@@ -35,7 +35,7 @@ describe('OrdersTablePagination', () => {
     expect(screen.getByRole('link', { name: 'Go to page 2' })).not.toBeNull()
   })
 
-  it('omits trailing ellipsis when the batch already ends at pagesCount (15 pages, page 8)', () => {
+  it('omits ellipses when the batch and boundary pages cover every page (15 pages, page 8)', () => {
     render(
       <MemoryRouter>
         <I18nProvider i18n={i18n}>
@@ -53,6 +53,7 @@ describe('OrdersTablePagination', () => {
 
     expect(screen.getByRole('link', { name: 'Page 8' })).not.toBeNull()
     expect(screen.getAllByRole('link', { name: 'Go to page 15' })).toHaveLength(1)
+    expect(screen.queryAllByText('...')).toHaveLength(0)
 
     const numberedPages = screen
       .getAllByRole('link')

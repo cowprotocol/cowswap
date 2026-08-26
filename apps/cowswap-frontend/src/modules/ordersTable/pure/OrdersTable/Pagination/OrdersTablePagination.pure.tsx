@@ -79,7 +79,7 @@ export function OrdersTablePagination({
               >
                 1
               </PageNavigationButton>
-              <BlankButton aria-hidden>...</BlankButton>
+              {batchStart > 1 && <BlankButton aria-hidden>...</BlankButton>}
             </>
           )}
         </>
@@ -104,7 +104,7 @@ export function OrdersTablePagination({
         <>
           {!isLastPagesBatch && (
             <>
-              <BlankButton aria-hidden>...</BlankButton>
+              {batchEnd < pagesCount - 1 && <BlankButton aria-hidden>...</BlankButton>}
               <PageNavigationButton
                 goToPage={goToPage}
                 getPageUrl={getPageUrl}
