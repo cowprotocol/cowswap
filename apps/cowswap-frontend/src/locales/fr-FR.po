@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 16:17\n"
+"PO-Revision-Date: 2026-08-26 17:59\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -1491,7 +1491,7 @@ msgstr "Surplus reçu"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signature is"
-msgstr "la signature est"
+msgstr "signature est"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "This app/hook can only be used as a <0>{hookType}-hook</0>"
@@ -4818,7 +4818,7 @@ msgstr "{tokenLabel} reçu"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "Please, make sure your address follows the format <0>{addressPrefix}:<your-address></0> or double-check if it is compatible with <1>{label}</1> network."
-msgstr "Assurez-vous que votre adresse respecte le format <0>{addressPrefix}:<your-address></0> ou vérifiez qu’elle est compatible avec le réseau <1>{label}</1>."
+msgstr "Assurez-vous que votre adresse respecte le format <0>{addressPrefix}:<your-address></0> ou vérifiez sa compatibilité avec le réseau <1>{label}</1>."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Recent Activity"
@@ -4854,7 +4854,7 @@ msgstr "Affiliation"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "Because you are selling {nativeSymbol} (native currency)"
-msgstr "Comme vous vendez {nativeSymbol}, la monnaie native"
+msgstr "Car vous vendez des {nativeSymbol} (devise native)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
 msgid "Token symbol, address"
@@ -4894,7 +4894,7 @@ msgstr "Recherche toujours en cours"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "check"
-msgstr "vérifier"
+msgstr "coché"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Are you sure you want to cancel {ordersCount} orders?"
@@ -4902,7 +4902,7 @@ msgstr "Voulez-vous vraiment annuler {ordersCount} ordres ?"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "Convert your <0/> LP tokens into CoW AMM pools and earn up to <1>+{apyDiffFormatted}%</1> more yield compared to <2/>. Or, swap"
-msgstr "Convertissez vos tokens LP <0/> vers des pools CoW AMM et obtenez jusqu’à <1>+{apyDiffFormatted}%</1> de rendement supplémentaire par rapport à <2/>. Ou swappez"
+msgstr "Convertissez vos tokens LP <0/> dans des pools CoW AMM et obtenez jusqu’à <1>+{apyDiffFormatted}%</1> de rendement supplémentaire par rapport à <2/>. Ou swappez"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
 #~ msgid "Only confirm if you trust this dapp and recognize the target contract and calldata below."
@@ -4931,7 +4931,7 @@ msgstr "Aucun ordre annulé trouvé"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "The {operationLabel} is submitted."
-msgstr "L’opération {operationLabel} a été soumise."
+msgstr "L’opération {operationLabel} a été envoyée."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Invalid manifest format at {manifestUrl}: missing cow_hook_dapp property"
@@ -5123,7 +5123,7 @@ msgstr "12 heures"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signatures are"
-msgstr "les signatures sont"
+msgstr "signatures sont"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 #~ msgid "This wallet isn’t eligible for that code."
@@ -5363,11 +5363,11 @@ msgstr "Votre ordre est en cours d’annulation."
 
 #: apps/cowswap-frontend/src/modules/tradeSlippage/containers/HighSuggestedSlippageWarning/index.tsx
 msgid "CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
-msgstr "CoW Swap ajuste dynamiquement votre tolérance au slippage selon les frais de gas actuels et la taille du trade. Vous pouvez définir une valeur personnalisée avec l’icône des paramètres ci-dessus."
+msgstr "CoW Swap ajuste dynamiquement votre tolérance au slippage selon les prix du gas actuels et la taille du trade. Vous pouvez définir un slippage personnalisé via l’icône des paramètres ci-dessus."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Press the button below to search older orders, or create a new one!"
-msgstr "Appuyez sur le bouton ci-dessous pour rechercher des ordres plus anciens ou créez-en un nouveau !"
+msgstr "Appuyez sur le bouton ci-dessous pour rechercher des ordres plus anciens ou en créer un nouveau !"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 #~ msgid "CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade size. Changes may result in slower execution."
@@ -5403,7 +5403,7 @@ msgstr "Maintenant"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "<0><1>Allows you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount.</5><7><8>Fill or kill</8> orders will either be filled fully or not at all.</7></4></0>"
-msgstr "<0><1>Vous permet de choisir si vos ordres limite seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
+msgstr "<0><1>Vous permet de choisir si vos ordres limites seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
@@ -5411,7 +5411,7 @@ msgstr "Mooovez <0/> d’une chaîne à l’autre, sans effort"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Scans locally in your browser. Nothing is uploaded."
-msgstr "Le scan est effectué localement dans votre navigateur. Rien n’est envoyé."
+msgstr "Le scan est effectué localement dans votre navigateur. Rien n’est envoyé en ligne."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate payouts happen on Ethereum mainnet."
@@ -5447,7 +5447,7 @@ msgstr "Exécution en cours"
 
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Another order has used up the approval amount. Set a new token approval to proceed with your order."
-msgstr "Un autre ordre a épuisé le montant approuvé. Définissez une nouvelle approbation du token pour poursuivre votre ordre."
+msgstr "Un autre ordre a consommé le montant approuvé. Définissez une nouvelle approbation du token pour poursuivre votre ordre."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 #~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -6066,7 +6066,7 @@ msgstr "Ajouter <0/> à {walletName}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
-msgstr "Sur CoW Swap, les ordres peuvent être des ordres au marché, exécutés au prix du marché dans la limite du slippage défini, ou des ordres limite, exécutés au prix que vous indiquez."
+msgstr "Sur CoW Swap, les ordres peuvent être soit des ordres au marché (qui s’exécutent au prix du marché dans la limite de la tolérance au glissement que vous avez définie), soit des ordres limites (qui s’exécutent au prix que vous spécifiez)."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
@@ -6111,7 +6111,7 @@ msgstr "Il s’agit du coût de règlement on-chain de votre ordre, comprenant l
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "more signature is"
-msgstr "une signature supplémentaire est"
+msgstr "signature supplémentaire est"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #~ msgid "<0><1>Allow you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6><7>Partially fillable</7> orders may be filled partially if there isn't enough liquidity to fill the full amount.</6><8><9>Fill or kill</9> orders will either be filled fully or not at all.</8></5></4></0>"
@@ -7458,7 +7458,7 @@ msgstr "Restauration du wallet..."
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "required"
-msgstr "requis"
+msgstr "requise"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Fetching balances"
