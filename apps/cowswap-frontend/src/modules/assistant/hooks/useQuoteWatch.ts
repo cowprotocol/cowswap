@@ -4,6 +4,9 @@ import { LandedStatus } from './useProposalLanded'
 
 import { AssistantUiContext } from '../types'
 
+/** How long a partial match must persist before it counts as the form's final word. */
+const SETTLE_MS = 1500
+
 /** What the form actually shows, compared against what was applied. */
 export type QuoteWatchState = {
   /** Set once per applied trade, when there's something to comment on. */
@@ -34,6 +37,12 @@ export type QuoteWatchState = {
  * is one of the cases most worth commenting on — letting the verification gate
  * silence the safety net would be exactly the wrong coupling.
  *
+ * But `partial` waits for the form to settle first. On a re-proposal over the same
+ * pair the tokens already match, so the state reads `partial` from the instant the
+ * navigation starts, while the amounts on screen are still the previous trade's.
+ * Commenting there would mean commenting on numbers that are about to be replaced —
+ * the same stale-state mistake, arriving from the other direction.
+ *
  * One shot per applied trade: the form re-quotes constantly, and a comment on every
  * tick would be both expensive and unbearable.
  */
@@ -51,9 +60,23 @@ export function useQuoteWatch(uiContext: AssistantUiContext, landed: LandedStatu
 
   useEffect(() => {
     if (!armed.current || landed === 'pending' || !hasSignal) return
-    armed.current = false
-    console.info('[assistant] quote signal after apply — asking for a comment')
-    setReady(Date.now())
+
+    const fire = (): void => {
+      if (!armed.current) return
+      armed.current = false
+      console.info(`[assistant] quote signal after apply (${landed}) — asking for a comment`)
+      setReady(Date.now())
+    }
+
+    // An exact match is proof the form has caught up; a partial one isn't, so give
+    // it a moment and let a later render supersede this timer.
+    if (landed === 'landed') {
+      fire()
+      return undefined
+    }
+
+    const timer = setTimeout(fire, SETTLE_MS)
+    return () => clearTimeout(timer)
   }, [hasSignal, landed])
 
   const arm = useCallback(() => {
