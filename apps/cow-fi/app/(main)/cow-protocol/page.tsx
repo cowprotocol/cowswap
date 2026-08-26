@@ -36,6 +36,7 @@ import {
   ContainerCard,
   ContainerCardSection,
   HeroContainer,
+  HeroButtonWrapper,
   HeroContent,
   HeroDescription,
   HeroImage,
@@ -70,19 +71,34 @@ export default function Page() {
             CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build
             any DeFi-related action you can imagine
           </HeroDescription>
-          <Link
-            bgColor={Color.cowfi_purple3}
-            color={Color.cowfi_purple_bright}
-            href="https://docs.cow.fi/category/tutorials"
-            external
-            linkType={LinkType.HeroButton}
-            data-click-event={toCowFiGtmEvent({
-              category: CowFiCategory.COWPROTOCOL,
-              action: 'Start Building Tutorial Navigation',
-            })}
-          >
-            Start building
-          </Link>
+          <HeroButtonWrapper>
+            <Link
+              bgColor={Color.cowfi_purple3}
+              color={Color.cowfi_purple_bright}
+              href="mailto:hello@cow.fi"
+              external
+              linkType={LinkType.HeroButton}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.COWPROTOCOL,
+                action: 'Get in touch',
+              })}
+            >
+              Get in touch
+            </Link>
+            <Link
+              bgColor="transparent"
+              color={Color.cowfi_purple3}
+              href="https://docs.cow.fi/category/tutorials"
+              external
+              linkType={LinkType.HeroButton}
+              data-click-event={toCowFiGtmEvent({
+                category: CowFiCategory.COWPROTOCOL,
+                action: 'Start Building Tutorial Navigation',
+              })}
+            >
+              Start building
+            </Link>
+          </HeroButtonWrapper>
         </HeroContent>
         <HeroImage width={470} height={470} color={Color.cowfi_purple3}>
           <LazySVG src={svgCowBitsSrc} />
