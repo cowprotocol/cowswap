@@ -103,7 +103,6 @@ jest.mock('modules/ordersTable/utils/getFilteredOrders', () => ({
     CANCELLED: 'cancelled',
     EXPIRED: 'expired',
     FILLED: 'filled',
-    PARTIALLY_FILLED: 'partially-filled',
   },
   getFilteredOrders: jest.fn(),
 }))

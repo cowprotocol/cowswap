@@ -111,7 +111,6 @@ export function OrdersTableWidget({ orderType, onClose, isDialog }: OrdersTableW
               <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
                 <option value={HistoryStatusFilter.ALL}>{i18n._('All orders')}</option>
                 <option value={HistoryStatusFilter.FILLED}>{i18n._('Filled orders')}</option>
-                <option value={HistoryStatusFilter.PARTIALLY_FILLED}>{i18n._('Partially filled orders')}</option>
                 <option value={HistoryStatusFilter.CANCELLED}>{i18n._('Cancelled orders')}</option>
                 <option value={HistoryStatusFilter.EXPIRED}>{i18n._('Expired orders')}</option>
               </Select>

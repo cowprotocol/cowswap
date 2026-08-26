@@ -69,12 +69,12 @@ describe('MobileOrdersFilterSheet', () => {
     expect(screen.getByRole('button', { name: 'Reset filters' }).hasAttribute('disabled')).toBe(false)
   })
 
-  it('offers a distinct partially-filled filter with wrapping touch targets', () => {
+  it('renders wrapping status choices with touch-sized targets', () => {
     renderFilterSheet()
 
-    const partiallyFilled = screen.getByRole('button', { name: 'Partially filled' })
+    const cancelled = screen.getByRole('button', { name: 'Cancelled' })
     const statusLegend = screen.getByText('Status')
-    const choices = partiallyFilled.parentElement
+    const choices = cancelled.parentElement
     const group = choices?.parentElement
 
     expect(choices).not.toBeNull()
@@ -82,9 +82,9 @@ describe('MobileOrdersFilterSheet', () => {
     expect(getComputedStyle(choices as HTMLElement).flexWrap).toBe('wrap')
     expect(getComputedStyle(group as HTMLElement).gap).toBe('12px')
     expect(getComputedStyle(statusLegend).marginBottom).toBe('12px')
-    expect(getComputedStyle(partiallyFilled).minHeight).toBe('44px')
+    expect(getComputedStyle(cancelled).minHeight).toBe('44px')
 
-    fireEvent.click(partiallyFilled)
+    fireEvent.click(cancelled)
     expect(screen.getByRole('button', { name: 'Reset filters' }).hasAttribute('disabled')).toBe(false)
   })
 })

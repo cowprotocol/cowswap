@@ -25,8 +25,7 @@ describe('getFilteredOrders', () => {
     }
     const orders = [filled, partiallyFilled, cancelled, expired]
 
-    expect(filterIds(orders, HistoryStatusFilter.FILLED)).toEqual(['filled'])
-    expect(filterIds(orders, HistoryStatusFilter.PARTIALLY_FILLED)).toEqual(['partially-filled'])
+    expect(filterIds(orders, HistoryStatusFilter.FILLED)).toEqual(['filled', 'partially-filled'])
     expect(filterIds(orders, HistoryStatusFilter.CANCELLED)).toEqual(['cancelled'])
     expect(filterIds(orders, HistoryStatusFilter.EXPIRED)).toEqual(['expired'])
     expect(filterIds(orders, HistoryStatusFilter.ALL)).toEqual(['filled', 'partially-filled', 'cancelled', 'expired'])

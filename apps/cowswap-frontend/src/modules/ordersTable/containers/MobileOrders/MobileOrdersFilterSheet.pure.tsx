@@ -124,7 +124,6 @@ function FilterStatusChoices({ value, onChange }: FilterStatusChoicesProps): Rea
   const statusOptions = [
     { value: HistoryStatusFilter.ALL, label: t`All` },
     { value: HistoryStatusFilter.FILLED, label: t`Filled` },
-    { value: HistoryStatusFilter.PARTIALLY_FILLED, label: t`Partially filled` },
     { value: HistoryStatusFilter.CANCELLED, label: t`Cancelled` },
     { value: HistoryStatusFilter.EXPIRED, label: t`Expired` },
   ] as const
