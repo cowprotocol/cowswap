@@ -6,6 +6,8 @@ import { useBodyScrollbarLocker, useMediaQuery } from '@cowprotocol/common-hooks
 import { ALL_SUPPORTED_CHAINS_MAP } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ChatIcon } from './ChatIcon'
 import * as styledEl from './styled'
 
@@ -110,7 +112,8 @@ export function AssistantDrawer(): ReactNode {
         <styledEl.Header>
           <strong>
             <ChatIcon />
-            CoWsultant
+            {/* Same word as the toggle: two names for one panel reads as two features. */}
+            <Trans>Assistant</Trans>
           </strong>
           <styledEl.CloseButton onClick={close} aria-label="Close the assistant">
             <Close width={18} height={18} />

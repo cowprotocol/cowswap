@@ -1,4 +1,4 @@
-import { FormEvent, KeyboardEvent, ReactNode, useCallback, useLayoutEffect, useRef, useState } from 'react'
+import { FormEvent, KeyboardEvent, ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { useVoiceInput } from '../../hooks/useVoiceInput'
 import { AssistantUiContext } from '../../types'
@@ -36,11 +36,27 @@ export function AssistantComposer({ busy, onSend }: AssistantComposerProps): Rea
 
   // What's actually in the box: typed text, plus whatever is being said right now.
   const shown = heard ? `${input} ${heard}`.trim() : input
+  const placeholder = voice.listening ? 'Listening…' : 'Describe a trade, or ask a question…'
 
   // Layout effect, not effect: the height is measured and written before paint, so
   // the box never renders at the wrong size first. Dictation makes that visible —
   // text arrives in bursts, and a frame at the old height reads as a flicker.
-  useLayoutEffect(() => growToFit(field.current), [shown])
+  //
+  // The placeholder is a dependency because it's part of what has to fit, and it
+  // changes without the value changing when dictation starts.
+  useLayoutEffect(() => growToFit(field.current), [shown, placeholder])
+
+  // The placeholder wraps differently at different widths, so a resize can clip it
+  // again. Observing the box itself covers the drawer becoming a full-screen sheet,
+  // which no window-level listener would report reliably.
+  useEffect(() => {
+    const el = field.current
+    if (!el || typeof ResizeObserver === 'undefined') return undefined
+
+    const observer = new ResizeObserver(() => growToFit(el))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
 
   const submit = useCallback(
     (event: FormEvent) => {
@@ -77,7 +93,7 @@ export function AssistantComposer({ busy, onSend }: AssistantComposerProps): Rea
           value={shown}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={onKeyDown}
-          placeholder={voice.listening ? 'Listening…' : 'Describe a trade, or ask a question…'}
+          placeholder={placeholder}
           disabled={busy}
         />
 
@@ -115,15 +131,32 @@ export function AssistantComposer({ busy, onSend }: AssistantComposerProps): Rea
 }
 
 /**
- * Sizes the box to its content.
+ * Sizes the box to whichever is taller: its content, or its placeholder.
  *
  * The reset to `auto` first is what makes it shrink again — scrollHeight can never
  * report less than the height already set, so without it the box only ever grows
  * and deleting a long request leaves a tall empty field behind. The max-height in
  * the stylesheet caps it; past that the textarea scrolls on its own.
+ *
+ * ⚠️ **A placeholder contributes nothing to scrollHeight**, so measuring an empty
+ * box reports one line however long the hint is. That clipped "Describe a trade, or
+ * ask a question…" to its first line and put a scrollbar on an empty field — the
+ * text you most need to read is the text that's there before you've typed anything.
+ *
+ * So when the box is empty, measure the placeholder as though it were the value.
+ * Writing to `el.value` here is safe despite React owning it: the value is restored
+ * within the same synchronous block, inside a layout effect, so nothing paints in
+ * between and React's own idea of the value never changes.
  */
 function growToFit(el: HTMLTextAreaElement | null): void {
   if (!el) return
+
+  const measuringPlaceholder = el.value === '' && Boolean(el.placeholder)
+  if (measuringPlaceholder) el.value = el.placeholder
+
   el.style.height = 'auto'
-  el.style.height = `${el.scrollHeight}px`
+  const needed = el.scrollHeight
+
+  if (measuringPlaceholder) el.value = ''
+  el.style.height = `${needed}px`
 }
