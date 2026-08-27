@@ -1,34 +1,19 @@
 import { ReactNode, useCallback } from 'react'
 
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
+
 import { Drawer as BaseDrawer } from '@base-ui/react/drawer'
 
 import * as styledEl from './BottomDrawer.styled'
 
-export interface BottomDrawerProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-  /** Optional a11y title; rendered visually hidden */
-  title?: string
-  className?: string
-  /**
-   * Optional pinned footer rendered outside the scrollable body.
-   * Use for footer inputs; keyboard inset is applied via StickyFooter styles.
-   */
-  footer?: ReactNode
-  /** Optional header content below the drag handle (outside the scroll body). */
-  header?: ReactNode
-}
+import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
+import { OverlayLayer } from '../surfaces/OverlayLayer.styled'
 
-export function BottomDrawer({
-  open,
-  onOpenChange,
-  children,
-  title,
-  className,
-  footer,
-  header,
-}: BottomDrawerProps): ReactNode {
+export type { BaseSurfaceProps as BaseOpenableContainerProps } from '../surfaces/BaseSurface.types'
+
+export type BottomDrawerProps = BaseSurfaceProps
+
+function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -36,32 +21,29 @@ export function BottomDrawer({
     [onOpenChange],
   )
 
+  useBodyScrollbarLocker(isOpen)
+
   return (
-    <BaseDrawer.Root open={open} onOpenChange={handleOpenChange} swipeDirection="down">
+    <BaseDrawer.Root open={isOpen} onOpenChange={handleOpenChange} swipeDirection="down">
       <BaseDrawer.VirtualKeyboardProvider>
         <BaseDrawer.Portal>
-          <styledEl.Backdrop />
-          <styledEl.Viewport>
-            <styledEl.Popup className={className}>
-              <styledEl.Header>
+          <OverlayLayer data-bottom-drawer-layer="">
+            <styledEl.Backdrop data-bottom-drawer-backdrop="" forceRender />
+            <styledEl.Viewport data-bottom-drawer-viewport="">
+              <styledEl.Popup className={className}>
                 <styledEl.Handle aria-hidden />
-                {header}
-              </styledEl.Header>
-
-              <styledEl.Content>
-                <styledEl.VisuallyHiddenTitle>{title ?? 'Drawer'}</styledEl.VisuallyHiddenTitle>
+                {a11yTitle ? <styledEl.VisuallyHiddenTitle>{a11yTitle}</styledEl.VisuallyHiddenTitle> : null}
                 {children}
-              </styledEl.Content>
-
-              {footer ? (
-                <styledEl.FooterSlot>
-                  <styledEl.StickyFooter>{footer}</styledEl.StickyFooter>
-                </styledEl.FooterSlot>
-              ) : null}
-            </styledEl.Popup>
-          </styledEl.Viewport>
+              </styledEl.Popup>
+            </styledEl.Viewport>
+          </OverlayLayer>
         </BaseDrawer.Portal>
       </BaseDrawer.VirtualKeyboardProvider>
     </BaseDrawer.Root>
   )
 }
+
+export const BottomDrawer = Object.assign(BottomDrawerComponent, {
+  /** Pass as `ModalHeader` `titleAs` so the visible heading names the drawer. */
+  Title: BaseDrawer.Title,
+})
