@@ -8,17 +8,13 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
   ${baseGlobalStyles}
 
-  *, *:after, *:before {
-    box-sizing: border-box;
-  }
-
   ::selection {
     background: var(${UI.COLOR_PRIMARY});
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
   html {
-    font-family: var(${UI.FONT_FAMILY_PRIMARY}), Arial, sans-serif;
+    font-family: var(${UI.FONT_FAMILY_PRIMARY});
     font-size: 16px;
     font-variant: none;
     font-variant-ligatures: none;
@@ -39,6 +35,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background: transparent;
     min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
+    /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
     &.noScroll {
       overflow: hidden;
     }
@@ -68,38 +65,5 @@ export const ThemedGlobalStyle = createGlobalStyle`
         text-decoration: underline;
       }
     }
-  }
-
-  button,
-  textarea,
-  select,
-  // Using where to avoid specificity issues with the input type selectors:
-  input:where(:not([type='checkbox'], [type='radio'], [type='range'])) {
-    border: none;
-    padding: 0;
-    margin: 0;
-    background: none;
-    outline: none;
-    font: inherit;
-    color: inherit;
-    appearance: none;
-  }
-
-  button {
-    user-select: none;
-    cursor: pointer;
-
-    &:disabled {
-      cursor: not-allowed;
-    }
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-  }
-
-  a {
-    // color: ${({ theme }) => theme.blue1};
-    color: inherit;
   }
 `
