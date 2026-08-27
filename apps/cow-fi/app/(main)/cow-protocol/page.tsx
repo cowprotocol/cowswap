@@ -66,7 +66,7 @@ export default function Page() {
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
           <HeroSubtitle color={Color.cowfi_purple3}>CoW Protocol</HeroSubtitle>
-          <HeroTitle maxWidth={520}>Swap what you want, build what you want</HeroTitle>
+          <HeroTitle maxWidth={530}>Swap what you want, build what you want</HeroTitle>
           <HeroDescription>
             CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build
             any DeFi-related action you can imagine
