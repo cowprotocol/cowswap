@@ -1,3 +1,4 @@
+export * from './hooks/useConfirmProposal'
 export * from './hooks/useFillWatch'
 export * from './hooks/useProposalLanded'
 export * from './hooks/useQuoteWatch'

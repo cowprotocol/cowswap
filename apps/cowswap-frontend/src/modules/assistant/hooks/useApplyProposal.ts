@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
 
 import { ALL_SUPPORTED_CHAINS_MAP, OrderKind } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { parameterizeTradeRoute, useTradeConfirmActions } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 import { AssistantProposal } from '../types'
 
@@ -44,12 +46,14 @@ export type ApplyResult = { ok: true } | { ok: false; problem: string }
  * `propose_trade`'s schema has to grow fields for TWAP regardless, so that work is
  * not avoided by choosing a different mechanism today.
  */
-export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult {
+export function useApplyProposal(): (proposal: AssistantProposal) => Promise<ApplyResult> {
   const navigate = useNavigate()
   const { onDismiss } = useTradeConfirmActions()
+  const onSelectNetwork = useOnSelectNetwork()
+  const { chainId: walletChainId } = useWalletInfo()
 
   return useCallback(
-    (proposal: AssistantProposal): ApplyResult => {
+    async (proposal: AssistantProposal): Promise<ApplyResult> => {
       const problem = validate(proposal)
       if (problem) {
         console.error('[assistant] rejected proposal:', problem, proposal)
@@ -79,6 +83,26 @@ export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult
       // when a route has to be understood by the trade updaters at the other end.
       const [pathname, search = ''] = url.split('?')
 
+      // ⚠️ **Switch the wallet's network BEFORE navigating, never after.**
+      //
+      // A trade URL naming a chain the wallet isn't on is a mismatch, and
+      // useSetupTradeState resolves mismatches by resetting to that chain's default
+      // state — which threw the tokens away and left "Select a token" in a form the
+      // card had just claimed to fill. Worse, the reconciliation that would have
+      // asked the wallet to switch keys off a *change* in the URL chain, and a
+      // proposal that also changes order type swaps route modules, so the effect
+      // sees a fresh mount with no previous URL state to compare against and asks
+      // for nothing.
+      //
+      // onSelectNetwork is the app's own entry point — the network selector uses it —
+      // and it sets the chain in the URL once the wallet agrees. Doing that first
+      // means our navigate lands on a URL the app already considers consistent.
+      if (proposal.chainId !== walletChainId) {
+        console.info('[assistant] switching network', walletChainId, '→', proposal.chainId)
+        // skipClose: we aren't in the network selector, so there's no modal to close.
+        await onSelectNetwork(proposal.chainId, true)
+      }
+
       console.info('[assistant] applying proposal →', pathname, search)
       navigate({ pathname, search })
 
@@ -94,7 +118,7 @@ export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult
 
       return { ok: true }
     },
-    [navigate, onDismiss],
+    [navigate, onDismiss, onSelectNetwork, walletChainId],
   )
 }
 

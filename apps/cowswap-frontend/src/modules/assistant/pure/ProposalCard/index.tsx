@@ -91,10 +91,19 @@ interface ProposalCardProps {
   chainName: string
   display: { buySymbol: string; sellSymbol: string } | null
   onConfirm(): void
+  /** Applying is in flight — usually waiting on a wallet network switch. */
+  pending: boolean
   proposal: AssistantProposal
 }
 
-export function ProposalCard({ chainName, display, landed, onConfirm, proposal }: ProposalCardProps): ReactNode {
+export function ProposalCard({
+  chainName,
+  display,
+  landed,
+  onConfirm,
+  pending,
+  proposal,
+}: ProposalCardProps): ReactNode {
   // Symbols come from the server, derived from the ADDRESSES in the proposal rather
   // than from anything the model called them — so the card can't read "USDC" over a
   // different contract.
@@ -144,13 +153,15 @@ export function ProposalCard({ chainName, display, landed, onConfirm, proposal }
         </Leg>
       </Legs>
 
-      <Confirm onClick={onConfirm} disabled={landed !== 'pending'}>
+      <Confirm onClick={onConfirm} disabled={pending || landed !== 'pending'}>
         {/* Reports what the form shows. 'partial' is the honest answer to the case
             where the tokens loaded and the amounts didn't — saying it loaded there
             sends someone to sign a trade they haven't read. */}
         {landed === 'landed' && <Trans>Loaded into the form</Trans>}
         {landed === 'partial' && <Trans>Partly loaded — check the form</Trans>}
-        {landed === 'pending' && <Trans>Confirm</Trans>}
+        {/* A cross-chain proposal waits on a wallet prompt, and a Confirm that looks
+            inert while that happens reads as a broken button. */}
+        {landed === 'pending' && (pending ? <Trans>Switching network…</Trans> : <Trans>Confirm</Trans>)}
       </Confirm>
 
       <FinePrint>

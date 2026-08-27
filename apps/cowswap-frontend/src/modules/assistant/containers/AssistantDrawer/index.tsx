@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import Close from '@cowprotocol/assets/images/x.svg?react'
 import { useBodyScrollbarLocker, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -11,9 +11,9 @@ import { Trans } from '@lingui/react/macro'
 import { ChatIcon } from './ChatIcon'
 import * as styledEl from './styled'
 
-import { useApplyProposal } from '../../hooks/useApplyProposal'
 import { useAssistantContext } from '../../hooks/useAssistantContext'
 import { useAssistantDrawer } from '../../hooks/useAssistantDrawer'
+import { useConfirmProposal } from '../../hooks/useConfirmProposal'
 import { FILL_MARKER, isAppInjected, QUOTE_MARKER, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
 import { useFillWatch } from '../../hooks/useFillWatch'
 import { useProposalLanded } from '../../hooks/useProposalLanded'
@@ -43,15 +43,18 @@ export function AssistantDrawer(): ReactNode {
   const isNarrow = useMediaQuery(Media.upToMedium(false))
 
   const uiContext = useAssistantContext()
-  const applyProposal = useApplyProposal()
   const { messages, proposal, proposalDisplay, preamble, proposalApplied } = useAtomValue(conversationAtom)
   const { busy, error, status, streamText, send, markApplied } = useConversation()
   const wrapWatch = useWrapWatch()
   const fillWatch = useFillWatch()
   const landed = useProposalLanded(proposal, proposalApplied, uiContext)
   const quoteWatch = useQuoteWatch(uiContext, landed)
+  const {
+    confirm,
+    applying,
+    problem: applyProblem,
+  } = useConfirmProposal({ markApplied, proposal, quoteWatch, wrapWatch })
 
-  const [applyProblem, setApplyProblem] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
@@ -101,22 +104,6 @@ export function AssistantDrawer(): ReactNode {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fillWatch.fill, busy, messages.length])
 
-  const confirm = useCallback(() => {
-    if (!proposal) return
-
-    const result = applyProposal(proposal)
-    if (!result.ok) {
-      setApplyProblem(result.problem)
-      return
-    }
-
-    markApplied()
-    // Arm both watches only for a trade that actually went to the form.
-    wrapWatch.watch(proposal)
-    quoteWatch.arm()
-    setApplyProblem(null)
-  }, [applyProposal, markApplied, proposal, quoteWatch, wrapWatch])
-
   if (!isOpen) return null
 
   return (
@@ -152,6 +139,7 @@ export function AssistantDrawer(): ReactNode {
               chainName={chainNameOf(proposal.chainId)}
               display={proposalDisplay}
               onConfirm={confirm}
+              pending={applying}
               proposal={proposal}
             />
           )}
