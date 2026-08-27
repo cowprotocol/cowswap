@@ -44,7 +44,7 @@ export function AssistantDrawer(): ReactNode {
 
   const uiContext = useAssistantContext()
   const { messages, proposal, proposalDisplay, preamble, proposalApplied } = useAtomValue(conversationAtom)
-  const { busy, error, status, streamText, send, markApplied } = useConversation()
+  const { busy, error, status, streamText, send, reset, markApplied } = useConversation()
   const wrapWatch = useWrapWatch()
   const fillWatch = useFillWatch()
   const landed = useProposalLanded(proposal, proposalApplied, uiContext)
@@ -116,6 +116,11 @@ export function AssistantDrawer(): ReactNode {
             {/* Same word as the toggle: two names for one panel reads as two features. */}
             <Trans>Assistant</Trans>
           </strong>
+          {messages.length > 0 && (
+            <styledEl.ResetButton onClick={reset} disabled={busy} aria-label="Start a new conversation">
+              <Trans>New</Trans>
+            </styledEl.ResetButton>
+          )}
           <styledEl.CloseButton onClick={close} aria-label="Close the assistant">
             <Close width={18} height={18} />
           </styledEl.CloseButton>

@@ -133,6 +133,31 @@ export const Message = styled.div<{ from: 'assistant' | 'user' }>`
   border-top-right-radius: ${({ from }) => (from === 'user' ? '4px' : '14px')};
 `
 
+// Deliberately quiet: starting over is occasionally useful and never the point of
+// opening the panel, so it sits beside the title rather than competing with it.
+export const ResetButton = styled.button`
+  margin-left: auto;
+  margin-right: 4px;
+  padding: 4px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+
+  &:hover {
+    background: var(${UI.COLOR_PAPER_DARKER});
+    color: inherit;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+`
+
 export const Composer = styled.form`
   display: flex;
   /* flex-end, not center: the buttons stay level with the last line as the box
