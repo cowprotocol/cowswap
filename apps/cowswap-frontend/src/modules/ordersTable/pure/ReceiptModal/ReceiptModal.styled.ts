@@ -18,29 +18,14 @@ export const Wrapper = styled.div`
   }
 `
 
-export const Header = styled.div`
+export const TitleWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 16px 16px;
-  background: var(${UI.COLOR_PAPER});
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100%;
-  padding: 16px;
-  z-index: 20;
-
-  > div {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  gap: 10px;
 `
 
 export const Title = styled.h3`
-  font-size: 16px;
+  font-size: inherit;
   margin: 0;
 `
 
@@ -63,10 +48,6 @@ export const FieldsWrapper = styled.div`
   ${Media.upToSmall()} {
     padding: 0 0 54px;
   }
-`
-
-export const InfoBannerWrapper = styled.div`
-  margin: 12px;
 `
 
 export const Field = styled.div`

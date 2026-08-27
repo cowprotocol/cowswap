@@ -7,7 +7,7 @@
   "apps": {
     "@cowprotocol/cow-fi": 5,
     "@cowprotocol/cowswap": 10.4,
-    "@cowprotocol/explorer": 10.8,
+    "@cowprotocol/explorer": 10.9,
     "@cowprotocol/sdk-tools": 9.9,
     "@cowprotocol/storybook": 3.6,
     "@cowprotocol/widget-configurator": 11.1,

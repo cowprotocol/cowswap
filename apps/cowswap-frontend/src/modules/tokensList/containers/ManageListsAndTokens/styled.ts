@@ -11,6 +11,7 @@ export const Wrapper = styled.div`
   width: 100%;
   background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
+  overflow: hidden;
 `
 
 export const TabsContainer = styled.div`
