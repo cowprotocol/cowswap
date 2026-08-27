@@ -4,8 +4,14 @@ import { LandedStatus } from './useProposalLanded'
 
 import { AssistantUiContext } from '../types'
 
-/** How long a partial match must persist before it counts as the form's final word. */
+/** How long the signals must stop changing before they count as the form's answer. */
 const SETTLE_MS = 1500
+
+/**
+ * Fire anyway after this long. A quote that never stops moving would otherwise mean
+ * never commenting, and silence is the failure mode this hook exists to remove.
+ */
+const MAX_WAIT_MS = 8000
 
 /** What the form actually shows, compared against what was applied. */
 export type QuoteWatchState = {
@@ -49,6 +55,8 @@ export type QuoteWatchState = {
 export function useQuoteWatch(uiContext: AssistantUiContext, landed: LandedStatus): QuoteWatchState {
   const [ready, setReady] = useState<number | null>(null)
   const armed = useRef(false)
+  /** When arming became effective, so the wait can be bounded. */
+  const armedAt = useRef<number | null>(null)
 
   // Anything the form can tell us that the assistant couldn't know at proposal time.
   // estimatedFillPrice is in here so a limit order sitting exactly at market — no
@@ -58,29 +66,52 @@ export function useQuoteWatch(uiContext: AssistantUiContext, landed: LandedStatu
     uiContext.quoteStatus ?? uiContext.limitPrice ?? uiContext.limitOrderSize ?? uiContext.estimatedFillPrice,
   )
 
+  // Everything the comment would be based on, as one value. Any change to any of it
+  // restarts the wait below, so the comment is made on the numbers that stay put.
+  const signature = JSON.stringify([
+    uiContext.quoteStatus,
+    uiContext.limitPrice,
+    uiContext.limitOrderSize,
+    uiContext.estimatedFillPrice,
+  ])
+
   useEffect(() => {
-    if (!armed.current || landed === 'pending' || !hasSignal) return
+    if (!armed.current || landed === 'pending' || !hasSignal) return undefined
+
+    if (armedAt.current === null) armedAt.current = Date.now()
+    const waited = Date.now() - armedAt.current
 
     const fire = (): void => {
       if (!armed.current) return
       armed.current = false
-      console.info(`[assistant] quote signal after apply (${landed}) — asking for a comment`)
+      armedAt.current = null
+      console.info(`[assistant] quote settled after apply (${landed}) — asking for a comment`)
       setReady(Date.now())
     }
 
-    // An exact match is proof the form has caught up; a partial one isn't, so give
-    // it a moment and let a later render supersede this timer.
-    if (landed === 'landed') {
+    // ⚠️ **Never fire on the first quote.** `landed` proves the tokens and amounts
+    // arrived; it proves nothing about the quote, which is a separate async result
+    // for a pair that may have just changed. Firing immediately reported "quote
+    // looks fine" on a swap the form went on to price at -33%, because the impact
+    // still belonged to the previous pair — WETH→USDC is liquid where WETH→DAI is
+    // not. An early right-sounding answer is worse than a late one: nobody
+    // re-reads it.
+    //
+    // So wait for the numbers to stop moving. Each change re-runs this effect and
+    // restarts the timer; MAX_WAIT_MS stops a permanently-churning quote from
+    // meaning permanent silence.
+    if (waited >= MAX_WAIT_MS) {
       fire()
       return undefined
     }
 
-    const timer = setTimeout(fire, SETTLE_MS)
+    const timer = setTimeout(fire, Math.min(SETTLE_MS, MAX_WAIT_MS - waited))
     return () => clearTimeout(timer)
-  }, [hasSignal, landed])
+  }, [hasSignal, landed, signature])
 
   const arm = useCallback(() => {
     armed.current = true
+    armedAt.current = null
   }, [])
 
   const clear = useCallback(() => setReady(null), [])
