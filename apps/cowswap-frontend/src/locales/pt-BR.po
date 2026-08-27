@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-27 11:32\n"
+"PO-Revision-Date: 2026-08-27 13:45\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -259,7 +259,7 @@ msgstr "Custos de rede (est.)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "The account address which will/did receive the bought amount."
-msgstr "O endereço da conta que irá/recebeu o valor comprado."
+msgstr "O endereço da conta que receberá/recebeu o valor comprado."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #~ msgid "Volume"
@@ -322,7 +322,7 @@ msgstr "O provedor da ponte modificou o endereço do destinatário para <0/>. Is
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation was successful. Your transaction is expected to succeed."
-msgstr "A simulação no Tenderly foi bem-sucedida. Há uma boa chance de que sua transação também seja."
+msgstr "A simulação Tenderly foi bem-sucedida. Há uma boa chance de que sua transação também seja."
 
 #: apps/cowswap-frontend/src/modules/injectedWidget/pure/WidgetParamsErrorsScreen/index.tsx
 msgid "The are some errors with CoW Swap widget configuration"
@@ -442,7 +442,7 @@ msgstr "Taxa do parceiro"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "<0>By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one.</0><1><2>If you purchase a token from this list, you may not be able to sell it back.</2></1>"
-msgstr "<0>Ao adicionar essa lista, você está confiando implicitamente que os dados estão corretos. Qualquer pessoa pode criar uma lista, inclusive versões falsas de listas existentes e listas que afirmam representar projetos que não têm uma lista própria.</0><1><2>Se você comprar um token dessa lista, talvez não consiga vendê-lo de volta.</2></1>"
+msgstr "<0>Ao adicionar essa lista, você está confiando implicitamente que os dados estão corretos. Qualquer pessoa pode criar uma lista, inclusive versões falsas de listas existentes e listas que afirmam representar projetos que não têm uma lista própria.</0><1><2>Se você comprar um token dessa lista, talvez não consiga vendê-lo.</2></1>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 #~ msgid "Your favorite saved tokens. Edit this list in your account page."
@@ -585,7 +585,7 @@ msgstr "Executar uma simulação"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "This CoW doesn't run away any more! Not from MEV!"
-msgstr "Esta CoW não foge mais! Não do MEV!"
+msgstr "Esta CoW não foge mais! Nem do MEV!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 #~ msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
@@ -756,7 +756,7 @@ msgstr "O endereço do contrato EthFlow ({actualContractAddress}) não correspon
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Active referral code"
-msgstr "Código de indicação ativo"
+msgstr "Código de afiliado ativo"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
@@ -996,7 +996,7 @@ msgstr "O endereço do destinatário da ordem difere do proprietário da ordem!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No signing orders"
-msgstr "Nenhuma ordem em assinatura"
+msgstr "Nenhuma ordem para assinar"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Import intermediate token"
@@ -1095,7 +1095,7 @@ msgstr "Já conferiu sua sorte hoje? Volte amanhã que tem mais!"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Enough signatures, <0>but not executed</0>"
-msgstr "Assinaturas suficientes, <0>mas não executada</0>"
+msgstr "Assinaturas suficientes, <0>mas transação não executada</0>"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Invalid order"
@@ -1138,7 +1138,7 @@ msgstr "Gerenciar lista de tokens"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays} days."
-msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociação, o código de indicação será vinculado e ficará ativo por {timeCapDays} dias."
+msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociação, o código de afiliado será vinculado e ficará ativo por {timeCapDays} dias."
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
@@ -1255,7 +1255,7 @@ msgstr "ícone de ataque sanduíche"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging to destination..."
-msgstr "Ponte para o destino..."
+msgstr "Fazendo a ponte para o destino..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderHeaderButton.container.tsx
@@ -1330,7 +1330,7 @@ msgstr "falhou"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Airdrop token chain ({tokenToClaimChainId}) and airdrop contract chain ({airdropChainId}) should match"
-msgstr "A cadeia do token do airdrop ({tokenToClaimChainId}) e a cadeia do contrato do airdrop ({airdropChainId}) devem corresponder"
+msgstr "A rede do token do airdrop ({tokenToClaimChainId}) e a rede do contrato do airdrop ({airdropChainId}) devem corresponder"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Protection from MEV by default"
@@ -1370,7 +1370,7 @@ msgstr "Histórico de ordens"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderExpiryBanner.tsx
 msgid "Your referral code expires {timeAgo}. Trade now to maximize your rewards."
-msgstr "Seu código de indicação expira {timeAgo}. Negocie agora para maximizar suas recompensas."
+msgstr "Seu código de afiliado expira {timeAgo}. Negocie agora para maximizar suas recompensas."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
@@ -1431,7 +1431,7 @@ msgstr "Personalizado"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
-msgstr "Preço de preenchimento parcial estimado"
+msgstr "Preço de execução parcial estimado"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
@@ -1898,7 +1898,7 @@ msgstr "Aprovar, Trocar e Fazer Ponte"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
-msgstr "Obtenha o Time-Weighted Average Price dispersando sua ordem grande em partes menores"
+msgstr "Obtenha o Time-Weighted Average Price dividindo sua ordem grande em partes menores"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "The bad news"
@@ -2339,7 +2339,7 @@ msgstr "Receba pelo menos"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Volume left to next {rewardAmountLabel}"
-msgstr "Volume restante para a próxima {rewardAmountLabel}"
+msgstr "Volume restante para a próxima recompensa de {rewardAmountLabel}"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "This is an"
@@ -2400,7 +2400,7 @@ msgstr "ou nos envie um e-mail para"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The minimum possible outcome after swap, including costs and slippage."
-msgstr "O resultado mínimo possível após o swap, incluindo custos e derrapagem."
+msgstr "O mínimo resultado possível após a troca, incluindo custos e derrapagem."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The estimated amount you'll receive after estimated network costs and the max slippage setting"
@@ -2755,7 +2755,7 @@ msgstr "Para continuar, altere a rede em sua carteira"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This referral code was not found in the affiliate program configuration."
-msgstr "Este código de indicação não foi encontrado na configuração do programa de afiliados."
+msgstr "Este código de afiliado não foi encontrado na configuração do programa de afiliados."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Show progress"
