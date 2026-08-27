@@ -1,5 +1,7 @@
 import { css } from 'styled-components/macro'
 
+import { UI } from '../enum'
+
 export const baseGlobalStyles = css`
   *,
   *:after,
@@ -34,6 +36,11 @@ export const baseGlobalStyles = css`
     font: inherit;
     color: inherit;
     appearance: none;
+
+    &:focus-visible {
+      outline: 1.5px dotted var(${UI.COLOR_TEXT});
+      outline-offset: 2px;
+    }
   }
 
   button {

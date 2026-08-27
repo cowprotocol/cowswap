@@ -36,6 +36,10 @@ export const Button = styled.button`
     opacity: 0.5;
   }
 
+  &:focus-visible {
+    outline: none;
+  }
+
   &:focus-visible::after {
     outline: 1.5px dotted var(${UI.COLOR_TEXT});
     inset: -2px;
