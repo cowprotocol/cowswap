@@ -45,6 +45,7 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+  prioritizedTokenIds?: ReadonlySet<string>
 }
 
 export interface TradeWidgetSlots {

@@ -39,6 +39,7 @@ export const APP_TITLE = msg`CoW Swap | The smartest way to trade cryptocurrenci
 
 export const PAGE_TITLES = {
   SWAP: msg`Swap`,
+  RWA: msg`RWA`,
   LIMIT_ORDERS: msg`Limit Orders`,
   YIELD: msg`Yield`,
   ADVANCED: msg`TWAP`,

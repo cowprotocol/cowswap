@@ -21,6 +21,7 @@ export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 export const Routes = {
   HOME: '/',
   SWAP: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/:inputCurrencyId?/:outputCurrencyId?`,
+  RWA: `/:chainId?${TRADE_WIDGET_PREFIX}/rwa/:inputCurrencyId?/:outputCurrencyId?`,
   HOOKS: `/:chainId?${TRADE_WIDGET_PREFIX}/swap/hooks/:inputCurrencyId?/:outputCurrencyId?`,
   LIMIT_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/limit/:inputCurrencyId?/:outputCurrencyId?`,
   YIELD: `/:chainId?${TRADE_WIDGET_PREFIX}/yield/:inputCurrencyId?/:outputCurrencyId?`,
@@ -82,6 +83,13 @@ export const MENU_ITEMS: I18nIMenuItem[] = [
     route: Routes.SWAP,
     label: msg`Swap`,
     description: msg`Trade tokens`,
+  },
+  {
+    route: Routes.RWA,
+    label: msg`RWA`,
+    description: msg`Trade real-world assets`,
+    badge: msg`New!`,
+    badgeType: BadgeTypes.ALERT,
   },
   {
     route: Routes.LIMIT_ORDERS,

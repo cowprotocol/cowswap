@@ -35,6 +35,7 @@ export interface TokenListContext {
   // UI config
   hideFavoriteTokensTooltip: boolean
   selectedTargetChainId: number | undefined
+  prioritizedTokenIds: ReadonlySet<string> | undefined
 
   // Callbacks
   onClearRecentTokens: () => void
@@ -83,6 +84,7 @@ export function useTokenListContext(): TokenListContext {
       bridgeSupportedTokensMap: tokensState.bridgeSupportedTokensMap,
       hideFavoriteTokensTooltip: isInjectedWidget(),
       selectedTargetChainId,
+      prioritizedTokenIds: widgetState.prioritizedTokenIds,
       onClearRecentTokens: clearRecentTokens,
       onTokenListItemClick: handleTokenListItemClick,
       selectTokenContext,
@@ -96,6 +98,7 @@ export function useTokenListContext(): TokenListContext {
       favoriteTokens,
       recentTokens,
       selectedTargetChainId,
+      widgetState.prioritizedTokenIds,
       clearRecentTokens,
       handleTokenListItemClick,
       selectTokenContext,

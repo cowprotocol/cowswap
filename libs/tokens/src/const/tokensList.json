@@ -16,10 +16,12 @@
     },
     {
       "priority": 4,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/cf97552db394cc10bffab7ac942805a89a882039/tokenlist.json"
     },
     {
       "priority": 5,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
@@ -75,6 +77,7 @@
     },
     {
       "priority": 6,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
@@ -166,10 +169,12 @@
     },
     {
       "priority": 4,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/cf97552db394cc10bffab7ac942805a89a882039/tokenlist.json"
     },
     {
       "priority": 5,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     },
     {
@@ -214,6 +219,7 @@
     },
     {
       "priority": 3,
+      "enabledByDefault": true,
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],

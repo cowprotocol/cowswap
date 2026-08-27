@@ -26,7 +26,9 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const isTokenSelectWide = useIsTokenSelectWide()
 
   const consentFlow = useTokenSelectorConsentFlow()
-  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget customFlows={consentFlow} />
+  const selectTokenWidgetNode = slots.selectTokenWidget ?? (
+    <SelectTokenWidget customFlows={consentFlow} prioritizedTokenIds={props.prioritizedTokenIds} />
+  )
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 

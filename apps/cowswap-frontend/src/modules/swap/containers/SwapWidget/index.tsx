@@ -62,13 +62,19 @@ export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
   allowSwapSameToken?: boolean
+  prioritizedTokenIds?: ReadonlySet<string>
 }
 
 const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
+export function SwapWidget({
+  topContent,
+  bottomContent,
+  allowSwapSameToken,
+  prioritizedTokenIds,
+}: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -284,6 +290,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         />
       ) : (
         <TradeWidget
+          prioritizedTokenIds={prioritizedTokenIds}
           slots={slots}
           actions={widgetActions}
           params={params}
