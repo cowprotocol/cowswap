@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-27 01:13\n"
+"PO-Revision-Date: 2026-08-27 02:20\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -160,7 +160,7 @@ msgstr "Ordre {value} exécuté"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the default amount, you will only have to do this once per token."
-msgstr "Vous devez autoriser les smart contracts de CoW Protocol à utiliser vos {tokenSymbol}. Si vous approuvez le montant par défaut, vous n’aurez à le faire qu’une seule fois par token."
+msgstr "Vous devez autoriser les smart contracts de CoW Protocol à utiliser votre {tokenSymbol}. Si vous approuvez le montant par défaut, vous n’aurez à le faire qu’une seule fois par token."
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 msgid "Switching network type"
@@ -2432,7 +2432,7 @@ msgstr "WalletConnect"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ZeroApprovalWarning/ZeroApprovalWarning.tsx
 msgid "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The first resets your spending cap to 0, and the second sets your desired spending cap. To avoid this in the future, set your spending cap to CoW Swap's recommended default amount."
-msgstr "<0>Remarque :</0> {symbol} nécessite spécifiquement 2 transactions d’approbation. La première réinitialise votre plafond de dépense à 0, puis la seconde définit le plafond souhaité. Pour éviter cela à l’avenir, utilisez le montant par défaut recommandé par CoW Swap."
+msgstr "<0>Remarque :</0> {symbol} nécessite spécifiquement 2 transactions d’approbation. La première réinitialise votre plafond de dépense à 0, puis la seconde définit le plafond de dépense souhaité. Pour éviter cela à l’avenir, définissez votre plafond de dépense sur le montant par défaut recommandé par CoW Swap."
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
@@ -5771,7 +5771,7 @@ msgstr "Suivez ces étapes :"
 
 #: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
 msgid "Please, connect your wallet to one of our supported networks."
-msgstr "Connectez votre wallet à l’un des réseaux pris en charge."
+msgstr "Veuillez connecter votre wallet à l’un des réseaux pris en charge."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
