@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-27 02:20\n"
+"PO-Revision-Date: 2026-08-27 11:32\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2270,7 +2270,7 @@ msgstr "TVL"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
 msgid "Unlimited one-time"
-msgstr "Illimité (usage unique)"
+msgstr "Illimité, en une seule fois"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Use Safe web app"
@@ -4137,7 +4137,7 @@ msgstr "Erreur"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
-msgstr "Une erreur est survenue et votre ordre n’a pas pu être exécuté dans ce lot. Pas d’inquiétude ! CoW Swap organise déjà une nouvelle compétition pour votre ordre."
+msgstr "Une erreur est survenue et votre ordre n’a pas pu être exécuté dans ce lot. Pas d’inquiétude ! CoW Swap organise déjà une nouvelle mise en concurrence pour votre ordre."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving token"
