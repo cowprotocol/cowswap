@@ -1,6 +1,6 @@
 import { InputHTMLAttributes, ReactNode } from 'react'
 
-import { Font, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
@@ -38,7 +38,7 @@ const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolea
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
-  font-family: ${Font.familyInter};
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   caret-color: var(${UI.COLOR_PRIMARY});
 
   &:disabled {

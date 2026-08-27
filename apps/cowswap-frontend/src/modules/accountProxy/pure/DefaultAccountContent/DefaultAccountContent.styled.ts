@@ -1,4 +1,4 @@
-import { UI, Font, Media } from '@cowprotocol/ui'
+import { UI, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -44,7 +44,7 @@ export const ValueLabel = styled.span`
 export const AddressDisplay = styled.span`
   font-size: 18px;
   font-weight: 600;
-  font-family: ${Font.familyInter};
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   font-feature-settings: 'ss10' on;
 
   ${Media.upToSmall()} {

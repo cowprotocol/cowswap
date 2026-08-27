@@ -1,6 +1,6 @@
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -205,7 +205,7 @@ const pulseAnimation = keyframes`
 `
 
 export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
-  font-family: ${Font.familyInter};
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   font-size: 68px;
   font-weight: bold;
   color: var(${UI.COLOR_TEXT_PAPER});
