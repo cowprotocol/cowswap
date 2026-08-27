@@ -14,7 +14,8 @@ import * as styledEl from './styled'
 import { useApplyProposal } from '../../hooks/useApplyProposal'
 import { useAssistantContext } from '../../hooks/useAssistantContext'
 import { useAssistantDrawer } from '../../hooks/useAssistantDrawer'
-import { isAppInjected, QUOTE_MARKER, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
+import { FILL_MARKER, isAppInjected, QUOTE_MARKER, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
+import { useFillWatch } from '../../hooks/useFillWatch'
 import { useProposalLanded } from '../../hooks/useProposalLanded'
 import { useQuoteWatch } from '../../hooks/useQuoteWatch'
 import { useWrapWatch } from '../../hooks/useWrapWatch'
@@ -46,6 +47,7 @@ export function AssistantDrawer(): ReactNode {
   const { messages, proposal, proposalDisplay, preamble, proposalApplied } = useAtomValue(conversationAtom)
   const { busy, error, status, streamText, send, markApplied } = useConversation()
   const wrapWatch = useWrapWatch()
+  const fillWatch = useFillWatch()
   const landed = useProposalLanded(proposal, proposalApplied, uiContext)
   const quoteWatch = useQuoteWatch(uiContext, landed)
 
@@ -86,6 +88,18 @@ export function AssistantDrawer(): ReactNode {
     // uiContext changes on every tick; depending on it would resend the nudge.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quoteWatch.ready, busy])
+
+  // Report a settlement once, and only into a conversation that exists — an
+  // unprompted "your order filled" in an empty panel is a notification, and the app
+  // already has those.
+  useEffect(() => {
+    if (!fillWatch.fill || busy || messages.length === 0) return
+    const fill = fillWatch.fill
+    fillWatch.clear()
+    send(FILL_MARKER, { ...uiContext, inputMode: 'app', lastFill: fill })
+    // uiContext changes every tick; depending on it would resend the nudge.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fillWatch.fill, busy, messages.length])
 
   const confirm = useCallback(() => {
     if (!proposal) return

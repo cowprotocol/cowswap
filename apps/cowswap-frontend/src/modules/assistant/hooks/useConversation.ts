@@ -17,6 +17,9 @@ export const WRAP_MARKER = '<WRAP_COMPLETED/>'
  */
 export const QUOTE_MARKER = '<QUOTE_LOADED/>'
 
+/** Sent by the app when an order settles, with the executed amounts in uiContext. */
+export const FILL_MARKER = '<ORDER_FILLED/>'
+
 export interface Conversation {
   error: string | null
   markApplied(): void
@@ -31,7 +34,12 @@ export interface Conversation {
 
 /** App-injected turns aren't the user's words and must not be rendered as them. */
 export function isAppInjected(text: string): boolean {
-  return text.startsWith('<CURRENT_STATE>') || text.startsWith(WRAP_MARKER) || text.startsWith(QUOTE_MARKER)
+  return (
+    text.startsWith('<CURRENT_STATE>') ||
+    text.startsWith(WRAP_MARKER) ||
+    text.startsWith(QUOTE_MARKER) ||
+    text.startsWith(FILL_MARKER)
+  )
 }
 
 export function useConversation(): Conversation {
@@ -52,7 +60,7 @@ export function useConversation(): Conversation {
       if (!trimmed || busy) return
 
       const previous = conversation
-      const isNudge = trimmed === WRAP_MARKER || trimmed === QUOTE_MARKER
+      const isNudge = trimmed === WRAP_MARKER || trimmed === QUOTE_MARKER || trimmed === FILL_MARKER
       const next = [...conversation.messages, { role: 'user' as const, content: trimmed }]
 
       setConversation({

@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { ALL_SUPPORTED_CHAINS_MAP, OrderKind } from '@cowprotocol/cow-sdk'
 
-import { parameterizeTradeRoute } from 'modules/trade'
+import { parameterizeTradeRoute, useTradeConfirmActions } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -46,6 +46,7 @@ export type ApplyResult = { ok: true } | { ok: false; problem: string }
  */
 export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult {
   const navigate = useNavigate()
+  const { onDismiss } = useTradeConfirmActions()
 
   return useCallback(
     (proposal: AssistantProposal): ApplyResult => {
@@ -81,9 +82,19 @@ export function useApplyProposal(): (proposal: AssistantProposal) => ApplyResult
       console.info('[assistant] applying proposal →', pathname, search)
       navigate({ pathname, search })
 
+      // Close the trade confirmation if it's still up. After a swap settles, the
+      // widget stays on "Transaction completed!", which covers the form — so the
+      // card said "Loaded into the form" while the form was behind a success screen
+      // the person had no reason to connect to their next trade. Loading a trade and
+      // then hiding it is worse than not loading it, because it looks like it worked.
+      //
+      // Safe when nothing is open: onDismiss only clears state that a closed
+      // confirmation isn't holding.
+      onDismiss()
+
       return { ok: true }
     },
-    [navigate],
+    [navigate, onDismiss],
   )
 }
 

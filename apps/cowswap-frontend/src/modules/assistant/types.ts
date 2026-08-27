@@ -15,6 +15,20 @@ export interface AssistantApproval {
   status: 'approval_transaction' | 'bundled_with_trade' | 'permit_signature'
 }
 
+/**
+ * A settlement the app observed. Amounts are what actually executed.
+ *
+ * Either amount may be null when the token isn't resolvable — the symbol without a
+ * number is still worth sending, and a number with the wrong decimals is not.
+ */
+export interface AssistantFill {
+  chainId: number
+  sellAmount: string | null
+  sellSymbol: string | null
+  buyAmount: string | null
+  buySymbol: string | null
+}
+
 export interface AssistantHolding {
   address: string
   balance: string
@@ -115,5 +129,7 @@ export interface AssistantUiContext {
    * and until they arrive the wallet looks empty on the new chain.
    */
   holdingsUnavailable?: 'error' | 'loading'
+  /** Sent only on the turn that reports a settlement. */
+  lastFill?: AssistantFill
   approval?: AssistantApproval | null
 }
