@@ -60,6 +60,17 @@ const SMALL_LIMIT_USD: Record<number, number> = {
 }
 
 /**
+ * Below this, a trade's own size cannot reasonably explain a large price impact —
+ * the pair is thin. A flat figure across chains on purpose: this is about the depth
+ * of one pool, which has nothing to do with what a chain costs to settle on.
+ *
+ * A judgement, deliberately, not a number we send. Same reason as SMALL_LIMIT_USD:
+ * the model gets the conclusion and cannot quote a threshold it would then have to
+ * defend.
+ */
+const THIN_LIQUIDITY_MAX_USD = 250
+
+/**
  * How many holdings to send. Every turn resends this, so it can't be unbounded —
  * and a wallet with hundreds of dust positions would drown the useful ones.
  * Truncation is reported rather than hidden.
@@ -122,7 +133,7 @@ export function useAssistantContext(): AssistantUiContext {
       sellTokenBalance: exact(state.inputCurrencyBalance),
       buyTokenBalance: exact(state.outputCurrencyBalance),
       slippageBps: toBps(state.slippage),
-      quoteStatus: deriveQuoteStatus(priceImpact),
+      quoteStatus: deriveQuoteStatus(priceImpact, state.inputCurrencyFiatAmount),
       limitPrice: deriveLimitPrice(isLimit, rateImpact),
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
@@ -219,14 +230,28 @@ function deriveLimitPrice(isLimit: boolean, rateImpact: number): AssistantLimitP
  * Absent while loading, which is deliberate — "unknown" and "fine" must not look
  * the same to the model, and a healthy quote deserves no figure at all.
  */
-function deriveQuoteStatus(priceImpact: PriceImpact): AssistantQuoteStatus | null {
+function deriveQuoteStatus(
+  priceImpact: PriceImpact,
+  fiatAmount: CurrencyAmount<Currency> | null | undefined,
+): AssistantQuoteStatus | null {
   if (priceImpact.loading || !priceImpact.priceImpact) return null
 
   const pct = Number(priceImpact.priceImpact.toSignificant(4))
   if (!Number.isFinite(pct)) return null
 
   if (pct < IMPACT_CALLOUT_PCT) return { status: 'ok', error_type: null }
-  return { status: 'high_impact', approxImpactPct: Number(pct.toFixed(1)), error_type: null }
+
+  // Is the trade big enough for its size to be the explanation? A 33% impact on
+  // $25 of WETH is not a trade that's too large; it's a pair with nothing in it.
+  const usd = fiatAmount ? Number(fiatAmount.toExact()) : NaN
+  const thin = Number.isFinite(usd) && usd > 0 && usd < THIN_LIQUIDITY_MAX_USD
+
+  return {
+    status: 'high_impact',
+    approxImpactPct: Number(pct.toFixed(1)),
+    error_type: null,
+    ...(thin ? { thinLiquidity: true as const } : {}),
+  }
 }
 
 /** Every `x?.toExact() ?? null` is two branches; naming it once keeps the assembly flat. */

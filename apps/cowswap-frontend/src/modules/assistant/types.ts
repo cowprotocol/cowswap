@@ -51,6 +51,12 @@ export interface AssistantQuoteStatus {
   status: 'ok' | 'high_impact'
   approxImpactPct?: number
   error_type: string | null
+  /**
+   * High impact on a trade too small for its own size to be the cause — the pair is
+   * thin. Present only when both are true, because it changes the advice completely:
+   * "trade a smaller amount" is useless when the amount is already tiny.
+   */
+  thinLiquidity?: true
 }
 
 /**
