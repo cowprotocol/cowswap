@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-08-27
 source_of_truth_scope: cowswap-frontend-specific architecture and module overrides
 ---
 
@@ -77,6 +77,12 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Put component logic in `*.container.tsx`.
 - Put styles in `*.styled.ts`.
 - Import styles as `import * as styledEl from './X.styled'`.
+
+## Typography
+- `SHOULD` use the `font()` mixin from `@cowprotocol/ui` for size, line-height, and weight in styled-components (`${font('FONT_NORMAL', 'semibold')}`), not `Font.weight` / `Font.family*` and not one-off `font-size` px values.
+- `SHOULD` use `var(${UI.FONT_FAMILY_PRIMARY})` for family; use `var(${UI.FONT_SIZE_*})` only when the mixin cannot be used. `fontFamilyBrand` is an exception for a few existing Studio Feixen brand spots only — do not spread it.
+- `MUST NOT` introduce a size 1px off an existing token (especially ≥16px) or a one-off size used in a single component. Add a real new step only via `FONT_SIZING` + `UI.FONT_SIZE_*` + `ThemeColorVars`.
+- Full rule: [`docs/MODULE_CONVENTIONS.md`](../../docs/MODULE_CONVENTIONS.md) (Typography). Do not migrate existing `Font.*` / raw sizes unless already editing that style.
 
 ## State management notes
 - Prefer managing side effects with `jotai-effect` rather than updaters.
