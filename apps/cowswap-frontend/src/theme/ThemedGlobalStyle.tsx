@@ -69,7 +69,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // TODO: Can be removed once we control this component
-  // Must stay above BottomDrawer (1000/1001) so order receipts and other modals are not covered
+  // Must stay at/above Dialog (1060) so Reach modals are not covered by Base UI overlays
   [data-reach-dialog-overlay] {
     z-index: ${Z_INDEX.modal} !important;
 
@@ -105,6 +105,10 @@ export const ThemedGlobalStyle = createGlobalStyle`
       'liga' off,
       'kern' on;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
   }
 
   a {
