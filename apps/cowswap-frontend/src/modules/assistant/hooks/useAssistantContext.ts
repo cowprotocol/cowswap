@@ -77,6 +77,14 @@ const THIN_LIQUIDITY_MAX_USD = 250
  */
 const MAX_HOLDINGS = 40
 
+interface HoldingsAvailability {
+  balances: Record<string, bigint | undefined>
+  balancesChainId: number | null
+  chainId: SupportedChainId
+  hasFirstLoad: boolean
+  balancesError: string | null
+}
+
 /**
  * Builds the state block the assistant reads each turn.
  *
@@ -97,7 +105,7 @@ export function useAssistantContext(): AssistantUiContext {
   const rateImpact = useRateImpact()
   const executionPrice = useAtomValue(executionPriceAtom)
   const tradeTypeInfo = useTradeTypeInfo()
-  const { values: balances, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
+  const { values: balances, chainId: balancesChainId, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const tokensByAddress = useTokensByAddressMap()
   const approval = useApprovalContext()
 
@@ -107,15 +115,7 @@ export function useAssistantContext(): AssistantUiContext {
     // Resolve the null-state once rather than optional-chaining every field.
     const state = derived ?? DEFAULT_TRADE_DERIVED_STATE
 
-    // ⚠️ An empty holdings list must never stand in for an unread one.
-    //
-    // Balances are scoped to the current chain and refetch when it changes, so
-    // between "switch this to Ethereum" and the new balances arriving, the map is
-    // empty — and reporting that as holdings said "you hold none of the tracked
-    // tokens on Ethereum" to someone who holds plenty. The app draws this same
-    // distinction in useIsZeroBalance, which refuses to report zero before
-    // hasFirstLoad for exactly this reason.
-    const unavailable = balancesError ? 'error' : !hasFirstLoad ? 'loading' : null
+    const unavailable = holdingsAvailability({ balances, balancesChainId, chainId, hasFirstLoad, balancesError })
     const { holdings, truncated } = deriveHoldings(balances, tokensByAddress)
 
     return {
@@ -151,6 +151,7 @@ export function useAssistantContext(): AssistantUiContext {
     account,
     chainId,
     balances,
+    balancesChainId,
     hasFirstLoad,
     balancesError,
     tokensByAddress,
@@ -267,6 +268,42 @@ function exact(amount: CurrencyAmount<Currency> | null | undefined): string | nu
 function formatFillPrice(isLimit: boolean, price: Price<Currency, Currency> | null): string | null {
   if (!isLimit || !price) return null
   return `${price.toSignificant(6)} ${price.quoteCurrency.symbol} per ${price.baseCurrency.symbol}`
+}
+
+/**
+ * Whether the balances can be reported at all, and if not, why.
+ *
+ * ⚠️ An empty holdings list must never stand in for an unread one — and an unread
+ * one must not be claimed either. Two different mistakes, and `hasFirstLoad` alone
+ * gets both wrong.
+ *
+ * **Too strict.** BalancesCacheUpdater restores balances from a persisted cache and
+ * deliberately leaves the flag alone, so after a page load there are real, usable
+ * balances on screen while it's still false. Gating on it produced "I can't see your
+ * Base balances yet" to someone looking at them. Having values is enough to answer
+ * with; the flag only says whether a multicall has finished.
+ *
+ * **Too lax**, which is the more dangerous half. Nothing resets it on a chain change
+ * and nothing clears `values` — the updater MERGES new balances over old — so after
+ * switching chains it stays true while the map still describes the previous chain.
+ * Intersected with the new chain's token map that yields almost nothing, which is how
+ * "you hold none of the tracked tokens on Ethereum" reached someone who holds plenty.
+ *
+ * The question that actually matters is which chain the numbers belong to, and
+ * `chainId` on the balances state answers it directly.
+ */
+function holdingsAvailability({
+  balances,
+  balancesChainId,
+  chainId,
+  hasFirstLoad,
+  balancesError,
+}: HoldingsAvailability): 'error' | 'loading' | null {
+  if (balancesError) return 'error'
+  // Numbers for a different chain are not numbers for this one.
+  if (balancesChainId !== null && balancesChainId !== chainId) return 'loading'
+  if (!hasFirstLoad && Object.keys(balances).length === 0) return 'loading'
+  return null
 }
 
 function toBps(slippage: Percent | null | undefined): number | null {
