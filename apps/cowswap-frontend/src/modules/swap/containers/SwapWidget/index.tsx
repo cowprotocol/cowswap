@@ -63,6 +63,8 @@ export interface SwapWidgetProps {
   bottomContent?: ReactNode
   allowSwapSameToken?: boolean
   prioritizedTokenIds?: ReadonlySet<string>
+  inputCurrencyTopContent?: ReactNode
+  outputCurrencyTopContent?: ReactNode
 }
 
 const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
@@ -74,6 +76,8 @@ export function SwapWidget({
   bottomContent,
   allowSwapSameToken,
   prioritizedTokenIds,
+  inputCurrencyTopContent,
+  outputCurrencyTopContent,
 }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
@@ -152,6 +156,7 @@ export function SwapWidget({
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
     receiveAmountInfo: !isSellTrade ? receiveAmountInfo : null,
+    topContent: inputCurrencyTopContent,
   }
 
   const outputCurrencyInfo: CurrencyInfo = {
@@ -161,6 +166,7 @@ export function SwapWidget({
     isIndependent: !isSellTrade,
     balance: outputCurrencyBalance,
     fiatAmount: outputCurrencyFiatAmount,
+    topContent: outputCurrencyTopContent,
     receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
 
