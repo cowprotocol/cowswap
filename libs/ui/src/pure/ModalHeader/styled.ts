@@ -29,7 +29,6 @@ const bottomEdgeCss = css<BottomEdgeProps>`
 export const Header = styled.header<BottomEdgeProps>`
   position: relative;
   background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
-  overflow: hidden;
 
   ${bottomEdgeCss}
 
@@ -69,6 +68,7 @@ export const Inner = styled.div`
   gap: 8px;
   padding: 0 16px;
   transition: ${transition(['padding'])};
+  overflow: hidden;
 
   .hasBack & {
     padding-left: 32px;
