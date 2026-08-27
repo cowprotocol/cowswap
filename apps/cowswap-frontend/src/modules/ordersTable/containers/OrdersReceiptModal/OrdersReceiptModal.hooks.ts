@@ -6,8 +6,9 @@ import { UiOrderType } from '@cowprotocol/types'
 import { IS_EDIT_ORDER_ENABLED, useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
 import { isCreating, isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { isOffchainOrder } from 'common/utils/isOffchainOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 import { receiptAtom, updateReceiptAtom } from '../../state/receip/ordersTableReceip.atoms'
@@ -17,17 +18,6 @@ import { receiptAtom, updateReceiptAtom } from '../../state/receip/ordersTableRe
 export function useCloseReceiptModal() {
   const updateReceiptState = useSetAtom(updateReceiptAtom)
   return useCallback(() => updateReceiptState({ order: null }), [updateReceiptState])
-}
-
-export function useSelectReceiptOrder(): (order: ParsedOrder) => void {
-  const updateReceiptState = useSetAtom(updateReceiptAtom)
-  return useCallback((order: ParsedOrder) => updateReceiptState({ order }), [updateReceiptState])
-}
-
-export function useSelectedOrder(): ParsedOrder | null {
-  const { order } = useAtomValue(receiptAtom)
-
-  return order
 }
 
 export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
@@ -45,6 +35,17 @@ export function useGetAlternativeOrderModalContextCallback(): (
     (order: ParsedOrder | null) => getAlternativeOrderModalContext(order, setAlternativeOrder),
     [setAlternativeOrder],
   )
+}
+
+export function useSelectedOrder(): ParsedOrder | null {
+  const { order } = useAtomValue(receiptAtom)
+
+  return order
+}
+
+export function useSelectReceiptOrder(): (order: ParsedOrder) => void {
+  const updateReceiptState = useSetAtom(updateReceiptAtom)
+  return useCallback((order: ParsedOrder) => updateReceiptState({ order }), [updateReceiptState])
 }
 
 function getAlternativeOrderModalContext(

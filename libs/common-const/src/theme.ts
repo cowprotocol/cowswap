@@ -29,6 +29,10 @@ const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
 
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
+export interface CustomThemeContext {
+  darkModeEnabled: boolean
+}
+
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
   if (theme === CustomTheme.NONE) {
     return false
@@ -40,10 +44,6 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
   }
 
   return false
-}
-
-export interface CustomThemeContext {
-  darkModeEnabled: boolean
 }
 
 /**

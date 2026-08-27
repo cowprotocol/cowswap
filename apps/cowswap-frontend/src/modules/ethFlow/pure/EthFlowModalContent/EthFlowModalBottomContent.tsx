@@ -18,20 +18,6 @@ import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
 const needApprove = [EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient]
 
-async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions): Promise<void> {
-  if (state === EthFlowState.SwapReady) {
-    return ethFlowActions.swap()
-  }
-  if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
-    return ethFlowActions.wrap()
-  }
-  if (needApprove.includes(state)) {
-    return ethFlowActions.approve()
-  }
-
-  return
-}
-
 export type BottomContentParams = {
   buttonText: string
   state: EthFlowState
@@ -99,4 +85,18 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
       )}
     </>
   )
+}
+
+async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions): Promise<void> {
+  if (state === EthFlowState.SwapReady) {
+    return ethFlowActions.swap()
+  }
+  if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
+    return ethFlowActions.wrap()
+  }
+  if (needApprove.includes(state)) {
+    return ethFlowActions.approve()
+  }
+
+  return
 }

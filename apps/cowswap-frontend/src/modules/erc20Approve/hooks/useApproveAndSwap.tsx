@@ -8,7 +8,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { ApproveCurrencyCallback, useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
@@ -29,6 +29,16 @@ export interface ApproveAndSwapProps {
   useModals?: boolean
 }
 
+interface ApproveAndSwapContext {
+  amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
+  onApproveConfirm?: (transactionHash: string | null) => void
+  isPartialApproveEnabledByUser?: boolean
+  isInfiniteApproveDisabled?: boolean
+  handleApprove: ApproveCurrencyCallback
+  updateTradeApproveState: UpdateApproveProgressModalState
+}
+
 export function useApproveAndSwap({
   amountToApprove,
   useModals,
@@ -42,8 +52,9 @@ export function useApproveAndSwap({
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
+  const { tradeType } = useDerivedTradeState() || {}
 
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
+  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, tradeType) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const handlePermit = useCallback(async () => {
@@ -89,16 +100,6 @@ export function useApproveAndSwap({
     account,
     tradeSpenderAddress,
   ])
-}
-
-interface ApproveAndSwapContext {
-  amountToApprove: CurrencyAmount<Currency>
-  minAmountToSignForSwap?: CurrencyAmount<Currency>
-  onApproveConfirm?: (transactionHash: string | null) => void
-  isPartialApproveEnabledByUser?: boolean
-  isInfiniteApproveDisabled?: boolean
-  handleApprove: ApproveCurrencyCallback
-  updateTradeApproveState: UpdateApproveProgressModalState
 }
 
 async function approveAndSwap({

@@ -6,15 +6,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
-export interface TradeFlowAnalyticsContext {
-  account: string | null
-  recipient?: string | null
-  recipientAddress?: string | null
-  marketLabel?: string
-  isBridgeOrder?: boolean
-  orderType: UiOrderType
-}
-
 export interface TradeFlowAnalytics {
   trade(context: TradeFlowAnalyticsContext): void
   sign(context: TradeFlowAnalyticsContext): void
@@ -24,53 +15,56 @@ export interface TradeFlowAnalytics {
   error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext): void
 }
 
+export interface TradeFlowAnalyticsContext {
+  account: string | null
+  recipient?: string | null
+  recipientAddress?: string | null
+  marketLabel?: string
+  isBridgeOrder?: boolean
+  orderType: UiOrderType
+  quoteId?: number
+  allowsOffchainSigning?: boolean
+}
+
 export function useTradeFlowAnalytics(): TradeFlowAnalytics {
   const analytics = useCowAnalytics()
 
   return useMemo(() => {
-    const sendTradeAnalytics = (
-      action: string,
-      orderType: UiOrderType,
-      marketLabel?: string,
-      value?: number,
-      isBridgeOrder?: boolean,
-    ): void => {
+    const sendTradeAnalytics = (action: string, context: TradeFlowAnalyticsContext, value?: number): void => {
+      const { orderType, marketLabel, isBridgeOrder, quoteId, allowsOffchainSigning } = context
+
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.TRADE,
         action,
         label: `${orderType}|${marketLabel}`,
         ...(value !== undefined && { value }),
         isBridgeOrder,
+        ...(quoteId !== undefined && { quoteId }),
+        ...(allowsOffchainSigning !== undefined && { allowsOffchainSigning }),
       } as GtmEvent<CowSwapAnalyticsCategory.TRADE>)
     }
 
     return {
       trade(context: TradeFlowAnalyticsContext) {
-        sendTradeAnalytics('Send', context.orderType, context.marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics('Send', context)
       },
       sign(context: TradeFlowAnalyticsContext) {
-        const { marketLabel, orderType } = context
-        sendTradeAnalytics('Sign', orderType, marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics('Sign', context)
       },
       approveAndPresign(context: TradeFlowAnalyticsContext) {
-        const { marketLabel, orderType } = context
-        sendTradeAnalytics('Bundle Approve and Swap', orderType, marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics('Bundle Approve and Swap', context)
       },
       placeAdvancedOrder(context: TradeFlowAnalyticsContext) {
-        const { marketLabel, orderType } = context
-        sendTradeAnalytics('Place Advanced Order', orderType, marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics('Place Advanced Order', context)
       },
       wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
-        const { marketLabel, orderType } = context
-        sendTradeAnalytics('Bundled Eth Flow', orderType, marketLabel, undefined, context.isBridgeOrder)
+        sendTradeAnalytics('Bundled Eth Flow', context)
       },
       error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext) {
-        const { marketLabel, orderType } = context
-
         if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-          sendTradeAnalytics('Reject', orderType, marketLabel, undefined, context.isBridgeOrder)
+          sendTradeAnalytics('Reject', context)
         } else {
-          sendTradeAnalytics('Error', orderType, marketLabel, error.code, context.isBridgeOrder)
+          sendTradeAnalytics('Error', context, error.code)
         }
       },
     }

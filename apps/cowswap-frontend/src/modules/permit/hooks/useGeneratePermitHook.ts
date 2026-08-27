@@ -1,6 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { maxUint256, type WalletClient } from 'viem'
+import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
+
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
@@ -11,8 +14,7 @@ import {
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { maxUint256, type WalletClient } from 'viem'
-import { usePublicClient, useConfig, useWalletClient } from 'wagmi'
+import { fireOnBeforeApprovalHook } from 'modules/injectedWidget'
 
 import { useGetCachedPermit } from './useGetCachedPermit'
 
@@ -26,6 +28,33 @@ type PermitDeps = {
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   storePermit: ReturnType<typeof useSetAtom<typeof storePermitCacheAtom>>
   walletClient: WalletClient | undefined
+}
+
+/**
+ * Hook that returns callback to generate permit hook data
+ */
+export function useGeneratePermitHook(): GeneratePermitHook {
+  const config = useConfig()
+  const publicClient = usePublicClient()
+  const { data: walletClient } = useWalletClient()
+  const { chainId } = useWalletInfo()
+  const storePermit = useSetAtom(storePermitCacheAtom)
+  const getCachedPermit = useGetCachedPermit()
+
+  return useCallback(
+    (params: GeneratePermitHookParams) =>
+      runPermitRequest(
+        params,
+        params.amount ?? maxUint256,
+        config,
+        publicClient,
+        chainId,
+        getCachedPermit,
+        storePermit,
+        walletClient,
+      ),
+    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
+  )
 }
 
 // eslint-disable-next-line complexity
@@ -68,7 +97,19 @@ async function runPermitRequest(
   const cachedPermit = await getCachedPermit(params.inputToken.address, amount, spender)
   if (cachedPermit) return cachedPermit
 
-  params.preSignCallback?.()
+  // Cache miss: a real permit signature is about to be requested. When a sell currency is provided
+  // (i.e. this is a user-facing trade approval), give the host widget a chance to veto it first.
+  // Throws WidgetHookDeclineError on decline so the calling flow aborts.
+  if (params.sellCurrency && params.account) {
+    await fireOnBeforeApprovalHook({
+      sellCurrency: params.sellCurrency,
+      sellAmount: params.amount,
+      walletAddress: params.account,
+      spenderAddress: spender,
+    })
+  }
+
+  await params.preSignCallback?.()
   try {
     const hookData = await generatePermitHook({
       account: params.account,
@@ -88,31 +129,4 @@ async function runPermitRequest(
   } finally {
     params.postSignCallback?.()
   }
-}
-
-/**
- * Hook that returns callback to generate permit hook data
- */
-export function useGeneratePermitHook(): GeneratePermitHook {
-  const config = useConfig()
-  const publicClient = usePublicClient()
-  const { data: walletClient } = useWalletClient()
-  const { chainId } = useWalletInfo()
-  const storePermit = useSetAtom(storePermitCacheAtom)
-  const getCachedPermit = useGetCachedPermit()
-
-  return useCallback(
-    (params: GeneratePermitHookParams) =>
-      runPermitRequest(
-        params,
-        params.amount ?? maxUint256,
-        config,
-        publicClient,
-        chainId,
-        getCachedPermit,
-        storePermit,
-        walletClient,
-      ),
-    [config, publicClient, chainId, getCachedPermit, storePermit, walletClient],
-  )
 }

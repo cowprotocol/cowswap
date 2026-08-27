@@ -1,9 +1,12 @@
-import { Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+import { baseGlobalStyles, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import { createGlobalStyle } from 'styled-components/macro'
 
+import { Z_INDEX } from './consts'
+
 export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
+  ${baseGlobalStyles}
 
   html,
   input,
@@ -18,12 +21,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
     button {
       font-family: 'Inter var', sans-serif;
     }
-  }
-
-  html,
-  body {
-    margin: 0;
-    padding: 0;
   }
 
   body {
@@ -45,8 +42,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
   html {
     font-size: 16px;
     font-variant: none;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
   }
@@ -74,8 +69,9 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   // TODO: Can be removed once we control this component
+  // Must stay at/above Dialog (1060) so Reach modals are not covered by Base UI overlays
   [data-reach-dialog-overlay] {
-    z-index: 10 !important;
+    z-index: ${Z_INDEX.modal} !important;
 
     ${Media.upToMedium()} {
       top: 0 !important;
@@ -100,20 +96,19 @@ export const ThemedGlobalStyle = createGlobalStyle`
 
   body {
     font-family: var(${UI.FONT_FAMILY_PRIMARY}), Arial, sans-serif;
-    margin: 0;
-    padding: 0;
     background: transparent;
     color: var(${UI.COLOR_TEXT});
-    scroll-behavior: smooth;
     font-variant: none;
     font-variant-ligatures: none;
     text-rendering: optimizeLegibility;
     font-feature-settings:
       'liga' off,
       'kern' on;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
   }
 
   a {

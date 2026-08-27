@@ -1,3 +1,5 @@
+import { Config } from 'wagmi'
+
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
@@ -5,7 +7,6 @@ import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -68,7 +69,11 @@ export async function safeBundleApprovalFlow({
   const tradeAmounts = { inputAmount, outputAmount }
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: orderParams.quoteId,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
@@ -208,7 +213,7 @@ export async function safeBundleApprovalFlow({
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: error', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_APPROVE, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

@@ -5,17 +5,24 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { EnrichedOrder, EthflowData, OrderClass, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { TokensByAddress, useAllActiveTokens } from '@cowprotocol/tokens'
+import { UiOrderType } from '@cowprotocol/types'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { useAddOrUpdateOrders, useClearOrdersStorage } from 'legacy/state/orders/hooks'
+import { useAddOrUpdateOrders, useAllOrdersMap, useClearOrdersStorage } from 'legacy/state/orders/hooks'
+import { PartialOrdersMap } from 'legacy/state/orders/reducer'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
+import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
 import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
 import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
+import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
@@ -26,6 +33,24 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   pending: OrderStatus.PENDING,
   presigned: OrderStatus.PENDING, // presigned is still pending
   unknown: undefined,
+}
+
+/**
+ * Orders that just transitioned into `FULFILLED` (per `allOrdersMap`'s previously-known status) and
+ * are eligible for the "Transaction completed" surplus modal — mirrors `PendingOrdersUpdater`'s own
+ * eligibility check (plain swap orders only, not bridge legs). An order with no previously-known
+ * status (never seen locally before, e.g. a past order the API returns on first load) is excluded —
+ * only a genuine local pending→fulfilled transition should pop the modal.
+ */
+export function _getOrdersToQueueForSurplusModal(orders: Order[], allOrdersMap: PartialOrdersMap): Order[] {
+  return orders.filter((order) => {
+    if (order.status !== OrderStatus.FULFILLED) return false
+
+    const previousStatus = deserializeOrder(allOrdersMap[order.id])?.status
+    if (previousStatus === undefined || previousStatus === OrderStatus.FULFILLED) return false
+
+    return getUiOrderType(order) === UiOrderType.SWAP && !getIsBridgeOrder(order)
+  })
 }
 
 /**
@@ -47,9 +72,11 @@ export function OrdersFromApiUpdater(): null {
   const allTokens = useAllActiveTokens().tokens
   const tokensAreLoaded = useMemo(() => Object.keys(allTokens).length > 0, [allTokens])
   const addOrUpdateOrders = useAddOrUpdateOrders()
+  const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const updateApiOrders = useSetAtom(apiOrdersAtom)
-  const ordersFromOrderBook = useOrdersFromOrderBook()
+  const { orders: ordersFromOrderBook, isLoadingMore } = useOrdersFromOrderBook()
   const getTokensForOrdersList = useTokensForOrdersList()
+  const allOrdersMap = useAllOrdersMap({ chainId })
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked
@@ -57,6 +84,13 @@ export function OrdersFromApiUpdater(): null {
   // Updated on every change
   // eslint-disable-next-line react-hooks/refs
   allTokensRef.current = allTokens
+
+  // Same reasoning as `allTokensRef`: read the latest inside `updateOrders` without adding it to
+  // that callback's own deps (it changes on every order update, which would otherwise recreate the
+  // callback — and the interval effect that calls it — on every poll).
+  const allOrdersMapRef = useRef(allOrdersMap)
+  // eslint-disable-next-line react-hooks/refs
+  allOrdersMapRef.current = allOrdersMap
 
   const updateOrders = useCallback(
     async (chainId: ChainId): Promise<void> => {
@@ -74,20 +108,35 @@ export function OrdersFromApiUpdater(): null {
         const orders = _filterOrders(ordersFromOrderBook, reallyAllTokens, chainId)
         console.debug(`OrdersFromApiUpdater::will add/update ${orders.length} out of ${ordersFromOrderBook.length}`)
 
+        /**
+         * This updater and `PendingOrdersUpdater` both poll independently and write order status
+         * into the same store — `PendingOrdersUpdater` is the one that normally detects a
+         * pending→fulfilled transition and queues the "Transaction completed" surplus modal, but it
+         * only sees orders still in its own locally-tracked "pending" bucket. If this updater's poll
+         * (interval configurable via `ORDER_BOOK_API_UPDATE_INTERVAL`, which e2e's fast-polling mode
+         * compresses down to the same ~2s as `PendingOrdersUpdater`'s own interval, making the race
+         * far more likely than in production where it normally polls every 30s) writes the fulfilled
+         * status here first, the order drops out of that pending bucket before `PendingOrdersUpdater`
+         * ever gets a chance to notice the transition — the modal then silently never appears
+         */
+        const ordersToQueue = _getOrdersToQueueForSurplusModal(orders, allOrdersMapRef.current)
+
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
+
+        ordersToQueue.forEach((order) => addOrderToSurplusQueue(order.id))
         // TODO: Replace any with proper type definitions
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }
     },
-    [addOrUpdateOrders, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet],
+    [addOrUpdateOrders, addOrderToSurplusQueue, ordersFromOrderBook, getTokensForOrdersList, isSafeWallet],
   )
 
   useEffect(() => {
-    updateApiOrders(ordersFromOrderBook)
-  }, [ordersFromOrderBook, updateApiOrders])
+    updateApiOrders({ orders: ordersFromOrderBook, isLoadingMore })
+  }, [isLoadingMore, ordersFromOrderBook, updateApiOrders])
 
   useEffect(() => {
     if (account && chainId && tokensAreLoaded) {

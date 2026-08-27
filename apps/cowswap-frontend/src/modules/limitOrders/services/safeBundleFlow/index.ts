@@ -1,3 +1,6 @@
+import { maxUint256 } from 'viem'
+import { Config } from 'wagmi'
+
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
@@ -5,8 +8,6 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { maxUint256 } from 'viem'
-import { Config } from 'wagmi'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -69,10 +70,14 @@ export async function safeBundleFlow({
   }
 
   logTradeFlow(LOG_PREFIX, 'STEP 2: send transaction')
-  analytics.approveAndPresign(swapFlowAnalyticsContext)
+  analytics.approveAndPresign({
+    ...swapFlowAnalyticsContext,
+    quoteId: params.postOrderParams.quoteId,
+    allowsOffchainSigning: params.postOrderParams.allowsOffchainSigning,
+  })
   beforeTrade?.()
 
-  const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions } = params
+  const { chainId, postOrderParams, spender, dispatch, sendBatchTransactions, amountToApprove } = params
 
   const validTo = calculateLimitOrdersDeadline(settingsState, params.quoteState)
 
@@ -83,7 +88,7 @@ export async function safeBundleFlow({
     const approveTx = await buildApproveTx({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: maxUint256,
+      amountToApprove: amountToApprove ?? maxUint256,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -152,7 +157,7 @@ export async function safeBundleFlow({
     const shouldZeroApprove = await shouldZeroApproveFn({
       tokenAddress: sellToken.address,
       spender,
-      amountToApprove: inputAmount,
+      amountToApprove: amountToApprove ?? maxUint256,
       forceApprove: true,
       config,
     })
@@ -205,7 +210,7 @@ export async function safeBundleFlow({
     const error = normalizeError(err)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

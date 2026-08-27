@@ -3,14 +3,15 @@ import { Provider as AtomProvider } from 'jotai'
 import { type ReactNode, StrictMode } from 'react'
 import './sentry'
 
+import { Messages } from '@lingui/core'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import { CowAnalyticsProvider, createNoopCowAnalytics, initGtm } from '@cowprotocol/analytics'
 import { isInjectedWidget, nodeRemoveChildFix } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { SnackbarsWidget } from '@cowprotocol/snackbars'
 import { WalletProvider, Web3Provider } from '@cowprotocol/wallet'
 
-import { Messages } from '@lingui/core'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { LanguageProvider } from 'i18n'
 import { useHydrateAtoms } from 'jotai/react/utils'
@@ -41,7 +42,7 @@ import { loadActiveLocaleMessages } from 'lib/localeMessages'
 import { APP_HEADER_ELEMENT_ID } from '../common/constants/common'
 import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsupportedNetworkBanner'
 
-const cowAnalytics = isInjectedWidget() ? createNoopCowAnalytics() : initGtm()
+const cowAnalytics = isInjectedWidget() || window.__COWSWAP_E2E__ ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
 
 const queryClient = new QueryClient({
@@ -86,10 +87,10 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                   <ThemeProvider>
                     <HistoryRouter history={hashHistory}>
                       <WalletProvider>
-                        <LanguageProvider messages={localeMessages}>
-                          <ErrorBoundary>
-                            <React310RecoveryErrorBoundary>
-                              <WithLDProvider>
+                        <WithLDProvider>
+                          <LanguageProvider messages={localeMessages}>
+                            <ErrorBoundary>
+                              <React310RecoveryErrorBoundary>
                                 <Web3Provider>
                                   <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                                     <WalletUnsupportedNetworkBanner />
@@ -98,10 +99,10 @@ export function Main({ localeMessages }: MainProps): ReactNode {
                                     <App />
                                   </CowAnalyticsProvider>
                                 </Web3Provider>
-                              </WithLDProvider>
-                            </React310RecoveryErrorBoundary>
-                          </ErrorBoundary>
-                        </LanguageProvider>
+                              </React310RecoveryErrorBoundary>
+                            </ErrorBoundary>
+                          </LanguageProvider>
+                        </WithLDProvider>
                       </WalletProvider>
                     </HistoryRouter>
                   </ThemeProvider>

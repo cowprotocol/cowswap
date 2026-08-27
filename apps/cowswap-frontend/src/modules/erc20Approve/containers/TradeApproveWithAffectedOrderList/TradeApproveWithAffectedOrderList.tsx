@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
+import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
 import {
   ApproveRequiredReason,
@@ -16,8 +16,11 @@ import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
   const isBundlingSupported = useIsTxBundlingSupported()
+  const { allowsOffchainSigning } = useWalletDetails()
   const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    allowsOffchainSigning,
+    ignoreLimitOrderPermitDeferral: true,
   })
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 

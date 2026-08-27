@@ -5,7 +5,7 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { renderHook } from '@testing-library/react'
 
 import { IsTokenPermittableResult, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { TradeType, useDerivedTradeState } from 'modules/trade'
 
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
@@ -28,7 +28,11 @@ jest.mock('modules/permit', () => ({
 jest.mock('modules/trade', () => ({
   TradeType: {
     SWAP: 'SWAP',
+    LIMIT_ORDER: 'LIMIT_ORDER',
+    ADVANCED_ORDERS: 'ADVANCED_ORDERS',
+    YIELD: 'YIELD',
   },
+  useDerivedTradeState: jest.fn(),
 }))
 
 jest.mock('../', () => ({
@@ -46,6 +50,7 @@ const mockUseUpdateApproveProgressModalState = useUpdateApproveProgressModalStat
 const mockUseResetApproveProgressModalState = useResetApproveProgressModalState as jest.MockedFunction<
   typeof useResetApproveProgressModalState
 >
+const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 
 describe('useGeneratePermitInAdvanceToTrade', () => {
   const mockToken = new Token(1, '0x1234567890123456789012345678901234567890', 18, 'TEST', 'Test Token')
@@ -67,6 +72,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
     mockUsePermitInfo.mockReturnValue(mockPermitInfo)
     mockUseUpdateApproveProgressModalState.mockReturnValue(mockUpdateApproveProgressModalState)
     mockUseResetApproveProgressModalState.mockReturnValue(mockResetApproveProgressModalState)
+    mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as ReturnType<typeof useDerivedTradeState>)
   })
 
   describe('hook initialization', () => {
@@ -82,10 +88,15 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       expect(mockGetWrappedToken).toHaveBeenCalledWith(mockAmountToApprove.currency)
     })
 
-    it('should call usePermitInfo with wrapped token and SWAP trade type', () => {
-      renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
-
+    it('should call usePermitInfo with wrapped token and the real trade type, not a hardcoded one', () => {
+      const { rerender } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
       expect(mockUsePermitInfo).toHaveBeenCalledWith(mockWrappedToken, TradeType.SWAP)
+
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.ADVANCED_ORDERS } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+      rerender()
+      expect(mockUsePermitInfo).toHaveBeenCalledWith(mockWrappedToken, TradeType.ADVANCED_ORDERS)
     })
   })
 
@@ -141,6 +152,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
         account: mockAccount,
         permitInfo: mockPermitInfo,
         amount: BigInt(mockAmountToApprove.quotient.toString()),
+        sellCurrency: mockAmountToApprove.currency,
         preSignCallback: expect.any(Function),
         postSignCallback: expect.any(Function),
       })

@@ -1,5 +1,52 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.8.0...common-const-v3.9.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.1...common-const-v3.8.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix: update EURe and GBPe on Gnosis (#7954)
+
+- fix(internationalization): clear stale translations and add pt-br and fr-fr (#7943)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.0...common-const-v3.7.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.6.0...common-const-v3.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/currency@1.2.2
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.1...common-const-v3.6.0) (2026-07-08)
 
 ### Minor Changes

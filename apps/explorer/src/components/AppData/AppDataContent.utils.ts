@@ -11,11 +11,6 @@ export function getStoredView(): AppDataTab {
   return storedView === 'parsed' ? 'parsed' : 'raw'
 }
 
-export function stringifyJson(value: unknown): string {
-  if (value === undefined) return ''
-  return JSON.stringify(value, null, 2)
-}
-
 export function parseQuoteBody(decodedAppData?: AnyAppDataDocVersion): unknown {
   if (!decodedAppData) return undefined
 
@@ -35,4 +30,9 @@ export function parseQuoteBody(decodedAppData?: AnyAppDataDocVersion): unknown {
   } catch {
     return decodedAppData
   }
+}
+
+export function stringifyJson(value: unknown): string {
+  if (value === undefined) return ''
+  return JSON.stringify(value, null, 2)
 }

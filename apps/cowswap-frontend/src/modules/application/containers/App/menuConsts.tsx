@@ -1,8 +1,9 @@
+import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 import AppziButton from 'legacy/components/AppziButton'
@@ -106,11 +107,6 @@ const MORE_ITEM = (isSolversEnabled: boolean): UntranslatedMenuItem => ({
     {
       href: 'https://cow.fi/cow-protocol',
       label: msg`CoW Protocol`,
-      external: true,
-    },
-    {
-      href: 'https://cow.fi/cow-amm',
-      label: msg`CoW AMM`,
       external: true,
     },
     {

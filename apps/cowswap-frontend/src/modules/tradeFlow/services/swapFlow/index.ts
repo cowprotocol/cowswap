@@ -1,3 +1,7 @@
+import type { Hex } from 'viem'
+import { maxUint256 } from 'viem'
+import { sendTransaction } from 'wagmi/actions'
+
 import {
   captureError,
   delay,
@@ -15,12 +19,12 @@ import { UiOrderType } from '@cowprotocol/types'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { sendTransaction } from 'wagmi/actions'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
+import { WidgetHookDeclineError } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -31,8 +35,6 @@ import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
-
-import type { Hex } from 'viem'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -79,19 +81,16 @@ export async function swapFlow(
   } = input
   const { chainId } = context
   const inputCurrency = inputAmount.currency
-  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign)
+  // Match the amount the permit is (or would be) cached under (`generatePermitHook` falls back to
+  // `maxUint256`) so a cached permit is reused and ON_BEFORE_APPROVAL is not fired needlessly.
+  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign ?? maxUint256)
 
   const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (shouldSignPermit) {
-      setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
-      tradeConfirmActions.requestPermitSignature(tradeAmounts)
-    }
-
-    const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
+    const { appData, account, isSafeWallet, recipientAddressOrName, kind } = orderParams
 
     orderParams.appData = await handlePermit({
       appData,
@@ -101,6 +100,14 @@ export async function swapFlow(
       permitInfo,
       amount: permitAmountToSign,
       generatePermitHook,
+      // The ON_BEFORE_APPROVAL veto now fires inside `handlePermit` on a genuine cache miss (throwing
+      // WidgetHookDeclineError on decline); this advances the permit-signing UI right before signing.
+      preSignCallback: shouldSignPermit
+        ? () => {
+            setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
+            tradeConfirmActions.requestPermitSignature(tradeAmounts)
+          }
+        : undefined,
     })
 
     if (callDataContainsPermitSigner(orderParams.appData.fullAppData)) {
@@ -108,7 +115,11 @@ export async function swapFlow(
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
-    analytics.trade(swapFlowAnalyticsContext)
+    analytics.trade({
+      ...swapFlowAnalyticsContext,
+      quoteId: orderParams.quoteId,
+      allowsOffchainSigning: orderParams.allowsOffchainSigning,
+    })
 
     tradeConfirmActions.onSign(tradeAmounts)
 
@@ -269,6 +280,10 @@ export async function swapFlow(
 
     return true
   } catch (err: unknown) {
+    // Expected abort path: the host widget vetoed the approval. Bail out quietly without swap-error
+    // telemetry, matching the previous inline `return false`.
+    if (err instanceof WidgetHookDeclineError) return false
+
     const error = normalizeError(err)
 
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
@@ -277,7 +292,7 @@ export async function swapFlow(
     const swapErrorMessage =
       isBridgingOrder && isCoWShedEip1271SignatureError
         ? BridgeInvalidEip1271SignatureError
-        : getSwapErrorMessage(error)
+        : getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)

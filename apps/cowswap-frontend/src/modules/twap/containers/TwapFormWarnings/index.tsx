@@ -1,8 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
-import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
@@ -19,8 +20,10 @@ import { BigPartTimeWarning } from './warnings/BigPartTimeWarning'
 import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarning'
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
+import { getHasTwapFormInput, getTwapSellAmountUsdBucket } from '../../analytics/twapDemandAnalytics.utils'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
+import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
@@ -46,7 +49,20 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
-  const isSafeViaWc = useIsSafeViaWc()
+  const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
+  const {
+    isInterestButtonVisible,
+    isInterestRegistered,
+    isSafeViaWc,
+    trackInterestClick,
+    trackSafeWcBannerClick,
+    trackSafeWcBannerShown,
+    trackSetupLinkClick,
+    trackUnsupportedWalletShown,
+  } = useTwapDemandAnalytics()
+
+  const hasFormInput = getHasTwapFormInput(inputCurrencyAmount, outputCurrencyAmount)
+  const sellAmountUsdBucket = getTwapSellAmountUsdBucket(inputCurrencyFiatAmount)
 
   const toggleFallbackHandlerSetupFlag = useCallback(
     (isFallbackHandlerSetupAccepted: boolean) => {
@@ -54,6 +70,14 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
     },
     [updateTwapOrdersSettings],
   )
+
+  const handleUnsupportedWalletShown = useCallback(() => {
+    trackUnsupportedWalletShown({ hasFormInput, sellAmountUsdBucket })
+  }, [hasFormInput, sellAmountUsdBucket, trackUnsupportedWalletShown])
+
+  const handleInterestClick = useCallback(() => {
+    trackInterestClick({ sellAmountUsdBucket })
+  }, [sellAmountUsdBucket, trackInterestClick])
 
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
@@ -72,8 +96,21 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   return (
     <>
       {(() => {
-        if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
-          return <UnsupportedWalletWarning isSafeViaWc={isSafeViaWc} chainId={chainId} account={account} />
+        if (isUnsupportedWallet(localFormValidation)) {
+          return (
+            <UnsupportedWalletWarning
+              isSafeViaWc={isSafeViaWc}
+              chainId={chainId}
+              account={account}
+              isInterestButtonVisible={isInterestButtonVisible}
+              isInterestRegistered={isInterestRegistered}
+              onInterestClick={handleInterestClick}
+              onSafeWcBannerClick={trackSafeWcBannerClick}
+              onSafeWcBannerShown={trackSafeWcBannerShown}
+              onSetupLinkClick={trackSetupLinkClick}
+              onUnsupportedWalletShown={handleUnsupportedWalletShown}
+            />
+          )
         }
 
         if (primaryFormValidation === TradeFormValidation.SellNativeToken) {
@@ -113,4 +150,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
       })()}
     </>
   )
+}
+
+function isUnsupportedWallet(state: TwapFormState | null): boolean {
+  return state === TwapFormState.WALLET_NOT_SUPPORTED || state === TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 }

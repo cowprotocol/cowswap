@@ -371,6 +371,11 @@ export const ApproveLabel = styled.span`
   font-weight: 500;
 `
 
+export const UnavailableLabel = styled.span`
+  opacity: 0.6;
+  font-weight: 500;
+`
+
 export const CustomLimit = styled.div`
   > span:last-child {
     cursor: default;

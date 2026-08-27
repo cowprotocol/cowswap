@@ -30,16 +30,6 @@ import { reduxOrdersStateAtom } from './redux/reduxOrders.atom'
 const MOCK_ACCOUNT = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
 const MOCK_CHAIN = SupportedChainId.MAINNET
 
-function st(address: string): SerializedToken {
-  return {
-    chainId: Number(MOCK_CHAIN),
-    address,
-    decimals: 18,
-    symbol: 'T',
-    name: 'Token',
-  }
-}
-
 function makeOrderObject(params: { id: string; orderClass: OrderClass }): OrderObject {
   const sell = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
   const buy = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
@@ -69,6 +59,16 @@ function makeOrderObject(params: { id: string; orderClass: OrderClass }): OrderO
       signingScheme: SigningScheme.EIP712,
       receiver: MOCK_ACCOUNT.replace(/^0x/i, ''),
     },
+  }
+}
+
+function st(address: string): SerializedToken {
+  return {
+    chainId: Number(MOCK_CHAIN),
+    address,
+    decimals: 18,
+    symbol: 'T',
+    name: 'Token',
   }
 }
 

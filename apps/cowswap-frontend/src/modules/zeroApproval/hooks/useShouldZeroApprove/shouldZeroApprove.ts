@@ -1,12 +1,12 @@
+import { Address, BaseError } from 'viem'
+import type { Config } from 'wagmi'
+import { simulateContract } from 'wagmi/actions'
+
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
-import { Address, BaseError } from 'viem'
-import { simulateContract } from 'wagmi/actions'
 
 import { ApprovalState } from 'modules/erc20Approve'
-
-import type { Config } from 'wagmi'
 
 // viem errors are multi-line `BaseError`s; logging the whole object floods the console with a
 // scary stack + docs links. We only need the one-line reason here.
@@ -37,16 +37,19 @@ const erc20Abi = [
 
 export interface ShouldZeroApproveParams {
   tokenAddress: Nullish<Address>
+  owner?: Nullish<Address>
   spender: Nullish<Address>
-  amountToApprove: Nullish<CurrencyAmount<Currency>>
+  amountToApprove: bigint | Nullish<CurrencyAmount<Currency>>
   forceApprove?: boolean
   approvalState?: ApprovalState
   config: Nullish<Config>
 }
 
+// eslint-disable-next-line complexity
 export async function shouldZeroApprove({
   approvalState,
   tokenAddress,
+  owner,
   spender,
   amountToApprove,
   forceApprove,
@@ -59,12 +62,16 @@ export async function shouldZeroApprove({
     return null
   }
 
+  const amountToApproveBigint =
+    typeof amountToApprove === 'bigint' ? amountToApprove : BigInt(amountToApprove.quotient.toString())
+
   try {
     await simulateContract(config, {
       address: tokenAddress,
       abi: erc20Abi,
       functionName: 'approve',
-      args: [spender, BigInt(amountToApprove.quotient.toString())],
+      args: [spender, amountToApproveBigint],
+      account: owner,
     })
 
     return false
@@ -79,6 +86,7 @@ export async function shouldZeroApprove({
         abi: erc20Abi,
         functionName: 'approve',
         args: [spender, 0n],
+        account: owner,
       })
       return true
     } catch (e) {

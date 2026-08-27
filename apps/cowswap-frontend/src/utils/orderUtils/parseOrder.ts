@@ -1,3 +1,5 @@
+import type { MessageDescriptor } from '@lingui/core'
+
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@cowprotocol/currency'
 
@@ -15,12 +17,11 @@ import { getOrderSurplus } from './getOrderSurplus'
 import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
 
-import type { MessageDescriptor } from '@lingui/core'
-
 export interface ParsedOrder {
   id: string
   owner: string
   isCancelling: boolean | undefined
+  isEoaTwapOrder?: boolean
   isUnfillable?: boolean
   receiver: string | undefined
   inputToken: Token
@@ -75,13 +76,13 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
   const filledPercentDisplay = filledPercentage.times(100).toString()
-
-  const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
-    ? new Price({
-        baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
-        quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
-      })
-    : null
+  const executedPrice =
+    JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0)) && JSBI.greaterThan(executedSellAmount, JSBI.BigInt(0))
+      ? new Price({
+          baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
+          quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
+        })
+      : null
   const showCreationTxLink =
     (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
     order.orderCreationHash &&
@@ -112,6 +113,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     id: order.id,
     owner: order.owner,
     isCancelling: order.isCancelling,
+    isEoaTwapOrder: order.isEoaTwapOrder,
     isUnfillable: order.isUnfillable,
     inputToken: order.inputToken,
     outputToken: order.outputToken,
@@ -131,10 +133,6 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executionData,
     signingScheme: order.signingScheme,
   }
-}
-
-export function isOffchainOrder(order: Order | ParsedOrder): boolean {
-  return order.signingScheme === SigningScheme.EIP712
 }
 
 export function isParsedOrder(order: Order | ParsedOrder): order is ParsedOrder {

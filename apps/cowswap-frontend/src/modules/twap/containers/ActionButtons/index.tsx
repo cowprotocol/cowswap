@@ -1,6 +1,8 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -20,15 +22,16 @@ interface ActionButtonsProps {
   fallbackHandlerIsNotSet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ActionButtons({
   localFormValidation,
   primaryFormValidation,
   fallbackHandlerIsNotSet,
-}: ActionButtonsProps) {
+}: ActionButtonsProps): ReactNode {
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   // Analytics callback that fires only when trade confirmation is actually opened
   const onConfirmOpen = useCallback(() => {
@@ -48,7 +51,14 @@ export function ActionButtons({
     confirmTrade,
   }
 
-  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade, true)
+
+  const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+
+  // EOA TWAP handles EOA => Vault approvals in the multi-step flow, not via LegacyApproveButton, so we just pass `null`
+  // in that case:
+  const validation =
+    isEoaTwap && primaryFormValidation === TradeFormValidation.ApproveRequired ? null : primaryFormValidation
 
   if (!tradeFormButtonContext) return null
 
@@ -59,7 +69,7 @@ export function ActionButtons({
     ) : (
       <TradeFormButtons
         confirmText={t`Review TWAP order`}
-        validation={primaryFormValidation}
+        validation={validation}
         context={tradeFormButtonContext}
         isDisabled={!areWarningsAccepted}
       />

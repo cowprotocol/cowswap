@@ -31,7 +31,9 @@ export function ToItem({ receiver, isBridgingOrder, bridgeProviderType, onCopy, 
       <RowWithCopyButton
         textToCopy={receiver}
         onCopy={() => onCopy('receiverAddress')}
-        contentsToDisplay={<AddressLink address={receiver} chainId={chainId} showNetworkName={isBridgingOrder} />}
+        contentsToDisplay={
+          <AddressLink address={receiver} chainId={chainId} showIcon showNetworkName={isBridgingOrder} />
+        }
       />
       <Wrapper>
         <LinkButton to={`/address/${receiver}`}>

@@ -1,4 +1,7 @@
-import { IS_SOLANA_ENABLED, RPC_URLS } from '@cowprotocol/common-const'
+import { http } from 'viem'
+import { type Transport } from 'wagmi'
+
+import { IS_SOLANA_ENABLED, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
@@ -6,8 +9,6 @@ import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
-import { http } from 'viem'
-import { type Transport } from 'wagmi'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
@@ -34,10 +35,17 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
   {} as Record<EvmChains, Transport>,
 )
 
-/** CAIP-shaped RPCs for AppKit UI / network metadata (pairs with `wagmiTransports`). */
+const walletRpcUrlOverrides: Partial<Record<EvmChains, string>> = {
+  // Viem's Thirdweb defaults rate-limit wallet chain-ID checks.
+  [EvmChains.BNB]: 'https://bsc-rpc.publicnode.com',
+  [EvmChains.SEPOLIA]: 'https://ethereum-sepolia-rpc.publicnode.com',
+}
+
+/** Public RPCs for AppKit's UI and wallet network-add prompts. */
 const customRpcUrls: Record<string, Array<{ url: string }>> = {}
 for (const chain of SUPPORTED_REOWN_NETWORKS) {
-  const url = RPC_URLS[chain.id as EvmChains]
+  const chainId = chain.id as EvmChains
+  const url = walletRpcUrlOverrides[chainId] ?? VIEM_CHAINS[chainId]?.rpcUrls.default.http[0]
   if (url) {
     customRpcUrls[`eip155:${chain.id}`] = [{ url }]
   }
@@ -79,7 +87,11 @@ OptionsController.setOptions({ ...OptionsController.state, enableInjected: false
 const isSafeApp = getIsSafeAppIframe()
 const isWidget = isInjectedWidget()
 const hasRecentConnector =
-  typeof localStorage !== 'undefined' && Boolean(localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`))
+  typeof localStorage !== 'undefined' &&
+  Boolean(
+    localStorage.getItem('@appkit/eip155:connected_connector_id') ||
+      localStorage.getItem('@appkit/solana:connected_connector_id'),
+  )
 
 const reownAppKit = createAppKit({
   adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
@@ -118,12 +130,55 @@ const reownAppKit = createAppKit({
 })
 
 /**
+ * Reconnect to the injected wallet, waiting for it to become available first.
+ *
+ * Mobile in-app browsers (e.g. MetaMask on iOS) may attach `window.ethereum` a
+ * few hundred ms after the app bootstraps, so the synchronous check below can run
+ * before the provider exists and the eager reconnect never fires (#7862). Wait for
+ * the provider to appear — via an EIP-6963 announcement or a short poll — before
+ * connecting, giving up after a timeout so we never hang.
+ */
+function autoConnectInjectedWhenReady(): void {
+  const connect = (): void => {
+    void connectWalletById('injected', 'injected')
+  }
+
+  if (window.ethereum) {
+    connect()
+    return
+  }
+
+  const TIMEOUT_MS = 3000
+  const POLL_INTERVAL_MS = 100
+  let settled = false
+
+  const stop = (): void => {
+    settled = true
+    window.removeEventListener('eip6963:announceProvider', onProviderReady)
+    clearInterval(pollId)
+    clearTimeout(timeoutId)
+  }
+
+  function onProviderReady(): void {
+    if (settled || !window.ethereum) return
+    stop()
+    connect()
+  }
+
+  window.addEventListener('eip6963:announceProvider', onProviderReady)
+  const pollId = setInterval(onProviderReady, POLL_INTERVAL_MS)
+  const timeoutId = setTimeout(stop, TIMEOUT_MS)
+  // Prompt EIP-6963 providers to (re-)announce themselves so we react as soon as possible.
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+}
+
+/**
  * Instantly connect to Safe if in Safe
  */
 if (isSafeApp) {
   connectWalletById(SAFE_CONNECTOR_ID, 'safe')
-} else if (hasRecentConnector && isMobile && window.ethereum) {
-  connectWalletById('injected', 'injected')
+} else if (hasRecentConnector && isMobile) {
+  autoConnectInjectedWhenReady()
 }
 
 bindActiveProvider(wagmiAdapter)

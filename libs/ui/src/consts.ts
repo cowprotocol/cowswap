@@ -12,13 +12,22 @@ export const MEDIA_WIDTHS = {
   upToLarge: 1280,
   upToLargeAlt: 1390,
   upToExtraLarge: 2560,
-}
+} as const
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const getMediaQuery = (query: string, useMediaPrefix = true) => {
   return useMediaPrefix ? `@media ${query}` : query
 }
+
+/**
+ * Shared overlay stacking context (above dropdowns at 1000). Dialogs and drawers
+ * use the same Layer z-index so a later portal — nested filters, receipts, etc. —
+ * paints over the previous overlay.
+ */
+export const OVERLAY_Z_INDEX = {
+  overlay: 1060,
+} as const
 
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
@@ -55,7 +64,25 @@ export const Font = {
     semibold: 600,
     bold: 700,
   },
-}
+} as const
+
+/**
+ * Font size / line-height pairs in px.
+ * Theme CSS vars and the `font()` mixin are derived from this map.
+ */
+export const FONT_SIZING = {
+  FONT_SMALL_PLUS: [13, 18],
+  FONT_NORMAL: [14, 20],
+  FONT_NORMAL_PLUS: [15, 20],
+  FONT_MEDIUM: [16, 22],
+  FONT_LARGE: [18, 24],
+} as const satisfies Record<string, readonly [fontSize: number, lineHeight: number]>
+
+export type FontSizingName = keyof typeof FONT_SIZING
+export type FontSizingPair = (typeof FONT_SIZING)[FontSizingName]
+export type FontWeight = FontWeightValue | FontWeightKey
+export type FontWeightKey = keyof typeof Font.weight
+export type FontWeightValue = (typeof Font.weight)[FontWeightKey]
 
 // Header offset in pixels (used in swap.cow.fi)
 export const SWAP_HEADER_OFFSET = 76

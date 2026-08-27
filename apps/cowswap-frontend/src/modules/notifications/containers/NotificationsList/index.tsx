@@ -1,9 +1,10 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import iconMessageReadSrc from '@cowprotocol/assets/images/icon-message-read.svg'
 
-import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -16,12 +17,14 @@ import {
   NotificationThumb,
   MessageReadIcon,
   EnableAlertsLink,
+  PromoBanner,
+  PromoBannerLink,
 } from './styled'
 
 import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
-import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
+import { markNotificationsAsReadCloneArrayAtom } from '../../state/readNotificationsAtom'
 import { isSidebarNotification } from '../../utils/filterNotifications.utils'
 import { getTrustedNotificationLink } from '../../utils/getTrustedNotificationLink'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
@@ -29,6 +32,10 @@ import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 interface EmptyNotificationsProps {
   hasSubscription: boolean | undefined
   onToggleSettings: (() => void) | undefined
+}
+
+interface NotificationsPromoBannerProps {
+  onToggleSettings: () => void
 }
 
 function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotificationsProps): ReactNode {
@@ -59,6 +66,28 @@ function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotifica
   )
 }
 
+function NotificationsPromoBanner({ onToggleSettings }: NotificationsPromoBannerProps): ReactNode {
+  return (
+    <PromoBanner>
+      <p>
+        <Trans>
+          <strong>New!</strong> Get Telegram notifications about your order status!{' '}
+          <PromoBannerLink
+            onClick={onToggleSettings}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+              action: 'Open notification settings',
+              label: 'promo banner',
+            })}
+          >
+            Get started
+          </PromoBannerLink>
+        </Trans>
+      </p>
+    </PromoBanner>
+  )
+}
+
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
@@ -73,7 +102,7 @@ interface NotificationsListProps {
 export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps): ReactNode {
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
-  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
+  const markNotificationsAsRead = useSetAtom(markNotificationsAsReadCloneArrayAtom)
 
   const sidebarNotifications = useMemo(
     () => (notifications ? notifications.filter(isSidebarNotification) : null),
@@ -100,6 +129,9 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
     <>
       {children}
       <ListWrapper>
+        {onToggleSettings && hasSubscription === false && (
+          <NotificationsPromoBanner onToggleSettings={onToggleSettings} />
+        )}
         {groups?.map((group) => (
           <>
             <h4>{group.date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</h4>

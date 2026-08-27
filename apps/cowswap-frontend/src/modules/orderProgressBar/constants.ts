@@ -1,3 +1,5 @@
+import { MessageDescriptor } from '@lingui/core'
+
 import svgProgressbarFinished1Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
 import svgProgressbarFinished2Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
 import svgProgressbarFinished3Src from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
@@ -5,7 +7,6 @@ import svgProgressbarFinished4Src from '@cowprotocol/assets/cow-swap/progressbar
 import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 
 /**
@@ -34,6 +35,10 @@ export enum OrderProgressBarStepName {
 
 export const DEFAULT_STEP_NAME: OrderProgressBarStepName = OrderProgressBarStepName.INITIAL
 
+// Progress bar countdown durations, matching the solve deadlines per chain (in seconds)
+const PROGRESS_BAR_TIMER_DURATION_MAINNET = 10
+const PROGRESS_BAR_TIMER_DURATION_DEFAULT = 7
+
 /**
  * Visual states for progress bar steps UI presentation.
  * These are purely for styling and visual feedback, determining:
@@ -53,9 +58,15 @@ export enum StepStatus {
   FUTURE = 'future',
   DONE = 'done',
 }
-type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
 
+type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
 type StepConfig = { title: MessageDescriptor; description?: MessageDescriptor }
+
+export function getProgressBarTimerDuration(chainId: SupportedChainId): number {
+  return chainId === SupportedChainId.MAINNET
+    ? PROGRESS_BAR_TIMER_DURATION_MAINNET
+    : PROGRESS_BAR_TIMER_DURATION_DEFAULT
+}
 
 export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {
@@ -84,7 +95,6 @@ export const COW_SWAP_BENEFITS = [
   msg`Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for.`,
   msg`On CoW Swap, you can set limit orders for balances you don't have yet.`,
   msg`Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!`,
-  msg`You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker.`,
   msg`Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots.`,
   msg`CoW Swap has over 20 active solvers - more than any other exchange.`,
   msg`CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.`,

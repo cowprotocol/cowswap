@@ -21,10 +21,29 @@ const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
   'Transaction was rejected',
 ]
 
+// Raw JSON-RPC messages returned by nodes (geth/erigon/anvil) when an account can't cover
+// `gas * gas price + value`. Viem wraps these into an `InsufficientFundsError` (matched by name
+// below) with its own reworded shortMessage, so the raw substrings only apply to unwrapped
+// provider errors (e.g. a wallet returning the node message directly).
+const INSUFFICIENT_FUNDS_ERROR_MESSAGES = ['insufficient funds', 'exceeds transaction sender account balance']
+
+// Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
+// or pathologically deep chain.
+const MAX_ERROR_CAUSE_DEPTH = 8
+
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
   new Promise((resolve) => setTimeout(resolve, ms, result))
+
+interface TimeoutOptions {
+  timeout: number
+  timeoutMessage: string
+}
+
+type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
+
+export class TimeoutError extends Error {}
 
 // TODO: Add proper return type annotation
 // TODO: Replace any with proper type definitions
@@ -58,16 +77,18 @@ export function isPromiseFulfilled<T>(
   return promiseResult.status === 'fulfilled'
 }
 
-export function withTimeout<T>(promise: Promise<T>, ms: number, context?: string): Promise<T> {
-  const failOnTimeout = delay(ms).then(() => {
-    const errorMessage = 'Timeout after ' + ms + ' ms'
-    throw new Error(context ? `${context}. ${errorMessage}` : errorMessage)
+export async function withTimeout<T>(promise: Promise<T>, options: TimeoutOptions): Promise<T> {
+  const { timeout, timeoutMessage } = options
+  let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+  const failOnTimeout = new Promise<never>((_, reject) => {
+    timeoutId = setTimeout(() => reject(new TimeoutError(timeoutMessage)), timeout)
   })
 
-  return Promise.race([promise, failOnTimeout])
+  return Promise.race([promise, failOnTimeout]).finally(() => {
+    clearTimeout(timeoutId)
+  })
 }
-
-type WindowWithMapping = Window & typeof globalThis & Record<string, unknown>
 
 export const registerOnWindow = (registerMapping: Record<string, unknown>): void => {
   if (typeof window === 'undefined') return
@@ -130,7 +151,7 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
     // Prefer viem's shortMessage (concise, human-readable) over the full message
     // which includes verbose request arguments and hex data.
     if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
-    if ('message' in error) return error.message as string
+    if ('message' in error && typeof error.message === 'string') return error.message
   }
   return error?.toString()
 }
@@ -171,6 +192,37 @@ export function hashCode(text: string): number {
 }
 
 /**
+ * @param error Optional error object returned by a provider when a transaction fails to submit
+ * because the account can't cover `gas * gas price + value` — e.g. selling ~100% of an ETH
+ * balance and picking a low gas setting, leaving nothing to pay for gas.
+ *
+ * @returns true if the error is an "insufficient funds for gas/value" failure
+ */
+export function isInsufficientFundsProviderError(error: unknown, depth = 0): boolean {
+  if (!error || depth > MAX_ERROR_CAUSE_DEPTH) {
+    return false
+  }
+
+  // Viem's `InsufficientFundsError` rewords the raw node message into its own shortMessage,
+  // so it's matched by name rather than by string content.
+  if (getErrorName(error) === 'InsufficientFundsError') {
+    return true
+  }
+
+  const message = getProviderErrorMessage(error)
+  if (message && matchesInsufficientFundsMessage(message)) {
+    return true
+  }
+
+  const cause = getErrorCause(error)
+  if (cause !== undefined && cause !== error) {
+    return isInsufficientFundsProviderError(cause, depth + 1)
+  }
+
+  return false
+}
+
+/**
  *
  * @param error Optional error object return by a provider.
  *
@@ -179,10 +231,6 @@ export function hashCode(text: string): number {
  *
  * @returns true if the user rejected the request in their wallet
  */
-// Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
-// or pathologically deep chain.
-const MAX_ERROR_CAUSE_DEPTH = 8
-
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isRejectRequestProviderError(error: any, depth = 0): boolean {
@@ -221,4 +269,17 @@ export function isRejectRequestProviderError(error: any, depth = 0): boolean {
  */
 export function percentToBps(percent: Percent): number {
   return Number(percent.multiply('100').toSignificant())
+}
+
+function getErrorCause(error: unknown): unknown {
+  return typeof error === 'object' && error !== null && 'cause' in error ? error.cause : undefined
+}
+
+function getErrorName(error: unknown): unknown {
+  return typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined
+}
+
+function matchesInsufficientFundsMessage(message: string): boolean {
+  const lowerCaseMessage = message.toLowerCase()
+  return INSUFFICIENT_FUNDS_ERROR_MESSAGES.some((needle) => lowerCaseMessage.includes(needle))
 }

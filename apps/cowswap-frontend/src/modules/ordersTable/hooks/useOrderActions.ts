@@ -17,16 +17,6 @@ import {
 } from '../containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { OrderActions } from '../state/ordersTable.types'
 
-function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
-  const isOrderIncluded = state.find((item) => item.id === order.id)
-
-  if (isOrderIncluded) {
-    return state.filter((item) => item.id !== order.id)
-  }
-
-  return [...state, order]
-}
-
 export function useOrderActions(): OrderActions {
   const { reduxOrders: allOrders } = useAtomValue(ordersTableStateAtom)
   const cancelOrder = useCancelOrder()
@@ -78,4 +68,14 @@ export function useOrderActions(): OrderActions {
       approveOrderToken,
     ],
   )
+}
+
+function toggleOrderInCancellationList(state: CancellableOrder[], order: CancellableOrder): CancellableOrder[] {
+  const isOrderIncluded = state.find((item) => item.id === order.id)
+
+  if (isOrderIncluded) {
+    return state.filter((item) => item.id !== order.id)
+  }
+
+  return [...state, order]
 }

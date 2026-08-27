@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -78,7 +79,10 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const isConfirmDisabled = (isTooLowRate ? !warningsAccepted : false) || isInsufficientBalance
 
   const inputSymbol = inputAmount?.currency?.symbol || t`token`
-  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
+  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const isSafeApprovalBundle =
+    useIsSafeApprovalBundle(inputAmount) && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
   const buttonText = isInsufficientBalance ? (
     t`Insufficient ${inputSymbol} balance`
   ) : isSafeApprovalBundle ? (
@@ -92,7 +96,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   )
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE}>
+    <TradeConfirmModal title={CONFIRM_TITLE} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}

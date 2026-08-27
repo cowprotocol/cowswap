@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import iconNotificationSettingsSrc from '@cowprotocol/assets/images/icon-notification-settings.svg'
@@ -10,6 +11,7 @@ import { createPortal } from 'react-dom'
 import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { openModalState } from 'common/state/openModalState'
 
 import {
   Sidebar,
@@ -25,29 +27,6 @@ import { NotificationSettingsPopover } from '../../pure/NotificationSettingsPopo
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
 
-interface SettingsHeaderProps {
-  onBack: () => void
-}
-
-function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
-  return (
-    <SidebarHeader>
-      <span>
-        <ArrowLeft
-          onClick={onBack}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-            action: 'Close notification settings',
-          })}
-        />
-      </span>
-      <h3>
-        <Trans>Trade alerts</Trans>
-      </h3>
-    </SidebarHeader>
-  )
-}
-
 interface NotificationsHeaderProps {
   isMobile: boolean
   areTelegramNotificationsEnabled: boolean
@@ -58,6 +37,96 @@ interface NotificationsHeaderProps {
   shouldShowSettingsPopover: boolean
   onDismissSettingsPopover: () => void
   headerRef: React.RefObject<HTMLDivElement | null>
+}
+
+interface NotificationSidebarProps {
+  isOpen: boolean
+  onClose: () => void
+  initialSettingsOpen?: boolean
+}
+
+interface SettingsHeaderProps {
+  onBack: () => void
+}
+
+export function NotificationSidebar({
+  isOpen,
+  onClose,
+  initialSettingsOpen = false,
+}: NotificationSidebarProps): ReactNode {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
+  const sidebarRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
+  const isMobile = useMediaQuery(Media.upToSmall(false))
+  const isAnyModalOpen = useAtomValue(openModalState)
+
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription } = useHasNotificationSubscription()
+  const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
+    useNotificationSettingsPopoverDismissal()
+
+  // Show settings popover when trade alerts are enabled (hasSubscription) but popover hasn't been dismissed
+  const shouldShowSettingsPopover = hasSubscription && !isSettingsPopoverDismissed && !isSettingsOpen
+
+  // Sync state when initialSettingsOpen prop changes
+  useEffect(() => {
+    setIsSettingsOpen(initialSettingsOpen)
+  }, [initialSettingsOpen])
+
+  const onDismiss = useCallback(() => {
+    onClose()
+    setIsSettingsOpen(false)
+  }, [onClose])
+
+  // Don't dismiss the sidebar on outside clicks while a modal (e.g. the Telegram
+  // connect modal) is open - it portals outside `sidebarRef`'s DOM subtree, so any
+  // click inside it would otherwise be treated as "outside the sidebar" and close it.
+  useOnClickOutside([sidebarRef], isAnyModalOpen ? undefined : onDismiss)
+
+  const toggleSettingsOpen = useCallback(() => {
+    setIsSettingsOpen((prev) => !prev)
+  }, [])
+
+  const handleEnableAlertsClick = useCallback(() => {
+    toggleSettingsOpen()
+  }, [toggleSettingsOpen])
+
+  if (!isOpen) return null
+
+  // Force re-mount of NotificationsList when returning from settings to refresh subscription status
+  const listKey = `notifications-list-${isSettingsOpen}`
+
+  const notificationSidebarElement = (
+    <Sidebar ref={sidebarRef} isOpen={isOpen}>
+      {isSettingsOpen ? (
+        <NotificationSettings isSettingsOpen={isSettingsOpen}>
+          <SettingsHeader onBack={toggleSettingsOpen} />
+        </NotificationSettings>
+      ) : (
+        <NotificationsList
+          key={listKey}
+          hasSubscription={hasSubscription}
+          onToggleSettings={areTelegramNotificationsEnabled ? toggleSettingsOpen : undefined}
+        >
+          <NotificationsHeader
+            isMobile={isMobile}
+            areTelegramNotificationsEnabled={areTelegramNotificationsEnabled}
+            hasSubscription={hasSubscription}
+            onDismiss={onDismiss}
+            onToggleSettings={toggleSettingsOpen}
+            onEnableAlerts={handleEnableAlertsClick}
+            shouldShowSettingsPopover={shouldShowSettingsPopover}
+            onDismissSettingsPopover={dismissSettingsPopover}
+            headerRef={headerRef}
+          />
+        </NotificationsList>
+      )}
+    </Sidebar>
+  )
+
+  const portalTarget = typeof document !== 'undefined' ? document.body : null
+
+  return portalTarget ? createPortal(notificationSidebarElement, portalTarget) : notificationSidebarElement
 }
 
 function NotificationsHeader({
@@ -119,84 +188,21 @@ function NotificationsHeader({
   )
 }
 
-interface NotificationSidebarProps {
-  isOpen: boolean
-  onClose: () => void
-  initialSettingsOpen?: boolean
-}
-
-export function NotificationSidebar({
-  isOpen,
-  onClose,
-  initialSettingsOpen = false,
-}: NotificationSidebarProps): ReactNode {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
-  const sidebarRef = useRef<HTMLDivElement>(null)
-  const headerRef = useRef<HTMLDivElement>(null)
-  const isMobile = useMediaQuery(Media.upToSmall(false))
-
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
-  const { hasSubscription } = useHasNotificationSubscription()
-  const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
-    useNotificationSettingsPopoverDismissal()
-
-  // Show settings popover when trade alerts are enabled (hasSubscription) but popover hasn't been dismissed
-  const shouldShowSettingsPopover = hasSubscription && !isSettingsPopoverDismissed && !isSettingsOpen
-
-  // Sync state when initialSettingsOpen prop changes
-  useEffect(() => {
-    setIsSettingsOpen(initialSettingsOpen)
-  }, [initialSettingsOpen])
-
-  const onDismiss = useCallback(() => {
-    onClose()
-    setIsSettingsOpen(false)
-  }, [onClose])
-
-  useOnClickOutside([sidebarRef], onDismiss)
-
-  const toggleSettingsOpen = useCallback(() => {
-    setIsSettingsOpen((prev) => !prev)
-  }, [])
-
-  const handleEnableAlertsClick = useCallback(() => {
-    toggleSettingsOpen()
-  }, [toggleSettingsOpen])
-
-  if (!isOpen) return null
-
-  // Force re-mount of NotificationsList when returning from settings to refresh subscription status
-  const listKey = `notifications-list-${isSettingsOpen}`
-
-  const notificationSidebarElement = (
-    <Sidebar ref={sidebarRef} isOpen={isOpen}>
-      {isSettingsOpen ? (
-        <NotificationSettings>
-          <SettingsHeader onBack={toggleSettingsOpen} />
-        </NotificationSettings>
-      ) : (
-        <NotificationsList
-          key={listKey}
-          hasSubscription={hasSubscription}
-          onToggleSettings={areTelegramNotificationsEnabled ? toggleSettingsOpen : undefined}
-        >
-          <NotificationsHeader
-            isMobile={isMobile}
-            areTelegramNotificationsEnabled={areTelegramNotificationsEnabled}
-            hasSubscription={hasSubscription}
-            onDismiss={onDismiss}
-            onToggleSettings={toggleSettingsOpen}
-            onEnableAlerts={handleEnableAlertsClick}
-            shouldShowSettingsPopover={shouldShowSettingsPopover}
-            onDismissSettingsPopover={dismissSettingsPopover}
-            headerRef={headerRef}
-          />
-        </NotificationsList>
-      )}
-    </Sidebar>
+function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
+  return (
+    <SidebarHeader>
+      <span>
+        <ArrowLeft
+          onClick={onBack}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+            action: 'Close notification settings',
+          })}
+        />
+      </span>
+      <h3>
+        <Trans>Trade alerts</Trans>
+      </h3>
+    </SidebarHeader>
   )
-
-  const portalTarget = typeof document !== 'undefined' ? document.body : null
-
-  return portalTarget ? createPortal(notificationSidebarElement, portalTarget) : notificationSidebarElement
 }

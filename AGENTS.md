@@ -37,6 +37,8 @@ Normative language:
 - `MUST` prefer existing shared utilities/hooks over creating near-duplicates.
 - `MUST` pin dependency versions in `package.json` files (exact semver) for `dependencies`, `devDependencies`, `optionalDependencies`, `resolutions`, and `pnpm.overrides`; `workspace:*` and explicit package artifact sources (`https://...tgz`, `file:`, `link:`, `portal:`, `patch:`) are allowed. `peerDependencies` MAY use semver ranges because they express integrator compatibility.
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
+- `MUST NOT` test log messages or logger calls; they do not need test coverage.
+- `MUST` type promise rejection values explicitly as `(err: unknown)` and normalize them once with `const error = normalizeError(err)` before use.
 - Both SWR and Jotai `atomWithQuery` are acceptable for data fetching. The team is evaluating migration; no forced migration yet.
 - Avoid introducing new `common/** -> modules/**` imports; treat existing cases as legacy debt and track cleanup in `docs/QUALITY.md`.
 
@@ -63,6 +65,7 @@ Normative language:
 - Hardening roadmap (next enforcement steps): [`docs/HARNESS_HARDENING.md`](./docs/HARNESS_HARDENING.md)
 - Frontend-specific additive rules: [`apps/cowswap-frontend/AGENTS.md`](./apps/cowswap-frontend/AGENTS.md)
 - Other app-local commands/overrides: `apps/*/AGENTS.md`
+- E2E tests (Playwright): `apps/cowswap-e2e-tests/AGENTS.md`
 
 ## Branch-Scoped AGENTS Task Protocol
 

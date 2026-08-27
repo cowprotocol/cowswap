@@ -1,11 +1,9 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-export interface TraderInfoResponse {
+export interface PartnerCreateRequest {
   code: string
-  traderRewardAmount: number
-  triggerVolume: number
-  timeCapDays: number
-  volumeCap: number
+  walletAddress: string
+  signedMessage: string
 }
 
 export interface PartnerInfoResponse {
@@ -20,20 +18,6 @@ export interface PartnerInfoResponse {
   revenueSplitDaoPct: number
 }
 
-export interface TraderStatsResponse {
-  trader_address: string
-  bound_referrer_code: string
-  linked_since: string
-  rewards_end: string
-  eligible_volume: number
-  left_to_next_rewards: number
-  trigger_volume: number
-  total_earned: number
-  paid_out: number
-  next_payout: number
-  lastUpdatedAt: string
-}
-
 export interface PartnerStatsResponse {
   affiliate_address: string
   referrer_code: string
@@ -46,12 +30,6 @@ export interface PartnerStatsResponse {
   active_traders: number
   total_traders: number
   lastUpdatedAt: string
-}
-
-export interface PartnerCreateRequest {
-  code: string
-  walletAddress: string
-  signedMessage: string
 }
 
 export type TraderActivityEligibilityReason =
@@ -88,4 +66,26 @@ export interface TraderActivityRowResponse {
   eligibility_reason: TraderActivityEligibilityReason
   is_bound_to_code: boolean
   is_eligible: boolean
+}
+
+export interface TraderInfoResponse {
+  code: string
+  traderRewardAmount: number
+  triggerVolume: number
+  timeCapDays: number
+  volumeCap: number
+}
+
+export interface TraderStatsResponse {
+  trader_address: string
+  bound_referrer_code: string
+  linked_since: string
+  rewards_end: string
+  eligible_volume: number
+  left_to_next_rewards: number
+  trigger_volume: number
+  total_earned: number
+  paid_out: number
+  next_payout: number
+  lastUpdatedAt: string
 }

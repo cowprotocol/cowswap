@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: cowswap-ipfs
-      url: ${{ steps.deploy-ipfs.outputs.url }}
+      deployment: false
 
     steps:
       - name: Checkout trusted workflow repository
@@ -43,6 +43,24 @@ jobs:
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
         run: node ../tools/scripts/verify-tag-reachable-from-main.mjs
 
+      - name: Create GitHub deployment for release tag
+        id: create-deployment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
+        with:
+          result-encoding: string
+          script: |
+            const { data: deployment } = await github.rest.repos.createDeployment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: process.env.DEPLOY_REF,
+              environment: 'cowswap-ipfs',
+              auto_merge: false,
+              required_contexts: [],
+            })
+            return String(deployment.id)
+
       - name: Install pnpm
         uses: pnpm/action-setup@0e279bb959325dab635dd2c09392533439d90093 # v6.0.8
 
@@ -62,12 +80,13 @@ jobs:
         run: pnpm run build:cowswap
         env:
           REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-          REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
           REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
-          REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.BALANCES_WATCHER_BASE_URL }}
+          REACT_APP_BALANCES_WATCHER_BASE_URL: ${{ secrets.REACT_APP_BALANCES_WATCHER_BASE_URL }}
           REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
-          NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
+          REACT_APP_TURNSTILE_SITE_KEY: ${{ secrets.REACT_APP_TURNSTILE_SITE_KEY }}
+          REACT_APP_LAUNCH_DARKLY_KEY: ${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
+          REACT_APP_NEAR_API_KEY: ${{ secrets.REACT_APP_NEAR_API_KEY }}
+          REACT_APP_SAFE_API_AUTH_TOKEN: ${{ secrets.REACT_APP_SAFE_API_AUTH_TOKEN }}
 
       - name: Deploy Web Apps to IPFS
         id: deploy-ipfs
@@ -88,11 +107,44 @@ jobs:
           {
             echo "### IPFS deployment"
             echo
+            echo "- Source tag: \`${DEPLOY_REF}\`"
             echo "- Source SHA: \`${{ github.event.workflow_run.head_sha }}\`"
             echo "- CID: \`${cid}\`"
             echo "- Primary URL: ${url}"
             echo "- Fallback URL: ${fallback_url}"
           } >> "$GITHUB_STEP_SUMMARY"
         env:
+          DEPLOY_REF: ${{ github.event.workflow_run.head_branch }}
           IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
           IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+
+      - name: Pin with secondary providers
+        id: pin-secondary
+        if: steps.deploy-ipfs.outcome == 'success'
+        working-directory: deploy-target
+        run: node ../tools/scripts/ipfs-pin-secondary.mjs "$CID"
+        env:
+          CID: ${{ steps.deploy-ipfs.outputs.cid }}
+          IPFS_4EVERLAND_ACCESS_TOKEN: ${{ secrets.IPFS_4EVERLAND_ACCESS_TOKEN }}
+          IPFS_NINJA_API_KEY: ${{ secrets.IPFS_NINJA_API_KEY }}
+
+      - name: Complete GitHub deployment
+        id: complete-deployment
+        if: always() && steps.create-deployment.outcome == 'success'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          DEPLOYMENT_ID: ${{ steps.create-deployment.outputs.result }}
+          DEPLOYMENT_STATE: ${{ steps.deploy-ipfs.outcome == 'success' && steps.pin-secondary.outcome == 'success' && 'success' || 'failure' }}
+          DEPLOYMENT_URL: ${{ steps.deploy-ipfs.outputs.url }}
+        with:
+          script: |
+            const status = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              deployment_id: Number(process.env.DEPLOYMENT_ID),
+              state: process.env.DEPLOYMENT_STATE,
+            }
+            if (status.state === 'success') {
+              status.environment_url = process.env.DEPLOYMENT_URL
+            }
+            await github.rest.repos.createDeploymentStatus(status)

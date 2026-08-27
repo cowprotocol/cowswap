@@ -1,9 +1,9 @@
+import { getPublicClient } from '@cowprotocol/common-utils'
 import { AddressKey } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
 import { ERC20_ABI, ERC4626_ABI } from './abis'
-import { getPublicClient } from './client'
 
 import { useEvmNetworkId } from '../../state/network/hooks'
 
@@ -16,13 +16,6 @@ export interface VaultAsset {
 
 type Erc20Meta = { symbol: string; name: string; decimals: number }
 type MulticallEntry = { status: string; result?: unknown }
-
-function resolveErc20Meta(data: MulticallEntry[] | undefined): Erc20Meta | undefined {
-  if (!data) return undefined
-  const [s, n, d] = data
-  if (s?.status !== 'success' || n?.status !== 'success' || d?.status !== 'success') return undefined
-  return { symbol: s.result as string, name: n.result as string, decimals: d.result as number }
-}
 
 export function useVaultAsset(vaultAddress: AddressKey): VaultAsset | undefined {
   const chainId = useEvmNetworkId()
@@ -53,4 +46,11 @@ export function useVaultAsset(vaultAddress: AddressKey): VaultAsset | undefined 
   const erc20Meta = resolveErc20Meta(erc20Data)
   if (!assetAddress || !erc20Meta) return undefined
   return { address: assetAddress, ...erc20Meta }
+}
+
+function resolveErc20Meta(data: MulticallEntry[] | undefined): Erc20Meta | undefined {
+  if (!data) return undefined
+  const [s, n, d] = data
+  if (s?.status !== 'success' || n?.status !== 'success' || d?.status !== 'success') return undefined
+  return { symbol: s.result as string, name: n.result as string, decimals: d.result as number }
 }

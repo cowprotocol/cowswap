@@ -6,16 +6,6 @@ import { normalizeRevalidateRequest } from '../../../util/cmsValidation'
 // Secret key for protecting the revalidation endpoint
 const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET
 
-function getSecretFromHeaders(request: NextRequest): string | null {
-  const authorization = request.headers.get('authorization')
-
-  if (authorization?.startsWith('Bearer ')) {
-    return authorization.slice('Bearer '.length)
-  }
-
-  return request.headers.get('x-revalidate-secret')
-}
-
 export async function GET(): Promise<NextResponse> {
   return NextResponse.json({ message: 'Use POST for revalidation requests' }, { status: 405 })
 }
@@ -68,4 +58,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const errorMessage = err instanceof Error ? err.message : 'Unknown revalidation error'
     return NextResponse.json({ message: 'Error revalidating', error: errorMessage }, { status: 400 })
   }
+}
+
+function getSecretFromHeaders(request: NextRequest): string | null {
+  const authorization = request.headers.get('authorization')
+
+  if (authorization?.startsWith('Bearer ')) {
+    return authorization.slice('Bearer '.length)
+  }
+
+  return request.headers.get('x-revalidate-secret')
 }

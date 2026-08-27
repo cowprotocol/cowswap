@@ -93,9 +93,8 @@ module.exports = [
     files: ['**/*.{js,ts}', '**/*.{jsx,tsx}'],
     plugins: { perfectionist },
     rules: {
-      // TODO: Turn this back on after the Viem migration, and only after running eslint:fix in the whole project.
       'perfectionist/sort-modules': [
-        'off',
+        'error',
         {
           groups: [
             ['export-interface', 'export-type'],
@@ -231,7 +230,12 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@uniswap,@safe-global}/**',
+              pattern: '{viem,wagmi,wagmi/*,@tanstack/*,@lingui/*}',
+              group: 'external',
+              position: 'before',
+            },
+            {
+              pattern: '{@cowprotocol,@safe-global}/**',
               group: 'external',
               position: 'before',
             },
@@ -373,6 +377,15 @@ module.exports = [
       complexity: ['error', 100],
       'max-lines-per-function': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
       '@typescript-eslint/no-restricted-imports': 'warn',
+    },
+  },
+
+  // Playwright E2E spec files contain large describe blocks of scaffolded placeholders.
+  {
+    files: ['apps/cowswap-e2e-tests/src/**/*.spec.ts'],
+    rules: {
+      complexity: ['error', 100],
+      'max-lines-per-function': 'off',
     },
   },
 

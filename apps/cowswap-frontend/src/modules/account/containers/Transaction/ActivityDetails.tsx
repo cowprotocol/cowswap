@@ -1,5 +1,7 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -10,7 +12,6 @@ import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
@@ -24,7 +25,6 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
@@ -62,6 +62,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { useIsPartialApproveEnabledBySettings } from '../../hooks/useIsPartialApproveEnabledBySettings'
 import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
@@ -104,10 +105,11 @@ export function ActivityDetails(props: {
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
   const getShowCancellationModal = useCancelOrder()
 
-  const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+  const uiOrderType = order ? getUiOrderType(order) : undefined
+  const isSwap = uiOrderType === UiOrderType.SWAP
+  const isPartialApproveEnabledBySettings = useIsPartialApproveEnabledBySettings(uiOrderType)
 
   const { disableProgressBar } = useInjectedWidgetParams()
 

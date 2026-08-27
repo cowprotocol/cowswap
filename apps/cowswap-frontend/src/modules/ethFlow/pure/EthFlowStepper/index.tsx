@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
@@ -9,23 +11,6 @@ import { Progress2 } from './steps/Progress2'
 import { Step1 } from './steps/Step1'
 import { Step2 } from './steps/Step2'
 import { Step3 } from './steps/Step3'
-
-export type TxState = {
-  /**
-   * undefined: there's no tx to track
-   * string: tx was created and can be tracked
-   */
-  hash?: string
-  /**
-   * undefined: not started/mining
-   * true: transaction failed
-   * false: transaction succeeded
-   */
-  failed?: boolean
-  cancelled?: boolean
-  spedUp?: boolean
-  replaced?: boolean
-}
 
 export interface EthFlowStepperProps {
   showProgressBar?: boolean
@@ -60,6 +45,23 @@ export interface EthFlowStepperProps {
    * To track cancellation tx
    */
   cancellation: TxState
+}
+
+export type TxState = {
+  /**
+   * undefined: there's no tx to track
+   * string: tx was created and can be tracked
+   */
+  hash?: string
+  /**
+   * undefined: not started/mining
+   * true: transaction failed
+   * false: transaction succeeded
+   */
+  failed?: boolean
+  cancelled?: boolean
+  spedUp?: boolean
+  replaced?: boolean
 }
 
 export const Wrapper = styled.div<{ showProgressBar?: boolean }>`
@@ -149,13 +151,11 @@ export const Progress = styled.div<ProgressProps>`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function EthFlowStepper(props: EthFlowStepperProps) {
+export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const { showProgressBar } = props
 
   return (
-    <Wrapper showProgressBar={showProgressBar}>
+    <Wrapper id="eth-flow-stepper" showProgressBar={showProgressBar}>
       <Step1 {...props} />
       <Progress1 {...props} />
       <Step2 {...props} />

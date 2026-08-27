@@ -8,12 +8,17 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { useGetTradeFormValidations, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import {
+  useGetTradeFormValidations,
+  useIsTradeFormValidationPassed,
+  useShouldHideTradeRateDetails,
+} from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -37,6 +42,7 @@ import {
   useIsFallbackHandlerCompatible,
   useIsFallbackHandlerRequired,
 } from '../../hooks/useFallbackHandlerVerification'
+import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
@@ -74,6 +80,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
 
   const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -88,6 +95,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const widgetDeadline = useInjectedWidgetDeadline(TradeType.ADVANCED)
 
   const cowAnalytics = useCowAnalytics()
+  const { trackTwapTabOpened } = useTwapDemandAnalytics()
 
   useEffect(() => {
     if (widgetDeadline) {
@@ -128,8 +136,12 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   }, [updateSettingsState, cowAnalytics])
 
   useEffect(() => {
+    trackTwapTabOpened()
+  }, [trackTwapTabOpened])
+
+  useEffect(() => {
     if (account && verification) {
-      if (localFormValidation === TwapFormState.TX_BUNDLING_NOT_SUPPORTED) {
+      if (localFormValidation === TwapFormState.WALLET_NOT_SUPPORTED) {
         cowAnalytics.sendEvent({
           category: CowSwapAnalyticsCategory.TWAP,
           action: 'non-compatible',
@@ -240,6 +252,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       {tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
+      {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

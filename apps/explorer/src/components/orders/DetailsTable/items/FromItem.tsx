@@ -32,7 +32,7 @@ export function FromItem({ chainId, isSigning, isBridgingOrder, onCopy, owner }:
       <RowWithCopyButton
         textToCopy={owner}
         onCopy={() => onCopy('ownerAddress')}
-        contentsToDisplay={<AddressLink address={owner} chainId={chainId} showNetworkName={isBridgingOrder} />}
+        contentsToDisplay={<AddressLink address={owner} chainId={chainId} showIcon showNetworkName={isBridgingOrder} />}
       />
       <Wrapper>
         <LinkButton to={`/address/${owner}`}>

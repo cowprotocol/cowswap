@@ -35,22 +35,18 @@ interface ConfirmedButtonProps {
   action: string
   confirmWord: string
   skipInput?: boolean
+  bottomContent?: ReactNode
 }
 
-function isValidConfirm(value: string, confirmWord: string): boolean {
-  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConfirmedButton({
   className,
   onConfirm,
   children,
   action,
   confirmWord,
+  bottomContent,
   skipInput = false,
-}: ConfirmedButtonProps) {
+}: ConfirmedButtonProps): ReactNode {
   const [inputValue, setInputValue] = useState('')
   const onInputChange: ChangeEventHandler<HTMLInputElement> = (event) => setInputValue(event.target.value ?? '')
   const shouldShowInput = !skipInput
@@ -74,6 +70,8 @@ export function ConfirmedButton({
             Please type the word <strong>"{confirmWord}"</strong> to {action}.
           </Trans>
         </Instruction>
+      ) : typeof bottomContent !== undefined ? (
+        bottomContent
       ) : (
         <Instruction>
           <Trans>Please click confirm to {action}.</Trans>
@@ -91,4 +89,8 @@ export function ConfirmedButton({
       </ButtonError>
     </Container>
   )
+}
+
+function isValidConfirm(value: string, confirmWord: string): boolean {
+  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }

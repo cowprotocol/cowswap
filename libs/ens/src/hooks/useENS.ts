@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import type { Address } from 'viem'
+
 import { isAddress } from '@cowprotocol/common-utils'
 
 import { useENSAddress } from './useENSAddress'
 import { useENSName } from './useENSName'
-
-import type { Address } from 'viem'
 
 /**
  * Given a name or address, does a lookup to resolve to an address and name

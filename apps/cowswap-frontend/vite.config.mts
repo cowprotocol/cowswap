@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
+
 import { sentryVitePlugin } from '@sentry/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { bundleStats } from 'rollup-plugin-bundle-stats'
@@ -44,6 +45,10 @@ function getGitBuildInfo(): {
   commitDate: string
   releaseTag: string
 } {
+  if (process.env.BUNDLE_SIZE_BUILD === 'true') {
+    return { commitHash: '0000000', commitDate: '1970-01-01T00:00:00+00:00', releaseTag: 'v1.0.0' }
+  }
+
   try {
     const commitHash = execSync('git rev-parse --short=7 HEAD').toString().trim()
     const commitDate = execSync('git show -s --format=%cI HEAD').toString().trim()
@@ -98,7 +103,7 @@ export default defineConfig(({ mode, isPreview }) => {
       minify: true,
       injectManifest: {
         // Preview build currently emits a large main chunk.
-        // If this value is smaller, pnpm preview will fail to start and Cypress will hang in CI and eventually timeout.
+        // If this value is smaller, pnpm preview will fail to start and Playwright will hang in CI and eventually timeout.
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MiB
         globPatterns: ['**/*.{js,css,html,png,jpg,svg,json,woff,woff2,md}'],
       },
@@ -111,6 +116,7 @@ export default defineConfig(({ mode, isPreview }) => {
 
   if (analyzeBundle) {
     plugins.push(
+      bundleStats() as PluginOption,
       visualizer({
         template: analyzeBundleTemplate,
         open: true,
@@ -120,7 +126,6 @@ export default defineConfig(({ mode, isPreview }) => {
         filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
-    plugins.push(bundleStats() as PluginOption)
   }
 
   if (isProduction && sentryAuthToken) {
@@ -289,10 +294,18 @@ export default defineConfig(({ mode, isPreview }) => {
       // in @reown/appkit-adapter-solana (#7709), pnpm resolves the appkit family to two
       // peer-instances; without deduping the controllers package, code in libs/wallet reads
       // an empty ConnectorController while the deduped appkit/adapter-wagmi populate the other.
-      dedupe: ['react-router', '@reown/appkit', '@reown/appkit-adapter-wagmi', '@reown/appkit-controllers', 'wagmi'],
+      dedupe: [
+        'react-router',
+        '@reown/appkit',
+        '@reown/appkit-adapter-wagmi',
+        '@reown/appkit-adapter-solana',
+        '@reown/appkit-controllers',
+        'wagmi',
+      ],
     },
 
     build: {
+      manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
       sourcemap: !isPreview,

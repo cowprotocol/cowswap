@@ -11,7 +11,6 @@ import {
   PriorityTokensUpdater,
   WatcherHealthState,
 } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
@@ -34,11 +33,6 @@ jest.mock('@cowprotocol/balances-and-allowances', () => ({
   BalancesAndAllowancesUpdater: jest.fn(() => null),
   PriorityTokensUpdater: jest.fn(() => null),
   PRIORITY_TOKENS_REFRESH_INTERVAL: 60_000,
-}))
-
-jest.mock('@cowprotocol/common-hooks', () => ({
-  ...jest.requireActual('@cowprotocol/common-hooks'),
-  useFeatureFlags: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -74,7 +68,6 @@ const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.Mo
   typeof BalancesAndAllowancesUpdater
 >
 const mockPriorityTokensUpdater = PriorityTokensUpdater as jest.MockedFunction<typeof PriorityTokensUpdater>
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseBalancesContext = useBalancesContext as jest.MockedFunction<typeof useBalancesContext>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
@@ -97,6 +90,14 @@ function HealthHydrator({ health, children }: { health: WatcherHealthState; chil
   return <>{children}</>
 }
 
+function healthy(): WatcherHealthState {
+  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
+}
+
+function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
+  return { status, isRecovering: true }
+}
+
 function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_STATE): void {
   render(
     <JotaiProvider>
@@ -107,19 +108,10 @@ function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_ST
   )
 }
 
-function healthy(): WatcherHealthState {
-  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
-}
-
-function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
-  return { status, isRecovering: true }
-}
-
 describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseFeatureFlags.mockReturnValue({ isBwEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockUseWalletInfo.mockReturnValue({
       account: '0x0000000000000000000000000000000000000001',
       chainId: SupportedChainId.MAINNET,
@@ -207,16 +199,6 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
         expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
       },
     )
-
-    it('mounts only the multicall stack when the bw feature flag is disabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isBwEnabled: false } as ReturnType<typeof useFeatureFlags>)
-
-      renderWithHealth(healthy())
-
-      expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
-      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
-      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
-    })
 
     it('mounts only the multicall stack on a non-EVM chain even with the bw flag on', () => {
       mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })

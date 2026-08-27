@@ -5,6 +5,7 @@ import ms from 'ms.macro'
 import {
   type BalancesMap,
   type BalancesSubscription,
+  type ReportWatcherErrorParams,
   createBalancesWatcherSession,
   subscribeToBalancesEvents,
 } from '../balancesWatcher'
@@ -38,6 +39,11 @@ export const FALLBACK_RETRY_INTERVAL_MS = ms`30s`
  */
 export const HIDDEN_SESSION_TIMEOUT_MS = ms`15s`
 
+export interface SessionController {
+  start(): void
+  cleanup(): void
+}
+
 export interface SessionControllerDeps {
   account: string
   chainId: SupportedChainId
@@ -45,11 +51,18 @@ export interface SessionControllerDeps {
   customTokens: string[]
   setBalances: (update: (state: BalancesState) => BalancesState) => void
   setHealth: (update: (state: WatcherHealthState) => WatcherHealthState) => void
+  // Throttled Sentry reporter, injected by the hook (see `useThrottledCallback`).
+  reportError: (params: ReportWatcherErrorParams) => void
 }
 
-export interface SessionController {
-  start(): void
-  cleanup(): void
+export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
+  return {
+    ...state,
+    chainId,
+    error: null,
+    isLoading: false,
+    hasFirstLoad: true,
+  }
 }
 
 /**
@@ -59,8 +72,9 @@ export interface SessionController {
  * parent keeps the multicall fallback mounted across retry transitions; it
  * only clears on the first successful snapshot.
  */
+// eslint-disable-next-line max-lines-per-function
 export function createSessionController(deps: SessionControllerDeps): SessionController {
-  const { account, chainId, tokensListsUrls, customTokens, setBalances, setHealth } = deps
+  const { account, chainId, tokensListsUrls, customTokens, setBalances, setHealth, reportError } = deps
 
   let cancelled = false
   let subscription: BalancesSubscription | undefined
@@ -103,7 +117,13 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
 
   const openStream = (): void => {
     firstSnapshotTimer = setTimeout(() => {
-      if (!cancelled) enterFallback()
+      if (cancelled) return
+      reportError({
+        error: new Error(`No snapshot received within ${FIRST_SNAPSHOT_TIMEOUT_MS}ms`),
+        phase: 'first-snapshot-timeout',
+        chainId,
+      })
+      enterFallback()
     }, FIRST_SNAPSHOT_TIMEOUT_MS)
 
     subscription = subscribeToBalancesEvents({
@@ -118,8 +138,9 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
         setBalances((state) => writeBalancesUpdate(state, balances, chainId, isFirstEvent))
         isFirstEvent = false
       },
-      onError: (_error, terminal) => {
+      onError: (error, terminal) => {
         if (cancelled || !terminal) return
+        reportError({ error, phase: 'stream', chainId })
         enterFallback()
       },
     })
@@ -140,8 +161,10 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
         setStatus(BalancesWatcherHealth.Connected)
         openStream()
       })
-      .catch(() => {
-        if (!cancelled) enterFallback()
+      .catch((error) => {
+        if (cancelled) return
+        reportError({ error, phase: 'session', chainId })
+        enterFallback()
       })
   }
 
@@ -153,16 +176,6 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
       clearRetryTimer()
       setHealth(() => DEFAULT_WATCHER_HEALTH_STATE)
     },
-  }
-}
-
-export function applyEmptyLoad(state: BalancesState, chainId: SupportedChainId): BalancesState {
-  return {
-    ...state,
-    chainId,
-    error: null,
-    isLoading: false,
-    hasFirstLoad: true,
   }
 }
 
