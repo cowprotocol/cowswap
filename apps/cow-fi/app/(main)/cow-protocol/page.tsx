@@ -66,7 +66,7 @@ export default function Page() {
       <HeroContainer variant="secondary">
         <HeroContent variant="secondary">
           <HeroSubtitle color={Color.cowfi_purple3}>CoW Protocol</HeroSubtitle>
-          <HeroTitle maxWidth={520}>Do what you want, build what you want</HeroTitle>
+          <HeroTitle maxWidth={520}>Swap what you want, build what you want</HeroTitle>
           <HeroDescription>
             CoW Protocol has the largest solver competition and the most advanced developer framework - so you can build
             any DeFi-related action you can imagine
@@ -75,7 +75,7 @@ export default function Page() {
             <Link
               bgColor={Color.cowfi_purple3}
               color={Color.cowfi_purple_bright}
-              href="mailto:hello@cow.fi"
+              href="mailto:hello@cow.fi?subject=Help%20me%20build%20with%20CoW%20Protocol"
               external
               linkType={LinkType.HeroButton}
               data-click-event={toCowFiGtmEvent({
