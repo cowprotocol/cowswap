@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 23:57\n"
+"PO-Revision-Date: 2026-08-27 01:13\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -1216,7 +1216,7 @@ msgstr "Explorateur du bridge"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "You possibly have other items to claim, but not Airdrops"
-msgstr "Vous avez peut-être d’autres éléments à réclamer, mais aucun airdrop"
+msgstr "Vous avez peut-être d’autres éléments à récupérer, mais aucun airdrop"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "APR"
@@ -4081,7 +4081,7 @@ msgstr "Partager sur X"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Total claimable rewards:"
-msgstr "Total des récompenses réclamables :"
+msgstr "Total des récompenses à récupérer :"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
@@ -5047,7 +5047,7 @@ msgstr "Rechercher un réseau"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
-msgstr "CoW Swap sans connexion"
+msgstr "CoW Swap hors connexion"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs (opens in a new tab)"
@@ -5062,7 +5062,7 @@ msgstr "Alerte"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Start time first"
-msgstr "Heure de début en premier"
+msgstr "Heure de début de la première"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "View tx on explorer"
@@ -5233,7 +5233,7 @@ msgstr "Entre les monnaies"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "wrapped native"
-msgstr "monnaie native wrappée"
+msgstr "la monnaie native wrappée"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Recover {target}"
@@ -6041,7 +6041,7 @@ msgstr "Le montant approuvé est insuffisant !"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "funds"
-msgstr "fonds"
+msgstr "les fonds"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Pool details"
@@ -6473,7 +6473,7 @@ msgstr "Ce token ne peut être tradé que pendant certaines plages horaires"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked"
-msgstr "Associé"
+msgstr "Lié"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Rewards hub - Affiliate"
@@ -7168,7 +7168,7 @@ msgstr "Contrairement aux autres plateformes d’échange, aucun frais ne vous s
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Error loading the claimable amount"
-msgstr "Erreur lors du chargement du montant réclamable"
+msgstr "Erreur lors du chargement du montant à récupérer"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
 msgid "Attention"
@@ -7355,7 +7355,7 @@ msgstr "Les frais de swap représentent au moins {formattedFeePercentage}% du mo
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "There was an error trying to load claimable tokens"
-msgstr "Une erreur est survenue lors du chargement des tokens réclamables"
+msgstr "Une erreur est survenue lors du chargement des tokens récupérables"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Learn"
@@ -7367,7 +7367,7 @@ msgstr "Découvrir"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
-msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre vos <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
+msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre votre <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
@@ -7379,7 +7379,7 @@ msgstr "Continuer le swap avec {wrappedSymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked since"
-msgstr "Associé depuis"
+msgstr "Lié depuis"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Light mode"
@@ -7420,7 +7420,7 @@ msgstr "Ce graphique indique le volume éligible restant avant de débloquer la 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"
-msgstr "Montant autorisé"
+msgstr "Autoriser la dépense"
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Reset favorites"
@@ -7497,7 +7497,7 @@ msgstr "La première partie de votre ordre TWAP deviendra active dès que vous c
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
-msgstr "Si CoW Swap ne peut pas obtenir ce prix ou un meilleur, en tenant compte des frais et de la tolérance de protection du prix, votre TWAP ne sera pas exécuté. CoW Swap améliorera <0>toujours</0> ce prix lorsque cela est possible."
+msgstr "Si CoW Swap ne peut pas obtenir ce prix ou un meilleur (en tenant compte des frais et de la tolérance de protection du prix), votre ordre TWAP ne sera pas exécuté. CoW Swap améliorera <0>toujours</0> ce prix si possible."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/HowItWorks.tsx
 #~ msgid "How it works."
@@ -7590,7 +7590,7 @@ msgstr "Échec du placement de l’ordre vendant {nativeCurrencySymbol}"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "native"
-msgstr "natif"
+msgstr "la monnaie native"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
