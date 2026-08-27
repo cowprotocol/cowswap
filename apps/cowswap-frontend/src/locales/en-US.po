@@ -4678,6 +4678,10 @@ msgstr "Define custom total time"
 msgid "Deprecated network"
 msgstr "Deprecated network"
 
+#: apps/cowswap-frontend/src/modules/rwaWidget/pure/RwaAlternativeQuote/index.tsx
+msgid "Use {symbol}"
+msgstr "Use {symbol}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
