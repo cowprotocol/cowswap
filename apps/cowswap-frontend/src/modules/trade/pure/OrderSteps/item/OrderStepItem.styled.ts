@@ -144,7 +144,7 @@ export const StepLabel = styled.strong`
   text-align: left;
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
 
   [data-status='active'] &,
   [data-status='loading'] & {

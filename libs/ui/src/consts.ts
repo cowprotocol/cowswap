@@ -56,6 +56,7 @@ export const Font = {
   familyStudioFeixen: `'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif`,
   familyStudioFeixenMono: `'studiofeixenmono', monospace, sans-serif`,
   familyStudioFeixenSerif: `'studiofeixenserif', Arial, serif`,
+  // Numeric source of truth for ThemeColorVars and @font-face only. Use UI.FONT_WEIGHT_* in styles.
   weight: {
     ultralight: 200,
     light: 300,
