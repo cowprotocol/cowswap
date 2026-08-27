@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-26 12:22\n"
+"PO-Revision-Date: 2026-08-27 11:32\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1374,7 +1374,7 @@ msgstr "Seu código de indicação expira {timeAgo}. Negocie agora para maximiza
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays} days."
-msgstr "Compartilhe seu código de indicação e ganhe <0>{partnerRewardAmount}</0> a cada <1>{triggerVolumeLabel}</1> em volume elegível, em até {affiliateTimeCapDays} dias."
+msgstr "Compartilhe seu código de afiliado e ganhe <0>{partnerRewardAmount}</0> a cada <1>{triggerVolumeLabel}</1> em volume elegível, em até {affiliateTimeCapDays} dias."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Dapp"
@@ -1483,7 +1483,7 @@ msgstr "Ver contrato"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Only \"sell\" orders are supported"
-msgstr "São suportadas apenas ordens \"de venda\""
+msgstr "São suportadas apenas ordens de \"venda\""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
 msgid "Surplus received"
@@ -1935,7 +1935,7 @@ msgstr "Troca falhou"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to WETH"
-msgstr "Alternar para WETH"
+msgstr "Mudar para WETH"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Great!"
@@ -2004,7 +2004,7 @@ msgstr "CoW Swap 404 não encontrado"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The trader already reached the rewardable volume cap for this referral code."
-msgstr "O trader já atingiu o limite de volume elegível para recompensa para este código de indicação."
+msgstr "O trader já atingiu o limite de volume elegível para recompensa para este código de afiliado."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Apply"
