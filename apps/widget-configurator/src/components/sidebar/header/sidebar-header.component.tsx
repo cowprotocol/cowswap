@@ -1,10 +1,11 @@
 import { ReactNode } from 'react'
 
-import { Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
+
+import { CowWidgetTitle } from './cow-widget-title.component'
 
 import { WidgetMode } from '../../../configurator.types'
 import { BRAND_COLOR } from '../../../theme/palettes.constants'
@@ -13,14 +14,13 @@ import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
 import type { WidgetSdkVersion } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 
 export interface SidebarHeaderProps {
-  title: string
   themeMode: PaletteMode
   widgetMode: WidgetMode
   baseUrl: string
   sdkVersion: WidgetSdkVersion
 }
 
-export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersion }: SidebarHeaderProps): ReactNode {
+export function SidebarHeader({ themeMode, widgetMode, baseUrl, sdkVersion }: SidebarHeaderProps): ReactNode {
   const brandColor = BRAND_COLOR[themeMode]
 
   return (
@@ -42,7 +42,7 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
         sx={{
           position: 'relative',
           display: 'flex',
-          alignItems: 'center',
+          alignItems: 'end',
           justifyContent: 'flex-start',
           gap: '8px',
           width: '100%',
@@ -56,19 +56,26 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
           overrideColor={brandColor}
           overrideHoverColor={brandColor}
         />
-        <Typography
+        <Box
           component="h1"
+          aria-label="CoW Widget"
           sx={{
-            fontFamily: Font.familyStudioFeixen,
-            fontWeight: Font.weight.bold,
-            fontSize: '2rem',
-            lineHeight: 1,
-            letterSpacing: 0,
+            m: 0,
+            display: 'flex',
+            alignItems: 'center',
             color: brandColor,
+            height: '2rem',
+            flex: '0 0 auto',
+
+            '& svg': {
+              display: 'block',
+              height: '100%',
+              width: 'auto',
+            },
           }}
         >
-          {title}
-        </Typography>
+          <CowWidgetTitle />
+        </Box>
         <SidebarEnvBadge baseUrl={baseUrl} configuratorOrigin={location.origin} sdkVersion={sdkVersion} />
       </Box>
 

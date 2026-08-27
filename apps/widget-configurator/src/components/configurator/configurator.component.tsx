@@ -45,7 +45,7 @@ const onLoadingError: () => void = () => {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function Configurator({ title }: { title: string }): ReactNode {
+export function Configurator(): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
   const { isConnected } = useConnection()
   const provider = useProvider()
@@ -220,7 +220,6 @@ export function Configurator({ title }: { title: string }): ReactNode {
       sx={configuradorRootSx}
     >
       <Sidebar
-        title={title}
         isOpen={isSidebarOpen}
         isResizing={isResizing}
         isSnippetOpen={isSnippetOpen}
