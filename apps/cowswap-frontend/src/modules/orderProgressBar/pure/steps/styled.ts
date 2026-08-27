@@ -1,6 +1,6 @@
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, fontFamilyBrand, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -205,7 +205,7 @@ const pulseAnimation = keyframes`
 `
 
 export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
-  font-family: var(${UI.FONT_FAMILY_PRIMARY});
+  ${fontFamilyBrand}
   font-size: 68px;
   font-weight: bold;
   color: var(${UI.COLOR_TEXT_PAPER});
@@ -264,6 +264,7 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
   flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
   gap: ${({ gap }) => gap || '10px'};
+  ${fontFamilyBrand}
   font-size: 21px;
   font-weight: bold;
   margin: ${({ margin }) => margin || '14px auto 0'};

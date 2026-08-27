@@ -7,12 +7,12 @@ import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
 import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
 import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
 
-interface ChromeEdgeProps {
+interface BottomEdgeProps {
   $bottomBorder?: boolean
   $contentMargin?: boolean
 }
 
-const chromeEdgeCss = css<ChromeEdgeProps>`
+const bottomEdgeCss = css<BottomEdgeProps>`
   ${({ $bottomBorder }) =>
     $bottomBorder &&
     css`
@@ -26,12 +26,12 @@ const chromeEdgeCss = css<ChromeEdgeProps>`
     `}
 `
 
-export const Header = styled.header<ChromeEdgeProps>`
+export const Header = styled.header<BottomEdgeProps>`
   position: relative;
   background: ${MODAL_DEBUG ? 'red' : `var(${UI.COLOR_PAPER})`};
-  // padding-bottom: 16px;
+  overflow: hidden;
 
-  ${chromeEdgeCss}
+  ${bottomEdgeCss}
 
   &.sticky {
     position: sticky;
@@ -179,7 +179,7 @@ export const CloseButton = styled(CloseIconButton)`
   }
 `
 
-export const ScrollableBottomSlot = styled.div<ChromeEdgeProps>`
+export const ScrollableBottomSlot = styled.div<BottomEdgeProps>`
   width: 100%;
-  ${chromeEdgeCss}
+  ${bottomEdgeCss}
 `

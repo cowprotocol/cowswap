@@ -3,7 +3,7 @@ import svgSurplusCowSrc from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import svgTwitterSrc from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
+import { ExternalLink, FiatAmount, fontFamilyBrand, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -40,6 +40,7 @@ export const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    ${fontFamilyBrand}
     font-size: 15px;
     width: 100%;
     font-weight: 600;
@@ -87,6 +88,7 @@ export const Wrapper = styled.div`
   }
 
   > h3 {
+    ${fontFamilyBrand}
     font-size: 20px;
     line-height: 1.2;
     margin: 24px auto 4px;
@@ -95,6 +97,7 @@ export const Wrapper = styled.div`
   }
 
   > strong {
+    ${fontFamilyBrand}
     font-size: 34px;
     width: 100%;
     display: block;
