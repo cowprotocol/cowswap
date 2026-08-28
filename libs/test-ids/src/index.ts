@@ -64,6 +64,25 @@ export const TEST_IDS = {
   openOrdersList: 'open-orders-list',
   twapPartsInput: 'twap-parts-input',
   twapDurationInput: 'twap-duration-input',
+
+  // BridgeRoutePanel's swap-leg rows (QuoteSwapContent / TradeFeesAndCosts) — distinct from
+  // `confirmOrderAmount`/`networkCosts` above, which are the same-looking rows in a different
+  // surface (the plain Confirm modal / the receive-amount tooltip) that can be in the DOM at the
+  // same time as the expanded route panel.
+  routeSwapFee: 'route-swap-fee',
+  routeSwapNetworkCosts: 'route-swap-network-costs',
+  routeSwapExpectedToReceive: 'route-swap-expected-to-receive',
+  routeSwapMinToReceive: 'route-swap-min-to-receive',
+  routeSwapRecipient: 'route-swap-recipient',
+  routeSwapQuoteId: 'route-swap-quote-id',
+
+  // BridgeRoutePanel's bridge-leg rows (QuoteBridgeContent)
+  routeBridgeEstTime: 'route-bridge-est-time',
+  routeBridgeCosts: 'route-bridge-costs',
+  routeBridgeExpectedToReceive: 'route-bridge-expected-to-receive',
+  routeBridgeMinToDeposit: 'route-bridge-min-to-deposit',
+  routeBridgeRecipient: 'route-bridge-recipient',
+  routeBridgeMinToReceive: 'route-bridge-min-to-receive',
 } as const
 
 export type TestId = (typeof TEST_IDS)[keyof typeof TEST_IDS]

@@ -1,11 +1,10 @@
 import { parseUnits, type Hex } from 'viem'
 
-import { areAddressesEqual, BTC_CURRENCY_ADDRESS } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, BTC_CURRENCY_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { generateOrderId } from '../mocks/orders'
-import { CHAIN_IDS } from '../support/constants'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { seedTrader } from '../support/seedTrader'
@@ -51,8 +50,8 @@ import type { SwapPage } from '../pages/SwapPage'
  *   checks both are present instead of asserting parity.
  */
 
-const MAINNET = CHAIN_IDS.MAINNET
-const BASE = CHAIN_IDS.BASE
+const MAINNET = SupportedChainId.MAINNET
+const BASE = SupportedChainId.BASE
 
 const USDC_MAINNET = '0xA0b86991c6218b36c1d19D4A2e9Eb0cE3606eB48'
 const USDC_BASE = '0x833589fCD6eDb6E08f4C7C32D4f71b54bdA02913'
