@@ -25,11 +25,7 @@ export const AdvancedDropdownButton = styled.button`
   width: 100%;
   font-size: 14px;
   padding: 10px;
-  border: 0;
-  outline: none;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  background: none;
-  cursor: pointer;
   margin-top: 10px;
 
   &:hover {
@@ -81,7 +77,6 @@ export const AdvancedApproveButton = styled.button`
   gap: 10px;
   justify-content: center;
   line-height: 0;
-  cursor: pointer;
   width: 100%;
   font-size: 16px;
   font-weight: 600;

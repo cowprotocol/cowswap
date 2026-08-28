@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -152,6 +152,7 @@ export const BubbleContent = styled.div<{ $variant: CowSpeechBubbleVariant }>`
 export const TypingLine = styled.span`
   display: inline-flex;
   align-items: center;
+  ${fontFamilyBrand}
   min-height: 1.4em;
   white-space: pre-wrap;
 `

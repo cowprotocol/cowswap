@@ -1,5 +1,6 @@
 import '@reach/dialog/styles.css'
 import './polyfills'
+import './styles/fonts.css'
 
 import { PropsWithChildren, ReactNode, StrictMode, useCallback, useContext } from 'react'
 

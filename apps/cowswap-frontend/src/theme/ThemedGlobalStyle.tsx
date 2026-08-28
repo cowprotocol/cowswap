@@ -8,64 +8,37 @@ export const ThemedGlobalStyle = createGlobalStyle`
   ${ThemeColorVars}
   ${baseGlobalStyles}
 
-  html,
-  input,
-  textarea,
-  button {
-    font-family: 'Inter', sans-serif;
+  ::selection {
+    background: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_BUTTON_TEXT});
   }
-  @supports (font-variation-settings: normal) {
-    html,
-    input,
-    textarea,
-    button {
-      font-family: 'Inter var', sans-serif;
-    }
+
+  html {
+    font-family: var(${UI.FONT_FAMILY_PRIMARY});
+    font-size: 16px;
+    font-variant: none;
+    font-variant-ligatures: none;
+    text-rendering: optimizeLegibility;
+    font-feature-settings:
+      'liga' off,
+      'kern' on,
+      'ss01' on,
+      'ss02' on,
+      'cv01' on,
+      'cv03' on;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    color: var(${UI.COLOR_TEXT_PAPER});
+    background-color: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`)};
   }
 
   body {
     background: transparent;
-  }
-
-  a {
-    color: ${({ theme }) => theme.blue1};
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  button {
-    user-select: none;
-  }
-
-  html {
-    font-size: 16px;
-    font-variant: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on, 'cv03' on;
-  }
-
-  html {
-    background-color: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`)};
-  }
-
-  *, *:after, *:before {
-    box-sizing: border-box;
-  }
-
-  body {
-    background: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_NEUTRAL_98})`)};
     min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
+    /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
     &.noScroll {
       overflow: hidden;
     }
-  }
-
-  ::selection {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_BUTTON_TEXT});
   }
 
   // TODO: Can be removed once we control this component
@@ -92,26 +65,5 @@ export const ThemedGlobalStyle = createGlobalStyle`
         text-decoration: underline;
       }
     }
-  }
-
-  body {
-    font-family: var(${UI.FONT_FAMILY_PRIMARY}), Arial, sans-serif;
-    background: transparent;
-    color: var(${UI.COLOR_TEXT});
-    font-variant: none;
-    font-variant-ligatures: none;
-    text-rendering: optimizeLegibility;
-    font-feature-settings:
-      'liga' off,
-      'kern' on;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    margin: 0;
-  }
-
-  a {
-    color: inherit;
   }
 `

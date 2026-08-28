@@ -6,7 +6,7 @@ import { darken, lighten, transparentize } from 'color2k'
 import { css } from 'styled-components/macro'
 
 import { Color } from '../colors'
-import { FONT_SIZING } from '../consts'
+import { Font, FONT_SIZING } from '../consts'
 import { UI } from '../enum'
 
 /**
@@ -364,9 +364,9 @@ export const ThemeColorVars = css`
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 
     // Font Weights:
-    ${UI.FONT_WEIGHT_NORMAL}: 400;
-    ${UI.FONT_WEIGHT_MEDIUM}: 500;
-    ${UI.FONT_WEIGHT_BOLD}: 600;
+    ${UI.FONT_WEIGHT_NORMAL}: ${Font.weight.regular};
+    ${UI.FONT_WEIGHT_MEDIUM}: ${Font.weight.medium};
+    ${UI.FONT_WEIGHT_BOLD}: ${Font.weight.semibold};
 
     // Font Sizes:
     ${UI.FONT_SIZE_SMALLER}: 10px;
@@ -385,8 +385,9 @@ export const ThemeColorVars = css`
     ${UI.LINE_HEIGHT_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[1]}px;
 
     // Font Families:
-    ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
-    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'Inter var', 'Inter', Arial, sans-serif;
+    ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyInter};
+    ${UI.FONT_FAMILY_BRAND}: ${Font.familyStudioFeixen};
+    ${UI.FONT_FAMILY_MONO}: ${Font.familyInter};
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
@@ -396,7 +397,5 @@ export const ThemeColorVars = css`
 
   body {
     ${({ theme }) => theme.colorScrollbar}
-
-    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `

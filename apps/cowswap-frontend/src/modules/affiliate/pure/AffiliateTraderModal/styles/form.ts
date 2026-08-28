@@ -51,10 +51,6 @@ export const FormActionDanger = styled.button`
   font-size: var(${UI.FONT_SIZE_SMALL});
   font-weight: 600;
   color: var(${UI.COLOR_DANGER_TEXT});
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
 
   &:disabled {
     opacity: 0.5;

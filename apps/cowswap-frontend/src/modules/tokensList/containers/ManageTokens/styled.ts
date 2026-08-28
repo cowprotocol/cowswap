@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { blankButtonMixin } from '../../pure/commonElements'
-
 const RowBox = styled.div`
   display: flex;
   flex-direction: row;
@@ -27,8 +25,6 @@ export const Title = styled.div`
 `
 
 export const LinkButton = styled.button`
-  ${blankButtonMixin};
-
   font-size: 16px;
   font-weight: 500;
   color: var(${UI.COLOR_LINK});
