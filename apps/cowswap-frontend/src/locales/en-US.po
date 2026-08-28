@@ -3577,6 +3577,7 @@ msgid "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap amo
 msgstr "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap amount"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "TWAP order"
 msgstr "TWAP order"
 
