@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai'
 import { useCallback, useState } from 'react'
 
+import { useSteadyStatus } from './useSteadyStatus'
+
 import { streamConversation } from '../services/assistantApi'
 import { conversationAtom, ConversationState, EMPTY_CONVERSATION } from '../state/conversationAtom'
 import { AssistantMessage, AssistantTurn, AssistantUiContext } from '../types'
@@ -47,7 +49,7 @@ export function useConversation(): Conversation {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [streamText, setStreamText] = useState('')
-  const [status, setStatus] = useState<string | null>(null)
+  const { status, show: showStatus, clear: clearStatus } = useSteadyStatus()
 
   const reset = useCallback(() => {
     setConversation(EMPTY_CONVERSATION)
@@ -72,18 +74,18 @@ export function useConversation(): Conversation {
       setBusy(true)
       setError(null)
       setStreamText('')
-      setStatus(null)
+      clearStatus()
 
       try {
         const turn = await streamConversation({
           messages: next,
           uiContext,
           onText: (delta) => {
-            setStatus(null)
+            clearStatus()
             setStreamText((prose) => prose + delta)
           },
           onStatus: (label) => {
-            setStatus(label)
+            showStatus(label)
             // A tool starting means the previous prose block ended; without a break
             // one round's text runs into the next as a single paragraph.
             setStreamText((prose) => (prose && !prose.endsWith('\n\n') ? `${prose}\n\n` : prose))
@@ -93,7 +95,7 @@ export function useConversation(): Conversation {
         // Clear the live bubble in the same update as the authoritative history, or
         // both render together for a frame and the answer appears twice.
         setStreamText('')
-        setStatus(null)
+        clearStatus()
         setConversation(fromTurn(turn, next))
       } catch (failure) {
         // A failed turn must not leave the user's message with no reply after it —
@@ -108,10 +110,11 @@ export function useConversation(): Conversation {
       } finally {
         setBusy(false)
         setStreamText('')
-        setStatus(null)
+        clearStatus()
       }
     },
-    [busy, conversation, setConversation],
+    // showStatus and clearStatus are stable by construction — see useSteadyStatus.
+    [busy, clearStatus, conversation, setConversation, showStatus],
   )
 
   const markApplied = useCallback(

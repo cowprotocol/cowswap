@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { useApplyProposal } from './useApplyProposal'
+import { LandedStatus } from './useProposalLanded'
 import { QuoteWatchState } from './useQuoteWatch'
 import { WrapWatch } from './useWrapWatch'
 
@@ -13,7 +14,11 @@ export interface ConfirmProposal {
   problem: string | null
 }
 
+/** How long the form gets to show the applied trade before we call it a failure. */
+const LANDING_GRACE_MS = 4000
+
 interface ConfirmProposalParams {
+  landed: LandedStatus
   markApplied(): void
   proposal: AssistantProposal | null
   quoteWatch: QuoteWatchState
@@ -32,6 +37,7 @@ interface ConfirmProposalParams {
  * exist, and eventually commenting on an unrelated one.
  */
 export function useConfirmProposal({
+  landed,
   markApplied,
   proposal,
   quoteWatch,
@@ -40,6 +46,32 @@ export function useConfirmProposal({
   const applyProposal = useApplyProposal()
   const [applying, setApplying] = useState(false)
   const [problem, setProblem] = useState<string | null>(null)
+  const [awaitingForm, setAwaitingForm] = useState(false)
+
+  // ⚠️ **A trade that doesn't arrive must be said out loud.**
+  //
+  // When a token in the URL means nothing on the target chain, the app fills the
+  // form with its default pair and keeps the amounts — so the form holds a trade
+  // nobody asked for, wearing the person's numbers. The card correctly stays on
+  // Confirm, but a button that didn't change is a quiet signal for a loud problem,
+  // and the form beside it looks perfectly plausible.
+  useEffect(() => {
+    if (!awaitingForm) return undefined
+
+    if (landed !== 'pending') {
+      setAwaitingForm(false)
+      return undefined
+    }
+
+    const timer = setTimeout(() => {
+      setAwaitingForm(false)
+      setProblem(
+        "That didn't reach the form — what's showing there now is something else, not this trade. Don't sign it. It usually means one of these tokens doesn't exist on this network.",
+      )
+    }, LANDING_GRACE_MS)
+
+    return () => clearTimeout(timer)
+  }, [awaitingForm, landed])
 
   const confirm = useCallback(() => {
     if (!proposal || applying) return
@@ -59,6 +91,7 @@ export function useConfirmProposal({
         markApplied()
         wrapWatch.watch(proposal)
         quoteWatch.arm()
+        setAwaitingForm(true)
       })
       .catch((failure: unknown) => {
         console.error('[assistant] applying failed', failure)

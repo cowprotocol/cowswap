@@ -53,7 +53,7 @@ export function AssistantDrawer(): ReactNode {
     confirm,
     applying,
     problem: applyProblem,
-  } = useConfirmProposal({ markApplied, proposal, quoteWatch, wrapWatch })
+  } = useConfirmProposal({ landed, markApplied, proposal, quoteWatch, wrapWatch })
 
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
