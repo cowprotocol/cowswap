@@ -65,8 +65,11 @@ export function useConfirmProposal({
 
     const timer = setTimeout(() => {
       setAwaitingForm(false)
+      // Says what can be seen and what to do. NOT why — the reason isn't knowable
+      // from here, and a guessed cause sent one person looking for a token that
+      // was there all along.
       setProblem(
-        "That didn't reach the form — what's showing there now is something else, not this trade. Don't sign it. It usually means one of these tokens doesn't exist on this network.",
+        "That didn't reach the form — what's showing there now is something else, not this trade. Don't sign it. If one of the tokens isn't loading, try adding it from its contract address in the form's token selector.",
       )
     }, LANDING_GRACE_MS)
 
