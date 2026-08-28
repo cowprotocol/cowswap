@@ -77,9 +77,10 @@ export const Chevron = styled(ChevronDown)`
   width: 16px;
   height: 16px;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
-  transition: ${slowTransition(['transform'])};
+  transition: ${slowTransition(['transform', 'color'])};
 
   ${Trigger}[data-panel-open] & {
+    color: var(${UI.COLOR_PRIMARY});
     transform: rotate(180deg);
   }
 `
