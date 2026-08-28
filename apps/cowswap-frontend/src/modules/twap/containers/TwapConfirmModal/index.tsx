@@ -120,7 +120,7 @@ export function TwapConfirmModal(): ReactNode {
     <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
-        title={t`Review TWAP`}
+        title={hasSigningPlan ? t`TWAP order` : t`Review TWAP`}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
