@@ -37,7 +37,6 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   box-sizing: border-box;
   display: flex;
   width: 100%;
-  height: var(${UI.CLICKABLE_SIZE});
   min-height: var(${UI.CLICKABLE_SIZE});
   align-items: center;
   justify-content: center;
@@ -59,7 +58,7 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   }
 
   &[data-panel-open] {
-    color: var(${UI.COLOR_BLUE});
+    color: var(${UI.COLOR_PRIMARY});
     background: color-mix(in srgb, var(${UI.COLOR_PAPER_DARKER}) 50%, var(${UI.COLOR_PAPER_DARKEST}));
 
     &:hover {
