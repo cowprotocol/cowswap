@@ -1,6 +1,6 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
-import { areAddressesEqual, bpsToPercentage, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, bpsToPercentage, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { test, expect } from '../fixtures'
@@ -133,8 +133,16 @@ test.describe('Market Orders', () => {
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
+      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
+      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
+      // instead of a one-shot read to ride out that gap, same as [CS-118]'s identical read.
+      await expect
+        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect
+        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
@@ -391,13 +399,26 @@ test.describe('Market Orders', () => {
       await expect(networkCostsRow).toBeVisible()
       await expect(totalRow).toBeVisible()
 
-      const beforeCosts = await readTitledAmount(beforeCostsRow)
-      const protocolFee = await readTitledAmount(protocolFeeRow)
-      const networkCosts = await readTitledAmount(networkCostsRow)
-      const toAmount = await readTitledAmount(totalRow)
+      // Four separately-awaited reads risk a re-render (the form's own default-amount probe quote
+      // settling into the typed one) landing in between two of them, tearing the snapshot — e.g.
+      // `beforeCosts` read from a stale quote and `protocolFee` from the fresh one. Re-reading all
+      // four together on every poll attempt, against the relationship they must satisfy, rides out
+      // that race instead of trusting a single one-shot batch.
+      let beforeCosts = 0n
+      let protocolFee = 0n
+      let networkCosts = 0n
+      let toAmount = 0n
 
-      // The core relationship: To = Before costs − Network costs − Protocol fee.
-      expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
+      await expect
+        .poll(async () => {
+          beforeCosts = await readTitledAmount(beforeCostsRow)
+          protocolFee = await readTitledAmount(protocolFeeRow)
+          networkCosts = await readTitledAmount(networkCostsRow)
+          toAmount = await readTitledAmount(totalRow)
+          // The core relationship: To = Before costs − Network costs − Protocol fee.
+          return toAmount === beforeCosts - networkCosts - protocolFee
+        })
+        .toBe(true)
 
       // The main "Receive (incl. fees)" field displays the same amount as the tooltip's "To" row.
       const receiveTitle = await swapPage.receiveAmountValue.getAttribute('title')
@@ -854,7 +875,7 @@ test.describe('Market Orders', () => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ [USDC.toLowerCase()]: { type: 'eip-2612', name: 'USDC', version: '2' } }),
+          body: JSON.stringify({ [getAddressKey(USDC)]: { type: 'eip-2612', name: 'USDC', version: '2' } }),
         })
       })
 

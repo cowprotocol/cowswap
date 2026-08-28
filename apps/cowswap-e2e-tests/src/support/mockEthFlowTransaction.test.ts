@@ -1,5 +1,7 @@
 import { decodeAbiParameters, encodeAbiParameters, encodeFunctionData, erc20Abi, type Address, type Hex } from 'viem'
 
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
@@ -142,7 +144,7 @@ function opaqueCalldata(): Hex {
  * real, cross-mock composition. */
 function registerFakeOtherMock(context: BrowserContext, target: string, matchCallData: Hex, answer: Hex): void {
   registerNestedCallResolver(context, (t, callData) =>
-    t.toLowerCase() === target.toLowerCase() && callData === matchCallData ? answer : undefined,
+    areAddressesEqual(t, target) && callData === matchCallData ? answer : undefined,
   )
 }
 

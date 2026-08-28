@@ -3,7 +3,21 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Page } from '@playwright/test'
 import type { MetaMask } from '@synthetixio/synpress/playwright'
 
-const CHAIN_NAME_BY_ID: Partial<Record<SupportedChainId, string>> = {
+/**
+ * The chains this fixture can actually drive — exactly the ones `wallet.setup.ts` preconfigures on
+ * the cached MetaMask profile. `SupportedChainId` has 5 more members (Polygon, Plasma, Avalanche,
+ * Ink, Linea) that were never added there; accepting the full enum in `connectAsEOA`/`switchChain`
+ * would let a caller compile against a chain `resolveChainName` can only fail at runtime for.
+ */
+export type MetaMaskChainId =
+  | SupportedChainId.MAINNET
+  | SupportedChainId.ARBITRUM_ONE
+  | SupportedChainId.BASE
+  | SupportedChainId.BNB
+  | SupportedChainId.GNOSIS_CHAIN
+  | SupportedChainId.SEPOLIA
+
+const CHAIN_NAME_BY_ID: Record<MetaMaskChainId, string> = {
   [SupportedChainId.MAINNET]: 'Mainnet',
   [SupportedChainId.ARBITRUM_ONE]: 'Arbitrum',
   [SupportedChainId.BASE]: 'Base',
@@ -14,8 +28,8 @@ const CHAIN_NAME_BY_ID: Partial<Record<SupportedChainId, string>> = {
 
 export interface WalletApi {
   readonly address: string
-  connectAsEOA(opts: { chainId: SupportedChainId }): Promise<void>
-  switchChain(chainId: SupportedChainId): Promise<void>
+  connectAsEOA(opts: { chainId: MetaMaskChainId }): Promise<void>
+  switchChain(chainId: MetaMaskChainId): Promise<void>
   confirmSignTypedData(): Promise<void>
   rejectSignTypedData(): Promise<void>
   approveToken(): Promise<void>
@@ -64,10 +78,6 @@ export function createWalletApi(metamask: MetaMask, page: Page): WalletApi {
   }
 }
 
-function resolveChainName(chainId: SupportedChainId): string {
-  const chainName = CHAIN_NAME_BY_ID[chainId]
-  if (!chainName) {
-    throw new Error(`Unsupported chainId: ${chainId}`)
-  }
-  return chainName
+function resolveChainName(chainId: MetaMaskChainId): string {
+  return CHAIN_NAME_BY_ID[chainId]
 }

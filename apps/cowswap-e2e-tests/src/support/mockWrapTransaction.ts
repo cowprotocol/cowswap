@@ -1,3 +1,5 @@
+import type { Hex } from 'viem'
+
 import { installNativeBalanceRoute } from './mockEthFlowTransaction'
 
 import type { MockWalletApi } from '../fixtures/mockWallet'
@@ -6,6 +8,9 @@ import type { RpcStub } from '../mockWallet/walletEngine'
 import type { BrowserContext } from '@playwright/test'
 
 const FAKE_WRAP_TX_HASH = `0x${'10'.repeat(32)}` as const
+
+/** `deposit()` on WETH9 — verified via `viem`'s `toFunctionSelector('deposit()')`. */
+const DEPOSIT_SELECTOR = '0xd0e30db0'
 
 export interface MockWrapTransactionHandle {
   /** The native ETH amount (wei) actually sent in the fake `deposit()` transaction, once sent. */
@@ -47,7 +52,14 @@ export async function mockWrapTransaction(opts: MockWrapTransactionOpts): Promis
   let mined = false
 
   const stub: RpcStub = ({ params }) => {
-    const tx = params[0] as { value?: string }
+    if (sentValue !== undefined) {
+      throw new Error('mockWrapTransaction: only one wrap transaction is supported per handle')
+    }
+    const tx = params[0] as { value?: string; data?: Hex }
+    const data = tx.data ?? '0x'
+    if (!data.toLowerCase().startsWith(DEPOSIT_SELECTOR)) {
+      throw new Error(`mockWrapTransaction: expected a deposit() call, got calldata ${data}`)
+    }
     sentValue = BigInt(tx.value ?? '0x0')
     balances.set(wallet.address, chainId, { [wethToken]: initialWethBalance + sentValue })
     return FAKE_WRAP_TX_HASH
