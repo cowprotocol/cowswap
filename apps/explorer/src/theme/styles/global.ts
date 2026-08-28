@@ -6,6 +6,11 @@ import { createGlobalStyle } from 'styled-components/macro'
 export const StaticGlobalStyle = createGlobalStyle`
   ${baseGlobalStyles}
 
+  /* Shared reset strips native dropdown chrome for CoW Swap; Explorer still uses <select>. */
+  select {
+    appearance: auto;
+  }
+
   /* TEMPORARY: import variables */
   ${variables}
 

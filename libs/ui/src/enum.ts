@@ -175,6 +175,7 @@ export enum UI {
 
   // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
+  FONT_FAMILY_BRAND = '--cow-font-family-brand',
   FONT_FAMILY_MONO = '--cow-font-family-mono',
 
   // Animation
