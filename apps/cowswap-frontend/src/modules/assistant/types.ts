@@ -29,6 +29,28 @@ export interface AssistantFill {
   buySymbol: string | null
 }
 
+/**
+ * Why the form's own button is disabled, in terms a person would recognise.
+ *
+ * Absent when nothing is blocking. `other` is deliberate and load-bearing: it says
+ * "something blocks this and it isn't one of these", which is the difference between
+ * an honest "the form is blocking it — have a look" and a confident wrong guess.
+ */
+export type AssistantFormBlocker =
+  | 'approval_needed'
+  | 'incomplete'
+  | 'insufficient_balance'
+  | 'loading'
+  | 'network_unsupported'
+  | 'offline'
+  | 'other'
+  | 'price_impact'
+  | 'quote_error'
+  | 'restricted'
+  | 'sell_native_needs_wrap'
+  | 'token_unsupported'
+  | 'wallet_not_connected'
+
 export interface AssistantHolding {
   address: string
   balance: string
@@ -131,5 +153,7 @@ export interface AssistantUiContext {
   holdingsUnavailable?: 'error' | 'loading'
   /** Sent only on the turn that reports a settlement. */
   lastFill?: AssistantFill
+  /** Why the form's button is disabled, when it is. */
+  formBlocker?: AssistantFormBlocker
   approval?: AssistantApproval | null
 }

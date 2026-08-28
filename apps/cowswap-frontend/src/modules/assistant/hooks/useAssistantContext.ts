@@ -20,6 +20,7 @@ import {
 } from 'modules/trade'
 
 import { useApprovalContext } from './useApprovalContext'
+import { useFormBlocker } from './useFormBlocker'
 
 import {
   AssistantHolding,
@@ -108,6 +109,7 @@ export function useAssistantContext(): AssistantUiContext {
   const { values: balances, chainId: balancesChainId, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const tokensByAddress = useTokensByAddressMap()
   const approval = useApprovalContext()
+  const formBlocker = useFormBlocker()
 
   const isLimit = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
@@ -138,6 +140,8 @@ export function useAssistantContext(): AssistantUiContext {
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
       approval,
+      // Absent when nothing is blocking, so silence stays the default.
+      ...(formBlocker ? { formBlocker } : {}),
       // Absent while unknown, so the model has nothing to mistake for an answer.
       ...(unavailable ? { holdingsUnavailable: unavailable } : { holdings }),
       ...(!unavailable && truncated ? { holdingsTruncated: true } : {}),
@@ -156,6 +160,7 @@ export function useAssistantContext(): AssistantUiContext {
     balancesError,
     tokensByAddress,
     approval,
+    formBlocker,
   ])
 }
 

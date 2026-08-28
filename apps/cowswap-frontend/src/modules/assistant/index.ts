@@ -1,3 +1,4 @@
+export * from './hooks/useFormBlocker'
 export * from './hooks/useConfirmProposal'
 export * from './hooks/useFillWatch'
 export * from './hooks/useProposalLanded'
