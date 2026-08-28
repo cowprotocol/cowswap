@@ -1,4 +1,8 @@
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import {
+  TradeFormValidation,
+  useGetTradeFormValidation,
+  useIsTradeFormValidationPassed,
+} from 'modules/tradeFormValidation'
 
 import { AssistantFormBlocker } from '../types'
 
@@ -18,19 +22,37 @@ import { AssistantFormBlocker } from '../types'
  */
 export function useFormBlocker(): AssistantFormBlocker | null {
   const validation = useGetTradeFormValidation()
-  return validation === null ? null : (BLOCKER_BY_VALIDATION[validation] ?? 'other')
+  const passed = useIsTradeFormValidationPassed()
+
+  // ⚠️ **A primary validation is not the same as a disabled button.**
+  //
+  // Some validations describe a button that works and does an extra step first —
+  // approve-and-swap, wrap-and-swap. The app names them in ACTIVE_VALIDATION_CASES,
+  // and useIsTradeFormValidationPassed is its own predicate for "can this trade go
+  // ahead". Deferring to it is the only way this can't drift from what the button
+  // actually does.
+  //
+  // Reading any validation as a block produced "the form says it needs the ETH
+  // wrapped to WETH first" beside a fully enabled Swap button. Selling native ETH on
+  // a market order is ordinary and needs no wrap — the form never said otherwise;
+  // the claim was manufactured here and then attributed to it.
+  if (validation === null || passed) return null
+
+  return BLOCKER_BY_VALIDATION[validation] ?? 'other'
 }
 
 const BLOCKER_BY_VALIDATION: Partial<Record<TradeFormValidation, AssistantFormBlocker>> = {
   [TradeFormValidation.BalanceInsufficient]: 'insufficient_balance',
 
-  // Wrapping is its own flow with its own explanation; naming it lets the assistant
-  // pick that up rather than reporting a dead button.
-  [TradeFormValidation.SellNativeToken]: 'sell_native_needs_wrap',
+  // The trade IS a wrap or unwrap — a different flow, not a broken one.
   [TradeFormValidation.WrapUnwrapFlow]: 'sell_native_needs_wrap',
 
-  [TradeFormValidation.ApproveRequired]: 'approval_needed',
-  [TradeFormValidation.ApproveAndSwapInBundle]: 'approval_needed',
+  // SellNativeToken, ApproveRequired and ApproveAndSwapInBundle are deliberately
+  // absent: the app lists all three in ACTIVE_VALIDATION_CASES, meaning the trade
+  // proceeds and the button just does an extra step first. They're unreachable past
+  // the guard above, and listing them invited exactly the mistake it now prevents.
+  // Approvals reach the assistant through `approval`, which distinguishes a free
+  // signature from a gas-costing transaction — a distinction this signal can't make.
 
   // Every flavour of "not finished yet" is one thing to a person: wait a moment.
   [TradeFormValidation.BalancesLoading]: 'loading',

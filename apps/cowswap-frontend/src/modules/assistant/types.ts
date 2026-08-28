@@ -37,7 +37,6 @@ export interface AssistantFill {
  * an honest "the form is blocking it — have a look" and a confident wrong guess.
  */
 export type AssistantFormBlocker =
-  | 'approval_needed'
   | 'incomplete'
   | 'insufficient_balance'
   | 'loading'
