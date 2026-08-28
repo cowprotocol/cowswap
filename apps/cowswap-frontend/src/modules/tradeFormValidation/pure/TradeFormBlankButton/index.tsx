@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { CenteredDots, LongLoadText, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -112,7 +113,8 @@ export function TradeFormBlankButton({
     <ActionButton
       ref={ref}
       id={id}
-      className={'trade-form-blank-button ' + className}
+      className={className}
+      data-testid={TEST_IDS.tradeFormBlankButton}
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}

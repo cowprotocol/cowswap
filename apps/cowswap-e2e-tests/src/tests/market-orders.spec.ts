@@ -1,6 +1,7 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
 import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
@@ -128,8 +129,10 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts
       // (`order.apiAdditionalInfo.executedSellAmount`/`executedBuyAmount`), not the originally
       // quoted ones — cross-check them against what `fulfill()` actually settled the order at.
-      const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
-      const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
+      const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
+      const receivedAmountRow = swapPage.orderProgressBarModal.locator(
+        `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
+      )
       const postedOrder = mocks.orders.getOrder(orderId)
       expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
       expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
@@ -379,19 +382,20 @@ test.describe('Market Orders', () => {
 
       await swapPage.receiveAmountTooltipTrigger.hover()
 
-      const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-      await expect(tooltipBox).toBeVisible()
-      await expect(tooltipBox.getByText('Protocol fee', { exact: true })).toBeVisible()
-      await expect(tooltipBox.getByText('Network costs', { exact: true })).toBeVisible()
-      await expect(tooltipBox.getByText('To', { exact: true })).toBeVisible()
+      const beforeCostsRow = swapPage.page.locator(`[data-testid="${TEST_IDS.beforeCosts}"]`)
+      const protocolFeeRow = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+      const networkCostsRow = swapPage.page.locator(`[data-testid="${TEST_IDS.networkCosts}"]`)
+      const totalRow = swapPage.page.locator(`[data-testid="${TEST_IDS.receiveAmountTotal}"]`)
 
-      const readRowAmount = (label: string): Promise<bigint> =>
-        readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
+      await expect(beforeCostsRow).toBeVisible()
+      await expect(protocolFeeRow).toBeVisible()
+      await expect(networkCostsRow).toBeVisible()
+      await expect(totalRow).toBeVisible()
 
-      const beforeCosts = await readRowAmount('Before costs')
-      const protocolFee = await readRowAmount('Protocol fee')
-      const networkCosts = await readRowAmount('Network costs')
-      const toAmount = await readRowAmount('To')
+      const beforeCosts = await readTitledAmount(beforeCostsRow)
+      const protocolFee = await readTitledAmount(protocolFeeRow)
+      const networkCosts = await readTitledAmount(networkCostsRow)
+      const toAmount = await readTitledAmount(totalRow)
 
       // The core relationship: To = Before costs − Network costs − Protocol fee.
       expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
@@ -1167,8 +1171,10 @@ test.describe('Market Orders', () => {
       // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
       // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
       // instead of a one-shot read to ride out that gap.
-      const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
-      const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
+      const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
+      const receivedAmountRow = swapPage.orderProgressBarModal.locator(
+        `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
+      )
       const postedOrder = mocks.orders.getOrder(orderId)
       await expect
         .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
@@ -1224,12 +1230,8 @@ test.describe('Market Orders', () => {
 
       await swapPage.receiveAmountTooltipTrigger.hover()
 
-      const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-      await expect(tooltipBox).toBeVisible()
-
-      const protocolFeeCell = tooltipBox
-        .getByText('Protocol fee', { exact: true })
-        .locator('xpath=following-sibling::*[1]')
+      const protocolFeeCell = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+      await expect(protocolFeeCell).toBeVisible()
 
       // The surplus/buy token (USDC), with a leading "-" — `FeeItem` renders a sell order's fee rows
       // with `typeString = '-'` and `feeAmount.currency` (the buy token for a sell order's protocol
@@ -1238,8 +1240,8 @@ test.describe('Market Orders', () => {
       const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
       expect(protocolFeeTitle).toMatch(/ USDC$/)
 
-      const readRowAmount = (label: string): Promise<bigint> =>
-        readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
+      const readRowAmount = (testId: string): Promise<bigint> =>
+        readTitledAmount(swapPage.page.locator(`[data-testid="${testId}"]`))
 
       // See [CS-128]'s comment on the identical read: four separately-awaited reads risk a
       // re-render (the form's own default-amount probe quote settling into the typed one) landing
@@ -1252,10 +1254,10 @@ test.describe('Market Orders', () => {
 
       await expect
         .poll(async () => {
-          beforeCosts = await readRowAmount('Before costs')
-          protocolFee = await readRowAmount('Protocol fee')
-          networkCosts = await readRowAmount('Network costs')
-          toAmount = await readRowAmount('To')
+          beforeCosts = await readRowAmount(TEST_IDS.beforeCosts)
+          protocolFee = await readRowAmount(TEST_IDS.protocolFee)
+          networkCosts = await readRowAmount(TEST_IDS.networkCosts)
+          toAmount = await readRowAmount(TEST_IDS.receiveAmountTotal)
           return Number(protocolFee) / Number(beforeCosts)
         })
         .toBeCloseTo(0.0002, 6)
@@ -1329,23 +1331,16 @@ test.describe('Market Orders', () => {
 
         await swapPage.receiveAmountTooltipTrigger.hover()
 
-        const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-        await expect(tooltipBox).toBeVisible()
-
-        const protocolFeeCell = tooltipBox
-          .getByText('Protocol fee', { exact: true })
-          .locator('xpath=following-sibling::*[1]')
+        const protocolFeeCell = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+        await expect(protocolFeeCell).toBeVisible()
 
         // The surplus/buy token, with a leading "-" — same rendering as [CS-127].
         await expect(protocolFeeCell).toContainText('-')
         const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
         expect(protocolFeeTitle).toMatch(new RegExp(` ${buySymbol}$`))
 
-        const readRowAmount = (label: string): Promise<bigint> =>
-          readTitledAmount(
-            tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'),
-            buyDecimals,
-          )
+        const readRowAmount = (testId: string): Promise<bigint> =>
+          readTitledAmount(swapPage.page.locator(`[data-testid="${testId}"]`), buyDecimals)
 
         // The tooltip briefly shows a stale quote (the form's own default-amount probe, fetched
         // before the typed "1000" settles) — `waitForQuote()` only waits for the loading flag to
@@ -1362,10 +1357,10 @@ test.describe('Market Orders', () => {
 
         await expect
           .poll(async () => {
-            beforeCosts = await readRowAmount('Before costs')
-            protocolFee = await readRowAmount('Protocol fee')
-            networkCosts = await readRowAmount('Network costs')
-            toAmount = await readRowAmount('To')
+            beforeCosts = await readRowAmount(TEST_IDS.beforeCosts)
+            protocolFee = await readRowAmount(TEST_IDS.protocolFee)
+            networkCosts = await readRowAmount(TEST_IDS.networkCosts)
+            toAmount = await readRowAmount(TEST_IDS.receiveAmountTotal)
             return Number(protocolFee) / Number(beforeCosts)
           })
           .toBeCloseTo(0.00003, 6)
