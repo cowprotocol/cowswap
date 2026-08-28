@@ -207,9 +207,16 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
+    // Confirming a cross-chain swap needs two separate enable-waits + clicks
+    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
+    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
+    // for the network round-trip, observed in CI as a false "no postOrder request observed"
+    // failure even though the trigger was still mid-flight. Bumped to this suite's usual slow-step
+    // allowance (15s) rather than the specific number that happened to just barely cover one run.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
+      timeoutMs: 15_000,
       trigger: async () => {
         await swapPage.clickPrimaryAction()
         await confirmModal.confirm()
@@ -270,9 +277,16 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
+    // Confirming a cross-chain swap needs two separate enable-waits + clicks
+    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
+    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
+    // for the network round-trip, observed in CI as a false "no postOrder request observed"
+    // failure even though the trigger was still mid-flight. Bumped to this suite's usual slow-step
+    // allowance (15s) rather than the specific number that happened to just barely cover one run.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
+      timeoutMs: 15_000,
       trigger: async () => {
         await swapPage.clickPrimaryAction()
         await confirmModal.confirm()
@@ -393,7 +407,10 @@ test.describe('Cross-chain swaps', () => {
 
     // Confirming signs/sends the on-chain creation tx directly (`eth_sendTransaction`, stubbed by
     // `mockEthFlowTransaction`) — there's no separate off-chain EIP-712 signature for this flow.
-    await expect.poll(() => ethFlow.getSentValue()).toBe(parseUnits('0.1', 18))
+    // Same CI-load headroom as the `expectOrderToBePosted` calls above: the preceding
+    // `clickSwap()`/`confirmModal.confirm()` pair alone was observed taking close to the default
+    // 10s budget on a loaded runner, leaving the poll no room to ever see a sent value.
+    await expect.poll(() => ethFlow.getSentValue(), { timeout: 15_000 }).toBe(parseUnits('0.1', 18))
     ethFlow.confirmMined()
     orderIndexed = true
 
