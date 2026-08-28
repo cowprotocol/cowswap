@@ -31,8 +31,8 @@ function resolveFontWeight(fontWeight: FontWeight): FontWeightValue {
 }
 
 /**
- * Studio Feixen brand face with OpenType settings used for CoW brand spots.
- * Declares features explicitly so they are not lost when the element leaves Inter inheritance.
+ * Studio Feixen Sans for large, expressive CoW brand storytelling.
+ * Declares OpenType features explicitly so they are not lost when the element leaves Inter inheritance.
  */
 export const fontFamilyBrand = css`
   font-family: var(${UI.FONT_FAMILY_BRAND});

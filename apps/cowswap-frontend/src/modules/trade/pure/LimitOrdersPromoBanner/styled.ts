@@ -1,4 +1,4 @@
-import { UI, Media } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -60,6 +60,7 @@ export const TitleSection = styled.div`
   width: 95%;
 
   > h3 {
+    ${fontFamilyBrand}
     font-size: 32px;
     font-weight: 600;
     margin: 0 auto 24px;

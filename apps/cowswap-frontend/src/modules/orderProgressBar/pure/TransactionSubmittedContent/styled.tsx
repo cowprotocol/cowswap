@@ -1,4 +1,4 @@
-import { ButtonOutlined, Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -134,6 +134,7 @@ export const Wrapper = styled.div`
 `
 
 export const Title = styled.div`
+  ${fontFamilyBrand}
   font-size: 28px;
   font-weight: 600;
   line-height: 1.2;

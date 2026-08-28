@@ -40,7 +40,6 @@ export const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    ${fontFamilyBrand}
     font-size: 15px;
     width: 100%;
     font-weight: 600;

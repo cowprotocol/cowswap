@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { UI, Media, ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
@@ -70,6 +70,7 @@ export const Title = styled.h2<{ color?: string }>`
   display: flex;
   align-items: center;
   gap: 8px;
+  ${fontFamilyBrand}
   font-size: 18px;
   font-weight: bold;
   margin: 0 auto 0 0;
@@ -129,6 +130,7 @@ export const Card = styled.div<{
     height: 100%;
     max-height: 100%;
     color: inherit;
+    ${fontFamilyBrand}
 
     ${Media.upToSmall()} {
       width: 100%;

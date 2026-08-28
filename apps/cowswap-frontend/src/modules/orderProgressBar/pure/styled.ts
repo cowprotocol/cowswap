@@ -156,7 +156,6 @@ export const Surplus = styled.div`
 
 export const FinishedTagLine = styled.div`
   line-height: 1.2;
-  ${fontFamilyBrand}
   font-weight: bold;
   color: inherit;
   max-width: 100%;
@@ -327,6 +326,7 @@ export const SurplusValue = styled.span`
 `
 
 export const BenefitResponsiveText = styled.div`
+  ${fontFamilyBrand}
   display: block;
   width: 100%;
   line-height: 1.2;
