@@ -61,6 +61,8 @@ const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 const INITIAL_USDC_BALANCE = parseUnits('1000', 6)
 const INITIAL_ETH_BALANCE = parseUnits('1', 18)
 
+const PROVIDER_DISPLAY_NAME = { bungee: 'Bungee', 'near-intents': 'Near Intents' } as const
+
 test.describe('Cross-chain swaps', () => {
   test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
 
@@ -102,11 +104,15 @@ test.describe('Cross-chain swaps', () => {
    * scoped, not amount-scoped, so nothing about the follow-up fetch retries or clears it.
    *
    * The app uses a hash router, so `page.goto()` to a new `#/...` route is a same-document
-   * navigation. No reload is needed to switch providers between calls (`configureProviders` in
-   * between): `mocks.launchDarkly.setFlag` pushes the new flags straight into the open page and
-   * fires a `featureFlagsUpdate` event, which `useFeatureFlags` (`libs/common-hooks/src/
-   * useFeatureFlags.ts`) picks up, causing `BridgeProvidersUpdater` to recompute `bridgingSdk`'s
-   * available providers reactively — see both files' doc comments.
+   * navigation — `bridgingSdk`'s available-provider set is seeded once at module load from
+   * whatever `window.__COWSWAP_E2E_FEATURE_FLAGS__` holds at that moment (`useFeatureFlags.ts`'s
+   * override memoizes on the real, permanently-unresolved LaunchDarkly flags, not on that window
+   * global, so it never re-reads it after mount either). `mocks.launchDarkly.setFlag` only queues
+   * a new `context.addInitScript`, which the browser only runs on the next real navigation — a
+   * hash-only `page.goto()` doesn't trigger one. A caller that changes providers between two
+   * `openCrossChainSwap` calls (`configureProviders` in between) MUST `page.reload()` first, once
+   * already on a real app hash, for the switch to actually take effect — see AGENTS.md's
+   * "HashRouter" note and [CS-285]'s second half for the working pattern.
    */
   async function openCrossChainSwap(
     wallet: { openApp(opts: { chainId: number; sell?: string }): Promise<void> },
@@ -550,8 +556,12 @@ test.describe('Cross-chain swaps', () => {
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
 
-    for (const provider of ['bungee', 'near-intents'] as const) {
+    for (const [index, provider] of (['bungee', 'near-intents'] as const).entries()) {
       await configureProviders(mocks, rpcProxy, provider)
+      // Switching providers on an already-loaded page needs an actual reload for the new
+      // LaunchDarkly flags to take effect — see `openCrossChainSwap`'s doc comment and AGENTS.md.
+      // Not needed before the very first iteration: nothing has navigated yet at that point.
+      if (index > 0) await swapPage.page.reload()
       await openCrossChainSwap(wallet, swapPage, {
         chainId: MAINNET,
         sell: USDC_MAINNET,
@@ -561,6 +571,10 @@ test.describe('Cross-chain swaps', () => {
       })
       await swapPage.waitForQuote()
       await swapPage.routePanel.expand()
+
+      // Confirms the intended provider actually switched (not just that the reload happened) —
+      // without this, a missed reload would silently re-test Bungee twice instead of failing.
+      await expect(swapPage.routePanel.bridgeStopTitle(PROVIDER_DISPLAY_NAME[provider])).toBeVisible()
 
       // Per spec: form `Receive (incl. fees)` equals the *bridge* stop's `Expected to receive`
       // (the final, post-bridge amount) — not the swap stop's own row, which shows the swap
@@ -597,8 +611,12 @@ test.describe('Cross-chain swaps', () => {
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
     })
 
-    for (const provider of ['bungee', 'near-intents'] as const) {
+    for (const [index, provider] of (['bungee', 'near-intents'] as const).entries()) {
       await configureProviders(mocks, rpcProxy, provider)
+      // Switching providers on an already-loaded page needs an actual reload for the new
+      // LaunchDarkly flags to take effect — see `openCrossChainSwap`'s doc comment and AGENTS.md.
+      // Not needed before the very first iteration: nothing has navigated yet at that point.
+      if (index > 0) await swapPage.page.reload()
       await openCrossChainSwap(wallet, swapPage, {
         chainId: MAINNET,
         sell: USDC_MAINNET,
@@ -608,6 +626,10 @@ test.describe('Cross-chain swaps', () => {
       })
       await swapPage.waitForQuote()
       await swapPage.routePanel.expand()
+
+      // Confirms the intended provider actually switched (not just that the reload happened) —
+      // without this, a missed reload would silently re-test Bungee twice instead of failing.
+      await expect(swapPage.routePanel.bridgeStopTitle(PROVIDER_DISPLAY_NAME[provider])).toBeVisible()
 
       const swapMinToReceive = await swapPage.routePanel.swapMinToReceive().getAttribute('title')
       await expect(swapPage.routePanel.bridgeMinToDeposit()).toHaveAttribute('title', swapMinToReceive ?? '')
