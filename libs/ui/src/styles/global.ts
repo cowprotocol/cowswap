@@ -36,7 +36,12 @@ export const baseGlobalStyles = css`
     font: inherit;
     color: inherit;
     appearance: none;
+  }
 
+  // Inputs match :focus-visible on mouse click, so they keep outline: none.
+  button,
+  textarea,
+  select {
     &:focus-visible {
       outline: 1.5px dotted var(${UI.COLOR_TEXT});
       outline-offset: 2px;
