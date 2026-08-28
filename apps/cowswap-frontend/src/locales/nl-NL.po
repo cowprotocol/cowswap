@@ -8,7 +8,7 @@ msgstr ""
 "Language: nl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-25 14:15\n"
+"PO-Revision-Date: 2026-08-28 17:16\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -878,7 +878,6 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Limit order"
 msgstr ""
 
@@ -1964,6 +1963,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "View all orders"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Review TWAP"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
@@ -3407,6 +3410,7 @@ msgid "Liquidity pools on CoW AMM grow faster than on other AMMs because they do
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP"
@@ -3564,7 +3568,6 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "TWAP order"
 msgstr ""
 
@@ -4416,6 +4419,7 @@ msgstr ""
 msgid "orders"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Limit Order"
 msgstr ""
@@ -4562,8 +4566,8 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Yield"
 msgstr ""
 
@@ -6412,9 +6416,9 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Hooks"
 msgstr ""
 
@@ -7154,6 +7158,10 @@ msgstr ""
 #~ msgid "Cow meditating..."
 #~ msgstr "Cow meditating..."
 
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
+msgid "Confirm {orderTypeLabel}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
 msgstr ""
@@ -7326,8 +7334,8 @@ msgstr ""
 #~ msgstr "It isn't a valid referral code."
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-msgid "Confirm {orderType}"
-msgstr ""
+#~ msgid "Confirm {orderType}"
+#~ msgstr "Confirm {orderType}"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #~ msgid "Order created"
@@ -7768,6 +7776,7 @@ msgid "Because you are using a smart contract wallet"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -7775,7 +7784,6 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Swap"
 msgstr ""
 
