@@ -43,8 +43,17 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
   const isAtLeastOneAmountIsSetRef = useRef(false)
 
-  // eslint-disable-next-line react-hooks/refs
-  isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
+  /**
+   * Sticky (never flips back to false) rather than a plain snapshot of the current render — a
+   * currency change (e.g. `selectTokens` picking a new input/output token) can transiently read
+   * `inputCurrencyAmount`/`outputCurrencyAmount` as falsy for one render, before the previously
+   * typed raw amount is reparsed against the newly-selected currency. A plain overwrite would read
+   * that transient render as "no amount was ever set" and, below, stomp a real typed amount (e.g.
+   * "1000") back to the "1 unit" default — observed as [CS-59]'s flaky
+   * `enterSellAmount('1000')` not sticking when it races `selectTokens`.
+   */
+
+  isAtLeastOneAmountIsSetRef.current ||= Boolean(inputCurrencyAmount || outputCurrencyAmount)
 
   const cleanParams = useCallback(() => {
     // Using browser API to have synchronous value of URL

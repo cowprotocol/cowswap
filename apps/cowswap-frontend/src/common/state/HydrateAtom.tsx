@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 import type { WritableAtom } from 'jotai/vanilla'
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useLayoutEffect } from 'react'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyWritableAtom = WritableAtom<any, any[], any>
@@ -12,18 +12,19 @@ interface HydrateAtomProps {
 }
 
 export function HydrateAtom({ atom, state, children }: HydrateAtomProps): ReactNode {
-  const prevStateRef = useRef<unknown | undefined>(undefined)
   const setAtom = useSetAtom(atom)
 
-  // Intentional render-phase side effect: sets the atom synchronously so
-  // children read the updated value in the same render pass (avoids the one-render delay of useEffect).
-  // Guard prevents writes when state is unchanged.
-  // eslint-disable-next-line react-hooks/refs
-  if (!Object.is(prevStateRef.current, state)) {
-    // eslint-disable-next-line react-hooks/refs
-    prevStateRef.current = state
+  // Setting the atom synchronously during render (the previous approach here) can update an
+  // already-mounted sibling/child subscriber (e.g. `SwapUpdaters`, reading this atom via
+  // `useAtomValue`) while this component is still mid-render — React logs "Cannot update a
+  // component while rendering a different component" for that, and the update can be silently
+  // dropped (observed as e.g. the sell token intermittently reverting to "Select a token").
+  // `useLayoutEffect` still runs synchronously before the browser paints (no visible flicker,
+  // unlike a plain `useEffect`), but as a commit-phase effect rather than a render-phase one, it's
+  // safe to update other components from.
+  useLayoutEffect(() => {
     setAtom(state)
-  }
+  }, [state, setAtom])
 
   return <>{children}</>
 }

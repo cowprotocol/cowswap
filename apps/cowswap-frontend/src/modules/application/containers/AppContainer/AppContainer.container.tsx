@@ -12,7 +12,7 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
-import { OrdersPanel } from 'modules/account'
+import { AccountModal } from 'modules/account'
 import { AffiliateTraderModal } from 'modules/affiliate'
 import { AssistantDrawer, AssistantToggle } from 'modules/assistant'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
@@ -116,7 +116,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
         <RecoveryBanner />
         <InvalidLocalTimeWarning />
 
-        <OrdersPanel />
+        <AccountModal />
         <AssistantDrawer />
 
         <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
