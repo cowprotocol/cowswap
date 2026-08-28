@@ -87,8 +87,8 @@ ${baseGlobalStyles}
 
   body {
     font-family: ${Font.familyStudioFeixen};
-    background: ${UI.COLOR_NEUTRAL_98};
-    color: ${UI.COLOR_TEXT};
+    background: var(${UI.COLOR_NEUTRAL_98});
+    color: var(${UI.COLOR_TEXT});
     font-variant: none;
     font-variant-ligatures: none;
     text-rendering: optimizeLegibility;
