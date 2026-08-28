@@ -1,130 +1,225 @@
-import { AutoRow, Media, UI } from '@cowprotocol/ui'
+import svgDropDownSrc from '@cowprotocol/assets/images/dropdown.svg'
+import { Accordion, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div`
-  background: var(${UI.COLOR_PAPER});
-  width: 100%;
-  margin: 0 0 14px;
-  overflow-y: auto;
-  ${({ theme }) => theme.colorScrollbar};
-
-  ${Media.upToSmall()} {
-    overflow-y: auto;
-    overflow-x: auto;
-    padding: 0;
-    max-height: 100vh;
-    margin: 0;
-  }
-`
-
 export const TitleWrapper = styled.div`
   display: flex;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
+
+  > div:last-child {
+    --height: 24px;
+    padding: 0 8px;
+    border-radius: 999px;
+  }
+
+  > div:last-child::before {
+    border-radius: 999px;
+  }
 `
 
-export const Title = styled.h3`
-  font-size: inherit;
+export const Title = styled.div`
+  min-width: 0;
   margin: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
-export const Body = styled(AutoRow)`
+export const ReceiptContent = styled.div`
   box-sizing: border-box;
-  max-height: 80vh;
-  padding: 0 10px;
-
-  ${Media.upToSmall()} {
-    max-height: 100%;
-  }
-`
-
-export const FieldsWrapper = styled.div`
   display: flex;
-  flex-flow: column wrap;
   width: 100%;
-  gap: 2px;
-
-  ${Media.upToSmall()} {
-    padding: 0 0 54px;
-  }
-`
-
-export const Field = styled.div`
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  width: 100%;
-  font-size: 13px;
-
-  &:first-child {
-    border-radius: 16px 16px 0 0;
-  }
-
-  &:last-child {
-    border-radius: 0 0 16px 16px;
-  }
-
-  > div {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-  }
-
-  > div > a {
-    display: flex;
-    margin: auto 0;
-  }
-`
-
-export const CurrencyField = styled.div`
-  display: flex;
-  flex-flow: row wrap;
   flex-direction: column;
-  align-items: flex-start;
-  padding: 16px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  width: 100%;
-  border-radius: 16px;
-  margin: 0 0 10px;
-  gap: 10px;
-
-  > b {
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  > div {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-
-    & .open-currency-select-button {
-      ${Media.upToSmall()} {
-        width: auto;
-      }
-    }
-  }
+  align-items: stretch;
+  gap: 12px;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom, 0px));
 `
 
-export const CurrencyValue = styled.span`
-  font-size: 26px;
+export const FillOutcome = styled.section`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
+
+export const FillHeading = styled.div`
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 13px;
+  line-height: 18px;
+`
+
+export const FillPercentage = styled.strong<{ $hasFill: boolean }>`
+  color: ${({ $hasFill }) => `var(${$hasFill ? UI.COLOR_SUCCESS_TEXT : UI.COLOR_TEXT})`};
   font-weight: 600;
 `
 
+export const ProgressTrack = styled.span<{ $hasFill: boolean }>`
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: ${({ $hasFill }) => `var(${$hasFill ? UI.COLOR_SUCCESS_BG : UI.COLOR_TEXT_OPACITY_10})`};
+`
+
+export const Progress = styled.span<{ $value: number }>`
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: ${({ $value }) => $value}%;
+  border-radius: inherit;
+  background: var(${UI.COLOR_SUCCESS_TEXT});
+`
+
+export const FillDescription = styled.div`
+  min-width: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+  overflow-wrap: anywhere;
+`
+
+export const FillStatus = styled.strong`
+  min-width: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: right;
+`
+
+export const SurplusCard = styled.section`
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: 2px 12px;
+  width: 100%;
+  min-height: 60px;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
+
+export const SurplusLabel = styled.div`
+  display: flex;
+  grid-row: 1 / span 2;
+  align-self: start;
+  align-items: center;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+`
+
+export const SurplusValue = styled.strong`
+  min-width: 0;
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: right;
+  overflow-wrap: anywhere;
+`
+
+export const SurplusPercent = styled.span`
+  min-width: 0;
+  color: var(${UI.COLOR_SUCCESS_TEXT});
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: right;
+  overflow-wrap: anywhere;
+`
+
+export const FieldsCard = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 0 12px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
+
+export const Field = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  min-height: 52px;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 13px;
+  line-height: 18px;
+
+  & + & {
+    min-height: 61px;
+    border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  }
+
+  > span:last-child,
+  > div:last-child {
+    min-width: 0;
+    text-align: right;
+  }
+
+  > div:last-child {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+  }
+
+  > div:last-child > a {
+    display: inline-flex;
+    min-width: 0;
+    align-items: center;
+  }
+`
+
+export const RecipientValue = styled.div`
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+
+  > a {
+    font-weight: 600;
+  }
+`
+
 export const LabelText = styled.span`
-  opacity: 0.8;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const Label = styled.div`
   display: flex;
-  gap: 4px;
+  min-width: 0;
   align-items: center;
+  gap: 4px;
 
   // TODO: Override required to remove inline styles from StyledInfoIcon parent.
   // Need to refactor and remove the inline styles.
@@ -134,31 +229,34 @@ export const Label = styled.div`
 `
 
 export const Value = styled.div`
-  flex: 1;
   display: flex;
+  width: 100%;
+  min-width: 0;
   flex-direction: column;
   align-items: flex-end;
-  gap: 12px 6px;
-  padding: 0 0 0 12px;
+  gap: 6px;
+  padding-left: 12px;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
   text-align: right;
-  line-height: 1.4;
-  font-weight: 500;
+  overflow-wrap: anywhere;
 `
 
 export const InlineWrapper = styled.div`
   display: flex;
+  width: 100%;
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
-  width: 100%;
+  gap: 4px 6px;
 `
 
-export const Surplus = styled.span`
-  color: ${({ theme }) => theme.success};
+export const RateValue = styled.div`
+  min-width: 0;
+  overflow-wrap: anywhere;
 `
-
-export const RateValue = styled.div``
 
 export const OrderTypeValue = styled.span`
   &:first-letter {
@@ -166,20 +264,102 @@ export const OrderTypeValue = styled.span`
   }
 `
 
-export const LightButton = styled.button`
-  font-size: 12px;
-  font-weight: 600;
-  border: 1px solid transparent;
-  padding: 6px 14px;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-  transition:
-    border var(${UI.ANIMATION_DURATION}) ease-in-out,
-    background-color var(${UI.ANIMATION_DURATION}) ease-in-out;
-  color: inherit;
+export const DisclosureGroup = styled(Accordion.Root)`
+  width: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
 
-  &:hover {
-    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
-    background-color: transparent;
+export const DisclosureItem = styled(Accordion.Item)`
+  border-radius: 0;
+  background: transparent;
+
+  & + & {
+    border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  }
+
+  &[data-open] {
+    padding: 0;
+    background: transparent;
+  }
+`
+
+export const DisclosureHeader = Accordion.Header
+
+export const DisclosureTrigger = styled(Accordion.Trigger)`
+  min-height: 52px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 12px;
+  border-radius: 0;
+  color: var(${UI.COLOR_TEXT});
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: left;
+`
+
+export const DisclosureSummary = styled.span`
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+  text-align: right;
+`
+
+export const DisclosureChevron = styled.img.attrs({ alt: '', src: svgDropDownSrc })`
+  width: 12px;
+  height: 7px;
+  flex: 0 0 auto;
+  transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  ${DisclosureTrigger}[data-panel-open] & {
+    transform: rotate(180deg);
+  }
+`
+
+export const DisclosurePanel = styled(Accordion.Panel)`
+  box-sizing: border-box;
+`
+
+export const DisclosureFields = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px 10px;
+  border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+`
+
+export const ActionButton = styled.button`
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(${UI.COLOR_PRIMARY});
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  cursor: pointer;
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover,
+  &:focus-visible {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_TEXT});
+    outline-offset: 2px;
   }
 `

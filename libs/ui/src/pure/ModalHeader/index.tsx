@@ -24,6 +24,9 @@ export interface ModalHeaderProps {
   onScrollableBottomVisibilityChange?(visible: boolean): void
   onBack?(): void
   onClose?(): void
+  /** Disable when the owning overlay primitive already handles Escape. */
+  closeOnEscape?: boolean
+  closeAriaLabel?: string
   className?: string
 }
 
@@ -45,6 +48,8 @@ export function ModalHeader({
   className,
   onBack,
   onClose,
+  closeOnEscape = true,
+  closeAriaLabel,
 }: ModalHeaderProps): ReactNode {
   const headerRef = useRef<HTMLElement>(null)
   const scrollableBottomSlotRef = useRef<HTMLDivElement>(null)
@@ -75,7 +80,12 @@ export function ModalHeader({
         $contentMargin={contentMargin && !hasScrollableBottomSlot}
       >
         <styledEl.Inner>
-          <styledEl.BackButton aria-hidden={!hasBack} disabled={!hasBack} onClick={onBack} />
+          <styledEl.BackButton
+            aria-hidden={!hasBack}
+            disabled={!hasBack}
+            onClick={onBack}
+            backOnEscape={closeOnEscape}
+          />
 
           <styledEl.Title as={titleAs}>{title || children}</styledEl.Title>
           {rightSlot ? (
@@ -84,7 +94,13 @@ export function ModalHeader({
             </styledEl.RightSlot>
           ) : null}
 
-          <styledEl.CloseButton aria-hidden={!hasClose} disabled={!hasClose} onClick={onClose} />
+          <styledEl.CloseButton
+            aria-label={closeAriaLabel}
+            aria-hidden={!hasClose}
+            disabled={!hasClose}
+            onClick={onClose}
+            closeOnEscape={closeOnEscape}
+          />
         </styledEl.Inner>
 
         {subtitle ? (

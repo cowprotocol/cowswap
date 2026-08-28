@@ -1,67 +1,85 @@
+import { ReactNode } from 'react'
+
 import { PercentDisplay, TokenAmount } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { ProgressBar, ProgressBarWrapper } from '../../../containers/OrderRow/OrderRow.styled'
+import { FieldLabel } from './FieldLabel'
+
 import * as styledEl from '../ReceiptModal.styled'
 
-interface Props {
+interface FilledFieldProps {
   order: ParsedOrder
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function FilledField({ order }: Props) {
+export function FilledField({ order }: FilledFieldProps): ReactNode {
   const {
     executionData: { filledPercentage, filledPercentDisplay, fullyFilled },
   } = order
   const { action, mainAmount, formattedFilledAmount, formattedSwappedAmount } = getFilledAmounts(order)
 
   const touched = filledPercentage?.gt(0)
+  const hasFill = !!touched
+  const fillPercentage = clampPercentage(Number(filledPercentDisplay))
+
+  if (!hasFill) {
+    return (
+      <styledEl.FillOutcome>
+        <styledEl.FillHeading>
+          <FieldLabel label={t`Fill outcome`} />
+          <styledEl.FillStatus>
+            <Trans>Not filled</Trans>
+          </styledEl.FillStatus>
+        </styledEl.FillHeading>
+      </styledEl.FillOutcome>
+    )
+  }
 
   return (
-    <styledEl.Value>
-      <styledEl.InlineWrapper>
-        <ProgressBarWrapper>
-          <ProgressBar value={filledPercentDisplay}></ProgressBar>
-          <b>
-            <PercentDisplay percent={filledPercentDisplay} />
-          </b>
-        </ProgressBarWrapper>
-      </styledEl.InlineWrapper>
+    <styledEl.FillOutcome>
+      <styledEl.FillHeading>
+        <FieldLabel label={t`Fill outcome`} />
+        <styledEl.FillPercentage $hasFill={hasFill}>
+          <PercentDisplay percent={filledPercentDisplay} />
+        </styledEl.FillPercentage>
+      </styledEl.FillHeading>
 
-      <styledEl.InlineWrapper>
-        <span>
-          <b>
-            {/* Executed part (bought/sold tokens) */}
-            <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />
-          </b>{' '}
-          {!fullyFilled && (
-            // Show the total amount to buy/sell. Only for orders that are not 100% executed
-            <>
-              <Trans>of</Trans>{' '}
-              <b>
-                <TokenAmount amount={mainAmount} tokenSymbol={mainAmount?.currency} />
-              </b>{' '}
-            </>
-          )}
-          {action}{' '}
-          {touched && (
-            // Executed part of the trade:
-            //    Total buy tokens you receive (for sell orders)
-            //    Total sell tokens you pay (for buy orders)
-            <>
-              <Trans>for a total of</Trans>{' '}
-              <b>
-                <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
-              </b>
-            </>
-          )}
-        </span>
-      </styledEl.InlineWrapper>
-    </styledEl.Value>
+      <styledEl.ProgressTrack
+        $hasFill={hasFill}
+        role="progressbar"
+        aria-label={t`Filled`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={fillPercentage}
+      >
+        <styledEl.Progress $value={fillPercentage} />
+      </styledEl.ProgressTrack>
+
+      <styledEl.FillDescription>
+        <TokenAmount amount={formattedFilledAmount} tokenSymbol={formattedFilledAmount.currency} />{' '}
+        {!fullyFilled ? (
+          <>
+            <Trans>of</Trans> <TokenAmount amount={mainAmount} tokenSymbol={mainAmount.currency} />{' '}
+          </>
+        ) : null}
+        {action}{' '}
+        {touched ? (
+          <>
+            <Trans>for</Trans>{' '}
+            <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
+          </>
+        ) : null}
+      </styledEl.FillDescription>
+    </styledEl.FillOutcome>
   )
+}
+
+function clampPercentage(value: number): number {
+  if (!Number.isFinite(value)) return 0
+
+  return Math.min(100, Math.max(0, value))
 }

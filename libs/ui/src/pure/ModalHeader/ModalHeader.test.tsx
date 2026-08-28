@@ -1,6 +1,6 @@
 import { i18n } from '@lingui/core'
 
-import { act, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import { ModalHeader } from './index'
 
@@ -111,5 +111,24 @@ describe('ModalHeader', () => {
     const { container } = render(<ModalHeader title="Orders" titleAs="h2" onClose={() => undefined} />)
 
     expect(container.querySelector('h2')?.textContent).toBe('Orders')
+  })
+
+  it('forwards a contextual accessible name and delegates Escape to the owning overlay', () => {
+    const onClose = jest.fn()
+
+    render(
+      <ModalHeader
+        title="Order receipt"
+        onClose={onClose}
+        closeOnEscape={false}
+        closeAriaLabel="Close order receipt"
+      />,
+    )
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(onClose).not.toHaveBeenCalled()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close order receipt' }))
+    expect(onClose).toHaveBeenCalledTimes(1)
   })
 })

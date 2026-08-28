@@ -89,9 +89,9 @@ export function ListItem(props: TokenListItemProps): ReactNode {
             </>
           }
         >
-          <styledEl.SettingsButton>
+          <styledEl.SettingsIcon>
             <Settings size={14} />
-          </styledEl.SettingsButton>
+          </styledEl.SettingsIcon>
         </ContextMenuTooltip>
       </TokenListDetails>
       <div>
