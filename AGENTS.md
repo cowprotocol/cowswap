@@ -59,7 +59,8 @@ Normative language:
 ## Where To Look
 
 - Architecture and dependency map: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
-- Naming, file structure, imports, component shape, typography tokens: [`docs/MODULE_CONVENTIONS.md`](./docs/MODULE_CONVENTIONS.md)
+- Naming, file structure, imports, component shape: [`docs/MODULE_CONVENTIONS.md`](./docs/MODULE_CONVENTIONS.md)
+- Typography tokens, `font()` mixin, Feixen allowlist: [`docs/FONT_CONVENTIONS.md`](./docs/FONT_CONVENTIONS.md)
 - Shared UI typography (`font()` mixin, `FONT_SIZING`): [`libs/ui/AGENTS.md`](./libs/ui/AGENTS.md)
 - Jotai/query, persistence, migrations: [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
 - Quality grades and known gaps: [`docs/QUALITY.md`](./docs/QUALITY.md)

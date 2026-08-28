@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-08-28
 source_of_truth_scope: monorepo layout, dependency direction, and boundary enforcement
 visual_reference: docs/architecture-overview.md
 ---
