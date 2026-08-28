@@ -158,6 +158,24 @@ export const ResetButton = styled.button`
   }
 `
 
+// Offered beside the failure it resolves, so the fix is where the problem is.
+export const ImportOffer = styled.button`
+  align-self: flex-start;
+  padding: 9px 14px;
+  border: 1px solid var(${UI.COLOR_PRIMARY});
+  border-radius: 14px;
+  background: var(${UI.COLOR_PRIMARY_OPACITY_10});
+  color: var(${UI.COLOR_PRIMARY});
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+
+  &:hover {
+    background: var(${UI.COLOR_PRIMARY_OPACITY_25});
+  }
+`
+
 export const Composer = styled.form`
   display: flex;
   /* flex-end, not center: the buttons stay level with the last line as the box

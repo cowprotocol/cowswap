@@ -16,6 +16,7 @@ import { useAssistantDrawer } from '../../hooks/useAssistantDrawer'
 import { useConfirmProposal } from '../../hooks/useConfirmProposal'
 import { FILL_MARKER, isAppInjected, QUOTE_MARKER, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
 import { useFillWatch } from '../../hooks/useFillWatch'
+import { useMissingProposalToken } from '../../hooks/useMissingProposalToken'
 import { useProposalLanded } from '../../hooks/useProposalLanded'
 import { useQuoteWatch } from '../../hooks/useQuoteWatch'
 import { useWrapWatch } from '../../hooks/useWrapWatch'
@@ -54,6 +55,7 @@ export function AssistantDrawer(): ReactNode {
     applying,
     problem: applyProblem,
   } = useConfirmProposal({ landed, markApplied, proposal, quoteWatch, wrapWatch })
+  const missingToken = useMissingProposalToken(proposal, landed)
 
   const scrollRef = useRef<HTMLDivElement | null>(null)
 
@@ -137,6 +139,15 @@ export function AssistantDrawer(): ReactNode {
         >
           {/* Only ever set when the model proposed a trade without saying anything. */}
           {proposal && preamble && <styledEl.Message from="assistant">{preamble}</styledEl.Message>}
+
+          {/* Only alongside a reported failure — an offer with no problem beside it
+              is an interruption. */}
+          {applyProblem && missingToken && (
+            <styledEl.ImportOffer onClick={missingToken.add}>
+              Add {missingToken.token.symbol} ({missingToken.token.address.slice(0, 6)}…
+              {missingToken.token.address.slice(-4)}) to your tokens
+            </styledEl.ImportOffer>
+          )}
 
           {proposal && (
             <ProposalCard

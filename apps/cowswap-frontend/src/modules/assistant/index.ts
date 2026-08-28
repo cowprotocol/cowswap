@@ -1,3 +1,4 @@
+export * from './hooks/useMissingProposalToken'
 export * from './hooks/useSteadyStatus'
 export * from './hooks/useFormBlocker'
 export * from './hooks/useConfirmProposal'
