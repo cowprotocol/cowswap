@@ -1,12 +1,11 @@
 import { formatUnits, parseUnits, type Hex } from 'viem'
 
-import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, bpsToPercentage, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
 import { generateOrderId } from '../mocks/orders'
-import { CHAIN_IDS } from '../support/constants'
 import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
@@ -21,7 +20,7 @@ const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 const DAI = '0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D'
 const USDT = '0x58eb19ef91e8a6327fed391b51ae1887b833cc91'
-const CHAIN_ID = CHAIN_IDS.SEPOLIA
+const CHAIN_ID = SupportedChainId.SEPOLIA
 
 test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {

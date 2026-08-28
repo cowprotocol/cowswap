@@ -1,15 +1,15 @@
-import { CHAIN_IDS, type SupportedChainId } from '../support/constants'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type { Page } from '@playwright/test'
 import type { MetaMask } from '@synthetixio/synpress/playwright'
 
-const CHAIN_NAME_BY_ID: Record<SupportedChainId, string> = {
-  [CHAIN_IDS.MAINNET]: 'Mainnet',
-  [CHAIN_IDS.ARBITRUM]: 'Arbitrum',
-  [CHAIN_IDS.BASE]: 'Base',
-  [CHAIN_IDS.BNB]: 'BNB',
-  [CHAIN_IDS.GNOSIS]: 'Gnosis',
-  [CHAIN_IDS.SEPOLIA]: 'Sepolia',
+const CHAIN_NAME_BY_ID: Partial<Record<SupportedChainId, string>> = {
+  [SupportedChainId.MAINNET]: 'Mainnet',
+  [SupportedChainId.ARBITRUM_ONE]: 'Arbitrum',
+  [SupportedChainId.BASE]: 'Base',
+  [SupportedChainId.BNB]: 'BNB',
+  [SupportedChainId.GNOSIS_CHAIN]: 'Gnosis',
+  [SupportedChainId.SEPOLIA]: 'Sepolia',
 }
 
 export interface WalletApi {

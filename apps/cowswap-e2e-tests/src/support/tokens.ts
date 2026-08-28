@@ -1,4 +1,4 @@
-import { CHAIN_IDS, type SupportedChainId } from './constants'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export interface TokenInfo {
   address: string
@@ -7,7 +7,7 @@ export interface TokenInfo {
 
 /** Symbol → token info, per chain. Seed with whatever specs actually use; extend by adding entries. */
 const TOKENS: Partial<Record<SupportedChainId, Record<string, TokenInfo>>> = {
-  [CHAIN_IDS.SEPOLIA]: {
+  [SupportedChainId.SEPOLIA]: {
     WETH: { address: '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14', decimals: 18 },
     // NB: this Sepolia test token is labeled "USDC" but is actually deployed with 18 decimals
     // (confirmed against ../mocks/cowProtocolApi/fixtures/quote.json's buyAmount) — do not
@@ -16,7 +16,7 @@ const TOKENS: Partial<Record<SupportedChainId, Record<string, TokenInfo>>> = {
     DAI: { address: '0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D', decimals: 18 },
     USDT: { address: '0x58eb19ef91e8a6327fed391b51ae1887b833cc91', decimals: 6 },
   },
-  [CHAIN_IDS.GNOSIS]: {
+  [SupportedChainId.GNOSIS_CHAIN]: {
     WXDAI: { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', decimals: 18 },
     USDC: { address: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', decimals: 6 },
   },
