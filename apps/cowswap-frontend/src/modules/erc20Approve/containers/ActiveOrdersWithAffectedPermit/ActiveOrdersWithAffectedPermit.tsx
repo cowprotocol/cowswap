@@ -54,9 +54,10 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>
-          There are <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
-          <Plural value={ordersWithPermitLength} one="order" few="orders" many="orders" other="orders" /> using a using
-          a <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
+          <Plural value={ordersWithPermitLength} one="There is" other="There are" />{' '}
+          <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
+          <Plural value={ordersWithPermitLength} one="order" few="orders" many="orders" other="orders" /> using a{' '}
+          <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
           execution of other orders. Adjust the amount or choose full approval to proceed.
         </Trans>
       </styledEl.DropdownFooter>

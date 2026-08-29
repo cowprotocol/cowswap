@@ -8436,3 +8436,56 @@ msgstr "Показать ещё {0, plural, one {#} few {#} many {#} other {#}}"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this tip!"
 msgstr "Поделиться советом!"
+
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
+msgstr "{gnosisSafeThreshold, plural, one {Требуется # подпись} few {Требуются # подписи} many {Требуется # подписей} other {Требуется # подписей}}"
+
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
+msgstr "{pendingSignaturesCount, plural, one {Требуется ещё # подпись} few {Требуются ещё # подписи} many {Требуется ещё # подписей} other {Требуется ещё # подписи}}"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
+msgstr "Частичное одобрение может заблокировать <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {другой ордер} few {других ордера} many {других ордеров} other {других ордеров}}"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "{ordersWithPermitLength, plural, one {There is} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr "{ordersWithPermitLength, plural, one {Существует} other {Существуют}} <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {существующий ордер} few {существующих ордера} many {существующих ордеров} other {существующих ордеров}} с использованием разрешения на токен <1/>. Частичное одобрение может повлиять на исполнение других ордеров. Измените сумму или выберите полное одобрение, чтобы продолжить."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "Insufficient <0><1/></0> balance detected."
+msgstr "Обнаружен недостаточный баланс <0><1/></0>."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
+msgstr "Если на момент создания баланса будет недостаточно, эта часть ордера не будет создана. Пополните баланс <0><1/></0> до этого времени."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "The order remains open. Execution requires sufficient <0><1/></0> balance."
+msgstr "Ордер остается открытым. Для исполнения требуется достаточный баланс <0><1/></0>."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
+msgstr "Предоставлено недостаточное разрешение для <0><1/></0>. Если на момент создания разрешение останется недостаточным, эта часть не будет создана. Одобрите токен <2><3/></2> перед созданием."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
+msgstr "Ордер остается открытым. Для исполнения требуется достаточное разрешение для <0><1/></0>. Одобрите токен, чтобы продолжить."
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
+msgstr "Сначала обернуть {nativeSymbol} в {wrappedNativeSymbol}"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
+msgid "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
+msgstr "{totalOpenOrders, plural, one {Найден # открытый ордер} few {Найдены # открытых ордера} many {Найдено # открытых ордеров} other {Найдено # открытых ордеров}} среди {limit} последних."
+
+#. placeholder {0}: solversLength - 3
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
+msgstr "Показать ещё {0, plural, one {#} few {#} many {#} other {#}}"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "Share this tip!"
+msgstr "Поделиться советом!"
