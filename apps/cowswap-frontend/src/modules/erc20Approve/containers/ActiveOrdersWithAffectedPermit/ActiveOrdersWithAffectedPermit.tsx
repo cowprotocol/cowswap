@@ -4,7 +4,7 @@ import { ReactNode, useMemo } from 'react'
 import { Currency } from '@cowprotocol/currency'
 import { TokenSymbol } from '@cowprotocol/ui'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable'
 
@@ -21,7 +21,6 @@ interface ActiveOrdersWithAffectedPermitProps {
 }
 
 export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
-  const { t } = useLingui()
   const pendingOrders = useAtomValue(onlyPendingOrdersAtom)
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
@@ -34,16 +33,19 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null
 
   const ordersWithPermitLength = ordersWithPermit.length
-  const isPlural = ordersWithPermit.length > 1
-  const orderWord = isPlural ? t`orders` : t`order`
 
   const titleContent = (
     <Trans>
-      Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span> other {orderWord}
+      Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span>{' '}
+      <Plural
+        value={ordersWithPermitLength}
+        one="other order"
+        few="other orders"
+        many="other orders"
+        other="other orders"
+      />
     </Trans>
   )
-
-  const areIs = isPlural ? t`are` : t`is`
 
   return (
     <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
@@ -52,8 +54,9 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>
-          There {areIs} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing {orderWord} using a{' '}
-          <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
+          There are <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
+          <Plural value={ordersWithPermitLength} one="order" few="orders" many="orders" other="orders" /> using a using
+          a <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
           execution of other orders. Adjust the amount or choose full approval to proceed.
         </Trans>
       </styledEl.DropdownFooter>
