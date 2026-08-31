@@ -18,9 +18,8 @@ export const baseGlobalStyles = css`
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
-  // This prevents the page content from moving right when the scrollbar is hidden, but causes the bottom navbar to move down, outside the viewport.
-  // Once we use the new Drawer for the network selector, we can re-enable this.
+  // This locks <html> too so Base UI sees the page as already locked and skips scrollbar-gutter.
+  // It also prevents the page content from moving right when the scrollbar is hidden.
   html:has(body.noScroll) {
     overflow: hidden;
   }
