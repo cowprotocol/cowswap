@@ -11,7 +11,7 @@ export function NetworkAndAccountControls(): ReactNode {
   const { hideNetworkSelector } = useInjectedWidgetParams()
 
   return (
-    <HeaderControls>
+    <HeaderControls data-testid="network-and-account-controls">
       {!hideNetworkSelector && <NetworkSelector />}
       <HeaderElement>
         <AccountElement />

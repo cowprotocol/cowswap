@@ -3,29 +3,32 @@ import type { Page, Locator } from '@playwright/test'
 /** The app-wide header (network selector, wallet status) — present on every route, not just Swap. */
 export class HeaderPage {
   readonly page: Page
-  readonly header: Locator
+  readonly networkAndAccountControls: Locator
+  readonly networkSelectorTrigger: Locator
   readonly networkDialog: Locator
   readonly snackbarPopup: Locator
 
   constructor(page: Page) {
     this.page = page
-    this.header = page.locator('#cowswap-app-header')
-    this.networkDialog = page.getByRole('dialog')
+    this.networkAndAccountControls = page.locator('[data-testid="network-and-account-controls"]:visible')
+    this.networkSelectorTrigger = this.networkAndAccountControls.getByTestId('network-selector-trigger')
+    this.networkDialog = this.networkAndAccountControls.getByRole('dialog')
     this.snackbarPopup = page.locator('.snackbar-popup').first()
   }
 
-  /**
-   * Opens the app's network selector (its trigger is an unlabelled `<div>`, so it's targeted by
-   * the currently active network's own label text, scoped to the header to avoid ambiguity).
-   */
-  async openNetworkSelector(currentNetworkLabel: string): Promise<void> {
-    await this.header.getByText(currentNetworkLabel, { exact: true }).click()
+  async openNetworkSelector(): Promise<void> {
+    await this.networkSelectorTrigger.click()
     await this.networkDialog.waitFor({ state: 'visible' })
   }
 
+  async closeNetworkSelector(): Promise<void> {
+    await this.networkDialog.getByRole('button', { name: 'Close' }).click()
+    await this.networkDialog.waitFor({ state: 'hidden' })
+  }
+
   /** Switches through the same UI flow a user would drive instead of changing the mocked wallet directly. */
-  async switchNetwork(currentNetworkLabel: string, targetNetworkLabel: string): Promise<void> {
-    await this.openNetworkSelector(currentNetworkLabel)
+  async switchNetwork(targetNetworkLabel: string): Promise<void> {
+    await this.openNetworkSelector()
     await this.networkDialog.getByRole('button', { name: targetNetworkLabel, exact: true }).click()
   }
 }

@@ -18,11 +18,6 @@ export const baseGlobalStyles = css`
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
-  html:has(body.noScroll) {
-    overflow: hidden;
-  }
-
   button,
   textarea,
   select,

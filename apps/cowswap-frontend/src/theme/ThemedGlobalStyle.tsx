@@ -35,7 +35,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background: transparent;
     min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
-    /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
+    /* Keep the lock on <body>; making <html> an overflow container shifts sticky mobile controls. */
     &.noScroll {
       overflow: hidden;
     }

@@ -75,7 +75,7 @@ export function NetworkSelector(): ReactNode {
   }
 
   return (
-    <styledEl.SelectorWrapper ref={node} onClick={toggleModal}>
+    <styledEl.SelectorWrapper ref={node} data-testid="network-selector-trigger" onClick={toggleModal}>
       <styledEl.SelectorControls ref={nodeSelector} $isChainIdUnsupported={isChainIdUnsupported} $isOpen={isOpen}>
         {!isChainIdUnsupported ? (
           <>

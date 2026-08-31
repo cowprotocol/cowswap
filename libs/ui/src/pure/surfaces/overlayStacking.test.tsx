@@ -40,4 +40,46 @@ describe('overlay stacking', () => {
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
   })
+
+  it('keeps the body locked until every open surface closes', () => {
+    const onOpenChange = jest.fn()
+    const { rerender } = render(
+      <>
+        <Dialog isOpen onOpenChange={onOpenChange}>
+          Orders
+        </Dialog>
+        <BottomDrawer isOpen onOpenChange={onOpenChange}>
+          Filters
+        </BottomDrawer>
+      </>,
+    )
+
+    expect(document.body.classList.contains('noScroll')).toBe(true)
+
+    rerender(
+      <>
+        <Dialog isOpen={false} onOpenChange={onOpenChange}>
+          Orders
+        </Dialog>
+        <BottomDrawer isOpen onOpenChange={onOpenChange}>
+          Filters
+        </BottomDrawer>
+      </>,
+    )
+
+    expect(document.body.classList.contains('noScroll')).toBe(true)
+
+    rerender(
+      <>
+        <Dialog isOpen={false} onOpenChange={onOpenChange}>
+          Orders
+        </Dialog>
+        <BottomDrawer isOpen={false} onOpenChange={onOpenChange}>
+          Filters
+        </BottomDrawer>
+      </>,
+    )
+
+    expect(document.body.classList.contains('noScroll')).toBe(false)
+  })
 })
