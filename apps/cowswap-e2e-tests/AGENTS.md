@@ -178,6 +178,52 @@ never a logic bug in the test — check infrastructure contention first.
   single `expect.poll(async () => { ...four reads...; return ratio })` callback, so every retry
   re-reads the full snapshot together instead of trusting a stale mix — the same idiom `[CC-17]`'s
   checkbox retry already uses, just applied to a read instead of a click.
+- **A page-load default (currency or typed amount) can still be mid-resolution when the very next
+  UI action fires, even when the test already "types before selecting" to dodge it.** Two distinct
+  production hooks each carry a sticky ref written specifically to survive this kind of currency/
+  amount change, but a ref only latches once the state it preserves has actually resolved — right
+  after `goto()`, under CI load, that resolution can still be in flight when the next action lands,
+  so the mitigation not being airtight isn't a logic bug in the hook, just a race it doesn't fully
+  close.
+  - **Typed sell amount reverts to "1".** `useSetupTradeAmountsFromUrl`'s
+    `isAtLeastOneAmountIsSetRef.current ||= Boolean(inputCurrencyAmount || outputCurrencyAmount)`
+    only latches once the just-typed amount has been reparsed into a real `inputCurrencyAmount`
+    *against whichever token is currently selected*. Typing before selecting a token (rather than
+    after) is the documented mitigation for this — parsing e.g. "1000" against an already-resolved
+    default currency is normally near-instant — but under CI load the reparse can still be in
+    flight when the currency switch fires, and `useSetupTradeAmountsFromUrl`'s own "no amount set
+    yet" 1-unit default wins the race anyway. Observed as `[CS-59]`/`[CS-118]` (`selectTokens`-
+    driven, both sides picked) and `[CS-68]` (a *native ETH* pick specifically, which has an extra
+    `crossChainFamilySwitch()` microtask gap per `useOpenTokenSelectWidget.ts` on top of the same
+    reparse race, so typing-first alone wasn't enough there even when the reparse itself landed in
+    time). Two different fixes depending on shape: for `[CS-59]`/`[CS-118]`, `await
+    swapPage.waitForQuote()` right after typing, before the token switch — a quote fetch can't fire
+    without a genuinely parsed amount, so waiting one out is concrete proof the reparse landed, more
+    reliable than guessing a fixed delay. For `[CS-68]`/`[CS-103]` (native ETH), retyping the amount
+    *after* both currency switches have landed is the more robust fix instead — there's no further
+    switch left to lose it to.
+  - **Currency reverts to "Select a token".** `useNavigateOnCurrencySelection`'s
+    `lastKnownInputCurrencyIdRef`/`lastKnownOutputCurrencyIdRef` exist specifically to preserve
+    whichever side *isn't* being picked, but each only latches once that side's currency has
+    resolved in React state. Picking the *other* side before that lands wipes the untouched side
+    back to `null` in the resulting URL/trade state instead of preserving it. Observed as `[CS-104]`
+    finding no `#input-currency-input` token at all (not a wrong value — the whole panel was blank,
+    since the sell side had no currency selected). Fixed with `SwapPage.waitForBothCurrenciesResolved()`
+    — waits until neither `sellTokenSelect` nor `buyTokenSelect` still shows `CurrencySelectButton`'s
+    "Select a token" placeholder — called right after `goto()`, before the first
+    `tokens.open{Input,Output}()` + `searchAndPick()`, in any test that changes one side via the
+    picker while relying on the default for the other (`[CS-68]`/`[CS-103]`/`[CS-104]`). Deliberately
+    **not** baked into `goto()`/`unlockIfNeeded()` themselves: `[CS-299]`/`[CS-301]` (picking a
+    Solana/Bitcoin destination) leave one side genuinely, deliberately unresolved for a while, and
+    would hang forever waiting on it — call the helper explicitly, only where both sides are
+    actually expected to already have a value.
+  - **General lesson for both:** don't guess at a fixed sleep for either race — wait on a concrete
+    signal that the specific state the next action depends on has actually landed (a resolved quote,
+    a resolved currency selector), the same idiom the "multi-row UI read" fix above uses. And keep
+    that wait in one named, reusable page-object method (`waitForQuote`, `waitForBothCurrenciesResolved`)
+    rather than duplicating an inline assertion — with its full "why" comment — at every call site
+    that needs it; a hardcoded expected value (e.g. `'Selected token: WETH'`) also doesn't generalize
+    to tests using a non-default pair, where a generic "not still the placeholder" check does.
 - **Root cause 2: the default 5s `expect` timeout is tight under CPU contention.** Several
   known-load-sensitive assertions (the recipient-confirmation checkbox retry in `[CC-17]`, the
   order-progress-modal reopen in `[CS-60]`) have their own comments acknowledging they only flake
