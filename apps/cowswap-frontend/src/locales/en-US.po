@@ -4458,7 +4458,7 @@ msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing 
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
-#: apps/cowswap-frontend/src/modules/trade/containers/SolanaWrapAndDelegateButton/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/containers/SolanaWrapAndDelegateButton/SolanaWrapAndDelegateButton.container.tsx
 msgid "Wrap <0/> and Swap"
 msgstr "Wrap <0/> and Swap"
 
