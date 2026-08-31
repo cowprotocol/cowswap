@@ -192,6 +192,7 @@
     "@types/wcag-contrast": "3.0.3",
     "@typescript-eslint/eslint-plugin": "8.46.0",
     "@typescript-eslint/parser": "8.46.0",
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
     "@vitejs/plugin-react": "5.0.4",
     "@vitejs/plugin-react-swc": "4.1.0",
     "@vitest/coverage-c8": "0.33.0",
