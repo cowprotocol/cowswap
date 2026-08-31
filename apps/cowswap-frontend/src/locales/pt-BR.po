@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-31 13:09\n"
+"PO-Revision-Date: 2026-08-31 15:20\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3617,7 +3617,7 @@ msgstr "Website"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Interface"
-msgstr "Interface de limite"
+msgstr "Interface de ordens limite"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Signed: <0>{numConfirmations} out of {gnosisSafeThreshold} signers</0>"
@@ -3703,7 +3703,7 @@ msgstr "Mudar para {wrappedSymbol}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/DebugPanel/index.tsx
 msgid "Select debug step"
-msgstr "Selecionar passo de depuração"
+msgstr "Selecionar passo de debug"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "You're all caught up"
@@ -3962,11 +3962,11 @@ msgstr "Tente ajustar o termo da sua pesquisa"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Partially Filled"
-msgstr "Parcialmente preenchida"
+msgstr "Parcialmente executada"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "<0>Note:</0> If you are using a Safe but still see this message, ensure your Safe is deployed!"
-msgstr "<0>Nota:</0> Se você estiver usando um Safe mas ainda vir esta mensagem, certifique-se de que seu Safe esteja implantado!"
+msgstr "<0>Nota:</0> Se você estiver usando um Safe mas ainda vir esta mensagem, certifique-se de que seu Safe esteja implementado!"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Included in the estimated execution price"
