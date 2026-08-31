@@ -5,7 +5,7 @@ import { installNearIntents, type NearIntentsMock } from '../mocks/bridge/nearIn
 import { installSocketVerifier } from '../mocks/bridge/socketVerifier'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
-import { installEthBalance, type EthBalanceMock } from '../mocks/nodeRpc/ethBalance'
+import { installEthBalance } from '../mocks/nodeRpc/ethBalance'
 import { installEthBlockNumber } from '../mocks/nodeRpc/ethBlockNumber'
 import { installEthEstimateGas } from '../mocks/nodeRpc/ethEstimateGas'
 import { installEthGetCode, type EthGetCodeMock } from '../mocks/nodeRpc/ethGetCode'
@@ -43,7 +43,6 @@ export interface SharedFixtures {
     cowApi: CowProtocolApiMock
     orders: OrdersMock
     ethGetCode: EthGetCodeMock
-    ethBalance: EthBalanceMock
     safeSdk: SafeSdkMock
     bungee: BungeeMock
     nearIntents: NearIntentsMock
@@ -113,7 +112,7 @@ export const sharedFixtures: Fixtures<
       const cowApi = await installCowProtocolApi(context)
       const orders = installOrdersMock(cowApi)
       const ethGetCode = installEthGetCode(context)
-      const ethBalance = installEthBalance(context, wallet.address)
+      installEthBalance(context, wallet.address)
       installEthBlockNumber(context)
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
@@ -135,7 +134,6 @@ export const sharedFixtures: Fixtures<
         cowApi,
         orders,
         ethGetCode,
-        ethBalance,
         safeSdk,
         bungee,
         nearIntents,

@@ -1,4 +1,4 @@
-import { encodeAbiParameters, parseUnits, type Hex } from 'viem'
+import { encodeAbiParameters, type Hex } from 'viem'
 
 import {
   classifyEthCall,
@@ -8,20 +8,29 @@ import {
   type ClassifiedEthCall,
 } from '../../support/mockEthFlowTransaction'
 import { mockRpcNodeRequest, type JsonRpcEntry } from '../../support/mockRpcNodeRequest'
+import { getBalancesMock } from '../balances'
 
 import type { BrowserContext } from '@playwright/test'
 
 const UINT256 = [{ type: 'uint256' }] as const
 
-export interface EthBalanceMock {
-  /** Overrides the native ETH balance reported for `owner` going forward. */
-  set(balance: bigint): void
-}
+/** Same pseudo-address `cross-chain-swaps.spec.ts` seeds native ETH balances under via
+ * `mocks.balances.set(owner, chainId, { [NATIVE_ETH]: ... })`, and `mockContractViewCall.ts` reuses
+ * for its own `getEthBalance` incidental-call handling — kept in step with `mocks/balances`'s own
+ * state here too, rather than a disconnected default, so the two can never silently disagree. */
+const NATIVE_ETH_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
+/** Used only once `mocks/balances` has nothing set for `owner` under `NATIVE_ETH_ADDRESS` — good
+ * enough to let the batch resolve locally without a real fetch, for a test that doesn't otherwise
+ * care about the exact native balance. Matches `mockContractViewCall.ts`'s own fallback. */
+const FALLBACK_NATIVE_BALANCE = 10n ** 18n
 
 /**
  * Answers the wallet owner's native ETH balance — read via Multicall3's `getEthBalance`, batched
  * through `aggregate3` (see `classifyEthCall` in `mockEthFlowTransaction.ts`; this app never issues
- * a bare `eth_getBalance`) — with a fixed default (1 ETH) so it never needs the real network.
+ * a bare `eth_getBalance`) — with whatever `mocks/balances` already has for `owner` under
+ * `NATIVE_ETH_ADDRESS` (falling back to 1 ETH if nothing was ever set), so it never needs the real
+ * network.
  *
  * Every test's wallet gets this polled in the background regardless of what token it's actually
  * trading. The only existing mock for it, `installNativeBalanceRoute`, is wired up solely by
@@ -37,10 +46,11 @@ export interface EthBalanceMock {
  * Registered *ahead of* `mockEthFlowTransaction`/`mockWrapTransaction`/`mockUnwrapTransaction` in
  * the `mocks` fixture (Playwright route order is LIFO — last registered gets first look), so a test
  * that also calls one of those still gets that mock's own dynamic, tx-tracking balance instead of
- * this static default.
+ * this one.
  */
-export function installEthBalance(context: BrowserContext, owner: string): EthBalanceMock {
-  let balance = parseUnits('1', 18)
+export function installEthBalance(context: BrowserContext, owner: string): void {
+  const getBalance = (): bigint =>
+    getBalancesMock(context)?.getBalance(owner, NATIVE_ETH_ADDRESS) ?? FALLBACK_NATIVE_BALANCE
 
   const classify = (entry: JsonRpcEntry): ClassifiedEthCall | undefined => {
     if (entry.method !== 'eth_call') return undefined
@@ -54,20 +64,14 @@ export function installEthBalance(context: BrowserContext, owner: string): EthBa
     (entry, upstreamResult) => {
       const call = classify(entry)
       if (!call || call.kind === 'opaque') return undefined
-      if (call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [balance])
-      if (isFullyMocked(context, call)) return resolveEthBalanceBatch(context, call, balance)
+      if (call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [getBalance()])
+      if (isFullyMocked(context, call)) return resolveEthBalanceBatch(context, call, getBalance())
       if (typeof upstreamResult !== 'string') return undefined
-      return resolveEthBalanceBatch(context, call, balance, upstreamResult as Hex)
+      return resolveEthBalanceBatch(context, call, getBalance(), upstreamResult as Hex)
     },
     (entry) => {
       const call = classify(entry)
       return call !== undefined && !isFullyOpaqueCall(call)
     },
   )
-
-  return {
-    set(next) {
-      balance = next
-    },
-  }
 }
