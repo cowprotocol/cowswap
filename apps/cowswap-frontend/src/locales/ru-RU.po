@@ -7940,7 +7940,7 @@ msgstr "<0>CoW Swap требует автономных подписей, кот
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapOrderStatus/TwapOrderStatus.pure.tsx
 msgid "Order expired"
-msgstr "Ордер истёк"
+msgstr "Срок действия заказа истек"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 msgid "Your current wallet will be disconnected."

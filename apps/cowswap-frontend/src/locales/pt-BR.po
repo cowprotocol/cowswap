@@ -2937,7 +2937,7 @@ msgstr "Esta ferramenta ajuda você a recuperar seus fundos."
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.styled.tsx
 msgid "Enable trade alerts"
-msgstr "Ativar alertas de trade"
+msgstr "Habilitar alertas de trade"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #~ msgid "Approval reset"
