@@ -26,12 +26,7 @@ export const SettingsButton = styled(MenuButton)`
   --maxSize: 28px;
   --iconSize: 18px;
 
-  background: none;
-  border: none;
-  outline: none;
   padding: 4px;
-  margin: 0;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;

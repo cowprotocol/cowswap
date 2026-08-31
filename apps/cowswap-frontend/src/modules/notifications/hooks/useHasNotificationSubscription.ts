@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTgAuthorization } from './useTgAuthorization'
-import { useTgSubscription } from './useTgSubscription'
+import { useTelegramConnect } from './useTelegramConnect'
 
 export interface UseHasNotificationSubscriptionReturn {
   hasSubscription: boolean
@@ -19,25 +18,17 @@ export interface UseHasNotificationSubscriptionReturn {
  */
 export function useHasNotificationSubscription(): UseHasNotificationSubscriptionReturn {
   const { account } = useWalletInfo()
-  const authorization = useTgAuthorization()
-  const { isTgSubscribed } = useTgSubscription(account, authorization)
+  const { isLoading, isSubscribed } = useTelegramConnect(account)
 
-  const result = useMemo(() => {
-    // Don't show loading state if no account (user not connected)
-    const isLoading = !!account && !authorization.isAuthChecked
-
+  return useMemo(() => {
     const channels = {
-      telegram: isTgSubscribed,
+      telegram: isSubscribed,
     }
 
-    const hasSubscription = channels.telegram
-
     return {
-      hasSubscription,
+      hasSubscription: channels.telegram,
       isLoading,
       channels,
     }
-  }, [account, isTgSubscribed, authorization.isAuthChecked])
-
-  return result
+  }, [isLoading, isSubscribed])
 }

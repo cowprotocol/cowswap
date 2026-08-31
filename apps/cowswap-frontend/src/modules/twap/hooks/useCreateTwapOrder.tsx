@@ -28,6 +28,7 @@ import {
   useUpdateAdvancedOrdersRawState,
 } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
@@ -66,6 +67,7 @@ import {
   startEoaTwapPlacement,
 } from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { getEoaTwapAmountToApprove } from '../utils/getEoaTwapAmountToApprove'
 import { getEoaTwapPrePlacementAmountToCover } from '../utils/getEoaTwapPrePlacementAmountToCover'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
@@ -107,7 +109,15 @@ export function useCreateTwapOrder() {
 
   const appDataInfo = useAppData()
   const sendSafeTransactions = useSendBatchTransactions()
-  const twapOrderCreationContext = useTwapOrderCreationContext(inputCurrencyAmount as Nullish<CurrencyAmount<Token>>)
+  const amountToSignApprove = useGetAmountToSignApprove()
+  // The exact amount the Safe flow will approve on-chain. Shared between the zero-approval
+  // pre-check (via useTwapOrderCreationContext) and the real approve tx (placeSafeTwapOrder)
+  // below so both simulate/target the same value.
+  const safeAmountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
+  const twapOrderCreationContext = useTwapOrderCreationContext(
+    inputCurrencyAmount as Nullish<CurrencyAmount<Token>>,
+    safeAmountToApprove,
+  )
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
   // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
@@ -271,13 +281,14 @@ export function useCreateTwapOrder() {
           const sellAmountAtoms = BigInt(twapOrder.sellAmount.quotient.toString())
           // Exact amount is unknown until after Twap Setup, so we cover the sell amount + buffer:
           const amountToCover = getEoaTwapPrePlacementAmountToCover(sellAmountAtoms)
+          const eoaAmountToApprove = getEoaTwapAmountToApprove(amountToSignApprove, amountToCover)
           const approvalNeeds = await getEoaTwapApprovalNeeds({
             config,
             account: account as `0x${string}`,
             sellTokenAddress,
             spender: vaultRelayerAddress,
             amountToCover,
-            amountToApprove: maxUint256,
+            amountToApprove: eoaAmountToApprove,
           })
 
           const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
@@ -290,8 +301,8 @@ export function useCreateTwapOrder() {
           }
 
           if (approvalNeeds.needsApproval) {
-            // Prefer on-chain max approve (not permit) when approval is needed: funding sell size
-            // is unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
+            // Prefer on-chain approve (not permit) when approval is needed: funding sell size is
+            // unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
             // already covers sell + buffer.
             await ensureEoaTwapVaultRelayerApproval({
               config,
@@ -301,7 +312,7 @@ export function useCreateTwapOrder() {
               sellTokenName: sellToken.name,
               spender: vaultRelayerAddress,
               amountToCover,
-              amountToApprove: maxUint256,
+              amountToApprove: eoaAmountToApprove,
               permitInfo,
               generatePermitHook,
               preferOnChainApprove: true,
@@ -353,6 +364,7 @@ export function useCreateTwapOrder() {
             fallbackHandlerIsNotSet,
             extensibleFallbackContext,
             sendSafeTransactions,
+            amountToApprove: safeAmountToApprove,
           })
           orderCreationHash = safeTxHash
           confirmModalHash = safeTxHash
@@ -447,6 +459,8 @@ export function useCreateTwapOrder() {
       permitInfo,
       generatePermitHook,
       updateEoaTwapFlow,
+      safeAmountToApprove,
+      amountToSignApprove,
     ],
   )
 }

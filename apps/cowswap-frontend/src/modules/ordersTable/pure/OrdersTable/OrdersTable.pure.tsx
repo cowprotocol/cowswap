@@ -15,7 +15,7 @@ import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancella
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
 import { OrdersTableHeader } from './Header/OrdersTableHeader.pure'
 import { LoadMoreOrdersSection } from './LoadMore/Section/LoadMoreOrdersSection'
-import { Rows, TableBox, TableInner } from './OrdersTable.styled'
+import { Rows, TableBox, TableInner, TableWrapper } from './OrdersTable.styled'
 import { OrdersTablePagination } from './Pagination/OrdersTablePagination.pure'
 import { OrdersTableRow } from './Row/OrdersTableRow.pure'
 
@@ -84,7 +84,7 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
 
   return (
-    <>
+    <TableWrapper id="orders-table">
       <TableBox>
         <TableInner onScroll={onScroll}>
           <OrdersTableHeader
@@ -120,6 +120,6 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
       {currentTab === OrderTabId.OPEN && currentPageNumber === lastPageNumber && (
         <LoadMoreOrdersSection totalOpenOrders={totalFilteredOrders} orderType={orderType} />
       )}
-    </>
+    </TableWrapper>
   )
 }

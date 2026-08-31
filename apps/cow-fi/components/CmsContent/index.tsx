@@ -16,7 +16,7 @@ interface CmsContentProps {
 
 // Styled heading components that use the correct font-family
 const StyledH1 = styled.h1`
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
   font-size: 4.2rem;
   font-weight: ${Font.weight.bold};
   line-height: 1.2;
@@ -30,7 +30,7 @@ const StyledH1 = styled.h1`
 `
 
 const StyledH2 = styled.h2`
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
   font-size: 3.6rem;
   font-weight: ${Font.weight.bold};
   line-height: 1.2;
@@ -44,7 +44,7 @@ const StyledH2 = styled.h2`
 `
 
 const StyledH3 = styled.h3`
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
   font-size: 3rem;
   font-weight: ${Font.weight.bold};
   line-height: 1.2;
@@ -58,7 +58,7 @@ const StyledH3 = styled.h3`
 `
 
 const StyledH4 = styled.h4`
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
   font-size: 2.4rem;
   font-weight: ${Font.weight.bold};
   line-height: 1.3;

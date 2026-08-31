@@ -59,8 +59,6 @@ jest.mock('@cowprotocol/wallet', () => ({
 jest.mock('@cowprotocol/ui', () => ({
   ButtonOutlined: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Media: { upToSmall: () => '', upToLarge: () => '' },
-  MY_ORDERS_ID: 'my-orders',
-  SWAP_HEADER_OFFSET: 0,
 }))
 
 // ─── Module mocks ──────────────────────────────────────────────────────────
@@ -92,6 +90,9 @@ jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAm
 jest.mock('../../hooks/useSolanaWrapReceiveAmount', () => ({ useSolanaWrapReceiveAmount: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 jest.mock('../../hooks/useTradeTypeInfoFromUrl', () => ({ useTradeTypeInfoFromUrl: jest.fn() }))
+jest.mock('../../hooks/useSetOrdersTableDrawerOpen', () => ({
+  useSetOrdersTableDrawerOpen: () => jest.fn(),
+}))
 jest.mock('../../state/alternativeOrder', () => ({
   useIsAlternativeOrderModalVisible: jest.fn(),
   alternativeOrderReadWriteAtomFactory: (regular: unknown) => regular,
