@@ -151,6 +151,27 @@ export class SwapPage implements TradePage {
       .toBe(true)
   }
 
+  /**
+   * Waits until BOTH sell and buy currency selectors show a resolved token (i.e. neither still
+   * reads `CurrencySelectButton`'s "Select a token" placeholder). Not run automatically by
+   * `goto()`/`unlockIfNeeded()` — some flows (e.g. picking a Solana/Bitcoin destination) leave one
+   * side genuinely unresolved on purpose, and would hang forever waiting on it.
+   *
+   * Call this before picking a *new* currency for one side via the token selector while relying on
+   * the app's already-resolved value for the *other*, untouched side (typically right after
+   * `goto()`, before the first `tokens.openInput()`/`openOutput()` + `searchAndPick()` call).
+   * `useNavigateOnCurrencySelection`'s `lastKnownInputCurrencyIdRef`/`lastKnownOutputCurrencyIdRef`
+   * (which exist specifically to preserve that untouched side) only latch once its currency has
+   * actually resolved in React state — right after navigation that can still be in flight, and if
+   * the picker action applies before it lands, the ref reads its unset initial value and wipes the
+   * untouched side back to "no token selected" instead of preserving it. Observed as [CS-104]'s
+   * sell balance check finding no `#input-currency-input` token at all.
+   */
+  async waitForBothCurrenciesResolved(): Promise<void> {
+    await expect(this.sellTokenSelect).not.toHaveAttribute('aria-label', 'Select a token')
+    await expect(this.buyTokenSelect).not.toHaveAttribute('aria-label', 'Select a token')
+  }
+
   async waitForQuote(): Promise<void> {
     await this.arrowSeparator.waitFor({ state: 'visible' })
     await this.page.waitForFunction(

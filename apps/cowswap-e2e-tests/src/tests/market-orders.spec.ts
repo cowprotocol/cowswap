@@ -532,18 +532,30 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new sell token below.
+      await swapPage.waitForBothCurrenciesResolved()
+
       // Typed before switching the sell token to ETH, not after: selecting a token with no amount
       // set yet auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
       // debounced quote fetch and can win under load — the mocked wallet balance here is exactly
       // 1 ETH, so that default is indistinguishable from "sold everything" when it wins. Typing an
       // amount first (against the default WETH sell token) marks one as already set, so switching to
-      // ETH afterwards carries the typed amount over instead of triggering the default.
+      // ETH afterwards carries the typed amount over instead of triggering the default. That
+      // mitigation alone isn't airtight for a *native* ETH pick specifically though: selecting a new
+      // input currency awaits `crossChainFamilySwitch()` before applying the selection
+      // (`useOpenTokenSelectWidget.ts`), a real microtask gap that can still let the 1-unit default
+      // win under CI load (observed: `inputAmount` landing on "1" instead of "0.5", same failure
+      // shape as [CS-59]). Retyping once both switches have landed removes any dependency on that
+      // race — there's no further currency switch left to lose the amount to — same fix [CS-103]
+      // already needed for this exact native-ETH-pick gap.
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('USDC')
+      await swapPage.enterSellAmount('0.5')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')
@@ -982,13 +994,9 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
-      // The default buy side (USDC) needs to have actually resolved in React state before picking
-      // a new sell token below — otherwise `useNavigateOnCurrencySelection`'s
-      // `lastKnownOutputCurrencyIdRef` (which preserves whichever side isn't being picked) can read
-      // its unset initial value and wipe the buy side back to "no token selected" instead of
-      // preserving USDC. See [CS-104]'s identical race in the opposite direction for the full
-      // mechanism.
-      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new sell token below.
+      await swapPage.waitForBothCurrenciesResolved()
 
       // Typed before switching the sell token to ETH, not after — see [CS-68]'s note on
       // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
@@ -1050,18 +1058,9 @@ test.describe('Market Orders', () => {
 
       // WETH is already the default sell token on Sepolia (see known quirks), so only the buy side
       // needs switching — typed before switching, not after, same auto-fill race as [CS-68]/[CS-103].
-      //
-      // `useNavigateOnCurrencySelection`'s `lastKnownInputCurrencyIdRef` preserves whichever side
-      // isn't being picked (the sell side here) by reading it live off `inputCurrency` at click
-      // time — but that ref only ever latches once `inputCurrency` has actually resolved to the
-      // default WETH in React state. Right after `goto()` that resolution is still in flight; if
-      // `searchAndPick('ETH')` below applies before it lands, the ref reads its unset initial
-      // value and wipes the sell side back to "no token selected" instead of preserving WETH
-      // (`inputCurrencyId: null` in the resulting URL state) — observed as this test's sell balance
-      // check finding no `#input-currency-input` token at all. Waiting for the sell selector to
-      // actually show "WETH" is concrete proof `inputCurrency` resolved and the ref latched, before
-      // doing anything that could race it.
-      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new buy token below.
+      await swapPage.waitForBothCurrenciesResolved()
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('ETH')
