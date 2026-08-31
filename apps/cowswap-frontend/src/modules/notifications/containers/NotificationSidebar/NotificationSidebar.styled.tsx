@@ -153,9 +153,10 @@ export const EnableAlertsButton = styled.button`
   white-space: normal;
   line-height: 1.2;
   overflow-wrap: anywhere;
-  text-align: left;
+  text-align: center;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition:
     background-color var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
