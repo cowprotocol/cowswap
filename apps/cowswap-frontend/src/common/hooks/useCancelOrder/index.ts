@@ -17,6 +17,7 @@ import { buildOrderWidgetHookPayload, callWidgetHook } from 'modules/injectedWid
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import { isOrderCancellationUnsupported } from 'common/utils/isOrderCancellationUnsupported'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -55,6 +56,9 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   return useCallback(
     (order: Order) => {
       // Check the 'cancellability'
+
+      // Whole-order EOA TWAP cancellation is not implemented. Hide its parent/last-part entry points everywhere.
+      if (isOrderCancellationUnsupported(order)) return null
 
       // The wallet must support off-chain signing
       const isOffChainCancellable = allowsOffchainSigning && isOrderOffChainCancellable(order)

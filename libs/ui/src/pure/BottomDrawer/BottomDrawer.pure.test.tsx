@@ -1,4 +1,6 @@
-import { render } from '@testing-library/react'
+import { ReactNode, useState } from 'react'
+
+import { fireEvent, render } from '@testing-library/react'
 
 import { BottomDrawer } from './BottomDrawer.pure'
 
@@ -61,5 +63,84 @@ describe('BottomDrawer', () => {
     expect(layers[0].compareDocumentPosition(layers[1]) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
       Node.DOCUMENT_POSITION_FOLLOWING,
     )
+  })
+
+  it('renders a full-screen surface without sheet chrome', () => {
+    const { container } = render(
+      <BottomDrawer isOpen fullScreen onOpenChange={jest.fn()}>
+        Content
+      </BottomDrawer>,
+    )
+
+    const popup = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-popup]')
+    const handle = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-handle]')
+
+    expect(popup).not.toBeNull()
+    expect(handle).toBeNull()
+
+    if (!popup) return
+
+    const popupStyle = getComputedStyle(popup)
+
+    expect(popupStyle.width).toBe('100vw')
+    expect(popupStyle.height).toBe('100dvh')
+    expect(popupStyle.maxHeight).toBe('100dvh')
+    expect(popupStyle.borderRadius).toBe('0')
+    expect(popupStyle.boxShadow).toBe('none')
+  })
+
+  it('closes only the nested drawer and restores focus to its opener', () => {
+    const onParentOpenChange = jest.fn()
+    const onNestedOpenChange = jest.fn()
+
+    function Harness(): ReactNode {
+      const [isNestedOpen, setIsNestedOpen] = useState(false)
+
+      return (
+        <BottomDrawer isOpen onOpenChange={onParentOpenChange}>
+          <button type="button" onClick={() => setIsNestedOpen(true)}>
+            Open receipt
+          </button>
+          <BottomDrawer
+            isOpen={isNestedOpen}
+            onOpenChange={(isOpen) => {
+              onNestedOpenChange(isOpen)
+              setIsNestedOpen(isOpen)
+            }}
+          >
+            Receipt
+          </BottomDrawer>
+        </BottomDrawer>
+      )
+    }
+
+    const { getByRole, queryByText } = render(<Harness />)
+    const opener = getByRole('button', { name: 'Open receipt' })
+
+    opener.focus()
+    fireEvent.click(opener)
+    expect(queryByText('Receipt')).not.toBeNull()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+
+    expect(onNestedOpenChange).toHaveBeenCalledWith(false)
+    expect(onParentOpenChange).not.toHaveBeenCalled()
+    expect(queryByText('Receipt')).toBeNull()
+    expect(document.activeElement).toBe(opener)
+
+    fireEvent.click(opener)
+
+    const nestedBackdrop = document.querySelectorAll<HTMLElement>('[data-bottom-drawer-backdrop]')[1]
+
+    if (!nestedBackdrop) throw new Error('Expected nested drawer backdrop')
+
+    fireEvent.pointerDown(nestedBackdrop, { button: 0, pointerType: 'mouse' })
+    fireEvent.click(nestedBackdrop)
+
+    expect(onNestedOpenChange).toHaveBeenCalledTimes(2)
+    expect(onNestedOpenChange).toHaveBeenLastCalledWith(false)
+    expect(onParentOpenChange).not.toHaveBeenCalled()
+    expect(queryByText('Receipt')).toBeNull()
+    expect(document.activeElement).toBe(opener)
   })
 })

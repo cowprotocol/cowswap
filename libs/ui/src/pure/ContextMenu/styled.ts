@@ -38,7 +38,11 @@ export const ContextMenuButton = styled(MenuButton).attrs({ type: 'button' })`
   }
 `
 
-export const ContextMenuTooltipButton = styled.div<{ disableHoverBackground?: boolean }>`
+export const ContextMenuTooltipButton = styled.button<{
+  disableHoverBackground?: boolean
+  $triggerSize?: number
+}>`
+  appearance: none;
   background: none;
   border: none;
   outline: none;
@@ -46,8 +50,8 @@ export const ContextMenuTooltipButton = styled.div<{ disableHoverBackground?: bo
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
   cursor: pointer;
-  height: 16px;
-  width: 16px;
+  height: ${({ $triggerSize }) => $triggerSize ?? 16}px;
+  width: ${({ $triggerSize }) => $triggerSize ?? 16}px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -158,14 +162,16 @@ export const ContextMenuContent = styled.div`
   color: var(${UI.COLOR_TEXT});
 `
 
-export const ContextMenuItemButton = styled.button<{ variant?: 'danger' }>`
+export const ContextMenuItemButton = styled.button.attrs({ role: 'menuitem', tabIndex: -1, type: 'button' })<{
+  variant?: 'danger'
+}>`
   ${BaseMenuItemStyles}
   border: none;
 
   ${({ variant }) => variant === 'danger' && dangerVariantStyles}
 `
 
-export const ContextMenuItemLink = styled.a<{ variant?: 'danger' }>`
+export const ContextMenuItemLink = styled.a.attrs({ role: 'menuitem', tabIndex: -1 })<{ variant?: 'danger' }>`
   ${BaseMenuItemStyles}
   border: none;
   text-decoration: none;
@@ -173,7 +179,7 @@ export const ContextMenuItemLink = styled.a<{ variant?: 'danger' }>`
   ${({ variant }) => variant === 'danger' && dangerVariantStyles}
 `
 
-export const ContextMenuItemText = styled.span`
+export const ContextMenuItemText = styled.span.attrs({ role: 'presentation' })`
   ${BaseMenuItemStyles}
   cursor: default;
 

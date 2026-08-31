@@ -15,17 +15,11 @@ export function ContextMenuExternalLink({
   label,
   'data-click-event': dataClickEvent,
 }: ContextMenuExternalLinkProps): ReactNode {
-  const handleClick = (event: React.MouseEvent): void => {
-    // Stop the click from reaching the Tooltip's onClick handler
-    event.stopPropagation()
-  }
-
   return (
     <styledEl.ContextMenuItemLink
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      onClick={handleClick}
       data-click-event={dataClickEvent}
     >
       <Link2 size={16} />

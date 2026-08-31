@@ -35,7 +35,13 @@ export function AccountModal(): ReactNode {
   return (
     <Dialog onOpenChange={handleOpenChange} isOpen={displayOrdersPanel}>
       <Modal.Root>
-        <ModalHeader sticky title={<Trans>Account</Trans>} titleAs={Dialog.Title} onClose={closeAccountModal} />
+        <ModalHeader
+          sticky
+          title={<Trans>Account</Trans>}
+          titleAs={Dialog.Title}
+          onClose={closeAccountModal}
+          closeOnEscape={false}
+        />
 
         <Modal.Content>
           <AccountDetails
