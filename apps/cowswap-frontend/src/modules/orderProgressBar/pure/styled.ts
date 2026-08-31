@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -69,6 +69,7 @@ export const Content = styled.div`
 export const Title = styled.h3<{ customColor?: string }>`
   color: ${({ customColor }) => customColor || `var(${UI.COLOR_TEXT_PAPER})`};
   margin: 0;
+  ${fontFamilyBrand}
   font-size: 21px;
 `
 
@@ -166,7 +167,7 @@ export const FinishedTagLine = styled.div`
   padding: 0;
   flex: 1 1 auto;
   min-height: 0;
-  overflow: visible;
+  overflow: hidden;
 
   ${Media.upToSmall()} {
     flex: 0 0 auto;
@@ -311,6 +312,7 @@ export const BenefitTagLine = styled.div`
 `
 
 export const SurplusValue = styled.span`
+  ${fontFamilyBrand}
   font-weight: 700;
   color: inherit;
   line-height: 1.1;
@@ -324,6 +326,7 @@ export const SurplusValue = styled.span`
 `
 
 export const BenefitResponsiveText = styled.div`
+  ${fontFamilyBrand}
   display: block;
   width: 100%;
   line-height: 1.2;

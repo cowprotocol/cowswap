@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react'
 
-import { useLatestRef } from './useLatestRef'
+import { useLatestNonNullRef, useLatestRef } from './useLatestRef'
 
 describe('useLatestRef', () => {
   it('returns a ref whose current matches the latest value', () => {
@@ -25,5 +25,21 @@ describe('useLatestRef', () => {
     const firstRef = result.current
     rerender({ value: 1 })
     expect(result.current).toBe(firstRef)
+  })
+})
+
+describe('useLatestNonNullRef', () => {
+  it('keeps the previous value when the next value is null', () => {
+    const { result, rerender } = renderHook(({ value }) => useLatestNonNullRef(value), {
+      initialProps: { value: 'a' as string | null },
+    })
+
+    expect(result.current.current).toBe('a')
+
+    rerender({ value: null })
+    expect(result.current.current).toBe('a')
+
+    rerender({ value: 'b' })
+    expect(result.current.current).toBe('b')
   })
 })

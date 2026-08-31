@@ -156,7 +156,6 @@ const ColorDot = styled.button<{ $active: boolean; $color: string }>`
   border-radius: 999px;
   border: 4px solid ${({ $active }) => ($active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_BORDER})`)};
   background: ${({ $color }) => $color};
-  cursor: pointer;
 `
 
 const QrActions = styled.div`
