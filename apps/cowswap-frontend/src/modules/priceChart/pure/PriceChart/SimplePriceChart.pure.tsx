@@ -329,7 +329,7 @@ export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartToolti
         </simpleStyledEl.TooltipExecutions>
       ) : null}
       <simpleStyledEl.TooltipTime $hasExecutions={data.executions.length > 0}>
-        {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'medium' }).format(data.time * 1000)}
+        {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'short' }).format(data.time * 1000)}
       </simpleStyledEl.TooltipTime>
     </simpleStyledEl.Tooltip>
   )
