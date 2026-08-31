@@ -1,4 +1,7 @@
+import { css } from 'styled-components/macro'
+
 import { Font, FONT_SIZING, FontSizingName, FontWeight, FontWeightValue } from '../consts'
+import { UI } from '../enum'
 
 /**
  * Emits CSS longhands for a paired size/line-height token (and optional weight).
@@ -26,3 +29,16 @@ export function font(fontSizingName: FontSizingName, fontWeight?: FontWeight): s
 function resolveFontWeight(fontWeight: FontWeight): FontWeightValue {
   return typeof fontWeight === 'string' ? Font.weight[fontWeight] : fontWeight
 }
+
+/**
+ * Studio Feixen Sans for large, expressive CoW brand storytelling.
+ * Declares OpenType features explicitly so they are not lost when the element leaves Inter inheritance.
+ */
+export const fontFamilyBrand = css`
+  font-family: var(${UI.FONT_FAMILY_BRAND});
+  font-variant: none;
+  font-variant-ligatures: none;
+  font-feature-settings:
+    'liga' off,
+    'kern' on;
+`

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.11.0...cow-fi-v2.12.0) (2026-08-27)
+
+### Minor Changes
+
+- feat(cow-fi): add get in touch CTA to protocol hero (#8042)
+
 ## [2.11.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.10.1...cow-fi-v2.11.0) (2026-08-12)
 
 ### Minor Changes

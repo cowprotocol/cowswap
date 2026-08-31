@@ -1529,7 +1529,7 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
 `
 
 export const BodyContent = styled.div<{ color?: string }>`
-  font-family: ${Font.familySerif};
+  font-family: ${Font.familyStudioFeixenSerif};
   font-size: 1.8rem;
   line-height: 1.6;
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
@@ -1654,7 +1654,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > h4,
   > h5,
   > h6 {
-    font-family: ${Font.family};
+    font-family: ${Font.familyStudioFeixen};
     font-weight: bold;
     margin: 5.6rem 0 3.2rem;
   }
