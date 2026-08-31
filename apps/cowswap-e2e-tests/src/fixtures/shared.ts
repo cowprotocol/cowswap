@@ -5,6 +5,7 @@ import { installNearIntents, type NearIntentsMock } from '../mocks/bridge/nearIn
 import { installSocketVerifier } from '../mocks/bridge/socketVerifier'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
+import { installEthBalance, type EthBalanceMock } from '../mocks/nodeRpc/ethBalance'
 import { installEthBlockNumber } from '../mocks/nodeRpc/ethBlockNumber'
 import { installEthEstimateGas } from '../mocks/nodeRpc/ethEstimateGas'
 import { installEthGetCode, type EthGetCodeMock } from '../mocks/nodeRpc/ethGetCode'
@@ -42,6 +43,7 @@ export interface SharedFixtures {
     cowApi: CowProtocolApiMock
     orders: OrdersMock
     ethGetCode: EthGetCodeMock
+    ethBalance: EthBalanceMock
     safeSdk: SafeSdkMock
     bungee: BungeeMock
     nearIntents: NearIntentsMock
@@ -91,7 +93,7 @@ export const sharedFixtures: Fixtures<
   // teardown. A plain (non-auto) fixture is only set up when requested, so without this the
   // whole mock stack — including `assertNoUnmatched()` — would silently never run.
   mocks: [
-    async ({ context }, use, testInfo) => {
+    async ({ context, wallet }, use, testInfo) => {
       // Diagnostic-only, opt-in via `LOG_UNMOCKED_RPC=1` — see `logUnmockedRpcRequests`'s own doc
       // comment. Registered before every other mock below (and therefore before any manually
       // installed one too, e.g. `mockApproveTransaction`, since those only get added once the test
@@ -111,6 +113,7 @@ export const sharedFixtures: Fixtures<
       const cowApi = await installCowProtocolApi(context)
       const orders = installOrdersMock(cowApi)
       const ethGetCode = installEthGetCode(context)
+      const ethBalance = installEthBalance(context, wallet.address)
       installEthBlockNumber(context)
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
@@ -132,6 +135,7 @@ export const sharedFixtures: Fixtures<
         cowApi,
         orders,
         ethGetCode,
+        ethBalance,
         safeSdk,
         bungee,
         nearIntents,

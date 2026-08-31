@@ -390,6 +390,39 @@ never a logic bug in the test — check infrastructure contention first.
     deleting the old mock — if this check ever starts flaking again the way `[CS-287]` did, that
     wallet-provider path is the first thing to re-check before assuming `mocks/socketVerifier.ts`
     itself regressed.)
+- **`[CS-287]` (Bungee) was failing in CI with "no postOrder request observed" on both retries —
+  root cause was a real, unmocked `eth_call` leaking to the actual internet, not CI-load slowness.**
+  Confirmed from a failing CI run's own trace (`0-trace.network`; Playwright records
+  `_wasFulfilled: false` plus genuine non-`-1` `dns`/`connect`/`ssl` timings for a request that
+  actually left the machine, vs `_wasFulfilled: true` with `-1` timings for one a `context.route()`
+  mock answered): the app polls the connected wallet's *native ETH balance* in the background via
+  Multicall3's `getEthBalance(owner)` (selector `0x4d2301cc`, batched through `aggregate3`, see
+  `classifyEthCall` in `support/mockEthFlowTransaction.ts`) regardless of what token is actually
+  being traded — a plain USDC→USDC swap polls it just as much as a native-ETH sell. The *only*
+  existing mock for this call, `installNativeBalanceRoute`, was wired up solely inside
+  `mockEthFlowTransaction`/`mockWrapTransaction`/`mockUnwrapTransaction` — every other test in the
+  suite (the vast majority) had no mock for it at all, so it fell through every `context.route()`
+  mock's `route.fallback()` all the way to the real `REACT_APP_NETWORK_URL_1` host
+  (`ethereum-rpc.publicnode.com`) roughly every 3-8 seconds for the test's *entire* duration,
+  including during whatever window a test happens to be timing (`[CS-287]`'s `expectOrderToBePosted`
+  in this case). A real, shared-CI-runner-rate-limited dependency — same class of bug as
+  `ethGetCode.ts`'s own documented history — explains the consistent (not marginal, not proportional
+  to CI load) full-timeout failure on both retries far better than "the mocked flow is just slow":
+  a full local trace of the confirm step (CPU-throttled up to 3x, and separately against a `pnpm
+  preview` production build) never took more than ~3s end to end, yet report evidence showed the
+  *entire* Bungee-path chain genuinely reaching outside the mocked sandbox on a live CI run.
+  **Fix:** extracted `mocks/nodeRpc/ethBalance.ts` — reuses `mockEthFlowTransaction.ts`'s already-
+  exported `classifyEthCall`/`isFullyMocked`/`isFullyOpaqueCall`/`resolveEthBalanceBatch` helpers to
+  answer `getEthBalance` with a static default (1 ETH), installed unconditionally in the `mocks`
+  fixture (`fixtures/shared.ts`) for every test, the same way `mockApproveSimulation` was made global
+  after a near-identical discovery for a different call. Registered *before*
+  `mockEthFlowTransaction`/`mockWrapTransaction`/`mockUnwrapTransaction` run (LIFO route order), so a
+  test that also calls one of those still gets that mock's own dynamic, tx-tracking balance instead
+  of this static default. **Lesson: a network trace's request URL alone doesn't tell you whether a
+  call was actually mocked** — `context.route()` interception happens before any real socket work, so
+  an intercepted request's logged URL looks identical to a real one; check `_wasFulfilled` (or
+  `dns`/`connect`/`ssl` timings — genuine values vs `-1`) to tell them apart before concluding a mock
+  is or isn't the gap.
 - **A real native-ETH sell (`[CC-13]`, eth-flow) needs `eth_estimateGas` stubbed too, not just
   `eth_sendTransaction`.** Left unmocked, gas estimation is a real simulation against the wallet's real
   on-chain balance — zero on Mainnet, since this is a shared test key with no real funds (never fund it;
