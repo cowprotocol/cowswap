@@ -75,22 +75,27 @@ test.describe('Market Orders', () => {
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just
-      // hit here via `selectTokens` instead of a manual token switch. Typing first against
-      // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
-      // and the typed amount carries over once USDC/WETH are picked.
+      // state update and can win under load — same race as [CS-68]'s ETH-flow note, just hit here
+      // via `selectTokens` instead of a manual token switch. Typing first against whatever's
+      // already selected trips the "amount already set" guard before `selectTokens` runs, so the
+      // typed amount normally carries over once USDC/WETH are picked.
       //
-      // Typing first isn't airtight on its own though: the guard only actually latches once the
-      // typed "1000" has been reparsed into a real `inputCurrencyAmount` against whatever token is
-      // *currently* selected (still the default WETH/USDC pair here) — under CI load that reparse
-      // can still be in flight when `selectTokens` fires, losing the race the same way a bare
-      // `toHaveValue('1000')` check would (that only confirms the input's own optimistic local
-      // echo, not the derived amount downstream). Waiting out a real quote for the still-default
-      // pair is a concrete proxy for "the reparse landed" — a quote fetch can't fire without a
-      // genuinely parsed, non-zero amount — so it's a more reliable gate than any fixed delay.
+      // Typing first isn't airtight on its own though: under CI load, even the *synchronous*,
+      // no-debounce reparse from the raw typed string into a real `inputCurrencyAmount`
+      // (`useBuildTradeDerivedState.ts`'s `useMemo`) can still not have been scheduled/rendered
+      // yet by the time `selectTokens` applies, losing the race — same shape as [CS-68]'s
+      // native-ETH-pick gap. `waitForQuote()` in between doesn't reliably catch this either:
+      // quote fetches are gated behind their *own*, separate 350ms debounce
+      // (`AMOUNT_CHANGE_DEBOUNCE_TIME` in `useQuoteParams.ts`), so checking too soon after typing
+      // finds `data-isLoading` never having been set at all yet — a false-positive "not loading"
+      // that doesn't prove the reparse (or anything else) actually landed; confirmed by tracing a
+      // CI run where `waitForQuote()` resolved in ~40ms, nowhere near enough time for a real fetch.
+      // Retyping "1000" again once `selectTokens` has finished removes any dependency on winning
+      // that race in the first place — there's no further currency switch left to lose the amount
+      // to, same fix [CS-103]/[CS-68] already needed for their analogous native-ETH-pick gap.
       await swapPage.enterSellAmount('1000')
-      await swapPage.waitForQuote()
       await selectTokens(swapPage, 'USDC', 'WETH')
+      await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
@@ -1177,13 +1182,13 @@ test.describe('Market Orders', () => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // Typed before selecting tokens, not after — dodges the auto-fill race documented at [CS-59].
-      // The extra `waitForQuote()` before `selectTokens` is the same belt-and-suspenders fix
-      // [CS-59] needed: it waits out a real quote for the still-default pair as concrete proof the
-      // typed "1000" was actually reparsed into a real amount (and so latched the "amount already
-      // set" guard) before the token switch that would otherwise race it.
+      // The retype after `selectTokens` is the same belt-and-suspenders fix [CS-59] needed: it
+      // removes any dependency on winning that race in the first place, rather than trying to
+      // catch the exact moment it's safe to proceed (see [CS-59]'s comment for why a `waitForQuote()`
+      // in between doesn't reliably do that).
       await swapPage.enterSellAmount('1000')
-      await swapPage.waitForQuote()
       await selectTokens(swapPage, 'USDC', 'WETH')
+      await swapPage.enterSellAmount('1000')
       await swapPage.waitForQuote()
 
       await mocks.orders.expectOrderToBePosted({

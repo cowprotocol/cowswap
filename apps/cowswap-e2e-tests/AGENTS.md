@@ -188,20 +188,23 @@ never a logic bug in the test — check infrastructure contention first.
   - **Typed sell amount reverts to "1".** `useSetupTradeAmountsFromUrl`'s
     `isAtLeastOneAmountIsSetRef.current ||= Boolean(inputCurrencyAmount || outputCurrencyAmount)`
     only latches once the just-typed amount has been reparsed into a real `inputCurrencyAmount`
-    *against whichever token is currently selected*. Typing before selecting a token (rather than
-    after) is the documented mitigation for this — parsing e.g. "1000" against an already-resolved
-    default currency is normally near-instant — but under CI load the reparse can still be in
-    flight when the currency switch fires, and `useSetupTradeAmountsFromUrl`'s own "no amount set
-    yet" 1-unit default wins the race anyway. Observed as `[CS-59]`/`[CS-118]` (`selectTokens`-
-    driven, both sides picked) and `[CS-68]` (a *native ETH* pick specifically, which has an extra
-    `crossChainFamilySwitch()` microtask gap per `useOpenTokenSelectWidget.ts` on top of the same
-    reparse race, so typing-first alone wasn't enough there even when the reparse itself landed in
-    time). Two different fixes depending on shape: for `[CS-59]`/`[CS-118]`, `await
-    swapPage.waitForQuote()` right after typing, before the token switch — a quote fetch can't fire
-    without a genuinely parsed amount, so waiting one out is concrete proof the reparse landed, more
-    reliable than guessing a fixed delay. For `[CS-68]`/`[CS-103]` (native ETH), retyping the amount
-    *after* both currency switches have landed is the more robust fix instead — there's no further
-    switch left to lose it to.
+    *against whichever token is currently selected* — a synchronous, no-debounce `useMemo` in
+    `useBuildTradeDerivedState.ts`, but under severe CI CPU contention even that can still not have
+    been scheduled/rendered by the time the currency switch fires, and `useSetupTradeAmountsFromUrl`'s
+    own "no amount set yet" 1-unit default wins the race. Observed as `[CS-59]`/`[CS-118]`
+    (`selectTokens`-driven, both sides picked) and `[CS-68]` (a *native ETH* pick specifically, which
+    has an extra `crossChainFamilySwitch()` microtask gap per `useOpenTokenSelectWidget.ts` on top of
+    the same reparse race). **First attempt that didn't actually work:** `await swapPage.waitForQuote()`
+    right after typing, before the switch — the theory (a quote fetch can't fire without a genuinely
+    parsed amount, so waiting one out proves the reparse landed) is reasonable but wrong in practice,
+    because the quote fetch itself sits behind its *own*, separate 350ms debounce
+    (`AMOUNT_CHANGE_DEBOUNCE_TIME` in `useQuoteParams.ts`) — checking too soon after typing finds
+    `data-isLoading` never having been set at all yet, a false-positive "not loading" `waitForFunction`
+    happily resolves in milliseconds. Confirmed by tracing a CI run where this added wait resolved in
+    ~40ms and `[CS-59]` still lost the race identically. **Actual fix:** retype the same amount again
+    once the currency switch has fully landed (`selectTokens`/both `searchAndPick()` calls returned)
+    — this removes any dependency on winning the race in the first place, rather than trying to catch
+    the exact moment it's safe to proceed. Applied to all four: `[CS-59]`/`[CS-118]`/`[CS-68]`/`[CS-103]`.
   - **Currency reverts to "Select a token".** `useNavigateOnCurrencySelection`'s
     `lastKnownInputCurrencyIdRef`/`lastKnownOutputCurrencyIdRef` exist specifically to preserve
     whichever side *isn't* being picked, but each only latches once that side's currency has
@@ -217,10 +220,17 @@ never a logic bug in the test — check infrastructure contention first.
     Solana/Bitcoin destination) leave one side genuinely, deliberately unresolved for a while, and
     would hang forever waiting on it — call the helper explicitly, only where both sides are
     actually expected to already have a value.
-  - **General lesson for both:** don't guess at a fixed sleep for either race — wait on a concrete
-    signal that the specific state the next action depends on has actually landed (a resolved quote,
-    a resolved currency selector), the same idiom the "multi-row UI read" fix above uses. And keep
-    that wait in one named, reusable page-object method (`waitForQuote`, `waitForBothCurrenciesResolved`)
+  - **General lesson for both:** don't guess at a fixed sleep for either race, and don't trust a
+    signal just because it's *plausible* that it depends on the same state — verify it's actually
+    *causally guaranteed* to, or it can resolve as a false positive before anything real happened
+    (`waitForQuote()`'s failed attempt above: reasonable-sounding, wrong, because the thing being
+    waited on sits behind a *different* debounce than the thing that actually needed to settle).
+    Where possible, prefer removing the dependency on timing altogether over trying to catch the
+    exact safe moment — retyping after the fact (used for the amount race) beats waiting before the
+    fact. Where the race is about identity rather than a value (the currency race, nothing to
+    "retype"), wait on a signal from the *same* render path as the ref being protected — a resolved
+    currency selector, the same idiom the "multi-row UI read" fix above uses for a torn read. Either
+    way, keep the wait in one named, reusable page-object method (`waitForBothCurrenciesResolved`)
     rather than duplicating an inline assertion — with its full "why" comment — at every call site
     that needs it; a hardcoded expected value (e.g. `'Selected token: WETH'`) also doesn't generalize
     to tests using a non-default pair, where a generic "not still the placeholder" check does.
