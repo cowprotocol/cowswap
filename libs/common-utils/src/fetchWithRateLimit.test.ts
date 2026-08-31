@@ -1,11 +1,8 @@
 import fetchMock from 'jest-fetch-mock'
 
-import { fetchWithRateLimit } from './fetch'
+import { fetchWithRateLimit } from './fetchWithRateLimit'
 
 fetchMock.enableMocks()
-// jest.useFakeTimers('modern')
-// jest.spyOn(global, 'setTimeout')
-// jest.useFakeTimers()
 
 const URL = 'https://cow.fi'
 const ERROR_MESSAGE = '💣💥 Booom!'
@@ -33,7 +30,6 @@ function mockAndFailUntilAttempt(attempt: number) {
   }) as any)
 }
 
-// We use fetchWithRateLimit instead of fetchWithBackoff, since that is just a default config version of fetchWithBackoff
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const fetchUrlWithBackoff = (attempts: number) =>
