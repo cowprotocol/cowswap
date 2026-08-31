@@ -4,6 +4,7 @@ import svgArrowLeftSrc from '@cowprotocol/assets/images/arrow-left.svg'
 import iconBellAlertSrc from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -166,6 +167,6 @@ export const EnableAlertsButtonWithIcon = ({
 }: IconProps & React.ButtonHTMLAttributes<HTMLButtonElement>): ReactNode => (
   <EnableAlertsButton onClick={onClick} {...props}>
     <BellIcon src={iconBellAlertSrc} />
-    Enable trade alerts
+    <Trans>Enable trade alerts</Trans>
   </EnableAlertsButton>
 )
