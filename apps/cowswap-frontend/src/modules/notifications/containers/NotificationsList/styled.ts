@@ -166,14 +166,10 @@ export const PromoBannerLink = styled.button`
 `
 
 export const EnableAlertsLink = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
   color: var(${UI.COLOR_PRIMARY});
   font-size: inherit;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   text-decoration: underline;
-  cursor: pointer;
 
   &:hover {
     color: var(${UI.COLOR_PRIMARY_DARKER});

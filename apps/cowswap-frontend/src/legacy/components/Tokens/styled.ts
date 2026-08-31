@@ -110,8 +110,7 @@ export const PaginationText = styled.span`
 `
 
 export const ArrowButton = styled.button`
-  background: none;
-  border: none;
+  padding: 0 10px;
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
