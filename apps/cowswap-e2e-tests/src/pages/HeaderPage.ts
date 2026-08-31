@@ -16,12 +16,16 @@ export class HeaderPage {
 
   /**
    * Opens the app's network selector (its trigger is an unlabelled `<div>`, so it's targeted by
-   * the currently active network's own label text, scoped to the header to avoid ambiguity) and
-   * picks `targetNetworkLabel` from the resulting dialog — the same flow a user driving the UI
-   * would follow, as opposed to switching chains directly on the mocked wallet.
+   * the currently active network's own label text, scoped to the header to avoid ambiguity).
    */
-  async switchNetwork(currentNetworkLabel: string, targetNetworkLabel: string): Promise<void> {
+  async openNetworkSelector(currentNetworkLabel: string): Promise<void> {
     await this.header.getByText(currentNetworkLabel, { exact: true }).click()
+    await this.networkDialog.waitFor({ state: 'visible' })
+  }
+
+  /** Switches through the same UI flow a user would drive instead of changing the mocked wallet directly. */
+  async switchNetwork(currentNetworkLabel: string, targetNetworkLabel: string): Promise<void> {
+    await this.openNetworkSelector(currentNetworkLabel)
     await this.networkDialog.getByRole('button', { name: targetNetworkLabel, exact: true }).click()
   }
 }

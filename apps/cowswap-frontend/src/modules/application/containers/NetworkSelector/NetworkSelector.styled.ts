@@ -102,13 +102,13 @@ export const FlyoutMenuContents = styled.div.attrs(() => ({
   max-height: calc(100dvh - 66px - 32px);
 
   ${Media.upToMedium()} {
-    bottom: 56px;
-    left: 0;
     position: fixed;
+    inset: 0;
     width: 100%;
-    border-radius: 12px 12px 0 0;
-    box-shadow: 0 -100vh 0 100vh ${transparentize('black', 0.4)};
-    max-height: calc(100dvh - 56px) !important;
+    height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+    max-height: 100dvh !important;
   }
 `
 

@@ -20,4 +20,23 @@ test.describe('Network', () => {
     await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
     await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
   })
+
+  test('[NW-02] Network selector covers the mobile and tablet viewport', async ({ swapPage, header }) => {
+    await swapPage.goto({ chainId: CHAIN_IDS.SEPOLIA })
+    await header.openNetworkSelector('Sepolia')
+    await swapPage.page.setViewportSize({ width: 960, height: 800 })
+
+    const uncoveredViewport = await header.networkDialog.evaluate((dialog) => {
+      const rect = dialog.getBoundingClientRect()
+
+      return {
+        top: Math.round(rect.top),
+        right: Math.round(window.innerWidth - rect.right),
+        bottom: Math.round(window.innerHeight - rect.bottom),
+        left: Math.round(rect.left),
+      }
+    })
+
+    expect(uncoveredViewport).toEqual({ top: 0, right: 0, bottom: 0, left: 0 })
+  })
 })
