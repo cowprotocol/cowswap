@@ -65,6 +65,30 @@ describe('BottomDrawer', () => {
     )
   })
 
+  it('renders a full-screen surface without sheet chrome', () => {
+    const { container } = render(
+      <BottomDrawer isOpen fullScreen onOpenChange={jest.fn()}>
+        Content
+      </BottomDrawer>,
+    )
+
+    const popup = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-popup]')
+    const handle = container.ownerDocument.querySelector<HTMLElement>('[data-bottom-drawer-handle]')
+
+    expect(popup).not.toBeNull()
+    expect(handle).toBeNull()
+
+    if (!popup) return
+
+    const popupStyle = getComputedStyle(popup)
+
+    expect(popupStyle.width).toBe('100vw')
+    expect(popupStyle.height).toBe('100dvh')
+    expect(popupStyle.maxHeight).toBe('100dvh')
+    expect(popupStyle.borderRadius).toBe('0')
+    expect(popupStyle.boxShadow).toBe('none')
+  })
+
   it('closes only the nested drawer and restores focus to its opener', () => {
     const onParentOpenChange = jest.fn()
     const onNestedOpenChange = jest.fn()

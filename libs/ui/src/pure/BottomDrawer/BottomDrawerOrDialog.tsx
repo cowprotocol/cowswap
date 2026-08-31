@@ -9,6 +9,8 @@ import { type BaseSurfaceProps } from '../surfaces/BaseSurface.types'
 
 export interface BottomDrawerOrDialogProps extends BaseSurfaceProps {
   variant?: DialogVariant
+  /** Drawer-mode only: expand the surface to the full dynamic viewport. */
+  fullScreen?: boolean
   /**
    * When true, render BottomDrawer; otherwise Dialog.
    * Pass the same value used for `ModalHeader` `titleAs`.
@@ -16,7 +18,12 @@ export interface BottomDrawerOrDialogProps extends BaseSurfaceProps {
   isDrawer: boolean
 }
 
-export function BottomDrawerOrDialog({ variant, isDrawer, ...props }: BottomDrawerOrDialogProps): ReactNode {
+export function BottomDrawerOrDialog({
+  fullScreen,
+  variant,
+  isDrawer,
+  ...props
+}: BottomDrawerOrDialogProps): ReactNode {
   const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
@@ -30,7 +37,7 @@ export function BottomDrawerOrDialog({ variant, isDrawer, ...props }: BottomDraw
   }, [onOpenChangeRef, isDrawer])
 
   if (isDrawer) {
-    return <BottomDrawer {...props} />
+    return <BottomDrawer {...props} fullScreen={fullScreen} />
   }
 
   return <Dialog {...props} variant={variant} />

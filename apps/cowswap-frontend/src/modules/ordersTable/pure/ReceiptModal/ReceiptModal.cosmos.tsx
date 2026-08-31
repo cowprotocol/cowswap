@@ -27,6 +27,8 @@ const SELL_AMOUNT = '1000000000000000'
 const MINIMUM_BUY_AMOUNT = '16906321000000000000'
 const EXECUTED_BUY_AMOUNT = '16935374400000000000'
 const SURPLUS_AMOUNT = '29053000000000000'
+const BUY_EXECUTED_SELL_AMOUNT = '990000000000000'
+const BUY_SURPLUS_AMOUNT = '10000000000000'
 const AVERAGE_MONTH_DURATION_MS = 2_629_800_000
 const CREATION_TIME = new Date(Date.now() - 9 * AVERAGE_MONTH_DURATION_MS)
 const COW_TOKEN = getCowToken()
@@ -87,13 +89,18 @@ function buildOrder({
   receiver = OWNER,
   composableCowInfo,
 }: BuildOrderOptions): ParsedOrder {
-  const executedSellAmount = scaleRawAmount(SELL_AMOUNT, fillBps)
-  const executedBuyAmount = scaleRawAmount(EXECUTED_BUY_AMOUNT, fillBps)
+  const executedSellAmount = scaleRawAmount(
+    kind === OrderKind.BUY && withSurplus ? BUY_EXECUTED_SELL_AMOUNT : SELL_AMOUNT,
+    fillBps,
+  )
+  const executedBuyAmount = scaleRawAmount(kind === OrderKind.BUY ? MINIMUM_BUY_AMOUNT : EXECUTED_BUY_AMOUNT, fillBps)
   const sellAmount = CurrencyAmount.fromRawAmount(WETH_MAINNET, executedSellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(COW_TOKEN, executedBuyAmount)
   const hasFill = fillBps > 0
   const fullyFilled = fillBps === 10_000
-  const surplusAmount = withSurplus ? SURPLUS_AMOUNT : '0'
+  const surplusAmount = withSurplus
+    ? scaleRawAmount(kind === OrderKind.BUY ? BUY_SURPLUS_AMOUNT : SURPLUS_AMOUNT, fillBps)
+    : '0'
 
   return {
     id: `${ORDER_ID.slice(0, -2)}${suffix}`,
@@ -126,7 +133,9 @@ function buildOrder({
       fullyFilled,
       partiallyFilled: hasFill && !fullyFilled,
       surplusAmount: new BigNumber(surplusAmount),
-      surplusPercentage: hasFill ? new BigNumber(surplusAmount).dividedBy(executedBuyAmount) : new BigNumber(0),
+      surplusPercentage: hasFill
+        ? new BigNumber(surplusAmount).dividedBy(kind === OrderKind.BUY ? executedSellAmount : executedBuyAmount)
+        : new BigNumber(0),
       executedFeeAmount: '0',
       executedFee: null,
       executedFeeToken: null,
@@ -195,7 +204,13 @@ const filledLimit = buildOrder({
   withSurplus: true,
   withPartnerFee: true,
 })
-const filledBuy = buildOrder({ suffix: '02', status: OrderStatus.FULFILLED, kind: OrderKind.BUY, fillBps: 10_000 })
+const filledBuy = buildOrder({
+  suffix: '02',
+  status: OrderStatus.FULFILLED,
+  kind: OrderKind.BUY,
+  fillBps: 10_000,
+  withSurplus: true,
+})
 const openLimit = buildOrder({ suffix: '03', status: OrderStatus.PENDING })
 const partiallyFilled = buildOrder({ suffix: '04', status: OrderStatus.PENDING, fillBps: 5_000, withSurplus: true })
 const cancelled = buildOrder({ suffix: '05', status: OrderStatus.CANCELLED })
@@ -234,6 +249,12 @@ const safeTwapPart = buildOrder({
   receiver: SAFE_ADDRESS,
   composableCowInfo: { parentId: TWAP_PARENT_ID, isVirtualPart: false },
 })
+const safeTwapParent = buildOrder({
+  suffix: '11',
+  status: OrderStatus.PENDING,
+  receiver: SAFE_ADDRESS,
+  composableCowInfo: { id: TWAP_PARENT_ID },
+})
 const customRecipient = buildOrder({
   suffix: '10',
   status: OrderStatus.PENDING,
@@ -261,7 +282,7 @@ const Fixtures = {
   'Filled Limit · sell + surplus + fee': (
     <ReceiptFixture order={filledLimit} receiverEnsName="fairlight.eth" showRecreate />
   ),
-  'Filled Limit · buy + no surplus': <ReceiptFixture order={filledBuy} showRecreate />,
+  'Filled Limit · buy + surplus': <ReceiptFixture order={filledBuy} showRecreate />,
   'Open Limit · unfilled + estimated price + actions': (
     <ReceiptFixture order={openLimit} estimatedExecutionPrice={getEstimatedPrice(openLimit)} showCancellation />
   ),
@@ -282,6 +303,9 @@ const Fixtures = {
   'EOA TWAP · scheduled virtual part': <ReceiptFixture order={virtualTwapPart} twapOrder={EOA_TWAP} isTwapPartOrder />,
   'Safe TWAP · partially filled part + metadata': (
     <ReceiptFixture order={safeTwapPart} twapOrder={SAFE_TWAP} isTwapPartOrder showCancellation />
+  ),
+  'Safe TWAP · parent + cancellation action': (
+    <ReceiptFixture order={safeTwapParent} twapOrder={SAFE_TWAP} showCancellation />
   ),
   'Open Limit · custom recipient warning': (
     <ReceiptFixture

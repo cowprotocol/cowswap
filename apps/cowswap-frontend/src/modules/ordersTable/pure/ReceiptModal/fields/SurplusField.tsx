@@ -19,7 +19,8 @@ export function SurplusField({ order }: SurplusFieldProps): ReactNode {
   const { kind, inputToken, outputToken } = order
   const { surplusAmount, surplusPercentage } = order.executionData
 
-  const surplusToken = isSellOrder(kind) ? outputToken : inputToken
+  const isSell = isSellOrder(kind)
+  const surplusToken = isSell ? outputToken : inputToken
 
   if (!surplusToken || !surplusAmount || surplusAmount.isLessThanOrEqualTo(0)) {
     return null
@@ -35,7 +36,7 @@ export function SurplusField({ order }: SurplusFieldProps): ReactNode {
         +<TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
       </styledEl.SurplusValue>
       <styledEl.SurplusPercent>
-        +{formattedPercent}% <Trans>more than min. amount</Trans>
+        +{formattedPercent}% {isSell ? <Trans>more than min. amount</Trans> : <Trans>saved</Trans>}
       </styledEl.SurplusPercent>
     </styledEl.SurplusCard>
   )

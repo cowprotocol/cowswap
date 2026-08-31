@@ -3,6 +3,7 @@ import type { ElementType, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction } from '@cowprotocol/currency'
@@ -26,8 +27,10 @@ import { ordersMock } from '../../test/ordersTable.mock'
 jest.mock('@cowprotocol/common-hooks', () => {
   const actual = jest.requireActual<typeof import('@cowprotocol/common-hooks')>('@cowprotocol/common-hooks')
 
-  return { ...actual, useMediaQuery: () => false, useTimeAgo: () => 'rerender tick' }
+  return { ...actual, useMediaQuery: jest.fn(() => false), useTimeAgo: () => 'rerender tick' }
 })
+
+const mockUseMediaQuery = useMediaQuery as jest.MockedFunction<typeof useMediaQuery>
 
 jest.mock('common/hooks/useCategorizeRecentActivity', () => ({
   isPending: ({ status }: { status: string }) => status === 'pending',
@@ -53,12 +56,14 @@ jest.mock('@cowprotocol/ui', () => {
     }),
     BottomDrawerOrDialog: ({
       children,
+      fullScreen,
       isDrawer,
       isOpen,
       onOpenChange,
       variant,
     }: {
       children: ReactNode
+      fullScreen?: boolean
       isDrawer: boolean
       isOpen: boolean
       onOpenChange(open: boolean): void
@@ -66,6 +71,7 @@ jest.mock('@cowprotocol/ui', () => {
     }) => (
       <div
         data-testid="bottom-drawer-or-dialog"
+        data-full-screen={String(fullScreen)}
         data-is-drawer={String(isDrawer)}
         data-is-open={String(isOpen)}
         data-variant={variant}
@@ -209,6 +215,10 @@ function renderReceipt(options: RenderReceiptOptions = {}): ReturnType<typeof re
 }
 
 describe('ReceiptModal', () => {
+  beforeEach(() => {
+    mockUseMediaQuery.mockReturnValue(false)
+  })
+
   afterEach(() => {
     jest.restoreAllMocks()
   })
@@ -247,6 +257,7 @@ describe('ReceiptModal', () => {
     expect(limitPriceValue && getComputedStyle(limitPriceValue).alignItems).toBe('flex-end')
     expect(screen.getByRole('progressbar').getAttribute('aria-valuenow')).toBe('100')
     expect(screen.getByText('Order surplus')).not.toBeNull()
+    expect(screen.getByText(/more than min\. amount/)).not.toBeNull()
     expect(screen.getByRole('button', { name: /Fees & costs/ }).getAttribute('aria-expanded')).toBe('false')
     expect(screen.getByRole('button', { name: /Order metadata/ }).getAttribute('aria-expanded')).toBe('false')
 
@@ -289,6 +300,18 @@ describe('ReceiptModal', () => {
     expect(screen.queryByRole('progressbar')).toBeNull()
   })
 
+  it('describes filled buy-order surplus as sell-token savings', () => {
+    const order = getOrder({ kind: OrderKind.BUY })
+
+    renderReceipt({ order })
+
+    const surplusCard = screen.getByText('Order surplus').closest('section')
+
+    expect(surplusCard?.getAttribute('title')).toMatch(new RegExp(` ${order.inputToken.symbol}$`))
+    expect(screen.getByText(/saved/)).not.toBeNull()
+    expect(screen.queryByText(/more than min\. amount/)).toBeNull()
+  })
+
   it('uses actual average execution data for a partially filled open order and exposes its actions', () => {
     const baseOrder = getOrder()
     const onDismiss = jest.fn()
@@ -324,6 +347,34 @@ describe('ReceiptModal', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Order actions' }))
     fireEvent.click(screen.getByRole('button', { name: 'Cancel order' }))
 
+    expect(onDismiss).toHaveBeenCalledTimes(1)
+    expect(showCancellationModal).toHaveBeenCalledTimes(1)
+  })
+
+  it('uses a full-screen drawer and footer action rail on mobile', () => {
+    mockUseMediaQuery.mockReturnValue(true)
+    const onDismiss = jest.fn()
+    const showAlternativeOrderModal = jest.fn()
+    const showCancellationModal = jest.fn()
+    const order = getOrder({ status: OrderStatus.PENDING })
+
+    renderReceipt({
+      order,
+      onDismiss,
+      showCancellationModal,
+      alternativeOrderModalContext: { isEdit: true, showAlternativeOrderModal },
+    })
+
+    const overlay = screen.getByTestId('bottom-drawer-or-dialog')
+
+    expect(overlay.getAttribute('data-is-drawer')).toBe('true')
+    expect(overlay.getAttribute('data-full-screen')).toBe('true')
+    expect(screen.queryByRole('button', { name: 'Order actions' })).toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit this order' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel order' }))
+
+    expect(showAlternativeOrderModal).toHaveBeenCalledTimes(1)
     expect(onDismiss).toHaveBeenCalledTimes(1)
     expect(showCancellationModal).toHaveBeenCalledTimes(1)
   })

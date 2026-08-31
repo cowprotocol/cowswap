@@ -62,9 +62,11 @@ import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 interface ReceiptModalContentProps {
   alternativeOrderModalContext?: AlternativeOrderModalContext
   buyAmount: CurrencyAmount<Token>
+  cancelOrder?: Command | null
   chainId: SupportedChainId
   estimatedExecutionPrice: Fraction | null
   executionPrice: Fraction | null
+  isMobile: boolean
   isTwapPartOrder: boolean
   limitPrice: Fraction | null
   order: ParsedOrder
@@ -72,12 +74,21 @@ interface ReceiptModalContentProps {
   twapOrder: TwapOrderItem | null
 }
 
+interface ReceiptModalFooterActionsProps {
+  activityUrl?: string
+  alternativeOrderModalContext?: AlternativeOrderModalContext
+  cancelOrder?: Command | null
+  isFinalized: boolean
+  isMobile: boolean
+}
+
 interface ReceiptModalHeaderProps {
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  cancelOrder?: Command | null
   chainId?: SupportedChainId
+  isMobile: boolean
   onDismiss: Command
   order: ParsedOrder | null
-  showCancellationModal?: Command | null
   titleAs: ElementType
 }
 
@@ -167,6 +178,12 @@ export function ReceiptModal({
   ...contentProps
 }: ReceiptProps): ReactNode {
   const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const cancelOrder = contentProps.showCancellationModal
+    ? () => {
+        onDismiss()
+        contentProps.showCancellationModal?.()
+      }
+    : null
   const handleOpenChange = (open: boolean): void => {
     if (!open) {
       onDismiss()
@@ -174,23 +191,32 @@ export function ReceiptModal({
   }
 
   return (
-    <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
+    <BottomDrawerOrDialog
+      fullScreen
+      isDrawer={isUpToSmall}
+      isOpen={isOpen}
+      onOpenChange={handleOpenChange}
+      variant="narrow"
+    >
       <Modal.Root>
         <ReceiptModalHeader
           alternativeOrderModalContext={contentProps.alternativeOrderModalContext}
+          cancelOrder={cancelOrder}
           chainId={chainId}
+          isMobile={isUpToSmall}
           onDismiss={onDismiss}
           order={order}
-          showCancellationModal={contentProps.showCancellationModal}
           titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title}
         />
         {order && chainId && buyAmount ? (
           <ReceiptModalContent
             alternativeOrderModalContext={contentProps.alternativeOrderModalContext}
             buyAmount={buyAmount}
+            cancelOrder={cancelOrder}
             chainId={chainId}
             estimatedExecutionPrice={contentProps.estimatedExecutionPrice ?? null}
             executionPrice={contentProps.executionPrice ?? null}
+            isMobile={isUpToSmall}
             isTwapPartOrder={contentProps.isTwapPartOrder ?? false}
             limitPrice={contentProps.limitPrice ?? null}
             order={order}
@@ -216,6 +242,8 @@ function ReceiptModalContent({
   estimatedExecutionPrice,
   receiverEnsName,
   alternativeOrderModalContext,
+  cancelOrder,
+  isMobile,
 }: ReceiptModalContentProps): ReactElement {
   const { i18n } = useLingui()
   const createdAgo = useCompactTimeAgo(order.creationTime, i18n.locale)
@@ -415,27 +443,66 @@ function ReceiptModalContent({
           </styledEl.DisclosureItem>
         </styledEl.DisclosureGroup>
 
-        {isFinalized && alternativeOrderModalContext ? (
-          <styledEl.ActionButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-            {alternativeOrderModalContext.isEdit ? <Trans>Edit this order</Trans> : <Trans>Recreate this order</Trans>}
-          </styledEl.ActionButton>
-        ) : null}
+        <ReceiptModalFooterActions
+          activityUrl={activityUrl}
+          alternativeOrderModalContext={alternativeOrderModalContext}
+          cancelOrder={cancelOrder}
+          isFinalized={isFinalized}
+          isMobile={isMobile}
+        />
       </styledEl.ReceiptContent>
     </Modal.Content>
   )
 }
 
+function ReceiptModalFooterActions({
+  activityUrl,
+  alternativeOrderModalContext,
+  cancelOrder,
+  isFinalized,
+  isMobile,
+}: ReceiptModalFooterActionsProps): ReactNode {
+  const showOpenOrderActions = isMobile && !isFinalized
+  const showAlternativeAction = !!alternativeOrderModalContext && (isMobile || isFinalized)
+
+  if (!showAlternativeAction && !(showOpenOrderActions && (activityUrl || cancelOrder))) return null
+
+  return (
+    <styledEl.ActionList>
+      {showOpenOrderActions && activityUrl ? (
+        <styledEl.ActionLink href={activityUrl}>
+          <Trans>View on explorer</Trans> ↗
+        </styledEl.ActionLink>
+      ) : null}
+      {showAlternativeAction && alternativeOrderModalContext ? (
+        <styledEl.ActionButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
+          {alternativeOrderModalContext.isEdit ? <Trans>Edit this order</Trans> : <Trans>Recreate this order</Trans>}
+        </styledEl.ActionButton>
+      ) : null}
+      {showOpenOrderActions && cancelOrder ? (
+        <styledEl.ActionButton $danger onClick={cancelOrder}>
+          <Trans>Cancel order</Trans>
+        </styledEl.ActionButton>
+      ) : null}
+    </styledEl.ActionList>
+  )
+}
+
 function ReceiptModalHeader({
   alternativeOrderModalContext,
+  cancelOrder,
   chainId,
+  isMobile,
   onDismiss,
   order,
-  showCancellationModal,
   titleAs,
 }: ReceiptModalHeaderProps): ReactNode {
   const activityUrl = order && chainId ? getActivityUrl(chainId, order) : undefined
   const showContextMenu =
-    !!order && !getIsFinalizedOrder(order) && !!(activityUrl || showCancellationModal || alternativeOrderModalContext)
+    !isMobile &&
+    !!order &&
+    !getIsFinalizedOrder(order) &&
+    !!(activityUrl || cancelOrder || alternativeOrderModalContext)
 
   return (
     <ModalHeader
@@ -453,14 +520,7 @@ function ReceiptModalHeader({
         showContextMenu ? (
           <OrderContextMenu
             activityUrl={activityUrl}
-            showCancellationModal={
-              showCancellationModal
-                ? () => {
-                    onDismiss()
-                    showCancellationModal()
-                  }
-                : null
-            }
+            showCancellationModal={cancelOrder ?? null}
             alternativeOrderModalContext={alternativeOrderModalContext}
             ariaLabel={t`Order actions`}
             triggerSize={44}

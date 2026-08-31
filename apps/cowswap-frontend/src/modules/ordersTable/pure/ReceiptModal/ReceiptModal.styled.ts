@@ -1,7 +1,7 @@
 import svgDropDownSrc from '@cowprotocol/assets/images/dropdown.svg'
-import { Accordion, UI } from '@cowprotocol/ui'
+import { Accordion, ExternalLink, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export const TitleWrapper = styled.div`
   display: flex;
@@ -335,7 +335,7 @@ export const DisclosureFields = styled.div`
   border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 `
 
-export const ActionButton = styled.button`
+const actionStyles = css`
   display: flex;
   width: 100%;
   min-height: 48px;
@@ -345,7 +345,6 @@ export const ActionButton = styled.button`
   border: 0;
   border-radius: 12px;
   background: transparent;
-  color: var(${UI.COLOR_PRIMARY});
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
@@ -362,4 +361,23 @@ export const ActionButton = styled.button`
     outline: 2px solid var(${UI.COLOR_TEXT});
     outline-offset: 2px;
   }
+`
+
+export const ActionList = styled.div`
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+`
+
+export const ActionButton = styled.button<{ $danger?: boolean }>`
+  ${actionStyles}
+
+  color: ${({ $danger }) => `var(${$danger ? UI.COLOR_DANGER : UI.COLOR_PRIMARY})`};
+`
+
+export const ActionLink = styled(ExternalLink)`
+  ${actionStyles}
+
+  color: var(${UI.COLOR_PRIMARY});
+  text-decoration: none;
 `
