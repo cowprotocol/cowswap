@@ -16,11 +16,6 @@ type Props = {
   params: Promise<{ campaign: string }>
 }
 
-export async function generateStaticParams(): Promise<{ campaign: string }[]> {
-  const campaigns = await getCampaignSummaries()
-  return campaigns.map(({ campaign }) => ({ campaign }))
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const campaign = (await params).campaign
   const label = getCampaignLabel(campaign)
@@ -29,6 +24,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: label,
     description: `Programmatic ${label.toLowerCase()} resources from CoW DAO.`,
   })
+}
+
+export async function generateStaticParams(): Promise<{ campaign: string }[]> {
+  const campaigns = await getCampaignSummaries()
+  return campaigns.map(({ campaign }) => ({ campaign }))
 }
 
 export default async function ResourcesCampaignPage({ params }: Props): Promise<ReactNode> {
