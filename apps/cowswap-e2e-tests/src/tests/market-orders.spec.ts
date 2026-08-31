@@ -79,7 +79,17 @@ test.describe('Market Orders', () => {
       // hit here via `selectTokens` instead of a manual token switch. Typing first against
       // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
       // and the typed amount carries over once USDC/WETH are picked.
+      //
+      // Typing first isn't airtight on its own though: the guard only actually latches once the
+      // typed "1000" has been reparsed into a real `inputCurrencyAmount` against whatever token is
+      // *currently* selected (still the default WETH/USDC pair here) — under CI load that reparse
+      // can still be in flight when `selectTokens` fires, losing the race the same way a bare
+      // `toHaveValue('1000')` check would (that only confirms the input's own optimistic local
+      // echo, not the derived amount downstream). Waiting out a real quote for the still-default
+      // pair is a concrete proxy for "the reparse landed" — a quote fetch can't fire without a
+      // genuinely parsed, non-zero amount — so it's a more reliable gate than any fixed delay.
       await swapPage.enterSellAmount('1000')
+      await swapPage.waitForQuote()
       await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
@@ -972,6 +982,14 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
+      // The default buy side (USDC) needs to have actually resolved in React state before picking
+      // a new sell token below — otherwise `useNavigateOnCurrencySelection`'s
+      // `lastKnownOutputCurrencyIdRef` (which preserves whichever side isn't being picked) can read
+      // its unset initial value and wipe the buy side back to "no token selected" instead of
+      // preserving USDC. See [CS-104]'s identical race in the opposite direction for the full
+      // mechanism.
+      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
+
       // Typed before switching the sell token to ETH, not after — see [CS-68]'s note on
       // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
       // with no amount set yet is selected. That mitigation alone isn't airtight for a *native* ETH
@@ -1032,6 +1050,18 @@ test.describe('Market Orders', () => {
 
       // WETH is already the default sell token on Sepolia (see known quirks), so only the buy side
       // needs switching — typed before switching, not after, same auto-fill race as [CS-68]/[CS-103].
+      //
+      // `useNavigateOnCurrencySelection`'s `lastKnownInputCurrencyIdRef` preserves whichever side
+      // isn't being picked (the sell side here) by reading it live off `inputCurrency` at click
+      // time — but that ref only ever latches once `inputCurrency` has actually resolved to the
+      // default WETH in React state. Right after `goto()` that resolution is still in flight; if
+      // `searchAndPick('ETH')` below applies before it lands, the ref reads its unset initial
+      // value and wipes the sell side back to "no token selected" instead of preserving WETH
+      // (`inputCurrencyId: null` in the resulting URL state) — observed as this test's sell balance
+      // check finding no `#input-currency-input` token at all. Waiting for the sell selector to
+      // actually show "WETH" is concrete proof `inputCurrency` resolved and the ref latched, before
+      // doing anything that could race it.
+      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -1148,7 +1178,12 @@ test.describe('Market Orders', () => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // Typed before selecting tokens, not after — dodges the auto-fill race documented at [CS-59].
+      // The extra `waitForQuote()` before `selectTokens` is the same belt-and-suspenders fix
+      // [CS-59] needed: it waits out a real quote for the still-default pair as concrete proof the
+      // typed "1000" was actually reparsed into a real amount (and so latched the "amount already
+      // set" guard) before the token switch that would otherwise race it.
       await swapPage.enterSellAmount('1000')
+      await swapPage.waitForQuote()
       await selectTokens(swapPage, 'USDC', 'WETH')
       await swapPage.waitForQuote()
 
