@@ -49,7 +49,6 @@ function buildSymbolDescriptor(
       description,
       exchange: PRO_CHART_EXCHANGE_NAME,
       format: 'price',
-      full_name: ticker,
       has_daily: true,
       has_intraday: true,
       has_weekly_and_monthly: true,
@@ -68,7 +67,6 @@ function buildSymbolDescriptor(
     searchSymbol: {
       description,
       exchange: PRO_CHART_EXCHANGE_NAME,
-      full_name: ticker,
       symbol: ticker,
       ticker,
       type: PRO_CHART_SYMBOL_TYPE,

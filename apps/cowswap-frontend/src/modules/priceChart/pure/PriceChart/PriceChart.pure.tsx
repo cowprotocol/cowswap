@@ -14,7 +14,6 @@ import { PriceChartStatus } from './PriceChartStatus.pure'
 import { logPriceChart } from '../../api'
 import {
   type ChartPropertiesOverrides,
-  type CustomFormatters,
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../../lib/charting_library'
@@ -36,7 +35,6 @@ import {
 import { createPriceChartDatafeed } from '../../lib/tradingViewDatafeed.service'
 import { loadSavedPriceChartState, savePriceChartState } from '../../lib/tradingViewPersistence.utils'
 
-import type { IExecutionLineAdapter } from '../../lib/charting_library/charting_library'
 import type { PriceChartBar, PriceChartSummary } from '../../lib/priceChart.types'
 import type {
   PriceChartHistoryStatus,
@@ -45,12 +43,12 @@ import type {
 } from '../../lib/tradingView.types'
 
 export interface ExecutionMarkerEntity {
-  adapter: IExecutionLineAdapter
+  entityId: PriceChartShapePromise
   signature: string
 }
 
 export interface HorizontalLineEntity {
-  entityId: PriceChartShapeId
+  entityId: PriceChartShapePromise
   signature: string
 }
 
@@ -61,7 +59,7 @@ export interface SyncHorizontalLinesParams {
   widget: IChartingLibraryWidget | null
 }
 
-type PriceChartShapeId = NonNullable<ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>>
+type PriceChartShapePromise = ReturnType<ReturnType<IChartingLibraryWidget['activeChart']>['createShape']>
 
 export function PriceChartPure({
   activeSymbol,
@@ -176,10 +174,10 @@ export function syncExecutionMarkers({
 
   const activeIds = new Set(markers.map((marker) => marker.id))
 
-  entities.forEach(({ adapter }, id) => {
+  entities.forEach(({ entityId }, id) => {
     if (activeIds.has(id)) return
 
-    adapter.remove()
+    removeShape(widget, entityId)
     entities.delete(id)
   })
 
@@ -200,22 +198,35 @@ export function syncExecutionMarkers({
     const existing = entities.get(marker.id)
 
     if (existing?.signature === signature) return
-    if (existing) existing.adapter.remove()
+    if (existing) removeShape(widget, existing.entityId)
 
-    const adapter = widget
-      .activeChart()
-      .createExecutionShape({ disableUndo: true })
-      .setArrowColor(color)
-      .setArrowHeight(12)
-      .setArrowSpacing(4 + marker.stackIndex * 10)
-      .setDirection(marker.side)
-      .setPrice(marker.barPrice)
-      .setText('')
-      .setTextColor(color)
-      .setTime(marker.barTimestamp)
-      .setTooltip(marker.title)
+    const isBuy = marker.side === 'buy'
+    const entityId = widget.activeChart().createShape(
+      { price: marker.barPrice, time: marker.barTimestamp },
+      {
+        disableSave: true,
+        disableSelection: true,
+        disableUndo: true,
+        lock: true,
+        overrides: isBuy
+          ? {
+              'linetoolarrowmarkup.arrowColor': color,
+              'linetoolarrowmarkup.color': color,
+              'linetoolarrowmarkup.showLabel': false,
+            }
+          : {
+              'linetoolarrowmarkdown.arrowColor': color,
+              'linetoolarrowmarkdown.color': color,
+              'linetoolarrowmarkdown.showLabel': false,
+            },
+        shape: isBuy ? 'arrow_up' : 'arrow_down',
+        showInObjectsTree: false,
+        text: marker.title,
+        zOrder: 'top',
+      },
+    )
 
-    entities.set(marker.id, { adapter, signature })
+    entities.set(marker.id, { entityId, signature })
   })
 }
 
@@ -227,7 +238,7 @@ export function syncHorizontalLines({ entities, referenceLines, ticker, widget }
   entities.forEach(({ entityId }, id) => {
     if (activeIds.has(id)) return
 
-    widget.activeChart().removeEntity(entityId, { disableUndo: true })
+    removeShape(widget, entityId)
     entities.delete(id)
   })
 
@@ -246,7 +257,7 @@ export function syncHorizontalLines({ entities, referenceLines, ticker, widget }
 
     if (existing?.signature === signature) return
 
-    if (existing) widget.activeChart().removeEntity(existing.entityId, { disableUndo: true })
+    if (existing) removeShape(widget, existing.entityId)
 
     const entityId = widget.activeChart().createShape(
       {
@@ -272,8 +283,6 @@ export function syncHorizontalLines({ entities, referenceLines, ticker, widget }
         zOrder: 'top',
       },
     )
-
-    if (entityId === null) return
 
     entities.set(referenceLine.id, { entityId, signature })
   })
@@ -334,8 +343,11 @@ function isDarkColor(hexOrRgb: string): boolean {
   return true
 }
 
-function removeExecutionMarkers(entities: Map<string, ExecutionMarkerEntity>): void {
-  entities.forEach(({ adapter }) => adapter.remove())
+function removeExecutionMarkers(
+  widget: IChartingLibraryWidget | null,
+  entities: Map<string, ExecutionMarkerEntity>,
+): void {
+  if (widget) entities.forEach(({ entityId }) => removeShape(widget, entityId))
   entities.clear()
 }
 
@@ -344,10 +356,14 @@ function removeHorizontalLines(
   entities: Map<string, HorizontalLineEntity>,
 ): void {
   if (widget) {
-    entities.forEach(({ entityId }) => widget.activeChart().removeEntity(entityId, { disableUndo: true }))
+    entities.forEach(({ entityId }) => removeShape(widget, entityId))
   }
 
   entities.clear()
+}
+
+function removeShape(widget: IChartingLibraryWidget, entityId: PriceChartShapePromise): void {
+  void entityId.then((id) => widget.activeChart().removeEntity(id, { disableUndo: true })).catch(() => undefined)
 }
 
 function useTradingViewWidget(
@@ -420,12 +436,11 @@ function useTradingViewWidget(
         autosize: true,
         container: containerId,
         custom_css_url: PRO_CHART_CSS_PATH,
-        // TradingView accepts partial custom formatters, but its bundled type requires date and time formatters.
         custom_formatters: {
           priceFormatterFactory: () => ({
             format: (value: number) => formatPriceChartValue(value, locale),
           }),
-        } as unknown as CustomFormatters,
+        },
         datafeed,
         disabled_features: [
           'create_volume_indicator_by_default',
@@ -505,7 +520,7 @@ function useTradingViewWidget(
         const wasWidgetReady = isWidgetReadyRef.current
         isWidgetReadyRef.current = false
         removeHorizontalLines(widget, referenceLineEntities)
-        removeExecutionMarkers(executionMarkerEntities)
+        removeExecutionMarkers(widget, executionMarkerEntities)
         if (widget && isCrosshairSubscribed) {
           widget.activeChart().crossHairMoved().unsubscribe(null, handleCrossHairMoved)
         }

@@ -253,13 +253,9 @@ function reportReadyHistory(params: HistoryLoaderParams, bars: PriceChartBar[]):
 
 function resolveSymbolFromInfo(
   symbols: PriceChartSymbolDescriptor[],
-  symbolInfo: Pick<LibrarySymbolInfo, 'name' | 'ticker' | 'full_name'>,
+  symbolInfo: Pick<LibrarySymbolInfo, 'name' | 'ticker'>,
 ): PriceChartSymbolDescriptor | undefined {
-  return (
-    (symbolInfo.ticker && findChartSymbol(symbols, symbolInfo.ticker)) ||
-    findChartSymbol(symbols, symbolInfo.name) ||
-    findChartSymbol(symbols, symbolInfo.full_name)
-  )
+  return (symbolInfo.ticker && findChartSymbol(symbols, symbolInfo.ticker)) || findChartSymbol(symbols, symbolInfo.name)
 }
 
 function setFirstRequestStatus(

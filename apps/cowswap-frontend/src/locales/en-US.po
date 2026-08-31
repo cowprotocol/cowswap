@@ -1595,13 +1595,9 @@ msgstr "Unsupported wallet"
 msgid "Expanded results from inactive Token Lists"
 msgstr "Expanded results from inactive Token Lists"
 
-#. placeholder {0}: execution.activeAmount
-#. placeholder {1}: execution.activeTokenSymbol
-#. placeholder {2}: execution.counterAmount
-#. placeholder {3}: execution.counterTokenSymbol
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
-msgid "<0>{0}</0> {1} for <1>{2}</1> {3}"
-msgstr "<0>{0}</0> {1} for <1>{2}</1> {3}"
+#~ msgid "<0>{0}</0> {1} for <1>{2}</1> {3}"
+#~ msgstr "<0>{0}</0> {1} for <1>{2}</1> {3}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "No hooks match your search."
@@ -1767,6 +1763,12 @@ msgstr "Please contact CoW Swap support!"
 msgid "CoW AMM"
 msgstr "CoW AMM"
 
+#. placeholder {0}: execution.activeAmount
+#. placeholder {1}: execution.activeTokenSymbol
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChart/SimplePriceChart.pure.tsx
+msgid "<0>{0}</0> {1}"
+msgstr "<0>{0}</0> {1}"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "Too much time between parts"
 msgstr "Too much time between parts"
@@ -1790,6 +1792,10 @@ msgstr "Price impact due to current liquidity levels and estimated swap fees and
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings/PriceChartSettings.container.tsx
 msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -5612,8 +5618,8 @@ msgid "Update Pre-hook"
 msgstr "Update Pre-hook"
 
 #: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
-msgid "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
-msgstr "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+#~ msgid "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+#~ msgstr "Bought {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Governance"
@@ -6855,8 +6861,8 @@ msgstr "Rewards hub - My Rewards"
 #~ msgstr "Swaps just got smarter"
 
 #: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
-msgid "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
-msgstr "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+#~ msgid "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
+#~ msgstr "Sold {formattedActiveAmount} {activeTokenSymbol} for {formattedCounterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -7716,6 +7722,10 @@ msgstr "Cancel order"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Your order was created on this date & time. It will remain open until it expires or is filled."
 msgstr "Your order was created on this date & time. It will remain open until it expires or is filled."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts

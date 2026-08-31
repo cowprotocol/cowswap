@@ -131,7 +131,7 @@ The simple chart is adapted from the GPL-3.0-or-later Uniswap interface chart:
 - `lib/tradingView*.ts`: TradingView adapter/datafeed glue
 - `lib/tradingViewPersistence.utils.ts`: local storage save/load helpers for chart state
 - `lib/symbolCatalog.ts`: swap-derived chart symbols
-- `lib/charting_library/`: vendored TradingView runtime types/loader
+- `lib/charting_library/`: CoW-owned TradingView loader and structural types
 - `pure/PriceChart/PriceChart.container.tsx`
 - `pure/PriceChart/PriceChart.pure.tsx`
 - `pure/PriceChart/PriceChart.styled.ts`

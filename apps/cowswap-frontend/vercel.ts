@@ -59,7 +59,7 @@ const csp = buildCsp([
   ['media-src', ['*', 'data:', 'blob:']],
   ['frame-src', ['*']],
   ['frame-ancestors', ['*']],
-  ['worker-src', ["'self'"]],
+  ['worker-src', ["'self'", 'blob:']],
   ['manifest-src', ["'self'"]],
   ['base-uri', ["'self'"]],
   ['form-action', ["'self'"]],

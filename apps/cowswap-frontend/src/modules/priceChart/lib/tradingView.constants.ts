@@ -1,4 +1,4 @@
-import type { ResolutionString } from './charting_library'
+import { TRADING_VIEW_LIBRARY_PATH, type ResolutionString } from './charting_library'
 
 const resolutionString = (value: string): ResolutionString => value as ResolutionString
 
@@ -6,7 +6,7 @@ export const PRO_CHART_CONTAINER_ID = 'cow-swap-pro-chart'
 export const PRO_CHART_EXCHANGE_NAME = 'CoW Swap'
 export const PRO_CHART_EXCHANGE_VALUE = 'cow-swap'
 export const PRO_CHART_SYMBOL_TYPE = 'spot crypto'
-export const PRO_CHART_LIBRARY_PATH = '/charting_library/'
+export const PRO_CHART_LIBRARY_PATH = TRADING_VIEW_LIBRARY_PATH
 export const PRO_CHART_CSS_PATH = '/tv.css'
 export const PRO_CHART_DEFAULT_INTERVAL = resolutionString('1D')
 export const PRO_CHART_DISABLE_BACKFILL_REQUESTS = true

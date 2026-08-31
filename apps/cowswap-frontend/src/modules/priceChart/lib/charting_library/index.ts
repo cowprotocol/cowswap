@@ -1,7 +1,9 @@
-import type { ChartingLibraryWidgetConstructor } from './charting_library'
+import type { ChartingLibraryWidgetConstructor } from './chartingLibrary.types'
 
 const TRADING_VIEW_SCRIPT_ID = 'cow-swap-trading-view-script'
-const TRADING_VIEW_SCRIPT_SRC = '/charting_library/charting_library.js'
+const TRADING_VIEW_VERSION = '32.1.0'
+export const TRADING_VIEW_LIBRARY_PATH = `https://files.cow.fi/charting-library/${TRADING_VIEW_VERSION}/`
+const TRADING_VIEW_SCRIPT_SRC = `${TRADING_VIEW_LIBRARY_PATH}charting_library.standalone.js`
 
 type TradingViewWindow = Window & {
   TradingView?: {
@@ -79,4 +81,4 @@ export type {
   ResolutionString,
   SearchSymbolResultItem,
   SearchSymbolsCallback,
-} from './charting_library'
+} from './chartingLibrary.types'

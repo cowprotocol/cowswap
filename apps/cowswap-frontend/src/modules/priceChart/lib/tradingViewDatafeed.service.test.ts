@@ -49,7 +49,6 @@ function createSymbolDescriptor(baseAsset: PriceChartAssetDescriptor): PriceChar
       description: ticker,
       exchange: 'CoW Swap',
       format: 'price',
-      full_name: ticker,
       has_daily: true,
       has_intraday: true,
       has_weekly_and_monthly: true,
@@ -67,7 +66,6 @@ function createSymbolDescriptor(baseAsset: PriceChartAssetDescriptor): PriceChar
     searchSymbol: {
       description: ticker,
       exchange: 'CoW Swap',
-      full_name: ticker,
       symbol: ticker,
       ticker,
       type: 'spot crypto',
