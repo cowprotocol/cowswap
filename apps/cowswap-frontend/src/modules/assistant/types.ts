@@ -154,5 +154,10 @@ export interface AssistantUiContext {
   lastFill?: AssistantFill
   /** Why the form's button is disabled, when it is. */
   formBlocker?: AssistantFormBlocker
+  /**
+   * Present only while the swap form is behind the cross-chain unlock screen — a
+   * promo a new device meets before it can trade. Absent in the ordinary case.
+   */
+  formCovered?: true
   approval?: AssistantApproval | null
 }

@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { ALL_SUPPORTED_CHAINS_MAP, OrderKind } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useUpdateSwapRawState } from 'modules/swap'
 import { parameterizeTradeRoute, useTradeConfirmActions } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
@@ -50,6 +51,7 @@ export function useApplyProposal(): (proposal: AssistantProposal) => Promise<App
   const navigate = useNavigate()
   const { onDismiss } = useTradeConfirmActions()
   const onSelectNetwork = useOnSelectNetwork()
+  const updateSwapState = useUpdateSwapRawState()
   const { chainId: walletChainId } = useWalletInfo()
 
   return useCallback(
@@ -106,6 +108,18 @@ export function useApplyProposal(): (proposal: AssistantProposal) => Promise<App
       console.info('[assistant] applying proposal →', pathname, search)
       navigate({ pathname, search })
 
+      // Lift the cross-chain unlock screen if it's still covering the form.
+      //
+      // `isUnlocked` lives in local storage and starts false, so a new device — or
+      // cleared storage — meets a full-width promo over the trade form. The trade
+      // loaded correctly behind it and could not be seen or quoted, which is the
+      // same failure as the success screen: a card claiming success over a form
+      // nobody can look at.
+      //
+      // Idempotent, and only ever in the direction the person is already heading:
+      // they asked for a trade, and this is what the screen's own button does.
+      updateSwapState({ isUnlocked: true })
+
       // Close the trade confirmation if it's still up. After a swap settles, the
       // widget stays on "Transaction completed!", which covers the form — so the
       // card said "Loaded into the form" while the form was behind a success screen
@@ -118,7 +132,7 @@ export function useApplyProposal(): (proposal: AssistantProposal) => Promise<App
 
       return { ok: true }
     },
-    [navigate, onDismiss, onSelectNetwork, walletChainId],
+    [navigate, onDismiss, onSelectNetwork, updateSwapState, walletChainId],
   )
 }
 

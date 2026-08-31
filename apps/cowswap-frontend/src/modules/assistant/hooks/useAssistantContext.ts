@@ -11,6 +11,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { executionPriceAtom, useRateImpact } from 'modules/limitOrders'
+import { swapRawStateAtom } from 'modules/swap'
 import {
   DEFAULT_TRADE_DERIVED_STATE,
   TradeType,
@@ -105,6 +106,7 @@ export function useAssistantContext(): AssistantUiContext {
   const priceImpact = useTradePriceImpact()
   const rateImpact = useRateImpact()
   const executionPrice = useAtomValue(executionPriceAtom)
+  const { isUnlocked } = useAtomValue(swapRawStateAtom)
   const tradeTypeInfo = useTradeTypeInfo()
   const { values: balances, chainId: balancesChainId, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const tokensByAddress = useTokensByAddressMap()
@@ -142,6 +144,9 @@ export function useAssistantContext(): AssistantUiContext {
       approval,
       // Absent when nothing is blocking, so silence stays the default.
       ...(formBlocker ? { formBlocker } : {}),
+      // The unlock screen covers the swap form entirely, so a quote can't be
+      // fetched and nothing loaded there can be seen. Only relevant on swap.
+      ...(!isLimit && !isUnlocked ? { formCovered: true as const } : {}),
       // Absent while unknown, so the model has nothing to mistake for an answer.
       ...(unavailable ? { holdingsUnavailable: unavailable } : { holdings }),
       ...(!unavailable && truncated ? { holdingsTruncated: true } : {}),
@@ -161,6 +166,7 @@ export function useAssistantContext(): AssistantUiContext {
     tokensByAddress,
     approval,
     formBlocker,
+    isUnlocked,
   ])
 }
 
