@@ -137,6 +137,7 @@ export const NotificationSettingsIcon = styled.button`
 const BellIcon = styled(SVG)`
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   fill: currentColor;
   margin-right: 6px;
 `
@@ -148,7 +149,11 @@ export const EnableAlertsButton = styled.button`
   padding: 6px 12px;
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
-  white-space: nowrap;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: left;
   display: flex;
   align-items: center;
   transition:

@@ -3522,7 +3522,7 @@ msgstr "Déléguer vos"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "<0>Enable trade alerts</0> for fills and expiries"
-msgstr "<0>Activez les alertes de trade</0> pour les exécutions et expirations"
+msgstr "<0>Activer les alertes de trade</0> lorsqu’un ordre est exécuté ou arrive à expiration"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #~ msgid "Advanced Order Settings"
@@ -8412,7 +8412,7 @@ msgstr "Suivre cet ordre"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Get Telegram updates when it fills or expires."
-msgstr "Recevez des mises à jour sur Telegram lorsque votre ordre est exécuté ou expire."
+msgstr "Recevez des mises à jour sur Telegram lorsque votre ordre est exécuté ou arrive à expiration."
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Enable Telegram alerts"
@@ -8448,7 +8448,7 @@ msgstr "Ouvrir dans Telegram"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Waiting for you to tap Start…"
-msgstr "En attente de votre appui sur « Démarrer »…"
+msgstr "Nous attendons que vous appuyiez sur « Démarrer »…"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Preparing your connect link…"

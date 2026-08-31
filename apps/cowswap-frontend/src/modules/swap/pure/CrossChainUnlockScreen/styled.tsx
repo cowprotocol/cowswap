@@ -52,7 +52,7 @@ export const Content = styled.div`
 
 export const Title = styled.h2`
   color: inherit;
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 800;
   hyphens: auto;
   line-height: 1.2;

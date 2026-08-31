@@ -3522,7 +3522,7 @@ msgstr "Delegar su"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "<0>Enable trade alerts</0> for fills and expiries"
-msgstr "<0>Habilitar alertas comerciales</0> para rellenos y expiraciones"
+msgstr "<0>Activar alertas de operaciones</0> cuando una orden se ejecute o expire"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #~ msgid "Advanced Order Settings"
