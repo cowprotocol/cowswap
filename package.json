@@ -62,7 +62,7 @@
     "prepare": "husky",
     "analyze-build": "rm -rf build/cowswap && cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build:cowswap -- --skip-nx-cache",
     "bundle:size": "node node_modules/@cowprotocol/dx/bundle-size.mjs",
-    "install:ci": "node tools/scripts/install.js"
+    "install:ci": "pnpm install --frozen-lockfile"
   },
   "browser": {
     "crypto": false

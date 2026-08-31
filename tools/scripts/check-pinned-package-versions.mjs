@@ -17,6 +17,8 @@ const dependencySections = [
 const scanRoots = ['apps', 'libs']
 const ignoredDirs = new Set(['node_modules'])
 
+const GITHUB_PACKAGES_DOWNLOAD_PREFIX = 'https://npm.pkg.github.com/download/'
+
 const exactSemverRegex = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const npmAliasExactRegex = /^npm:.+@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 
@@ -45,7 +47,9 @@ function isPinnedVersion(spec) {
   if (npmAliasExactRegex.test(spec)) return true
 
   if (
-    (spec.startsWith('https://') && spec.endsWith('.tgz')) ||
+    // GitHub Packages download URLs end in a content hash rather than .tgz, and embed the
+    // exact version — at least as pinned as an exact semver.
+    (spec.startsWith('https://') && (spec.endsWith('.tgz') || spec.startsWith(GITHUB_PACKAGES_DOWNLOAD_PREFIX))) ||
     spec.startsWith('file:') ||
     spec.startsWith('link:') ||
     spec.startsWith('portal:') ||
