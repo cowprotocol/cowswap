@@ -38,22 +38,18 @@ export const baseGlobalStyles = css`
     appearance: none;
   }
 
-  // Inputs match :focus-visible on mouse click, so they keep outline: none.
-  button,
-  textarea,
-  select {
-    &:focus-visible {
-      outline: 1.5px dotted var(${UI.COLOR_TEXT});
-      outline-offset: 2px;
-    }
-  }
-
   button {
     user-select: none;
     cursor: pointer;
 
     &:disabled {
       cursor: not-allowed;
+    }
+
+    // Default outline only for buttons because inputs/textareas match :focus-visible on mouse click, so they keep outline: none.
+    &:focus-visible {
+      outline: 1.5px dotted var(${UI.COLOR_TEXT});
+      outline-offset: 2px;
     }
   }
 
