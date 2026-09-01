@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useConnection } from 'wagmi'
 
 import { isSupportedChainId } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 
 import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
 
@@ -18,7 +19,7 @@ export function WalletChainUrlSyncUpdater(): null {
 
   useEffect(() => {
     // Only sync supported chains from a connected wallet
-    if (isConnected && isSupportedChainId(chainId) && chainId !== prevChainIdRef.current) {
+    if (isConnected && isSupportedChainId(chainId) && isEvmChain(chainId) && chainId !== prevChainIdRef.current) {
       setChainIdToUrl(chainId)
     }
     prevChainIdRef.current = chainId
