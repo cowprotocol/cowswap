@@ -114,7 +114,7 @@ export function NotificationSettings({ children, isSettingsOpen }: NotificationS
           <SettingsRow className="disabled">
             <RowBetween>
               <span>
-                <Trans>Order expired</Trans>
+                <Trans>Order expirations</Trans>
               </span>
               <HoverTooltip
                 content={<DisabledToggleTooltipMessage />}
