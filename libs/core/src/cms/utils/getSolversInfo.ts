@@ -5,7 +5,7 @@ import { querySerializer } from './querySerializer'
 
 import { DEFAULT_CMS_REQUEST_TTL } from '../consts'
 import { CmsSolversInfo } from '../types'
-import { getCmsClient, PROD_CMS_BASE_URL } from '../utils'
+import { getProdCmsClient } from '../utils'
 
 /**
  * Request parameters are static, hence the cache key is also static
@@ -29,7 +29,7 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
 }
 
 async function fetchSolversInfo(): Promise<CmsSolversInfo | null> {
-  const cmsClient = getCmsClient(PROD_CMS_BASE_URL)
+  const cmsClient = getProdCmsClient()
 
   return cmsClient
     .GET('/solvers', {
