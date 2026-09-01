@@ -96,12 +96,12 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
         return
       }
 
-      const isOptimalQuote = fetchParams.priceQuality === PriceQuality.OPTIMAL
+      const isVerifiedQuote = fetchParams.priceQuality === PriceQuality.VERIFIED
 
       update(sellTokenAddress, {
         quote,
         bridgeQuote,
-        ...(isOptimalQuote ? { isLoading: false } : null),
+        ...(isVerifiedQuote ? { isLoading: false } : null),
         error: null,
         hasParamsChanged: false,
         fetchParams,

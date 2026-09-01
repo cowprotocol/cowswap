@@ -260,7 +260,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       account: Boolean(walletInfo.account),
       appData: Boolean(appData),
       quote: Boolean(tradeQuote.quote),
-      quoteIsOptimal: quotePriceQuality === PriceQuality.OPTIMAL,
+      quoteIsVerified: quotePriceQuality === PriceQuality.VERIFIED,
       orderKind: Boolean(derivedTradeState?.orderKind),
       settlementContract: Boolean(settlementContract),
       uiOrderType: Boolean(uiOrderType),

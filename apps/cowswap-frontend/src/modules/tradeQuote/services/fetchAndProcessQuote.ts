@@ -26,7 +26,7 @@ import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getVerifiedQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 
 export async function fetchAndProcessQuote(
@@ -144,10 +144,10 @@ async function fetchSwapQuote(
   }
 
   const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+  const isVerifiedQuote = priceQuality === PriceQuality.VERIFIED
 
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
+  const request = isVerifiedQuote
+    ? getVerifiedQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 
   try {
