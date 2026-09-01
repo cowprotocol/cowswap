@@ -33,6 +33,7 @@ export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/page
           populate: { shareImage: { fields: ['url'] } },
         },
         authorsBio: { fields: ['name'] },
+        categories: { fields: ['name'] },
       }
   }
 }

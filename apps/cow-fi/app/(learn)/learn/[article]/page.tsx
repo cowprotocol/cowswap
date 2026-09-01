@@ -2,32 +2,20 @@ import type { ReactNode } from 'react'
 
 import { notFound } from 'next/navigation'
 
-import {
-  Category,
-  getAllArticleSlugs,
-  getArticleBySlug,
-  getArticles,
-  getCategories,
-  SharedRichTextComponent,
-} from '../../../../services/cms'
+import { Category, getAllArticleSlugs, getArticleBySlug, getArticles, getCategories } from '../../../../services/cms'
 
 import type { Metadata } from 'next'
 
 import { ArticlePageComponent } from '@/components/ArticlePageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
+import { buildArticleStructuredData, getArticleSeoData, serializeJsonLd } from '@/util/articleSeo'
 import { isValidCmsSlug } from '@/util/cmsValidation'
 import { fetchArticleWithRetry } from '@/util/fetchHelpers'
 import { getPageMetadata } from '@/util/getPageMetadata'
-import { stripHtmlTags } from '@/util/stripHTMLTags'
 
 // Next.js requires revalidate to be a literal number for static analysis
 // 12 hours (43200 seconds) - balanced between freshness and cache efficiency
 export const revalidate = 43200
-
-// Maximum length for metadata descriptions. When content exceeds MAX_LENGTH,
-// we truncate to TRUNCATE_LENGTH (MAX_LENGTH - 3) to make room for "..." ellipsis
-const METADATA_DESCRIPTION_MAX_LENGTH = 150
-const METADATA_DESCRIPTION_TRUNCATE_LENGTH = METADATA_DESCRIPTION_MAX_LENGTH - 3
 
 type Props = {
   params: Promise<{ article: string }>
@@ -40,107 +28,100 @@ export default async function ArticlePage({ params }: Props): Promise<ReactNode>
     return notFound()
   }
 
-  try {
-    const article = await fetchArticleWithRetry(articleSlug)
+  const article = await fetchArticleWithRetry(articleSlug)
 
-    if (!article) {
-      return notFound()
-    }
+  if (!article) {
+    return notFound()
+  }
 
-    // Fetch featured articles
-    const featuredArticlesResponse = await getArticles({
-      filters: {
-        featured: {
-          $eq: true,
-        },
+  // Fetch featured articles
+  const featuredArticlesResponse = await getArticles({
+    filters: {
+      featured: {
+        $eq: true,
       },
-      pageSize: FEATURED_ARTICLES_PAGE_SIZE,
-    })
-    const featuredArticles = featuredArticlesResponse.data
+    },
+    pageSize: FEATURED_ARTICLES_PAGE_SIZE,
+  })
+  const featuredArticles = featuredArticlesResponse.data
 
-    // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
-    const readMoreArticles = featuredArticles.slice(0, 3)
-    const categoriesResponse = await getCategories()
-    const allCategories =
-      categoriesResponse?.map((category: Category) => ({
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-      })) || []
+  // Use first 3 featured articles for "Read more" section to ensure deterministic ISR caching
+  const readMoreArticles = featuredArticles.slice(0, 3)
+  const categoriesResponse = await getCategories()
+  const allCategories =
+    categoriesResponse?.map((category: Category) => ({
+      name: category?.attributes?.name || '',
+      slug: category?.attributes?.slug || '',
+    })) || []
 
-    return (
+  return (
+    <>
+      <script
+        id="article-structured-data"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(buildArticleStructuredData(article, articleSlug)) }}
+      />
       <ArticlePageComponent
         article={article}
         randomArticles={readMoreArticles}
         featuredArticles={featuredArticles}
         allCategories={allCategories}
       />
-    )
-  } catch (error) {
-    console.error(`Error fetching article ${articleSlug}:`, error)
-    return notFound()
-  }
+    </>
+  )
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const articleSlug = (await params).article
 
   if (!articleSlug || !isValidCmsSlug(articleSlug)) {
-    return getPageMetadata({
-      title: 'Article Not Found',
-      description: 'The requested article could not be found.',
-    })
+    return getMissingArticleMetadata()
   }
 
-  try {
-    const article = await getArticleBySlug(articleSlug)
-    if (!article || !article.attributes) {
-      return getPageMetadata({
-        title: 'Article Not Found',
-        description: 'The requested article could not be found.',
-      })
-    }
+  const article = await getArticleBySlug(articleSlug)
+  if (!article || !article.attributes) {
+    return getMissingArticleMetadata()
+  }
 
-    const attributes = article.attributes
-    const { title, blocks, description, cover } = attributes
-    const coverImageUrl = cover?.data?.attributes?.url
+  const seo = getArticleSeoData(article, articleSlug)
+  const pageMetadata = getPageMetadata({
+    absoluteTitle: `${seo.title} - CoW DAO`,
+    description: seo.description,
+    image: seo.imageUrl,
+  })
 
-    const content =
-      blocks?.map((block: SharedRichTextComponent) => (isRichTextComponent(block) ? block.body : '')).join(' ') || ''
-    const plainContent = stripHtmlTags(content)
-
-    return getPageMetadata({
-      absoluteTitle: `${title} - CoW DAO`,
-      description: description
-        ? stripHtmlTags(description)
-        : plainContent.length > METADATA_DESCRIPTION_MAX_LENGTH
-          ? stripHtmlTags(plainContent.substring(0, METADATA_DESCRIPTION_TRUNCATE_LENGTH)) + '...'
-          : stripHtmlTags(plainContent),
-      image: coverImageUrl,
-    })
-  } catch (error) {
-    console.error(`Error generating metadata for article ${articleSlug}:`, error)
-    return getPageMetadata({
-      title: 'Article',
-      description: 'Loading article...',
-    })
+  return {
+    ...pageMetadata,
+    alternates: { canonical: seo.canonicalUrl },
+    authors: seo.authorNames.map((name) => ({ name })),
+    publisher: 'CoW DAO',
+    openGraph: {
+      ...pageMetadata.openGraph,
+      type: 'article',
+      url: seo.canonicalUrl,
+      publishedTime: seo.publishedTime,
+      modifiedTime: seo.modifiedTime,
+      section: seo.categoryNames[0],
+    },
   }
 }
 
 export async function generateStaticParams(): Promise<{ article: string }[]> {
-  try {
-    const slugs = await getAllArticleSlugs()
-    return slugs.map((article) => ({ article }))
-  } catch (error) {
-    console.error('Error generating static params:', error)
-    return []
-  }
+  const slugs = await getAllArticleSlugs()
+  return slugs.map((article) => ({ article }))
 }
 
-function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
-  return (
-    typeof block === 'object' &&
-    block !== null &&
-    'body' in block &&
-    typeof (block as { body?: unknown }).body === 'string'
-  )
+function getMissingArticleMetadata(): Metadata {
+  return {
+    ...getPageMetadata({
+      title: 'Article Not Found',
+      description: 'The requested article could not be found.',
+    }),
+    alternates: { canonical: null },
+    robots: {
+      index: false,
+      follow: false,
+      noarchive: true,
+    },
+  }
 }

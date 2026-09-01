@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { useState } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
 
@@ -19,22 +19,18 @@ const cowAnalytics = initGtm()
 
 export function Providers({ children }: { children: React.ReactNode }): React.ReactNode {
   return (
-    <Suspense>
-      <CacheProvider>
-        <StyledComponentsRegistry>
-          <>
-            <ApolloProvider client={apolloClient}>
-              <WithLDProvider>
-                <ThemeProvider>
-                  <GlobalStyles />
-                  <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
-                </ThemeProvider>
-              </WithLDProvider>
-            </ApolloProvider>
-          </>
-        </StyledComponentsRegistry>
-      </CacheProvider>
-    </Suspense>
+    <CacheProvider>
+      <StyledComponentsRegistry>
+        <ApolloProvider client={apolloClient}>
+          <WithLDProvider>
+            <ThemeProvider>
+              <GlobalStyles />
+              <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+            </ThemeProvider>
+          </WithLDProvider>
+        </ApolloProvider>
+      </StyledComponentsRegistry>
+    </CacheProvider>
   )
 }
 

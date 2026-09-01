@@ -267,11 +267,11 @@ function ArticleSubtitle({
         <span>{readTime}</span>
       </div>
 
-      {formattedDate && (
+      {formattedDate && date && (
         <>
           <div>·</div>
           <div>
-            <span>Published {formattedDate}</span>
+            <time dateTime={date.toISOString()}>Published {formattedDate}</time>
           </div>
         </>
       )}
