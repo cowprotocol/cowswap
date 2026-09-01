@@ -18,10 +18,10 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
-import { getSolanaMockQuote } from './getSolanaMockQuote'
+import { getSolanaJupiterQuote } from './getSolanaJupiterQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -36,6 +36,7 @@ export async function fetchAndProcessQuote(
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
+  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -58,17 +59,6 @@ export async function fetchAndProcessQuote(
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
-    // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet, so swallow
-    // Solana quote errors instead of surfacing them (`reset` just clears the loading spinner). The swap
-    // path serves a mock quote (see `fetchSwapQuote`), so this mainly covers any other Solana error.
-    // Remove once real Solana quotes are wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
-    if (IS_SOLANA_ENABLED && isSolanaChain(chainId)) {
-      console.warn('[fetchAndProcessQuote]:: Solana quote error ignored (no Solana quote backend yet)', parsedError)
-      tradeQuoteManager.reset()
-
-      return
-    }
-
     tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
   }
 
@@ -77,7 +67,14 @@ export async function fetchAndProcessQuote(
   if (isBridge) {
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
-    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    await fetchSwapQuote(
+      fetchParams,
+      quoteParams,
+      advancedSettings,
+      tradeQuoteManager,
+      processQuoteError,
+      solanaSigningContext,
+    )
   }
 }
 
@@ -133,12 +130,15 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
+  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
-  // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet — serve a
-  // mock quote so the trade-widget flow can reach the Approve step. Remove once real Solana quotes are
-  // wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    tradeQuoteManager.onResponse(getSolanaMockQuote(quoteParams), null, fetchParams, quoteParams)
+    try {
+      const quoteAndPost = await getSolanaJupiterQuote(quoteParams, solanaSigningContext)
+      tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
+    } catch (error) {
+      processQuoteError('fetchSwapQuote', error)
+    }
 
     return
   }
