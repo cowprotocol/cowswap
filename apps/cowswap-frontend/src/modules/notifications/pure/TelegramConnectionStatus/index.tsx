@@ -50,18 +50,20 @@ export function TelegramConnectionStatus({
 
   return (
     <div>
-      {isSubscribed && botDeepLink ? (
+      {isSubscribed ? (
         // window.open() doesn't work inside an iframe - use a real <a> so the browser
-        // handles the navigation natively instead.
+        // handles the navigation natively instead. Falls back to a non-navigating
+        // span (still a no-op toggle) if botDeepLink hasn't loaded yet.
         <Toggle
-          root="a"
+          root={botDeepLink ? 'a' : 'span'}
           id="toggle-telegram-notifications"
           checked={isSubscribed}
           toggle={NOOP}
           inactiveBgColor={`var(${UI.COLOR_PAPER})`}
           href={botDeepLink}
-          target="_blank"
-          rel="noopener noreferrer"
+          target={botDeepLink ? '_blank' : undefined}
+          rel={botDeepLink ? 'noopener noreferrer' : undefined}
+          aria-label="Unsubscribe from Telegram notifications (opens Telegram)"
         />
       ) : (
         <Toggle

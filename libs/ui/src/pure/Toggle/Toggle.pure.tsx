@@ -16,6 +16,7 @@ export interface ToggleProps {
   href?: string
   target?: string
   rel?: string
+  'aria-label'?: string
 }
 
 export function Toggle({
@@ -30,7 +31,13 @@ export function Toggle({
   href,
   target,
   rel,
+  'aria-label': ariaLabel,
 }: ToggleProps): ReactNode {
+  // A checkbox nested in an <a> is invalid content model and reads as mixed
+  // "checkbox" + "link" semantics to assistive tech - hide it and describe the
+  // control via the anchor's aria-label instead.
+  const isLink = Root === 'a'
+
   return (
     <styledEl.Wrapper
       as={Root}
@@ -38,11 +45,18 @@ export function Toggle({
       href={href}
       target={target}
       rel={rel}
+      aria-label={isLink ? ariaLabel : undefined}
       $bgColor={bgColor}
       $inactiveBgColor={inactiveBgColor}
       data-click-event={dataClickEvent}
     >
-      <styledEl.Input type="checkbox" checked={checked} onChange={() => toggle()} disabled={disabled} />
+      <styledEl.Input
+        type="checkbox"
+        checked={checked}
+        onChange={() => toggle()}
+        disabled={disabled}
+        aria-hidden={isLink || undefined}
+      />
       <styledEl.ToggleThumb />
     </styledEl.Wrapper>
   )
