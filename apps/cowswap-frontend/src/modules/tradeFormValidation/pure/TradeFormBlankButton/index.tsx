@@ -21,14 +21,11 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
   border-radius: 16px;
-  cursor: pointer;
   min-height: 58px;
   text-align: center;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
-  border: none;
-  outline: none;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY_LIGHTER});
@@ -38,7 +35,6 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
     background-color: var(${UI.COLOR_PAPER_DARKER});
     color: var(${UI.COLOR_TEXT_PAPER});
     background-image: none;
-    border: 0;
     cursor: auto;
     animation: none;
     transform: none;
@@ -112,7 +108,7 @@ export function TradeFormBlankButton({
     <ActionButton
       ref={ref}
       id={id}
-      className={className}
+      className={'trade-form-blank-button ' + className}
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}

@@ -84,7 +84,7 @@ export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
   }, [duration, hasDuration, removeSelf])
 
   return (
-    <Wrapper>
+    <Wrapper className="snackbar-popup">
       <StyledClose
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => {

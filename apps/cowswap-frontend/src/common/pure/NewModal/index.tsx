@@ -36,7 +36,6 @@ const Wrapper = styled.div<{
   ${Media.upToSmall()} {
     margin: 0;
     box-shadow: none;
-    ${({ modalMode }) => modalMode && 'border-radius: 0;'}
   }
 
   ${ModalInner} {
