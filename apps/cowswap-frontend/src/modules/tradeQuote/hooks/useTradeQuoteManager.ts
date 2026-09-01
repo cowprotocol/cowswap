@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useMemo, useRef } from 'react'
 
-import { PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeQuoteResults, QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -11,6 +11,7 @@ import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenErr
 import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
+import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
 export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void
@@ -96,12 +97,10 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
         return
       }
 
-      const isVerifiedQuote = fetchParams.priceQuality === PriceQuality.VERIFIED
-
       update(sellTokenAddress, {
         quote,
         bridgeQuote,
-        ...(isVerifiedQuote ? { isLoading: false } : null),
+        ...(getIsFinalQuote(fetchParams) ? { isLoading: false } : null),
         error: null,
         hasParamsChanged: false,
         fetchParams,

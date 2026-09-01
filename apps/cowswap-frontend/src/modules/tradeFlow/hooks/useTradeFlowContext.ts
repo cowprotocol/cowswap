@@ -1,6 +1,6 @@
 import { useConfig, useWalletClient } from 'wagmi'
 
-import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -23,7 +23,7 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
@@ -102,7 +102,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         appData &&
         tradeQuote.quote &&
-        tradeQuote.fetchParams?.priceQuality === PriceQuality.VERIFIED &&
+        getIsFinalQuote(tradeQuote.fetchParams) &&
         orderKind &&
         settlementContract &&
         uiOrderType &&
