@@ -1,6 +1,6 @@
 import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   BridgeQuoteErrors,
@@ -23,10 +23,11 @@ import { getSolanaMockQuote } from './getSolanaMockQuote'
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getVerifiedQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getFinalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 
 export async function fetchAndProcessQuote(
@@ -143,11 +144,8 @@ async function fetchSwapQuote(
     return
   }
 
-  const { priceQuality } = fetchParams
-  const isVerifiedQuote = priceQuality === PriceQuality.VERIFIED
-
-  const request = isVerifiedQuote
-    ? getVerifiedQuote(quoteParams, advancedSettings)
+  const request = getIsFinalQuote(fetchParams)
+    ? getFinalQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 
   try {

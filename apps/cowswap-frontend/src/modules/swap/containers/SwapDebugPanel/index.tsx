@@ -3,7 +3,6 @@ import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 import { useChainId, useConnection, useWalletClient } from 'wagmi'
 
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
@@ -31,7 +30,7 @@ import {
 } from 'modules/trade'
 import { useTradeFlowContext, useTradeFlowType } from 'modules/tradeFlow'
 import { useGetTradeFormValidation, useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
@@ -260,7 +259,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       account: Boolean(walletInfo.account),
       appData: Boolean(appData),
       quote: Boolean(tradeQuote.quote),
-      quoteIsVerified: quotePriceQuality === PriceQuality.VERIFIED,
+      quoteIsFinal: getIsFinalQuote(tradeQuote.fetchParams),
       orderKind: Boolean(derivedTradeState?.orderKind),
       settlementContract: Boolean(settlementContract),
       uiOrderType: Boolean(uiOrderType),
@@ -275,9 +274,9 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       inputAmount,
       networkFee,
       outputAmount,
-      quotePriceQuality,
       sellAmountBeforeFee,
       settlementContract,
+      tradeQuote.fetchParams,
       tradeQuote.quote,
       uiOrderType,
       validTo,
