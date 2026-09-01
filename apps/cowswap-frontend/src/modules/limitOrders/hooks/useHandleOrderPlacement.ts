@@ -62,8 +62,7 @@ export function useHandleOrderPlacement(
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
-  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
-  const shouldUseSafeBundle = isSafeBundle && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
+  const shouldUseSafeBundle = isSafeBundle && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
   const { t } = useLingui()
@@ -185,8 +184,11 @@ export function useHandleOrderPlacement(
 
         // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
         // still be no signing orders.
+        // Orders that go through the bundle flow are pre-signed on-chain (approveAndPresign), so they
+        // land in the Signing tab until mined — this covers EIP-7702 accounts, which are EOAs and so
+        // aren't caught by isSmartContractWallet. Send the user there just like smart-contract wallets.
         setTimeout(() => {
-          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
+          navigateToOrdersTableTab(isSmartContractWallet || shouldUseSafeBundle ? OrderTabId.SIGNING : OrderTabId.OPEN)
         })
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
@@ -218,6 +220,7 @@ export function useHandleOrderPlacement(
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
     isSmartContractWallet,
+    shouldUseSafeBundle,
     tradeContext.chainId,
   ])
 }
