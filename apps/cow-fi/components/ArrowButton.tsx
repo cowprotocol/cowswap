@@ -1,5 +1,5 @@
 import svgArrowRightSrc from '@cowprotocol/assets/images/arrow-right.svg'
-import { Font, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import SVG from 'react-inlinesvg'
@@ -14,7 +14,7 @@ const Wrapper = styled(Link)`
   gap: 10px;
   font-size: 21px;
   border-radius: var(--size);
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   padding: 5px 8px 5px 16px;
   text-decoration: none;
   color: var(${UI.COLOR_NEUTRAL_0});

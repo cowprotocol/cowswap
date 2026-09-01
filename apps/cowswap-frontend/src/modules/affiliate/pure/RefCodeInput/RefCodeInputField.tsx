@@ -1,6 +1,6 @@
 import { InputHTMLAttributes, ReactNode } from 'react'
 
-import { Font, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
@@ -28,7 +28,6 @@ export function RefCodeInputField({ compactSize = false, ...rest }: RefCodeInput
 
 const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolean }>`
   flex: 1;
-  border: none;
   background: transparent;
   color: inherit;
   position: relative;
@@ -39,10 +38,7 @@ const StyledInputField = styled.input<{ disabled?: boolean; compactSize?: boolea
   font-weight: 600;
   letter-spacing: 0;
   text-transform: uppercase;
-  font-family: ${Font.familyMono};
-  padding: 0;
-  margin: 0;
-  outline: none;
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   caret-color: var(${UI.COLOR_PRIMARY});
 
   &:disabled {

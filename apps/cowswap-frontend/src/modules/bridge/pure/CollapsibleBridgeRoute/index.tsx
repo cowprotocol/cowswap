@@ -39,7 +39,7 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={'collapsible-bridge-route' + (className ?? '')}>
       {isCollapsible && (
         <RouteOverviewTitle
           isCollapsible

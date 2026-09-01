@@ -1,5 +1,5 @@
 import { TokenLogo as TokenLogoOriginal } from '@cowprotocol/tokens'
-import { Media, UI } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import styled, { DefaultTheme } from 'styled-components/macro'
 
@@ -56,6 +56,7 @@ export const Header = styled.div<{ $step: BridgingFlowStep }>`
 
   > h3 {
     margin: 0;
+    ${fontFamilyBrand}
     font-size: 19px;
     color: inherit;
   }

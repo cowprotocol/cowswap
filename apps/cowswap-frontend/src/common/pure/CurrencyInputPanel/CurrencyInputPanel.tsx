@@ -286,7 +286,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         <styledEl.CurrencyInputBox>
           <div>
             {amount && !isUsdValuesMode && (
-              <styledEl.FiatAmountText>
+              <styledEl.FiatAmountText data-testid="fiat-amount">
                 <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} isBridging={isBridging} />
               </styledEl.FiatAmountText>
             )}

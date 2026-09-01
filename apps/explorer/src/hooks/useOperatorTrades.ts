@@ -1,15 +1,25 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { normalizeError } from '@cowprotocol/common-utils'
 
 import { useNetworkId } from 'state/network'
+import useSWR from 'swr'
 import { Network, UiError } from 'types'
-import { transformTrade } from 'utils'
+import { getProtocolFees, transformTrade } from 'utils'
 
-import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
 
 type Result = {
+  /** The requested page of fills. */
   trades: Trade[]
+  /**
+   * Fee breakdown over every fill, so it does not change as the user pages. `undefined` means
+   * unknown (loading or failed); `[]` means the order was charged no fee.
+   */
+  protocolFees?: ProtocolFee[]
   error?: UiError
   isLoading: boolean
   hasNextPage: boolean
@@ -19,106 +29,83 @@ type TradesTimestamps = { [txHash: string]: number }
 
 const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
 
+type AllTradesResult = {
+  // Undefined while unknown (loading, failed, or no order).
+  rawTrades?: RawTrade[]
+  error?: UiError
+  isLoading: boolean
+}
+
+// Large enough that most orders need a single call. Exported so tests can serve a full page.
+export const ALL_TRADES_PAGE_SIZE = 1000
+// Safety bound; reaching it means the paging is broken, not that the order has this many fills.
+const MAX_TRADES_PAGES = 100
+
+const TRADES_ERROR = 'Failed to fetch trades'
+
+/**
+ * An order's fills: the requested page, enriched with timestamps, plus the fee breakdown over all
+ * of them. One fetch serves both, so the order details page reads the trades once.
+ */
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
-  const [error, setError] = useState<UiError>()
-  const [trades, setTrades] = useState<Trade[]>([])
-  const [rawTrades, setRawTrades] = useState<RawTrade[] | null>(null)
+  const { rawTrades, error, isLoading } = useAllOrderTrades(order)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
-  const [hasNextPage, setHasNextPage] = useState(false)
 
-  // Here we assume that we are already in the right network
-  // contrary to useOrder hook, where it searches all networks for a given orderId
-  const networkId = useNetworkId()
+  // Paging client-side: the API offsets PROD and BARN separately, so it cannot page the merged list.
+  const pageTrades = useMemo(() => rawTrades?.slice(offset, offset + limit) ?? [], [rawTrades, offset, limit])
 
-  const fetchTrades = useCallback(
-    async (controller: AbortController, _networkId: Network): Promise<void> => {
-      if (!order) return
-
-      const { uid: orderId } = order
-
-      try {
-        const trades = await getTrades({ networkId: _networkId, orderId, offset, limit: limit + 1 })
-
-        if (controller.signal.aborted) return
-
-        setRawTrades(trades)
-        setError(undefined)
-      } catch (e) {
-        const msg = `Failed to fetch trades`
-        console.error(msg, e)
-
-        setRawTrades([])
-        setError({ message: msg, type: 'error' })
-      }
-    },
-    [order, offset, limit],
-  )
-
-  // Fetch blocks timestamps for trades
+  // Fetch blocks timestamps for the visible page only
   useEffect(() => {
-    if (!rawTrades) return
+    if (!pageTrades.length) return
 
-    fetchTradesTimestamps(rawTrades)
-      .then(setTradesTimestamps)
+    let cancelled = false
+
+    fetchTradesTimestamps(pageTrades)
+      // Merged, not replaced: a timestamp belongs to its tx, so earlier pages stay correct.
+      .then((timestamps) => {
+        if (!cancelled) setTradesTimestamps((current) => ({ ...current, ...timestamps }))
+      })
       .catch((error) => {
         console.error('Trades timestamps fetching error: ', error)
-
-        setTradesTimestamps({})
       })
-  }, [rawTrades])
+
+    return (): void => {
+      cancelled = true
+    }
+  }, [pageTrades])
 
   // Transform trades adding tokens and timestamps
-  useEffect(() => {
-    if (!order || !rawTrades) return
+  const trades = useMemo(() => {
+    if (!order) return []
 
     const { buyToken, sellToken } = order
 
-    const trades = rawTrades.map((trade) => {
+    const trades = pageTrades.map((trade) => {
       const timestamp = trade.txHash ? tradesTimestamps[trade.txHash] : undefined
 
       return { ...transformTrade(trade, order, timestamp), buyToken, sellToken }
     })
 
     // sort trades by execution time, newest first
-    trades.sort((a, b) => {
+    return trades.sort((a, b) => {
       if (a.executionTime && b.executionTime) {
         return b.executionTime > a.executionTime ? 1 : -1
       }
       return 0
     })
+  }, [order, pageTrades, tradesTimestamps])
 
-    const hasNext = trades.length > limit
-    setHasNextPage(hasNext)
+  const protocolFees = useMemo(() => rawTrades && getProtocolFees(rawTrades), [rawTrades])
 
-    setTrades(hasNext ? trades.slice(0, limit) : trades)
-  }, [order, rawTrades, tradesTimestamps, limit])
+  const hasNextPage = (rawTrades?.length ?? 0) > offset + limit
+  // SWR reports nothing pending without a key, but the caller is still waiting on the order itself.
+  const areTradesLoading = isLoading || (!rawTrades && !error)
 
-  const executedSellAmount = order?.executedSellAmount.toString()
-  const executedBuyAmount = order?.executedBuyAmount.toString()
-
-  useEffect(() => {
-    if (!networkId || !order?.uid) {
-      return
-    }
-
-    const controller = new AbortController()
-
-    fetchTrades(controller, networkId)
-    return (): void => controller.abort()
-    // Depending on order UID to avoid re-fetching when obj changes but ID remains the same
-    // Depending on `executedBuy/SellAmount`s string to force a refetch when there are new trades
-    // using the string version because hooks are bad at detecting Object changes
-  }, [fetchTrades, networkId, order?.uid, executedSellAmount, executedBuyAmount])
-
-  const isLoading = rawTrades === null
-
-  return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
+  return useMemo(
+    () => ({ trades, protocolFees, error, isLoading: areTradesLoading, hasNextPage }),
+    [trades, protocolFees, error, areTradesLoading, hasNextPage],
+  )
 }
-
-/**
- * Fetches trades for given order
- */
-// TODO: Break down this large function into smaller functions
 
 async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
@@ -142,4 +129,63 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
 
     return acc
   }, {} as TradesTimestamps)
+}
+
+/** Fetches every trade of an order, skipping duplicates so they cannot inflate the fee totals. */
+async function getAllOrderTrades(networkId: Network, orderId: string): Promise<RawTrade[]> {
+  const allTrades: RawTrade[] = []
+  const seen = new Set<string>()
+
+  for (let page = 0; page < MAX_TRADES_PAGES; page++) {
+    const trades = await getTrades({ networkId, orderId, offset: allTrades.length, limit: ALL_TRADES_PAGE_SIZE })
+
+    // Already-collected records mean `offset` was ignored and an earlier page was re-served.
+    const newTrades = trades.filter((trade) => {
+      const key = `${trade.txHash}-${trade.logIndex}`
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+
+    allTrades.push(...newTrades)
+
+    // Per the `/api/v2/trades` contract, a short page is the last one; the `newTrades` check covers
+    // an API that serves full pages forever.
+    if (trades.length < ALL_TRADES_PAGE_SIZE || newTrades.length === 0) return allTrades
+  }
+
+  throw new Error(`Reached ${MAX_TRADES_PAGES} pages of trades for order ${orderId}; the API is not paging correctly`)
+}
+
+/** Every fill of an order, as one SWR entry that {@link useOrderTrades} pages and aggregates. */
+function useAllOrderTrades(order: Order | null): AllTradesResult {
+  // Here we assume that we are already in the right network
+  // contrary to useOrder hook, where it searches all networks for a given orderId
+  const networkId = useNetworkId()
+  const orderUid = order?.uid
+
+  // In the key so a new fill refetches. They change only when a fill lands, not on every poll.
+  const executedSellAmount = order?.executedSellAmount.toString()
+  const executedBuyAmount = order?.executedBuyAmount.toString()
+
+  const { data, error, isLoading } = useSWR(
+    networkId && orderUid ? ['allOrderTrades', networkId, orderUid, executedSellAmount, executedBuyAmount] : null,
+    ([, network, uid]: [string, Network, string, ...unknown[]]) => getAllOrderTrades(network, uid),
+    {
+      ...SWR_NO_REFRESH_OPTIONS,
+      errorRetryCount: 0,
+      onError: (err: unknown) => {
+        console.error(`[useAllOrderTrades] ${TRADES_ERROR}`, normalizeError(err))
+      },
+    },
+  )
+
+  return useMemo<AllTradesResult>(
+    () => ({
+      rawTrades: data,
+      error: error ? { message: TRADES_ERROR, type: 'error' } : undefined,
+      isLoading,
+    }),
+    [data, error, isLoading],
+  )
 }
