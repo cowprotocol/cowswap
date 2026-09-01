@@ -26,7 +26,7 @@ import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getVerifiedQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 // Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
 // FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
@@ -138,10 +138,10 @@ async function fetchSwapQuote(
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+  const isVerifiedQuote = priceQuality === PriceQuality.VERIFIED
 
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    const solanaRequest = isOptimalQuote
+    const solanaRequest = isVerifiedQuote
       ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
       : getFastSolanaQuote(quoteParams, solanaSigningContext)
 
@@ -160,8 +160,8 @@ async function fetchSwapQuote(
     return
   }
 
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
+  const request = isVerifiedQuote
+    ? getVerifiedQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 
   try {

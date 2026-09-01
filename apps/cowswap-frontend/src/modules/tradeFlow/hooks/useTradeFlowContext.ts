@@ -102,7 +102,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         appData &&
         tradeQuote.quote &&
-        tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
+        tradeQuote.fetchParams?.priceQuality === PriceQuality.VERIFIED &&
         orderKind &&
         settlementContract &&
         uiOrderType &&
