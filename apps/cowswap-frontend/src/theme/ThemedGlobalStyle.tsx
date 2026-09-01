@@ -35,6 +35,14 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background: transparent;
     min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
+    /*
+     * Preserve the safe body inheritance boundary used before the Inter migration.
+     * Otherwise Inter-specific ss/cv tags can select unrelated glyphs in another font.
+     */
+    font-feature-settings:
+      'liga' off,
+      'kern' on;
+
     /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
     &.noScroll {
       overflow: hidden;
