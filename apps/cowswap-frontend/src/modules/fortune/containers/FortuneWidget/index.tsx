@@ -4,7 +4,7 @@ import { useCallback, useRef, useState, useMemo, ReactNode } from 'react'
 import svgTwitterSrc from '@cowprotocol/assets/cow-swap/twitter.svg'
 import iconFortuneCookieSrc from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
-import { ExternalLink, Media, UI, Confetti } from '@cowprotocol/ui'
+import { Confetti, ExternalLink, fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import ReactDOM from 'react-dom'
@@ -144,6 +144,7 @@ const DontShowAgainBox = styled.div`
 const FortuneTitle = styled.h2`
   display: block;
   width: 100%;
+  ${fontFamilyBrand}
   font-size: 21px;
   text-align: center;
   font-weight: 700;
@@ -167,6 +168,7 @@ const FortuneTitle = styled.h2`
 const FortuneText = styled.h3`
   padding: 21px;
   width: 100%;
+  ${fontFamilyBrand}
   font-size: 32px;
   border-radius: 42px;
   word-break: break-word;

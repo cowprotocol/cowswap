@@ -33,13 +33,7 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: none;
-  border: 0;
-  outline: none;
-  margin: 0;
-  padding: 0;
   white-space: nowrap;
-  cursor: pointer;
   text-overflow: ellipsis;
   overflow: hidden;
 
@@ -96,7 +90,6 @@ export const CustomInput = styled.input`
   border: 1px solid ${({ theme }) => transparentize(theme.text, 0.7)};
   color: inherit;
   padding: 4px 8px;
-  outline: 0;
   background: var(${UI.COLOR_PAPER});
 
   &::-webkit-calendar-picker-indicator {

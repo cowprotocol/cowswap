@@ -120,12 +120,6 @@ export const StepsIconWrapper = styled.div`
 export const StepHeaderButton = styled.button`
   position: relative;
   padding: var(--spacing-around) calc(var(--circle-size) + var(--spacing-around)) 0 0;
-  border: none;
-  background: transparent;
-
-  &:not(:disabled) {
-    cursor: pointer;
-  }
 
   &::before {
     content: '';
@@ -166,12 +160,8 @@ export const StepExpandIcon = styled.button`
   position: absolute;
   right: 0;
   top: 14px;
-  background: none;
-  border: none;
-  cursor: pointer;
   font-size: 20px;
   line-height: 1;
-  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;

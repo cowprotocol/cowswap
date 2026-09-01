@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { UiOrderType } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -18,7 +19,7 @@ export type PermitModalProps = NewModalProps & {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
   step: 'approve' | 'submit'
-  orderType: string
+  orderType: UiOrderType
   icon?: React.ReactNode
 }
 
@@ -31,6 +32,7 @@ export type PermitModalProps = NewModalProps & {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PermitModal(props: PermitModalProps) {
   const { inputAmount, outputAmount, step, icon: inputIcon, orderType, ...rest } = props
+  const orderTypeLabel = getPermitOrderTypeLabel(orderType)
 
   const steps: StepProps[] = useMemo(
     () => [
@@ -62,9 +64,9 @@ export function PermitModal(props: PermitModalProps) {
           </Trans>
         </>
       ) : (
-        t`Confirm ${orderType}`
+        t`Confirm ${orderTypeLabel}`
       ),
-    [inputAmount?.currency, orderType, step],
+    [inputAmount?.currency, orderTypeLabel, step],
   )
 
   const body = useMemo(
@@ -96,6 +98,21 @@ export function PermitModal(props: PermitModalProps) {
       </NewModalContentBottom>
     </NewModal>
   )
+}
+
+function getPermitOrderTypeLabel(orderType: UiOrderType): string {
+  switch (orderType) {
+    case UiOrderType.SWAP:
+      return t`Swap`
+    case UiOrderType.LIMIT:
+      return t`Limit Order`
+    case UiOrderType.TWAP:
+      return t`TWAP`
+    case UiOrderType.HOOKS:
+      return t`Hooks`
+    case UiOrderType.YIELD:
+      return t`Yield`
+  }
 }
 
 const SignDescription = styled.p`

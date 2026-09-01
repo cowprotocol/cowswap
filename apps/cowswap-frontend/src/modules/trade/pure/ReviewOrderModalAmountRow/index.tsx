@@ -56,6 +56,7 @@ export function ReviewOrderModalAmountRow({
 
   return (
     <ConfirmDetailsItem
+      className="confirm-order-amount"
       tooltip={tooltip}
       label={highlighted ? undefined : label}
       withTimelineDot={withTimelineDot}

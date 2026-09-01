@@ -62,7 +62,6 @@ export const SearchInput = styled.input`
   }
 
   &:focus {
-    outline: none;
     border-color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
 
