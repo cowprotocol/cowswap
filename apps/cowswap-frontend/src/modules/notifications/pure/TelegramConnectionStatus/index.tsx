@@ -1,10 +1,15 @@
 import { ReactNode, useCallback } from 'react'
 
 import { normalizeError } from '@cowprotocol/common-utils'
+import { Command } from '@cowprotocol/types'
 import { Loader, UI, Toggle } from '@cowprotocol/ui'
 
 import { ConnectTelegramModal } from '../../containers/ConnectTelegram/ConnectTelegramModal'
 import { ConnectState } from '../../hooks/useTelegramConnect'
+
+// The unsubscribed toggle click is a no-op: unsubscribing happens on the bot side,
+// this state renders as a plain link instead (see the `root="a"` Toggle below).
+const NOOP: Command = () => undefined
 
 interface TelegramConnectionStatusProps {
   isLoading: boolean
@@ -28,23 +33,16 @@ export function TelegramConnectionStatus({
   cancelConnect,
 }: TelegramConnectionStatusProps): ReactNode {
   const handleToggle = useCallback(async () => {
-    if (isSubscribed) {
-      // Unsubscribing only happens from the bot side - send the user there to tap
-      // "Unsubscribe" instead of toggling anything here. The toggle itself stays on
-      // until the next status refresh notices they actually unsubscribed.
-      if (botDeepLink) {
-        window.open(botDeepLink, '_blank', 'noopener,noreferrer')
-      }
-    } else {
-      try {
-        await connect()
-      } catch (err: unknown) {
-        // connect() handles its own errors internally (connectState becomes 'error'),
-        // this is just a safety net against an unhandled rejection.
-        console.error('[TelegramConnectionStatus] Failed to start Telegram connect flow', normalizeError(err))
-      }
+    // Unsubscribing only happens from the bot side (rendered as a plain link below),
+    // so this only ever handles the subscribe flow.
+    try {
+      await connect()
+    } catch (err: unknown) {
+      // connect() handles its own errors internally (connectState becomes 'error'),
+      // this is just a safety net against an unhandled rejection.
+      console.error('[TelegramConnectionStatus] Failed to start Telegram connect flow', normalizeError(err))
     }
-  }, [isSubscribed, botDeepLink, connect])
+  }, [connect])
 
   if (isLoading) {
     return <Loader size="33px" stroke={`var(${UI.COLOR_TEXT_OPACITY_50})`} />
@@ -52,12 +50,27 @@ export function TelegramConnectionStatus({
 
   return (
     <div>
-      <Toggle
-        id="toggle-telegram-notifications"
-        checked={isSubscribed}
-        toggle={handleToggle}
-        inactiveBgColor={`var(${UI.COLOR_PAPER})`}
-      />
+      {isSubscribed && botDeepLink ? (
+        // window.open() doesn't work inside an iframe - use a real <a> so the browser
+        // handles the navigation natively instead.
+        <Toggle
+          root="a"
+          id="toggle-telegram-notifications"
+          checked={isSubscribed}
+          toggle={NOOP}
+          inactiveBgColor={`var(${UI.COLOR_PAPER})`}
+          href={botDeepLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        />
+      ) : (
+        <Toggle
+          id="toggle-telegram-notifications"
+          checked={isSubscribed}
+          toggle={handleToggle}
+          inactiveBgColor={`var(${UI.COLOR_PAPER})`}
+        />
+      )}
       <ConnectTelegramModal
         isOpen={connectState !== 'idle'}
         connectState={connectState}
