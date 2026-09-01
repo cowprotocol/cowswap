@@ -6,6 +6,7 @@ import { darken, lighten, transparentize } from 'color2k'
 import { css } from 'styled-components/macro'
 
 import { Color } from '../colors'
+import { Font, FONT_SIZING } from '../consts'
 import { UI } from '../enum'
 
 /**
@@ -342,7 +343,9 @@ export const ThemeColorVars = css`
     ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});
     ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
+    ${UI.BORDER_RADIUS_LARGE}: 32px;
     ${UI.PADDING_NORMAL}: 24px;
+    ${UI.CLICKABLE_SIZE}: 44px;
 
     // Icons
     ${UI.ICON_SIZE_LARGE}: 36px;
@@ -360,28 +363,39 @@ export const ThemeColorVars = css`
     ${UI.COLOR_LINK}: var(${UI.COLOR_PRIMARY});
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 
-    // Font Weights & Sizes
-    ${UI.FONT_WEIGHT_NORMAL}: 400;
-    ${UI.FONT_WEIGHT_MEDIUM}: 500;
-    ${UI.FONT_WEIGHT_BOLD}: 600;
+    // Font Weights:
+    ${UI.FONT_WEIGHT_NORMAL}: ${Font.weight.regular};
+    ${UI.FONT_WEIGHT_MEDIUM}: ${Font.weight.medium};
+    ${UI.FONT_WEIGHT_BOLD}: ${Font.weight.semibold};
+
+    // Font Sizes:
     ${UI.FONT_SIZE_SMALLER}: 10px;
     ${UI.FONT_SIZE_SMALL}: 12px;
-    ${UI.FONT_SIZE_NORMAL}: 14px;
-    ${UI.FONT_SIZE_MEDIUM}: 16px;
-    ${UI.FONT_SIZE_LARGE}: 18px;
+    ${UI.FONT_SIZE_SMALL_PLUS}: ${FONT_SIZING.FONT_SMALL_PLUS[0]}px;
+    ${UI.FONT_SIZE_NORMAL}: ${FONT_SIZING.FONT_NORMAL[0]}px;
+    ${UI.FONT_SIZE_NORMAL_PLUS}: ${FONT_SIZING.FONT_NORMAL_PLUS[0]}px;
+    ${UI.FONT_SIZE_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[0]}px;
+    ${UI.FONT_SIZE_LARGE}: ${FONT_SIZING.FONT_LARGE[0]}px;
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
-    ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif;
-    ${UI.FONT_FAMILY_MONO}: 'studiofeixenmono', 'Inter var', 'Inter', Arial, sans-serif;
+
+    // Line Heights:
+    ${UI.LINE_HEIGHT_SMALL}: ${FONT_SIZING.FONT_SMALL_PLUS[1]}px;
+    ${UI.LINE_HEIGHT_NORMAL}: ${FONT_SIZING.FONT_NORMAL[1]}px;
+    ${UI.LINE_HEIGHT_MEDIUM}: ${FONT_SIZING.FONT_MEDIUM[1]}px;
+
+    // Font Families:
+    ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyInter};
+    ${UI.FONT_FAMILY_BRAND}: ${Font.familyStudioFeixen};
+    ${UI.FONT_FAMILY_MONO}: ${Font.familyInter};
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
     ${UI.ANIMATION_DURATION_SLOW}: 0.2s;
+    ${UI.ANIMATION_TIMING_FUNCTION}: ease-in-out;
   }
 
   body {
     ${({ theme }) => theme.colorScrollbar}
-
-    color: var(${UI.COLOR_TEXT_PAPER});
   }
 `

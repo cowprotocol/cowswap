@@ -27,8 +27,6 @@ export const InputHeader = styled.div`
 export const ResetBtn = styled.button`
   font-size: 12px;
   border-radius: 6px;
-  border: none;
-  cursor: pointer;
   font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   background: var(${UI.COLOR_PAPER});

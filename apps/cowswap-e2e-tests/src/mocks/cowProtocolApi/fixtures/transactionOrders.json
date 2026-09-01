@@ -1,0 +1,54 @@
+[
+  {
+    "creationDate": "2026-05-20T11:39:47Z",
+    "owner": "0xb37add6ac288bd3825a901cba6ec65a89f31b8cc",
+    "uid": "0xb2c5a5d9ef8a663bc40c0a8bb42c6883af4678d7fa39b196161cea04ee6e5e12b37add6ac288bd3825a901cba6ec65a89f31b8ccffffffff",
+    "availableBalance": null,
+    "executedBuyAmount": "1935815",
+    "executedSellAmount": "1000000000000000",
+    "executedSellAmountBeforeFees": "1000000000000000",
+    "executedFeeAmount": "0",
+    "executedFee": "90807291931580",
+    "executedFeeToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "invalidated": false,
+    "status": "fulfilled",
+    "class": "limit",
+    "settlementContract": "0xf553d092b50bdcbdded1a99af2ca29fbe5e2cb13",
+    "ethflowData": {
+      "userValidTo": 1779278959,
+      "refundTxHash": null,
+      "isRefunded": false
+    },
+    "onchainOrderData": {
+      "sender": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+      "placementError": null
+    },
+    "onchainUser": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+    "isLiquidityOrder": false,
+    "fullAppData": "{\"appCode\":\"CoW Swap\",\"environment\":\"pr\",\"metadata\":{\"orderClass\":{\"orderClass\":\"market\"},\"quote\":{\"slippageBips\":517,\"smartSlippage\":true}},\"version\":\"1.14.0\"}",
+    "sellToken": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+    "buyToken": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+    "receiver": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+    "sellAmount": "1000000000000000",
+    "buyAmount": "1843334",
+    "validTo": 4294967295,
+    "appData": "0x5405c99b1a9aa67f0a5be8bb22ba95059c748b0fa2728d702a060bae0979b8ac",
+    "feeAmount": "0",
+    "kind": "sell",
+    "partiallyFillable": false,
+    "sellTokenBalance": "erc20",
+    "buyTokenBalance": "erc20",
+    "signingScheme": "eip1271",
+    "signature": "0xb37add6ac288bd3825a901cba6ec65a89f31b8cc",
+    "interactions": {
+      "pre": [
+        {
+          "target": "0xb37add6ac288bd3825a901cba6ec65a89f31b8cc",
+          "value": "0",
+          "callData": "0x4c84c1c8"
+        }
+      ],
+      "post": []
+    }
+  }
+]

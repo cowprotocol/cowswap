@@ -1,5 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { UI, Media, ExternalLink } from '@cowprotocol/ui'
+import { ExternalLink, fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { keyframes } from 'styled-components/macro'
@@ -70,6 +70,7 @@ export const Title = styled.h2<{ color?: string }>`
   display: flex;
   align-items: center;
   gap: 8px;
+  ${fontFamilyBrand}
   font-size: 18px;
   font-weight: bold;
   margin: 0 auto 0 0;
@@ -129,6 +130,7 @@ export const Card = styled.div<{
     height: 100%;
     max-height: 100%;
     color: inherit;
+    ${fontFamilyBrand}
 
     ${Media.upToSmall()} {
       width: 100%;
@@ -220,13 +222,11 @@ export const CTAButton = styled.button<{
   --font-size: ${({ fontSize = 24 }) => fontSize}px;
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_COWAMM_LIGHT_GREEN})`};
   color: ${({ color }) => color || `var(${UI.COLOR_COWAMM_DARK_GREEN})`};
-  border: none;
   border-radius: var(--size);
   min-height: var(--size);
   padding: 12px 24px;
   font-size: var(--font-size);
   font-weight: bold;
-  cursor: pointer;
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -275,24 +275,6 @@ export const SecondaryLink = styled(ExternalLink)`
     text-decoration: underline;
   }
 `
-
-export const DEMO_DROPDOWN = styled.select`
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  z-index: 999999999;
-  padding: 5px;
-  font-size: 14px;
-
-  ${Media.upToSmall()} {
-    bottom: initial;
-    top: 0;
-    width: 100%;
-    right: 0;
-    left: 0;
-  }
-`
-
 export const StarIcon = styled.div<{
   color?: string
   size?: number

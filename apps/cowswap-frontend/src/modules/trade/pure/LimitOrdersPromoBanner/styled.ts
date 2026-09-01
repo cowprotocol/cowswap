@@ -1,4 +1,4 @@
-import { UI, Media } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import { X } from 'react-feather'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -60,6 +60,7 @@ export const TitleSection = styled.div`
   width: 95%;
 
   > h3 {
+    ${fontFamilyBrand}
     font-size: 32px;
     font-weight: 600;
     margin: 0 auto 24px;
@@ -218,13 +219,10 @@ export const CTAButton = styled.button`
   width: 100%;
   padding: 0.8em 1.4em;
   border-radius: 0.66em;
-  border: none;
-  outline: none;
   background-image: linear-gradient(315deg, var(--button-darker) 0%, var(--button-base) 47%, var(--button-darker) 100%);
   color: var(--button-text);
   font-size: 1.2em;
   font-weight: 600;
-  cursor: pointer;
   position: relative;
   isolation: isolate;
   box-shadow: 0 2px 3px 1px color-mix(in srgb, var(--button-base) 50%, transparent);
@@ -249,13 +247,8 @@ export const CTAButton = styled.button`
 `
 
 export const DismissLink = styled.button`
-  background: none;
-  border: none;
-  color: inherit;
   font-size: 16px;
   text-decoration: underline;
-  cursor: pointer;
-  padding: 0;
   margin: 24px auto 12px;
   opacity: 0.8;
   transition: opacity 0.2s ease-in-out;

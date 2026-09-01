@@ -236,7 +236,7 @@ const ShareBlockContainer = styled.div`
   border-radius: 1.8rem;
   border: 0.1rem solid var(${UI.COLOR_NEUTRAL_80});
   background: var(${UI.COLOR_NEUTRAL_98});
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
 `
 
 const ShareTitle = styled.div`

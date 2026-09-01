@@ -1,17 +1,7 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import {
-  ApiError,
-  fetchWithTimeout,
-  JSON_HEADERS,
-  parseJsonResponse,
-  RetryableResponseError,
-  STATUS_CODES_TO_RETRY,
-  stripTrailingSlash,
-  unwrapOk,
-} from '@cowprotocol/common-utils'
-import type { ApiErrorPayload, FetchJsonResponse } from '@cowprotocol/common-utils'
+import { ApiError, BffApiClient, unwrapOk } from '@cowprotocol/common-utils'
+import type { ApiErrorPayload } from '@cowprotocol/common-utils'
 
-import { fetchWithRateLimit } from 'common/utils/fetch'
 import { wait } from 'common/utils/wait'
 
 import {
@@ -25,62 +15,14 @@ import {
 
 import {
   AFFILIATE_API_TIMEOUT_MS,
-  BACKOFF_MAX_ATTEMPTS,
-  BACKOFF_START_DELAY_MS,
-  BACKOFF_TIME_MULTIPLE,
-  RATE_LIMIT_INTERVAL_MS,
   VERIFICATION_MIN_RESPONSE_DELAY_MS,
   VERIFICATION_RETRY_DELAY_MS,
 } from '../config/affiliateProgram.const'
 
-class BffAffiliateApi {
-  private readonly baseUrl: string
-  private readonly timeoutMs: number
-  private readonly fetchRateLimited: ReturnType<typeof fetchWithRateLimit>
-
-  /**
-   * Configuration
-   */
-
+class BffAffiliateApi extends BffApiClient {
   constructor(baseUrl: string, timeoutMs: number = AFFILIATE_API_TIMEOUT_MS) {
-    this.baseUrl = stripTrailingSlash(baseUrl)
-    this.timeoutMs = timeoutMs
-    this.fetchRateLimited = fetchWithRateLimit({
-      rateLimit: {
-        tokensPerInterval: 1,
-        interval: RATE_LIMIT_INTERVAL_MS,
-      },
-      backoff: {
-        numOfAttempts: BACKOFF_MAX_ATTEMPTS,
-        startingDelay: BACKOFF_START_DELAY_MS,
-        timeMultiple: BACKOFF_TIME_MULTIPLE,
-      },
-    })
-  }
-
-  private buildUrl(path: string): string {
-    const normalizedPath = path.replace(/^\//, '')
-    return `${this.baseUrl}/${normalizedPath}`
-  }
-
-  private async fetchJsonResponse<T>(input: string, init?: RequestInit): Promise<FetchJsonResponse<T>> {
-    const response = await this.fetchRateLimited(async () => {
-      const requestInit = {
-        method: 'GET',
-        headers: JSON_HEADERS,
-        ...init,
-      }
-      const response = await fetchWithTimeout(input, {
-        ...requestInit,
-        timeout: this.timeoutMs,
-        timeoutMessage: 'Unable to reach referral service',
-      })
-      if (STATUS_CODES_TO_RETRY.has(response.status)) {
-        throw new RetryableResponseError(response.status)
-      }
-      return response
-    })
-    return parseJsonResponse<T>(response)
+    // Rate-limit/retry-on-retryable-status uses BffApiClient's default tuning.
+    super(baseUrl, timeoutMs, 'Unable to reach referral service')
   }
 
   /**
@@ -88,10 +30,10 @@ class BffAffiliateApi {
    */
 
   async verifyCode(code: string): Promise<TraderInfoResponse> {
-    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
+    const path = `ref-codes/${encodeURIComponent(code)}`
     try {
       const [result] = await Promise.all([
-        this.fetchJsonResponse<TraderInfoResponse>(url),
+        this.fetchJson<TraderInfoResponse>(path),
         wait(VERIFICATION_MIN_RESPONSE_DELAY_MS),
       ])
       return unwrapOk(result, 'Trader response missing')
@@ -102,8 +44,7 @@ class BffAffiliateApi {
   }
 
   async verifyCodeAvailability(code: string): Promise<boolean> {
-    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, text } = await this.fetchJsonResponse<TraderInfoResponse>(url)
+    const { response, text } = await this.fetchJson<TraderInfoResponse>(`ref-codes/${encodeURIComponent(code)}`)
 
     if (response.status === 404) return true
     if (response.ok || response.status === 403) return false
@@ -112,8 +53,7 @@ class BffAffiliateApi {
   }
 
   async createCode(request: PartnerCreateRequest): Promise<PartnerInfoResponse> {
-    const url = this.buildUrl(`affiliate/${request.walletAddress}`)
-    const result = await this.fetchJsonResponse<PartnerInfoResponse>(url, {
+    const result = await this.fetchJson<PartnerInfoResponse>(`affiliate/${request.walletAddress}`, {
       method: 'POST',
       body: JSON.stringify(request),
     })
@@ -121,40 +61,37 @@ class BffAffiliateApi {
   }
 
   async getTraderInfo(code: string): Promise<TraderInfoResponse | null> {
-    const url = this.buildUrl(`ref-codes/${encodeURIComponent(code)}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderInfoResponse>(url)
+    const { response, data, text } = await this.fetchJson<TraderInfoResponse>(`ref-codes/${encodeURIComponent(code)}`)
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)
   }
 
   async getPartnerInfo(account: string): Promise<PartnerInfoResponse | null> {
-    const url = this.buildUrl(`affiliate/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<PartnerInfoResponse>(url)
+    const { response, data, text } = await this.fetchJson<PartnerInfoResponse>(`affiliate/${account}`)
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)
   }
 
   async getTraderStats(account: string): Promise<TraderStatsResponse | null> {
-    const url = this.buildUrl(`affiliate/trader-stats/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderStatsResponse>(url)
+    const { response, data, text } = await this.fetchJson<TraderStatsResponse>(`affiliate/trader-stats/${account}`)
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)
   }
 
   async getAffiliateStats(account: string): Promise<PartnerStatsResponse | null> {
-    const url = this.buildUrl(`affiliate/affiliate-stats/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<PartnerStatsResponse>(url)
+    const { response, data, text } = await this.fetchJson<PartnerStatsResponse>(`affiliate/affiliate-stats/${account}`)
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)
   }
 
   async getTraderActivity(account: string): Promise<TraderActivityResponse | null> {
-    const url = this.buildUrl(`affiliate/trader-activity/${account}`)
-    const { response, data, text } = await this.fetchJsonResponse<TraderActivityResponse>(url)
+    const { response, data, text } = await this.fetchJson<TraderActivityResponse>(
+      `affiliate/trader-activity/${account}`,
+    )
     if (response.status === 404) return null
     if (response.ok) return data ?? null
     throw new ApiError(response.status, text, data as ApiErrorPayload)
