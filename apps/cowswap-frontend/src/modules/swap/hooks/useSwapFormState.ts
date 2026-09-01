@@ -14,7 +14,7 @@ export enum SwapFormState {
   WrapAndSwap = 'WrapAndSwap',
   WrapAndSwapAndBridge = 'WrapAndSwapAndBridge',
   SellNativeInHooks = 'SellNativeInHooks',
-  SolanaWrapAndDelegate = 'SolanaWrapAndDelegate',
+  SolanaNativeSell = 'SolanaNativeSell',
 }
 
 export function useSwapFormState(): SwapFormState | null {
@@ -26,7 +26,8 @@ export function useSwapFormState(): SwapFormState | null {
   return useMemo(() => {
     if (state.inputCurrency && getIsNativeToken(state.inputCurrency)) {
       if (isHooksStore) return SwapFormState.SellNativeInHooks
-      if (isSolanaChain(state.inputCurrency.chainId)) return SwapFormState.SolanaWrapAndDelegate
+      // Solana native sell uses the regular Swap button; wrap+delegate is bundled into the confirm step.
+      if (isSolanaChain(state.inputCurrency.chainId)) return SwapFormState.SolanaNativeSell
 
       const isBridging =
         state.inputCurrency && state.outputCurrency && state.inputCurrency.chainId !== state.outputCurrency.chainId
