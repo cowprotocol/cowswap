@@ -245,6 +245,30 @@ export const ConclusionContent = styled.div`
   margin: 20px auto 0;
 `
 
+export const ReceiptReplayButton = styled.button`
+  position: fixed;
+  z-index: 20;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  left: max(16px, env(safe-area-inset-left));
+  padding: 8px 14px;
+  color: var(${UI.COLOR_NEUTRAL_100});
+  background: var(${UI.COLOR_NEUTRAL_0});
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.86;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+  }
+`
+
 export const ShareButton = styled(ButtonPrimary)`
   gap: 10px;
 

@@ -35,6 +35,7 @@ import {
   Updaters,
   WithLDProvider,
 } from 'modules/application'
+import { setupCowSoundUnlock } from 'modules/sounds'
 
 import { hashHistory } from 'common/constants/routes'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -61,6 +62,7 @@ function HydrateQueryClient({ children }: { children: ReactNode }): ReactNode {
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
 nodeRemoveChildFix()
+setupCowSoundUnlock()
 
 // Disable MetaMask network auto-refresh; ignore when window.ethereum is read-only (e.g. another extension set it with a getter).
 try {

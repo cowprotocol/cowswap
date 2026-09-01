@@ -16,7 +16,7 @@ import { jotaiStore } from '@cowprotocol/core'
 
 import { cowSwapStore } from 'legacy/state'
 
-import { __soundTestUtils } from './sound'
+import { __soundTestUtils, setupCowSoundUnlock } from './sound'
 
 function buildFlags(overrides: Partial<FeatureFlags> = {}): FeatureFlags {
   return {
@@ -107,6 +107,12 @@ describe('getThemeBasedSound', () => {
     expect(getThemeBasedSound('SUCCESS')).toBe('/audio/success.mp3')
   })
 
+  it('uses the thermal printer sound for receipts across seasonal themes', () => {
+    jotaiGet.mockReturnValue({ isChristmasEnabled: true })
+
+    expect(getThemeBasedSound('RECEIPT')).toBe('/audio/receipt-printer.wav')
+  })
+
   it('falls back to default sounds when April flag is disabled', () => {
     jotaiGet.mockReturnValue({})
 
@@ -136,5 +142,76 @@ describe('getThemeBasedSound', () => {
     getState.mockReturnValue({ user: { userDarkMode: false, matchesDarkMode: false } })
 
     expect(getThemeBasedSound('SEND')).toBe('/audio/send.mp3')
+  })
+})
+
+describe('receipt widget sound', () => {
+  const getWidgetSoundUrl = __soundTestUtils.getWidgetSoundUrl
+  const jotaiGet = jotaiStore.get as jest.Mock
+
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('uses the existing orderExecuted widget customization', () => {
+    jotaiGet.mockReturnValue({ params: { sounds: { orderExecuted: 'https://example.com/filled.mp3' } } })
+
+    expect(getWidgetSoundUrl('RECEIPT')).toBe('https://example.com/filled.mp3')
+  })
+
+  it('preserves an explicitly muted orderExecuted widget sound', () => {
+    jotaiGet.mockReturnValue({ params: { sounds: { orderExecuted: null } } })
+
+    expect(getWidgetSoundUrl('RECEIPT')).toBeNull()
+  })
+})
+
+describe('receipt sound unlock', () => {
+  it('primes the cached success and receipt sounds on the first user interaction', async () => {
+    const originalAudio = global.Audio
+    const successSound = {
+      currentTime: 1,
+      muted: false,
+      pause: jest.fn(),
+      play: jest.fn().mockResolvedValue(undefined),
+      preload: 'none',
+      volume: 1,
+    } as unknown as HTMLAudioElement
+    const receiptSound = {
+      currentTime: 1,
+      muted: false,
+      pause: jest.fn(),
+      play: jest.fn().mockResolvedValue(undefined),
+      preload: 'none',
+      volume: 1,
+    } as unknown as HTMLAudioElement
+
+    Object.defineProperty(global, 'Audio', {
+      configurable: true,
+      value: jest.fn((src: string) => (src.includes('receipt-printer') ? receiptSound : successSound)),
+      writable: true,
+    })
+    jest.mocked(jotaiStore.get).mockReturnValue({})
+
+    setupCowSoundUnlock()
+    window.dispatchEvent(new Event('pointerdown'))
+    await Promise.resolve()
+
+    const sounds = [successSound, receiptSound]
+    sounds.forEach((sound) => {
+      expect(sound.play).toHaveBeenCalledTimes(1)
+      expect(sound.pause).toHaveBeenCalledTimes(1)
+      expect(sound.currentTime).toBe(0)
+      expect(sound.muted).toBe(false)
+      expect(sound.preload).toBe('auto')
+    })
+    expect(successSound.volume).toBe(1)
+    expect(receiptSound.volume).toBe(0.2)
+
+    Object.defineProperty(global, 'Audio', {
+      configurable: true,
+      value: originalAudio,
+      writable: true,
+    })
   })
 })

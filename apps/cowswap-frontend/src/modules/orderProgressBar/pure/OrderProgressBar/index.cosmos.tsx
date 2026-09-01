@@ -17,9 +17,10 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { Order } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
+import { getCowSoundReceiptBundle } from 'modules/sounds'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { inputCurrencyInfoMock } from '../../../../mocks/tradeStateMock'
@@ -30,7 +31,14 @@ import { OrderProgressBar } from './index'
 
 const order = {
   ...getOrderMock(SupportedChainId.MAINNET),
-  apiAdditionalInfo: { executedBuyAmount: '1000000000000000000000', executedSellAmount: '5000000000000000000' },
+  status: OrderStatus.FULFILLED,
+  creationTime: '2026-08-19T12:59:50.000Z',
+  fulfillmentTime: '2026-08-19T13:00:00.000Z',
+  apiAdditionalInfo: {
+    executedBuyAmount: '1000000000',
+    executedSellAmount: '5000000000000000000',
+    executedSellAmountBeforeFees: '5000000000000000000',
+  },
 } as Order
 
 const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
@@ -115,7 +123,7 @@ const defaultProps: OrderProgressBarProps = {
   totalSolvers: 52,
   surplusData: {
     surplusFiatValue: CurrencyAmount.fromRawAmount(USDC_GNOSIS_CHAIN, '10000000'),
-    surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '1000000000000000000'),
+    surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '10000000'),
     surplusToken: order.outputToken,
     surplusPercent: '10',
     showFiatValue: true,
@@ -126,17 +134,17 @@ const defaultProps: OrderProgressBarProps = {
 }
 
 const Wrapper = styled.div`
-  width: 560px;
+  width: min(560px, 100%);
   margin: 0 auto;
   background: var(${UI.COLOR_PAPER});
 `
 
 const NarrowWrapper = styled(Wrapper)`
-  width: 375px;
+  width: min(375px, 100%);
 `
 
 const WideWrapper = styled(Wrapper)`
-  width: 720px;
+  width: min(720px, 100%);
 `
 
 const cloneTokenWithSymbol = (token: Token | TokenWithLogo, symbol: string): TokenWithLogo => {
@@ -156,6 +164,21 @@ const orderWithLongSymbols: Order = {
   ...order,
   inputToken: cloneTokenWithSymbol(order.inputToken, 'VERY-LONG-ALGO-TOKEN-SYMBOL'),
   outputToken: cloneTokenWithSymbol(order.outputToken, 'WRAPPED-SUPER-STABLECOIN-WITH-AN-EXTRA-SUFFIX'),
+}
+
+function FinishedReceiptFixture(): ReactNode {
+  useEffect(() => {
+    getCowSoundReceiptBundle().forEach((sound) => {
+      sound.currentTime = 0
+      sound.play().catch(() => undefined)
+    })
+  }, [])
+
+  return (
+    <Wrapper>
+      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
+    </Wrapper>
+  )
 }
 
 function SolvingFixture(): ReactNode {
@@ -323,11 +346,7 @@ const Fixtures = {
       <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.SUBMISSION_FAILED} />
     </Wrapper>
   ),
-  '4-finished': () => (
-    <Wrapper>
-      <OrderProgressBar {...defaultProps} stepName={OrderProgressBarStepName.FINISHED} />
-    </Wrapper>
-  ),
+  '4-finished': () => <FinishedReceiptFixture />,
   '4-finished-customReceiver': () => (
     <Wrapper>
       <OrderProgressBar

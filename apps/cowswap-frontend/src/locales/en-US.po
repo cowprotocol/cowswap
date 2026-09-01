@@ -451,6 +451,10 @@ msgstr "<0>By adding this list you are implicitly trusting that the data is corr
 #~ msgid "As soon as anything important or interesting happens, we will definitely let you know."
 #~ msgstr "As soon as anything important or interesting happens, we will definitely let you know."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Thanks for swapping"
+msgstr "Thanks for swapping"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "SWAP order"
 msgstr "SWAP order"
@@ -923,6 +927,7 @@ msgstr "Unsupported Token"
 #~ msgid "Limit price (incl. costs)"
 #~ msgstr "Limit price (incl. costs)"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 msgid "Order receipt"
 msgstr "Order receipt"
@@ -1215,6 +1220,10 @@ msgstr "Available COW balance"
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeTransactionLink/index.tsx
 msgid "Bridge explorer"
 msgstr "Bridge explorer"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Completed swap receipt"
+msgstr "Completed swap receipt"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "You possibly have other items to claim, but not Airdrops"
@@ -2683,6 +2692,10 @@ msgstr "(via WalletConnect)"
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Settlement"
+msgstr "Settlement"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Error loading price. Try again later."
 msgstr "Error loading price. Try again later."
@@ -3552,9 +3565,9 @@ msgstr "Learn how"
 msgid "Account overview"
 msgstr "Account overview"
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-#~ msgid "Network"
-#~ msgstr "Network"
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Network"
+msgstr "Network"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate your"
@@ -4005,6 +4018,7 @@ msgid "Safe confirmed signatures"
 msgstr "Safe confirmed signatures"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Winning solver"
 msgstr "Winning solver"
@@ -4357,6 +4371,7 @@ msgid "Token is temporarily suspended from trading"
 msgstr "Token is temporarily suspended from trading"
 
 #: apps/cowswap-frontend/src/legacy/state/orders/helpers.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/pure/OrderNotificationContent/index.tsx
 msgid "Order"
@@ -4882,8 +4897,8 @@ msgstr "Order Receipt"
 #~ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Transaction completed!"
-msgstr "Transaction completed!"
+#~ msgid "Transaction completed!"
+#~ msgstr "Transaction completed!"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "When orders fill or expire"
@@ -5211,6 +5226,10 @@ msgstr "Current network costs make up <0><1>{formattedFeePercentage}%</1></0> of
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork.tsx
 msgid "Switch network"
 msgstr "Switch network"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+#~ msgid "Swap complete"
+#~ msgstr "Swap complete"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
@@ -5709,6 +5728,10 @@ msgstr "Version"
 msgid "All tokens"
 msgstr "All tokens"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Received by"
+msgstr "Received by"
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
 msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher{amountRange} to ensure a high likelihood of order matching, even in volatile market conditions."
@@ -5994,6 +6017,10 @@ msgstr "Links/codes don't reveal your wallet."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Save & lock code"
 msgstr "Save & lock code"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Price improvement"
+msgstr "Price improvement"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign in your wallet. We'll submit the funding order automatically."
@@ -6475,6 +6502,7 @@ msgstr "Enter valid list location"
 msgid "View"
 msgstr "View"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Execution price"
@@ -6561,8 +6589,8 @@ msgid "Refreshing quote..."
 msgstr "Refreshing quote..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "was sent to"
-msgstr "was sent to"
+#~ msgid "was sent to"
+#~ msgstr "was sent to"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
@@ -7246,6 +7274,10 @@ msgstr "Try Again"
 #~ msgid "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
 #~ msgstr "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "You sold"
+msgstr "You sold"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "The order remains open. Execution requires adequate allowance for"
 msgstr "The order remains open. Execution requires adequate allowance for"
@@ -7905,6 +7937,10 @@ msgstr "Review hook request"
 msgid "Invalid parameters"
 msgstr "Invalid parameters"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "You received"
+msgstr "You received"
+
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "{label}"
 msgstr "{label}"
@@ -8113,6 +8149,10 @@ msgstr "This requires connecting a different wallet."
 #~ msgid "Waiting for settlement"
 #~ msgstr "Waiting for settlement"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Trade succeeded"
+msgstr "Trade succeeded"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/AccountProxyPage.container.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/AccountProxyPage.container.tsx
 msgid "Invalid proxy address"
@@ -8132,8 +8172,8 @@ msgstr "Exec. price"
 #~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "You sold <0/>"
-msgstr "You sold <0/>"
+#~ msgid "You sold <0/>"
+#~ msgstr "You sold <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Order details"
@@ -8404,6 +8444,10 @@ msgstr "yield over average"
 msgid "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
 msgstr "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
+msgid "Time to fill"
+msgstr "Time to fill"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 msgid "Found {totalOpenOrders} open orders in the {limit} most recent ones."
 msgstr "Found {totalOpenOrders} open orders in the {limit} most recent ones."
@@ -8433,6 +8477,7 @@ msgid "Add token"
 msgstr "Add token"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/PrintedOrderReceipt/PrintedOrderReceipt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx

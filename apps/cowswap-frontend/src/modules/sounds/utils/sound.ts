@@ -11,13 +11,21 @@ import { cowSwapStore } from 'legacy/state'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 type Sounds = Record<SoundType, string>
-type SoundType = 'SEND' | 'SUCCESS' | 'ERROR'
+type SoundType = 'SEND' | 'SUCCESS' | 'RECEIPT' | 'ERROR'
 type WidgetSounds = keyof NonNullable<CowSwapWidgetAppParams['sounds']>
 
 const DEFAULT_COW_SOUNDS: Sounds = {
   SEND: '/audio/send.mp3',
   SUCCESS: '/audio/success.mp3',
+  RECEIPT: '/audio/receipt-printer.wav',
   ERROR: '/audio/error.mp3',
+}
+
+const DEFAULT_COW_SOUND_VOLUMES: Record<SoundType, number> = {
+  SEND: 1,
+  SUCCESS: 1,
+  RECEIPT: 0.2,
+  ERROR: 1,
 }
 
 const WINTER_SOUNDS: Partial<Sounds> = {
@@ -33,6 +41,7 @@ const HALLOWEEN_SOUNDS: Partial<Sounds> = {
 const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   SEND: 'postOrder',
   SUCCESS: 'orderExecuted',
+  RECEIPT: 'orderExecuted',
   ERROR: 'orderError',
 }
 
@@ -109,9 +118,20 @@ function pickRandomAprilsFoolSound(): string {
 }
 
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
+let soundUnlockInitialized = false
 
 export function getCowSoundError(): HTMLAudioElement {
   return getAudio('ERROR')
+}
+
+export function getCowSoundReceipt(): HTMLAudioElement {
+  return getAudio('RECEIPT')
+}
+
+export function getCowSoundReceiptBundle(): HTMLAudioElement[] {
+  if (isInjectedWidget() && getWidgetSoundUrl('RECEIPT') === null) return []
+
+  return Array.from(new Set([getCowSoundSuccess(), getCowSoundReceipt()]))
 }
 
 export function getCowSoundSend(): HTMLAudioElement {
@@ -122,8 +142,50 @@ export function getCowSoundSuccess(): HTMLAudioElement {
   return getAudio('SUCCESS')
 }
 
-function createAudioOrEmpty(src: string): HTMLAudioElement {
-  return typeof Audio !== 'undefined' ? new Audio(src) : getEmptySound()
+export function setupCowSoundUnlock(): void {
+  if (typeof window === 'undefined' || soundUnlockInitialized) return
+  if (isInjectedWidget() && getWidgetSoundUrl('RECEIPT') === null) return
+
+  soundUnlockInitialized = true
+
+  const cleanup = (): void => {
+    window.removeEventListener('pointerdown', unlock, true)
+    window.removeEventListener('keydown', unlock, true)
+  }
+  const unlock = (): void => {
+    cleanup()
+
+    Promise.all(
+      getCowSoundReceiptBundle().map(async (sound) => {
+        const wasMuted = sound.muted
+
+        sound.muted = true
+        sound.preload = 'auto'
+        try {
+          await sound.play()
+          sound.pause()
+          sound.currentTime = 0
+        } finally {
+          sound.muted = wasMuted
+        }
+      }),
+    ).catch(() => {
+      soundUnlockInitialized = false
+      setupCowSoundUnlock()
+    })
+  }
+
+  window.addEventListener('pointerdown', unlock, { capture: true, once: true })
+  window.addEventListener('keydown', unlock, { capture: true, once: true })
+}
+
+function createAudioOrEmpty(src: string, volume: number): HTMLAudioElement {
+  if (typeof Audio === 'undefined') return getEmptySound()
+
+  const sound = new Audio(src)
+  sound.preload = 'auto'
+  sound.volume = volume
+  return sound
 }
 
 function getAudio(type: SoundType): HTMLAudioElement {
@@ -139,7 +201,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
     let sound = SOUND_CACHE[soundPath]
 
     if (!sound) {
-      sound = createAudioOrEmpty(soundPath)
+      sound = createAudioOrEmpty(soundPath, widgetSound ? 1 : DEFAULT_COW_SOUND_VOLUMES[type])
       SOUND_CACHE[soundPath] = sound
     }
 
@@ -151,7 +213,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
-    sound = createAudioOrEmpty(soundPath)
+    sound = createAudioOrEmpty(soundPath, DEFAULT_COW_SOUND_VOLUMES[type])
     SOUND_CACHE[soundPath] = sound
   }
 
@@ -182,4 +244,5 @@ function getWidgetSoundUrl(type: SoundType): string | null | undefined {
 
 export const __soundTestUtils = {
   getThemeBasedSound,
+  getWidgetSoundUrl,
 } as const
