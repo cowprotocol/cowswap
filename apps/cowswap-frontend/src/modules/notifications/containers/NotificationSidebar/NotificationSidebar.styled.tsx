@@ -151,6 +151,7 @@ export const EnableAlertsButton = styled.button`
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   min-width: 0;
   white-space: normal;
+  text-wrap: balance;
   line-height: 1.2;
   overflow-wrap: anywhere;
   text-align: center;
