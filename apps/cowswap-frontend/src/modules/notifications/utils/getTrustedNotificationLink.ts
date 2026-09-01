@@ -1,3 +1,5 @@
+import { isHttpUrl } from '@cowprotocol/common-utils'
+
 export interface TrustedNotificationLink {
   href: string
   target: '_blank' | '_parent'
@@ -24,9 +26,8 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
 
   try {
     const parsedUrl = new URL(trimmedUrl)
-    const isHttpUrl = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
 
-    if (!isHttpUrl) {
+    if (!isHttpUrl(parsedUrl)) {
       return null
     }
 
