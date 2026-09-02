@@ -54,7 +54,6 @@ export const Media = {
 export const Font = {
   familyInter: `'Inter var', 'Inter', Arial, sans-serif`,
   familyStudioFeixen: `'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif`,
-  familyStudioFeixenMono: `'studiofeixenmono', monospace, sans-serif`,
   familyStudioFeixenSerif: `'studiofeixenserif', Arial, serif`,
   // Numeric source of truth for ThemeColorVars and @font-face only. Use UI.FONT_WEIGHT_* in styles.
   weight: {

@@ -391,7 +391,6 @@ export const ThemeColorVars = css`
     // Font Families:
     ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyInter};
     ${UI.FONT_FAMILY_BRAND}: ${Font.familyStudioFeixen};
-    ${UI.FONT_FAMILY_MONO}: ${Font.familyInter};
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
