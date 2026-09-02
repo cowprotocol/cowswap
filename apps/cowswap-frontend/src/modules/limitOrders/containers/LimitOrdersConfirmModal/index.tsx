@@ -3,6 +3,7 @@ import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { UiOrderType } from '@cowprotocol/types'
 import { TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -96,7 +97,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   )
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE} showGetNotifiedMessage>
+    <TradeConfirmModal orderType={UiOrderType.LIMIT} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
