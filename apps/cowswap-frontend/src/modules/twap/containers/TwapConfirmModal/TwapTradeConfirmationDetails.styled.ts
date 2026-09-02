@@ -1,4 +1,4 @@
-import { Accordion, UI, slowTransition } from '@cowprotocol/ui'
+import { slowTransition } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -23,18 +23,9 @@ export const TriggerSlot = styled.div<{ $isVisible: boolean }>`
   }
 `
 
-export const Trigger = styled(Accordion.Trigger)<{ $isExpanded: boolean }>`
-  background: transparent;
-
-  &:hover {
-    background: ${({ $isExpanded }) =>
-      $isExpanded ? `var(${UI.COLOR_PAPER_DARKEST})` : `var(${UI.COLOR_PAPER_DARKER})`};
-  }
-`
-
 export const Body = styled.div<{ $withTopPadding: boolean }>`
   display: flex;
   flex-direction: column;
-  padding-top: ${({ $withTopPadding }) => ($withTopPadding ? '10px' : '0')};
+  padding-top: ${({ $withTopPadding }) => ($withTopPadding ? '8px' : '0')};
   transition: ${slowTransition(['padding-top'])};
 `
