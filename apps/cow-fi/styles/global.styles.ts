@@ -15,7 +15,6 @@ ${ThemeColorVars}
 
   :root {
     ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyStudioFeixen};
-    ${UI.FONT_FAMILY_MONO}: ${Font.familyStudioFeixenMono};
   }
 
 ${baseGlobalStyles}
