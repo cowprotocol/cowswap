@@ -3,13 +3,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
-import {
-  areAddressesEqual,
-  EnrichedOrder,
-  EthflowData,
-  isSolanaChain,
-  SupportedChainId as ChainId,
-} from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -22,7 +16,6 @@ import { useDispatch } from 'react-redux'
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { AppDispatch } from 'legacy/state'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
-import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import {
   CREATING_STATES,
   FulfillOrdersBatchParams,
@@ -274,39 +267,6 @@ export function PendingOrdersUpdater(): null {
   return null
 }
 
-/**
- * Solana counterpart to `_updateCreatingOrders`.
- *
- * The CoW orderbook API has no record of Solana orders (backend not live yet), so a Solana
- * order's status can never be resolved via `getOrder()`. Instead, resolve it from the on-chain
- * transaction that created it: `FinalizeTxUpdater`'s `checkSolanaTransaction` already confirms
- * that transaction and stores a `receipt` on it once known, so once that receipt lands, mirror
- * its outcome onto the order.
- */
-export function updateSolanaCreatingOrders(
-  chainId: ChainId,
-  pendingOrders: Order[],
-  allTransactions: Record<string, EnhancedTransactionDetails>,
-  isSafeWallet: boolean,
-  addOrUpdateOrders: AddOrUpdateOrdersCallback,
-): void {
-  pendingOrders
-    .filter((order) => order.status === OrderStatus.CREATING)
-    .forEach((order) => {
-      const tx = order.orderCreationHash ? allTransactions[order.orderCreationHash] : undefined
-      if (!tx?.receipt) return // still pending on-chain, nothing to do yet
-
-      // A confirmed CreateOrder tx only means the on-chain order intent exists; nothing has
-      // filled it yet, so it belongs in the PENDING bucket (ExpiredOrdersUpdater will expire
-      // it later if it never gets filled).
-      const status = tx.receipt.status === 'success' ? OrderStatus.PENDING : OrderStatus.FAILED
-
-      // `addOrUpdateOrders` (unlike `partialOrderUpdate`) moves the order into the redux
-      // bucket matching its new status.
-      addOrUpdateOrders({ chainId, orders: [{ ...order, status }], isSafeWallet })
-    })
-}
-
 // Check if there is any order pending for a long time
 // If so, trigger appzi
 function _triggerNps(pending: Order[], chainId: ChainId, account: string): void {
@@ -406,17 +366,9 @@ async function _updateOrders({
   if (!pending.length) {
     markPollComplete?.(chainId)
     return
+  } else {
+    _triggerNps(pending, chainId, account)
   }
-
-  if (isSolanaChain(chainId)) {
-    // The CoW orderbook API has no record of Solana orders (backend not live yet) —
-    // resolve status from the order's own transaction instead of polling getOrder().
-    updateSolanaCreatingOrders(chainId, pending, allTransactions, isSafeWallet, addOrUpdateOrders)
-    markPollComplete?.(chainId)
-    return
-  }
-
-  _triggerNps(pending, chainId, account)
 
   // Iterate over pending orders fetching API data
   const unfilteredOrdersData = await Promise.all(
