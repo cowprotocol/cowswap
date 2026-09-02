@@ -18,6 +18,6 @@ test.describe('Network', () => {
 
     await expect(swapPage.page).toHaveURL(/\/#\/100\/swap/)
     await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
-    await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
+    await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC.e')
   })
 })
