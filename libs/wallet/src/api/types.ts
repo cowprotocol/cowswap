@@ -1,11 +1,13 @@
 import { Connector as WagmiConnector } from 'wagmi'
-import { injected, walletConnect, coinbaseWallet, baseAccount, safe } from 'wagmi/connectors'
+import { injected, walletConnect, coinbaseWallet, safe } from 'wagmi/connectors'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export const ConnectionType = {
-  BASE_ACCOUNT: baseAccount.type,
+  // wagmi's `baseAccount` connector doesn't expose a static `.type` like the other
+  // connector factories do, so this is hardcoded to match its runtime connector.type.
+  BASE_ACCOUNT: 'baseAccount',
   COINBASE_WALLET: coinbaseWallet.type,
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,

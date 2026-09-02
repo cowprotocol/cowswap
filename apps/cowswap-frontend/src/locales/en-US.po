@@ -8255,6 +8255,10 @@ msgstr "Waiting for you to tap Start…"
 msgid "View cancellation"
 msgstr "View cancellation"
 
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
+msgid "Base Account"
+msgstr "Base Account"
+
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
 msgstr "Loading"
