@@ -201,7 +201,7 @@ Solana trading support under active development). To develop against a sibling
 [`cow-sdk`](https://github.com/cowprotocol/cow-sdk) checkout instead of the published npm
 packages, clone it next to this repo:
 
-```
+```text
 projects/
 ├── cow-sdk/
 └── cowswap/

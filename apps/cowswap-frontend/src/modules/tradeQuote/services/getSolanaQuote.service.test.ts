@@ -14,7 +14,7 @@ import { PublicKey, TransactionInstruction, Connection } from '@solana/web3.js'
 
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction'
 
-import { getSolanaQuote } from './getSolanaQuote'
+import { getSolanaQuote } from './getSolanaQuote.service'
 
 import { SolanaSigningContext } from '../types'
 

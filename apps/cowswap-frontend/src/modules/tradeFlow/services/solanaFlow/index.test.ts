@@ -55,7 +55,13 @@ function buildContext(postSwapOrderFromQuote: jest.Mock): SolanaTradeFlowContext
       },
       postSwapOrderFromQuote,
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
-    context: { chainId: SOLANA_CHAIN_ID, inputAmount, outputAmount },
+    context: {
+      chainId: SOLANA_CHAIN_ID,
+      inputAmount,
+      outputAmount,
+      orderKind: OrderKind.SELL,
+      validTo: Math.floor(Date.now() / 1000) + 600,
+    },
     callbacks: {
       closeModals: jest.fn(),
       dispatch: jest.fn(),

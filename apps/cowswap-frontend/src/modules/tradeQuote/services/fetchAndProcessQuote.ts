@@ -18,7 +18,7 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
-import { getSolanaQuote } from './getSolanaQuote'
+import { getSolanaQuote } from './getSolanaQuote.service'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -28,6 +28,11 @@ const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
+// Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
+// FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
+// a later one) could overwrite it in TradeQuoteManager.
+const getFastSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
+const getOptimalSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
 
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
@@ -132,19 +137,28 @@ async function fetchSwapQuote(
   processQuoteError: (errorLocation: string, error: unknown) => void,
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
+  const { priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
+    const solanaRequest = isOptimalQuote
+      ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
+      : getFastSolanaQuote(quoteParams, solanaSigningContext)
+
     try {
-      const quoteAndPost = await getSolanaQuote(quoteParams, solanaSigningContext)
-      tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
+      const { cancelled, data } = await solanaRequest
+
+      if (cancelled) {
+        return
+      }
+
+      tradeQuoteManager.onResponse(data, null, fetchParams, quoteParams)
     } catch (error) {
       processQuoteError('fetchSwapQuote', error)
     }
 
     return
   }
-
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
   const request = isOptimalQuote
     ? getOptimalQuote(quoteParams, advancedSettings)
