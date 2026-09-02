@@ -1,3 +1,5 @@
+import { isHttpUrl } from '@cowprotocol/common-utils/safeLink'
+
 interface AllowedHtmlImage {
   src: string
   alt: string
@@ -191,12 +193,7 @@ function isSafeImageSrc(src: string): boolean {
   if (ASCII_CONTROL_CHARACTERS_REGEXP.test(src)) return false
   if (!URL_SCHEME_REGEXP.test(src)) return true
 
-  try {
-    const parsedUrl = new URL(src)
-    return parsedUrl.protocol === 'https:' || parsedUrl.protocol === 'http:'
-  } catch {
-    return false
-  }
+  return isHttpUrl(src)
 }
 
 function removeHtmlComments(html: string): string {
