@@ -72,8 +72,9 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
       const items = res.data?.data
 
       // openapi-fetch resolves non-2xx responses instead of rejecting, so an HTTP error arrives here
-      // with no data. Geoblocking must never silently turn itself off, so fall back instead.
-      if (!items) {
+      // with no data. An empty collection is treated the same way: geoblocking must never silently
+      // turn itself off, so fall back rather than caching zero restricted lists.
+      if (!items?.length) {
         throw new Error(`Restricted token lists response had no data [${res.response?.status ?? 'unknown'}]`)
       }
 

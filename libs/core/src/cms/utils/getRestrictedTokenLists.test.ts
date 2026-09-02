@@ -12,6 +12,14 @@ jest.mock('@cowprotocol/cms', () => ({
 const RESERVE_BNB_TOKEN_LIST_URL =
   'https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json'
 const BARN_CMS_BASE_URL = 'https://cms.barn.cow.fi/api'
+const CMS_ITEM = {
+  id: 1,
+  attributes: {
+    name: 'Ondo Tokenized Stocks List',
+    tokenListUrl: 'https://example.com/ondo.tokenlist.json',
+    restrictedCountries: ['US'],
+  },
+}
 const originalCmsBaseUrl = process.env.REACT_APP_CMS_BASE_URL
 
 const expectsReserveBnbFallback = expect.arrayContaining([
@@ -63,10 +71,20 @@ describe('getRestrictedTokenLists', () => {
     await expect(getRestrictedTokenLists()).resolves.toEqual(expectsReserveBnbFallback)
   })
 
+  // An empty collection leaves the app with zero restricted lists, which is the same end state as a
+  // failed request, so it must not be treated as a valid answer and cached
+  it('falls back when the CMS returns an empty collection', async () => {
+    mockCmsGet.mockResolvedValue({ data: { data: [] }, response: { ok: true, status: 200 } })
+
+    const { getRestrictedTokenLists } = await importGetRestrictedTokenLists()
+
+    await expect(getRestrictedTokenLists()).resolves.toEqual(expectsReserveBnbFallback)
+  })
+
   // The barn CMS returns 403 for the `restricted-token-lists` collection
   it('reads restricted token lists from the production CMS even when the app points at the barn CMS', async () => {
     process.env.REACT_APP_CMS_BASE_URL = BARN_CMS_BASE_URL
-    mockCmsGet.mockResolvedValue({ data: { data: [] }, response: { ok: true, status: 200 } })
+    mockCmsGet.mockResolvedValue({ data: { data: [CMS_ITEM] }, response: { ok: true, status: 200 } })
 
     const { getRestrictedTokenLists } = await importGetRestrictedTokenLists()
 
