@@ -42,6 +42,32 @@ import { AssistantApproval } from '../types'
  * else needed" moments before their wallet asks them to sign something is exactly
  * the surprise this is meant to remove.
  */
+/**
+ * ⚠️ **FOR REVIEW BEFORE MERGE — this does one on-chain read while the panel is closed.**
+ *
+ * `useAssistantContext` runs on every render of the drawer, and the drawer is mounted
+ * in `AppContainer`: it returns `null` when closed but its hooks still run. Most of
+ * what it reads is free — Jotai atoms that the app's own updaters populate regardless
+ * — and the approval hooks below are shared with `tradeFormValidation` and
+ * `tradeFlow`, so that work happens anyway.
+ *
+ * The exception is `useNeedsZeroApproval`. It calls `shouldZeroApproveFn`, a real
+ * allowance read via wagmi, and it holds the result in local `useState` rather than a
+ * shared cache — so this call does **not** dedupe with the TWAP module's. It
+ * short-circuits unless `needsApproval` is true, which requires a real trade in the
+ * form with an approval genuinely pending, so the blast radius is small: one extra
+ * allowance read, in one state, for someone who never opened the assistant.
+ *
+ * Small, but it means "the closed panel costs nothing" is *nearly* true rather than
+ * true. The fix is the same shape as `useOpenLimitOrders`: gate on
+ * `assistantDrawerOpenAtom` and pass nothing to the approval hooks while closed. Left
+ * undone deliberately so a reviewer can decide whether the assistant should read
+ * anything at all before it is opened — that is a house call, not mine.
+ *
+ * Precedent for how badly this can go: the open-orders lookup shipped with
+ * `useBalancesAndAllowances` running on every page, which re-fetched every 32 seconds
+ * for every visitor, and the e2e smoke run caught it.
+ */
 export function useApprovalContext(): AssistantApproval | null {
   const isBundlingSupported = useIsTxBundlingSupported()
   const { allowsOffchainSigning } = useWalletDetails()
