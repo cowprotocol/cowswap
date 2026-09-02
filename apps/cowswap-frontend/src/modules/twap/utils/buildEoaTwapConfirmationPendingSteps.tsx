@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@cowprotocol/currency'
+
 import { t } from '@lingui/core/macro'
 
 import { OrderStep, OrderStepStatus } from 'modules/trade'
@@ -13,14 +15,21 @@ const LOADING_PHASES: ReadonlySet<EoaTwapSigningPhase> = new Set([
   EoaTwapSigningPhase.Verifying,
 ])
 
+const APPROVAL_STEPS = new Set<EoaTwapSigningSteps>([
+  EoaTwapSigningSteps.ZeroApprove,
+  EoaTwapSigningSteps.ApproveOrPermit,
+])
+
 export interface BuildEoaTwapConfirmationPendingStepsParams {
   signingStep: EoaTwapSigningStepState
   symbol?: string
+  token?: Currency
 }
 
 export function buildEoaTwapConfirmationPendingSteps({
   signingStep,
   symbol,
+  token,
 }: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
@@ -32,41 +41,24 @@ export function buildEoaTwapConfirmationPendingSteps({
 
   return signingStep.plan.map((step, index) => {
     const label = getEoaTwapStepLabel(step, symbol)
+    const approvalToken = APPROVAL_STEPS.has(step) ? token : undefined
 
-    if (index < currentIndex) {
-      return {
-        id: step,
-        label,
-        description: getEoaTwapStepDescription(step, 'success'),
-        status: 'success',
-      }
-    }
+    let status: OrderStepStatus
 
-    if (index === currentIndex) {
-      if (signingStep.phase === EoaTwapSigningPhase.Confirmed) {
-        return {
-          id: step,
-          label,
-          description: getEoaTwapStepDescription(step, 'success'),
-          status: 'success',
-        }
-      }
-
-      const status = LOADING_PHASES.has(signingStep.phase) ? 'loading' : 'active'
-
-      return {
-        id: step,
-        label,
-        description: getEoaTwapStepDescription(step, status),
-        status,
-      }
+    if (index < currentIndex || (index === currentIndex && signingStep.phase === EoaTwapSigningPhase.Confirmed)) {
+      status = 'success'
+    } else if (index === currentIndex) {
+      status = LOADING_PHASES.has(signingStep.phase) ? 'loading' : 'active'
+    } else {
+      status = 'upcoming'
     }
 
     return {
       id: step,
       label,
-      description: getEoaTwapStepDescription(step, 'upcoming'),
-      status: 'upcoming',
+      description: getEoaTwapStepDescription(step, status),
+      status,
+      ...(approvalToken ? { token: approvalToken } : {}),
     }
   })
 }
