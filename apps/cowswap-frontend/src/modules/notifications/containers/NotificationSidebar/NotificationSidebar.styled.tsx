@@ -97,7 +97,7 @@ export const SidebarHeader = styled.div`
 
   > h3 {
     font-size: 16px;
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     margin: 0 auto 0 0;
     line-height: 1;
   }
@@ -146,7 +146,7 @@ export const EnableAlertsButton = styled.button`
   border-radius: 12px;
   padding: 6px 12px;
   font-size: 12px;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   white-space: nowrap;
   display: flex;
   align-items: center;

@@ -132,7 +132,7 @@ export const HookTag = styled.div<{ isPost?: boolean; addSeparator?: boolean }>`
   letter-spacing: 0.2px;
 
   > b {
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     color: var(${UI.COLOR_TEXT});
   }
 
@@ -172,7 +172,7 @@ export const CircleCount = styled.span`
   background-color: var(${UI.COLOR_PAPER_DARKER});
   color: var(${UI.COLOR_TEXT});
   font-size: 12px;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   margin: 0;
 `
 
