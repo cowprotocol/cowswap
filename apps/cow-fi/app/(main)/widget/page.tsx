@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import iconGhostSrc from '@cowprotocol/assets/images/icon-ghost.svg'
 import iconOwlSrc from '@cowprotocol/assets/images/icon-owl.svg'
-import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowSwapWidget, type CowSwapWidgetParams } from '@cowprotocol/widget-react'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -261,7 +261,7 @@ export default function Page(): ReactNode {
                   <LazySVG src="images/icons/check-color.svg" />
                 </TopicImage>
                 <TopicCardInner contentAlign="left">
-                  <TopicTitle fontSize={23} fontWeight={Font.weight.medium}>
+                  <TopicTitle fontSize={23} fontWeight={`var(${UI.FONT_WEIGHT_MEDIUM})`}>
                     {item}
                   </TopicTitle>
                 </TopicCardInner>

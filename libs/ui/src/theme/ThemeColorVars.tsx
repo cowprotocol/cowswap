@@ -364,9 +364,13 @@ export const ThemeColorVars = css`
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 
     // Font Weights:
+    ${UI.FONT_WEIGHT_ULTRALIGHT}: ${Font.weight.ultralight};
+    ${UI.FONT_WEIGHT_LIGHT}: ${Font.weight.light};
     ${UI.FONT_WEIGHT_NORMAL}: ${Font.weight.regular};
+    ${UI.FONT_WEIGHT_BOOK}: ${Font.weight.book};
     ${UI.FONT_WEIGHT_MEDIUM}: ${Font.weight.medium};
-    ${UI.FONT_WEIGHT_BOLD}: ${Font.weight.semibold};
+    ${UI.FONT_WEIGHT_SEMIBOLD}: ${Font.weight.semibold};
+    ${UI.FONT_WEIGHT_BOLD}: ${Font.weight.bold};
 
     // Font Sizes:
     ${UI.FONT_SIZE_SMALLER}: 10px;
