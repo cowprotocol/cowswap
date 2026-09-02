@@ -20,6 +20,7 @@ const REQUIRED_ROOT_HEADINGS = [
 const REQUIRED_DOC_PATHS = [
   'docs/ARCHITECTURE.md',
   'docs/MODULE_CONVENTIONS.md',
+  'docs/FONT_CONVENTIONS.md',
   'docs/STATE_MANAGEMENT.md',
   'docs/QUALITY.md',
   'docs/HARNESS_HARDENING.md',
