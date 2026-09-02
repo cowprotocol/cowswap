@@ -9,6 +9,8 @@
     "projects": [
       "libs/events",
       "libs/currency",
+      "libs/common-const",
+      "libs/common-utils",
       "libs/types",
       "libs/permit-utils",
       "libs/widget-lib",

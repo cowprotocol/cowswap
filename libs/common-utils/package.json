@@ -1,9 +1,15 @@
 {
   "name": "@cowprotocol/common-utils",
   "version": "3.13.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cowprotocol/cowswap.git",
+    "directory": "libs/common-utils"
+  },
+  "type": "module",
   "main": "./src/index.ts",
-  "types": "./src/index.ts",
-  "private": true,
+  "types": "./src/index.d.ts",
+  "license": "ISC",
   "exports": {
     ".": {
       "types": "./src/index.ts",
@@ -11,26 +17,27 @@
       "require": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./json-utils": {
-      "types": "./src/json-utils.ts",
-      "import": "./src/json-utils.ts",
-      "require": "./src/json-utils.ts",
-      "default": "./src/json-utils.ts"
+    "./*": {
+      "types": "./src/*.js",
+      "import": "./src/*.js",
+      "require": "./src/*.js",
+      "default": "./src/*.js"
     }
   },
   "publishConfig": {
+    "access": "public",
     "main": "./index.js",
     "types": "./index.d.ts",
     "exports": {
       ".": {
         "types": "./index.d.ts",
-        "import": "./index.mjs",
-        "require": "./index.js"
+        "import": "./index.js",
+        "require": "./index.cjs"
       },
-      "./json-utils": {
-        "types": "./json-utils.d.ts",
-        "import": "./json-utils.mjs",
-        "require": "./json-utils.js"
+      "./*": {
+        "types": "./*.d.ts",
+        "import": "./*.js",
+        "require": "./*.cjs"
       }
     }
   },

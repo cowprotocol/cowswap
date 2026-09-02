@@ -2,6 +2,7 @@ import { Address, BaseError, ExecutionRevertedError, Hex } from 'viem'
 import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
+import { NormalizedError, normalizeError } from '@cowprotocol/common-utils/errors'
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from '../const'
@@ -9,8 +10,6 @@ import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
-
-type NormalizedError = Error & { code?: number }
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
@@ -176,21 +175,4 @@ function isUserRejectionError(error: NormalizedError): boolean {
 
   const message = error.message.toLowerCase()
   return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
-}
-
-// Keep this local: permit-utils is buildable, while common-utils is not.
-function normalizeError(err: unknown): NormalizedError {
-  if (err instanceof Error) return err
-
-  const message =
-    typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string'
-      ? err.message
-      : String(err)
-  const error = new Error(message) as NormalizedError
-
-  if (typeof err === 'object' && err !== null && 'code' in err && typeof err.code === 'number') {
-    error.code = err.code
-  }
-
-  return error
 }
