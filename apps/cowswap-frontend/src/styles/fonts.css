@@ -48,11 +48,3 @@
   font-style: normal;
   font-display: fallback;
 }
-
-@font-face {
-  font-family: 'studiofeixenmono';
-  src: url('/static/StudioFeixenMono-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: fallback;
-}
