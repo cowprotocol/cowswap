@@ -22,6 +22,7 @@ import {
 
 import { useApprovalContext } from './useApprovalContext'
 import { useFormBlocker } from './useFormBlocker'
+import { useOpenLimitOrders } from './useOpenLimitOrders'
 
 import {
   AssistantHolding,
@@ -112,6 +113,7 @@ export function useAssistantContext(): AssistantUiContext {
   const tokensByAddress = useTokensByAddressMap()
   const approval = useApprovalContext()
   const formBlocker = useFormBlocker()
+  const openLimitOrders = useOpenLimitOrders()
 
   const isLimit = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
@@ -144,6 +146,8 @@ export function useAssistantContext(): AssistantUiContext {
       approval,
       // Absent when nothing is blocking, so silence stays the default.
       ...(formBlocker ? { formBlocker } : {}),
+      // Absent when there are none — which is most people, most of the time.
+      ...openOrdersFields(openLimitOrders),
       // The unlock screen covers the swap form entirely, so a quote can't be
       // fetched and nothing loaded there can be seen. Only relevant on swap.
       ...(!isLimit && !isUnlocked ? { formCovered: true as const } : {}),
@@ -167,6 +171,7 @@ export function useAssistantContext(): AssistantUiContext {
     approval,
     formBlocker,
     isUnlocked,
+    openLimitOrders,
   ])
 }
 
@@ -315,6 +320,18 @@ function holdingsAvailability({
   if (balancesChainId !== null && balancesChainId !== chainId) return 'loading'
   if (!hasFirstLoad && Object.keys(balances).length === 0) return 'loading'
   return null
+}
+
+/** Omitted entirely when there are no open limit orders, which is the common case. */
+function openOrdersFields(
+  openLimitOrders: ReturnType<typeof useOpenLimitOrders>,
+): Pick<AssistantUiContext, 'openOrders' | 'openOrdersTruncated'> {
+  if (openLimitOrders.orders.length === 0) return {}
+
+  return {
+    openOrders: openLimitOrders.orders,
+    ...(openLimitOrders.truncated ? { openOrdersTruncated: true as const } : {}),
+  }
 }
 
 function toBps(slippage: Percent | null | undefined): number | null {

@@ -71,6 +71,34 @@ export interface AssistantMessage {
   content: unknown
 }
 
+/**
+ * One open limit order, as the app already understands it.
+ *
+ * ⚠️ Every "why isn't it filling" field is three-valued, not two. `undefined` on the
+ * app's fillability checks means *not computed yet*, and reporting that as "you don't
+ * have enough" would tell someone their order is stuck when nobody has looked. So
+ * blockers are listed only when the answer is a definite no, and `fillabilityUnknown`
+ * carries the third case explicitly.
+ */
+export interface AssistantOpenOrder {
+  /** Short id, enough to match against the orders table. */
+  ref: string
+  selling: string | null
+  buying: string | null
+  /** ISO date. Absent when the order effectively never expires. */
+  expires?: string
+  /** The app's own judgement — price has moved away since placement. */
+  outOfMarket?: true
+  /** Definite blockers only: 'balance' and/or 'allowance'. */
+  cannotFillBecause?: string[]
+  /** The checks haven't run yet, so silence about blockers means nothing. */
+  fillabilityUnknown?: true
+  /** Being cancelled right now. */
+  cancelling?: true
+  /** From the app's pending-order prices. Absent when the quote API errored. */
+  estimatedFillPrice?: string
+}
+
 /** What `propose_trade` returns. No recipient field — deliberately (spec §7). */
 export interface AssistantProposal {
   chainId: number
@@ -152,6 +180,13 @@ export interface AssistantUiContext {
   holdingsUnavailable?: 'error' | 'loading'
   /** Sent only on the turn that reports a settlement. */
   lastFill?: AssistantFill
+  /**
+   * Open limit orders on this chain, from the app's own pending-order state rather
+   * than the Orderbook API — see useOpenLimitOrders for why that distinction matters.
+   */
+  openOrders?: AssistantOpenOrder[]
+  openOrdersTruncated?: true
+
   /** Why the form's button is disabled, when it is. */
   formBlocker?: AssistantFormBlocker
   /**
