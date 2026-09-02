@@ -99,6 +99,21 @@ export interface AssistantOpenOrder {
   estimatedFillPrice?: string
 }
 
+/**
+ * An order the person just signed and posted.
+ *
+ * Placement and settlement are different moments. For a market order they are
+ * seconds apart, so `lastFill` is the better of the two to speak on — it carries
+ * what actually arrived. For a limit order, placement may be the last thing that
+ * happens for days, which is why it's worth acknowledging at all.
+ */
+export interface AssistantPlacement {
+  /** 'LIMIT' | 'TWAP' | … — never 'SWAP'; see usePlacementWatch. */
+  orderType: string
+  selling: string | null
+  buying: string | null
+}
+
 /** What `propose_trade` returns. No recipient field — deliberately (spec §7). */
 export interface AssistantProposal {
   chainId: number
@@ -180,6 +195,8 @@ export interface AssistantUiContext {
   holdingsUnavailable?: 'error' | 'loading'
   /** Sent only on the turn that reports a settlement. */
   lastFill?: AssistantFill
+  /** Sent only on the turn that reports a placement. */
+  lastPlacement?: AssistantPlacement
   /**
    * Open limit orders on this chain, from the app's own pending-order state rather
    * than the Orderbook API — see useOpenLimitOrders for why that distinction matters.

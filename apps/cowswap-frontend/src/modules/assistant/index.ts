@@ -1,3 +1,4 @@
+export * from './hooks/usePlacementWatch'
 export * from './hooks/useOpenLimitOrders'
 export * from './hooks/useMissingProposalToken'
 export * from './hooks/useSteadyStatus'

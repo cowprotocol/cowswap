@@ -1,12 +1,20 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { PendingOrdersPrices, usePendingOrdersPrices } from 'modules/orders'
-import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
+import { OrderFillability, useOrdersFillability } from 'modules/ordersTable'
 
+import { assistantDrawerOpenAtom } from '../state/drawerAtom'
 import { AssistantOpenOrder } from '../types'
+
+/** Stable empty array, so a closed drawer doesn't re-run the fillability memo. */
+const NO_ORDERS: never[] = []
 
 /** Enough to answer "what's still open"; more is a job for the orders table. */
 const MAX_OPEN_ORDERS = 10
@@ -33,8 +41,28 @@ const NEVER_EXPIRES_YEARS = 5
  * revoked. Those are how a limit order silently never fills.
  */
 export function useOpenLimitOrders(): { orders: AssistantOpenOrder[]; truncated: boolean } {
-  const fillability = usePendingOrdersFillability(OrderClass.LIMIT)
+  // ⚠️ **Only while the panel is open.**
+  //
+  // `useAssistantContext` runs on every render of the drawer, and the drawer is
+  // mounted in AppContainer — it returns null when closed but its hooks still run.
+  // So this would otherwise fire `useBalancesAndAllowances` multicalls on every page
+  // of CoW Swap, for the sell token of every pending order, to answer a question
+  // nobody has asked. That is real RPC traffic for every visitor who never opens the
+  // assistant, and it broke the e2e smoke run, whose network is mocked.
+  //
+  // `usePendingOrdersFillability` is inlined here rather than called, because it
+  // takes no way to stay idle.
+  const isOpen = useAtomValue(assistantDrawerOpenAtom)
+  const { account, chainId } = useWalletInfo()
+  const pending = useOnlyPendingOrders(chainId, account)
   const prices = usePendingOrdersPrices()
+
+  const limitOrders = useMemo(
+    () => (isOpen ? pending.filter((order) => order.class === OrderClass.LIMIT) : NO_ORDERS),
+    [isOpen, pending],
+  )
+
+  const fillability = useOrdersFillability(limitOrders)
 
   return useMemo(() => {
     const entries = Object.values(fillability).filter((entry): entry is OrderFillability => Boolean(entry))

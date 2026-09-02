@@ -22,6 +22,9 @@ export const QUOTE_MARKER = '<QUOTE_LOADED/>'
 /** Sent by the app when an order settles, with the executed amounts in uiContext. */
 export const FILL_MARKER = '<ORDER_FILLED/>'
 
+/** Sent by the app when an order is signed and posted, with lastPlacement attached. */
+export const PLACED_MARKER = '<ORDER_PLACED/>'
+
 export interface Conversation {
   error: string | null
   markApplied(): void
@@ -40,7 +43,8 @@ export function isAppInjected(text: string): boolean {
     text.startsWith('<CURRENT_STATE>') ||
     text.startsWith(WRAP_MARKER) ||
     text.startsWith(QUOTE_MARKER) ||
-    text.startsWith(FILL_MARKER)
+    text.startsWith(FILL_MARKER) ||
+    text.startsWith(PLACED_MARKER)
   )
 }
 
@@ -62,7 +66,8 @@ export function useConversation(): Conversation {
       if (!trimmed || busy) return
 
       const previous = conversation
-      const isNudge = trimmed === WRAP_MARKER || trimmed === QUOTE_MARKER || trimmed === FILL_MARKER
+      const isNudge =
+        trimmed === WRAP_MARKER || trimmed === QUOTE_MARKER || trimmed === FILL_MARKER || trimmed === PLACED_MARKER
       const next = [...conversation.messages, { role: 'user' as const, content: trimmed }]
 
       setConversation({
