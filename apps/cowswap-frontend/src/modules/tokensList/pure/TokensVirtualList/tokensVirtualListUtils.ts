@@ -1,7 +1,7 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
 
@@ -103,11 +103,27 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
   return [...composedRows, ...tokenRows]
 }
 
-export function sortTokensByBalance(tokens: TokenWithLogo[], balances: BalancesMap): TokenWithLogo[] {
-  if (!balances) {
-    return tokens
-  }
+export function sortTokensByBalance(
+  tokens: TokenWithLogo[],
+  balances: BalancesMap,
+  prioritizedTokenIds?: ReadonlySet<string>,
+): TokenWithLogo[] {
+  const balanceSortedTokens = balances ? sortByBalance(tokens, balances) : tokens
 
+  if (!prioritizedTokenIds?.size) return balanceSortedTokens
+
+  const prioritized: TokenWithLogo[] = []
+  const remainder: TokenWithLogo[] = []
+
+  balanceSortedTokens.forEach((token) => {
+    const target = prioritizedTokenIds.has(getTokenId(token)) ? prioritized : remainder
+    target.push(token)
+  })
+
+  return [...prioritized, ...remainder]
+}
+
+function sortByBalance(tokens: TokenWithLogo[], balances: NonNullable<BalancesMap>): TokenWithLogo[] {
   const prioritized: TokenWithLogo[] = []
   const remainder: TokenWithLogo[] = []
 

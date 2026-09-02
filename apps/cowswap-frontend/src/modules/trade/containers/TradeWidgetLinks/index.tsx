@@ -67,6 +67,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   const menuItemsElements = useMemo(() => {
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
+      const isItemRwa = item.route === Routes.RWA
       const chainId = tradeContext.chainId
 
       const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
@@ -81,8 +82,9 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           } as TradeUrlParams)
         : getTradeUrlParams(item)
 
-      const routePath =
-        isItemYield && !isCurrentPathYield
+      const routePath = isItemRwa
+        ? addChainIdToRoute(item.route, chainId)
+        : isItemYield && !isCurrentPathYield
           ? addChainIdToRoute(item.route, chainId)
           : parameterizeTradeRoute(tradeUrlParams, item.route, !isCurrentPathYield)
 

@@ -1,6 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
-import { buildVirtualRows } from './tokensVirtualListUtils'
+import { buildVirtualRows, sortTokensByBalance } from './tokensVirtualListUtils'
 
 const mockToken = {
   address: '0xabc123',
@@ -16,6 +16,14 @@ const mockBridgeableToken = {
   decimals: 18,
   symbol: 'BRIDGE',
   name: 'Bridgeable Token',
+} as TokenWithLogo
+
+const mockPrioritizedToken = {
+  address: '0x789abc',
+  chainId: 1,
+  decimals: 18,
+  symbol: 'RWA',
+  name: 'Prioritized RWA Token',
 } as TokenWithLogo
 
 describe('buildVirtualRows', () => {
@@ -213,5 +221,17 @@ describe('buildVirtualRows', () => {
       const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
       expect(allTokensTitle).toBeDefined()
     })
+  })
+})
+
+describe('sortTokensByBalance', () => {
+  it('moves configured tokens to the front while preserving relative order', () => {
+    const result = sortTokensByBalance(
+      [mockToken, mockPrioritizedToken, mockBridgeableToken],
+      undefined,
+      new Set(['1:0x789abc']),
+    )
+
+    expect(result).toEqual([mockPrioritizedToken, mockToken, mockBridgeableToken])
   })
 })

@@ -124,6 +124,10 @@ msgstr ""
 msgid "<0>Connection Lost</0><1/>You appear to be offline. Some features may not work properly."
 msgstr "<0>Connection Lost</0><1/>You appear to be offline. Some features may not work properly."
 
+#: apps/cowswap-frontend/src/common/constants/routes.ts
+msgid "New!"
+msgstr "New!"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Total duration"
@@ -4678,6 +4682,10 @@ msgstr "Define custom total time"
 msgid "Deprecated network"
 msgstr "Deprecated network"
 
+#: apps/cowswap-frontend/src/modules/rwaWidget/pure/RwaAlternativeQuote/index.tsx
+msgid "Use {symbol}"
+msgstr "Use {symbol}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
@@ -6349,6 +6357,10 @@ msgstr "Cancelled order"
 #~ msgid "Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 #~ msgstr "Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
 
+#: apps/cowswap-frontend/src/common/constants/routes.ts
+msgid "RWA"
+msgstr "RWA"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #~ msgid "Limit Order Settings"
 #~ msgstr "Limit Order Settings"
@@ -6446,6 +6458,10 @@ msgstr "Only confirm if you trust this dapp and recognize the target contract an
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
 msgstr "at most "
+
+#: apps/cowswap-frontend/src/common/constants/routes.ts
+msgid "Trade real-world assets"
+msgstr "Trade real-world assets"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users."

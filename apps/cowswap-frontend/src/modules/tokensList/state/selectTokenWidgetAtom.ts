@@ -38,6 +38,7 @@ export interface SelectTokenWidgetState {
   // UI config
   standalone?: boolean
   displayLpTokenLists?: boolean
+  prioritizedTokenIds?: ReadonlySet<string>
 }
 
 export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
@@ -54,6 +55,7 @@ export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
   forceOpen: false,
   standalone: false,
   displayLpTokenLists: false,
+  prioritizedTokenIds: undefined,
 }
 
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(

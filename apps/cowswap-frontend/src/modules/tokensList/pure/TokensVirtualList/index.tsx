@@ -35,12 +35,16 @@ export function TokensVirtualList({
     selectedTargetChainId,
     bridgeSupportedTokensMap,
     areTokensFromBridge,
+    prioritizedTokenIds,
   } = useTokenListContext()
   const { values: balances } = selectTokenContext.balancesState
   const { isYieldEnabled } = useFeatureFlags()
   const { hideRecentTokens, hideFavoriteTokens } = useInjectedWidgetParams()
 
-  const sortedTokens = useMemo(() => sortTokensByBalance(tokensToDisplay, balances), [tokensToDisplay, balances])
+  const sortedTokens = useMemo(
+    () => sortTokensByBalance(tokensToDisplay, balances, prioritizedTokenIds),
+    [tokensToDisplay, balances, prioritizedTokenIds],
+  )
 
   const rows = useMemo<TokensVirtualRow[]>(
     () =>

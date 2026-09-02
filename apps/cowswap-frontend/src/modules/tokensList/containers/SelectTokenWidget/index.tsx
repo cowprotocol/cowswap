@@ -13,6 +13,7 @@ import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 export interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
   standalone?: boolean
+  prioritizedTokenIds?: ReadonlySet<string>
   /**
    * Custom flows registry - allows injecting pre/post flow views from outside.
    * This keeps the token selector domain-agnostic.
@@ -39,14 +40,19 @@ export interface SelectTokenWidgetProps {
  * Uses slot-based composition with configurable custom flows.
  * Custom flows (like consent) are provided externally via the customFlows prop.
  */
-export function SelectTokenWidget({ displayLpTokenLists, standalone, customFlows }: SelectTokenWidgetProps): ReactNode {
+export function SelectTokenWidget({
+  displayLpTokenLists,
+  standalone,
+  prioritizedTokenIds,
+  customFlows,
+}: SelectTokenWidgetProps): ReactNode {
   const updateWidgetState = useSetAtom(updateSelectTokenWidgetAtom)
   const setCustomFlows = useSetAtom(customFlowsRegistryAtom)
 
   // Sync config props to atoms
   useEffect(() => {
-    updateWidgetState({ displayLpTokenLists, standalone })
-  }, [displayLpTokenLists, standalone, updateWidgetState])
+    updateWidgetState({ displayLpTokenLists, standalone, prioritizedTokenIds })
+  }, [displayLpTokenLists, standalone, prioritizedTokenIds, updateWidgetState])
 
   // Sync custom flows to atom
   useEffect(() => {
