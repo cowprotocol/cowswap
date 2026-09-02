@@ -18,7 +18,7 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
-import { getSolanaJupiterQuote } from './getSolanaJupiterQuote'
+import { getSolanaQuote } from './getSolanaQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -134,7 +134,7 @@ async function fetchSwapQuote(
 ): Promise<void> {
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
     try {
-      const quoteAndPost = await getSolanaJupiterQuote(quoteParams, solanaSigningContext)
+      const quoteAndPost = await getSolanaQuote(quoteParams, solanaSigningContext)
       tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams, quoteParams)
     } catch (error) {
       processQuoteError('fetchSwapQuote', error)

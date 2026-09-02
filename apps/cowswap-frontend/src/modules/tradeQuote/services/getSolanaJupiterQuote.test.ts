@@ -14,7 +14,7 @@ import { PublicKey, TransactionInstruction, Connection } from '@solana/web3.js'
 
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction'
 
-import { getSolanaJupiterQuote } from './getSolanaJupiterQuote'
+import { getSolanaQuote } from './getSolanaQuote'
 
 import { SolanaSigningContext } from '../types'
 
@@ -90,7 +90,7 @@ describe('getSolanaJupiterQuote', () => {
     })
     mockSolanaTradingSdk(mockGetQuote)
 
-    const quoteAndPost = await getSolanaJupiterQuote(quoteParams)
+    const quoteAndPost = await getSolanaQuote(quoteParams)
 
     expect(quoteAndPost.quoteResults.quoteResponse.quote.sellAmount).toBe('1000000000')
     expect(quoteAndPost.quoteResults.quoteResponse.quote.buyAmount).toBe('9707507795')
@@ -156,7 +156,7 @@ describe('getSolanaJupiterQuote', () => {
     })
     mockSolanaTradingSdk(mockGetQuote)
 
-    const quoteAndPost = await getSolanaJupiterQuote(quoteParams)
+    const quoteAndPost = await getSolanaQuote(quoteParams)
 
     await expect(quoteAndPost.postSwapOrderFromQuote()).rejects.toThrow()
 
@@ -208,7 +208,7 @@ describe('getSolanaJupiterQuote', () => {
       owner: '0x1234567890123456789012345678901234567890' as `0x${string}`,
     }
 
-    await expect(getSolanaJupiterQuote(evmOwnerQuoteParams)).resolves.toBeDefined()
+    await expect(getSolanaQuote(evmOwnerQuoteParams)).resolves.toBeDefined()
   })
 
   it('rejects when receiver is different from owner', async () => {
@@ -219,7 +219,7 @@ describe('getSolanaJupiterQuote', () => {
       receiver: differentReceiver,
     }
 
-    await expect(getSolanaJupiterQuote(paramsWithDifferentReceiver)).rejects.toThrow(
+    await expect(getSolanaQuote(paramsWithDifferentReceiver)).rejects.toThrow(
       'Solana quotes do not support a receiver different from the owner yet',
     )
   })
@@ -270,7 +270,7 @@ describe('getSolanaJupiterQuote postSwapOrderFromQuote', () => {
   })
 
   it('rejects when no Solana wallet is connected', async () => {
-    await getSolanaJupiterQuote(quoteParams, undefined)
+    await getSolanaQuote(quoteParams, undefined)
 
     // The disconnected-wallet guard now lives in the `signAndSend` passed to the `SolanaTradingSdk`
     // constructor (rather than a check inside `postSwapOrderFromQuote` itself) — verify it directly.
@@ -288,7 +288,7 @@ describe('getSolanaJupiterQuote postSwapOrderFromQuote', () => {
       connection: {} as Connection,
     }
 
-    const quoteAndPost = await getSolanaJupiterQuote(quoteParams, signingContext)
+    const quoteAndPost = await getSolanaQuote(quoteParams, signingContext)
     const result = await quoteAndPost.postSwapOrderFromQuote()
 
     expect(mockPostSwapOrderFromQuote).toHaveBeenCalledWith()

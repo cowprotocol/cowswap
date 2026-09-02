@@ -33,7 +33,7 @@ jest.mock('@cowprotocol/common-const', () => ({
   IS_SOLANA_ENABLED: true,
 }))
 
-jest.mock('./getSolanaJupiterQuote', () => ({
+jest.mock('./getSolanaQuote', () => ({
   getSolanaJupiterQuote: jest.fn(),
 }))
 
@@ -55,7 +55,7 @@ import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { fetchAndProcessQuote } from './fetchAndProcessQuote'
-import { getSolanaJupiterQuote } from './getSolanaJupiterQuote'
+import { getSolanaQuote } from './getSolanaQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -403,7 +403,7 @@ describe('fetchAndProcessQuote', () => {
       sellTokenChainId: SupportedChainId.SOLANA,
       buyTokenChainId: SupportedChainId.SOLANA,
     }
-    const mockGetSolanaJupiterQuote = getSolanaJupiterQuote as jest.MockedFunction<typeof getSolanaJupiterQuote>
+    const mockGetSolanaJupiterQuote = getSolanaQuote as jest.MockedFunction<typeof getSolanaQuote>
 
     it('serves a real Jupiter-sourced quote instead of calling bridgingSdk', async () => {
       const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }

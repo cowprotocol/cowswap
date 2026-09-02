@@ -18,7 +18,7 @@ import { SolanaSigningContext } from '../types'
  * (validFor-based expiry offset used by `getOrderValidTo`) both read it and need real values, not stubs.
  */
 
-export async function getSolanaJupiterQuote(
+export async function getSolanaQuote(
   quoteParams: QuoteBridgeRequest,
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<QuoteAndPost> {
