@@ -34,7 +34,7 @@ jest.mock('@cowprotocol/common-const', () => ({
 }))
 
 jest.mock('./getSolanaQuote', () => ({
-  getSolanaJupiterQuote: jest.fn(),
+  getSolanaQuote: jest.fn(),
 }))
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
@@ -403,11 +403,11 @@ describe('fetchAndProcessQuote', () => {
       sellTokenChainId: SupportedChainId.SOLANA,
       buyTokenChainId: SupportedChainId.SOLANA,
     }
-    const mockGetSolanaJupiterQuote = getSolanaQuote as jest.MockedFunction<typeof getSolanaQuote>
+    const mockGetSolanaQuote = getSolanaQuote as jest.MockedFunction<typeof getSolanaQuote>
 
     it('serves a real Jupiter-sourced quote instead of calling bridgingSdk', async () => {
       const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }
-      mockGetSolanaJupiterQuote.mockResolvedValue(mockQuoteAndPost)
+      mockGetSolanaQuote.mockResolvedValue(mockQuoteAndPost)
 
       await fetchAndProcessQuote(
         mockFetchParams,
@@ -417,7 +417,7 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockGetSolanaJupiterQuote).toHaveBeenCalledWith(solanaQuoteParams, undefined)
+      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams, undefined)
       expect(mockBridgingSdk.getQuote).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
         mockQuoteAndPost,
@@ -428,7 +428,7 @@ describe('fetchAndProcessQuote', () => {
     })
 
     it('surfaces a Jupiter quote failure via onError, same as an EVM quote failure', async () => {
-      mockGetSolanaJupiterQuote.mockRejectedValue(new Error('no route found'))
+      mockGetSolanaQuote.mockRejectedValue(new Error('no route found'))
 
       await fetchAndProcessQuote(
         mockFetchParams,
