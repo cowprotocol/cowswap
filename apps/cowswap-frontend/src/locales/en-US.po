@@ -6722,6 +6722,10 @@ msgstr "Tip: Custom tokens are stored locally in your browser"
 msgid "You receive at least"
 msgstr "You receive at least"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planWrapStep.ts
+msgid "Wrap {sellAmountStr} SOL"
+msgstr "Wrap {sellAmountStr} SOL"
+
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "You are connected to"
 #~ msgstr "You are connected to"
@@ -7284,6 +7288,7 @@ msgstr "Add custom hook"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planDelegateStep.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Approve {symbol}"

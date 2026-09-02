@@ -18,7 +18,7 @@ const TOKENS: Partial<Record<SupportedChainId, Record<string, TokenInfo>>> = {
   },
   [CHAIN_IDS.GNOSIS]: {
     WXDAI: { address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d', decimals: 18 },
-    USDC: { address: '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83', decimals: 6 },
+    'USDC.e': { address: '0x2a22f9c3b484c3629090FeED35F17Ff8F88f76F0', decimals: 6 },
   },
 }
 
