@@ -11,12 +11,14 @@ import { Trans } from '@lingui/react/macro'
 import { ChatIcon } from './ChatIcon'
 import * as styledEl from './styled'
 
+import { useAppNudges } from '../../hooks/useAppNudges'
 import { useAssistantContext } from '../../hooks/useAssistantContext'
 import { useAssistantDrawer } from '../../hooks/useAssistantDrawer'
 import { useConfirmProposal } from '../../hooks/useConfirmProposal'
-import { FILL_MARKER, isAppInjected, QUOTE_MARKER, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
+import { isAppInjected, useConversation, WRAP_MARKER } from '../../hooks/useConversation'
 import { useFillWatch } from '../../hooks/useFillWatch'
 import { useMissingProposalToken } from '../../hooks/useMissingProposalToken'
+import { usePlacementWatch } from '../../hooks/usePlacementWatch'
 import { useProposalLanded } from '../../hooks/useProposalLanded'
 import { useQuoteWatch } from '../../hooks/useQuoteWatch'
 import { useWrapWatch } from '../../hooks/useWrapWatch'
@@ -48,6 +50,7 @@ export function AssistantDrawer(): ReactNode {
   const { busy, error, status, streamText, send, reset, markApplied } = useConversation()
   const wrapWatch = useWrapWatch()
   const fillWatch = useFillWatch()
+  const placementWatch = usePlacementWatch()
   const landed = useProposalLanded(proposal, proposalApplied, uiContext)
   const quoteWatch = useQuoteWatch(uiContext, landed)
   const {
@@ -84,27 +87,9 @@ export function AssistantDrawer(): ReactNode {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wrapWatch.completed, busy])
 
-  // Once the form has priced the applied trade, ask for a comment on it. This is the
-  // only point at which the assistant can see what the trade actually costs.
-  useEffect(() => {
-    if (!quoteWatch.ready || busy) return
-    quoteWatch.clear()
-    send(QUOTE_MARKER, { ...uiContext, inputMode: 'app' })
-    // uiContext changes on every tick; depending on it would resend the nudge.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [quoteWatch.ready, busy])
-
-  // Report a settlement once, and only into a conversation that exists — an
-  // unprompted "your order filled" in an empty panel is a notification, and the app
-  // already has those.
-  useEffect(() => {
-    if (!fillWatch.fill || busy || messages.length === 0) return
-    const fill = fillWatch.fill
-    fillWatch.clear()
-    send(FILL_MARKER, { ...uiContext, inputMode: 'app', lastFill: fill })
-    // uiContext changes every tick; depending on it would resend the nudge.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fillWatch.fill, busy, messages.length])
+  // The turns the app injects on its own behalf: a priced quote, a placed order, a
+  // settlement. Gathered into one hook — see useAppNudges.
+  useAppNudges({ busy, fillWatch, messages, placementWatch, quoteWatch, send, uiContext })
 
   if (!isOpen) return null
 
