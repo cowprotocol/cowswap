@@ -19,7 +19,7 @@ export const Wrapper = styled.div`
     flex-direction: column;
 
     p {
-      margin-top: 0;
+      margin: 0 0 16px;
     }
   }
 

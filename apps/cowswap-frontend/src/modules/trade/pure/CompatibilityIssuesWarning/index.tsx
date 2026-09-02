@@ -2,6 +2,7 @@ import { memo } from 'react'
 
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@cowprotocol/currency'
+import { SimpleStyledText } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -29,16 +30,18 @@ export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarnin
         currencies={currenciesPair}
         showDetailsText={msg`Read more about unsupported wallets`}
         detailsText={
-          <Trans>
-            <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
-            <p>
-              Read more in the{' '}
-              <ReactRouterLink target="_blank" to="/faq/protocol#wallet-not-supported">
-                FAQ
-              </ReactRouterLink>
-              .
-            </p>
-          </Trans>
+          <SimpleStyledText>
+            <Trans>
+              <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
+              <p>
+                Read more in the{' '}
+                <ReactRouterLink target="_blank" to="/faq/protocol#wallet-not-supported">
+                  FAQ
+                </ReactRouterLink>
+                .
+              </p>
+            </Trans>
+          </SimpleStyledText>
         }
         detailsTitle={msg`This wallet is not yet supported`}
       />
