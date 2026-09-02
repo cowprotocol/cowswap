@@ -1,5 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { getCmsClient, PROD_CMS_BASE_URL } from '@cowprotocol/core'
+import { getProdCmsClient, PROD_CMS_BASE_URL } from '@cowprotocol/core'
 
 import type {
   CmsEntity,
@@ -47,7 +47,7 @@ export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
 }
 
 async function fetchSolversInfoFromCms(): Promise<SolversInfo> {
-  const cmsClient = getCmsClient(PROD_CMS_BASE_URL)
+  const cmsClient = getProdCmsClient()
   const { data, error, response } = await cmsClient.GET('/solvers', {
     params: {
       query: {},
