@@ -1,7 +1,7 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { Color, Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -54,7 +54,7 @@ export function CareersPageContent({
             <SectionTitleDescription
               fontSize={24}
               color={`var(${UI.COLOR_NEUTRAL_40})`}
-              fontWeight={Font.weight.regular}
+              fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
             >
               We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that
               we can make markets more fair and more efficient by building the ultimate batch auction settlement layer
@@ -171,7 +171,7 @@ export function CareersPageContent({
               <TopicCardInner contentAlign="left" height="100%">
                 <TopicTitle fontSize={34}>💸 Refer a friend and earn up to 6,000 in USDC or USD!</TopicTitle>
 
-                <TopicDescription fontSize={24} fontWeight={Font.weight.regular} margin="0 0 24px">
+                <TopicDescription fontSize={24} fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`} margin="0 0 24px">
                   Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
                   earn up to $6,000 in USD or USDC{' '}
                 </TopicDescription>
@@ -202,7 +202,7 @@ export function CareersPageContent({
             <SectionTitleDescription
               fontSize={18}
               color={`var(${UI.COLOR_NEUTRAL_40})`}
-              fontWeight={Font.weight.regular}
+              fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
             >
               We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram
               and other unofficial channels, falsely claiming to represent CoW DAO
