@@ -157,3 +157,15 @@ export const BodyWrapper = styled.div<{
       `}
   }
 `
+
+/**
+ * The header's persistent-content slot takes a single element and lays it out
+ * itself, so anything beside NetworkAndAccountControls has to come pre-grouped —
+ * two bare children wrap onto separate lines.
+ */
+export const HeaderControls = styled.div`
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  gap: 8px;
+`

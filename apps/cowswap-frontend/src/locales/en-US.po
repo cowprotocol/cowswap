@@ -102,6 +102,10 @@ msgstr "Set to trade"
 #~ msgid "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
 #~ msgstr "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
 
+#: apps/cowswap-frontend/src/modules/assistant/pure/MessageList/index.tsx
+msgid "Thinking…"
+msgstr "Thinking…"
+
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 #~ msgid "Order cannot be filled due to insufficient allowance on the current account."
 #~ msgstr "Order cannot be filled due to insufficient allowance on the current account."
@@ -177,6 +181,7 @@ msgstr "Partially fillable"
 msgid "Value may be zero due to missing token price information"
 msgstr "Value may be zero due to missing token price information"
 
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "Type"
 msgstr "Type"
@@ -372,6 +377,10 @@ msgstr "Supported networks:"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
 msgstr "EOA wallets"
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Loaded into the form"
+msgstr "Loaded into the form"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
@@ -659,6 +668,10 @@ msgstr "Recipient is on {chainName} network. Confirm this is the correct address
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Partly loaded — check the form"
+msgstr "Partly loaded — check the form"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "generate"
 #~ msgstr "generate"
@@ -666,6 +679,10 @@ msgstr "Considering current network costs (<0><1/></0> per chunk), you could sav
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Permit an address to spend one token on your behalf."
 #~ msgstr "Permit an address to spend one token on your behalf."
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "amount set by the quote"
+msgstr "amount set by the quote"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
 msgid "sold"
@@ -890,6 +907,7 @@ msgid "Approve and Swap"
 msgstr "Approve and Swap"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Limit order"
 msgstr "Limit order"
@@ -1306,6 +1324,7 @@ msgstr "Click the checkbox"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
@@ -1320,6 +1339,10 @@ msgstr "Total vCOW balance"
 #: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 msgid "TWAP orders"
 msgstr "TWAP orders"
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "at your limit price"
+msgstr "at your limit price"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/UnsupportedTokenButton.pure.tsx
@@ -3562,9 +3585,9 @@ msgstr "Learn how"
 msgid "Account overview"
 msgstr "Account overview"
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-#~ msgid "Network"
-#~ msgstr "Network"
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Network"
+msgstr "Network"
 
 #: apps/cowswap-frontend/src/pages/Account/Delegate.tsx
 msgid "Delegate your"
@@ -3739,6 +3762,10 @@ msgstr "You could gain an extra <0><1/></0> compared to using a {swapOrderLink}"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Native currency (e.g ETH)"
 msgstr "Native currency (e.g ETH)"
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Switching network…"
+msgstr "Switching network…"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "This token list is not available in your region."
@@ -5523,6 +5550,11 @@ msgstr "The token pair is constrained"
 msgid "Created"
 msgstr "Created"
 
+#: apps/cowswap-frontend/src/modules/assistant/containers/AssistantDrawer/index.tsx
+#: apps/cowswap-frontend/src/modules/assistant/containers/AssistantToggle/index.tsx
+msgid "Assistant"
+msgstr "Assistant"
+
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 #~ msgid "operation"
 #~ msgstr "operation"
@@ -6012,6 +6044,10 @@ msgstr "Links/codes don't reveal your wallet."
 msgid "Save & lock code"
 msgstr "Save & lock code"
 
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "quoted in the form"
+msgstr "quoted in the form"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign in your wallet. We'll submit the funding order automatically."
 msgstr "Sign in your wallet. We'll submit the funding order automatically."
@@ -6394,6 +6430,7 @@ msgstr "Volume referred"
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
+#: apps/cowswap-frontend/src/modules/assistant/containers/AssistantDrawer/index.tsx
 msgid "New"
 msgstr "New"
 
@@ -6636,6 +6673,10 @@ msgstr "Enable Partial Executions"
 msgid "I acknowledge the high price impact"
 msgstr "I acknowledge the high price impact"
 
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Receive"
+msgstr "Receive"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Simulation Failed"
 msgstr "Simulation Failed"
@@ -6766,6 +6807,10 @@ msgstr "The order will start when it is validated and executed in your Safe."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
 #~ msgid "Paid weekly via airdrop."
 #~ msgstr "Paid weekly via airdrop."
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Loads the trade into the form. Nothing is signed until you confirm it there."
+msgstr "Loads the trade into the form. Nothing is signed until you confirm it there."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/ConfirmButton.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
@@ -8095,6 +8140,7 @@ msgid "Loading bridge data <0/>"
 msgstr "Loading bridge data <0/>"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
@@ -8260,6 +8306,10 @@ msgstr "Dark mode"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Quote ID"
 msgstr "Quote ID"
+
+#: apps/cowswap-frontend/src/modules/assistant/pure/ProposalCard/index.tsx
+msgid "Market order"
+msgstr "Market order"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
