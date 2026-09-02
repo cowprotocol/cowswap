@@ -4,6 +4,7 @@ import svgArrowLeftSrc from '@cowprotocol/assets/images/arrow-left.svg'
 import iconBellAlertSrc from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -136,6 +137,7 @@ export const NotificationSettingsIcon = styled.button`
 const BellIcon = styled(SVG)`
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   fill: currentColor;
   margin-right: 6px;
 `
@@ -147,9 +149,15 @@ export const EnableAlertsButton = styled.button`
   padding: 6px 12px;
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
-  white-space: nowrap;
+  min-width: 0;
+  white-space: normal;
+  text-wrap: balance;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition:
     background-color var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -166,6 +174,6 @@ export const EnableAlertsButtonWithIcon = ({
 }: IconProps & React.ButtonHTMLAttributes<HTMLButtonElement>): ReactNode => (
   <EnableAlertsButton onClick={onClick} {...props}>
     <BellIcon src={iconBellAlertSrc} />
-    Enable trade alerts
+    <Trans>Enable trade alerts</Trans>
   </EnableAlertsButton>
 )
