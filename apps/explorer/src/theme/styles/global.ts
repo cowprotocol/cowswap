@@ -11,6 +11,16 @@ export const StaticGlobalStyle = createGlobalStyle`
     appearance: auto;
   }
 
+  /* The shared reset's "font: inherit" resolves to body's 6.25px here (62.5% applied to html
+     and body both), so restore the ~13.3px UA default controls used to get. Real fix is body's font-size,
+     blocked on "line-height: 10px" below sharing that rule. */
+  button,
+  textarea,
+  select,
+  input:where(:not([type='checkbox'], [type='radio'], [type='range'])) {
+    font-size: 1.3rem;
+  }
+
   /* TEMPORARY: import variables */
   ${variables}
 
