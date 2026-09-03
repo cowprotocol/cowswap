@@ -122,20 +122,35 @@ export function mockContractViewCall(
         }
 
         if (resolved.some((result) => typeof result !== 'undefined')) {
-          if (typeof upstreamResult !== 'string') {
-            // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
+          if (upstreamResult === undefined) {
+            // Not attempted yet — ask mockRpcNodeRequest to fetch upstream and retry.
             return undefined
           }
 
-          const upstreamResults = decodeFunctionResult({
-            abi: multicall3Abi,
-            functionName: 'aggregate3',
-            data: upstreamResult as Hex,
-          }) as Readonly<Aggregate3Result[]>
+          // `upstreamResult` is `null` (mockRpcNodeRequest's explicit "attempted, nothing usable"
+          // signal — a rate-limited or otherwise erroring real RPC, observed as Infura's `-32005
+          // Too Many Requests`) or any other non-decodable value. Falling through to `undefined`
+          // here (as if upstream were never even tried) previously threw this branch's already-
+          // correct slots away along with the genuinely-unresolved ones — discarding, for example,
+          // `installSocketVerifier`'s answer for a call that only shared a batch with some *other*
+          // mock's still-uncovered selector (see [CS-310]). A real, `allowFailure: true` aggregate3
+          // reports exactly this shape for a call that reverted — every caller already handles it —
+          // so marking what we can't answer as a clean failure is strictly better than either a raw
+          // decode error or one real, rate-limited dependency corrupting the whole batch.
+          const upstreamResults =
+            typeof upstreamResult === 'string'
+              ? (decodeFunctionResult({
+                  abi: multicall3Abi,
+                  functionName: 'aggregate3',
+                  data: upstreamResult as Hex,
+                }) as Readonly<Aggregate3Result[]>)
+              : undefined
 
           return packAggregate3Result(
             resolved.map((returnData, i) =>
-              typeof returnData === 'undefined' ? upstreamResults[i] : { success: true, returnData: returnData as Hex },
+              typeof returnData !== 'undefined'
+                ? { success: true, returnData: returnData as Hex }
+                : (upstreamResults?.[i] ?? { success: false, returnData: '0x' }),
             ),
           )
         }

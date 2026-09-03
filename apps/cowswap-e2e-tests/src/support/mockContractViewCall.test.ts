@@ -261,6 +261,38 @@ test('an aggregate3 batch mixing a matching and a non-matching call merges with 
   assert.equal(results[1].returnData, upstreamBalance)
 })
 
+test('an aggregate3 batch mixing a matching and a non-matching call degrades the unmatched slot to a clean failure when the upstream fetch itself errors, instead of discarding the matched slot too', async () => {
+  // Real shape from [CS-310]: SocketVerifier's `validateRotueId` shares a batch with an unrelated,
+  // still-unmocked call (there, `getNonce`); a rate-limited real RPC (Infura's `-32005 Too Many
+  // Requests`, with no `id`/`jsonrpc` envelope at all) used to make `fulfillFromUpstream` relay
+  // that raw error verbatim, discarding SocketVerifier's already-correct answer along with it.
+  const data = aggregate3Calldata([
+    { target: TOKEN_A, callData: allowanceCalldata() },
+    { target: TOKEN_A, callData: balanceOfCalldata() },
+  ])
+  const stub = createStubContext()
+  mockContractViewCall(
+    stub.context,
+    TOKEN_A,
+    ALLOWANCE_SELECTOR,
+    () => '0x000000000000000000000000000000000000000000000000000000000000002a',
+  )
+
+  // No `id`, no `result` — a rate-limit response, not a per-entry JSON-RPC result.
+  const upstream = [{ code: -32005, message: 'Too Many Requests', data: { see: 'https://infura.io/dashboard' } }]
+  const route = createStubRoute({ id: 5, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] }, upstream)
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, true)
+  const results = decodeAggregate3Result(parsedBody(route.fulfilled).result)
+  assert.equal(results.length, 2)
+  assert.equal(results[0].success, true, 'the matched (allowance) slot must still resolve correctly')
+  assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 42n)
+  assert.equal(results[1].success, false, 'the genuinely-unmocked slot degrades to a clean failure')
+  assert.equal(results[1].returnData, '0x')
+})
+
 // Real-world shape (bug report): the SDK's own `validateSocketRequest` call happens to land in the
 // same batch as a coincidental native-balance poll, purely by viem's incidental request batching —
 // the two calls are otherwise unrelated.
