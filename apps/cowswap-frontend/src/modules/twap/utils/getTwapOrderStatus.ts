@@ -1,3 +1,5 @@
+import { getTwapExecutionStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
+
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 interface GetTwapOrderStatusParams {
@@ -17,16 +19,25 @@ export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderS
     isWaitingForSignature,
   } = params
 
-  const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
-  const isCompleted = confirmedPartsCount === order.n
-  const isExpired = isCompleted || isTwapOrderExpired(order, executionDate)
+  const now = Math.ceil(Date.now() / 1000)
+  const effectiveStartTime = order.t0 || Math.ceil((executionDate?.getTime() ?? now * 1000) / 1000)
+  const status = getProgrammaticOrderStatus(isCancelled, confirmedPartsCount === order.n)
+  const executionStatus = getTwapExecutionStatus({
+    status,
+    executedSellAmount: BigInt(executionInfo.executedSellAmount),
+    partSellAmount: BigInt(order.partSellAmount),
+    numberOfParts: order.n,
+    effectiveStartTime,
+    timeBetweenParts: order.t,
+    now,
+  })
 
-  if (isFulfilled) return TwapOrderStatus.Fulfilled
-  if (isCancelled) return TwapOrderStatus.Cancelled
-  if (isExpired) return TwapOrderStatus.Expired
-  if (isWaitingForSignature) return TwapOrderStatus.WaitSigning
+  if (executionStatus === 'filled') return TwapOrderStatus.Fulfilled
+  if (executionStatus === 'cancelled') return TwapOrderStatus.Cancelled
+  if (executionStatus === 'partiallyFilled') return TwapOrderStatus.PartiallyFilled
+  if (executionStatus === 'expired') return TwapOrderStatus.Expired
 
-  return TwapOrderStatus.Pending
+  return isWaitingForSignature ? TwapOrderStatus.WaitSigning : TwapOrderStatus.Pending
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {
@@ -40,6 +51,8 @@ export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | nul
   return nowTimestamp > endTime
 }
 
-function isTwapOrderFulfilled(order: TWAPOrderStruct, executedSellAmount: string): boolean {
-  return executedSellAmount === (BigInt(order.partSellAmount) * BigInt(order.n)).toString()
+function getProgrammaticOrderStatus(isCancelled: boolean, isCompleted: boolean): ProgrammaticOrderStatus {
+  if (isCancelled) return 'Cancelled'
+  if (isCompleted) return 'Completed'
+  return 'Active'
 }

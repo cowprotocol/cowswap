@@ -33,7 +33,8 @@ export function getPartOrderStatus(
   }
   if (isCancelled) return OrderStatus.CANCELLED
 
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
+  const hasParentExecutionFinished = [TwapOrderStatus.Expired, TwapOrderStatus.PartiallyFilled].includes(parent.status)
+  if (hasParentExecutionFinished) return OrderStatus.EXPIRED
   if (isExpired) return OrderStatus.EXPIRED
 
   if (isVirtualPart) return OrderStatus.SCHEDULED

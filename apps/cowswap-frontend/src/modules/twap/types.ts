@@ -88,5 +88,6 @@ export enum TwapOrderStatus {
   Cancelling = 'Cancelling',
   Cancelled = 'Cancelled',
   Expired = 'Expired',
+  PartiallyFilled = 'PartiallyFilled',
   Fulfilled = 'Fulfilled',
 }

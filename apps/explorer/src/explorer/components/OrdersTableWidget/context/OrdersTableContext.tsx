@@ -1,5 +1,7 @@
 import React from 'react'
 
+import type { AddressKey } from '@cowprotocol/cow-sdk'
+
 import { Order } from '../../../../api/operator'
 import { Network, UiError } from '../../../../types'
 import { TableState, TableStateSetters } from '../useTable'
@@ -7,7 +9,7 @@ import { TableState, TableStateSetters } from '../useTable'
 export type BlockchainNetwork = Network | undefined
 
 type CommonState = {
-  addressAccountParams: { networkId: BlockchainNetwork; ownerAddress: string }
+  addressAccountParams: { networkId: BlockchainNetwork; ownerAddress: AddressKey }
   data: Order[] | undefined
   error?: UiError
   isLoading: boolean

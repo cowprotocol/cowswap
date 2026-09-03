@@ -2,6 +2,7 @@ import React from 'react'
 
 import { CowAnalyticsProvider, initGtm, useAnalyticsReporter } from '@cowprotocol/analytics'
 import { CHAIN_INFO_ARRAY } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import * as Sentry from '@sentry/react'
 import { Integrations } from '@sentry/tracing'
@@ -19,6 +20,7 @@ import { useSolversFeatureFlag } from '../hooks/useSolversFeatureFlag'
 import { CowSdkUpdater } from '../sdk/cowSdk'
 import { RedirectMainnet, RedirectXdai, useNetworkId } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
+import { isTwapSupportedChain } from '../utils'
 import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
@@ -111,6 +113,12 @@ const TransactionDetails = React.lazy(
     ),
 )
 
+const TwapDetailsPage = React.lazy(() =>
+  // The direct import keeps this route out of Explorer's main bundle.
+  // eslint-disable-next-line import/no-internal-modules
+  import('../modules/twap/pure/TwapDetails.container').then(({ TwapDetailsPage: Page }) => ({ default: Page })),
+)
+
 /**
  * Update the global state
  */
@@ -125,6 +133,8 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 const AppContent = (): React.ReactNode => {
   const chainId = useNetworkId()
   const isSolversEnabled = useSolversFeatureFlag()
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isTwapEnabled = isTwapEoaEnabled === true && isTwapSupportedChain(chainId)
   useAnalyticsReporter({
     account: undefined, // Explorer doesn't have wallet functionality
     walletName: undefined, // Explorer doesn't have wallet functionality
@@ -145,6 +155,7 @@ const AppContent = (): React.ReactNode => {
           <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
+          {isTwapEnabled && <Route path={pathPrefix + '/twap/:eventId'} element={<TwapDetailsPage />} />}
           <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
           <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
           {isSolversEnabled && <Route path={pathPrefix + '/solvers'} element={<Solvers />} />}
