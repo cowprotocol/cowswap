@@ -170,6 +170,10 @@ export const ReceiverInput = styled.input<{ $error?: boolean; $compact?: boolean
         field-sizing: content;
 
         &:focus {
+          // field-sizing: content overrides an explicit width entirely (that's its purpose), so
+          // it must be reset back to the default here - otherwise the box stays sized to the
+          // full, untruncated value shown on focus instead of respecting width: 100% below.
+          field-sizing: fixed;
           width: 100%;
         }
       `}
