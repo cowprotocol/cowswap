@@ -83,12 +83,14 @@ export function ReceiverPanelBody({
 
   const showConfirmationRow = (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
 
+  const showCheckmark = isValid && !loading
+
   return (
     <>
       {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ReceiverInputWrapper>
         <ReceiverInputRow>
-          {isValid && !loading && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
+          {showCheckmark && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
           <ReceiverInput
             data-testid={TEST_IDS.recipientAddressInput}
             type="text"
@@ -98,16 +100,21 @@ export function ReceiverPanelBody({
             spellCheck={false}
             placeholder={resolvedPlaceholder}
             $error={isError}
+            // Only shrink the input to fit its content when a confirmed, short, JS-truncated
+            // address is shown next to the checkmark. Keep the default full-width, truncating
+            // (overflow: hidden + text-overflow: ellipsis) input otherwise, so a long invalid
+            // pasted value doesn't blow out the layout - see ReceiverInput's styles.
+            $compact={showCheckmark}
             pattern={strategy.pattern}
             onChange={handleInput}
             value={displayValue}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            // On narrow viewports the input's CSS width is `auto`, so its size falls back to the
-            // browser default (~20 characters) unless overridden here. Without this, the box is
-            // wider than the (usually short, truncated) address, and text-align: center leaves the
-            // checkmark next to the box edge but far from the actual text glyphs.
-            size={displayValue.length || undefined}
+            // On narrow viewports, when $compact, the input's CSS width is `auto`, so its size
+            // falls back to the browser default (~20 characters) unless overridden here. Without
+            // this, the box is wider than the (usually short, truncated) address, and
+            // text-align: center leaves the checkmark next to the box edge but far from the text.
+            size={showCheckmark ? displayValue.length || undefined : undefined}
           />
         </ReceiverInputRow>
         {isError && (
