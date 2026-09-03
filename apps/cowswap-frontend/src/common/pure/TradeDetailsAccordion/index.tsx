@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -51,7 +52,7 @@ export function TradeDetailsAccordion({
       <Summary>
         {rateInfo}
         <SummaryClickable
-          className="trade-details-accordion-toggle"
+          data-testid={TEST_IDS.tradeDetailsAccordionToggle}
           onClick={onToggle}
           onKeyDown={handleKeyDown}
           aria-expanded={open}

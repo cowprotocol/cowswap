@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import { expect } from '@playwright/test'
 
 import type { TradePage } from './TradePage'
@@ -19,7 +21,7 @@ export class LimitPage implements TradePage {
 
   constructor(page: Page) {
     this.page = page
-    this.inputAmount = page.locator('#input-currency-input .token-amount-input')
+    this.inputAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
     this.limitPriceInput = page.locator('#rate-limit-amount-input')
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-limit-orders-btn')
@@ -27,9 +29,9 @@ export class LimitPage implements TradePage {
     this.orderSubmittedHeading = page.getByRole('heading', { name: 'Order Submitted' })
     this.continueButton = page.getByRole('button', { name: /continue/i })
     this.myOrdersButton = page.getByRole('button', { name: 'My orders' })
-    this.openOrdersTab = page.locator('.orders-table_tab', { hasText: 'Open' })
+    this.openOrdersTab = page.locator(`[data-testid="${TEST_IDS.ordersTableTab}"]`, { hasText: 'Open' })
     this.ordersTable = page.locator('#orders-table')
-    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
+    this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
