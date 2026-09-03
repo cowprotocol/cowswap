@@ -19,6 +19,7 @@ export function WalletChainUrlSyncUpdater(): null {
 
   useEffect(() => {
     // Only sync supported chains from a connected wallet
+    // Currently we only support network switching without reconnecting between EVM chains
     if (isConnected && isSupportedChainId(chainId) && isEvmChain(chainId) && chainId !== prevChainIdRef.current) {
       setChainIdToUrl(chainId)
     }
