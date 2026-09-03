@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { twapOrdersAtom, TwapOrdersList } from 'entities/twap'
+import { eoaTwapOrdersAtom, twapOrdersAtom, TwapOrdersList } from 'entities/twap'
 
 import { cowSwapStore } from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
@@ -44,10 +44,17 @@ export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[])
 })
 
 export const setTwapOrderStatusAtom = atom(null, (get, set, orderId: string, status: TwapOrderStatus) => {
+  const currentEoaState = get(eoaTwapOrdersAtom)
+  const currentEoaOrder = currentEoaState[orderId]
   const currentState = get(twapOrdersAtom)
-  const currentOrder = currentState[orderId]
+  const cachedOrderId = currentEoaOrder?.hash ?? orderId
+  const currentOrder = currentState[cachedOrderId]
 
-  if (TWAP_FINAL_STATUSES.includes(currentOrder.status)) return
+  if (currentOrder && !TWAP_FINAL_STATUSES.includes(currentOrder.status)) {
+    set(twapOrdersAtom, { ...currentState, [cachedOrderId]: { ...currentOrder, status } })
+  }
 
-  set(twapOrdersAtom, { ...currentState, [orderId]: { ...currentOrder, status } })
+  if (currentEoaOrder && !TWAP_FINAL_STATUSES.includes(currentEoaOrder.status)) {
+    set(eoaTwapOrdersAtom, { ...currentEoaState, [orderId]: { ...currentEoaOrder, status } })
+  }
 })

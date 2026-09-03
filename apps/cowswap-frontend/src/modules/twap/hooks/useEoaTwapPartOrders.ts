@@ -14,7 +14,7 @@ import type { TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-compos
 
 import useSWR from 'swr'
 
-import { OrderStatus, type Order } from 'legacy/state/orders/actions'
+import { type Order } from 'legacy/state/orders/actions'
 
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 
@@ -22,6 +22,7 @@ import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { type TwapOrderItem } from '../types'
+import { getPartOrderStatus } from '../utils/getPartOrderStatus'
 
 interface EoaTwapPartOrdersResult {
   orders: ParsedOrder[]
@@ -130,14 +131,6 @@ function mapApiAdditionalInfo(
   }
 }
 
-function mapLegacyPartOrderStatus(status: TwapPartOrderStatus): OrderStatus {
-  if (status === 'open') return OrderStatus.PENDING
-  if (status === 'fulfilled') return OrderStatus.FULFILLED
-  if (status === 'cancelled') return OrderStatus.CANCELLED
-
-  return OrderStatus.EXPIRED
-}
-
 function mapPartOrder(
   partOrder: TwapPartOrder,
   twapOrder: TwapOrderItem,
@@ -149,7 +142,7 @@ function mapPartOrder(
   const order = {
     ...apiAdditionalInfo,
     id: partOrder.orderUid as UID,
-    status: mapLegacyPartOrderStatus(partOrder.status),
+    status: getPartOrderStatus(apiAdditionalInfo, twapOrder, false),
     creationTime,
     isEoaTwapOrder: true,
     sellAmountBeforeFee: partOrder.sellAmount.toString(),
@@ -160,6 +153,7 @@ function mapPartOrder(
       isVirtualPart: false,
       isTheLastPart,
       parentId: twapOrder.id,
+      twapOrderHash: twapOrder.hash,
     },
     apiAdditionalInfo,
   } satisfies Order
