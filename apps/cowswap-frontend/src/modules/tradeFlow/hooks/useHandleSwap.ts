@@ -14,6 +14,7 @@ import {
   TradeWidgetActions,
   logTradeFlow,
   useDerivedTradeState,
+  useSolanaWrapAndDelegateDoTrade,
   useTradeFlowAnalytics,
   useTradePriceImpact,
 } from 'modules/trade'
@@ -110,6 +111,12 @@ export function useHandleSwap(
     onUserInput,
     derivedTradeState?.slippage,
   ])
+
+  const solanaWrapAndDelegateDoTrade = useSolanaWrapAndDelegateDoTrade()
+
+  if (solanaWrapAndDelegateDoTrade) {
+    return solanaWrapAndDelegateDoTrade
+  }
 
   return { callback, contextIsReady }
 }
