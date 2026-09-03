@@ -145,16 +145,16 @@ export const ReceiverInput = styled.input<{ $error?: boolean; $compact?: boolean
   }
 
   ${Media.upToSmall()} {
-    text-align: center;
-
-    // Only shrink-to-fit for a confirmed valid (checkmark-showing) address, whose displayed
-    // value is already short/JS-truncated. field-sizing: content grows the box to fit the
-    // full value with no truncation, which is fine there but would blow out the layout for
-    // an invalid/untruncated pasted value (e.g. a long file path) - so error/pending states
-    // keep width: 100% with the standard overflow: hidden + text-overflow: ellipsis above.
+    // Only shrink-to-fit and center for a confirmed valid (checkmark-showing) non-EVM address,
+    // whose displayed value is already short/JS-truncated. field-sizing: content grows the box
+    // to fit the full value with no truncation, which is fine there but would blow out the
+    // layout for an invalid or full-length EVM address - so those keep the default left-aligned,
+    // width: 100% input with the standard overflow: hidden + text-overflow: ellipsis above,
+    // which already keeps the checkmark next to the start of the (ellipsis-truncated) text.
     ${({ $compact }) =>
       $compact &&
       css`
+        text-align: center;
         flex: 0 1 auto;
         // Shrink to fit the (usually short, truncated) address so ReceiverInputRow's
         // justify-content: center centers the checkmark together with the address,
