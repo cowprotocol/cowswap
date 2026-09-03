@@ -1,8 +1,14 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from './consts'
 
 import { RoutesValues } from '../../constants/routes'
+
+export type TradeCurrencies = {
+  inputCurrency: TokenWithLogo | null
+  outputCurrency: TokenWithLogo | null
+}
 
 export type TradeCurrenciesIds = {
   readonly inputCurrencyId: string | null
