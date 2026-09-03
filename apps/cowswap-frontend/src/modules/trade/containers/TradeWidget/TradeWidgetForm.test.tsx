@@ -90,7 +90,13 @@ jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAm
 jest.mock('../../hooks/useSolanaWrapReceiveAmount', () => ({ useSolanaWrapReceiveAmount: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
 jest.mock('common/modules/tradeNavigation', () => ({
+  // requireActual only the lightweight consts module (TradeType and friends) rather than the whole
+  // barrel — the barrel's hooks pull in common/constants/routes.ts, which this file mocks elsewhere.
+  ...jest.requireActual('common/modules/tradeNavigation/consts'),
   useTradeTypeInfoFromUrl: jest.fn(),
+  // Called eagerly by TradeRawState.ts (getDefaultTradeRawState) when default atom state is built at
+  // module-load time, well before any test in this file runs — must stay callable even unstubbed.
+  getDefaultTradeCurrenciesIds: jest.fn(),
 }))
 jest.mock('../../hooks/useSetOrdersTableDrawerOpen', () => ({
   useSetOrdersTableDrawerOpen: () => jest.fn(),

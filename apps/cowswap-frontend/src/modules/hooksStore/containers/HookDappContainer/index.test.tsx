@@ -38,6 +38,9 @@ jest.mock('legacy/state/user/hooks', () => ({
 
 jest.mock('modules/trade', () => ({
   useTradeState: jest.fn(),
+}))
+
+jest.mock('common/modules/tradeNavigation', () => ({
   useTradeNavigate: jest.fn(),
 }))
 
