@@ -1,6 +1,7 @@
 import { ReactNode, useLayoutEffect, useState } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -14,6 +15,8 @@ import { useTradeNavigate } from 'modules/trade'
 import { Routes } from 'common/constants/routes'
 import { useNavigate, useNavigateBack } from 'common/hooks/useNavigate'
 import { NewModal } from 'common/pure/NewModal'
+import { UnsupportedNetworkBanner } from 'common/pure/UnsupportedNetworkBanner'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 import * as styledEl from './AccountProxyWidgetPage.styled'
 
@@ -43,6 +46,7 @@ export function AccountProxyWidgetPage(): ReactNode {
   useSetupBalancesContext(proxyAddress && isAddress(proxyAddress) ? proxyAddress : undefined)
 
   const isWalletConnected = !!account
+  const isUnsupportedChain = isWalletConnected && !isEvmChain(chainId)
   const isHelpPage = location.pathname.endsWith('/help')
   const isRootProxyPage = !!matchPath(Routes.ACCOUNT_PROXIES, location.pathname)
   const query = new URLSearchParams(location.search)
@@ -89,7 +93,15 @@ export function AccountProxyWidgetPage(): ReactNode {
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          {isWalletConnected || isHelpPage ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
+          {isUnsupportedChain ? (
+            <UnsupportedNetworkBanner>
+              <UnsupportedNetworksText />
+            </UnsupportedNetworkBanner>
+          ) : isWalletConnected || isHelpPage ? (
+            <Outlet />
+          ) : (
+            <WalletNotConnected onConnect={toggleWalletModal} />
+          )}
         </NewModal>
       </styledEl.WidgetWrapper>
     </styledEl.EmptyWrapper>

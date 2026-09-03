@@ -3,7 +3,7 @@ import { type Config, useConfig } from 'wagmi'
 import { readContract, getStorageAt } from 'wagmi/actions'
 
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { areAddressesEqual, type SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isEvmChain, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -84,9 +84,14 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
   const config = useConfig()
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
+  const isEvmWallet = isEvmChain(chainId)
 
   return useSWR(
-    account && cowShedHooks ? [account, chainId, 'useCurrentAccountProxyAddress'] : null,
+    // `chainId as SupportedChainId`: `isEvmWallet` narrows `chainId` to the SDK's `EvmChains` subtype here,
+    // which conflicts with `ProxyAndAccount.chainId`/`SWR_OPTIONS`'s `SupportedChainId` below.
+    account && cowShedHooks && isEvmWallet
+      ? [account, chainId as SupportedChainId, 'useCurrentAccountProxyAddress']
+      : null,
     async ([account, chainId]) => {
       if (!cowShedHooks) return
 
