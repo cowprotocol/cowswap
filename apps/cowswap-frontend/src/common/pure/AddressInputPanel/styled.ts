@@ -151,6 +151,10 @@ export const ReceiverInput = styled.input<{ $error?: boolean }>`
     // justify-content: center centers the checkmark together with the address,
     // instead of centering the address text alone inside a full-width input.
     width: auto;
+    // field-sizing sizes the box to the actual rendered value, unlike the HTML size
+    // attribute (kept as a fallback below) which only approximates via character count
+    // and can leave the box - and therefore the centered text - wider than the content.
+    field-sizing: content;
 
     &:focus {
       width: 100%;
