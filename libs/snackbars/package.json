@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/test-ids": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@react-spring/web": "9.7.3",
     "jotai": "2.16.2",

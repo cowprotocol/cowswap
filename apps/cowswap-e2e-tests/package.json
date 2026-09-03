@@ -8,7 +8,8 @@
   "dependencies": {
     "viem": "2.48.8",
     "@cowprotocol/cow-sdk": "9.2.6",
-    "@cowprotocol/sdk-order-book": "4.0.2"
+    "@cowprotocol/sdk-order-book": "4.0.2",
+    "@cowprotocol/test-ids": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "1.49.1",
