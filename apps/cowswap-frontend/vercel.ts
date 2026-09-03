@@ -61,7 +61,7 @@ const csp = buildCsp([
   ['frame-ancestors', ['*']],
   ['worker-src', ["'self'", 'blob:']],
   ['manifest-src', ["'self'"]],
-  ['base-uri', ["'self'"]],
+  ['base-uri', ["'self'", 'https://files.cow.fi']],
   ['form-action', ["'self'"]],
   ['object-src', ["'none'"]],
   ['upgrade-insecure-requests', []],
