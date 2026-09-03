@@ -29,7 +29,6 @@ const InfoButton = styled.button`
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  outline: 0;
   border-radius: 16px;
   background: transparent;
   color: var(${UI.COLOR_TEXT_OPACITY_70});

@@ -1,0 +1,93 @@
+diff --git a/dist/cypress/index.js b/dist/cypress/index.js
+index 68a51eea11dd3c565ba0c113088c06843ec0ad06..bfe0413c8fa80029fbfb7a243ca9cc12f47ec630 100644
+--- a/dist/cypress/index.js
++++ b/dist/cypress/index.js
+@@ -197,7 +197,7 @@ var networkDropdown = {
+   networksList: `${networkDropdownContainer} .multichain-network-list-menu`,
+   networks: `${networkDropdownContainer} .multichain-network-list-item p`,
+   showTestNetworksToggle: `${networkDropdownContainer} > section > div > label.toggle-button`,
+-  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button`,
++  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button.mm-button-secondary`,
+   toggleOff: `${networkDropdownContainer} label.toggle-button.toggle-button--off`,
+   toggleOn: `${networkDropdownContainer} label.toggle-button.toggle-button--on`,
+   closeNetworkPopupButton: ".mm-modal-header button.mm-button-icon.mm-box--color-icon-default.mm-box--background-color-transparent.mm-box--rounded-lg"
+diff --git a/dist/playwright/index.js b/dist/playwright/index.js
+index 16add1399d77db8be42bc5d6c7fc7e49ebe526a1..964b803b7a511b1dda48fc9ff5af1d6286c29e1c 100644
+--- a/dist/playwright/index.js
++++ b/dist/playwright/index.js
+@@ -194,7 +194,7 @@ var networkDropdown = {
+   networksList: `${networkDropdownContainer} .multichain-network-list-menu`,
+   networks: `${networkDropdownContainer} .multichain-network-list-item p`,
+   showTestNetworksToggle: `${networkDropdownContainer} > section > div > label.toggle-button`,
+-  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button`,
++  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button.mm-button-secondary`,
+   toggleOff: `${networkDropdownContainer} label.toggle-button.toggle-button--off`,
+   toggleOn: `${networkDropdownContainer} label.toggle-button.toggle-button--on`,
+   closeNetworkPopupButton: ".mm-modal-header button.mm-button-icon.mm-box--color-icon-default.mm-box--background-color-transparent.mm-box--rounded-lg"
+@@ -497,7 +497,7 @@ async function waitFor(action, timeout, shouldThrow = true) {
+ async function clickLocatorIfCondition(locator, condition, timeout = 3e3) {
+   const shouldClick = await waitFor(condition, timeout, false);
+   if (shouldClick) {
+-    await locator.click();
++    await locator.click({ force: true, timeout: 10000 });
+   }
+ }
+ 
+@@ -516,19 +516,24 @@ async function closeRecoveryPhraseReminder(page) {
+ // src/playwright/pages/HomePage/actions/popups/closeNewNetworkInfoPopover.ts
+ async function closeNewNetworkInfoPopover(page) {
+   const gotItButtonLocator = page.locator(HomePage_default.newNetworkInfoPopover.gotItButton);
+-  await clickLocatorIfCondition(gotItButtonLocator, () => gotItButtonLocator.isVisible(), 1e3);
++  await clickLocatorIfCondition(gotItButtonLocator, () => gotItButtonLocator.isVisible(), 5e3);
+ }
+ 
+ // src/playwright/pages/HomePage/actions/popups/closeNetworkAddedPopover.ts
+ async function closeNetworkAddedPopover(page) {
+   const switchNetworkButtonLocator = page.locator(HomePage_default.networkAddedPopover.switchToNetworkButton);
+-  await clickLocatorIfCondition(switchNetworkButtonLocator, () => switchNetworkButtonLocator.isVisible(), 1e3);
+-  const switchCompleteCloseButtonLocator = page.locator(HomePage_default.networkAddedPopover.switchCompleteCloseButton);
+-  await clickLocatorIfCondition(
+-    switchCompleteCloseButtonLocator,
+-    () => switchCompleteCloseButtonLocator.isVisible(),
+-    1e3
+-  );
++  await clickLocatorIfCondition(switchNetworkButtonLocator, () => switchNetworkButtonLocator.isVisible(), 5e3);
++  const switchCompleteCloseButtonLocators = page.locator(HomePage_default.networkAddedPopover.switchCompleteCloseButton);
++  const firstCloseButtonLocator = switchCompleteCloseButtonLocators.first();
++  await clickLocatorIfCondition(firstCloseButtonLocator, () => firstCloseButtonLocator.isVisible(), 5e3);
++  for (let i = 0; i < 5; i++) {
++    const nextCloseButtonLocator = switchCompleteCloseButtonLocators.first();
++    const stillVisible = await waitFor(() => nextCloseButtonLocator.isVisible(), 1e3, false);
++    if (!stillVisible) {
++      break;
++    }
++    await nextCloseButtonLocator.click({ force: true, timeout: 10000 });
++  }
+ }
+ 
+ // src/playwright/pages/HomePage/actions/lock.ts
+diff --git a/src/playwright/utils/clickLocatorIfCondition.ts b/src/playwright/utils/clickLocatorIfCondition.ts
+index ce919a4557f9c39304dc9ba528a24cb3262828ea..1b790fead9770c1545215a73f67c70b0de19fb46 100644
+--- a/src/playwright/utils/clickLocatorIfCondition.ts
++++ b/src/playwright/utils/clickLocatorIfCondition.ts
+@@ -5,6 +5,6 @@ import { waitFor } from './waitFor'
+ export async function clickLocatorIfCondition(locator: Locator, condition: () => Promise<boolean>, timeout = 3_000) {
+   const shouldClick = await waitFor(condition, timeout, false)
+   if (shouldClick) {
+-    await locator.click()
++    await locator.click({ force: true, timeout: 10_000 })
+   }
+ }
+diff --git a/src/selectors/pages/HomePage/index.ts b/src/selectors/pages/HomePage/index.ts
+index 8149bd73520252c3c977a7e393fe6d2e682d35b0..85e2c7ae17b88cf59398f527265bca0a23b130f0 100644
+--- a/src/selectors/pages/HomePage/index.ts
++++ b/src/selectors/pages/HomePage/index.ts
+@@ -74,7 +74,7 @@ const networkDropdown = {
+   networksList: `${networkDropdownContainer} .multichain-network-list-menu`,
+   networks: `${networkDropdownContainer} .multichain-network-list-item p`,
+   showTestNetworksToggle: `${networkDropdownContainer} > section > div > label.toggle-button`,
+-  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button`,
++  addNetworkButton: `${networkDropdownContainer} div.mm-box.mm-box--padding-4 > button.mm-button-secondary`,
+   toggleOff: `${networkDropdownContainer} label.toggle-button.toggle-button--off`,
+   toggleOn: `${networkDropdownContainer} label.toggle-button.toggle-button--on`,
+   closeNetworkPopupButton:

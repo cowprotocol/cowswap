@@ -1,0 +1,20 @@
+{
+  "name": "@cowprotocol/cowswap-e2e-pw",
+  "version": "0.0.1",
+  "private": true,
+  "description": "CoW Swap e2e tests (Playwright + Synpress)",
+  "main": "index.js",
+  "license": "ISC",
+  "dependencies": {
+    "viem": "2.48.8",
+    "@cowprotocol/cow-sdk": "9.2.6",
+    "@cowprotocol/sdk-order-book": "4.0.2",
+    "@cowprotocol/test-ids": "workspace:*"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.49.1",
+    "@synthetixio/synpress": "4.0.10",
+    "@synthetixio/synpress-metamask": "0.0.11",
+    "exceljs": "4.4.0"
+  }
+}

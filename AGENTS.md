@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-04-02
+last_reviewed: 2026-08-27
 source_of_truth_scope: root coordination contract for AI and human contributors
 review_cadence: weekly during active frontend work, otherwise bi-weekly
 ---
@@ -60,11 +60,14 @@ Normative language:
 
 - Architecture and dependency map: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
 - Naming, file structure, imports, component shape: [`docs/MODULE_CONVENTIONS.md`](./docs/MODULE_CONVENTIONS.md)
+- Typography tokens, `font()` mixin, Feixen allowlist: [`docs/FONT_CONVENTIONS.md`](./docs/FONT_CONVENTIONS.md)
+- Shared UI typography (`font()` mixin, `FONT_SIZING`): [`libs/ui/AGENTS.md`](./libs/ui/AGENTS.md)
 - Jotai/query, persistence, migrations: [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
 - Quality grades and known gaps: [`docs/QUALITY.md`](./docs/QUALITY.md)
 - Hardening roadmap (next enforcement steps): [`docs/HARNESS_HARDENING.md`](./docs/HARNESS_HARDENING.md)
 - Frontend-specific additive rules: [`apps/cowswap-frontend/AGENTS.md`](./apps/cowswap-frontend/AGENTS.md)
 - Other app-local commands/overrides: `apps/*/AGENTS.md`
+- E2E tests (Playwright): `apps/cowswap-e2e-tests/AGENTS.md`
 
 ## Branch-Scoped AGENTS Task Protocol
 

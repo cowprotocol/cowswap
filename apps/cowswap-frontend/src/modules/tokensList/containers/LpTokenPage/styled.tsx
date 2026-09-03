@@ -67,9 +67,6 @@ export const SelectButton = styled.button`
   border-radius: 24px;
   padding: 10px 24px;
   text-decoration: none;
-  border: 0;
-  outline: 0;
-  cursor: pointer;
 
   &:hover {
     opacity: 0.8;

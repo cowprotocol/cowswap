@@ -152,9 +152,13 @@ export enum UI {
   COLOR_LINK = '--cow-color-link',
   COLOR_LINK_OPACITY_10 = '--cow-color-link-opacity-10',
 
-  // Font Weights:
+  // Font Weights (values come from Font.weight in ThemeColorVars):
+  FONT_WEIGHT_ULTRALIGHT = '--cow-font-weight-ultralight',
+  FONT_WEIGHT_LIGHT = '--cow-font-weight-light',
   FONT_WEIGHT_NORMAL = '--cow-font-weight-normal',
+  FONT_WEIGHT_BOOK = '--cow-font-weight-book',
   FONT_WEIGHT_MEDIUM = '--cow-font-weight-medium',
+  FONT_WEIGHT_SEMIBOLD = '--cow-font-weight-semibold',
   FONT_WEIGHT_BOLD = '--cow-font-weight-bold',
 
   // Font Sizes:
@@ -175,7 +179,7 @@ export enum UI {
 
   // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
-  FONT_FAMILY_MONO = '--cow-font-family-mono',
+  FONT_FAMILY_BRAND = '--cow-font-family-brand',
 
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',

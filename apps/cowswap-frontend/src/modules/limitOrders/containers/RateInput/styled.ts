@@ -71,14 +71,9 @@ export const MarketRateWrapper = styled.div`
 `
 
 export const MarketPriceButton = styled.button`
-  color: inherit;
   white-space: nowrap;
-  border: none;
   font-weight: 500;
-  cursor: pointer;
   font-size: inherit;
-  background: transparent;
-  padding: 0;
   color: var(${UI.COLOR_TEXT});
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
@@ -115,7 +110,6 @@ export const NumericalInput = styled(Input)<{ $loading: boolean }>`
   display: flex;
   align-items: center;
   background: none;
-  border: none;
   text-align: left;
   color: inherit;
   font-size: 32px;
@@ -151,8 +145,6 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
   gap: var(--gap);
   font-size: var(--font-size);
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-  border: none;
-  cursor: pointer;
   position: relative;
   height: var(--height);
   border-radius: var(--border-radius);
@@ -211,7 +203,7 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
 `
 
 export const UsdButton = styled(ActiveCurrency)`
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   min-width: 40px;
   justify-content: center;
 

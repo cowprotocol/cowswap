@@ -24,10 +24,6 @@ const ButtonIcon = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
   width: 24px;
   height: 24px;
   transition: opacity 0.2s ease-in-out;
@@ -42,10 +38,6 @@ const ClearButton = styled(ButtonIcon)`
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
   opacity: 0.4;
   transition: all 0.2s ease-in-out;
 

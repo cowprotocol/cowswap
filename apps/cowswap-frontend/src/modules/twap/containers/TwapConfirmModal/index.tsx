@@ -1,5 +1,6 @@
 import { useCallback, ReactNode } from 'react'
 
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -29,8 +30,6 @@ import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { TwapFormWarnings } from '../TwapFormWarnings'
-
-const CONFIRM_TITLE = 'TWAP'
 
 const TwapTradeConfirmationDetails = styled(TwapTradeConfirmationDetailsBase)`
   margin-top: -4px;
@@ -118,11 +117,10 @@ export function TwapConfirmModal(): ReactNode {
   const eoaTwapSigningStepElement = <EoaTwapSigningPendingContent />
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE} showGetNotifiedMessage>
+    <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage>
       <TradeConfirmation
         {...commonTradeConfirmContext}
-        // TODO: Maybe better to use the same?
-        title={hasSigningPlan ? t`TWAP order` : CONFIRM_TITLE}
+        title={hasSigningPlan ? t`TWAP order` : t`Review TWAP`}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}
