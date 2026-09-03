@@ -147,6 +147,14 @@ export const ReceiverInput = styled.input<{ $error?: boolean }>`
   ${Media.upToSmall()} {
     text-align: center;
     flex: 0 1 auto;
+    // Shrink to fit the (usually short, truncated) address so ReceiverInputRow's
+    // justify-content: center centers the checkmark together with the address,
+    // instead of centering the address text alone inside a full-width input.
+    width: auto;
+
+    &:focus {
+      width: 100%;
+    }
   }
 `
 
