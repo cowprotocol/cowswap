@@ -12,8 +12,6 @@ export type TradeCurrencies = {
   outputCurrency: TokenWithLogo | null
 }
 
-export type TradeCurrenciesIds = Pick<TradeRawState, 'inputCurrencyId' | 'outputCurrencyId'>
-
 export interface TradeRawState {
   readonly chainId: number | null
   readonly targetChainId: number | null
@@ -21,15 +19,6 @@ export interface TradeRawState {
   readonly outputCurrencyId: string | null
   readonly recipient?: string | null
   readonly recipientAddress?: string | null
-}
-export interface TradeUrlParams {
-  readonly chainId: string | undefined
-  readonly inputCurrencyId: string | undefined
-  readonly outputCurrencyId: string | undefined
-  readonly inputCurrencyAmount: string | undefined
-  readonly outputCurrencyAmount: string | undefined
-  readonly orderKind: OrderKind | undefined
-  readonly targetChainId?: string
 }
 
 export function getDefaultCurrencies(chainId: SupportedChainId | null): TradeCurrencies {

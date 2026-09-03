@@ -11,7 +11,9 @@ import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useTradeNavigate, useTradeState } from 'modules/trade'
+import { useTradeState } from 'modules/trade'
+
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 
 import { useAddHook } from '../../hooks/useAddHook'
 import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'

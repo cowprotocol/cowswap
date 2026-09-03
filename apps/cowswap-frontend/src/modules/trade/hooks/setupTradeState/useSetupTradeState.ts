@@ -8,15 +8,13 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { TradeType, useTradeNavigate, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 
-import { useTradeNavigate } from '../../hooks/useTradeNavigate'
-import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
-import { TradeType } from '../../types/TradeType'
 import { useTradeState } from '../useTradeState'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()

@@ -8,9 +8,10 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
+
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useNavigateOnCurrencySelection } from './useNavigateOnCurrencySelection'
-import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
 // Mock dependencies
@@ -30,7 +31,7 @@ jest.mock('./useDerivedTradeState', () => ({
   useDerivedTradeState: jest.fn(),
 }))
 
-jest.mock('./useTradeNavigate', () => ({
+jest.mock('common/modules/tradeNavigation', () => ({
   useTradeNavigate: jest.fn(),
 }))
 
