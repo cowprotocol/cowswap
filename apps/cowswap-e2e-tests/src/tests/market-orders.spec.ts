@@ -72,6 +72,8 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
+      await selectTokens(swapPage, 'USDC', 'WETH')
+
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
@@ -80,7 +82,6 @@ test.describe('Market Orders', () => {
       // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
       // and the typed amount carries over once USDC/WETH are picked.
       await swapPage.enterSellAmount('1000')
-      await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
