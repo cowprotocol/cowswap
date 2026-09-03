@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import { expect } from '@playwright/test'
 
 import type { TradePage } from './TradePage'
@@ -15,13 +17,13 @@ export class TwapPage implements TradePage {
 
   constructor(page: Page) {
     this.page = page
-    this.inputAmount = page.locator('#input-currency-input .token-amount-input')
-    this.partsInput = page.locator('[data-testid="twap-parts-input"]')
-    this.durationInput = page.locator('[data-testid="twap-duration-input"]')
+    this.inputAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
+    this.partsInput = page.locator(`[data-testid="${TEST_IDS.twapPartsInput}"]`)
+    this.durationInput = page.locator(`[data-testid="${TEST_IDS.twapDurationInput}"]`)
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-advanced-orders-btn')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
-    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
+    this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
