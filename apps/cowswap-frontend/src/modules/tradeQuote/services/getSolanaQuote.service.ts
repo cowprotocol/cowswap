@@ -58,10 +58,6 @@ export async function getSolanaQuote(
     buyTokenDecimals,
     amount,
     kind,
-    // NOTE: sellTokenProgramId/buyTokenProgramId are left at the SDK default (classic SPL Token) — this
-    // frontend doesn't yet have the token metadata needed to detect Token-2022 mints (getIsToken2022())
-    // threaded down to this layer the way buildApproveInstruction.ts does. A Token-2022 pair will derive
-    // the wrong token accounts here until that's wired through. Known follow-up, not fixed in this pass.
     validForSeconds: quoteParams.validFor,
   })
 }
