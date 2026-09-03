@@ -10,15 +10,6 @@ interface Console extends Node.Console {
   force: Node.Console
 }
 
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
-}
-
 interface Window {
   console: Console & { force: Console }
   // walletLinkExtension is injected by the Coinbase Wallet extension
@@ -40,18 +31,6 @@ interface Window {
     isTrustWallet?: boolean
   }
   web3?: Record<string, unknown>
-  Telegram?: {
-    Login: {
-      auth(
-        options: {
-          bot_id: number
-          lang?: string
-          request_access?: string
-        },
-        callback: (data: TelegramData | false) => void,
-      ): void
-    }
-  }
 }
 
 declare module 'content-hash' {

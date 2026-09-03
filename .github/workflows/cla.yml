@@ -31,4 +31,4 @@ jobs:
           branch: 'cla-signatures'
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://github.com/cowprotocol/cla/blob/main/Cow%20Services%20CLA.md'
-          allowlist: '${{ steps.team.outputs.result }},*[bot],lint-action,dependabot,mergify'
+          allowlist: '${{ steps.team.outputs.result }},*[bot],lint-action,dependabot,mergify,cow-protocol'

@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { BackButton } from '@cowprotocol/ui'
+import { Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -15,7 +15,6 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
-import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
@@ -35,6 +34,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
+  hasSigningPlan?: boolean
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -50,8 +50,10 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData, confirmClickEvent } =
-    props
+
+  // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
+  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
+  const { title, hasSigningPlan, children } = _props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -83,20 +85,23 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   )
 
   return (
-    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
-      <styledEl.ContentWrapper id="trade-confirmation">
+    <Modal.Root>
+      <ModalHeader
+        title={title}
+        onBack={hasSigningPlan ? undefined : onDismiss}
+        onClose={hasSigningPlan ? onDismiss : undefined}
+        // TODO: Consider still displaying this here or somewhere else?
+        rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
+      />
+
+      <Modal.Content id="trade-confirmation">
         <ConfirmAmounts
+          variant={hasSigningPlan ? 'slim' : 'default'}
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
         />
+
         {children?.(
           <>
             {hookDetailsElement}
@@ -104,24 +109,28 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           </>,
         )}
 
-        <ConfirmWarnings
-          account={props.account}
-          ensName={props.ensName}
-          recipient={props.recipient}
-          isPriceChanged={isPriceChanged}
-          isPriceStatic={isPriceStatic}
-          resetPriceChanged={resetPriceChanged}
-        />
+        {hasSigningPlan ? null : (
+          <>
+            <ConfirmWarnings
+              account={props.account}
+              ensName={props.ensName}
+              recipient={props.recipient}
+              isPriceChanged={isPriceChanged}
+              isPriceStatic={isPriceStatic}
+              resetPriceChanged={resetPriceChanged}
+            />
 
-        <ConfirmButton
-          onConfirm={onConfirm}
-          buttonText={buttonText ? buttonText : t`Confirm`}
-          isButtonDisabled={isButtonDisabled}
-          hasPendingTrade={hasPendingTrade}
-          signingStep={signingStep}
-          clickEvent={confirmClickEvent}
-        />
-      </styledEl.ContentWrapper>
-    </styledEl.WidgetWrapper>
+            <ConfirmButton
+              onConfirm={onConfirm}
+              buttonText={buttonText ? buttonText : t`Confirm`}
+              isButtonDisabled={isButtonDisabled}
+              hasPendingTrade={hasPendingTrade}
+              signingStep={signingStep}
+              clickEvent={confirmClickEvent}
+            />
+          </>
+        )}
+      </Modal.Content>
+    </Modal.Root>
   )
 }

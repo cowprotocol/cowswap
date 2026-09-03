@@ -9,7 +9,6 @@ export const DropdownButton = styled.button`
   border-radius: 12px;
   padding: 10px 34px 10px 12px;
   width: 180px;
-  cursor: pointer;
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -31,10 +30,6 @@ export const DropdownButton = styled.button`
   &:hover {
     border-color: var(${UI.COLOR_PRIMARY_OPACITY_25});
     background: var(${UI.COLOR_PRIMARY_OPACITY_10});
-  }
-
-  &:focus {
-    outline: none;
   }
 `
 

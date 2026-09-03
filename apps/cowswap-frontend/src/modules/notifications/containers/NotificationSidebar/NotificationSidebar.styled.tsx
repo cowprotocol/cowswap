@@ -4,6 +4,7 @@ import svgArrowLeftSrc from '@cowprotocol/assets/images/arrow-left.svg'
 import iconBellAlertSrc from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -14,10 +15,6 @@ interface IconProps {
 }
 
 const IconButton = styled.button`
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -116,10 +113,7 @@ export const SidebarHeader = styled.div`
 
 export const NotificationSettingsIcon = styled.button`
   --size: 38px;
-  border: none;
-  background: none;
   padding: 8px;
-  cursor: pointer;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -143,6 +137,7 @@ export const NotificationSettingsIcon = styled.button`
 const BellIcon = styled(SVG)`
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
   fill: currentColor;
   margin-right: 6px;
 `
@@ -150,15 +145,19 @@ const BellIcon = styled(SVG)`
 export const EnableAlertsButton = styled.button`
   background: var(${UI.COLOR_INFO_BG});
   color: var(${UI.COLOR_INFO_TEXT});
-  border: none;
   border-radius: 12px;
   padding: 6px 12px;
   font-size: 12px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
-  cursor: pointer;
-  white-space: nowrap;
+  min-width: 0;
+  white-space: normal;
+  text-wrap: balance;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  text-align: center;
   display: flex;
   align-items: center;
+  justify-content: center;
   transition:
     background-color var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -175,6 +174,6 @@ export const EnableAlertsButtonWithIcon = ({
 }: IconProps & React.ButtonHTMLAttributes<HTMLButtonElement>): ReactNode => (
   <EnableAlertsButton onClick={onClick} {...props}>
     <BellIcon src={iconBellAlertSrc} />
-    Enable trade alerts
+    <Trans>Enable trade alerts</Trans>
   </EnableAlertsButton>
 )

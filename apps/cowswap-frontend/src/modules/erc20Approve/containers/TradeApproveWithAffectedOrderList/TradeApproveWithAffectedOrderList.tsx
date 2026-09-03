@@ -20,6 +20,7 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
   const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
     allowsOffchainSigning,
+    ignoreLimitOrderPermitDeferral: true,
   })
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
