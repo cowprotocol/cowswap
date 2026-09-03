@@ -103,6 +103,11 @@ export function ReceiverPanelBody({
             value={displayValue}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            // On narrow viewports the input's CSS width is `auto`, so its size falls back to the
+            // browser default (~20 characters) unless overridden here. Without this, the box is
+            // wider than the (usually short, truncated) address, and text-align: center leaves the
+            // checkmark next to the box edge but far from the actual text glyphs.
+            size={displayValue.length || undefined}
           />
         </ReceiverInputRow>
         {isError && (
