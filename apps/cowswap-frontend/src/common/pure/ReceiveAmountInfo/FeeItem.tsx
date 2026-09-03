@@ -13,13 +13,15 @@ interface FeeItemProps {
   isSell: boolean
   feeAmount: CurrencyAmount<Currency> | undefined
   loading?: boolean
+  /** Test hook — most callers don't need one, only those an e2e test targets directly. */
+  testId?: string
 }
 
-export function FeeItem({ title, isSell, feeAmount: feeAmount, loading }: FeeItemProps): ReactNode {
+export function FeeItem({ title, isSell, feeAmount: feeAmount, loading, testId }: FeeItemProps): ReactNode {
   const typeString = !isSell ? '+' : '-'
 
   return (
-    <div>
+    <div data-testid={testId}>
       <span>{title}</span>
       {!isFractionFalsy(feeAmount) ? (
         <span>
