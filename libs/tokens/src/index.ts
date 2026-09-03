@@ -1,10 +1,8 @@
-import { dedupeRepinnedTokenLists } from './state/migrations/dedupeRepinnedTokenLists'
 import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
 import { migrateTokenListsFromGithubCdn } from './state/migrations/migrateTokenListsFromGithubCdn'
 
 migrateNetworkMismatchUserAddedTokens()
-// Both write allTokenListsInfoAtom:v7, so they must not interleave
-migrateTokenListsFromGithubCdn().then(dedupeRepinnedTokenLists)
+migrateTokenListsFromGithubCdn()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
