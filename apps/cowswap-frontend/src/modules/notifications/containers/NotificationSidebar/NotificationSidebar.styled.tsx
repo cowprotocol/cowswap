@@ -14,10 +14,6 @@ interface IconProps {
 }
 
 const IconButton = styled.button`
-  border: none;
-  background: none;
-  padding: 0;
-  cursor: pointer;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -101,7 +97,7 @@ export const SidebarHeader = styled.div`
 
   > h3 {
     font-size: 16px;
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     margin: 0 auto 0 0;
     line-height: 1;
   }
@@ -116,10 +112,7 @@ export const SidebarHeader = styled.div`
 
 export const NotificationSettingsIcon = styled.button`
   --size: 38px;
-  border: none;
-  background: none;
   padding: 8px;
-  cursor: pointer;
   border-radius: 18px;
   display: flex;
   align-items: center;
@@ -150,12 +143,10 @@ const BellIcon = styled(SVG)`
 export const EnableAlertsButton = styled.button`
   background: var(${UI.COLOR_INFO_BG});
   color: var(${UI.COLOR_INFO_TEXT});
-  border: none;
   border-radius: 12px;
   padding: 6px 12px;
   font-size: 12px;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
-  cursor: pointer;
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   white-space: nowrap;
   display: flex;
   align-items: center;

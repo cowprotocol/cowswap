@@ -3,7 +3,7 @@ import { ReactNode, useCallback } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Command } from '@cowprotocol/types'
+import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -36,7 +36,7 @@ const Container = styled.div`
 `
 
 export interface TradeConfirmModalProps extends React.PropsWithChildren {
-  title: string
+  orderType: UiOrderType
   submittedContent?: ReactNode
   showGetNotifiedMessage?: boolean
 }
@@ -44,7 +44,7 @@ export interface TradeConfirmModalProps extends React.PropsWithChildren {
 interface InnerComponentProps extends React.PropsWithChildren {
   chainId: SupportedChainId
   account: string
-  title: string // TODO: This is actually order type...
+  orderType: UiOrderType
   error: string | null
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
@@ -58,7 +58,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
 }
 
 export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
-  const { children, submittedContent, title, showGetNotifiedMessage } = props
+  const { children, submittedContent, orderType, showGetNotifiedMessage } = props
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
@@ -82,7 +82,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         chainId={chainId}
         account={account}
         error={error}
-        title={title}
+        orderType={orderType}
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
@@ -115,7 +115,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
     error,
     isSafeWallet,
     onDismiss,
-    title,
+    orderType,
     pendingTrade,
     permitSignatureState,
     transactionHash,
@@ -137,7 +137,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
         outputAmount={pendingTrade.outputAmount}
         step={step}
         onDismiss={onDismiss}
-        orderType={title}
+        orderType={orderType}
       />
     )
   }

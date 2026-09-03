@@ -17,13 +17,6 @@ export const Button = styled.button`
     font-size var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  // TODO: Should we add a global CSS reset instead?
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: none;
-  outline: none;
-
   &::before,
   &::after {
     content: '';
@@ -41,6 +34,10 @@ export const Button = styled.button`
   &:disabled {
     cursor: not-allowed;
     opacity: 0.5;
+  }
+
+  &:focus-visible {
+    outline: none;
   }
 
   &:focus-visible::after {

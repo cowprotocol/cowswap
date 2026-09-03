@@ -85,8 +85,6 @@ const CopyButton = styled.button`
   padding: 4px 8px;
   background: #123621;
   color: #d8ffe7;
-  font: inherit;
-  cursor: pointer;
 
   &:hover {
     background: #1b4a2e;

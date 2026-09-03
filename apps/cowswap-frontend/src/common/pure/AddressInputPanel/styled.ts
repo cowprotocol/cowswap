@@ -53,13 +53,8 @@ export const ReceiverActions = styled.div`
 `
 
 export const ActionBtn = styled.button`
-  border: none;
-  background: transparent;
-  padding: 0;
-  margin: 0;
   font-size: 13px;
   font-weight: 400;
-  cursor: pointer;
   color: inherit;
   opacity: 0.7;
   display: inline-flex;
@@ -120,19 +115,14 @@ export const ValidCheckmark = styled(SVG)`
 
 export const ReceiverInput = styled.input<{ $error?: boolean }>`
   font-size: var(${UI.FONT_SIZE_LARGER});
-  font-family: var(${UI.FONT_FAMILY_MONO});
   letter-spacing: -0.2px;
-  outline: none;
-  border: none;
   flex: 1 1 auto;
-  background: none;
   transition: color 0.2s step-start;
   color: ${({ $error }) => ($error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 500;
   width: 100%;
-  padding: 0;
   appearance: textfield;
   -webkit-appearance: textfield;
 
@@ -286,8 +276,6 @@ export const CameraSwitchBtn = styled.button`
   height: 40px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.5);
-  border: none;
-  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
