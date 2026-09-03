@@ -74,13 +74,13 @@ test.describe('Market Orders', () => {
 
       await selectTokens(swapPage, 'USDC', 'WETH')
 
-      // Typed before selecting tokens, not after: selecting a token with no amount set yet
-      // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
-      // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just
-      // hit here via `selectTokens` instead of a manual token switch. Typing first against
-      // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
-      // and the typed amount carries over once USDC/WETH are picked.
+      // Selecting tokens before typing, not after: typing first used to be this test's order, on
+      // the theory that it tripped `useSetupTradeAmountsFromUrl`'s "amount already set" guard
+      // (`isAtLeastOneAmountIsSetRef`) before `selectTokens` could race it with its own "auto-fill 1
+      // whole unit" default (same underlying race as [CS-68]'s ETH-flow note). That stopped holding
+      // on this branch — the type-first order started flaking with the typed amount losing to the
+      // 1-unit default (root cause not yet confirmed) — so this now selects tokens first and types
+      // directly into the resulting input, sidestepping the race instead of exercising it.
       await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
