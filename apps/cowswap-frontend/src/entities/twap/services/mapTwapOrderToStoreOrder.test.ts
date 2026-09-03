@@ -5,6 +5,8 @@ import type { TokensByAddress } from '@cowprotocol/tokens'
 // eslint-disable-next-line import/no-internal-modules
 import { TwapOrderStatus, type TwapOrderItem } from 'modules/twap/types'
 
+jest.mock('modules/twap', () => jest.requireActual('modules/twap/types'))
+
 import { mapTwapOrderToStoreOrder } from './mapTwapOrderToStoreOrder'
 
 const chainId = SupportedChainId.GNOSIS_CHAIN
