@@ -87,8 +87,6 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
   const isEvmWallet = isEvmChain(chainId)
 
   return useSWR(
-    // `chainId as SupportedChainId`: `isEvmWallet` narrows `chainId` to the SDK's `EvmChains` subtype here,
-    // which conflicts with `ProxyAndAccount.chainId`/`SWR_OPTIONS`'s `SupportedChainId` below.
     account && cowShedHooks && isEvmWallet
       ? [account, chainId as SupportedChainId, 'useCurrentAccountProxyAddress']
       : null,
