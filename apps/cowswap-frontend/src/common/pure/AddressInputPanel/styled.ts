@@ -117,6 +117,10 @@ export const ReceiverInput = styled.input<{ $error?: boolean; $compact?: boolean
   font-size: var(${UI.FONT_SIZE_LARGER});
   letter-spacing: -0.2px;
   flex: 1 1 auto;
+  // Flex items default to min-width: auto, which stops them shrinking below their content's
+  // natural size - e.g. a focused, full-length (untruncated) address next to the checkmark
+  // would push the whole row (and page) wider instead of the input shrinking to fit.
+  min-width: 0;
   transition: color 0.2s step-start;
   color: ${({ $error }) => ($error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   overflow: hidden;
