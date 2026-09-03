@@ -14,10 +14,18 @@ export function getCountryAsKey(country: string): string {
 
 /**
  * Matches a GitHub raw URL and captures everything except the git ref:
- * `https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>`, where `<ref>` is a branch, a tag,
- * a commit SHA, or the `refs/heads/<branch>` / `refs/tags/<tag>` long form.
+ * `https://raw.githubusercontent.com/<owner>/<repo>/<ref>/<path>`.
+ *
+ * Only refs that can be identified with certainty are stripped: a 40-character commit SHA, or the
+ * default branch in its short (`main/…`) or long (`refs/heads/main/…`) form. A ref may itself contain
+ * slashes, and nothing in the URL marks where it ends and the path begins — `refs/heads/release/v1/l.json`
+ * is `release/v1` + `l.json` or `release` + `v1/l.json`, indistinguishable. Guessing there does not just
+ * miss a match: it builds a key that can belong to a different file in the same repo, and
+ * `dropRepinnedDuplicates` would then delete a list that is not a duplicate. Anything unrecognized is
+ * left verbatim, which costs a missed match and nothing else.
  */
-const GITHUB_RAW_REF = /^(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/)(?:refs\/(?:heads|tags)\/)?[^/]+\/(.+)$/
+const GITHUB_RAW_REF =
+  /^(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/)(?:refs\/heads\/)?(?:[0-9a-f]{40}|main|master)\/(.+)$/
 
 /**
  * Identity of a token list, for looking up its restricted countries and consent hash.
