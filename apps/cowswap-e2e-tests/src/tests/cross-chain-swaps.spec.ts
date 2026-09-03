@@ -489,12 +489,15 @@ test.describe('Cross-chain swaps', () => {
 
     // Under load, a still-settling recipient-validation debounce can reset `confirmed` back to
     // false right after this click lands (the checkbox is a controlled input driven by that
-    // validation state) — Playwright's own `.check()` sees the click "not change its state" when
-    // that happens. Retrying the click until it actually sticks rides out the race instead of
-    // asserting on a single attempt.
+    // validation state). `.check()` verifies the click actually changed the box's state and
+    // *throws* "Clicking the checkbox did not change its state" when this race hits — but
+    // `expect.poll()` calls its generator outside its own retry try/catch, so that throw aborts
+    // the poll on the very first hit instead of being retried. `.click()` performs the same click
+    // without that verification, so a no-op attempt just reads back `false` below — a normal,
+    // retryable mismatch — and the poll rides out the race as originally intended.
     await expect
       .poll(async () => {
-        await swapPage.recipientConfirmationCheckbox.check()
+        await swapPage.recipientConfirmationCheckbox.click()
         return swapPage.recipientConfirmationCheckbox.isChecked()
       })
       .toBe(true)
@@ -546,12 +549,15 @@ test.describe('Cross-chain swaps', () => {
 
     // Under load, a still-settling recipient-validation debounce can reset `confirmed` back to
     // false right after this click lands (the checkbox is a controlled input driven by that
-    // validation state) — Playwright's own `.check()` sees the click "not change its state" when
-    // that happens. Retrying the click until it actually sticks rides out the race instead of
-    // asserting on a single attempt.
+    // validation state). `.check()` verifies the click actually changed the box's state and
+    // *throws* "Clicking the checkbox did not change its state" when this race hits — but
+    // `expect.poll()` calls its generator outside its own retry try/catch, so that throw aborts
+    // the poll on the very first hit instead of being retried. `.click()` performs the same click
+    // without that verification, so a no-op attempt just reads back `false` below — a normal,
+    // retryable mismatch — and the poll rides out the race as originally intended.
     await expect
       .poll(async () => {
-        await swapPage.recipientConfirmationCheckbox.check()
+        await swapPage.recipientConfirmationCheckbox.click()
         return swapPage.recipientConfirmationCheckbox.isChecked()
       })
       .toBe(true)

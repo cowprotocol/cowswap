@@ -13,6 +13,7 @@ import { installEthGetTransactionCount } from '../mocks/nodeRpc/ethGetTransactio
 import { installTokenNonce } from '../mocks/nodeRpc/tokenNonce'
 import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
+import { installSlippageTolerance, type SlippageToleranceMock } from '../mocks/slippageTolerance'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
 import { AccountPage } from '../pages/AccountPage'
@@ -48,6 +49,7 @@ export interface SharedFixtures {
     nearIntents: NearIntentsMock
     launchDarkly: LaunchDarklyMock
     usdPrices: UsdPricesMock
+    slippageTolerance: SlippageToleranceMock
   }
 }
 
@@ -127,6 +129,7 @@ export const sharedFixtures: Fixtures<
       const nearIntents = installNearIntents(context)
       const launchDarkly = await installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
+      const slippageTolerance = installSlippageTolerance(context)
 
       await use({
         allowances,
@@ -139,6 +142,7 @@ export const sharedFixtures: Fixtures<
         nearIntents,
         launchDarkly,
         usdPrices,
+        slippageTolerance,
       })
 
       ethGetCode.reset()
@@ -146,6 +150,7 @@ export const sharedFixtures: Fixtures<
       nearIntents.reset()
       await launchDarkly.reset()
       usdPrices.reset()
+      slippageTolerance.reset()
       await safeSdk.disable()
       allowances.reset()
       balances.reportUnknownOwners()
