@@ -6,6 +6,7 @@ import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { Trans } from '@lingui/react/macro'
 
+import { MAX_RECIPIENT_LENGTH } from './const'
 import { useAddressDisplayValue } from './hooks/useAddressDisplayValue'
 import { useOnAddressInput } from './hooks/useOnAddressInput'
 import { useReceiverChainInfo } from './hooks/useReceiverChainInfo'
@@ -99,6 +100,10 @@ export function ReceiverPanelBody({
             placeholder={resolvedPlaceholder}
             $error={isError}
             pattern={strategy.pattern}
+            // Caps typing/native paste at the DOM level. AddressInputPanel's handleChange applies
+            // the same cap to every path (including the header's own Paste button, which bypasses
+            // this) - see MAX_RECIPIENT_LENGTH for why.
+            maxLength={MAX_RECIPIENT_LENGTH}
             onChange={handleInput}
             value={displayValue}
             onFocus={handleFocus}

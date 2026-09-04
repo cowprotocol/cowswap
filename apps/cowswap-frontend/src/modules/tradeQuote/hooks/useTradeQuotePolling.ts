@@ -22,6 +22,7 @@ import { isQuoteExpired } from '../utils/quoteDeadline'
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
@@ -80,6 +81,13 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
      * So, we should not refetch quote
      */
     if (isConfirmOpen) return
+
+    console.log(
+      '[DIAG useTradeQuotePolling] instant-fetch effect firing, isQuoteUpdatePossible=',
+      isQuoteUpdatePossible,
+      'quoteParams ref=',
+      quoteParams,
+    )
 
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()

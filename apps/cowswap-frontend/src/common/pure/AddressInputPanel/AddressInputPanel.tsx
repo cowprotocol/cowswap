@@ -1,7 +1,8 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, useCallback } from 'react'
 
 import { TargetChainId } from '@cowprotocol/cow-sdk'
 
+import { MAX_RECIPIENT_LENGTH } from './const'
 import { ReceiverPanelBody } from './ReceiverPanelBody.container'
 import { ReceiverPanelHeader } from './ReceiverPanelHeader.container'
 import { ReceiverPanel } from './styled'
@@ -29,12 +30,20 @@ export function AddressInputPanel({
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: AddressInputPanelProps): ReactElement {
+  // Single choke point for every way `value` can change - typing (native maxLength also applies),
+  // the header's Paste button (reads the clipboard directly) and QR scan both call this, so none
+  // of them can push an unbounded string into state. See MAX_RECIPIENT_LENGTH for why this matters.
+  const handleChange = useCallback(
+    (next: string) => onChange(next.length > MAX_RECIPIENT_LENGTH ? next.slice(0, MAX_RECIPIENT_LENGTH) : next),
+    [onChange],
+  )
+
   return (
     <ReceiverPanel id={id}>
-      <ReceiverPanelHeader onChange={onChange} value={value} targetChainId={targetChainId} label={label} />
+      <ReceiverPanelHeader onChange={handleChange} value={value} targetChainId={targetChainId} label={label} />
       <ReceiverPanelBody
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         targetChainId={targetChainId}
         placeholder={placeholder}
         isBridging={isBridging}
