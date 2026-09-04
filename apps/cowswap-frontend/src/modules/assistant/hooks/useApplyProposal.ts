@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAINS_MAP, OrderKind } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -136,6 +137,12 @@ export function useApplyProposal(): (proposal: AssistantProposal) => Promise<App
   )
 }
 
+/** The chain's native currency, by symbol or by the sentinel address the API uses for it. */
+function isNativeToken(id: string, chainId: number): boolean {
+  const chain = ALL_SUPPORTED_CHAINS_MAP[chainId as keyof typeof ALL_SUPPORTED_CHAINS_MAP]
+  return id === chain?.nativeCurrency.symbol || id.toLowerCase() === NATIVE_CURRENCY_ADDRESS.toLowerCase()
+}
+
 /**
  * A token id is a contract address, or the chain's native currency symbol.
  *
@@ -148,6 +155,12 @@ function isTokenId(id: string, chainId: number): boolean {
   return id === chain?.nativeCurrency.symbol || /^0x[a-fA-F0-9]{40}$/.test(id || '')
 }
 
+/** Native → wrapped native on the same chain, which the app treats as a wrap rather than a trade. */
+function isWrap(proposal: AssistantProposal): boolean {
+  const wrapped = WRAPPED_NATIVE_CURRENCIES[proposal.chainId as keyof typeof WRAPPED_NATIVE_CURRENCIES]
+  return Boolean(wrapped && proposal.buyToken.toLowerCase() === wrapped.address.toLowerCase())
+}
+
 /**
  * Guard clauses on anything the model proposes.
  *
@@ -157,7 +170,7 @@ function isTokenId(id: string, chainId: number): boolean {
  */
 function validate(proposal: AssistantProposal): string | null {
   if (!proposal) return 'Empty proposal.'
-  return validateTokens(proposal) ?? validateAmounts(proposal)
+  return validateTokens(proposal) ?? validateAmounts(proposal) ?? validateNativeSell(proposal)
 }
 
 /**
@@ -173,6 +186,45 @@ function validateAmounts(proposal: AssistantProposal): string | null {
     return 'A limit order needs both amounts — they are what set the price.'
   }
   return null
+}
+
+/**
+ * ⚠️ **A market order selling native currency can only be a sell order.**
+ *
+ * Selling native goes through the EthFlow path, which fixes the sell side: you name
+ * how much native to spend and the market decides what you get. So the form makes
+ * the buy field read-only whenever the sell token is native — `TradeWidgetForm`, on
+ * `isSellingEthSupported && isEoaEthFlow`.
+ *
+ * **Rejected here rather than left to the form, because the form does not merely
+ * ignore the buy amount.** `SwapWidget` applies `SELL_ETH_RESET_STATE` —
+ * `{ orderKind: SELL, inputCurrencyAmount: null, outputCurrencyAmount: null }` — so
+ * both amounts are cleared and the kind flips back. "Buy 500 COW with ETH" would
+ * leave two tokens, no numbers, and a card asserting a trade that no longer exists.
+ * That is the same failure as a card claiming success over a form nobody can act on,
+ * and it is silent: nothing in the state block says the form emptied itself.
+ *
+ * A refusal handed back to the model is recoverable. An emptied form is not. The
+ * prompt already declines this and offers the wrap route; this is our side of that
+ * boundary. Spec §25.
+ *
+ * **A wrap is exempt, and must be.** Native → wrapped native sets `isWrapOrUnwrap`,
+ * which makes `isEoaEthFlowAtom` false, so neither the read-only field nor the reset
+ * applies — "wrap enough to get 0.5 WETH" is a legal buy order and rejecting it
+ * would break the first half of every wrap-then-limit sequence.
+ *
+ * Limit orders are deliberately not covered: they cannot sell native at all, and the
+ * form says so on its own button ("Selling ETH is not supported"). A refusal the
+ * person can already read needs no guard here.
+ */
+function validateNativeSell(proposal: AssistantProposal): string | null {
+  if (proposal.orderType !== 'swap' || !proposal.buyAmount) return null
+  if (!isNativeToken(proposal.sellToken, proposal.chainId) || isWrap(proposal)) return null
+
+  const chain = ALL_SUPPORTED_CHAINS_MAP[proposal.chainId as keyof typeof ALL_SUPPORTED_CHAINS_MAP]
+  const symbol = chain?.nativeCurrency.symbol ?? 'native currency'
+
+  return `A market order selling ${symbol} must set the sell amount, not the buy amount. Propose the wrap first, then the buy order selling wrapped ${symbol}.`
 }
 
 /** Tokens must be real, distinct, and on a chain we support. */
