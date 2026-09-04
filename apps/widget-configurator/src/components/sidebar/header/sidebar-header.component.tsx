@@ -5,8 +5,6 @@ import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
 
-import { CowWidgetTitle } from './cow-widget-title.component'
-
 import { WidgetMode } from '../../../configurator.types'
 import { BRAND_COLOR } from '../../../theme/palettes.constants'
 import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
@@ -42,39 +40,29 @@ export function SidebarHeader({ themeMode, widgetMode, baseUrl, sdkVersion }: Si
         sx={{
           position: 'relative',
           display: 'flex',
-          alignItems: 'end',
+          alignItems: 'center',
           justifyContent: 'flex-start',
           gap: '8px',
           width: '100%',
         }}
       >
-        <ProductLogo
-          variant={ProductVariant.CowSwap}
-          theme={themeMode}
-          logoIconOnly
-          height={28}
-          overrideColor={brandColor}
-          overrideHoverColor={brandColor}
-        />
         <Box
           component="h1"
-          aria-label="CoW Widget"
           sx={{
             m: 0,
             display: 'flex',
             alignItems: 'center',
-            color: brandColor,
-            height: '2rem',
             flex: '0 0 auto',
-
-            '& svg': {
-              display: 'block',
-              height: '100%',
-              width: 'auto',
-            },
           }}
         >
-          <CowWidgetTitle />
+          <ProductLogo
+            variant={ProductVariant.CowSwap}
+            theme={themeMode}
+            logoIconOnly={false}
+            height={30}
+            overrideColor={brandColor}
+            overrideHoverColor={brandColor}
+          />
         </Box>
         <SidebarEnvBadge baseUrl={baseUrl} configuratorOrigin={location.origin} sdkVersion={sdkVersion} />
       </Box>
