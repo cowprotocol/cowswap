@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-03 13:22\n"
+"PO-Revision-Date: 2026-09-04 11:23\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2966,6 +2966,7 @@ msgid "This tool helps you recover your funds."
 msgstr "Cet outil vous aide à récupérer vos fonds."
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.styled.tsx
 msgid "Enable trade alerts"
 msgstr "Activer les alertes de trade"
 
@@ -2980,6 +2981,10 @@ msgstr "Transaction terminée"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Waiting for tx"
 msgstr "En attente de la transaction"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
+msgid "Review Swap"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/FallbackHandlerWarning.tsx
 msgid "Your Safe needs a modification"
@@ -4434,7 +4439,6 @@ msgid "orders"
 msgstr "ordres"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Limit Order"
 msgstr "Ordre limite"
 
@@ -4566,6 +4570,10 @@ msgstr "Demander les annulations"
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
 #~ msgstr "Left to next $10"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Order expirations"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 #~ msgid "Recommended"
@@ -6003,6 +6011,10 @@ msgstr "Les liens et codes ne révèlent pas votre wallet."
 msgid "Save & lock code"
 msgstr "Enregistrer et verrouiller le code"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "This toggle is on by default. Toggling on/off will be supported in the future."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign in your wallet. We'll submit the funding order automatically."
 msgstr "Signez dans votre wallet. Nous soumettrons automatiquement l’ordre de financement."
@@ -7077,6 +7089,10 @@ msgstr "En savoir plus sur les <0>ordres {orderType} ↗</0>"
 msgid "Network fees and costs"
 msgstr "Frais et coûts de réseau"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 msgid "NEW"
 msgstr "NOUVEAU"
@@ -7284,6 +7300,10 @@ msgstr "Ajouter un hook personnalisé"
 msgid "Approve {symbol}"
 msgstr "Approuver {symbol}"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Order fills"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be after {minDateStr} {timeZone}"
 msgstr "Doit être postérieur au {minDateStr} {timeZone}"
@@ -7466,6 +7486,10 @@ msgstr "Réinitialiser les favoris"
 msgid "Wrap {nativeSymbol} failed"
 msgstr "Échec du wrapping de {nativeSymbol}"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
+msgid "Review Limit Order"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at most"
 msgstr "au maximum"
@@ -7572,6 +7596,10 @@ msgstr "activer le mode Expert"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #~ msgid "Buying native currency with smart contract wallets is not currently supported"
 #~ msgstr "Buying native currency with smart contract wallets is not currently supported"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Alert types"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "Expected to sell"
@@ -7813,7 +7841,6 @@ msgstr "Comme vous utilisez un wallet smart contract"
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
-#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
@@ -8277,6 +8304,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
 msgstr "Chargement"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Alert channels"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
