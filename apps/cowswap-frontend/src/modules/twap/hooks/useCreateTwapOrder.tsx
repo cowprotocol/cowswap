@@ -1,13 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { maxUint256 } from 'viem'
+import { maxUint256, type Hex } from 'viem'
 import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -60,7 +60,11 @@ import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSignin
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildEoaTwapSigningStepPlan } from '../utils/buildEoaTwapSigningStepPlan'
-import { buildTwapOrderParamsStruct, createTwapOrderSalt } from '../utils/buildTwapOrderParamsStruct'
+import {
+  assertTwapOrderSalt,
+  buildTwapOrderParamsStruct,
+  createTwapOrderSalt,
+} from '../utils/buildTwapOrderParamsStruct'
 import {
   EoaTwapPlacementCancelledError,
   isEoaTwapPlacementCancelled,
@@ -227,17 +231,14 @@ export function useCreateTwapOrder() {
           return
         }
 
-        const salt = isEoaTwap ? createTwapOrderSalt() : undefined
+        const eoaPoller = isEoaTwap ? requireEoaTwapPollerAddress(chainId, pollerAddress) : undefined
 
+        let salt: Hex | undefined
         let updatedAppData = appDataInfo
         let updatedTwapOrder = twapOrder
 
-        if (isEoaTwap) {
-          const poller = COMPOSABLE_COW_POLLER_ADDRESS[chainId]
-
-          if (!poller) {
-            throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
-          }
+        if (eoaPoller) {
+          salt = assertTwapOrderSalt(createTwapOrderSalt())
 
           const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
@@ -247,11 +248,11 @@ export function useCreateTwapOrder() {
             funder: account as `0x${string}`,
             handler: TWAP_HANDLER_ADDRESS[chainId] as `0x${string}`,
             owner: proxyAddress,
-            salt: salt as `0x${string}`,
+            salt,
           })
 
           updatedAppData = await injectPollFundsPreHookIntoAppData(appDataInfo, {
-            pollerAddress: poller,
+            pollerAddress: eoaPoller,
             scheduleId,
           })
           updatedTwapOrder = { ...twapOrder, appData: updatedAppData.appDataKeccak256 }
@@ -295,13 +296,7 @@ export function useCreateTwapOrder() {
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
 
-        if (isEoaTwap) {
-          const poller = COMPOSABLE_COW_POLLER_ADDRESS[chainId]
-
-          if (!poller) {
-            throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
-          }
-
+        if (eoaPoller) {
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
@@ -310,7 +305,7 @@ export function useCreateTwapOrder() {
             config,
             account: account as `0x${string}`,
             sellTokenAddress,
-            spender: poller,
+            spender: eoaPoller,
             amountToCover: sellAmountAtoms,
             amountToApprove: maxUint256,
           })
@@ -339,7 +334,7 @@ export function useCreateTwapOrder() {
               account: account as `0x${string}`,
               sellTokenAddress,
               sellTokenName: sellToken.name,
-              spender: poller,
+              spender: eoaPoller,
               amountToCover: sellAmountAtoms,
               amountToApprove: maxUint256,
               permitInfo: pollerPermitInfo,
@@ -371,22 +366,11 @@ export function useCreateTwapOrder() {
           })
 
           // Setup factory tx hash for confirm-modal / explorer link.
+          // CreatingOrder is marked Confirmed inside placeEoaTwapOrder after the receipt.
           confirmModalHash = setupTxHash
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
-
-          updateEoaTwapFlow({
-            step: EoaTwapSigningSteps.CreatingOrder,
-            phase: EoaTwapSigningPhase.WaitingForTx,
-          })
-
-          // Setup tx is already mined inside placeEoaTwapOrder; mark activation confirmed.
           orderCreationHash = setupTxHash
-
-          updateEoaTwapFlow({
-            step: EoaTwapSigningSteps.CreatingOrder,
-            phase: EoaTwapSigningPhase.Confirmed,
-          })
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -448,10 +432,12 @@ export function useCreateTwapOrder() {
           // sign it, while a EOA TWAP order is in Open straight away.
           navigateToOrdersTableTab(isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING)
         })
-      } catch (error) {
-        if (error instanceof EoaTwapPlacementCancelledError) {
+      } catch (err: unknown) {
+        if (err instanceof EoaTwapPlacementCancelledError) {
           return
         }
+
+        const error = normalizeError(err)
 
         log.error(error)
         const errorMessage = getErrorMessage(error)
@@ -486,6 +472,7 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
+      pollerAddress,
       pollerPermitInfo,
       generatePermitHook,
       walletClient,
@@ -493,4 +480,12 @@ export function useCreateTwapOrder() {
       safeAmountToApprove,
     ],
   )
+}
+
+function requireEoaTwapPollerAddress(chainId: number, poller: AccountAddress | undefined): AccountAddress {
+  if (!poller) {
+    throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
+  }
+
+  return poller
 }

@@ -29,7 +29,8 @@ interface AppendSpenderApprovalStepIds {
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
  * - (Required) {@link EoaTwapSigningSteps.TwapSetup}: cow-shed EIP-712 + factory TX
  *   (optional EOA => Poller permit calldata + `registerFromShed + optional shed => Vault Relayer approve + ComposableCoW create)
- * - (Required) {@link EoaTwapSigningSteps.CreatingOrder}: confirm setup TX / activate TWAP
+ * - (Required) {@link EoaTwapSigningSteps.CreatingOrder}: mark TWAP active after the setup receipt
+ *   (confirmed immediately; setup already waited for mining)
  *
  * Approval steps are omitted when allowance is already sufficient.
  */

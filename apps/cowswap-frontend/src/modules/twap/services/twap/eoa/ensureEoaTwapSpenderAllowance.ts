@@ -2,7 +2,7 @@ import { type Address, erc20Abi } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, createCowLogger } from '@cowprotocol/common-utils'
+import { calculateGasMargin, createCowLogger, normalizeError } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
@@ -107,7 +107,7 @@ interface TryGeneratePermitAllowanceParams {
   sellTokenAddress: Address
   sellTokenName: string | undefined
   spender: AccountAddress
-  amountToCover: bigint
+  amountToApprove: bigint
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitUiStep: EoaTwapSigningSteps
@@ -123,8 +123,10 @@ interface TryGeneratePermitAllowanceParams {
  *
  * In EOA TWAP, this is currently used for ComposableCowPoller allowance.
  *
- * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for the full
- * TWAP sell when supported. Otherwise: execute on-chain zero-approve (if needed) and approve.
+ * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for
+ * `amountToApprove` (typically `maxUint256`) when supported, matching on-chain approve.
+ * Permitting only `amountToCover` would overwrite an existing max allowance.
+ * Otherwise: execute on-chain zero-approve (if needed) and approve.
  *
  * On on-chain approve, the transaction usually approves `amountToApprove` (typically
  * `maxUint256`) and validates that the emitted Approval amount still covers `amountToCover`,
@@ -165,7 +167,7 @@ export async function ensureEoaTwapSpenderAllowance({
       sellTokenAddress,
       sellTokenName,
       spender,
-      amountToCover,
+      amountToApprove,
       permitInfo,
       generatePermitHook,
       permitUiStep,
@@ -274,7 +276,7 @@ async function approveEoaSellToken({
         data: logEntry.data,
       })),
     }
-  } catch (waitError) {
+  } catch (waitError: unknown) {
     throw toApprovalUserError(waitError)
   }
 }
@@ -358,11 +360,14 @@ async function runOnChainApprovalStep({
   onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed })
 }
 
-function toApprovalUserError(error: unknown): Error {
+function toApprovalUserError(err: unknown): Error {
+  const error = normalizeError(err)
+
   if (error instanceof TransactionNotBroadcastError) {
     return new Error(t`Approval was cancelled or not broadcast. Please try again.`)
   }
-  return error instanceof Error ? error : new Error(String(error))
+
+  return error
 }
 
 async function tryGeneratePermitAllowance({
@@ -370,7 +375,7 @@ async function tryGeneratePermitAllowance({
   sellTokenAddress,
   sellTokenName,
   spender,
-  amountToCover,
+  amountToApprove,
   permitInfo,
   generatePermitHook,
   permitUiStep,
@@ -393,9 +398,10 @@ async function tryGeneratePermitAllowance({
     },
     account,
     permitInfo,
-    amount: amountToCover,
+    amount: amountToApprove,
     customSpender: spender,
-  }).catch((error) => {
+  }).catch((err: unknown) => {
+    const error = normalizeError(err)
     log.warn('Error generating permit data; falling back to approval', error)
     return null
   })
