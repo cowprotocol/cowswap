@@ -11,7 +11,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   expect: { timeout: 10_000 },
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 1 : 6,
+  workers: process.env.CI ? 3 : 6,
   reporter: process.env.CI ? [['html', { open: 'never' }], ['github']] : [['list'], ['html', { open: 'never' }]],
   globalSetup: path.resolve(__dirname, 'src/support/globalSetup.ts'),
   globalTeardown: path.resolve(__dirname, 'src/support/globalTeardown.ts'),
