@@ -31,6 +31,7 @@ import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
+import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
 import {
   ensureEoaTwapSpenderAllowance,
   getEoaTwapApprovalNeeds,
@@ -154,6 +155,9 @@ const mockedUseTwapOrderCreationContext = useTwapOrderCreationContext as jest.Mo
   typeof useTwapOrderCreationContext
 >
 const mockedPlaceEoaTwapOrder = placeEoaTwapOrder as jest.MockedFunction<typeof placeEoaTwapOrder>
+const mockedInjectPollFundsPreHookIntoAppData = injectPollFundsPreHookIntoAppData as jest.MockedFunction<
+  typeof injectPollFundsPreHookIntoAppData
+>
 const mockedGetEoaTwapApprovalNeeds = getEoaTwapApprovalNeeds as jest.MockedFunction<typeof getEoaTwapApprovalNeeds>
 const mockedEnsureEoaTwapSpenderAllowance = ensureEoaTwapSpenderAllowance as jest.MockedFunction<
   typeof ensureEoaTwapSpenderAllowance
@@ -290,5 +294,19 @@ describe('useCreateTwapOrder', () => {
         pollerPermitData: null,
       }),
     )
+  })
+
+  it('does not place an EOA TWAP or inject pollFunds on Mainnet when isTwapEoaEnabled is off', async () => {
+    mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+    expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
+    expect(mockedPlaceSafeTwapOrder).not.toHaveBeenCalled()
   })
 })

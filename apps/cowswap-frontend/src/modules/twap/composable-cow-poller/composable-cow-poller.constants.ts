@@ -11,7 +11,11 @@ import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
  *
  * Contract ABI: `ComposableCowPollerAbi` from `@cowprotocol/cowswap-abis`.
  *
- * Deployed on Mainnet, Gnosis, and Sepolia (pre-audit).
+ * Deployed on Mainnet, Gnosis, and Sepolia (pre-audit). Same CREATE2 address on each chain.
+ *
+ * The only consumer is EOA TWAP (`placeEoaTwapOrder` / `pollFunds` pre-hook). That flow
+ * is gated by LaunchDarkly `isTwapEoaEnabled` (off unless the flag is on), including on
+ * Mainnet. Keep the Mainnet address here: the flag is what turns the flow on, not this map.
  *
  * @see https://github.com/cowprotocol/composable-cow/pull/145 - poller / `registerFromShed`
  * @see https://github.com/cowprotocol/composable-cow/commit/b779e50445dd326014f62dcced2dce51dec2f18c - #145 merge
