@@ -98,9 +98,9 @@ const RESULT_TUPLE = [
   },
 ] as const
 
-function aggregate3Calldata(calls: Array<{ target: string; callData: Hex }>): Hex {
+function aggregate3Calldata(calls: Array<{ target: string; callData: Hex; allowFailure?: boolean }>): Hex {
   const encoded = encodeAbiParameters(CALL3_TUPLE, [
-    calls.map((c) => ({ target: c.target as Address, allowFailure: true, callData: c.callData })),
+    calls.map((c) => ({ target: c.target as Address, allowFailure: c.allowFailure ?? true, callData: c.callData })),
   ])
   return `${AGGREGATE3_SELECTOR}${encoded.slice(2)}` as Hex
 }
@@ -291,6 +291,38 @@ test('an aggregate3 batch mixing a matching and a non-matching call degrades the
   assert.equal(decodeAbiParameters([{ type: 'uint256' }], results[0].returnData)[0], 42n)
   assert.equal(results[1].success, false, 'the genuinely-unmocked slot degrades to a clean failure')
   assert.equal(results[1].returnData, '0x')
+})
+
+test('an aggregate3 batch mixing a matching call with an unresolvable allowFailure:false call propagates the real upstream failure instead of synthesizing a failed slot', async () => {
+  // Real Multicall3 semantics: an `allowFailure: false` call that fails reverts the *entire*
+  // `aggregate3` call — there's no such thing as "just that one slot failed" for it. A rate-limited
+  // or otherwise erroring real upstream for this slot means the true answer is unknown, not "this
+  // one slot cleanly failed while everything else (including this mock's own already-correct
+  // answer) succeeded" — that fabricated shape could never happen for real, so it must not be
+  // synthesized; the genuine upstream response (a revert, most likely) has to be relayed instead.
+  const data = aggregate3Calldata([
+    { target: TOKEN_A, callData: allowanceCalldata() },
+    { target: TOKEN_A, callData: balanceOfCalldata(), allowFailure: false },
+  ])
+  const stub = createStubContext()
+  mockContractViewCall(
+    stub.context,
+    TOKEN_A,
+    ALLOWANCE_SELECTOR,
+    () => '0x000000000000000000000000000000000000000000000000000000000000002a',
+  )
+
+  // The whole real `eth_call` reverted — a JSON-RPC error, not a per-slot aggregate3 result.
+  const upstream = { jsonrpc: '2.0', id: 5, error: { code: 3, message: 'execution reverted' } }
+  const route = createStubRoute({ id: 5, method: 'eth_call', params: [{ to: MULTICALL3, data }, 'latest'] }, upstream)
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, true)
+  assert.equal(route.fellBack, false, 'the real upstream response is relayed via fulfill, not a fallback')
+  const body = JSON.parse(route.fulfilled?.body ?? 'null') as { error?: unknown; result?: unknown }
+  assert.equal(body.result, undefined, 'must not fabricate a successful aggregate3 result')
+  assert.deepEqual(body.error, upstream.error, 'the genuine upstream error is relayed untouched')
 })
 
 // Real-world shape (bug report): the SDK's own `validateSocketRequest` call happens to land in the

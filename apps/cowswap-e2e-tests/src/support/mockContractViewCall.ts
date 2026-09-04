@@ -146,11 +146,30 @@ export function mockContractViewCall(
                 }) as Readonly<Aggregate3Result[]>)
               : undefined
 
+          // A slot we still can't answer (no local resolution, and `upstreamResults` couldn't
+          // decode a real per-slot result either — the whole real `aggregate3` call itself errored)
+          // can only be safely degraded to a clean `{success: false}` when its own `allowFailure`
+          // is `true`. Real Multicall3 semantics revert the *entire* call the instant an
+          // `allowFailure: false` call fails — there is no such thing as "just that one slot
+          // failed" on-chain for it — so synthesizing a failed-but-otherwise-successful slot here
+          // would fabricate a response shape that could never happen for real, and would silently
+          // vouch for every *other* slot (including this mock's own already-correct answer) as if
+          // the call had genuinely gone through. Bailing out with `undefined` instead lets
+          // `fulfillFromUpstream` relay whatever the real upstream actually said for the whole call
+          // (a genuine revert, most likely) rather than a fabricated success.
+          const hasUnanswerableRequiredCall = resolved.some(
+            (returnData, i) =>
+              typeof returnData === 'undefined' && !upstreamResults?.[i] && calls[i].allowFailure === false,
+          )
+          if (hasUnanswerableRequiredCall) {
+            return undefined
+          }
+
           return packAggregate3Result(
             resolved.map((returnData, i) =>
               typeof returnData !== 'undefined'
                 ? { success: true, returnData: returnData as Hex }
-                : (upstreamResults?.[i] ?? { success: false, returnData: '0x' }),
+                : (upstreamResults?.[i] ?? { success: false, returnData: '0x' as Hex }),
             ),
           )
         }
