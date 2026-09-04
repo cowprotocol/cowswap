@@ -8,6 +8,7 @@ import svgCowswapChristmasDarkSrc from '@cowprotocol/assets/images/logo-cowswap-
 import svgCowswapChristmasLightSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
 import svgCowswapHalloweenSrc from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
 import svgCowswapSrc from '@cowprotocol/assets/images/logo-cowswap.svg'
+import svgCowwidgetSrc from '@cowprotocol/assets/images/logo-cowwidget.svg'
 import iconCowSrc from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import iconMevblockerSrc from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import svgMevblockerSrc from '@cowprotocol/assets/images/logo-mevblocker.svg'
@@ -31,6 +32,7 @@ export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoI
 
 export enum ProductVariant {
   CowSwap = 'cowSwap',
+  CowWidget = 'cowWidget',
   CowExplorer = 'cowExplorer',
   CowProtocol = 'cowProtocol',
   MevBlocker = 'mevBlocker',
@@ -99,6 +101,34 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,
+      },
+    },
+  },
+
+  // CoW Widget
+  [ProductVariant.CowWidget]: {
+    light: {
+      default: {
+        src: svgCowwidgetSrc,
+        alt: 'CoW Widget',
+        color: '#004293',
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW Widget',
+        color: '#004293',
+      },
+    },
+    dark: {
+      default: {
+        src: svgCowwidgetSrc,
+        alt: 'CoW Widget',
+        color: Color.blue300Primary,
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW Widget',
+        color: Color.blue300Primary,
       },
     },
   },
