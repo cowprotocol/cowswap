@@ -18,6 +18,17 @@ export interface CowProtocolApiMock {
   /** Suppress the teardown failure for un-mocked CoW API URLs in this test. */
   allowUnmocked(): void
   readonly posted: ReadonlyArray<PostedOrder>
+  /**
+   * Every served `/quote` response, request body alongside the (already-normalized) response
+   * body, in call order. A spec that retypes an amount to dodge the UI's own auto-fill-default
+   * race (see `AGENTS.md`'s "Typed sell amount reverts to '1'") can't tell from `waitForQuote()`
+   * alone that the *retyped* amount's quote actually round-tripped — the app can still be holding
+   * an earlier quote object (built from a stale amount) at the moment it posts the order, even
+   * once the UI's own display has caught up. Polling this array for a response whose
+   * `quote.sellAmount`/`buyAmount` matches the intended amount is a direct check on the same
+   * object the app uses to build the order, not a proxy for it.
+   */
+  readonly quotes: ReadonlyArray<QuoteExchange>
   readonly unmatched: readonly string[]
   /** Messages from handler failures (a bad fixture, a throwing override, ...), fulfilled as HTTP 500 so requests never hang. */
   readonly mockErrors: readonly string[]
@@ -31,9 +42,15 @@ export interface PostedOrder {
   body: unknown
 }
 
+export interface QuoteExchange {
+  request: unknown
+  response: unknown
+}
+
 export async function installCowProtocolApi(context: BrowserContext): Promise<CowProtocolApiMock> {
   const overrides = new Map<CowApiEndpointKey, CowApiOverride>()
   const posted: PostedOrder[] = []
+  const quotes: QuoteExchange[] = []
   const unmatched: string[] = []
   const mockErrors: string[] = []
   let unmatchedAllowed = false
@@ -64,6 +81,10 @@ export async function installCowProtocolApi(context: BrowserContext): Promise<Co
         posted.push({ uid: body, body: req.body })
       }
 
+      if (matched.endpoint.key === 'quote') {
+        quotes.push({ request: req.body, response: body })
+      }
+
       await route.fulfill({ status, contentType, body: serializeBody(body, contentType) })
     } catch (error) {
       // A hung request produces a confusing navigation/action timeout far from the real cause
@@ -78,6 +99,7 @@ export async function installCowProtocolApi(context: BrowserContext): Promise<Co
 
   return {
     posted,
+    quotes,
     unmatched,
     mockErrors,
     set(key, override) {
@@ -114,6 +136,7 @@ export async function installCowProtocolApi(context: BrowserContext): Promise<Co
     reset() {
       overrides.clear()
       posted.length = 0
+      quotes.length = 0
       unmatched.length = 0
       mockErrors.length = 0
       unmatchedAllowed = false
