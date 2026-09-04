@@ -56,7 +56,7 @@ export function SidebarHeader({ themeMode, widgetMode, baseUrl, sdkVersion }: Si
           }}
         >
           <ProductLogo
-            variant={ProductVariant.CowSwap}
+            variant={ProductVariant.CowWidget}
             theme={themeMode}
             logoIconOnly={false}
             height={30}
