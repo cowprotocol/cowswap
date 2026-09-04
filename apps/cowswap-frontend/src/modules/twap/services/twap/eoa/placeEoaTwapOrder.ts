@@ -45,6 +45,10 @@ import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 const DEFAULT_GAS_LIMIT = 1_000_000n
 const SETUP_VALID_FOR_SEC = 1800
 const log = createCowLogger('EOA TWAP')
+
+/**
+ * Enable EOA TWAP POC debug logging. Enabled until this is released to prod.
+ */
 const EOA_TWAP_POC_DEBUG = true
 
 export interface GetEoaTwapOrderShedCallsParams {
