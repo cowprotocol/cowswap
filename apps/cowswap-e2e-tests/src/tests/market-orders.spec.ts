@@ -70,17 +70,11 @@ test.describe('Market Orders', () => {
         allowances: { [USDC]: INITIAL_USDC_BALANCE },
       })
 
-      await swapPage.goto({ chainId: CHAIN_ID })
-
-      await selectTokens(swapPage, 'USDC', 'WETH')
-
-      // Selecting tokens before typing, not after: typing first used to be this test's order, on
-      // the theory that it tripped `useSetupTradeAmountsFromUrl`'s "amount already set" guard
-      // (`isAtLeastOneAmountIsSetRef`) before `selectTokens` could race it with its own "auto-fill 1
-      // whole unit" default (same underlying race as [CS-68]'s ETH-flow note). That stopped holding
-      // on this branch — the type-first order started flaking with the typed amount losing to the
-      // 1-unit default (root cause not yet confirmed) — so this now selects tokens first and types
-      // directly into the resulting input, sidestepping the race instead of exercising it.
+      // Put the pair in the URL so we don't race `selectTokens` against the default 1-unit fill
+      // (`useSetupTradeAmountsFromUrl`). That race can leave the input showing "1000" while the
+      // live quote is still for 1 USDC, and confirming then posts a 1-unit order (balance 1499
+      // instead of 500 after fill).
+      await swapPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: WETH })
       await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
@@ -88,6 +82,9 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('1000')
 
       await swapPage.waitForQuote()
+      // 1000 USDC * 804 / 1_000_000 = 0.804 WETH. A stale 1-unit quote is ~0.000804 — wait until
+      // the output is clearly the 1000-unit quote before confirming.
+      await expect(swapPage.outputAmount).toHaveValue(/^0\.8/, { timeout: 15_000 })
 
       await mocks.orders.expectOrderToBePosted({
         orderId,
@@ -526,15 +523,16 @@ test.describe('Market Orders', () => {
       // Typed before switching the sell token to ETH, not after: selecting a token with no amount
       // set yet auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — the mocked wallet balance here is exactly
-      // 1 ETH, so that default is indistinguishable from "sold everything" when it wins. Typing an
-      // amount first (against the default WETH sell token) marks one as already set, so switching to
-      // ETH afterwards carries the typed amount over instead of triggering the default.
+      // quote fetch and can win under load — the mocked wallet balance here is exactly 1 ETH, so
+      // that default is indistinguishable from "sold everything" when it wins. Typing first against
+      // the default WETH sell token marks an amount as already set; retyping after both switches
+      // have landed matches [CS-103] and removes any remaining dependency on that race.
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('USDC')
+      await swapPage.enterSellAmount('0.5')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')

@@ -1,14 +1,15 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { maxUint256 } from 'viem'
-import { useConfig } from 'wagmi'
+import { maxUint256, type Hex } from 'viem'
+import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import {
   useIsSafeViaWc,
@@ -22,11 +23,8 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import {
-  useAdvancedOrdersDerivedState,
-  useComposableCowContractData,
-  useUpdateAdvancedOrdersRawState,
-} from 'modules/advancedOrders'
+import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
@@ -48,27 +46,31 @@ import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
-import { DEFAULT_TWAP_EXECUTION } from '../const'
+import { COMPOSABLE_COW_POLLER_ADDRESS } from '../composable-cow-poller/composable-cow-poller.constants'
+import { getComposableCowPollerScheduleId } from '../composable-cow-poller/composable-cow-poller.utils'
+import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
+import { DEFAULT_TWAP_EXECUTION, TWAP_HANDLER_ADDRESS } from '../const'
 import {
-  ensureEoaTwapVaultRelayerApproval,
+  ensureEoaTwapSpenderAllowance,
   getEoaTwapApprovalNeeds,
-} from '../services/twap/eoa/ensureEoaTwapVaultRelayerApproval'
+} from '../services/twap/eoa/ensureEoaTwapSpenderAllowance'
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
-import { waitForFundingOrderSettlementTx } from '../services/twap/eoa/waitForFundingOrderSettlementTx'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildEoaTwapSigningStepPlan } from '../utils/buildEoaTwapSigningStepPlan'
-import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
+import {
+  assertTwapOrderSalt,
+  buildTwapOrderParamsStruct,
+  createTwapOrderSalt,
+} from '../utils/buildTwapOrderParamsStruct'
 import {
   EoaTwapPlacementCancelledError,
   isEoaTwapPlacementCancelled,
   startEoaTwapPlacement,
 } from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
-import { getEoaTwapAmountToApprove } from '../utils/getEoaTwapAmountToApprove'
-import { getEoaTwapPrePlacementAmountToCover } from '../utils/getEoaTwapPrePlacementAmountToCover'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
 
@@ -120,13 +122,11 @@ export function useCreateTwapOrder() {
   )
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
-  // Funding order is a regular swap sell=buy posted to prod. ADVANCED_ORDERS disables permit, so we look it up as here
-  // against the production Vault Relayer (same spender placeEoaTwapOrder uses):
-  const permitInfo = usePermitInfo(
-    inputCurrencyAmount?.currency,
-    TradeType.SWAP,
-    chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId] : undefined,
-  )
+  const { data: walletClient } = useWalletClient()
+
+  // Poller permit only: ADVANCED_ORDERS disables permit for the trade spender, so look up poller as SWAP + custom spender.
+  const pollerAddress = chainId ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
+  const pollerPermitInfo = usePermitInfo(inputCurrencyAmount?.currency, TradeType.SWAP, pollerAddress)
   const generatePermitHook = useGeneratePermitHook()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
@@ -140,7 +140,6 @@ export function useCreateTwapOrder() {
 
   const analytics = useCowAnalytics()
   const tradeFlowAnalytics = useTradeFlowAnalytics()
-  const composableCowContract = useComposableCowContractData()
 
   const sendOrderAnalytics = useCallback(
     (action: string, context: string) => {
@@ -179,11 +178,11 @@ export function useCreateTwapOrder() {
         return
       }
 
-      if (!chainId || !account) return
+      if (!chainId || !account || !walletClient) return
       if (!inputCurrencyAmount || !outputCurrencyAmount || !appDataInfo || !twapOrder) return
 
       if (isEoaTwap) {
-        if (!eoaSigner) return
+        if (!eoaSigner || !walletClient || !twapOrderCreationContext) return
       } else if (
         !twapOrderCreationContext ||
         chainId !== twapOrderCreationContext.chainId ||
@@ -232,23 +231,51 @@ export function useCreateTwapOrder() {
           return
         }
 
-        const paramsStruct = buildTwapOrderParamsStruct(chainId, twapOrder)
+        const eoaPoller = isEoaTwap ? requireEoaTwapPollerAddress(chainId, pollerAddress) : undefined
+
+        let salt: Hex | undefined
+        let updatedAppData = appDataInfo
+        let updatedTwapOrder = twapOrder
+
+        if (eoaPoller) {
+          salt = assertTwapOrderSalt(createTwapOrderSalt())
+
+          const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+          const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
+
+          // Schedule id is appData-independent; compute before injecting pollFunds into appData.
+          const scheduleId = getComposableCowPollerScheduleId({
+            funder: account as `0x${string}`,
+            handler: TWAP_HANDLER_ADDRESS[chainId] as `0x${string}`,
+            owner: proxyAddress,
+            salt,
+          })
+
+          updatedAppData = await injectPollFundsPreHookIntoAppData(appDataInfo, {
+            pollerAddress: eoaPoller,
+            scheduleId,
+          })
+          updatedTwapOrder = { ...twapOrder, appData: updatedAppData.appDataKeccak256 }
+        }
+
+        const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
         // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
         const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
+
+        // No quote/quoteId exists yet at this point for either TWAP path:
         tradeFlowAnalytics.placeAdvancedOrder({
           ...twapFlowAnalyticsContext,
-          // No quote/quoteId exists yet at this point for either TWAP path (the EOA path only fetches
-          // one later, inside placeEoaTwapOrder).
           allowsOffchainSigning,
         })
+
         sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
 
         await uploadAppDataDocOrderbookApi({
-          appDataKeccak256: appDataInfo.appDataKeccak256,
-          fullAppData: appDataInfo.fullAppData,
+          appDataKeccak256: updatedAppData.appDataKeccak256,
+          fullAppData: updatedAppData.fullAppData,
           chainId,
           env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
@@ -262,36 +289,33 @@ export function useCreateTwapOrder() {
 
         // Value passed to `tradeConfirmActions.onSuccess`. Ends up in `PostedOrderNotification`, rendering a Safe or Explorer link in a toast.
         // Must be truthy to show the success screen.
-        // - EOA: CoW orderbook UID of the intermediate sell=buy funding order (not the TWAP id)
+        // - EOA: cow-shed factory setup transaction hash
         // - Safe: safeTxHash
         let confirmModalHash: string
 
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
 
-        if (isEoaTwap) {
-          const vaultRelayerAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId]
+        if (eoaPoller) {
+          const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
+          const sellToken = updatedTwapOrder.sellAmount.currency
+          const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
 
-          if (!vaultRelayerAddress) {
-            throw new Error(`Vault relayer address is not configured for chain ${chainId}`)
-          }
-
-          const sellTokenAddress = twapOrder.sellAmount.currency.address as `0x${string}`
-          const sellToken = twapOrder.sellAmount.currency
-          const sellAmountAtoms = BigInt(twapOrder.sellAmount.quotient.toString())
-          // Exact amount is unknown until after Twap Setup, so we cover the sell amount + buffer:
-          const amountToCover = getEoaTwapPrePlacementAmountToCover(sellAmountAtoms)
-          const eoaAmountToApprove = getEoaTwapAmountToApprove(amountToSignApprove, amountToCover)
-          const approvalNeeds = await getEoaTwapApprovalNeeds({
+          const pollerApprovalNeeds = await getEoaTwapApprovalNeeds({
             config,
             account: account as `0x${string}`,
             sellTokenAddress,
-            spender: vaultRelayerAddress,
-            amountToCover,
-            amountToApprove: eoaAmountToApprove,
+            spender: eoaPoller,
+            amountToCover: sellAmountAtoms,
+            amountToApprove: maxUint256,
           })
 
-          const signingStepPlan = buildEoaTwapSigningStepPlan(approvalNeeds)
+          const pollerCanUsePermit = isSupportedPermitInfo(pollerPermitInfo)
+          const pollerNeeds = { ...pollerApprovalNeeds, canUsePermit: pollerCanUsePermit }
+
+          const signingStepPlan = buildEoaTwapSigningStepPlan({
+            poller: pollerNeeds,
+          })
 
           // Open the multi-step pending UI as soon as the plan is known.
           const firstStep = signingStepPlan[0]
@@ -300,62 +324,53 @@ export function useCreateTwapOrder() {
             updateEoaTwapFlow({ step: firstStep, phase: EoaTwapSigningPhase.Sign, plan: signingStepPlan })
           }
 
-          if (approvalNeeds.needsApproval) {
-            // Prefer on-chain approve (not permit) when approval is needed: funding sell size is
-            // unknown until after the quote inside placeEoaTwapOrder. Skip only when allowance
-            // already covers sell + buffer.
-            await ensureEoaTwapVaultRelayerApproval({
+          let pollerPermitData: PermitHookData | null = null
+
+          if (pollerApprovalNeeds.needsApproval) {
+            // Return a permit for the poller when available, or otherwise do on-chain zero-approve/approve for full TWAP sell:
+            pollerPermitData = await ensureEoaTwapSpenderAllowance({
               config,
               chainId,
               account: account as `0x${string}`,
               sellTokenAddress,
               sellTokenName: sellToken.name,
-              spender: vaultRelayerAddress,
-              amountToCover,
-              amountToApprove: eoaAmountToApprove,
-              permitInfo,
+              spender: eoaPoller,
+              amountToCover: sellAmountAtoms,
+              amountToApprove: maxUint256,
+              permitInfo: pollerPermitInfo,
               generatePermitHook,
-              preferOnChainApprove: true,
+              step: EoaTwapSigningSteps.ApprovePoller,
+              permitStep: EoaTwapSigningSteps.PermitPoller,
+              zeroStep: EoaTwapSigningSteps.ZeroApprovePoller,
+              onChainFallbackPlan: pollerCanUsePermit
+                ? buildEoaTwapSigningStepPlan({
+                    poller: { ...pollerApprovalNeeds, canUsePermit: false },
+                  })
+                : undefined,
               onSigningStep: updateEoaTwapFlow,
-              approvalNeeds,
+              approvalNeeds: pollerNeeds,
             })
           }
 
-          const { proxyAddress, orderPostingResult } = await placeEoaTwapOrder({
+          const { proxyAddress, setupTxHash } = await placeEoaTwapOrder({
             chainId,
             account: account as `0x${string}`,
-            twapOrder,
+            twapOrder: updatedTwapOrder,
             twapOrderCreationContext,
             paramsStruct,
             signer: eoaSigner,
             config,
-            composableCowContract,
-            permitInfo,
-            generatePermitHook,
+            walletClient,
             onSigningStep: updateEoaTwapFlow,
+            pollerPermitData,
           })
 
-          // Funding-order UID used for confirm-modal CoW explorer link. `!== twapOrderId`.
-          confirmModalHash = orderPostingResult.orderId
+          // Setup factory tx hash for confirm-modal / explorer link.
+          // CreatingOrder is marked Confirmed inside placeEoaTwapOrder after the receipt.
+          confirmModalHash = setupTxHash
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
-
-          // CreatingOrder WaitingForTx already set at end of placeEoaTwapOrder; keep it through settlement wait.
-          updateEoaTwapFlow({
-            step: EoaTwapSigningSteps.CreatingOrder,
-            phase: EoaTwapSigningPhase.WaitingForTx,
-          })
-
-          // Used for the toast native chain explorer link.
-          // Not available until the funding order tx settles. If we cannot resolve this, we fallback to the funding
-          // order UID (CoW Explorer).
-          const settlementTxHash = await waitForFundingOrderSettlementTx(chainId, orderPostingResult.orderId)
-          orderCreationHash = settlementTxHash ?? orderPostingResult.orderId
-
-          updateEoaTwapFlow({
-            step: EoaTwapSigningSteps.CreatingOrder,
-            phase: EoaTwapSigningPhase.Confirmed,
-          })
+          orderCreationHash = setupTxHash
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -373,7 +388,7 @@ export function useCreateTwapOrder() {
         }
 
         const orderItem: TwapOrderItem = {
-          order: twapOrderToStruct(twapOrder),
+          order: twapOrderToStruct(updatedTwapOrder),
           status: orderStatus,
           chainId,
           safeAddress: safeAddressOrCowShedAddress,
@@ -393,8 +408,8 @@ export function useCreateTwapOrder() {
           orderCreationHash,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
-          inputAmount: twapOrder.sellAmount,
-          outputAmount: twapOrder.buyAmount,
+          inputAmount: updatedTwapOrder.sellAmount,
+          outputAmount: updatedTwapOrder.buyAmount,
           owner: account,
           uiOrderType: orderType,
         })
@@ -417,10 +432,12 @@ export function useCreateTwapOrder() {
           // sign it, while a EOA TWAP order is in Open straight away.
           navigateToOrdersTableTab(isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING)
         })
-      } catch (error) {
-        if (error instanceof EoaTwapPlacementCancelledError) {
+      } catch (err: unknown) {
+        if (err instanceof EoaTwapPlacementCancelledError) {
           return
         }
+
+        const error = normalizeError(err)
 
         log.error(error)
         const errorMessage = getErrorMessage(error)
@@ -455,12 +472,20 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
-      composableCowContract,
-      permitInfo,
+      pollerAddress,
+      pollerPermitInfo,
       generatePermitHook,
+      walletClient,
       updateEoaTwapFlow,
       safeAmountToApprove,
-      amountToSignApprove,
     ],
   )
+}
+
+function requireEoaTwapPollerAddress(chainId: number, poller: AccountAddress | undefined): AccountAddress {
+  if (!poller) {
+    throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
+  }
+
+  return poller
 }
