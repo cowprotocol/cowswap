@@ -63,6 +63,11 @@ jest.mock('wagmi', () => ({
   useWalletClient: jest.fn().mockReturnValue({ data: {} }),
 }))
 
+jest.mock('@cowprotocol/wallet', () => ({
+  ...jest.requireActual('@cowprotocol/wallet'),
+  useSolanaWalletProvider: jest.fn().mockReturnValue(undefined),
+}))
+
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
 
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }
