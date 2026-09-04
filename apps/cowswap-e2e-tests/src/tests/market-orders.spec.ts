@@ -75,12 +75,14 @@ test.describe('Market Orders', () => {
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just
-      // hit here via `selectTokens` instead of a manual token switch. Typing first against
-      // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
-      // and the typed amount carries over once USDC/WETH are picked.
+      // quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just hit here
+      // via `selectTokens` instead of a manual token switch. Typing first against whatever's
+      // already selected trips the "amount already set" guard before `selectTokens` runs.
+      // Retyping after the pair is picked matches [CS-103]: the type-first mitigation is not
+      // airtight under CI load, and there is no further currency switch left to lose the amount to.
       await swapPage.enterSellAmount('1000')
       await selectTokens(swapPage, 'USDC', 'WETH')
+      await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
@@ -525,15 +527,16 @@ test.describe('Market Orders', () => {
       // Typed before switching the sell token to ETH, not after: selecting a token with no amount
       // set yet auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — the mocked wallet balance here is exactly
-      // 1 ETH, so that default is indistinguishable from "sold everything" when it wins. Typing an
-      // amount first (against the default WETH sell token) marks one as already set, so switching to
-      // ETH afterwards carries the typed amount over instead of triggering the default.
+      // quote fetch and can win under load — the mocked wallet balance here is exactly 1 ETH, so
+      // that default is indistinguishable from "sold everything" when it wins. Typing first against
+      // the default WETH sell token marks an amount as already set; retyping after both switches
+      // have landed matches [CS-103] and removes any remaining dependency on that race.
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('USDC')
+      await swapPage.enterSellAmount('0.5')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')
