@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useDebounce } from '@cowprotocol/common-hooks'
 
@@ -20,9 +20,18 @@ export function TradeFormValidationUpdater(): null {
   const updateContext = useSetAtom(tradeFormValidationContextAtom)
   const commonContext = useTradeFormValidationContext()
   const debouncedContext = useDebounce(commonContext, VALIDATION_CONTEXT_DEBOUNCE_TIME)
+  // Guards against pushing a semantically-identical context that only differs by object
+  // identity (e.g. an upstream hook returning a fresh-but-equal object every render). Without
+  // this, a no-op-content update can still notify subscribers and, if any of them feeds back
+  // into an upstream dependency, resonate into a self-sustaining render loop.
+  const lastPushedContentRef = useRef<string | null>(null)
 
   useEffect(() => {
     if (!debouncedContext) return
+
+    const serializedContext = JSON.stringify(debouncedContext)
+    if (serializedContext === lastPushedContentRef.current) return
+    lastPushedContentRef.current = serializedContext
 
     console.log(
       '[DIAG TradeFormValidationUpdater] updateContext firing, recipient=',
