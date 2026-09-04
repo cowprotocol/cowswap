@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { Nullish } from 'types'
 
@@ -48,7 +49,7 @@ export function CurrencyAmountPreview({
       <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
       <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>
-        <styledEl.Amount className="token-amount-input" amount={amount} tokenSymbol={currency} />
+        <styledEl.Amount testId={TEST_IDS.currencyAmountPreviewValue} amount={amount} tokenSymbol={currency} />
         <styledEl.FiatAmountSlot fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
       </styledEl.Amounts>
     </styledEl.Container>
