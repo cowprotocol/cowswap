@@ -113,6 +113,7 @@ jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
 jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
   buildTwapOrderParamsStruct: jest.fn(() => ({})),
   createTwapOrderSalt: jest.fn(() => '0xsalt'),
+  assertTwapOrderSalt: jest.fn((salt: string) => salt),
 }))
 jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest.fn() }))
 jest.mock('../utils/twapOrderToStruct', () => ({ twapOrderToStruct: jest.fn(() => ({})) }))

@@ -1,4 +1,4 @@
-import { encodeAbiParameters, padHex, toHex, type Hex } from 'viem'
+import { encodeAbiParameters, isHex, padHex, toHex, type Hex } from 'viem'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -41,4 +41,15 @@ export function createTwapOrderSalt(): Hex {
   const bytes = new Uint8Array(32)
   crypto.getRandomValues(bytes)
   return toHex(bytes)
+}
+
+const TWAP_ORDER_SALT_HEX_LENGTH = 66
+
+/** Narrows a TWAP `salt` to a 32-byte hex string. */
+export function assertTwapOrderSalt(salt: string | undefined): Hex {
+  if (!isHex(salt, { strict: true }) || salt.length !== TWAP_ORDER_SALT_HEX_LENGTH) {
+    throw new Error('TWAP order salt must be a 32-byte hex value')
+  }
+
+  return salt
 }

@@ -2,7 +2,7 @@ import { encodeAbiParameters, encodeFunctionData, keccak256, type Hex } from 'vi
 
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
 
-import { ComposableCowPollerSchedule } from './composable-cow-poller.constants'
+import type { ComposableCowPollerSchedule } from './composable-cow-poller.types'
 
 export function encodePollFundsCalldata(scheduleId: Hex): Hex {
   return encodeFunctionData({

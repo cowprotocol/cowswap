@@ -2,15 +2,14 @@ import { decodeFunctionData, encodeAbiParameters } from 'viem'
 
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
 
-import {
-  COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
-  type ComposableCowPollerSchedule,
-} from './composable-cow-poller.constants'
+import { COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH } from './composable-cow-poller.constants'
 import {
   encodePollFundsCalldata,
   encodeRegisterFromShedCalldata,
   getComposableCowPollerScheduleId,
 } from './composable-cow-poller.utils'
+
+import type { ComposableCowPollerSchedule } from './composable-cow-poller.types'
 
 const FUNDER = '0x1111111111111111111111111111111111111111' as const
 const HANDLER = '0x2222222222222222222222222222222222222222' as const

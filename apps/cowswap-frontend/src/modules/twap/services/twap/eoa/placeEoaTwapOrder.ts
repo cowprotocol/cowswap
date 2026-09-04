@@ -31,14 +31,15 @@ import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
 import {
   COMPOSABLE_COW_POLLER_ADDRESS,
   COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
-  type ComposableCowPollerSchedule,
 } from '../../../composable-cow-poller/composable-cow-poller.constants'
 import { encodeRegisterFromShedCalldata } from '../../../composable-cow-poller/composable-cow-poller.utils'
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
+import { assertTwapOrderSalt } from '../../../utils/buildTwapOrderParamsStruct'
 import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 
+import type { ComposableCowPollerSchedule } from '../../../composable-cow-poller/composable-cow-poller.types'
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
 const DEFAULT_GAS_LIMIT = 1_000_000n
@@ -233,8 +234,7 @@ export function getEoaTwapOrderShedCalls({
  * After that:
  * 1. Sign cow-shed EIP-712.
  * 2. Send factory executeHooks TX and wait for mining.
- *
- * The caller then continues with CreatingOrder.
+ * 3. Mark CreatingOrder confirmed (setup receipt is already mined).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
@@ -313,7 +313,7 @@ export async function placeEoaTwapOrder({
     authEpoch: COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
     funder: account,
     owner: proxyAddress,
-    salt: paramsStruct.salt as Hex,
+    salt: assertTwapOrderSalt(paramsStruct.salt),
     staticInput: paramsStruct.staticInput as Hex,
   }
 
@@ -387,6 +387,8 @@ export async function placeEoaTwapOrder({
   }
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
+  // Setup receipt is already mined; skip CreatingOrder WaitingForTx to avoid a UI flicker.
+  onSigningStep({ step: EoaTwapSigningSteps.CreatingOrder, phase: EoaTwapSigningPhase.Confirmed })
 
   return { proxyAddress, setupTxHash }
 }
