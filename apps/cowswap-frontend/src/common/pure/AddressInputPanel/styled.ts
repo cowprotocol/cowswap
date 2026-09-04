@@ -1,7 +1,7 @@
 import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components/macro'
 
 export const ReceiverPanel = styled.div`
   display: flex;
@@ -113,10 +113,14 @@ export const ValidCheckmark = styled(SVG)`
   }
 `
 
-export const ReceiverInput = styled.input<{ $error?: boolean }>`
+export const ReceiverInput = styled.input<{ $error?: boolean; $compact?: boolean }>`
   font-size: var(${UI.FONT_SIZE_LARGER});
   letter-spacing: -0.2px;
   flex: 1 1 auto;
+  // Flex items default to min-width: auto, which stops them shrinking below their content's
+  // natural size - e.g. a focused, full-length (untruncated) address next to the checkmark
+  // would push the whole row (and page) wider instead of the input shrinking to fit.
+  min-width: 0;
   transition: color 0.2s step-start;
   color: ${({ $error }) => ($error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
   overflow: hidden;
@@ -145,8 +149,34 @@ export const ReceiverInput = styled.input<{ $error?: boolean }>`
   }
 
   ${Media.upToSmall()} {
-    text-align: center;
-    flex: 0 1 auto;
+    // Only shrink-to-fit and center for a confirmed valid (checkmark-showing) non-EVM address,
+    // whose displayed value is already short/JS-truncated. field-sizing: content grows the box
+    // to fit the full value with no truncation, which is fine there but would blow out the
+    // layout for an invalid or full-length EVM address - so those keep the default left-aligned,
+    // width: 100% input with the standard overflow: hidden + text-overflow: ellipsis above,
+    // which already keeps the checkmark next to the start of the (ellipsis-truncated) text.
+    ${({ $compact }) =>
+      $compact &&
+      css`
+        text-align: center;
+        flex: 0 1 auto;
+        // Shrink to fit the (usually short, truncated) address so ReceiverInputRow's
+        // justify-content: center centers the checkmark together with the address,
+        // instead of centering the address text alone inside a full-width input.
+        width: auto;
+        // field-sizing sizes the box to the actual rendered value, unlike the HTML size
+        // attribute (kept as a fallback below) which only approximates via character count
+        // and can leave the box - and therefore the centered text - wider than the content.
+        field-sizing: content;
+
+        &:focus {
+          // field-sizing: content overrides an explicit width entirely (that's its purpose), so
+          // it must be reset back to the default here - otherwise the box stays sized to the
+          // full, untruncated value shown on focus instead of respecting width: 100% below.
+          field-sizing: fixed;
+          width: 100%;
+        }
+      `}
   }
 `
 
