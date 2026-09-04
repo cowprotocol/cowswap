@@ -70,18 +70,11 @@ test.describe('Market Orders', () => {
         allowances: { [USDC]: INITIAL_USDC_BALANCE },
       })
 
-      await swapPage.goto({ chainId: CHAIN_ID })
-
-      // Typed before selecting tokens, not after: selecting a token with no amount set yet
-      // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
-      // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just hit here
-      // via `selectTokens` instead of a manual token switch. Typing first against whatever's
-      // already selected trips the "amount already set" guard before `selectTokens` runs.
-      // Retyping after the pair is picked matches [CS-103]: the type-first mitigation is not
-      // airtight under CI load, and there is no further currency switch left to lose the amount to.
-      await swapPage.enterSellAmount('1000')
-      await selectTokens(swapPage, 'USDC', 'WETH')
+      // Put the pair in the URL so we don't race `selectTokens` against the default 1-unit fill
+      // (`useSetupTradeAmountsFromUrl`). That race can leave the input showing "1000" while the
+      // live quote is still for 1 USDC, and confirming then posts a 1-unit order (balance 1499
+      // instead of 500 after fill).
+      await swapPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: WETH })
       await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
@@ -89,6 +82,9 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('1000')
 
       await swapPage.waitForQuote()
+      // 1000 USDC * 804 / 1_000_000 = 0.804 WETH. A stale 1-unit quote is ~0.000804 — wait until
+      // the output is clearly the 1000-unit quote before confirming.
+      await expect(swapPage.outputAmount).toHaveValue(/^0\.8/, { timeout: 15_000 })
 
       await mocks.orders.expectOrderToBePosted({
         orderId,
