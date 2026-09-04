@@ -1,13 +1,20 @@
 import { encodeFunctionData, erc20Abi, maxUint256, stringToHex, type Hex, type WalletClient } from 'viem'
 import type { Config } from 'wagmi'
-import { readContract, waitForTransactionReceipt } from 'wagmi/actions'
+import { readContract } from 'wagmi/actions'
 
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD, createCowLogger, isProdLike } from '@cowprotocol/common-utils'
+import {
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
+  createCowLogger,
+  isProdLike,
+  normalizeError,
+} from '@cowprotocol/common-utils'
 import { AccountAddress, SignerLike, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+
+import { t } from '@lingui/core/macro'
 
 import {
   assertFactoryDeployed,
@@ -16,6 +23,10 @@ import {
   EOA_TWAP_SHED_FACTORY_OPTIONS,
 } from 'modules/accountProxy'
 import { shouldZeroApprove } from 'modules/zeroApproval'
+
+import { TransactionNotBroadcastError } from 'common/hooks/useGetReceipt'
+
+import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
 
 import {
   COMPOSABLE_COW_POLLER_ADDRESS,
@@ -361,7 +372,15 @@ export async function placeEoaTwapOrder({
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
 
-  const receipt = await waitForTransactionReceipt(config, { hash: setupTxHash })
+  const receipt = await waitForEoaTwapTxReceipt(config, setupTxHash, chainId).catch((err: unknown) => {
+    const error = normalizeError(err)
+
+    if (error instanceof TransactionNotBroadcastError) {
+      throw new Error(t`TWAP setup was cancelled or not broadcast. Please try again.`)
+    }
+
+    throw error
+  })
 
   if (receipt.status !== 'success') {
     throw new Error('TWAP setup transaction reverted')

@@ -1,8 +1,8 @@
-import { type Address, type Hex, erc20Abi } from 'viem'
+import { type Address, erc20Abi } from 'viem'
 import type { Config } from 'wagmi'
-import { getPublicClient, getTransaction, getTransactionReceipt, readContract, writeContract } from 'wagmi/actions'
+import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, createCowLogger, delay } from '@cowprotocol/common-utils'
+import { calculateGasMargin, createCowLogger } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
@@ -14,28 +14,13 @@ import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { TransactionNotBroadcastError } from 'common/hooks/useGetReceipt'
 
+import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
+
 import { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { EoaTwapApprovalNeeds } from '../../../utils/buildEoaTwapSigningStepPlan'
 
 const log = createCowLogger('EOA TWAP approve')
-
-/**
- * Grace period before treating a missing hash as never-broadcast.
- * Matches FinalizeTxUpdater (`checkOnChainTransaction`) — MetaMask Smart Transactions can return a
- * synthetic hash that is cancelled before any real tx is submitted.
- */
-const NOT_BROADCAST_GRACE_PERIOD_MS: Partial<Record<SupportedChainId, number>> = {
-  [SupportedChainId.MAINNET]: 60_000,
-  [SupportedChainId.GNOSIS_CHAIN]: 30_000,
-  [SupportedChainId.ARBITRUM_ONE]: 15_000,
-  [SupportedChainId.BASE]: 15_000,
-  [SupportedChainId.SEPOLIA]: 30_000,
-}
-const DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS = 30_000
-const APPROVAL_RECEIPT_POLL_MS = 2_000
-/** Upper bound once the tx is known to exist in the mempool / on a lagging RPC. */
-const APPROVAL_RECEIPT_TIMEOUT_MS = 180_000
 
 export interface EnsureEoaTwapSpenderAllowanceParams {
   config: Config
@@ -277,7 +262,7 @@ async function approveEoaSellToken({
   onSubmitted()
 
   try {
-    const txResponse = await waitForEoaTwapApprovalReceipt(config, hash, chainId)
+    const txResponse = await waitForEoaTwapTxReceipt(config, hash, chainId)
 
     return {
       status: txResponse.status,
@@ -428,60 +413,4 @@ async function tryGeneratePermitAllowance({
   })
 
   return null
-}
-
-/**
- * Waits for an approve receipt without hanging forever on MetaMask Smart Transaction
- * synthetic hashes that are never broadcast (see `TransactionNotBroadcastError` / FinalizeTxUpdater).
- */
-async function waitForEoaTwapApprovalReceipt(
-  config: Config,
-  hash: Hex,
-  chainId: SupportedChainId,
-): Promise<{
-  status: 'success' | 'reverted'
-  blockNumber: bigint
-  transactionHash: Hex
-  logs: Array<{ address: Address; topics: Hex[]; data: Hex }>
-}> {
-  const gracePeriodMs = NOT_BROADCAST_GRACE_PERIOD_MS[chainId] ?? DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS
-  const startedAt = Date.now()
-
-  while (Date.now() - startedAt < APPROVAL_RECEIPT_TIMEOUT_MS) {
-    const receipt = await getTransactionReceipt(config, { hash }).catch(() => null)
-
-    if (receipt) {
-      return receipt
-    }
-
-    let txExists = false
-    try {
-      await getTransaction(config, { hash })
-      txExists = true
-    } catch (error: unknown) {
-      const name = (error as { name?: string })?.name
-      if (name === 'TransactionNotFoundError') {
-        txExists = false
-      } else {
-        // Transient RPC failure — keep polling.
-        await delay(APPROVAL_RECEIPT_POLL_MS)
-        continue
-      }
-    }
-
-    const pendingMs = Date.now() - startedAt
-
-    if (!txExists && pendingMs >= gracePeriodMs) {
-      log.warn('Approval tx hash not found on-chain after grace period (likely STX synthetic hash)', {
-        hash,
-        pendingMs,
-        gracePeriodMs,
-      })
-      throw new TransactionNotBroadcastError(hash)
-    }
-
-    await delay(APPROVAL_RECEIPT_POLL_MS)
-  }
-
-  throw new Error(t`Timed out waiting for the approval transaction. Please try again.`)
 }
