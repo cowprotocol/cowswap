@@ -5,11 +5,19 @@ import {
   getCurrentChainIdFromUrl,
   isBarnBackendEnv,
 } from '@cowprotocol/common-utils'
-import { TradingSdk } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SwapAdvancedSettings, TradingSdk } from '@cowprotocol/cow-sdk'
 
 import { orderBookApi, prodOrderBookApi } from '../cowSdk'
 
 const chainId = getCurrentChainIdFromUrl()
+
+// CoW Swap prefers a fillable quote over a higher but unverifiable one, so every quote we may place
+// an order from asks for `verified`. `optimal` skips simulation (cowprotocol/services#4805) and the
+// SDK still defaults to it, so call sites have to be explicit. The tradeQuote polling path sets its
+// own price quality because it also fetches `fast` quotes.
+export const QUOTE_SETTINGS: SwapAdvancedSettings = {
+  quoteRequest: { priceQuality: PriceQuality.VERIFIED },
+}
 
 export const tradingSdk = new TradingSdk(
   {
