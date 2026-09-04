@@ -1,10 +1,10 @@
 import { useCallback, useRef } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
-import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol, useDoesSymbolResolveToToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -167,15 +167,29 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
+  const doesSymbolResolveToToken = useDoesSymbolResolveToToken()
 
   return useCallback(
     (currency: Currency | null): string | null => {
       if (!currency) return null
 
-      return currency instanceof LpToken || areThereTokensWithSameSymbol(currency.symbol, currency.chainId)
-        ? (currency as Token).address
-        : currency.symbol || null
+      if (currency instanceof LpToken) return (currency as Token).address
+
+      const symbol = currency.symbol || null
+
+      // Native currencies are modelled as tokens with a fixed 0xeee... address, which is not a usable URL id
+      if (getIsNativeToken(currency)) return symbol
+
+      const { address, chainId } = currency as Token
+
+      // Prefer the address when the symbol is ambiguous, and also when it does not resolve back to this
+      // exact token: a token that is not active yet, or whose address is active under a different
+      // symbol, is unreachable by symbol and would re-trigger the import prompt forever.
+      const isSymbolUsable =
+        !areThereTokensWithSameSymbol(symbol, chainId) && doesSymbolResolveToToken(symbol, address, chainId)
+
+      return isSymbolUsable ? symbol : address
     },
-    [areThereTokensWithSameSymbol],
+    [areThereTokensWithSameSymbol, doesSymbolResolveToToken],
   )
 }

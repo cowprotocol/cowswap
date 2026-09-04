@@ -51,9 +51,9 @@ export const Content = styled.div`
 `
 
 export const Title = styled.h2`
-  ${fontFamilyBrand}
+  ${fontFamilyBrand};
   color: inherit;
-  font-size: 34px;
+  font-size: 28px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   hyphens: auto;
   line-height: 1.2;
