@@ -997,14 +997,19 @@ export const MenuBar = (props: MenuBarProps) => {
         </RightAligned>
 
         {isMobile && (
-          <MobileMenuTrigger ref={mobileMenuTriggerRef} mobileMode={isMobile} onClick={handleMobileMenuToggle}>
+          <MobileMenuTrigger
+            ref={mobileMenuTriggerRef}
+            data-testid="mobile-menu-trigger"
+            mobileMode={isMobile}
+            onClick={handleMobileMenuToggle}
+          >
             <SVG src={isMobileMenuOpen ? svgXSrc : svgMenuHamburgerSrc} />
           </MobileMenuTrigger>
         )}
       </MenuBarInner>
 
       {isMobile && isMobileMenuOpen && (
-        <NavItems mobileMode={isMobile} ref={mobileMenuRef}>
+        <NavItems data-testid="mobile-menu" mobileMode={isMobile} ref={mobileMenuRef}>
           <div>
             {navItems.map((item, index) => (
               <NavItem

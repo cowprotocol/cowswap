@@ -4,14 +4,30 @@ import type { Page, Locator } from '@playwright/test'
 export class HeaderPage {
   readonly page: Page
   readonly header: Locator
+  readonly mobileMenu: Locator
+  readonly mobileMenuTradeItem: Locator
+  readonly mobileMenuTrigger: Locator
   readonly networkDialog: Locator
   readonly snackbarPopup: Locator
 
   constructor(page: Page) {
     this.page = page
     this.header = page.locator('#cowswap-app-header')
+    this.mobileMenu = this.header.getByTestId('mobile-menu')
+    this.mobileMenuTradeItem = this.mobileMenu.getByText('Trade', { exact: true })
+    this.mobileMenuTrigger = this.header.getByTestId('mobile-menu-trigger')
     this.networkDialog = page.getByRole('dialog')
     this.snackbarPopup = page.locator('.snackbar-popup').first()
+  }
+
+  async closeMobileMenu(): Promise<void> {
+    await this.mobileMenuTrigger.click()
+    await this.mobileMenu.waitFor({ state: 'hidden' })
+  }
+
+  async openMobileMenu(): Promise<void> {
+    await this.mobileMenuTrigger.click()
+    await this.mobileMenu.waitFor({ state: 'visible' })
   }
 
   /**
