@@ -18,16 +18,21 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
-import { getSolanaMockQuote } from './getSolanaMockQuote'
+import { getSolanaQuote } from './getSolanaQuote.service'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
+// Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
+// FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
+// a later one) could overwrite it in TradeQuoteManager.
+const getFastSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
+const getOptimalSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
 
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
@@ -36,6 +41,7 @@ export async function fetchAndProcessQuote(
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
+  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -58,17 +64,6 @@ export async function fetchAndProcessQuote(
 
     console.error(`[fetchAndProcessQuote]:: ${errorLocation} error`, parsedError)
 
-    // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet, so swallow
-    // Solana quote errors instead of surfacing them (`reset` just clears the loading spinner). The swap
-    // path serves a mock quote (see `fetchSwapQuote`), so this mainly covers any other Solana error.
-    // Remove once real Solana quotes are wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
-    if (IS_SOLANA_ENABLED && isSolanaChain(chainId)) {
-      console.warn('[fetchAndProcessQuote]:: Solana quote error ignored (no Solana quote backend yet)', parsedError)
-      tradeQuoteManager.reset()
-
-      return
-    }
-
     tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
   }
 
@@ -77,7 +72,14 @@ export async function fetchAndProcessQuote(
   if (isBridge) {
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
-    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    await fetchSwapQuote(
+      fetchParams,
+      quoteParams,
+      advancedSettings,
+      tradeQuoteManager,
+      processQuoteError,
+      solanaSigningContext,
+    )
   }
 }
 
@@ -133,18 +135,30 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
+  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
-  // TODO(solana): temporary, tied to IS_SOLANA_ENABLED. There is no Solana quote backend yet — serve a
-  // mock quote so the trade-widget flow can reach the Approve step. Remove once real Solana quotes are
-  // wired — surfaces on the IS_SOLANA_ENABLED cleanup grep.
+  const { priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    tradeQuoteManager.onResponse(getSolanaMockQuote(quoteParams), null, fetchParams, quoteParams)
+    const solanaRequest = isOptimalQuote
+      ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
+      : getFastSolanaQuote(quoteParams, solanaSigningContext)
+
+    try {
+      const { cancelled, data } = await solanaRequest
+
+      if (cancelled) {
+        return
+      }
+
+      tradeQuoteManager.onResponse(data, null, fetchParams, quoteParams)
+    } catch (error) {
+      processQuoteError('fetchSwapQuote', error)
+    }
 
     return
   }
-
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
   const request = isOptimalQuote
     ? getOptimalQuote(quoteParams, advancedSettings)
