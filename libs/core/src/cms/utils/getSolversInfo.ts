@@ -5,14 +5,15 @@ import { querySerializer } from './querySerializer'
 
 import { DEFAULT_CMS_REQUEST_TTL } from '../consts'
 import { CmsSolversInfo } from '../types'
-import { getCmsClient } from '../utils'
+import { getProdCmsClient } from '../utils'
 
 /**
  * Request parameters are static, hence the cache key is also static
  */
 const CACHE_KEY = 'solvers-info'
 
-const cache = new TTLCache<CmsSolversInfo>('cmsSolversInfo:v0', true, DEFAULT_CMS_REQUEST_TTL)
+// v1: invalidates responses cached from the barn CMS, which returns solvers without `solver_networks`
+const cache = new TTLCache<CmsSolversInfo>('cmsSolversInfo:v1', true, DEFAULT_CMS_REQUEST_TTL)
 
 export async function getSolversInfo(): Promise<CmsSolversInfo> {
   const cached = cache.get(CACHE_KEY)
@@ -28,7 +29,7 @@ export async function getSolversInfo(): Promise<CmsSolversInfo> {
 }
 
 async function fetchSolversInfo(): Promise<CmsSolversInfo | null> {
-  const cmsClient = getCmsClient()
+  const cmsClient = getProdCmsClient()
 
   return cmsClient
     .GET('/solvers', {
