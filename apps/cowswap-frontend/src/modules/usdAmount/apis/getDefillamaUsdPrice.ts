@@ -1,10 +1,8 @@
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { fetchWithRateLimit, FractionUtils } from '@cowprotocol/common-utils'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
-
-import { fetchWithRateLimit } from 'common/utils/fetch'
 
 import { RateLimitError, UnknownCurrencyError, UnsupportedPlatformError } from './errors'
 

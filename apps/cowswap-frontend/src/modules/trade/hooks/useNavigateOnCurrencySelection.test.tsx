@@ -1,6 +1,6 @@
-import { TokenWithLogo, USDC, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo, USDC, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAINS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
+import { useAreThereTokensWithSameSymbol, useDoesSymbolResolveToToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
@@ -16,6 +16,7 @@ import { useTradeState } from './useTradeState'
 // Mock dependencies
 jest.mock('@cowprotocol/tokens', () => ({
   useAreThereTokensWithSameSymbol: jest.fn(),
+  useDoesSymbolResolveToToken: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -41,6 +42,9 @@ jest.mock('./useTradeState', () => ({
 const mockedUseAreThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol as jest.MockedFunction<
   typeof useAreThereTokensWithSameSymbol
 >
+const mockedUseDoesSymbolResolveToToken = useDoesSymbolResolveToToken as jest.MockedFunction<
+  typeof useDoesSymbolResolveToToken
+>
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeNavigate = useTradeNavigate as jest.MockedFunction<typeof useTradeNavigate>
@@ -55,9 +59,16 @@ const USDC_MAINNET = USDC[SupportedChainId.MAINNET]
 const WETH_GNOSIS = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 const USDC_GNOSIS = USDC[SupportedChainId.GNOSIS_CHAIN]
 
+// Assigned by setupDefaultMocks; defaults to "the symbol resolves back to this token", which is the
+// case for any token already on an active list. Override per test to exercise the fallback.
+let mockDoesSymbolResolveToToken: jest.Mock
+
 function setupDefaultMocks(mockNavigate: jest.Mock, mockAreThereTokensWithSameSymbol: jest.Mock): void {
   mockedUseTradeNavigate.mockReturnValue(mockNavigate)
   mockedUseAreThereTokensWithSameSymbol.mockReturnValue(mockAreThereTokensWithSameSymbol)
+
+  mockDoesSymbolResolveToToken = jest.fn().mockReturnValue(true)
+  mockedUseDoesSymbolResolveToToken.mockReturnValue(mockDoesSymbolResolveToToken)
 
   mockedUseWalletInfo.mockReturnValue({
     chainId: SupportedChainId.MAINNET,
@@ -110,6 +121,59 @@ describe('useNavigateOnCurrencySelection - basic', () => {
         SupportedChainId.MAINNET,
         {
           inputCurrencyId: 'DAI',
+          outputCurrencyId: USDC_MAINNET.symbol,
+        },
+        undefined,
+      )
+    })
+
+    // Regression: the Coinbase RWA list ships AAPL at an address CoinGecko already ships as AAPLC, so
+    // the symbol never resolves back and a symbol URL re-triggers the import prompt in a loop
+    it('should use the address when the symbol does not resolve back to the token', () => {
+      // only AAPL is unresolvable; the untouched WETH side must keep its symbol
+      mockDoesSymbolResolveToToken.mockImplementation((symbol: string | null) => symbol !== 'AAPL')
+
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+
+      const address = '0xb200000000000000000000C2e324d24d7eEcd1fb'
+      const newToken = new TokenWithLogo(
+        undefined,
+        SupportedChainId.MAINNET,
+        address,
+        18,
+        'AAPL',
+        'Apple (Coinbase Tokenized Stocks)',
+      )
+
+      act(() => {
+        result.current(Field.OUTPUT, newToken)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.MAINNET,
+        {
+          inputCurrencyId: WETH_MAINNET.symbol,
+          outputCurrencyId: address,
+        },
+        undefined,
+      )
+    })
+
+    it('should keep the symbol for native currencies, which have no address to fall back to', () => {
+      // false even for the native symbol: the hook must not consult this for native currencies
+      mockDoesSymbolResolveToToken.mockImplementation((symbol: string | null) => symbol === USDC_MAINNET.symbol)
+
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+      const native = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+
+      act(() => {
+        result.current(Field.INPUT, native)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.MAINNET,
+        {
+          inputCurrencyId: native.symbol,
           outputCurrencyId: USDC_MAINNET.symbol,
         },
         undefined,

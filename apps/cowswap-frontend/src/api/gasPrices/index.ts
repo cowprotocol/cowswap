@@ -1,10 +1,9 @@
 import { GAS_FEE_ENDPOINTS } from '@cowprotocol/common-const'
+import { fetchWithRateLimit } from '@cowprotocol/common-utils'
 import { isEvmChain, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { wagmiAdapter } from '@cowprotocol/wallet'
 
 import { getGasPrice } from '@wagmi/core'
-
-import { fetchWithRateLimit } from 'common/utils/fetch'
 
 const fetchRateLimited = fetchWithRateLimit({
   rateLimit: {

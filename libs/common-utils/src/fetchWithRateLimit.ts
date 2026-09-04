@@ -29,7 +29,7 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
   numOfAttempts: 10,
   maxDelay: Infinity,
   jitter: 'none',
-  retry: (err) => {
+  retry: (err: { rawApiError?: { status: number } }) => {
     if (err?.rawApiError?.status) {
       return STATUS_CODES_TO_RETRY.includes(err.rawApiError.status)
     }
@@ -47,18 +47,13 @@ const DEFAULT_BACKOFF_OPTIONS: BackoffOptions = {
 // Types reference: https://stackoverflow.com/questions/55059436/typescript-conditional-return-type-based-on-string-argument
 export function fetchWithRateLimit(
   params?: FetchWithRateLimit,
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-): <T extends (RequestInfo | URL) | (() => Promise<any>)>(
+): <T extends (RequestInfo | URL) | (() => Promise<unknown>)>(
   input: T,
   init?: RequestInit,
 ) => T extends () => infer R ? R : Promise<Response>
-export function fetchWithRateLimit(params?: FetchWithRateLimit): (
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  input: RequestInfo | URL | (() => Promise<any>),
-  init?: RequestInit,
-) => typeof input extends () => infer R ? R : Promise<Response> {
+export function fetchWithRateLimit(
+  params?: FetchWithRateLimit,
+): (input: RequestInfo | URL | (() => Promise<unknown>), init?: RequestInit) => Promise<unknown> {
   const { backoff, rateLimit } = params || {}
 
   // optionally rate limit
@@ -80,12 +75,3 @@ export function fetchWithRateLimit(params?: FetchWithRateLimit): (
       { ...DEFAULT_BACKOFF_OPTIONS, ...backoff },
     )
 }
-
-/**
- *
- * @param input Request info (as in the fetch method)
- * @param init Request options (as in fetch method)
- * @param backoffOptions Backoff parameters. By default It will wait a maximum of ~102s. Wait time is 100ms * 2**(attenmpt). Not more than 10 attempts
- * @returns A promise of the request
- */
-export const fetchWithBackoff = fetchWithRateLimit()
