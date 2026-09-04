@@ -2,7 +2,7 @@ import type { PropsWithChildren, ReactElement } from 'react'
 
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId, type UID } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
-import type { QueryPage, TwapPartOrder } from '@cowprotocol/sdk-composable'
+import type { QueryPage, TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-composable'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
@@ -53,21 +53,23 @@ const parent = parseOrder({
   outputToken,
 } satisfies Order)
 
-function makePartPage(uid: string): QueryPage<TwapPartOrder> {
+function makePartPage(uid: string, status: TwapPartOrderStatus = 'fulfilled'): QueryPage<TwapPartOrder> {
+  const executedSellAmount = status === 'fulfilled' ? 10n : 0n
+
   return {
     totalCount: 1,
     items: [
       {
         orderUid: uid,
-        status: 'fulfilled',
+        status,
         sellAmount: 10n,
         buyAmount: 5n,
         feeAmount: 0n,
         validTo: 2_000_000_000,
         createdAt: 1_000_000_000,
-        executedSellAmount: 10n,
-        executedBuyAmount: 6n,
-        executedFeeAmount: 1n,
+        executedSellAmount,
+        executedBuyAmount: status === 'fulfilled' ? 6n : 0n,
+        executedFeeAmount: status === 'fulfilled' ? 1n : 0n,
       },
     ],
   }
@@ -129,6 +131,10 @@ describe('useEoaTwapPartOrders', () => {
       1,
       ORDERS_TABLE_PAGE_SIZE,
     )
+    expect(result.current.orders[0]?.composableCowInfo).toMatchObject({
+      parentId: 'event',
+      twapOrderHash: 'hash',
+    })
 
     rerender({ parentOrder: { ...parent }, twapOrder })
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(1)
@@ -217,5 +223,16 @@ describe('useEoaTwapPartOrders', () => {
 
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('fulfilled-parent-part'))
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('shows an open part as cancelled when its parent is cancelled', async () => {
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('open-part', 'open'))
+
+    const { result } = renderHook(
+      () => useEoaTwapPartOrders({ ...makeTwapOrder(), status: TwapOrderStatus.Cancelled }, parent, 1, true),
+      { wrapper: SwrTestProvider },
+    )
+
+    await waitFor(() => expect(result.current.orders[0]?.status).toBe(OrderStatus.CANCELLED))
   })
 })
