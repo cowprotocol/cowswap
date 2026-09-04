@@ -4,7 +4,8 @@ import { PathMatch, useMatch } from 'react-router'
 
 import { Routes, TRADE_WIDGET_PREFIX } from 'common/constants/routes'
 
-import { TradeType, TradeTypeInfo } from '../types'
+import { TradeType } from '../consts'
+import { TradeTypeInfo } from '../types'
 
 export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
   const swapMatch = !!useMatchTradeRoute('swap')

@@ -8,7 +8,7 @@ import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
 import { ChainsToSelectState } from '../../../../types'
