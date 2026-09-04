@@ -1883,6 +1883,10 @@ msgstr "Last updated"
 #~ msgid "Save and verify code"
 #~ msgstr "Save and verify code"
 
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
+msgid "TWAP setup was cancelled or not broadcast. Please try again."
+msgstr "TWAP setup was cancelled or not broadcast. Please try again."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
 msgstr "Eligible trade"
@@ -4545,6 +4549,10 @@ msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing 
 msgid "Wrap <0/> and Swap"
 msgstr "Wrap <0/> and Swap"
 
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/waitForEoaTwapTxReceipt.utils.ts
+msgid "Timed out waiting for the transaction. Please try again."
+msgstr "Timed out waiting for the transaction. Please try again."
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "View full consent terms ↗"
 #~ msgstr "View full consent terms ↗"
@@ -4558,8 +4566,8 @@ msgid "This fee helps pay for maintenance & improvements to the trade experience
 msgstr "This fee helps pay for maintenance & improvements to the trade experience"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
-msgid "Timed out waiting for the approval transaction. Please try again."
-msgstr "Timed out waiting for the approval transaction. Please try again."
+#~ msgid "Timed out waiting for the approval transaction. Please try again."
+#~ msgstr "Timed out waiting for the approval transaction. Please try again."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "No. of parts"
