@@ -90,9 +90,11 @@ describe('costs & fees breakdown (integration)', () => {
 
     fireEvent.click(screen.getByText('[+] Show more'))
     expect(screen.getByText('Network costs:')).not.toBeNull()
-    expect(screen.getByText('Volume fee:')).not.toBeNull()
-    expect(screen.getByText('Price improvement fee:')).not.toBeNull()
-    // The zero-amount fee (position 2) is dropped, so the volume fee is not numbered.
-    expect(screen.queryByText(/Volume fee \(/)).toBeNull()
+    expect(screen.getByText('Protocol fee:')).not.toBeNull()
+    expect(screen.getByText('DAO price improvement share:')).not.toBeNull()
+    // The order declares no partner fee, so both charged policies are the protocol's own.
+    expect(screen.queryByText(/^Partner /)).toBeNull()
+    // The zero-amount fee (position 2) is dropped, so no label is left repeating.
+    expect(screen.queryByText(/Protocol fee \(/)).toBeNull()
   })
 })
