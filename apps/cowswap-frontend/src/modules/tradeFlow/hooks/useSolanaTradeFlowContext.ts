@@ -90,9 +90,9 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
 
   return (
     useSWR(
-      isReady
+      isReady && account
         ? [
-            account as string,
+            account,
             chainId,
             tradeQuoteState.quote as QuoteAndPost,
             inputAmount as CurrencyAmount<Currency>,
