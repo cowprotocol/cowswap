@@ -6,7 +6,9 @@ import { isSupportedPermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'

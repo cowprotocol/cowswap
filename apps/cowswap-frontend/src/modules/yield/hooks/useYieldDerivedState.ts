@@ -3,7 +3,9 @@ import { useMemo } from 'react'
 
 import { INITIAL_ALLOWED_SLIPPAGE_PERCENT } from '@cowprotocol/common-const'
 
-import { TradeType, useBuildTradeDerivedState } from 'modules/trade'
+import { useBuildTradeDerivedState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { YieldDerivedState, yieldDerivedStateAtom, yieldRawStateAtom } from '../state/yieldRawStateAtom'
 

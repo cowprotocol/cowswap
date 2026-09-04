@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import NextLink from 'next/link'
 import styled, { css } from 'styled-components/macro'
@@ -44,7 +44,7 @@ const topicButtonStyles = css<LinkProps>`
   padding: ${({ padding }) => padding || '16px 24px'};
   margin: ${({ margin }) => margin || 'initial'};
   font-size: ${({ fontSize }) => fontSize || 21}px;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: ${({ color, disabled }) =>
     disabled
       ? `color-mix(in srgb, var(${UI.COLOR_NEUTRAL_10}) 50%, transparent)`
@@ -80,7 +80,7 @@ const heroButtonStyles = css<LinkProps>`
   display: inline-block;
   padding: 16px 24px;
   font-size: 27px;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_98})`};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_10})`};
   text-decoration: none;
@@ -100,7 +100,7 @@ const sectionTitleButtonStyles = css<LinkProps>`
   display: inline-block;
   padding: 16px 24px;
   font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_98})`};
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_10})`};
   text-decoration: none;

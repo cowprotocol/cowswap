@@ -12,14 +12,14 @@ import { useLocation } from 'react-router'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
+import { TradeUrlParams, addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 
 import * as styledEl from './styled'
 
 import { useGetTradeUrlParams } from '../../hooks/useGetTradeUrlParams'
 import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
-import { getDefaultTradeRawState, TradeUrlParams } from '../../types'
-import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameterizeTradeRoute'
+import { getDefaultTradeRawState } from '../../types'
 
 interface MenuItemConfig {
   route: RoutesValues

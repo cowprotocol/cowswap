@@ -91,6 +91,7 @@ interface NotificationSettingsPopoverProps {
   show: boolean
   onDismiss: Command
   containerRef: RefObject<HTMLElement | null>
+  contentRef?: RefObject<HTMLDivElement | null>
 }
 
 export function NotificationSettingsPopover({
@@ -98,6 +99,7 @@ export function NotificationSettingsPopover({
   show,
   onDismiss,
   containerRef,
+  contentRef,
 }: NotificationSettingsPopoverProps): ReactNode {
   const primaryButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -125,6 +127,7 @@ export function NotificationSettingsPopover({
 
   const popoverContent = (
     <PopoverContent
+      ref={contentRef}
       role="dialog"
       aria-label={t`Trade alert settings info`}
       aria-describedby="notification-settings-description"
