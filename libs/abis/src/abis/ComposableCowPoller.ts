@@ -89,10 +89,10 @@ export default [
   {
     inputs: [
       { internalType: 'address', name: 'handler', type: 'address' },
-      { internalType: 'uint96', name: 'authEpoch', type: 'uint96' },
       { internalType: 'address', name: 'funder', type: 'address' },
       { internalType: 'address', name: 'owner', type: 'address' },
       { internalType: 'bytes32', name: 'salt', type: 'bytes32' },
+      { internalType: 'uint96', name: 'authEpoch', type: 'uint96' },
     ],
     name: 'revokeFromShed',
     outputs: [{ internalType: 'bytes32', name: 'id', type: 'bytes32' }],
