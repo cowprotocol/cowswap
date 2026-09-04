@@ -1,36 +1,65 @@
 import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
+export interface BuildEoaTwapSigningStepPlanParams {
+  /** EOA => ComposableCowPoller allowance, covering the full TWAP sell pulled just in time. */
+  poller: EoaTwapApprovalNeeds
+}
+
 export interface EoaTwapApprovalNeeds {
   needsApproval: boolean
   needsZeroApproval: boolean
+
+  /**
+   * When true and {@link needsApproval}, emit a permit step and skip zero-approve.
+   * Used for the Poller when the sell token supports EIP-2612 / Dai-like permit.
+   */
+  canUsePermit?: boolean
+}
+
+interface AppendSpenderApprovalStepIds {
+  zero: EoaTwapSigningSteps
+  approve: EoaTwapSigningSteps
+  /** When set, used instead of zero/approve if {@link EoaTwapApprovalNeeds.canUsePermit}. */
+  permit?: EoaTwapSigningSteps
 }
 
 /**
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
- * - (Optional) Zero approval step
- * - (Optional) Approval step
- * - (Required) Setup step
- * - (Required) Funding order step
- * - (Required) Creating order step
+ * - (Optional) {@link EoaTwapSigningSteps.PermitPoller}, or {@link EoaTwapSigningSteps.ZeroApprovePoller} /
+ *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
+ * - (Required) {@link EoaTwapSigningSteps.TwapSetup}: cow-shed EIP-712 + factory TX
+ *   (optional EOA => Poller permit calldata + `registerFromShed + optional shed => Vault Relayer approve + ComposableCoW create)
+ * - (Required) {@link EoaTwapSigningSteps.CreatingOrder}: confirm setup TX / activate TWAP
  *
- * Note that approval steps are included only when needed at plan/build time based on the `needs` param,
- * which accounts for TWAP sell amount + funding buffer.
- * @see `getEoaTwapPrePlacementAmountToCover`
+ * Approval steps are omitted when allowance is already sufficient.
  */
-export function buildEoaTwapSigningStepPlan(needs: EoaTwapApprovalNeeds): EoaTwapSigningSteps[] {
+export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepPlanParams): EoaTwapSigningSteps[] {
   const steps: EoaTwapSigningSteps[] = []
 
-  // TODO: Handle permit?
+  steps.push(
+    ...getSpenderApprovalSteps(poller, {
+      zero: EoaTwapSigningSteps.ZeroApprovePoller,
+      approve: EoaTwapSigningSteps.ApprovePoller,
+      permit: EoaTwapSigningSteps.PermitPoller,
+    }),
+  )
 
-  if (needs.needsZeroApproval) {
-    steps.push(EoaTwapSigningSteps.ZeroApprove)
-  }
-
-  if (needs.needsApproval) {
-    steps.push(EoaTwapSigningSteps.ApproveOrPermit)
-  }
-
-  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.FundingOrder, EoaTwapSigningSteps.CreatingOrder)
+  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.CreatingOrder)
 
   return steps
+}
+
+function getSpenderApprovalSteps(
+  needs: EoaTwapApprovalNeeds,
+  stepIds: AppendSpenderApprovalStepIds,
+): EoaTwapSigningSteps[] {
+  if (!needs.needsApproval) {
+    return []
+  }
+
+  if (needs.canUsePermit && stepIds.permit) {
+    return [stepIds.permit]
+  }
+
+  return needs.needsZeroApproval ? [stepIds.zero, stepIds.approve] : [stepIds.approve]
 }
