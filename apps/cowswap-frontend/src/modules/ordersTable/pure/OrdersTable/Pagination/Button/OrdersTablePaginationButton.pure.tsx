@@ -4,6 +4,7 @@ import { ArrowButton, PageButtonLink } from './OrdersTablePaginationButton.style
 
 interface PageNavigationButtonProps {
   index: number
+  ariaLabel: string
   getPageUrl?(index: number): Partial<{ pathname: string; search: string }>
   goToPage(index: number): void
   children: ReactNode
@@ -12,17 +13,29 @@ interface PageNavigationButtonProps {
 
 export function PageNavigationButton({
   index,
+  ariaLabel,
   active = false,
   getPageUrl,
   goToPage,
   children,
 }: PageNavigationButtonProps): ReactNode {
   return getPageUrl ? (
-    <PageButtonLink to={getPageUrl(index)} $active={active}>
+    <PageButtonLink
+      to={getPageUrl(index)}
+      $active={active}
+      aria-current={active ? 'page' : undefined}
+      aria-label={ariaLabel}
+    >
       {children}
     </PageButtonLink>
   ) : (
-    <ArrowButton onClick={() => goToPage(index)} $active={active}>
+    <ArrowButton
+      type="button"
+      onClick={() => goToPage(index)}
+      $active={active}
+      aria-current={active ? 'page' : undefined}
+      aria-label={ariaLabel}
+    >
       {children}
     </ArrowButton>
   )

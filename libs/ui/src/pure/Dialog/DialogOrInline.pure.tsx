@@ -18,16 +18,16 @@ export function DialogOrInline({ children, isDialog, ...props }: DialogOrInlineP
   const onOpenChangeRef = useLatestRef(props.onOpenChange)
 
   useEffect(() => {
-    const closeDrawer = onOpenChangeRef.current
+    const onOpenChange = onOpenChangeRef.current
 
-    // If we got from "drawer" to "inline" (we make the window wider),
-    // we close it, so that if we resize the window back down, the drawer is not already opened:
     if (!isDialog) {
-      closeDrawer(false)
+      // Inline callers render children regardless of `isOpen`. Close so a later
+      // resize into the dialog branch does not reopen a drawer the user never opened.
+      onOpenChange(false)
     }
 
     return () => {
-      closeDrawer(false)
+      onOpenChange(false)
     }
   }, [onOpenChangeRef, isDialog])
 

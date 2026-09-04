@@ -80,7 +80,9 @@ export const SecondaryWrapper = styled.div.attrs({
   box-shadow: none;
   position: relative;
   padding: 0;
-  overflow: hidden;
+  /* In the orders dialog, Modal.Root is the scrollport for sticky ModalHeader.
+     overflow:hidden here would trap sticky and can also clip scrolling. */
+  overflow: ${({ $inDrawer }) => ($inDrawer ? 'visible' : 'hidden')};
 
   ${({ $inDrawer }) =>
     $inDrawer

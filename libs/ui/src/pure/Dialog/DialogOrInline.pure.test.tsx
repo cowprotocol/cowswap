@@ -115,6 +115,26 @@ describe('DialogOrInline', () => {
     expect(onOpenChange).toHaveBeenCalledWith(false)
   })
 
+  it('does not open after switching from the inline branch to the dialog branch', () => {
+    const { onOpenChange, rerender } = renderDialogOrInline(false, false)
+
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+    onOpenChange.mockClear()
+
+    rerender(
+      <DialogOrInline isOpen={false} isDialog={true} onOpenChange={onOpenChange}>
+        <div>orders</div>
+      </DialogOrInline>,
+    )
+
+    // cleanup of the inline effect closes; the dialog branch must not auto-open
+    // (inline callers render unconditionally, so "was inline" is not "user had this open")
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+    expect(onOpenChange).not.toHaveBeenCalledWith(true)
+    expect(screen.getByTestId('dialog')).toBeTruthy()
+    expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('false')
+  })
+
   it('closes on unmount so a later remount does not reopen the dialog', () => {
     const { onOpenChange, unmount } = renderDialogOrInline(true, true)
 

@@ -3,7 +3,7 @@ import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -45,7 +45,7 @@ export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
   const params = useParams()
-  const { i18n, t } = useLingui()
+  const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -67,6 +67,10 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
+  const handleOrdersTableDrawerClose = useCallback(() => {
+    setOrdersTableDrawerOpen(false)
+  }, [setOrdersTableDrawerOpen])
+
   const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
@@ -74,6 +78,8 @@ export function AdvancedOrdersPage(): ReactNode {
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
   }
+
+  // TODO: Do not use SecondaryWrapper in the dialog branch
 
   return (
     <HydrateAtom atom={advancedOrdersDerivedStateAtom} state={advancedOrdersDerivedStateToFill}>
@@ -109,17 +115,13 @@ export function AdvancedOrdersPage(): ReactNode {
             onOpenChange={handleOrdersTableDrawerOpenChange}
           >
             <Modal.Root className="trade-orders-table">
-              {isUpToLarge ? (
-                <ModalHeader
-                  sticky
-                  title={t`TWAP orders`}
-                  titleAs={Dialog.Title}
-                  onClose={() => setOrdersTableDrawerOpen(false)}
-                />
-              ) : null}
               <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
                 <Suspense fallback={<Loading />}>
-                  <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                  <OrdersTableWidget
+                    orderType={TabOrderTypes.ADVANCED}
+                    onClose={handleOrdersTableDrawerClose}
+                    isDialog={isUpToLarge}
+                  />
                 </Suspense>
               </styledEl.SecondaryWrapper>
             </Modal.Root>

@@ -2,9 +2,8 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
-import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
@@ -20,7 +19,6 @@ const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 export function RegularLimitOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.LIMIT)
 
-  const { t } = useLingui()
   const isUnlocked = useIsWidgetUnlocked()
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
   const { hideOrdersTable } = useInjectedWidgetParams()
@@ -35,6 +33,12 @@ export function RegularLimitOrdersPage(): ReactNode {
     },
     [setOrdersTableDrawerOpen],
   )
+
+  const handleOrdersTableDrawerClose = useCallback(() => {
+    setOrdersTableDrawerOpen(false)
+  }, [setOrdersTableDrawerOpen])
+
+  // TODO: Do not use SecondaryWrapper in the dialog branch
 
   return (
     <styledEl.PageWrapper
@@ -54,18 +58,14 @@ export function RegularLimitOrdersPage(): ReactNode {
           onOpenChange={handleOrdersTableDrawerOpenChange}
         >
           <Modal.Root className="trade-orders-table">
-            {isUpToLarge ? (
-              <ModalHeader
-                sticky
-                title={t`Limit orders`}
-                titleAs={Dialog.Title}
-                onClose={() => setOrdersTableDrawerOpen(false)}
-              />
-            ) : null}
             <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
               {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
               <Suspense fallback={<Loading />}>
-                <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />
+                <OrdersTableWidget
+                  orderType={TabOrderTypes.LIMIT}
+                  onClose={handleOrdersTableDrawerClose}
+                  isDialog={isUpToLarge}
+                />
               </Suspense>
             </styledEl.SecondaryWrapper>
           </Modal.Root>

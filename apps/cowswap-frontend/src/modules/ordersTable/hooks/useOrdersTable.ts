@@ -3,11 +3,7 @@ import { useLayoutEffect } from 'react'
 
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
-import {
-  DEFAULT_ORDERS_TABLE_FILTERS,
-  ordersTableFiltersAtom,
-} from 'modules/ordersTable/state/filters/ordersTableFilters.atom'
-
+import { DEFAULT_ORDERS_TABLE_FILTERS, ordersTableFiltersAtom } from '../state/filters/ordersTableFilters.atom'
 import { ordersTableOrderTypeAtom } from '../state/ordersTableOrderType.atom'
 
 export function useOrdersTable(orderType: TabOrderTypes): void {
@@ -19,5 +15,5 @@ export function useOrdersTable(orderType: TabOrderTypes): void {
   useLayoutEffect(() => {
     setOrdersTableOrderType(orderType)
     setOrdersTableFilters(DEFAULT_ORDERS_TABLE_FILTERS)
-  }, [orderType, setOrdersTableOrderType, setOrdersTableFilters])
+  }, [orderType, setOrdersTableFilters, setOrdersTableOrderType])
 }

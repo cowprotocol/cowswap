@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-export const PaginationBox = styled.div`
+export const PaginationBox = styled.nav`
   width: 100%;
   display: flex;
   overflow-x: auto;

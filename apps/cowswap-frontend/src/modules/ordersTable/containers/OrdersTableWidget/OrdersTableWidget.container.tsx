@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useLayoutEffect, useMemo } from 'react'
+import { ReactNode, useCallback, useLayoutEffect, useMemo, useRef } from 'react'
 
-import { useStateWithDeferredValue } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useStateWithDeferredValue } from '@cowprotocol/common-hooks'
+import { Dialog, Media, Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
@@ -27,51 +28,65 @@ import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartial
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
 import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
+import { OrdersTableFilters, OrderTableItem } from '../../state/ordersTable.types'
 import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
 import { HistoryStatusFilter } from '../../utils/getFilteredOrders'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
+import { MobileOrders } from '../MobileOrders/MobileOrders.container'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu/MultipleCancellationMenu.container'
 import { OrdersReceiptModal } from '../OrdersReceiptModal/OrdersReceiptModal.container'
 
-function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
-  const start = (pageNumber - 1) * pageSize
-  const end = start + pageSize
-  return orders.slice(start, end)
+export interface OrdersTableWidgetProps {
+  orderType: TabOrderTypes
+  onClose(): void
+  /**
+   * Must match `DialogOrInline` `isDialog` from the page.
+   * Do not derive this from a local media query — a mistimed resize can render
+   * `Dialog.Title` outside `Dialog.Root` for a frame and crash.
+   */
+  isDialog: boolean
+}
+
+interface OrdersTableFiltersControls {
+  applyFilters(filters: Partial<OrdersTableFilters>): void
+  historyStatusFilter: HistoryStatusFilter
+  searchTerm: string
+  setSearchTerm(value: string): void
 }
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.OPEN, OrderTabId.UNFILLABLE] as const
 
-export interface OrdersTableWidgetProps {
-  orderType: TabOrderTypes
-}
-
-export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactNode {
+export function OrdersTableWidget({ orderType, onClose, isDialog }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const { applyFilters, historyStatusFilter, searchTerm, setSearchTerm } = useOrdersTableFilters()
 
-  const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
-  const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
-
-  const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
-    partiallyUpdateOrdersTableFilters({ searchTerm })
-  })
-
-  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching pages.
   useLayoutEffect(() => {
     setSearchTerm('')
   }, [orderType, setSearchTerm])
 
   const resetSearchTerm = (): void => {
-    setSearchTerm('')
-    partiallyUpdateOrdersTableFilters({ searchTerm: '' })
-  }
-
-  const handleSearchTermChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchTerm(e.target.value)
+    applyFilters({ searchTerm: '' })
   }
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-    partiallyUpdateOrdersTableFilters({ historyStatusFilter: e.target.value as HistoryStatusFilter })
+    applyFilters({ historyStatusFilter: e.target.value as HistoryStatusFilter })
+  }
+
+  const handleApplyMobileFilters = (nextSearchTerm: string, nextHistoryStatusFilter: HistoryStatusFilter): void => {
+    applyFilters({
+      searchTerm: nextSearchTerm,
+      historyStatusFilter: nextHistoryStatusFilter,
+    })
+  }
+
+  const handleResetMobileFilters = (): void => {
+    applyFilters({
+      searchTerm: '',
+      historyStatusFilter: HistoryStatusFilter.ALL,
+    })
   }
 
   const { filteredOrders, reduxOrders } = useAtomValue(ordersTableStateAtom)
@@ -80,62 +95,133 @@ export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactN
   const currentPageNumber = ordersTableParams.page
   const pendingOrdersPrices = usePendingOrdersPrices()
 
-  const pendingOrdersInCurrentPage = useMemo(() => {
-    const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+  const pendingOrdersInCurrentPage = useMemo(
+    () => getPendingOrdersInCurrentPage(filteredOrders, currentTabId, currentPageNumber),
+    [currentPageNumber, currentTabId, filteredOrders],
+  )
 
-    if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
+  const tableContainer = (
+    <OrdersTableContainer orderType={orderType}>
+      {!!pendingOrdersInCurrentPage?.length && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
 
-    const currentPageItems = getOrdersPageChunk(
-      tableItemsToOrders(filteredOrders),
-      ORDERS_TABLE_PAGE_SIZE,
-      currentPageNumber,
-    )
+      {!!reduxOrders?.length && (
+        <>
+          {currentTabId === OrderTabId.HISTORY && (
+            <SelectContainer>
+              <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
+                <option value={HistoryStatusFilter.ALL}>{i18n._('All orders')}</option>
+                <option value={HistoryStatusFilter.FILLED}>{i18n._('Filled orders')}</option>
+                <option value={HistoryStatusFilter.CANCELLED}>{i18n._('Cancelled orders')}</option>
+                <option value={HistoryStatusFilter.EXPIRED}>{i18n._('Expired orders')}</option>
+              </Select>
+            </SelectContainer>
+          )}
 
-    return currentPageItems.filter((order) => {
-      return order.status === OrderStatus.PENDING
-    })
-  }, [currentTabId, filteredOrders, currentPageNumber])
+          <SearchInputContainer>
+            <SearchIcon />
+            <SearchInput
+              type="text"
+              placeholder={t`Token symbol, address`}
+              name="searchTerm"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+            {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
+          </SearchInputContainer>
+        </>
+      )}
+    </OrdersTableContainer>
+  )
 
-  const hasPendingOrdersInCurrentPage = !!pendingOrdersInCurrentPage?.length
+  // TODO: Missing Modal.Content wrapper and we are always rendering tableContainer even when not used...
 
   return (
     <>
-      {hasPendingOrdersInCurrentPage && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
+      {!!pendingOrdersInCurrentPage?.length && <UnfillableOrdersUpdater orders={pendingOrdersInCurrentPage} />}
 
-      <OrdersTableContainer orderType={orderType}>
-        {hasPendingOrdersInCurrentPage && <MultipleCancellationMenu pendingOrders={pendingOrdersInCurrentPage} />}
-
-        {/* Show filters only if there are orders */}
-        {!!reduxOrders?.length && (
-          <>
-            {/* Show onlyFilled select only in history tab */}
-            {currentTabId === OrderTabId.HISTORY && (
-              <SelectContainer>
-                <Select name="historyStatusFilter" value={historyStatusFilter} onChange={handleSelectChange}>
-                  <option value="filled">{i18n._('Filled orders')}</option>
-                  <option value="cancelled">{i18n._('Cancelled orders')}</option>
-                  <option value="expired">{i18n._('Expired orders')}</option>
-                  <option value="all">{i18n._('All orders')}</option>
-                </Select>
-              </SelectContainer>
-            )}
-
-            <SearchInputContainer>
-              <SearchIcon />
-              <SearchInput
-                type="text"
-                placeholder={t`Token symbol, address`}
-                name="searchTerm"
-                value={searchTerm}
-                onChange={handleSearchTermChange}
-              />
-              {searchTerm && <StyledCloseIcon onClick={resetSearchTerm} />}
-            </SearchInputContainer>
-          </>
-        )}
-      </OrdersTableContainer>
+      {isUpToSmall ? (
+        <MobileOrders
+          orderType={orderType}
+          searchTerm={searchTerm}
+          historyStatusFilter={historyStatusFilter}
+          onApplyFilters={handleApplyMobileFilters}
+          onResetFilters={handleResetMobileFilters}
+          onClose={onClose}
+          titleAs={isDialog ? Dialog.Title : undefined}
+        />
+      ) : isUpToLarge ? (
+        <>
+          <ModalHeader
+            sticky
+            title={orderType === TabOrderTypes.ADVANCED ? t`TWAP orders` : t`Limit orders`}
+            titleAs={isDialog ? Dialog.Title : undefined}
+            onClose={onClose}
+          />
+          <Modal.Content $noPadding>{tableContainer}</Modal.Content>
+        </>
+      ) : (
+        tableContainer
+      )}
 
       {pendingOrdersPrices && <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />}
     </>
   )
+}
+
+function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
+  const start = (pageNumber - 1) * pageSize
+  const end = start + pageSize
+  return orders.slice(start, end)
+}
+
+function getPendingOrdersInCurrentPage(
+  filteredOrders: OrderTableItem[],
+  currentTabId: OrderTabId | null | undefined,
+  currentPageNumber: number | null | undefined,
+): ParsedOrder[] | undefined {
+  const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+
+  if (!isTabWithPending || typeof currentPageNumber !== 'number') return undefined
+
+  const currentPageItems = getOrdersPageChunk(
+    tableItemsToOrders(filteredOrders),
+    ORDERS_TABLE_PAGE_SIZE,
+    currentPageNumber,
+  )
+
+  return currentPageItems.filter((order) => order.status === OrderStatus.PENDING)
+}
+
+function useOrdersTableFilters(): OrdersTableFiltersControls {
+  const currentFilters = useAtomValue(ordersTableFiltersAtom)
+  const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
+  const skipNextDeferredSearchUpdate = useRef(false)
+
+  const [searchTerm, setSearchTerm] = useStateWithDeferredValue(currentFilters.searchTerm, (nextSearchTerm) => {
+    if (skipNextDeferredSearchUpdate.current) {
+      skipNextDeferredSearchUpdate.current = false
+      return
+    }
+
+    partiallyUpdateOrdersTableFilters({ searchTerm: nextSearchTerm })
+  })
+
+  const applyFilters = useCallback(
+    (filters: Partial<OrdersTableFilters>): void => {
+      if (filters.searchTerm !== undefined && filters.searchTerm !== searchTerm) {
+        skipNextDeferredSearchUpdate.current = true
+        setSearchTerm(filters.searchTerm)
+      }
+
+      partiallyUpdateOrdersTableFilters(filters)
+    },
+    [partiallyUpdateOrdersTableFilters, searchTerm, setSearchTerm],
+  )
+
+  return {
+    applyFilters,
+    historyStatusFilter: currentFilters.historyStatusFilter,
+    searchTerm,
+    setSearchTerm,
+  }
 }
