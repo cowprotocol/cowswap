@@ -172,7 +172,7 @@ describe('useCreateTwapOrder', () => {
     jest.clearAllMocks()
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
-    mockedUseCowAnalytics.mockReturnValue({ sendEvent } as ReturnType<typeof useCowAnalytics>)
+    mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
     mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: false } as ReturnType<typeof useWalletDetails>)
@@ -190,17 +190,17 @@ describe('useCreateTwapOrder', () => {
     mockedUseNavigateToOrdersTableTab.mockReturnValue(jest.fn())
     mockedUseGeneratePermitHook.mockReturnValue(jest.fn())
     mockedUsePermitInfo.mockReturnValue({} as ReturnType<typeof usePermitInfo>)
-    mockedGetCowSoundSend.mockReturnValue({ play: jest.fn() })
+    mockedGetCowSoundSend.mockReturnValue({ play: jest.fn() } as unknown as ReturnType<typeof getCowSoundSend>)
     mockedUseTradeConfirmActions.mockReturnValue({
       onSign: jest.fn(),
       onSuccess: jest.fn(),
       onError: jest.fn(),
-    } as ReturnType<typeof useTradeConfirmActions>)
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
     mockedUseTradePriceImpact.mockReturnValue({ priceImpact: undefined } as ReturnType<typeof useTradePriceImpact>)
     mockedUseAppSigner.mockReturnValue({} as ReturnType<typeof useAppSigner>)
     mockedUseConfirmPriceImpactWithoutFee.mockReturnValue({
       confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
-    } as ReturnType<typeof useConfirmPriceImpactWithoutFee>)
+    } as unknown as ReturnType<typeof useConfirmPriceImpactWithoutFee>)
     mockedUseExtensibleFallbackContext.mockReturnValue(null)
     mockedUseTwapOrder.mockReturnValue({
       receiver: '0xreceiver',
