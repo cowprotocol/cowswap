@@ -122,20 +122,54 @@ export function mockContractViewCall(
         }
 
         if (resolved.some((result) => typeof result !== 'undefined')) {
-          if (typeof upstreamResult !== 'string') {
-            // No real result to fall back on yet — ask mockRpcNodeRequest to fetch upstream and retry.
+          if (upstreamResult === undefined) {
+            // Not attempted yet — ask mockRpcNodeRequest to fetch upstream and retry.
             return undefined
           }
 
-          const upstreamResults = decodeFunctionResult({
-            abi: multicall3Abi,
-            functionName: 'aggregate3',
-            data: upstreamResult as Hex,
-          }) as Readonly<Aggregate3Result[]>
+          // `upstreamResult` is `null` (mockRpcNodeRequest's explicit "attempted, nothing usable"
+          // signal — a rate-limited or otherwise erroring real RPC, observed as Infura's `-32005
+          // Too Many Requests`) or any other non-decodable value. Falling through to `undefined`
+          // here (as if upstream were never even tried) previously threw this branch's already-
+          // correct slots away along with the genuinely-unresolved ones — discarding, for example,
+          // `installSocketVerifier`'s answer for a call that only shared a batch with some *other*
+          // mock's still-uncovered selector (see [CS-310]). A real, `allowFailure: true` aggregate3
+          // reports exactly this shape for a call that reverted — every caller already handles it —
+          // so marking what we can't answer as a clean failure is strictly better than either a raw
+          // decode error or one real, rate-limited dependency corrupting the whole batch.
+          const upstreamResults =
+            typeof upstreamResult === 'string'
+              ? (decodeFunctionResult({
+                  abi: multicall3Abi,
+                  functionName: 'aggregate3',
+                  data: upstreamResult as Hex,
+                }) as Readonly<Aggregate3Result[]>)
+              : undefined
+
+          // A slot we still can't answer (no local resolution, and `upstreamResults` couldn't
+          // decode a real per-slot result either — the whole real `aggregate3` call itself errored)
+          // can only be safely degraded to a clean `{success: false}` when its own `allowFailure`
+          // is `true`. Real Multicall3 semantics revert the *entire* call the instant an
+          // `allowFailure: false` call fails — there is no such thing as "just that one slot
+          // failed" on-chain for it — so synthesizing a failed-but-otherwise-successful slot here
+          // would fabricate a response shape that could never happen for real, and would silently
+          // vouch for every *other* slot (including this mock's own already-correct answer) as if
+          // the call had genuinely gone through. Bailing out with `undefined` instead lets
+          // `fulfillFromUpstream` relay whatever the real upstream actually said for the whole call
+          // (a genuine revert, most likely) rather than a fabricated success.
+          const hasUnanswerableRequiredCall = resolved.some(
+            (returnData, i) =>
+              typeof returnData === 'undefined' && !upstreamResults?.[i] && calls[i].allowFailure === false,
+          )
+          if (hasUnanswerableRequiredCall) {
+            return undefined
+          }
 
           return packAggregate3Result(
             resolved.map((returnData, i) =>
-              typeof returnData === 'undefined' ? upstreamResults[i] : { success: true, returnData: returnData as Hex },
+              typeof returnData !== 'undefined'
+                ? { success: true, returnData: returnData as Hex }
+                : (upstreamResults?.[i] ?? { success: false, returnData: '0x' as Hex }),
             ),
           )
         }
