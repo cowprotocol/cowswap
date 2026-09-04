@@ -95,10 +95,11 @@ describe('encodeRegisterFromShedCalldata()', () => {
 
   it('keeps schedule id independent of authEpoch / staticInput', () => {
     const withoutAuth = getComposableCowPollerScheduleId(FIRST_REGISTER_SCHEDULE)
-    const withDifferentStatic = getComposableCowPollerScheduleId({
+    const scheduleWithDifferentStatic: ComposableCowPollerSchedule = {
       ...FIRST_REGISTER_SCHEDULE,
       staticInput: '0xabcd',
-    })
+    }
+    const withDifferentStatic = getComposableCowPollerScheduleId(scheduleWithDifferentStatic)
 
     expect(withoutAuth).toBe(withDifferentStatic)
     expect(withoutAuth).toBe(

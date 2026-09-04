@@ -15,13 +15,12 @@ import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
  *
  * Deployed on Mainnet, Gnosis, and Sepolia (pre-audit).
  *
- * @see https://github.com/cowprotocol/composable-cow/pull/145 — poller / `registerFromShed`
- * @see https://github.com/cowprotocol/composable-cow/commit/b779e50445dd326014f62dcced2dce51dec2f18c — #145 merge
- * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json — `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`
- * @see https://github.com/cowdao-grants/cow-shed/pull/68 — multi-chain ComposableCoW shed deploys
+ * @see https://github.com/cowprotocol/composable-cow/pull/145 - poller / `registerFromShed`
+ * @see https://github.com/cowprotocol/composable-cow/commit/b779e50445dd326014f62dcced2dce51dec2f18c - #145 merge
+ * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json - `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`
+ * @see https://github.com/cowdao-grants/cow-shed/pull/68 - multi-chain ComposableCoW shed deploys
  */
 export const COMPOSABLE_COW_POLLER_ADDRESS: Partial<Record<SupportedChainId, AccountAddress>> = {
-  // Anxo, 2025-08-25: Sepolia / Mainnet / Gnosis (pre-audit). Address shared in #dev after composable-cow#145.
   [SupportedChainId.MAINNET]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
   [SupportedChainId.GNOSIS_CHAIN]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
   [SupportedChainId.SEPOLIA]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
