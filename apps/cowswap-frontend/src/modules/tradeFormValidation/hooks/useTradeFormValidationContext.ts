@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
@@ -103,6 +103,65 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     outputCurrency,
   })
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
+
+  // TEMP DIAGNOSTIC - remove once the "Maximum update depth exceeded" repro is pinpointed.
+  // Logs exactly which named dependency changed reference/value between consecutive renders.
+  const diagDeps = {
+    hasFirstLoad,
+    account,
+    approvalState,
+    customTokenError,
+    derivedTradeState,
+    intermediateBuyToken,
+    isAccountProxyLoading,
+    isApproveRequired,
+    isBundlingSupported,
+    isInsufficientBalanceOrderAllowed,
+    isOnline,
+    isProviderNetworkUnsupported,
+    isProviderNetworkDeprecated,
+    isRestrictedForCountry,
+    isSafeReadonlyUser,
+    isSupportedWallet,
+    isBalancesLoading,
+    isSwapUnsupported,
+    isWrapUnwrap,
+    isProxySetupValid,
+    isInputCurrencyXstock,
+    isOutputCurrencyXstock,
+    recipientEnsAddress,
+    toBeImported,
+    tradeQuote,
+    balancesError,
+    injectedWidgetParams,
+    tradePriceImpact,
+    isNonEvmReceiverConfirmed,
+    isRestoringConnection,
+    featureFlagsStatus,
+    canQuote,
+    captchaInteractionRequired,
+  }
+  const diagPrevRef = useRef<typeof diagDeps | null>(null)
+  const diagRenderCountRef = useRef(0)
+  useEffect(() => {
+    diagRenderCountRef.current += 1
+    if (diagPrevRef.current) {
+      const changed = (Object.keys(diagDeps) as Array<keyof typeof diagDeps>).filter(
+        (key) => !Object.is(diagPrevRef.current![key], diagDeps[key]),
+      )
+      if (changed.length > 0) {
+        console.log(
+          `[DIAG useTradeFormValidationContext] render #${diagRenderCountRef.current} changed deps:`,
+          changed,
+          changed.length === 1
+            ? { [changed[0]]: { prev: diagPrevRef.current[changed[0]], next: diagDeps[changed[0]] } }
+            : '',
+        )
+      }
+    }
+    diagPrevRef.current = diagDeps
+  })
+  // END TEMP DIAGNOSTIC
 
   return useMemo(() => {
     if (!derivedTradeState) return null
