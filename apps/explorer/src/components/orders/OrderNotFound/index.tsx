@@ -38,6 +38,7 @@ const Content = styled.div`
   p {
     line-height: ${({ theme }): string => theme.fontLineHeight};
     word-break: break-word;
+    margin: 0 0 16px;
   }
 
   strong {

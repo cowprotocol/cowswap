@@ -103,6 +103,10 @@ export const Wrapper = styled(WrapperTemplate)`
       &:not(.error) {
         background: ${Color.explorer_greyOpacity};
       }
+
+      p + p {
+        margin-top: 16px;
+      }
     }
 
     .appData-hash {
@@ -142,6 +146,10 @@ export const Wrapper = styled(WrapperTemplate)`
 
     p {
       line-height: 1.6rem;
+    }
+
+    p + p {
+      margin-top: 16px;
     }
 
     i.glyphicon {
