@@ -2,7 +2,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 
 import { RoutesValues } from 'common/constants/routes'
 
-import { TradeUrlParams } from '../types/TradeRawState'
+import { TradeUrlParams } from '../types'
 
 export function addChainIdToRoute(route: RoutesValues, chainId: string | undefined): string {
   return route

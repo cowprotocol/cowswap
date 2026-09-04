@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.11.0...balances-and-allowances-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/tokens@3.11.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.10.0...balances-and-allowances-v3.11.0) (2026-08-12)
 
 ### Minor Changes

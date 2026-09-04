@@ -10,9 +10,11 @@ import { limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrde
 import { swapDerivedStateAtom } from 'modules/swap/state/swapRawStateAtom'
 import { yieldDerivedStateAtom } from 'modules/yield/state/yieldRawStateAtom'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { tradeTypeAtom } from './tradeTypeAtom'
 
-import { TradeDerivedState, TradeType } from '../types'
+import { TradeDerivedState } from '../types'
 
 export const derivedTradeStateAtom = atom<TradeDerivedState | null>((get) => {
   const tradeTypeInfo = get(tradeTypeAtom)
