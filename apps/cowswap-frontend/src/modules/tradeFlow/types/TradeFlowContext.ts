@@ -1,6 +1,6 @@
 import type { Config } from 'wagmi'
 
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
@@ -9,6 +9,7 @@ import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import { SigningSteps } from 'entities/trade'
 
 import type { AppDispatch } from 'legacy/state'
+import type { TransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import type { PostOrderParams } from 'legacy/utils/trade'
 
 import type { TypedAppDataHooks } from 'modules/appData'
@@ -27,6 +28,25 @@ export interface SafeBundleFlowContext {
   tokenAddress: string
   amountToApprove: CurrencyAmount<Currency>
   maximumSendSellAmount: CurrencyAmount<Currency>
+}
+
+export interface SolanaTradeFlowContext {
+  tradeQuote: QuoteAndPost
+  account: string
+  context: {
+    chainId: SupportedChainId
+    inputAmount: CurrencyAmount<Currency>
+    outputAmount: CurrencyAmount<Currency>
+    orderKind: OrderKind
+    validTo: number
+  }
+  callbacks: {
+    closeModals: Command
+    dispatch: AppDispatch
+    addTransaction: TransactionAdder
+  }
+  tradeConfirmActions: TradeConfirmActions
+  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
 }
 
 export interface TradeFlowContext {
@@ -63,4 +83,5 @@ export enum FlowType {
   EOA_ETH_FLOW = 'EOA_ETH_FLOW',
   SAFE_BUNDLE_APPROVAL = 'SAFE_BUNDLE_APPROVAL',
   SAFE_BUNDLE_ETH = 'SAFE_BUNDLE_ETH',
+  SOLANA_SWAP = 'SOLANA_SWAP',
 }
