@@ -109,6 +109,12 @@ const FOOTER_NAV_GROUP_HELP = {
       utmContent: 'footer-help-knowledge-base',
     },
     {
+      label: 'Resources',
+      href: 'https://cow.fi/resources',
+      external: true,
+      utmContent: 'footer-help-resources',
+    },
+    {
       label: 'Report Scams',
       href: 'https://cow.fi/report-scam',
       external: true,

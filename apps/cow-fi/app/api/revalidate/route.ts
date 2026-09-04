@@ -41,6 +41,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Revalidate the dynamic article route (this updates the manifest)
     revalidatePath('/learn/[article]')
 
+    // Revalidate resources pages
+    revalidatePath('/resources')
+    revalidatePath('/resources/[campaign]')
+    revalidatePath('/resources/[campaign]/[slug]')
+
     // If a specific path was provided, revalidate it to update the route manifest
     if (path) revalidatePath(path)
 
