@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-04 11:23\n"
+"PO-Revision-Date: 2026-09-04 14:04\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2058,6 +2058,10 @@ msgstr "Saldo recuperável"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 msgstr "Seu preço limite é {absoluteRateImpact}% menor que o preço atual de mercado. Você pode estar vendendo seu <0/> com prejuízo (embora o CoW Swap sempre tente lhe dar o melhor preço, independentemente)."
+
+#: apps/cowswap-frontend/src/modules/tradeFlow/services/solanaFlow/index.ts
+msgid "Swap {sellSymbol} for {buySymbol}"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
