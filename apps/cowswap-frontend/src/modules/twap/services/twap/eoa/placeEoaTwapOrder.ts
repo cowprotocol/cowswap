@@ -337,7 +337,7 @@ export async function placeEoaTwapOrder({
   const deadline = BigInt(Math.ceil(Date.now() / 1000)) + BigInt(SETUP_VALID_FOR_SEC)
 
   // TODO: Revert to this once we switch from `getCowShedHooks` to `CowShedSdk.signCalls`, once it forwards a custom
-  // EIP-712 version.
+  // EIP-712 version. CowShedSdk.signCalls would estimate gas for us.
   /*
   const { signedMulticall, gasLimit } = await cowShedSdk.signCalls({
     chainId,
