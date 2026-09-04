@@ -24,6 +24,11 @@ export function TradeFormValidationUpdater(): null {
   useEffect(() => {
     if (!debouncedContext) return
 
+    console.log(
+      '[DIAG TradeFormValidationUpdater] updateContext firing, recipient=',
+      debouncedContext.derivedTradeState?.recipient?.slice(0, 12),
+    )
+
     updateContext({
       ...debouncedContext,
     })

@@ -11,7 +11,18 @@ export function RecipientAddressUpdater() {
   const { address: recipientAddress } = useENSAddress(state?.recipient)
 
   useEffect(() => {
+    console.log(
+      '[DIAG RecipientAddressUpdater] render, recipient=',
+      state?.recipient?.slice(0, 12),
+      'len=',
+      state?.recipient?.length,
+      'state.recipientAddress=',
+      state?.recipientAddress,
+      'ens recipientAddress=',
+      recipientAddress,
+    )
     if (state?.recipientAddress !== recipientAddress) {
+      console.log('[DIAG RecipientAddressUpdater] WRITING recipientAddress =', recipientAddress)
       updateState?.({ ...state, recipientAddress })
     }
   }, [recipientAddress, state?.recipientAddress, updateState, state])
