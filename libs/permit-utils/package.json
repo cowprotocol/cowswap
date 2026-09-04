@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.7-pr-973-2692f856.0",
+    "@cowprotocol/cow-sdk": "9.2.8",
     "@1inch/permit-signed-approvals-utils": "1.5.2",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "ms.macro": "2.0.0",
