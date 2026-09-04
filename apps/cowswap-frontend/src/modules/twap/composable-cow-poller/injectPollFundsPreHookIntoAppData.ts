@@ -14,6 +14,7 @@ export const EOA_TWAP_POLL_FUNDS_DAPP_ID = 'cowswap://twap/eoa-poll-funds'
 /**
  * Injects `pollFunds(scheduleId)` as a TWAP pre-hook and re-hashes appData.
  * Must run before `buildTwapOrderParamsStruct` so `staticInput` includes the new appData hash.
+ * Prepends so JIT funding lands sell tokens on the shed before other pre-hooks run.
  */
 export async function injectPollFundsPreHookIntoAppData(
   appData: AppDataInfo,
@@ -29,7 +30,7 @@ export async function injectPollFundsPreHookIntoAppData(
   const existing = appData.doc.metadata.hooks
 
   return replaceHooksOnAppData(appData, {
-    pre: [...(existing?.pre ?? []), pollFundsHook],
+    pre: [pollFundsHook, ...(existing?.pre ?? [])],
     ...(existing?.post?.length ? { post: existing.post } : undefined),
   })
 }
