@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
-import { getAddressKey, Nullish, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Nullish, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { tokensBySymbolAtom } from '../../state/tokens/allTokensAtom'
 
@@ -18,10 +18,9 @@ export function useAreThereTokensWithSameSymbol(): (
 
       if (tokensBySymbol.chainId !== chainId) return false
 
-      const key = isAddress(tokenAddressOrSymbol)
-        ? getAddressKey(tokenAddressOrSymbol)
-        : tokenAddressOrSymbol.toLowerCase()
-      const tokens = tokensBySymbol.tokens[key]
+      // No need for getAddressKey here: the early return above already bails for any address
+      // (EVM, Solana, or BTC), so this only ever receives a symbol.
+      const tokens = tokensBySymbol.tokens[tokenAddressOrSymbol.toLowerCase()]
       const hasDuplications = tokens?.length > 1
 
       if (hasDuplications) {
