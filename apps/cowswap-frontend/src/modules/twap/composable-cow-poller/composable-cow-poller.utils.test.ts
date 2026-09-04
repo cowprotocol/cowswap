@@ -1,4 +1,4 @@
-import { decodeFunctionData, encodeAbiParameters, keccak256 } from 'viem'
+import { decodeFunctionData, encodeAbiParameters } from 'viem'
 
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
 
@@ -18,6 +18,15 @@ const OWNER = '0x3333333333333333333333333333333333333333' as const
 const SALT = '0x0000000000000000000000000000000000000000000000000000000000000001' as const
 const STATIC_INPUT = '0x1234' as const
 
+/**
+ * Independent Solidity vector for `keccak256(abi.encode(funder, handler, owner, salt))`
+ * over the fixtures above. Computed with Foundry `cast keccak` of the ABI-encoded identity
+ * fields (same formula as `ComposableCowPoller._scheduleId`), not by re-running the TS helper.
+ *
+ * @see https://github.com/cowprotocol/composable-cow/blob/main/src/types/ComposableCowPoller.sol
+ */
+const EXPECTED_SCHEDULE_ID = '0x4a6d31b249226ff992ea760b06288a012f917aa317e6be37829d163e51af97ad' as const
+
 const FIRST_REGISTER_SCHEDULE: ComposableCowPollerSchedule = {
   handler: HANDLER,
   authEpoch: COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
@@ -28,15 +37,7 @@ const FIRST_REGISTER_SCHEDULE: ComposableCowPollerSchedule = {
 }
 
 describe('getComposableCowPollerScheduleId()', () => {
-  it('hashes funder, handler, owner, salt in that order', () => {
-    const id = getComposableCowPollerScheduleId({
-      funder: FUNDER,
-      handler: HANDLER,
-      owner: OWNER,
-      salt: SALT,
-    })
-
-    expect(id).toMatch(/^0x[0-9a-f]{64}$/)
+  it('matches the Solidity _scheduleId hash for funder, handler, owner, salt', () => {
     expect(
       getComposableCowPollerScheduleId({
         funder: FUNDER,
@@ -44,7 +45,7 @@ describe('getComposableCowPollerScheduleId()', () => {
         owner: OWNER,
         salt: SALT,
       }),
-    ).toBe(id)
+    ).toBe(EXPECTED_SCHEDULE_ID)
   })
 })
 
@@ -102,13 +103,6 @@ describe('encodeRegisterFromShedCalldata()', () => {
     const withDifferentStatic = getComposableCowPollerScheduleId(scheduleWithDifferentStatic)
 
     expect(withoutAuth).toBe(withDifferentStatic)
-    expect(withoutAuth).toBe(
-      keccak256(
-        encodeAbiParameters(
-          [{ type: 'address' }, { type: 'address' }, { type: 'address' }, { type: 'bytes32' }],
-          [FUNDER, HANDLER, OWNER, SALT],
-        ),
-      ),
-    )
+    expect(withoutAuth).toBe(EXPECTED_SCHEDULE_ID)
   })
 })
