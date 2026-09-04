@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { CenteredDots, FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
@@ -56,7 +57,7 @@ export function ReviewOrderModalAmountRow({
 
   return (
     <ConfirmDetailsItem
-      className="confirm-order-amount"
+      testId={TEST_IDS.confirmOrderAmount}
       tooltip={tooltip}
       label={highlighted ? undefined : label}
       withTimelineDot={withTimelineDot}

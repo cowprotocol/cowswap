@@ -2,6 +2,7 @@ import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState
 
 import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { TargetChainId } from '@cowprotocol/cow-sdk'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -16,7 +17,6 @@ import { ReceiverErrorText, ReceiverInput, ReceiverInputRow, ReceiverInputWrappe
 import ChainPrefixWarning from '../ChainPrefixWarning'
 
 export interface ReceiverPanelBodyProps {
-  className: string
   value: string
   onChange(value: string): void
   targetChainId?: TargetChainId
@@ -27,7 +27,6 @@ export interface ReceiverPanelBodyProps {
 }
 
 export function ReceiverPanelBody({
-  className,
   value,
   onChange,
   targetChainId,
@@ -91,7 +90,7 @@ export function ReceiverPanelBody({
         <ReceiverInputRow>
           {isValid && !loading && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
           <ReceiverInput
-            className={className}
+            data-testid={TEST_IDS.recipientAddressInput}
             type="text"
             autoComplete="off"
             autoCorrect="off"

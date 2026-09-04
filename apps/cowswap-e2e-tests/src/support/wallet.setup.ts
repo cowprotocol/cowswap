@@ -1,7 +1,7 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { defineWalletSetup } from '@synthetixio/synpress'
 import { MetaMask } from '@synthetixio/synpress/playwright'
-
-import { CHAIN_IDS } from './constants'
 
 import type { BrowserContext, Page } from '@playwright/test'
 
@@ -58,11 +58,11 @@ export default defineWalletSetup(PASSWORD, async (context, walletPage) => {
   const w = 'w0'
 
   const networks = [
-    { name: 'Mainnet', chainId: CHAIN_IDS.MAINNET, symbol: 'ETH' },
-    { name: 'Arbitrum', chainId: CHAIN_IDS.ARBITRUM, symbol: 'ETH' },
-    { name: 'Base', chainId: CHAIN_IDS.BASE, symbol: 'ETH' },
-    { name: 'BNB', chainId: CHAIN_IDS.BNB, symbol: 'BNB' },
-    { name: 'Gnosis', chainId: CHAIN_IDS.GNOSIS, symbol: 'ETH' },
+    { name: 'Mainnet', chainId: SupportedChainId.MAINNET, symbol: 'ETH' },
+    { name: 'Arbitrum', chainId: SupportedChainId.ARBITRUM_ONE, symbol: 'ETH' },
+    { name: 'Base', chainId: SupportedChainId.BASE, symbol: 'ETH' },
+    { name: 'BNB', chainId: SupportedChainId.BNB, symbol: 'BNB' },
+    { name: 'Gnosis', chainId: SupportedChainId.GNOSIS_CHAIN, symbol: 'ETH' },
   ] as const
 
   for (const net of networks) {
@@ -82,7 +82,7 @@ export default defineWalletSetup(PASSWORD, async (context, walletPage) => {
   await mm.addNetwork({
     name: 'Sepolia',
     rpcUrl: process.env.REACT_APP_NETWORK_URL_11155111 ?? 'https://1rpc.io/sepolia',
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     symbol: 'ETH',
   })
 
