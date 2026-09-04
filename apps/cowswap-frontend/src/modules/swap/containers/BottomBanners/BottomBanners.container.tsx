@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import svgHandSrc from '@cowprotocol/assets/cow-swap/hand.svg'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -27,7 +28,7 @@ export function BottomBanners(): ReactNode {
 
   if (isProviderNetworkDeprecated) {
     bannerNode = <DeprecatedNetworkBanner />
-  } else if (isHookTradeType && account) {
+  } else if (isHookTradeType && account && isEvmChain(chainId)) {
     bannerNode = (
       <InlineBanner
         bannerType={StatusColorVariant.Info}

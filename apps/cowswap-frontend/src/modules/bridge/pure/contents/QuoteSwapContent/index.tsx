@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 
@@ -63,7 +64,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
           {content}
         </ConfirmDetailsItem>
       ))}
-      {!isBridgeQuoteRecipient && (
+      {!isBridgeQuoteRecipient && isEvmChain(sellAmount.currency.chainId) && (
         <ProxyAccountBanner
           recipient={recipient}
           bridgeReceiverOverride={bridgeReceiverOverride}
