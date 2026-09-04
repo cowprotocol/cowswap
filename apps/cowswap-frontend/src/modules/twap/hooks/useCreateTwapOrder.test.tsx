@@ -87,9 +87,7 @@ jest.mock('./useExtensibleFallbackContext', () => ({ useExtensibleFallbackContex
 jest.mock('./useTwapOrder', () => ({ useTwapOrder: jest.fn() }))
 jest.mock('./useTwapOrderCreationContext', () => ({ useTwapOrderCreationContext: jest.fn() }))
 jest.mock('../services/twap/eoa/ensureEoaTwapSpenderAllowance', () => ({
-  ensureEoaTwapSpenderAllowance: jest
-    .fn()
-    .mockResolvedValue({ usedPermit: false, permitData: null, promptedWallet: false }),
+  ensureEoaTwapSpenderAllowance: jest.fn().mockResolvedValue(null),
   getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false, needsZeroApproval: false }),
 }))
 jest.mock('../services/twap/eoa/placeEoaTwapOrder', () => ({ placeEoaTwapOrder: jest.fn() }))

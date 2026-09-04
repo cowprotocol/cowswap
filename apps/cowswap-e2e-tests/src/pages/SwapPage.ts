@@ -161,8 +161,17 @@ export class SwapPage implements TradePage {
   }
 
   async enterSellAmount(amount: string): Promise<void> {
+    // Controlled React input can get stomped by `useSetupTradeAmountsFromUrl`'s default
+    // "1 unit" fill while Playwright's `fill()` is landing. Wait until the field is enabled,
+    // then retry until the typed amount sticks so later token selection (CS-59 / CS-68) does
+    // not see a stale default.
     await expect(this.inputAmount).toBeEnabled()
-    await this.inputAmount.fill(amount)
+    await expect
+      .poll(async () => {
+        await this.inputAmount.fill(amount)
+        return this.inputAmount.inputValue()
+      })
+      .toBe(amount)
   }
 
   async enterBuyAmount(amount: string): Promise<void> {
