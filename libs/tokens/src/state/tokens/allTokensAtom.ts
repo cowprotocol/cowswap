@@ -11,7 +11,7 @@ import { userAddedTokensAtom } from './userAddedTokensAtom'
 import { GLOBAL_TOKENS_OVERRIDES } from '../../const/tokensOverrides'
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
-import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
+import { normalizeTokensMapKeys } from '../../utils/normalizeTokensMapKeys'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
@@ -137,13 +137,13 @@ export const allActiveTokensAtom = atom(async (get) => {
   const tokenSources = lpTokens ? [lpTokens] : []
 
   if (!hideFavoriteTokens) {
-    tokenSources.push(lowerCaseTokensMap(favoriteTokensState[chainId]))
+    tokenSources.push(normalizeTokensMapKeys(favoriteTokensState[chainId]))
   }
 
-  tokenSources.push(lowerCaseTokensMap(userAddedTokens[chainId] || {}), tokensMap.activeTokens)
+  tokenSources.push(normalizeTokensMapKeys(userAddedTokens[chainId] || {}), tokensMap.activeTokens)
 
   if (nativeToken) {
-    tokenSources.push({ [nativeToken.address.toLowerCase()]: nativeToken as TokenInfo })
+    tokenSources.push({ [getAddressKey(nativeToken.address)]: nativeToken as TokenInfo })
   }
 
   const tokens = tokenMapToListWithLogo(tokenSources, chainId)
