@@ -252,7 +252,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       {tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+      {/* Local validation replaces the trade button with a disabled one, so approval controls are pointless */}
+      {isPrimaryValidationPassed && !localFormValidation && <TradeApproveWithAffectedOrderList />}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}
