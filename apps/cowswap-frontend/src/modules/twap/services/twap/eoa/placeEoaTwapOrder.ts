@@ -211,7 +211,7 @@ export function getEoaTwapOrderShedCalls({
 /**
  * Places an EOA TWAP with JIT funding via ComposableCowPoller `registerFromShed`.
  *
- * Capital stays on the EOA. Setup is a single cow-shed factory transaction (not a sell=buy funding order).
+ * Capital stays on the EOA. Setup is a single cow-shed factory transaction.
  *
  * For full placement flow see `buildEoaTwapSigningStepPlan`. Note the caller runs pre-steps before this function
  * (permit / zero-approve / approve):
