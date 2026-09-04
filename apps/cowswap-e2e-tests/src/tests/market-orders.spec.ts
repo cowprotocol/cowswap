@@ -103,6 +103,19 @@ test.describe('Market Orders', () => {
 
       await swapPage.waitForQuote()
 
+      // `waitForQuote()` only proves *a* quote settled, not that it's the one for "1000" — it
+      // clears as soon as `data-isLoading` is unset, which can be a false positive if this check
+      // runs before the retype's own 350ms `AMOUNT_CHANGE_DEBOUNCE_TIME` has even started (see the
+      // giant comment above on the amount-revert race). If the trade still internally holds the
+      // auto-filled "1" default at that point, clicking Swap posts an order for 1 USDC instead of
+      // 1000 — confirmed root cause of a real CI failure, where the order-progress modal showed
+      // "Sell 1 USDC for at least 0.0008 WETH". `outputAmount` is on the *same* render path as
+      // whatever `clickSwap` actually submits (unlike the loading flag, a separate signal), so
+      // waiting for it to reflect the correct amount's quote (1000 × 804/1,000,000 = 0.804) is
+      // causally tied to the order about to be built from the right amount, not just "some quote
+      // response arrived."
+      await expect(swapPage.outputAmount).toHaveValue('0.804')
+
       await mocks.orders.expectOrderToBePosted({
         orderId,
         owner: wallet.address,
