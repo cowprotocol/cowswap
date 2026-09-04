@@ -442,19 +442,19 @@ export const ReceivedAmount = styled.span`
 export const SoldAmount = ReceivedAmount
 
 export const ExtraAmount = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  text-align: center;
   width: 100%;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 15px;
   margin: 0 auto;
-  gap: 4px;
+  line-height: 1.4;
 
   > i {
     color: var(${UI.COLOR_SUCCESS_TEXT});
     font-weight: bold;
     font-style: normal;
+    white-space: nowrap;
   }
 `
 
