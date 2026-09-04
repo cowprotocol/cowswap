@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.6.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.5.0...widget-lib-v4.6.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/iframe-transport@2.3.6
+
 ## [4.5.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.4.4...widget-lib-v4.5.0) (2026-08-05)
 
 ### Minor Changes
