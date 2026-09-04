@@ -9,10 +9,11 @@ import { useLocation, useParams } from 'react-router'
 import { PageTitle } from 'modules/application'
 import { HooksStoreWidget } from 'modules/hooksStore'
 import { swapDerivedStateAtom, SwapUpdaters, useSwapDerivedStateToFill } from 'modules/swap'
-import { getDefaultTradeRawState, parameterizeTradeRoute } from 'modules/trade'
+import { getDefaultTradeRawState } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 import { HydrateAtom } from 'common/state/HydrateAtom'
 
 export function HooksPage(): ReactNode {

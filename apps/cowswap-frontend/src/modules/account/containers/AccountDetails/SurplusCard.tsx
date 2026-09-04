@@ -23,17 +23,20 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
 
-const DEFAULT_START_DATE = 'March 2023'
-const ARBITRUM_ONE_START_DATE = 'May 2024'
-const BASE_START_DATE = 'December 2024'
-const POLYGON_START_DATE = 'June 2025'
-const AVALANCHE_START_DATE = 'June 2025'
-const BNB_START_DATE = 'September 2025'
-const LINEA_START_DATE = 'November 2025'
-const PLASMA_START_DATE = 'January 2026'
-const INK_START_DATE = 'February 2026'
+// Month is 0-indexed (Date constructor), constructed explicitly instead of parsed from a
+// string like 'June 2025' because non-ISO date string parsing is implementation-defined
+// and can yield Invalid Date in some browsers/locales.
+const DEFAULT_START_DATE = new Date(2023, 2)
+const ARBITRUM_ONE_START_DATE = new Date(2024, 4)
+const BASE_START_DATE = new Date(2024, 11)
+const POLYGON_START_DATE = new Date(2025, 5)
+const AVALANCHE_START_DATE = new Date(2025, 5)
+const BNB_START_DATE = new Date(2025, 8)
+const LINEA_START_DATE = new Date(2025, 10)
+const PLASMA_START_DATE = new Date(2026, 0)
+const INK_START_DATE = new Date(2026, 1)
 
-const START_DATE: Record<SupportedChainId, string> = {
+const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
   [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_START_DATE,
   [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_START_DATE,
@@ -179,7 +182,7 @@ export function SurplusCard() {
   const surplusUsdAmount = useUsdAmount(showSurplusAmount ? surplusAmount : undefined).value
   const native = useNativeCurrency()
   const nativeSymbol = native.symbol || 'ETH'
-  const startDate = new Date(START_DATE[native.chainId as SupportedChainId]).toLocaleDateString(i18n.locale, {
+  const startDate = START_DATE[native.chainId as SupportedChainId].toLocaleDateString(i18n.locale, {
     year: 'numeric',
     month: 'long',
   })

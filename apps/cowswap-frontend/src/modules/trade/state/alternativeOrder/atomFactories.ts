@@ -1,8 +1,9 @@
 import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from 'jotai'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { isAlternativeOrderModalVisibleAtom } from './atoms'
 
-import { TradeType } from '../../types/TradeType'
 import { tradeTypeAtom } from '../tradeTypeAtom'
 
 type WritableWithOptionalSetterValue<GetterValue, SetterValue> = WritableAtom<

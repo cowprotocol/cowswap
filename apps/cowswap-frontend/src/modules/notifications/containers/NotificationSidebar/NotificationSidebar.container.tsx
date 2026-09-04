@@ -37,6 +37,7 @@ interface NotificationsHeaderProps {
   shouldShowSettingsPopover: boolean
   onDismissSettingsPopover: () => void
   headerRef: React.RefObject<HTMLDivElement | null>
+  settingsPopoverContentRef: React.RefObject<HTMLDivElement | null>
 }
 
 interface NotificationSidebarProps {
@@ -57,6 +58,7 @@ export function NotificationSidebar({
   const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
+  const settingsPopoverContentRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(Media.upToSmall(false))
   const isAnyModalOpen = useAtomValue(openModalState)
 
@@ -81,7 +83,9 @@ export function NotificationSidebar({
   // Don't dismiss the sidebar on outside clicks while a modal (e.g. the Telegram
   // connect modal) is open - it portals outside `sidebarRef`'s DOM subtree, so any
   // click inside it would otherwise be treated as "outside the sidebar" and close it.
-  useOnClickOutside([sidebarRef], isAnyModalOpen ? undefined : onDismiss)
+  // The settings popover content is portaled the same way, so it's excluded explicitly
+  // via `settingsPopoverContentRef` rather than being gated behind a boolean.
+  useOnClickOutside([sidebarRef, settingsPopoverContentRef], isAnyModalOpen ? undefined : onDismiss)
 
   const toggleSettingsOpen = useCallback(() => {
     setIsSettingsOpen((prev) => !prev)
@@ -118,6 +122,7 @@ export function NotificationSidebar({
             shouldShowSettingsPopover={shouldShowSettingsPopover}
             onDismissSettingsPopover={dismissSettingsPopover}
             headerRef={headerRef}
+            settingsPopoverContentRef={settingsPopoverContentRef}
           />
         </NotificationsList>
       )}
@@ -139,6 +144,7 @@ function NotificationsHeader({
   shouldShowSettingsPopover,
   onDismissSettingsPopover,
   headerRef,
+  settingsPopoverContentRef,
 }: NotificationsHeaderProps): ReactNode {
   return (
     <SidebarHeader ref={headerRef}>
@@ -161,6 +167,7 @@ function NotificationsHeader({
             show={shouldShowSettingsPopover}
             onDismiss={onDismissSettingsPopover}
             containerRef={headerRef}
+            contentRef={settingsPopoverContentRef}
           >
             <NotificationSettingsIcon
               onClick={onToggleSettings}
