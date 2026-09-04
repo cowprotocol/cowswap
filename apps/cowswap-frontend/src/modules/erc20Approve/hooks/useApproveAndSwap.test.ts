@@ -1,3 +1,5 @@
+import { ExecutionRevertedError } from 'viem'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -176,6 +178,34 @@ describe('useApproveAndSwap', () => {
         expect(mockHandleApprove).not.toHaveBeenCalled()
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
+    })
+
+    it('should fall back to on-chain approve when the signed permit execution reverts', async () => {
+      mockUseTokenSupportsPermit.mockReturnValue(true)
+      mockGeneratePermitToTrade.mockRejectedValue(new ExecutionRevertedError({ message: 'invalid signature' }))
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: mockAmount,
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      expect(mockGeneratePermitToTrade).toHaveBeenCalled()
+      expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+      expect(mockOnApproveConfirm).toHaveBeenCalledWith(mockTxReceipt.transactionHash)
     })
 
     it('should not call onApproveConfirm if onApproveConfirm callback is not provided', async () => {
