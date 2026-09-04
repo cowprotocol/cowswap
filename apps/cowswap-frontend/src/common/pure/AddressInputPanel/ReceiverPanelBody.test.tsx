@@ -135,7 +135,7 @@ function mockValidAddress(explorerUrl: string | null = null): void {
 // --- Render helpers ---
 
 function renderComponent(props: Partial<React.ComponentProps<typeof ReceiverPanelBody>> = {}): RenderResult {
-  return render(wrap(<ReceiverPanelBody className="test-class" value="" onChange={jest.fn()} {...props} />))
+  return render(wrap(<ReceiverPanelBody value="" onChange={jest.fn()} {...props} />))
 }
 
 function wrap(element: React.ReactElement): React.ReactElement {
@@ -279,7 +279,6 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     rerender(
       wrap(
         <ReceiverPanelBody
-          className="test-class"
           value="AnotherSolanaAddress111111111111111111111111"
           onChange={jest.fn()}
           targetChainId={SupportedChainId.SOLANA}
@@ -303,7 +302,6 @@ describe('ReceiverPanelBody — onNonEvmReceiverConfirmedChange callback', () =>
     rerender(
       wrap(
         <ReceiverPanelBody
-          className="test-class"
           value={VALID_SOL_ADDRESS}
           onChange={jest.fn()}
           targetChainId={AdditionalTargetChainId.BITCOIN}
