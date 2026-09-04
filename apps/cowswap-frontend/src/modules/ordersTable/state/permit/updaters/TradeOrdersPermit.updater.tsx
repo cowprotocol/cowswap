@@ -3,8 +3,7 @@ import { ReactNode } from 'react'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { TradeType } from 'modules/trade'
-
+import { TradeType } from 'common/modules/tradeNavigation'
 import { GenericOrder } from 'common/types'
 
 import { OrdersPermitUpdater } from './OrdersPermit.updater'

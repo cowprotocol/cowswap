@@ -1,8 +1,9 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { TradeType } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { validateTradeForm } from './validateTradeForm'
 

@@ -33,12 +33,12 @@ import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
-import { TradeType } from 'modules/trade/types/TradeType'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
