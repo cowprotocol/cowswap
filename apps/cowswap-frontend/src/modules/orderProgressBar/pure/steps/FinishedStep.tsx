@@ -13,7 +13,7 @@ import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -183,7 +183,10 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
+                    <Trans>
+                      View <Plural value={solversLength - 3} one="# more" few="# more" many="# more" other="# more" />
+                    </Trans>{' '}
+                    <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -206,9 +209,7 @@ export function FinishedStep({
           })}
         >
           <SVG src={iconSocialXSrc} />
-          <span>
-            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-          </span>
+          <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
         </styledEl.ShareButton>
       )}
     </styledEl.FinishedStepContainer>
