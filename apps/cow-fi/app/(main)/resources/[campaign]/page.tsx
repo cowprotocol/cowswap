@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 import { notFound } from 'next/navigation'
 
-import { getCampaignSummaries, getResources } from '../../../../services/cms'
+import { getAllResources, getCampaignSummaries } from '../../../../services/cms'
 
 import type { Metadata } from 'next'
 
@@ -33,7 +33,7 @@ export async function generateStaticParams(): Promise<{ campaign: string }[]> {
 
 export default async function ResourcesCampaignPage({ params }: Props): Promise<ReactNode> {
   const campaign = (await params).campaign
-  const resourcesResponse = await getResources({
+  const resources = await getAllResources({
     filters: {
       campaign: {
         $eq: campaign,
@@ -41,9 +41,9 @@ export default async function ResourcesCampaignPage({ params }: Props): Promise<
     },
   })
 
-  if (resourcesResponse.data.length === 0) {
+  if (resources.length === 0) {
     return notFound()
   }
 
-  return <ResourcesCampaignComponent campaign={campaign} resources={resourcesResponse.data} />
+  return <ResourcesCampaignComponent campaign={campaign} resources={resources} />
 }

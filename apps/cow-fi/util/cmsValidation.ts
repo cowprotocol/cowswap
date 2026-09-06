@@ -3,6 +3,7 @@ import { isRecord } from '@cowprotocol/common-utils/json-utils'
 const CMS_SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const LEARN_REVALIDATE_PATH_PATTERN =
   /^\/learn(?:\/(?:articles(?:\/\d+)?|topics|topic\/[a-z0-9]+(?:-[a-z0-9]+)*|[a-z0-9]+(?:-[a-z0-9]+)*))?$/
+const RESOURCES_REVALIDATE_PATH_PATTERN = /^\/resources(?:\/[a-z0-9]+(?:-[a-z0-9]+)*(?:\/[a-z0-9]+(?:-[a-z0-9]+)*)?)?$/
 
 export const CMS_REVALIDATE_TAG = 'cms-content'
 export const DEFAULT_SEARCH_PAGE = 0
@@ -12,7 +13,7 @@ export const MAX_SEARCH_PAGE_SIZE = 100
 export const MAX_SEARCH_TERM_LENGTH = 100
 
 export function isAllowedRevalidatePath(path: string): boolean {
-  return LEARN_REVALIDATE_PATH_PATTERN.test(path)
+  return LEARN_REVALIDATE_PATH_PATTERN.test(path) || RESOURCES_REVALIDATE_PATH_PATTERN.test(path)
 }
 
 export function isValidCmsSlug(slug: string): boolean {

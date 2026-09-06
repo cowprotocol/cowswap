@@ -6,7 +6,7 @@ import { isValidCmsSlug, normalizeSearchArticlesInput } from 'util/cmsValidation
 import { toQueryParams } from 'util/queryParams'
 
 import { CMS_BASE_URL, DEFAULT_PAGE_SIZE, clientAddons } from './config'
-import { querySerializer, getPopulateConfig } from './helpers'
+import { collectAllPages, getPopulateConfig, querySerializer, toResourceSlugParams } from './helpers'
 
 export type Article = Schemas['ArticleListResponseDataItem']
 export type ArticleListResponse = {
@@ -114,32 +114,58 @@ export async function getAllCategorySlugs(): Promise<string[]> {
 }
 
 /**
+ * Returns every published resource matching the given filters, across CMS pages.
+ */
+export async function getAllResources({
+  filters = {},
+  pageSize = DEFAULT_PAGE_SIZE,
+}: { filters?: Record<string, unknown>; pageSize?: number } = {}): Promise<Resource[]> {
+  try {
+    return await collectAllPages(async (page) => {
+      const result = await getResources({ page, pageSize, filters })
+
+      return {
+        items: result.data,
+        page: result.meta.pagination.page,
+        pageCount: result.meta.pagination.pageCount,
+      }
+    })
+  } catch (error) {
+    return handleCmsBuildFailure('getAllResources', error, [])
+  }
+}
+
+/**
  * Returns all resource slugs grouped by campaign.
  */
 export async function getAllResourceSlugs(): Promise<ResourceSlugParam[]> {
   try {
-    const { data, error, response } = await client.GET('/resources', {
-      params: {
-        query: {
-          fields: ['slug', 'campaign'],
-          'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+    const resources = await collectAllPages(async (page) => {
+      const { data, error, response } = await client.GET('/resources', {
+        params: {
+          query: {
+            fields: ['slug', 'campaign'],
+            'pagination[page]': page,
+            'pagination[pageSize]': DEFAULT_PAGE_SIZE,
+          },
         },
-      },
-      querySerializer,
-      ...clientAddons,
+        querySerializer,
+        ...clientAddons,
+      })
+
+      if (error) {
+        console.error(`Error ${response.status} getting resource slugs: ${response.url}`, error)
+        throw error
+      }
+
+      return {
+        items: data.data,
+        page: data.meta.pagination.page,
+        pageCount: data.meta.pagination.pageCount,
+      }
     })
 
-    if (error) {
-      console.error(`Error ${response.status} getting resource slugs: ${response.url}`, error)
-      throw error
-    }
-
-    return data.data
-      .filter((resource: Resource) => resource.attributes?.slug && resource.attributes?.campaign)
-      .map((resource: Resource) => ({
-        campaign: resource.attributes!.campaign!,
-        slug: resource.attributes!.slug!,
-      }))
+    return toResourceSlugParams(resources)
   } catch (error) {
     return handleCmsBuildFailure('getAllResourceSlugs', error, [])
   }

@@ -7,6 +7,7 @@ import { getAllResourceSlugs, getResourceBySlug, SharedRichTextComponent } from 
 import type { Metadata } from 'next'
 
 import { ResourcePageComponent } from '@/components/ResourcePageComponent'
+import { resolveResourceRoute } from '@/const/resources'
 import { getPageMetadata } from '@/util/getPageMetadata'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
 
@@ -83,8 +84,14 @@ export default async function ResourcePage({ params }: Props): Promise<ReactNode
   }
 
   // Keep outside try/catch — permanentRedirect throws a control-flow error Next must handle
-  if (resource.attributes.campaign !== campaign) {
-    permanentRedirect(`/resources/${resource.attributes.campaign}/${slug}`)
+  const resolution = resolveResourceRoute(campaign, resource.attributes.campaign, slug)
+
+  if (resolution.action === 'not-found') {
+    return notFound()
+  }
+
+  if (resolution.action === 'redirect') {
+    permanentRedirect(resolution.href)
   }
 
   return <ResourcePageComponent resource={resource} />
