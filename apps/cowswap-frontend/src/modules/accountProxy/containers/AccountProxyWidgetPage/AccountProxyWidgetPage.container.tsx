@@ -44,7 +44,9 @@ export function AccountProxyWidgetPage(): ReactNode {
   useSetupBalancesContext(proxyAddress && isAddress(proxyAddress) ? proxyAddress : undefined)
 
   const isWalletConnected = !!account
-  const isUnsupportedChain = isWalletConnected && !isEvmChain(chainId)
+  // When no wallet is connected, chainId comes from the URL, so this also covers
+  // opening the page on a non-EVM network while disconnected
+  const isUnsupportedChain = !isEvmChain(chainId)
   const isHelpPage = location.pathname.endsWith('/help')
   const isRootProxyPage = !!matchPath(Routes.ACCOUNT_PROXIES, location.pathname)
   const query = new URLSearchParams(location.search)
@@ -73,7 +75,7 @@ export function AccountProxyWidgetPage(): ReactNode {
   }, [accountOrChainChanged, isUnsupportedChain, chainId, navigate])
 
   // Account Proxy is an EVM-only concept (CoW Shed): redirect out instead of showing an error
-  // when a non-EVM wallet (e.g. Solana) is connected.
+  // or an empty page on a non-EVM network (e.g. Solana).
   useLayoutEffect(() => {
     if (!isUnsupportedChain) return
 
