@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-04 14:04\n"
+"PO-Revision-Date: 2026-09-06 14:51\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1660,7 +1660,7 @@ msgstr "Nenhuma rota encontrada para este token"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/ProxyRecipient.container.tsx
 msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
-msgstr "Este provedor de ponte usa um endereço de destinatário especial para fazer a ponte dos fundos. Esse endereço é determinante para uma cotação e foi verificado pelo CoW Swap."
+msgstr "Este provedor de ponte usa um endereço de destinatário especial para fazer a ponte dos fundos. Esse endereço é determinante para a cotação e foi verificado pelo CoW Swap."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountModal/AccountModal.container.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -1673,7 +1673,7 @@ msgstr "As ordens limite agora são mais fáceis de usar. <0/> Experimente"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Create an issue on GitHub"
-msgstr "Levantar uma questão no Github"
+msgstr "Criar um issue no Github"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap has over 20 active solvers - more than any other exchange."
@@ -1702,7 +1702,7 @@ msgstr "Restaurando carteira"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 msgid "Already linked to a referral code"
-msgstr "Já vinculado a um código de indicação"
+msgstr "Já vinculado a um código de afiliado"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "No results found"
@@ -1719,7 +1719,7 @@ msgstr "Token desconhecido"
 
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/index.tsx
 msgid "Read more about the tokenomics"
-msgstr "Leia mais sobre a tokenomics"
+msgstr "Leia mais sobre os tokenomics"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
@@ -2150,7 +2150,7 @@ msgstr "Agora é a hora de agir!"
 
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
 msgid "Swap order filled"
-msgstr "Ordem de troca preenchida"
+msgstr "Ordem de troca executada"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "Let's slice some"
