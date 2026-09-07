@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.25.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.0...cowswap-v3.25.1) (2026-09-07)
+
+### Patch Changes
+
+- fix: do not show partial approval when unsupported (#8093)
+
+- fix: keep mobile menu header visible after scroll (#8098)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+  - @cowprotocol/tokens@3.11.1
+  - @cowprotocol/snackbars@2.3.1
+  - @cowprotocol/wallet@3.12.1
+  - @cowprotocol/balances-and-allowances@3.12.1
+  - @cowprotocol/multicall@3.6.1
+
 ## [3.25.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.24.0...cowswap-v3.25.0) (2026-09-03)
 
 ### Minor Changes
