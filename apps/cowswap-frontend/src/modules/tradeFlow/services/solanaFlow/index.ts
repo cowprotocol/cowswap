@@ -19,7 +19,7 @@ export async function solanaFlow(
   analytics: TradeFlowAnalytics,
 ): Promise<boolean | void> {
   const { tradeConfirmActions, tradeQuote, context, callbacks, swapFlowAnalyticsContext, account } = input
-  const { inputAmount, outputAmount, chainId, validTo } = context
+  const { inputAmount, outputAmount, chainId, validTo, receiver } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and post order')
@@ -27,10 +27,10 @@ export async function solanaFlow(
   analytics.trade(swapFlowAnalyticsContext)
 
   try {
-    // Forward the user's configured deadline (swapSettingsAtom -> getOrderValidTo -> context.validTo);
-    // otherwise the SDK falls back to the quote's own validTo, ignoring the swap settings deadline.
+    // Forward the user's configured deadline and any custom recipient set after quoting; otherwise
+    // the SDK falls back to the quote's own validTo/receiver, same as swapFlow does for EVM.
     const { orderId, txHash, signingScheme, signature } = await tradeQuote.postSwapOrderFromQuote({
-      quoteRequest: { validTo },
+      quoteRequest: { validTo, receiver },
     })
 
     if (!txHash) {

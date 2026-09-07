@@ -61,6 +61,7 @@ function buildContext(postSwapOrderFromQuote: jest.Mock): SolanaTradeFlowContext
       outputAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
+      receiver: 'ReceiverSolanaAddress1111111111111111111111',
     },
     callbacks: {
       closeModals: jest.fn(),
@@ -101,10 +102,11 @@ describe('solanaFlow', () => {
     const result = await solanaFlow(context, analytics)
 
     expect(result).toBe(true)
-    // The user's configured deadline (swapSettingsAtom -> getOrderValidTo -> context.validTo) must be
-    // forwarded to the SDK, otherwise Solana orders silently fall back to the quote's own validTo.
+    // The user's configured deadline (swapSettingsAtom -> getOrderValidTo -> context.validTo) and a
+    // custom recipient (context.receiver) must both be forwarded to the SDK, otherwise Solana orders
+    // silently fall back to the quote's own validTo/receiver, same as swapFlow does for EVM.
     expect(postSwapOrderFromQuote).toHaveBeenCalledWith({
-      quoteRequest: { validTo: context.context.validTo },
+      quoteRequest: { validTo: context.context.validTo, receiver: context.context.receiver },
     })
     expect(context.callbacks.addTransaction).toHaveBeenCalledWith(expect.objectContaining({ hash: 'tx-signature-abc' }))
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
