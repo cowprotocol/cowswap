@@ -2,7 +2,7 @@ import { OrderKind, PriceQuality, QuoteAndPost, SupportedChainId } from '@cowpro
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { getIsSolanaTradeFlowContextReady } from './useSolanaTradeFlowContext'
+import { getIsSolanaTradeFlowContextReady } from './getIsSolanaTradeFlowContextReady'
 
 // The canonical Solana System Program address (32 zero bytes) — always a valid
 // Solana pubkey, used here purely as "some syntactically valid Solana address".
@@ -11,7 +11,9 @@ const EVM_CHAIN_ID = SupportedChainId.MAINNET
 
 const token = new Token(EVM_CHAIN_ID, '0x0000000000000000000000000000000000000001', 18, 'FOO')
 const amount = CurrencyAmount.fromRawAmount(token, '1000')
-const quote = {} as QuoteAndPost
+// Readiness requires a Solana quote specifically: `solanaQuote` carries the intent/PDA the
+// CreateOrder instruction is built from.
+const quote = { solanaQuote: {} } as unknown as QuoteAndPost
 
 describe('getIsSolanaTradeFlowContextReady', () => {
   const readyParams = {
@@ -24,6 +26,7 @@ describe('getIsSolanaTradeFlowContextReady', () => {
     uiOrderType: UiOrderType.SWAP,
     orderKind: OrderKind.SELL,
     validTo: 1_700_000_000,
+    hasSolanaSigner: true,
   }
 
   it('is ready when every condition is met', () => {
@@ -40,6 +43,14 @@ describe('getIsSolanaTradeFlowContextReady', () => {
 
   it('is not ready when there is no quote yet', () => {
     expect(getIsSolanaTradeFlowContextReady({ ...readyParams, quote: null })).toBe(false)
+  })
+
+  it('is not ready when the quote carries no solanaQuote', () => {
+    expect(getIsSolanaTradeFlowContextReady({ ...readyParams, quote: {} as QuoteAndPost })).toBe(false)
+  })
+
+  it('is not ready without a Solana connection, provider and sell token', () => {
+    expect(getIsSolanaTradeFlowContextReady({ ...readyParams, hasSolanaSigner: false })).toBe(false)
   })
 
   it('is not ready when the quote is not the OPTIMAL price quality', () => {
