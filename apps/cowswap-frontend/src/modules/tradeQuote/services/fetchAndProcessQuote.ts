@@ -138,10 +138,10 @@ async function fetchSwapQuote(
   processQuoteError: (errorLocation: string, error: unknown) => void,
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
-  const isVerifiedQuote = getIsFinalQuote(fetchParams)
+  const isFinalQuote = getIsFinalQuote(fetchParams)
 
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    const solanaRequest = isVerifiedQuote
+    const solanaRequest = isFinalQuote
       ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
       : getFastSolanaQuote(quoteParams, solanaSigningContext)
 
@@ -160,7 +160,7 @@ async function fetchSwapQuote(
     return
   }
 
-  const request = isVerifiedQuote
+  const request = isFinalQuote
     ? getFinalQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 

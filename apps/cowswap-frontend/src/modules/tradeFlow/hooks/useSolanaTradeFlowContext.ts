@@ -1,11 +1,4 @@
-import {
-  isSolanaAddress,
-  isSolanaChain,
-  OrderKind,
-  PriceQuality,
-  QuoteAndPost,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain, OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -24,7 +17,7 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeFlowParams } from './useTradeFlowContext'
 
@@ -36,14 +29,14 @@ interface SolanaTradeFlowContextParams {
   inputAmount: CurrencyAmount<Currency> | undefined
   outputAmount: CurrencyAmount<Currency> | undefined
   quote: QuoteAndPost | null
-  priceQuality: PriceQuality | undefined
+  isFinalQuote: boolean
   uiOrderType: UiOrderType | null
   orderKind: OrderKind | undefined
   validTo: number
 }
 
 export function getIsSolanaTradeFlowContextReady(params: SolanaTradeFlowContextParams): boolean {
-  const { chainId, account, inputAmount, outputAmount, quote, priceQuality, uiOrderType, orderKind, validTo } = params
+  const { chainId, account, inputAmount, outputAmount, quote, isFinalQuote, uiOrderType, orderKind, validTo } = params
 
   return Boolean(
     isSolanaChain(chainId) &&
@@ -51,7 +44,7 @@ export function getIsSolanaTradeFlowContextReady(params: SolanaTradeFlowContextP
       inputAmount &&
       outputAmount &&
       quote &&
-      priceQuality === PriceQuality.OPTIMAL &&
+      isFinalQuote &&
       uiOrderType &&
       orderKind &&
       validTo > 0,
@@ -82,7 +75,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
     inputAmount,
     outputAmount,
     quote: tradeQuoteState.quote,
-    priceQuality: tradeQuoteState.fetchParams?.priceQuality,
+    isFinalQuote: getIsFinalQuote(tradeQuoteState.fetchParams),
     uiOrderType,
     orderKind,
     validTo,
