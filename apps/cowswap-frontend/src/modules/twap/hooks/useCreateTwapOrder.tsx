@@ -113,16 +113,10 @@ export function useCreateTwapOrder() {
   const sendSafeTransactions = useSendBatchTransactions()
 
   const amountToSignApprove = useGetAmountToSignApprove()
-  // On-chain approve amount from the form's partial vs full toggle.
-  //
-  // `useGetAmountToSignApprove` is keyed off vault-relayer allowance (the trade spender):
-  // - `null` — sell amount not ready. The `?` below is false, so we use maxUint256.
-  // - `0` — vault relayer already covers this trade. A zero CurrencyAmount is still
-  //   truthy, so this becomes 0n (not unlimited). Safe then skips the approve tx.
-  //   EOA remaps 0n to the TWAP sell later: it approves the poller, not the vault relayer.
-  // - otherwise — partial sell or unlimited, as selected on the form.
-  //
-  // Permit does not use this value; it always permits the exact TWAP sell (`amountToCover`).
+  // The line above can be misleading because `useGetAmountToSignApprove` checks against the vault relayer allowance,
+  // but we want to approve the poller instead, and it can return null when the form is not ready yet or `0` when the
+  // vault relayer already covers the trade.
+  // Note permit does not use this value. It always permits the exact TWAP sell (`amountToCover`).
   const amountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
   const twapOrderCreationContext = useTwapOrderCreationContext(
     inputCurrencyAmount as Nullish<CurrencyAmount<Token>>,
@@ -310,8 +304,8 @@ export function useCreateTwapOrder() {
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
-          // 0n means vault-relayer allowance already covers the trade (see amountToApprove above).
-          // The poller is a different spender, so approve the TWAP sell instead of 0 or unlimited.
+          // 0n means vault-relayer allowance already covers the trade (see amountToApprove above), but we don't care about vault-relayer allowance here,
+          // we want to approve the poller instead, so qw approve the TWAP sell instead of 0 or unlimited.
           const pollerAmountToApprove = amountToApprove > 0n ? amountToApprove : sellAmountAtoms
 
           const pollerApprovalNeeds = await getEoaTwapApprovalNeeds({
@@ -340,7 +334,7 @@ export function useCreateTwapOrder() {
           let pollerPermitData: PermitHookData | null = null
 
           if (pollerApprovalNeeds.needsApproval) {
-            // Permit the exact TWAP sell when available; otherwise on-chain approve uses the form amount:
+            // Permit the exact TWAP sell when available, or otherwise on-chain approve the form amount:
             pollerPermitData = await ensureEoaTwapSpenderAllowance({
               config,
               chainId,
