@@ -61,7 +61,9 @@ export async function solanaFlow(
     )
 
     logTradeFlow('SOLANA FLOW', 'STEP 2: show UI of the successfully sent transaction', orderId)
-    tradeConfirmActions.onSuccess(txHash)
+    // onSuccess takes the order id, not the tx hash: OrderSubmittedContent looks the order up
+    // from Redux by this value via `useOrder({ id: transactionHash })`.
+    tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
     callbacks.closeModals()
 

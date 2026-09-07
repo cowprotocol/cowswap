@@ -118,7 +118,9 @@ describe('solanaFlow', () => {
       }),
       context.callbacks.dispatch,
     )
-    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith('tx-signature-abc')
+    // onSuccess must receive the order id (not the tx signature): OrderSubmittedContent looks the
+    // order up from Redux via `useOrder({ id: transactionHash })`, and orders are keyed by order id.
+    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith('order-uid-123')
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
     expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)

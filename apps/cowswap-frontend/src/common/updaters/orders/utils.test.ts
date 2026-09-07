@@ -11,14 +11,26 @@ import { UiOrderType } from '@cowprotocol/types'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { getOrder } from 'api/cowProtocol'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
-import { fetchAndClassifyOrder, getOrdersFromTransitionData, getOrderTypesByUid, OrderTransitionData } from './utils'
+import {
+  fetchAndClassifyOrder,
+  getFulfilledOrderUidsForSurplusQueue,
+  getOrdersFromTransitionData,
+  getOrderTypesByUid,
+  OrderTransitionData,
+} from './utils'
 
 jest.mock('api/cowProtocol', () => ({
   getOrder: jest.fn(),
 }))
 
+jest.mock('common/utils/getIsBridgeOrder', () => ({
+  getIsBridgeOrder: jest.fn(() => false),
+}))
+
 const getOrderMock = getOrder as jest.MockedFunction<typeof getOrder>
+const getIsBridgeOrderMock = getIsBridgeOrder as jest.MockedFunction<typeof getIsBridgeOrder>
 
 const CHAIN_ID = SupportedChainId.MAINNET
 
@@ -123,6 +135,39 @@ describe('order updater utils', () => {
 
       await expect(fetchAndClassifyOrder(storedOrder, CHAIN_ID)).resolves.toBeNull()
       expect(getOrderMock).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getFulfilledOrderUidsForSurplusQueue', () => {
+    afterEach(() => {
+      getIsBridgeOrderMock.mockReturnValue(false)
+    })
+
+    it('queues a swap order even when the API response omits class/fullAppData (Solana orders)', () => {
+      // Solana order-book responses don't include `class`/`fullAppData`, unlike EVM's EnrichedOrder,
+      // so the order type must come from the already-computed orderTypesByUid, not the API order itself.
+      const solanaShapedOrder = buildApiOrder({ uid: '0xsolana-order', class: undefined, fullAppData: undefined })
+
+      const result = getFulfilledOrderUidsForSurplusQueue([solanaShapedOrder], { '0xsolana-order': UiOrderType.SWAP })
+
+      expect(result).toEqual(['0xsolana-order'])
+    })
+
+    it('does not queue non-swap order types', () => {
+      const limitOrder = buildApiOrder({ uid: '0xlimit' })
+
+      const result = getFulfilledOrderUidsForSurplusQueue([limitOrder], { '0xlimit': UiOrderType.LIMIT })
+
+      expect(result).toEqual([])
+    })
+
+    it('does not queue bridge orders', () => {
+      const bridgeOrder = buildApiOrder({ uid: '0xbridge' })
+      getIsBridgeOrderMock.mockReturnValue(true)
+
+      const result = getFulfilledOrderUidsForSurplusQueue([bridgeOrder], { '0xbridge': UiOrderType.SWAP })
+
+      expect(result).toEqual([])
     })
   })
 

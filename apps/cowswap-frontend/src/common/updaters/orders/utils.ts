@@ -6,6 +6,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getOrder } from 'api/cowProtocol'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -24,7 +25,7 @@ export async function fetchAndClassifyOrder(
   orderFromStore: Order,
   chainId: ChainId,
 ): Promise<OrderTransitionData | null> {
-  // Skip EthFlow creating orders
+  // Creating orders (EthFlow, Solana) aren't indexed by the order-book yet; _updateCreatingOrders handles those
   if (orderFromStore.status === OrderStatus.CREATING) {
     return null
   }
@@ -46,6 +47,20 @@ export async function fetchAndClassifyOrder(
     )
     return null
   }
+}
+
+/**
+ * Not every order-book response carries `class`/`fullAppData` (e.g. Solana's), so the order type
+ * must come from the already-classified `orderTypesByUid` map rather than being re-derived from
+ * the fetched API order.
+ */
+export function getFulfilledOrderUidsForSurplusQueue(
+  fulfilledOrders: EnrichedOrder[],
+  orderTypesByUid: OrderTypesByUid,
+): string[] {
+  return fulfilledOrders
+    .filter((order) => orderTypesByUid[order.uid] === UiOrderType.SWAP && !getIsBridgeOrder(order))
+    .map((order) => order.uid)
 }
 
 export function getOrdersFromTransitionData(orderData: OrderTransitionData[]): EnrichedOrder[] {

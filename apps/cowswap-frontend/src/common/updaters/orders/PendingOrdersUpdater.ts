@@ -55,6 +55,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   fetchAndClassifyOrder,
+  getFulfilledOrderUidsForSurplusQueue,
   getOrdersFromTransitionData,
   getOrderTypesByUid,
   OrderTransitionData,
@@ -301,11 +302,13 @@ async function _updateCreatingOrders(
 ): Promise<void> {
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
-      // Filter only EthFlow orders in creating state
+      // Orders that are only known locally until the backend indexes their creation tx
+      // (EthFlow's on-chain creation tx, Solana's order creation tx): keep polling until
+      // `getOrder` finds them, then move them to the pending bucket.
 
       const promise = getOrder(chainId, order.id)
         .then((orderData) => {
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} fetched from API!!!`, orderData)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} fetched from API!!!`, orderData)
           if (!orderData) {
             return
           }
@@ -445,14 +448,7 @@ async function _updateOrders({
       fulfilledOrderTypesByUid,
     )
     // add to surplus queue
-    fulfilledOrders.forEach((order) => {
-      const { uid, fullAppData, class: orderClass } = order
-      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        if (!getIsBridgeOrder(order)) {
-          addOrderToSurplusQueue(uid)
-        }
-      }
-    })
+    getFulfilledOrderUidsForSurplusQueue(fulfilledOrders, fulfilledOrderTypesByUid).forEach(addOrderToSurplusQueue)
   }
 
   const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)
