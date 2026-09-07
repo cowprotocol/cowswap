@@ -6,9 +6,9 @@ import { useLocation } from 'react-router'
 
 import type { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 
 import { getDefaultTradeRawState } from '../types/TradeRawState'
-import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
 interface UseTradeRouteRedirectOptions {
   /** Used when both query ?inputCurrency= and getDefaultTradeRawState(...).inputCurrencyId are empty. */

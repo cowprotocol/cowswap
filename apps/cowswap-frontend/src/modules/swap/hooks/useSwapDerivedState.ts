@@ -1,10 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { TradeType, useBuildTradeDerivedState } from 'modules/trade'
+import { useBuildTradeDerivedState } from 'modules/trade'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import {
   DEFAULT_SWAP_DERIVED_STATE,

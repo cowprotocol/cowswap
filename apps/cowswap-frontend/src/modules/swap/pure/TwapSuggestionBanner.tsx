@@ -9,9 +9,8 @@ import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'modules/trade'
-
 import { Routes } from 'common/constants/routes'
+import { parameterizeTradeRoute, parameterizeTradeSearch, TradeUrlParams } from 'common/modules/tradeNavigation'
 
 const StyledNavLink = styled(NavLink)`
   color: inherit;

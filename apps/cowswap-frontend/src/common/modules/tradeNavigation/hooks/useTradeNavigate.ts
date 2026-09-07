@@ -9,7 +9,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
 
-import { TradeCurrenciesIds } from '../types/TradeRawState'
+import { TradeCurrenciesIds } from '../types'
 import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 import { parameterizeTradeSearch, TradeSearchParams } from '../utils/parameterizeTradeSearch'
 

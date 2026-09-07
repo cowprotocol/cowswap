@@ -161,10 +161,12 @@ export class SwapPage implements TradePage {
   }
 
   async enterSellAmount(amount: string): Promise<void> {
+    await expect(this.inputAmount).toBeEnabled()
     await this.inputAmount.fill(amount)
   }
 
   async enterBuyAmount(amount: string): Promise<void> {
+    await expect(this.outputAmount).toBeEnabled()
     await this.outputAmount.fill(amount)
   }
 

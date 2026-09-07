@@ -7,11 +7,11 @@ import { UiOrderType } from '@cowprotocol/types'
 import { renderHook } from '@testing-library/react'
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { useAmountsToSignFromQuote } from './useAmountsToSignFromQuote'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useNotifyWidgetTrade } from './useNotifyWidgetTrade'
-
-import { TradeType } from '../types'
 
 jest.mock('widgetEventEmitter', () => ({
   WIDGET_EVENT_EMITTER: {

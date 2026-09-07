@@ -11,9 +11,9 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { recoverSpenderFromCalldata, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
 

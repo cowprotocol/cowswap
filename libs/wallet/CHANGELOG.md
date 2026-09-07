@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.11.1...wallet-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/ens@3.6.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/iframe-transport@2.3.6
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.11.0...wallet-v3.11.1) (2026-08-12)
 
 ### Patch Changes

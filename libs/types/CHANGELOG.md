@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.9.0](https://github.com/cowprotocol/cowswap/compare/types-v4.8.0...types-v4.9.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.4.0
+
 ## [4.8.0](https://github.com/cowprotocol/cowswap/compare/types-v4.7.0...types-v4.8.0) (2026-08-05)
 
 ### Minor Changes

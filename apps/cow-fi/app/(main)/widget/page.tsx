@@ -51,7 +51,7 @@ const widgetParams: CowSwapWidgetParams = {
   appCode: 'CoW Protocol: Widget Demo',
   theme: 'light',
   standaloneMode: true,
-  rootStyle: { width: '100%' },
+  rootStyle: { width: '100%', height: 'var(--dynamicHeight)' },
 }
 
 export default function Page(): ReactNode {

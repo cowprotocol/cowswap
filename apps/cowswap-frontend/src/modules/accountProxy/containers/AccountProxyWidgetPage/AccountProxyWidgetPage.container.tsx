@@ -9,10 +9,10 @@ import { Outlet, useLocation, useParams, matchPath } from 'react-router'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
-import { useTradeNavigate } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate, useNavigateBack } from 'common/hooks/useNavigate'
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 import { NewModal } from 'common/pure/NewModal'
 
 import * as styledEl from './AccountProxyWidgetPage.styled'

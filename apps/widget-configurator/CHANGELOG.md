@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.11.1...widget-configurator-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/widget-lib@4.6.0
+  - @cowprotocol/widget-react@3.2.6
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.11.0...widget-configurator-v3.11.1) (2026-08-12)
 
 ### Patch Changes
