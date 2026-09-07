@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "skills": {
+    "pr-review": {
+      "source": "cowprotocol/skills",
+      "ref": "main",
+      "sourceType": "github",
+      "skillPath": "pr-review/SKILL.md",
+      "computedHash": "b6133a29edc77104904d7fd82b688cffc48ce37f17efa42879f5a5dfc8cf76f0"
+    }
+  }
+}
