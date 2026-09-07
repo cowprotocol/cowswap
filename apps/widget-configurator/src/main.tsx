@@ -53,7 +53,7 @@ function ConfiguratorApp(): ReactNode {
       <Box sx={WrapperStyled}>
         <WithLDProvider>
           <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-            <Configurator title="CoW Widget" />
+            <Configurator />
           </CowAnalyticsProvider>
         </WithLDProvider>
       </Box>
