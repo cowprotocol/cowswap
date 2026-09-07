@@ -6654,6 +6654,7 @@ msgstr "View"
 msgid "TWAP · {partCount} parts"
 msgstr "TWAP · {partCount} parts"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MobileOrders/MobileOrderCard.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Execution price"
