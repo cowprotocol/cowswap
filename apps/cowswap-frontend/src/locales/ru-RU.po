@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-04 15:07\n"
+"PO-Revision-Date: 2026-09-07 10:30\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -164,7 +164,7 @@ msgstr "Вы должны предоставить разрешение на и�
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 msgid "Switching network type"
-msgstr "Переключение типа сети"
+msgstr "Переключая тип сети"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 msgid "Receiving {nativeTokenSymbol} Refund..."
@@ -5988,7 +5988,7 @@ msgstr "Минимум {0} мин, максимум {1} мин."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 msgid "Transaction rejected"
-msgstr "Транзакция отклонена."
+msgstr "Транзакция отклонена"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
@@ -6017,7 +6017,7 @@ msgstr "Сохранить и зафиксировать код"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "This toggle is on by default. Toggling on/off will be supported in the future."
-msgstr "Этот переключатель включен по умолчанию. Включение/выключение будет поддерживаться в будущем."
+msgstr "Данные типы уведомлений включены по умолчанию. Включение/выключение будут поддерживаться в будущем."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign in your wallet. We'll submit the funding order automatically."
