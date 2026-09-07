@@ -1,6 +1,7 @@
 import { ReactNode, useLayoutEffect, useState } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -43,6 +44,7 @@ export function AccountProxyWidgetPage(): ReactNode {
   useSetupBalancesContext(proxyAddress && isAddress(proxyAddress) ? proxyAddress : undefined)
 
   const isWalletConnected = !!account
+  const isUnsupportedChain = isWalletConnected && !isEvmChain(chainId)
   const isHelpPage = location.pathname.endsWith('/help')
   const isRootProxyPage = !!matchPath(Routes.ACCOUNT_PROXIES, location.pathname)
   const query = new URLSearchParams(location.search)
@@ -61,12 +63,27 @@ export function AccountProxyWidgetPage(): ReactNode {
     }
   }
 
-  // Go to main page when account/chainId changes
+  // Go to main page when account/chainId changes. Skipped for an unsupported chain: the effect below
+  // redirects out of the whole feature instead, and this would otherwise fire first and push an extra,
+  // immediately-abandoned account-proxy history entry for the unsupported chain.
   useLayoutEffect(() => {
-    if (!accountOrChainChanged) return
+    if (!accountOrChainChanged || isUnsupportedChain) return
 
     navigate(getProxyAccountUrl(chainId), { state: URL_NETWORK_CHANGED_STATE })
-  }, [accountOrChainChanged, chainId, navigate])
+  }, [accountOrChainChanged, isUnsupportedChain, chainId, navigate])
+
+  // Account Proxy is an EVM-only concept (CoW Shed): redirect out instead of showing an error
+  // when a non-EVM wallet (e.g. Solana) is connected.
+  useLayoutEffect(() => {
+    if (!isUnsupportedChain) return
+
+    tradeNavigate(
+      chainId,
+      { inputCurrencyId, outputCurrencyId },
+      undefined,
+      sourceRoute === 'hooks' ? Routes.HOOKS : Routes.SWAP,
+    )
+  }, [isUnsupportedChain, tradeNavigate, chainId, inputCurrencyId, outputCurrencyId, sourceRoute])
 
   return (
     <styledEl.EmptyWrapper>
@@ -89,7 +106,11 @@ export function AccountProxyWidgetPage(): ReactNode {
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          {isWalletConnected || isHelpPage ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
+          {isUnsupportedChain ? null : isWalletConnected || isHelpPage ? (
+            <Outlet />
+          ) : (
+            <WalletNotConnected onConnect={toggleWalletModal} />
+          )}
         </NewModal>
       </styledEl.WidgetWrapper>
     </styledEl.EmptyWrapper>

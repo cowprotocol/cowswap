@@ -9,7 +9,7 @@ import { AccountType } from '@cowprotocol/types'
 import { accountTypeAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, render, waitFor } from '@testing-library/react'
-import { eoaTwapOrdersAtom } from 'entities/twap'
+import { eoaTwapOrdersAtom, twapOrdersAtom } from 'entities/twap'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { ordersLimitAtom } from 'modules/orders'
@@ -28,7 +28,10 @@ jest.mock('@cowprotocol/wallet', () => ({
 jest.mock('../services/programmaticOrdersApi', () => ({
   programmaticOrdersApi: { fetchEoaTwapOrders: jest.fn() },
 }))
-jest.mock('entities/twap', () => jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'))
+jest.mock('entities/twap', () => ({
+  ...jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'),
+  ...jest.requireActual('entities/twap/state/twapOrdersAtom'),
+}))
 
 const EOA_A = '0x1111111111111111111111111111111111111111'
 const EOA_B = '0x2222222222222222222222222222222222222222'
@@ -178,6 +181,40 @@ describe('eoaTwapOrdersEffectAtom', () => {
     })
 
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 200))
+  })
+
+  it('does not overwrite a local cancelling status with stale API data', async () => {
+    const store = createStore()
+    const cancellingOrder = { ...makeOrder('cancelling-event', EOA_A), status: TwapOrderStatus.Cancelling }
+    const staleApiOrder = { ...cancellingOrder, status: TwapOrderStatus.Pending }
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    store.set(eoaTwapOrdersAtom, { [cancellingOrder.id]: cancellingOrder })
+    fetchEoaTwapOrdersMock.mockResolvedValue({ orders: { [staleApiOrder.id]: staleApiOrder }, totalCount: 1 })
+
+    render(<Effect />, { wrapper: testWrapper(store) })
+
+    await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalled())
+    expect(store.get(eoaTwapOrdersAtom)[cancellingOrder.id]?.status).toBe(TwapOrderStatus.Cancelling)
+  })
+
+  it('transfers a local cancellation from an optimistic hash to an indexed event', async () => {
+    const store = createStore()
+    const indexedOrder = makeOrder('indexed-event', EOA_A)
+    const optimisticOrder = {
+      ...indexedOrder,
+      id: `hash-${indexedOrder.id}`,
+      status: TwapOrderStatus.Cancelled,
+      partOrdersCount: undefined,
+    }
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    store.set(twapOrdersAtom, { [optimisticOrder.id]: optimisticOrder })
+    fetchEoaTwapOrdersMock.mockResolvedValue({ orders: { [indexedOrder.id]: indexedOrder }, totalCount: 1 })
+
+    render(<Effect />, { wrapper: testWrapper(store) })
+
+    await waitFor(() => expect(store.get(eoaTwapOrdersAtom)[indexedOrder.id]?.status).toBe(TwapOrderStatus.Cancelled))
   })
 })
 
