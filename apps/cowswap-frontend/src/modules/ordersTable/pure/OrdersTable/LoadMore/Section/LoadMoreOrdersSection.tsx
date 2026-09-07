@@ -2,8 +2,8 @@ import { ReactNode } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
-import { plural, t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { plural } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { useLoadMoreOrders } from 'modules/orders'
@@ -17,6 +17,7 @@ export interface LoadMoreOrdersSectionProps {
 }
 
 export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOrdersSectionProps): ReactNode {
+  const { t } = useLingui()
   const { limit, hasMoreOrders, isLoading, loadMore } = useLoadMoreOrders(orderType)
 
   const paragraphs = hasMoreOrders ? (
