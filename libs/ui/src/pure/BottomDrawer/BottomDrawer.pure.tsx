@@ -11,9 +11,19 @@ import { OverlayLayer } from '../surfaces/OverlayLayer.styled'
 
 export type { BaseSurfaceProps as BaseOpenableContainerProps } from '../surfaces/BaseSurface.types'
 
-export type BottomDrawerProps = BaseSurfaceProps
+export interface BottomDrawerProps extends BaseSurfaceProps {
+  /** Expands the drawer to the full dynamic viewport and removes the sheet chrome. */
+  fullScreen?: boolean
+}
 
-function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
+function BottomDrawerComponent({
+  isOpen,
+  onOpenChange,
+  children,
+  a11yTitle,
+  className,
+  fullScreen = false,
+}: BottomDrawerProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -30,8 +40,8 @@ function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, clas
           <OverlayLayer data-bottom-drawer-layer="">
             <styledEl.Backdrop data-bottom-drawer-backdrop="" forceRender />
             <styledEl.Viewport data-bottom-drawer-viewport="">
-              <styledEl.Popup className={className}>
-                <styledEl.Handle aria-hidden />
+              <styledEl.Popup className={className} $fullScreen={fullScreen} data-bottom-drawer-popup="">
+                {fullScreen ? null : <styledEl.Handle aria-hidden data-bottom-drawer-handle="" />}
                 {a11yTitle ? <styledEl.VisuallyHiddenTitle>{a11yTitle}</styledEl.VisuallyHiddenTitle> : null}
                 {children}
               </styledEl.Popup>

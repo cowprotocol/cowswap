@@ -10,13 +10,21 @@ jest.mock('./BottomDrawer.pure', () => ({
     isOpen,
     a11yTitle,
     className,
+    fullScreen,
   }: {
     children: ReactNode
     isOpen: boolean
     a11yTitle?: string
     className?: string
+    fullScreen?: boolean
   }) => (
-    <div data-testid="bottom-drawer" data-open={String(isOpen)} data-a11y-title={a11yTitle} className={className}>
+    <div
+      data-testid="bottom-drawer"
+      data-open={String(isOpen)}
+      data-a11y-title={a11yTitle}
+      data-full-screen={String(fullScreen)}
+      className={className}
+    >
       {children}
     </div>
   ),
@@ -56,6 +64,7 @@ function renderBottomDrawerOrDialog(
     a11yTitle?: string
     className?: string
     children?: ReactNode
+    fullScreen?: boolean
     variant?: 'default' | 'narrow'
   },
 ): ReturnType<typeof render> & {
@@ -68,6 +77,7 @@ function renderBottomDrawerOrDialog(
       onOpenChange={onOpenChange}
       a11yTitle={extra?.a11yTitle}
       className={extra?.className}
+      fullScreen={extra?.fullScreen}
       variant={extra?.variant}
     >
       {extra?.children ?? <div>receipt</div>}
@@ -85,6 +95,7 @@ describe('BottomDrawerOrDialog', () => {
       a11yTitle: 'Order Receipt',
       className: 'receipt-overlay',
       children: <span>Content</span>,
+      fullScreen: true,
     })
 
     const drawer = screen.getByTestId('bottom-drawer')
@@ -93,6 +104,7 @@ describe('BottomDrawerOrDialog', () => {
     expect(screen.queryByTestId('dialog')).toBeNull()
     expect(drawer.getAttribute('data-open')).toBe('true')
     expect(drawer.getAttribute('data-a11y-title')).toBe('Order Receipt')
+    expect(drawer.getAttribute('data-full-screen')).toBe('true')
     expect(drawer.className).toContain('receipt-overlay')
     expect(drawer.textContent).toContain('Content')
   })

@@ -143,7 +143,7 @@ export const PaginationRange = styled.p`
 export const DateGroup = styled.section`
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   width: 100%;
 `
 
@@ -270,16 +270,19 @@ export const Summary = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  padding: 0 12px;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
 `
 
 export const SummaryRow = styled.div`
   display: grid;
-  grid-template-columns: minmax(82px, auto) minmax(0, 1fr);
+  grid-template-columns: minmax(104px, auto) minmax(0, 1fr);
   align-items: center;
-  gap: 16px;
-  min-height: 34px;
-  padding: 6px 0;
+  gap: 8px;
+  min-height: 46px;
+  padding: 10px 0;
 
   & + & {
     border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
@@ -289,8 +292,10 @@ export const SummaryRow = styled.div`
 export const SummaryLabel = styled.span`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 18px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
   white-space: nowrap;
 `
 
@@ -328,7 +333,7 @@ export const ProgressTrack = styled.span`
   display: block;
   flex: 1 1 auto;
   min-width: 28px;
-  height: 4px;
+  height: 6px;
   overflow: hidden;
   border-radius: 999px;
   background: var(${UI.COLOR_SUCCESS_BG});
@@ -337,7 +342,7 @@ export const ProgressTrack = styled.span`
 export const Progress = styled.span<{ $value: number }>`
   position: absolute;
   inset: 0 auto 0 0;
-  width: ${({ $value }) => $value}%;
+  width: ${({ $value }) => ($value > 0 ? `max(${$value}%, 2px)` : '0')};
   border-radius: inherit;
   background: var(${UI.COLOR_SUCCESS_TEXT});
 `

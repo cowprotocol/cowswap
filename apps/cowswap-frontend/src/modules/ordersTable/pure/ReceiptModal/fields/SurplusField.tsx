@@ -1,38 +1,43 @@
+import { ReactNode } from 'react'
+
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount } from '@cowprotocol/ui'
+
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from '../ReceiptModal.styled'
 
-interface Props {
+interface SurplusFieldProps {
   order: ParsedOrder
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SurplusField({ order }: Props) {
+export function SurplusField({ order }: SurplusFieldProps): ReactNode {
   const { kind, inputToken, outputToken } = order
   const { surplusAmount, surplusPercentage } = order.executionData
 
-  const surplusToken = isSellOrder(kind) ? outputToken : inputToken
+  const isSell = isSellOrder(kind)
+  const surplusToken = isSell ? outputToken : inputToken
 
-  if (!surplusToken || !surplusAmount || surplusAmount?.isZero()) {
-    return <styledEl.Value>-</styledEl.Value>
+  if (!surplusToken || !surplusAmount || surplusAmount.isLessThanOrEqualTo(0)) {
+    return null
   }
 
   const parsedSurplus = CurrencyAmount.fromRawAmount(surplusToken, surplusAmount?.decimalPlaces(0).toFixed())
   const formattedPercent = surplusPercentage?.multipliedBy(100)?.toFixed(2)
 
   return (
-    <styledEl.Value title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
-      <styledEl.InlineWrapper>
-        <styledEl.Surplus>+{formattedPercent}%</styledEl.Surplus>
-        <span>
-          <TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
-        </span>
-      </styledEl.InlineWrapper>
-    </styledEl.Value>
+    <styledEl.SurplusCard title={`${parsedSurplus.toExact()} ${surplusToken.symbol}`}>
+      <styledEl.SurplusLabel>{t`Order surplus`}</styledEl.SurplusLabel>
+      <styledEl.SurplusValue>
+        +<TokenAmount amount={parsedSurplus} tokenSymbol={surplusToken} />
+      </styledEl.SurplusValue>
+      <styledEl.SurplusPercent>
+        +{formattedPercent}% {isSell ? <Trans>more than min. amount</Trans> : <Trans>saved</Trans>}
+      </styledEl.SurplusPercent>
+    </styledEl.SurplusCard>
   )
 }

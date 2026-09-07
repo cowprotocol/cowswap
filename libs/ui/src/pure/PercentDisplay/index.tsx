@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js'
 
 const ALMOST_HUNDRED = BigNumber(99.99)
+const MIN_DISPLAY_PERCENTAGE = BigNumber(0.01)
 
 export interface PercentDisplayProps {
   percent: string
@@ -9,6 +10,12 @@ export interface PercentDisplayProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PercentDisplay({ percent }: PercentDisplayProps) {
+  const value = BigNumber(percent)
+
+  if (value.isFinite() && value.gt(0) && value.lt(MIN_DISPLAY_PERCENTAGE)) {
+    return <span>{'<0.01%'}</span>
+  }
+
   if (percentIsAlmostHundred(percent)) {
     return <span>{'>'}99.99%</span>
   }

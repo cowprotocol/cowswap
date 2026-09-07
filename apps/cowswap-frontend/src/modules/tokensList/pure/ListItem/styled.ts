@@ -13,7 +13,7 @@ export const Wrapper = styled.div<{ $enabled: boolean }>`
   background-color: ${({ $enabled }) => ($enabled ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
 `
 
-export const SettingsButton = styled.button`
+export const SettingsIcon = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;

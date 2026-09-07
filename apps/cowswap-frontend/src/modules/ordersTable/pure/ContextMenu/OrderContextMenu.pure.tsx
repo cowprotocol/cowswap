@@ -10,10 +10,12 @@ import { Edit, FileText, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
 export interface OrderContextMenuProps {
-  openReceipt: Command
+  openReceipt?: Command
   activityUrl: string | undefined
   showCancellationModal: Command | null
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  ariaLabel?: string
+  triggerSize?: number
 }
 
 export function OrderContextMenu({
@@ -21,18 +23,24 @@ export function OrderContextMenu({
   activityUrl,
   showCancellationModal,
   alternativeOrderModalContext,
+  ariaLabel,
+  triggerSize,
 }: OrderContextMenuProps): ReactNode {
   return (
     <ContextMenuTooltip
+      ariaLabel={ariaLabel}
       disableHoverBackground
+      triggerSize={triggerSize}
       content={
         <>
-          <ContextMenuItemButton onClick={openReceipt}>
-            <FileText size={16} />
-            <span>
-              <Trans>Order receipt</Trans>
-            </span>
-          </ContextMenuItemButton>
+          {openReceipt ? (
+            <ContextMenuItemButton onClick={openReceipt}>
+              <FileText size={16} />
+              <span>
+                <Trans>Order receipt</Trans>
+              </span>
+            </ContextMenuItemButton>
+          ) : null}
           {activityUrl && <ContextMenuExternalLink href={activityUrl} label={t`View on explorer`} />}
           {alternativeOrderModalContext && (
             <ContextMenuItemButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>

@@ -13,8 +13,10 @@ import { PendingOrdersPrices } from 'modules/orders'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 
+import { getReceiptCancellationAction } from './getReceiptCancellationAction'
 import { useCloseReceiptModal, useGetAlternativeOrderModalContext, useSelectedOrder } from './OrdersReceiptModal.hooks'
 
+import { useOrderActions } from '../../hooks/useOrderActions'
 import { ReceiptModal } from '../../pure/ReceiptModal/ReceiptModal.modal'
 
 interface OrdersReceiptModalProps {
@@ -24,7 +26,7 @@ interface OrdersReceiptModalProps {
 export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalProps): ReactNode {
   // TODO: can we get selected order from URL by id?
   const selectedOrder = useSelectedOrder()
-  // Keep the last order after close so DrawerOrDialog can animate out with content still mounted.
+  // Keep the last order after close so BottomDrawerOrDialog can animate out with content still mounted.
   const lastOrderRef = useLatestNonNullRef(selectedOrder)
   const order = selectedOrder ?? lastOrderRef.current
   const isOpen = selectedOrder !== null
@@ -40,6 +42,8 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
   const isChainIdDeprecated = useIsProviderNetworkDeprecated()
   const alternativeOrderModalContextFromHook = useGetAlternativeOrderModalContext(order)
   const alternativeOrderModalContext = isChainIdDeprecated ? undefined : alternativeOrderModalContextFromHook
+  const orderActions = useOrderActions()
+  const showCancellationModal = getReceiptCancellationAction(order, orderActions.getShowCancellationModal)
 
   if (!chainId || !order) {
     return <ReceiptModal isOpen={false} onDismiss={closeReceiptModal} order={null} />
@@ -80,6 +84,7 @@ export function OrdersReceiptModal({ pendingOrdersPrices }: OrdersReceiptModalPr
       isOpen={isOpen}
       onDismiss={closeReceiptModal}
       alternativeOrderModalContext={alternativeOrderModalContext}
+      showCancellationModal={showCancellationModal}
     />
   )
 }

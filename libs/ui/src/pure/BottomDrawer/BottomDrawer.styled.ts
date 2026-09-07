@@ -46,20 +46,22 @@ export const Viewport = styled(BaseDrawer.Viewport)`
   }
 `
 
-export const Popup = styled(BaseDrawer.Popup)`
+export const Popup = styled(BaseDrawer.Popup)<{ $fullScreen: boolean }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 100%;
+  width: ${({ $fullScreen }) => ($fullScreen ? '100vw' : '100%')};
+  max-width: ${({ $fullScreen }) => ($fullScreen ? 'none' : '100%')};
   /* Definite max height so flex children can shrink and scroll inside */
-  height: auto;
-  max-height: 90dvh;
+  height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : 'auto')};
+  max-height: ${({ $fullScreen }) => ($fullScreen ? '100dvh' : '90dvh')};
+  padding-top: ${({ $fullScreen }) => ($fullScreen ? 'env(safe-area-inset-top, 0px)' : '0')};
   overflow: hidden;
-  border-radius: var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0;
+  border-radius: ${({ $fullScreen }) =>
+    $fullScreen ? '0' : `var(${UI.BORDER_RADIUS_LARGE}) var(${UI.BORDER_RADIUS_LARGE}) 0 0`};
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
-  box-shadow: var(${UI.BOX_SHADOW});
+  box-shadow: ${({ $fullScreen }) => ($fullScreen ? 'none' : `var(${UI.BOX_SHADOW})`)};
   outline: none;
   transform: translateY(calc(var(--drawer-swipe-movement-y, 0px)));
   transition: transform ${DRAWER_TRANSITION_DURATION} ${DRAWER_TRANSITION_EASING};

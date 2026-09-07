@@ -253,6 +253,7 @@ function OrderSummary({ isExecutionDataTrusted, order, warningReason }: OrderSum
   const limitPrice = buildPriceFromCurrencyAmounts(limitSellAmount, buyAmount)
   const { executedPrice, fillPercentage, isTerminalWithoutFill, showExecutionPrice, showFillProgress, showLimitPrice } =
     getOrderSummaryState(order, warningReason, isExecutionDataTrusted)
+  const averageExecutionPriceLabel = t`Avg. execution price`
   const warningLabel =
     warningReason === WarningReason.FallbackHandler
       ? t`Update fallback handler`
@@ -268,6 +269,22 @@ function OrderSummary({ isExecutionDataTrusted, order, warningReason }: OrderSum
         <styledEl.SummaryRow>
           <styledEl.SummaryLabel>{t`Action required`}</styledEl.SummaryLabel>
           <styledEl.WarningValue>{warningLabel}</styledEl.WarningValue>
+        </styledEl.SummaryRow>
+      ) : null}
+
+      {showExecutionPrice && executedPrice ? (
+        <styledEl.SummaryRow>
+          <styledEl.SummaryLabel aria-label={averageExecutionPriceLabel} title={averageExecutionPriceLabel}>
+            {t`Execution price`}
+          </styledEl.SummaryLabel>
+          <styledEl.Price>{`1 ${inputSymbol} = ${formatTokenAmount(executedPrice)} ${outputSymbol}`}</styledEl.Price>
+        </styledEl.SummaryRow>
+      ) : null}
+
+      {showLimitPrice ? (
+        <styledEl.SummaryRow>
+          <styledEl.SummaryLabel>{t`Limit price`}</styledEl.SummaryLabel>
+          <styledEl.Price>{`1 ${inputSymbol} = ${formatTokenAmount(limitPrice)} ${outputSymbol}`}</styledEl.Price>
         </styledEl.SummaryRow>
       ) : null}
 
@@ -293,20 +310,6 @@ function OrderSummary({ isExecutionDataTrusted, order, warningReason }: OrderSum
             </styledEl.ProgressTrack>
             <PercentDisplay percent={order.executionData.filledPercentDisplay} />
           </styledEl.FillValue>
-        </styledEl.SummaryRow>
-      ) : null}
-
-      {showExecutionPrice && executedPrice ? (
-        <styledEl.SummaryRow>
-          <styledEl.SummaryLabel>{t`Avg. execution price`}</styledEl.SummaryLabel>
-          <styledEl.Price>{`1 ${inputSymbol} = ${formatTokenAmount(executedPrice)} ${outputSymbol}`}</styledEl.Price>
-        </styledEl.SummaryRow>
-      ) : null}
-
-      {showLimitPrice ? (
-        <styledEl.SummaryRow>
-          <styledEl.SummaryLabel>{t`Limit price`}</styledEl.SummaryLabel>
-          <styledEl.Price>{`1 ${inputSymbol} = ${formatTokenAmount(limitPrice)} ${outputSymbol}`}</styledEl.Price>
         </styledEl.SummaryRow>
       ) : null}
     </styledEl.Summary>
