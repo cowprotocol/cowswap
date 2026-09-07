@@ -3176,6 +3176,8 @@ msgid "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find yo
 msgstr "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price."
 
 #: apps/cowswap-frontend/src/modules/permit/utils/handlePermit.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Unable to generate permit data"
 msgstr "Unable to generate permit data"
 
