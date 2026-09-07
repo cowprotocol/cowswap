@@ -13,7 +13,8 @@ import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
-import { Plural, Trans, useLingui } from '@lingui/react/macro'
+import { plural } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -183,9 +184,12 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>
-                      View <Plural value={solversLength - 3} one="# more" few="# more" many="# more" other="# more" />
-                    </Trans>{' '}
+                    {t`View ${plural(solversLength - 3, {
+                      one: '# more',
+                      few: '# more',
+                      many: '# more',
+                      other: '# more',
+                    })}`}{' '}
                     <PiCaretDown />
                   </>
                 )}

@@ -2,7 +2,8 @@ import { ReactNode } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
-import { Plural, Trans } from '@lingui/react/macro'
+import { plural, t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { useLoadMoreOrders } from 'modules/orders'
@@ -24,17 +25,12 @@ export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOr
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
         ) : (
-          <Trans>
-            Found{' '}
-            <Plural
-              value={totalOpenOrders}
-              one="# open order"
-              few="# open orders"
-              many="# open orders"
-              other="# open orders"
-            />{' '}
-            in the {limit} most recent ones.
-          </Trans>
+          t`Found ${plural(totalOpenOrders, {
+            one: '# open order',
+            few: '# open orders',
+            many: '# open orders',
+            other: '# open orders',
+          })} in the ${limit} most recent ones.`
         )}
       </p>
       <p>

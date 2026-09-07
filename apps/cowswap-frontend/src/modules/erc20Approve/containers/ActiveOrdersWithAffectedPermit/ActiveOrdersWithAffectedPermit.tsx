@@ -4,7 +4,8 @@ import { ReactNode, useMemo } from 'react'
 import { Currency } from '@cowprotocol/currency'
 import { TokenSymbol } from '@cowprotocol/ui'
 
-import { Plural, Trans } from '@lingui/react/macro'
+import { plural } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable'
 
@@ -37,13 +38,12 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   const titleContent = (
     <Trans>
       Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span>{' '}
-      <Plural
-        value={ordersWithPermitLength}
-        one="other order"
-        few="other orders"
-        many="other orders"
-        other="other orders"
-      />
+      {plural(ordersWithPermitLength, {
+        one: 'other order',
+        few: 'other orders',
+        many: 'other orders',
+        other: 'other orders',
+      })}
     </Trans>
   )
 
@@ -54,9 +54,9 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>
-          <Plural value={ordersWithPermitLength} one="There is" other="There are" />{' '}
+          {plural(ordersWithPermitLength, { one: 'There is', other: 'There are' })}{' '}
           <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
-          <Plural value={ordersWithPermitLength} one="order" few="orders" many="orders" other="orders" /> using a{' '}
+          {plural(ordersWithPermitLength, { one: 'order', few: 'orders', many: 'orders', other: 'orders' })} using a{' '}
           <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
           execution of other orders. Adjust the amount or choose full approval to proceed.
         </Trans>

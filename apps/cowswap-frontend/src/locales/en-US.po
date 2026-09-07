@@ -331,6 +331,10 @@ msgstr "The Tenderly simulation was successful. Your transaction is expected to 
 msgid "The are some errors with CoW Swap widget configuration"
 msgstr "The are some errors with CoW Swap widget configuration"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
+msgstr "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Provide liquidity"
 msgstr "Provide liquidity"
@@ -865,6 +869,10 @@ msgstr "View all {totalChains} networks"
 msgid "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
 msgstr "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+#~ msgid "There are <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+#~ msgstr "There are <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/InvalidCoWShedSetup/InvalidCoWShedSetup.container.tsx
 msgid "CoW Shed setup is invalid!"
 msgstr "CoW Shed setup is invalid!"
@@ -1039,6 +1047,10 @@ msgstr "Partial approval"
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
 msgstr "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "{ordersWithPermitLength, plural, one {There is} other {There are}}"
+msgstr "{ordersWithPermitLength, plural, one {There is} other {There are}}"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
 msgstr "Sell per part"
@@ -1187,6 +1199,11 @@ msgstr "Delegate (v)COW"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
 msgstr "On CoW Swap, you can set limit orders for balances you don't have yet."
+
+#. placeholder {0}: solversLength - 3
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
+msgstr "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
@@ -1550,6 +1567,10 @@ msgstr "Allows you to set partial token approvals instead of full approvals."
 msgid "Switch to {wrappedNativeSymbol}"
 msgstr "Switch to {wrappedNativeSymbol}"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
+msgid "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
+msgstr "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
 #~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
 #~ msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
@@ -1620,6 +1641,10 @@ msgstr "Gas-free"
 msgid "Eligible volume"
 msgstr "Eligible volume"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "Insufficient <0><1/></0> balance detected."
+msgstr "Insufficient <0><1/></0> balance detected."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
 msgstr "5 Minutes"
@@ -1628,6 +1653,7 @@ msgstr "5 Minutes"
 msgid "With high slippage, you may not get the best price."
 msgstr "With high slippage, you may not get the best price."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
 msgstr "Share this win!"
@@ -2013,6 +2039,10 @@ msgstr "MEV-Protected Slippage"
 msgid "Closed"
 msgstr "Closed"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "Share this tip!"
+msgstr "Share this tip!"
+
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
 msgstr "Connect Telegram"
@@ -2180,8 +2210,8 @@ msgid "Initiating {nativeTokenSymbol} Refund..."
 msgstr "Initiating {nativeTokenSymbol} Refund..."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "balance."
-msgstr "balance."
+#~ msgid "balance."
+#~ msgstr "balance."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "Fee tier"
@@ -2802,8 +2832,8 @@ msgid "This fee helps pay for maintenance & improvements to the trade experience
 msgstr "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Share this"
-msgstr "Share this"
+#~ msgid "Share this"
+#~ msgstr "Share this"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/index.tsx
 msgid "Review limit order"
@@ -2924,8 +2954,8 @@ msgid "Since TWAP orders consist of multiple parts, prices are expected to fluct
 msgstr "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "are"
-msgstr "are"
+#~ msgid "are"
+#~ msgstr "are"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time before your total TWAP order ends."
@@ -3287,6 +3317,10 @@ msgstr "Wrap {sendAmountStr} {native} to {receiveAmountStr} {wrapped}"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Wrap operation failed."
 msgstr "Wrap operation failed."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+#~ msgid "{ordersWithPermitLength, plural, one {There is} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+#~ msgstr "{ordersWithPermitLength, plural, one {There is} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
 
 #~ msgid "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
 #~ msgstr "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
@@ -3927,6 +3961,11 @@ msgstr "Tokenized by {tokenizedByIssuer}"
 msgid "Unwrap"
 msgstr "Unwrap"
 
+#. placeholder {0}: import { useAtomValue } from 'jotai' import { ReactNode, useMemo } from 'react' import { Currency } from '@cowprotocol/currency' import { TokenSymbol } from '@cowprotocol/ui' import { plural } from '@lingui/core/macro' import { Trans } from '@lingui/react/macro' import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable' import { AccordionBanner } from 'common/pure/AccordionBanner' import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit' import * as styledEl from './styled' import { useIsPartialApproveSelectedByUser } from '../../state' interface ActiveOrdersWithAffectedPermitProps { currency: Currency orderId?: string } export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode { const pendingOrders = useAtomValue(onlyPendingOrdersAtom) const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser() const ordersWithPermit = useMemo(() => { return pendingOrders.filter((order) => { return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order) }) }, [pendingOrders, orderId, currency]) if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null const ordersWithPermitLength = ordersWithPermit.length const titleContent = ( <Trans> Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span>{' '} {plural(ordersWithPermitLength, { one: 'other order', few: 'other orders', many: 'other orders', other: 'other orders', })} </Trans> ) return ( <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}> <styledEl.DropdownList> <AffectedPermitOrdersTable ordersWithPermit={ordersWithPermit} /> </styledEl.DropdownList> <styledEl.DropdownFooter> <Trans> {plural(ordersWithPermitLength, { one: 'There is', other: 'There are' })}{' '} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '} {plural(ordersWithPermitLength, { one: 'order', few: 'orders', many: 'orders', other: 'orders' })} using a{' '} <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed. </Trans> </styledEl.DropdownFooter> </AccordionBanner> ) } 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "Partial approval may block <0>{ordersWithPermitLength}</0> {0}"
+msgstr "Partial approval may block <0>{ordersWithPermitLength}</0> {0}"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Connect your wallet first"
 msgstr "Connect your wallet first"
@@ -4029,8 +4068,8 @@ msgid "Tokens from external sources."
 msgstr "Tokens from external sources."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "Insufficient"
-msgstr "Insufficient"
+#~ msgid "Insufficient"
+#~ msgstr "Insufficient"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
@@ -4080,6 +4119,10 @@ msgstr "This swap has a price impact of at least {pct}%."
 msgid "Read how to prevent losing funds"
 msgstr "Read how to prevent losing funds"
 
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
+msgstr "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/LoadMoreOrdersSection.tsx
 #~ msgid "No open orders found. You can try again by clicking the \"Load More\" button."
 #~ msgstr "No open orders found. You can try again by clicking the \"Load More\" button."
@@ -4121,8 +4164,8 @@ msgid "Connected with"
 msgstr "Connected with"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "balance detected."
-msgstr "balance detected."
+#~ msgid "balance detected."
+#~ msgstr "balance detected."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.container.tsx
 msgid "Deposit tokens to the {label} network."
@@ -4443,8 +4486,8 @@ msgid "Expected sell amount"
 msgstr "Expected sell amount"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "orders"
-msgstr "orders"
+#~ msgid "orders"
+#~ msgstr "orders"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Limit Order"
@@ -4558,6 +4601,10 @@ msgstr "Caution"
 msgid "Add pre-hook"
 msgstr "Add pre-hook"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "The order remains open. Execution requires sufficient <0><1/></0> balance."
+msgstr "The order remains open. Execution requires sufficient <0><1/></0> balance."
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
@@ -4593,6 +4640,10 @@ msgstr "Start trading"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Price change"
 msgstr "Price change"
+
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
+msgstr "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/constants/routes.ts
@@ -5276,6 +5327,10 @@ msgstr "Expiry"
 msgid "Minutes"
 msgstr "Minutes"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
+msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code was applied after the trader's first qualifying trade."
@@ -5422,6 +5477,10 @@ msgstr "Swap with"
 msgid "Current network fees"
 msgstr "Current network fees"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+#~ msgid "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
+#~ msgstr "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "3 Days"
 msgstr "3 Days"
@@ -5447,8 +5506,8 @@ msgstr "Scans locally in your browser. Nothing is uploaded."
 #~ msgstr "Affiliate payouts happen on Ethereum mainnet."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
-msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
-msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
+#~ msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
+#~ msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
@@ -5617,7 +5676,6 @@ msgid "Invalid URL format"
 msgstr "Invalid URL format"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 msgid "order"
 msgstr "order"
@@ -5633,8 +5691,8 @@ msgstr "cancellation"
 #~ msgstr "Create a LlamaPay vesting contract"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "tip"
-msgstr "tip"
+#~ msgid "tip"
+#~ msgstr "tip"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/test/ordersTable.cosmos.tsx
 #~ msgid "Open orders"
@@ -5699,8 +5757,8 @@ msgstr "Preparing your connect link…"
 #~ msgstr "This list requires consent before importing."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "is"
-msgstr "is"
+#~ msgid "is"
+#~ msgstr "is"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Transaction {errorType}"
@@ -5861,13 +5919,16 @@ msgid "Confirm Action"
 msgstr "Confirm Action"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "more"
 msgstr "more"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Your referral code is saved. It will link after your first eligible trade."
 msgstr "Your referral code is saved. It will link after your first eligible trade."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
+msgstr "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -6494,8 +6555,8 @@ msgid "Enter valid list location"
 msgstr "Enter valid list location"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "View"
-msgstr "View"
+#~ msgid "View"
+#~ msgstr "View"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -7260,8 +7321,8 @@ msgid "The Safe App License Fee incurred here is charged by the Safe Foundation 
 msgstr "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "win"
-msgstr "win"
+#~ msgid "win"
+#~ msgstr "win"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "This order needs to be signed and executed with your {walletType} wallet"
@@ -7416,6 +7477,10 @@ msgstr "There was an error trying to load claimable tokens"
 msgid "Learn"
 msgstr "Learn"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "{ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
+msgstr "{ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
+
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 #~ msgid "{networkLabel} address"
 #~ msgstr "{networkLabel} address"
@@ -7517,8 +7582,8 @@ msgstr "Restoring wallet..."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-msgid "required"
-msgstr "required"
+#~ msgid "required"
+#~ msgstr "required"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Fetching balances"
@@ -7767,6 +7832,12 @@ msgstr "Status"
 msgid "higher"
 msgstr "higher"
 
+#. placeholder {0}: import { useAtomValue } from 'jotai' import { ReactNode, useMemo } from 'react' import { Currency } from '@cowprotocol/currency' import { TokenSymbol } from '@cowprotocol/ui' import { plural } from '@lingui/core/macro' import { Trans } from '@lingui/react/macro' import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable' import { AccordionBanner } from 'common/pure/AccordionBanner' import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit' import * as styledEl from './styled' import { useIsPartialApproveSelectedByUser } from '../../state' interface ActiveOrdersWithAffectedPermitProps { currency: Currency orderId?: string } export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode { const pendingOrders = useAtomValue(onlyPendingOrdersAtom) const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser() const ordersWithPermit = useMemo(() => { return pendingOrders.filter((order) => { return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order) }) }, [pendingOrders, orderId, currency]) if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null const ordersWithPermitLength = ordersWithPermit.length const titleContent = ( <Trans> Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span>{' '} {plural(ordersWithPermitLength, { one: 'other order', few: 'other orders', many: 'other orders', other: 'other orders', })} </Trans> ) return ( <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}> <styledEl.DropdownList> <AffectedPermitOrdersTable ordersWithPermit={ordersWithPermit} /> </styledEl.DropdownList> <styledEl.DropdownFooter> <Trans> {plural(ordersWithPermitLength, { one: 'There is', other: 'There are' })}{' '} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '} {plural(ordersWithPermitLength, { one: 'order', few: 'orders', many: 'orders', other: 'orders' })} using a{' '} <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed. </Trans> </styledEl.DropdownFooter> </AccordionBanner> ) } 
+#. placeholder {1}: import { useAtomValue } from 'jotai' import { ReactNode, useMemo } from 'react' import { Currency } from '@cowprotocol/currency' import { TokenSymbol } from '@cowprotocol/ui' import { plural } from '@lingui/core/macro' import { Trans } from '@lingui/react/macro' import { AffectedPermitOrdersTable, onlyPendingOrdersAtom } from 'modules/ordersTable' import { AccordionBanner } from 'common/pure/AccordionBanner' import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit' import * as styledEl from './styled' import { useIsPartialApproveSelectedByUser } from '../../state' interface ActiveOrdersWithAffectedPermitProps { currency: Currency orderId?: string } export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode { const pendingOrders = useAtomValue(onlyPendingOrdersAtom) const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser() const ordersWithPermit = useMemo(() => { return pendingOrders.filter((order) => { return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order) }) }, [pendingOrders, orderId, currency]) if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null const ordersWithPermitLength = ordersWithPermit.length const titleContent = ( <Trans> Partial approval may block <span className={'font-bold'}>{ordersWithPermitLength}</span>{' '} {plural(ordersWithPermitLength, { one: 'other order', few: 'other orders', many: 'other orders', other: 'other orders', })} </Trans> ) return ( <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}> <styledEl.DropdownList> <AffectedPermitOrdersTable ordersWithPermit={ordersWithPermit} /> </styledEl.DropdownList> <styledEl.DropdownFooter> <Trans> {plural(ordersWithPermitLength, { one: 'There is', other: 'There are' })}{' '} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '} {plural(ordersWithPermitLength, { one: 'order', few: 'orders', many: 'orders', other: 'orders' })} using a{' '} <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed. </Trans> </styledEl.DropdownFooter> </AccordionBanner> ) } 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "{0} <0>{ordersWithPermitLength}</0> existing {1} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr "{0} <0>{ordersWithPermitLength}</0> existing {1} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"
 msgstr "Copy referral link"
@@ -7923,6 +7994,10 @@ msgstr "You will be prompted to <0>wrap your {nativeSymbol} to {wrappedSymbol}</
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancelling {ordersCount} orders"
 msgstr "Cancelling {ordersCount} orders"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
+msgid "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
+msgstr "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "User rejected signing COW claim transaction"
@@ -8454,6 +8529,10 @@ msgstr "2/2 Sign transaction"
 msgid "yield over average"
 msgstr "yield over average"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "{ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}}"
+msgstr "{ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}}"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
 msgstr "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
@@ -8549,109 +8628,3 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-
-#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-msgid "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
-msgstr "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
-
-#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-msgid "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
-msgstr "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
-
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
-msgstr "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
-
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There are <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "There are <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "Insufficient <0><1/></0> balance detected."
-msgstr "Insufficient <0><1/></0> balance detected."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-msgstr "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "The order remains open. Execution requires sufficient <0><1/></0> balance."
-msgstr "The order remains open. Execution requires sufficient <0><1/></0> balance."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
-msgstr "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
-msgstr "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
-
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
-msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
-msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
-msgid "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
-msgstr "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
-
-#. placeholder {0}: solversLength - 3
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
-msgstr "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Share this tip!"
-msgstr "Share this tip!"
-
-#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-msgid "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
-msgstr "{gnosisSafeThreshold, plural, one {# signature is required} few {# signatures are required} many {# signatures are required} other {# signatures are required}}"
-
-#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
-msgid "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
-msgstr "{pendingSignaturesCount, plural, one {# more signature is required} few {# more signatures are required} many {# more signatures are required} other {# more signatures are required}}"
-
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
-msgstr "Partial approval may block <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
-
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "{ordersWithPermitLength, plural, one {There is} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "{ordersWithPermitLength, plural, one {There is} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "Insufficient <0><1/></0> balance detected."
-msgstr "Insufficient <0><1/></0> balance detected."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-msgstr "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "The order remains open. Execution requires sufficient <0><1/></0> balance."
-msgstr "The order remains open. Execution requires sufficient <0><1/></0> balance."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
-msgstr "Insufficient allowance granted for <0><1/></0>. If allowance remains insufficient at creation time, this portion will not be created. Approve the <2><3/></2> token before creation."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
-msgid "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
-msgstr "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
-
-#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
-msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
-msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
-msgid "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
-msgstr "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
-
-#. placeholder {0}: solversLength - 3
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
-msgstr "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
-
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Share this tip!"
-msgstr "Share this tip!"
