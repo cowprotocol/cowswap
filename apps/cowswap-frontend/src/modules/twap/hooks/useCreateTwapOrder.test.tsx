@@ -275,7 +275,7 @@ describe('useCreateTwapOrder', () => {
     expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
   })
 
-  it('requests full TWAP sell poller allowance for EOA when approval is needed', async () => {
+  it('requests unlimited poller allowance for EOA when the form selected a full approval', async () => {
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
 
     const { result } = renderHook(useCreateTwapOrder)
@@ -295,6 +295,46 @@ describe('useCreateTwapOrder', () => {
         walletClient: expect.anything(),
         pollerPermitData: null,
       }),
+    )
+  })
+
+  it('uses the amount from useGetAmountToSignApprove for the EOA poller approval, not an unlimited amount', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '1000000' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+    )
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+    )
+  })
+
+  it('approves the TWAP sell amount when useGetAmountToSignApprove reports no vault-relayer approval', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '0' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+    )
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
     )
   })
 

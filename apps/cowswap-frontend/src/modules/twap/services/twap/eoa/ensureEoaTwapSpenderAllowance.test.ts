@@ -179,7 +179,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(mockedWriteContract).not.toHaveBeenCalled()
   })
 
-  it('prefers a permit for amountToApprove and skips on-chain approve', async () => {
+  it('prefers a permit for the exact TWAP sell and skips on-chain approve', async () => {
     const onSigningStep = jest.fn()
     const generatePermitHook = jest.fn().mockResolvedValue(PERMIT_DATA) as GeneratePermitHook
 
@@ -198,7 +198,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
       inputToken: { address: SELL_TOKEN, name: 'COW' },
       account: ACCOUNT,
       permitInfo: PERMIT_INFO,
-      amount: AMOUNT_TO_APPROVE,
+      amount: AMOUNT_TO_COVER,
       customSpender: SPENDER,
     })
     expect(onSigningStep.mock.calls).toEqual([
