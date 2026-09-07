@@ -5,6 +5,12 @@ import { isOrderExpired, isOrderFulfilled, isTwapOrderCancelled } from 'legacy/s
 
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 
+/**
+ * Derives the display status of a TWAP part from its order state and parent status.
+ *
+ * Parent completion and cancellation take precedence over the part state. A virtual
+ * part is scheduled only when no terminal status applies.
+ */
 export function getPartOrderStatus(
   enrichedOrder: Omit<EnrichedOrder, 'settlementContract'>,
   parent: TwapOrderItem,

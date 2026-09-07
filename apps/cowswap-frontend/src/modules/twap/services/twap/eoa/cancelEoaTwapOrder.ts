@@ -42,6 +42,8 @@ export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Pro
   logTwap.info('Cancelling EOA TWAP order', logContext)
 
   try {
+    // TODO: Revert to this once we switch from `getCowShedHooks` to `CowShedSdk.signCalls`, once it forwards a custom
+    // EIP-712 version. CowShedSdk.signCalls would estimate gas for us.
     const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
     const calls = cancelTwapOrderTxs(context).map(({ to, data }) => ({
       target: to,
