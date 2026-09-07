@@ -9,7 +9,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
+import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import {
   useIsSafeViaWc,
@@ -51,6 +51,7 @@ import { getComposableCowPollerScheduleId } from '../composable-cow-poller/compo
 import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
 import { DEFAULT_TWAP_EXECUTION, TWAP_HANDLER_ADDRESS } from '../const'
 import {
+  canUseEoaTwapPermit,
   ensureEoaTwapSpenderAllowance,
   getEoaTwapApprovalNeeds,
 } from '../services/twap/eoa/ensureEoaTwapSpenderAllowance'
@@ -317,7 +318,7 @@ export function useCreateTwapOrder() {
             amountToApprove: pollerAmountToApprove,
           })
 
-          const pollerCanUsePermit = isSupportedPermitInfo(pollerPermitInfo)
+          const pollerCanUsePermit = canUseEoaTwapPermit(pollerPermitInfo, pollerAmountToApprove)
           const pollerNeeds = { ...pollerApprovalNeeds, canUsePermit: pollerCanUsePermit }
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
@@ -334,7 +335,7 @@ export function useCreateTwapOrder() {
           let pollerPermitData: PermitHookData | null = null
 
           if (pollerApprovalNeeds.needsApproval) {
-            // Permit the exact TWAP sell when available, or otherwise on-chain approve the form amount:
+            // EIP-2612 permits the exact TWAP sell. Dai-like finite amounts use on-chain approve.
             pollerPermitData = await ensureEoaTwapSpenderAllowance({
               config,
               chainId,

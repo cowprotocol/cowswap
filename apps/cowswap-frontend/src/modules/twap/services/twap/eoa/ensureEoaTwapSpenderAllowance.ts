@@ -1,4 +1,4 @@
-import { type Address, erc20Abi } from 'viem'
+import { type Address, erc20Abi, maxUint256 } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
@@ -119,12 +119,29 @@ interface TryGeneratePermitAllowanceParams {
 }
 
 /**
+ * Dai-like permits always set `allowed: true` (unlimited). Only use them when the form
+ * selected unlimited approval. Otherwise fall back to on-chain `amountToApprove`.
+ */
+export function canUseEoaTwapPermit(permitInfo: IsTokenPermittableResult, amountToApprove: bigint): boolean {
+  if (!isSupportedPermitInfo(permitInfo)) {
+    return false
+  }
+
+  if (permitInfo.type === 'dai-like' && amountToApprove !== maxUint256) {
+    return false
+  }
+
+  return true
+}
+
+/**
  * Ensures the EOA has allowance (or a permit) for `spender` to pull `amountToCover`.
  *
  * In EOA TWAP, this is currently used for ComposableCowPoller allowance.
  *
- * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for the
- * exact `amountToCover` (the TWAP sell). Permit never uses unlimited `amountToApprove`.
+ * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 permit for the exact
+ * `amountToCover` (the TWAP sell). Dai-like permits cannot express a finite amount
+ * (`allowed: true`), so they are used only when `amountToApprove` is unlimited.
  * Otherwise: execute on-chain zero-approve (if needed) and approve `amountToApprove`
  * (partial sell or unlimited, matching the TWAP form).
  *
@@ -161,7 +178,7 @@ export async function ensureEoaTwapSpenderAllowance({
     return null
   }
 
-  if (generatePermitHook && isSupportedPermitInfo(permitInfo)) {
+  if (generatePermitHook && canUseEoaTwapPermit(permitInfo, amountToApprove)) {
     const permitResult = await tryGeneratePermitAllowance({
       account,
       sellTokenAddress,

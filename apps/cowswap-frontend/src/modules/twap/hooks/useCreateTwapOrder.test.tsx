@@ -89,6 +89,7 @@ jest.mock('./useExtensibleFallbackContext', () => ({ useExtensibleFallbackContex
 jest.mock('./useTwapOrder', () => ({ useTwapOrder: jest.fn() }))
 jest.mock('./useTwapOrderCreationContext', () => ({ useTwapOrderCreationContext: jest.fn() }))
 jest.mock('../services/twap/eoa/ensureEoaTwapSpenderAllowance', () => ({
+  ...jest.requireActual('../services/twap/eoa/ensureEoaTwapSpenderAllowance'),
   ensureEoaTwapSpenderAllowance: jest.fn().mockResolvedValue(null),
   getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false, needsZeroApproval: false }),
 }))
@@ -277,6 +278,9 @@ describe('useCreateTwapOrder', () => {
 
   it('requests unlimited poller allowance for EOA when the form selected a full approval', async () => {
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => maxUint256.toString() },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
 
     const { result } = renderHook(useCreateTwapOrder)
 
@@ -301,7 +305,7 @@ describe('useCreateTwapOrder', () => {
   it('uses the amount from useGetAmountToSignApprove for the EOA poller approval, not an unlimited amount', async () => {
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
     mockedUseGetAmountToSignApprove.mockReturnValue({
-      quotient: { toString: () => '1000000' },
+      quotient: { toString: () => '2000000' },
     } as ReturnType<typeof useGetAmountToSignApprove>)
 
     const { result } = renderHook(useCreateTwapOrder)
@@ -311,10 +315,32 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
-      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+      expect.objectContaining({ amountToApprove: 2_000_000n, amountToCover: 1_000_000n }),
     )
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
-      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+      expect.objectContaining({ amountToApprove: 2_000_000n, amountToCover: 1_000_000n }),
+    )
+  })
+
+  it('does not permit a Dai-like token when the form selected a finite poller approval', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUsePermitInfo.mockReturnValue({ type: 'dai-like', name: 'DAI' } as ReturnType<typeof usePermitInfo>)
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '2000000' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({
+        amountToApprove: 2_000_000n,
+        amountToCover: 1_000_000n,
+        approvalNeeds: expect.objectContaining({ canUsePermit: false }),
+      }),
     )
   })
 
