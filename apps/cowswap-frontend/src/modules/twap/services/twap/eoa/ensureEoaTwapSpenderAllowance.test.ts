@@ -208,6 +208,61 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(mockedWriteContract).not.toHaveBeenCalled()
   })
 
+  it('skips Dai-like permit for a finite amountToApprove and uses on-chain approve', async () => {
+    setupSuccessfulOnChainApprove()
+    mockedExtractApprovalAmountFromLogs.mockReturnValue(AMOUNT_TO_COVER)
+
+    const onSigningStep = jest.fn()
+    const generatePermitHook = jest.fn().mockResolvedValue(PERMIT_DATA) as GeneratePermitHook
+    const daiLikePermitInfo = { type: 'dai-like' as const, name: 'DAI', version: '1' }
+
+    await expect(
+      ensureEoaTwapSpenderAllowance(
+        baseParams({
+          onSigningStep,
+          generatePermitHook,
+          permitInfo: daiLikePermitInfo,
+          amountToApprove: AMOUNT_TO_COVER,
+          permitStep: EoaTwapSigningSteps.PermitPoller,
+        }),
+      ),
+    ).resolves.toBeNull()
+
+    expect(generatePermitHook).not.toHaveBeenCalled()
+    expect(mockedWriteContract).toHaveBeenCalledTimes(1)
+    expect(mockedWriteContract).toHaveBeenCalledWith(
+      CONFIG,
+      expect.objectContaining({
+        args: [SPENDER, AMOUNT_TO_COVER],
+      }),
+    )
+    expect(onSigningStep.mock.calls).toEqual([
+      [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.Sign }],
+      [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.WaitingForTx }],
+      [{ step: EoaTwapSigningSteps.ApprovePoller, phase: EoaTwapSigningPhase.Confirmed }],
+    ])
+  })
+
+  it('still permits a Dai-like token when amountToApprove is unlimited', async () => {
+    const onSigningStep = jest.fn()
+    const generatePermitHook = jest.fn().mockResolvedValue(PERMIT_DATA) as GeneratePermitHook
+    const daiLikePermitInfo = { type: 'dai-like' as const, name: 'DAI', version: '1' }
+
+    await expect(
+      ensureEoaTwapSpenderAllowance(
+        baseParams({
+          onSigningStep,
+          generatePermitHook,
+          permitInfo: daiLikePermitInfo,
+          permitStep: EoaTwapSigningSteps.PermitPoller,
+        }),
+      ),
+    ).resolves.toEqual(PERMIT_DATA)
+
+    expect(generatePermitHook).toHaveBeenCalled()
+    expect(mockedWriteContract).not.toHaveBeenCalled()
+  })
+
   it('replaces the stepper plan and falls back to on-chain approve when permit generation fails', async () => {
     setupSuccessfulOnChainApprove()
 
