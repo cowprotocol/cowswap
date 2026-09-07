@@ -47,6 +47,7 @@ const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary }
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
 const ORDER_STEP = step('Swap SOL for USDC')
+const ORDER_ID = '0xdeadbeef'
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -148,7 +149,11 @@ describe('solanaFlow', () => {
     mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
     mockPlanWrapStep.mockReturnValue(WRAP_STEP)
     mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
-    mockPlanCreateOrderStep.mockReturnValue(ORDER_STEP)
+    mockPlanCreateOrderStep.mockResolvedValue({
+      step: ORDER_STEP,
+      orderId: ORDER_ID,
+      signingScheme: SigningScheme.PRESIGN,
+    })
   })
 
   it('bundles wrap, delegate and create-order into a single transaction', async () => {
@@ -198,9 +203,11 @@ describe('solanaFlow', () => {
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({
+        id: ORDER_ID,
         chainId: SOLANA_CHAIN_ID,
         isSafeWallet: false,
         order: expect.objectContaining({
+          id: ORDER_ID,
           owner: context.account,
           status: OrderStatus.CREATING,
           orderCreationHash: TX_HASH,

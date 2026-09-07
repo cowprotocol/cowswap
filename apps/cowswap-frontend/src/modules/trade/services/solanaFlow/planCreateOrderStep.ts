@@ -1,30 +1,39 @@
-import { buildCreateOrderInstruction, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
+import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
 
 import { SolanaFlowStep } from './types'
 
-export interface PlanCreateOrderStepParams {
-  solanaQuote: SolanaQuote
+export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   sellSymbol: string
   buySymbol: string
 }
 
-// `createdBy` is always the owner: one connected wallet both authenticates the order and funds the order
-// PDA's rent, matching `postSolanaSwapOrderFromQuote` in the SDK.
-export function planCreateOrderStep({ solanaQuote, sellSymbol, buySymbol }: PlanCreateOrderStepParams): SolanaFlowStep {
-  const { programId, orderPda, intent } = solanaQuote
+export interface PlannedCreateOrderStep {
+  step: SolanaFlowStep
+  orderId: string
+  signingScheme: SolanaSwapOrder['signingScheme']
+}
+
+/**
+ * The SDK owns the order's identity as well as its instruction: overriding `receiver`/`validTo` re-derives
+ * `uid` and the order PDA, so `orderId` has to come from the same call that built the instruction rather
+ * than from the quoted `solanaQuote.uid`.
+ */
+export async function planCreateOrderStep({
+  quoteResults,
+  solanaQuote,
+  sellSymbol,
+  buySymbol,
+}: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
+  const { instruction, orderId, signingScheme } = await buildSolanaSwapOrder({ quoteResults, solanaQuote })
 
   return {
-    instructions: [
-      buildCreateOrderInstruction({
-        programId,
-        owner: intent.owner,
-        createdBy: intent.owner,
-        orderPda,
-        intent,
-      }),
-    ],
-    summary: t`Swap ${sellSymbol} for ${buySymbol}`,
+    step: {
+      instructions: [instruction],
+      summary: t`Swap ${sellSymbol} for ${buySymbol}`,
+    },
+    orderId,
+    signingScheme,
   }
 }

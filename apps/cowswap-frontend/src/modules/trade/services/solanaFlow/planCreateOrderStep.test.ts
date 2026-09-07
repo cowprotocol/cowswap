@@ -1,57 +1,68 @@
 jest.mock('@cowprotocol/sdk-trading-solana', () => ({
-  buildCreateOrderInstruction: jest.fn(() => 'CREATE_ORDER_IX'),
+  buildSolanaSwapOrder: jest.fn(),
 }))
 
-import { buildCreateOrderInstruction, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
+import { SigningScheme } from '@cowprotocol/cow-sdk'
+import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { PublicKey } from '@solana/web3.js'
 
 import { planCreateOrderStep } from './planCreateOrderStep'
 
-const mockBuildCreateOrderInstruction = buildCreateOrderInstruction as jest.MockedFunction<
-  typeof buildCreateOrderInstruction
->
+const mockBuildSolanaSwapOrder = buildSolanaSwapOrder as jest.MockedFunction<typeof buildSolanaSwapOrder>
 
-const owner = new PublicKey(new Uint8Array(32).fill(9))
-const orderPda = new PublicKey(new Uint8Array(32).fill(4))
-const programId = new PublicKey(new Uint8Array(32).fill(5))
+const quote = {
+  quoteResults: {},
+  solanaQuote: {
+    programId: new PublicKey(new Uint8Array(32).fill(5)),
+    orderPda: new PublicKey(new Uint8Array(32).fill(4)),
+    uid: new Uint8Array(32).fill(7),
+    intent: { owner: new PublicKey(new Uint8Array(32).fill(9)) },
+  },
+} as unknown as SolanaSwapOrderQuote
 
-const solanaQuote = {
-  programId,
-  orderPda,
-  intent: { owner },
-} as unknown as SolanaQuote
+const builtOrder = {
+  instruction: 'CREATE_ORDER_IX',
+  orderId: '0xdeadbeef',
+  signingScheme: SigningScheme.PRESIGN,
+} as unknown as SolanaSwapOrder
 
 describe('planCreateOrderStep', () => {
   beforeEach(() => {
-    mockBuildCreateOrderInstruction.mockClear()
+    mockBuildSolanaSwapOrder.mockReset()
+    mockBuildSolanaSwapOrder.mockResolvedValue(builtOrder)
   })
 
-  it('builds the CreateOrder instruction from the quote', () => {
-    const result = planCreateOrderStep({ solanaQuote, sellSymbol: 'SOL', buySymbol: 'USDC' })
+  it('delegates instruction building to the SDK', async () => {
+    const { step } = await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC' })
 
-    expect(mockBuildCreateOrderInstruction).toHaveBeenCalledWith({
-      programId,
-      owner,
-      createdBy: owner,
-      orderPda,
-      intent: solanaQuote.intent,
+    expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith({
+      quoteResults: quote.quoteResults,
+      solanaQuote: quote.solanaQuote,
     })
-    expect(result.instructions).toEqual(['CREATE_ORDER_IX'])
+    expect(step.instructions).toEqual(['CREATE_ORDER_IX'])
   })
 
-  it('summarises the swap with both symbols', () => {
-    const { summary } = planCreateOrderStep({ solanaQuote, sellSymbol: 'SOL', buySymbol: 'USDC' })
+  it('carries the order identity out of the same call that built the instruction', async () => {
+    // Not derived from `solanaQuote.uid`: a receiver/validTo override re-derives it inside the SDK.
+    const { orderId, signingScheme } = await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC' })
 
-    expect(summary).toContain('SOL')
-    expect(summary).toContain('USDC')
+    expect(orderId).toBe('0xdeadbeef')
+    expect(signingScheme).toBe(SigningScheme.PRESIGN)
   })
 
-  it('funds the order rent from the owner, so a single wallet signs the whole transaction', () => {
-    planCreateOrderStep({ solanaQuote, sellSymbol: 'SOL', buySymbol: 'USDC' })
+  it('summarises the swap with both symbols', async () => {
+    const { step } = await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC' })
 
-    const { owner: calledOwner, createdBy } = mockBuildCreateOrderInstruction.mock.calls[0][0]
+    expect(step.summary).toContain('SOL')
+    expect(step.summary).toContain('USDC')
+  })
 
-    expect(createdBy).toBe(calledOwner)
+  it('propagates an SDK failure instead of sending a partial bundle', async () => {
+    mockBuildSolanaSwapOrder.mockRejectedValue(new Error('bad receiver'))
+
+    await expect(planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC' })).rejects.toThrow(
+      'bad receiver',
+    )
   })
 })
