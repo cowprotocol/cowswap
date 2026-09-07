@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.0...tokens-v3.11.1) (2026-09-07)
+
+### Patch Changes
+
+- fix(rwa): fix rwa list migration (#8089)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.10.0...tokens-v3.11.0) (2026-09-03)
 
 ### Minor Changes
