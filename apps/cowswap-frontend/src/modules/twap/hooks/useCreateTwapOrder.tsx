@@ -350,11 +350,6 @@ export function useCreateTwapOrder() {
               step: EoaTwapSigningSteps.ApprovePoller,
               permitStep: EoaTwapSigningSteps.PermitPoller,
               zeroStep: EoaTwapSigningSteps.ZeroApprovePoller,
-              onChainFallbackPlan: pollerCanUsePermit
-                ? buildEoaTwapSigningStepPlan({
-                    poller: { ...pollerApprovalNeeds, canUsePermit: false },
-                  })
-                : undefined,
               onSigningStep: updateEoaTwapFlow,
               approvalNeeds: pollerNeeds,
             })

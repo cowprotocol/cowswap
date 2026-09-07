@@ -2,7 +2,7 @@ import { type Address, erc20Abi, maxUint256 } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { calculateGasMargin, normalizeError } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
@@ -19,8 +19,6 @@ import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
 import { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { EoaTwapApprovalNeeds } from '../../../utils/buildEoaTwapSigningStepPlan'
-
-const log = createCowLogger('EOA TWAP approve')
 
 export interface EnsureEoaTwapSpenderAllowanceParams {
   config: Config
@@ -44,11 +42,6 @@ export interface EnsureEoaTwapSpenderAllowanceParams {
   permitStep?: EoaTwapSigningSteps
   /** Override for USDT-style zero-approve step (defaults to ZeroApprovePoller, or `step` when set). */
   zeroStep?: EoaTwapSigningSteps
-  /**
-   * When permit generation fails and we fall back to on-chain approve, replace the stepper plan
-   * so PermitPoller is not left as an orphan upcoming step.
-   */
-  onChainFallbackPlan?: EoaTwapSigningSteps[]
   onSigningStep: EoaTwapFlowUpdater
   approvalNeeds: EoaTwapApprovalNeeds
 }
@@ -111,10 +104,6 @@ interface TryGeneratePermitAllowanceParams {
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitUiStep: EoaTwapSigningSteps
-  approveStep: EoaTwapSigningSteps
-  zeroApproveStep: EoaTwapSigningSteps
-  needsZeroApproval: boolean
-  onChainFallbackPlan: EoaTwapSigningSteps[] | undefined
   onSigningStep: EoaTwapFlowUpdater
 }
 
@@ -149,7 +138,8 @@ export function canUseEoaTwapPermit(permitInfo: IsTokenPermittableResult, amount
  * emitted Approval amount still covers `amountToCover`, throwing
  * "Approved amount is not sufficient!" if not.
  *
- * When permit succeeds, returns `permitData` for the caller to include in setup execution.
+ * When permit is offered, a cancelled or failed permit aborts (no on-chain approve fallback),
+ * matching swap/limit. On success, returns `permitData` for the caller to include in setup.
  */
 export async function ensureEoaTwapSpenderAllowance({
   config,
@@ -165,7 +155,6 @@ export async function ensureEoaTwapSpenderAllowance({
   step,
   permitStep,
   zeroStep,
-  onChainFallbackPlan,
   onSigningStep,
   approvalNeeds,
 }: EnsureEoaTwapSpenderAllowanceParams): Promise<PermitHookData | null> {
@@ -179,7 +168,7 @@ export async function ensureEoaTwapSpenderAllowance({
   }
 
   if (generatePermitHook && canUseEoaTwapPermit(permitInfo, amountToApprove)) {
-    const permitResult = await tryGeneratePermitAllowance({
+    return tryGeneratePermitAllowance({
       account,
       sellTokenAddress,
       sellTokenName,
@@ -188,16 +177,8 @@ export async function ensureEoaTwapSpenderAllowance({
       permitInfo,
       generatePermitHook,
       permitUiStep,
-      approveStep,
-      zeroApproveStep,
-      needsZeroApproval,
-      onChainFallbackPlan,
       onSigningStep,
     })
-
-    if (permitResult) {
-      return permitResult
-    }
   }
 
   await runOnChainAllowanceSteps({
@@ -396,14 +377,10 @@ async function tryGeneratePermitAllowance({
   permitInfo,
   generatePermitHook,
   permitUiStep,
-  approveStep,
-  zeroApproveStep,
-  needsZeroApproval,
-  onChainFallbackPlan,
   onSigningStep,
-}: TryGeneratePermitAllowanceParams): Promise<PermitHookData | null> {
+}: TryGeneratePermitAllowanceParams): Promise<PermitHookData> {
   if (!isSupportedPermitInfo(permitInfo)) {
-    return null
+    throw new Error(t`Unable to generate permit data`)
   }
 
   onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Sign })
@@ -417,23 +394,12 @@ async function tryGeneratePermitAllowance({
     permitInfo,
     amount: amountToPermit,
     customSpender: spender,
-  }).catch((err: unknown) => {
-    const error = normalizeError(err)
-    log.warn('Error generating permit data; falling back to approval', error)
-    return null
   })
 
-  if (permitData) {
-    onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
-    return permitData
+  if (!permitData) {
+    throw new Error(t`Unable to generate permit data`)
   }
 
-  // Permit failed — switch the stepper onto the on-chain path before prompting approve txs.
-  onSigningStep({
-    step: needsZeroApproval ? zeroApproveStep : approveStep,
-    phase: EoaTwapSigningPhase.Sign,
-    ...(onChainFallbackPlan ? { plan: onChainFallbackPlan } : undefined),
-  })
-
-  return null
+  onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
+  return permitData
 }
