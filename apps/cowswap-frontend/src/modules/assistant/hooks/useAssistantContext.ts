@@ -19,6 +19,7 @@ import {
   useTradePriceImpact,
   useTradeTypeInfo,
 } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useApprovalContext } from './useApprovalContext'
 import { useFormBlocker } from './useFormBlocker'
@@ -93,9 +94,15 @@ interface HoldingsAvailability {
  *
  * The in-app replacement for the widget's ON_CHANGE_TRADE_PARAMS event, and better
  * in three specific ways: balances are a real read rather than whatever the form
- * happened to render, price impact is the app's own number instead of a fiat-delta
- * proxy, and the limit-price deviation and estimated fill price exist at all.
- * Spec §6, §13.
+ * happened to render, price impact is the app's own computed number rather than one
+ * we reconstruct, and the limit-price deviation and estimated fill price exist at
+ * all. Spec §6, §13.
+ *
+ * ⚠️ That price impact is itself a fiat delta — `1 - fiatOut / fiatIn`, from
+ * `useFiatValuePriceImpact`. An earlier version of this comment called it "the app's
+ * own number instead of a fiat-delta proxy", which was wrong in a way that matters:
+ * it is only meaningful when both amounts come from the SAME quote. See
+ * `deriveQuoteStatus`.
  *
  * Every derived signal is ABSENT when there's nothing worth saying. Silence by
  * default is deliberate: an assistant that volunteers figures about healthy trades
@@ -105,6 +112,7 @@ export function useAssistantContext(): AssistantUiContext {
   const { account, chainId } = useWalletInfo()
   const derived = useDerivedTradeState()
   const priceImpact = useTradePriceImpact()
+  const { isLoading: quoteLoading, hasParamsChanged: quoteParamsChanged } = useTradeQuote()
   const rateImpact = useRateImpact()
   const executionPrice = useAtomValue(executionPriceAtom)
   const { isUnlocked } = useAtomValue(swapRawStateAtom)
@@ -139,7 +147,7 @@ export function useAssistantContext(): AssistantUiContext {
       sellTokenBalance: exact(state.inputCurrencyBalance),
       buyTokenBalance: exact(state.outputCurrencyBalance),
       slippageBps: toBps(state.slippage),
-      quoteStatus: deriveQuoteStatus(priceImpact, state.inputCurrencyFiatAmount),
+      quoteStatus: deriveQuoteStatus(priceImpact, state.inputCurrencyFiatAmount, quoteLoading || quoteParamsChanged),
       limitPrice: deriveLimitPrice(isLimit, rateImpact),
       limitOrderSize: deriveLimitOrderSize(isLimit, chainId, state.inputCurrencyFiatAmount),
       estimatedFillPrice: formatFillPrice(isLimit, executionPrice),
@@ -158,6 +166,8 @@ export function useAssistantContext(): AssistantUiContext {
   }, [
     derived,
     priceImpact,
+    quoteLoading,
+    quoteParamsChanged,
     rateImpact,
     executionPrice,
     isLimit,
@@ -250,8 +260,29 @@ function deriveLimitPrice(isLimit: boolean, rateImpact: number): AssistantLimitP
 function deriveQuoteStatus(
   priceImpact: PriceImpact,
   fiatAmount: CurrencyAmount<Currency> | null | undefined,
+  quoteInFlight: boolean,
 ): AssistantQuoteStatus | null {
-  if (priceImpact.loading || !priceImpact.priceImpact) return null
+  // ⚠️ **`priceImpact.loading` is not enough, because it stops being true too soon.**
+  //
+  // Price impact is `1 - fiatOut / fiatIn`, so it is only a price impact while both
+  // amounts describe the same quote. `useFiatValuePriceImpact` knows this and
+  // withholds the value while a quote is in flight — but only for 15 seconds. After
+  // PRICE_IMPACT_LOADING_TIMEOUT it reports `isLoading: false` and computes anyway,
+  // on whatever mismatched pair of amounts is in state. Its own comment calls the
+  // result "a huge nonsense %".
+  //
+  // For the form that's a reasonable trade: a number that flickers is better than a
+  // field stuck on a spinner, and a person watching sees it settle. For us it is
+  // not, because we take one snapshot and hand it over as fact. It produced "roughly
+  // 50% price impact, and it's a thin pair" on 0.01 WETH into USDC that the form was
+  // pricing at 0.04% — a fabricated reason to avoid a perfectly good trade.
+  //
+  // So gate on the quote itself. `isLoading || hasParamsChanged` is the same pair of
+  // signals useFiatValuePriceImpact starts from, without the timeout that discards
+  // them. If a quote never settles we say nothing about impact, which is the right
+  // failure: the prompt already tells the assistant to admit it can't see the
+  // numbers rather than invent any.
+  if (quoteInFlight || priceImpact.loading || !priceImpact.priceImpact) return null
 
   const pct = Number(priceImpact.priceImpact.toSignificant(4))
   if (!Number.isFinite(pct)) return null
