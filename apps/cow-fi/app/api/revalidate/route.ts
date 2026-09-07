@@ -1,13 +1,21 @@
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextRequest, NextResponse } from 'next/server'
 
-import { handleRevalidatePost } from '../../../util/cmsRevalidate'
+import { getUnauthorizedRevalidateResponse, handleRevalidatePost } from '../../../util/cmsRevalidate'
 
 export async function GET(): Promise<NextResponse> {
   return NextResponse.json({ message: 'Use POST for revalidation requests' }, { status: 405 })
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  const configuredSecret = process.env.REVALIDATE_SECRET
+  const providedSecret = getSecretFromHeaders(request)
+  const unauthorized = getUnauthorizedRevalidateResponse(configuredSecret, providedSecret)
+
+  if (unauthorized) {
+    return NextResponse.json(unauthorized.body, { status: unauthorized.status })
+  }
+
   let body: unknown
 
   try {
@@ -19,8 +27,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const result = handleRevalidatePost({
     body,
-    configuredSecret: process.env.REVALIDATE_SECRET,
-    providedSecret: getSecretFromHeaders(request),
+    configuredSecret,
+    providedSecret,
     revalidatePath,
     revalidateTag,
   })

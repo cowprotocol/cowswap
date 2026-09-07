@@ -1,4 +1,8 @@
-import { CMS_REVALIDATE_ROUTES, handleRevalidatePost } from '../../../util/cmsRevalidate'
+import {
+  CMS_REVALIDATE_ROUTES,
+  getUnauthorizedRevalidateResponse,
+  handleRevalidatePost,
+} from '../../../util/cmsRevalidate'
 
 const TEST_SECRET = 'test-revalidate-secret'
 
@@ -112,6 +116,7 @@ describe('authenticated resource revalidation', () => {
 
     expect(result.status).toBe(200)
     expect(revalidatePath).toHaveBeenCalledWith('/learn/topic/amm')
+    expect(revalidatePath).toHaveBeenCalledWith('/learn/[article]', 'page')
   })
 
   it('accepts a constructor campaign because it is a valid CMS slug', () => {
@@ -149,12 +154,25 @@ describe('authenticated resource revalidation', () => {
     expect(revalidateTag).not.toHaveBeenCalled()
   })
 
-  it('passes page type for dynamic resource routes', () => {
-    const resourceRoutes = CMS_REVALIDATE_ROUTES.filter((route) => route.path.startsWith('/resources/['))
+  it('passes page type for dynamic learn and resource routes', () => {
+    const dynamicRoutes = CMS_REVALIDATE_ROUTES.filter((route) => route.path.includes('['))
 
-    expect(resourceRoutes).toEqual([
+    expect(dynamicRoutes).toEqual([
+      { path: '/learn/[article]', type: 'page' },
       { path: '/resources/[campaign]', type: 'page' },
       { path: '/resources/[campaign]/[slug]', type: 'page' },
     ])
+  })
+
+  it('rejects unauthorized requests without requiring a parsed body', () => {
+    expect(getUnauthorizedRevalidateResponse(undefined, TEST_SECRET)).toEqual({
+      status: 500,
+      body: { message: 'Revalidation not configured properly' },
+    })
+    expect(getUnauthorizedRevalidateResponse(TEST_SECRET, null)).toEqual({
+      status: 401,
+      body: { message: 'Invalid secret' },
+    })
+    expect(getUnauthorizedRevalidateResponse(TEST_SECRET, TEST_SECRET)).toBeNull()
   })
 })

@@ -4,11 +4,26 @@ export const CMS_REVALIDATE_ROUTES: ReadonlyArray<{ path: string; type?: 'layout
   { path: '/learn' },
   { path: '/learn/articles' },
   { path: '/learn/topics' },
-  { path: '/learn/[article]' },
+  { path: '/learn/[article]', type: 'page' },
   { path: '/resources' },
   { path: '/resources/[campaign]', type: 'page' },
   { path: '/resources/[campaign]/[slug]', type: 'page' },
 ]
+
+export function getUnauthorizedRevalidateResponse(
+  configuredSecret: string | undefined,
+  providedSecret: string | null,
+): { body: Record<string, unknown>; status: 401 | 500 } | null {
+  if (!configuredSecret) {
+    return { status: 500, body: { message: 'Revalidation not configured properly' } }
+  }
+
+  if (providedSecret !== configuredSecret) {
+    return { status: 401, body: { message: 'Invalid secret' } }
+  }
+
+  return null
+}
 
 export function handleRevalidatePost({
   body,
@@ -26,12 +41,10 @@ export function handleRevalidatePost({
   body: Record<string, unknown>
   status: number
 } {
-  if (!configuredSecret) {
-    return { status: 500, body: { message: 'Revalidation not configured properly' } }
-  }
+  const unauthorized = getUnauthorizedRevalidateResponse(configuredSecret, providedSecret)
 
-  if (providedSecret !== configuredSecret) {
-    return { status: 401, body: { message: 'Invalid secret' } }
+  if (unauthorized) {
+    return unauthorized
   }
 
   try {
