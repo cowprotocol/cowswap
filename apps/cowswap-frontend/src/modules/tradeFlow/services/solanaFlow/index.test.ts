@@ -101,7 +101,11 @@ describe('solanaFlow', () => {
     const result = await solanaFlow(context, analytics)
 
     expect(result).toBe(true)
-    expect(postSwapOrderFromQuote).toHaveBeenCalledWith()
+    // The user's configured deadline (swapSettingsAtom -> getOrderValidTo -> context.validTo) must be
+    // forwarded to the SDK, otherwise Solana orders silently fall back to the quote's own validTo.
+    expect(postSwapOrderFromQuote).toHaveBeenCalledWith({
+      quoteRequest: { validTo: context.context.validTo },
+    })
     expect(context.callbacks.addTransaction).toHaveBeenCalledWith(expect.objectContaining({ hash: 'tx-signature-abc' }))
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({
