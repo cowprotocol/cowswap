@@ -107,7 +107,7 @@ interface TryGeneratePermitAllowanceParams {
   sellTokenAddress: Address
   sellTokenName: string | undefined
   spender: AccountAddress
-  amountToApprove: bigint
+  amountToPermit: bigint
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitUiStep: EoaTwapSigningSteps
@@ -123,14 +123,14 @@ interface TryGeneratePermitAllowanceParams {
  *
  * In EOA TWAP, this is currently used for ComposableCowPoller allowance.
  *
- * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for
- * `amountToApprove` (typically `maxUint256`) when supported, matching on-chain approve.
- * Permitting only `amountToCover` would overwrite an existing max allowance.
- * Otherwise: execute on-chain zero-approve (if needed) and approve.
+ * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for the
+ * exact `amountToCover` (the TWAP sell). Permit never uses unlimited `amountToApprove`.
+ * Otherwise: execute on-chain zero-approve (if needed) and approve `amountToApprove`
+ * (partial sell or unlimited, matching the TWAP form).
  *
- * On on-chain approve, the transaction usually approves `amountToApprove` (typically
- * `maxUint256`) and validates that the emitted Approval amount still covers `amountToCover`,
- * throwing "Approved amount is not sufficient!" if not.
+ * On on-chain approve, the transaction approves `amountToApprove` and validates that the
+ * emitted Approval amount still covers `amountToCover`, throwing
+ * "Approved amount is not sufficient!" if not.
  *
  * When permit succeeds, returns `permitData` for the caller to include in setup execution.
  */
@@ -167,7 +167,7 @@ export async function ensureEoaTwapSpenderAllowance({
       sellTokenAddress,
       sellTokenName,
       spender,
-      amountToApprove,
+      amountToPermit: amountToCover,
       permitInfo,
       generatePermitHook,
       permitUiStep,
@@ -375,7 +375,7 @@ async function tryGeneratePermitAllowance({
   sellTokenAddress,
   sellTokenName,
   spender,
-  amountToApprove,
+  amountToPermit,
   permitInfo,
   generatePermitHook,
   permitUiStep,
@@ -398,7 +398,7 @@ async function tryGeneratePermitAllowance({
     },
     account,
     permitInfo,
-    amount: amountToApprove,
+    amount: amountToPermit,
     customSpender: spender,
   }).catch((err: unknown) => {
     const error = normalizeError(err)
