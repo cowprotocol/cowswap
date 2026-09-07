@@ -6,6 +6,7 @@ import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -90,6 +91,42 @@ export const tokenListsUpdatingAtom = atom<boolean>(false)
  */
 export const virtualListsStateAtom = atom<TokenListsState>({})
 
+/**
+ * Restricted token lists are pinned to a commit and get re-pinned whenever an issuer adds a token.
+ * Nothing prunes a source that drops out of the default config, so every re-pin leaves the previous
+ * URL behind in storage and the list is rendered twice.
+ *
+ * `getSourceAsKey` ignores the git ref, so the leftovers are detectable: when several stored sources
+ * are the same list, only the URL the app currently ships is surfaced.
+ *
+ * Applied on read so the UI is never wrong, and again in `upsertListsAtom` so storage converges. It
+ * must not be done by writing IndexedDB directly: `listsStatesByChainAtom` loads with `getOnInit` and
+ * is re-persisted wholesale on upsert, so a write behind jotai's back is clobbered by the in-memory
+ * copy that was read before it.
+ */
+export function dropRepinnedDuplicates<T>(
+  lists: Record<string, T>,
+  shipped: readonly { source: string }[],
+): Record<string, T> {
+  const shippedSources = new Set(shipped.map((list) => list.source))
+  const sourceByKey = new Map<string, string>()
+
+  for (const source of Object.keys(lists)) {
+    const key = getSourceAsKey(source)
+    const kept = sourceByKey.get(key)
+
+    if (kept === undefined || (!shippedSources.has(kept) && shippedSources.has(source))) {
+      sourceByKey.set(key, source)
+    }
+  }
+
+  if (sourceByKey.size === Object.keys(lists).length) {
+    return lists
+  }
+
+  return Object.fromEntries([...sourceByKey.values()].map((source) => [source, lists[source]]))
+}
+
 export const listsStatesMapAtom = atom(async (get) => {
   const { chainId, widgetAppCode, selectedLists, useCuratedListOnly } = get(environmentAtom)
   const virtualListsState = get(virtualListsStateAtom)
@@ -99,16 +136,18 @@ export const listsStatesMapAtom = atom(async (get) => {
   const allTokenListsInfo = await get(listsStatesByChainAtom)
   const listsState = allTokenListsInfo[chainId] || {}
 
+  const storedLists = Object.keys(listsState).reduce<TokenListsState>((acc, key) => {
+    const val = listsState[key]
+
+    if (val !== 'deleted') {
+      acc[key] = val
+    }
+
+    return acc
+  }, {})
+
   const currentNetworkLists = {
-    ...Object.keys(listsState).reduce<TokenListsState>((acc, key) => {
-      const val = listsState[key]
-
-      if (val !== 'deleted') {
-        acc[key] = val
-      }
-
-      return acc
-    }, {}),
+    ...dropRepinnedDuplicates(storedLists, get(allListsSourcesAtom)),
     ...virtualListsState,
   }
 

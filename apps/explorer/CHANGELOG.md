@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.11.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.11.0...explorer-v4.11.1) (2026-09-07)
+
+### Patch Changes
+
+- fix(explorer): restore explorer's font size removed on the global reset (#8088)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
 ## [4.11.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.10.0...explorer-v4.11.0) (2026-09-03)
 
 ### Minor Changes
