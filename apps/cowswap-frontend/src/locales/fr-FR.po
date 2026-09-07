@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-04 14:04\n"
+"PO-Revision-Date: 2026-09-07 12:28\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3772,8 +3772,8 @@ msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): 
 msgstr "CoW Swap est la seule plateforme d’échange qui associe les Coincidences of Wants (CoWs) : des swaps pair-à-pair qui réduisent les frais de règlement."
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
-msgid "EOA TWAP cancellation is not implemented"
-msgstr "L’annulation des ordres TWAP n’est pas prise en charge pour les wallets EOA"
+#~ msgid "EOA TWAP cancellation is not implemented"
+#~ msgstr "EOA TWAP cancellation is not implemented"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
@@ -7703,6 +7703,10 @@ msgstr "Confirmer le swap"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #~ msgid "Save"
 #~ msgstr "Save"
+
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
+msgid "Wallet signer is required to cancel an EOA TWAP order"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
