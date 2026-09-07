@@ -19,6 +19,12 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - i18n (app-only): `pnpx nx run cowswap-frontend:i18n`
 - Cosmos: `pnpm start:cosmos`
 
+## Localization catalogs
+
+- `src/locales/en-US.po` is the source catalog and MUST be updated through the i18n extraction command, not manually.
+- Non-source `src/locales/*.po` catalogs are managed by Crowdin and MUST NOT be edited in feature or fix PRs; manual changes will be overwritten.
+- Submit translation additions or corrections through Crowdin or the localization maintainers. See the [localization guide](./src/lib/README-LOCALIZATION.md).
+
 ## Architecture principles
 - Apply Dependency Inversion Principle: higher-level modules should depend on abstractions, not concrete low-level details.
 - Abstractions should not depend on details; concrete details should depend on abstractions.

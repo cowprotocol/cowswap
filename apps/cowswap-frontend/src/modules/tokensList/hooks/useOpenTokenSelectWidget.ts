@@ -9,10 +9,10 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
-import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
+import { useTradeTypeInfo } from 'modules/trade'
 
 import { CrossChainFamilySwitchState, useCrossChainFamilySwitch } from 'common/hooks/useCrossChainFamilySwitch'
+import { TradeType, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'

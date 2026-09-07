@@ -28,6 +28,15 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
   },
 }))
 
+jest.mock('@cowprotocol/common-const', () => ({
+  ...jest.requireActual('@cowprotocol/common-const'),
+  IS_SOLANA_ENABLED: true,
+}))
+
+jest.mock('./getSolanaQuote.service', () => ({
+  getSolanaQuote: jest.fn(),
+}))
+
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderKind, PriceQuality, SupportedChainId, QuoteAndPost } from '@cowprotocol/cow-sdk'
 import {
@@ -46,6 +55,7 @@ import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { fetchAndProcessQuote } from './fetchAndProcessQuote'
+import { getSolanaQuote } from './getSolanaQuote.service'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -384,6 +394,82 @@ describe('fetchAndProcessQuote', () => {
         '[fetchAndProcessQuote]:: fetchSwapQuote error',
         expect.any(QuoteApiError),
       )
+    })
+  })
+
+  describe('Solana quotes', () => {
+    const solanaQuoteParams: QuoteBridgeRequest = {
+      ...mockQuoteParams,
+      sellTokenChainId: SupportedChainId.SOLANA,
+      buyTokenChainId: SupportedChainId.SOLANA,
+    }
+    const mockGetSolanaQuote = getSolanaQuote as jest.MockedFunction<typeof getSolanaQuote>
+
+    it('serves a real Jupiter-sourced quote instead of calling bridgingSdk', async () => {
+      const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }
+      mockGetSolanaQuote.mockResolvedValue(mockQuoteAndPost)
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        solanaQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams, undefined)
+      expect(mockBridgingSdk.getQuote).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
+        mockQuoteAndPost,
+        null,
+        mockFetchParams,
+        solanaQuoteParams,
+      )
+    })
+
+    it('surfaces a Jupiter quote failure via onError, same as an EVM quote failure', async () => {
+      mockGetSolanaQuote.mockRejectedValue(new Error('no route found'))
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        solanaQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
+      expect(mockTradeQuoteManager.reset).not.toHaveBeenCalled()
+    })
+
+    // Solana quotes now go through the same per-tier onlyResolvesLast protection the EVM path uses
+    // above (getFastQuote/getOptimalQuote), so a stale FAST response can no longer overwrite a newer
+    // OPTIMAL one. onlyResolvesLast's actual cancellation semantics are covered directly, with real
+    // delayed promises, in libs/common-utils/src/async.test.ts — here we only need to confirm the FAST
+    // vs OPTIMAL request is still wired correctly through the wrapper for Solana.
+    it('requests a Jupiter quote for both FAST and OPTIMAL price qualities', async () => {
+      const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }
+      mockGetSolanaQuote.mockResolvedValue(mockQuoteAndPost)
+
+      await fetchAndProcessQuote(
+        { ...mockFetchParams, priceQuality: PriceQuality.FAST },
+        solanaQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+      await fetchAndProcessQuote(
+        { ...mockFetchParams, priceQuality: PriceQuality.OPTIMAL },
+        solanaQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
+
+      expect(mockGetSolanaQuote).toHaveBeenCalledTimes(2)
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(1, solanaQuoteParams, undefined)
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(2, solanaQuoteParams, undefined)
+      expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledTimes(2)
     })
   })
 

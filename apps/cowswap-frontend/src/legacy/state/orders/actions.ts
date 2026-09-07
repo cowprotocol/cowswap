@@ -56,8 +56,8 @@ export interface BaseOrder extends OrderCreation {
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
 
-  // EthFlow
-  orderCreationHash?: string
+  // EthFlow / Solana
+  orderCreationHash?: string // EthFlow: order creation tx hash. Solana: order creation transaction signature
   isRefunded?: boolean
   refundHash?: string
 

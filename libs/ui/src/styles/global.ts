@@ -18,7 +18,8 @@ export const baseGlobalStyles = css`
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
+  // This locks <html> too so Base UI sees the page as already locked and skips scrollbar-gutter.
+  // It also prevents the page content from moving right when the scrollbar is hidden.
   html:has(body.noScroll) {
     overflow: hidden;
   }
@@ -38,22 +39,18 @@ export const baseGlobalStyles = css`
     appearance: none;
   }
 
-  // Inputs match :focus-visible on mouse click, so they keep outline: none.
-  button,
-  textarea,
-  select {
-    &:focus-visible {
-      outline: 1.5px dotted var(${UI.COLOR_TEXT});
-      outline-offset: 2px;
-    }
-  }
-
   button {
     user-select: none;
     cursor: pointer;
 
     &:disabled {
       cursor: not-allowed;
+    }
+
+    // Default outline only for buttons because inputs/textareas match :focus-visible on mouse click, so they keep outline: none.
+    &:focus-visible {
+      outline: 1.5px dotted var(${UI.COLOR_TEXT});
+      outline-offset: 2px;
     }
   }
 

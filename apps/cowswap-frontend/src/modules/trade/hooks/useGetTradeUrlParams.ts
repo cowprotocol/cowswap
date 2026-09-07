@@ -5,7 +5,8 @@ import { IMenuItem, Routes } from 'common/constants/routes'
 import { useIsCurrentTradeBridging } from './useIsCurrentTradeBridging'
 import { useTradeRouteContext } from './useTradeRouteContext'
 
-import { getDefaultTradeRawState, TradeUrlParams } from '../types'
+import { TradeUrlParams } from '../../../common/modules/tradeNavigation'
+import { getDefaultTradeRawState } from '../types'
 
 /**
  * Bridging mode is currently enabled only on the Swap tab.

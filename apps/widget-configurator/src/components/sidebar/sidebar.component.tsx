@@ -55,7 +55,6 @@ const JSON_FIELD_NAMES = new Set<keyof ConfiguratorFormValues>([
 ])
 
 export interface SidebarProps {
-  title: string
   isOpen: boolean
   isResizing: boolean
   isSnippetOpen: boolean
@@ -73,7 +72,6 @@ const CONFIGURATOR_STATE_PROPAGATION_THROTTLE_MS = 250
 
 // eslint-disable-next-line max-lines-per-function
 export function Sidebar({
-  title,
   isOpen,
   isResizing,
   isSnippetOpen,
@@ -188,7 +186,6 @@ export function Sidebar({
       <Box sx={drawerPaperRowSx}>
         <Box sx={drawerContentColumnSx}>
           <SidebarHeader
-            title={title}
             themeMode={mode}
             widgetMode={configuratorFormValues.widgetMode}
             baseUrl={configuratorFormValues.baseUrl || CONFIGURATOR_DEFAULT_WIDGET_BASE_URL}
