@@ -3,7 +3,6 @@ import { maxUint256 } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin } from '@cowprotocol/common-utils'
 import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { PermitHookData } from '@cowprotocol/permit-utils'
 
@@ -17,7 +16,6 @@ import { ensureEoaTwapSpenderAllowance, getEoaTwapApprovalNeeds } from './ensure
 import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
 
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
-import { buildEoaTwapSigningStepPlan } from '../../../utils/buildEoaTwapSigningStepPlan'
 
 jest.mock('wagmi/actions', () => ({
   getPublicClient: jest.fn(),
@@ -263,14 +261,12 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(mockedWriteContract).not.toHaveBeenCalled()
   })
 
-  it('replaces the stepper plan and falls back to on-chain approve when permit generation fails', async () => {
+  it('aborts when the user rejects the permit signature and does not fall back to on-chain approve', async () => {
     setupSuccessfulOnChainApprove()
 
     const onSigningStep = jest.fn()
-    const generatePermitHook = jest.fn().mockRejectedValue(new Error('user rejected')) as GeneratePermitHook
-    const onChainFallbackPlan = buildEoaTwapSigningStepPlan({
-      poller: { needsApproval: true, needsZeroApproval: false, canUsePermit: false },
-    })
+    const userRejected = Object.assign(new Error('User rejected the request'), { code: 4001 })
+    const generatePermitHook = jest.fn().mockRejectedValue(userRejected) as GeneratePermitHook
 
     await expect(
       ensureEoaTwapSpenderAllowance(
@@ -280,45 +276,23 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
           permitInfo: PERMIT_INFO,
           permitStep: EoaTwapSigningSteps.PermitPoller,
           step: EoaTwapSigningSteps.ApprovePoller,
-          onChainFallbackPlan,
         }),
       ),
-    ).resolves.toBeNull()
+    ).rejects.toBe(userRejected)
 
+    expect(mockedWriteContract).not.toHaveBeenCalled()
+    expect(onSigningStep).toHaveBeenCalledTimes(1)
     expect(onSigningStep).toHaveBeenCalledWith({
-      step: EoaTwapSigningSteps.ApprovePoller,
+      step: EoaTwapSigningSteps.PermitPoller,
       phase: EoaTwapSigningPhase.Sign,
-      plan: onChainFallbackPlan,
-    })
-    expect(mockedWriteContract).toHaveBeenCalledTimes(1)
-    expect(mockedWriteContract).toHaveBeenCalledWith(
-      CONFIG,
-      expect.objectContaining({
-        address: SELL_TOKEN,
-        functionName: 'approve',
-        args: [SPENDER, AMOUNT_TO_APPROVE],
-        gas: calculateGasMargin(ESTIMATED_GAS),
-        account: ACCOUNT,
-      }),
-    )
-    expect(onSigningStep).toHaveBeenCalledWith({
-      step: EoaTwapSigningSteps.ApprovePoller,
-      phase: EoaTwapSigningPhase.WaitingForTx,
-    })
-    expect(onSigningStep).toHaveBeenCalledWith({
-      step: EoaTwapSigningSteps.ApprovePoller,
-      phase: EoaTwapSigningPhase.Confirmed,
     })
   })
 
-  it('falls back onto the zero-approve step when permit fails and USDT-style reset is required', async () => {
+  it('aborts when permit generation returns no data and does not fall back to on-chain approve', async () => {
     setupSuccessfulOnChainApprove()
 
     const onSigningStep = jest.fn()
     const generatePermitHook = jest.fn().mockResolvedValue(undefined) as GeneratePermitHook
-    const onChainFallbackPlan = buildEoaTwapSigningStepPlan({
-      poller: { needsApproval: true, needsZeroApproval: true, canUsePermit: false },
-    })
 
     await expect(
       ensureEoaTwapSpenderAllowance(
@@ -329,23 +303,39 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
           permitStep: EoaTwapSigningSteps.PermitPoller,
           step: EoaTwapSigningSteps.ApprovePoller,
           zeroStep: EoaTwapSigningSteps.ZeroApprovePoller,
-          onChainFallbackPlan,
+          approvalNeeds: { needsApproval: true, needsZeroApproval: true },
+        }),
+      ),
+    ).rejects.toThrow('Unable to generate permit data')
+
+    expect(mockedWriteContract).not.toHaveBeenCalled()
+  })
+
+  it('runs USDT-style zero-approve then approve when permit is not available', async () => {
+    setupSuccessfulOnChainApprove()
+    const onSigningStep = jest.fn()
+
+    await expect(
+      ensureEoaTwapSpenderAllowance(
+        baseParams({
+          onSigningStep,
+          permitInfo: { type: 'unsupported' },
+          zeroStep: EoaTwapSigningSteps.ZeroApprovePoller,
           approvalNeeds: { needsApproval: true, needsZeroApproval: true },
         }),
       ),
     ).resolves.toBeNull()
 
-    expect(onSigningStep).toHaveBeenCalledWith({
-      step: EoaTwapSigningSteps.ZeroApprovePoller,
-      phase: EoaTwapSigningPhase.Sign,
-      plan: onChainFallbackPlan,
-    })
     expect(mockedWriteContract).toHaveBeenNthCalledWith(1, CONFIG, expect.objectContaining({ args: [SPENDER, 0n] }))
     expect(mockedWriteContract).toHaveBeenNthCalledWith(
       2,
       CONFIG,
       expect.objectContaining({ args: [SPENDER, AMOUNT_TO_APPROVE] }),
     )
+    expect(onSigningStep).toHaveBeenCalledWith({
+      step: EoaTwapSigningSteps.ZeroApprovePoller,
+      phase: EoaTwapSigningPhase.Sign,
+    })
   })
 
   it('uses on-chain approve when the token does not support permit', async () => {
