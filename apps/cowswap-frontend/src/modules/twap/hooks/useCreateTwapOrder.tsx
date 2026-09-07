@@ -178,7 +178,7 @@ export function useCreateTwapOrder() {
         return
       }
 
-      if (!chainId || !account || !walletClient) return
+      if (!chainId || !account) return
       if (!inputCurrencyAmount || !outputCurrencyAmount || !appDataInfo || !twapOrder) return
 
       if (isEoaTwap) {
@@ -297,6 +297,8 @@ export function useCreateTwapOrder() {
         let orderStatus: TwapOrderStatus
 
         if (eoaPoller) {
+          if (!walletClient || !eoaSigner) return
+
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())

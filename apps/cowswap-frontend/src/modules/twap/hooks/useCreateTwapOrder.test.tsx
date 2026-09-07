@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 
 import { maxUint256 } from 'viem'
+import { useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -167,6 +168,7 @@ const mockedPlaceSafeTwapOrder = placeSafeTwapOrder as jest.MockedFunction<typeo
 const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.MockedFunction<
   typeof useGetAmountToSignApprove
 >
+const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
 
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
@@ -221,6 +223,9 @@ describe('useCreateTwapOrder', () => {
       setupTxHash: '0xsetuptx',
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedUseGetAmountToSignApprove.mockReturnValue(null)
+    mockedUseWalletClient.mockReturnValue({
+      data: { account: '0xaccount', chain: { id: 1 } },
+    } as ReturnType<typeof useWalletClient>)
     mockedPlaceSafeTwapOrder.mockResolvedValue({ safeTxHash: '0xsafetx', safeAddress: '0xsafe' })
     ;(uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>).mockResolvedValue(
       undefined,
@@ -253,6 +258,21 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(mockedPlaceSafeTwapOrder).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 999n }))
+  })
+
+  it('places a Safe TWAP when useWalletClient has not hydrated yet', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseWalletClient.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceSafeTwapOrder).toHaveBeenCalled()
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
   })
 
   it('requests full TWAP sell poller allowance for EOA when approval is needed', async () => {
