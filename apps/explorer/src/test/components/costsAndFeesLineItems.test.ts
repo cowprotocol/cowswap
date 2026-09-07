@@ -3,7 +3,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 
-import { ProtocolFee, ProtocolFeeType } from 'api/operator'
+import { ProtocolFee, ProtocolFeeOwner, ProtocolFeeType } from 'api/operator'
 
 import { buildLineItems, indexTokensByKey, sumByToken } from '../../components/orders/GasFeeDisplay/breakdown'
 import { TUSD, USDT, WETH } from '../data'
@@ -11,8 +11,25 @@ import { TUSD, USDT, WETH } from '../data'
 const NATIVE_KEY = getAddressKey('0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
 const GAS_COST = new BigNumber('2500000000000000')
 
-function fee(type: ProtocolFeeType, token: string, amount: string, position = 0): ProtocolFee {
-  return { type, tokenAddress: getAddressKey(token), amount: new BigNumber(amount), position }
+function fee(
+  type: ProtocolFeeType,
+  token: string,
+  amount: string,
+  position = 0,
+  owner = ProtocolFeeOwner.Protocol,
+  partnerNumber?: number,
+): ProtocolFee {
+  return { type, tokenAddress: getAddressKey(token), amount: new BigNumber(amount), position, owner, partnerNumber }
+}
+
+function partnerFee(
+  type: ProtocolFeeType,
+  token: string,
+  amount: string,
+  position: number,
+  partnerNumber: number,
+): ProtocolFee {
+  return fee(type, token, amount, position, ProtocolFeeOwner.Partner, partnerNumber)
 }
 
 describe('buildLineItems', () => {
@@ -24,38 +41,78 @@ describe('buildLineItems', () => {
 
   it('keeps the fees in the order they were applied', () => {
     const items = buildLineItems(
-      [fee(ProtocolFeeType.Surplus, WETH.address, '1'), fee(ProtocolFeeType.PriceImprovement, USDT.address, '2', 1)],
-      GAS_COST,
-      NATIVE_KEY,
-    )
-
-    expect(items.map((item) => item.label)).toEqual(['Network costs', 'Surplus fee', 'Price improvement fee'])
-  })
-
-  it('numbers repeated fee types so the rows stay distinguishable', () => {
-    const items = buildLineItems(
       [
-        fee(ProtocolFeeType.Volume, WETH.address, '1'),
-        fee(ProtocolFeeType.Surplus, WETH.address, '2', 1),
-        fee(ProtocolFeeType.Volume, USDT.address, '3', 2),
+        fee(ProtocolFeeType.PriceImprovement, WETH.address, '1'),
+        partnerFee(ProtocolFeeType.Volume, USDT.address, '2', 1, 1),
       ],
       GAS_COST,
       NATIVE_KEY,
     )
 
-    // Only the repeated type is numbered; the single surplus fee keeps its plain label.
     expect(items.map((item) => item.label)).toEqual([
       'Network costs',
-      'Volume fee (1)',
-      'Surplus fee',
-      'Volume fee (2)',
+      'DAO price improvement share',
+      'Partner 1 volume fee',
     ])
   })
 
-  it('labels a fee of an unrecognised policy generically', () => {
-    const items = buildLineItems([fee(ProtocolFeeType.Unknown, USDT.address, '1')], GAS_COST, NATIVE_KEY)
+  it('numbers a label that still repeats, so the rows stay distinguishable', () => {
+    const items = buildLineItems(
+      [
+        partnerFee(ProtocolFeeType.Volume, WETH.address, '1', 0, 1),
+        fee(ProtocolFeeType.Surplus, WETH.address, '2', 1),
+        partnerFee(ProtocolFeeType.Volume, USDT.address, '3', 2, 1),
+      ],
+      GAS_COST,
+      NATIVE_KEY,
+    )
 
-    expect(items[1].label).toBe('Fee')
+    // Same partner, same kind of fee, twice; the surplus fee is alone so it keeps its plain label.
+    expect(items.map((item) => item.label)).toEqual([
+      'Network costs',
+      'Partner 1 volume fee (1)',
+      'DAO price improvement share',
+      'Partner 1 volume fee (2)',
+    ])
+  })
+
+  it('falls back to the plain fee names for an unrecognised policy', () => {
+    const items = buildLineItems(
+      [fee(ProtocolFeeType.Unknown, USDT.address, '1'), partnerFee(ProtocolFeeType.Unknown, USDT.address, '2', 1, 1)],
+      GAS_COST,
+      NATIVE_KEY,
+    )
+
+    expect(items.map((item) => item.label)).toEqual(['Network costs', 'Protocol fee', 'Partner 1 fee'])
+  })
+
+  it('names the protocol fees and numbers the partners, per the agreed labels', () => {
+    const items = buildLineItems(
+      [
+        fee(ProtocolFeeType.PriceImprovement, WETH.address, '1'),
+        fee(ProtocolFeeType.Volume, WETH.address, '2', 1),
+        partnerFee(ProtocolFeeType.Volume, USDT.address, '3', 2, 1),
+        partnerFee(ProtocolFeeType.PriceImprovement, USDT.address, '4', 3, 1),
+        partnerFee(ProtocolFeeType.Volume, TUSD.address, '5', 4, 2),
+      ],
+      GAS_COST,
+      NATIVE_KEY,
+    )
+
+    expect(items.map((item) => item.label)).toEqual([
+      'Network costs',
+      'DAO price improvement share',
+      'Protocol fee',
+      'Partner 1 volume fee',
+      'Partner 1 price improvement share',
+      'Partner 2 volume fee',
+    ])
+  })
+
+  it('labels the protocol surplus fee as the DAO price improvement share', () => {
+    const items = buildLineItems([fee(ProtocolFeeType.Surplus, WETH.address, '1')], GAS_COST, NATIVE_KEY)
+
+    expect(items[1].label).toBe('DAO price improvement share')
   })
 })
 
