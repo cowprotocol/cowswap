@@ -27,6 +27,7 @@ jest.mock('../environmentAtom', () => {
 import { removeListAtom, upsertListsAtom } from './tokenListsActionsAtom'
 import { listsStatesByChainAtom, listsStatesMapAtom, virtualListsStateAtom } from './tokenListsStateAtom'
 
+import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { ListState, TokenListsByChainState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
@@ -43,6 +44,7 @@ const DEFAULT_LISTS_STATE = {
   [SupportedChainId.PLASMA]: {},
 }
 const MOCK_CHAIN_ID = SupportedChainId.MAINNET
+const REPIN_BASE = 'https://raw.githubusercontent.com/acme/tokenlist'
 
 const MOCK_LIST_STATE: ListState = {
   source: 'https://example.com/tokenlist.json',
@@ -178,6 +180,68 @@ describe('listsStatesByChainAtom - token lists state', () => {
       expect(Object.keys(listsStatesMap)).toHaveLength(0)
     })
 
+    it('surfaces only the shipped URL when a list was re-pinned', async () => {
+      const store = createStore()
+
+      const shipped = DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID].find((list) => list.source.includes('ondoprotocol'))?.source
+
+      if (!shipped) throw new Error('No SHA-pinned Ondo list configured for mainnet')
+
+      // What a returning user still has stored from before the re-pin
+      const repinned = shipped.replace(
+        /^(https:\/\/raw\.githubusercontent\.com\/[^/]+\/[^/]+\/)[^/]+\//,
+        '$1refs/heads/main/',
+      )
+
+      expect(repinned).not.toBe(shipped)
+
+      store.set(environmentAtom, {
+        chainId: MOCK_CHAIN_ID,
+        useCuratedListOnly: false,
+        isYieldEnabled: false,
+      })
+      store.set(listsStatesByChainAtom, {
+        ...DEFAULT_LISTS_STATE,
+        [MOCK_CHAIN_ID]: {
+          [repinned]: { ...MOCK_LIST_STATE, source: repinned },
+          [shipped]: { ...MOCK_LIST_STATE, source: shipped },
+          [MOCK_LIST_STATE.source]: MOCK_LIST_STATE,
+        },
+      })
+
+      const listsStatesMap = await store.get(listsStatesMapAtom)
+
+      expect(listsStatesMap[shipped]).toBeDefined()
+      expect(listsStatesMap[repinned]).toBeUndefined()
+      // unrelated lists are untouched
+      expect(listsStatesMap[MOCK_LIST_STATE.source]).toEqual(MOCK_LIST_STATE)
+    })
+
+    it('keeps one entry when a re-pinned list has no shipped URL stored', async () => {
+      const store = createStore()
+
+      const base = 'https://raw.githubusercontent.com/acme/tokenlist'
+      const older = `${base}/refs/heads/master/tokenlist.json`
+      const newer = `${base}/refs/heads/main/tokenlist.json`
+
+      store.set(environmentAtom, {
+        chainId: MOCK_CHAIN_ID,
+        useCuratedListOnly: false,
+        isYieldEnabled: false,
+      })
+      store.set(listsStatesByChainAtom, {
+        ...DEFAULT_LISTS_STATE,
+        [MOCK_CHAIN_ID]: {
+          [older]: { ...MOCK_LIST_STATE, source: older },
+          [newer]: { ...MOCK_LIST_STATE, source: newer },
+        },
+      })
+
+      const listsStatesMap = await store.get(listsStatesMapAtom)
+
+      expect(Object.keys(listsStatesMap)).toEqual([older])
+    })
+
     it('keeps virtual widget lists when curated-only mode is enabled', async () => {
       const store = createStore()
 
@@ -234,6 +298,29 @@ describe('listsStatesByChainAtom - token lists state', () => {
   })
 
   describe('upsertListsAtom', () => {
+    it('drops a re-pinned leftover from storage, not just from the rendered map', async () => {
+      const store = createStore()
+
+      const shipped = { ...MOCK_LIST_STATE, source: `${REPIN_BASE}/2222222222222222222222222222222222222222/l.json` }
+      const leftover = { ...MOCK_LIST_STATE, source: `${REPIN_BASE}/refs/heads/main/l.json` }
+
+      store.set(listsStatesByChainAtom, {
+        ...DEFAULT_LISTS_STATE,
+        [MOCK_CHAIN_ID]: {
+          [leftover.source]: leftover,
+          [MOCK_LIST_STATE.source]: MOCK_LIST_STATE,
+        },
+      })
+
+      await store.set(upsertListsAtom, MOCK_CHAIN_ID, [shipped])
+
+      const updatedState = await store.get(listsStatesByChainAtom)
+
+      expect(updatedState?.[MOCK_CHAIN_ID]?.[shipped.source]).toBeDefined()
+      expect(updatedState?.[MOCK_CHAIN_ID]?.[leftover.source]).toBeUndefined()
+      expect(updatedState?.[MOCK_CHAIN_ID]?.[MOCK_LIST_STATE.source]).toEqual(MOCK_LIST_STATE)
+    })
+
     it('restores a list that was marked as deleted with isEnabled defaulting to true', async () => {
       const store = createStore()
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.0...ui-v3.12.1) (2026-09-07)
+
+### Patch Changes
+
+- fix: keep mobile menu header visible after scroll (#8098)
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.11.0...ui-v3.12.0) (2026-09-03)
 
 ### Minor Changes
