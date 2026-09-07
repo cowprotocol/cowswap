@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { isSupportedPermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
@@ -118,6 +119,10 @@ function isApproveSupportedByFlowOrWallet(
   isBundlingSupportedOrEnabledForContext: boolean,
   allowsOffchainSigning: boolean,
 ): boolean {
+  // Solana bundles the SPL delegation into the same transaction as the order (see `solanaFlow`), so there
+  // is never a standalone approve to gate the form on — the user goes straight to confirm.
+  if (inputCurrency && isSolanaChain(inputCurrency.chainId)) return false
+
   const isNativeFlow = !!inputCurrency && getIsNativeToken(inputCurrency)
   if (!isNativeFlow) return true
 
