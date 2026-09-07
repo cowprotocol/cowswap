@@ -113,6 +113,16 @@ export function getUltimateOrderTradeAmounts({
   }
 }
 
+/**
+ * Resolves the validTo to store once a creating order (EthFlow, Solana) is confirmed indexed by the
+ * order-book. EthFlow's `userValidTo` is the most specific/authoritative source; the order-book's
+ * generic `validTo` (present on every order, unlike `ethflowData`) covers everything else, including
+ * Solana, whose order gets created with whatever the SDK originally quoted until this refresh.
+ */
+export function resolveValidToOnCreation(orderData: EnrichedOrder, storedValidTo: number): number {
+  return orderData.ethflowData?.userValidTo || orderData.validTo || storedValidTo
+}
+
 function getBridgeTradeAmounts(
   bridgeOrderFromStore: BridgeOrderData,
   bridgeOrderFromApi?: Nullish<CrossChainOrder>,

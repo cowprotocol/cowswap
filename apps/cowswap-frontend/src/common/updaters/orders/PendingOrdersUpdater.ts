@@ -60,6 +60,7 @@ import {
   getOrderTypesByUid,
   OrderTransitionData,
   OrderTypesByUid,
+  resolveValidToOnCreation,
 } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
@@ -317,7 +318,7 @@ async function _updateCreatingOrders(
 
           const updatedOrder = {
             ...order,
-            validTo: orderData.ethflowData?.userValidTo || order.validTo,
+            validTo: resolveValidToOnCreation(orderData, order.validTo),
             isRefunded: ethflowData?.isRefunded,
             refundHash: ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
@@ -328,7 +329,7 @@ async function _updateCreatingOrders(
         })
         .catch((error) => {
           // Nothing to do here, keep waiting until the order shows up
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} couldn't be fetched from API`, error)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
         })
 
       acc.push(promise)

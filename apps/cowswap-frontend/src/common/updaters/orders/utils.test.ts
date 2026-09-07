@@ -19,6 +19,7 @@ import {
   getOrdersFromTransitionData,
   getOrderTypesByUid,
   OrderTransitionData,
+  resolveValidToOnCreation,
 } from './utils'
 
 jest.mock('api/cowProtocol', () => ({
@@ -168,6 +169,32 @@ describe('order updater utils', () => {
       const result = getFulfilledOrderUidsForSurplusQueue([bridgeOrder], { '0xbridge': UiOrderType.SWAP })
 
       expect(result).toEqual([])
+    })
+  })
+
+  describe('resolveValidToOnCreation', () => {
+    it("falls back to the order-book's generic validTo when there is no ethFlow data (Solana orders)", () => {
+      // Solana orders have no `ethflowData`, so the deadline the user actually set (baked into the
+      // order-book's validTo when the order was created) must come from here, not the stale value
+      // the locally-built order started with before it was indexed.
+      const orderData = buildApiOrder({ validTo: 1788785059, ethflowData: undefined })
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1788785059)
+    })
+
+    it('prefers ethFlow userValidTo over the generic validTo when present', () => {
+      const orderData = buildApiOrder({
+        validTo: 1788785059,
+        ethflowData: { userValidTo: 1788790000 } as EnrichedOrder['ethflowData'],
+      })
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1788790000)
+    })
+
+    it('falls back to the stored validTo if the API response has neither', () => {
+      const orderData = buildApiOrder({ validTo: undefined, ethflowData: undefined } as Partial<EnrichedOrder>)
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1700000000)
     })
   })
 
