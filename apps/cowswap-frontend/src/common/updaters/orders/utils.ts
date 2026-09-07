@@ -1,6 +1,7 @@
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { UiOrderType } from '@cowprotocol/types'
+import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
+import { BridgeOrderData, Nullish, UiOrderType } from '@cowprotocol/types'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -89,21 +90,7 @@ export function getUltimateOrderTradeAmounts({
 
   // Bridge order
   if (bridgeOrderFromStore) {
-    // Executed order
-    if (bridgeOrderFromApi?.bridgingParams.outputAmount) {
-      return {
-        inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
-        outputAmount: CurrencyAmount.fromRawAmount(
-          bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount.currency,
-          bridgeOrderFromApi.bridgingParams.outputAmount.toString(),
-        ),
-      }
-    }
-
-    return {
-      inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
-      outputAmount: bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount,
-    }
+    return getBridgeTradeAmounts(bridgeOrderFromStore, bridgeOrderFromApi)
   }
 
   // Executed swap order
@@ -115,13 +102,35 @@ export function getUltimateOrderTradeAmounts({
   }
 
   const sellAmount = genericOrder.sellAmount
-  const feeAmount = genericOrder.feeAmount
+  // Fee is undefined in Solana
+  const feeAmount = genericOrder.feeAmount ?? '0'
   const buyAmount = genericOrder.buyAmount
 
   // Any other swap orders
   return {
     inputAmount: stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken)),
     outputAmount: stringToCurrency(buyAmount, outputToken),
+  }
+}
+
+function getBridgeTradeAmounts(
+  bridgeOrderFromStore: BridgeOrderData,
+  bridgeOrderFromApi?: Nullish<CrossChainOrder>,
+): TradeAmounts {
+  // Executed order
+  if (bridgeOrderFromApi?.bridgingParams.outputAmount) {
+    return {
+      inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+      outputAmount: CurrencyAmount.fromRawAmount(
+        bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount.currency,
+        bridgeOrderFromApi.bridgingParams.outputAmount.toString(),
+      ),
+    }
+  }
+
+  return {
+    inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+    outputAmount: bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount,
   }
 }
 
