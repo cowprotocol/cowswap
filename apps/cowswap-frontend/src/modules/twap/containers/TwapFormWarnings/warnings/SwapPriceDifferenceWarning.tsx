@@ -7,10 +7,10 @@ import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { parameterizeTradeRoute, TradeUrlParams } from 'modules/trade'
 import { SwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import { Routes } from 'common/constants/routes'
+import { parameterizeTradeRoute, TradeUrlParams } from 'common/modules/tradeNavigation'
 
 export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference

@@ -31,6 +31,7 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     id: enrichedOrder.uid,
     composableCowInfo: {
       id: order.id,
+      twapOrderHash: order.hash,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

@@ -59,7 +59,7 @@ export interface SwapConfirmModalProps {
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { t } = useLingui()
-  const CONFIRM_TITLE = t`Swap`
+  const CONFIRM_TITLE = t`Review Swap`
   const {
     inputCurrencyInfo,
     outputCurrencyInfo,
