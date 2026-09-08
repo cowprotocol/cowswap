@@ -28,6 +28,7 @@ import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountIn
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
+import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
@@ -93,6 +94,7 @@ export function TwapConfirmModal(): ReactNode {
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
   const hasSigningPlan = !!eoaTwapSigningStep
+  const isEoaTwapSuccess = eoaTwapSigningStep?.step === EoaTwapSigningSteps.Success
 
   const tradeDetailsElement =
     receiveAmountInfo && numOfParts ? (
@@ -111,10 +113,12 @@ export function TwapConfirmModal(): ReactNode {
       />
     ) : null
 
-  const twapFormWarningsElement = <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+  const twapFormWarningsElement = isEoaTwapSuccess ? null : (
+    <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+  )
 
   // Actually only rendered if hasSigningPlan / !!eoaTwapSigningStep:
-  const eoaTwapSigningStepElement = <EoaTwapSigningPendingContent />
+  const eoaTwapSigningStepElement = <EoaTwapSigningPendingContent onDismiss={onDismiss} />
 
   return (
     <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage>
@@ -134,12 +138,11 @@ export function TwapConfirmModal(): ReactNode {
         {(restContent) => (
           <>
             {tradeDetailsElement}
-            {restContent}
+            {isEoaTwapSuccess ? null : restContent}
             {twapFormWarningsElement}
             {eoaTwapSigningStepElement}
           </>
         )}
-        {/* hasSigningPlan ? <ConfirmButton .../> : null */}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

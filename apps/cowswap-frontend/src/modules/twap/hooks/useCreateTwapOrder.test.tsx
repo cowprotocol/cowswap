@@ -14,6 +14,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
@@ -28,6 +29,7 @@ import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useCreateTwapOrder } from './useCreateTwapOrder'
+import { useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
@@ -39,6 +41,7 @@ import {
 } from '../services/twap/eoa/ensureEoaTwapSpenderAllowance'
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
+import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
@@ -170,6 +173,7 @@ const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.Mocked
   typeof useGetAmountToSignApprove
 >
 const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
+const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
 
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
@@ -394,5 +398,64 @@ describe('useCreateTwapOrder', () => {
     expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
     expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
     expect(mockedPlaceSafeTwapOrder).not.toHaveBeenCalled()
+  })
+
+  it('keeps the EOA confirm card open after placement instead of showing the submitted screen', async () => {
+    const updateEoaTwapFlow = jest.fn()
+    const onSuccess = jest.fn()
+    const navigateToOrdersTableTab = jest.fn()
+    mockedUseEoaTwapFlowUpdater.mockReturnValue(updateEoaTwapFlow)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess,
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(onSuccess).not.toHaveBeenCalled()
+    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
+    expect(updateEoaTwapFlow).toHaveBeenCalledWith({
+      step: EoaTwapSigningSteps.Success,
+      phase: EoaTwapSigningPhase.Confirmed,
+      orderId: '0xtwap',
+      setupTxHash: '0xsetuptx',
+      proxyAddress: '0xproxy',
+    })
+  })
+
+  it('shows the submitted screen and navigates to signing for a Safe TWAP', async () => {
+    jest.useFakeTimers()
+    const onSuccess = jest.fn()
+    const navigateToOrdersTableTab = jest.fn()
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess,
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(onSuccess).toHaveBeenCalledWith('0xsafetx')
+
+    await act(async () => {
+      jest.runAllTimers()
+    })
+
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.SIGNING)
+    jest.useRealTimers()
   })
 })

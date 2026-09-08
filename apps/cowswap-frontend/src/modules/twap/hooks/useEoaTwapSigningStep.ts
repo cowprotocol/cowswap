@@ -28,16 +28,7 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
         throw new EoaTwapPlacementCancelledError()
       }
 
-      const { step, phase, plan, lockDismiss } = update
-
-      setState((prev) => ({
-        step,
-        phase,
-
-        // These two values are sticky until the end of the placement, or until overridden by a subsequent update:
-        plan: plan ?? prev?.plan ?? [],
-        lockDismiss: lockDismiss ?? prev?.lockDismiss ?? false,
-      }))
+      setState((prev) => mergeEoaTwapFlowState(prev, update))
     },
     [setState],
   )
@@ -45,4 +36,27 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
 
 export function useEoaTwapSigningStep(): EoaTwapSigningStepState | null {
   return useAtomValue(eoaTwapSigningStepAtom)
+}
+
+function mergeEoaTwapFlowState(
+  prev: EoaTwapSigningStepState | null,
+  update: EoaTwapFlowUpdate,
+): EoaTwapSigningStepState {
+  const base: EoaTwapSigningStepState = prev ?? {
+    step: update.step,
+    phase: update.phase,
+    plan: [],
+    lockDismiss: false,
+  }
+
+  return {
+    step: update.step,
+    phase: update.phase,
+    // Sticky until the end of the placement, or until overridden by a subsequent update:
+    plan: update.plan ?? base.plan,
+    lockDismiss: update.lockDismiss ?? base.lockDismiss,
+    setupTxHash: update.setupTxHash ?? base.setupTxHash,
+    orderId: update.orderId ?? base.orderId,
+    proxyAddress: update.proxyAddress ?? base.proxyAddress,
+  }
 }

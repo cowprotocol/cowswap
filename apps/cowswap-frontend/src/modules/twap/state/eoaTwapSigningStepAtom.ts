@@ -19,6 +19,15 @@ export interface EoaTwapSigningStepState {
    * update it mid-flow).
    */
   lockDismiss: boolean
+
+  /** Cow-shed factory setup transaction hash, set after the tx is submitted. */
+  setupTxHash?: string
+
+  /** Conditional TWAP order id, set after placement succeeds. */
+  orderId?: string
+
+  /** Cow-shed proxy that owns the TWAP, used for the temporary Explorer address link. */
+  proxyAddress?: string
 }
 
 /**
@@ -38,8 +47,12 @@ export enum EoaTwapSigningSteps {
   ApprovePoller = 'ApprovePoller',
   /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
   PermitPoller = 'PermitPoller',
+  /** Cow-shed EIP-712 signature for the setup multicall. */
   TwapSetup = 'TwapSetup',
-  CreatingOrder = 'CreatingOrder',
+  /** Factory executeHooks on-chain transaction. */
+  TwapSign = 'TwapSign',
+  /** Placement finished; the review card shows the inline success box. */
+  Success = 'Success',
 }
 
 export const eoaTwapSigningStepAtom = atom<EoaTwapSigningStepState | null>(null)

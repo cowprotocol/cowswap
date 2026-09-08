@@ -236,9 +236,8 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. Sign cow-shed EIP-712.
- * 2. Send factory executeHooks TX and wait for mining.
- * 3. Mark CreatingOrder confirmed (setup receipt is already mined).
+ * 1. Sign cow-shed EIP-712 (`TwapSetup`).
+ * 2. Sign and send factory executeHooks TX and wait for mining (`TwapSign`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
@@ -354,17 +353,16 @@ export async function placeEoaTwapOrder({
   const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
+
   const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
+
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
 
   const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
 
   eoaTwapDebugLog('Signed setup multicall', { to: factoryAddress, callData })
 
-  onSigningStep({
-    step: EoaTwapSigningSteps.TwapSetup,
-    phase: EoaTwapSigningPhase.WaitingForTx,
-    lockDismiss: true,
-  })
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
   const setupTxHash = await walletClient.sendTransaction({
     to: factoryAddress,
@@ -375,6 +373,12 @@ export async function placeEoaTwapOrder({
   })
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
+
+  onSigningStep({
+    step: EoaTwapSigningSteps.TwapSign,
+    phase: EoaTwapSigningPhase.WaitingForTx,
+    lockDismiss: true,
+  })
 
   const receipt = await waitForEoaTwapTxReceipt(config, setupTxHash, chainId).catch((err: unknown) => {
     const error = normalizeError(err)
@@ -390,9 +394,12 @@ export async function placeEoaTwapOrder({
     throw new Error('TWAP setup transaction reverted')
   }
 
-  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
-  // Setup receipt is already mined; skip CreatingOrder WaitingForTx to avoid a UI flicker.
-  onSigningStep({ step: EoaTwapSigningSteps.CreatingOrder, phase: EoaTwapSigningPhase.Confirmed })
+  onSigningStep({
+    step: EoaTwapSigningSteps.TwapSign,
+    phase: EoaTwapSigningPhase.Confirmed,
+    setupTxHash,
+    proxyAddress,
+  })
 
   return { proxyAddress, setupTxHash }
 }

@@ -49,17 +49,23 @@ export interface OrdersTableWidgetProps {
 export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
 
-  const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
+  const filters = useAtomValue(ordersTableFiltersAtom)
+  const { searchTerm: searchTermFilter, historyStatusFilter } = filters
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
 
   const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
     partiallyUpdateOrdersTableFilters({ searchTerm })
   })
 
-  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching pages.
+  // `useStateWithDeferredValue` only uses the atom value as initial state. Sync local input when switching pages
+  // or when filters are cleared/reset (e.g. "View in Orders" resets with a new object).
   useLayoutEffect(() => {
+    if (filters.searchTerm !== '') {
+      console.warn('Unexpected non-empty search term')
+    }
+
     setSearchTerm('')
-  }, [orderType, setSearchTerm])
+  }, [orderType, filters, setSearchTerm])
 
   const resetSearchTerm = (): void => {
     setSearchTerm('')

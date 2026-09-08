@@ -431,8 +431,8 @@ msgid "sell"
 msgstr "sell"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Activating your TWAP"
-msgstr "Activating your TWAP"
+#~ msgid "Activating your TWAP"
+#~ msgstr "Activating your TWAP"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 #~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -1001,8 +1001,8 @@ msgid "Custom slippage amount set{amountRange}."
 msgstr "Custom slippage amount set{amountRange}."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Activating TWAP"
-msgstr "Activating TWAP"
+#~ msgid "Activating TWAP"
+#~ msgstr "Activating TWAP"
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -1442,6 +1442,10 @@ msgstr "Bridge transaction costs."
 #: apps/cowswap-frontend/src/modules/twap/pure/DeadlineSelector/index.tsx
 msgid "Custom"
 msgstr "Custom"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
+msgid "Open in CoW Explorer"
+msgstr "Open in CoW Explorer"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
@@ -2517,6 +2521,10 @@ msgstr "Wallet support"
 msgid "Refunding"
 msgstr "Refunding"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm the TWAP transaction in your connected wallet."
+msgstr "Confirm the TWAP transaction in your connected wallet."
+
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeOnChainCancellation.ts
 msgid "Failed to cancel order selling {sellTokenSymbol}"
 msgstr "Failed to cancel order selling {sellTokenSymbol}"
@@ -2657,6 +2665,10 @@ msgstr "d"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Creating..."
 msgstr "Creating..."
+
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
+msgid "View in Orders"
+msgstr "View in Orders"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
@@ -3631,6 +3643,10 @@ msgstr "TWAP order"
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "You can now trade <0/>"
 msgstr "You can now trade <0/>"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
+msgid "Track its progress in Orders."
+msgstr "Track its progress in Orders."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "How much of the order has been filled."
@@ -4607,6 +4623,10 @@ msgstr "Add pre-hook"
 #~ msgid "Morpho Borrow"
 #~ msgstr "Morpho Borrow"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP."
+msgstr "Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an intermediary account that handles trading on your behalf."
 msgstr "This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an intermediary account that handles trading on your behalf."
@@ -4793,9 +4813,9 @@ msgstr "Scan QR code"
 msgid "No signatures yet"
 msgstr "No signatures yet"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#~ msgid "Sign TWAP"
-#~ msgstr "Sign TWAP"
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign TWAP"
+msgstr "Sign TWAP"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Invalid format"
@@ -4820,6 +4840,10 @@ msgstr "Approving <0>{currencySymbolOrContext}</0> for trading"
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A resident of the EU or EEA."
 #~ msgstr "A resident of the EU or EEA."
+
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
+msgid "Your TWAP is active"
+msgstr "Your TWAP is active"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
@@ -6840,8 +6864,8 @@ msgstr "Confirm with your wallet"
 #~ msgstr "applied!"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
-msgstr "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
+#~ msgid "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
+#~ msgstr "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #~ msgid "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
@@ -7136,6 +7160,10 @@ msgstr "Swap completed"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Pool"
 msgstr "Pool"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
+msgid "New trade"
+msgstr "New trade"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #~ msgid "Allow you to chose whether your limit orders will be <0>Partially fillable</0> or <1>Fill or kill</1>.<2/><3/><4>Fill or kill</4> orders will either be filled fully or not at all.<5/><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount."

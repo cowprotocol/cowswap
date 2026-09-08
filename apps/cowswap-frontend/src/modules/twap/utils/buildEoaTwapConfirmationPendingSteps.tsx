@@ -31,13 +31,12 @@ export function buildEoaTwapConfirmationPendingSteps({
   signingStep,
   symbol,
   token,
-}: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] {
+}: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] | null {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
+  // Success is a terminal UI state and is intentionally omitted from the plan, so we just return null:
   if (currentIndex === -1) {
-    throw new Error(
-      `EOA TWAP signing step "${signingStep.step}" is not present in plan [${signingStep.plan.join(', ')}]`,
-    )
+    return null
   }
 
   return signingStep.plan.map((step, index) => {
@@ -88,6 +87,9 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
       return t`Sign the permit in your wallet. Each part is pulled right before it trades.`
 
     case EoaTwapSigningSteps.TwapSetup:
+      return t`Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP.`
+
+    case EoaTwapSigningSteps.TwapSign:
       if (isLoading) {
         return (
           <p>
@@ -96,15 +98,10 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
           </p>
         )
       }
-      return t`Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP.`
+      return t`Confirm the TWAP transaction in your connected wallet.`
 
-    case EoaTwapSigningSteps.CreatingOrder:
-      return (
-        <p>
-          {t`Activating your TWAP`}
-          <ThreeDots />
-        </p>
-      )
+    case EoaTwapSigningSteps.Success:
+      return undefined
   }
 }
 
@@ -117,7 +114,9 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
       return symbol ? t`Permit ${symbol} for funding` : t`Permit funding`
     case EoaTwapSigningSteps.TwapSetup:
       return t`Set up TWAP`
-    case EoaTwapSigningSteps.CreatingOrder:
-      return t`Activating TWAP`
+    case EoaTwapSigningSteps.TwapSign:
+      return t`Sign TWAP`
+    case EoaTwapSigningSteps.Success:
+      return ''
   }
 }
