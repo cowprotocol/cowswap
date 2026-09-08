@@ -83,12 +83,18 @@ export function ReceiverPanelBody({
 
   const showConfirmationRow = (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
 
+  const showCheckmark = isValid && !loading
+  // Only non-EVM addresses get JS-shortened by useAddressDisplayValue (shouldBeShorted = isNonEvm) -
+  // a valid EVM address's displayValue is the full, untruncated string, so shrinking the input to
+  // fit it would blow the layout out just like the invalid-address case did.
+  const showCompactInput = showCheckmark && isNonEvm
+
   return (
     <>
       {chainPrefixWarning && <ChainPrefixWarning chainPrefixWarning={chainPrefixWarning} chainInfo={chainInfo} />}
       <ReceiverInputWrapper>
         <ReceiverInputRow>
-          {isValid && !loading && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
+          {showCheckmark && <ValidCheckmark src={svgOrderCheckSrc} aria-hidden="true" />}
           <ReceiverInput
             data-testid={TEST_IDS.recipientAddressInput}
             type="text"
@@ -98,11 +104,21 @@ export function ReceiverPanelBody({
             spellCheck={false}
             placeholder={resolvedPlaceholder}
             $error={isError}
+            // Only shrink the input to fit its content when a confirmed, short, JS-truncated
+            // (non-EVM) address is shown next to the checkmark. Keep the default full-width,
+            // truncating (overflow: hidden + text-overflow: ellipsis) input otherwise, so a long
+            // invalid or EVM address doesn't blow out the layout - see ReceiverInput's styles.
+            $compact={showCompactInput}
             pattern={strategy.pattern}
             onChange={handleInput}
             value={displayValue}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            // On narrow viewports, when $compact, the input's CSS width is `auto`, so its size
+            // falls back to the browser default (~20 characters) unless overridden here. Without
+            // this, the box is wider than the (usually short, truncated) address, and
+            // text-align: center leaves the checkmark next to the box edge but far from the text.
+            size={showCompactInput ? displayValue.length || undefined : undefined}
           />
         </ReceiverInputRow>
         {isError && (

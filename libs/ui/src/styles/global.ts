@@ -18,12 +18,6 @@ export const baseGlobalStyles = css`
     -moz-osx-font-smoothing: grayscale;
   }
 
-  // This locks <html> too so Base UI sees the page as already locked and skips scrollbar-gutter.
-  // It also prevents the page content from moving right when the scrollbar is hidden.
-  html:has(body.noScroll) {
-    overflow: hidden;
-  }
-
   button,
   textarea,
   select,

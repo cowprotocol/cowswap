@@ -22,19 +22,13 @@ import { getSafeAbsoluteUrl } from './safeLink'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-export function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
-}
-
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
   if (!value) return false
-  const prefixed = value.startsWith('0x') ? value : `0x${value}`
-  try {
-    return getAddress(prefixed)
-  } catch {
-    return false
-  }
+
+  if (isSolanaAddress(value)) return value // base58, case-sensitive — no checksum transform
+
+  return checksumEvmAddress(value)
 }
 
 /**
@@ -67,6 +61,15 @@ export function shortenAddress(address: string, chars = 4): string {
   }
 
   throw Error(`Invalid 'address' parameter '${address}'.`)
+}
+
+function checksumEvmAddress(value: string): string | false {
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
+  try {
+    return getAddress(prefixed)
+  } catch {
+    return false
+  }
 }
 
 function isCaseSensitiveAddress(address: string): boolean {

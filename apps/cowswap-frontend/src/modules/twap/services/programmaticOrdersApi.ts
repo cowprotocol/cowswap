@@ -94,6 +94,19 @@ class ProgrammaticOrdersApi {
       },
     )
   }
+
+  async fetchCurrentEoaTwapPartOrder(eventId: string, chainId: SupportedChainId): Promise<TwapPartOrder | undefined> {
+    const { items } = await this.api.getTwapPartOrders(
+      { eventId, chainId },
+      {
+        direction: 'desc',
+        limit: 1,
+      },
+    )
+    const latestPart = items[0]
+
+    return latestPart?.status === 'open' ? latestPart : undefined
+  }
 }
 
 export const programmaticOrdersApi = new ProgrammaticOrdersApi()
