@@ -33,5 +33,6 @@ export function buildSolanaContextKey(params: SolanaContextKeyParams): SolanaCon
     solana,
     sellToken,
     params.currentDelegation ?? 0n,
+    params.delegationAmount,
   ] as const
 }

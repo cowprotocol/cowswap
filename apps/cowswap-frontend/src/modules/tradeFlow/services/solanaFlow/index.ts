@@ -29,6 +29,7 @@ export async function solanaFlow(
     sellToken,
     sellAmount,
     currentDelegation,
+    delegationAmount,
   } = input
   const { inputAmount, outputAmount, chainId } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -57,7 +58,7 @@ export async function solanaFlow(
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
     const steps = [
       planWrapStep({ owner, sellAmount: getIsNativeToken(inputAmount.currency) ? sellAmount : 0n }),
-      planDelegateStep({ owner, token: sellToken, amount: sellAmount, currentDelegation }),
+      planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 

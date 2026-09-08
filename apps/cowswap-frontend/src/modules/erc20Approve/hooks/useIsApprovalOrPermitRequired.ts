@@ -58,42 +58,50 @@ export function useIsApprovalOrPermitRequired({
     ? ApproveRequiredReason.NotRequired
     : getPermitRequirements(type)
 
-  const reason = (() => {
-    if (
-      !isApproveSupportedByFlowOrWallet(
-        inputCurrency,
-        tradeType,
-        !!isBundlingSupportedOrEnabledForContext,
-        allowsOffchainSigning,
-      )
-    ) {
-      return ApproveRequiredReason.Unsupported
-    }
+  // Solana bundles the SPL delegation into the trade transaction itself (see `solanaFlow`), so there is
+  // no standalone approve step. It still reports `BundleApproveRequired` rather than `Unsupported`,
+  // because the user picks how much to delegate and `Unsupported` would hide that switcher too.
+  const solanaReason =
+    inputCurrency && isSolanaChain(inputCurrency.chainId) ? getSolanaApproveRequirement(amountToApprove) : null
 
-    if (!isErc20TokenAmountApproveRequired(amountToApprove)) {
-      return ApproveRequiredReason.NotRequired
-    }
+  const reason =
+    solanaReason ??
+    (() => {
+      if (
+        !isApproveSupportedByFlowOrWallet(
+          inputCurrency,
+          tradeType,
+          !!isBundlingSupportedOrEnabledForContext,
+          allowsOffchainSigning,
+        )
+      ) {
+        return ApproveRequiredReason.Unsupported
+      }
 
-    const isPermitSupported = isSupportedPermitInfo(permitInfo)
+      if (!isNonZeroApproveAmount(amountToApprove)) {
+        return ApproveRequiredReason.NotRequired
+      }
 
-    if (allowsOffchainSigning && isPermitSupported) {
-      return offchainPermitRequirement
-    }
+      const isPermitSupported = isSupportedPermitInfo(permitInfo)
 
-    if (!isPermitSupported && isApprovalRequired(approvalState)) {
-      return isBundlingSupportedOrEnabledForContext
-        ? ApproveRequiredReason.BundleApproveRequired
-        : ApproveRequiredReason.Required
-    }
+      if (allowsOffchainSigning && isPermitSupported) {
+        return offchainPermitRequirement
+      }
 
-    if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
+      if (!isPermitSupported && isApprovalRequired(approvalState)) {
+        return isBundlingSupportedOrEnabledForContext
+          ? ApproveRequiredReason.BundleApproveRequired
+          : ApproveRequiredReason.Required
+      }
 
-    if (!isNewApproveFlowEnabled(tradeType, deferLimitOrderPermit)) {
-      return ApproveRequiredReason.NotRequired
-    }
+      if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
-    return getPermitRequirements(type)
-  })()
+      if (!isNewApproveFlowEnabled(tradeType, deferLimitOrderPermit)) {
+        return ApproveRequiredReason.NotRequired
+      }
+
+      return getPermitRequirements(type)
+    })()
 
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
@@ -109,6 +117,12 @@ function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
   }
 }
 
+function getSolanaApproveRequirement(amountToApprove: CurrencyAmount<Currency> | null): ApproveRequiredReason {
+  return isNonZeroApproveAmount(amountToApprove)
+    ? ApproveRequiredReason.BundleApproveRequired
+    : ApproveRequiredReason.NotRequired
+}
+
 function isApprovalRequired(approvalState: ApprovalState): boolean {
   return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 }
@@ -119,10 +133,6 @@ function isApproveSupportedByFlowOrWallet(
   isBundlingSupportedOrEnabledForContext: boolean,
   allowsOffchainSigning: boolean,
 ): boolean {
-  // Solana bundles the SPL delegation into the same transaction as the order (see `solanaFlow`), so there
-  // is never a standalone approve to gate the form on — the user goes straight to confirm.
-  if (inputCurrency && isSolanaChain(inputCurrency.chainId)) return false
-
   const isNativeFlow = !!inputCurrency && getIsNativeToken(inputCurrency)
   if (!isNativeFlow) return true
 
@@ -130,13 +140,13 @@ function isApproveSupportedByFlowOrWallet(
   return isSwap ? isBundlingSupportedOrEnabledForContext && !allowsOffchainSigning : false
 }
 
-function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Currency> | null): boolean {
-  if (!amountToApprove) return false
-  return !amountToApprove.equalTo('0')
-}
-
 function isNewApproveFlowEnabled(tradeType: Nullish<TradeType>, deferLimitOrderPermit: boolean): boolean {
   if (tradeType === TradeType.SWAP) return true
   if (tradeType === TradeType.LIMIT_ORDER) return !deferLimitOrderPermit
   return false
+}
+
+function isNonZeroApproveAmount(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+  if (!amountToApprove) return false
+  return !amountToApprove.equalTo('0')
 }

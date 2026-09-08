@@ -49,8 +49,10 @@ export interface SolanaTradeFlowContext {
   // The sell token and its exact amount, driving the wrap and delegate steps.
   sellToken: TokenWithLogo
   sellAmount: bigint
-  // Already-delegated amount for `sellToken`; the delegate step is skipped when it covers `sellAmount`.
+  // Already-delegated amount for `sellToken`; the delegate step is skipped when it covers `delegationAmount`.
   currentDelegation: bigint
+  // How much to delegate, from the partial/full approval switcher — not necessarily `sellAmount`.
+  delegationAmount: bigint
   context: {
     chainId: SupportedChainId
     inputAmount: CurrencyAmount<Currency>

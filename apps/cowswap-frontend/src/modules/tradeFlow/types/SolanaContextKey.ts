@@ -29,6 +29,7 @@ export type SolanaContextKey = readonly [
   solana: SolanaTradeFlowContext['solana'],
   sellToken: TokenWithLogo,
   currentDelegation: bigint,
+  delegationAmount: bigint,
 ]
 
 /** The same dependencies before narrowing, as the hook reads them. */
@@ -51,6 +52,7 @@ export interface SolanaContextKeyParams {
   solana: SolanaTradeFlowContext['solana'] | null
   sellToken: TokenWithLogo | undefined
   currentDelegation: bigint | undefined
+  delegationAmount: bigint
 }
 
 export interface SolanaTradeFlowContextParams {

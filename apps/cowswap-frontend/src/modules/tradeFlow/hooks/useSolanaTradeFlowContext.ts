@@ -9,6 +9,7 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useDerivedTradeState, useGetReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -21,6 +22,7 @@ import { SolanaTradeFlowContext } from '../types/TradeFlowContext'
 import { buildSolanaContextKey } from '../utils/buildSolanaContextKey'
 import { buildSolanaTradeFlowContext } from '../utils/buildSolanaTradeFlowContext'
 import { getIsSolanaTradeFlowContextReady } from '../utils/getIsSolanaTradeFlowContextReady'
+import { getSolanaDelegationAmount } from '../utils/getSolanaDelegationAmount'
 import { getSolanaSellToken } from '../utils/getSolanaSellToken'
 import { getUiOrderType } from '../utils/getUiOrderType'
 
@@ -42,6 +44,9 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
   const uiOrderType = getUiOrderType(tradeTypeInfo?.tradeType)
   const sellToken = getSolanaSellToken(inputCurrency)
   const currentDelegation = useSolanaDelegationAllowance(sellToken?.address)
+  const amountToApprove = useGetAmountToSignApprove()
+
+  const sellAmountRaw = inputAmount ? BigInt(inputAmount.quotient.toString()) : 0n
 
   const validTo = getOrderValidTo(deadline, tradeQuoteState)
   const quote = tradeQuoteState.quote
@@ -79,6 +84,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
         solana,
         sellToken,
         currentDelegation,
+        delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
       }),
     [
       chainId,
@@ -99,6 +105,8 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
       solana,
       sellToken,
       currentDelegation,
+      amountToApprove,
+      sellAmountRaw,
     ],
   )
 
