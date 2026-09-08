@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-07 12:28\n"
+"PO-Revision-Date: 2026-09-08 11:27\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -7705,7 +7705,7 @@ msgstr "Confirmar Troca"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr ""
+msgstr "Signatário da carteira necessário para cancelar uma ordem EOA TWAP"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
