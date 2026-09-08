@@ -92,18 +92,15 @@ export function getOrderSubmitSummary(
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
 
-  const [inputQuantifier, outputQuantifier] = isSellOrder(kind) ? ['', t`at least `] : [t`at most `, '']
-  const inputSymbol = formatSymbol(sellToken.symbol)
-  const outputSymbol = formatSymbol(buyToken.symbol)
+  const inputSymbol = formatSymbol(sellToken.symbol) ?? ''
+  const outputSymbol = formatSymbol(buyToken.symbol) ?? ''
   // this already contains the fee in the fee amount when fee=0
   const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base =
-    t`Swap` +
-    ` ${inputQuantifier} ${inputAmountValue} ${inputSymbol} ` +
-    t`for` +
-    ` ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
+  const base = isSellOrder(kind)
+    ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol}`
+    : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
@@ -111,9 +108,9 @@ export function getOrderSubmitSummary(
     const toAddress =
       recipientAddressOrName && isAddress(recipientAddressOrName)
         ? shortenAddress(recipientAddressOrName)
-        : recipientAddressOrName
+        : (recipientAddressOrName ?? '')
 
-    return `${base} ` + t`to` + ` ${toAddress}`
+    return t`${base} to ${toAddress}`
   }
 }
 

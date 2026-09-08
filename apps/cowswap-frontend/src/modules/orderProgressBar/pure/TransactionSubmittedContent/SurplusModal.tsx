@@ -2,7 +2,6 @@ import svgCheckSingularSrc from '@cowprotocol/assets/cow-swap/check-singular.svg
 import svgSurplusCowSrc from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
 import svgTwitterSrc from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, fontFamilyBrand, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -14,6 +13,8 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+
+import { getTwitterText } from '../../helpers'
 
 export const Wrapper = styled.div`
   --borderRadius: 16px;
@@ -163,8 +164,7 @@ export function SurplusModal(props: SurplusModalProps) {
     return null
   }
 
-  const orderKind = isSellOrder(order.kind) ? t`got` : t`saved`
-  const surplusMsg = t`You ${orderKind} an extra`
+  const surplusMsg = isSellOrder(order.kind) ? t`You got an extra` : t`You saved an extra`
 
   return (
     <Wrapper>
@@ -207,15 +207,5 @@ export function SurplusModal(props: SurplusModalProps) {
         </ExternalLink>
       </p>
     </Wrapper>
-  )
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
-  const surplus = `${surplusAmount} ${surplusToken}`
-  return encodeURIComponent(
-    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
