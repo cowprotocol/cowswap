@@ -120,6 +120,11 @@ describe('solanaFlow', () => {
           status: OrderStatus.CREATING,
           orderCreationHash: 'tx-signature-abc',
           signingScheme: SigningScheme.PRESIGN,
+          // The local order must reflect what was actually submitted (context.receiver/validTo),
+          // not the quote's own values (receiver: null in this fixture), otherwise a recipient or
+          // deadline picked after quoting is missing from the order until indexing replaces it.
+          receiver: context.context.receiver,
+          validTo: context.context.validTo,
         }),
       }),
       context.callbacks.dispatch,

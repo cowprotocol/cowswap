@@ -56,6 +56,8 @@ export async function solanaFlow(
           signature,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
+          receiver,
+          validTo,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
         }),
@@ -91,13 +93,31 @@ function buildSolanaOrder(params: {
   signature: Order['signature']
   account: string
   quoteParams: OrderParameters
+  receiver: string
+  validTo: number
   inputToken: Token
   outputToken: Token
 }): Order {
-  const { orderId, txHash, signingScheme, signature, account, quoteParams, inputToken, outputToken } = params
+  const {
+    orderId,
+    txHash,
+    signingScheme,
+    signature,
+    account,
+    quoteParams,
+    receiver,
+    validTo,
+    inputToken,
+    outputToken,
+  } = params
 
   return {
     ...quoteParams,
+    // Override the quote's own receiver/validTo: they can be stale by the time the order is
+    // actually submitted (see the postSwapOrderFromQuote call above), and the local CREATING
+    // order must match what was really posted, not what the quote a moment ago.
+    receiver,
+    validTo,
     id: orderId,
     owner: account,
     from: account,
