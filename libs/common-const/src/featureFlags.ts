@@ -14,6 +14,10 @@ interface BootFeatureFlags {
  * the page once if LD just resolved a value different from the one this page already booted
  * with, since code like the wallet config only reads it at module load and won't otherwise pick
  * up the change until the next navigation. Called by `FeatureFlagsUpdater` once LD resolves.
+ *
+ * This also fires for a brand-new session with nothing persisted yet — `IS_SOLANA_ENABLED`
+ * defaults to `false`, so a session LD resolves to `true` reloads once too, not only a value
+ * that changes mid-visit.
  */
 export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void = () => location.reload()): void {
   if (typeof localStorage === 'undefined') return
@@ -21,7 +25,13 @@ export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void
   const isSolanaEnabled = Boolean(flags.isSolanaEnabled)
   const bootFlagChanged = isSolanaEnabled !== IS_SOLANA_ENABLED
 
-  localStorage.setItem(BOOT_FEATURE_FLAGS_KEY, JSON.stringify({ isSolanaEnabled }))
+  try {
+    localStorage.setItem(BOOT_FEATURE_FLAGS_KEY, JSON.stringify({ isSolanaEnabled }))
+  } catch {
+    // Storage write failed (quota exceeded, blocked, etc.) — skip the reload too, otherwise
+    // the boot flag can never catch up and this would reload on every subsequent load.
+    return
+  }
 
   if (bootFlagChanged && typeof location !== 'undefined') {
     reload()

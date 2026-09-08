@@ -80,5 +80,21 @@ describe('featureFlags boot flag', () => {
 
       expect(reload).not.toHaveBeenCalled()
     })
+
+    it('does not reload when persisting the resolved value fails', () => {
+      // Nothing persisted yet, so this page booted with IS_SOLANA_ENABLED === false — a mismatch
+      // that would otherwise trigger a reload.
+      const setItemSpy = jest.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+        throw new Error('QuotaExceededError')
+      })
+      const reload = jest.fn()
+
+      const { syncBootFeatureFlags } = require('./featureFlags')
+      syncBootFeatureFlags({ isSolanaEnabled: true }, reload)
+
+      expect(reload).not.toHaveBeenCalled()
+
+      setItemSpy.mockRestore()
+    })
   })
 })
