@@ -392,15 +392,11 @@ export function ActivityDetails(props: {
                 // Regular order layout
                 <>
                   <SummaryInnerRow>
-                    <b>
-                      <Trans>From</Trans> {kind === 'buy' && ' ' && <Trans>at most</Trans>}
-                    </b>
+                    <b>{kind === 'buy' ? <Trans>From at most</Trans> : <Trans>From</Trans>}</b>
                     <i>{from}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
-                    <b>
-                      <Trans>To</Trans> {kind === 'sell' && ' ' && <Trans>at least</Trans>}
-                    </b>
+                    <b>{kind === 'sell' ? <Trans>To at least</Trans> : <Trans>To</Trans>}</b>
                     <i>{to}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>

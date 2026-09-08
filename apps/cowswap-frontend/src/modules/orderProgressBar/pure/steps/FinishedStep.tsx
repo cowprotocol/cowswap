@@ -31,7 +31,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
-import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
@@ -213,9 +213,7 @@ export function FinishedStep({
           })}
         >
           <SVG src={iconSocialXSrc} />
-          <span>
-            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-          </span>
+          <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
         </styledEl.ShareButton>
       )}
     </styledEl.FinishedStepContainer>
@@ -233,12 +231,23 @@ function ExtraAmount({
   isCustomRecipient?: boolean
   isSell?: boolean
 }): ReactNode {
+  const amount = (
+    <i>
+      +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+    </i>
+  )
+
   return (
     <styledEl.ExtraAmount>
-      {getSurplusText(isSell, isCustomRecipient)}
-      <i>
-        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-      </i>{' '}
+      {isSell ? (
+        isCustomRecipient ? (
+          <Trans>including an extra {amount}</Trans>
+        ) : (
+          <Trans>and got an extra {amount}</Trans>
+        )
+      ) : (
+        <Trans>and saved {amount}</Trans>
+      )}{' '}
       {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
     </styledEl.ExtraAmount>
   )
