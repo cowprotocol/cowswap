@@ -70,7 +70,7 @@ const RECORDINGS: readonly Recording[] = [
       kind: 'sell',
       onchainOrder: false,
       signingScheme: 'eip712',
-      priceQuality: 'optimal',
+      priceQuality: 'verified',
     },
   },
 ]
