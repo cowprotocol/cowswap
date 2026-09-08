@@ -14,8 +14,12 @@ const log = createCowLogger('EOA TWAP receipt')
 /** Interval between receipt / mempool lookups while waiting for the tx to mine or appear. */
 const RECEIPT_POLL_MS = 2_000
 
-/** Upper bound once the tx is known to exist in the mempool / on a lagging RPC. */
-const RECEIPT_TIMEOUT_MS = 180_000
+/**
+ * Upper bound once the tx is known to exist in the mempool / on a lagging RPC.
+ * Matches cow-shed setup validity (`SETUP_VALID_FOR_SEC`) so "try again" is not offered
+ * while the original setup can still mine.
+ */
+const RECEIPT_TIMEOUT_MS = 1_800_000
 
 /**
  * Waits for a receipt without hanging forever on MetaMask Smart Transaction synthetic hashes

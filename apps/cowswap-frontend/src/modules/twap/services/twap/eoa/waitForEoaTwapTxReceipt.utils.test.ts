@@ -27,7 +27,9 @@ const HASH = '0xabc' as Hex
 const CONFIG = {} as Config
 const SEPOLIA_GRACE_PERIOD_MS = NOT_BROADCAST_GRACE_PERIOD_MS[SupportedChainId.SEPOLIA]
 const RECEIPT_POLL_MS = 2_000
-const RECEIPT_TIMEOUT_MS = 180_000
+const RECEIPT_TIMEOUT_MS = 1_800_000
+/** Previous 180s cap. A known-pending hash must keep polling past this. */
+const PREVIOUS_RECEIPT_TIMEOUT_MS = 180_000
 
 const SUCCESS_RECEIPT = {
   status: 'success',
@@ -96,6 +98,19 @@ describe('waitForEoaTwapTxReceipt()', () => {
     mockedGetTransaction.mockRejectedValueOnce(new Error('429')).mockResolvedValueOnce({ hash: HASH } as never)
 
     await expect(waitForEoaTwapTxReceipt(CONFIG, HASH, SupportedChainId.SEPOLIA)).resolves.toBe(SUCCESS_RECEIPT)
+  })
+
+  it('keeps polling past 180s while the tx is in the mempool until a receipt arrives', async () => {
+    const receiptAtMs = PREVIOUS_RECEIPT_TIMEOUT_MS + RECEIPT_POLL_MS * 10
+
+    mockedGetTransactionReceipt.mockImplementation(async () => {
+      return now >= receiptAtMs ? SUCCESS_RECEIPT : (null as never)
+    })
+    mockedGetTransaction.mockResolvedValue({ hash: HASH } as never)
+
+    await expect(waitForEoaTwapTxReceipt(CONFIG, HASH, SupportedChainId.SEPOLIA)).resolves.toBe(SUCCESS_RECEIPT)
+    expect(now).toBeGreaterThanOrEqual(receiptAtMs)
+    expect(now).toBeLessThan(RECEIPT_TIMEOUT_MS)
   })
 
   it('times out if the tx exists but a receipt never arrives', async () => {
