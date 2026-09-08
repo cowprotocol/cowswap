@@ -106,7 +106,7 @@ export const ContainerCardSectionTopTitle = styled.h3<{
   textAlignMobile?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 38}px;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: ${({ color }) => color || 'inherit'};
   text-align: ${({ textAlign }) => textAlign || 'left'};
   line-height: 1.2;
@@ -165,7 +165,7 @@ export const ArticleImage = styled.div<{ color?: string }>`
 
 export const ArticleTitle = styled.h4<{ fontSize?: number; fontSizeMobile?: number }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 1.6rem 0 0.8rem;
   line-height: 1.2;
@@ -175,10 +175,10 @@ export const ArticleTitle = styled.h4<{ fontSize?: number; fontSizeMobile?: numb
   }
 `
 
-export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number }>`
+export const ArticleDescription = styled.p<{ color?: string; fontSize?: number; fontWeight?: number | string }>`
   font-size: ${({ fontSize }) => fontSize || 16}px;
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_50})`};
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_MEDIUM})`};
   line-height: 1.5;
 `
 
@@ -243,7 +243,7 @@ export const TopicCard = styled.a.attrs<TopicCardProps>(({ asProp }) => ({
   border-radius: 2rem;
   text-align: center;
   font-size: 2.4rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   text-decoration: none;
   border: ${({ border, borderColor }) =>
     border || (borderColor ? `0.4rem solid ${borderColor}` : '0.4rem solid transparent')};
@@ -417,11 +417,11 @@ export const TopicImage = styled.div<{
 export const TopicTitle = styled.h5<{
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   color?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_BOLD})`};
   color: ${({ color }) => color || 'inherit'};
   padding: 0;
   margin: 0;
@@ -430,14 +430,14 @@ export const TopicTitle = styled.h5<{
 
   ${Media.upToMedium()} {
     font-size: ${({ fontSizeMobile }) => fontSizeMobile || 28}px;
-    font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+    font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_BOLD})`};
   }
 `
 
 export const TopicDescription = styled.p<{
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   color?: string
   margin?: string
   minHeight?: number
@@ -445,7 +445,7 @@ export const TopicDescription = styled.p<{
 }>`
   font-size: ${({ fontSize }) => fontSize || 21}px;
   color: ${({ color }) => color || 'inherit'};
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_MEDIUM})`};
   line-height: 1.4;
   margin: ${({ margin }) => margin || '16px 0'};
   text-align: inherit;
@@ -463,7 +463,7 @@ export const TopicTable = styled.table`
   max-width: 100%;
   font-size: inherit;
   line-height: 1.2;
-  font-weight: ${Font.weight.regular};
+  font-weight: var(${UI.FONT_WEIGHT_NORMAL});
 
   > tbody {
     max-width: 100%;
@@ -530,7 +530,7 @@ export const LinkColumn = styled.div`
 
   > h5 {
     font-size: 2.1rem;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     color: var(${UI.COLOR_NEUTRAL_0});
     margin: 0 0 1.6rem;
     line-height: 1.2;
@@ -624,7 +624,7 @@ export const CTAImage = styled.div<{ bgColor?: string; color?: string }>`
 
 export const CTATitle = styled.h6`
   font-size: 4.8rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 0;
   line-height: 1.2;
@@ -650,7 +650,7 @@ export const CTAButton = styled.a`
   min-height: var(--height);
   padding: 1.2rem 2.4rem;
   font-size: 2.4rem;
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   color: var(${UI.COLOR_NEUTRAL_98});
   background: var(${UI.COLOR_NEUTRAL_0});
   border: none;
@@ -730,7 +730,7 @@ export const Pagination = styled.div`
   border-radius: 2.1rem;
   width: min-content;
   font-size: 1.6rem;
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
 
   > a {
     display: flex;
@@ -796,7 +796,7 @@ export const SectionTitleWrapper = styled.div<{
 export const SectionTitleText = styled.h5<{
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   color?: string
   maxWidth?: number
   as?: string
@@ -805,7 +805,7 @@ export const SectionTitleText = styled.h5<{
   lineHeightMobile?: number
 }>`
   font-size: ${({ fontSize }) => fontSize || 51}px;
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_BOLD})`};
   color: ${({ color }) => color || 'inherit'};
   margin: 0;
   text-align: ${({ textAlign }) => textAlign || 'center'};
@@ -823,13 +823,13 @@ export const SectionTitleDescription = styled.p<{
   color?: string
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   textAlign?: string
   margin?: string
 }>`
   font-size: ${({ fontSize }) => fontSize || 28}px;
   color: ${({ color }) => color || 'inherit'};
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.medium};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_MEDIUM})`};
   margin: ${({ margin }) => margin || '0'};
   line-height: 1.4;
   text-align: ${({ textAlign }) => textAlign || 'center'};
@@ -981,13 +981,13 @@ export const HeroContent = styled.div<{ variant?: string; gap?: number; flex?: s
 export const HeroTitle = styled.h1<{
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   color?: string
   as?: string
   maxWidth?: number
 }>`
   font-size: ${({ fontSize }) => fontSize || 51}px;
-  font-weight: ${({ fontWeight }) => fontWeight || Font.weight.bold};
+  font-weight: ${({ fontWeight }) => fontWeight || `var(${UI.FONT_WEIGHT_BOLD})`};
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   margin: 0;
   line-height: 1.2;
@@ -1003,7 +1003,7 @@ export const HeroTitle = styled.h1<{
 export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
   --color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   font-size: 2.8rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   background: ${({ variant }) => (variant === 'pill' ? `var(${UI.COLOR_NEUTRAL_100})` : 'transparent')};
   color: var(--color);
   padding: ${({ variant }) => (variant === 'pill' ? '0.8rem 1.6rem' : '0')};
@@ -1021,7 +1021,7 @@ export const HeroSubtitle = styled.p<{ variant?: string; color?: string }>`
 
 export const HeroDescription = styled.span<{ fontSize?: number; fontSizeMobile?: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize || 26}px;
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_10})`};
   margin: 1.6rem 0;
   padding: 0;
@@ -1155,7 +1155,7 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
 
   > h2 {
     font-size: 4.8rem;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     margin: 0;
     color: inherit;
     width: 100%;
@@ -1165,7 +1165,7 @@ export const MetricsItem = styled.div<{ dividerColor?: string }>`
   > p,
   > a {
     font-size: 2.1rem;
-    font-weight: ${Font.weight.medium};
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     line-height: 1.3;
     color: inherit;
     margin: 0;
@@ -1188,7 +1188,7 @@ export const TrustedBy = styled.div`
   width: 100%;
   font-size: 3.2rem;
   color: var(${UI.COLOR_NEUTRAL_0});
-  font-weight: ${Font.weight.regular};
+  font-weight: var(${UI.FONT_WEIGHT_NORMAL});
 
   ${Media.upToMedium()} {
     flex-flow: column wrap;
@@ -1267,7 +1267,7 @@ export const TrustedBy = styled.div`
   }
 
   > ul > li > strong {
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     white-space: nowrap;
     color: var(${UI.COLOR_NEUTRAL_0});
   }
@@ -1406,7 +1406,7 @@ export const SwiperSlideWrapper = styled.div`
       font-size: 3.4rem;
       line-height: 1.2;
       color: var(${UI.COLOR_NEUTRAL_100});
-      font-weight: ${Font.weight.bold};
+      font-weight: var(${UI.FONT_WEIGHT_BOLD});
 
       ${Media.upToMedium()} {
         font-size: 2.4rem;
@@ -1456,7 +1456,7 @@ export const WidgetContainer = styled.div`
   &::before {
     color: var(${UI.COLOR_NEUTRAL_0});
     font-size: 2.1rem;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     content: 'Try it out!';
     background: url('/images/arrow-drawn.svg') no-repeat center 2.5rem / 2.4rem 5rem;
     width: 12rem;
@@ -1511,7 +1511,7 @@ export const StickyMenu = styled.div`
   > b {
     display: block;
     font-size: 1.8rem;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     color: var(${UI.COLOR_NEUTRAL_10});
     margin: 0 0 2.4rem;
   }
@@ -1519,7 +1519,7 @@ export const StickyMenu = styled.div`
 
 export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }>`
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : '6.7rem')};
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: var(${UI.COLOR_NEUTRAL_10});
   margin: ${({ margin }) => margin || '0 0 1.6rem'};
 
@@ -1529,7 +1529,7 @@ export const ArticleMainTitle = styled.h1<{ margin?: string; fontSize?: number }
 `
 
 export const BodyContent = styled.div<{ color?: string }>`
-  font-family: ${Font.familySerif};
+  font-family: ${Font.familyStudioFeixenSerif};
   font-size: 1.8rem;
   line-height: 1.6;
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
@@ -1584,7 +1584,7 @@ export const BodyContent = styled.div<{ color?: string }>`
 
   p.warn {
     display: block;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     font-style: normal;
     background: ${Color.cowfi_orange_pale};
     padding: 0.8rem;
@@ -1654,7 +1654,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > h4,
   > h5,
   > h6 {
-    font-family: ${Font.family};
+    font-family: ${Font.familyStudioFeixen};
     font-weight: bold;
     margin: 5.6rem 0 3.2rem;
   }
@@ -1727,7 +1727,7 @@ export const RelatedArticles = styled.div`
 
 export const ArticleSubtitleWrapper = styled.div`
   color: var(${UI.COLOR_NEUTRAL_40});
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   font-size: 1.6rem;
   display: flex;
   flex-flow: row wrap;
@@ -1746,7 +1746,7 @@ export const CategoryTags = styled.div`
   margin-bottom: 2.4rem;
   font-size: 1.6rem;
   color: var(${UI.COLOR_NEUTRAL_10});
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
 
   a {
     display: inline-block;
@@ -1863,7 +1863,7 @@ export const ColorTable = styled.table`
   border-collapse: collapse;
   margin-top: 2rem;
   font-size: 3.2rem;
-  font-weight: ${Font.weight.semibold};
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   color: var(--neutral);
   border-radius: 3.2rem;
 

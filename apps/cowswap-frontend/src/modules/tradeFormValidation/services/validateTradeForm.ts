@@ -1,9 +1,9 @@
 import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
-import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
+import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
 import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'

@@ -3,7 +3,9 @@ import { useEffect, useMemo } from 'react'
 
 import ms from 'ms.macro'
 
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { useTradeTypeInfo } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { MOCK_POOL_INFO } from './mockPoolInfo'
 

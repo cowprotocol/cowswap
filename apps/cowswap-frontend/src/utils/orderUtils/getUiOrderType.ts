@@ -1,8 +1,6 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { t } from '@lingui/core/macro'
-
 import { Order } from 'legacy/state/orders/actions'
 
 import { AppDataMetadataOrderClass } from 'modules/appData/types'
@@ -43,14 +41,4 @@ export function getUiOrderType({ fullAppData, composableCowInfo, class: orderCla
   // 3. As a last resort, map it to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
   return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass]
-}
-
-export function getUiOrderTypeTitles(): Record<UiOrderType, string> {
-  return {
-    [UiOrderType.SWAP]: t`Swap`,
-    [UiOrderType.LIMIT]: t`Limit order`,
-    [UiOrderType.TWAP]: t`TWAP order`,
-    [UiOrderType.HOOKS]: t`Hooks`,
-    [UiOrderType.YIELD]: t`Yield`,
-  }
 }

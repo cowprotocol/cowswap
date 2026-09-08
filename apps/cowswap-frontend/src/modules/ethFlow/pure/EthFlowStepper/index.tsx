@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
@@ -149,13 +151,11 @@ export const Progress = styled.div<ProgressProps>`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function EthFlowStepper(props: EthFlowStepperProps) {
+export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const { showProgressBar } = props
 
   return (
-    <Wrapper showProgressBar={showProgressBar}>
+    <Wrapper id="eth-flow-stepper" showProgressBar={showProgressBar}>
       <Step1 {...props} />
       <Progress1 {...props} />
       <Step2 {...props} />

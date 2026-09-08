@@ -7,7 +7,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.30.3",
   "config": {
-    "enabledApps": "cowswap-frontend cowswap-frontend-e2e abis ui ui-utils widget-lib widget-react"
+    "enabledApps": "cowswap-frontend abis ui ui-utils widget-lib widget-react"
   },
   "scripts": {
     "start": "pnpm run start:cowswap",
@@ -21,6 +21,11 @@
     "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
+    "e2e": "nx run cowswap-e2e-tests:e2e",
+    "e2e:build-cache": "nx run cowswap-e2e-tests:e2e:build-cache",
+    "e2e:smoke": "nx run cowswap-e2e-tests:e2e:smoke",
+    "e2e:ui": "nx run cowswap-e2e-tests:e2e:ui",
+    "e2e:record-mocks": "nx run cowswap-e2e-tests:e2e:record-mocks",
     "build": "pnpm run build:cowswap",
     "build:all": "nx run-many -t build --no-cloud",
     "build:cowswap": "cross-env NODE_ENV=production NODE_OPTIONS=--max-old-space-size=8192 nx build cowswap-frontend --no-cloud",
@@ -42,8 +47,6 @@
     "test:tools": "node --test tools/scripts/*.test.mjs",
     "typecheck": "nx run cowswap-frontend:typecheck && pnpm run typecheck:workspaces",
     "typecheck:workspaces": "node tools/scripts/typecheck-workspaces.mjs",
-    "e2e": "nx run-many -t e2e",
-    "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
     "agents:check": "node tools/scripts/agents-check.mjs && node tools/scripts/check-pinned-package-versions.mjs",
     "lint:fix": "pnpm run lint --fix --skip-nx-cache",
@@ -141,9 +144,6 @@
           "lit-html": "2.8.0"
         }
       }
-    },
-    "patchedDependencies": {
-      "@reown/appkit-adapter-wagmi@1.8.19": "patches/@reown__appkit-adapter-wagmi@1.8.19.patch"
     }
   },
   "dependencies": {
@@ -160,17 +160,16 @@
     "tslib": "2.8.1"
   },
   "devDependencies": {
-    "@cowprotocol/dx": "workspace:*",
     "@babel/preset-react": "7.27.1",
     "@changesets/changelog-github": "0.5.2",
     "@changesets/cli": "2.31.0",
     "@commitlint/cli": "20.1.0",
     "@commitlint/config-conventional": "20.0.0",
+    "@cowprotocol/dx": "workspace:*",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
     "@lingui/vite-plugin": "5.5.1",
     "@next/eslint-plugin-next": "16.1.6",
-    "@nx/cypress": "22.4.2",
     "@nx/eslint": "22.4.2",
     "@nx/eslint-plugin": "22.4.2",
     "@nx/jest": "22.4.2",
@@ -203,7 +202,6 @@
     "eslint": "9.37.0",
     "eslint-config-next": "16.1.5",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-cypress": "5.2.0",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-jest": "29.0.1",
     "eslint-plugin-jsx-a11y": "6.10.2",
@@ -234,6 +232,7 @@
     "rollup-plugin-visualizer": "6.0.4",
     "ts-jest": "29.4.5",
     "ts-node": "10.9.1",
+    "tsx": "4.22.0",
     "typechain": "8.3.2",
     "typescript": "5.9.3",
     "vite": "7.3.1",

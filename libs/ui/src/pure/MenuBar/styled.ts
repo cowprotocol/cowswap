@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Font, Media } from '../../consts'
+import { Media } from '../../consts'
 import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
@@ -704,7 +704,7 @@ export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>
       align-items: center;
       justify-content: left;
       font-size: 21px;
-      font-weight: ${Font.weight.semibold};
+      font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
       padding: 12px 16px 12px 6px;
     `}
   > svg {

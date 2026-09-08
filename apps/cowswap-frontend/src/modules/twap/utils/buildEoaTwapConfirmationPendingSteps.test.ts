@@ -1,5 +1,7 @@
 import { i18n } from '@lingui/core'
 
+import { Token } from '@cowprotocol/currency'
+
 import {
   buildEoaTwapConfirmationPendingSteps,
   getEoaTwapStepDescription,
@@ -7,6 +9,8 @@ import {
 } from './buildEoaTwapConfirmationPendingSteps'
 
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
+
+const USDC = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
 
 describe('buildEoaTwapConfirmationPendingSteps()', () => {
   beforeAll(async () => {
@@ -145,6 +149,24 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       },
     ])
     expect(steps[1]?.description).toBeTruthy()
+  })
+
+  it('attaches the sell token to approval steps only', () => {
+    const plan = [EoaTwapSigningSteps.ApproveOrPermit, EoaTwapSigningSteps.TwapSetup]
+
+    const steps = buildEoaTwapConfirmationPendingSteps({
+      signingStep: {
+        step: EoaTwapSigningSteps.ApproveOrPermit,
+        plan,
+        phase: EoaTwapSigningPhase.Sign,
+        lockDismiss: false,
+      },
+      symbol: 'USDC',
+      token: USDC,
+    })
+
+    expect(steps[0]?.token).toBe(USDC)
+    expect(steps[1]?.token).toBeUndefined()
   })
 
   it('throws when the current step is missing from the plan', () => {

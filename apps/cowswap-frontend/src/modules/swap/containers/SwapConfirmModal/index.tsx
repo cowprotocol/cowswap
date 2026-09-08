@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
-import { Nullish } from '@cowprotocol/types'
+import { Nullish, UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -59,7 +59,7 @@ export interface SwapConfirmModalProps {
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { t } = useLingui()
-  const CONFIRM_TITLE = t`Swap`
+  const CONFIRM_TITLE = t`Review Swap`
   const {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -157,7 +157,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   }, [confirmText, inputCurrencyInfo, isInsufficientBalance, t])
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
+    <TradeConfirmModal orderType={UiOrderType.SWAP} submittedContent={submittedContent}>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}

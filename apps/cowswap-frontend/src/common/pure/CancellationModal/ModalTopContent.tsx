@@ -28,11 +28,8 @@ const TypeButton = styled.button<{ isOnChain$: boolean }>`
   color: ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_TEXT})` : 'inherit')};
   padding: 4px 8px;
   border-radius: 4px;
-  outline: none;
-  border: 0;
   margin: 0 3px;
   font-size: inherit;
-  cursor: pointer;
 
   :hover {
     outline: 1px solid

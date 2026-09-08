@@ -1,12 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import {
-  fetchWithTimeout,
-  JSON_HEADERS,
-  parseJsonResponse,
-  stripTrailingSlash,
-  unwrapOk,
-} from '@cowprotocol/common-utils'
-import type { FetchJsonResponse } from '@cowprotocol/common-utils'
+import { BffApiClient, NO_RATE_LIMIT, unwrapOk } from '@cowprotocol/common-utils'
 
 export interface TelegramConnectStatusResponse {
   connected: boolean
@@ -23,26 +16,11 @@ export interface TelegramConnectTokenResponse {
 
 const TELEGRAM_API_TIMEOUT_MS = 10_000
 
-class BffTelegramApi {
-  private readonly baseUrl: string
-
+class BffTelegramApi extends BffApiClient {
   constructor(baseUrl: string) {
-    this.baseUrl = stripTrailingSlash(baseUrl)
-  }
-
-  private buildUrl(path: string): string {
-    return `${this.baseUrl}/${path.replace(/^\//, '')}`
-  }
-
-  private async fetchJson<T>(path: string, init?: RequestInit): Promise<FetchJsonResponse<T>> {
-    const response = await fetchWithTimeout(this.buildUrl(path), {
-      method: 'GET',
-      headers: JSON_HEADERS,
-      ...init,
-      timeout: TELEGRAM_API_TIMEOUT_MS,
-      timeoutMessage: 'Unable to reach notifications service',
-    })
-    return parseJsonResponse<T>(response)
+    // Each poll tick already retries on its own schedule (see useTelegramConnect.ts), so this
+    // opts out of BffApiClient's default rate-limit/backoff instead of stacking both.
+    super(baseUrl, TELEGRAM_API_TIMEOUT_MS, 'Unable to reach notifications service', NO_RATE_LIMIT)
   }
 
   async getConnectToken(account: string): Promise<TelegramConnectTokenResponse> {

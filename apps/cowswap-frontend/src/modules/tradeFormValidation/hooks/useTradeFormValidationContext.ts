@@ -25,18 +25,13 @@ import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import {
-  TradeType,
-  useDerivedTradeState,
-  useIsWrapOrUnwrap,
-  useNonEvmReceiverConfirmed,
-  useTradePriceImpact,
-} from 'modules/trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap, useNonEvmReceiverConfirmed, useTradePriceImpact } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 

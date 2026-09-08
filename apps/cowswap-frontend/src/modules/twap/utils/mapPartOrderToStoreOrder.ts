@@ -31,6 +31,7 @@ export function mapPartOrderToStoreOrder(
       isVirtualPart,
       isTheLastPart: getIsLastPartOrder(item, parent),
       parentId: parent.id,
+      twapOrderHash: parent.hash,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

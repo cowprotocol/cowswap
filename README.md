@@ -147,31 +147,42 @@ pnpm run cosmos
 
 # 🤓 Development
 
-## Integration test
+## E2E tests
 
-> ⚠️ To run the tests. Make sure you add the required environment variables to
-> your root `.env.local` file with:
+CoW Swap's e2e suite lives in [`apps/cowswap-e2e-tests`](apps/cowswap-e2e-tests) (Playwright +
+Synpress). See that app's [README](apps/cowswap-e2e-tests/README.md) for the full guide — mocks, page
+objects, wallet fixtures, and troubleshooting.
+
+> ⚠️ Add the required environment variables to your root `.env.local` file:
 >
-> - `CYPRESS_INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
-> - `CYPRESS_INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
-> - `CYPRESS_INTEGRATION_TESTS_ALCHEMY_KEY=<your-alchemy-key>`: Alchemy key (preferred if both are set)
+> - `INTEGRATION_TEST_PRIVATE_KEY=<a throwaway Sepolia private key>`
+> - `REACT_APP_NETWORK_URL_11155111=<a Sepolia RPC URL>`
 
-To launch it with our development server (so you have live-reloading):
+Most specs — including the PR smoke subset run in CI — use a fast mock wallet fixture and need no
+setup beyond the env vars above. A separate Synpress fixture drives a real MetaMask extension for
+scenarios that must exercise actual wallet UI; only specs using *that* fixture need a pre-built
+cache:
 
 ```bash
-# Terminal 1
-pnpm run start
-# Terminal 2
-pnpm run e2e
+pnpm e2e:build-cache
 ```
 
-If we want to use the Cypress UI, with the production build:
+> Neither the `e2e-pw-smoke` nor `e2e-pw-nightly` CI workflow runs this step — no spec in the
+> suite currently uses the Synpress fixture, so CI never touches `.cache-synpress`. If a spec
+> starts using it, its workflow must build or restore the cache first.
+
+Then run the suite. Playwright builds and serves the app itself, so there's no need to start a dev
+server in a separate terminal:
 
 ```bash
-# Terminal 1
-npx nx run cowswap-frontend:serve-static --port 3000
-# Terminal 2
-pnpm run e2e:open
+# Full suite
+pnpm e2e
+
+# PR smoke subset only
+pnpm e2e:smoke
+
+# Playwright UI mode, for interactive debugging
+pnpm e2e:ui
 ```
 
 ## Analyze build
@@ -181,6 +192,71 @@ Analyze CoW Swap bundle:
 ```bash
 # Use one of the following templates: "sunburst" | "treemap" | "network" | "raw-data" | "list";
 ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build
+```
+
+## Developing against a local `cow-sdk` checkout
+
+Sometimes a feature needs `@cowprotocol/cow-sdk` changes that aren't published yet (e.g. the
+Solana trading support under active development). To develop against a sibling
+[`cow-sdk`](https://github.com/cowprotocol/cow-sdk) checkout instead of the published npm
+packages, clone it next to this repo:
+
+```text
+projects/
+├── cow-sdk/
+└── cowswap/
+```
+
+then build the package(s) you need there:
+
+```bash
+cd ../cow-sdk
+pnpm --filter @cowprotocol/cow-sdk build      # rebuilds @cowprotocol/sdk-trading too (a dependency)
+```
+
+**Two different linking mechanisms are in play, depending on whether the package is already a
+real dependency here:**
+
+- **Packages already in `package.json`** (`@cowprotocol/cow-sdk`, `@cowprotocol/sdk-trading`,
+  …): `pnpm link` doesn't work cleanly in this pnpm version — its `link <dir>` form always
+  requires a positional directory and rewrites `package.json`/the lockfile with a `link:`
+  dependency, which isn't something you want committed on top of an already-published version
+  pin. Instead, symlink the package directly inside the shared pnpm store, bypassing pnpm
+  entirely:
+
+  ```bash
+  # Find the store path pnpm resolved for the published version, e.g.:
+  ls node_modules/.pnpm | grep '@cowprotocol+cow-sdk@'
+  # Then replace that store entry's package folder with a symlink to your local build:
+  rm node_modules/.pnpm/@cowprotocol+cow-sdk@<version>*/node_modules/@cowprotocol/cow-sdk
+  ln -s /path/to/cow-sdk/packages/sdk \
+    node_modules/.pnpm/@cowprotocol+cow-sdk@<version>*/node_modules/@cowprotocol/cow-sdk
+  ```
+
+  This is **local-only and untracked by git** — it lives entirely in `node_modules`, which is
+  gitignored, and it does not survive a fresh `pnpm install` (that restores the normal
+  store-managed symlink back to the published version). Redo it whenever you reinstall.
+
+- **A package that isn't published yet at all** (no npm fallback to preserve): add a real
+  `link:` dependency directly in the consuming app's `package.json`, e.g.:
+
+  ```json
+  "@cowprotocol/sdk-trading-solana": "link:../../../cow-sdk/packages/sdk-trading-solana"
+  ```
+
+  then run `pnpm install`. Unlike the workaround above, this **is** a real, committed manifest
+  change — `pnpm install` honors it going forward, but it also means anyone installing this repo
+  (including CI) needs that exact relative path to resolve to a built `cow-sdk` checkout, or the
+  install fails outright. Only use this for a genuinely new, unpublished dependency, and treat it
+  as a temporary state to replace with a real published version pin before merging to a shared
+  branch.
+
+**After (re)linking either way:** if a dev server is already running, clear Vite's dependency
+cache so it re-bundles against the new code, then restart:
+
+```bash
+rm -rf apps/cowswap-frontend/node_modules/.vite
+pnpm start
 ```
 
 # ⚙️ Configuration

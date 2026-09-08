@@ -53,8 +53,6 @@ export const Select = styled.select`
   font-size: 13px;
   font-weight: 400;
   cursor: pointer;
-  outline: none;
-  appearance: none;
   text-align: left;
   transition: border-color var(${UI.ANIMATION_DURATION}) ease-in-out;
 

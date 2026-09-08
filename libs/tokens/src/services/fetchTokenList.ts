@@ -16,9 +16,18 @@ import { TokenList } from '@uniswap/token-lists'
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
 
+// Read-only config used ONLY for ENS content-hash resolution on mainnet.
+// It must never touch wallets:
+// - `multiInjectedProviderDiscovery: false` — otherwise this shadow config discovers the user's
+//   injected wallets via EIP-6963 and attaches to the same providers as the real wallet adapter,
+//   auto-connecting them into its own store and breaking the adapter's reconnect (event cross-talk).
+// - `storage: null` — so it doesn't persist a second `wagmi.store` (default key) alongside the
+//   adapter's `cowswap-wallet.store`.
 const MAINNET_CONFIG = createConfig({
   chains: [mainnet],
   transports: { [mainnet.id]: http(RPC_URLS[SupportedChainId.MAINNET]) },
+  multiInjectedProviderDiscovery: false,
+  storage: null,
 })
 
 /**
@@ -132,16 +141,20 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   let hasNonEvmTokens = false
 
   const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    // `getAddressKey` lowercases EVM hex addresses and leaves non-EVM (base58) addresses
-    // untouched — exactly the normalization `isAddress` (case-insensitive on EVM hex) wants.
-    const checksummed = isAddress(getAddressKey(token.address))
-    if (checksummed) {
-      acc.push({ ...token, address: checksummed })
-      return acc
-    }
+    // Checked first: `isAddress` also accepts Solana addresses (returning them unchanged), so
+    // checking it before this would classify every Solana token as "checksummed" and never mark
+    // `hasNonEvmTokens`, sending the whole list through the EVM-only schema in `validateTokenList`.
     if (isSolanaAddress(token.address)) {
       hasNonEvmTokens = true
       acc.push(token)
+      return acc
+    }
+
+    // `getAddressKey` lowercases EVM hex addresses — exactly the normalization `isAddress`
+    // (case-insensitive on EVM hex) wants.
+    const checksummed = isAddress(getAddressKey(token.address))
+    if (checksummed) {
+      acc.push({ ...token, address: checksummed })
     }
     return acc
   }, [])

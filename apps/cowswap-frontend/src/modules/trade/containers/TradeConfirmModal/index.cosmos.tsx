@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
@@ -72,7 +73,7 @@ function Custom({ stateValue }: { stateValue: string }) {
   }, [updateWalletInfo])
 
   return (
-    <TradeConfirmModal title="Swap">
+    <TradeConfirmModal orderType={UiOrderType.SWAP}>
       <TradeConfirmation {...confirmationState} onDismiss={console.log}>
         {() => <span>Some content</span>}
       </TradeConfirmation>
