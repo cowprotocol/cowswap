@@ -18,7 +18,7 @@ import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
-import { prodTradingSdk } from 'tradingSdk/tradingSdk'
+import { prodTradingSdk, QUOTE_SETTINGS } from 'tradingSdk/tradingSdk'
 
 import {
   assertFactoryDeployed,
@@ -344,6 +344,7 @@ To create the TWAP we will use an intermediate sell=buy order with a post hook:
       signer,
     },
     {
+      ...QUOTE_SETTINGS,
       appData: {
         metadata: {
           hooks: {

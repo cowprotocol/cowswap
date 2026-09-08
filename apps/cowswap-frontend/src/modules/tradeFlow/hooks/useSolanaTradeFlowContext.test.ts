@@ -1,4 +1,4 @@
-import { OrderKind, PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -20,7 +20,7 @@ describe('getIsSolanaTradeFlowContextReady', () => {
     inputAmount: amount,
     outputAmount: amount,
     quote,
-    priceQuality: PriceQuality.OPTIMAL,
+    isFinalQuote: true,
     uiOrderType: UiOrderType.SWAP,
     orderKind: OrderKind.SELL,
     validTo: 1_700_000_000,
@@ -42,8 +42,8 @@ describe('getIsSolanaTradeFlowContextReady', () => {
     expect(getIsSolanaTradeFlowContextReady({ ...readyParams, quote: null })).toBe(false)
   })
 
-  it('is not ready when the quote is not the OPTIMAL price quality', () => {
-    expect(getIsSolanaTradeFlowContextReady({ ...readyParams, priceQuality: PriceQuality.FAST })).toBe(false)
+  it('is not ready when the quote is only the fast preview quote', () => {
+    expect(getIsSolanaTradeFlowContextReady({ ...readyParams, isFinalQuote: false })).toBe(false)
   })
 
   it('is not ready when amounts are missing', () => {
