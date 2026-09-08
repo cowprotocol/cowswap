@@ -49,6 +49,7 @@ const completeParams: SolanaContextKeyParams = {
   solana,
   sellToken: wsol,
   currentDelegation: 5n,
+  delegationAmount: 1_000_000_000n,
 }
 
 describe('buildSolanaContextKey', () => {
@@ -59,6 +60,15 @@ describe('buildSolanaContextKey', () => {
     expect(key?.[0]).toBe(SOLANA_ACCOUNT)
     expect(key?.[15]).toBe(wsol)
     expect(key?.[16]).toBe(5n)
+    expect(key?.[17]).toBe(1_000_000_000n)
+  })
+
+  it('changes the key when the user picks a different approve amount, so the context rebuilds', () => {
+    const key = buildSolanaContextKey(completeParams)
+    const withMoreApproved = buildSolanaContextKey({ ...completeParams, delegationAmount: 2n ** 64n - 1n })
+
+    expect(withMoreApproved?.[17]).toBe(2n ** 64n - 1n)
+    expect(withMoreApproved).not.toEqual(key)
   })
 
   it('defaults a missing delegation to zero so the delegate step is planned', () => {

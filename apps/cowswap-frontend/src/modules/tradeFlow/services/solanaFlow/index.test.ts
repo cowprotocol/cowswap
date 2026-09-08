@@ -72,7 +72,7 @@ function buildAnalytics(): TradeFlowAnalytics {
   }
 }
 
-function buildContext({ isNativeSell = true } = {}): SolanaTradeFlowContext {
+function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = {}): SolanaTradeFlowContext {
   const sellCurrency = isNativeSell ? nativeSol : wsol
   const inputAmount = CurrencyAmount.fromRawAmount(sellCurrency, SELL_AMOUNT.toString())
 
@@ -92,6 +92,7 @@ function buildContext({ isNativeSell = true } = {}): SolanaTradeFlowContext {
     sellToken: wsol,
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
+    delegationAmount,
     tradeQuote: {
       quoteResults: {
         quoteResponse: {
@@ -120,7 +121,7 @@ function buildContext({ isNativeSell = true } = {}): SolanaTradeFlowContext {
     },
     callbacks: {
       closeModals: jest.fn(),
-      dispatch: jest.fn(),
+      dispatch: jest.fn() as unknown as SolanaTradeFlowContext['callbacks']['dispatch'],
       addTransaction: jest.fn(),
     },
     tradeConfirmActions: {
@@ -170,6 +171,14 @@ describe('solanaFlow', () => {
     await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics())
 
     expect(mockPlanWrapStep).toHaveBeenCalledWith(expect.objectContaining({ sellAmount: SELL_AMOUNT }))
+  })
+
+  it('delegates the amount the approve switcher chose, not the sell amount', async () => {
+    const unlimited = 2n ** 64n - 1n
+
+    await solanaFlow(buildContext({ delegationAmount: unlimited }), buildAnalytics())
+
+    expect(mockPlanDelegateStep).toHaveBeenCalledWith(expect.objectContaining({ amount: unlimited }))
   })
 
   it('asks for no wrapping on an SPL sell', async () => {
