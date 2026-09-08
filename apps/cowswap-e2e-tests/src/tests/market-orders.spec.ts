@@ -89,6 +89,20 @@ test.describe('Market Orders', () => {
 
       await swapPage.waitForQuote()
 
+      // `waitForQuote()` only proves *some* quote finished loading, not that it's the one for
+      // '1000' — `useSetupTradeAmountsFromUrl`'s own doc comment names this exact test as already
+      // hit by its "default to 1 unit" race once (fixed there by making its guard ref sticky), yet
+      // the same symptom recurred here: the order actually POSTED for sellAmount = 1 unit, not
+      // 1000 (confirmed from a real failed run's trace — the post-settlement balance snapshot was
+      // 1499 USDC, i.e. 1500 − 1, and the credited WETH was exactly 1/1000th of this rate's
+      // expected payout). `clickSwap()` only checks the button is enabled, so nothing here stops
+      // a submit from firing while the order-construction state is still keyed off that stale
+      // 1-unit default even though the input DOM already reads "1000" and the loading flag has
+      // already cleared once. Poll for the displayed output amount to actually reflect a trade
+      // this size — 1000x anything a 1-unit default could quote at this fixed rate — before
+      // submitting, instead of trusting `waitForQuote()`'s single edge.
+      await expect.poll(() => swapPage.outputAmount.inputValue().then(Number)).toBeGreaterThan(0.1)
+
       await mocks.orders.expectOrderToBePosted({
         orderId,
         owner: wallet.address,
