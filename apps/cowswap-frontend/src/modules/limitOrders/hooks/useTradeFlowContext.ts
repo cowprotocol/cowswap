@@ -16,12 +16,12 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 

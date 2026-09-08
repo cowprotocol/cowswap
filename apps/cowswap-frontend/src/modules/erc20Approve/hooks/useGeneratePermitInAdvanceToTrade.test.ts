@@ -5,7 +5,9 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { renderHook } from '@testing-library/react'
 
 import { IsTokenPermittableResult, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
