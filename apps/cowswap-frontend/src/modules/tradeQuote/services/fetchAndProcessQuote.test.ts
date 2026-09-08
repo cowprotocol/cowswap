@@ -28,11 +28,6 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
   },
 }))
 
-jest.mock('@cowprotocol/common-const', () => ({
-  ...jest.requireActual('@cowprotocol/common-const'),
-  IS_SOLANA_ENABLED: true,
-}))
-
 jest.mock('./getSolanaQuote.service', () => ({
   getSolanaQuote: jest.fn(),
 }))
@@ -278,6 +273,7 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
+        false,
         mockGetCorrelatedTokens,
       )
 
@@ -415,6 +411,7 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
+        true,
       )
 
       expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams, undefined)
@@ -436,6 +433,7 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
+        true,
       )
 
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
@@ -457,6 +455,7 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
+        true,
       )
       await fetchAndProcessQuote(
         { ...mockFetchParams, priceQuality: PriceQuality.OPTIMAL },
@@ -464,6 +463,7 @@ describe('fetchAndProcessQuote', () => {
         tradeQuotePollingParameters,
         mockAppData,
         mockTradeQuoteManager,
+        true,
       )
 
       expect(mockGetSolanaQuote).toHaveBeenCalledTimes(2)

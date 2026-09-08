@@ -1,4 +1,3 @@
-import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
@@ -41,6 +40,7 @@ export async function fetchAndProcessQuote(
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
+  isSolanaEnabled = false,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
@@ -79,6 +79,7 @@ export async function fetchAndProcessQuote(
       advancedSettings,
       tradeQuoteManager,
       processQuoteError,
+      isSolanaEnabled,
       solanaSigningContext,
     )
   }
@@ -136,11 +137,12 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
+  isSolanaEnabled: boolean,
   solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const isFinalQuote = getIsFinalQuote(fetchParams)
 
-  if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
+  if (isSolanaEnabled && isSolanaChain(quoteParams.sellTokenChainId)) {
     const solanaRequest = isFinalQuote
       ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
       : getFastSolanaQuote(quoteParams, solanaSigningContext)
