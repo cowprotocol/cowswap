@@ -70,6 +70,14 @@ import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
+function getActivityName(isOrder: boolean, orderKind: string | undefined): string {
+  if (!isOrder) return t`Transaction`
+  if (orderKind === 'sell') return t`sell order`
+  if (orderKind === 'buy') return t`buy order`
+
+  return t`order`
+}
+
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
@@ -84,7 +92,6 @@ interface OrderSummaryType {
   executionPrice?: string | undefined
   validTo: string | undefined
   fulfillmentTime?: string | undefined
-  kind?: string
   inputAmount?: CurrencyAmount<Token>
   outputAmount?: CurrencyAmount<Token>
 }
@@ -187,16 +194,7 @@ export function ActivityDetails(props: {
   let isOrderFulfilled = false
 
   if (order) {
-    const {
-      inputToken,
-      sellAmount,
-      feeAmount: feeAmountRaw,
-      outputToken,
-      buyAmount,
-      validTo,
-      kind,
-      fulfillmentTime,
-    } = order
+    const { inputToken, sellAmount, feeAmount: feeAmountRaw, outputToken, buyAmount, validTo, fulfillmentTime } = order
 
     const effectiveOutputToken = intermediateToken ?? outputToken
     const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
@@ -230,8 +228,6 @@ export function ActivityDetails(props: {
       timeStyle: 'short',
     }
 
-    const orderKind = kind.toString()
-
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
@@ -242,7 +238,6 @@ export function ActivityDetails(props: {
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(i18n.locale, DateFormatOptions)
         : undefined,
-      kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
       outputAmount,
     }
@@ -250,8 +245,12 @@ export function ActivityDetails(props: {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
 
-  const { kind, from, to, fulfillmentTime, validTo } = orderSummary
-  const activityName = isOrder ? `${kind} ` + t`order` : t`Transaction`
+  const { from, to, fulfillmentTime, validTo } = orderSummary
+  // Branch on the raw order kind, never on a translated word: the summary used to store
+  // `t`sell`` / `t`buy`` and every consumer compared it against the English literals, so all
+  // of these labels silently flipped in any other locale.
+  const orderKind = order?.kind
+  const activityName = getActivityName(isOrder, orderKind)
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 
@@ -392,11 +391,11 @@ export function ActivityDetails(props: {
                 // Regular order layout
                 <>
                   <SummaryInnerRow>
-                    <b>{kind === 'buy' ? <Trans>From at most</Trans> : <Trans>From</Trans>}</b>
+                    <b>{orderKind === 'buy' ? <Trans>From at most</Trans> : <Trans>From</Trans>}</b>
                     <i>{from}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
-                    <b>{kind === 'sell' ? <Trans>To at least</Trans> : <Trans>To</Trans>}</b>
+                    <b>{orderKind === 'sell' ? <Trans>To at least</Trans> : <Trans>To</Trans>}</b>
                     <i>{to}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
