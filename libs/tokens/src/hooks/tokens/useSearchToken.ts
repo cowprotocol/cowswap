@@ -6,6 +6,7 @@ import { useConfig } from 'wagmi'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
@@ -48,20 +49,22 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  * useSWR is widely used inside to cache the search results
  */
 export function useSearchToken(input: string | null): TokenSearchResponse {
-  const inputLowerCase = input?.toLowerCase()
+  // Don't lowercase here: Solana addresses are case-sensitive, and symbol/name matching
+  // (getTokenSearchFilter) and address matching (areAddressesEqual) each normalize on their own.
+  const normalizedInput = input?.trim()
   const [isLoading, setIsLoading] = useState(false)
 
-  const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
-  const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
+  const debouncedInputInList = useDebounce(normalizedInput, IN_LISTS_DEBOUNCE_TIME)
+  const debouncedInputInExternals = useDebounce(normalizedInput, IN_EXTERNALS_DEBOUNCE_TIME)
 
-  const isInputStale = debouncedInputInExternals !== inputLowerCase
+  const isInputStale = debouncedInputInExternals !== normalizedInput
 
   // Search in active and inactive lists
   const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
-    return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
-      (token) => token.address.toLowerCase() === debouncedInputInList,
+    return [...tokensFromActiveLists, ...tokensFromInactiveLists].some((token) =>
+      areAddressesEqual(token.address, debouncedInputInList),
     )
   }, [debouncedInputInList, tokensFromActiveLists, tokensFromInactiveLists])
 
@@ -79,7 +82,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 
   useEffect(() => {
     setIsLoading(true)
-  }, [inputLowerCase])
+  }, [normalizedInput])
 
   useEffect(() => {
     // When there are results from toke lists, then we don't need to wait for the rest

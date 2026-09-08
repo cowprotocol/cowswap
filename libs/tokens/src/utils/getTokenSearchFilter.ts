@@ -8,7 +8,9 @@ const alwaysTrue = (): boolean => true
 export function getTokenSearchFilter<T extends Token | TokenInfo>(
   query: string,
 ): (token: T | NativeCurrency) => boolean {
-  const normalizedQuery = query.startsWith('0x') ? query : `0x${query}`
+  // EVM addresses may be pasted without the `0x` prefix; Solana/BTC addresses never have one,
+  // so only fall back to prefixing when the raw query isn't already a supported address.
+  const normalizedQuery = isSupportedAddress(query) ? query : query.startsWith('0x') ? query : `0x${query}`
   if (isSupportedAddress(normalizedQuery)) {
     return (t: T | NativeCurrency) => 'address' in t && areAddressesEqual(normalizedQuery, t.address)
   }

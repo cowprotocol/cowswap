@@ -18,6 +18,12 @@ describe('utils', () => {
     it('fails if too long', () => {
       expect(isAddress('f164fc0ec4e93095b804a4795bbe1e041497b92a0')).toBe(false)
     })
+
+    it('returns the address as-is for a valid Solana address', () => {
+      expect(isAddress('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')).toBe(
+        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+      )
+    })
   })
 
   describe('#shortenAddress', () => {

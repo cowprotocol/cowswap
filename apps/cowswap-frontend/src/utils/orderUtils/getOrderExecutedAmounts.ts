@@ -14,7 +14,7 @@ export function getOrderExecutedAmounts(order: Order): {
 } {
   const { apiAdditionalInfo } = order
 
-  if (!apiAdditionalInfo) {
+  if (!apiAdditionalInfo || !apiAdditionalInfo.executedSellAmountBeforeFees) {
     return {
       executedBuyAmount: JSBI.BigInt(0),
       executedSellAmount: JSBI.BigInt(0),
