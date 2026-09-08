@@ -12,7 +12,7 @@ import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -565,7 +565,12 @@ export function GnosisSafeTxDetails(props: {
           </b>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {gnosisSafeThreshold} {gnosisSafeThreshold === 1 ? t`signature is` : t`signatures are`} {t`required`}
+          {plural(gnosisSafeThreshold, {
+            one: '# signature is required',
+            few: '# signatures are required',
+            many: '# signatures are required',
+            other: '# signatures are required',
+          })}
         </TextAlert>
       </>
     )
@@ -604,8 +609,12 @@ export function GnosisSafeTxDetails(props: {
           </Trans>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {pendingSignaturesCount} {pendingSignaturesCount === 1 ? t`more signature is` : t`more signatures are`}{' '}
-          {t`required`}
+          {plural(pendingSignaturesCount, {
+            one: '# more signature is required',
+            few: '# more signatures are required',
+            many: '# more signatures are required',
+            other: '# more signatures are required',
+          })}
         </TextAlert>
       </>
     )
