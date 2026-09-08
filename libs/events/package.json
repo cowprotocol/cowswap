@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.9",
-    "@cowprotocol/sdk-bridging": "4.4.5",
+    "@cowprotocol/cow-sdk": "9.2.9-pr-1003-2299ea8b.0",
+    "@cowprotocol/sdk-bridging": "4.4.5-pr-1003-2299ea8b.0",
     "@cowprotocol/types": "workspace:*"
   }
 }
