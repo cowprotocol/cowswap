@@ -5,6 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { test, expect } from '../fixtures'
 import { generateOrderId } from '../mocks/orders'
 import { mockBridgeSupportedTokens } from '../support/mockBridgeSupportedTokens'
+import { mockEnsReverseLookup } from '../support/mockEnsReverseLookup'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
 import { mockHookLogo } from '../support/mockHookLogo'
 import { mockHooksSimulation } from '../support/mockHooksSimulation'
@@ -99,6 +100,15 @@ test.describe('Hooks store', () => {
     // artificial rate. `mocks.usdPrices` defaults every token to $1 though, which doesn't match
     // that real ratio and renders an absurd price-impact percentage; match it here instead.
     mocks.usdPrices.setPrice(WETH, 546.9898499813039)
+    // Registered here (well before Part 2's Mainnet navigation, not right before it) deliberately:
+    // this mock's own `context.route()` call isn't awaited internally (`mockRpcNodeRequest`'s, like
+    // most of this suite's route registrations), so it needs a real head start on the page that
+    // actually triggers the lookup — registering it immediately before `wallet.openApp` below raced
+    // wagmi's very first reverse-lookup attempt and lost a fraction of the time (confirmed via
+    // `LOG_UNMOCKED_RPC=1`: the earliest of several near-simultaneous lookup attempts still reached
+    // real `mainnet.infura.io` even though later ones were caught). It's a no-op during Part 1
+    // (Sepolia), since it only matches Mainnet's ENS batch-gateway target/selector.
+    mockEnsReverseLookup(context)
 
     // Part 1: the buy-token picker on the Hooks tab never offers another chain to pick from.
     await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
@@ -149,10 +159,18 @@ test.describe('Hooks store', () => {
     // read on the very first render, before that fetch has even reported itself as loading, "no
     // data yet" looks identical to "confirmed no route", so it strips the just-set
     // `outputCurrencyId`/`targetChainId` back out of the URL within a render or two — before the
-    // (mocked) fetch resolves. Navigating to the exact same bridging URL a second time sidesteps
-    // it deterministically: the first attempt's fetch already warmed the SWR cache for this exact
-    // pair (independent of the URL/rawState that attempt also reset), so the second attempt's
-    // render sees resolved data immediately instead of racing it.
+    // (mocked) fetch resolves.
+    //
+    // This is a real app-level race, not a mock/test artifact: a real user opening a bridging deep
+    // link or bookmark directly (a fresh document load, same as this test's `wallet.openApp` above)
+    // can hit the exact same window and have their bridge pair silently reset. It isn't fixed here
+    // — out of scope for an e2e-test PR — so this only works around it to reach the state under
+    // test: navigating to the exact same bridging URL a second time sidesteps it deterministically,
+    // since the first attempt's fetch already warmed the SWR cache for this exact pair (independent
+    // of the URL/rawState that attempt also reset), so the second attempt's render sees resolved
+    // data immediately instead of racing it. If `InvalidBridgeOutputUpdater` ever gets fixed to wait
+    // for that fetch's `isLoading` before deciding a pair is invalid, this double-navigation and
+    // its comment can be deleted.
     const gotoBridgingPair = async (): Promise<void> => {
       await swapPage.page.goto(`/#/${MAINNET_CHAIN_ID}/swap/${MAINNET_WETH}/${WXDAI}?targetChainId=${GNOSIS_CHAIN_ID}`)
     }
