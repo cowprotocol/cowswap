@@ -1,6 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { CenteredDots, LongLoadText, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -21,14 +22,11 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
   border-radius: 16px;
-  cursor: pointer;
   min-height: 58px;
   text-align: center;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
-  border: none;
-  outline: none;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY_LIGHTER});
@@ -38,7 +36,6 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
     background-color: var(${UI.COLOR_PAPER_DARKER});
     color: var(${UI.COLOR_TEXT_PAPER});
     background-image: none;
-    border: 0;
     cursor: auto;
     animation: none;
     transform: none;
@@ -113,6 +110,7 @@ export function TradeFormBlankButton({
       ref={ref}
       id={id}
       className={className}
+      data-testid={TEST_IDS.tradeFormBlankButton}
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}

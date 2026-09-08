@@ -118,13 +118,23 @@ jobs:
           IPFS_DEPLOY_PINATA__API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
           IPFS_DEPLOY_PINATA__SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
 
+      - name: Pin with secondary providers
+        id: pin-secondary
+        if: steps.deploy-ipfs.outcome == 'success'
+        working-directory: deploy-target
+        run: node ../tools/scripts/ipfs-pin-secondary.mjs "$CID"
+        env:
+          CID: ${{ steps.deploy-ipfs.outputs.cid }}
+          IPFS_4EVERLAND_ACCESS_TOKEN: ${{ secrets.IPFS_4EVERLAND_ACCESS_TOKEN }}
+          IPFS_NINJA_API_KEY: ${{ secrets.IPFS_NINJA_API_KEY }}
+
       - name: Complete GitHub deployment
         id: complete-deployment
         if: always() && steps.create-deployment.outcome == 'success'
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         env:
           DEPLOYMENT_ID: ${{ steps.create-deployment.outputs.result }}
-          DEPLOYMENT_STATE: ${{ steps.deploy-ipfs.outcome == 'success' && 'success' || 'failure' }}
+          DEPLOYMENT_STATE: ${{ steps.deploy-ipfs.outcome == 'success' && steps.pin-secondary.outcome == 'success' && 'success' || 'failure' }}
           DEPLOYMENT_URL: ${{ steps.deploy-ipfs.outputs.url }}
         with:
           script: |

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactNode } from 'react'
 
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -33,7 +34,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
 
   return (
     <styledEl.ReceiveAmountBox>
-      <div>
+      <div data-testid={TEST_IDS.receiveAmountLabel}>
         <span>{!isSell ? t`From (incl. fees)` : t`Receive (incl. fees)`}</span>
         <styledEl.QuestionHelperWrapped
           placement="right"
@@ -47,7 +48,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
         />
       </div>
       <div>
-        <styledEl.ReceiveAmountValue title={title}>
+        <styledEl.ReceiveAmountValue title={title} data-testid={TEST_IDS.receiveAmountValue}>
           <TokenAmount amount={minToReceiveAmount} defaultValue="0" />
         </styledEl.ReceiveAmountValue>
       </div>

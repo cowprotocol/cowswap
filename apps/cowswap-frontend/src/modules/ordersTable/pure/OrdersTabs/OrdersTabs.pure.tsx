@@ -3,6 +3,7 @@ import { ReactNode, ChangeEvent } from 'react'
 
 import svgFilledInfoCircleSrc from '@cowprotocol/assets/cow-swap/filled-info-circle.svg'
 import svgOrderPresignaturePendingSrc from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -57,7 +58,7 @@ export function OrdersTabs(): ReactNode {
           const isSigning = tab.id === 'signing'
           return (
             <styledEl.TabButton
-              className="orders-table_tab"
+              data-testid={TEST_IDS.ordersTableTab}
               key={tab.id}
               $isActive={tab.id === currentTabId}
               $isUnfillable={isUnfillable}

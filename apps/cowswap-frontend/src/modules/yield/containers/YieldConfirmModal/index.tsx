@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from 'react'
 
-import { Nullish } from '@cowprotocol/types'
+import { Nullish, UiOrderType } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
 
@@ -61,7 +61,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
 
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
+    <TradeConfirmModal orderType={UiOrderType.YIELD} submittedContent={submittedContent}>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}

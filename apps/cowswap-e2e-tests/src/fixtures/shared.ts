@@ -1,16 +1,14 @@
-import { createRpcProxyHandle, type RpcProxyHandle } from './rpcProxy'
-
 import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
-import { installEthBlockNumber } from '../mocks/ethBlockNumber'
-import { installEthEstimateGas } from '../mocks/ethEstimateGas'
-import { installEthGetCode, type EthGetCodeMock } from '../mocks/ethGetCode'
-import { installEthGetTransactionCount } from '../mocks/ethGetTransactionCount'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
-import { installMulticall3 } from '../mocks/multicall3'
+import { installEthBlockNumber } from '../mocks/nodeRpc/ethBlockNumber'
+import { installEthEstimateGas } from '../mocks/nodeRpc/ethEstimateGas'
+import { installEthGetCode, type EthGetCodeMock } from '../mocks/nodeRpc/ethGetCode'
+import { installEthGetTransactionCount } from '../mocks/nodeRpc/ethGetTransactionCount'
+import { installTokenNonce } from '../mocks/nodeRpc/tokenNonce'
+import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
-import { installTokenLists, type TokenListsMock } from '../mocks/tokenLists'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
 import { AccountPage } from '../pages/AccountPage'
@@ -21,7 +19,6 @@ import { SwapPage } from '../pages/SwapPage'
 import { TwapPage } from '../pages/TwapPage'
 import { logUnmockedRpcRequests } from '../support/logUnmockedRpcRequests'
 import { mockApproveSimulation } from '../support/mockApproveSimulation'
-import { mockOrderPosting } from '../support/mockOrderPosting'
 import { createSetupTestConditions, type SetupTestConditions } from '../support/setupTestConditions'
 
 import type { Fixtures, PlaywrightTestArgs, PlaywrightTestOptions } from '@playwright/test'
@@ -34,16 +31,14 @@ export interface SharedFixtures {
   accountModal: AccountModal
   confirmModal: ConfirmModal
   header: HeaderPage
-  rpcProxy: RpcProxyHandle
+  rpcProxy: unknown
   setupTestConditions: SetupTestConditions
-  /** Page-agnostic order-mocking helpers shared by swap, limit and TWAP order flows. */
-  tradePage: { mockOrderPosting: typeof mockOrderPosting }
   mocks: {
     allowances: AllowancesMock
     balances: BalancesMock
     cowApi: CowProtocolApiMock
+    orders: OrdersMock
     ethGetCode: EthGetCodeMock
-    tokenLists: TokenListsMock
     safeSdk: SafeSdkMock
     launchDarkly: LaunchDarklyMock
     usdPrices: UsdPricesMock
@@ -85,15 +80,7 @@ export const sharedFixtures: Fixtures<
   setupTestConditions: async ({ wallet, mocks, swapPage, limitPage, twapPage }, use) => {
     await use(createSetupTestConditions({ wallet, mocks, swapPage, limitPage, twapPage }))
   },
-  tradePage: async ({}, use) => {
-    await use({ mockOrderPosting })
-  },
-  rpcProxy: async ({}, use, testInfo) => {
-    const handle = createRpcProxyHandle(testInfo)
-    await handle.reset()
-    await use(handle)
-    await handle.reset()
-  },
+  rpcProxy: undefined,
   // `auto: true`: nothing destructures `mocks` directly anymore (Task 4 dropped the last two
   // call sites), but every test still needs the CoW API lockdown installed and asserted at
   // teardown. A plain (non-auto) fixture is only set up when requested, so without this the
@@ -102,8 +89,8 @@ export const sharedFixtures: Fixtures<
     async ({ context }, use, testInfo) => {
       // Diagnostic-only, opt-in via `LOG_UNMOCKED_RPC=1` — see `logUnmockedRpcRequests`'s own doc
       // comment. Registered before every other mock below (and therefore before any manually
-      // installed one too, e.g. `mockSocketVerifier`, since those only get added once the test body
-      // starts running) so it only ever sees requests nothing else claimed.
+      // installed one too, e.g. `mockApproveTransaction`, since those only get added once the test
+      // body starts running) so it only ever sees requests nothing else claimed.
       if (process.env.LOG_UNMOCKED_RPC) {
         logUnmockedRpcRequests({ context, worker: testInfo.workerIndex, test: testInfo.title })
       }
@@ -117,41 +104,39 @@ export const sharedFixtures: Fixtures<
       const allowances = installAllowances(context)
       const balances = installBalances(context)
       const cowApi = await installCowProtocolApi(context)
+      const orders = installOrdersMock(cowApi)
       const ethGetCode = installEthGetCode(context)
       installEthBlockNumber(context)
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
-      installMulticall3(context, { allowances })
+      installTokenNonce(context)
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
       // allowance and never click Approve), so this is global rather than opt-in per test.
       mockApproveSimulation(context)
-      const tokenLists = installTokenLists(context)
       const safeSdk = installSafeSdk(context)
-      const launchDarkly = installLaunchDarkly(context)
+      const launchDarkly = await installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
 
       await use({
         allowances,
         balances,
         cowApi,
+        orders,
         ethGetCode,
-        tokenLists,
         safeSdk,
         launchDarkly,
         usdPrices,
       })
 
       ethGetCode.reset()
-      tokenLists.reset()
       await launchDarkly.reset()
       usdPrices.reset()
       await safeSdk.disable()
-      // Non-fatal, so it must run before the throwing assert below.
-      allowances.reportUnknownOwners()
       allowances.reset()
       balances.reportUnknownOwners()
       balances.reset()
+      orders.reset()
       // Runs last: it throws when the test hit an un-mocked CoW API URL, and the
       // resets above must still happen.
       try {

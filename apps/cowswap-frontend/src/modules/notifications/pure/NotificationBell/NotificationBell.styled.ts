@@ -12,12 +12,6 @@ export const IconButton = styled.button<{ hasNotification?: boolean }>`
   display: ${({ theme }) => (theme.isWidget ? 'none' : 'flex')};
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  position: relative;
-  background: transparent;
-  border: none;
   padding: 0 12px 0 calc(8px + var(--overlap));
   margin-left: calc(var(--overlap) * -1);
   color: var(${UI.COLOR_TEXT_OPACITY_50});

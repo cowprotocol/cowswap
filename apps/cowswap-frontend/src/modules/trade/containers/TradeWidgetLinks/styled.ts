@@ -129,6 +129,7 @@ export const SelectMenu = styled.div`
   top: 0;
   background: var(${UI.COLOR_PAPER});
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  overflow: hidden;
 
   > div:first-child {
     margin-bottom: ${({ theme }) => (theme.isWidget ? '16px' : '24px')};

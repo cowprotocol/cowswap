@@ -115,12 +115,6 @@ export const HookItemActions = styled.div`
 `
 
 export const ActionBtn = styled.button<{ actionType?: 'remove' | 'edit' }>`
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  outline: none;
-  cursor: pointer;
   border-radius: 8px;
   font-size: 0;
 

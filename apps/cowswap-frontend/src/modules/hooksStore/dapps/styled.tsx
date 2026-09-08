@@ -72,7 +72,6 @@ export const Row = styled.div`
     &:focus,
     &:not(:placeholder-shown) {
       border-color: var(${UI.COLOR_TEXT_OPACITY_25});
-      outline: none;
     }
 
     &:focus + label,

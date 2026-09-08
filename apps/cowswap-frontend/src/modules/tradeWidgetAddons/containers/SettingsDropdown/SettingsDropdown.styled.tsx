@@ -1,7 +1,6 @@
 import { RowFixed, UI } from '@cowprotocol/ui'
 
 import { MenuList } from '@reach/menu-button'
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 import { SettingsButton } from 'modules/trade/pure/Settings/styled'
@@ -47,7 +46,7 @@ export const MenuFlyout = styled(MenuList)`
   z-index: 100;
   color: inherit;
   box-shadow: ${({ theme }) => theme.boxShadow2};
-  border: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
+  border-top: 1px solid var(${UI.COLOR_BORDER});
   background-color: var(${UI.COLOR_PAPER});
   color: inherit;
   padding: 0;

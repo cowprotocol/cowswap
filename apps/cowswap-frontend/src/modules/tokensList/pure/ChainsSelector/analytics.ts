@@ -1,8 +1,7 @@
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { TradeType } from 'modules/trade'
-
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 export type BuildClickEvent = (chain: ChainInfo) => string
 

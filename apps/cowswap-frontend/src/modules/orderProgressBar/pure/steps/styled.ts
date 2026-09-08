@@ -1,6 +1,6 @@
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { SingleLetterLogoWrapper } from '@cowprotocol/tokens'
-import { ButtonPrimary, Font, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, fontFamilyBrand, LinkStyledButton, Media, UI } from '@cowprotocol/ui'
 
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -205,7 +205,7 @@ const pulseAnimation = keyframes`
 `
 
 export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
-  font-family: ${Font.familyMono};
+  ${fontFamilyBrand}
   font-size: 68px;
   font-weight: bold;
   color: var(${UI.COLOR_TEXT_PAPER});
@@ -264,6 +264,7 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
   flex-flow: ${({ flexFlow }) => flexFlow || 'row wrap'};
   align-items: center;
   gap: ${({ gap }) => gap || '10px'};
+  ${fontFamilyBrand}
   font-size: 21px;
   font-weight: bold;
   margin: ${({ margin }) => margin || '14px auto 0'};
@@ -413,7 +414,6 @@ export const ViewMoreButton = styled.button`
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_70});
   color: var(${UI.COLOR_TEXT});
   border-radius: 20px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -442,19 +442,19 @@ export const ReceivedAmount = styled.span`
 export const SoldAmount = ReceivedAmount
 
 export const ExtraAmount = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
+  text-align: center;
   width: 100%;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 15px;
   margin: 0 auto;
-  gap: 4px;
+  line-height: 1.4;
 
   > i {
     color: var(${UI.COLOR_SUCCESS_TEXT});
     font-weight: bold;
     font-style: normal;
+    white-space: nowrap;
   }
 `
 

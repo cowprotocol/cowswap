@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.5.1...ens-v3.6.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.5.0...ens-v3.5.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.4.7...ens-v3.5.0) (2026-08-05)
 
 ### Minor Changes

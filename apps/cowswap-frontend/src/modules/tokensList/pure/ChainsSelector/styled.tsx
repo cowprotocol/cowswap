@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { blankButtonMixin } from '../commonElements'
-
 export interface ChainAccentVars {
   backgroundVar: string
   borderVar: string
@@ -37,7 +35,6 @@ export const ChainButton = styled.button<{
   loading$?: boolean
 }>`
   --min-height: 46px;
-  ${blankButtonMixin};
 
   position: relative;
   overflow: hidden;
@@ -68,7 +65,6 @@ export const ChainButton = styled.button<{
   }
 
   &:focus-visible {
-    outline: none;
     border-color: ${({ accent$, disabled$, loading$ }) =>
       disabled$ || loading$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder)};
   }

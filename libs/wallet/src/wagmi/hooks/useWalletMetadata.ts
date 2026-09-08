@@ -6,6 +6,7 @@ import { useConnectionType } from './useConnectionType'
 
 import { useGnosisSafeInfo } from '../../api/hooks'
 import { ConnectionType } from '../../api/types'
+import { svgBaseSrc } from '../../assets'
 import { COW_WIDGET_CONNECTOR_ID } from '../../reown/consts'
 import { reownAppKit } from '../config'
 
@@ -21,6 +22,19 @@ const METADATA_DISCONNECTED: WalletMetaData = {
 const METADATA_SAFE: WalletMetaData = {
   walletName: SAFE_APP_NAME,
   icon: SAFE_ICON_URL,
+}
+
+const METADATA_BASE_ACCOUNT: WalletMetaData = {
+  walletName: 'Base Account',
+  icon: svgBaseSrc,
+}
+
+// Connector types whose metadata is fixed and shouldn't fall back to walletMetaData (which is
+// populated by reownAppKit.subscribeWalletInfo and can be stale for connectors, like baseAccount,
+// whose own connect flow doesn't go through AppKit's wallet-selection UI).
+const STATIC_METADATA_BY_CONNECTOR_TYPE: Partial<Record<ConnectionType, WalletMetaData>> = {
+  [ConnectionType.GNOSIS_SAFE]: METADATA_SAFE,
+  [ConnectionType.BASE_ACCOUNT]: METADATA_BASE_ACCOUNT,
 }
 
 export interface WalletMetaData {
@@ -114,9 +128,10 @@ export function useWalletMetaData(): WalletMetaData {
       return wcPeerMetadata
     }
 
-    if (connector.type === ConnectionType.GNOSIS_SAFE) {
-      // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
-      return METADATA_SAFE
+    // TODO: potentially here is where we'll need to work to show the multiple flavours of Safe wallets
+    const staticMetadata = STATIC_METADATA_BY_CONNECTOR_TYPE[connector.type as ConnectionType]
+    if (staticMetadata) {
+      return staticMetadata
     }
 
     return {

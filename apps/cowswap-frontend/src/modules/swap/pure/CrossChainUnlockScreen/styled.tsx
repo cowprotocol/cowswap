@@ -1,5 +1,5 @@
 import svgCrossChainUnlockBgSrc from '@cowprotocol/assets/images/cross-chain-unlock-bg.svg'
-import { Media, UI } from '@cowprotocol/ui'
+import { fontFamilyBrand, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -51,9 +51,10 @@ export const Content = styled.div`
 `
 
 export const Title = styled.h2`
+  ${fontFamilyBrand};
   color: inherit;
-  font-size: 34px;
-  font-weight: 800;
+  font-size: 28px;
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   hyphens: auto;
   line-height: 1.2;
   margin: 0;

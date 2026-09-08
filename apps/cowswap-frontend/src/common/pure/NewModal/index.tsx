@@ -36,7 +36,6 @@ const Wrapper = styled.div<{
   ${Media.upToSmall()} {
     margin: 0;
     box-shadow: none;
-    ${({ modalMode }) => modalMode && 'border-radius: 0;'}
   }
 
   ${ModalInner} {
@@ -107,7 +106,7 @@ const NewModalContent = styled.div<{ padding?: string; justifyContent?: string }
   h3 {
     width: 100%;
     font-size: var(${UI.FONT_SIZE_MEDIUM});
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     text-align: left;
     line-height: 1.4;
     margin: 0 auto;

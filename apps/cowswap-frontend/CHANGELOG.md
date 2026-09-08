@@ -1,5 +1,155 @@
 # Changelog
 
+## [3.25.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.0...cowswap-v3.25.1) (2026-09-07)
+
+### Patch Changes
+
+- fix: do not show partial approval when unsupported (#8093)
+
+- fix: keep mobile menu header visible after scroll (#8098)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+  - @cowprotocol/tokens@3.11.1
+  - @cowprotocol/snackbars@2.3.1
+  - @cowprotocol/wallet@3.12.1
+  - @cowprotocol/balances-and-allowances@3.12.1
+  - @cowprotocol/multicall@3.6.1
+
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.24.0...cowswap-v3.25.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: EOA TWAP title fixes (#8052)
+
+- feat: add Dialog and surfaces improvements (#8010)
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat(notifications): promote trade alerts (#8007)
+
+- feat: add BottomDrawer + DrawerOrInline components for orders table (#8008)
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat: add multi-step tracker for EOA TWAP order creation flow (#7921)
+
+- feat(telegram): login but via link (#8015)
+
+- feat(twap): impement partiall approve feature for EOA (#8017)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(partial-approvals): implement partial approve for limit orders/TWAP (#8011)
+
+- feat: re-enable token search (#8006)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- fix: prevent font features leaking into injected UI (#8066)
+
+- fix(order-progress-bar): contain surplus tagline overflow in finished order card (#8023)
+
+- fix(notifications): do not close settings on popover click (#8059)
+
+- fix(notifications): localize trade alert flows (#8064)
+
+- fix(solvers): fetch solver info from cms prod only (#8067)
+
+- fix(notifications): unsubscribe via link (#8070)
+
+- fix(twap): label open orders as unfillable when Safe fallback handler is reset (#7802)
+
+- fix(notifications): mark-as-read not reflected in UI without unrelated re-render (#8005)
+
+- fix: fix surplus row layout for long texts (#8065)
+
+- fix: remove horizontal scrollbar in edit partial approval modal (#8013)
+
+- fix(account): avoid Invalid Date in surplus tooltip start date (#8078)
+
+- fix: align review modal titles (#8061)
+
+- fix: narrow down default focus selector to buttons only (#8062)
+
+- fix: add bottom padding to AccountModal with no activity (#8082)
+
+- fix(notifications): Replace Get trade alerts link with dismissable banner (#8018)
+
+- fix(token-import): dedupe token present in multiple lists with different symbol (#8081)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/tokens@3.11.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/balances-and-allowances@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/snackbars@2.3.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/ens@3.6.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/multicall@3.6.0
+  - @cowprotocol/permit-utils@3.6.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+  - @cowprotocol/widget-lib@4.6.0
+  - @cowprotocol/iframe-transport@2.3.6
+  - @cowprotocol/hook-dapp-lib@2.2.13
+
+## [3.24.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.23.0...cowswap-v3.24.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+- feat: approve for token list page (#7967)
+
+- feat: twap for EOAs order history (#7880)
+
+- feat(solana): approve flow (#7946)
+
+- feat(solana): implement approve for limit orders page (#7974)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix(eth-flow): show short friendly message on insufficient ETH for gas (#7977)
+
+- fix: restore unified sol flow + bundle-size.mjs token list validation (#7994)
+
+- fix(bridge): hide stale price impact while a new quote is loading (#7711)
+
+- fix: skip captcha for wrap/unwrap (#7988)
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: restore translations + reverted fix
+
+- fix: restore lost files after squash revert from main
+
+- fix: order parsing when executed amounts are zero (#7983)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/tokens@3.10.0
+  - @cowprotocol/balances-and-allowances@3.11.0
+  - @cowprotocol/snackbars@2.2.11
+  - @cowprotocol/wallet@3.11.1
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+  - @cowprotocol/ens@3.5.1
+  - @cowprotocol/multicall@3.5.1
+
 ## [3.23.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.22.0...cowswap-v3.23.0) (2026-08-05)
 
 ### Minor Changes

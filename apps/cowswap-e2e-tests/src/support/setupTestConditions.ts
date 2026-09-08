@@ -1,8 +1,9 @@
 import { parseUnits } from 'viem'
 
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { resolveToken } from './tokens'
 
-import type { SupportedChainId } from './constants'
 import type { AllowancesMock } from '../mocks/allowances'
 import type { BalancesMock } from '../mocks/balances'
 import type { TradePage } from '../pages/TradePage'

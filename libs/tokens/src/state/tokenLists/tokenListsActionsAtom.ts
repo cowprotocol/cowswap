@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
+  dropRepinnedDuplicates,
   listsEnabledStateAtom,
   listsStatesByChainAtom,
   listsStatesMapAtom,
@@ -28,12 +29,11 @@ export const upsertListsAtom = atom(null, async (get, set, chainId: SupportedCha
     return acc
   }, {})
 
+  // `listsStates` is what the app currently ships for this chain, so this is the one moment we can
+  // tell a re-pinned leftover from a live list and drop it from storage for good.
   set(listsStatesByChainAtom, {
     ...globalState,
-    [chainId]: {
-      ...chainState,
-      ...update,
-    },
+    [chainId]: dropRepinnedDuplicates({ ...chainState, ...update }, listsStates),
   })
 })
 export const addListAtom = atom(null, (get, set, state: ListState) => {

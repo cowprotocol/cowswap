@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { Media, UI, slowTransition } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -57,6 +57,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number;
   min-width: var(--size);
   min-height: var(--size);
   font-size: var(--size);
+  transition: ${slowTransition(['width', 'height', 'min-width', 'min-height', 'border-radius', 'font-size'])};
 
   > ${TokenImageWrapper} {
     border-radius: var(--size);
@@ -162,6 +163,7 @@ export const ChainLogoWrapper = styled.div<{ size?: number }>`
   align-items: center;
   justify-content: center;
   z-index: 3;
+  transition: ${slowTransition(['width', 'height', 'border-radius'])};
 
   > img,
   > svg {

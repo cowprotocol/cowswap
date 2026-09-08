@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.9.0...common-const-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.8.0...common-const-v3.9.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.1...common-const-v3.8.0) (2026-08-05)
 
 ### Minor Changes

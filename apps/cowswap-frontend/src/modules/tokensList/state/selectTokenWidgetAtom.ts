@@ -10,7 +10,7 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 /**
  * Pending list toggle state.

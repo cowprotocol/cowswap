@@ -10,6 +10,7 @@ const defaultProps: SettingsProps = {
     limitPriceLocked: false,
     ordersTableOnLeft: false,
     isUsdValuesMode: false,
+    enablePartialApprovalBySettings: true,
   },
   onStateChanged(state) {
     console.log('Settings state changed: ', state)

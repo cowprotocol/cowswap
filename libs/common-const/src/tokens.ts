@@ -565,7 +565,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
 
 export const USDC: Record<TargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
+  [SupportedChainId.GNOSIS_CHAIN]: USDCe_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
   [SupportedChainId.BASE]: USDC_BASE,
   [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,

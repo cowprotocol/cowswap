@@ -213,12 +213,6 @@ export const StatusLabelWrapper = styled.div`
     }
   }
 
-  > button {
-    appearance: none;
-    border: none;
-    background: none;
-  }
-
   ${Media.upToSmall()} {
     margin: 16px auto 0;
     width: 100%;

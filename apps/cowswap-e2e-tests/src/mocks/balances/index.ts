@@ -1,5 +1,5 @@
 import { loadBalancesFixture, parseBalanceValue } from './fixture'
-import { hasAnyEntry, isOwnerConfigured, resolveBalancesSnapshot } from './resolve'
+import { hasAnyEntry, isOwnerConfigured, resolveBalanceAnyChain, resolveBalancesSnapshot } from './resolve'
 import { balanceKey, type BalanceLookup, type BalancesSessionRequest, type BalanceValue } from './types'
 
 import type { BrowserContext, Route } from '@playwright/test'
@@ -11,6 +11,11 @@ const BALANCES_WATCHER_URL_PATTERN = /^https:\/\/balances-watcher(?:\.barn)?\.co
 
 const SESSION_PATH = /^\/(\d+)\/sessions\/(0x[a-fA-F0-9]{40})$/i
 const SSE_PATH = /^\/sse\/(\d+)\/balances\/(0x[a-fA-F0-9]{40})$/i
+
+/** Keyed by the same `context` `installBalances` was called with, so `getBalancesMock` can find it
+ * again without every caller having to thread the `BalancesMock` instance through by hand — see
+ * `getBalancesMock`'s own doc comment. */
+const registry = new WeakMap<BrowserContext, BalancesMock>()
 
 export interface BalancesMock {
   /**
@@ -26,11 +31,30 @@ export interface BalancesMock {
   sessions(): readonly BalancesSessionRequest[]
   /** Non-fatal warning about SSE connections opened for an owner/chain with no entry. */
   reportUnknownOwners(): void
+  /** Whatever `set()` (or the fixture) last recorded for `owner`+`token`, ignoring chainId — used
+   * by `mockContractViewCall.ts` (via `getBalancesMock`) to answer a `getEthBalance` RPC read
+   * consistently with what this mock already tells the app over SSE, instead of an unrelated
+   * placeholder that could silently disagree with it. `chainId` isn't available to key on there —
+   * an RPC `getEthBalance(address)` read carries none. */
+  getBalance(owner: string, token: string): bigint | undefined
   reset(): void
+}
+
+/**
+ * Looks up the `BalancesMock` `installBalances` registered for `context`, if any. Lets
+ * `mockContractViewCall.ts` answer a `getEthBalance` RPC read consistently with whatever this mock
+ * already tells the app over SSE, by default, for every one of its callers (`tokenNonce`,
+ * `allowances`, `socketVerifier`) — without each of them needing to thread a resolver through by
+ * hand. `undefined` only if `installBalances` was never called for this `context` (not the case in
+ * the `mocks` fixture, which always installs it first).
+ */
+export function getBalancesMock(context: BrowserContext): BalancesMock | undefined {
+  return registry.get(context)
 }
 
 export function installBalances(context: BrowserContext): BalancesMock {
   const fixture = loadBalancesFixture()
+
   const overrides: BalanceLookup = new Map()
   const sessions: BalancesSessionRequest[] = []
   const unknownOwners = new Set<string>()
@@ -59,7 +83,7 @@ export function installBalances(context: BrowserContext): BalancesMock {
 
   void context.route(BALANCES_WATCHER_URL_PATTERN, handler)
 
-  return {
+  const mock: BalancesMock = {
     set(owner, chainId, balances) {
       for (const [token, value] of Object.entries(balances)) {
         const where = `balances.set("${owner}", ${chainId}, { "${token}" })`
@@ -81,12 +105,18 @@ export function installBalances(context: BrowserContext): BalancesMock {
           `mocks.balances.set(wallet.address, chainId, { ... }) in the spec.`,
       )
     },
+    getBalance(owner, token) {
+      return resolveBalanceAnyChain(fixture, overrides, owner, token)
+    },
     reset() {
       overrides.clear()
       sessions.length = 0
       unknownOwners.clear()
     },
   }
+
+  registry.set(context, mock)
+  return mock
 }
 
 async function handleSession(

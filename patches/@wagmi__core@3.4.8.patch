@@ -1,0 +1,20 @@
+diff --git a/dist/esm/hydrate.js b/dist/esm/hydrate.js
+index 1e780f64ba3cde82dbbe228ca1dd7694e350d9fe..ead21cf9dd86aa0f9ccc4e75a4809295402bc9ea 100644
+--- a/dist/esm/hydrate.js
++++ b/dist/esm/hydrate.js
+@@ -42,8 +42,13 @@ export function hydrate(config, parameters) {
+             }
+             if (reconnectOnMount)
+                 reconnect(config);
+-            else if (config.storage)
+-                // Reset connections that may have been hydrated from storage.
++            else if (config.storage && config.state.status === 'disconnected')
++                // Reset connections that may have been hydrated from storage. Guarded on
++                // 'disconnected': when reconnectOnMount is false, something outside wagmi's own
++                // hydration (e.g. an adapter driving its own reconnect flow) may already be
++                // connecting/connected by the time this mount callback runs, since onMount is not
++                // awaited by anything that also awaits that external reconnect. Resetting
++                // unconditionally in that case wipes a connection that already succeeded.
+                 config.setState((x) => ({
+                     ...x,
+                     connections: new Map(),

@@ -64,7 +64,7 @@ export const Content = styled.div`
 export const Title = styled.h2`
   margin: 0;
   font-size: 22px;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   line-height: 1;
   color: inherit;
   white-space: nowrap;
@@ -116,12 +116,7 @@ export const CloseButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
   color: inherit;
-  cursor: pointer;
 
   &:hover ${CloseIcon} {
     opacity: 1;

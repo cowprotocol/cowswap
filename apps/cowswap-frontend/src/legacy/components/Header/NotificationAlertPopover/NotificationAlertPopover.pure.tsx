@@ -77,11 +77,7 @@ const PopoverActions = styled.div`
 `
 
 const SecondaryButton = styled.button`
-  background: none;
-  border: none;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  cursor: pointer;
-  padding: 0;
   text-decoration: underline;
   align-self: center;
   font-size: inherit;

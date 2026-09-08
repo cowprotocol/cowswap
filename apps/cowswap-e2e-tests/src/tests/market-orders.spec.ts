@@ -1,20 +1,15 @@
-import { encodeFunctionData, formatUnits, parseUnits, type Hex } from 'viem'
+import { formatUnits, parseUnits, type Hex } from 'viem'
 
-import { areAddressesEqual, bpsToPercentage } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, bpsToPercentage, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { test, expect } from '../fixtures'
 import { reply } from '../mocks/cowProtocolApi'
-import { CHAIN_IDS } from '../support/constants'
+import { generateOrderId } from '../mocks/orders'
 import { expectActivityStatus } from '../support/expectActivityStatus'
 import { mockApproveTransaction } from '../support/mockApproveTransaction'
-import { mockBridgeSupportedTokens } from '../support/mockBridgeSupportedTokens'
-import { mockCancellableOrder } from '../support/mockCancellableOrder'
-import { mockEthFlowOrderIndexing } from '../support/mockEthFlowOrderIndexing'
 import { mockEthFlowTransaction } from '../support/mockEthFlowTransaction'
 import { mockFixedRateQuote } from '../support/mockFixedRateQuote'
-import { mockHookLogo } from '../support/mockHookLogo'
-import { mockHooksSimulation } from '../support/mockHooksSimulation'
-import { mockTokenLogos } from '../support/mockTokenLogos'
 import { mockUnwrapTransaction } from '../support/mockUnwrapTransaction'
 import { mockWrapTransaction } from '../support/mockWrapTransaction'
 import { readTitledAmount } from '../support/readTitledAmount'
@@ -25,16 +20,13 @@ const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const WETH = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
 const DAI = '0xB4F1737Af37711e9A5890D9510c9bB60e170CB0D'
 const USDT = '0x58eb19ef91e8a6327fed391b51ae1887b833cc91'
-// Real Gnosis-chain WXDAI — used only as a "buy token from another chain" stand-in for [CS-136],
-// never actually traded, so no real Gnosis RPC call is needed to back it (see that test's own
-// `mocks.tokenLists.setListForChain` call).
-const WXDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-const CHAIN_ID = CHAIN_IDS.SEPOLIA
-const GNOSIS_CHAIN_ID = CHAIN_IDS.GNOSIS
+const CHAIN_ID = SupportedChainId.SEPOLIA
 
 test.describe('Market Orders', () => {
   test.describe('Connected EOA wallet', () => {
-    test.use({ mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined })
+    test.use({
+      mockWalletKey: process.env.INTEGRATION_TEST_PRIVATE_KEY as Hex | undefined,
+    })
 
     // A default for every test in this file, per `AGENTS.md`'s "Using mocks" note — a test that
     // forgets to seed its own balance (e.g. [CS-62], which never asserts on a balance figure at
@@ -47,7 +39,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-59] Sell order: ERC-20 → ERC-20 @smoke', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -67,7 +58,7 @@ test.describe('Market Orders', () => {
       // than a hardcoded figure.
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // `usdPrices` defaults every token to $1 — under that assumption this trade's quoted rate
       // looks like a ~99.9% loss and trips the "Confirm Price Impact" dialog. Pricing WETH to match
@@ -81,15 +72,16 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
-      // Typed before selecting tokens, not after: selecting a token with no amount set yet
-      // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
-      // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // debounced quote fetch and can win under load — same race as [CS-68]'s ETH-flow note, just
-      // hit here via `selectTokens` instead of a manual token switch. Typing first against
-      // whatever's already selected trips the "amount already set" guard before `selectTokens` runs,
-      // and the typed amount carries over once USDC/WETH are picked.
-      await swapPage.enterSellAmount('1000')
       await selectTokens(swapPage, 'USDC', 'WETH')
+
+      // Selecting tokens before typing, not after: typing first used to be this test's order, on
+      // the theory that it tripped `useSetupTradeAmountsFromUrl`'s "amount already set" guard
+      // (`isAtLeastOneAmountIsSetRef`) before `selectTokens` could race it with its own "auto-fill 1
+      // whole unit" default (same underlying race as [CS-68]'s ETH-flow note). That stopped holding
+      // on this branch — the type-first order started flaking with the typed amount losing to the
+      // 1-unit default (root cause not yet confirmed) — so this now selects tokens first and types
+      // directly into the resulting input, sidestepping the race instead of exercising it.
+      await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0 WETH')
@@ -97,8 +89,14 @@ test.describe('Market Orders', () => {
 
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just posted, competition not started yet.
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
@@ -117,13 +115,13 @@ test.describe('Market Orders', () => {
       // `ExecutingStep` overrides that step's own title to "Best price found!" while active.
       // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds each step on screen for at
       // least 5s before advancing to the next one, so this needs more room than the default 5s.
-      posting.markExecuting()
+      mocks.orders.markExecuting(orderId)
       await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -131,17 +129,28 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts
       // (`order.apiAdditionalInfo.executedSellAmount`/`executedBuyAmount`), not the originally
       // quoted ones — cross-check them against what `fulfill()` actually settled the order at.
-      const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
-      const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
+      const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
+      const receivedAmountRow = swapPage.orderProgressBarModal.locator(
+        `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
+      )
+      const postedOrder = mocks.orders.getOrder(orderId)
+      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
+      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
+      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
+      // instead of a one-shot read to ride out that gap, same as [CS-118]'s identical read.
+      await expect
+        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect
+        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC', { timeout: 15_000 })
       await expect(swapPage.buyBalance).toHaveAttribute(
         'title',
-        `${formatUnits(BigInt(posting.getPostedBuyAmount()), 18)} WETH`,
+        `${formatUnits(BigInt(mocks.orders.getOrder(orderId)?.buyAmount ?? 0), 18)} WETH`,
         { timeout: 15_000 },
       )
 
@@ -150,7 +159,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-60] Buy order: specify exact buy amount (ERC-20) @smoke', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       accountModal,
@@ -166,7 +174,7 @@ test.describe('Market Orders', () => {
       // matches the typed amount exactly, keeping the buy-side balance assertion a round number.
       mockFixedRateQuote({ cowApi: mocks.cowApi, direction: 'buy', rate: { numerator: RATE, denominator: 1n } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // `usdPrices` defaults every token to $1 — pricing WETH to match the quote rate keeps the
       // trade looking fair so the "Confirm Price Impact" dialog doesn't appear, same as [CS-59].
@@ -186,8 +194,14 @@ test.describe('Market Orders', () => {
       await swapPage.enterBuyAmount('1')
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
       await swapPage.page.keyboard.press('Escape')
@@ -196,7 +210,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Open')
 
       // Settle the order now that it's posted and confirmed — mirrors [CS-59].
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
@@ -209,7 +223,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH', { timeout: 15_000 })
       await expect(swapPage.sellBalance).toHaveAttribute(
         'title',
-        `${formatUnits(INITIAL_USDC_BALANCE - BigInt(posting.getPostedSellAmount()), 18)} USDC`,
+        `${formatUnits(INITIAL_USDC_BALANCE - BigInt(mocks.orders.getOrder(orderId)?.sellAmount ?? 0), 18)} USDC`,
         { timeout: 15_000 },
       )
 
@@ -376,22 +390,36 @@ test.describe('Market Orders', () => {
 
       await swapPage.receiveAmountTooltipTrigger.hover()
 
-      const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-      await expect(tooltipBox).toBeVisible()
-      await expect(tooltipBox.getByText('Protocol fee', { exact: true })).toBeVisible()
-      await expect(tooltipBox.getByText('Network costs', { exact: true })).toBeVisible()
-      await expect(tooltipBox.getByText('To', { exact: true })).toBeVisible()
+      const beforeCostsRow = swapPage.page.locator(`[data-testid="${TEST_IDS.beforeCosts}"]`)
+      const protocolFeeRow = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+      const networkCostsRow = swapPage.page.locator(`[data-testid="${TEST_IDS.networkCosts}"]`)
+      const totalRow = swapPage.page.locator(`[data-testid="${TEST_IDS.receiveAmountTotal}"]`)
 
-      const readRowAmount = (label: string): Promise<bigint> =>
-        readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
+      await expect(beforeCostsRow).toBeVisible()
+      await expect(protocolFeeRow).toBeVisible()
+      await expect(networkCostsRow).toBeVisible()
+      await expect(totalRow).toBeVisible()
 
-      const beforeCosts = await readRowAmount('Before costs')
-      const protocolFee = await readRowAmount('Protocol fee')
-      const networkCosts = await readRowAmount('Network costs')
-      const toAmount = await readRowAmount('To')
+      // Four separately-awaited reads risk a re-render (the form's own default-amount probe quote
+      // settling into the typed one) landing in between two of them, tearing the snapshot — e.g.
+      // `beforeCosts` read from a stale quote and `protocolFee` from the fresh one. Re-reading all
+      // four together on every poll attempt, against the relationship they must satisfy, rides out
+      // that race instead of trusting a single one-shot batch.
+      let beforeCosts = 0n
+      let protocolFee = 0n
+      let networkCosts = 0n
+      let toAmount = 0n
 
-      // The core relationship: To = Before costs − Network costs − Protocol fee.
-      expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
+      await expect
+        .poll(async () => {
+          beforeCosts = await readTitledAmount(beforeCostsRow)
+          protocolFee = await readTitledAmount(protocolFeeRow)
+          networkCosts = await readTitledAmount(networkCostsRow)
+          toAmount = await readTitledAmount(totalRow)
+          // The core relationship: To = Before costs − Network costs − Protocol fee.
+          return toAmount === beforeCosts - networkCosts - protocolFee
+        })
+        .toBe(true)
 
       // The main "Receive (incl. fees)" field displays the same amount as the tooltip's "To" row.
       const receiveTitle = await swapPage.receiveAmountValue.getAttribute('title')
@@ -475,7 +503,6 @@ test.describe('Market Orders', () => {
       const ethFlow = await mockEthFlowTransaction({
         context,
         wallet,
-        chainId: CHAIN_ID,
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 
@@ -486,7 +513,7 @@ test.describe('Market Orders', () => {
       // real app moves through "Sending ETH" → "Sent ETH"/"Creating Order" → "Order Created" as two
       // separate gates (tx receipt, then order indexed), not one. See `mockEthFlowOrderIndexing` for
       // why this needs its own `order` override rather than `mockOrderPosting`.
-      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
+      const orderIndexing = mocks.orders.trackEthFlowOrder(ethFlow)
 
       // For an ETH-flow order the wei sent as `tx.value` is sellAmount + the quote's feeAmount
       // (there's no separate ERC-20 fee deduction to hide it in) — zeroing it out, same technique as
@@ -600,11 +627,10 @@ test.describe('Market Orders', () => {
       const ethFlow = await mockEthFlowTransaction({
         context,
         wallet,
-        chainId: CHAIN_ID,
         initialEthBalance: INITIAL_ETH_BALANCE,
       })
 
-      const orderIndexing = mockEthFlowOrderIndexing(mocks.cowApi, ethFlow)
+      const orderIndexing = mocks.orders.trackEthFlowOrder(ethFlow)
 
       mockFixedRateQuote({ cowApi: mocks.cowApi })
 
@@ -689,7 +715,10 @@ test.describe('Market Orders', () => {
       context,
     }) => {
       let dynamicSlippageBps = 20 // 0.2% — comfortably under the 2% banner threshold
-      await context.route(/bff\.(?:barn\.)?cow\.fi\/\d+\/markets\/.*\/slippageTolerance$/i, async (route) => {
+      // Matched by path only (not the `bff(.barn).cow.fi` host) so this still works when
+      // `REACT_APP_BFF_BASE_URL` points at a local proxy instead of the real BFF host — see
+      // `mocks/usdPrices.ts`'s equivalent BFF route for the same reasoning.
+      await context.route(/\/\d+\/markets\/.*\/slippageTolerance$/i, async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -847,7 +876,7 @@ test.describe('Market Orders', () => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ [USDC.toLowerCase()]: { type: 'eip-2612', name: 'USDC', version: '2' } }),
+          body: JSON.stringify({ [getAddressKey(USDC)]: { type: 'eip-2612', name: 'USDC', version: '2' } }),
         })
       })
 
@@ -1037,8 +1066,9 @@ test.describe('Market Orders', () => {
       // Deliberately not created through the swap UI (per spec) — seeded directly via
       // `mockCancellableOrder` instead. See that helper for why mocking `accountOrders` is the
       // correct lever (not something reverse-engineered from localStorage).
-      const cancellableOrder = mockCancellableOrder({
-        cowApi: mocks.cowApi,
+      const orderId = generateOrderId()
+      mocks.orders.seedOpenOrder({
+        orderId,
         owner: wallet.address,
         sellToken: WETH,
         buyToken: USDC,
@@ -1069,12 +1099,12 @@ test.describe('Market Orders', () => {
 
       // The wallet is asked to sign an `OrderCancellations` EIP-712 message (`orderUids: bytes[]`,
       // see `@cowprotocol/sdk-contracts-ts`'s `CANCELLATIONS_TYPE_FIELDS`) — not a transaction.
-      await expect.poll(() => cancellableOrder.wasCancelRequested()).toBe(true)
+      await expect.poll(() => mocks.orders.wasCancelRequested(orderId)).toBe(true)
       const cancellationSignRequest = wallet
         .rpcCalls('eth_signTypedData_v4')
         .map((call) => JSON.parse(call.params[1] as string))
         .find((typedData) => typedData.primaryType === 'OrderCancellations')
-      expect(cancellationSignRequest?.message?.orderUids).toContain(cancellableOrder.uid)
+      expect(cancellationSignRequest?.message?.orderUids).toContain(orderId)
 
       // No gas transaction is ever sent for a soft cancellation.
       expect(wallet.rpcCalls('eth_sendTransaction')).toHaveLength(0)
@@ -1082,7 +1112,7 @@ test.describe('Market Orders', () => {
       // The API now considers the order invalidated — the order's own `creationDate` hasn't cleared
       // `PENDING_ORDERS_BUFFER` yet, so the UI shows the transient "Cancelling..." state first
       // (`isCancelling: apiStatus === 'pending' && order.invalidated`, `OrdersFromApiUpdater.ts`).
-      cancellableOrder.markCancelled()
+      mocks.orders.markCancelled(orderId)
       await expect(accountModal.activitiesList).toContainText('Cancelling...', { timeout: 45_000 })
 
       // Once enough real time has passed since `creationDate`, `isOrderCancelled` flips true and the
@@ -1093,7 +1123,6 @@ test.describe('Market Orders', () => {
 
     test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
       swapPage,
-      tradePage,
       wallet,
       confirmModal,
       mocks,
@@ -1105,7 +1134,7 @@ test.describe('Market Orders', () => {
 
       mockFixedRateQuote({ cowApi: mocks.cowApi, rate: { numerator: BUY_RATE_NUM, denominator: BUY_RATE_DEN } })
 
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
+      const orderId = generateOrderId()
 
       // Matches the quote's implied rate so the trade doesn't look like a loss against the
       // fixture's flat $1-per-token USD prices, which would otherwise trip the "Confirm Price
@@ -1124,8 +1153,14 @@ test.describe('Market Orders', () => {
       await selectTokens(swapPage, 'USDC', 'WETH')
       await swapPage.waitForQuote()
 
-      await swapPage.clickSwap()
-      await confirmModal.confirm()
+      await mocks.orders.expectOrderToBePosted({
+        orderId,
+        owner: wallet.address,
+        trigger: async () => {
+          await swapPage.clickSwap()
+          await confirmModal.confirm()
+        },
+      })
 
       // Step 1 (INITIAL, backend OPEN/SCHEDULED) — order just signed and posted, competition hasn't
       // started yet.
@@ -1140,11 +1175,11 @@ test.describe('Market Orders', () => {
 
       // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain. `ExecutingStep`
       // overrides that step's own title to "Best price found!" while active.
-      posting.markExecuting()
+      mocks.orders.markExecuting(orderId)
       await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
 
       // Settle the order now that it's posted and confirmed.
-      posting.fulfill(mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
+      mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
@@ -1152,10 +1187,22 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
       // order at, same as [CS-59].
-      const soldAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'You sold' }).first()
-      const receivedAmountRow = swapPage.orderProgressBarModal.locator('span', { hasText: 'Received' }).first()
-      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(posting.getPostedSellAmount()))
-      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(posting.getPostedBuyAmount()))
+      //
+      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
+      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
+      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
+      // instead of a one-shot read to ride out that gap.
+      const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
+      const receivedAmountRow = swapPage.orderProgressBarModal.locator(
+        `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
+      )
+      const postedOrder = mocks.orders.getOrder(orderId)
+      await expect
+        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect
+        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
+        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
     test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
@@ -1204,12 +1251,8 @@ test.describe('Market Orders', () => {
 
       await swapPage.receiveAmountTooltipTrigger.hover()
 
-      const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-      await expect(tooltipBox).toBeVisible()
-
-      const protocolFeeCell = tooltipBox
-        .getByText('Protocol fee', { exact: true })
-        .locator('xpath=following-sibling::*[1]')
+      const protocolFeeCell = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+      await expect(protocolFeeCell).toBeVisible()
 
       // The surplus/buy token (USDC), with a leading "-" — `FeeItem` renders a sell order's fee rows
       // with `typeString = '-'` and `feeAmount.currency` (the buy token for a sell order's protocol
@@ -1218,8 +1261,8 @@ test.describe('Market Orders', () => {
       const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
       expect(protocolFeeTitle).toMatch(/ USDC$/)
 
-      const readRowAmount = (label: string): Promise<bigint> =>
-        readTitledAmount(tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'))
+      const readRowAmount = (testId: string): Promise<bigint> =>
+        readTitledAmount(swapPage.page.locator(`[data-testid="${testId}"]`))
 
       // See [CS-128]'s comment on the identical read: four separately-awaited reads risk a
       // re-render (the form's own default-amount probe quote settling into the typed one) landing
@@ -1232,10 +1275,10 @@ test.describe('Market Orders', () => {
 
       await expect
         .poll(async () => {
-          beforeCosts = await readRowAmount('Before costs')
-          protocolFee = await readRowAmount('Protocol fee')
-          networkCosts = await readRowAmount('Network costs')
-          toAmount = await readRowAmount('To')
+          beforeCosts = await readRowAmount(TEST_IDS.beforeCosts)
+          protocolFee = await readRowAmount(TEST_IDS.protocolFee)
+          networkCosts = await readRowAmount(TEST_IDS.networkCosts)
+          toAmount = await readRowAmount(TEST_IDS.receiveAmountTotal)
           return Number(protocolFee) / Number(beforeCosts)
         })
         .toBeCloseTo(0.0002, 6)
@@ -1309,23 +1352,16 @@ test.describe('Market Orders', () => {
 
         await swapPage.receiveAmountTooltipTrigger.hover()
 
-        const tooltipBox = swapPage.page.getByText('Before costs', { exact: true }).locator('xpath=../..')
-        await expect(tooltipBox).toBeVisible()
-
-        const protocolFeeCell = tooltipBox
-          .getByText('Protocol fee', { exact: true })
-          .locator('xpath=following-sibling::*[1]')
+        const protocolFeeCell = swapPage.page.locator(`[data-testid="${TEST_IDS.protocolFee}"]`)
+        await expect(protocolFeeCell).toBeVisible()
 
         // The surplus/buy token, with a leading "-" — same rendering as [CS-127].
         await expect(protocolFeeCell).toContainText('-')
         const protocolFeeTitle = await protocolFeeCell.locator('[title]').getAttribute('title')
         expect(protocolFeeTitle).toMatch(new RegExp(` ${buySymbol}$`))
 
-        const readRowAmount = (label: string): Promise<bigint> =>
-          readTitledAmount(
-            tooltipBox.getByText(label, { exact: true }).locator('xpath=following-sibling::*[1]'),
-            buyDecimals,
-          )
+        const readRowAmount = (testId: string): Promise<bigint> =>
+          readTitledAmount(swapPage.page.locator(`[data-testid="${testId}"]`), buyDecimals)
 
         // The tooltip briefly shows a stale quote (the form's own default-amount probe, fetched
         // before the typed "1000" settles) — `waitForQuote()` only waits for the loading flag to
@@ -1342,10 +1378,10 @@ test.describe('Market Orders', () => {
 
         await expect
           .poll(async () => {
-            beforeCosts = await readRowAmount('Before costs')
-            protocolFee = await readRowAmount('Protocol fee')
-            networkCosts = await readRowAmount('Network costs')
-            toAmount = await readRowAmount('To')
+            beforeCosts = await readRowAmount(TEST_IDS.beforeCosts)
+            protocolFee = await readRowAmount(TEST_IDS.protocolFee)
+            networkCosts = await readRowAmount(TEST_IDS.networkCosts)
+            toAmount = await readRowAmount(TEST_IDS.receiveAmountTotal)
             return Number(protocolFee) / Number(beforeCosts)
           })
           .toBeCloseTo(0.00003, 6)
@@ -1404,296 +1440,6 @@ test.describe('Market Orders', () => {
       })
 
       await expect(swapPage.page.getByText('Price impact unknown - trade carefully')).toBeVisible()
-    })
-
-    test('[CS-129] Enable Hooks via settings toggle @smoke', async ({ swapPage }) => {
-      await swapPage.goto({ chainId: CHAIN_ID })
-
-      // `SettingsBox`/`Toggle` render the real `<input type="checkbox">` inert (0×0,
-      // `pointer-events: none`) and rely on the enclosing `<label>` (`SettingsBoxWrapper`) to forward
-      // clicks to it — the actual click target is the wrapper span (`#toggle-hooks-mode-button`
-      // itself), not the checkbox.
-      const hooksToggle = swapPage.page.locator('#toggle-hooks-mode-button')
-      const hooksCheckbox = hooksToggle.locator('input[type="checkbox"]')
-
-      // Enabling Hooks adds a new top-level nav item (`useMenuItems`'s `HOOKS_STORE_MENU_ITEM`)
-      // alongside Swap/Limit/TWAP, routing to a `/swap/hooks` URL — there's no tab *inside* the swap
-      // widget itself. At this viewport `TradeWidgetForm`'s `showDropdown` is true (a connected
-      // wallet renders the "My orders" button, one of its triggers), so these nav items only exist in
-      // the DOM behind the collapsed "Trading mode" dropdown, not as a plain visible link row.
-      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-
-      // Precondition: Hooks starts disabled, so its nav entry isn't rendered yet.
-      await swapPage.tradingModeDropdown.click()
-      await expect(hooksLink).toBeHidden()
-
-      // A full reload (not another `goto`, which only changes the hash on this single-page app and
-      // wouldn't remount anything) is the simplest way to close the dropdown before opening settings —
-      // the dropdown's own overlay covers the header, including the settings gear icon, while open.
-      await swapPage.page.reload()
-
-      await swapPage.page.locator('#open-settings-dialog-button').click()
-      await expect(hooksCheckbox).not.toBeChecked()
-
-      await hooksToggle.click()
-      await expect(hooksCheckbox).toBeChecked()
-      await swapPage.page.keyboard.press('Escape')
-
-      await swapPage.tradingModeDropdown.click()
-      await expect(hooksLink).toBeVisible()
-
-      // Setting persists across a refresh — it's backed by `state.user.hooksEnabled`, written to
-      // `localStorage` by `redux-localstorage-simple` with a 1s debounce (`legacy/state/index.ts`).
-      // Reloading before that debounce fires would reload the pre-toggle value, so wait for the
-      // write to actually land first instead of guessing a timeout.
-      await expect
-        .poll(() => swapPage.page.evaluate(() => localStorage.getItem('redux_localstorage_simple_user')))
-        .toContain('"hooksEnabled":true')
-
-      await swapPage.page.reload()
-
-      await swapPage.page.locator('#open-settings-dialog-button').click()
-      await expect(hooksCheckbox).toBeChecked()
-      await swapPage.page.keyboard.press('Escape')
-
-      await swapPage.tradingModeDropdown.click()
-      await expect(hooksLink).toBeVisible()
-      await hooksLink.click()
-
-      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
-      // The Hooks tab is the same swap widget, with these hook-management buttons added around the
-      // form — there's no separate "browse hooks" landing screen at this route.
-      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
-      await expect(swapPage.page.getByText('Add Post-Hook Action')).toBeVisible()
-    })
-
-    test('[CS-136] Hooks: cross-chain swaps are not available @smoke', async ({ swapPage, mocks, context }) => {
-      // Resolving WXDAI@Gnosis as a currency needs both of these — the general per-chain token
-      // list (same endpoint `installTokenLists` already stubs for every chain) and the bridge
-      // provider's own "is this a valid destination token" check, which otherwise hits a real,
-      // unmocked `bff.barn.cow.fi` endpoint (confirmed by tracing actual network requests — see
-      // `mockBridgeSupportedTokens`'s own doc comment). No live Gnosis RPC call is involved either
-      // way, since the test never submits a trade, only inspects picker/URL/nav state.
-      mocks.tokenLists.setListForChain(GNOSIS_CHAIN_ID, {
-        tokens: [{ address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID }],
-      })
-      await mockBridgeSupportedTokens(context, [
-        { address: WXDAI, symbol: 'WXDAI', name: 'Wrapped XDAI', decimals: 18, chainId: GNOSIS_CHAIN_ID },
-      ])
-      // The default quote fixture's WETH/USDC rate is a real recorded snapshot (~546.99 USDC per
-      // WETH), not an arbitrary placeholder — leave it as-is rather than overriding it with an
-      // artificial rate. `mocks.usdPrices` defaults every token to $1 though, which doesn't match
-      // that real ratio and renders an absurd price-impact percentage; match it here instead.
-      mocks.usdPrices.setPrice(WETH, 546.9898499813039)
-
-      // Part 1: the buy-token picker on the Hooks tab never offers another chain to pick from.
-      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/hooks/${WETH}/${USDC}`)
-      await swapPage.unlockIfNeeded()
-      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
-
-      await swapPage.tokens.openInput()
-      await swapPage.tokens.searchAndPick('WETH')
-      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
-
-      await swapPage.tokens.openOutput()
-      // `useChainPanelState`'s chain-tab (`ChainButton` rows, e.g. "Gnosis") only renders when
-      // `isBridgingEnabled` is true, which `BridgingEnabledUpdater` hardcodes to false off the
-      // Swap route — so there's no chain row to pick from at all on Hooks, scoped to the picker
-      // itself since the header's own network switcher also renders a "Gnosis" label elsewhere.
-      await expect(swapPage.tokens.currencyList.getByText('Gnosis', { exact: true })).not.toBeVisible()
-      await swapPage.page.keyboard.press('Escape')
-      await swapPage.tokens.currencyList.waitFor({ state: 'hidden' })
-
-      // Part 2: a cross-chain buy token set on Swap is reset when navigating to Hooks via the
-      // in-app tab link (`useGetTradeUrlParams` — the one path this ticket's reset IS wired up on).
-      await swapPage.page.goto(`/#/${CHAIN_ID}/swap/${WETH}/${WXDAI}?targetChainId=${GNOSIS_CHAIN_ID}`)
-      await swapPage.unlockIfNeeded()
-      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
-
-      // Make this a genuinely active bridge trade (amount entered, quote loaded), not just tokens
-      // picked with an empty form — the reset-on-navigate behavior below should hold for a real,
-      // in-flight bridge quote, not merely for two currency IDs sitting unused in the URL.
-      await swapPage.enterSellAmount('1')
-      await swapPage.waitForQuote()
-
-      // The Hooks nav link only renders once `state.user.hooksEnabled` is set (same
-      // `redux-localstorage-simple`-backed flag [CS-129] toggles via Settings) — set it directly
-      // rather than re-exercising that toggle flow, and reload so the store rehydrates with it.
-      // Merge into the existing persisted state instead of replacing it outright, so other
-      // `state.user` fields written earlier (slippage, recipient, ...) survive the reload.
-      await swapPage.page.evaluate(() =>
-        localStorage.setItem(
-          'redux_localstorage_simple_user',
-          JSON.stringify({
-            ...JSON.parse(localStorage.getItem('redux_localstorage_simple_user') || '{}'),
-            hooksEnabled: true,
-          }),
-        ),
-      )
-      await swapPage.page.reload()
-      await swapPage.unlockIfNeeded()
-      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: WXDAI')
-
-      // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
-      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-      await swapPage.tradingModeDropdown.click()
-      await hooksLink.click()
-
-      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
-      await expect(swapPage.page).not.toHaveURL(/targetChainId=/)
-      // The whole trade form resets to the Sepolia Hooks-tab default pair (WETH/USDC) — not just
-      // the buy side — per `getDefaultTradeRawState`: `useGetTradeUrlParams` keeps `inputCurrencyId`
-      // as-is when leaving a bridging Swap (already WETH here, so unchanged) and falls back
-      // `outputCurrencyId` to the target widget's default (USDC), dropping `targetChainId` entirely.
-      await expect(swapPage.sellTokenSelect).toHaveAttribute('aria-label', 'Selected token: WETH')
-      await expect(swapPage.buyTokenSelect).toHaveAttribute('aria-label', 'Selected token: USDC')
-      // The sell amount typed on the Swap tab carries over as-is (only the currencies reset) — no
-      // need to re-enter it here.
-      await expect(swapPage.inputAmount).toHaveValue('1')
-
-      // The reset pair is same-chain (Sepolia/Sepolia), so this is an ordinary quote, not a bridge
-      // one — no "No routes found" (that's a bridge-route error) should linger from the pre-reset
-      // cross-chain state, and the carried-over sell amount should have a fresh, non-bridge quote
-      // automatically recalculated for it against the reset pair.
-      await expect(swapPage.page.getByText('No routes found')).not.toBeVisible()
-      await swapPage.waitForQuote()
-      // The realistic recorded rate (~546.99 USDC/WETH) from the default quote fixture, scaled to
-      // the carried-over 1 WETH sell amount — and, since `mocks.usdPrices` above now matches that
-      // same rate, a sane price impact rather than the fixture/$1-default mismatch's absurd one.
-      await expect(swapPage.outputAmount).toHaveValue('547.1548')
-      await expect(swapPage.priceImpact).toContainText('0.03%')
-
-      // The reset form isn't just quoted, it's genuinely actionable — the approve/swap button
-      // (WETH allowance is unset for this wallet, same describe-block default as every other test
-      // here, so the partial/full approval selector renders too) actually becomes enabled, proving
-      // this isn't a partially-broken post-reset state that merely looks quoted.
-      await expect(swapPage.approveModeSelector).toBeVisible()
-      await expect(swapPage.primaryActionButton).toBeEnabled()
-    })
-
-    test('[CS-131] Add a Pre-hook to a swap order @smoke', async ({
-      swapPage,
-      tradePage,
-      wallet,
-      confirmModal,
-      accountModal,
-      mocks,
-      context,
-    }) => {
-      // The real CoW Protocol GPv2VaultRelayer address (same across chains) — used only as the
-      // `approve()` spender encoded into the hook's calldata below, to represent a realistic
-      // "token approval" pre-hook per the ticket's example, not because it's ever actually called
-      // (the hook is never executed on a real chain in this mocked test).
-      const VAULT_RELAYER = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110'
-      const HOOK_GAS_LIMIT = '45000'
-      const approveCalldata = encodeFunctionData({
-        abi: [
-          {
-            name: 'approve',
-            type: 'function',
-            stateMutability: 'nonpayable',
-            inputs: [
-              { name: 'spender', type: 'address' },
-              { name: 'amount', type: 'uint256' },
-            ],
-            outputs: [{ name: '', type: 'bool' }],
-          },
-        ],
-        functionName: 'approve',
-        args: [VAULT_RELAYER, parseUnits('1', 18)],
-      })
-
-      // Realistic quote: the default fixture's real recorded WETH/USDC rate (~546.99, see [CS-136]
-      // for how this was confirmed), not an artificial 1:1 — matching `usdPrices` to it avoids the
-      // otherwise-absurd price-impact percentage that mismatch produces.
-      mocks.usdPrices.setPrice(WETH, 546.9898499813039)
-      mocks.allowances.set(wallet.address, CHAIN_ID, { [WETH]: parseUnits('10', 18) })
-      // None of these real endpoints was mocked before this test — see each helper's own doc
-      // comment for what they replace and why (a 403'ing token-logo CDN, the hook's unmocked
-      // GitHub-hosted logo, and a live Tenderly simulation call the confirmation screen makes
-      // once a hook is attached).
-      await mockTokenLogos(context)
-      await mockHookLogo(context)
-      await mockHooksSimulation(context)
-
-      // Enable Hooks via the Settings toggle first (same mechanic [CS-129] exercises in full),
-      // then navigate to the Hooks tab through the UI — not a direct URL shortcut.
-      await swapPage.goto({ chainId: CHAIN_ID })
-      await swapPage.page.locator('#open-settings-dialog-button').click()
-      await swapPage.page.locator('#toggle-hooks-mode-button').click()
-      await swapPage.page.keyboard.press('Escape')
-
-      // Same viewport quirk as [CS-129]: the trade-mode tabs are collapsed behind this dropdown.
-      const hooksLink = swapPage.page.locator('a[href*="/swap/hooks"]')
-      await swapPage.tradingModeDropdown.click()
-      await hooksLink.click()
-      await expect(swapPage.page).toHaveURL(/\/swap\/hooks(\/|$|\?)/)
-      await expect(swapPage.page.getByText('Add Pre-Hook Action')).toBeVisible()
-
-      await swapPage.enterSellAmount('1')
-      await swapPage.waitForQuote()
-
-      // Opens `HookRegistryList` — a searchable Hook Store modal listing both built-in ("Build your
-      // own hook", `BUILD_CUSTOM_HOOK` in `hookRegistry.tsx`) and custom hook dapps.
-      await swapPage.page.getByText('Add Pre-Hook Action', { exact: true }).click()
-      await swapPage.page.getByPlaceholder('Search hooks by title or description').fill('Build your own hook')
-      // `HookListItem` renders the whole `<li>` card clickable to *open its details page*
-      // (`onOpenDetails`) — only the "Open" button inside it actually selects the dapp
-      // (`onSelect`) and opens `BuildHookApp`'s form.
-      const hookCard = swapPage.page.locator('li', { hasText: 'Build your own hook' })
-      await hookCard.getByRole('button', { name: 'Open', exact: true }).click()
-
-      // `BuildHookApp`'s plain form: `<input name="target">`, `<input name="gasLimit">`,
-      // `<textarea name="callData">` — no ids/`data-testid`, matched by their `name` attribute.
-      await swapPage.page.locator('input[name="target"]').fill(WETH)
-      await swapPage.page.locator('input[name="gasLimit"]').fill(HOOK_GAS_LIMIT)
-      await swapPage.page.locator('textarea[name="callData"]').fill(approveCalldata)
-      await swapPage.page.getByRole('button', { name: 'Add Pre-hook', exact: true }).click()
-
-      // The Hook Store modal closes back to the swap form once `context.addHook` resolves.
-      await swapPage.page.getByPlaceholder('Search hooks by title or description').waitFor({ state: 'hidden' })
-      await expect(swapPage.page.getByText('Build your own hook', { exact: true })).toBeVisible()
-
-      const posting = tradePage.mockOrderPosting(mocks.cowApi, wallet.address)
-      await swapPage.clickSwap()
-
-      // `TradeConfirmation` renders `OrderHooksDetails` with `isTradeConfirmation`, which is what
-      // triggers the Tenderly simulation fetch — expand the "Hooks" summary, then the individual
-      // hook row, to reach the "Simulation successful" text `HookItem` renders off a `status: true`
-      // response (mocked above), plus its dapp logo actually loading (not a broken/letter fallback).
-      const confirmationModal = swapPage.page.locator('#trade-confirmation')
-      // `HookTag` renders "PRE" and its count (`<b>1</b>`) as one element's text ("PRE 1"), so an
-      // exact match on "PRE" alone doesn't match — match the whole rendered pattern instead of a
-      // bare substring, which could resolve more than one node and hit a strict-mode error.
-      await confirmationModal.getByText(/^PRE\s*\d+$/).click()
-      const hookRow = confirmationModal.getByText('Build your own hook', { exact: true })
-      await expect(hookRow).toBeVisible()
-      // This particular logo (`hookDappsRegistry.ts`'s `BUILD_CUSTOM_HOOK.image`) is mocked via
-      // `mockHookLogo` above, but the `<img>` load is still async, so poll instead of a single
-      // immediate read.
-      const hookLogo = confirmationModal.locator('img[alt="Build your own hook"]')
-      await expect(hookLogo).toBeVisible()
-      await expect
-        .poll(() => hookLogo.evaluate((img: HTMLImageElement) => img.naturalWidth), { timeout: 15_000 })
-        .toBeGreaterThan(0)
-      await hookRow.click()
-      await expect(confirmationModal.getByText('Simulation successful', { exact: true })).toBeVisible()
-
-      await confirmModal.confirm()
-
-      await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
-      posting.fulfill(mocks.balances, CHAIN_ID, parseUnits('10', 18), parseUnits('1500', 18))
-      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
-      await swapPage.page.keyboard.press('Escape')
-
-      // `mockOrderPosting`'s `buildOpenOrder` already echoes the posted `appData` back as
-      // `fullAppData` on the mocked `accountOrders`/`order` endpoints — `OrderHooksDetails`
-      // (`common/containers/OrderHooksDetails`) decodes that same field to render this "Hooks"
-      // summary in `ActivityDetails`, so this is a genuine round-trip check: the hook was correctly
-      // built into the signed order's appData, not just added to local form state.
-      await accountModal.open()
-      await expect(accountModal.activitiesList).toContainText('Hooks')
-      await expect(accountModal.activitiesList).toContainText('PRE')
     })
   })
 

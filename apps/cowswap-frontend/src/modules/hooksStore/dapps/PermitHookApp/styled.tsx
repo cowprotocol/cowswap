@@ -43,7 +43,6 @@ export const Row = styled.div`
     border-radius: 4px;
 
     &:focus {
-      outline: none;
       border: 1px solid var(${UI.COLOR_TEXT_OPACITY_50});
     }
   }

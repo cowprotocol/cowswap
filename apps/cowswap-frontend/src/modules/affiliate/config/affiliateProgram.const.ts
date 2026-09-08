@@ -53,11 +53,6 @@ export const AFFILIATE_HIDE_REWARDS_ROW_IF_INELIGIBLE = true
 
 export const AFFILIATE_ELIGIBILITY_LOADING_WARNING_MS = ms`30s`
 
-export const RATE_LIMIT_INTERVAL_MS = 200
-export const BACKOFF_START_DELAY_MS = ms`1s`
-export const BACKOFF_TIME_MULTIPLE = 3
-export const BACKOFF_MAX_ATTEMPTS = 3
-
 export const REF_CODE_PATTERN = /^[A-Z0-9_-]{5,20}$/
 export const REF_CODE_MIN_LENGTH = 5
 export const REF_CODE_MAX_LENGTH = 20

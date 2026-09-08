@@ -9,6 +9,7 @@ import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
@@ -250,7 +251,7 @@ function ReceivedAmount({
   receiverEnsName?: string | null
 }): ReactNode {
   return (
-    <styledEl.ReceivedAmount>
+    <styledEl.ReceivedAmount data-testid={TEST_IDS.orderReceivedAmount}>
       {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
@@ -273,7 +274,7 @@ function ReceivedAmount({
 
 function SoldAmount({ order }: { order: Order }): ReactNode {
   return (
-    <styledEl.SoldAmount>
+    <styledEl.SoldAmount data-testid={TEST_IDS.orderSoldAmount}>
       <Trans>
         You sold <TokenLogo token={order.inputToken} size={20} />
       </Trans>

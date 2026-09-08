@@ -49,8 +49,6 @@ export interface MockUnwrapTransactionOpts {
  */
 export async function mockUnwrapTransaction(opts: MockUnwrapTransactionOpts): Promise<MockUnwrapTransactionHandle> {
   const { context, wallet, balances, chainId, wethToken, initialEthBalance, initialWethBalance } = opts
-  const rpcUrl = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
-  if (!rpcUrl) throw new Error(`REACT_APP_NETWORK_URL_${chainId} not set`)
 
   let sentValue: bigint | undefined
   let mined = false
@@ -75,7 +73,6 @@ export async function mockUnwrapTransaction(opts: MockUnwrapTransactionOpts): Pr
   // debits it, and the same reasoning as `mockEthFlowTransaction`'s own native-balance patch.
   await installNativeBalanceRoute({
     context,
-    rpcUrl,
     owner: wallet.address,
     txHash: FAKE_UNWRAP_TX_HASH,
     getBalance: () => initialEthBalance + (sentValue ?? 0n),

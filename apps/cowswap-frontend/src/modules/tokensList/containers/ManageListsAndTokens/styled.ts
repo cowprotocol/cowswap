@@ -2,8 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { blankButtonMixin } from '../../pure/commonElements'
-
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -11,6 +9,7 @@ export const Wrapper = styled.div`
   width: 100%;
   background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
+  overflow: hidden;
 `
 
 export const TabsContainer = styled.div`
@@ -31,8 +30,6 @@ export const InputError = styled.div`
 `
 
 export const Tab = styled.button<{ active$: boolean }>`
-  ${blankButtonMixin};
-
   color: inherit;
   opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
   padding: 10px;
@@ -47,13 +44,11 @@ export const PrimaryInputBox = styled.div`
 
 export const PrimaryInput = styled.input`
   width: 100%;
-  border: none;
   background: var(${UI.COLOR_PAPER_DARKER});
   font-size: 18px;
   border-radius: 20px;
   padding: 16px;
   color: inherit;
-  outline: none;
 
   ::placeholder {
     color: inherit;

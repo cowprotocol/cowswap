@@ -3,13 +3,14 @@ import { TTLCache } from '@cowprotocol/cow-sdk'
 import { querySerializer } from './querySerializer'
 
 import {
+  COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
   DEFAULT_CMS_REQUEST_TTL,
   ONDO_FALLBACK_TOKEN_LIST,
   RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
   XStocks_FALLBACK_TOKEN_LIST,
 } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
-import { getCmsClient } from '../utils'
+import { getProdCmsClient } from '../utils'
 
 interface CmsRestrictedTokenListItem {
   id: number
@@ -31,7 +32,15 @@ interface CmsRestrictedTokenListsResponse {
  */
 const CACHE_KEY = 'restricted-token-lists'
 
-const cache = new TTLCache<RestrictedTokenLists>('cmsRestrictedTokenLists:v0', true, DEFAULT_CMS_REQUEST_TTL)
+// v1: invalidates empty responses cached from the barn CMS, which doesn't have them configured
+const cache = new TTLCache<RestrictedTokenLists>('cmsRestrictedTokenLists:v1', true, DEFAULT_CMS_REQUEST_TTL)
+
+const FALLBACK_TOKEN_LISTS: RestrictedTokenLists = [
+  ONDO_FALLBACK_TOKEN_LIST,
+  XStocks_FALLBACK_TOKEN_LIST,
+  RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
+  COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
+]
 
 export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
   const cached = cache.get(CACHE_KEY)
@@ -47,7 +56,7 @@ export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {
 }
 
 async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null> {
-  const cmsClient = getCmsClient()
+  const cmsClient = getProdCmsClient()
 
   return cmsClient
     .GET('/restricted-token-lists', {
@@ -59,9 +68,15 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
       },
       querySerializer,
     })
-    .then((res: { data: CmsRestrictedTokenListsResponse }) => {
+    .then((res: { data?: CmsRestrictedTokenListsResponse; response?: Response }) => {
       const items = res.data?.data
-      if (!items) return []
+
+      // openapi-fetch resolves non-2xx responses instead of rejecting, so an HTTP error arrives here
+      // with no data. An empty collection is treated the same way: geoblocking must never silently
+      // turn itself off, so fall back rather than caching zero restricted lists.
+      if (!items?.length) {
+        throw new Error(`Restricted token lists response had no data [${res.response?.status ?? 'unknown'}]`)
+      }
 
       return items.map(
         (item): RestrictedTokenList => ({
@@ -73,6 +88,6 @@ async function fetchRestrictedTokenLists(): Promise<RestrictedTokenLists | null>
     })
     .catch((error: Error) => {
       console.error('Failed to fetch restricted token lists', error)
-      return [ONDO_FALLBACK_TOKEN_LIST, XStocks_FALLBACK_TOKEN_LIST, RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST]
+      return FALLBACK_TOKEN_LISTS
     })
 }

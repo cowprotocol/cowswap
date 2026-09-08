@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { useBodyScrollbarLocker } from '@cowprotocol/common-hooks'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../state'
@@ -13,12 +13,5 @@ export function useWidgetEffects(isOpen: boolean): void {
   useEffect(() => () => updateModalUI(DEFAULT_MODAL_UI_STATE), [updateModalUI])
   useEffect(() => () => closeTokenSelectWidget({ overrideForceLock: true }), [closeTokenSelectWidget])
 
-  useEffect(() => {
-    if (!isOpen) {
-      removeBodyClass('noScroll')
-      return
-    }
-    addBodyClass('noScroll')
-    return () => removeBodyClass('noScroll')
-  }, [isOpen])
+  useBodyScrollbarLocker(isOpen)
 }

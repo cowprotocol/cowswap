@@ -1,23 +1,10 @@
-import {
-  createWalletClient,
-  defineChain,
-  http,
-  toHex,
-  type Address,
-  type Chain,
-  type Hex,
-  type HttpTransport,
-  type PrivateKeyAccount,
-  type WalletClient,
-} from 'viem'
+import { toHex, type Address, type Hex } from 'viem'
 
 import { privateKeyToAccount } from 'viem/accounts'
 
 export interface CreateWalletEngineOpts {
   privateKey: Hex
   chainId: number
-  workerId: string
-  proxyBaseUrl: string
   emit: (event: string, payload: unknown) => void
 }
 
@@ -53,53 +40,12 @@ export interface WalletEngine {
   rpcCalls(method?: string): RpcCallRecord[]
 }
 
-interface TransactionParams {
-  to?: Address
-  data?: Hex
-  value?: string
-  gas?: string
-  gasLimit?: string
-}
-
 // eslint-disable-next-line max-lines-per-function
 export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
   const account = privateKeyToAccount(opts.privateKey)
   const stubs = new Map<string, RpcStub>()
   const calls: RpcCallRecord[] = []
   let chainId = opts.chainId
-
-  const partitionUrl = (): string => `${opts.proxyBaseUrl}/rpc/${chainId}/${opts.workerId}`
-
-  async function forward(method: string, params: unknown[]): Promise<unknown> {
-    const res = await fetch(partitionUrl(), {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
-    })
-    const json: unknown = await res.json()
-    if (typeof json !== 'object' || json === null) {
-      throw new Error(`Unexpected RPC response for ${method}: expected a JSON object`)
-    }
-    if ('error' in json && json.error != null) {
-      const err = json.error as { code?: unknown; message?: unknown }
-      throw {
-        code: typeof err.code === 'number' ? err.code : -32000,
-        message: typeof err.message === 'string' ? err.message : 'RPC error',
-      }
-    }
-    return 'result' in json ? (json as { result?: unknown }).result : undefined
-  }
-
-  function walletClient(): WalletClient<HttpTransport, Chain, PrivateKeyAccount> {
-    // Minimal ad-hoc chain: routes viem's fill+sign+submit pipeline through the proxy partition.
-    const chain = defineChain({
-      id: chainId,
-      name: `e2e-${chainId}`,
-      nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-      rpcUrls: { default: { http: [partitionUrl()] } },
-    })
-    return createWalletClient({ account, chain, transport: http(partitionUrl()) })
-  }
 
   function setChainId(next: number): void {
     if (next === chainId) return
@@ -110,6 +56,7 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
   // eslint-disable-next-line complexity
   async function dispatch(method: string, params: unknown[]): Promise<unknown> {
     const stub = stubs.get(method)
+
     if (stub) return stub({ method, params, chainId })
 
     switch (method) {
@@ -138,14 +85,7 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
         return account.signTypedData({ ...typed, types } as Parameters<typeof account.signTypedData>[0])
       }
       case 'eth_sendTransaction': {
-        const tx = (params[0] ?? {}) as TransactionParams
-        const gas = tx.gas ?? tx.gasLimit
-        return walletClient().sendTransaction({
-          to: tx.to,
-          data: tx.data,
-          value: tx.value !== undefined ? BigInt(tx.value) : undefined,
-          gas: gas !== undefined ? BigInt(gas) : undefined,
-        })
+        throw new Error('eth_sendTransaction must be mocked!', { cause: params })
       }
       case 'wallet_switchEthereumChain': {
         const target = (params[0] as { chainId: string }).chainId
@@ -194,6 +134,26 @@ export function createWalletEngine(opts: CreateWalletEngineOpts): WalletEngine {
       return method ? calls.filter((c) => c.method === method) : [...calls]
     },
   }
+}
+
+async function forward(method: string, params: unknown[]): Promise<unknown> {
+  const res = await fetch('https://rpc-request-from.wallet', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method, params }),
+  })
+  const json: unknown = await res.json()
+  if (typeof json !== 'object' || json === null) {
+    throw new Error(`Unexpected RPC response for ${method}: expected a JSON object`)
+  }
+  if ('error' in json && json.error != null) {
+    const err = json.error as { code?: unknown; message?: unknown }
+    throw {
+      code: typeof err.code === 'number' ? err.code : -32000,
+      message: typeof err.message === 'string' ? err.message : 'RPC error',
+    }
+  }
+  return 'result' in json ? (json as { result?: unknown }).result : undefined
 }
 
 function toRpcError(e: unknown): RpcError {

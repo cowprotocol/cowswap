@@ -69,7 +69,7 @@ export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
   }, [currentStep, getDuration, analytics])
 
   return (
-    <div id="order-progress-bar-modal">
+    <div id="order-progress-bar-modal" style={{ width: '100%' }}>
       <OrderProgressStepFactory step={stepName} props={props} />
       {debugMode && <DebugPanel stepName={currentStep} setDebugStep={setDebugStep} />}
     </div>

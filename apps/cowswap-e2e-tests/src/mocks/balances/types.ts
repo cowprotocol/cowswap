@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 /**
  * Flat balance lookup keyed by `${owner}|${chainId}|${token}`, addresses lowercased.
  *
@@ -19,10 +21,10 @@ export interface BalancesSessionRequest {
 export type BalanceValue = string | number | bigint
 
 export function balanceKey(owner: string, chainId: number, token: string): string {
-  return `${owner.toLowerCase()}|${chainId}|${token.toLowerCase()}`
+  return `${getAddressKey(owner)}|${chainId}|${getAddressKey(token)}`
 }
 
 /** Prefix of every key belonging to `owner` on `chainId`, for the SSE snapshot scan. */
 export function balanceOwnerChainPrefix(owner: string, chainId: number): string {
-  return `${owner.toLowerCase()}|${chainId}|`
+  return `${getAddressKey(owner)}|${chainId}|`
 }

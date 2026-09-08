@@ -6,8 +6,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
+
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
-import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string,

@@ -10,7 +10,6 @@ export const CloseButton = styled.button`
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  border: none;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 19px;
@@ -19,9 +18,6 @@ export const CloseButton = styled.button`
   font-weight: 500;
   display: grid;
   place-items: center;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
   z-index: 3;
   box-shadow: 0 6px 14px -12px rgba(0, 0, 0, 0.7);
   transition:

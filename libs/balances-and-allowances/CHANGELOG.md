@@ -1,5 +1,53 @@
 # Changelog
 
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.12.0...balances-and-allowances-v3.12.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.11.1
+  - @cowprotocol/wallet@3.12.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.11.0...balances-and-allowances-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/tokens@3.11.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.10.0...balances-and-allowances-v3.11.0) (2026-08-12)
+
+### Minor Changes
+
+- feat(solana): approve flow (#7946)
+
+### Patch Changes
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: restore lost files after squash revert from main
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/tokens@3.10.0
+  - @cowprotocol/wallet@3.11.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.9.0...balances-and-allowances-v3.10.0) (2026-08-05)
 
 ### Minor Changes

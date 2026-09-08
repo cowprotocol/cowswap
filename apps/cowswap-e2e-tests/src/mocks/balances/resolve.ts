@@ -1,3 +1,5 @@
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { balanceOwnerChainPrefix, type BalanceLookup } from './types'
 
 export function hasAnyEntry(fixture: BalanceLookup, overrides: BalanceLookup): boolean {
@@ -13,6 +15,23 @@ export function isOwnerConfigured(
 ): boolean {
   const prefix = balanceOwnerChainPrefix(owner, chainId)
   return hasKeyWithPrefix(overrides, prefix) || hasKeyWithPrefix(fixture, prefix)
+}
+
+/**
+ * The balance last recorded for `owner`+`token`, on whichever chain it was set for — for callers
+ * with no `chainId` to key on (an RPC `getEthBalance(address)` read carries none). This suite only
+ * ever seeds one chain's balance per owner/token at a time in practice, so "any chain" is
+ * unambiguous. Override wins over fixture, same precedence as `resolveBalancesSnapshot`.
+ */
+export function resolveBalanceAnyChain(
+  fixture: BalanceLookup,
+  overrides: BalanceLookup,
+  owner: string,
+  token: string,
+): bigint | undefined {
+  const prefix = `${getAddressKey(owner)}|`
+  const suffix = `|${getAddressKey(token)}`
+  return findByPrefixAndSuffix(overrides, prefix, suffix) ?? findByPrefixAndSuffix(fixture, prefix, suffix)
 }
 
 /**
@@ -40,6 +59,13 @@ export function resolveBalancesSnapshot(
   }
 
   return snapshot
+}
+
+function findByPrefixAndSuffix(lookup: BalanceLookup, prefix: string, suffix: string): bigint | undefined {
+  for (const [key, value] of lookup) {
+    if (key.startsWith(prefix) && key.endsWith(suffix)) return value
+  }
+  return undefined
 }
 
 function hasKeyWithPrefix(lookup: BalanceLookup, prefix: string): boolean {

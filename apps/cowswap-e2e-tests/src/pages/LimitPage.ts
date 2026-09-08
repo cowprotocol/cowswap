@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import { expect } from '@playwright/test'
 
 import type { TradePage } from './TradePage'
@@ -12,20 +14,24 @@ export class LimitPage implements TradePage {
   readonly arrowSeparator: Locator
   readonly orderSubmittedHeading: Locator
   readonly continueButton: Locator
+  readonly myOrdersButton: Locator
   readonly openOrdersTab: Locator
   readonly ordersTable: Locator
+  readonly tradeFormActionButton: Locator
 
   constructor(page: Page) {
     this.page = page
-    this.inputAmount = page.locator('#input-currency-input .token-amount-input')
+    this.inputAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
     this.limitPriceInput = page.locator('#rate-limit-amount-input')
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-limit-orders-btn')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.orderSubmittedHeading = page.getByRole('heading', { name: 'Order Submitted' })
     this.continueButton = page.getByRole('button', { name: /continue/i })
-    this.openOrdersTab = page.locator('.orders-table_tab', { hasText: 'Open' })
+    this.myOrdersButton = page.getByRole('button', { name: 'My orders' })
+    this.openOrdersTab = page.locator(`[data-testid="${TEST_IDS.ordersTableTab}"]`, { hasText: 'Open' })
     this.ordersTable = page.locator('#orders-table')
+    this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -40,7 +46,7 @@ export class LimitPage implements TradePage {
   // provider sync still settling right after navigation, especially under CI load) — retry the
   // click until the form actually shows up instead of firing it once and hoping it stuck.
   private async unlockIfNeeded(): Promise<void> {
-    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    await this.unlockButton.or(this.tradeFormActionButton).first().waitFor({ state: 'visible' })
     if (!(await this.unlockButton.isVisible())) return
 
     await expect
@@ -73,5 +79,15 @@ export class LimitPage implements TradePage {
       undefined,
       { timeout: 30_000 },
     )
+  }
+
+  // Below the "large" breakpoint (1280px — Playwright's default Desktop Chrome viewport width),
+  // the orders table renders in a closed drawer instead of inline, so it needs this button to open
+  // it first. Above that breakpoint the table is already inline and this button doesn't render.
+  async openOrders(): Promise<void> {
+    if (await this.myOrdersButton.isVisible()) {
+      await this.myOrdersButton.click()
+    }
+    await this.openOrdersTab.click()
   }
 }

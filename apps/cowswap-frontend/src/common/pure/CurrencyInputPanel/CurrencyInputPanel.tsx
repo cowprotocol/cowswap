@@ -5,6 +5,7 @@ import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -190,7 +191,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
 
   const numericalInput = (
     <styledEl.NumericalInput
-      className="token-amount-input"
+      data-testid={TEST_IDS.tokenAmountInput}
       prependSymbol={isUsdValuesMode ? '$' : ''}
       value={isProviderNetworkUnsupported || isProviderNetworkDeprecated ? '' : typedValue}
       readOnly={inputDisabled || disabled}
@@ -202,7 +203,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
   const balanceView = (
     <div>
       {balance && !disabled && (
-        <styledEl.BalanceText className="currency-balance-text">
+        <styledEl.BalanceText data-testid={TEST_IDS.currencyBalanceText}>
           {isUsdValuesMode ? (
             <FiatValue fiatValue={balanceUsdAmount} isBridging={isBridging} />
           ) : (
@@ -286,7 +287,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         <styledEl.CurrencyInputBox>
           <div>
             {amount && !isUsdValuesMode && (
-              <styledEl.FiatAmountText data-testid="fiat-amount">
+              <styledEl.FiatAmountText data-testid={TEST_IDS.fiatAmount}>
                 <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} isBridging={isBridging} />
               </styledEl.FiatAmountText>
             )}

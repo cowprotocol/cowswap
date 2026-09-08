@@ -1,17 +1,31 @@
-import { ReactElement } from 'react'
+import { ElementType, ReactElement, ReactNode } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
 import { Trans as TransReact } from '@lingui/react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  BottomDrawer,
+  BottomDrawerOrDialog,
+  Dialog,
+  ExternalLink,
+  Icon,
+  IconType,
+  InlineBanner,
+  Media,
+  Modal,
+  ModalHeader,
+  StatusColorVariant,
+  UI,
+} from '@cowprotocol/ui'
 
 import { msg, t } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
-import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
@@ -20,7 +34,6 @@ import { TwapOrderItem } from 'modules/twap'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
-import { CowModal } from 'common/pure/Modal'
 import {
   useHideReceiverWalletBanner,
   useIsReceiverWalletBannerHidden,
@@ -44,20 +57,37 @@ import * as styledEl from './ReceiptModal.styled'
 
 import { AlternativeOrderModalContext } from '../../state/ordersTable.types'
 
-interface ReceiptProps {
-  isOpen: boolean
+interface ReceiptModalContentProps {
+  buyAmount: CurrencyAmount<Token>
+  chainId: SupportedChainId
+  estimatedExecutionPrice: Fraction | null
+  executionPrice: Fraction | null
+  isTwapPartOrder: boolean
+  limitPrice: Fraction | null
   order: ParsedOrder
   receiverEnsName: string | null
   twapOrder: TwapOrderItem | null
-  isTwapPartOrder: boolean
-  chainId: SupportedChainId
-  onDismiss: Command
-  sellAmount: CurrencyAmount<Token>
-  buyAmount: CurrencyAmount<Token>
-  limitPrice: Fraction | null
-  executionPrice: Fraction | null
-  estimatedExecutionPrice: Fraction | null
+}
+
+interface ReceiptModalHeaderProps {
   alternativeOrderModalContext?: AlternativeOrderModalContext
+  onDismiss: Command
+  titleAs: ElementType
+}
+
+interface ReceiptProps {
+  alternativeOrderModalContext?: AlternativeOrderModalContext
+  buyAmount?: CurrencyAmount<Token>
+  chainId?: SupportedChainId
+  estimatedExecutionPrice?: Fraction | null
+  executionPrice?: Fraction | null
+  isOpen: boolean
+  isTwapPartOrder?: boolean
+  limitPrice?: Fraction | null
+  onDismiss: Command
+  order: ParsedOrder | null
+  receiverEnsName?: string | null
+  twapOrder?: TwapOrderItem | null
 }
 
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
@@ -102,14 +132,53 @@ const TOOLTIPS_JSX: Record<string, ReactElement> = {
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
 
+export function ReceiptModal({
+  isOpen,
+  onDismiss,
+  order,
+  chainId,
+  buyAmount,
+  ...contentProps
+}: ReceiptProps): ReactNode {
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const handleOpenChange = (open: boolean): void => {
+    if (!open) {
+      onDismiss()
+    }
+  }
+
+  return (
+    <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
+      <Modal.Root>
+        <ReceiptModalHeader
+          alternativeOrderModalContext={contentProps.alternativeOrderModalContext}
+          onDismiss={onDismiss}
+          titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title}
+        />
+        {order && chainId && buyAmount ? (
+          <ReceiptModalContent
+            order={order}
+            chainId={chainId}
+            buyAmount={buyAmount}
+            receiverEnsName={contentProps.receiverEnsName ?? null}
+            twapOrder={contentProps.twapOrder ?? null}
+            isTwapPartOrder={contentProps.isTwapPartOrder ?? false}
+            limitPrice={contentProps.limitPrice ?? null}
+            executionPrice={contentProps.executionPrice ?? null}
+            estimatedExecutionPrice={contentProps.estimatedExecutionPrice ?? null}
+          />
+        ) : null}
+      </Modal.Root>
+    </BottomDrawerOrDialog>
+  )
+}
+
 // TODO: add cosmos fixture for this component
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function ReceiptModal({
-  isOpen,
-  onDismiss,
+function ReceiptModalContent({
   order,
   twapOrder,
   isTwapPartOrder,
@@ -119,8 +188,7 @@ export function ReceiptModal({
   executionPrice,
   estimatedExecutionPrice,
   receiverEnsName,
-  alternativeOrderModalContext,
-}: ReceiptProps) {
+}: ReceiptModalContentProps) {
   const { i18n } = useLingui()
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
@@ -131,10 +199,6 @@ export function ReceiptModal({
     receiver: order.receiver,
   })
   const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
-
-  if (!order || !chainId) {
-    return null
-  }
 
   const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
 
@@ -148,171 +212,171 @@ export function ReceiptModal({
   const twapOrderN = twapOrder?.order.n
 
   return (
-    <CowModal onDismiss={onDismiss} isOpen={isOpen}>
-      <styledEl.Wrapper>
-        <styledEl.Header>
-          <div>
-            <styledEl.Title>
-              <Trans>Order Receipt</Trans>
-            </styledEl.Title>
-            {alternativeOrderModalContext && (
-              <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-                {alternativeOrderModalContext?.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
-                <Trans>this order</Trans>
-              </styledEl.LightButton>
+    <Modal.Content>
+      {twapOrder && (
+        <InlineBanner bannerType={StatusColorVariant.Info}>
+          <p>
+            {isTwapPartOrder ? (
+              <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
+            ) : (
+              <Trans>TWAP order split into {twapOrderN} parts</Trans>
             )}
-          </div>
-          <CloseIcon onClick={() => onDismiss()} />
-        </styledEl.Header>
+          </p>
+        </InlineBanner>
+      )}
 
-        {twapOrder && (
-          <styledEl.InfoBannerWrapper>
-            <InlineBanner bannerType={StatusColorVariant.Info}>
-              <p>
-                {isTwapPartOrder ? (
-                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
-                ) : (
-                  <Trans>TWAP order split into {twapOrderN} parts</Trans>
-                )}
-              </p>
-            </InlineBanner>
-          </styledEl.InfoBannerWrapper>
+      <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
+      <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
+
+      <styledEl.FieldsWrapper>
+        {/* If custom recipient show warning banner */}
+        {showCustomRecipientBanner && (
+          <CustomRecipientWarningBanner
+            borderRadius={'12px 12px 0 0'}
+            orientation={BannerOrientation.Horizontal}
+            onDismiss={() => hideCustomRecipientWarning(order.id)}
+          />
         )}
 
-        <styledEl.Body>
-          <CurrencyField amount={getSellAmountWithFee(order)} token={order.inputToken} label={inputLabel} />
-          <CurrencyField amount={buyAmount} token={order.outputToken} label={outputLabel} />
+        <styledEl.Field>
+          <FieldLabel label={t`Status`} />
+          <StatusField order={order} />
+        </styledEl.Field>
 
-          <styledEl.FieldsWrapper>
-            {/* If custom recipient show warning banner */}
-            {showCustomRecipientBanner && (
-              <CustomRecipientWarningBanner
-                borderRadius={'12px 12px 0 0'}
-                orientation={BannerOrientation.Horizontal}
-                onDismiss={() => hideCustomRecipientWarning(order.id)}
-              />
-            )}
+        {order.receiver && (
+          <styledEl.Field>
+            <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
+            <div>
+              {showCustomRecipientBanner && (
+                <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} />
+              )}
+              <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
+                {receiverEnsName || shortenAddress(order.receiver)} ↗
+              </ExternalLink>
+            </div>
+          </styledEl.Field>
+        )}
 
-            <styledEl.Field>
-              <FieldLabel label={t`Status`} />
-              <StatusField order={order} />
-            </styledEl.Field>
+        <styledEl.Field>
+          <FieldLabel label={t`Limit price (incl. fees)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
+          <PriceField order={order} price={limitPrice} />
+        </styledEl.Field>
 
-            {order.receiver && (
-              <styledEl.Field>
-                <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
-                <div>
-                  {showCustomRecipientBanner && (
-                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} />
-                  )}
-                  <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
-                    {receiverEnsName || shortenAddress(order.receiver)} ↗
-                  </ExternalLink>
-                </div>
-              </styledEl.Field>
-            )}
-
-            <styledEl.Field>
-              <FieldLabel label={t`Limit price (incl. fees)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
-              <PriceField order={order} price={limitPrice} />
-            </styledEl.Field>
-
-            {(!twapOrder || isTwapPartOrder) && (
-              <styledEl.Field>
-                {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
-                  <>
-                    <FieldLabel label={t`Executes at`} tooltip={i18n._(TOOLTIPS_MSG.EXECUTES_AT)} />
-                    <PriceField order={order} price={estimatedExecutionPrice} />
-                  </>
-                ) : (
-                  <>
-                    <FieldLabel
-                      label={order.partiallyFillable ? t`Avg. execution price` : t`Execution price`}
-                      tooltip={i18n._(TOOLTIPS_MSG.EXECUTION_PRICE)}
-                    />{' '}
-                    <PriceField order={order} price={executionPrice} />
-                  </>
-                )}
-              </styledEl.Field>
-            )}
-
-            {volumeFeeBps && (
-              <styledEl.Field>
-                <FieldLabel label={t`Total fee`} tooltip={i18n._(TOOLTIPS_MSG.TOTAL_FEE)} />
-                <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
-              </styledEl.Field>
-            )}
-
-            <styledEl.Field>
-              <FieldLabel
-                label={t`Filled`}
-                tooltip={twapOrder ? i18n._(TOOLTIPS_MSG.FILLED_TWAP) : TOOLTIPS_JSX.FILLED}
-              />
-              <FilledField order={order} />
-            </styledEl.Field>
-
-            <styledEl.Field>
-              <FieldLabel label={t`Order surplus`} tooltip={i18n._(TOOLTIPS_MSG.SURPLUS)} />
-              <SurplusField order={order} />
-            </styledEl.Field>
-
-            {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
-            {/*The condition should be removed once we have the data*/}
-            {(!twapOrder || isTwapPartOrder) && (
+        {(!twapOrder || isTwapPartOrder) && (
+          <styledEl.Field>
+            {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
               <>
-                <styledEl.Field>
-                  <FieldLabel label={t`Network fees and costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
-                  <FeeField order={order} />
-                </styledEl.Field>
+                <FieldLabel label={t`Executes at`} tooltip={i18n._(TOOLTIPS_MSG.EXECUTES_AT)} />
+                <PriceField order={order} price={estimatedExecutionPrice} />
+              </>
+            ) : (
+              <>
+                <FieldLabel
+                  label={order.partiallyFillable ? t`Avg. execution price` : t`Execution price`}
+                  tooltip={i18n._(TOOLTIPS_MSG.EXECUTION_PRICE)}
+                />{' '}
+                <PriceField order={order} price={executionPrice} />
               </>
             )}
+          </styledEl.Field>
+        )}
 
+        {volumeFeeBps && (
+          <styledEl.Field>
+            <FieldLabel label={t`Total fee`} tooltip={i18n._(TOOLTIPS_MSG.TOTAL_FEE)} />
+            <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
+          </styledEl.Field>
+        )}
+
+        <styledEl.Field>
+          <FieldLabel label={t`Filled`} tooltip={twapOrder ? i18n._(TOOLTIPS_MSG.FILLED_TWAP) : TOOLTIPS_JSX.FILLED} />
+          <FilledField order={order} />
+        </styledEl.Field>
+
+        <styledEl.Field>
+          <FieldLabel label={t`Order surplus`} tooltip={i18n._(TOOLTIPS_MSG.SURPLUS)} />
+          <SurplusField order={order} />
+        </styledEl.Field>
+
+        {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
+        {/*The condition should be removed once we have the data*/}
+        {(!twapOrder || isTwapPartOrder) && (
+          <>
             <styledEl.Field>
-              <FieldLabel label={t`Created`} tooltip={i18n._(TOOLTIPS_MSG.CREATED)} />
-              <DateField date={order.creationTime} />
+              <FieldLabel label={t`Network fees and costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
+              <FeeField order={order} />
             </styledEl.Field>
+          </>
+        )}
 
-            <styledEl.Field>
-              <FieldLabel label={t`Expiry`} tooltip={i18n._(TOOLTIPS_MSG.EXPIRY)} />
-              <DateField date={order.expirationTime} />
-            </styledEl.Field>
+        <styledEl.Field>
+          <FieldLabel label={t`Created`} tooltip={i18n._(TOOLTIPS_MSG.CREATED)} />
+          <DateField date={order.creationTime} />
+        </styledEl.Field>
 
-            <styledEl.Field>
-              <FieldLabel label={t`Order type`} tooltip={TOOLTIPS_JSX.ORDER_TYPE} />
-              <OrderTypeField order={order} />
-            </styledEl.Field>
+        <styledEl.Field>
+          <FieldLabel label={t`Expiry`} tooltip={i18n._(TOOLTIPS_MSG.EXPIRY)} />
+          <DateField date={order.expirationTime} />
+        </styledEl.Field>
 
-            {/*TODO: add a link to explorer when it will support TWAP orders*/}
-            {(!twapOrder || twapPartOrderExists) && (
-              <styledEl.Field>
-                {order.executionData.activityId && (
-                  <>
-                    <FieldLabel
-                      label={
-                        typeof order.executionData.activityTitle === 'string'
-                          ? order.executionData.activityTitle
-                          : i18n._(order.executionData.activityTitle)
-                      }
-                    />
-                    <IdField id={order.executionData.activityId} chainId={chainId} />
-                  </>
-                )}
-              </styledEl.Field>
+        <styledEl.Field>
+          <FieldLabel label={t`Order type`} tooltip={TOOLTIPS_JSX.ORDER_TYPE} />
+          <OrderTypeField order={order} />
+        </styledEl.Field>
+
+        {/*TODO: add a link to explorer when it will support TWAP orders*/}
+        {(!twapOrder || twapPartOrderExists) && (
+          <styledEl.Field>
+            {order.executionData.activityId && (
+              <>
+                <FieldLabel
+                  label={
+                    typeof order.executionData.activityTitle === 'string'
+                      ? order.executionData.activityTitle
+                      : i18n._(order.executionData.activityTitle)
+                  }
+                />
+                <IdField id={order.executionData.activityId} chainId={chainId} />
+              </>
             )}
-            {/*TODO: make it more generic. The ReceiptModal should know about TWAP and should display Safe info for any ComposableCow order*/}
-            {twapOrder && safeTxParams && (
-              <SafeTxFields
-                chainId={chainId}
-                safeAddress={twapOrder.safeAddress}
-                safeTxHash={safeTxParams.safeTxHash}
-                nonce={safeTxParams.nonce}
-                confirmations={safeTxParams.confirmations}
-                confirmationsRequired={safeTxParams.confirmationsRequired}
-              />
-            )}
-          </styledEl.FieldsWrapper>
-        </styledEl.Body>
-      </styledEl.Wrapper>
-    </CowModal>
+          </styledEl.Field>
+        )}
+        {/*TODO: make it more generic. The ReceiptModal should know about TWAP and should display Safe info for any ComposableCow order*/}
+        {twapOrder && safeTxParams && (
+          <SafeTxFields
+            chainId={chainId}
+            safeAddress={twapOrder.safeAddress}
+            safeTxHash={safeTxParams.safeTxHash}
+            nonce={safeTxParams.nonce}
+            confirmations={safeTxParams.confirmations}
+            confirmationsRequired={safeTxParams.confirmationsRequired}
+          />
+        )}
+      </styledEl.FieldsWrapper>
+    </Modal.Content>
+  )
+}
+
+function ReceiptModalHeader({ alternativeOrderModalContext, onDismiss, titleAs }: ReceiptModalHeaderProps): ReactNode {
+  return (
+    <ModalHeader
+      sticky
+      titleAs={titleAs}
+      title={
+        <styledEl.TitleWrapper>
+          <styledEl.Title>
+            <Trans>Order Receipt</Trans>
+          </styledEl.Title>
+
+          {alternativeOrderModalContext && (
+            <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
+              {alternativeOrderModalContext.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
+              <Trans>this order</Trans>
+            </styledEl.LightButton>
+          )}
+        </styledEl.TitleWrapper>
+      }
+      onClose={onDismiss}
+    />
   )
 }

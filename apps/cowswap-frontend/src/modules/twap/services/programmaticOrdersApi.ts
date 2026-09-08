@@ -8,8 +8,11 @@ import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
 import type { TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
 
+const PROGRAMMATIC_ORDERS_API_URL =
+  process.env.REACT_APP_PROGRAMMATIC_ORDERS_API_URL || 'https://programmatic-orders.cow.fi/'
+
 class ProgrammaticOrdersApi {
-  private readonly api = new ProgrammaticOrderApi()
+  private readonly api = new ProgrammaticOrderApi({ apiUrl: PROGRAMMATIC_ORDERS_API_URL })
 
   async fetchEoaTwapOrders(
     resolvedOwner: string,
@@ -90,6 +93,19 @@ class ProgrammaticOrdersApi {
         limit: pageSize,
       },
     )
+  }
+
+  async fetchCurrentEoaTwapPartOrder(eventId: string, chainId: SupportedChainId): Promise<TwapPartOrder | undefined> {
+    const { items } = await this.api.getTwapPartOrders(
+      { eventId, chainId },
+      {
+        direction: 'desc',
+        limit: 1,
+      },
+    )
+    const latestPart = items[0]
+
+    return latestPart?.status === 'open' ? latestPart : undefined
   }
 }
 

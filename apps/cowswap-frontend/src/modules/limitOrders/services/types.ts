@@ -31,6 +31,7 @@ export interface TradeFlowContext {
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitAmountToSign?: bigint
+  amountToApprove?: bigint
   getCachedPermit: ReturnType<typeof useGetCachedPermit>
   quoteState: TradeQuoteState
 }

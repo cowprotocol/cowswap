@@ -1,4 +1,4 @@
-import { encodeFunctionData, erc20Abi, maxUint256 } from 'viem'
+import { encodeFunctionData, erc20Abi } from 'viem'
 
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { MetaTransactionData } from '@safe-global/types-kit'
@@ -15,6 +15,7 @@ export interface GetSafeTwapOrderTxsParams {
   paramsStruct: ConditionalOrderParams
   fallbackHandlerIsNotSet: boolean
   extensibleFallbackContext: ExtensibleFallbackContext
+  amountToApprove: bigint
 }
 
 export interface PlaceSafeTwapOrderParams {
@@ -24,6 +25,7 @@ export interface PlaceSafeTwapOrderParams {
   fallbackHandlerIsNotSet: boolean
   extensibleFallbackContext: ExtensibleFallbackContext | null
   sendSafeTransactions: SendBatchTxCallback
+  amountToApprove: bigint
 }
 
 export interface PlaceSafeTwapOrderResult {
@@ -37,6 +39,7 @@ export async function getSafeTwapOrderTxs({
   paramsStruct,
   fallbackHandlerIsNotSet,
   extensibleFallbackContext,
+  amountToApprove,
 }: GetSafeTwapOrderTxsParams): Promise<MetaTransactionData[]> {
   const { composableCowContract, needsApproval, needsZeroApproval, spender, currentBlockFactoryAddress } =
     twapOrderCreationContext
@@ -47,7 +50,6 @@ export async function getSafeTwapOrderTxs({
 
   const { sellAmount } = twapOrder
   const sellTokenAddress = sellAmount.currency.address
-  const sellAmountAtoms = maxUint256
 
   // At the very lest, we need the create order tx:
   const txs: MetaTransactionData[] = [
@@ -70,7 +72,7 @@ export async function getSafeTwapOrderTxs({
       data: encodeFunctionData({
         abi: erc20Abi,
         functionName: 'approve',
-        args: [spender as `0x${string}`, sellAmountAtoms],
+        args: [spender as `0x${string}`, amountToApprove],
       }),
       value: '0',
       operation: 0,
@@ -110,6 +112,7 @@ export async function placeSafeTwapOrder({
   fallbackHandlerIsNotSet,
   extensibleFallbackContext,
   sendSafeTransactions,
+  amountToApprove,
 }: PlaceSafeTwapOrderParams): Promise<PlaceSafeTwapOrderResult> {
   if (!twapOrderCreationContext || !extensibleFallbackContext)
     throw new Error('twapOrderCreationContext and safeExtensibleFallbackContext are required')
@@ -120,6 +123,7 @@ export async function placeSafeTwapOrder({
     paramsStruct,
     fallbackHandlerIsNotSet,
     extensibleFallbackContext,
+    amountToApprove,
   })
 
   const safeTxHash = await sendSafeTransactions(txs)

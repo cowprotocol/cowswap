@@ -1,3 +1,4 @@
+import { decodeFunctionData, erc20Abi } from 'viem'
 import type { Config } from 'wagmi'
 
 import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
@@ -33,6 +34,7 @@ if (!COW_SEPOLIA) {
 }
 
 const SAFE_ADDRESS = '0x360Ba61Bc799edfa01e306f1eCCb2F6e0C3C8c8e'
+const AMOUNT_TO_APPROVE = 123_456_789n
 
 const order: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 100_000_000_000),
@@ -109,6 +111,7 @@ describe('getSafeTwapOrderTxs', () => {
       paramsStruct,
       fallbackHandlerIsNotSet: false,
       extensibleFallbackContext,
+      amountToApprove: AMOUNT_TO_APPROVE,
     })
 
     expect(result).toHaveLength(1)
@@ -125,11 +128,28 @@ describe('getSafeTwapOrderTxs', () => {
       paramsStruct,
       fallbackHandlerIsNotSet: false,
       extensibleFallbackContext,
+      amountToApprove: AMOUNT_TO_APPROVE,
     })
 
     expect(result).toHaveLength(2)
     expect(areAddressesEqual(result[0].to, order.sellAmount.currency.address)).toBe(true)
     expect(result[1].to).toBe(COMPOSABLE_COW_ADDRESS[chainId])
+  })
+
+  it('uses the given amountToApprove for the approve tx instead of an unlimited amount', async () => {
+    const paramsStruct = buildTwapOrderParamsStruct(chainId, order)
+    const result = await getSafeTwapOrderTxs({
+      twapOrder: order,
+      twapOrderCreationContext: { ...twapOrderCreationContext, needsApproval: true },
+      paramsStruct,
+      fallbackHandlerIsNotSet: false,
+      extensibleFallbackContext,
+      amountToApprove: AMOUNT_TO_APPROVE,
+    })
+
+    const { functionName, args } = decodeFunctionData({ abi: erc20Abi, data: result[0].data as `0x${string}` })
+    expect(functionName).toBe('approve')
+    expect(args[1]).toBe(AMOUNT_TO_APPROVE)
   })
 
   it('When sell token is NOT approved AND token needs zero approval, then should generate 2 approvals and creation transactions', async () => {
@@ -144,6 +164,7 @@ describe('getSafeTwapOrderTxs', () => {
       paramsStruct,
       fallbackHandlerIsNotSet: false,
       extensibleFallbackContext,
+      amountToApprove: AMOUNT_TO_APPROVE,
     })
 
     expect(result).toHaveLength(3)
@@ -160,6 +181,7 @@ describe('getSafeTwapOrderTxs', () => {
       paramsStruct,
       fallbackHandlerIsNotSet: true,
       extensibleFallbackContext,
+      amountToApprove: AMOUNT_TO_APPROVE,
     })
 
     expect(result).toHaveLength(4)

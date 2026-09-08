@@ -1,10 +1,14 @@
-import { decodeAbiParameters, encodeAbiParameters, type Hex } from 'viem'
+import { decodeAbiParameters, encodeAbiParameters, type Address, type Hex } from 'viem'
 
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
+import { mockRpcNodeRequest } from './mockRpcNodeRequest'
+import { resolveNestedCall } from './nestedRpcCallRegistry'
+
+import type { JsonRpcEntry } from './mockRpcNodeRequest'
 import type { MockWalletApi } from '../fixtures/mockWallet'
 import type { RpcStub } from '../mockWallet/walletEngine'
-import type { BrowserContext, Route } from '@playwright/test'
+import type { BrowserContext } from '@playwright/test'
 
 const FAKE_ETH_FLOW_TX_HASH = `0x${'ef'.repeat(32)}` as const
 
@@ -43,24 +47,8 @@ export interface BatchCall {
 
 export type ClassifiedEthCall = OwnBalanceCall | BatchCall | OpaqueCall
 
-export interface OpaqueCall {
-  kind: 'opaque'
-}
-
-export interface OwnBalanceCall {
-  kind: 'ownBalance'
-}
-
-interface BatchResultSlot {
-  success: boolean
-  returnData: Hex
-}
-
-const OPAQUE: OpaqueCall = { kind: 'opaque' }
-
 export interface NativeBalanceRouteOpts {
   context: BrowserContext
-  rpcUrl: string
   /** Owner whose `getEthBalance(owner)` reads (however deep inside a Multicall3 batch) get patched. */
   owner: string
   /** The fake hash `eth_getTransactionReceipt` polls for. */
@@ -72,7 +60,24 @@ export interface NativeBalanceRouteOpts {
   isMined: () => boolean
 }
 
-type NativeBalanceEntry = { kind: 'receipt' } | { kind: 'call'; call: ClassifiedEthCall } | { kind: 'opaque' }
+/** Anything this route doesn't itself recognize — carries its own `target`/`callData` so
+ * `resolveEthBalanceBatch` can still ask `nestedRpcCallRegistry.ts` whether some *other*,
+ * unrelated mock (e.g. `installSocketVerifier`) recognizes it before ever trusting whatever a real
+ * upstream fetch said for it. */
+export interface OpaqueCall {
+  kind: 'opaque'
+  target: Address
+  callData: Hex
+}
+
+export interface OwnBalanceCall {
+  kind: 'ownBalance'
+}
+
+interface BatchResultSlot {
+  success: boolean
+  returnData: Hex
+}
 
 /**
  * Classifies one `eth_call` payload for `owner`'s own ETH balance, recursively — mirrors
@@ -80,17 +85,20 @@ type NativeBalanceEntry = { kind: 'receipt' } | { kind: 'call'; call: Classified
  * regardless of what's inside them. Recognizing `getEthBalance(owner)` wherever it appears inside
  * a batch (rather than requiring the *whole* batch to be nothing but that) is what keeps this from
  * ever needing to forward the owner's real balance to the real RPC just because some other,
- * unrelated read got bundled into the same Multicall3 call.
+ * unrelated read got bundled into the same Multicall3 call. `target` is the call's own `to` (the
+ * top-level entry's `to` for a bare call, or each inner call's own `target` when nested in an
+ * `aggregate3` batch) — carried on an unrecognized (`opaque`) call so `resolveEthBalanceBatch` can
+ * still ask around for it later, see `OpaqueCall`'s doc comment.
  */
-export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
+export function classifyEthCall(data: Hex, owner: string, target: string): ClassifiedEthCall {
   const selector = data.slice(0, 10).toLowerCase()
 
   if (selector === GET_ETH_BALANCE_SELECTOR) {
     try {
       const [address] = decodeAbiParameters([{ type: 'address' }], `0x${data.slice(10)}` as Hex)
-      return areAddressesEqual(address as string, owner) ? { kind: 'ownBalance' } : OPAQUE
+      return areAddressesEqual(address as string, owner) ? { kind: 'ownBalance' } : opaque(target, data)
     } catch {
-      return OPAQUE
+      return opaque(target, data)
     }
   }
 
@@ -99,14 +107,16 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
       const [calls] = decodeAbiParameters(CALL3_TUPLE, `0x${data.slice(10)}` as Hex)
       return {
         kind: 'batch',
-        calls: (calls as ReadonlyArray<{ callData: Hex }>).map((c) => classifyEthCall(c.callData, owner)),
+        calls: (calls as ReadonlyArray<{ target: string; callData: Hex }>).map((c) =>
+          classifyEthCall(c.callData, owner, c.target),
+        ),
       }
     } catch {
-      return OPAQUE
+      return opaque(target, data)
     }
   }
 
-  return OPAQUE
+  return opaque(target, data)
 }
 
 /**
@@ -116,91 +126,90 @@ export function classifyEthCall(data: Hex, owner: string): ClassifiedEthCall {
  * — see `classifyEthCall`). Used by `mockEthFlowTransaction`, `mockWrapTransaction`, and
  * `mockUnwrapTransaction` — the only things that differ between them are the fake tx hash and the
  * direction/amount `getBalance()` computes. The receipt reports success only once `isMined()` says
- * so, so a test can assert the transient "pending" state before letting it proceed. For entries
- * this route doesn't recognize (fully opaque, or a batch only partially recognized), the real
- * upstream is fetched and only the recognized slots are patched in, so unrelated batched reads
- * still get real data instead of being silently nulled out.
+ * so, so a test can assert the transient "pending" state before letting it proceed.
+ *
+ * Built on `mockRpcNodeRequest` (the same match/resolve/fallback-to-upstream-merge engine
+ * `mockContractViewCall` uses) rather than hand-rolling that plumbing again: `matches()` decides
+ * whether an entry is ours at all, and `resolve()` either answers it outright or — for a batch
+ * only partially recognized (some `getEthBalance` calls, some unrelated reads) — returns
+ * `undefined` on the first pass so `mockRpcNodeRequest` fetches the real upstream and calls
+ * `resolve()` again with it, this time patching only the recognized slots.
+ *
+ * Registered host-agnostically (no `rpcUrl` scoping): the app's own real-RPC traffic for a given
+ * chain doesn't reliably go through `REACT_APP_NETWORK_URL_<chainId>` — see AGENTS.md — so matching
+ * by the actual JSON-RPC method/calldata (`classifyEthCall`, the tracked `txHash`) is what's
+ * reliable, not the host it happens to land on.
  */
-export async function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): Promise<void> {
-  const { context, rpcUrl, owner, txHash, getBalance, isMined } = opts
+export function installNativeBalanceRoute(opts: NativeBalanceRouteOpts): void {
+  const { context, owner, txHash, getBalance, isMined } = opts
 
-  const classify = (entry: JsonRpcEntry): NativeBalanceEntry => {
-    if (entry.method === 'eth_getTransactionReceipt' && entry.params[0] === txHash) {
-      return { kind: 'receipt' }
-    }
-    if (entry.method === 'eth_call') {
-      const call = entry.params[0] as { data?: Hex }
-      if (call.data) {
-        const classifiedCall = classifyEthCall(call.data, owner)
-        if (classifiedCall.kind !== 'opaque') return { kind: 'call', call: classifiedCall }
-      }
-    }
-    return { kind: 'opaque' }
+  const classifyCall = (entry: JsonRpcEntry): ClassifiedEthCall | undefined => {
+    if (entry.method !== 'eth_call') return undefined
+    const call = entry.params[0] as { to?: string; data?: Hex } | undefined
+    return call?.data ? classifyEthCall(call.data, owner, call.to ?? '') : undefined
   }
 
-  const isEntryFullyMocked = (entry: NativeBalanceEntry): boolean =>
-    entry.kind === 'receipt' || (entry.kind === 'call' && isFullyMocked(entry.call))
-
-  const buildResult = (classified: NativeBalanceEntry, balance: bigint, upstream?: Hex): unknown => {
-    if (classified.kind === 'receipt') return isMined() ? buildReceipt(txHash) : null
-    if (classified.kind === 'call') {
-      if (classified.call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [balance])
-      if (classified.call.kind === 'opaque') return undefined
-      return resolveEthBalanceBatch(classified.call, balance, upstream)
-    }
-    return undefined
+  // A batch's own `kind` is `'batch'` even when every call inside it is opaque (e.g. an aggregate3
+  // wrapping nothing but an unrelated on-chain check, like SocketVerifier's `validateRotueId`) —
+  // `isFullyOpaqueCall` (rather than a shallow `kind !== 'opaque'` check) is what keeps that shape
+  // correctly unrecognized, so it falls back to `route.fallback()` and an earlier-registered, more
+  // specific mock (e.g. `installSocketVerifier`) gets a chance to answer it instead of this route
+  // sending it to `route.fetch()` and relaying a real revert.
+  const matches = (entry: JsonRpcEntry): boolean => {
+    if (entry.method === 'eth_getTransactionReceipt') return entry.params[0] === txHash
+    const call = classifyCall(entry)
+    return call !== undefined && !isFullyOpaqueCall(call)
   }
 
-  await context.route(rpcUrl, async (route) => {
-    const body = route.request().postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    const entries = Array.isArray(body) ? body : [body]
-    const classified = entries.map(classify)
-
-    if (classified.every((c) => c.kind === 'opaque')) return route.fallback()
-
-    const balance = getBalance()
-
-    if (classified.every(isEntryFullyMocked)) {
-      const payload = entries.map((entry, i) => ({
-        jsonrpc: '2.0',
-        id: entry.id,
-        result: buildResult(classified[i], balance),
-      }))
-      return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
+  const resolve = (entry: JsonRpcEntry, upstreamResult?: unknown): unknown => {
+    if (entry.method === 'eth_getTransactionReceipt') {
+      return entry.params[0] === txHash ? (isMined() ? buildReceipt(txHash) : null) : undefined
     }
 
-    // Some entries need real data (fully opaque, or a batch only partially recognized) — fetch
-    // upstream and patch in only what's actually mocked, same merge technique as the allowances mock.
-    const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcEntry | JsonRpcEntry[]
-    const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
+    const call = classifyCall(entry)
+    if (!call || call.kind === 'opaque') return undefined
+    if (call.kind === 'ownBalance') return encodeAbiParameters(UINT256, [getBalance()])
 
-    const classifiedById = new Map<number | string, NativeBalanceEntry>()
-    entries.forEach((entry, i) => classifiedById.set(entry.id, classified[i]))
+    // `call.kind === 'batch'`: answerable locally only once every leaf is `ownBalance` or
+    // something a *different*, unrelated mock recognizes (`nestedRpcCallRegistry.ts`) — otherwise
+    // the remaining slots need the real upstream blob as their base.
+    if (isFullyMocked(context, call)) return resolveEthBalanceBatch(context, call, getBalance())
+    if (typeof upstreamResult !== 'string') return undefined
+    return resolveEthBalanceBatch(context, call, getBalance(), upstreamResult as Hex)
+  }
 
-    const payload = upstreamEntries.map((entry) => {
-      const classifiedEntry = classifiedById.get(entry.id)
-      if (!classifiedEntry || classifiedEntry.kind === 'opaque') return entry
-      const upstreamResult = typeof entry.result === 'string' ? (entry.result as Hex) : undefined
-      return { jsonrpc: '2.0', id: entry.id, result: buildResult(classifiedEntry, balance, upstreamResult) }
-    })
-    return route.fulfill({ json: Array.isArray(upstreamBody) ? payload : payload[0] })
-  })
+  mockRpcNodeRequest(context, ['eth_call', 'eth_getTransactionReceipt'], resolve, matches)
 }
 
-export function isFullyMocked(call: ClassifiedEthCall): boolean {
+/** True once every leaf in `call` is something answerable without ever touching the real upstream:
+ * the caller's own balance, or a call some *other*, unrelated mock recognizes (e.g.
+ * `installSocketVerifier`'s own selectors, via `nestedRpcCallRegistry.ts`) — batched alongside a
+ * genuine `ownBalance` call purely by viem's own incidental request batching. */
+export function isFullyMocked(context: BrowserContext, call: ClassifiedEthCall): boolean {
   if (call.kind === 'ownBalance') return true
-  if (call.kind === 'opaque') return false
-  return call.calls.every(isFullyMocked)
+  if (call.kind === 'opaque') return typeof resolveNestedCall(context, call.target, call.callData) !== 'undefined'
+  return call.calls.every((inner) => isFullyMocked(context, inner))
+}
+
+/** True when `call` recognizes no `ownBalance` leaf anywhere — including a batch whose every call
+ * is itself opaque (e.g. nothing but SocketVerifier checks). Deliberately does *not* consult
+ * `nestedRpcCallRegistry.ts`: a batch with no `ownBalance` concern of this route's own is none of
+ * its business at all, so it should defer the whole thing (`route.fallback()`) rather than answer
+ * it itself just because it happens to be *able* to, via some other mock's registered resolver. */
+export function isFullyOpaqueCall(call: ClassifiedEthCall): boolean {
+  if (call.kind === 'ownBalance') return false
+  if (call.kind === 'opaque') return true
+  return call.calls.every(isFullyOpaqueCall)
 }
 
 /**
- * Builds the `Result[]` blob for a batch, patching only the `ownBalance` slots and leaving every
- * other slot as whatever the real upstream response had for it (or a failure slot if there's no
- * upstream at all, i.e. the batch turned out to be nothing but `ownBalance` calls). Same
- * upstream-as-base technique as `codec.ts`'s `resolveBatchResult`.
+ * Builds the `Result[]` blob for a batch, patching the `ownBalance` slots, asking around
+ * (`nestedRpcCallRegistry.ts`) for any other slot before ever trusting the real upstream response
+ * for it, and only actually falling back to that real response — or a failure slot if there's no
+ * upstream at all — once nothing recognizes a slot. Same upstream-as-base technique as `codec.ts`'s
+ * `resolveBatchResult`.
  */
-export function resolveEthBalanceBatch(call: BatchCall, balance: bigint, upstream?: Hex): Hex {
+export function resolveEthBalanceBatch(context: BrowserContext, call: BatchCall, balance: bigint, upstream?: Hex): Hex {
   const base = upstream ? decodeResultSlots(upstream) : []
 
   const slots = call.calls.map((inner, index) => {
@@ -211,9 +220,13 @@ export function resolveEthBalanceBatch(call: BatchCall, balance: bigint, upstrea
     }
     if (inner.kind === 'batch') {
       const nestedUpstream = fallback.success ? fallback.returnData : undefined
-      return { success: true, returnData: resolveEthBalanceBatch(inner, balance, nestedUpstream) }
+      return { success: true, returnData: resolveEthBalanceBatch(context, inner, balance, nestedUpstream) }
     }
-    return fallback
+
+    // `inner.kind === 'opaque'`: give any *other*, unrelated mock a chance to answer this exact
+    // call before ever relaying whatever the real upstream said for it.
+    const nestedAnswer = resolveNestedCall(context, inner.target, inner.callData)
+    return typeof nestedAnswer === 'undefined' ? fallback : { success: true, returnData: nestedAnswer as Hex }
   })
 
   return encodeAbiParameters(RESULT_TUPLE, [slots])
@@ -226,6 +239,10 @@ function decodeResultSlots(blob: Hex): BatchResultSlot[] {
     // An upstream error body or a truncated blob must not lose the mocked slots.
     return []
   }
+}
+
+function opaque(target: string, callData: Hex): OpaqueCall {
+  return { kind: 'opaque', target: target as Address, callData }
 }
 
 /** `EthFlowOrder.Data` — the struct `createOrder()` takes, per `libs/abis/src/abis/CoWSwapEthFlow.ts`. */
@@ -277,19 +294,11 @@ export interface MockEthFlowTransactionHandle {
 export interface MockEthFlowTransactionOpts {
   context: BrowserContext
   wallet: Pick<MockWalletApi, 'address' | 'stubRpc'>
-  chainId: number
   initialEthBalance: bigint
 }
 
 /** A generous flat estimate for the `createOrder()` call — never actually spent, since the send itself is stubbed. */
 const FAKE_GAS_ESTIMATE = '0x7a120' as const
-
-interface JsonRpcEntry {
-  id: number | string
-  method: string
-  params: unknown[]
-  result?: unknown
-}
 
 type TxLookupEntry = { kind: 'receipt' } | { kind: 'transaction' }
 
@@ -316,11 +325,14 @@ type TxLookupEntry = { kind: 'receipt' } | { kind: 'transaction' }
  * default fixture already answers any uid with a valid open order) is withheld until
  * `confirmMined()` is called, so a test can assert the transient "creating" state before letting
  * it proceed — otherwise both mocks would resolve on the very first poll and race right past it.
+ *
+ * Both direct-RPC reads below are registered host-agnostically (see `installNativeBalanceRoute`
+ * and `mockEthFlowTxLookupFallback`) rather than scoped to `REACT_APP_NETWORK_URL_<chainId>` — the
+ * app's own RPC traffic doesn't reliably go through that URL, so there's no `chainId` to key on
+ * here in the first place.
  */
 export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): Promise<MockEthFlowTransactionHandle> {
-  const { context, wallet, chainId, initialEthBalance } = opts
-  const rpcUrl = process.env[`REACT_APP_NETWORK_URL_${chainId}`]
-  if (!rpcUrl) throw new Error(`REACT_APP_NETWORK_URL_${chainId} not set`)
+  const { context, wallet, initialEthBalance } = opts
 
   let sentValue: bigint | undefined
   let orderParams: EthFlowOrderParams | undefined
@@ -336,7 +348,6 @@ export async function mockEthFlowTransaction(opts: MockEthFlowTransactionOpts): 
 
   await installNativeBalanceRoute({
     context,
-    rpcUrl,
     owner: wallet.address,
     txHash: FAKE_ETH_FLOW_TX_HASH,
     getBalance: () => initialEthBalance - (sentValue ?? 0n),
@@ -429,39 +440,31 @@ function decodeEthFlowOrderParams(data: Hex | undefined): EthFlowOrderParams | u
  * two polls the app runs *after* sending the creation tx rather than before it: tracing real RPC
  * traffic for the bridging ETH-flow path (`[CC-13]`) found `eth_getTransactionReceipt` AND
  * `eth_getTransactionByHash` for this exact tx hash going out to a real Infura/WalletConnect-relay
- * host that sometimes 429s — not the configured `REACT_APP_NETWORK_URL_{chainId}` this file's
- * `context.route(rpcUrl, ...)` handler below is scoped to, so that handler's own (receipt-only)
- * mocking never saw them. Registered host-agnostically, alongside `installEthEstimateGas`, as a
- * second line of defense: for the configured RPC host, `context.route(rpcUrl, ...)` (registered
- * after this one) still wins and answers first, so there's no double-handling; this one only ever
- * fires for the *other*, unpredictable hosts the app's own independent client happens to pick.
+ * host — unpredictable and outside any one configured RPC URL's control (see AGENTS.md), so this is
+ * registered host-agnostically, matching by tx hash rather than by host. `eth_getTransactionReceipt`
+ * for this hash is also answered by `installNativeBalanceRoute` below, itself host-agnostic — the
+ * overlap is harmless (both compute the same result from the same `isMined` flag); this function's
+ * distinct job is `eth_getTransactionByHash`, which that route doesn't cover.
+ *
+ * Built on `mockRpcNodeRequest` rather than hand-rolling the same route/body-parsing/batch plumbing
+ * `installNativeBalanceRoute` already shares it with.
  */
 async function mockEthFlowTxLookupFallback(
   context: BrowserContext,
   from: string,
   isMined: () => boolean,
 ): Promise<void> {
-  await context.route('**/*', async (route: Route) => {
-    const request = route.request()
-    if (request.method() !== 'POST') return route.fallback()
-    let body: JsonRpcEntry | JsonRpcEntry[]
-    try {
-      body = request.postDataJSON() as JsonRpcEntry | JsonRpcEntry[]
-    } catch {
-      return route.fallback()
-    }
-    const entries = Array.isArray(body) ? body : [body]
-    const classified = entries.map(classifyTxLookup)
-    if (!entries.length || classified.some((c) => !c)) return route.fallback()
+  const resolve = (entry: JsonRpcEntry): unknown => {
+    const lookup = classifyTxLookup(entry)
+    return lookup ? buildTxLookupResult(lookup, isMined(), from) : undefined
+  }
 
-    const mined = isMined()
-    const payload = entries.map((entry, i) => ({
-      jsonrpc: '2.0',
-      id: entry.id,
-      result: buildTxLookupResult(classified[i] as TxLookupEntry, mined, from),
-    }))
-    return route.fulfill({ json: Array.isArray(body) ? payload : payload[0] })
-  })
+  mockRpcNodeRequest(
+    context,
+    ['eth_getTransactionReceipt', 'eth_getTransactionByHash'],
+    resolve,
+    (entry) => classifyTxLookup(entry) !== undefined,
+  )
 }
 
 /** Wires the ETH-flow creation tx's `eth_sendTransaction` stub, decoding the sent value/order struct

@@ -2,11 +2,9 @@
 
 ## Local development
 
-To debug/develop Telegram subscriptions locally you need to do:
-1. Create your own telegram bot (https://core.telegram.org/bots/tutorial)
-2. Put the bot id to `REACT_APP_TG_BOT_ID` in `.env.local`. You can get it from BotFather. Id is the fist digital part of API Token
-3. Uncomment `REACT_APP_CMS_BASE_URL` in `.env.local` or add `REACT_APP_CMS_BASE_URL=http://localhost:1337/api` to `.env`
-4. Run the CMS locally and add you bot API token to CMS `.env`: `TELEGRAM_SECRET=XXX`
-5. In CMS settings, go to `Settings -> Users & Permissions plugin -> Roles -> Public -> Telegram subscription` and enable `addSubscription`, `removeSubscription`, and `checkSubscription`
-6. Launch CoW Swap app as `pnpm run start --host=127.0.0.1`, because Telegram only allows using this domain locally
+Telegram notifications are connected via a bot deep-link (`/start <token>`), not the Telegram Login Widget — the frontend only talks to the bff, never to `oauth.telegram.org` or the CMS directly.
 
+To debug/develop Telegram subscriptions locally:
+1. Point `REACT_APP_BFF_BASE_URL` at your local `bff` `apps/api` instance in `.env.local`.
+2. Follow the `bff` repo's own local-dev instructions for `apps/api` and `apps/telegram` (these need `TELEGRAM_SECRET`, `CMS_BASE_URL`, `CMS_API_KEY`, and a Redis instance shared between the two apps).
+3. Launch CoW Swap as usual (`pnpm run start`) — no bot id or Telegram-specific env var is needed on the frontend anymore.

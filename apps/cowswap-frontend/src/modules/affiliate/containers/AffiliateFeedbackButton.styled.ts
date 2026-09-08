@@ -23,7 +23,6 @@ export const Button = styled(ButtonOutlined).attrs({
   background: transparent;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   border-color: var(${UI.COLOR_TEXT_OPACITY_25});
-  cursor: pointer;
   font-size: 14px;
   white-space: nowrap;
 

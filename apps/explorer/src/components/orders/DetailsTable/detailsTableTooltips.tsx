@@ -64,4 +64,6 @@ export const DetailsTableTooltips = {
   filled:
     'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
   fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
+  feesBreakdown:
+    'The costs and fees charged for this order, totaled per token, with a breakdown into the on-chain network costs and each fee applied. Might take a few minutes to show the final value.',
 }

@@ -20,7 +20,9 @@ const mockNativeToken = new TestNativeCurrency(SupportedChainId.MAINNET)
 import { renderHook } from '@testing-library/react'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType, useDerivedTradeState, TradeDerivedState } from 'modules/trade'
+import { useDerivedTradeState, TradeDerivedState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
@@ -568,6 +570,21 @@ describe('useIsApprovalOrPermitRequired', () => {
       )
 
       expect(result.current.reason).toBe(expectedReason)
+    })
+
+    it('should return the real permit requirement for LIMIT_ORDER when ignoreLimitOrderPermitDeferral is set', () => {
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ tradeType: TradeType.LIMIT_ORDER }))
+      mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({
+          isBundlingSupportedOrEnabledForContext: true,
+          allowsOffchainSigning: true,
+          ignoreLimitOrderPermitDeferral: true,
+        }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
 
     it('should keep bundling limit-order permits without offchain signing', () => {

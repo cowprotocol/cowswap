@@ -10,6 +10,7 @@ import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
 
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
@@ -22,7 +23,7 @@ import {
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -166,6 +167,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const hideTradeRateDetails = useShouldHideTradeRateDetails()
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -231,6 +233,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
+
+          {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
 
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />

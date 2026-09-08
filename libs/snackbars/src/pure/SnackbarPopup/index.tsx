@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect } from 'react'
 
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { UI } from '@cowprotocol/ui'
 
 import { animated, useSpring } from '@react-spring/web'
@@ -84,7 +85,7 @@ export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
   }, [duration, hasDuration, removeSelf])
 
   return (
-    <Wrapper className="snackbar-popup">
+    <Wrapper data-testid={TEST_IDS.snackbarPopup}>
       <StyledClose
         onMouseDown={(e) => e.stopPropagation()}
         onClick={(e) => {

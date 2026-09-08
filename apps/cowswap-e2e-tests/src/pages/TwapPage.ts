@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import { expect } from '@playwright/test'
 
 import type { TradePage } from './TradePage'
@@ -11,15 +13,17 @@ export class TwapPage implements TradePage {
   readonly placeOrderButton: Locator
   readonly unlockButton: Locator
   readonly arrowSeparator: Locator
+  readonly tradeFormActionButton: Locator
 
   constructor(page: Page) {
     this.page = page
-    this.inputAmount = page.locator('#input-currency-input .token-amount-input')
-    this.partsInput = page.locator('[data-testid="twap-parts-input"]')
-    this.durationInput = page.locator('[data-testid="twap-duration-input"]')
+    this.inputAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
+    this.partsInput = page.locator(`[data-testid="${TEST_IDS.twapPartsInput}"]`)
+    this.durationInput = page.locator(`[data-testid="${TEST_IDS.twapDurationInput}"]`)
     this.placeOrderButton = page.locator('#do-trade-button')
     this.unlockButton = page.locator('#unlock-advanced-orders-btn')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
+    this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -34,7 +38,7 @@ export class TwapPage implements TradePage {
   // provider sync still settling right after navigation, especially under CI load) — retry the
   // click until the form actually shows up instead of firing it once and hoping it stuck.
   private async unlockIfNeeded(): Promise<void> {
-    await this.unlockButton.or(this.inputAmount).first().waitFor({ state: 'visible' })
+    await this.unlockButton.or(this.tradeFormActionButton).first().waitFor({ state: 'visible' })
     if (!(await this.unlockButton.isVisible())) return
 
     await expect

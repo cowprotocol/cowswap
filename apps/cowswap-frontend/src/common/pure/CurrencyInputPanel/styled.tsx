@@ -160,12 +160,6 @@ export const FiatAmountText = styled.span`
 
 export const SetMaxBtn = styled.button`
   display: inline-block;
-  cursor: pointer;
-  margin: 0;
-  background: none;
-  border: none;
-  outline: none;
-  color: inherit;
   font-weight: 600;
   font-size: 11px;
   background: var(${UI.COLOR_PAPER});

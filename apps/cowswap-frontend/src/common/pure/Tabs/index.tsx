@@ -11,11 +11,6 @@ export const Tabs = styled.div`
 `
 
 export const Tab = styled.button<{ $active: boolean }>`
-  background: none;
-  margin: 0;
-  outline: none;
-  border: 0;
-  cursor: pointer;
   color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_INFO + ')' : 'var(' + UI.COLOR_TEXT + ')')};
   opacity: ${({ $active }) => ($active ? 1 : 0.5)};
   padding: 14px 16px;
