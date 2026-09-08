@@ -1,4 +1,4 @@
-import { isSolanaAddress, isSolanaChain, PriceQuality } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { isSolanaQuoteAndPost } from 'modules/tradeQuote'
 
@@ -11,7 +11,7 @@ export function getIsSolanaTradeFlowContextReady(params: SolanaTradeFlowContextP
     inputAmount,
     outputAmount,
     quote,
-    priceQuality,
+    isFinalQuote,
     uiOrderType,
     orderKind,
     validTo,
@@ -24,7 +24,7 @@ export function getIsSolanaTradeFlowContextReady(params: SolanaTradeFlowContextP
       inputAmount &&
       outputAmount &&
       isSolanaQuoteAndPost(quote) &&
-      priceQuality === PriceQuality.OPTIMAL &&
+      isFinalQuote &&
       uiOrderType &&
       orderKind &&
       validTo > 0 &&

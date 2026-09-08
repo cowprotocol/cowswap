@@ -1,5 +1,5 @@
 import type { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -59,7 +59,7 @@ export interface SolanaTradeFlowContextParams {
   inputAmount: CurrencyAmount<Currency> | undefined
   outputAmount: CurrencyAmount<Currency> | undefined
   quote: QuoteAndPost | null
-  priceQuality: PriceQuality | undefined
+  isFinalQuote: boolean
   uiOrderType: UiOrderType | null
   orderKind: OrderKind | undefined
   validTo: number

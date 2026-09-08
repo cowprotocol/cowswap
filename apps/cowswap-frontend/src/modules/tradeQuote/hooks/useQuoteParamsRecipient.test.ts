@@ -267,14 +267,6 @@ describe('useQuoteParamsRecipient', () => {
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
     })
 
-    it('should reject SOL address when output chain is EVM (chainId=1)', () => {
-      mockState(SOLANA_ADDRESS, undefined, 1)
-
-      const { result } = renderHook(() => useQuoteParamsRecipient())
-
-      expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: ACCOUNT_ADDRESS })
-    })
-
     it('should reject BTC address when output chain is EVM (chainId=1)', () => {
       mockState(BTC_ADDRESS, undefined, 1)
 

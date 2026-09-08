@@ -1,6 +1,6 @@
 import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   BridgeQuoteErrors,
@@ -23,10 +23,11 @@ import { getSolanaQuote } from './getSolanaQuote.service'
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { SolanaQuoteAndPost, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getFinalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 // Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
 // FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
@@ -128,11 +129,10 @@ async function fetchSwapQuote(
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
 ): Promise<void> {
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+  const isFinalQuote = getIsFinalQuote(fetchParams)
 
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    const solanaRequest = isOptimalQuote ? getOptimalSolanaQuote(quoteParams) : getFastSolanaQuote(quoteParams)
+    const solanaRequest = isFinalQuote ? getOptimalSolanaQuote(quoteParams) : getFastSolanaQuote(quoteParams)
 
     try {
       const { cancelled, data } = await solanaRequest
@@ -149,8 +149,8 @@ async function fetchSwapQuote(
     return
   }
 
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
+  const request = isFinalQuote
+    ? getFinalQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 
   try {

@@ -222,10 +222,10 @@ describe('fetchAndProcessQuote', () => {
       })
     })
 
-    it('should use optimal quote for OPTIMAL price quality', async () => {
-      const optimalFetchParams = {
+    it('should use verified quote for VERIFIED price quality', async () => {
+      const verifiedFetchParams = {
         ...mockFetchParams,
-        priceQuality: PriceQuality.OPTIMAL,
+        priceQuality: PriceQuality.VERIFIED,
       }
 
       const mockQuoteAndPost: QuoteAndPost = {
@@ -239,7 +239,7 @@ describe('fetchAndProcessQuote', () => {
       } as any)
 
       await fetchAndProcessQuote(
-        optimalFetchParams,
+        verifiedFetchParams,
         mockQuoteParams,
         tradeQuotePollingParameters,
         mockAppData,
@@ -249,7 +249,7 @@ describe('fetchAndProcessQuote', () => {
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
         allowIntermediateEqSellToken: true,
         quoteRequest: {
-          priceQuality: PriceQuality.OPTIMAL,
+          priceQuality: PriceQuality.VERIFIED,
         },
         appData: mockAppData,
         quoteSigner: undefined,

@@ -1,5 +1,6 @@
 import { useConfig, useWalletClient } from 'wagmi'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -25,7 +26,10 @@ const useConfigMock = useConfig as jest.MockedFunction<typeof useConfig>
 describe('useRecoverFundsFromProxy', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    useWalletInfoMock.mockReturnValue({ account: ACCOUNT } as ReturnType<typeof useWalletInfo>)
+    useWalletInfoMock.mockReturnValue({
+      account: ACCOUNT,
+      chainId: SupportedChainId.MAINNET,
+    } as ReturnType<typeof useWalletInfo>)
     useWalletClientMock.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
     useConfigMock.mockReturnValue({} as ReturnType<typeof useConfig>)
   })
@@ -48,5 +52,29 @@ describe('useRecoverFundsFromProxy', () => {
 
     expect(proxyOf).toHaveBeenCalledWith(ACCOUNT)
     expect(result.current.proxyAddress).toBe(PROXY)
+  })
+
+  it('does not call proxyOf for a non-EVM chain', () => {
+    useWalletInfoMock.mockReturnValue({
+      account: ACCOUNT,
+      chainId: SupportedChainId.SOLANA,
+    } as ReturnType<typeof useWalletInfo>)
+    const proxyOf = jest.fn(() => PROXY)
+    const cowShedHooks = {
+      proxyOf,
+      getFactoryAddress: jest.fn(() => '0x3333333333333333333333333333333333333333'),
+    } as unknown as CowShedHooks
+
+    const { result } = renderHook(() =>
+      useRecoverFundsFromProxy({
+        cowShedHooks,
+        selectedTokenAddress: undefined,
+        tokenBalance: null,
+        isNativeToken: false,
+      }),
+    )
+
+    expect(proxyOf).not.toHaveBeenCalled()
+    expect(result.current.proxyAddress).toBeUndefined()
   })
 })

@@ -36,7 +36,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
       'liga' off,
       'kern' on;
 
-    /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
+    /* Keep the lock on <body>; making <html> an overflow container shifts sticky mobile controls. */
     &.noScroll {
       overflow: hidden;
     }

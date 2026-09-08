@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/balances-and-allowances",
-  "version": "3.12.0",
+  "version": "3.12.1",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -24,7 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.9-pr-999-659d71d3.0",
+    "@cowprotocol/cow-sdk": "9.2.9-pr-999-c766d347.0",
+    "@cowprotocol/sdk-trading-solana": "0.4.1-pr-999-c766d347.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",

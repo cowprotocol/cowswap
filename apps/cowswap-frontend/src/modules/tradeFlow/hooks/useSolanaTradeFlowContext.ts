@@ -10,7 +10,7 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useDerivedTradeState, useGetReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAllowance'
 
@@ -45,7 +45,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
 
   const validTo = getOrderValidTo(deadline, tradeQuoteState)
   const quote = tradeQuoteState.quote
-  const priceQuality = tradeQuoteState.fetchParams?.priceQuality
+  const isFinalQuote = getIsFinalQuote(tradeQuoteState.fetchParams)
 
   const key = useMemo(
     () =>
@@ -56,7 +56,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
           inputAmount,
           outputAmount,
           quote,
-          priceQuality,
+          isFinalQuote,
           uiOrderType,
           orderKind,
           validTo,
@@ -86,7 +86,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
       inputAmount,
       outputAmount,
       quote,
-      priceQuality,
+      isFinalQuote,
       uiOrderType,
       orderKind,
       validTo,

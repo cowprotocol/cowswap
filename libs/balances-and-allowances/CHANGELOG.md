@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.12.0...balances-and-allowances-v3.12.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.11.1
+  - @cowprotocol/wallet@3.12.1
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.11.0...balances-and-allowances-v3.12.0) (2026-09-03)
 
 ### Minor Changes

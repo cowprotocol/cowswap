@@ -141,16 +141,20 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   let hasNonEvmTokens = false
 
   const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    // `getAddressKey` lowercases EVM hex addresses and leaves non-EVM (base58) addresses
-    // untouched — exactly the normalization `isAddress` (case-insensitive on EVM hex) wants.
-    const checksummed = isAddress(getAddressKey(token.address))
-    if (checksummed) {
-      acc.push({ ...token, address: checksummed })
-      return acc
-    }
+    // Checked first: `isAddress` also accepts Solana addresses (returning them unchanged), so
+    // checking it before this would classify every Solana token as "checksummed" and never mark
+    // `hasNonEvmTokens`, sending the whole list through the EVM-only schema in `validateTokenList`.
     if (isSolanaAddress(token.address)) {
       hasNonEvmTokens = true
       acc.push(token)
+      return acc
+    }
+
+    // `getAddressKey` lowercases EVM hex addresses — exactly the normalization `isAddress`
+    // (case-insensitive on EVM hex) wants.
+    const checksummed = isAddress(getAddressKey(token.address))
+    if (checksummed) {
+      acc.push({ ...token, address: checksummed })
     }
     return acc
   }, [])
