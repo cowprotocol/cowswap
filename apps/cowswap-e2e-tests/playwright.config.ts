@@ -18,8 +18,12 @@ export default defineConfig({
   use: {
     baseURL: 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
-    video: 'retain-on-failure',
+    // `retain-on-failure` still records trace/video continuously through every passing test and
+    // only discards it afterwards — real CPU/memory overhead on the shared CI runner that we don't
+    // need for tests that pass first try. `on-first-retry` only starts recording once a test has
+    // already failed once, freeing up headroom for the timing-sensitive waits below.
+    trace: 'on-first-retry',
+    video: 'on-first-retry',
     actionTimeout: 20_000,
     navigationTimeout: 30_000,
   },

@@ -211,12 +211,12 @@ test.describe('Cross-chain swaps', () => {
     // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
     // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
     // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. Bumped to this suite's usual slow-step
-    // allowance (15s) rather than the specific number that happened to just barely cover one run.
+    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
+    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
-      timeoutMs: 15_000,
+      timeoutMs: 20_000,
       trigger: async () => {
         await swapPage.clickPrimaryAction()
         await confirmModal.confirm()
@@ -281,12 +281,12 @@ test.describe('Cross-chain swaps', () => {
     // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
     // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
     // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. Bumped to this suite's usual slow-step
-    // allowance (15s) rather than the specific number that happened to just barely cover one run.
+    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
+    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
-      timeoutMs: 15_000,
+      timeoutMs: 20_000,
       trigger: async () => {
         await swapPage.clickPrimaryAction()
         await confirmModal.confirm()
@@ -410,7 +410,7 @@ test.describe('Cross-chain swaps', () => {
     // Same CI-load headroom as the `expectOrderToBePosted` calls above: the preceding
     // `clickSwap()`/`confirmModal.confirm()` pair alone was observed taking close to the default
     // 10s budget on a loaded runner, leaving the poll no room to ever see a sent value.
-    await expect.poll(() => ethFlow.getSentValue(), { timeout: 15_000 }).toBe(parseUnits('0.1', 18))
+    await expect.poll(() => ethFlow.getSentValue(), { timeout: 20_000 }).toBe(parseUnits('0.1', 18))
     ethFlow.confirmMined()
     orderIndexed = true
 
