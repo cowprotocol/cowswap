@@ -98,20 +98,24 @@ export function getOrderSubmitSummary(
   const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base = isSellOrder(kind)
-    ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol}`
-    : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
+  const isSell = isSellOrder(kind)
 
   if (recipient === account) {
-    return base
-  } else {
-    const toAddress =
-      recipientAddressOrName && isAddress(recipientAddressOrName)
-        ? shortenAddress(recipientAddressOrName)
-        : (recipientAddressOrName ?? '')
-
-    return t`${base} to ${toAddress}`
+    return isSell
+      ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol}`
+      : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
   }
+
+  const toAddress =
+    recipientAddressOrName && isAddress(recipientAddressOrName)
+      ? shortenAddress(recipientAddressOrName)
+      : (recipientAddressOrName ?? '')
+
+  // Spelled out per variant rather than wrapping the localized summary in an outer message:
+  // interpolating an already-translated sentence leaves translators unable to reorder it.
+  return isSell
+    ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol} to ${toAddress}`
+    : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol} to ${toAddress}`
 }
 
 export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
