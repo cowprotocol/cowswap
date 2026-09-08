@@ -57,7 +57,7 @@ export function doQuotePolling({
   if (fastQuote && !isConfirmOpen && !isBridging) {
     fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
-  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
+  fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.VERIFIED, fetchStartTimestamp })
 
   return true
 }

@@ -6,6 +6,7 @@ import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/sdk-b
 
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
+import { QUOTE_SETTINGS } from 'tradingSdk/tradingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
@@ -31,7 +32,7 @@ export function FullAmountQuoteUpdater() {
   useEffect(() => {
     if (!canQuote || error || isLoading || !partQuoteAmount || !quoteParams) return
 
-    getQuoteOnlyResolveLast(quoteParams)
+    getQuoteOnlyResolveLast(quoteParams, QUOTE_SETTINGS)
       .then((response) => {
         const { cancelled, data } = response
 
