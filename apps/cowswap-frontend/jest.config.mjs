@@ -9,7 +9,15 @@ export default {
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      {
+        presets: ['@nx/react/babel'],
+        // The legacy babel-plugin-macros path cannot compile Lingui's JSX macros (<Plural>, <Select>);
+        // the dedicated plugin can, and is what the Vite build already uses via @lingui/vite-plugin.
+        plugins: ['@lingui/babel-plugin-lingui-macro'],
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/cowswap',
