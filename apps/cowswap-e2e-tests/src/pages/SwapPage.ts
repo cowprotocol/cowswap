@@ -65,6 +65,13 @@ export class SwapPage implements TradePage {
    * header has its own, differently-cased "Connect wallet" button, so this is matched `exact`.
    */
   readonly connectWalletButton: Locator
+  /**
+   * The collapsed "Trading mode" dropdown that hides the Swap/Limit/TWAP/Hooks nav links at
+   * viewports where `TradeWidgetForm`'s `showDropdown` is true. `id` set directly on
+   * `TradeWidgetLinks`'s dropdown-trigger `MenuItem` (the element with the real `onClick`, not the
+   * inner `DropdownButton` label wrapper the old class-based selector targeted).
+   */
+  readonly tradingModeDropdown: Locator
 
   constructor(page: Page) {
     this.page = page
@@ -122,6 +129,7 @@ export class SwapPage implements TradePage {
     this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
     this.unwrapButton = page.getByRole('button', { name: 'Unwrap', exact: true })
     this.connectWalletButton = page.getByRole('button', { name: 'Connect Wallet', exact: true })
+    this.tradingModeDropdown = page.locator('#trading-mode-dropdown-button')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {

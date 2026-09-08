@@ -123,6 +123,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   return isDropdown ? (
     <>
       <styledEl.MenuItem
+        id="trading-mode-dropdown-button"
         onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
         isDropdownVisible={isDropdownVisible}
       >
