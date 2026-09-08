@@ -4,7 +4,7 @@ import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { Edit2 } from 'react-feather'
 
 import { REF_CODE_MIN_LENGTH } from 'modules/affiliate'
@@ -46,6 +46,16 @@ export interface AffiliateTradeCodeFormProps
   submitButtonLabel: string
   onSubmit(): void
 }
+
+const CODE_TOO_SHORT = (
+  <Plural
+    value={REF_CODE_MIN_LENGTH}
+    one="The code must be at least # character long."
+    few="The code must be at least # characters long."
+    many="The code must be at least # characters long."
+    other="The code must be at least # characters long."
+  />
+)
 
 export function AffiliateTradeCodeForm({
   walletStatus,
@@ -120,7 +130,7 @@ export function AffiliateTradeCodeForm({
         {showInvalidFormat && (
           <StatusText $variant="error">
             {typeof inputProps.value === 'string' && inputProps.value.length < REF_CODE_MIN_LENGTH ? (
-              <Trans>The code must be at least {REF_CODE_MIN_LENGTH} characters long.</Trans>
+              CODE_TOO_SHORT
             ) : (
               <Trans>Only A-Z, 0-9, dashes, and underscores are allowed.</Trans>
             )}

@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { Token } from '@cowprotocol/currency'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -88,7 +88,7 @@ export function TwapStatusAndToggle({
       {totalParts > 0 && (
         <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
           <i>
-            {totalParts} {totalParts > 1 ? <Trans>parts</Trans> : <Trans>part</Trans>}
+            <Plural value={totalParts} one="# part" few="# parts" many="# parts" other="# parts" />
           </i>
           <button />
         </styledEl.ToggleExpandButton>

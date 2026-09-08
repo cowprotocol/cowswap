@@ -25,7 +25,7 @@ import {
 } from '@cowprotocol/ui'
 
 import { msg, t } from '@lingui/core/macro'
-import { useLingui, Trans } from '@lingui/react/macro'
+import { useLingui, Plural, Trans } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
@@ -209,7 +209,7 @@ function ReceiptModalContent({
   const safeTxParams = twapOrder?.safeTxParams
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
-  const twapOrderN = twapOrder?.order.n
+  const twapOrderN = twapOrder?.order.n ?? 0
 
   return (
     <Modal.Content>
@@ -219,7 +219,13 @@ function ReceiptModalContent({
             {isTwapPartOrder ? (
               <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
             ) : (
-              <Trans>TWAP order split into {twapOrderN} parts</Trans>
+              <Plural
+                value={twapOrderN}
+                one="TWAP order split into # part"
+                few="TWAP order split into # parts"
+                many="TWAP order split into # parts"
+                other="TWAP order split into # parts"
+              />
             )}
           </p>
         </InlineBanner>

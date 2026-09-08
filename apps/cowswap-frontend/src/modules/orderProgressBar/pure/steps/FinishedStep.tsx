@@ -13,6 +13,7 @@ import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
+import { plural } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -183,7 +184,13 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
+                    {t`View ${plural(solversLength - 3, {
+                      one: '# more',
+                      few: '# more',
+                      many: '# more',
+                      other: '# more',
+                    })}`}{' '}
+                    <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>

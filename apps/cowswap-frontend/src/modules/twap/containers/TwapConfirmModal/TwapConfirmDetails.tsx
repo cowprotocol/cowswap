@@ -3,7 +3,7 @@ import React from 'react'
 import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
@@ -51,8 +51,10 @@ export type TwapConfirmDetailsProps = {
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
   const { partDuration, totalDuration, numOfParts } = props
 
-  const partsSuffix = ' ' + t`part` + ` (1/${numOfParts})`
-  const amountLabelSuffix = ' ' + t`amount per` + partsSuffix
+  const partsCount = numOfParts ?? 0
+  const sellLabel = t`Sell amount per part (1/${partsCount})`
+  const buyLabel = t`Buy amount per part (1/${partsCount})`
+  const startTimeLabel = t`Start time first part (1/${partsCount})`
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
@@ -68,7 +70,16 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
     <Wrapper>
       <TWAPSplitTitle>
         <Trans>
-          TWAP order split in <b>{numOfParts} equal parts</b>
+          TWAP order split in{' '}
+          <b>
+            <Plural
+              value={partsCount}
+              one="# equal part"
+              few="# equal parts"
+              many="# equal parts"
+              other="# equal parts"
+            />
+          </b>
         </Trans>
       </TWAPSplitTitle>
 
@@ -77,7 +88,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         amount={inputPartAmountToSign}
         fiatAmount={inputPartAmountUsd}
         tooltip={t`This is the amount that will be sold in each part of the TWAP order.`}
-        label={t`Sell` + amountLabelSuffix}
+        label={sellLabel}
         withTimelineDot={true}
       />
 
@@ -86,7 +97,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         amount={outputPartAmountToSign}
         fiatAmount={outputPartAmountUsd}
         tooltip={t`This is the estimated amount you will receive for each part of the TWAP order.`}
-        label={t`Buy` + amountLabelSuffix}
+        label={buyLabel}
         isAmountAccurate={false}
         withTimelineDot={true}
       />
@@ -94,7 +105,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       {/* Start time */}
       <ConfirmDetailsItem
         tooltip={t`The first part of your TWAP order will become active as soon as you confirm the order below.`}
-        label={t`Start time first` + partsSuffix}
+        label={startTimeLabel}
         withArrow={false}
       >
         <Trans>Now</Trans>
