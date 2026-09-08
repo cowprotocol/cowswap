@@ -39,7 +39,7 @@ export function SolanaOrderStepper({ order }: SolanaOrderStepperProps): ReactNod
 
   return (
     <Wrapper id="solana-order-stepper">
-      <Step state="pending" icon={svgSendSrc} label={t`Confirming order on Solana`}>
+      <Step state="pending" icon={svgSendSrc} label={t`Creating order on Solana`}>
         {order.orderCreationHash && (
           <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={order.orderCreationHash} />
         )}
