@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { ChainPanelHeader } from './ChainPanelHeader'
 import { filterChainsByQuery, getEmptyStateFlags } from './chainPanelUtils'

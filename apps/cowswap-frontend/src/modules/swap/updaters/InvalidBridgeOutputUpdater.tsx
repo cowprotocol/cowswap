@@ -8,11 +8,15 @@ import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useBridgeProvidersReady, useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
-import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
-import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
+import { useTradeTypeInfo } from 'modules/trade'
 
 import type { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import {
+  parameterizeTradeRoute,
+  parameterizeTradeSearch,
+  useTradeTypeInfoFromUrl,
+} from 'common/modules/tradeNavigation'
 
 import { getInvalidBridgeOutputPatch, getUnsupportedBridgePairPatch } from './InvalidBridgeOutputUpdater.utils'
 

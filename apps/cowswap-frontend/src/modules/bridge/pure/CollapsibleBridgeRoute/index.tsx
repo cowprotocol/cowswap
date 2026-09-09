@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -39,7 +40,7 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
 
   return (
-    <Wrapper className={'collapsible-bridge-route' + (className ?? '')}>
+    <Wrapper className={className} data-testid={TEST_IDS.collapsibleBridgeRoute}>
       {isCollapsible && (
         <RouteOverviewTitle
           isCollapsible

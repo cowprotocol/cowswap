@@ -1,4 +1,4 @@
-import { Identicon, ConnectionType, svgCoinbaseSrc, iconWalletConnectSrc } from '@cowprotocol/wallet'
+import { Identicon, ConnectionType, svgBaseSrc, svgCoinbaseSrc, iconWalletConnectSrc } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
@@ -28,6 +28,9 @@ export function StatusIcon({ connectionType, account, size = 16 }: StatusIconPro
   switch (connectionType) {
     case ConnectionType.COINBASE_WALLET:
       image = <img src={svgCoinbaseSrc} alt={t`Coinbase Wallet`} />
+      break
+    case ConnectionType.BASE_ACCOUNT:
+      image = <img src={svgBaseSrc} alt={t`Base Account`} />
       break
     case ConnectionType.INJECTED:
       image = <Identicon account={account} />

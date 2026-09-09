@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
-import { Font, ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { PaletteMode } from '@mui/material'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 
 import { WidgetMode } from '../../../configurator.types'
 import { BRAND_COLOR } from '../../../theme/palettes.constants'
@@ -13,14 +12,13 @@ import { SidebarEnvBadge } from '../env-badge/SidebarEnvBadge.component'
 import type { WidgetSdkVersion } from '../../../utils/widget-sdk-versions/widget-sdk-versions.constants'
 
 export interface SidebarHeaderProps {
-  title: string
   themeMode: PaletteMode
   widgetMode: WidgetMode
   baseUrl: string
   sdkVersion: WidgetSdkVersion
 }
 
-export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersion }: SidebarHeaderProps): ReactNode {
+export function SidebarHeader({ themeMode, widgetMode, baseUrl, sdkVersion }: SidebarHeaderProps): ReactNode {
   const brandColor = BRAND_COLOR[themeMode]
 
   return (
@@ -48,27 +46,24 @@ export function SidebarHeader({ title, themeMode, widgetMode, baseUrl, sdkVersio
           width: '100%',
         }}
       >
-        <ProductLogo
-          variant={ProductVariant.CowSwap}
-          theme={themeMode}
-          logoIconOnly
-          height={28}
-          overrideColor={brandColor}
-          overrideHoverColor={brandColor}
-        />
-        <Typography
+        <Box
           component="h1"
           sx={{
-            fontFamily: Font.familyStudioFeixen,
-            fontWeight: Font.weight.bold,
-            fontSize: '2rem',
-            lineHeight: 1,
-            letterSpacing: 0,
-            color: brandColor,
+            m: 0,
+            display: 'flex',
+            alignItems: 'center',
+            flex: '0 0 auto',
           }}
         >
-          {title}
-        </Typography>
+          <ProductLogo
+            variant={ProductVariant.CowWidget}
+            theme={themeMode}
+            logoIconOnly={false}
+            height={30}
+            overrideColor={brandColor}
+            overrideHoverColor={brandColor}
+          />
+        </Box>
         <SidebarEnvBadge baseUrl={baseUrl} configuratorOrigin={location.origin} sdkVersion={sdkVersion} />
       </Box>
 

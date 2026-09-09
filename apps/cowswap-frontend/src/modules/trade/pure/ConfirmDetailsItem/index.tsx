@@ -12,6 +12,8 @@ export type ConfirmDetailsItemProps = {
   children: ReactNode
   label?: ReactNode
   className?: string
+  /** Test hook for the whole row — most rows don't need one, only those an e2e test targets. */
+  testId?: string
   labelOpacity?: boolean
   tooltip?: ReactNode
   withArrow?: boolean
@@ -26,6 +28,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
   const {
     children,
     className,
+    testId,
     label,
     labelOpacity = false,
     tooltip,
@@ -36,7 +39,7 @@ export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
   } = props
 
   return (
-    <Wrapper className={className}>
+    <Wrapper className={className} data-testid={testId}>
       {withArrow && <CornerDownRight size={14} />}
       {withTimelineDot && <TimelineDot isLast={isLast} />}
       {label ? (

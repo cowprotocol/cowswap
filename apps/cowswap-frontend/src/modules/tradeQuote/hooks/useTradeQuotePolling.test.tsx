@@ -11,9 +11,10 @@ import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
+import { DEFAULT_TRADE_DERIVED_STATE } from 'modules/trade'
 
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { featureFlagsAtom, featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
@@ -60,6 +61,11 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
 jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
   useWalletClient: jest.fn().mockReturnValue({ data: {} }),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  ...jest.requireActual('@cowprotocol/wallet'),
+  useSolanaWalletProvider: jest.fn().mockReturnValue(undefined),
 }))
 
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock

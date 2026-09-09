@@ -4,6 +4,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 import { slowTransition, transition } from '../../utils/animation'
+import { font } from '../../utils/font'
 
 export const Root = styled(BaseAccordion.Root)`
   width: 100%;
@@ -13,18 +14,18 @@ export const Root = styled(BaseAccordion.Root)`
 
 export const Item = styled(BaseAccordion.Item)<{ $isCollapsible?: boolean }>`
   width: 100%;
-  border-radius: 12px;
+  border-radius: ${({ $isCollapsible }) => ($isCollapsible ? '10px' : '12px')};
   padding: 0;
   overflow: hidden;
   /* Use opaque paper (not transparent) so background-color transitions match ConfirmAmounts,
      instead of blending through alpha over the modal. */
   background-color: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER})` : 'transparent')};
-  transition: ${slowTransition(['padding', 'background-color'])};
+  transition: ${slowTransition(['padding', 'background-color', 'border-radius'])};
 
   &[data-open] {
-    padding: ${({ $isCollapsible = true }) => ($isCollapsible ? '8px' : '0')};
-    background-color: ${({ $isCollapsible = true }) =>
-      $isCollapsible ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent'};
+    padding: ${({ $isCollapsible }) => ($isCollapsible ? '8px 8px 16px' : '0')};
+    border-radius: ${({ $isCollapsible }) => ($isCollapsible ? '14px' : '12px')};
+    background-color: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER_DARKER})` : 'transparent')};
   }
 `
 
@@ -40,20 +41,30 @@ export const Trigger = styled(BaseAccordion.Trigger)`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 0;
+  padding: 12px;
   margin: 0;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: transparent;
-  color: var(${UI.COLOR_TEXT});
-  font-family: inherit;
-  font-size: var(${UI.FONT_SIZE_SMALL});
-  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-  line-height: 1.4;
+  color: var(${UI.COLOR_TEXT2});
+  ${font('FONT_NORMAL', 'medium')}
   text-align: center;
   cursor: pointer;
   user-select: none;
-  transition: ${transition(['background-color'])};
+  transition: ${transition(['background-color', 'color'])};
+
+  &:hover {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &[data-panel-open] {
+    color: var(${UI.COLOR_PRIMARY});
+    background: color-mix(in srgb, var(${UI.COLOR_PAPER_DARKER}) 50%, var(${UI.COLOR_PAPER_DARKEST}));
+
+    &:hover {
+      background: var(${UI.COLOR_PAPER_DARKEST});
+    }
+  }
 
   &:focus-visible {
     outline: 2px solid var(${UI.COLOR_TEXT});
@@ -66,9 +77,10 @@ export const Chevron = styled(ChevronDown)`
   width: 16px;
   height: 16px;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
-  transition: ${slowTransition(['transform'])};
+  transition: ${slowTransition(['transform', 'color'])};
 
   ${Trigger}[data-panel-open] & {
+    color: var(${UI.COLOR_PRIMARY});
     transform: rotate(180deg);
   }
 `

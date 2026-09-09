@@ -11,14 +11,13 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
+import { useTradeNavigate, TradeSearchParams } from 'common/modules/tradeNavigation'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'
-import { TradeSearchParams } from '../utils/parameterizeTradeSearch'
 
 export type CurrencySelectionCallback = (
   field: Field,

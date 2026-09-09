@@ -8,7 +8,6 @@ import { ReceiverPanel } from './styled'
 
 export interface AddressInputPanelProps {
   id?: string
-  className?: string
   label?: ReactNode
   placeholder?: string
   value: string
@@ -21,7 +20,6 @@ export interface AddressInputPanelProps {
 
 export function AddressInputPanel({
   id,
-  className = 'recipient-address-input',
   label,
   value,
   onChange,
@@ -35,7 +33,6 @@ export function AddressInputPanel({
     <ReceiverPanel id={id}>
       <ReceiverPanelHeader onChange={onChange} value={value} targetChainId={targetChainId} label={label} />
       <ReceiverPanelBody
-        className={className}
         value={value}
         onChange={onChange}
         targetChainId={targetChainId}

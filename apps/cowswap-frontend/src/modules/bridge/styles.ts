@@ -45,7 +45,7 @@ const stopCircleBase = css`
   width: var(--size);
   height: var(--size);
   border-radius: 50%;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   font-size: 13px;
   flex-shrink: 0;
   position: relative;
@@ -217,7 +217,7 @@ export const Link = styled.a<{ underline?: boolean }>`
 
 export const SuccessTextBold = styled.b`
   color: var(${UI.COLOR_SUCCESS});
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   display: inline-flex;
   align-items: center;
   justify-content: center;

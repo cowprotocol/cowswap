@@ -20,7 +20,9 @@ const mockNativeToken = new TestNativeCurrency(SupportedChainId.MAINNET)
 import { renderHook } from '@testing-library/react'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType, useDerivedTradeState, TradeDerivedState } from 'modules/trade'
+import { useDerivedTradeState, TradeDerivedState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'

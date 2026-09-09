@@ -5,7 +5,7 @@ import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import iconGovernanceSrc from '@cowprotocol/assets/images/icon-governance.svg'
 import iconGrantsCartonSrc from '@cowprotocol/assets/images/icon-grants-carton.svg'
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
-import { Font, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
@@ -90,7 +90,7 @@ export default function Page() {
             <SectionTitleText textAlign="center">Governance</SectionTitleText>
             <SectionTitleDescription
               color={`var(${UI.COLOR_NEUTRAL_60})`}
-              fontWeight={Font.weight.regular}
+              fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
               textAlign="center"
             >
               Anyone can join CoW DAO by holding{' '}
@@ -136,7 +136,7 @@ export default function Page() {
             <SectionTitleText textAlign="center">Grants</SectionTitleText>
             <SectionTitleDescription
               color={`var(${UI.COLOR_NEUTRAL_30})`}
-              fontWeight={Font.weight.regular}
+              fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
               textAlign="center"
             >
               The CoW DAO Grants Program funds mission-aligned projects and people working on MEV protection, trading
