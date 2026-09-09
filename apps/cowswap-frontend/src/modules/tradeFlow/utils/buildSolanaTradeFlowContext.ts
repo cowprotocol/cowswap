@@ -1,3 +1,5 @@
+import { resolveSolanaReceiver } from './resolveSolanaReceiver'
+
 import { SolanaContextKey } from '../types/SolanaContextKey'
 import { SolanaTradeFlowContext } from '../types/TradeFlowContext'
 
@@ -30,7 +32,14 @@ export function buildSolanaTradeFlowContext([
     sellAmount: BigInt(inputAmount.quotient.toString()),
     currentDelegation,
     delegationAmount,
-    context: { chainId, inputAmount, outputAmount, orderKind, validTo },
+    context: {
+      chainId,
+      inputAmount,
+      outputAmount,
+      orderKind,
+      validTo,
+      receiver: resolveSolanaReceiver({ recipient, recipientAddress, account }),
+    },
     callbacks: { closeModals, dispatch, addTransaction },
     tradeConfirmActions,
     swapFlowAnalyticsContext: {

@@ -231,7 +231,7 @@ describe('solanaFlow', () => {
       }),
       context.callbacks.dispatch,
     )
-    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith(TX_HASH)
+    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith(ORDER_ID)
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
     expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
