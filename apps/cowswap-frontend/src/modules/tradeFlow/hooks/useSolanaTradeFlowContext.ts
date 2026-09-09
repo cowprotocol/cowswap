@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
@@ -43,6 +44,9 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
 
   const uiOrderType = getUiOrderType(tradeTypeInfo?.tradeType)
   const sellToken = getSolanaSellToken(inputCurrency)
+  // The quote reports its own sellToken as WSOL for a native sell (see `getSolanaSellToken`), so the
+  // wrap step's native check must read the user's actual selection, not `inputAmount.currency`.
+  const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const currentDelegation = useSolanaDelegationAllowance(sellToken?.address)
   const amountToApprove = useGetAmountToSignApprove()
 
@@ -85,6 +89,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
         sellToken,
         currentDelegation,
         delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
+        isNativeSell,
       }),
     [
       chainId,
@@ -107,6 +112,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
       currentDelegation,
       amountToApprove,
       sellAmountRaw,
+      isNativeSell,
     ],
   )
 

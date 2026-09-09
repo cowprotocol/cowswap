@@ -22,6 +22,7 @@ export function buildSolanaTradeFlowContext([
   sellToken,
   currentDelegation,
   delegationAmount,
+  isNativeSell,
 ]: SolanaContextKey): SolanaTradeFlowContext {
   return {
     tradeQuote,
@@ -32,6 +33,7 @@ export function buildSolanaTradeFlowContext([
     sellAmount: BigInt(inputAmount.quotient.toString()),
     currentDelegation,
     delegationAmount,
+    isNativeSell,
     context: {
       chainId,
       inputAmount,

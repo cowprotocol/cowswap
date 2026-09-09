@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -58,8 +58,9 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
-const nativeSol = NATIVE_CURRENCIES[SupportedChainId.SOLANA]
 const outputAmount = CurrencyAmount.fromRawAmount(usdc, '150000000')
+// The quote always reports its sellToken as WSOL, even for a native sell — see `getSolanaSellToken`.
+const inputAmount = CurrencyAmount.fromRawAmount(wsol, SELL_AMOUNT.toString())
 
 function buildAnalytics(): TradeFlowAnalytics {
   return {
@@ -73,11 +74,9 @@ function buildAnalytics(): TradeFlowAnalytics {
 }
 
 function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = {}): SolanaTradeFlowContext {
-  const sellCurrency = isNativeSell ? nativeSol : wsol
-  const inputAmount = CurrencyAmount.fromRawAmount(sellCurrency, SELL_AMOUNT.toString())
-
   return {
     account: SOLANA_ACCOUNT,
+    isNativeSell,
     solanaQuote: {
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),

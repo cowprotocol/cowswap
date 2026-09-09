@@ -50,6 +50,7 @@ const completeParams: SolanaContextKeyParams = {
   sellToken: wsol,
   currentDelegation: 5n,
   delegationAmount: 1_000_000_000n,
+  isNativeSell: true,
 }
 
 describe('buildSolanaContextKey', () => {

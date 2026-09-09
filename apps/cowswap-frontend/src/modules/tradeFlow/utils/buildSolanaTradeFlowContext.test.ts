@@ -66,6 +66,7 @@ const key = [
   wsol,
   42n,
   SELL_AMOUNT,
+  true,
 ] as const satisfies SolanaContextKey
 
 describe('buildSolanaTradeFlowContext', () => {
@@ -84,6 +85,7 @@ describe('buildSolanaTradeFlowContext', () => {
     expect(context.sellToken).toBe(wsol)
     expect(context.currentDelegation).toBe(42n)
     expect(context.delegationAmount).toBe(SELL_AMOUNT)
+    expect(context.isNativeSell).toBe(true)
   })
 
   it('builds the analytics market label from both symbols', () => {

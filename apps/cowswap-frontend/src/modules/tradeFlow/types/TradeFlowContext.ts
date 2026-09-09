@@ -49,6 +49,10 @@ export interface SolanaTradeFlowContext {
   // The sell token and its exact amount, driving the wrap and delegate steps.
   sellToken: TokenWithLogo
   sellAmount: bigint
+  // Whether the user's original selection (not the quote's WSOL-substituted sell token) was native
+  // SOL — the wrap step must gate on this, not on `context.inputAmount.currency`, which the Solana
+  // quote always reports as WSOL for a native sell (see `getSolanaSellToken`'s doc comment).
+  isNativeSell: boolean
   // Already-delegated amount for `sellToken`; the delegate step is skipped when it covers `delegationAmount`.
   currentDelegation: bigint
   // How much to delegate, from the partial/full approval switcher — not necessarily `sellAmount`.

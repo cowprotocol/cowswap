@@ -1,4 +1,4 @@
-import { captureError, ERROR_TYPES, getIsNativeToken, normalizeError } from '@cowprotocol/common-utils'
+import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { OrderClass, OrderParameters } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
 import type { SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
@@ -31,6 +31,7 @@ export async function solanaFlow(
     sellAmount,
     currentDelegation,
     delegationAmount,
+    isNativeSell,
   } = input
   const { inputAmount, outputAmount, chainId, validTo, receiver } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -57,8 +58,11 @@ export async function solanaFlow(
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
+    // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
+    // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
+    // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, sellAmount: getIsNativeToken(inputAmount.currency) ? sellAmount : 0n }),
+      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
