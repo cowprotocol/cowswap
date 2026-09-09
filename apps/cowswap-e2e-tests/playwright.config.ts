@@ -11,16 +11,20 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   expect: { timeout: 10_000 },
   retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : 6,
+  workers: process.env.CI ? 1 : 6,
   reporter: process.env.CI ? [['html', { open: 'never' }], ['github']] : [['list'], ['html', { open: 'never' }]],
   globalSetup: path.resolve(__dirname, 'src/support/globalSetup.ts'),
   globalTeardown: path.resolve(__dirname, 'src/support/globalTeardown.ts'),
   use: {
     baseURL: 'http://localhost:3000',
     screenshot: 'only-on-failure',
-    trace: 'retain-on-failure',
-    video: 'retain-on-failure',
-    actionTimeout: 15_000,
+    // `retain-on-failure` still records trace/video continuously through every passing test and
+    // only discards it afterwards — real CPU/memory overhead on the shared CI runner that we don't
+    // need for tests that pass first try. `on-first-retry` only starts recording once a test has
+    // already failed once, freeing up headroom for the timing-sensitive waits below.
+    trace: 'on-first-retry',
+    video: 'on-first-retry',
+    actionTimeout: 20_000,
     navigationTimeout: 30_000,
   },
   projects: [
