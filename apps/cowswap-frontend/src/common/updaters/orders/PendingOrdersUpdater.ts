@@ -55,10 +55,12 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   fetchAndClassifyOrder,
+  getFulfilledOrderUidsForSurplusQueue,
   getOrdersFromTransitionData,
   getOrderTypesByUid,
   OrderTransitionData,
   OrderTypesByUid,
+  resolveValidToOnCreation,
 } from './utils'
 
 import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
@@ -301,11 +303,13 @@ async function _updateCreatingOrders(
 ): Promise<void> {
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
-      // Filter only EthFlow orders in creating state
+      // Orders that are only known locally until the backend indexes their creation tx
+      // (EthFlow's on-chain creation tx, Solana's order creation tx): keep polling until
+      // `getOrder` finds them, then move them to the pending bucket.
 
       const promise = getOrder(chainId, order.id)
         .then((orderData) => {
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} fetched from API!!!`, orderData)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} fetched from API!!!`, orderData)
           if (!orderData) {
             return
           }
@@ -314,7 +318,7 @@ async function _updateCreatingOrders(
 
           const updatedOrder = {
             ...order,
-            validTo: orderData.ethflowData?.userValidTo || order.validTo,
+            validTo: resolveValidToOnCreation(orderData, order.validTo),
             isRefunded: ethflowData?.isRefunded,
             refundHash: ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
@@ -325,7 +329,7 @@ async function _updateCreatingOrders(
         })
         .catch((error) => {
           // Nothing to do here, keep waiting until the order shows up
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} couldn't be fetched from API`, error)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
         })
 
       acc.push(promise)
@@ -445,14 +449,7 @@ async function _updateOrders({
       fulfilledOrderTypesByUid,
     )
     // add to surplus queue
-    fulfilledOrders.forEach((order) => {
-      const { uid, fullAppData, class: orderClass } = order
-      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        if (!getIsBridgeOrder(order)) {
-          addOrderToSurplusQueue(uid)
-        }
-      }
-    })
+    getFulfilledOrderUidsForSurplusQueue(fulfilledOrders, fulfilledOrderTypesByUid).forEach(addOrderToSurplusQueue)
   }
 
   const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)

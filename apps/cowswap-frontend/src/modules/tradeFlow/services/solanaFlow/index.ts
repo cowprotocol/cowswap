@@ -20,6 +20,7 @@ export async function solanaFlow(
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
+    tradeQuote,
     solanaQuote,
     context,
     callbacks,
@@ -31,7 +32,7 @@ export async function solanaFlow(
     currentDelegation,
     delegationAmount,
   } = input
-  const { inputAmount, outputAmount, chainId } = context
+  const { inputAmount, outputAmount, chainId, validTo, receiver } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate and create-order in one transaction')
@@ -76,7 +77,9 @@ export async function solanaFlow(
           txHash: hash,
           signingScheme,
           account,
-          quoteParams: input.tradeQuote.quoteResults.quoteResponse.quote,
+          quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
+          receiver,
+          validTo,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
         }),
@@ -86,7 +89,9 @@ export async function solanaFlow(
     )
 
     logTradeFlow('SOLANA FLOW', 'STEP 2: show UI of the successfully sent transaction', orderId)
-    tradeConfirmActions.onSuccess(hash)
+    // onSuccess takes the order id, not the tx hash: OrderSubmittedContent looks the order up
+    // from Redux by this value via `useOrder({ id: transactionHash })`.
+    tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
     callbacks.closeModals()
 
@@ -109,13 +114,20 @@ function buildSolanaOrder(params: {
   signingScheme: SolanaSwapOrder['signingScheme']
   account: string
   quoteParams: OrderParameters
+  receiver: string
+  validTo: number
   inputToken: Token
   outputToken: Token
 }): Order {
-  const { orderId, txHash, signingScheme, account, quoteParams, inputToken, outputToken } = params
+  const { orderId, txHash, signingScheme, account, quoteParams, receiver, validTo, inputToken, outputToken } = params
 
   return {
     ...quoteParams,
+    // Override the quote's own receiver/validTo: they can be stale by the time the order is
+    // actually submitted (see the postSwapOrderFromQuote call above), and the local CREATING
+    // order must match what was really posted, not what the quote a moment ago.
+    receiver,
+    validTo,
     id: orderId,
     owner: account,
     from: account,

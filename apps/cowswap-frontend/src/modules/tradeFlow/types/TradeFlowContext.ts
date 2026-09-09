@@ -59,6 +59,7 @@ export interface SolanaTradeFlowContext {
     outputAmount: CurrencyAmount<Currency>
     orderKind: OrderKind
     validTo: number
+    receiver: string
   }
   callbacks: {
     closeModals: Command

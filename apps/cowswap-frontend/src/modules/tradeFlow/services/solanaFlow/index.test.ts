@@ -118,6 +118,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       outputAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
+      receiver: 'ReceiverSolanaAddress1111111111111111111111',
     },
     callbacks: {
       closeModals: jest.fn(),
@@ -221,6 +222,11 @@ describe('solanaFlow', () => {
           status: OrderStatus.CREATING,
           orderCreationHash: TX_HASH,
           signingScheme: SigningScheme.PRESIGN,
+          // The local order must reflect what was actually submitted (context.receiver/validTo),
+          // not the quote's own values (receiver: null in this fixture), otherwise a recipient or
+          // deadline picked after quoting is missing from the order until indexing replaces it.
+          receiver: context.context.receiver,
+          validTo: context.context.validTo,
         }),
       }),
       context.callbacks.dispatch,

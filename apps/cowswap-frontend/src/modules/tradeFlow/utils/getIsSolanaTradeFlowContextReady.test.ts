@@ -3,6 +3,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { getIsSolanaTradeFlowContextReady } from './getIsSolanaTradeFlowContextReady'
+import { resolveSolanaReceiver } from './useSolanaTradeFlowContext'
 
 // The canonical Solana System Program address (32 zero bytes) — always a valid
 // Solana pubkey, used here purely as "some syntactically valid Solana address".
@@ -67,5 +68,27 @@ describe('getIsSolanaTradeFlowContextReady', () => {
 
   it('is not ready when validTo is not set', () => {
     expect(getIsSolanaTradeFlowContextReady({ ...readyParams, validTo: 0 })).toBe(false)
+  })
+})
+
+describe('resolveSolanaReceiver', () => {
+  // Mirrors swapFlow's `orderParams.recipient = recipientAddress || recipient || account`, so a
+  // custom recipient set after quoting is forwarded to postSwapOrderFromQuote the same way EVM does.
+  it('prefers the resolved recipient address when set', () => {
+    expect(
+      resolveSolanaReceiver({ recipient: 'some-name', recipientAddress: SOLANA_ADDRESS, account: 'self-address' }),
+    ).toBe(SOLANA_ADDRESS)
+  })
+
+  it('falls back to the raw recipient when there is no resolved address', () => {
+    expect(
+      resolveSolanaReceiver({ recipient: SOLANA_ADDRESS, recipientAddress: undefined, account: 'self-address' }),
+    ).toBe(SOLANA_ADDRESS)
+  })
+
+  it('falls back to the connected account when there is no custom recipient (default: send to self)', () => {
+    expect(resolveSolanaReceiver({ recipient: undefined, recipientAddress: undefined, account: 'self-address' })).toBe(
+      'self-address',
+    )
   })
 })
