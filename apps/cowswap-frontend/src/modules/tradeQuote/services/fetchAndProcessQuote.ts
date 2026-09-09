@@ -21,7 +21,7 @@ import { coWBFFClient } from 'common/services/bff'
 import { getSolanaQuote } from './getSolanaQuote.service'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { SolanaQuoteAndPost, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
@@ -32,8 +32,8 @@ const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBe
 // Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
 // FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
 // a later one) could overwrite it in TradeQuoteManager.
-const getFastSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
-const getOptimalSolanaQuote = onlyResolvesLast<QuoteAndPost>(getSolanaQuote)
+const getFastSolanaQuote = onlyResolvesLast<SolanaQuoteAndPost>(getSolanaQuote)
+const getOptimalSolanaQuote = onlyResolvesLast<SolanaQuoteAndPost>(getSolanaQuote)
 
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
@@ -42,7 +42,6 @@ export async function fetchAndProcessQuote(
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
-  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -73,14 +72,7 @@ export async function fetchAndProcessQuote(
   if (isBridge) {
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
-    await fetchSwapQuote(
-      fetchParams,
-      quoteParams,
-      advancedSettings,
-      tradeQuoteManager,
-      processQuoteError,
-      solanaSigningContext,
-    )
+    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   }
 }
 
@@ -136,14 +128,11 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
-  solanaSigningContext?: SolanaSigningContext,
 ): Promise<void> {
   const isFinalQuote = getIsFinalQuote(fetchParams)
 
   if (IS_SOLANA_ENABLED && isSolanaChain(quoteParams.sellTokenChainId)) {
-    const solanaRequest = isFinalQuote
-      ? getOptimalSolanaQuote(quoteParams, solanaSigningContext)
-      : getFastSolanaQuote(quoteParams, solanaSigningContext)
+    const solanaRequest = isFinalQuote ? getOptimalSolanaQuote(quoteParams) : getFastSolanaQuote(quoteParams)
 
     try {
       const { cancelled, data } = await solanaRequest
