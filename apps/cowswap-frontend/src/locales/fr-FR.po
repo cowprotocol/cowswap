@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-09 13:32\n"
+"PO-Revision-Date: 2026-09-09 14:34\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2059,9 +2059,9 @@ msgstr "Solde récupérable"
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 msgstr "Votre prix limite est inférieur de {absoluteRateImpact}% au prix actuel du marché. Vous pourriez vendre vos <0/> à perte, même si CoW Swap cherchera toujours à vous obtenir le meilleur prix."
 
-#: apps/cowswap-frontend/src/modules/tradeFlow/services/solanaFlow/index.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateOrderStep.ts
 msgid "Swap {sellSymbol} for {buySymbol}"
-msgstr "Échanger {sellSymbol} contre {buySymbol}"
+msgstr "Swapper {sellSymbol} contre {buySymbol}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
@@ -2988,7 +2988,7 @@ msgstr "En attente de la transaction"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 msgid "Review Swap"
-msgstr ""
+msgstr "Vérifier le swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/FallbackHandlerWarning.tsx
 msgid "Your Safe needs a modification"
@@ -4577,7 +4577,7 @@ msgstr "Demander les annulations"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Order expirations"
-msgstr ""
+msgstr "Expirations d'ordres"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 #~ msgid "Recommended"
@@ -5281,7 +5281,6 @@ msgstr "Minutes"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "Le code de parrainage a été appliqué après le premier trade éligible du trader."
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "L’utilisateur a rejeté la transaction d’approbation"
@@ -5666,7 +5665,7 @@ msgstr "Votre surplus total"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolanaOrderStepper/index.tsx
 msgid "Creating order on Solana"
-msgstr ""
+msgstr "Création de l'ordre sur Solana"
 
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
@@ -6022,7 +6021,7 @@ msgstr "Enregistrer et verrouiller le code"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "This toggle is on by default. Toggling on/off will be supported in the future."
-msgstr ""
+msgstr "Cette option est activée par défaut. L'activation/désactivation sera prise en charge à l'avenir."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign in your wallet. We'll submit the funding order automatically."
@@ -6736,7 +6735,7 @@ msgstr "Vous recevez au moins"
 
 #: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planWrapStep.ts
 msgid "Wrap {sellAmountStr} SOL"
-msgstr ""
+msgstr "Wrapper {sellAmountStr} SOL"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "You are connected to"
@@ -7100,7 +7099,7 @@ msgstr "Frais et coûts de réseau"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
-msgstr ""
+msgstr "Seules les alertes de trade sont envoyées. Aucun message marketing. Les ordres de type swap et bridge ne sont pas encore pris en charge."
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 msgid "NEW"
@@ -7211,7 +7210,7 @@ msgstr "signature en cours"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Confirm {orderTypeLabel}"
-msgstr ""
+msgstr "Confirmer {orderTypeLabel}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
@@ -7311,7 +7310,7 @@ msgstr "Approuver {symbol}"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Order fills"
-msgstr ""
+msgstr "Exécutions d'ordres"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be after {minDateStr} {timeZone}"
@@ -7608,7 +7607,7 @@ msgstr "activer le mode Expert"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Alert types"
-msgstr ""
+msgstr "Types d'alertes"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "Expected to sell"
@@ -7711,7 +7710,7 @@ msgstr "Confirmer le swap"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr ""
+msgstr "Le signataire du wallet est requis pour annuler un ordre TWAP EOA"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
@@ -8312,7 +8311,7 @@ msgstr "Voir l’annulation"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Base Account"
-msgstr ""
+msgstr "Compte Base"
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
@@ -8320,7 +8319,7 @@ msgstr "Chargement"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Alert channels"
-msgstr ""
+msgstr "Canaux d'alertes"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
