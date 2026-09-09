@@ -81,7 +81,6 @@ function makeAddressShorter(address: string, chars = 4): string {
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
-const SOLANA_COW_ORDER_ID_LENGTH = 66
 
 export type BlockExplorerLinkType =
   | 'transaction'
@@ -110,6 +109,15 @@ export function getBlockExplorerUrl(
   return getEtherscanUrl(chainId, data, type, base)
 }
 
+export function getChainExplorerLinkTitle(chainId: SupportedChainId): string {
+  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+
+  return t`View on` + ` ${explorerTitle}`
+}
+export function getCoWExplorerLinkTitle(): string {
+  return t`View on Explorer`
+}
+
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
   if (isCowOrder(type, data)) {
     // Explorer for CoW orders:
@@ -121,9 +129,7 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 }
 
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
-
-  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
+  return isCowOrder(type, data) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
 }
 
 // TODO: Add proper return type annotation
@@ -131,7 +137,8 @@ export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerL
 export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
   if (!data) return false
 
-  return type === 'transaction' && (data.length === COW_ORDER_ID_LENGTH || data.length === SOLANA_COW_ORDER_ID_LENGTH)
+  // FIXME: Solana order id has different length than COW_ORDER_ID_LENGTH
+  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
 }
 
 export function shortenOrderId(orderId: string): string {

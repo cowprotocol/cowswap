@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
+import { getChainExplorerLinkTitle, getCoWExplorerLinkTitle, getExplorerOrderLink } from '@cowprotocol/common-utils'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -20,14 +20,18 @@ export function DisplayLink({ id, chainId, leadToBridgeTab }: DisplayLinkProps):
     return null
   }
 
-  const ethFlowHash =
+  const transactionHash =
     orderCreationHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED)
       ? orderCreationHash
       : undefined
-  const href = ethFlowHash
-    ? getBlockExplorerUrl(chainId, 'transaction', ethFlowHash)
-    : getEtherscanLink(chainId, 'transaction', id) + (leadToBridgeTab ? '?tab=bridge' : '')
-  const label = getExplorerLabel(chainId, 'transaction', ethFlowHash || id)
 
-  return <ExternalLinkCustom href={href}>{label} ↗</ExternalLinkCustom>
+  if (transactionHash) {
+    return <ExternalLinkCustom href={transactionHash}>{getChainExplorerLinkTitle(chainId)} ↗</ExternalLinkCustom>
+  }
+
+  return (
+    <ExternalLinkCustom href={getExplorerOrderLink(chainId, id) + (leadToBridgeTab ? '?tab=bridge' : '')}>
+      {getCoWExplorerLinkTitle()} ↗
+    </ExternalLinkCustom>
+  )
 }
