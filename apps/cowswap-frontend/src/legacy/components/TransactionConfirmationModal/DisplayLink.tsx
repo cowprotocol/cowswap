@@ -1,6 +1,11 @@
 import { ReactNode } from 'react'
 
-import { getChainExplorerLinkTitle, getCoWExplorerLinkTitle, getExplorerOrderLink } from '@cowprotocol/common-utils'
+import {
+  getChainExplorerLinkTitle,
+  getCoWExplorerLinkTitle,
+  getEtherscanUrl,
+  getExplorerOrderLink,
+} from '@cowprotocol/common-utils'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -26,7 +31,11 @@ export function DisplayLink({ id, chainId, leadToBridgeTab }: DisplayLinkProps):
       : undefined
 
   if (transactionHash) {
-    return <ExternalLinkCustom href={transactionHash}>{getChainExplorerLinkTitle(chainId)} ↗</ExternalLinkCustom>
+    return (
+      <ExternalLinkCustom href={getEtherscanUrl(chainId, transactionHash, 'transaction')}>
+        {getChainExplorerLinkTitle(chainId)} ↗
+      </ExternalLinkCustom>
+    )
   }
 
   return (

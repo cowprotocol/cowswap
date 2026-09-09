@@ -128,6 +128,26 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
   }
 }
 
+export function getEtherscanUrl(
+  chainId: TargetChainId,
+  data: string,
+  type: BlockExplorerLinkType,
+  base?: string,
+): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(base) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
+
+  if (!basePath) return ''
+
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
+  // a dedicated explorer URL builder must be added here before this fallback.
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
+}
+
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   return isCowOrder(type, data) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
 }
@@ -160,21 +180,6 @@ function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLi
     case 'contract':
       return `${basePath}` // BTC has no token or contract page
   }
-}
-
-function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath =
-    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
-    getSafeAbsoluteUrl(base) ||
-    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
-
-  if (!basePath) return ''
-
-  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
-  // a dedicated explorer URL builder must be added here before this fallback.
-  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
-  return getEvmExplorerUrl(basePath, data, type)
 }
 
 function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
