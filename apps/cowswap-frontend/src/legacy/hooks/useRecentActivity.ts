@@ -161,7 +161,8 @@ export function useRecentActivity(): TransactionAndOrder[] {
             areAddressesEqual(tx.from, account) &&
             isTransactionRecent(tx) &&
             isNotEthFlowTx(tx) &&
-            isNotOnChainCancellationTx(tx)
+            isNotOnChainCancellationTx(tx) &&
+            isNotSolanaOrderCreationTx(tx)
           )
         })
         .map((tx) => {
@@ -269,6 +270,13 @@ function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
 
 function isNotOnChainCancellationTx(tx: EnhancedTransactionDetails): boolean {
   return !tx.onChainCancellation
+}
+
+// Solana orders are created by an on-chain transaction, like ETH-flow — the order (shown with its own
+// stepper) already represents this activity, so its creation tx is hidden here the same way `ethFlow`
+// creation txs are, instead of being listed a second time as a standalone transaction.
+function isNotSolanaOrderCreationTx(tx: EnhancedTransactionDetails): boolean {
+  return !tx.solanaOrderCreation
 }
 
 /**

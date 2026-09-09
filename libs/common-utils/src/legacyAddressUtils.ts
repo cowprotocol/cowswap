@@ -81,6 +81,7 @@ function makeAddressShorter(address: string, chars = 4): string {
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
+const SOLANA_COW_ORDER_ID_LENGTH = 66
 
 export type BlockExplorerLinkType =
   | 'transaction'
@@ -130,7 +131,7 @@ export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerL
 export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
   if (!data) return false
 
-  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
+  return type === 'transaction' && (data.length === COW_ORDER_ID_LENGTH || data.length === SOLANA_COW_ORDER_ID_LENGTH)
 }
 
 export function shortenOrderId(orderId: string): string {

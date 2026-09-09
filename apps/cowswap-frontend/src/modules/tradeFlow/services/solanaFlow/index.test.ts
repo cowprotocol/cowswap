@@ -7,6 +7,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import { emitPostedOrderEvent } from 'modules/orders'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
@@ -22,6 +23,7 @@ import { solanaFlow } from './index'
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
 jest.mock('modules/trade/utils/addPendingOrderStep')
+jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 
 // The step planners are unit-tested on their own; mocking them here keeps this a test of the flow's
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
@@ -35,6 +37,7 @@ const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSola
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
+const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
@@ -236,6 +239,24 @@ describe('solanaFlow', () => {
     expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
   })
 
+  it('emits the posted-order event so the rich "Order submitted" snackbar shows, not the raw tx summary', async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockEmitPostedOrderEvent).toHaveBeenCalledWith({
+      chainId: SOLANA_CHAIN_ID,
+      id: ORDER_ID,
+      owner: context.account,
+      kind: context.context.orderKind,
+      uiOrderType: context.swapFlowAnalyticsContext.orderType,
+      receiver: context.context.receiver,
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+      orderCreationHash: TX_HASH,
+    })
+  })
+
   it('reports an error and adds nothing when sending rejects', async () => {
     mockSendSolanaFlow.mockRejectedValue(new Error('User rejected the request'))
     const context = buildContext()
@@ -245,6 +266,7 @@ describe('solanaFlow', () => {
 
     expect(result).toBeUndefined()
     expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+    expect(mockEmitPostedOrderEvent).not.toHaveBeenCalled()
     expect(context.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(analytics.error).toHaveBeenCalled()

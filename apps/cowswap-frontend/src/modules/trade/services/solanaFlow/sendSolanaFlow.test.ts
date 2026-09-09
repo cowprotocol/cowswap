@@ -77,6 +77,7 @@ describe('sendSolanaFlow', () => {
     expect(addTransaction).toHaveBeenCalledWith({
       hash: SIGNATURE,
       summary: 'Wrap 1 SOL, Approve WSOL',
+      solanaOrderCreation: true,
       data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
     })
   })

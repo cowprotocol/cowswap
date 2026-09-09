@@ -46,6 +46,9 @@ export interface EnhancedTransactionDetails {
   swapLockedGNOvCow?: boolean
   ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
   onChainCancellation?: { orderId: string; sellTokenSymbol: string }
+  // The Solana order-creation tx: like `ethFlow`, its own on-chain activity should be hidden from the
+  // activity list (the order it created is shown instead) — see `isNotSolanaOrderCreationTx`.
+  solanaOrderCreation?: boolean
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 
@@ -113,6 +116,7 @@ export default createReducer(initialState, (builder) =>
             swapLockedGNOvCow,
             ethFlow,
             onChainCancellation,
+            solanaOrderCreation,
           },
         },
       ) => {
@@ -143,6 +147,7 @@ export default createReducer(initialState, (builder) =>
           swapLockedGNOvCow,
           ethFlow,
           onChainCancellation,
+          solanaOrderCreation,
         }
         transactions[chainId] = txs
       },

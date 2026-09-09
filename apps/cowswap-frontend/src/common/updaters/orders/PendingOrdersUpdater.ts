@@ -363,7 +363,6 @@ async function _updateOrders({
   allTransactions,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
-  console.log('CCCCC', { chainId, orders })
   // Only check pending orders of current connected account
   const pending = orders.filter(({ owner }) => areAddressesEqual(owner, account))
 
