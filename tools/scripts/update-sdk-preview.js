@@ -27,6 +27,41 @@ const PR_URL_REGEX = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)$/
 // Matches `@cowprotocol/<pkg>@<version>` in the publish bot's comment.
 const PACKAGE_REGEX = /(@cowprotocol\/[\w-]+)@(\d[\w.\-]+)/g
 
+function collectWorkspacePins() {
+  const pins = {}
+
+  for (const dir of ['apps', 'libs']) {
+    const base = path.join(ROOT_DIR, dir)
+    if (!fs.existsSync(base)) continue
+
+    for (const entry of fs.readdirSync(base)) {
+      const file = path.join(base, entry, 'package.json')
+      if (!fs.existsSync(file)) continue
+
+      const pkg = JSON.parse(fs.readFileSync(file, 'utf-8'))
+      for (const section of ['dependencies', 'devDependencies']) {
+        for (const [name, version] of Object.entries(pkg[section] ?? {})) {
+          if (!name.startsWith('@cowprotocol/') || !/^\d/.test(version)) continue
+          if (!pins[name] || compareVersions(version, pins[name]) > 0) pins[name] = version
+        }
+      }
+    }
+  }
+
+  return pins
+}
+
+function compareVersions(a, b) {
+  const left = a.split('.').map(Number)
+  const right = b.split('.').map(Number)
+
+  for (let i = 0; i < 3; i++) {
+    if ((left[i] ?? 0) !== (right[i] ?? 0)) return (left[i] ?? 0) < (right[i] ?? 0) ? -1 : 1
+  }
+
+  return 0
+}
+
 /** Reads the newest "📦 GitHub Packages Published" comment on the PR. */
 async function fetchPublishedVersions(owner, repo, number) {
   const comments = []
@@ -108,10 +143,37 @@ async function main() {
     console.log(`  ${name}@${version}`)
   }
 
+  warnAboutDowngrades(overrides)
   writeOverrides(overrides)
   console.log(`\nPinned ${Object.keys(overrides).length} package(s) in root package.json overrides.\n`)
 
   install()
+}
+
+/**
+ * A preview is published from an SDK branch that may sit behind main, so an override can silently
+ * roll a package back — which breaks the build only later, at typecheck, far from the cause.
+ * Warn rather than skip: the package under test is usually behind the workspace pin too.
+ */
+function warnAboutDowngrades(overrides) {
+  const pinned = collectWorkspacePins()
+  const behind = []
+
+  for (const [name, url] of Object.entries(overrides)) {
+    const previewBase = url.match(/\/(\d+\.\d+\.\d+)-/)?.[1]
+    const pin = pinned[name]
+    if (previewBase && pin && compareVersions(previewBase, pin) < 0) {
+      behind.push(`  ${name}: workspace pins ${pin}, preview is ${previewBase}`)
+    }
+  }
+
+  if (behind.length === 0) return
+
+  console.warn(`\n⚠️  ${behind.length} package(s) roll BACKWARDS vs what this repo pins:`)
+  console.warn(behind.join('\n'))
+  console.warn('If the preview branch predates a package the app now depends on, the install will')
+  console.warn('succeed and the build will fail on missing exports. Rebase the SDK PR, or drop the')
+  console.warn('affected entries from pnpm.overrides.\n')
 }
 
 function writeOverrides(overrides) {
