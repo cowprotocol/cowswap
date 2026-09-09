@@ -202,9 +202,12 @@ export function ActivityDetails(props: {
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
-    const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo || {}
+    const { executedSellAmountBeforeFees, executedBuyAmount, executedSellAmount } = order.apiAdditionalInfo || {}
     const rateInputCurrencyAmount = isOrderFulfilled
-      ? CurrencyAmount.fromRawAmount(inputToken, executedSellAmountBeforeFees?.toString() || '0')
+      ? CurrencyAmount.fromRawAmount(
+          inputToken,
+          (executedSellAmountBeforeFees ?? executedSellAmount)?.toString() || '0',
+        )
       : inputAmount
 
     const rateOutputCurrencyAmount = isOrderFulfilled
