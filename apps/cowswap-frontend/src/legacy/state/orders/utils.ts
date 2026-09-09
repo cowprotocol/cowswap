@@ -131,8 +131,7 @@ export function isOrderFulfilled(
 ): boolean {
   const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, executedSellAmount, kind } = order
   // FIXME: Solana API doesn't return executedSellAmountBeforeFees. Need to ask backend to fix it
-  const filledSellAmount =
-    typeof executedSellAmountBeforeFees === 'undefined' ? executedSellAmount : executedSellAmountBeforeFees
+  const filledSellAmount = executedSellAmountBeforeFees ?? executedSellAmount
 
   if (isSellOrder(kind)) {
     return sellAmount === filledSellAmount
