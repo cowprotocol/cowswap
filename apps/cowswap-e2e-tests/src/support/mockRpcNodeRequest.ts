@@ -69,38 +69,60 @@ export function mockRpcNodeRequest(
       }
     }
 
-    return fulfillFromUpstream(route, entries, isOwnMethod, resolve)
+    return fulfillFromUpstream(route, entries, Array.isArray(body), isOwnMethod, resolve)
   })
 }
 
 async function fulfillFromUpstream(
   route: Route,
   entries: JsonRpcEntry[],
+  isRequestBatched: boolean,
   isOwnMethod: (entry: JsonRpcEntry) => boolean,
   resolve: (entry: JsonRpcEntry, upstreamResult?: unknown) => unknown,
 ): Promise<void> {
   try {
     const upstream = await route.fetch()
-    const upstreamBody = (await upstream.json()) as JsonRpcResult | JsonRpcResult[]
+    const upstreamBody = (await upstream.json()) as JsonRpcResult | JsonRpcResult[] | unknown
     const upstreamEntries = Array.isArray(upstreamBody) ? upstreamBody : [upstreamBody]
-    const entriesById = new Map(entries.map((entry) => [entry.id, entry]))
+    const upstreamById = new Map(
+      upstreamEntries
+        .filter((res): res is JsonRpcResult => typeof res === 'object' && res !== null && 'id' in res)
+        .map((res) => [res.id, res]),
+    )
 
-    const payload = upstreamEntries.map((res) => {
-      const entry = entriesById.get(res.id)
+    // Driven by OUR entries, not the upstream ones: a real, rate-limited or otherwise erroring
+    // upstream can reply with a shape that doesn't carry a matching `id` per entry at all (a bare
+    // `{code, message}` rate-limit body, observed from Infura, rather than a proper per-id
+    // JSON-RPC error) — iterating the upstream array and looking entries up by `res.id` then
+    // silently failed to find a match and relayed that raw, unmapped body straight through,
+    // discarding this mock's already-correct answer for every entry in the same batch (including
+    // ones nothing about the failed entry had anything to do with — see [CS-310]). Falling back to
+    // positional pairing when an id can't be matched, and always calling `resolve()` regardless of
+    // whether an upstream counterpart was found, means a real upstream failure can only cost the
+    // specific entries this mock genuinely can't answer on its own.
+    const payload = entries.map((entry, i) => {
+      const upstreamEntry = upstreamById.get(entry.id) ?? (upstreamEntries[i] as JsonRpcResult | undefined)
 
-      if (!entry || !isOwnMethod(entry)) return res
+      if (!isOwnMethod(entry)) return upstreamEntry ?? entry
 
-      const result = resolve(entry, res.result)
+      // `null` (never `undefined`) signals "upstream was attempted for this entry" to `resolve()` —
+      // `mockContractViewCall`'s own multicall merge relies on that distinction to tell "haven't
+      // fetched upstream yet, ask for a retry" apart from "fetched it, nothing usable came back" —
+      // this call only ever happens after a real `route.fetch()`, so it's always the latter.
+      const result = resolve(entry, upstreamEntry?.result ?? null)
 
-      if (typeof result === 'undefined') return res
+      if (typeof result === 'undefined') return upstreamEntry ?? entry
 
       return { jsonrpc: '2.0', id: entry.id, result }
     })
 
+    // Shaped after OUR request, not the upstream response — a malformed upstream body (the same
+    // rate-limit error above happens to arrive as a bare array) must not turn a single-object
+    // request into an array response the caller never asked for.
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(Array.isArray(upstreamBody) ? payload : payload[0]),
+      body: JSON.stringify(isRequestBatched ? payload : payload[0]),
     })
   } catch {
     await route.fallback()

@@ -1,7 +1,9 @@
 import type { Config } from 'wagmi'
 
+import type { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 import type { Command } from '@cowprotocol/types'
 import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
@@ -20,6 +22,9 @@ import type { TradeQuoteState } from 'modules/tradeQuote'
 
 import type { WethContractData } from 'common/hooks/useContract'
 
+import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
+import type { Connection, PublicKey } from '@solana/web3.js'
+
 export interface SafeBundleFlowContext {
   spender: string
   sendBatchTransactions: SendBatchTxCallback
@@ -32,7 +37,26 @@ export interface SafeBundleFlowContext {
 
 export interface SolanaTradeFlowContext {
   tradeQuote: QuoteAndPost
+  // Carries the order intent/PDA the `CreateOrder` instruction is built from.
+  solanaQuote: SolanaQuote
   account: string
+  // Everything needed to bundle and send the flow's instructions as one transaction.
+  solana: {
+    connection: Connection
+    provider: SolanaProvider
+    owner: PublicKey
+  }
+  // The sell token and its exact amount, driving the wrap and delegate steps.
+  sellToken: TokenWithLogo
+  sellAmount: bigint
+  // Whether the user's original selection (not the quote's WSOL-substituted sell token) was native
+  // SOL — the wrap step must gate on this, not on `context.inputAmount.currency`, which the Solana
+  // quote always reports as WSOL for a native sell (see `getSolanaSellToken`'s doc comment).
+  isNativeSell: boolean
+  // Already-delegated amount for `sellToken`; the delegate step is skipped when it covers `delegationAmount`.
+  currentDelegation: bigint
+  // How much to delegate, from the partial/full approval switcher — not necessarily `sellAmount`.
+  delegationAmount: bigint
   context: {
     chainId: SupportedChainId
     inputAmount: CurrencyAmount<Currency>

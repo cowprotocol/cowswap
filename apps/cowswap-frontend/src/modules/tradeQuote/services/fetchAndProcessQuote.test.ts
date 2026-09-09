@@ -402,7 +402,11 @@ describe('fetchAndProcessQuote', () => {
     const mockGetSolanaQuote = getSolanaQuote as jest.MockedFunction<typeof getSolanaQuote>
 
     it('serves a real Jupiter-sourced quote instead of calling bridgingSdk', async () => {
-      const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }
+      const mockQuoteAndPost = {
+        quoteResults: {} as any,
+        solanaQuote: {} as any,
+        postSwapOrderFromQuote: jest.fn(),
+      }
       mockGetSolanaQuote.mockResolvedValue(mockQuoteAndPost)
 
       await fetchAndProcessQuote(
@@ -414,7 +418,7 @@ describe('fetchAndProcessQuote', () => {
         true,
       )
 
-      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams, undefined)
+      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams)
       expect(mockBridgingSdk.getQuote).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
         mockQuoteAndPost,
@@ -446,7 +450,11 @@ describe('fetchAndProcessQuote', () => {
     // delayed promises, in libs/common-utils/src/async.test.ts — here we only need to confirm the FAST
     // vs OPTIMAL request is still wired correctly through the wrapper for Solana.
     it('requests a Jupiter quote for both FAST and OPTIMAL price qualities', async () => {
-      const mockQuoteAndPost: QuoteAndPost = { quoteResults: {} as any, postSwapOrderFromQuote: jest.fn() }
+      const mockQuoteAndPost = {
+        quoteResults: {} as any,
+        solanaQuote: {} as any,
+        postSwapOrderFromQuote: jest.fn(),
+      }
       mockGetSolanaQuote.mockResolvedValue(mockQuoteAndPost)
 
       await fetchAndProcessQuote(
@@ -467,8 +475,8 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockGetSolanaQuote).toHaveBeenCalledTimes(2)
-      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(1, solanaQuoteParams, undefined)
-      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(2, solanaQuoteParams, undefined)
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(1, solanaQuoteParams)
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(2, solanaQuoteParams)
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledTimes(2)
     })
   })

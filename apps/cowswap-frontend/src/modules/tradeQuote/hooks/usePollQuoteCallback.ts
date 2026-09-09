@@ -1,14 +1,10 @@
 import { useAtomValue } from 'jotai'
-import { RefObject, useCallback, useMemo, useRef } from 'react'
+import { RefObject, useCallback, useRef } from 'react'
 
 import { useFeatureFlags, useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
-import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
-import { PublicKey } from '@solana/web3.js'
 import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { useGetCorrelatedTokensByChainId } from 'entities/correlatedTokens'
 
@@ -19,7 +15,7 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { doQuotePolling, QuoteUpdateContext } from '../services/doQuotePolling'
 import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
-import { SolanaSigningContext, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 
 // eslint-disable-next-line max-lines-per-function
 export function usePollQuoteCallback(
@@ -49,17 +45,6 @@ export function usePollQuoteCallback(
   isOnlineRef.current = isOnline
 
   const updatingStartTimestamp = useRef<number | null>(null)
-
-  const { account: walletAccount, chainId } = useWalletInfo()
-  const solanaProvider = useSolanaWalletProvider()
-  const { connection: solanaConnection } = useAppKitConnection()
-
-  const solanaSigningContext: SolanaSigningContext | undefined = useMemo(() => {
-    if (!isSolanaChain(chainId) || !isSolanaAddress(walletAccount) || !solanaProvider || !solanaConnection)
-      return undefined
-
-    return { owner: new PublicKey(walletAccount), provider: solanaProvider, connection: solanaConnection }
-  }, [chainId, walletAccount, solanaProvider, solanaConnection])
 
   return useCallback(
     // eslint-disable-next-line complexity
@@ -93,7 +78,6 @@ export function usePollQuoteCallback(
           tradeQuoteManager,
           isSolanaEnabled,
           getCorrelatedTokensByChainId,
-          solanaSigningContext,
         )
       }
 
@@ -135,7 +119,6 @@ export function usePollQuoteCallback(
       hasSmartSlippagePrev,
       currentAmountRef,
       canQuote,
-      solanaSigningContext,
       isSolanaEnabled,
     ],
   )
