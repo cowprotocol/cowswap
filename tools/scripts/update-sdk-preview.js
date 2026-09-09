@@ -63,12 +63,16 @@ function compareVersions(a, b) {
 }
 
 /** Reads the newest "📦 GitHub Packages Published" comment on the PR. */
-async function fetchPublishedVersions(owner, repo, number) {
+async function fetchPublishedVersions(owner, repo, number, token) {
   const comments = []
 
   for (let page = 1; ; page++) {
     const url = `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}`
-    const response = await fetch(url, { headers: { 'User-Agent': 'cowswap-sdk-updater' } })
+    const response = await fetch(url, {
+      // cow-sdk is public, so this works unauthenticated too — but anonymous GitHub API calls are
+      // capped at 60/hour per IP, and the token is already required below.
+      headers: { 'User-Agent': 'cowswap-sdk-updater', Authorization: `Bearer ${token}` },
+    })
     if (!response.ok) throw new Error(`HTTP ${response.status} from ${url}`)
 
     const batch = await response.json()
@@ -135,7 +139,7 @@ async function main() {
 
   const [, owner, repo, number] = match
   console.log(`Fetching published versions from ${owner}/${repo}#${number}...`)
-  const versions = await fetchPublishedVersions(owner, repo, number)
+  const versions = await fetchPublishedVersions(owner, repo, number, token)
 
   const overrides = {}
   for (const [name, version] of Object.entries(versions)) {
@@ -160,11 +164,20 @@ function warnAboutDowngrades(overrides) {
   const behind = []
 
   for (const [name, url] of Object.entries(overrides)) {
+    // The capture only matches when a prerelease suffix follows, so every previewBase here comes
+    // from a `-pr-NNN-<sha>` build — which sorts BEFORE the plain release of the same version.
     const previewBase = url.match(/\/(\d+\.\d+\.\d+)-/)?.[1]
     const pin = pinned[name]
-    if (previewBase && pin && compareVersions(previewBase, pin) < 0) {
-      behind.push(`  ${name}: workspace pins ${pin}, preview is ${previewBase}`)
-    }
+    if (!previewBase || !pin) continue
+
+    const comparison = compareVersions(previewBase, pin)
+    if (comparison > 0) continue
+
+    behind.push(
+      comparison < 0
+        ? `  ${name}: workspace pins ${pin}, preview is ${previewBase}`
+        : `  ${name}: workspace pins released ${pin}, preview is only a ${previewBase} prerelease`,
+    )
   }
 
   if (behind.length === 0) return
@@ -184,7 +197,11 @@ function writeOverrides(overrides) {
   fs.writeFileSync(ROOT_PACKAGE_JSON_PATH, JSON.stringify(packageJson, null, 2) + '\n')
 }
 
-main().catch((err) => {
-  console.error(err.message || err)
-  process.exit(1)
-})
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message || err)
+    process.exit(1)
+  })
+}
+
+module.exports = { collectWorkspacePins, compareVersions }
