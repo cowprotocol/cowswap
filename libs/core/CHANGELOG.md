@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/core-v3.8.0...core-v3.9.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: use prod cms for correlated tokens as well (#8124)
+
+- fix: new ondo tokens, updating fallback pin (#8123)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/core-v3.7.1...core-v3.8.0) (2026-09-03)
 
 ### Minor Changes

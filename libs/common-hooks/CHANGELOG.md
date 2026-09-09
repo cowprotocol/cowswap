@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.10.0...common-hooks-v3.11.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.1...common-hooks-v3.10.0) (2026-09-03)
 
 ### Minor Changes
