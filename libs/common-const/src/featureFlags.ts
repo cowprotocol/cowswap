@@ -34,7 +34,11 @@ export function syncBootFeatureFlags(flags: BootFeatureFlags, reload: () => void
   }
 
   if (bootFlagChanged && typeof location !== 'undefined') {
-    reload()
+    if (isSolanaEnabled) {
+      reload()
+    } else {
+      location.href = ''
+    }
   }
 }
 
