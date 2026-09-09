@@ -1,6 +1,8 @@
 import { useCallback } from 'react'
 
-import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { ExecutionRevertedError } from 'viem'
+
+import { getWrappedToken, isRejectRequestProviderError, normalizeError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -46,8 +48,10 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       })
 
       return !!permitData
-    } catch (error) {
-      if (isRejectRequestProviderError(error)) {
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+
+      if (isRejectRequestProviderError(error) || error instanceof ExecutionRevertedError) {
         resetApproveProgressModalState()
         throw error
       }
