@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.1...ui-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: remove Feixen font from widget configurator (#8049)
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+- feat: update AGENTS.md to use new font mixins and constants (#8048)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: adjust styles for TWAP EOA tracker order details expand button (#8055)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.0...ui-v3.12.1) (2026-09-07)
 
 ### Patch Changes

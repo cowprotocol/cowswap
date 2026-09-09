@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.7.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.6.0...widget-lib-v4.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/iframe-transport@2.3.7
+
 ## [4.6.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.5.0...widget-lib-v4.6.0) (2026-09-03)
 
 ### Minor Changes
