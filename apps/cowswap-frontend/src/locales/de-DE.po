@@ -8,7 +8,7 @@ msgstr ""
 "Language: de\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-07 12:28\n"
+"PO-Revision-Date: 2026-09-09 11:17\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -5660,6 +5660,10 @@ msgstr ""
 msgid "Your total surplus"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolanaOrderStepper/index.tsx
+msgid "Creating order on Solana"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
 msgstr ""
@@ -5684,6 +5688,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolanaOrderStepper/index.tsx
 msgid "View transaction"
 msgstr ""
 
