@@ -1,11 +1,11 @@
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { OrderClass, OrderParameters } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
-
-import { t } from '@lingui/core/macro'
+import type { SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { planCreateOrderStep, planDelegateStep, planWrapStep, sendSolanaFlow, SolanaFlowStep } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -18,32 +18,59 @@ export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
 ): Promise<boolean | void> {
-  const { tradeConfirmActions, tradeQuote, context, callbacks, swapFlowAnalyticsContext, account } = input
+  const {
+    tradeConfirmActions,
+    tradeQuote,
+    solanaQuote,
+    context,
+    callbacks,
+    swapFlowAnalyticsContext,
+    account,
+    solana,
+    sellToken,
+    sellAmount,
+    currentDelegation,
+    delegationAmount,
+    isNativeSell,
+  } = input
   const { inputAmount, outputAmount, chainId, validTo, receiver } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
-  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and post order')
+  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate and create-order in one transaction')
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(swapFlowAnalyticsContext)
 
   try {
-    // Forward the user's configured deadline and any custom recipient set after quoting; otherwise
-    // the SDK falls back to the quote's own validTo/receiver, same as swapFlow does for EVM.
-    const { orderId, txHash, signingScheme, signature } = await tradeQuote.postSwapOrderFromQuote({
-      quoteRequest: { validTo, receiver },
-    })
-
-    if (!txHash) {
-      throw new Error('Solana order posted without a transaction signature')
-    }
-
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
     const buySymbol = outputAmount.currency.symbol ?? 'token'
+    const { owner, connection, provider } = solana
 
-    callbacks.addTransaction({
-      hash: txHash,
-      summary: t`Swap ${sellSymbol} for ${buySymbol}`,
+    const {
+      step: createOrderStep,
+      orderId,
+      signingScheme,
+    } = await planCreateOrderStep({
+      quoteResults: input.tradeQuote.quoteResults,
+      solanaQuote,
+      sellSymbol,
+      buySymbol,
     })
+
+    // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
+    // both plan functions return null otherwise, so the transaction carries the minimum instructions.
+    // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
+    // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
+    // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
+    const steps = [
+      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
+      createOrderStep,
+    ].filter((step): step is SolanaFlowStep => step !== null)
+
+    const { hash } = await sendSolanaFlow(
+      { connection, provider, owner, addTransaction: callbacks.addTransaction },
+      steps,
+    )
 
     addPendingOrderStep(
       {
@@ -51,9 +78,8 @@ export async function solanaFlow(
         chainId,
         order: buildSolanaOrder({
           orderId,
-          txHash,
+          txHash: hash,
           signingScheme,
-          signature,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
           receiver,
@@ -89,8 +115,7 @@ export async function solanaFlow(
 function buildSolanaOrder(params: {
   orderId: string
   txHash: string
-  signingScheme: Order['signingScheme']
-  signature: Order['signature']
+  signingScheme: SolanaSwapOrder['signingScheme']
   account: string
   quoteParams: OrderParameters
   receiver: string
@@ -98,18 +123,7 @@ function buildSolanaOrder(params: {
   inputToken: Token
   outputToken: Token
 }): Order {
-  const {
-    orderId,
-    txHash,
-    signingScheme,
-    signature,
-    account,
-    quoteParams,
-    receiver,
-    validTo,
-    inputToken,
-    outputToken,
-  } = params
+  const { orderId, txHash, signingScheme, account, quoteParams, receiver, validTo, inputToken, outputToken } = params
 
   return {
     ...quoteParams,
@@ -129,6 +143,7 @@ function buildSolanaOrder(params: {
     orderCreationHash: txHash,
     sellAmountBeforeFee: quoteParams.sellAmount,
     signingScheme,
-    signature,
+    // The order is created on-chain by the transaction above; there is no off-chain signature to carry.
+    signature: txHash,
   }
 }

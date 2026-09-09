@@ -264,6 +264,42 @@ describe('useIsApprovalOrPermitRequired', () => {
   })
 
   describe('when approve is unsupported (Unsupported)', () => {
+    // Solana bundles the SPL delegation into the order transaction, so the form must never show a
+    // standalone approve step — even when the current delegation is zero.
+    it.each([
+      ['an SPL token', new Token(SupportedChainId.SOLANA, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')],
+      ['native SOL', new TestNativeCurrency(SupportedChainId.SOLANA)],
+    ])('should return NotRequired on Solana for %s when nothing needs delegating', (_label, currency) => {
+      mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(currency, '0'))
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ inputCurrency: currency }))
+      mockUseApproveState.mockReturnValue({ state: ApprovalState.APPROVED, currentAllowance: BigInt(0) })
+      mockUsePermitInfo.mockReturnValue(undefined)
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
+    })
+
+    // Solana has no standalone approve step (the delegation is bundled with the order), but the reason
+    // must stay BundleApproveRequired so the partial/full amount switcher keeps rendering.
+    it.each([
+      ['an SPL token', new Token(SupportedChainId.SOLANA, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')],
+      ['native SOL', new TestNativeCurrency(SupportedChainId.SOLANA)],
+    ])('should return BundleApproveRequired on Solana for %s when a delegation is needed', (_label, currency) => {
+      mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(currency, '1000000'))
+      mockUseDerivedTradeState.mockReturnValue(createMockTradeState({ inputCurrency: currency }))
+      mockUseApproveState.mockReturnValue({ state: ApprovalState.NOT_APPROVED, currentAllowance: BigInt(0) })
+      mockUsePermitInfo.mockReturnValue(undefined)
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
+    })
+
     it('should return Unsupported for native token in LIMIT_ORDER', () => {
       const nativeAmount = CurrencyAmount.fromRawAmount(mockNativeToken, '1000000000000000000')
       mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
