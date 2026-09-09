@@ -32,6 +32,7 @@ export async function planCreateOrderStep({
     step: {
       instructions: [instruction],
       summary: t`Swap ${sellSymbol} for ${buySymbol}`,
+      createsOrder: true,
     },
     orderId,
     signingScheme,
