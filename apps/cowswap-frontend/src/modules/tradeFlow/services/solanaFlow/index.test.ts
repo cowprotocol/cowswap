@@ -61,6 +61,7 @@ function buildContext(postSwapOrderFromQuote: jest.Mock): SolanaTradeFlowContext
       outputAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
+      receiver: 'ReceiverSolanaAddress1111111111111111111111',
     },
     callbacks: {
       closeModals: jest.fn(),
@@ -101,7 +102,12 @@ describe('solanaFlow', () => {
     const result = await solanaFlow(context, analytics)
 
     expect(result).toBe(true)
-    expect(postSwapOrderFromQuote).toHaveBeenCalledWith()
+    // The user's configured deadline (swapSettingsAtom -> getOrderValidTo -> context.validTo) and a
+    // custom recipient (context.receiver) must both be forwarded to the SDK, otherwise Solana orders
+    // silently fall back to the quote's own validTo/receiver, same as swapFlow does for EVM.
+    expect(postSwapOrderFromQuote).toHaveBeenCalledWith({
+      quoteRequest: { validTo: context.context.validTo, receiver: context.context.receiver },
+    })
     expect(context.callbacks.addTransaction).toHaveBeenCalledWith(expect.objectContaining({ hash: 'tx-signature-abc' }))
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -114,11 +120,18 @@ describe('solanaFlow', () => {
           status: OrderStatus.CREATING,
           orderCreationHash: 'tx-signature-abc',
           signingScheme: SigningScheme.PRESIGN,
+          // The local order must reflect what was actually submitted (context.receiver/validTo),
+          // not the quote's own values (receiver: null in this fixture), otherwise a recipient or
+          // deadline picked after quoting is missing from the order until indexing replaces it.
+          receiver: context.context.receiver,
+          validTo: context.context.validTo,
         }),
       }),
       context.callbacks.dispatch,
     )
-    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith('tx-signature-abc')
+    // onSuccess must receive the order id (not the tx signature): OrderSubmittedContent looks the
+    // order up from Redux via `useOrder({ id: transactionHash })`, and orders are keyed by order id.
+    expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith('order-uid-123')
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
     expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)

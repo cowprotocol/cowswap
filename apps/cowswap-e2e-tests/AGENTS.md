@@ -178,6 +178,62 @@ never a logic bug in the test — check infrastructure contention first.
   single `expect.poll(async () => { ...four reads...; return ratio })` callback, so every retry
   re-reads the full snapshot together instead of trusting a stale mix — the same idiom `[CC-17]`'s
   checkbox retry already uses, just applied to a read instead of a click.
+- **A page-load default (currency or typed amount) can still be mid-resolution when the very next
+  UI action fires, even when the test already "types before selecting" to dodge it.** Two distinct
+  production hooks each carry a sticky ref written specifically to survive this kind of currency/
+  amount change, but a ref only latches once the state it preserves has actually resolved — right
+  after `goto()`, under CI load, that resolution can still be in flight when the next action lands,
+  so the mitigation not being airtight isn't a logic bug in the hook, just a race it doesn't fully
+  close.
+  - **Typed sell amount reverts to "1".** `useSetupTradeAmountsFromUrl`'s
+    `isAtLeastOneAmountIsSetRef.current ||= Boolean(inputCurrencyAmount || outputCurrencyAmount)`
+    only latches once the just-typed amount has been reparsed into a real `inputCurrencyAmount`
+    *against whichever token is currently selected* — a synchronous, no-debounce `useMemo` in
+    `useBuildTradeDerivedState.ts`, but under severe CI CPU contention even that can still not have
+    been scheduled/rendered by the time the currency switch fires, and `useSetupTradeAmountsFromUrl`'s
+    own "no amount set yet" 1-unit default wins the race. Observed as `[CS-59]`/`[CS-118]`
+    (`selectTokens`-driven, both sides picked) and `[CS-68]` (a *native ETH* pick specifically, which
+    has an extra `crossChainFamilySwitch()` microtask gap per `useOpenTokenSelectWidget.ts` on top of
+    the same reparse race). **First attempt that didn't actually work:** `await swapPage.waitForQuote()`
+    right after typing, before the switch — the theory (a quote fetch can't fire without a genuinely
+    parsed amount, so waiting one out proves the reparse landed) is reasonable but wrong in practice,
+    because the quote fetch itself sits behind its *own*, separate 350ms debounce
+    (`AMOUNT_CHANGE_DEBOUNCE_TIME` in `useQuoteParams.ts`) — checking too soon after typing finds
+    `data-isLoading` never having been set at all yet, a false-positive "not loading" `waitForFunction`
+    happily resolves in milliseconds. Confirmed by tracing a CI run where this added wait resolved in
+    ~40ms and `[CS-59]` still lost the race identically. **Actual fix:** retype the same amount again
+    once the currency switch has fully landed (`selectTokens`/both `searchAndPick()` calls returned)
+    — this removes any dependency on winning the race in the first place, rather than trying to catch
+    the exact moment it's safe to proceed. Applied to all four: `[CS-59]`/`[CS-118]`/`[CS-68]`/`[CS-103]`.
+  - **Currency reverts to "Select a token".** `useNavigateOnCurrencySelection`'s
+    `lastKnownInputCurrencyIdRef`/`lastKnownOutputCurrencyIdRef` exist specifically to preserve
+    whichever side *isn't* being picked, but each only latches once that side's currency has
+    resolved in React state. Picking the *other* side before that lands wipes the untouched side
+    back to `null` in the resulting URL/trade state instead of preserving it. Observed as `[CS-104]`
+    finding no `#input-currency-input` token at all (not a wrong value — the whole panel was blank,
+    since the sell side had no currency selected). Fixed with `SwapPage.waitForBothCurrenciesResolved()`
+    — waits until neither `sellTokenSelect` nor `buyTokenSelect` still shows `CurrencySelectButton`'s
+    "Select a token" placeholder — called right after `goto()`, before the first
+    `tokens.open{Input,Output}()` + `searchAndPick()`, in any test that changes one side via the
+    picker while relying on the default for the other (`[CS-68]`/`[CS-103]`/`[CS-104]`). Deliberately
+    **not** baked into `goto()`/`unlockIfNeeded()` themselves: `[CS-299]`/`[CS-301]` (picking a
+    Solana/Bitcoin destination) leave one side genuinely, deliberately unresolved for a while, and
+    would hang forever waiting on it — call the helper explicitly, only where both sides are
+    actually expected to already have a value.
+  - **General lesson for both:** don't guess at a fixed sleep for either race, and don't trust a
+    signal just because it's *plausible* that it depends on the same state — verify it's actually
+    *causally guaranteed* to, or it can resolve as a false positive before anything real happened
+    (`waitForQuote()`'s failed attempt above: reasonable-sounding, wrong, because the thing being
+    waited on sits behind a *different* debounce than the thing that actually needed to settle).
+    Where possible, prefer removing the dependency on timing altogether over trying to catch the
+    exact safe moment — retyping after the fact (used for the amount race) beats waiting before the
+    fact. Where the race is about identity rather than a value (the currency race, nothing to
+    "retype"), wait on a signal from the *same* render path as the ref being protected — a resolved
+    currency selector, the same idiom the "multi-row UI read" fix above uses for a torn read. Either
+    way, keep the wait in one named, reusable page-object method (`waitForBothCurrenciesResolved`)
+    rather than duplicating an inline assertion — with its full "why" comment — at every call site
+    that needs it; a hardcoded expected value (e.g. `'Selected token: WETH'`) also doesn't generalize
+    to tests using a non-default pair, where a generic "not still the placeholder" check does.
 - **Root cause 2: the default 5s `expect` timeout is tight under CPU contention.** Several
   known-load-sensitive assertions (the recipient-confirmation checkbox retry in `[CC-17]`, the
   order-progress-modal reopen in `[CS-60]`) have their own comments acknowledging they only flake
@@ -334,6 +390,39 @@ never a logic bug in the test — check infrastructure contention first.
     deleting the old mock — if this check ever starts flaking again the way `[CS-287]` did, that
     wallet-provider path is the first thing to re-check before assuming `mocks/socketVerifier.ts`
     itself regressed.)
+- **`[CS-287]` (Bungee) was failing in CI with "no postOrder request observed" on both retries —
+  root cause was a real, unmocked `eth_call` leaking to the actual internet, not CI-load slowness.**
+  Confirmed from a failing CI run's own trace (`0-trace.network`; Playwright records
+  `_wasFulfilled: false` plus genuine non-`-1` `dns`/`connect`/`ssl` timings for a request that
+  actually left the machine, vs `_wasFulfilled: true` with `-1` timings for one a `context.route()`
+  mock answered): the app polls the connected wallet's *native ETH balance* in the background via
+  Multicall3's `getEthBalance(owner)` (selector `0x4d2301cc`, batched through `aggregate3`, see
+  `classifyEthCall` in `support/mockEthFlowTransaction.ts`) regardless of what token is actually
+  being traded — a plain USDC→USDC swap polls it just as much as a native-ETH sell. The *only*
+  existing mock for this call, `installNativeBalanceRoute`, was wired up solely inside
+  `mockEthFlowTransaction`/`mockWrapTransaction`/`mockUnwrapTransaction` — every other test in the
+  suite (the vast majority) had no mock for it at all, so it fell through every `context.route()`
+  mock's `route.fallback()` all the way to the real `REACT_APP_NETWORK_URL_1` host
+  (`ethereum-rpc.publicnode.com`) roughly every 3-8 seconds for the test's *entire* duration,
+  including during whatever window a test happens to be timing (`[CS-287]`'s `expectOrderToBePosted`
+  in this case). A real, shared-CI-runner-rate-limited dependency — same class of bug as
+  `ethGetCode.ts`'s own documented history — explains the consistent (not marginal, not proportional
+  to CI load) full-timeout failure on both retries far better than "the mocked flow is just slow":
+  a full local trace of the confirm step (CPU-throttled up to 3x, and separately against a `pnpm
+  preview` production build) never took more than ~3s end to end, yet report evidence showed the
+  *entire* Bungee-path chain genuinely reaching outside the mocked sandbox on a live CI run.
+  **Fix:** extracted `mocks/nodeRpc/ethBalance.ts` — reuses `mockEthFlowTransaction.ts`'s already-
+  exported `classifyEthCall`/`isFullyMocked`/`isFullyOpaqueCall`/`resolveEthBalanceBatch` helpers to
+  answer `getEthBalance` with a static default (1 ETH), installed unconditionally in the `mocks`
+  fixture (`fixtures/shared.ts`) for every test, the same way `mockApproveSimulation` was made global
+  after a near-identical discovery for a different call. Registered *before*
+  `mockEthFlowTransaction`/`mockWrapTransaction`/`mockUnwrapTransaction` run (LIFO route order), so a
+  test that also calls one of those still gets that mock's own dynamic, tx-tracking balance instead
+  of this static default. **Lesson: a network trace's request URL alone doesn't tell you whether a
+  call was actually mocked** — `context.route()` interception happens before any real socket work, so
+  an intercepted request's logged URL looks identical to a real one; check `_wasFulfilled` (or
+  `dns`/`connect`/`ssl` timings — genuine values vs `-1`) to tell them apart before concluding a mock
+  is or isn't the gap.
 - **A real native-ETH sell (`[CC-13]`, eth-flow) needs `eth_estimateGas` stubbed too, not just
   `eth_sendTransaction`.** Left unmocked, gas estimation is a real simulation against the wallet's real
   on-chain balance — zero on Mainnet, since this is a shared test key with no real funds (never fund it;

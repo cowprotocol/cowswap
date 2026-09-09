@@ -19,7 +19,7 @@ export async function solanaFlow(
   analytics: TradeFlowAnalytics,
 ): Promise<boolean | void> {
   const { tradeConfirmActions, tradeQuote, context, callbacks, swapFlowAnalyticsContext, account } = input
-  const { inputAmount, outputAmount, chainId } = context
+  const { inputAmount, outputAmount, chainId, validTo, receiver } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and post order')
@@ -27,7 +27,11 @@ export async function solanaFlow(
   analytics.trade(swapFlowAnalyticsContext)
 
   try {
-    const { orderId, txHash, signingScheme, signature } = await tradeQuote.postSwapOrderFromQuote()
+    // Forward the user's configured deadline and any custom recipient set after quoting; otherwise
+    // the SDK falls back to the quote's own validTo/receiver, same as swapFlow does for EVM.
+    const { orderId, txHash, signingScheme, signature } = await tradeQuote.postSwapOrderFromQuote({
+      quoteRequest: { validTo, receiver },
+    })
 
     if (!txHash) {
       throw new Error('Solana order posted without a transaction signature')
@@ -52,6 +56,8 @@ export async function solanaFlow(
           signature,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
+          receiver,
+          validTo,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
         }),
@@ -61,7 +67,9 @@ export async function solanaFlow(
     )
 
     logTradeFlow('SOLANA FLOW', 'STEP 2: show UI of the successfully sent transaction', orderId)
-    tradeConfirmActions.onSuccess(txHash)
+    // onSuccess takes the order id, not the tx hash: OrderSubmittedContent looks the order up
+    // from Redux by this value via `useOrder({ id: transactionHash })`.
+    tradeConfirmActions.onSuccess(orderId)
     analytics.sign(swapFlowAnalyticsContext)
     callbacks.closeModals()
 
@@ -85,13 +93,31 @@ function buildSolanaOrder(params: {
   signature: Order['signature']
   account: string
   quoteParams: OrderParameters
+  receiver: string
+  validTo: number
   inputToken: Token
   outputToken: Token
 }): Order {
-  const { orderId, txHash, signingScheme, signature, account, quoteParams, inputToken, outputToken } = params
+  const {
+    orderId,
+    txHash,
+    signingScheme,
+    signature,
+    account,
+    quoteParams,
+    receiver,
+    validTo,
+    inputToken,
+    outputToken,
+  } = params
 
   return {
     ...quoteParams,
+    // Override the quote's own receiver/validTo: they can be stale by the time the order is
+    // actually submitted (see the postSwapOrderFromQuote call above), and the local CREATING
+    // order must match what was really posted, not what the quote a moment ago.
+    receiver,
+    validTo,
     id: orderId,
     owner: account,
     from: account,
