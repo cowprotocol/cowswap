@@ -16,7 +16,7 @@ import { CornerWarningIcon, GenericStatus as StyledGenericStatus, Label, Wrapper
 export type PartiallyTagPosition = 'right' | 'bottom'
 
 export type StatusLabelProps = {
-  status: OrderStatus | BridgeStatus
+  status: OrderStatus | BridgeStatus | 'unconfirmed'
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition

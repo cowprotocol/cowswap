@@ -10,13 +10,14 @@ import { NetworkLogo, TruncatedText } from '@cowprotocol/ui'
 import BigNumber from 'bignumber.js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
 import { DateDisplay } from 'components/common/DateDisplay'
+import { DetailRow } from 'components/common/DetailRow'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { LoadingWrapper } from 'components/common/LoadingWrapper'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
-import { StatusLabel } from 'components/orders/StatusLabel'
+import { StatusLabel, type StatusLabelProps } from 'components/orders/StatusLabel'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
 import { APP_TITLE } from 'explorer/const'
@@ -120,15 +121,21 @@ function getProgress(executedSellAmount: bigint, intendedSellAmount: bigint): nu
 }
 
 function PartStatus({ status }: { status: TwapPartOrderStatus }): ReactNode {
-  const mappedStatus: Record<TwapPartOrderStatus, OrderStatus> = {
+  const mappedStatus: Record<TwapPartOrderStatus, StatusLabelProps['status']> = {
     open: OrderStatus.Open,
     fulfilled: OrderStatus.Filled,
     expired: OrderStatus.Expired,
     cancelled: OrderStatus.Cancelled,
     unfilled: OrderStatus.Expired,
+    unconfirmed: 'unconfirmed',
   }
 
-  return <StatusLabel status={mappedStatus[status]} customText={status === 'unfilled' ? 'UNFILLED' : undefined} />
+  const labels: Partial<Record<TwapPartOrderStatus, string>> = {
+    unfilled: 'UNFILLED',
+    unconfirmed: 'SCHEDULED',
+  }
+
+  return <StatusLabel status={mappedStatus[status]} customText={labels[status]} />
 }
 
 function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedChainId }): ReactNode {
@@ -148,89 +155,108 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
       <FlexContainerVar>
         <h1>TWAP details</h1>
         <NetworkLogo chainId={chainId} size={16} />
-        <RowWithCopyButton
-          textToCopy={order.eventId}
-          contentsToDisplay={<TruncatedText>{order.eventId}</TruncatedText>}
-        />
+        <styledEl.TitleUid textToCopy={order.eventId} contentsToDisplay={abbreviateString(order.eventId, 12, 6)} />
       </FlexContainerVar>
 
-      <styledEl.DetailsCard>
-        <styledEl.DetailsGrid>
-          <dt>Status</dt>
-          <dd>
-            <TwapStatus order={order} now={now} />
-          </dd>
-          <dt>Pair</dt>
-          <dd>
-            <TwapTokenPair
-              sellTokenAddress={schedule.sellToken}
-              buyTokenAddress={schedule.buyToken}
-              sellToken={sellToken}
-              buyToken={buyToken}
-              chainId={chainId}
-            />
-          </dd>
-          <dt>Created</dt>
-          <dd>
-            <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
-          </dd>
-          <dt>Schedule</dt>
-          <dd>
-            <DateDisplay date={new Date(schedule.effectiveStartTime * 1000)} /> to{' '}
-            <DateDisplay date={new Date(endTime * 1000)} />
-          </dd>
-          <dt>Parts</dt>
-          <dd>
-            {schedule.numberOfParts} parts, every {formatSeconds(schedule.timeBetweenParts)}
-          </dd>
-          <dt>Part validity</dt>
-          <dd>{schedule.durationOfPart === 0 ? 'Full interval' : formatSeconds(schedule.durationOfPart)}</dd>
-          <dt>Intended sell</dt>
-          <dd>{formatTokenAmount(intendedSellAmount, sellToken, chainId)}</dd>
-          <dt>Minimum intended buy</dt>
-          <dd>{formatTokenAmount(intendedBuyAmount, buyToken, chainId)}</dd>
-          <dt>Executed sell</dt>
-          <dd>{formatTokenAmount(executedAmounts.executedSellAmount, sellToken, chainId)}</dd>
-          <dt>Executed buy</dt>
-          <dd>{formatTokenAmount(executedAmounts.executedBuyAmount, buyToken, chainId)}</dd>
-          <dt>Execution fee</dt>
-          <dd>{formatTokenAmount(executedAmounts.executedFeeAmount, sellToken, chainId)}</dd>
-          <dt>Progress</dt>
-          <dd>{progress}%</dd>
-          <dt>Owner</dt>
-          <dd>{addressLink(order.resolvedOwner, chainId)}</dd>
-          <dt>Proxy or Safe</dt>
-          <dd>
-            {areAddressesEqual(order.owner, order.resolvedOwner) ? 'Not applicable' : addressLink(order.owner, chainId)}
-          </dd>
-          <dt>Receiver</dt>
-          <dd>{addressLink(schedule.receiver, chainId)}</dd>
-          <dt>Event ID</dt>
-          <dd>
-            <RowWithCopyButton textToCopy={order.eventId} contentsToDisplay={order.eventId} />
-          </dd>
-          <dt>Order hash</dt>
-          <dd>
-            <RowWithCopyButton textToCopy={order.hash} contentsToDisplay={order.hash} />
-          </dd>
-          <dt>Creation transaction</dt>
-          <dd>
-            <BlockExplorerLink
-              type="transaction"
-              identifier={order.creationTxHash}
-              networkId={chainId}
-              label={`${abbreviateString(order.creationTxHash, 6, 4)}↗`}
-            />
-          </dd>
-          <dt>App data</dt>
-          <dd>
-            <RowWithCopyButton textToCopy={schedule.appData} contentsToDisplay={schedule.appData} />
-          </dd>
-        </styledEl.DetailsGrid>
-      </styledEl.DetailsCard>
+      <styledEl.DetailsTabs
+        tabItems={[
+          {
+            id: 1,
+            tab: 'Overview',
+            content: (
+              <styledEl.DetailsTable
+                columnViewMobile
+                body={
+                  <>
+                    <DetailRow label="Status">
+                      <TwapStatus order={order} now={now} />
+                    </DetailRow>
+                    <DetailRow label="Pair">
+                      <TwapTokenPair
+                        sellTokenAddress={schedule.sellToken}
+                        buyTokenAddress={schedule.buyToken}
+                        sellToken={sellToken}
+                        buyToken={buyToken}
+                        chainId={chainId}
+                      />
+                    </DetailRow>
+                    <DetailRow label="Created">
+                      <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
+                    </DetailRow>
+                    <DetailRow label="Schedule">
+                      <span>
+                        <DateDisplay date={new Date(schedule.effectiveStartTime * 1000)} /> to{' '}
+                        <DateDisplay date={new Date(endTime * 1000)} />
+                      </span>
+                    </DetailRow>
+                    <DetailRow label="Parts">
+                      {schedule.numberOfParts} parts, every {formatSeconds(schedule.timeBetweenParts)}
+                    </DetailRow>
+                    <DetailRow label="Part validity">
+                      {schedule.durationOfPart === 0 ? 'Full interval' : formatSeconds(schedule.durationOfPart)}
+                    </DetailRow>
+                    <DetailRow label="Intended sell">
+                      {formatTokenAmount(intendedSellAmount, sellToken, chainId)}
+                    </DetailRow>
+                    <DetailRow label="Minimum intended buy">
+                      {formatTokenAmount(intendedBuyAmount, buyToken, chainId)}
+                    </DetailRow>
+                    <DetailRow label="Executed sell">
+                      {formatTokenAmount(executedAmounts.executedSellAmount, sellToken, chainId)}
+                    </DetailRow>
+                    <DetailRow label="Executed buy">
+                      {formatTokenAmount(executedAmounts.executedBuyAmount, buyToken, chainId)}
+                    </DetailRow>
+                    <DetailRow label="Execution fee">
+                      {formatTokenAmount(executedAmounts.executedFeeAmount, sellToken, chainId)}
+                    </DetailRow>
+                    <DetailRow label="Progress">{progress}%</DetailRow>
+                    <TwapIdentityRows order={order} chainId={chainId} />
+                  </>
+                }
+              />
+            ),
+          },
+          {
+            id: 2,
+            tab: `Part orders (${order.partOrdersCount})`,
+            content: <TwapParts eventId={order.eventId} chainId={chainId} sellToken={sellToken} buyToken={buyToken} />,
+          },
+        ]}
+      />
+    </>
+  )
+}
 
-      <styledEl.SectionTitle>Part orders</styledEl.SectionTitle>
-      <TwapParts eventId={order.eventId} chainId={chainId} sellToken={sellToken} buyToken={buyToken} />
+function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: SupportedChainId }): ReactNode {
+  return (
+    <>
+      <DetailRow label="Owner">{addressLink(order.resolvedOwner, chainId)}</DetailRow>
+      <DetailRow label="Proxy or Safe">
+        {areAddressesEqual(order.owner, order.resolvedOwner) ? 'Not applicable' : addressLink(order.owner, chainId)}
+      </DetailRow>
+      <DetailRow label="Receiver">{addressLink(order.schedule.receiver, chainId)}</DetailRow>
+      <DetailRow label="Event ID">
+        <RowWithCopyButton textToCopy={order.eventId} contentsToDisplay={abbreviateString(order.eventId, 12, 6)} />
+      </DetailRow>
+      <DetailRow label="Order hash">
+        <RowWithCopyButton textToCopy={order.hash} contentsToDisplay={order.hash} />
+      </DetailRow>
+      <DetailRow label="Creation transaction">
+        {order.creationTxHash ? (
+          <BlockExplorerLink
+            type="transaction"
+            identifier={order.creationTxHash}
+            networkId={chainId}
+            label={`${abbreviateString(order.creationTxHash, 6, 4)}↗`}
+          />
+        ) : (
+          'Not available'
+        )}
+      </DetailRow>
+      <DetailRow label="App data">
+        <RowWithCopyButton textToCopy={order.schedule.appData} contentsToDisplay={order.schedule.appData} />
+      </DetailRow>
     </>
   )
 }
@@ -310,7 +336,7 @@ function TwapPartsTable({
         <tr key={part.orderUid}>
           <td>
             <LinkWithPrefixNetwork to={`/orders/${part.orderUid}`}>
-              <TruncatedText>{part.orderUid}</TruncatedText>
+              <TruncatedText>{abbreviateString(part.orderUid, 12, 6)}</TruncatedText>
             </LinkWithPrefixNetwork>
           </td>
           <td>{formatTokenAmount(part.sellAmount, sellToken, chainId)}</td>
