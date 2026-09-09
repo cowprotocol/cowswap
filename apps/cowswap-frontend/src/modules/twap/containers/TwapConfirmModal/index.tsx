@@ -14,7 +14,9 @@ import {
   useCommonTradeConfirmContext,
   useTradeConfirmActions,
   useTradePriceImpact,
+  getOrderTypeReceiveAmounts,
 } from 'modules/trade'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -43,8 +45,6 @@ export function TwapConfirmModal(): ReactNode {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
     inputCurrencyBalance,
-    outputCurrencyAmount,
-    outputCurrencyFiatAmount,
     outputCurrencyBalance,
     recipient,
     recipientAddress,
@@ -79,11 +79,15 @@ export function TwapConfirmModal(): ReactNode {
     label: t`Sell amount`,
   } satisfies CurrencyPreviewInfo
 
+  const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
+  const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
+
   const outputCurrencyInfo = {
-    amount: outputCurrencyAmount,
-    fiatAmount: outputCurrencyFiatAmount,
+    amount: amountAfterFees,
+    fiatAmount: amountAfterFeesUsd,
     balance: outputCurrencyBalance,
-    label: t`Receive (before fees)`,
+    label: t`Expected to receive`,
+    prefix: '≈',
   } satisfies CurrencyPreviewInfo
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
