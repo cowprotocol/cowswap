@@ -35,7 +35,7 @@ export type SolanaContextKey = readonly [
 
 /** The same dependencies before narrowing, as the hook reads them. */
 export interface SolanaContextKeyParams {
-  isReady: boolean
+  isFinalQuote: boolean
   account: string | null | undefined
   chainId: SupportedChainId
   quote: QuoteAndPost | null

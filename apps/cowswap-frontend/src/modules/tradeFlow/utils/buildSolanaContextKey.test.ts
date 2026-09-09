@@ -31,7 +31,7 @@ const solana: SolanaTradeFlowContext['solana'] = {
 }
 
 const completeParams: SolanaContextKeyParams = {
-  isReady: true,
+  isFinalQuote: true,
   account: SOLANA_ACCOUNT,
   chainId: SupportedChainId.SOLANA,
   quote: { solanaQuote: {} } as unknown as SolanaContextKeyParams['quote'],
@@ -79,7 +79,7 @@ describe('buildSolanaContextKey', () => {
   })
 
   it.each([
-    ['not ready', { isReady: false }],
+    ['a non-final quote', { isFinalQuote: false }],
     ['no account', { account: undefined }],
     ['no Solana signer', { solana: null }],
     ['no sell token', { sellToken: undefined }],

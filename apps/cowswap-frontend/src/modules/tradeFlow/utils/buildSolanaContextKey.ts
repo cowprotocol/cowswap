@@ -3,14 +3,22 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { isSolanaQuoteAndPost } from 'modules/tradeQuote'
 
+import { getIsSolanaTradeFlowContextReady } from './getIsSolanaTradeFlowContextReady'
+
 import { SolanaContextKey, SolanaContextKeyParams } from '../types/SolanaContextKey'
 
 /**
  * Narrows every optional dependency in one place, so the SWR key is either complete or absent — the flow
- * must never run with a partially resolved context.
+ * must never run with a partially resolved context. Readiness is checked here rather than by the caller
+ * because every input it needs is already a parameter of this function.
  */
 export function buildSolanaContextKey(params: SolanaContextKeyParams): SolanaContextKey | null {
-  const { isReady, account, quote, inputAmount, outputAmount, solana, sellToken } = params
+  const { account, quote, inputAmount, outputAmount, solana, sellToken } = params
+
+  const isReady = getIsSolanaTradeFlowContextReady({
+    ...params,
+    hasSolanaSigner: Boolean(solana && sellToken),
+  })
 
   if (!isReady || !account || !solana || !sellToken || !inputAmount || !outputAmount) return null
   if (!isSolanaQuoteAndPost(quote)) return null

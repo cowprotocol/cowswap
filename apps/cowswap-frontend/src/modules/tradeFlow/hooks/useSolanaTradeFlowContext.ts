@@ -22,7 +22,6 @@ import { TradeFlowParams } from './useTradeFlowContext'
 import { SolanaTradeFlowContext } from '../types/TradeFlowContext'
 import { buildSolanaContextKey } from '../utils/buildSolanaContextKey'
 import { buildSolanaTradeFlowContext } from '../utils/buildSolanaTradeFlowContext'
-import { getIsSolanaTradeFlowContextReady } from '../utils/getIsSolanaTradeFlowContextReady'
 import { getSolanaDelegationAmount } from '../utils/getSolanaDelegationAmount'
 import { getSolanaSellToken } from '../utils/getSolanaSellToken'
 import { getUiOrderType } from '../utils/getUiOrderType'
@@ -59,18 +58,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
   const key = useMemo(
     () =>
       buildSolanaContextKey({
-        isReady: getIsSolanaTradeFlowContextReady({
-          chainId,
-          account,
-          inputAmount,
-          outputAmount,
-          quote,
-          isFinalQuote,
-          uiOrderType,
-          orderKind,
-          validTo,
-          hasSolanaSigner: Boolean(solana && sellToken),
-        }),
+        isFinalQuote,
         account,
         chainId,
         quote,
