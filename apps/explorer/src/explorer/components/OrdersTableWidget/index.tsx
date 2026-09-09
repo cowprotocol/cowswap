@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import type { AddressKey } from '@cowprotocol/cow-sdk'
@@ -34,6 +34,7 @@ interface OrdersTableWidgetProps {
 }
 
 export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidgetProps): ReactNode {
+  const [selectedTab, setSelectedTab] = useState(1)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const showTwap = isTwapEoaEnabled === true && isTwapSupportedChain(networkId)
   const {
@@ -68,7 +69,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
           <StyledTabLoader>{isLoading && <Spinner spin size="1x" />}</StyledTabLoader>
         </>
       ),
-      content: <OrdersHistory />,
+      content: <OrdersTableWithData />,
     },
   ]
 
@@ -76,25 +77,34 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     tabItems.push({
       id: 2,
       tab: 'TWAP',
-      content: <TwapHistory key={`${networkId}:${ownerAddress}`} owner={ownerAddress} chainId={networkId} />,
+      content: null,
     })
   }
+
+  const renderTabs = (
+    content?: ReactNode,
+    pagination: ReactNode = <TablePagination context={OrdersTableContext} />,
+  ): ReactNode => (
+    <StyledExplorerTabs
+      selectedTab={showTwap ? selectedTab : 1}
+      updateSelectedTab={setSelectedTab}
+      tabItems={tabItems.map((tab) => (tab.id === 2 ? { ...tab, content } : tab))}
+      extra={pagination}
+      extraPosition="both"
+    />
+  )
 
   return (
     <OrdersTableContext.Provider value={contextValue}>
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
-      <StyledExplorerTabs tabItems={tabItems} />
+      {showTwap && selectedTab === 2 ? (
+        <TwapHistory key={`${networkId}:${ownerAddress}`} owner={ownerAddress} chainId={networkId}>
+          {renderTabs}
+        </TwapHistory>
+      ) : (
+        renderTabs()
+      )}
     </OrdersTableContext.Provider>
-  )
-}
-
-function OrdersHistory(): ReactNode {
-  return (
-    <>
-      <TablePagination context={OrdersTableContext} />
-      <OrdersTableWithData />
-      <TablePagination context={OrdersTableContext} />
-    </>
   )
 }

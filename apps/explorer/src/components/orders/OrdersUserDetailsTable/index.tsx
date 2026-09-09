@@ -27,18 +27,18 @@ import { ToggleFilter } from './ToggleFilter'
 import { TableState } from '../../../explorer/components/TokensTableWidget/useTable'
 import { SimpleTable, SimpleTableProps } from '../../common/SimpleTable'
 import { Tags } from '../../common/Tags'
-import { StatusLabel } from '../StatusLabel'
+import { StatusLabel, type StatusLabelProps } from '../StatusLabel'
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
 const EXPIRED_CANCELED_STATES: OrderStatus[] = [OrderStatus.Cancelled, OrderStatus.Cancelling, OrderStatus.Expired]
 
-function isExpiredOrCanceled(order: Order): boolean {
+function isExpiredOrCanceled(order: OrderTableRowData): boolean {
   const { executedSellAmount, executedBuyAmount, status } = order
   // We don't consider an order expired or cancelled if it was partially or fully filled
   if (!executedSellAmount.isZero() || !executedBuyAmount.isZero()) return false
 
   // Otherwise, return if the order is expired or cancelled
-  return EXPIRED_CANCELED_STATES.includes(status)
+  return EXPIRED_CANCELED_STATES.some((expiredStatus) => expiredStatus === status)
 }
 
 const tooltip = {
@@ -54,15 +54,32 @@ const Wrapper = styled.div`
   min-height: 25rem;
 `
 
+export type OrderTableRowData = Pick<
+  Order,
+  | 'uid'
+  | 'kind'
+  | 'creationDate'
+  | 'buyToken'
+  | 'buyAmount'
+  | 'sellToken'
+  | 'sellAmount'
+  | 'feeAmount'
+  | 'executedSellAmount'
+  | 'executedBuyAmount'
+  | 'partiallyFilled'
+  | 'filledPercentage'
+> & { status: StatusLabelProps['status']; statusLabel?: string }
+
 export type Props = SimpleTableProps & {
-  orders: Order[] | undefined
+  orders: OrderTableRowData[] | undefined
   tableState: TableState
   handleNextPage: Command
   messageWhenEmpty?: string | React.ReactNode
+  dateColumnLabel?: string
 }
 
 interface RowProps {
-  order: Order
+  order: OrderTableRowData
   isPriceInverted: boolean
 
   // TODO: Filter by state using the API. Not available for now, so filtering in the client
@@ -178,17 +195,18 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         )}
       </td>
       <td>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</td>
-      <td>
-        <OrderSurplusDisplayStyledByRow order={order} />
-      </td>
-      <td>
-        <Tags order={order} />
-      </td>
+      <td>{hasOrderDetails(order) ? <OrderSurplusDisplayStyledByRow order={order} /> : '-'}</td>
+      <td>{hasOrderDetails(order) && <Tags order={order} />}</td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
       </td>
       <td>
-        <StatusLabel status={order.status} partiallyFilled={partiallyFilled} filledPercentage={filledPercentage} />
+        <StatusLabel
+          status={order.status}
+          customText={order.statusLabel}
+          partiallyFilled={partiallyFilled}
+          filledPercentage={filledPercentage}
+        />
       </td>
     </tr>
   )
@@ -198,7 +216,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 const OrdersUserDetailsTable: React.FC<Props> = (props) => {
-  const { orders, messageWhenEmpty, tableState, handleNextPage } = props
+  const { orders, messageWhenEmpty, tableState, handleNextPage, dateColumnLabel = 'Created' } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)
   const [showCanceledAndExpired, setShowCanceledAndExpired] = useState(false)
   const [showPreSigning, setShowPreSigning] = useState(false)
@@ -241,7 +259,7 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
               </th>
               <th>Surplus</th>
               <th>Tags</th>
-              <th>Created</th>
+              <th>{dateColumnLabel}</th>
               <th>Status</th>
             </tr>
           )}
@@ -323,6 +341,10 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
       }
     />
   )
+}
+
+function hasOrderDetails(order: OrderTableRowData): order is Order {
+  return 'surplusAmount' in order
 }
 
 export default OrdersUserDetailsTable

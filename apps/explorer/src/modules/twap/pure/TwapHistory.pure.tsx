@@ -5,30 +5,40 @@ import { getAddressKey, type AddressKey, type SupportedChainId } from '@cowproto
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 import { TruncatedText } from '@cowprotocol/ui'
 
+import BigNumber from 'bignumber.js'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { LinkWithPrefixNetwork } from 'components/common/LinkWithPrefixNetwork'
 import { LoadingWrapper } from 'components/common/LoadingWrapper'
+import { ProgressBar } from 'components/common/ProgressBar'
+import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
+import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
+import { HelpTooltip } from 'components/Tooltip'
 import TablePagination from 'explorer/components/common/TablePagination'
+import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
 import { useMultipleErc20 } from 'hooks/useErc20'
+import { FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
 import * as styledEl from './TwapHistory.styled'
 import { TwapStatus } from './TwapStatus.pure'
-import { TwapTokenPair } from './TwapTokenPair.pure'
 
+import { getTwapProgress } from '../getTwapProgress'
 import { useCurrentUnixTime } from '../hooks/useCurrentUnixTime'
 import { useTwapOrders } from '../hooks/useTwapOrders'
 import { TWAP_PAGE_SIZE } from '../twap.constants'
 import { TwapPaginationContext } from '../TwapPaginationContext'
 
+import type { TokenErc20 } from '@gnosis.pm/dex-js'
+
 interface TwapHistoryProps {
+  children: (content: ReactNode, pagination: ReactNode) => ReactNode
   owner: AddressKey
   chainId: SupportedChainId
 }
 
-export function TwapHistory({ owner, chainId }: TwapHistoryProps): ReactNode {
+export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): ReactNode {
   const now = useCurrentUnixTime()
   const { state, setPageSize, handleNextPage, handlePreviousPage } = useTable({
     initialState: { pageOffset: 0, pageSize: TWAP_PAGE_SIZE },
@@ -54,15 +64,36 @@ export function TwapHistory({ owner, chainId }: TwapHistoryProps): ReactNode {
     </TwapPaginationContext.Provider>
   )
 
-  if (isLoading && !orders) return <LoadingWrapper message="Loading TWAP orders" />
+  if (isLoading && !orders) return children(<LoadingWrapper message="Loading TWAP orders" />, null)
 
-  return (
+  return children(
     <>
       {error && <Notification type="error" message="Failed to fetch TWAP orders" />}
-      {pagination}
       <TwapHistoryTable orders={orders} chainId={chainId} now={now} />
-      {pagination}
-    </>
+    </>,
+    pagination,
+  )
+}
+
+function TwapHistoryAmount({
+  amount,
+  token,
+  chainId,
+}: {
+  amount: bigint
+  token?: TokenErc20 | null
+  chainId: SupportedChainId
+}): ReactNode {
+  if (!token) return amount.toString()
+
+  const value = new BigNumber(amount.toString())
+  const fullAmount = formattedAmount(token, value)
+
+  return (
+    <TextWithTooltip textInTooltip={`${fullAmount} ${safeTokenName(token)}`}>
+      {formattedAmount(token, value, FormatAmountPrecision.highPrecision)}{' '}
+      <TokenDisplay showAbbreviated erc20={token} network={chainId} />
+    </TextWithTooltip>
   )
 }
 
@@ -87,8 +118,14 @@ function TwapHistoryTable({
     <SimpleTable
       header={
         <tr>
-          <th>TWAP event</th>
-          <th>Pair</th>
+          <th>
+            <span>
+              TWAP ID <HelpTooltip tooltip="A unique identifier for this TWAP on the selected network." />
+            </span>
+          </th>
+          <th>Sell amount</th>
+          <th>Minimum buy</th>
+          <th>Progress</th>
           <th>Created</th>
           <th>Status</th>
         </tr>
@@ -96,24 +133,32 @@ function TwapHistoryTable({
       body={orders.map((order) => {
         const sellToken = tokens[getAddressKey(order.schedule.sellToken)]
         const buyToken = tokens[getAddressKey(order.schedule.buyToken)]
+        const intendedSellAmount = order.schedule.partSellAmount * BigInt(order.schedule.numberOfParts)
+        const intendedBuyAmount = order.schedule.minPartLimit * BigInt(order.schedule.numberOfParts)
+        const progress = getTwapProgress(order.executedAmounts.executedSellAmount, intendedSellAmount)
 
         return (
           <tr key={order.eventId}>
             <td>
               <styledEl.EventLink>
-                <LinkWithPrefixNetwork to={`/twap/${order.eventId}`}>
-                  <TruncatedText>{order.eventId}</TruncatedText>
-                </LinkWithPrefixNetwork>
+                <RowWithCopyButton
+                  textToCopy={order.eventId}
+                  contentsToDisplay={
+                    <LinkWithPrefixNetwork to={`/twap/${order.eventId}`}>
+                      <TruncatedText>{order.eventId}</TruncatedText>
+                    </LinkWithPrefixNetwork>
+                  }
+                />
               </styledEl.EventLink>
             </td>
             <td>
-              <TwapTokenPair
-                sellTokenAddress={order.schedule.sellToken}
-                buyTokenAddress={order.schedule.buyToken}
-                sellToken={sellToken}
-                buyToken={buyToken}
-                chainId={chainId}
-              />
+              <TwapHistoryAmount amount={intendedSellAmount} token={sellToken} chainId={chainId} />
+            </td>
+            <td>
+              <TwapHistoryAmount amount={intendedBuyAmount} token={buyToken} chainId={chainId} />
+            </td>
+            <td>
+              <ProgressBar percentage={String(progress)} />
             </td>
             <td>
               <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />

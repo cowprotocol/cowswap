@@ -39,10 +39,3 @@ export const TokenAmount = styled.span`
   display: inline-flex;
   gap: 0.4rem;
 `
-
-export const EmptyParts = styled.div`
-  min-height: 12rem;
-  padding: 3.2rem;
-  font-size: 1.4rem;
-  text-align: center;
-`
