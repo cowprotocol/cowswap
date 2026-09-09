@@ -6,9 +6,9 @@ export const SuccessBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 100%;
-  padding: 24px 16px 20px;
+  padding: 16px;
   border-radius: 16px;
   background: var(${UI.COLOR_SUCCESS_BG});
   color: var(${UI.COLOR_SUCCESS_TEXT});
@@ -16,14 +16,17 @@ export const SuccessBox = styled.div`
 `
 
 export const IconWrap = styled.div`
+  --status-bg: var(${UI.COLOR_SUCCESS_BG});
+  --status-color: var(${UI.COLOR_SUCCESS_TEXT});
+
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 32px;
-  background: var(${UI.COLOR_SUCCESS});
-  color: var(${UI.COLOR_PAPER});
+  width: 28px;
+  height: 28px;
+  border-radius: 14px;
+  background: var(--status-bg);
+  color: var(--status-color);
 `
 
 export const Title = styled.h3`
@@ -49,7 +52,7 @@ export const ExplorerAnchor = styled(ExternalLink)`
 
 export const Actions = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 40% 60%;
   gap: 8px;
   width: 100%;
 `
