@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.12.1...balances-and-allowances-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.12.0
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.12.0...balances-and-allowances-v3.12.1) (2026-09-07)
 
 ### Patch Changes

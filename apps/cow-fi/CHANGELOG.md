@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.14.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.13.1...cow-fi-v2.14.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+### Patch Changes
+
+- fix(cow-fi): widget preview cuts off in default state (#8085)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/widget-react@3.2.7
+
 ## [2.13.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.13.0...cow-fi-v2.13.1) (2026-09-07)
 
 ### Patch Changes

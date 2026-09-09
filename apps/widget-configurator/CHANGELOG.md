@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.12.1...widget-configurator-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: remove Feixen font from widget configurator (#8049)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/widget-lib@4.7.0
+  - @cowprotocol/widget-react@3.2.7
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.12.0...widget-configurator-v3.12.1) (2026-09-07)
 
 ### Patch Changes

@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.14.0...common-utils-v3.15.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- fix(tokens): support solana address format (#8099)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.13.0...common-utils-v3.14.0) (2026-09-03)
 
 ### Minor Changes

@@ -1,5 +1,73 @@
 # Changelog
 
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.1...cowswap-v3.26.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): add bundle flow for future sol-native flow (#7984)
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+- feat: allow cancellation of EOA TWAP (#8086)
+
+- feat: update AGENTS.md to use new font mixins and constants (#8048)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+- feat: use own indexer for twap (#8069)
+
+- feat(quote): move to verified quotes (#8068)
+
+- feat: add extra slots to EOA progress tracker (#8060)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(trade): keep trade state in sync with URL (#8071)
+
+- fix: use prod cms for correlated tokens as well (#8124)
+
+- fix: hide proxy page for solana connection (#8090)
+
+- fix(trade): fix checkmark far from recipient address on narrow viewports (#8087)
+
+- fix: adjust styles for TWAP EOA tracker order details expand button (#8055)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- fix(wallet): show wallet icon for Base Account connections (#8080)
+
+- fix(tokens): support solana address format (#8099)
+
+- fix(twap): remove stray apostrophe in TWAP review part labels (#8079)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/tokens@3.12.0
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/permit-utils@3.7.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/balances-and-allowances@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/ens@3.7.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/multicall@3.7.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/widget-lib@4.7.0
+  - @cowprotocol/snackbars@2.3.2
+  - @cowprotocol/iframe-transport@2.3.7
+  - @cowprotocol/hook-dapp-lib@2.2.14
+
 ## [3.25.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.0...cowswap-v3.25.1) (2026-09-07)
 
 ### Patch Changes
