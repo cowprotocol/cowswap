@@ -774,7 +774,6 @@ msgid "Active referral code"
 msgstr "Active referral code"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Receive (before fees)"
 msgstr "Receive (before fees)"
@@ -4764,6 +4763,7 @@ msgstr "Deprecated network"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Expected to receive"
 msgstr "Expected to receive"
 
