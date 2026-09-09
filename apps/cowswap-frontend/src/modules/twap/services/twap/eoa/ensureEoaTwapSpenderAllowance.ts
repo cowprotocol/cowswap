@@ -26,9 +26,11 @@ export interface EnsureEoaTwapSpenderAllowanceParams {
   account: AccountAddress
   sellTokenAddress: Address
   sellTokenName: string | undefined
+  /** The amount of sell tokens to cover the TWAP, min for the permit / approval. */
+  sellTokenAmount: bigint
+  /** The amount of sell tokens to approve or permit, depending what the user selected in the form and what the token supports. */
+  amountToPermitOrApprove: bigint
   spender: AccountAddress
-  amountToCover: bigint
-  amountToApprove: bigint
   /**
    * When provided (with {@link generatePermitHook}) and the token supports EIP-2612 / Dai-like
    * permit, a permit is preferred for the spender allowance (currently ComposableCowPoller).
@@ -70,9 +72,11 @@ interface RunOnChainAllowanceStepsParams {
   chainId: SupportedChainId
   account: AccountAddress
   sellTokenAddress: Address
-  spender: AccountAddress
-  amountToCover: bigint
+  /** The amount of sell tokens to cover the TWAP, min for the approval. */
+  sellTokenAmount: bigint
+  /** The amount of sell tokens to approve, depending what the user selected in the form and what the token supports. */
   amountToApprove: bigint
+  spender: AccountAddress
   needsZeroApproval: boolean
   approveStep: EoaTwapSigningSteps
   zeroApproveStep: EoaTwapSigningSteps
@@ -148,8 +152,8 @@ export async function ensureEoaTwapSpenderAllowance({
   sellTokenAddress,
   sellTokenName,
   spender,
-  amountToCover,
-  amountToApprove,
+  sellTokenAmount,
+  amountToPermitOrApprove,
   permitInfo,
   generatePermitHook,
   step,
@@ -167,13 +171,18 @@ export async function ensureEoaTwapSpenderAllowance({
     return null
   }
 
-  if (generatePermitHook && canUseEoaTwapPermit(permitInfo, amountToApprove)) {
+  // This should never happen because the edit amount screen already validates the amount to approve is greater than the sell amount, but just in case...:
+  if (amountToPermitOrApprove < sellTokenAmount) {
+    throw new Error('Amount to approve is less than amount to cover')
+  }
+
+  if (generatePermitHook && canUseEoaTwapPermit(permitInfo, amountToPermitOrApprove)) {
     return tryGeneratePermitAllowance({
       account,
       sellTokenAddress,
       sellTokenName,
       spender,
-      amountToPermit: amountToCover,
+      amountToPermit: amountToPermitOrApprove,
       permitInfo,
       generatePermitHook,
       permitUiStep,
@@ -186,9 +195,9 @@ export async function ensureEoaTwapSpenderAllowance({
     chainId,
     account,
     sellTokenAddress,
+    sellTokenAmount,
+    amountToApprove: amountToPermitOrApprove,
     spender,
-    amountToCover,
-    amountToApprove,
     needsZeroApproval,
     approveStep,
     zeroApproveStep,
@@ -284,9 +293,9 @@ async function runOnChainAllowanceSteps({
   chainId,
   account,
   sellTokenAddress,
-  spender,
-  amountToCover,
+  sellTokenAmount,
   amountToApprove,
+  spender,
   needsZeroApproval,
   approveStep,
   zeroApproveStep,
@@ -314,7 +323,7 @@ async function runOnChainAllowanceSteps({
     amount: amountToApprove,
     step: approveStep,
     onSigningStep,
-    minApprovedAmount: amountToCover,
+    minApprovedAmount: sellTokenAmount,
   })
 }
 
@@ -399,6 +408,8 @@ async function tryGeneratePermitAllowance({
   if (!permitData) {
     throw new Error(t`Unable to generate permit data`)
   }
+
+  console.log(permitData)
 
   onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
   return permitData
