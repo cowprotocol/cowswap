@@ -5,7 +5,7 @@ import type { RestrictedTokenList } from './types'
 export const DEFAULT_CMS_REQUEST_TTL = ms`1h`
 
 export const ONDO_TOKEN_LIST_URL =
-  'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/cf97552db394cc10bffab7ac942805a89a882039/tokenlist.json'
+  'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/4ae87da178469e53f44b1b8cae1820c02c999907/tokenlist.json'
 
 export const RESERVE_PROTOCOL_BNB_TOKEN_LIST_URL =
   'https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json'

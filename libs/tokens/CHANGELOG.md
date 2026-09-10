@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.1...tokens-v3.12.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(account): handle disconnection of injected wallets after a refresh (#7894)
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: new ondo tokens, updating fallback pin (#8123)
+
+- fix(tokens): support solana address format (#8099)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.0...tokens-v3.11.1) (2026-09-07)
 
 ### Patch Changes
