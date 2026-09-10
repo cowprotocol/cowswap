@@ -168,7 +168,6 @@
     "@cowprotocol/dx": "workspace:*",
     "@eslint/eslintrc": "3.3.3",
     "@eslint/js": "9.39.2",
-    "@lingui/babel-plugin-lingui-macro": "5.5.1",
     "@lingui/vite-plugin": "5.5.1",
     "@next/eslint-plugin-next": "16.1.6",
     "@nx/eslint": "22.4.2",
