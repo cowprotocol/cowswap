@@ -195,7 +195,6 @@ export const StepDetailsInner = styled.div`
 
   display: flex;
   flex-flow: column nowrap;
-  gap: ${DETAILS_ROW_GAP};
   padding: ${DETAILS_ROW_GAP} 0 0 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 
@@ -210,9 +209,9 @@ export const StepDetailsInner = styled.div`
   }
 `
 
-export const StepDescriptionLabel = styled.span`
+export const StepDescriptionLabel = styled.strong`
   ${font('FONT_SMALL_PLUS', 'semibold')}
-
+  margin-bottom: ${DETAILS_ROW_GAP};
   color: var(${UI.COLOR_ALERT_TEXT});
 
   [data-status='error'] & {

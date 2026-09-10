@@ -8,7 +8,7 @@ import { t } from '@lingui/core/macro'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useCommonTradeConfirmContext, useTradePriceImpact } from 'modules/trade'
 
-import { TwapBadge, TwapTradeConfirmationDetails } from './TwapBadge.styled'
+import { TwapBadge, TwapTradeConfirmationDetails } from './TwapConfirmModal.styled'
 import { useEoaTwapPlan } from './useEoaTwapPlan'
 import { useTwapConfirmCurrencyPreview } from './useTwapConfirmCurrencyPreview'
 

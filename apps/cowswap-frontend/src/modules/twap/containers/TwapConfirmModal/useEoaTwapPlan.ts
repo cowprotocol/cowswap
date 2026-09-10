@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeConfirmActions } from 'modules/trade'
 
@@ -30,17 +31,19 @@ interface UseEoaTwapPlanReturn {
 
 export function useEoaTwapPlan({ inputToken, inputSymbolLabel }: UseEoaTwapPlanParams): UseEoaTwapPlanReturn {
   const eoaTwapSigningStep = useEoaTwapSigningStep()
+  const { chainId } = useWalletInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const updateEoaTwapFlow = useEoaTwapFlowUpdater()
 
   const steps = useMemo(() => {
     return eoaTwapSigningStep
       ? buildEoaTwapConfirmationPendingSteps({
+          chainId,
           signingStep: eoaTwapSigningStep,
           token: inputToken,
         })
       : null
-  }, [eoaTwapSigningStep, inputToken])
+  }, [chainId, eoaTwapSigningStep, inputToken])
 
   const { badgeProps, buttonProps } = useMemo(() => {
     const currentStep = eoaTwapSigningStep?.step

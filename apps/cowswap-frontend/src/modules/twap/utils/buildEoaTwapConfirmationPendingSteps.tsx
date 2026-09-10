@@ -1,7 +1,11 @@
 import { ReactNode } from 'react'
 
+import type { Hex } from 'viem'
+
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType } from '@cowprotocol/ui'
+import { BadgeType, ExternalLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -9,20 +13,18 @@ import { OrderStep, OrderStepStatus } from 'modules/trade'
 
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
+import { TwapOrderStepTokenInfo } from '../containers/TwapConfirmModal/TwapConfirmModal.styled'
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
-const LOADING_PHASES: ReadonlySet<EoaTwapSigningPhase> = new Set([
-  EoaTwapSigningPhase.WaitingForTx,
-  EoaTwapSigningPhase.Verifying,
-])
+export const EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID = 'WalletActionsComplete'
 
-const APPROVAL_STEPS = new Set<EoaTwapSigningSteps>([
-  EoaTwapSigningSteps.ZeroApprovePoller,
-  EoaTwapSigningSteps.ApprovePoller,
-  EoaTwapSigningSteps.PermitPoller,
+const ACTIVATION_STEPS = new Set<EoaTwapSigningSteps>([
+  EoaTwapSigningSteps.SubmitTwap,
+  EoaTwapSigningSteps.SubmitTwapSlow,
 ])
 
 export interface BuildEoaTwapConfirmationPendingStepsParams {
+  chainId?: SupportedChainId
   signingStep: EoaTwapSigningStepState
   token?: Currency
 }
@@ -37,7 +39,21 @@ export interface EoaTwapCurrentStepButtonProps {
   isDisabled: boolean
 }
 
+interface BuildEoaTwapWalletActionsCompleteDescriptionParams {
+  walletActionSteps: EoaTwapSigningSteps[]
+  plan: EoaTwapSigningSteps[]
+  completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
+  token: Currency | undefined
+  chainId: SupportedChainId | undefined
+}
+
+interface EoaTwapWalletActionOutcome {
+  label: string
+  hasTxLink: boolean
+}
+
 export function buildEoaTwapConfirmationPendingSteps({
+  chainId,
   signingStep,
   token,
 }: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] | null {
@@ -48,17 +64,42 @@ export function buildEoaTwapConfirmationPendingSteps({
     return null
   }
 
+  if (ACTIVATION_STEPS.has(signingStep.step)) {
+    const walletActionSteps = signingStep.plan.filter((step) => !ACTIVATION_STEPS.has(step))
+    const activationStatus = getEoaTwapActivationStepStatus(signingStep)
+
+    return [
+      {
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: t`Wallet actions complete`,
+        description: buildEoaTwapWalletActionsCompleteDescription({
+          walletActionSteps,
+          plan: signingStep.plan,
+          completedStepTxHashes: signingStep.completedStepTxHashes,
+          token,
+          chainId,
+        }),
+        status: 'success',
+      },
+      {
+        id: signingStep.step,
+        label: getEoaTwapStepLabel(signingStep.step),
+        description: getEoaTwapStepDescription(signingStep.step, activationStatus),
+        status: activationStatus,
+      },
+    ]
+  }
+
   return signingStep.plan.map((step, index) => {
     const symbol = token?.symbol
     const label = getEoaTwapStepLabel(step, symbol)
-    const approvalToken = APPROVAL_STEPS.has(step) ? token : undefined
 
     let status: OrderStepStatus
 
     if (index < currentIndex || (index === currentIndex && signingStep.phase === EoaTwapSigningPhase.Confirmed)) {
       status = 'success'
     } else if (index === currentIndex) {
-      status = LOADING_PHASES.has(signingStep.phase) ? 'loading' : 'active'
+      status = signingStep.phase == EoaTwapSigningPhase.WaitingForTx ? 'loading' : 'active'
     } else {
       status = 'upcoming'
     }
@@ -66,9 +107,8 @@ export function buildEoaTwapConfirmationPendingSteps({
     return {
       id: step,
       label,
-      description: getEoaTwapStepDescription(step, status),
+      description: getEoaTwapStepDescription(step, status, token),
       status,
-      ...(approvalToken ? { token: approvalToken } : {}),
     }
   })
 }
@@ -207,34 +247,55 @@ export function getEoaTwapCurrentStepButton(
   }
 }
 
-export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {
+export function getEoaTwapStepDescription(
+  step: EoaTwapSigningSteps,
+  status: OrderStepStatus,
+  token?: Currency,
+): ReactNode | undefined {
   if (status === 'success') {
     return undefined
   }
 
   const isLoading = status === 'loading'
+  const tokenElement = token ? <TwapOrderStepTokenInfo token={token} /> : null
 
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
     case EoaTwapSigningSteps.ApprovePoller:
-      if (isLoading) {
-        return (
+      return isLoading ? (
+        <>
           <p>
-            {t`Waiting for tx`}
+            {t`Approval submitted. Waiting for network confirmation`}
             <ThreeDots />
           </p>
-        )
-      }
-      return t`Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.`
+          <p>{tokenElement}</p>
+        </>
+      ) : (
+        <>
+          <p>{t`Review and confirm in your wallet to continue.`}</p>
+          <p>{tokenElement}</p>
+        </>
+      )
 
     case EoaTwapSigningSteps.PermitPoller:
-      return t`Sign the permit in your wallet. Each part is pulled right before it trades.`
+      return isLoading ? (
+        <>
+          <p>
+            {t`Permit submitted. Waiting for network confirmation`}
+            <ThreeDots />
+          </p>
+          <p>{tokenElement}</p>
+        </>
+      ) : (
+        <>
+          <p>{t`Review and confirm in your wallet to continue.`}</p>
+          <p>{tokenElement}</p>
+        </>
+      )
 
     case EoaTwapSigningSteps.TwapSetup:
-      return t`Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP.`
-
     case EoaTwapSigningSteps.TwapSign:
-      return t`Confirm the TWAP transaction in your connected wallet.`
+      return t`Review and confirm in your wallet to continue.`
 
     case EoaTwapSigningSteps.SubmitTwap:
       return t`Sit tight! We're getting your order ready`
@@ -251,9 +312,9 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
     case EoaTwapSigningSteps.ApprovePoller:
-      return symbol ? t`Approve ${symbol} for funding` : t`Approve funding`
+      return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
-      return symbol ? t`Permit ${symbol} for funding` : t`Permit funding`
+      return symbol ? t`Permit ${symbol}` : t`Permit token`
     case EoaTwapSigningSteps.TwapSetup:
       return t`Set up TWAP`
     case EoaTwapSigningSteps.TwapSign:
@@ -264,5 +325,80 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
       return t`Still activating TWAP`
     case EoaTwapSigningSteps.Success:
       return ''
+  }
+}
+
+export function getEoaTwapWalletActionSummaryLabel(
+  step: EoaTwapSigningSteps,
+  symbol: string | undefined,
+): null | string {
+  switch (step) {
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Reset approval`
+    case EoaTwapSigningSteps.ApprovePoller:
+      return symbol ? t`Approve ${symbol}` : t`Approve token`
+    case EoaTwapSigningSteps.PermitPoller:
+      return symbol ? t`Permit ${symbol}` : t`Permit token`
+    case EoaTwapSigningSteps.TwapSetup:
+      return t`Set up TWAP`
+    case EoaTwapSigningSteps.TwapSign:
+      return t`Sign TWAP`
+    default:
+      return null
+  }
+}
+
+function buildEoaTwapWalletActionsCompleteDescription({
+  walletActionSteps,
+  plan,
+  completedStepTxHashes,
+  token,
+  chainId,
+}: BuildEoaTwapWalletActionsCompleteDescriptionParams): ReactNode {
+  const symbol = token?.symbol
+
+  return (
+    <>
+      {walletActionSteps.map((step) => {
+        const label = getEoaTwapWalletActionSummaryLabel(step, symbol, plan)
+        const outcome = getEoaTwapWalletActionOutcome(step)
+
+        if (!label || !outcome) return null
+
+        const txHash = completedStepTxHashes?.[step]
+        const explorerUrl =
+          chainId && txHash && outcome.hasTxLink
+            ? getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)
+            : undefined
+
+        return (
+          <p key={step}>
+            {label} · {explorerUrl ? <ExternalLink href={explorerUrl}>{outcome.label} ↗</ExternalLink> : outcome.label}
+          </p>
+        )
+      })}
+    </>
+  )
+}
+
+function getEoaTwapActivationStepStatus(signingStep: EoaTwapSigningStepState): OrderStepStatus {
+  if (signingStep.phase === EoaTwapSigningPhase.Confirmed) {
+    return 'success'
+  }
+
+  return signingStep.phase === EoaTwapSigningPhase.WaitingForTx ? 'loading' : 'active'
+}
+
+function getEoaTwapWalletActionOutcome(step: EoaTwapSigningSteps): null | EoaTwapWalletActionOutcome {
+  switch (step) {
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
+      return { label: t`Confirmed`, hasTxLink: true }
+    case EoaTwapSigningSteps.PermitPoller:
+    case EoaTwapSigningSteps.TwapSetup:
+    case EoaTwapSigningSteps.TwapSign:
+      return { label: t`Signed`, hasTxLink: false }
+    default:
+      return null
   }
 }

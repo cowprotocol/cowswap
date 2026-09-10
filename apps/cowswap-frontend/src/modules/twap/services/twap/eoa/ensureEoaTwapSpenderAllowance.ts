@@ -355,7 +355,7 @@ async function runOnChainApprovalStep({
     }
   }
 
-  onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed })
+  onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed, stepTxHash: receipt.transactionHash })
 }
 
 function toApprovalUserError(err: unknown): Error {

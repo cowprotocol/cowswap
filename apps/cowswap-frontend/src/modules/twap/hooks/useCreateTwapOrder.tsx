@@ -264,6 +264,7 @@ export function useCreateTwapOrder() {
         const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
         // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
+        // TODO: This should probably be removed for v2:
         const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
@@ -426,7 +427,6 @@ export function useCreateTwapOrder() {
             step: EoaTwapSigningSteps.Success,
             phase: EoaTwapSigningPhase.Confirmed,
             orderId: twapOrderId,
-            setupTxHash: confirmModalHash,
             proxyAddress: safeAddressOrCowShedAddress,
           })
         } else {

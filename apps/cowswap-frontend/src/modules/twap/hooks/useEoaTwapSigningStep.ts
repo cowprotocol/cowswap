@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import type { Hex } from 'viem'
+
 import { eoaTwapSigningStepAtom, EoaTwapSigningStepState } from '../state/eoaTwapSigningStepAtom'
 import {
   cancelEoaTwapPlacement,
@@ -8,7 +10,11 @@ import {
   isEoaTwapPlacementCancelled,
 } from '../utils/eoaTwapPlacementCancel'
 
-export type EoaTwapFlowUpdate = Partial<EoaTwapSigningStepState> & Pick<EoaTwapSigningStepState, 'step' | 'phase'>
+export type EoaTwapFlowUpdate = Partial<Omit<EoaTwapSigningStepState, 'completedStepTxHashes'>> &
+  Pick<EoaTwapSigningStepState, 'step' | 'phase'> & {
+    /** Merged into {@link EoaTwapSigningStepState.completedStepTxHashes} for the given step. */
+    stepTxHash?: Hex
+  }
 
 export type EoaTwapFlowUpdater = (update: EoaTwapFlowUpdaterArg) => void
 
@@ -54,13 +60,20 @@ function mergeEoaTwapFlowState(
     lockDismiss: false,
   }
 
+  const completedStepTxHashes = update.stepTxHash
+    ? {
+        ...(base.completedStepTxHashes ?? {}),
+        [update.step]: update.stepTxHash,
+      }
+    : base.completedStepTxHashes
+
   return {
     step: update.step,
     phase: update.phase,
     // Sticky until the end of the placement, or until overridden by a subsequent update:
     plan: update.plan ?? base.plan,
     lockDismiss: update.lockDismiss ?? base.lockDismiss,
-    setupTxHash: update.setupTxHash ?? base.setupTxHash,
+    completedStepTxHashes,
     orderId: update.orderId ?? base.orderId,
     proxyAddress: update.proxyAddress ?? base.proxyAddress,
   }

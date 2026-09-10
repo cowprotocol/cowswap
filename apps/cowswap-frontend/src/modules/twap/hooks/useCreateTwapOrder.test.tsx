@@ -425,7 +425,6 @@ describe('useCreateTwapOrder', () => {
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
       orderId: '0xtwap',
-      setupTxHash: '0xsetuptx',
       proxyAddress: '0xproxy',
     })
   })

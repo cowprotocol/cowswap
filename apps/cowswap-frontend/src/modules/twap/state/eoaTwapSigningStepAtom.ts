@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import type { Hex } from 'viem'
+
 export interface EoaTwapSigningStepState {
   step: EoaTwapSigningSteps
   phase: EoaTwapSigningPhase
@@ -20,8 +22,8 @@ export interface EoaTwapSigningStepState {
    */
   lockDismiss: boolean
 
-  /** Cow-shed factory setup transaction hash, set after the tx is submitted. */
-  setupTxHash?: string
+  /** On-chain transaction hashes for completed wallet-action steps (approvals, setup tx). */
+  completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
 
   /** Conditional TWAP order id, set after placement succeeds. */
   orderId?: string
@@ -32,14 +34,12 @@ export interface EoaTwapSigningStepState {
 
 /**
  * Progress within the current EOA TWAP signing step.
- * On-chain: Sign → WaitingForTx → (optional Verifying) → Confirmed.
- * Signature-only steps typically use Sign → Confirmed.
+ * On-chain: Sign → WaitingForTx → Confirmed.
  */
 export enum EoaTwapSigningPhase {
-  Confirmed = 'Confirmed',
   Sign = 'Sign',
-  Verifying = 'Verifying',
   WaitingForTx = 'WaitingForTx',
+  Confirmed = 'Confirmed',
 }
 
 export enum EoaTwapSigningSteps {

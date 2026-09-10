@@ -43,8 +43,9 @@ export function EoaTwapSigningPendingContent({
 
   if (signingStep.step === EoaTwapSigningSteps.Success) {
     // CoW Explorer does not support TWAP setup txs yet. Restore this when it does:
+    // const setupTxHash = signingStep.completedStepTxHashes?.[EoaTwapSigningSteps.TwapSign]
     // const explorerUrl =
-    //   chainId && signingStep.setupTxHash ? `${getExplorerBaseUrl(chainId)}/tx/${signingStep.setupTxHash}` : undefined
+    //   chainId && setupTxHash ? `${getExplorerBaseUrl(chainId)}/tx/${setupTxHash}` : undefined
     const explorerUrl =
       chainId && signingStep.proxyAddress ? getExplorerAddressLink(chainId, signingStep.proxyAddress) : undefined
 

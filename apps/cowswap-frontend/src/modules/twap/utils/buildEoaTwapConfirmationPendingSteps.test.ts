@@ -1,10 +1,17 @@
 import { i18n } from '@lingui/core'
 
+import { USDC_MAINNET } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { renderToStaticMarkup } from 'react-dom/server'
+
 import {
   buildEoaTwapConfirmationPendingSteps,
+  EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
   getEoaTwapCurrentStepBadge,
   getEoaTwapStepDescription,
   getEoaTwapStepLabel,
+  getEoaTwapWalletActionSummaryLabel,
 } from './buildEoaTwapConfirmationPendingSteps'
 
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
@@ -40,14 +47,14 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
           phase: EoaTwapSigningPhase.WaitingForTx,
           lockDismiss: false,
         },
-        symbol: 'USDC',
+        token: USDC_MAINNET,
       }),
     )
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
         id: EoaTwapSigningSteps.ApprovePoller,
-        label: 'Approve USDC for funding',
+        label: 'Approve USDC',
         status: 'loading',
       },
       {
@@ -70,7 +77,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     expect(steps[1]?.description).toBeTruthy()
   })
 
-  it('marks Sign phase as active with Approve {symbol} for funding', () => {
+  it('marks Sign phase as active with Approve {symbol}', () => {
     const plan = [EoaTwapSigningSteps.ApprovePoller, EoaTwapSigningSteps.TwapSetup]
 
     const steps = getPendingSteps(
@@ -81,14 +88,14 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
           phase: EoaTwapSigningPhase.Sign,
           lockDismiss: false,
         },
-        symbol: 'USDC',
+        token: USDC_MAINNET,
       }),
     )
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
         id: EoaTwapSigningSteps.ApprovePoller,
-        label: 'Approve USDC for funding',
+        label: 'Approve USDC',
         status: 'active',
       },
       {
@@ -97,8 +104,9 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         status: 'upcoming',
       },
     ])
-    expect(steps[0]?.description).toBe(
-      'Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.',
+    expect(steps[0]?.description).toBeTruthy()
+    expect(renderToStaticMarkup(getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'active'))).toContain(
+      'Review and confirm in your wallet to continue.',
     )
   })
 
@@ -112,13 +120,13 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
             phase: EoaTwapSigningPhase.Sign,
             lockDismiss: false,
           },
-          symbol: 'USDC',
+          token: USDC_MAINNET,
         }),
       ).map(({ id, label, status, description }) => ({ id, label, status, description: description ?? null })),
     ).toEqual([
       {
         id: EoaTwapSigningSteps.ApprovePoller,
-        label: 'Approve USDC for funding',
+        label: 'Approve USDC',
         status: 'success',
         description: null,
       },
@@ -126,19 +134,19 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         id: EoaTwapSigningSteps.TwapSetup,
         label: 'Set up TWAP',
         status: 'active',
-        description: 'Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP.',
+        description: 'Review and confirm in your wallet to continue.',
       },
       {
         id: EoaTwapSigningSteps.TwapSign,
         label: 'Sign TWAP',
         status: 'upcoming',
-        description: 'Confirm the TWAP transaction in your connected wallet.',
+        description: 'Review and confirm in your wallet to continue.',
       },
       {
         id: EoaTwapSigningSteps.SubmitTwap,
         label: 'Activating TWAP',
         status: 'upcoming',
-        description: null,
+        description: "Sit tight! We're getting your order ready",
       },
     ])
   })
@@ -176,7 +184,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     ])
   })
 
-  it('marks WaitingForTx phase as loading for SubmitTwap', () => {
+  it('collapses wallet actions while SubmitTwap is loading', () => {
     const plan = [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
     const steps = getPendingSteps(
@@ -192,13 +200,8 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
-        id: EoaTwapSigningSteps.TwapSetup,
-        label: 'Set up TWAP',
-        status: 'success',
-      },
-      {
-        id: EoaTwapSigningSteps.TwapSign,
-        label: 'Sign TWAP',
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: 'Wallet actions complete',
         status: 'success',
       },
       {
@@ -207,10 +210,11 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         status: 'loading',
       },
     ])
-    expect(steps[2]?.description).toBeTruthy()
+    expect(steps[0]?.description).toBeTruthy()
+    expect(steps[1]?.description).toBeTruthy()
   })
 
-  it('marks WaitingForTx phase as loading for SubmitTwapSlow', () => {
+  it('collapses wallet actions while SubmitTwapSlow is loading', () => {
     const plan = [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwapSlow]
 
     const steps = getPendingSteps(
@@ -226,13 +230,8 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
-        id: EoaTwapSigningSteps.TwapSetup,
-        label: 'Set up TWAP',
-        status: 'success',
-      },
-      {
-        id: EoaTwapSigningSteps.TwapSign,
-        label: 'Sign TWAP',
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: 'Wallet actions complete',
         status: 'success',
       },
       {
@@ -241,7 +240,45 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         status: 'loading',
       },
     ])
-    expect(steps[2]?.description).toBe("This is taking longer than usual. We're still getting your order ready.")
+    expect(steps[1]?.description).toBe("This is taking longer than usual. We're still getting your order ready.")
+  })
+
+  it('renders wallet-action summaries with tx links when expanded', () => {
+    const plan = [
+      EoaTwapSigningSteps.ZeroApprovePoller,
+      EoaTwapSigningSteps.ApprovePoller,
+      EoaTwapSigningSteps.TwapSetup,
+      EoaTwapSigningSteps.TwapSign,
+      EoaTwapSigningSteps.SubmitTwap,
+    ]
+
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.SubmitTwap,
+          plan,
+          phase: EoaTwapSigningPhase.WaitingForTx,
+          lockDismiss: true,
+          completedStepTxHashes: {
+            [EoaTwapSigningSteps.ZeroApprovePoller]: '0xzero',
+            [EoaTwapSigningSteps.ApprovePoller]: '0xapprove',
+          },
+        },
+        token: USDC_MAINNET,
+        chainId: SupportedChainId.MAINNET,
+      }),
+    )
+
+    const descriptionMarkup = renderToStaticMarkup(steps[0]?.description)
+
+    expect(descriptionMarkup).toContain('Reset approval')
+    expect(descriptionMarkup).toContain('Approve USDC')
+    expect(descriptionMarkup).toContain('Set up TWAP')
+    expect(descriptionMarkup).toContain('Sign TWAP')
+    expect(descriptionMarkup).toContain('Confirmed')
+    expect(descriptionMarkup).toContain('Signed')
+    expect(descriptionMarkup).toContain('https://etherscan.io/tx/0xzero')
+    expect(descriptionMarkup).toContain('https://etherscan.io/tx/0xapprove')
   })
 
   it('returns null when the current step is missing from the plan', () => {
@@ -271,16 +308,30 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
   })
 })
 
+describe('getEoaTwapWalletActionSummaryLabel()', () => {
+  beforeAll(async () => {
+    await i18n.activate('en-US')
+  })
+
+  it('returns summary labels for wallet-action steps', () => {
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ZeroApprovePoller, 'USDC', [])).toBe('Reset approval')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC', [])).toBe('Approve USDC')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, undefined, [])).toBe('Approve token')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.TwapSetup, 'USDC', [])).toBe('Set up TWAP')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.SubmitTwap, 'USDC', [])).toBeNull()
+  })
+})
+
 describe('getEoaTwapStepLabel()', () => {
   beforeAll(async () => {
     await i18n.activate('en-US')
   })
 
   it('returns stable labels per step', () => {
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'COW')).toBe('Approve COW for funding')
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller)).toBe('Approve funding')
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'COW')).toBe('Permit COW for funding')
-    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller)).toBe('Permit funding')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'COW')).toBe('Approve COW')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller)).toBe('Approve token')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'COW')).toBe('Permit COW')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller)).toBe('Permit token')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.TwapSetup)).toBe('Set up TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.TwapSign)).toBe('Sign TWAP')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.SubmitTwap)).toBe('Activating TWAP')
@@ -307,20 +358,20 @@ describe('getEoaTwapStepDescription()', () => {
   })
 
   it('returns poller approve copy when active', () => {
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'active')).toBe(
-      'Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.',
+    expect(renderToStaticMarkup(getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'active'))).toContain(
+      'Review and confirm in your wallet to continue.',
     )
   })
 
   it('returns setup copy for TwapSetup', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'active')).toBe(
-      'Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP.',
+      'Review and confirm in your wallet to continue.',
     )
   })
 
   it('returns sign copy for TwapSign', () => {
     expect(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSign, 'active')).toBe(
-      'Confirm the TWAP transaction in your connected wallet.',
+      'Review and confirm in your wallet to continue.',
     )
   })
 
@@ -337,8 +388,8 @@ describe('getEoaTwapStepDescription()', () => {
   })
 
   it('returns poller permit copy when active', () => {
-    expect(getEoaTwapStepDescription(EoaTwapSigningSteps.PermitPoller, 'active')).toBe(
-      'Sign the permit in your wallet. Each part is pulled right before it trades.',
+    expect(renderToStaticMarkup(getEoaTwapStepDescription(EoaTwapSigningSteps.PermitPoller, 'active'))).toContain(
+      'Review and confirm in your wallet to continue.',
     )
   })
 })

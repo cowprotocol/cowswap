@@ -48,10 +48,10 @@ import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 const DEFAULT_GAS_LIMIT = 1_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
-const SUBMIT_TWAP_SLOW_MS = 30_000
+const SUBMIT_TWAP_SLOW_MS = 10_000
 
 /** Set > 0 to artificially delay receipt resolution (local testing only). */
-const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 0
+const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 30000
 
 /** TWAP setup is valid for 30 minutes. */
 const SETUP_VALID_FOR_SEC = 1800
@@ -388,6 +388,12 @@ export async function placeEoaTwapOrder({
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
 
   onSigningStep({
+    step: EoaTwapSigningSteps.TwapSign,
+    phase: EoaTwapSigningPhase.Confirmed,
+    stepTxHash: setupTxHash,
+  })
+
+  onSigningStep({
     step: EoaTwapSigningSteps.SubmitTwap,
     phase: EoaTwapSigningPhase.WaitingForTx,
     lockDismiss: true,
@@ -428,7 +434,6 @@ export async function placeEoaTwapOrder({
   onSigningStep({
     step: submitTwapStep,
     phase: EoaTwapSigningPhase.Confirmed,
-    setupTxHash,
     proxyAddress,
   })
 
