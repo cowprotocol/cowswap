@@ -13,9 +13,15 @@ export default {
       'babel-jest',
       {
         presets: ['@nx/react/babel'],
-        // The legacy babel-plugin-macros path cannot compile Lingui's JSX macros (<Plural>, <Select>);
-        // the dedicated plugin can, and is what the Vite build already uses via @lingui/vite-plugin.
-        plugins: ['@lingui/babel-plugin-lingui-macro'],
+        // `babel-plugin-macros` has to run BEFORE the JSX transform, and listing it here is the only
+        // way to get that: Babel runs top-level plugins ahead of every preset plugin. Left to the
+        // preset chain alone (`@nx/js/babel` supplies macros, `@babel/preset-react` supplies the JSX
+        // transform) `<Plural>` is rewritten to `_jsx(Plural, { value, one, few, many, other })`
+        // before macros sees it, and macros then reads that 5-property props object as a labelled
+        // expression and throws "Incorrect usage, expected exactly one property".
+        // The Vite build never hits this because `vite-plugin-babel-macros` runs macros as its own
+        // pass, before vite's React transform touches the file.
+        plugins: ['macros'],
       },
     ],
   },
