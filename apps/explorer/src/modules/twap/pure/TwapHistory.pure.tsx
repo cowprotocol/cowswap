@@ -14,6 +14,7 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
+import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
@@ -22,10 +23,8 @@ import { useMultipleErc20 } from 'hooks/useErc20'
 import { FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
 import * as styledEl from './TwapHistory.styled'
-import { TwapStatus } from './TwapStatus.pure'
 
 import { getTwapProgress } from '../getTwapProgress'
-import { useCurrentUnixTime } from '../hooks/useCurrentUnixTime'
 import { useTwapOrders } from '../hooks/useTwapOrders'
 import { TWAP_PAGE_SIZE } from '../twap.constants'
 import { TwapPaginationContext } from '../TwapPaginationContext'
@@ -39,7 +38,6 @@ interface TwapHistoryProps {
 }
 
 export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): ReactNode {
-  const now = useCurrentUnixTime()
   const { state, setPageSize, handleNextPage, handlePreviousPage } = useTable({
     initialState: { pageOffset: 0, pageSize: TWAP_PAGE_SIZE },
   })
@@ -69,7 +67,7 @@ export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): Rea
   return children(
     <>
       {error && <Notification type="error" message="Failed to fetch TWAP orders" />}
-      <TwapHistoryTable orders={orders} chainId={chainId} now={now} />
+      <TwapHistoryTable orders={orders} chainId={chainId} />
     </>,
     pagination,
   )
@@ -100,11 +98,9 @@ function TwapHistoryAmount({
 function TwapHistoryTable({
   orders,
   chainId,
-  now,
 }: {
   orders: TwapOrder[] | undefined
   chainId: SupportedChainId
-  now: number
 }): ReactNode {
   const tokenAddresses = useMemo(
     () => orders?.flatMap(({ schedule }) => [schedule.sellToken, schedule.buyToken]) ?? [],
@@ -164,7 +160,7 @@ function TwapHistoryTable({
               <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
             </td>
             <td>
-              <TwapStatus order={order} now={now} />
+              <StatusLabel status={order.status} />
             </td>
           </tr>
         )

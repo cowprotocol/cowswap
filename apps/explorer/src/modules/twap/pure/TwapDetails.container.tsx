@@ -23,6 +23,7 @@ import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/Submiss
 import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
 import { FilledProgressSummary } from 'components/orders/FilledProgress/FilledProgressSummary'
 import OrdersUserDetailsTable from 'components/orders/OrdersUserDetailsTable'
+import { StatusLabel } from 'components/orders/StatusLabel'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
 import { APP_TITLE } from 'explorer/const'
@@ -41,10 +42,8 @@ import {
 } from 'utils'
 
 import * as styledEl from './TwapDetails.styled'
-import { TwapStatus } from './TwapStatus.pure'
 
 import { getTwapProgress } from '../getTwapProgress'
-import { useCurrentUnixTime } from '../hooks/useCurrentUnixTime'
 import { useTwapOrder } from '../hooks/useTwapOrder'
 import { useTwapPartOrders } from '../hooks/useTwapPartOrders'
 import { toTwapPartTableRow } from '../toTwapPartTableRow'
@@ -115,7 +114,6 @@ function getGlobalSearchState(state: unknown): boolean {
 
 // eslint-disable-next-line max-lines-per-function
 function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedChainId }): ReactNode {
-  const now = useCurrentUnixTime()
   const { schedule, executedAmounts } = order
   const tokenAddresses = useMemo(() => [schedule.sellToken, schedule.buyToken], [schedule.buyToken, schedule.sellToken])
   const { value: tokens } = useMultipleErc20({ addresses: tokenAddresses, networkId: chainId })
@@ -175,7 +173,7 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Status"
                   tooltipText="The current state of this TWAP, based on its schedule, cancellation state, and executed amounts."
                 >
-                  <TwapStatus order={order} now={now} />
+                  <StatusLabel status={order.status} />
                 </DetailRow>
                 <SubmissionTimeItem creationDate={new Date(order.createdAt * 1000)} showIcon />
                 <DetailRow
@@ -292,16 +290,12 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
         label="Creation transaction"
         tooltipText="The onchain transaction that created this TWAP. This is not a settlement transaction for an individual part order."
       >
-        {order.creationTxHash ? (
-          <BlockExplorerLink
-            type="transaction"
-            identifier={order.creationTxHash}
-            networkId={chainId}
-            label={`${order.creationTxHash}↗`}
-          />
-        ) : (
-          'Not available'
-        )}
+        <BlockExplorerLink
+          type="transaction"
+          identifier={order.txHash}
+          networkId={chainId}
+          label={`${order.txHash}↗`}
+        />
       </DetailRow>
     </>
   )

@@ -1,4 +1,4 @@
-import { getTwapExecutionStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
+import { deriveTwapStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
 
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
@@ -22,14 +22,15 @@ export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderS
   const now = Math.ceil(Date.now() / 1000)
   const effectiveStartTime = order.t0 || Math.ceil((executionDate?.getTime() ?? now * 1000) / 1000)
   const status = getProgrammaticOrderStatus(isCancelled, confirmedPartsCount === order.n)
-  const executionStatus = getTwapExecutionStatus({
-    status,
-    executedSellAmount: BigInt(executionInfo.executedSellAmount),
-    partSellAmount: BigInt(order.partSellAmount),
-    numberOfParts: order.n,
-    effectiveStartTime,
-    timeBetweenParts: order.t,
-    now,
+  const executionStatus = deriveTwapStatus({
+    lifecycleStatus: status,
+    executedAmounts: { executedSellAmount: BigInt(executionInfo.executedSellAmount) },
+    schedule: {
+      partSellAmount: BigInt(order.partSellAmount),
+      numberOfParts: order.n,
+      effectiveStartTime,
+      timeBetweenParts: order.t,
+    },
   })
 
   if (executionStatus === 'filled') return TwapOrderStatus.Fulfilled

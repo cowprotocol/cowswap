@@ -1,17 +1,24 @@
 import { logTwap } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProgrammaticOrderApi } from '@cowprotocol/sdk-composable'
-import type { QueryPage, TwapOrder, TwapPartOrder } from '@cowprotocol/sdk-composable'
+import type { QueryPage, TwapOrder, TwapPartOrder, TwapStatus } from '@cowprotocol/sdk-composable'
 
-import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
+import { TwapOrderStatus, type TWAPOrderStruct } from '../types'
 
-import type { TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
 
 const PROGRAMMATIC_ORDERS_API_URL =
   process.env.REACT_APP_PROGRAMMATIC_ORDERS_API_URL || 'https://programmatic-orders.cow.fi/'
 
 type EoaTwapOrdersDelta = Omit<EoaTwapOrdersResult, 'totalCount'>
+
+const TWAP_STATUS: Record<TwapStatus, TwapOrderStatus> = {
+  open: TwapOrderStatus.Pending,
+  filled: TwapOrderStatus.Fulfilled,
+  partiallyFilled: TwapOrderStatus.PartiallyFilled,
+  expired: TwapOrderStatus.Expired,
+  cancelled: TwapOrderStatus.Cancelled,
+}
 
 interface EoaTwapOrdersResult {
   orders: TwapOrdersList
@@ -105,7 +112,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
     }
     const executionInfo = {
       // TODO rename this to isCompleted, this is its only purpose and it is confusing to have a count of confirmed parts when we only ever use it as a boolean
-      confirmedPartsCount: twapOrder.status === 'Completed' ? schedule.numberOfParts : 0,
+      confirmedPartsCount: twapOrder.lifecycleStatus === 'Completed' ? schedule.numberOfParts : 0,
       info: {
         executedSellAmount: executedAmounts.executedSellAmount.toString(),
         executedBuyAmount: executedAmounts.executedBuyAmount.toString(),
@@ -121,13 +128,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
       safeAddress: twapOrder.owner,
       resolvedOwner: twapOrder.resolvedOwner,
       order,
-      status: getTwapOrderStatus({
-        execution: executionInfo,
-        executionDate: createdAt,
-        isCancelled: twapOrder.status === 'Cancelled',
-        isWaitingForSignature: false,
-        order,
-      }),
+      status: TWAP_STATUS[twapOrder.status],
       submissionDate: createdAt.toISOString(),
       executedDate: createdAt.toISOString(),
       partOrdersCount: twapOrder.partOrdersCount,
