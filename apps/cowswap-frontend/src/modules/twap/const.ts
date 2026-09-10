@@ -53,10 +53,14 @@ export const TWAP_ORDER_STRUCT = [
 const twapHandlerAddress = '0x6cF1e9cA41f7611dEf408122793c358a3d11E5a5'
 export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = mapAddressToSupportedNetworks(twapHandlerAddress)
 
-export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Cancelling]
+export const TWAP_PENDING_STATUSES: TwapOrderStatus[] = [
+  TwapOrderStatus.WaitSigning,
+  TwapOrderStatus.Open,
+  TwapOrderStatus.Cancelling,
+]
 
-export const TWAP_FINAL_STATUSES = [
-  TwapOrderStatus.Fulfilled,
+export const TWAP_FINAL_STATUSES: TwapOrderStatus[] = [
+  TwapOrderStatus.Filled,
   TwapOrderStatus.PartiallyFilled,
   TwapOrderStatus.Expired,
   TwapOrderStatus.Cancelled,

@@ -33,12 +33,7 @@ export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderS
     },
   })
 
-  if (executionStatus === 'filled') return TwapOrderStatus.Fulfilled
-  if (executionStatus === 'cancelled') return TwapOrderStatus.Cancelled
-  if (executionStatus === 'partiallyFilled') return TwapOrderStatus.PartiallyFilled
-  if (executionStatus === 'expired') return TwapOrderStatus.Expired
-
-  return isWaitingForSignature ? TwapOrderStatus.WaitSigning : TwapOrderStatus.Pending
+  return executionStatus === 'open' && isWaitingForSignature ? TwapOrderStatus.WaitSigning : executionStatus
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {

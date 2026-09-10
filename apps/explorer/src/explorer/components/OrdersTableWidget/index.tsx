@@ -3,6 +3,7 @@ import { useState, type ReactNode } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import type { AddressKey } from '@cowprotocol/cow-sdk'
 
+import { ORDERS_PAGE_SIZE } from 'explorer/const'
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, type BlockchainNetwork } from './context/OrdersTableContext'
@@ -42,7 +43,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     setPageSize,
     handleNextPage,
     handlePreviousPage,
-  } = useTable({ initialState: { pageOffset: 0, pageSize: 20 } })
+  } = useTable({ initialState: { pageOffset: 0, pageSize: ORDERS_PAGE_SIZE } })
   const {
     orders,
     isLoading,

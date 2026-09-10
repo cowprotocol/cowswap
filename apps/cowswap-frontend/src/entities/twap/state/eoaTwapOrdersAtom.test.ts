@@ -6,14 +6,53 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import type { TwapOrderItem } from 'modules/twap'
 
 import { eoaTwapOrdersAtom } from './eoaTwapOrdersAtom'
+import { twapOrdersAtom } from './twapOrdersAtom'
 
 const OWNER_A = '0x1111111111111111111111111111111111111111'
 const OWNER_B = '0x2222222222222222222222222222222222222222'
 const CHAIN_ID = SupportedChainId.GNOSIS_CHAIN
 
-describe('eoaTwapOrdersAtom', () => {
+describe('TWAP order storage', () => {
   beforeEach(() => {
     localStorage.clear()
+  })
+
+  it('ignores the Safe v1 cache and restores orders from v2', () => {
+    const order = makeOrder('cached-event', OWNER_A)
+    const oldCache = JSON.stringify({ [order.id]: { ...order, status: 'Pending' } })
+    localStorage.setItem('twap-orders-list:v1', oldCache)
+    const store = createStore()
+    const unsubscribe = store.sub(twapOrdersAtom, () => undefined)
+    expect(store.get(twapOrdersAtom)).toEqual({})
+
+    store.set(twapOrdersAtom, { [order.id]: order })
+    unsubscribe()
+    const reloadedStore = createStore()
+    const unsubscribeReloaded = reloadedStore.sub(twapOrdersAtom, () => undefined)
+    expect(reloadedStore.get(twapOrdersAtom)).toEqual({ [order.id]: order })
+    expect(JSON.parse(String(localStorage.getItem('twap-orders-list:v2')))).toEqual({ [order.id]: order })
+    expect(localStorage.getItem('twap-orders-list:v1')).toBe(oldCache)
+    unsubscribeReloaded()
+  })
+
+  it('ignores the EOA v1 cache and restores orders from v2', () => {
+    const order = makeOrder('cached-event', OWNER_A)
+    const ownerKey = `${CHAIN_ID}:${OWNER_A}`
+    const oldCache = JSON.stringify({ [ownerKey]: { [order.id]: { ...order, status: 'Pending' } } })
+    localStorage.setItem('eoa-twap-orders:v1', oldCache)
+    const store = createStore()
+    store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
+    const unsubscribe = store.sub(eoaTwapOrdersAtom, () => undefined)
+    expect(store.get(eoaTwapOrdersAtom)).toEqual({})
+
+    store.set(eoaTwapOrdersAtom, { [order.id]: order })
+    unsubscribe()
+    const reloadedStore = createStore()
+    reloadedStore.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
+    const unsubscribeReloaded = reloadedStore.sub(eoaTwapOrdersAtom, () => undefined)
+    expect(reloadedStore.get(eoaTwapOrdersAtom)).toEqual({ [order.id]: order })
+    expect(localStorage.getItem('eoa-twap-orders:v1')).toBe(oldCache)
+    unsubscribeReloaded()
   })
 
   it('isolates persisted owner buckets and restores a bucket when switching back', () => {
@@ -40,7 +79,7 @@ describe('eoaTwapOrdersAtom', () => {
     store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
     store.set(eoaTwapOrdersAtom, { [order.id]: order })
 
-    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v1'))) as Record<string, unknown>
+    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v2'))) as Record<string, unknown>
     expect(Object.values(persisted)).toEqual([{ [order.id]: order }])
     expect(store.get(eoaTwapOrdersAtom)).toEqual({ [order.id]: order })
   })
@@ -73,7 +112,7 @@ function makeOrder(id: string, resolvedOwner: string, createdAt = 0): TwapOrderI
     chainId: CHAIN_ID,
     safeAddress: '0x3333333333333333333333333333333333333333',
     resolvedOwner,
-    status: 'Pending' as TwapOrderItem['status'],
+    status: 'open',
     submissionDate: date,
     executedDate: date,
     order: {

@@ -3,13 +3,13 @@ import { EnrichedOrder, OrderClass, OrderKind, OrderStatus, SigningScheme } from
 import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
 
 const statusMap: Record<TwapOrderStatus, OrderStatus> = {
-  [TwapOrderStatus.Pending]: OrderStatus.OPEN,
+  [TwapOrderStatus.Open]: OrderStatus.OPEN,
   [TwapOrderStatus.Cancelling]: OrderStatus.OPEN,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
   [TwapOrderStatus.PartiallyFilled]: OrderStatus.EXPIRED,
-  [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
+  [TwapOrderStatus.Filled]: OrderStatus.FULFILLED,
 }
 
 export function emulateTwapAsOrder(item: TwapOrderItem): Omit<EnrichedOrder, 'settlementContract'> {

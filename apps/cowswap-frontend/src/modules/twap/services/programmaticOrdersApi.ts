@@ -1,24 +1,15 @@
 import { logTwap } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProgrammaticOrderApi } from '@cowprotocol/sdk-composable'
-import type { QueryPage, TwapOrder, TwapPartOrder, TwapStatus } from '@cowprotocol/sdk-composable'
+import type { QueryPage, TwapOrder, TwapPartOrder } from '@cowprotocol/sdk-composable'
 
-import { TwapOrderStatus, type TWAPOrderStruct } from '../types'
-
+import type { TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
 
 const PROGRAMMATIC_ORDERS_API_URL =
   process.env.REACT_APP_PROGRAMMATIC_ORDERS_API_URL || 'https://programmatic-orders.cow.fi/'
 
 type EoaTwapOrdersDelta = Omit<EoaTwapOrdersResult, 'totalCount'>
-
-const TWAP_STATUS: Record<TwapStatus, TwapOrderStatus> = {
-  open: TwapOrderStatus.Pending,
-  filled: TwapOrderStatus.Fulfilled,
-  partiallyFilled: TwapOrderStatus.PartiallyFilled,
-  expired: TwapOrderStatus.Expired,
-  cancelled: TwapOrderStatus.Cancelled,
-}
 
 interface EoaTwapOrdersResult {
   orders: TwapOrdersList
@@ -128,7 +119,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
       safeAddress: twapOrder.owner,
       resolvedOwner: twapOrder.resolvedOwner,
       order,
-      status: TWAP_STATUS[twapOrder.status],
+      status: twapOrder.status,
       submissionDate: createdAt.toISOString(),
       executedDate: createdAt.toISOString(),
       partOrdersCount: twapOrder.partOrdersCount,

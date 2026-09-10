@@ -1,10 +1,10 @@
 import type { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { QueryPage, TwapOrder } from '@cowprotocol/sdk-composable'
 
+import { ORDERS_QUERY_INTERVAL } from 'explorer/const'
 import useSWR, { SWRResponse } from 'swr'
 
 import { programmaticOrdersApi } from '../programmaticOrdersApi.service'
-import { TWAP_REFRESH_INTERVAL } from '../twap.constants'
 
 interface UseTwapOrdersParams {
   owner: AddressKey
@@ -26,7 +26,7 @@ export function useTwapOrders({
     () => programmaticOrdersApi.getTwapOrders({ resolvedOwner: owner, chainId }, { limit, offset, direction: 'desc' }),
     {
       keepPreviousData: true,
-      refreshInterval: offset === 0 ? TWAP_REFRESH_INTERVAL : 0,
+      refreshInterval: offset === 0 ? ORDERS_QUERY_INTERVAL : 0,
     },
   )
 }

@@ -19,6 +19,7 @@ import { HelpTooltip } from 'components/Tooltip'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
+import { ORDERS_PAGE_SIZE } from 'explorer/const'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
@@ -26,7 +27,6 @@ import * as styledEl from './TwapHistory.styled'
 
 import { getTwapProgress } from '../getTwapProgress'
 import { useTwapOrders } from '../hooks/useTwapOrders'
-import { TWAP_PAGE_SIZE } from '../twap.constants'
 import { TwapPaginationContext } from '../TwapPaginationContext'
 
 import type { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -39,7 +39,7 @@ interface TwapHistoryProps {
 
 export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): ReactNode {
   const { state, setPageSize, handleNextPage, handlePreviousPage } = useTable({
-    initialState: { pageOffset: 0, pageSize: TWAP_PAGE_SIZE },
+    initialState: { pageOffset: 0, pageSize: ORDERS_PAGE_SIZE },
   })
   const { data, error, isLoading } = useTwapOrders({
     owner,

@@ -39,7 +39,7 @@ describe('getTwapOrderStatus()', () => {
         order: orderStruct,
       })
 
-      expect(status).toBe(TwapOrderStatus.Fulfilled)
+      expect(status).toBe(TwapOrderStatus.Filled)
     })
   })
 
@@ -62,7 +62,7 @@ describe('getTwapOrderStatus()', () => {
         order: orderStruct,
       })
 
-      expect(status).toBe(TwapOrderStatus.Pending)
+      expect(status).toBe(TwapOrderStatus.Open)
     })
   })
 
@@ -85,7 +85,7 @@ describe('getTwapOrderStatus()', () => {
         order: orderStruct,
       })
 
-      expect(status).toBe(TwapOrderStatus.Pending)
+      expect(status).toBe(TwapOrderStatus.Open)
     })
 
     it('Then WaitSigning when the order is waiting for a signature', () => {

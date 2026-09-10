@@ -1,11 +1,11 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
+import { ORDERS_QUERY_INTERVAL } from 'explorer/const'
 import useSWR, { SWRResponse } from 'swr'
 import { TWAP_SUPPORTED_CHAIN_IDS } from 'utils'
 
 import { programmaticOrdersApi } from '../programmaticOrdersApi.service'
-import { TWAP_REFRESH_INTERVAL } from '../twap.constants'
 
 export interface ResolvedTwapOrder {
   chainId: SupportedChainId
@@ -49,6 +49,6 @@ export function useTwapOrder({
   return useSWR(
     enabled ? ['twap-order', eventId, chainId, searchAllChains] : null,
     () => findTwapOrder(eventId, chainId, searchAllChains),
-    { refreshInterval: TWAP_REFRESH_INTERVAL },
+    { refreshInterval: ORDERS_QUERY_INTERVAL },
   )
 }

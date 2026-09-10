@@ -26,7 +26,7 @@ import OrdersUserDetailsTable from 'components/orders/OrdersUserDetailsTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
-import { APP_TITLE } from 'explorer/const'
+import { APP_TITLE, ORDERS_PAGE_SIZE } from 'explorer/const'
 import { FlexContainerVar, StyledSearch, Wrapper } from 'explorer/pages/styled'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { Helmet } from 'react-helmet'
@@ -47,7 +47,6 @@ import { getTwapProgress } from '../getTwapProgress'
 import { useTwapOrder } from '../hooks/useTwapOrder'
 import { useTwapPartOrders } from '../hooks/useTwapPartOrders'
 import { toTwapPartTableRow } from '../toTwapPartTableRow'
-import { TWAP_PAGE_SIZE } from '../twap.constants'
 import { TwapPaginationContext } from '../TwapPaginationContext'
 
 import type { TokenErc20 } from '@gnosis.pm/dex-js'
@@ -316,7 +315,7 @@ function TwapPartsTabs({
 }): ReactNode {
   const [selectedTab, setSelectedTab] = useState(1)
   const { state, setPageSize, handleNextPage, handlePreviousPage } = useTable({
-    initialState: { pageOffset: 0, pageSize: TWAP_PAGE_SIZE },
+    initialState: { pageOffset: 0, pageSize: ORDERS_PAGE_SIZE },
   })
   const { data, error, isLoading } = useTwapPartOrders({
     eventId: order.eventId,

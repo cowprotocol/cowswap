@@ -25,7 +25,7 @@ function makeOrder(
     chainId,
     safeAddress,
     resolvedOwner,
-    status: 'Pending' as TwapOrderItem['status'],
+    status: 'open',
     submissionDate: new Date(0).toISOString(),
     order: {
       sellToken: '0x2222222222222222222222222222222222222222',
