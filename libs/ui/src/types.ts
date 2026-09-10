@@ -14,6 +14,7 @@ export const BadgeTypes = {
   SUCCESS: 'success',
   ALERT: 'alert',
   ALERT2: 'alert2',
+  ERROR: 'error',
   DEFAULT: 'default',
 } as const
 

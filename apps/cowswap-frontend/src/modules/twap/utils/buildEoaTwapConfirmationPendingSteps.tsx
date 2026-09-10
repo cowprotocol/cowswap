@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
+import { BadgeType } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -23,13 +24,21 @@ const APPROVAL_STEPS = new Set<EoaTwapSigningSteps>([
 
 export interface BuildEoaTwapConfirmationPendingStepsParams {
   signingStep: EoaTwapSigningStepState
-  symbol?: string
   token?: Currency
+}
+
+export interface EoaTwapCurrentStepBadgeProps {
+  children: ReactNode
+  type?: BadgeType
+}
+
+export interface EoaTwapCurrentStepButtonProps {
+  label: ReactNode
+  isDisabled: boolean
 }
 
 export function buildEoaTwapConfirmationPendingSteps({
   signingStep,
-  symbol,
   token,
 }: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] | null {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
@@ -40,6 +49,7 @@ export function buildEoaTwapConfirmationPendingSteps({
   }
 
   return signingStep.plan.map((step, index) => {
+    const symbol = token?.symbol
     const label = getEoaTwapStepLabel(step, symbol)
     const approvalToken = APPROVAL_STEPS.has(step) ? token : undefined
 
@@ -61,6 +71,131 @@ export function buildEoaTwapConfirmationPendingSteps({
       ...(approvalToken ? { token: approvalToken } : {}),
     }
   })
+}
+
+export function getEoaTwapCurrentStepBadge(
+  step: EoaTwapSigningSteps,
+  status: OrderStepStatus,
+): EoaTwapCurrentStepBadgeProps {
+  const isLoading = status === 'loading'
+  const hasError = status === 'error'
+
+  switch (step) {
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
+      return isLoading
+        ? {
+            children: t`Approval pending`,
+            type: 'information',
+          }
+        : {
+            children: t`Action required`,
+            type: hasError ? 'error' : 'error',
+          }
+
+    case EoaTwapSigningSteps.PermitPoller:
+      return isLoading
+        ? {
+            children: t`Permit pending`,
+            type: 'information',
+          }
+        : {
+            children: t`Action required`,
+            type: hasError ? 'error' : 'alert',
+          }
+
+    case EoaTwapSigningSteps.TwapSetup:
+    case EoaTwapSigningSteps.TwapSign:
+      return isLoading
+        ? {
+            children: t`Waiting for signature`,
+            type: 'information',
+          }
+        : {
+            children: t`Action required`,
+            type: hasError ? 'error' : 'alert',
+          }
+
+    case EoaTwapSigningSteps.Success:
+      return {
+        children: t`Active`,
+        type: 'success',
+      }
+  }
+}
+
+export function getEoaTwapCurrentStepButton(
+  step: EoaTwapSigningSteps,
+  status: OrderStepStatus,
+  symbol: string,
+): EoaTwapCurrentStepButtonProps | null {
+  const isLoading = status === 'loading'
+  const hasError = status === 'error'
+
+  switch (step) {
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+      return isLoading
+        ? {
+            label: t`Resetting approval...`,
+            isDisabled: true,
+          }
+        : hasError
+          ? {
+              label: t`Reset approval`,
+              isDisabled: false,
+            }
+          : {
+              label: t`Confirming with your wallet...`,
+              isDisabled: true,
+            }
+
+    case EoaTwapSigningSteps.ApprovePoller:
+      return isLoading
+        ? {
+            label: t`Approving ${symbol}...`,
+            isDisabled: true,
+          }
+        : hasError
+          ? {
+              label: t`Approve ${symbol}`,
+              isDisabled: false,
+            }
+          : {
+              label: t`Confirming with your wallet...`,
+              isDisabled: true,
+            }
+
+    case EoaTwapSigningSteps.PermitPoller:
+      return isLoading
+        ? {
+            label: t`Approving ${symbol}...`,
+            isDisabled: true,
+          }
+        : hasError
+          ? {
+              label: t`Approve ${symbol}`,
+              isDisabled: false,
+            }
+          : {
+              label: t`Confirming with your wallet...`,
+              isDisabled: true,
+            }
+
+    case EoaTwapSigningSteps.TwapSetup:
+    case EoaTwapSigningSteps.TwapSign:
+      return hasError
+        ? {
+            label: t`Try again`,
+            isDisabled: false,
+          }
+        : {
+            label: t`Confirming with your wallet...`,
+            isDisabled: true,
+          }
+
+    default:
+      return null
+  }
 }
 
 export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {

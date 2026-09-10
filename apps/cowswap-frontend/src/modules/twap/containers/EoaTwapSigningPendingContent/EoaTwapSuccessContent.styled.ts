@@ -52,7 +52,7 @@ export const ExplorerAnchor = styled(ExternalLink)`
 
 export const Actions = styled.div`
   display: grid;
-  grid-template-columns: 40% 60%;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
   width: 100%;
 `

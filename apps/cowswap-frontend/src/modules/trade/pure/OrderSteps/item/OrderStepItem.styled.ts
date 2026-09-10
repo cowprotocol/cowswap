@@ -163,7 +163,7 @@ export const StepLabel = styled.span`
   }
 `
 
-export const StepExpandIcon = styled.button`
+export const StepExpandIcon = styled.span`
   position: absolute;
   right: 0;
   top: 14px;

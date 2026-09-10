@@ -173,9 +173,9 @@ export enum UI {
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
 
   // Line Heights:
-  LINE_HEIGHT_SMALL = '--cow-line-height-small',
-  LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
-  LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
+  // LINE_HEIGHT_SMALL = '--cow-line-height-small',
+  // LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
+  // LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
 
   // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
