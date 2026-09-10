@@ -176,6 +176,16 @@ describe('solanaFlow', () => {
     expect(mockPlanWrapStep).toHaveBeenCalledWith(expect.objectContaining({ sellAmount: SELL_AMOUNT }))
   })
 
+  // The quoted intent carries the quote's own TTL, so the deadline has to be handed to the order
+  // planner explicitly — otherwise the on-chain order expires at a time the UI never showed.
+  it("hands the user's deadline to the order planner", async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ validTo: context.context.validTo }))
+  })
+
   it('delegates the amount the approve switcher chose, not the sell amount', async () => {
     const unlimited = 2n ** 64n - 1n
 
