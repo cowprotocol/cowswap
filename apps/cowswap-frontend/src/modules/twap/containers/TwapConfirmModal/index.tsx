@@ -12,6 +12,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useCommonTradeConfirmContext,
+  useFreezeWhileConfirming,
   useTradeConfirmActions,
   useTradePriceImpact,
 } from 'modules/trade'
@@ -87,6 +88,14 @@ export function TwapConfirmModal(): ReactNode {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
+  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
+  // the modal can never display a different amount than what was actually confirmed/signed.
+  const {
+    receiveAmountInfo: frozenReceiveAmountInfo,
+    rateInfoParams: frozenRateInfoParams,
+    slippage: frozenSlippage,
+  } = useFreezeWhileConfirming({ receiveAmountInfo, rateInfoParams, slippage })
+
   const { timeInterval, numOfParts } = twapOrder || {}
 
   const partDuration = timeInterval
@@ -95,11 +104,11 @@ export function TwapConfirmModal(): ReactNode {
   const hasSigningPlan = !!eoaTwapSigningStep
 
   const tradeDetailsElement =
-    receiveAmountInfo && numOfParts ? (
+    frozenReceiveAmountInfo && numOfParts ? (
       <TwapTradeConfirmationDetails
-        rateInfoParams={rateInfoParams}
-        receiveAmountInfo={receiveAmountInfo}
-        slippage={slippage}
+        rateInfoParams={frozenRateInfoParams}
+        receiveAmountInfo={frozenReceiveAmountInfo}
+        slippage={frozenSlippage}
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}
