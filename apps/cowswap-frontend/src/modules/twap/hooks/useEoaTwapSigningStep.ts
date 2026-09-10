@@ -10,13 +10,18 @@ import {
 
 export type EoaTwapFlowUpdate = Partial<EoaTwapSigningStepState> & Pick<EoaTwapSigningStepState, 'step' | 'phase'>
 
-export type EoaTwapFlowUpdater = (update: null | EoaTwapFlowUpdate) => void
+export type EoaTwapFlowUpdater = (update: EoaTwapFlowUpdaterArg) => void
+
+export type EoaTwapFlowUpdaterArg =
+  | null
+  | EoaTwapFlowUpdate
+  | ((prev: EoaTwapSigningStepState | null) => EoaTwapFlowUpdate)
 
 export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
   const setState = useSetAtom(eoaTwapSigningStepAtom)
 
   return useCallback(
-    (update: null | EoaTwapFlowUpdate) => {
+    (update: EoaTwapFlowUpdaterArg) => {
       if (!update) {
         cancelEoaTwapPlacement()
         setState(null)
@@ -28,7 +33,7 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
         throw new EoaTwapPlacementCancelledError()
       }
 
-      setState((prev) => mergeEoaTwapFlowState(prev, update))
+      setState((prev) => mergeEoaTwapFlowState(prev, typeof update === 'function' ? update(prev) : update))
     },
     [setState],
   )

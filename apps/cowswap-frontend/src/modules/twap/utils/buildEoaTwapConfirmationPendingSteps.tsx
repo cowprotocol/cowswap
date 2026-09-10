@@ -90,7 +90,7 @@ export function getEoaTwapCurrentStepBadge(
           }
         : {
             children: t`Action required`,
-            type: hasError ? 'error' : 'error',
+            type: hasError ? 'error' : 'alert',
           }
 
     case EoaTwapSigningSteps.PermitPoller:
@@ -106,15 +106,23 @@ export function getEoaTwapCurrentStepBadge(
 
     case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
-      return isLoading
-        ? {
-            children: t`Waiting for signature`,
-            type: 'information',
-          }
-        : {
-            children: t`Action required`,
-            type: hasError ? 'error' : 'alert',
-          }
+      // TODO: This should probably be "Action required" as well, or use type="alert" at least:
+      return {
+        children: t`Waiting for signature`,
+        type: 'information',
+      }
+
+    case EoaTwapSigningSteps.SubmitTwap:
+      return {
+        children: t`Activating`,
+        type: 'information',
+      }
+
+    case EoaTwapSigningSteps.SubmitTwapSlow:
+      return {
+        children: t`Still activating`,
+        type: 'information',
+      }
 
     case EoaTwapSigningSteps.Success:
       return {
@@ -194,6 +202,7 @@ export function getEoaTwapCurrentStepButton(
           }
 
     default:
+      // No more button past `TwapSign`, as we are just waiting for the tx confirmation.
       return null
   }
 }
@@ -225,15 +234,13 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
       return t`Sign the setup in your wallet. This registers just-in-time funding and creates the TWAP.`
 
     case EoaTwapSigningSteps.TwapSign:
-      if (isLoading) {
-        return (
-          <p>
-            {t`Submitting setup transaction`}
-            <ThreeDots />
-          </p>
-        )
-      }
       return t`Confirm the TWAP transaction in your connected wallet.`
+
+    case EoaTwapSigningSteps.SubmitTwap:
+      return t`Sit tight! We're getting your order ready`
+
+    case EoaTwapSigningSteps.SubmitTwapSlow:
+      return t`This is taking longer than usual. We're still getting your order ready.`
 
     case EoaTwapSigningSteps.Success:
       return undefined
@@ -251,6 +258,10 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
       return t`Set up TWAP`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
+    case EoaTwapSigningSteps.SubmitTwap:
+      return t`Activating TWAP`
+    case EoaTwapSigningSteps.SubmitTwapSlow:
+      return t`Still activating TWAP`
     case EoaTwapSigningSteps.Success:
       return ''
   }

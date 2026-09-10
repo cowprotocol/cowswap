@@ -29,7 +29,8 @@ interface AppendSpenderApprovalStepIds {
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
  * - (Required) {@link EoaTwapSigningSteps.TwapSetup}: cow-shed EIP-712 for the setup multicall
  *   (optional EOA => Poller permit calldata + `registerFromShed` + optional shed => Vault Relayer approve + ComposableCoW create)
- * - (Required) {@link EoaTwapSigningSteps.TwapSign}: factory executeHooks TX; wait for the receipt, then the flow is done
+ * - (Required) {@link EoaTwapSigningSteps.TwapSign}: factory executeHooks TX signature
+ * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the factory executeHooks receipt, then the flow is done
  *
  * Approval steps are omitted when allowance is already sufficient.
  */
@@ -44,9 +45,14 @@ export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepP
     }),
   )
 
-  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign)
+  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap)
 
   return steps
+}
+
+/** Swaps {@link EoaTwapSigningSteps.SubmitTwap} for {@link EoaTwapSigningSteps.SubmitTwapSlow} mid-flow. */
+export function replaceSubmitTwapWithSlowInPlan(plan: EoaTwapSigningSteps[]): EoaTwapSigningSteps[] {
+  return plan.map((step) => (step === EoaTwapSigningSteps.SubmitTwap ? EoaTwapSigningSteps.SubmitTwapSlow : step))
 }
 
 function getSpenderApprovalSteps(

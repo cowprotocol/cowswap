@@ -51,6 +51,10 @@ export enum EoaTwapSigningSteps {
   TwapSetup = 'TwapSetup',
   /** Factory executeHooks on-chain transaction. */
   TwapSign = 'TwapSign',
+  /** Wait for the factory executeHooks transaction to be mined. */
+  SubmitTwap = 'SubmitTwap',
+  /** Same as {@link SubmitTwap}, shown when activation is taking longer than usual. */
+  SubmitTwapSlow = 'SubmitTwapSlow',
   /** Placement finished; the review card shows the inline success box. */
   Success = 'Success',
 }
