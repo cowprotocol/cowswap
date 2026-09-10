@@ -47,10 +47,10 @@ function _getFillOrKillBuySurplus(order: Order): Surplus | null {
     return null
   }
 
-  const { executedSellAmountBeforeFees } = apiAdditionalInfo
+  const { executedSellAmountBeforeFees, executedSellAmount } = apiAdditionalInfo
 
   const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees ?? executedSellAmount)
 
   // BUY order has the buy amount fixed, so it'll sell AT MOST `sellAmount`
   // Surplus will come in the form of a "discount", selling less than `sellAmount`
@@ -91,10 +91,10 @@ function _getPartialFillBuySurplus(order: Order): Surplus | null {
     return null
   }
 
-  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
+  const { executedSellAmountBeforeFees, executedSellAmount, executedBuyAmount } = apiAdditionalInfo
 
   const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees ?? executedSellAmount)
   const buyAmountBigNumber = new BigNumber(buyAmount)
   const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
 
@@ -117,10 +117,10 @@ function _getPartialFillSellSurplus(order: Order): Surplus | null {
     return null
   }
 
-  const { executedSellAmountBeforeFees, executedBuyAmount } = apiAdditionalInfo
+  const { executedSellAmountBeforeFees, executedSellAmount, executedBuyAmount } = apiAdditionalInfo
 
   const sellAmountBigNumber = new BigNumber(sellAmount)
-  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees)
+  const executedSellAmountBigNumber = new BigNumber(executedSellAmountBeforeFees ?? executedSellAmount)
   const buyAmountBigNumber = new BigNumber(buyAmount)
   const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
 

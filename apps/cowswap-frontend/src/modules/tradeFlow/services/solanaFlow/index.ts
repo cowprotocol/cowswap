@@ -1,10 +1,12 @@
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
-import { OrderClass, OrderParameters } from '@cowprotocol/cow-sdk'
-import type { Token } from '@cowprotocol/currency'
+import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
+import type { UiOrderType } from '@cowprotocol/types'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { emitPostedOrderEvent } from 'modules/orders'
 import { planCreateOrderStep, planDelegateStep, planWrapStep, sendSolanaFlow, SolanaFlowStep } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -14,6 +16,7 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
+// eslint-disable-next-line max-lines-per-function
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
@@ -33,7 +36,7 @@ export async function solanaFlow(
     delegationAmount,
     isNativeSell,
   } = input
-  const { inputAmount, outputAmount, chainId, validTo, receiver } = context
+  const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate and create-order in one transaction')
@@ -92,6 +95,18 @@ export async function solanaFlow(
       callbacks.dispatch,
     )
 
+    emitSolanaPostedOrderEvent({
+      chainId,
+      orderId,
+      account,
+      orderKind,
+      uiOrderType: swapFlowAnalyticsContext.orderType,
+      receiver,
+      inputAmount,
+      outputAmount,
+      txHash: hash,
+    })
+
     logTradeFlow('SOLANA FLOW', 'STEP 2: show UI of the successfully sent transaction', orderId)
     // onSuccess takes the order id, not the tx hash: OrderSubmittedContent looks the order up
     // from Redux by this value via `useOrder({ id: transactionHash })`.
@@ -146,4 +161,32 @@ function buildSolanaOrder(params: {
     // The order is created on-chain by the transaction above; there is no off-chain signature to carry.
     signature: txHash,
   }
+}
+
+// Drives the rich "Order submitted" snackbar (OrderNotification); without this, the fallback
+// transaction-added toast shows the raw bundled tx summary instead (e.g. "Swap USDC for SOL").
+function emitSolanaPostedOrderEvent(params: {
+  chainId: SupportedChainId
+  orderId: string
+  account: string
+  orderKind: OrderKind
+  uiOrderType: UiOrderType
+  receiver: string
+  inputAmount: CurrencyAmount<Currency>
+  outputAmount: CurrencyAmount<Currency>
+  txHash: string
+}): void {
+  const { chainId, orderId, account, orderKind, uiOrderType, receiver, inputAmount, outputAmount, txHash } = params
+
+  emitPostedOrderEvent({
+    chainId,
+    id: orderId,
+    owner: account,
+    kind: orderKind,
+    uiOrderType,
+    receiver,
+    inputAmount,
+    outputAmount,
+    orderCreationHash: txHash,
+  })
 }
