@@ -17,6 +17,8 @@ const dependencySections = [
 const scanRoots = ['apps', 'libs']
 const ignoredDirs = new Set(['node_modules'])
 
+const GITHUB_PACKAGES_DOWNLOAD_PREFIX = 'https://npm.pkg.github.com/download/'
+
 const exactSemverRegex = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 const npmAliasExactRegex = /^npm:.+@\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/
 
@@ -45,7 +47,9 @@ function isPinnedVersion(spec) {
   if (npmAliasExactRegex.test(spec)) return true
 
   if (
-    (spec.startsWith('https://') && spec.endsWith('.tgz')) ||
+    // GitHub Packages download URLs end in a content hash rather than .tgz, and embed the
+    // exact version — at least as pinned as an exact semver.
+    (spec.startsWith('https://') && (spec.endsWith('.tgz') || spec.startsWith(GITHUB_PACKAGES_DOWNLOAD_PREFIX))) ||
     spec.startsWith('file:') ||
     spec.startsWith('link:') ||
     spec.startsWith('portal:') ||
@@ -81,6 +85,26 @@ function checkPnpmOverrides(filePath, packageJson) {
   checkDependencyMap(filePath, 'pnpm.overrides', overrides)
 }
 
+/**
+ * SDK previews are pinned as GitHub Packages tarball URLs, which need auth to download. Without a
+ * valid PACKAGE_READ_AUTH_TOKEN, CI and Vercel fail with a bare 401 that names no credential — so
+ * flag it here, at commit time, while it is still cheap to act on.
+ */
+function warnAboutPreviewOverrides(packageJson) {
+  const overrides = packageJson?.pnpm?.overrides
+  if (!overrides || typeof overrides !== 'object') return
+
+  const previews = Object.keys(overrides).filter((name) =>
+    String(overrides[name]).startsWith(GITHUB_PACKAGES_DOWNLOAD_PREFIX),
+  )
+  if (previews.length === 0) return
+
+  console.warn(`\n⚠️  ${previews.length} pnpm.overrides entr(ies) resolve from GitHub Packages:`)
+  console.warn(previews.map((name) => `  ${name}`).join('\n'))
+  console.warn('   CI and Vercel need a valid PACKAGE_READ_AUTH_TOKEN secret to install these.')
+  console.warn('   Remove them from pnpm.overrides before merging.\n')
+}
+
 function main() {
   const rootPackageJsonPath = path.join(repoRoot, 'package.json')
 
@@ -105,6 +129,8 @@ function main() {
     }
 
     checkPnpmOverrides(packageJsonPath, packageJson)
+
+    if (packageJsonPath === rootPackageJsonPath) warnAboutPreviewOverrides(packageJson)
   }
 
   if (errors.length > 0) {
