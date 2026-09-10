@@ -12,6 +12,7 @@ import {
 } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -212,6 +213,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
     const discreteTwapOrders = reduxOrders.filter((order) => order.composableCowInfo?.isVirtualPart === false)
 
     reduxOrders = emulatedTwapOrders.concat(emulatedPartOrders, discreteTwapOrders)
+    emulatedTwapOrders.forEach((order) => ordersTokensSet.add(getAddressKey(order.inputToken.address)))
   }
 
   logOrdersTableDebug(`2. reduxOrders (${orderType} / ${uiOrderType}) =`, reduxOrders)
