@@ -22,11 +22,15 @@ import { getSafeAbsoluteUrl } from './safeLink'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-// returns the checksummed address if the address is valid, otherwise returns false
+/**
+ * EVM only. Returns the checksummed EVM address if valid, otherwise false.
+ *
+ * Do not make this chain-aware: it has no `chainId` and ~23 call sites rely on the EVM contract
+ * (recipient validation, quote params). For chain-agnostic checks use `isSupportedAddress` /
+ * `getAddressKey` from `@cowprotocol/cow-sdk`.
+ */
 export function isAddress(value: string | undefined | null): string | false {
   if (!value) return false
-
-  if (isSolanaAddress(value)) return value // base58, case-sensitive — no checksum transform
 
   return checksumEvmAddress(value)
 }
