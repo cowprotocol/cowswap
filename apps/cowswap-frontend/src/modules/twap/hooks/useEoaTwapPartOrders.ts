@@ -58,7 +58,7 @@ export function useEoaTwapPartOrders(
           page,
         })
 
-        return partPage
+        return { ...partPage, eventId, chainId, page }
       } catch (err: unknown) {
         const error = normalizeError(err)
 
@@ -72,12 +72,20 @@ export function useEoaTwapPartOrders(
     },
     {
       ...SWR_NO_REFRESH_OPTIONS,
+      keepPreviousData: true,
       shouldRetryOnError: false,
     },
   )
 
   return useMemo(() => {
-    if (!partPage || !twapOrder) return { orders: [], isLoading }
+    if (!enabled || !twapOrder || partOrdersCount === 0) return { orders: [], isLoading: false }
+    if (
+      !partPage ||
+      partPage.eventId !== twapOrder.id ||
+      partPage.chainId !== twapOrder.chainId ||
+      partPage.page !== page
+    )
+      return { orders: [], isLoading }
 
     // `index` starts at 0 on every page. Add the number of parts on earlier pages
     // to find its position in the full TWAP: page 2, index 2 is the 13th part.
@@ -88,9 +96,9 @@ export function useEoaTwapPartOrders(
       orders: partPage.items.map((partOrder, index) =>
         mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1),
       ),
-      isLoading,
+      isLoading: false,
     }
-  }, [isLoading, page, parent, partPage, twapOrder])
+  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder])
 }
 
 function mapApiAdditionalInfo(
