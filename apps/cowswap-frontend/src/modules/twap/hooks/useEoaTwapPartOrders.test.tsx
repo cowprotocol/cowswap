@@ -114,6 +114,55 @@ describe('useEoaTwapPartOrders', () => {
     jest.clearAllMocks()
   })
 
+  it('loads candidate-only parents and promotes the same row without changing the count', async () => {
+    const page = makePartPage('candidate')
+    const candidate = {
+      ...page.items[0],
+      status: 'unconfirmed',
+      executedSellAmount: null,
+      executedBuyAmount: null,
+      executedFeeAmount: null,
+    } as TwapPartOrder
+    fetchEoaTwapPartOrdersMock
+      .mockResolvedValueOnce({ totalCount: 1, items: [candidate] })
+      .mockResolvedValueOnce({ totalCount: 1, items: [{ ...candidate, status: 'open' }] })
+    const { result, rerender } = renderHook(({ order }) => useEoaTwapPartOrders(order, parent, 1, true), {
+      initialProps: { order: makeTwapOrder(1, '1') },
+      wrapper: SwrTestProvider,
+    })
+
+    await waitFor(() => expect(result.current.orders[0]?.status).toBe(OrderStatus.SCHEDULED))
+    expect(result.current.orders[0]?.composableCowInfo?.isVirtualPart).toBe(true)
+
+    rerender({ order: makeTwapOrder(1, '2') })
+
+    await waitFor(() => expect(result.current.orders[0]?.status).toBe(OrderStatus.PENDING))
+    expect(result.current.orders[0]?.id).toBe('candidate')
+    expect(result.current.orders[0]?.composableCowInfo?.isVirtualPart).toBe(false)
+    expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
+  })
+
+  it.each([
+    [TwapOrderStatus.Cancelled, OrderStatus.CANCELLED],
+    [TwapOrderStatus.Expired, OrderStatus.EXPIRED],
+  ])('does not show candidates as scheduled under a %s parent', async (status, expected) => {
+    const page = makePartPage('candidate')
+    fetchEoaTwapPartOrdersMock.mockResolvedValue({
+      ...page,
+      items: page.items.map((part) => ({
+        ...part,
+        status: 'unconfirmed',
+        executedSellAmount: null,
+        executedBuyAmount: null,
+        executedFeeAmount: null,
+      })),
+    })
+    const { result } = renderHook(() => useEoaTwapPartOrders({ ...makeTwapOrder(), status }, parent, 1, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders[0]?.status).toBe(expected))
+  })
+
   it('remaps parent snapshots and refetches when the part count changes', async () => {
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce(makePartPage('part-1'))
@@ -143,6 +192,16 @@ describe('useEoaTwapPartOrders', () => {
     rerender({ parentOrder: parent, twapOrder: makeTwapOrder(2) })
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('part-2'))
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('requests the selected server page and marks its final part using the unified count', async () => {
+    fetchEoaTwapPartOrdersMock.mockResolvedValue({ ...makePartPage('last'), totalCount: 11 })
+    const { result } = renderHook(() => useEoaTwapPartOrders(makeTwapOrder(11), parent, 2, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders[0]?.id).toBe('last'))
+    expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledWith('event', SupportedChainId.GNOSIS_CHAIN, 2, 10)
+    expect(result.current.orders[0]?.composableCowInfo?.isTheLastPart).toBe(true)
   })
 
   it('ignores stale responses and clears row failures', async () => {
