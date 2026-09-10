@@ -41,7 +41,6 @@ export interface EoaTwapCurrentStepButtonProps {
 
 interface BuildEoaTwapWalletActionsCompleteDescriptionParams {
   walletActionSteps: EoaTwapSigningSteps[]
-  plan: EoaTwapSigningSteps[]
   completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
   token: Currency | undefined
   chainId: SupportedChainId | undefined
@@ -74,7 +73,6 @@ export function buildEoaTwapConfirmationPendingSteps({
         label: t`Wallet actions complete`,
         description: buildEoaTwapWalletActionsCompleteDescription({
           walletActionSteps,
-          plan: signingStep.plan,
           completedStepTxHashes: signingStep.completedStepTxHashes,
           token,
           chainId,
@@ -350,7 +348,6 @@ export function getEoaTwapWalletActionSummaryLabel(
 
 function buildEoaTwapWalletActionsCompleteDescription({
   walletActionSteps,
-  plan,
   completedStepTxHashes,
   token,
   chainId,
@@ -360,7 +357,7 @@ function buildEoaTwapWalletActionsCompleteDescription({
   return (
     <>
       {walletActionSteps.map((step) => {
-        const label = getEoaTwapWalletActionSummaryLabel(step, symbol, plan)
+        const label = getEoaTwapWalletActionSummaryLabel(step, symbol)
         const outcome = getEoaTwapWalletActionOutcome(step)
 
         if (!label || !outcome) return null
