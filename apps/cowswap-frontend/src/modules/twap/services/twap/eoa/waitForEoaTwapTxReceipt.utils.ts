@@ -34,7 +34,7 @@ export async function waitForEoaTwapTxReceipt(
   const startedAt = Date.now()
 
   while (Date.now() - startedAt < RECEIPT_TIMEOUT_MS) {
-    const receipt = await getTransactionReceipt(config, { hash }).catch(() => null)
+    const receipt = await getTransactionReceipt(config, { hash, chainId }).catch(() => null)
 
     if (receipt) {
       return receipt
@@ -42,7 +42,7 @@ export async function waitForEoaTwapTxReceipt(
 
     let txExists = false
     try {
-      await getTransaction(config, { hash })
+      await getTransaction(config, { hash, chainId })
       txExists = true
     } catch (err: unknown) {
       const error = normalizeError(err)

@@ -9,7 +9,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
+import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import {
   useIsSafeViaWc,
@@ -51,6 +51,7 @@ import { getComposableCowPollerScheduleId } from '../composable-cow-poller/compo
 import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
 import { DEFAULT_TWAP_EXECUTION, TWAP_HANDLER_ADDRESS } from '../const'
 import {
+  canUseEoaTwapPermit,
   ensureEoaTwapSpenderAllowance,
   getEoaTwapApprovalNeeds,
 } from '../services/twap/eoa/ensureEoaTwapSpenderAllowance'
@@ -111,14 +112,16 @@ export function useCreateTwapOrder() {
 
   const appDataInfo = useAppData()
   const sendSafeTransactions = useSendBatchTransactions()
+
   const amountToSignApprove = useGetAmountToSignApprove()
-  // The exact amount the Safe flow will approve on-chain. Shared between the zero-approval
-  // pre-check (via useTwapOrderCreationContext) and the real approve tx (placeSafeTwapOrder)
-  // below so both simulate/target the same value.
-  const safeAmountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
+  // The line above can be misleading because `useGetAmountToSignApprove` checks against the vault relayer allowance,
+  // but we want to approve the poller instead, and it can return null when the form is not ready yet or `0` when the
+  // vault relayer already covers the trade.
+  // Note permit does not use this value. It always permits the exact TWAP sell (`amountToCover`).
+  const amountToApprove = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : maxUint256
   const twapOrderCreationContext = useTwapOrderCreationContext(
     inputCurrencyAmount as Nullish<CurrencyAmount<Token>>,
-    safeAmountToApprove,
+    amountToApprove,
   )
   const extensibleFallbackContext = useExtensibleFallbackContext()
 
@@ -302,6 +305,9 @@ export function useCreateTwapOrder() {
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
+          // 0n means vault-relayer allowance already covers the trade (see amountToApprove above), but we don't care about vault-relayer allowance here,
+          // we want to approve the poller instead, so qw approve the TWAP sell instead of 0 or unlimited.
+          const pollerAmountToApprove = amountToApprove > 0n ? amountToApprove : sellAmountAtoms
 
           const pollerApprovalNeeds = await getEoaTwapApprovalNeeds({
             config,
@@ -309,10 +315,10 @@ export function useCreateTwapOrder() {
             sellTokenAddress,
             spender: eoaPoller,
             amountToCover: sellAmountAtoms,
-            amountToApprove: maxUint256,
+            amountToApprove: pollerAmountToApprove,
           })
 
-          const pollerCanUsePermit = isSupportedPermitInfo(pollerPermitInfo)
+          const pollerCanUsePermit = canUseEoaTwapPermit(pollerPermitInfo, pollerAmountToApprove)
           const pollerNeeds = { ...pollerApprovalNeeds, canUsePermit: pollerCanUsePermit }
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
@@ -329,26 +335,21 @@ export function useCreateTwapOrder() {
           let pollerPermitData: PermitHookData | null = null
 
           if (pollerApprovalNeeds.needsApproval) {
-            // Return a permit for the poller when available, or otherwise do on-chain zero-approve/approve for full TWAP sell:
+            // EIP-2612 permits the exact TWAP sell. Dai-like finite amounts use on-chain approve.
             pollerPermitData = await ensureEoaTwapSpenderAllowance({
               config,
               chainId,
               account: account as `0x${string}`,
               sellTokenAddress,
               sellTokenName: sellToken.name,
+              sellTokenAmount: sellAmountAtoms,
+              amountToPermitOrApprove: pollerAmountToApprove,
               spender: eoaPoller,
-              amountToCover: sellAmountAtoms,
-              amountToApprove: maxUint256,
               permitInfo: pollerPermitInfo,
               generatePermitHook,
               step: EoaTwapSigningSteps.ApprovePoller,
               permitStep: EoaTwapSigningSteps.PermitPoller,
               zeroStep: EoaTwapSigningSteps.ZeroApprovePoller,
-              onChainFallbackPlan: pollerCanUsePermit
-                ? buildEoaTwapSigningStepPlan({
-                    poller: { ...pollerApprovalNeeds, canUsePermit: false },
-                  })
-                : undefined,
               onSigningStep: updateEoaTwapFlow,
               approvalNeeds: pollerNeeds,
             })
@@ -381,7 +382,7 @@ export function useCreateTwapOrder() {
             fallbackHandlerIsNotSet,
             extensibleFallbackContext,
             sendSafeTransactions,
-            amountToApprove: safeAmountToApprove,
+            amountToApprove,
           })
           orderCreationHash = safeTxHash
           confirmModalHash = safeTxHash
@@ -479,7 +480,7 @@ export function useCreateTwapOrder() {
       generatePermitHook,
       walletClient,
       updateEoaTwapFlow,
-      safeAmountToApprove,
+      amountToApprove,
     ],
   )
 }

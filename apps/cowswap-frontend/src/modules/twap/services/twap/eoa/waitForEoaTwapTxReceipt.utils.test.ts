@@ -50,6 +50,7 @@ describe('waitForEoaTwapTxReceipt()', () => {
   beforeEach(() => {
     now = 0
     jest.spyOn(Date, 'now').mockImplementation(() => now)
+    mockedDelay.mockReset()
     mockedDelay.mockImplementation(async (ms = 0) => {
       now += ms
     })
@@ -66,6 +67,22 @@ describe('waitForEoaTwapTxReceipt()', () => {
 
     await expect(waitForEoaTwapTxReceipt(CONFIG, HASH, SupportedChainId.SEPOLIA)).resolves.toBe(SUCCESS_RECEIPT)
     expect(mockedGetTransaction).not.toHaveBeenCalled()
+  })
+
+  it('passes the submitted chainId to receipt and mempool lookups', async () => {
+    mockedGetTransactionReceipt.mockResolvedValueOnce(null as never).mockResolvedValueOnce(SUCCESS_RECEIPT)
+    mockedGetTransaction.mockResolvedValue({ hash: HASH } as never)
+
+    await expect(waitForEoaTwapTxReceipt(CONFIG, HASH, SupportedChainId.SEPOLIA)).resolves.toBe(SUCCESS_RECEIPT)
+
+    expect(mockedGetTransactionReceipt).toHaveBeenCalledWith(CONFIG, {
+      hash: HASH,
+      chainId: SupportedChainId.SEPOLIA,
+    })
+    expect(mockedGetTransaction).toHaveBeenCalledWith(CONFIG, {
+      hash: HASH,
+      chainId: SupportedChainId.SEPOLIA,
+    })
   })
 
   it('returns the receipt after polling while the tx is in the mempool', async () => {

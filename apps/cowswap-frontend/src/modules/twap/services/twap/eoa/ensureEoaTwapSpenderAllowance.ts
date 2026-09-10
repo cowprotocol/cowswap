@@ -1,8 +1,8 @@
-import { type Address, erc20Abi } from 'viem'
+import { type Address, erc20Abi, maxUint256 } from 'viem'
 import type { Config } from 'wagmi'
 import { getPublicClient, readContract, writeContract } from 'wagmi/actions'
 
-import { calculateGasMargin, createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { calculateGasMargin, normalizeError } from '@cowprotocol/common-utils'
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo, PermitHookData } from '@cowprotocol/permit-utils'
 
@@ -20,17 +20,17 @@ import { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { EoaTwapApprovalNeeds } from '../../../utils/buildEoaTwapSigningStepPlan'
 
-const log = createCowLogger('EOA TWAP approve')
-
 export interface EnsureEoaTwapSpenderAllowanceParams {
   config: Config
   chainId: SupportedChainId
   account: AccountAddress
   sellTokenAddress: Address
   sellTokenName: string | undefined
+  /** The amount of sell tokens to cover the TWAP, min for the permit / approval. */
+  sellTokenAmount: bigint
+  /** The amount of sell tokens to approve or permit, depending what the user selected in the form and what the token supports. */
+  amountToPermitOrApprove: bigint
   spender: AccountAddress
-  amountToCover: bigint
-  amountToApprove: bigint
   /**
    * When provided (with {@link generatePermitHook}) and the token supports EIP-2612 / Dai-like
    * permit, a permit is preferred for the spender allowance (currently ComposableCowPoller).
@@ -44,11 +44,6 @@ export interface EnsureEoaTwapSpenderAllowanceParams {
   permitStep?: EoaTwapSigningSteps
   /** Override for USDT-style zero-approve step (defaults to ZeroApprovePoller, or `step` when set). */
   zeroStep?: EoaTwapSigningSteps
-  /**
-   * When permit generation fails and we fall back to on-chain approve, replace the stepper plan
-   * so PermitPoller is not left as an orphan upcoming step.
-   */
-  onChainFallbackPlan?: EoaTwapSigningSteps[]
   onSigningStep: EoaTwapFlowUpdater
   approvalNeeds: EoaTwapApprovalNeeds
 }
@@ -77,9 +72,11 @@ interface RunOnChainAllowanceStepsParams {
   chainId: SupportedChainId
   account: AccountAddress
   sellTokenAddress: Address
-  spender: AccountAddress
-  amountToCover: bigint
+  /** The amount of sell tokens to cover the TWAP, min for the approval. */
+  sellTokenAmount: bigint
+  /** The amount of sell tokens to approve, depending what the user selected in the form and what the token supports. */
   amountToApprove: bigint
+  spender: AccountAddress
   needsZeroApproval: boolean
   approveStep: EoaTwapSigningSteps
   zeroApproveStep: EoaTwapSigningSteps
@@ -107,15 +104,27 @@ interface TryGeneratePermitAllowanceParams {
   sellTokenAddress: Address
   sellTokenName: string | undefined
   spender: AccountAddress
-  amountToApprove: bigint
+  amountToPermit: bigint
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
   permitUiStep: EoaTwapSigningSteps
-  approveStep: EoaTwapSigningSteps
-  zeroApproveStep: EoaTwapSigningSteps
-  needsZeroApproval: boolean
-  onChainFallbackPlan: EoaTwapSigningSteps[] | undefined
   onSigningStep: EoaTwapFlowUpdater
+}
+
+/**
+ * Dai-like permits always set `allowed: true` (unlimited). Only use them when the form
+ * selected unlimited approval. Otherwise fall back to on-chain `amountToApprove`.
+ */
+export function canUseEoaTwapPermit(permitInfo: IsTokenPermittableResult, amountToApprove: bigint): boolean {
+  if (!isSupportedPermitInfo(permitInfo)) {
+    return false
+  }
+
+  if (permitInfo.type === 'dai-like' && amountToApprove !== maxUint256) {
+    return false
+  }
+
+  return true
 }
 
 /**
@@ -123,16 +132,18 @@ interface TryGeneratePermitAllowanceParams {
  *
  * In EOA TWAP, this is currently used for ComposableCowPoller allowance.
  *
- * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 / Dai-like permit for
- * `amountToApprove` (typically `maxUint256`) when supported, matching on-chain approve.
- * Permitting only `amountToCover` would overwrite an existing max allowance.
- * Otherwise: execute on-chain zero-approve (if needed) and approve.
+ * With `permitInfo` + `generatePermitHook`: prefer EIP-2612 permit for the exact
+ * `amountToCover` (the TWAP sell). Dai-like permits cannot express a finite amount
+ * (`allowed: true`), so they are used only when `amountToApprove` is unlimited.
+ * Otherwise: execute on-chain zero-approve (if needed) and approve `amountToApprove`
+ * (partial sell or unlimited, matching the TWAP form).
  *
- * On on-chain approve, the transaction usually approves `amountToApprove` (typically
- * `maxUint256`) and validates that the emitted Approval amount still covers `amountToCover`,
- * throwing "Approved amount is not sufficient!" if not.
+ * On on-chain approve, the transaction approves `amountToApprove` and validates that the
+ * emitted Approval amount still covers `amountToCover`, throwing
+ * "Approved amount is not sufficient!" if not.
  *
- * When permit succeeds, returns `permitData` for the caller to include in setup execution.
+ * When permit is offered, a cancelled or failed permit aborts (no on-chain approve fallback),
+ * matching swap/limit. On success, returns `permitData` for the caller to include in setup.
  */
 export async function ensureEoaTwapSpenderAllowance({
   config,
@@ -141,14 +152,13 @@ export async function ensureEoaTwapSpenderAllowance({
   sellTokenAddress,
   sellTokenName,
   spender,
-  amountToCover,
-  amountToApprove,
+  sellTokenAmount,
+  amountToPermitOrApprove,
   permitInfo,
   generatePermitHook,
   step,
   permitStep,
   zeroStep,
-  onChainFallbackPlan,
   onSigningStep,
   approvalNeeds,
 }: EnsureEoaTwapSpenderAllowanceParams): Promise<PermitHookData | null> {
@@ -161,26 +171,23 @@ export async function ensureEoaTwapSpenderAllowance({
     return null
   }
 
-  if (generatePermitHook && isSupportedPermitInfo(permitInfo)) {
-    const permitResult = await tryGeneratePermitAllowance({
+  // This should never happen because the edit amount screen already validates the amount to approve is greater than the sell amount, but just in case...:
+  if (amountToPermitOrApprove < sellTokenAmount) {
+    throw new Error('Amount to approve is less than amount to cover')
+  }
+
+  if (generatePermitHook && canUseEoaTwapPermit(permitInfo, amountToPermitOrApprove)) {
+    return tryGeneratePermitAllowance({
       account,
       sellTokenAddress,
       sellTokenName,
       spender,
-      amountToApprove,
+      amountToPermit: amountToPermitOrApprove,
       permitInfo,
       generatePermitHook,
       permitUiStep,
-      approveStep,
-      zeroApproveStep,
-      needsZeroApproval,
-      onChainFallbackPlan,
       onSigningStep,
     })
-
-    if (permitResult) {
-      return permitResult
-    }
   }
 
   await runOnChainAllowanceSteps({
@@ -188,9 +195,9 @@ export async function ensureEoaTwapSpenderAllowance({
     chainId,
     account,
     sellTokenAddress,
+    sellTokenAmount,
+    amountToApprove: amountToPermitOrApprove,
     spender,
-    amountToCover,
-    amountToApprove,
     needsZeroApproval,
     approveStep,
     zeroApproveStep,
@@ -286,9 +293,9 @@ async function runOnChainAllowanceSteps({
   chainId,
   account,
   sellTokenAddress,
-  spender,
-  amountToCover,
+  sellTokenAmount,
   amountToApprove,
+  spender,
   needsZeroApproval,
   approveStep,
   zeroApproveStep,
@@ -316,7 +323,7 @@ async function runOnChainAllowanceSteps({
     amount: amountToApprove,
     step: approveStep,
     onSigningStep,
-    minApprovedAmount: amountToCover,
+    minApprovedAmount: sellTokenAmount,
   })
 }
 
@@ -375,18 +382,14 @@ async function tryGeneratePermitAllowance({
   sellTokenAddress,
   sellTokenName,
   spender,
-  amountToApprove,
+  amountToPermit,
   permitInfo,
   generatePermitHook,
   permitUiStep,
-  approveStep,
-  zeroApproveStep,
-  needsZeroApproval,
-  onChainFallbackPlan,
   onSigningStep,
-}: TryGeneratePermitAllowanceParams): Promise<PermitHookData | null> {
+}: TryGeneratePermitAllowanceParams): Promise<PermitHookData> {
   if (!isSupportedPermitInfo(permitInfo)) {
-    return null
+    throw new Error(t`Unable to generate permit data`)
   }
 
   onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Sign })
@@ -398,25 +401,16 @@ async function tryGeneratePermitAllowance({
     },
     account,
     permitInfo,
-    amount: amountToApprove,
+    amount: amountToPermit,
     customSpender: spender,
-  }).catch((err: unknown) => {
-    const error = normalizeError(err)
-    log.warn('Error generating permit data; falling back to approval', error)
-    return null
   })
 
-  if (permitData) {
-    onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
-    return permitData
+  if (!permitData) {
+    throw new Error(t`Unable to generate permit data`)
   }
 
-  // Permit failed — switch the stepper onto the on-chain path before prompting approve txs.
-  onSigningStep({
-    step: needsZeroApproval ? zeroApproveStep : approveStep,
-    phase: EoaTwapSigningPhase.Sign,
-    ...(onChainFallbackPlan ? { plan: onChainFallbackPlan } : undefined),
-  })
+  console.log(permitData)
 
-  return null
+  onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
+  return permitData
 }
