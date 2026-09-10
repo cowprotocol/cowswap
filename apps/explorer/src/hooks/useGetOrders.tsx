@@ -76,10 +76,16 @@ export function useGetAccountOrders(
   const [error, setError] = useState<UiError>()
   const { orders, setOrders, setMountNewOrders, setErc20Addresses } = useOrdersWithTokenInfo(networkId)
   const [isThereNext, setIsThereNext] = useState(false)
+  // Requests are not cancellable, so tag each one and let only the most recent one write to the state.
+  // Switching owner, network or page, and polls slower than the interval, would otherwise let an
+  // older response land on top of newer orders
+  const latestRequestId = useRef(0)
 
   const fetchOrders = useCallback(
     async (network: Network, owner: string, options: FetchAccountOrdersOptions = {}): Promise<void> => {
       const { skipCache = false, isBackgroundUpdate = false } = options
+      const requestId = ++latestRequestId.current
+      const isStale = (): boolean => requestId !== latestRequestId.current
 
       // A background update must not swap the table for the loading placeholder
       if (!isBackgroundUpdate) {
@@ -88,6 +94,9 @@ export function useGetAccountOrders(
 
       try {
         const { orders, hasNextPage } = await getAccountOrders({ networkId: network, owner, offset, limit, skipCache })
+
+        if (isStale()) return
+
         setIsThereNext(hasNextPage)
         const newErc20Addresses = filterDuplicateErc20Addresses(orders)
         setErc20Addresses(newErc20Addresses)
@@ -98,9 +107,14 @@ export function useGetAccountOrders(
       } catch (e) {
         const msg = `Failed to fetch orders`
         console.error(msg, e)
+
+        if (isStale()) return
+
         setError({ message: msg, type: 'error' })
       } finally {
-        if (!isBackgroundUpdate) {
+        // Whichever request is the most recent one owns the loading state, background or not:
+        // a superseded request leaves it to the one that replaced it
+        if (!isStale()) {
           setIsLoading(false)
         }
       }
