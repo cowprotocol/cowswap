@@ -100,6 +100,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
   // the modal can never display a different amount than what was actually confirmed/signed.
   const {
+    shouldDisplayBridgeDetails: frozenShouldDisplayBridgeDetails,
     receiveAmountInfo: frozenReceiveAmountInfo,
     rateInfoParams: frozenRateInfoParams,
     quoteResponse: frozenQuoteResponse,
@@ -109,6 +110,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     slippage: frozenSlippage,
     deadline: frozenDeadline,
   } = useFreezeWhileConfirming({
+    shouldDisplayBridgeDetails,
     receiveAmountInfo,
     rateInfoParams,
     quoteResponse,
@@ -195,7 +197,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         appData={appData}
         confirmClickEvent={swapBridgeClickEvent}
       >
-        {shouldDisplayBridgeDetails && frozenBridgeProvider && frozenSwapContext && frozenBridgeContext
+        {frozenShouldDisplayBridgeDetails && frozenBridgeProvider && frozenSwapContext && frozenBridgeContext
           ? (restContent) => (
               <>
                 <RateInfo label={t`Price`} rateInfoParams={frozenRateInfoParams} fontSize={13} fontBold labelBold />

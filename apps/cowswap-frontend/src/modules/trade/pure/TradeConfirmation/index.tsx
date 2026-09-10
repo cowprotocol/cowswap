@@ -60,13 +60,19 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   /**
    * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
    * (through signing/submission) so the amounts shown can never drift from what was actually
-   * confirmed/signed.
+   * confirmed/signed. Only the reset (on abort/dismiss) happens here - the snapshot itself is
+   * captured synchronously in `handleConfirm`, not from this effect: an effect only runs after
+   * the render that flips `isConfirming` has committed, and by then `propsRef.current` may
+   * already have been overwritten by a newer render (e.g. a quote refresh) that snuck in first.
    */
   useEffect(() => {
-    setFrozenProps(isConfirming ? propsRef.current : null)
+    if (!isConfirming) {
+      setFrozenProps(null)
+    }
   }, [isConfirming])
 
   const handleConfirm = useCallback(async (): Promise<void | boolean> => {
+    setFrozenProps(propsRef.current)
     tradeConfirmActions.setConfirming(true)
     try {
       const isConfirmed = await onConfirm()

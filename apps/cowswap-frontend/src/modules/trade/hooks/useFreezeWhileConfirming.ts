@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useTradeConfirmState } from './useTradeConfirmState'
 
@@ -16,9 +16,17 @@ export function useFreezeWhileConfirming<T>(value: T): T {
   const { isConfirming } = useTradeConfirmState()
   const frozenRef = useRef(value)
 
+  // Only commit the snapshot once the render has actually committed, never during render itself -
+  // otherwise a render React later discards (e.g. under concurrent rendering) could still leak an
+  // uncommitted value into the frozen snapshot.
+  useEffect(() => {
+    if (!isConfirming) {
+      frozenRef.current = value
+    }
+  }, [isConfirming, value])
+
   if (!isConfirming) {
-    // eslint-disable-next-line react-hooks/refs
-    frozenRef.current = value
+    return value
   }
 
   // eslint-disable-next-line react-hooks/refs
