@@ -1,3 +1,4 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { render } from '@testing-library/react'
@@ -148,6 +149,43 @@ describe('TransactionContentWithLink', () => {
       const tx = getRenderedTx()
       expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
       expect(tx.hash).toBe(ONCHAIN_TX_HASH)
+    })
+  })
+
+  // A Solana order is created by an on-chain transaction, so the link has to move from that
+  // transaction to the order once it exists — the same progression eth-flow makes.
+  describe('Solana orders', () => {
+    // 32 bytes hex, the same length as an EVM transaction hash — only the chain tells them apart.
+    const SOLANA_ORDER_ID = '0x' + 'c'.repeat(64)
+    const SOLANA_TX_SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
+
+    beforeEach(() => {
+      useGnosisSafeInfoMock.mockReturnValue(undefined)
+      useWalletInfoMock.mockReturnValue({
+        account: '11111111111111111111111111111111',
+        chainId: SupportedChainId.SOLANA,
+      } as ReturnType<typeof useWalletInfo>)
+    })
+
+    it('links the creation transaction while the order is still being created', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.CREATING } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: SOLANA_TX_SIGNATURE, orderUid: SOLANA_ORDER_ID })
+
+      expect(getRenderedTx().hash).toBe(SOLANA_TX_SIGNATURE)
+    })
+
+    it('links the order once it has been created', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.PENDING } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: SOLANA_TX_SIGNATURE, orderUid: SOLANA_ORDER_ID })
+
+      expect(getRenderedTx().hash).toBe(SOLANA_ORDER_ID)
+    })
+
+    it('links the order when there is no creation transaction to fall back on', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.CREATING } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: undefined, orderUid: SOLANA_ORDER_ID })
+
+      expect(getRenderedTx().hash).toBe(SOLANA_ORDER_ID)
     })
   })
 })

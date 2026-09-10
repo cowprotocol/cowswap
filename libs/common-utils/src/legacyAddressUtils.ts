@@ -81,6 +81,7 @@ function makeAddressShorter(address: string, chars = 4): string {
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
+const SOLANA_ORDER_ID_LENGTH = 66 // 64 (32 bytes in hex) + 2 (it's prefixed with "0x")
 
 export type BlockExplorerLinkType =
   | 'transaction'
@@ -119,7 +120,7 @@ export function getCoWExplorerLinkTitle(): string {
 }
 
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
-  if (isCowOrder(type, data)) {
+  if (isCowOrder(type, data, chainId)) {
     // Explorer for CoW orders:
     //    If a transaction has the size of the CoW orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
@@ -149,16 +150,22 @@ export function getEtherscanUrl(
 }
 
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  return isCowOrder(type, data) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
+  return isCowOrder(type, data, chainId) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
-  if (!data) return false
+/**
+ * A CoW order id is told apart from a raw transaction hash by its length, which needs the chain to be
+ * unambiguous: Solana order ids are 32 bytes, exactly the length of an EVM transaction hash. Callers that
+ * pass no `chainId` keep the EVM rule, so an EVM transaction hash is never mistaken for an order.
+ */
+export function isCowOrder(type: BlockExplorerLinkType, data?: string, chainId?: TargetChainId): boolean {
+  if (!data || type !== 'transaction') return false
 
-  // FIXME: Solana order id has different length than COW_ORDER_ID_LENGTH
-  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
+  if (chainId !== undefined && isSolanaChain(chainId)) {
+    return data.length === SOLANA_ORDER_ID_LENGTH
+  }
+
+  return data.length === COW_ORDER_ID_LENGTH
 }
 
 export function shortenOrderId(orderId: string): string {

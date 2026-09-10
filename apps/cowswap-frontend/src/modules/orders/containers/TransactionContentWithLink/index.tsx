@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -43,19 +44,25 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
   const { transactionHash, orderUid, children, isEthFlow, isSafeTx: isSafeTxProp } = props
   const { status } = useOrder({ id: orderUid, chainId }) || {}
 
-  const isOrder = isCowOrder('transaction', orderUid)
-  const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid))
-  const isSafeTx = isSafeTxProp ?? !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash))
+  const isOrder = isCowOrder('transaction', orderUid, chainId)
+  const isSafeOrder = !!(isSafeWallet && orderUid && !isCowOrder('transaction', orderUid, chainId))
+  const isSafeTx =
+    isSafeTxProp ?? !!(isSafeWallet && transactionHash && !isCowOrder('transaction', transactionHash, chainId))
 
-  const isEthFlowCreating =
-    isEthFlow && transactionHash && (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status)
+  const isCreatingOnChain = !!(
+    transactionHash &&
+    (status === OrderStatus.CREATING || status === OrderStatus.FAILED || !status) &&
+    // A Solana order is created by an on-chain transaction, so until that settles the transaction is the
+    // only thing worth linking to — same reasoning as eth-flow, where the order doesn't exist yet either.
+    (isEthFlow || isSolanaChain(chainId))
+  )
 
   let hash = ''
 
-  if (isOrder && !isEthFlow) {
-    hash = orderUid || ''
-  } else if (isEthFlowCreating) {
+  if (isCreatingOnChain) {
     hash = transactionHash || ''
+  } else if (isOrder && !isEthFlow) {
+    hash = orderUid || ''
   } else if (isSafeOrder) {
     hash = orderUid || ''
   } else {
