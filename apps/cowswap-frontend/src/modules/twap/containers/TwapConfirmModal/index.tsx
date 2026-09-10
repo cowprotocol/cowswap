@@ -12,7 +12,6 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useCommonTradeConfirmContext,
-  useFreezeWhileConfirming,
   useTradeConfirmActions,
   useTradePriceImpact,
 } from 'modules/trade'
@@ -20,7 +19,10 @@ import {
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
-import { TwapTradeConfirmationDetails as TwapTradeConfirmationDetailsBase } from './TwapTradeConfirmationDetails'
+import {
+  TwapTradeConfirmationDetails as TwapTradeConfirmationDetailsBase,
+  TwapTradeConfirmationDetailsProps,
+} from './TwapTradeConfirmationDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useEoaTwapFlowUpdater, useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
@@ -32,7 +34,7 @@ import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-const TwapTradeConfirmationDetails = styled(TwapTradeConfirmationDetailsBase)`
+const StyledTwapTradeConfirmationDetails = styled(TwapTradeConfirmationDetailsBase)`
   margin-top: -4px;
 `
 
@@ -88,14 +90,6 @@ export function TwapConfirmModal(): ReactNode {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
-  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
-  // the modal can never display a different amount than what was actually confirmed/signed.
-  const {
-    receiveAmountInfo: frozenReceiveAmountInfo,
-    rateInfoParams: frozenRateInfoParams,
-    slippage: frozenSlippage,
-  } = useFreezeWhileConfirming({ receiveAmountInfo, rateInfoParams, slippage })
-
   const { timeInterval, numOfParts } = twapOrder || {}
 
   const partDuration = timeInterval
@@ -104,11 +98,11 @@ export function TwapConfirmModal(): ReactNode {
   const hasSigningPlan = !!eoaTwapSigningStep
 
   const tradeDetailsElement =
-    frozenReceiveAmountInfo && numOfParts ? (
+    receiveAmountInfo && numOfParts ? (
       <TwapTradeConfirmationDetails
-        rateInfoParams={frozenRateInfoParams}
-        receiveAmountInfo={frozenReceiveAmountInfo}
-        slippage={frozenSlippage}
+        rateInfoParams={rateInfoParams}
+        receiveAmountInfo={receiveAmountInfo}
+        slippage={slippage}
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}
@@ -116,7 +110,6 @@ export function TwapConfirmModal(): ReactNode {
         numOfParts={numOfParts}
         partDuration={partDuration}
         totalDuration={totalDuration}
-        isCollapsible={hasSigningPlan}
       />
     ) : null
 
@@ -152,4 +145,14 @@ export function TwapConfirmModal(): ReactNode {
       </TradeConfirmation>
     </TradeConfirmModal>
   )
+}
+
+/**
+ * This renders inside `TradeConfirmation`'s click-time snapshot, so `isCollapsible` cannot come from
+ * the (frozen) closure - it has to follow the live signing state and is therefore read here.
+ */
+function TwapTradeConfirmationDetails(props: Omit<TwapTradeConfirmationDetailsProps, 'isCollapsible'>): ReactNode {
+  const hasSigningPlan = !!useEoaTwapSigningStep()
+
+  return <StyledTwapTradeConfirmationDetails {...props} isCollapsible={hasSigningPlan} />
 }

@@ -25,7 +25,6 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useFreezeWhileConfirming,
   useGetConfirmButtonLabel,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
@@ -96,30 +95,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
-
-  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
-  // the modal can never display a different amount than what was actually confirmed/signed.
-  const {
-    shouldDisplayBridgeDetails: frozenShouldDisplayBridgeDetails,
-    receiveAmountInfo: frozenReceiveAmountInfo,
-    rateInfoParams: frozenRateInfoParams,
-    quoteResponse: frozenQuoteResponse,
-    swapContext: frozenSwapContext,
-    bridgeContext: frozenBridgeContext,
-    bridgeProvider: frozenBridgeProvider,
-    slippage: frozenSlippage,
-    deadline: frozenDeadline,
-  } = useFreezeWhileConfirming({
-    shouldDisplayBridgeDetails,
-    receiveAmountInfo,
-    rateInfoParams,
-    quoteResponse,
-    swapContext,
-    bridgeContext,
-    bridgeProvider,
-    slippage,
-    deadline,
-  })
 
   const { values: balances } = useTokensBalancesCombined()
 
@@ -197,15 +172,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         appData={appData}
         confirmClickEvent={swapBridgeClickEvent}
       >
-        {frozenShouldDisplayBridgeDetails && frozenBridgeProvider && frozenSwapContext && frozenBridgeContext
+        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label={t`Price`} rateInfoParams={frozenRateInfoParams} fontSize={13} fontBold labelBold />
+                <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
-                  bridgeProvider={frozenBridgeProvider}
-                  swapContext={frozenSwapContext}
-                  bridgeContext={frozenBridgeContext}
+                  bridgeProvider={bridgeProvider}
+                  swapContext={swapContext}
+                  bridgeContext={bridgeContext}
                   hideRecommendedSlippage
                 />
                 {restContent}
@@ -214,11 +189,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
             )
           : (restContent) => (
               <>
-                {frozenReceiveAmountInfo && frozenSlippage && (
+                {receiveAmountInfo && slippage && (
                   <TradeBasicConfirmDetails
-                    rateInfoParams={frozenRateInfoParams}
-                    slippage={frozenSlippage}
-                    receiveAmountInfo={frozenReceiveAmountInfo}
+                    rateInfoParams={rateInfoParams}
+                    slippage={slippage}
+                    receiveAmountInfo={receiveAmountInfo}
                     recipient={recipient}
                     recipientAddress={recipientAddress}
                     account={account}
@@ -228,11 +203,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     withTimelineDot={false}
                   >
                     {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-                    <RowDeadline deadline={frozenDeadline} />
+                    <RowDeadline deadline={deadline} />
                     <RowQuoteId
-                      quoteId={frozenQuoteResponse?.id}
-                      isVerified={frozenQuoteResponse?.verified}
-                      expiration={frozenQuoteResponse?.expiration}
+                      quoteId={quoteResponse?.id}
+                      isVerified={quoteResponse?.verified}
+                      expiration={quoteResponse?.expiration}
                     />
                   </TradeBasicConfirmDetails>
                 )}

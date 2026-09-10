@@ -13,7 +13,6 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useCommonTradeConfirmContext,
-  useFreezeWhileConfirming,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
@@ -61,14 +60,6 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
 
-  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
-  // the modal can never display a different amount than what was actually confirmed/signed.
-  const {
-    receiveAmountInfo: frozenReceiveAmountInfo,
-    rateInfoParams: frozenRateInfoParams,
-    slippage: frozenSlippage,
-  } = useFreezeWhileConfirming({ receiveAmountInfo, rateInfoParams, slippage })
-
   return (
     <TradeConfirmModal orderType={UiOrderType.YIELD} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -86,11 +77,11 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
       >
         {(restContent) => (
           <>
-            {frozenReceiveAmountInfo && frozenSlippage && (
+            {receiveAmountInfo && slippage && (
               <TradeBasicConfirmDetails
-                rateInfoParams={frozenRateInfoParams}
-                slippage={frozenSlippage}
-                receiveAmountInfo={frozenReceiveAmountInfo}
+                rateInfoParams={rateInfoParams}
+                slippage={slippage}
+                receiveAmountInfo={receiveAmountInfo}
                 recipient={recipient}
                 recipientAddress={recipientAddress}
                 account={commonTradeConfirmContext.account}

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText, Media } from '@cowprotocol/ui'
@@ -11,17 +11,15 @@ import { getPendingText } from './getPendingText'
 interface ConfirmButtonProps {
   buttonText: ReactNode
   isButtonDisabled: boolean
-  hasPendingTrade: boolean
+  /** Owned by `useFreezeOnConfirm`: true from the click until the flow resolves, fails or aborts */
+  isConfirming: boolean
   onConfirm(): Promise<void | boolean>
   signingStep: SigningStepState | null
   clickEvent?: string
 }
 export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
-  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
   const confirmInFlightRef = useRef(false)
-  const { buttonText, onConfirm, hasPendingTrade, signingStep, clickEvent } = props
-
-  const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
+  const { buttonText, onConfirm, isConfirming, isButtonDisabled, signingStep, clickEvent } = props
 
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
@@ -33,26 +31,12 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
       window.scrollTo({ top: 0, left: 0 })
     }
 
-    setIsConfirmClicked(true)
     try {
-      const isConfirmed = await onConfirm()
-
-      if (!isConfirmed) {
-        setIsConfirmClicked(false)
-      }
-    } catch (error) {
-      setIsConfirmClicked(false)
-      throw error
+      await onConfirm()
     } finally {
       confirmInFlightRef.current = false
     }
   }
-
-  useEffect(() => {
-    if (!hasPendingTrade) {
-      setIsConfirmClicked(false)
-    }
-  }, [hasPendingTrade])
 
   const pendingText = (signingStep ? getPendingText(signingStep) : null) || t`Confirm with your wallet`
 
@@ -63,7 +47,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
       buttonSize={ButtonSize.BIG}
       data-click-event={clickEvent}
     >
-      {hasPendingTrade || isConfirmClicked ? (
+      {isConfirming ? (
         <LongLoadText fontSize={15} fontWeight={500}>
           <span>{pendingText}</span>
           <CenteredDots smaller />

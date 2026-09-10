@@ -7,7 +7,6 @@ import { TradeAmounts } from 'common/types'
 
 import {
   setCloseTradeConfirmAtom,
-  setConfirmingTradeConfirmAtom,
   setErrorTradeConfirmAtom,
   setOpenTradeConfirmAtom,
   setPendingTradeConfirmAtom,
@@ -22,11 +21,6 @@ export interface TradeConfirmActions {
   onOpen(forcePriceConfirmation?: boolean): void
   requestPermitSignature(pendingTrade: TradeAmounts): void
   onDismiss(): void
-  /**
-   * Marks the confirm flow as in progress (from the moment the confirm button is clicked) or
-   * aborted (reset back to false). While `true`, the confirm modal freezes its displayed amounts.
-   */
-  setConfirming(isConfirming: boolean): void
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
@@ -37,7 +31,6 @@ export function useTradeConfirmActions(): TradeConfirmActions {
   const setPendingTradeConfirm = useSetAtom(setPendingTradeConfirmAtom)
   const setTxHashTradeConfirm = useSetAtom(setTxHashTradeConfirmAtom)
   const setPermitSignatureRequested = useSetAtom(setPermitSignatureRequestedTradeConfirmAtom)
-  const setConfirmingAtom = useSetAtom(setConfirmingTradeConfirmAtom)
 
   return useMemo(() => {
     return {
@@ -60,9 +53,6 @@ export function useTradeConfirmActions(): TradeConfirmActions {
       onDismiss() {
         setCloseTradeConfirm()
       },
-      setConfirming(isConfirming: boolean) {
-        setConfirmingAtom(isConfirming)
-      },
     }
   }, [
     resetSigningStep,
@@ -72,6 +62,5 @@ export function useTradeConfirmActions(): TradeConfirmActions {
     setErrorTradeConfirm,
     setTxHashTradeConfirm,
     setPermitSignatureRequested,
-    setConfirmingAtom,
   ])
 }
