@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.2](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.3.1...snackbars-v2.3.2) (2026-09-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-hooks@3.11.0
+
 ## [2.3.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.3.0...snackbars-v2.3.1) (2026-09-07)
 
 ### Patch Changes

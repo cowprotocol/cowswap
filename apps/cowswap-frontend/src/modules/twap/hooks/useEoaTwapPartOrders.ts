@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { ORDER_BOOK_API_UPDATE_INTERVAL, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { logTwap, normalizeError } from '@cowprotocol/common-utils'
 import {
   type EnrichedOrder,
@@ -45,6 +45,7 @@ export function useEoaTwapPartOrders(
           page,
           ORDERS_TABLE_PAGE_SIZE,
           partOrdersCount,
+          twapOrder.updatedAtBlock,
           twapOrder.status,
           twapOrder.executionInfo,
         ] as const)
@@ -71,7 +72,6 @@ export function useEoaTwapPartOrders(
     },
     {
       ...SWR_NO_REFRESH_OPTIONS,
-      refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL,
       shouldRetryOnError: false,
     },
   )
@@ -139,10 +139,11 @@ function mapPartOrder(
 ): ParsedOrder {
   const creationTime = new Date(partOrder.createdAt * 1000).toISOString()
   const apiAdditionalInfo = mapApiAdditionalInfo(partOrder, twapOrder, parent, creationTime)
+  const isVirtualPart = partOrder.status === 'unconfirmed'
   const order = {
     ...apiAdditionalInfo,
     id: partOrder.orderUid as UID,
-    status: getPartOrderStatus(apiAdditionalInfo, twapOrder, false),
+    status: getPartOrderStatus(apiAdditionalInfo, twapOrder, isVirtualPart),
     creationTime,
     isEoaTwapOrder: true,
     sellAmountBeforeFee: partOrder.sellAmount.toString(),
@@ -150,7 +151,7 @@ function mapPartOrder(
     outputToken: parent.outputToken,
     fullAppData: parent.fullAppData,
     composableCowInfo: {
-      isVirtualPart: false,
+      isVirtualPart,
       isTheLastPart,
       parentId: twapOrder.id,
       twapOrderHash: twapOrder.hash,
@@ -162,7 +163,8 @@ function mapPartOrder(
 }
 
 function mapSdkPartOrderStatus(status: TwapPartOrderStatus): SdkOrderStatus {
-  if (status === 'open') return SdkOrderStatus.OPEN
+  // Virtual parts use the scheduled/parent-aware status above, not this placeholder.
+  if (status === 'open' || status === 'unconfirmed') return SdkOrderStatus.OPEN
   if (status === 'fulfilled') return SdkOrderStatus.FULFILLED
   if (status === 'cancelled') return SdkOrderStatus.CANCELLED
 

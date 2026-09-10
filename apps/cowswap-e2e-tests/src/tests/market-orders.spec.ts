@@ -70,11 +70,31 @@ test.describe('Market Orders', () => {
         allowances: { [USDC]: INITIAL_USDC_BALANCE },
       })
 
-      // Put the pair in the URL so we don't race `selectTokens` against the default 1-unit fill
-      // (`useSetupTradeAmountsFromUrl`). That race can leave the input showing "1000" while the
-      // live quote is still for 1 USDC, and confirming then posts a 1-unit order (balance 1499
-      // instead of 500 after fill).
-      await swapPage.goto({ chainId: CHAIN_ID, sell: USDC, buy: WETH })
+      await swapPage.goto({ chainId: CHAIN_ID })
+
+      // Typed before selecting tokens, not after: selecting a token with no amount set yet
+      // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
+      // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
+      // state update and can win under load — same race as [CS-68]'s ETH-flow note, just hit here
+      // via `selectTokens` instead of a manual token switch. Typing first against whatever's
+      // already selected trips the "amount already set" guard before `selectTokens` runs, so the
+      // typed amount normally carries over once USDC/WETH are picked.
+      //
+      // Typing first isn't airtight on its own though: under CI load, even the *synchronous*,
+      // no-debounce reparse from the raw typed string into a real `inputCurrencyAmount`
+      // (`useBuildTradeDerivedState.ts`'s `useMemo`) can still not have been scheduled/rendered
+      // yet by the time `selectTokens` applies, losing the race — same shape as [CS-68]'s
+      // native-ETH-pick gap. `waitForQuote()` in between doesn't reliably catch this either:
+      // quote fetches are gated behind their *own*, separate 350ms debounce
+      // (`AMOUNT_CHANGE_DEBOUNCE_TIME` in `useQuoteParams.ts`), so checking too soon after typing
+      // finds `data-isLoading` never having been set at all yet — a false-positive "not loading"
+      // that doesn't prove the reparse (or anything else) actually landed; confirmed by tracing a
+      // CI run where `waitForQuote()` resolved in ~40ms, nowhere near enough time for a real fetch.
+      // Retyping "1000" again once `selectTokens` has finished removes any dependency on winning
+      // that race in the first place — there's no further currency switch left to lose the amount
+      // to, same fix [CS-103]/[CS-68] already needed for their analogous native-ETH-pick gap.
+      await swapPage.enterSellAmount('1000')
+      await selectTokens(swapPage, 'USDC', 'WETH')
       await swapPage.enterSellAmount('1000')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
@@ -85,6 +105,27 @@ test.describe('Market Orders', () => {
       // 1000 USDC * 804 / 1_000_000 = 0.804 WETH. A stale 1-unit quote is ~0.000804 — wait until
       // the output is clearly the 1000-unit quote before confirming.
       await expect(swapPage.outputAmount).toHaveValue(/^0\.8/, { timeout: 15_000 })
+
+      // Neither `waitForQuote()` nor a correct-looking `outputAmount` proves the order is about to
+      // be built from the "1000" amount. Confirmed against a real CI failure: `outputAmount`
+      // already read "0.804" (the 1000-amount ratio, recomputed locally from whatever's currently
+      // typed) while the confirm modal's "Expected to receive" row still showed "0.000804" — the
+      // stale "1" auto-fill default's quote — and the order that got posted matched the stale one
+      // exactly ("Sell 1 USDC for at least 0.0008 WETH"). That row (and the order-build path
+      // itself, `useSwapReceiveAmountInfoParams.ts`) reads `tradeQuote.quote.quoteResults
+      // .quoteResponse.quote` directly — the raw `/quote` API response object — not a locally
+      // recomputed display value, so `outputAmount` catching up doesn't mean that object has. The
+      // only direct way to know it has is to check the mock's own record of served `/quote`
+      // responses — the exact objects `tradeQuote.quote` gets built from — for one whose
+      // `sellAmount` actually matches what was typed.
+      const expectedSellAmount = parseUnits('1000', 18).toString()
+      await expect
+        .poll(
+          () =>
+            (mocks.cowApi.quotes.at(-1)?.response as { quote?: { sellAmount?: string } } | undefined)?.quote
+              ?.sellAmount,
+        )
+        .toBe(expectedSellAmount)
 
       await mocks.orders.expectOrderToBePosted({
         orderId,
@@ -520,13 +561,24 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new sell token below.
+      await swapPage.waitForBothCurrenciesResolved()
+
       // Typed before switching the sell token to ETH, not after: selecting a token with no amount
       // set yet auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
       // `!isAtLeastOneAmountIsSetRef.current` default), which races the real typed amount's own
-      // quote fetch and can win under load — the mocked wallet balance here is exactly 1 ETH, so
-      // that default is indistinguishable from "sold everything" when it wins. Typing first against
-      // the default WETH sell token marks an amount as already set; retyping after both switches
-      // have landed matches [CS-103] and removes any remaining dependency on that race.
+      // debounced quote fetch and can win under load — the mocked wallet balance here is exactly
+      // 1 ETH, so that default is indistinguishable from "sold everything" when it wins. Typing an
+      // amount first (against the default WETH sell token) marks one as already set, so switching to
+      // ETH afterwards carries the typed amount over instead of triggering the default. That
+      // mitigation alone isn't airtight for a *native* ETH pick specifically though: selecting a new
+      // input currency awaits `crossChainFamilySwitch()` before applying the selection
+      // (`useOpenTokenSelectWidget.ts`), a real microtask gap that can still let the 1-unit default
+      // win under CI load (observed: `inputAmount` landing on "1" instead of "0.5", same failure
+      // shape as [CS-59]). Retyping once both switches have landed removes any dependency on that
+      // race — there's no further currency switch left to lose the amount to — same fix [CS-103]
+      // already needed for this exact native-ETH-pick gap.
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -971,6 +1023,10 @@ test.describe('Market Orders', () => {
 
       await swapPage.goto({ chainId: CHAIN_ID })
 
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new sell token below.
+      await swapPage.waitForBothCurrenciesResolved()
+
       // Typed before switching the sell token to ETH, not after — see [CS-68]'s note on
       // `useSetupTradeAmountsFromUrl`'s 1-unit auto-fill racing the real typed amount when a token
       // with no amount set yet is selected. That mitigation alone isn't airtight for a *native* ETH
@@ -1031,6 +1087,9 @@ test.describe('Market Orders', () => {
 
       // WETH is already the default sell token on Sepolia (see known quirks), so only the buy side
       // needs switching — typed before switching, not after, same auto-fill race as [CS-68]/[CS-103].
+      // See `waitForBothCurrenciesResolved`'s doc comment for why this needs to happen before
+      // picking a new buy token below.
+      await swapPage.waitForBothCurrenciesResolved()
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -1147,8 +1206,13 @@ test.describe('Market Orders', () => {
       await swapPage.goto({ chainId: CHAIN_ID })
 
       // Typed before selecting tokens, not after — dodges the auto-fill race documented at [CS-59].
+      // The retype after `selectTokens` is the same belt-and-suspenders fix [CS-59] needed: it
+      // removes any dependency on winning that race in the first place, rather than trying to
+      // catch the exact moment it's safe to proceed (see [CS-59]'s comment for why a `waitForQuote()`
+      // in between doesn't reliably do that).
       await swapPage.enterSellAmount('1000')
       await selectTokens(swapPage, 'USDC', 'WETH')
+      await swapPage.enterSellAmount('1000')
       await swapPage.waitForQuote()
 
       await mocks.orders.expectOrderToBePosted({

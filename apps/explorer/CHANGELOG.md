@@ -1,5 +1,27 @@
 # Changelog
 
+## [4.12.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.11.1...explorer-v4.12.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/hook-dapp-lib@2.2.14
+
 ## [4.11.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.11.0...explorer-v4.11.1) (2026-09-07)
 
 ### Patch Changes

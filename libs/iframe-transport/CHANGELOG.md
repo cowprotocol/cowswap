@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.7](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.6...iframe-transport-v2.3.7) (2026-09-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.10.0
+
 ## [2.3.6](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v2.3.5...iframe-transport-v2.3.6) (2026-09-03)
 
 ### Patch Changes

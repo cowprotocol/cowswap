@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.1...multicall-v3.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/types@4.10.0
+
 ## [3.6.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.0...multicall-v3.6.1) (2026-09-07)
 
 ### Patch Changes

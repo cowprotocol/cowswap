@@ -73,8 +73,8 @@ function baseParams(
     sellTokenAddress: SELL_TOKEN,
     sellTokenName: 'COW',
     spender: SPENDER,
-    amountToCover: AMOUNT_TO_COVER,
-    amountToApprove: AMOUNT_TO_APPROVE,
+    sellTokenAmount: AMOUNT_TO_COVER,
+    amountToPermitOrApprove: AMOUNT_TO_APPROVE,
     onSigningStep: jest.fn(),
     approvalNeeds: { needsApproval: true, needsZeroApproval: false },
     ...overrides,
@@ -196,7 +196,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
       inputToken: { address: SELL_TOKEN, name: 'COW' },
       account: ACCOUNT,
       permitInfo: PERMIT_INFO,
-      amount: AMOUNT_TO_COVER,
+      amount: AMOUNT_TO_APPROVE,
       customSpender: SPENDER,
     })
     expect(onSigningStep.mock.calls).toEqual([
@@ -206,7 +206,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(mockedWriteContract).not.toHaveBeenCalled()
   })
 
-  it('skips Dai-like permit for a finite amountToApprove and uses on-chain approve', async () => {
+  it('skips Dai-like permit for a finite amountToPermitOrApprove and uses on-chain approve', async () => {
     setupSuccessfulOnChainApprove()
     mockedExtractApprovalAmountFromLogs.mockReturnValue(AMOUNT_TO_COVER)
 
@@ -220,7 +220,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
           onSigningStep,
           generatePermitHook,
           permitInfo: daiLikePermitInfo,
-          amountToApprove: AMOUNT_TO_COVER,
+          amountToPermitOrApprove: AMOUNT_TO_COVER,
           permitStep: EoaTwapSigningSteps.PermitPoller,
         }),
       ),
@@ -241,7 +241,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     ])
   })
 
-  it('still permits a Dai-like token when amountToApprove is unlimited', async () => {
+  it('still permits a Dai-like token when amountToPermitOrApprove is unlimited', async () => {
     const onSigningStep = jest.fn()
     const generatePermitHook = jest.fn().mockResolvedValue(PERMIT_DATA) as GeneratePermitHook
     const daiLikePermitInfo = { type: 'dai-like' as const, name: 'DAI', version: '1' }
@@ -357,7 +357,7 @@ describe('ensureEoaTwapSpenderAllowance()', () => {
     expect(mockedWriteContract).toHaveBeenCalledTimes(1)
   })
 
-  it('throws when the mined approval amount is below amountToCover', async () => {
+  it('throws when the mined approval amount is below sellTokenAmount', async () => {
     setupSuccessfulOnChainApprove()
     mockedExtractApprovalAmountFromLogs.mockReturnValue(AMOUNT_TO_COVER - 1n)
 

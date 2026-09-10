@@ -48,10 +48,10 @@ import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 const DEFAULT_GAS_LIMIT = 1_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
-const SUBMIT_TWAP_SLOW_MS = 10_000
+const SUBMIT_TWAP_SLOW_MS = 30_000
 
 /** Set > 0 to artificially delay receipt resolution (local testing only). */
-const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 30000
+const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 0
 
 /** TWAP setup is valid for 30 minutes. */
 const SETUP_VALID_FOR_SEC = 1800
@@ -250,7 +250,8 @@ export function getEoaTwapOrderShedCalls({
  *
  * After that:
  * 1. Sign cow-shed EIP-712 (`TwapSetup`).
- * 2. Sign and send factory executeHooks TX (`TwapSign`), then wait for mining (`SubmitTwap`).
+ * 2. Sign and send factory executeHooks TX (`TwapSign`)
+ * 3. Then wait for mining (`SubmitTwap`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({

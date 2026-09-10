@@ -5,9 +5,10 @@ import type { Page, Locator } from '@playwright/test'
 /**
  * The "Route" breakdown shown under the swap form once a cross-chain quote loads
  * (`SwapRateDetails` → `TradeRateDetails` → `QuoteDetails`, rendering a swap leg then a bridge
- * leg). None of it carries `data-testid`/`id` at the row level — only i18n text — and several
- * labels repeat once per leg with no container id to key off, so rows here are matched by text
- * and disambiguated by DOM order (swap leg renders before bridge leg).
+ * leg). Each row carries its own `data-testid` (`ConfirmDetailsItem`'s `testId` prop, threaded
+ * through `QuoteSwapContent`/`QuoteBridgeContent` — see `libs/test-ids`'s `routeSwap*`/
+ * `routeBridge*` entries), distinct per swap-leg/bridge-leg row so there's no need to disambiguate
+ * same-labeled rows by DOM order the way plain text matching would require.
  */
 export class BridgeRoutePanel {
   private readonly page: Page
@@ -51,70 +52,54 @@ export class BridgeRoutePanel {
     }
   }
 
-  /**
-   * The label's sibling `Content` cell (`ConfirmDetailsItem`'s `Row > Label, Content`).
-   *
-   * `getByText` resolves to the innermost element whose full text matches — for a label like
-   * "Expected to receive" that's the `Label` span itself (a tooltip icon after it contributes no
-   * text), but for one wrapped in an inner tag with nothing else inside (e.g. `Min. to receive`'s
-   * `<b>` in `ReceiveAmountTitle`) it's that inner tag instead, which has no useful sibling of its
-   * own. Walling up to the nearest `styled__Label-*` ancestor first — babel-plugin-styled-
-   * components names every `styled.xxx` export after its variable, so any component's own
-   * `Label` export produces this same class prefix — lands on `Content`'s actual sibling either way.
-   */
-  private detailContent(label: string | RegExp, occurrence = 0): Locator {
-    const labelLocator =
-      typeof label === 'string' ? this.page.getByText(label, { exact: true }) : this.page.getByText(label)
-    return labelLocator
-      .nth(occurrence)
-      .locator('xpath=ancestor-or-self::*[contains(concat(" ", @class, " "), "__Label-")][1]')
-      .locator('xpath=following-sibling::*[1]')
+  /** A row's whole `ConfirmDetailsItem` container (label + content), keyed by its own `data-testid`. */
+  private routeRow(testId: string): Locator {
+    return this.page.locator(`[data-testid="${testId}"]`)
   }
 
-  /** Reads a `TokenAmountDisplay` cell's exact value off its inner `[title]` (`LibTokenAmount`). */
-  private amountValue(label: string, occurrence = 0): Locator {
-    return this.detailContent(label, occurrence).locator('[title]').first()
+  /** Reads a row's `TokenAmountDisplay` cell off its inner `[title]` (`LibTokenAmount`). */
+  private routeAmount(testId: string): Locator {
+    return this.routeRow(testId).locator('[title]').first()
   }
 
   // Swap leg (stop 1)
   /** `ProtocolFeeRow`'s "Protocol fee (X%)" when nonzero, `FreeFeeRow`'s plain "Fee" when free. */
   swapFee(): Locator {
-    return this.detailContent(/^(Protocol fee|Fee)/)
+    return this.routeRow(TEST_IDS.routeSwapFee)
   }
   swapNetworkCosts(): Locator {
-    return this.detailContent('Network costs (est.)')
+    return this.routeRow(TEST_IDS.routeSwapNetworkCosts)
   }
   swapExpectedToReceive(): Locator {
-    return this.amountValue('Expected to receive', 0)
+    return this.routeAmount(TEST_IDS.routeSwapExpectedToReceive)
   }
   swapMinToReceive(): Locator {
-    return this.amountValue('Min. to receive', 0)
+    return this.routeAmount(TEST_IDS.routeSwapMinToReceive)
   }
   swapRecipient(): Locator {
-    return this.detailContent('Recipient', 0)
+    return this.routeRow(TEST_IDS.routeSwapRecipient)
   }
-  /** Not an exact match: the label also carries the verification badge/tooltip after the text. */
   swapQuoteId(): Locator {
-    return this.detailContent(/^Quote ID/)
+    return this.routeRow(TEST_IDS.routeSwapQuoteId)
   }
 
   // Bridge leg (stop 2)
   bridgeEstTime(): Locator {
-    return this.detailContent('Est. bridge time')
+    return this.routeRow(TEST_IDS.routeBridgeEstTime)
   }
   bridgeCosts(): Locator {
-    return this.detailContent('Bridge costs')
+    return this.routeRow(TEST_IDS.routeBridgeCosts)
   }
   bridgeExpectedToReceive(): Locator {
-    return this.amountValue('Expected to receive', 1)
+    return this.routeAmount(TEST_IDS.routeBridgeExpectedToReceive)
   }
   bridgeMinToDeposit(): Locator {
-    return this.amountValue('Min. to deposit', 0)
+    return this.routeAmount(TEST_IDS.routeBridgeMinToDeposit)
   }
   bridgeRecipient(): Locator {
-    return this.detailContent('Recipient', 1)
+    return this.routeRow(TEST_IDS.routeBridgeRecipient)
   }
   bridgeMinToReceive(): Locator {
-    return this.amountValue('Min. to receive', 1)
+    return this.routeAmount(TEST_IDS.routeBridgeMinToReceive)
   }
 }

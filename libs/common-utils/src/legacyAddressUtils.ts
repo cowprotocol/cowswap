@@ -109,6 +109,15 @@ export function getBlockExplorerUrl(
   return getEtherscanUrl(chainId, data, type, base)
 }
 
+export function getChainExplorerLinkTitle(chainId: SupportedChainId): string {
+  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+
+  return t`View on` + ` ${explorerTitle}`
+}
+export function getCoWExplorerLinkTitle(): string {
+  return t`View on Explorer`
+}
+
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
   if (isCowOrder(type, data)) {
     // Explorer for CoW orders:
@@ -119,10 +128,28 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
   }
 }
 
-export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+export function getEtherscanUrl(
+  chainId: TargetChainId,
+  data: string,
+  type: BlockExplorerLinkType,
+  base?: string,
+): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(base) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
 
-  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
+  if (!basePath) return ''
+
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
+  // a dedicated explorer URL builder must be added here before this fallback.
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
+}
+
+export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
+  return isCowOrder(type, data) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
 }
 
 // TODO: Add proper return type annotation
@@ -130,6 +157,7 @@ export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerL
 export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
   if (!data) return false
 
+  // FIXME: Solana order id has different length than COW_ORDER_ID_LENGTH
   return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
 }
 
@@ -152,21 +180,6 @@ function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLi
     case 'contract':
       return `${basePath}` // BTC has no token or contract page
   }
-}
-
-function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath =
-    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
-    getSafeAbsoluteUrl(base) ||
-    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
-
-  if (!basePath) return ''
-
-  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
-  // a dedicated explorer URL builder must be added here before this fallback.
-  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
-  return getEvmExplorerUrl(basePath, data, type)
 }
 
 function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {

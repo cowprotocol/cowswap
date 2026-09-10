@@ -296,7 +296,7 @@ describe('useCreateTwapOrder', () => {
       expect.objectContaining({ amountToApprove: maxUint256, amountToCover: 1_000_000n }),
     )
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
-      expect.objectContaining({ amountToApprove: maxUint256, amountToCover: 1_000_000n }),
+      expect.objectContaining({ amountToPermitOrApprove: maxUint256, sellTokenAmount: 1_000_000n }),
     )
     expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -322,7 +322,7 @@ describe('useCreateTwapOrder', () => {
       expect.objectContaining({ amountToApprove: 2_000_000n, amountToCover: 1_000_000n }),
     )
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
-      expect.objectContaining({ amountToApprove: 2_000_000n, amountToCover: 1_000_000n }),
+      expect.objectContaining({ amountToPermitOrApprove: 2_000_000n, sellTokenAmount: 1_000_000n }),
     )
   })
 
@@ -341,8 +341,8 @@ describe('useCreateTwapOrder', () => {
 
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
       expect.objectContaining({
-        amountToApprove: 2_000_000n,
-        amountToCover: 1_000_000n,
+        amountToPermitOrApprove: 2_000_000n,
+        sellTokenAmount: 1_000_000n,
         approvalNeeds: expect.objectContaining({ canUsePermit: false }),
       }),
     )
@@ -364,7 +364,7 @@ describe('useCreateTwapOrder', () => {
       expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
     )
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
-      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+      expect.objectContaining({ amountToPermitOrApprove: 1_000_000n, sellTokenAmount: 1_000_000n }),
     )
   })
 

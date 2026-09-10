@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.12.1...wallet-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: configure batching & change permit logic check (#8014)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(account): handle disconnection of injected wallets after a refresh (#7894)
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(wallet): swallow ConnectorAlreadyConnectedError in widget dapp-mode connect race (#8002)
+
+- fix(wallet): show wallet icon for Base Account connections (#8080)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/ens@3.7.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/iframe-transport@2.3.7
+
 ## [3.12.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.12.0...wallet-v3.12.1) (2026-09-07)
 
 ### Patch Changes
