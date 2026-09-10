@@ -23,6 +23,7 @@ import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { type TwapOrderItem } from '../types'
 import { getPartOrderStatus } from '../utils/getPartOrderStatus'
+import { getTwapPartStartTime } from '../utils/getTwapPartStartTime.utils'
 
 interface EoaTwapPartOrdersResult {
   orders: ParsedOrder[]
@@ -137,7 +138,9 @@ function mapPartOrder(
   parent: ParsedOrder,
   isTheLastPart: boolean,
 ): ParsedOrder {
-  const creationTime = new Date(partOrder.createdAt * 1000).toISOString()
+  const startTime =
+    partOrder.validTo === null ? partOrder.createdAt : getTwapPartStartTime(partOrder.validTo, twapOrder.order)
+  const creationTime = new Date(startTime * 1000).toISOString()
   const apiAdditionalInfo = mapApiAdditionalInfo(partOrder, twapOrder, parent, creationTime)
   const isVirtualPart = partOrder.status === 'unconfirmed'
   const order = {

@@ -28,6 +28,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import * as styledEl from './OrderRow.styled'
 import { TableRow } from './OrderRow.styled'
 
+import { useOrderCreationTime } from '../../hooks/useOrderCreationTime'
 import { usePricesDifference } from '../../hooks/usePricesDifference'
 import { OrderContextMenu } from '../../pure/ContextMenu/OrderContextMenu.pure'
 import { CurrencyAmountItem } from '../../pure/CurrencyAmountItem/CurrencyAmountItem.pure'
@@ -123,12 +124,9 @@ export function OrderRow({
     // show the warning only for pending and scheduled orders, but not for presignature pending
     status !== OrderStatus.PRESIGNATURE_PENDING &&
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
-  const isOrderScheduled = order.status === OrderStatus.SCHEDULED
-
-  // eslint-disable-next-line react-hooks/purity
-  const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
+  const isOrderScheduled = status === OrderStatus.SCHEDULED
+  const { isScheduledCreating, creationTimeAgo } = useOrderCreationTime(creationTime, status)
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
-  const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)
   const fulfillmentTimeAgo = useTimeAgo(
     order.fulfillmentTime ? new Date(order.fulfillmentTime) : undefined,
     TIME_AGO_UPDATE_INTERVAL,
