@@ -31,12 +31,7 @@ export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get
       const previous = queryClient.getQueryData<EoaTwapOrdersQueryData>(queryKey)
       if (!previous) return programmaticOrdersApi.fetchEoaTwapOrders(owner, chainId, limit)
 
-      const changes = await programmaticOrdersApi.fetchChangedEoaTwapOrders(
-        owner,
-        chainId,
-        previous.updatedAtBlock,
-        new Set(Object.keys(previous.orders)),
-      )
+      const changes = await programmaticOrdersApi.fetchChangedEoaTwapOrders(owner, chainId, previous.updatedAtBlock)
 
       if (changes.updatedAtBlock === previous.updatedAtBlock && Object.keys(changes.orders).length === 0) {
         return previous

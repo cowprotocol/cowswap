@@ -45,19 +45,17 @@ class ProgrammaticOrdersApi {
     resolvedOwner: string,
     chainId: SupportedChainId,
     updatedAtBlock: string,
-    knownOrderIds: ReadonlySet<string>,
   ): Promise<EoaTwapOrdersDelta> {
     const cursor = BigInt(updatedAtBlock)
     const { items } = await this.api.getTwapOrders(
       { resolvedOwner, chainId, updatedAtBlockGte: cursor },
       { limit: 1000 },
     )
-    const changedItems = items.filter((item) => item.updatedAtBlock > cursor || !knownOrderIds.has(item.eventId))
 
-    logTwap.debug('Polled TWAP delta', changedItems.length)
+    logTwap.debug('Polled TWAP delta', items.length)
 
     return {
-      orders: mapTwapOrders(changedItems),
+      orders: mapTwapOrders(items),
       updatedAtBlock: getLatestUpdatedAtBlock(items, cursor).toString(),
     }
   }
