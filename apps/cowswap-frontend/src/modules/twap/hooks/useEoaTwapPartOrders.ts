@@ -21,7 +21,7 @@ import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
-import { type TwapOrderItem } from '../types'
+import { TwapOrderStatus, type TwapOrderItem } from '../types'
 import { getPartOrderStatus } from '../utils/getPartOrderStatus'
 
 interface EoaTwapPartOrdersResult {
@@ -144,6 +144,7 @@ function mapPartOrder(
     ...apiAdditionalInfo,
     id: partOrder.orderUid as UID,
     status: getPartOrderStatus(apiAdditionalInfo, twapOrder, isVirtualPart),
+    isCancelling: twapOrder.status === TwapOrderStatus.Cancelling,
     creationTime,
     isEoaTwapOrder: true,
     sellAmountBeforeFee: partOrder.sellAmount.toString(),
