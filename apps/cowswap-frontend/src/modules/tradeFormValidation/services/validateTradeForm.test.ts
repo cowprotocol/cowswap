@@ -279,6 +279,10 @@ describe('validateTradeForm - balance vs slippage', () => {
   test('falls back to raw input amount when swapMaximumSellAmount is not provided (e.g. limit/TWAP orders)', () => {
     const context = {
       ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        tradeType: TradeType.LIMIT_ORDER,
+      },
       swapMaximumSellAmount: null,
     } as unknown as TradeFormValidationContext
 
