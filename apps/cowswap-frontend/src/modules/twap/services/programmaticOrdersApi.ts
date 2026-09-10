@@ -31,14 +31,14 @@ class ProgrammaticOrdersApi {
       { resolvedOwner, chainId },
       { direction: 'desc', limit },
     )
-    const orders = mapTwapOrders(twapOrders)
+    const { orders, updatedAtBlock } = mapTwapOrders(twapOrders)
 
     logTwap.debug('Fetched EOA TWAP orders', {
       chainId,
       orderCount: Object.keys(orders).length,
     })
 
-    return { orders, totalCount, updatedAtBlock: getLatestUpdatedAtBlock(twapOrders).toString() }
+    return { orders, totalCount, updatedAtBlock }
   }
 
   async fetchChangedEoaTwapOrders(
@@ -54,10 +54,7 @@ class ProgrammaticOrdersApi {
 
     logTwap.debug('Polled TWAP delta', items.length)
 
-    return {
-      orders: mapTwapOrders(items),
-      updatedAtBlock: getLatestUpdatedAtBlock(items, cursor).toString(),
-    }
+    return mapTwapOrders(items, cursor)
   }
 
   fetchEoaTwapPartOrders(
@@ -90,15 +87,9 @@ class ProgrammaticOrdersApi {
   }
 }
 
-function getLatestUpdatedAtBlock(twapOrders: TwapOrder[], initialValue = 0n): bigint {
-  return twapOrders.reduce(
-    (latest, order) => (order.updatedAtBlock > latest ? order.updatedAtBlock : latest),
-    initialValue,
-  )
-}
-
-function mapTwapOrders(twapOrders: TwapOrder[]): TwapOrdersList {
-  return twapOrders.reduce<TwapOrdersList>((result, twapOrder) => {
+function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrdersDelta {
+  const orders: TwapOrdersList = {}
+  for (const twapOrder of twapOrders) {
     const { schedule, executedAmounts } = twapOrder
     const order: TWAPOrderStruct = {
       sellToken: schedule.sellToken,
@@ -123,7 +114,7 @@ function mapTwapOrders(twapOrders: TwapOrder[]): TwapOrdersList {
     }
     const createdAt = new Date(twapOrder.createdAt * 1000)
 
-    result[twapOrder.eventId] = {
+    orders[twapOrder.eventId] = {
       id: twapOrder.eventId,
       hash: twapOrder.hash,
       chainId: twapOrder.chainId,
@@ -144,8 +135,10 @@ function mapTwapOrders(twapOrders: TwapOrder[]): TwapOrdersList {
       executionInfo,
     }
 
-    return result
-  }, {})
+    if (twapOrder.updatedAtBlock > updatedAtBlock) updatedAtBlock = twapOrder.updatedAtBlock
+  }
+
+  return { orders, updatedAtBlock: updatedAtBlock.toString() }
 }
 
 export const programmaticOrdersApi = new ProgrammaticOrdersApi()
