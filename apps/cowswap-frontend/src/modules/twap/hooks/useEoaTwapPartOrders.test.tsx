@@ -75,7 +75,7 @@ function makePartPage(uid: string, status: TwapPartOrderStatus = 'fulfilled'): Q
   }
 }
 
-function makeTwapOrder(partOrdersCount = 1): TwapOrderItem {
+function makeTwapOrder(partOrdersCount = 1, updatedAtBlock = '1'): TwapOrderItem {
   return {
     id: 'event',
     hash: 'hash',
@@ -85,6 +85,7 @@ function makeTwapOrder(partOrdersCount = 1): TwapOrderItem {
     status: TwapOrderStatus.Pending,
     submissionDate: new Date(0).toISOString(),
     partOrdersCount,
+    updatedAtBlock,
     order: {
       sellToken: parent.inputToken.address,
       buyToken: parent.outputToken.address,
@@ -181,30 +182,21 @@ describe('useEoaTwapPartOrders', () => {
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(1)
   })
 
-  it('refreshes an expanded part page', async () => {
-    jest.useFakeTimers()
+  it('refreshes an expanded part page when the parent cursor changes', async () => {
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce(makePartPage('stale-part'))
       .mockResolvedValueOnce(makePartPage('updated-part'))
+    const { result, rerender } = renderHook(({ twapOrder }) => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
+      initialProps: { twapOrder: makeTwapOrder() },
+      wrapper: SwrTestProvider,
+    })
 
-    try {
-      const { result } = renderHook(() => useEoaTwapPartOrders(makeTwapOrder(), parent, 1, true), {
-        wrapper: SwrTestProvider,
-      })
+    await waitFor(() => expect(result.current.orders[0]?.id).toBe('stale-part'))
 
-      await act(async () => {
-        await jest.advanceTimersByTimeAsync(0)
-      })
-      expect(result.current.orders[0]?.id).toBe('stale-part')
+    rerender({ twapOrder: makeTwapOrder(1, '2') })
 
-      await act(async () => {
-        await jest.advanceTimersByTimeAsync(30_000)
-      })
-      expect(result.current.orders[0]?.id).toBe('updated-part')
-      expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
-    } finally {
-      jest.useRealTimers()
-    }
+    await waitFor(() => expect(result.current.orders[0]?.id).toBe('updated-part'))
+    expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
   })
 
   it('refreshes parts when the parent status changes', async () => {
