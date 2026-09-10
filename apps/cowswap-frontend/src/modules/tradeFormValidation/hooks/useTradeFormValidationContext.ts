@@ -194,7 +194,7 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
 }
 
 function getSwapMaximumSellAmount(
-  tradeType: TradeType | undefined,
+  tradeType: TradeType | null | undefined,
   receiveAmountInfo: ReceiveAmountInfo | null,
 ): CurrencyAmount<Currency> | null {
   if (tradeType !== TradeType.SWAP) return null
