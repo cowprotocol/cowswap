@@ -15,8 +15,8 @@ export interface EoaTwapSigningStepState {
   /**
    * When true, hide back/close in `ConfirmationPendingContentShell`.
    *
-   * Set once the funding-order EIP-712 signature is requested and preserved until the end of the flow (unless any step
-   * needs to update it mid-flow).
+   * Set once the setup transaction is submitted and preserved until the end of the flow (unless any step needs to
+   * update it mid-flow).
    */
   lockDismiss: boolean
 }
@@ -34,10 +34,11 @@ export enum EoaTwapSigningPhase {
 }
 
 export enum EoaTwapSigningSteps {
-  ZeroApprove = 'ZeroApprove',
-  ApproveOrPermit = 'ApproveOrPermit',
+  ZeroApprovePoller = 'ZeroApprovePoller',
+  ApprovePoller = 'ApprovePoller',
+  /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
+  PermitPoller = 'PermitPoller',
   TwapSetup = 'TwapSetup',
-  FundingOrder = 'FundingOrder',
   CreatingOrder = 'CreatingOrder',
 }
 

@@ -64,12 +64,14 @@ const metadata = {
 const solanaAdapter = new SolanaAdapter()
 
 const wagmiAdapter = new WagmiAdapter({
-  batch: {
-    multicall: {
-      wait: 130, //  coalescing window in ms
-      batchSize: 30_000, // calldata size ceiling (30kb)
-    },
-  },
+  batch: window.__COWSWAP_E2E__
+    ? undefined
+    : {
+        multicall: {
+          wait: 130, //  coalescing window in ms
+          batchSize: 30_000, // calldata size ceiling (30kb)
+        },
+      },
   // Frequency (in ms) for polling enabled actions & events.
   pollingInterval: 12_000,
   connectors: getConnectors(),

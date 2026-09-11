@@ -8,14 +8,23 @@ import { getAppData } from 'modules/appData'
 
 import { getEoaTwapOrderShedCalls } from './placeEoaTwapOrder'
 
+import {
+  COMPOSABLE_COW_POLLER_ADDRESS,
+  COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
+} from '../../../composable-cow-poller/composable-cow-poller.constants'
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
 
 const chainId = SupportedChainId.SEPOLIA
 const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[chainId]
+const POLLER_ADDRESS = COMPOSABLE_COW_POLLER_ADDRESS[chainId]
 
 if (!COW_SEPOLIA) {
   throw new Error(`COW token not found for chain ${chainId}`)
+}
+
+if (!POLLER_ADDRESS) {
+  throw new Error(`ComposableCowPoller not found for chain ${chainId}`)
 }
 
 const paramsStruct: ConditionalOrderParams = {
@@ -56,60 +65,95 @@ const twapOrderCreationContext: TwapOrderCreationContext = {
   },
 }
 
+const pollerRegistration = {
+  pollerAddress: POLLER_ADDRESS,
+  schedule: {
+    handler: paramsStruct.handler as `0x${string}`,
+    authEpoch: COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
+    funder: '0x1111111111111111111111111111111111111111' as `0x${string}`,
+    owner: '0x2222222222222222222222222222222222222222' as `0x${string}`,
+    salt: paramsStruct.salt as `0x${string}`,
+    staticInput: paramsStruct.staticInput as `0x${string}`,
+  },
+}
+
 describe('getEoaTwapOrderShedCalls()', () => {
-  it('Includes approve then create when proxy needsApproval is true', () => {
+  it('includes registerFromShed then approve then create when proxy needsApproval is true', () => {
     const calls = getEoaTwapOrderShedCalls({
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
       spender: vaultRelayer,
       proxyAllowances: { needsApproval: true, needsZeroApproval: false },
+      pollerRegistration,
     })
 
-    expect(calls).toHaveLength(2)
+    expect(calls).toHaveLength(3)
 
-    expect(calls[0].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[0].target.toLowerCase()).toBe(POLLER_ADDRESS.toLowerCase())
     expect(calls[0].value).toBe(0n)
     expect(calls[0].isDelegateCall).toBe(false)
     expect(calls[0].allowFailure).toBe(false)
     expect(calls[0].callData).toMatch(/^0x/)
 
-    expect(calls[1].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
-    expect(calls[1].value).toBe(0n)
-    expect(calls[1].isDelegateCall).toBe(false)
+    expect(calls[1].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
     expect(calls[1].allowFailure).toBe(false)
-    expect(calls[1].callData).toMatch(/^0x/)
+
+    expect(calls[2].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
+    expect(calls[2].allowFailure).toBe(false)
   })
 
-  it('Omits approve when proxy needsApproval is false', () => {
+  it('includes registerFromShed then create when proxy needsApproval is false', () => {
     const calls = getEoaTwapOrderShedCalls({
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
       spender: vaultRelayer,
       proxyAllowances: { needsApproval: false, needsZeroApproval: false },
+      pollerRegistration,
     })
 
-    expect(calls).toHaveLength(1)
-    expect(calls[0].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
-    expect(calls[0].allowFailure).toBe(false)
+    expect(calls).toHaveLength(2)
+    expect(calls[0].target.toLowerCase()).toBe(POLLER_ADDRESS.toLowerCase())
+    expect(calls[1].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
   })
 
-  it('Includes zero-approve before approve when proxy needsZeroApproval is true', () => {
+  it('includes zero-approve before approve when proxy needsZeroApproval is true', () => {
     const calls = getEoaTwapOrderShedCalls({
       twapOrder,
       twapOrderCreationContext,
       paramsStruct,
       spender: vaultRelayer,
       proxyAllowances: { needsApproval: true, needsZeroApproval: true },
+      pollerRegistration,
+    })
+
+    expect(calls).toHaveLength(4)
+    expect(calls[0].target.toLowerCase()).toBe(POLLER_ADDRESS.toLowerCase())
+    expect(calls[1].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[2].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
+    expect(calls[3].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
+  })
+
+  it('prepends pollerPermitData before registerFromShed when provided', () => {
+    const calls = getEoaTwapOrderShedCalls({
+      twapOrder,
+      twapOrderCreationContext,
+      paramsStruct,
+      spender: vaultRelayer,
+      proxyAllowances: { needsApproval: false, needsZeroApproval: false },
+      pollerRegistration,
+      pollerPermitData: {
+        target: COW_SEPOLIA.address,
+        callData: '0xdeadbeef',
+        gasLimit: '50000',
+      },
     })
 
     expect(calls).toHaveLength(3)
     expect(calls[0].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
-    expect(calls[0].allowFailure).toBe(false)
-    expect(calls[1].target.toLowerCase()).toBe(COW_SEPOLIA.address.toLowerCase())
-    expect(calls[1].allowFailure).toBe(false)
+    expect(calls[0].callData).toBe('0xdeadbeef')
+    expect(calls[1].target.toLowerCase()).toBe(POLLER_ADDRESS.toLowerCase())
     expect(calls[2].target).toBe(COMPOSABLE_COW_ADDRESS[chainId])
-    expect(calls[2].allowFailure).toBe(false)
   })
 })

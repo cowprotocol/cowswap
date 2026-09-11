@@ -16,14 +16,16 @@ import { RecipientWrapper } from '../../styles'
 interface RecipientDetailsItemProps {
   recipient: string
   chainId: number
+  testId?: string
 }
 
-export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsItemProps): ReactNode {
+export function RecipientDetailsItem({ recipient, chainId, testId }: RecipientDetailsItemProps): ReactNode {
   return (
     <>
       {!areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT) && isSupportedAddress(recipient) && (
         <ConfirmDetailsItem
           withTimelineDot
+          testId={testId}
           label={
             <>
               <Trans>Recipient</Trans>{' '}

@@ -1,0 +1,25 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "result": [
+    {
+      "chainId": 1,
+      "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "name": "USDC",
+      "symbol": "USDC",
+      "decimals": 6,
+      "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+      "icon": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602"
+    },
+    {
+      "chainId": 1,
+      "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+      "name": "Tether",
+      "symbol": "USDT",
+      "decimals": 6,
+      "logoURI": "https://assets.coingecko.com/coins/images/325/large/Tether.png?1696501661",
+      "icon": "https://assets.coingecko.com/coins/images/325/large/Tether.png?1696501661"
+    }
+  ],
+  "message": null
+}
