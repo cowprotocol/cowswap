@@ -13,7 +13,7 @@ import {
 
 import { t } from '@lingui/core/macro'
 
-import { getExplorerOrderLink } from './explorer'
+import { getExplorerOrderLink, getExplorerTwapOrderLink, isTwapEventId } from './explorer'
 import { getSafeAbsoluteUrl } from './safeLink'
 
 /**
@@ -110,6 +110,9 @@ export function getBlockExplorerUrl(
 }
 
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
+  const twapLink = type === 'transaction' ? getExplorerTwapOrderLink(chainId, data) : undefined
+  if (twapLink) return twapLink
+
   if (isCowOrder(type, data)) {
     // Explorer for CoW orders:
     //    If a transaction has the size of the CoW orderId, then it's a meta-tx
@@ -122,7 +125,9 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
   const explorerTitle = CHAIN_INFO[chainId].explorerTitle
 
-  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
+  return isCowOrder(type, data) || (type === 'transaction' && isTwapEventId(data ?? ''))
+    ? t`View on Explorer`
+    : t`View on` + ` ${explorerTitle}`
 }
 
 // TODO: Add proper return type annotation

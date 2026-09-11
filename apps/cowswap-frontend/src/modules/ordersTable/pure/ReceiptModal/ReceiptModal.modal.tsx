@@ -348,11 +348,7 @@ function ReceiptModalContent({
                       : i18n._(order.executionData.activityTitle)
                   }
                 />
-                <IdField
-                  id={order.executionData.activityId}
-                  chainId={chainId}
-                  href={isTwapPartOrder ? undefined : parentUrl}
-                />
+                <IdField id={order.executionData.activityId} chainId={chainId} />
               </>
             )}
           </styledEl.Field>
