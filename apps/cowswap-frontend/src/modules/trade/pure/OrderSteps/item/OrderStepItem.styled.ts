@@ -1,8 +1,28 @@
 import { font, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 
 const DETAILS_ROW_GAP = '10px'
+
+const statusBgPulse = keyframes`
+  0%,
+  100% {
+    background: var(${UI.COLOR_INFO_BG});
+  }
+  50% {
+    background: var(${UI.COLOR_PRIMARY_OPACITY_25});
+  }
+`
+
+const statusDotPulse = keyframes`
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+`
 
 export const StepItem = styled.li`
   position: relative;
@@ -43,34 +63,6 @@ export const StepsIconWrapper = styled.div`
     --status-color: var(${UI.COLOR_INFO_TEXT});
   }
 
-  &[data-status='loading'] {
-    animation: statusBgPulse 1.4s ease-in-out infinite;
-  }
-
-  &[data-status='loading']::before {
-    animation: statusDotPulse 1.4s ease-in-out infinite;
-  }
-
-  @keyframes statusBgPulse {
-    0%,
-    100% {
-      background: var(${UI.COLOR_INFO_BG});
-    }
-    50% {
-      background: var(${UI.COLOR_PRIMARY_OPACITY_25});
-    }
-  }
-
-  @keyframes statusDotPulse {
-    0%,
-    100% {
-      transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.25);
-    }
-  }
-
   &[data-status='warning'] {
     --status-bg: var(${UI.COLOR_ALERT_BG});
     --status-color: var(${UI.COLOR_ALERT_TEXT});
@@ -102,6 +94,16 @@ export const StepsIconWrapper = styled.div`
   &[data-status='active']::before,
   &[data-status='loading']::before {
     border-width: calc(var(--inner-circle-size) / 2);
+  }
+
+  &[data-status='loading'] {
+    --status-bg: var(${UI.COLOR_INFO_BG});
+    animation: ${statusBgPulse} 1.4s ease-in-out infinite;
+  }
+
+  &[data-status='loading']::before {
+    animation: ${statusDotPulse} 1.4s ease-in-out infinite;
+    transition: none;
   }
 
   &[data-status='success'],
