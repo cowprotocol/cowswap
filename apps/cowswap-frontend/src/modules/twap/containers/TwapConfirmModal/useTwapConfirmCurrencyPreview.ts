@@ -1,13 +1,17 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
+
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
-import { getOrderTypeReceiveAmounts } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useTradeConfirmState } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 
+import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 
@@ -22,11 +26,23 @@ interface UseTwapConfirmCurrencyPreviewReturn {
   receiveAmountInfo: ReturnType<typeof useScaledReceiveAmountInfo>
 }
 
+// eslint-disable-next-line complexity
 export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewReturn {
-  const { inputCurrencyAmount, inputCurrencyFiatAmount, inputCurrencyBalance, outputCurrencyBalance } =
-    useAdvancedOrdersDerivedState()
+  const {
+    inputCurrencyAmount,
+    inputCurrencyFiatAmount,
+    inputCurrencyBalance,
+    outputCurrencyAmount,
+    outputCurrencyFiatAmount,
+    outputCurrencyBalance,
+  } = useAdvancedOrdersDerivedState()
   const receiveAmountInfo = useScaledReceiveAmountInfo()
   const localFormValidation = useTwapFormState()
+  const { pendingTrade } = useTradeConfirmState()
+  const eoaTwapSigningStep = useEoaTwapSigningStep()
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
   const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
@@ -42,13 +58,22 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
   const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
 
-  const outputCurrencyInfo = {
-    amount: amountAfterFees,
-    fiatAmount: amountAfterFeesUsd,
-    balance: outputCurrencyBalance,
-    label: t`Expected to receive`,
-    prefix: '≈',
-  } satisfies CurrencyPreviewInfo
+  const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+  const isEoaTwapPostConfirm = isEoaTwap && (!!pendingTrade || !!eoaTwapSigningStep)
+  const outputCurrencyInfo = isEoaTwapPostConfirm
+    ? {
+        amount: amountAfterFees,
+        fiatAmount: amountAfterFeesUsd,
+        balance: outputCurrencyBalance,
+        label: t`Expected to receive`,
+        prefix: '≈',
+      }
+    : {
+        amount: outputCurrencyAmount,
+        fiatAmount: outputCurrencyFiatAmount,
+        balance: outputCurrencyBalance,
+        label: t`Receive (before fees)`,
+      }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
