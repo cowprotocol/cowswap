@@ -32,7 +32,8 @@ export function emulatePartAsOrder(
 
 function getOrderStatus(parent: TwapOrderItem): OrderStatus {
   if (parent.status === TwapOrderStatus.Fulfilled) return OrderStatus.FULFILLED
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
+  if (parent.status === TwapOrderStatus.Expired || parent.status === TwapOrderStatus.PartiallyFilled)
+    return OrderStatus.EXPIRED
   if (parent.status === TwapOrderStatus.Cancelled) return OrderStatus.CANCELLED
 
   return OrderStatus.OPEN

@@ -1,10 +1,12 @@
 import { useCallback } from 'react'
 
-import { useNavigate } from 'react-router'
-import { useNavigationPathPrefix } from 'state/network'
-import { isAnAddressAccount, isAnOrderId, isATxHash, isEns } from 'utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-export function pathAccordingTo(query: string): string {
+import { useNavigate } from 'react-router'
+import { useNavigationPathPrefix, useNetworkId } from 'state/network'
+import { isAnAddressAccount, isAnOrderId, isATxHash, isEns, isTwapEventId, isTwapSupportedChain } from 'utils'
+
+export function pathAccordingTo(query: string, isTwapEnabled = false): string {
   if (isAnAddressAccount(query)) {
     return 'address'
   }
@@ -14,6 +16,9 @@ export function pathAccordingTo(query: string): string {
   if (isATxHash(query)) {
     return 'tx'
   }
+  if (isTwapEnabled && isTwapEventId(query)) {
+    return 'twap'
+  }
 
   return 'search'
 }
@@ -21,20 +26,25 @@ export function pathAccordingTo(query: string): string {
 export function useSearchSubmit(): (query: string) => void {
   const navigate = useNavigate()
   const prefixNetwork = useNavigationPathPrefix()
+  const networkId = useNetworkId()
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isTwapEnabled = isTwapEoaEnabled === true && isTwapSupportedChain(networkId)
 
   return useCallback(
     (query: string) => {
       // For now assumes /orders/ path. Needs logic to try all types for a valid response:
       // Orders, transactions, tokens, batches
-      const path = pathAccordingTo(query)
+      const path = pathAccordingTo(query, isTwapEnabled)
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
 
       if (path === 'address' && isEns(query)) {
         navigate(`/${path}/${query}`)
+      } else if (path === 'twap') {
+        navigate(`/${pathPrefix}/${query}`, { state: { twapGlobalSearch: true } })
       } else {
         query && query.length > 0 && navigate(`/${pathPrefix}/${query}`)
       }
     },
-    [navigate, prefixNetwork],
+    [isTwapEnabled, navigate, prefixNetwork],
   )
 }
