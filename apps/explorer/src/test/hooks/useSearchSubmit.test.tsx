@@ -92,6 +92,22 @@ describe('useSearchSubmit', () => {
     expect(result.location.pathname).toBe(`/orders/${query}`)
   })
 
+  // A Solana order uid is exactly as long as an EVM transaction hash, so the same string has to
+  // route to a different page depending on the chain.
+  const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
+
+  it('should be /orders/0x... for a Solana order uid on Solana', () => {
+    const result = runHook(SOLANA_ORDER_ID, { networkId: SupportedChainId.SOLANA })
+
+    expect(result.location.pathname).toBe(`/orders/${SOLANA_ORDER_ID}`)
+  })
+
+  it('should still be /tx/0x... for the same length on an EVM chain', () => {
+    const result = runHook(SOLANA_ORDER_ID, { networkId: SupportedChainId.MAINNET })
+
+    expect(result.location.pathname).toBe(`/tx/${SOLANA_ORDER_ID}`)
+  })
+
   it('should keep selected chain prefix on canonical /solvers', () => {
     const query = 'invalid_search'
 

@@ -11,6 +11,8 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { Network } from 'types'
 
+import type { SolanaOrderDetails } from 'api/solanaOrderbook/types'
+
 export type TxHash = string
 
 export enum OrderStatus {
@@ -84,6 +86,7 @@ export type Order = Pick<
   | 'class'
   | 'fullAppData'
   | 'executedFeeToken'
+  | 'solana'
 > & {
   receiver: string
   txHash?: string
@@ -129,7 +132,15 @@ export type ProtocolFee = {
 }
 
 // TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
-export type RawOrder = EnrichedOrder & { gasCost?: string | null }
+export type RawOrder = EnrichedOrder & {
+  gasCost?: string | null
+  /**
+   * Set only for orders from the Solana order book, where it is always set. The fields the two
+   * books share are normalised into the shape above; these have no EVM counterpart, so they ride
+   * along instead of being dropped. Components can branch on its presence.
+   */
+  solana?: SolanaOrderDetails
+}
 
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 

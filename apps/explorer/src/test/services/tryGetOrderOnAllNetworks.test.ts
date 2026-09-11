@@ -43,4 +43,37 @@ describe('tryGetOrderOnAllNetworks', () => {
     expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
     expect(result).toEqual({ order: ordersResult })
   })
+
+  // An order uid is chain-shaped — 112 hex on EVM, 64 on Solana — so an id that missed on one
+  // family can never resolve on the other, and each extra chain costs a PROD and a BARN request.
+  test('Should not fall back across the EVM/Solana boundary', async () => {
+    const txHash = '0xTest_txHash'
+    const mockedApi = jest.fn().mockImplementation(() => Promise.resolve(null))
+    const searchList = [Network.MAINNET, Network.SEPOLIA, Network.SOLANA]
+
+    const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
+      api: mockedApi,
+      defaultParams: { networkId: Network.SOLANA, txHash },
+    }
+    await tryGetOrderOnAllNetworksAndEnvironments(Network.SOLANA, getOrderApi, searchList)
+
+    // Only the initial Solana attempt: no EVM chain is worth asking.
+    expect(mockedApi).toHaveBeenCalledTimes(1)
+    expect(mockedApi).toHaveBeenCalledWith({ networkId: Network.SOLANA, txHash })
+  })
+
+  test('Should not fall back from an EVM chain onto Solana', async () => {
+    const txHash = '0xTest_txHash'
+    const mockedApi = jest.fn().mockImplementation(() => Promise.resolve(null))
+    const searchList = [Network.MAINNET, Network.SEPOLIA, Network.SOLANA]
+
+    const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
+      api: mockedApi,
+      defaultParams: { networkId: Network.SEPOLIA, txHash },
+    }
+    await tryGetOrderOnAllNetworksAndEnvironments(Network.SEPOLIA, getOrderApi, searchList)
+
+    expect(mockedApi).toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
+    expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.SOLANA, txHash })
+  })
 })

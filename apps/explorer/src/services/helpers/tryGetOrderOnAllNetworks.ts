@@ -1,4 +1,4 @@
-import { ALL_SUPPORTED_CHAIN_IDS } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { Network } from 'types'
 
@@ -47,8 +47,14 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
     return { order }
   }
 
-  // If we didn't find the order in the current network, we look in different networks
-  const remainingNetworkIds = networkIdSearchListRemaining.filter((network) => network !== networkId)
+  // If we didn't find the order in the current network, we look in different networks.
+  // Only within the same family: an order uid is chain-shaped — 112 hex on EVM, 64 on Solana — so
+  // an id from one family can never resolve on the other, and searching across would be a round of
+  // guaranteed misses against every chain (each of which costs a PROD and a BARN request).
+  const searchInSolana = isSolanaChain(networkId)
+  const remainingNetworkIds = networkIdSearchListRemaining.filter(
+    (network) => network !== networkId && isSolanaChain(network) === searchInSolana,
+  )
 
   // Try to get the order in another network (to see if the ID is OK, but the network not)
   for (const currentNetworkId of remainingNetworkIds) {

@@ -5,6 +5,7 @@ import { Wrapper as WrapperMod, StyledSearch } from './styled'
 
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useOrderIdParam } from '../../hooks/useSanitizeOrderIdAndUpdateUrl'
+import { useNetworkId } from '../../state/network'
 import { isAnOrderId } from '../../utils'
 import { OrderWidget } from '../components/OrderWidget'
 import { APP_TITLE } from '../const'
@@ -19,8 +20,9 @@ const Wrapper = styled(WrapperMod)`
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Order = () => {
   const orderId = useOrderIdParam()
+  const networkId = useNetworkId()
 
-  if (!isAnOrderId(orderId)) {
+  if (!isAnOrderId(orderId, networkId)) {
     return <RedirectToSearch from="orders" />
   }
 
