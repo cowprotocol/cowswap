@@ -44,8 +44,7 @@ describe('tryGetOrderOnAllNetworks', () => {
     expect(result).toEqual({ order: ordersResult })
   })
 
-  // An order uid is chain-shaped — 112 hex on EVM, 64 on Solana — so an id that missed on one
-  // family can never resolve on the other, and each extra chain costs a PROD and a BARN request.
+  // Uids are chain-shaped, so crossing over can only miss — at two requests per chain.
   test('Should not fall back across the EVM/Solana boundary', async () => {
     const txHash = '0xTest_txHash'
     const mockedApi = jest.fn().mockImplementation(() => Promise.resolve(null))

@@ -50,9 +50,8 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   const { data: coingeckoList, isLoading: isCoingeckoLoading } = useTokenListByUrl(
     coingeckoUrlKey ? `https://tokens.coingecko.com/${coingeckoUrlKey}/all.json` : '',
   )
-  // The only source of SPL metadata here. Coingecko has no Solana feed in `COINGECKO_CHAINS`, and a
-  // mint is not a contract to read `symbol`/`decimals` off, so a token missing from this list stays
-  // unknown — and without decimals an order's amounts cannot be rendered at all.
+  // The only source of SPL metadata: a mint is not a contract to read `symbol`/`decimals` off, and
+  // without decimals an order's amounts cannot be rendered at all.
   const { data: solanaList, isLoading: isSolanaListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.SOLANA ? SOLANA_TOKEN_LIST_URL : '',
   )

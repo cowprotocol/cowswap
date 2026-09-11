@@ -9,8 +9,7 @@ export function pathAccordingTo(query: string, networkId?: Network | null): stri
   if (isAnAddressAccount(query)) {
     return 'address'
   }
-  // Before the tx-hash check on purpose: a Solana order uid and an EVM transaction hash are the
-  // same length, so on Solana the order has to win or every uid routes to the transaction page.
+  // Before the tx-hash check on purpose: a Solana uid is the same length as an EVM tx hash.
   if (isAnOrderId(query, networkId)) {
     return 'orders'
   }

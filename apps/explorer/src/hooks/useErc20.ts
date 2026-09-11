@@ -62,9 +62,8 @@ export function useMultipleErc20(
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(
     () =>
-      // An SPL mint is not an ERC-20 contract and there is no EVM RPC to ask, so a Solana token the
-      // list did not cover stays unknown. Attempting it anyway leaves every order page retrying
-      // `symbol`/`decimals` calls that can never succeed.
+      // An SPL mint is not an ERC-20 contract, so whatever the Solana token list missed stays
+      // unknown. Trying anyway leaves the page retrying calls that can never succeed.
       isTokenListLoading || (networkId && isSolanaChain(networkId))
         ? []
         : addresses.filter(

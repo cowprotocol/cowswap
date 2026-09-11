@@ -7,27 +7,13 @@ import { RawOrder, RawTrade } from 'api/operator/types'
 import { SolanaOrderKind, SolanaOrderStatus, SolanaRawOrder, SolanaRawTrade } from './types'
 
 /**
- * Solana order-book payloads expressed as the EVM ones the explorer already consumes.
- *
- * The two books describe the same thing — an intent and its fills — with different field names, and
- * the arithmetic over them (filled amount, surplus, limit price) is identical. Renaming the fields
- * once, here, keeps that arithmetic in a single tested implementation instead of forking
- * `transformOrder`, `transformTrade` and every helper they call.
- *
- * Normalising is not flattening: what Solana has and EVM does not travels on `order.solana` rather
- * than being dropped, so components are free to diverge on top of one data layer. Every EVM-only
- * field is filled with the value that makes the shared helpers reach the same conclusion the book
- * reached server-side; fields genuinely unknowable from these endpoints are left empty rather than
- * invented, and the UI has to stop showing them for Solana.
+ * Solana order-book payloads expressed as the EVM ones, so the shared order helpers and UI work
+ * unchanged. What has no EVM counterpart travels on `order.solana` rather than being dropped.
  */
 
 /**
- * The response mapper for a chain, identity on EVM.
- *
- * The Solana order book mirrors the EVM paths — `/api/v1/orders/{uid}`,
- * `/api/v1/account/{owner}/orders`, `/api/v2/trades` — so `OrderBookApi` reaches it unchanged once
- * its context carries the Solana chain id, and what it hands back is typed as an EVM order without
- * being one. Mapping at that boundary keeps the callers above it chain-agnostic.
+ * Response mapper for a chain, identity on EVM. The Solana book mirrors the EVM paths, so the SDK
+ * reaches it unchanged and types its reply as an EVM order without it being one.
  */
 export function orderNormalizer(networkId: Network): (order: RawOrder) => RawOrder {
   if (!isSolanaChain(networkId)) return (order) => order
@@ -47,10 +33,7 @@ const ORDER_KIND: Record<SolanaOrderKind, OrderKind> = {
   buy: OrderKind.BUY,
 }
 
-/**
- * Solana's statuses are a subset of the EVM ones, spelled identically. Mapping them rather than
- * asserting the overlap means the compiler catches it if either side ever adds a state.
- */
+/** Spelled identically on both sides; mapped rather than cast so a new state breaks the build. */
 const ORDER_STATUS: Record<SolanaOrderStatus, OrderStatus> = {
   open: OrderStatus.OPEN,
   fulfilled: OrderStatus.FULFILLED,
@@ -95,39 +78,28 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
     executedBuyAmount,
     status: ORDER_STATUS[status],
     receiver: buyTokenAccount,
-    // Currently no component in the Solana flow charges a fee (`openapi.yml`: "Always zero. No
-    // component charges a fee"), so every fee field is zero rather than unknown. This has to be
-    // revisited once fees exist: `isOrderFilled` subtracts `executedFeeAmount` from the executed
-    // sell amount, and only while it is zero does that reduce to the book's own
-    // `amount_withdrawn >= sell_amount`.
+    // Nothing charges a fee on Solana today; revisit when that changes, `isOrderFilled` subtracts
+    // `executedFeeAmount` and only a zero makes it match the book's own fill check.
     feeAmount: '0',
     executedFeeAmount: '0',
     totalFee: '0',
     executedSellAmountBeforeFees: executedSellAmount,
     invalidated: status === 'cancelled',
-    // The order exists because a `CreateOrder` instruction was signed and landed on-chain, which
-    // is what presign means on EVM: authorisation recorded on-chain rather than a signature
-    // carried with the order. The Solana trading SDK reports the same scheme when it builds one.
+    // Authorised on-chain by `CreateOrder`, which is what presign means on EVM.
     signingScheme: SigningScheme.PRESIGN,
-    // Not carried by these endpoints: the authorising transaction is not part of the order
-    // payload, and the settlement program's address is deployment configuration, not order data.
+    // Not carried by these endpoints.
     signature: '',
     settlementContract: '',
-    // Solana currently has no order classes; every order is a plain swap. Limit orders would
-    // need this to stop being a constant.
+    // No order classes on Solana yet; limit orders would make this a real value.
     class: OrderClass.MARKET,
-    // Everything above is the intent as the EVM book would describe it. These have no EVM
-    // counterpart, so they travel separately rather than being dropped — and their presence is
-    // what tells a component it is looking at a Solana order.
+    // No EVM counterpart. Its presence is also what marks the order as Solana's.
     solana: { orderPda, sellTokenAccount, buyTokenAccount },
   }
 }
 
 /**
- * `slot` is not a block number — it indexes Solana's slot clock and means nothing to an EVM RPC.
- * It is mapped onto `blockNumber` so the shared trade code can carry it, and callers must not
- * feed it to `web3.eth.getBlock`. It is `null` until the settlement row is indexed; `0` stands in
- * for that, matching how `blockNumber` is treated as "not yet known" elsewhere.
+ * `blockNumber` carries a slot, which means nothing to an EVM RPC — never pass it to
+ * `web3.eth.getBlock`. `0` stands in for a settlement that is not indexed yet.
  */
 export function toRawTrade(trade: SolanaRawTrade): RawTrade {
   const { orderUid, owner, sellToken, buyToken, sellAmount, buyAmount, txSignature, instructionIndex, slot } = trade
@@ -139,10 +111,9 @@ export function toRawTrade(trade: SolanaRawTrade): RawTrade {
     buyToken,
     sellAmount,
     buyAmount,
-    // Currently no fee is charged, so the fill's sell amount is already its before-fees amount.
+    // No fee charged, so this is already the before-fees amount.
     sellAmountBeforeFees: sellAmount,
-    // A base58 transaction signature, not a 0x hash. Anything linking it out has to point at a
-    // Solana explorer.
+    // Base58 signature, not a 0x hash.
     txHash: txSignature,
     logIndex: instructionIndex,
     blockNumber: slot ?? 0,

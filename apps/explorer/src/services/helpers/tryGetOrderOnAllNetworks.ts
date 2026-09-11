@@ -48,9 +48,8 @@ export async function tryGetOrderOnAllNetworksAndEnvironments<TypeOrderResult>(
   }
 
   // If we didn't find the order in the current network, we look in different networks.
-  // Only within the same family: an order uid is chain-shaped — 112 hex on EVM, 64 on Solana — so
-  // an id from one family can never resolve on the other, and searching across would be a round of
-  // guaranteed misses against every chain (each of which costs a PROD and a BARN request).
+  // Only within the same family: uids are chain-shaped (112 hex on EVM, 64 on Solana), so crossing
+  // over is a round of guaranteed misses, two requests per chain.
   const searchInSolana = isSolanaChain(networkId)
   const remainingNetworkIds = networkIdSearchListRemaining.filter(
     (network) => network !== networkId && isSolanaChain(network) === searchInSolana,

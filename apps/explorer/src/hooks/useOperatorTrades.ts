@@ -59,9 +59,8 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   // Fetch blocks timestamps for the visible page only
   useEffect(() => {
     if (!pageTrades.length) return
-    // On Solana `blockNumber` carries a slot, which indexes Solana's own clock and means nothing
-    // to the EVM RPC behind `web3.eth.getBlock`. Fills keep a null `executionTime` until this
-    // resolves slots through a Solana RPC instead.
+    // `blockNumber` carries a slot there, which the EVM RPC behind `web3.eth.getBlock` cannot
+    // resolve. Fills keep a null `executionTime` until a Solana RPC does it.
     if (networkId && isSolanaChain(networkId)) return
 
     let cancelled = false

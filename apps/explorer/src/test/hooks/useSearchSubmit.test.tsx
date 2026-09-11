@@ -92,8 +92,7 @@ describe('useSearchSubmit', () => {
     expect(result.location.pathname).toBe(`/orders/${query}`)
   })
 
-  // A Solana order uid is exactly as long as an EVM transaction hash, so the same string has to
-  // route to a different page depending on the chain.
+  // Same length as an EVM tx hash, so the same string routes differently per chain.
   const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
 
   it('should be /orders/0x... for a Solana order uid on Solana', () => {

@@ -134,11 +134,7 @@ export type ProtocolFee = {
 // TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
 export type RawOrder = EnrichedOrder & {
   gasCost?: string | null
-  /**
-   * Set only for orders from the Solana order book, where it is always set. The fields the two
-   * books share are normalised into the shape above; these have no EVM counterpart, so they ride
-   * along instead of being dropped. Components can branch on its presence.
-   */
+  /** Always set for Solana orders, never for EVM ones — components can branch on its presence. */
   solana?: SolanaOrderDetails
 }
 

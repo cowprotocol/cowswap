@@ -107,11 +107,7 @@ describe('toRawOrder', () => {
   })
 })
 
-/**
- * The point of normalising rather than forking the pipeline: the explorer derives an order's state
- * itself instead of trusting the `status` field, so the derivation has to land on what the Solana
- * book already decided server-side.
- */
+/** The explorer derives status itself rather than trusting the field, so it must match the book. */
 describe('toRawOrder feeding transformOrder', () => {
   it('derives Filled when the sell side is fully withdrawn', () => {
     const filled = toRawOrder({ ...SOLANA_ORDER, status: 'fulfilled', executedSellAmount: SOLANA_ORDER.sellAmount })
@@ -130,8 +126,7 @@ describe('toRawOrder feeding transformOrder', () => {
   })
 
   it('keeps a fill ahead of a cancellation, matching how the book ranks them', () => {
-    // Reclaiming a filled order's PDA to recover its rent stamps a cancellation, and that cleanup
-    // must not make a settled order look cancelled.
+    // Reclaiming a filled order's PDA stamps a cancellation; it must not look cancelled.
     const reclaimed = toRawOrder({
       ...SOLANA_ORDER,
       status: 'fulfilled',
