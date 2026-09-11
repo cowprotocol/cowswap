@@ -25,7 +25,7 @@ const twapOrder = {
   chainId,
   safeAddress: '0x4444444444444444444444444444444444444444',
   resolvedOwner: '0x5555555555555555555555555555555555555555',
-  status: TwapOrderStatus.Open,
+  status: TwapOrderStatus.Pending,
   submissionDate: new Date(0).toISOString(),
   order: {
     sellToken: sellToken.address,

@@ -82,7 +82,7 @@ function makeTwapOrder(partOrdersCount = 1, updatedAtBlock = '1'): TwapOrderItem
     chainId: SupportedChainId.GNOSIS_CHAIN,
     safeAddress: parent.owner,
     resolvedOwner: owner,
-    status: TwapOrderStatus.Open,
+    status: TwapOrderStatus.Pending,
     submissionDate: new Date(0).toISOString(),
     partOrdersCount,
     updatedAtBlock,
@@ -270,7 +270,7 @@ describe('useEoaTwapPartOrders', () => {
 
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('pending-parent-part'))
 
-    rerender({ order: { ...twapOrder, status: TwapOrderStatus.Filled } })
+    rerender({ order: { ...twapOrder, status: TwapOrderStatus.Fulfilled } })
 
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('fulfilled-parent-part'))
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)

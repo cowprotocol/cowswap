@@ -41,7 +41,7 @@ function makeOrder(id: string): TwapOrderItem {
     chainId: SupportedChainId.GNOSIS_CHAIN,
     safeAddress: '0x2222222222222222222222222222222222222222',
     resolvedOwner: OWNER,
-    status: TwapOrderStatus.Open,
+    status: TwapOrderStatus.Pending,
     submissionDate: new Date(0).toISOString(),
     order: {
       sellToken: '0x3333333333333333333333333333333333333333',

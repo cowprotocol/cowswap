@@ -12,7 +12,7 @@ const MAX_PERSISTED_ORDERS = 1000
 type PersistedEoaTwapOrders = Record<string, TwapOrdersList>
 
 const persistedEoaTwapOrdersAtom = atomWithStorage<PersistedEoaTwapOrders>(
-  'eoa-twap-orders:v2',
+  'eoa-twap-orders:v1',
   {},
   getJotaiIsolatedStorage<PersistedEoaTwapOrders>(),
   { getOnInit: true },

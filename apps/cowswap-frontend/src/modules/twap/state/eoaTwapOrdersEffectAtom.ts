@@ -20,7 +20,7 @@ export const eoaTwapOrdersEffectAtom = atomEffect((get, set) => {
         const optimisticOrder = order.hash ? optimisticOrders[order.hash] : undefined
 
         if (
-          order.status === TwapOrderStatus.Open &&
+          order.status === TwapOrderStatus.Pending &&
           (optimisticOrder?.status === TwapOrderStatus.Cancelling ||
             optimisticOrder?.status === TwapOrderStatus.Cancelled)
         ) {

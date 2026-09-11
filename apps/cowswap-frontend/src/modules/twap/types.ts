@@ -1,6 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
-import type { TwapStatus } from '@cowprotocol/sdk-composable'
 
 import { SafeTransactionParams } from 'common/types'
 
@@ -67,8 +66,6 @@ export interface TwapOrdersSafeData {
   safeTxParams: SafeTransactionParams
 }
 
-export type TwapOrderStatus = TwapStatus | 'waitSigning' | 'cancelling'
-
 export interface TWAPOrderStruct {
   sellToken: string
   buyToken: string
@@ -85,12 +82,12 @@ export interface TWAPOrderStruct {
   appData: string
 }
 
-export const TwapOrderStatus = {
-  WaitSigning: 'waitSigning',
-  Open: 'open',
-  Cancelling: 'cancelling',
-  Cancelled: 'cancelled',
-  Expired: 'expired',
-  PartiallyFilled: 'partiallyFilled',
-  Filled: 'filled',
-} as const satisfies Record<string, TwapOrderStatus>
+export enum TwapOrderStatus {
+  WaitSigning = 'WaitSigning',
+  Pending = 'Pending',
+  Cancelling = 'Cancelling',
+  Cancelled = 'Cancelled',
+  Expired = 'Expired',
+  Fulfilled = 'Fulfilled',
+  PartiallyFilled = 'PartiallyFilled',
+}

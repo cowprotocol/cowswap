@@ -1,5 +1,7 @@
 import { deriveTwapStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
 
+import { mapTwapStatus } from './mapTwapStatus'
+
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
 interface GetTwapOrderStatusParams {
@@ -33,7 +35,9 @@ export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderS
     },
   })
 
-  return executionStatus === 'open' && isWaitingForSignature ? TwapOrderStatus.WaitSigning : executionStatus
+  return executionStatus === 'open' && isWaitingForSignature
+    ? TwapOrderStatus.WaitSigning
+    : mapTwapStatus(executionStatus)
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {

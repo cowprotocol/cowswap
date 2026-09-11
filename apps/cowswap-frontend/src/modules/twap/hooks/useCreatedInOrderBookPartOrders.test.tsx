@@ -44,11 +44,11 @@ const ACCOUNT = '0x1111111111111111111111111111111111111111'
 const defaultTwapOrders = {
   'twap-1': {
     id: 'twap-1',
-    status: TwapOrderStatus.Filled,
+    status: TwapOrderStatus.Fulfilled,
   },
   'twap-2': {
     id: 'twap-2',
-    status: TwapOrderStatus.Open,
+    status: TwapOrderStatus.Pending,
   },
 }
 

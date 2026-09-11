@@ -372,7 +372,7 @@ export function useCreateTwapOrder() {
           // CreatingOrder is marked Confirmed inside placeEoaTwapOrder after the receipt.
           confirmModalHash = setupTxHash
           safeAddressOrCowShedAddress = proxyAddress
-          orderStatus = TwapOrderStatus.Open
+          orderStatus = TwapOrderStatus.Pending
           orderCreationHash = setupTxHash
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({

@@ -52,7 +52,7 @@ function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {
     chainId: CHAIN_ID,
     safeAddress: '0x3333333333333333333333333333333333333333',
     resolvedOwner,
-    status: TwapOrderStatus.Open,
+    status: TwapOrderStatus.Pending,
     submissionDate: new Date(0).toISOString(),
     order: {
       sellToken: '0x4444444444444444444444444444444444444444',
@@ -198,7 +198,7 @@ describe('eoaTwapOrdersEffectAtom', () => {
   it('does not overwrite a local cancelling status with stale API data', async () => {
     const store = createStore()
     const cancellingOrder = { ...makeOrder('cancelling-event', EOA_A), status: TwapOrderStatus.Cancelling }
-    const staleApiOrder = { ...cancellingOrder, status: TwapOrderStatus.Open }
+    const staleApiOrder = { ...cancellingOrder, status: TwapOrderStatus.Pending }
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
     store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     store.set(eoaTwapOrdersAtom, { [cancellingOrder.id]: cancellingOrder })

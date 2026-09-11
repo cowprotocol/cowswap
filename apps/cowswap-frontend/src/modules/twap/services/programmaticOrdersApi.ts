@@ -3,6 +3,8 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProgrammaticOrderApi } from '@cowprotocol/sdk-composable'
 import type { QueryPage, TwapOrder, TwapPartOrder } from '@cowprotocol/sdk-composable'
 
+import { mapTwapStatus } from '../utils/mapTwapStatus'
+
 import type { TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
 
@@ -119,7 +121,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
       safeAddress: twapOrder.owner,
       resolvedOwner: twapOrder.resolvedOwner,
       order,
-      status: twapOrder.status,
+      status: mapTwapStatus(twapOrder.status),
       submissionDate: createdAt.toISOString(),
       executedDate: createdAt.toISOString(),
       partOrdersCount: twapOrder.partOrdersCount,
