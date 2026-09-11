@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.15.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.0...common-utils-v3.15.1) (2026-09-11)
+
+### Patch Changes
+
+- fix: properly prevent solana recipient addresses on evm (#8139)
+
 ## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.14.0...common-utils-v3.15.0) (2026-09-09)
 
 ### Minor Changes

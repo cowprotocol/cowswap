@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { Modal, ModalHeader } from '@cowprotocol/ui'
 
@@ -18,6 +18,7 @@ import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
+import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
@@ -38,7 +39,8 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
-  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation, isConfirming } = useTradeConfirmState()
+  const tradeConfirmActions = useTradeConfirmActions()
   const { t } = useLingui()
   const signingStep = useSigningStep()
 
@@ -56,11 +58,33 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { title, hasSigningPlan, children } = _props
 
   /**
-   * Once user sends a transaction, we keep the confirmation content frozen
+   * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
+   * (through signing/submission) so the amounts shown can never drift from what was actually
+   * confirmed/signed. Only the reset (on abort/dismiss) happens here - the snapshot itself is
+   * captured synchronously in `handleConfirm`, not from this effect: an effect only runs after
+   * the render that flips `isConfirming` has committed, and by then `propsRef.current` may
+   * already have been overwritten by a newer render (e.g. a quote refresh) that snuck in first.
    */
   useEffect(() => {
-    setFrozenProps(hasPendingTrade ? propsRef.current : null)
-  }, [hasPendingTrade])
+    if (!isConfirming) {
+      setFrozenProps(null)
+    }
+  }, [isConfirming])
+
+  const handleConfirm = useCallback(async (): Promise<void | boolean> => {
+    setFrozenProps(propsRef.current)
+    tradeConfirmActions.setConfirming(true)
+    try {
+      const isConfirmed = await onConfirm()
+      if (!isConfirmed) {
+        tradeConfirmActions.setConfirming(false)
+      }
+      return isConfirmed
+    } catch (error) {
+      tradeConfirmActions.setConfirming(false)
+      throw error
+    }
+  }, [onConfirm, tradeConfirmActions])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
     props.inputCurrencyInfo.amount?.toExact(),
@@ -91,7 +115,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         onBack={hasSigningPlan ? undefined : onDismiss}
         onClose={hasSigningPlan ? onDismiss : undefined}
         // TODO: Consider still displaying this here or somewhere else?
-        rightSlot={hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
+        rightSlot={isConfirming || isPriceStatic ? null : <QuoteCountdown />}
       />
 
       <Modal.Content id="trade-confirmation">
@@ -121,7 +145,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
             />
 
             <ConfirmButton
-              onConfirm={onConfirm}
+              onConfirm={handleConfirm}
               buttonText={buttonText ? buttonText : t`Confirm`}
               isButtonDisabled={isButtonDisabled}
               hasPendingTrade={hasPendingTrade}

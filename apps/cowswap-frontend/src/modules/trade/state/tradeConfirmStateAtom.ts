@@ -13,6 +13,12 @@ interface TradeConfirmModalState {
    * The confirmation is happening through "Price updated" banner
    */
   forcePriceConfirmation: boolean
+  /**
+   * True from the moment the user clicks the confirm button until the trade flow resolves,
+   * fails, or is dismissed. Used to freeze the quote-derived amounts shown in the confirm modal
+   * so they never change to a different value than what the user actually confirmed/signed.
+   */
+  isConfirming: boolean
 }
 
 export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
@@ -22,6 +28,7 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
   error: null,
   permitSignatureState: undefined,
   forcePriceConfirmation: false,
+  isConfirming: false,
 })
 
 export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmation: boolean = false) => {
@@ -32,6 +39,7 @@ export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmat
     transactionHash: null,
     permitSignatureState: undefined,
     forcePriceConfirmation,
+    isConfirming: false,
   }))
 })
 
@@ -43,6 +51,7 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
     pendingTrade: null,
     permitSignatureState: undefined,
     forcePriceConfirmation: false,
+    isConfirming: false,
   }))
 })
 
@@ -55,6 +64,14 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
     transactionHash: null,
     permitSignatureState: undefined,
     forcePriceConfirmation: false,
+    isConfirming: false,
+  }))
+})
+
+export const setConfirmingTradeConfirmAtom = atom(null, (get, set, isConfirming: boolean) => {
+  set(tradeConfirmStateAtom, () => ({
+    ...get(tradeConfirmStateAtom),
+    isConfirming,
   }))
 })
 
