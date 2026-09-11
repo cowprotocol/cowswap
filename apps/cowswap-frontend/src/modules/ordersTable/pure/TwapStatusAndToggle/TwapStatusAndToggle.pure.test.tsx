@@ -70,18 +70,20 @@ function renderToggle(props: {
   parent: ParsedOrder
   isFallbackHandlerRequired?: boolean
   childOrders?: { order: ParsedOrder; orderParams: OrderParams }[]
+  parentOrderParams?: OrderParams
 }): void {
   render(
     <I18nProvider i18n={i18n}>
       <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
         <TwapStatusAndToggle
           parent={props.parent}
-          childrenLength={props.childOrders?.length ?? 0}
+          totalParts={props.childOrders?.length ?? 0}
           isCollapsed={true}
           isFallbackHandlerRequired={props.isFallbackHandlerRequired}
           onToggle={() => undefined}
           onClick={() => undefined}
           childOrders={props.childOrders ?? []}
+          parentOrderParams={props.parentOrderParams}
           approveOrderToken={() => undefined}
         />
       </StyledComponentsThemeProvider>
@@ -124,6 +126,30 @@ describe('TwapStatusAndToggle()', () => {
     })
 
     expect(screen.getByText('FALLBACK_HANDLER_WARNING')).not.toBeNull()
+    expect(screen.queryByText('BALANCE_ALLOWANCE_WARNING')).toBeNull()
+  })
+
+  it('surfaces a parent funding warning without loaded child orders', () => {
+    renderToggle({
+      parent: parentOrder({ status: OrderStatus.PENDING, isEoaTwapOrder: true }),
+      parentOrderParams: {
+        hasEnoughBalance: false,
+        hasEnoughAllowance: true,
+      } as OrderParams,
+    })
+
+    expect(screen.getByText('BALANCE_ALLOWANCE_WARNING')).not.toBeNull()
+  })
+
+  it('does not surface a funding warning once the parent is no longer open', () => {
+    renderToggle({
+      parent: parentOrder({ status: OrderStatus.FULFILLED, isEoaTwapOrder: true }),
+      parentOrderParams: {
+        hasEnoughBalance: false,
+        hasEnoughAllowance: false,
+      } as OrderParams,
+    })
+
     expect(screen.queryByText('BALANCE_ALLOWANCE_WARNING')).toBeNull()
   })
 })

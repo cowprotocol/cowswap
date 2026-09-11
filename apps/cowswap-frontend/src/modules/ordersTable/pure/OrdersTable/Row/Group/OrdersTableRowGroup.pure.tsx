@@ -51,6 +51,7 @@ export interface OrdersTableRowGroupProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableRowGroup({
   item,
   prices,
@@ -101,6 +102,9 @@ export function OrdersTableRowGroup({
     balancesAndAllowances,
   }
 
+  const eoaTwapPartSellAmount = isEoaTwapOrder ? twapOrder?.order.partSellAmount : undefined
+  const parentOrderParams = getOrderParams(chainId, balancesAndAllowances, parent, undefined, eoaTwapPartSellAmount)
+
   // Create an array of child order data with their orderParams
   const childrenWithParams = buildChildrenWithParams(usesLocalChildren ? children : [], chainId, balancesAndAllowances)
 
@@ -111,7 +115,7 @@ export function OrdersTableRowGroup({
         key={parent.id}
         isRowSelected={isRowSelected}
         order={parent}
-        orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
+        orderParams={parentOrderParams}
         onClick={() => orderActions.selectReceiptOrder(parent)}
         isExpanded={!isCollapsed}
         childOrders={usesLocalChildren ? children : undefined}
@@ -126,6 +130,7 @@ export function OrdersTableRowGroup({
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
             childOrders={childrenWithParams}
+            parentOrderParams={parentOrderParams}
           />
         )}
       </OrderRow>
@@ -144,7 +149,13 @@ export function OrdersTableRowGroup({
               isChild={true}
               isRowSelected={false}
               order={child}
-              orderParams={getOrderParams(chainId, balancesAndAllowances, child)}
+              orderParams={getOrderParams(
+                chainId,
+                balancesAndAllowances,
+                child,
+                undefined,
+                isEoaTwapOrder ? child.sellAmount : undefined,
+              )}
               onClick={() => orderActions.selectReceiptOrder(child)}
             />
           ))}
