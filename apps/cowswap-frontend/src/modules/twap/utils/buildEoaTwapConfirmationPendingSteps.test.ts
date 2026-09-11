@@ -314,11 +314,11 @@ describe('getEoaTwapWalletActionSummaryLabel()', () => {
   })
 
   it('returns summary labels for wallet-action steps', () => {
-    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ZeroApprovePoller, 'USDC', [])).toBe('Reset approval')
-    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC', [])).toBe('Approve USDC')
-    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, undefined, [])).toBe('Approve token')
-    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.TwapSetup, 'USDC', [])).toBe('Set up TWAP')
-    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.SubmitTwap, 'USDC', [])).toBeNull()
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ZeroApprovePoller, 'USDC')).toBe('Reset approval')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, 'USDC')).toBe('Approve USDC')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.ApprovePoller, undefined)).toBe('Approve token')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.TwapSetup, 'USDC')).toBe('Set up TWAP')
+    expect(getEoaTwapWalletActionSummaryLabel(EoaTwapSigningSteps.SubmitTwap, 'USDC')).toBeNull()
   })
 })
 
