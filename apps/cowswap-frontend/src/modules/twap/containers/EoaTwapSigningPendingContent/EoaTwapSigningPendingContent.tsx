@@ -2,13 +2,13 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { getExplorerAddressLink } from '@cowprotocol/common-utils'
-import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { resetOrdersTableFiltersAtom, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { OrderStep, OrderSteps } from 'modules/trade'
+import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
 import { EoaTwapSuccessContent } from './EoaTwapSuccessContent.pure'
 
@@ -56,11 +56,7 @@ export function EoaTwapSigningPendingContent({
     <>
       <OrderSteps steps={steps} />
 
-      {buttonProps && (
-        <ButtonPrimary onClick={() => alert('Not implemented yet')} disabled={buttonProps.isDisabled}>
-          {buttonProps.label}
-        </ButtonPrimary>
-      )}
+      {buttonProps && <TradeFormBlankButton {...buttonProps} onClick={() => alert('Not implemented yet')} />}
     </>
   )
 }

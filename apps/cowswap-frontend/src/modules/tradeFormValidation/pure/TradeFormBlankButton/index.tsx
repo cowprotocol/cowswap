@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { TEST_IDS } from '@cowprotocol/test-ids'
@@ -44,7 +44,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 `
 
 export interface TradeFormPrimaryButtonProps {
-  children: ReactElement | string
+  children: ReactNode
   disabled?: boolean
   loading?: boolean
   id?: string

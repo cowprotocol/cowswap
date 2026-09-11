@@ -41,8 +41,9 @@ export interface EoaTwapCurrentStepBadgeProps {
 }
 
 export interface EoaTwapCurrentStepButtonProps {
-  label: ReactNode
-  isDisabled: boolean
+  children: ReactNode
+  disabled: boolean
+  loading?: boolean
 }
 
 export interface EoaTwapStepDescriptionOptions {
@@ -205,61 +206,80 @@ export function getEoaTwapCurrentStepButton(
     case EoaTwapSigningSteps.ZeroApprovePoller:
       return isLoading
         ? {
-            label: t`Resetting approval...`,
-            isDisabled: true,
+            children: (
+              <>
+                {t`Resetting approval`}
+                <ThreeDots />
+              </>
+            ),
+            disabled: true,
           }
         : hasError
           ? {
-              label: t`Reset approval`,
-              isDisabled: false,
+              children: t`Reset approval`,
+              disabled: false,
             }
           : {
-              label: t`Confirming with your wallet...`,
-              isDisabled: true,
+              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
+              disabled: true,
+              loading: true,
             }
 
     case EoaTwapSigningSteps.ApprovePoller:
       return isLoading
         ? {
-            label: t`Approving ${symbol}...`,
-            isDisabled: true,
+            children: (
+              <>
+                {t`Approving ${symbol}`}
+                <ThreeDots />
+              </>
+            ),
+            disabled: true,
           }
         : hasError
           ? {
-              label: t`Approve ${symbol}`,
-              isDisabled: false,
+              children: t`Approve ${symbol}`,
+              disabled: false,
             }
           : {
-              label: t`Confirming with your wallet...`,
-              isDisabled: true,
+              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
+              disabled: true,
+              loading: true,
             }
 
     case EoaTwapSigningSteps.PermitPoller:
       return isLoading
         ? {
-            label: t`Approving ${symbol}...`,
-            isDisabled: true,
+            children: (
+              <>
+                {t`Approving ${symbol}`}
+                <ThreeDots />
+              </>
+            ),
+            disabled: true,
           }
         : hasError
           ? {
-              label: t`Approve ${symbol}`,
-              isDisabled: false,
+              children: t`Approve ${symbol}`,
+              disabled: false,
             }
           : {
-              label: t`Confirming with your wallet...`,
-              isDisabled: true,
+              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
+              disabled: true,
+              loading: true,
             }
 
     case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
       return hasError
         ? {
-            label: t`Try again`,
-            isDisabled: false,
+            children: t`Try again`,
+            disabled: false,
           }
         : {
-            label: t`Confirming with your wallet...`,
-            isDisabled: true,
+            children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
+            disabled: true,
+            loading: true,
           }
 
     default:
