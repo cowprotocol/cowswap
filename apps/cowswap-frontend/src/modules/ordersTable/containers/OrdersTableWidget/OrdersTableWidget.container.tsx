@@ -25,7 +25,7 @@ import {
 
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
+import { ordersTableFiltersAtom, ordersTableFiltersResetSignalAtom } from '../../state/filters/ordersTableFilters.atom'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
 import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
@@ -52,20 +52,23 @@ export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactN
   const filters = useAtomValue(ordersTableFiltersAtom)
   const { searchTerm: searchTermFilter, historyStatusFilter } = filters
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
+  const ordersTableFiltersResetSignal = useAtomValue(ordersTableFiltersResetSignalAtom)
 
   const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
     partiallyUpdateOrdersTableFilters({ searchTerm })
   })
 
-  // `useStateWithDeferredValue` only uses the atom value as initial state. Sync local input when switching pages
-  // or when filters are cleared/reset (e.g. "View in Orders" resets with a new object).
+  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching order
+  // type pages (useOrdersTable resets filters on the parent).
   useLayoutEffect(() => {
-    if (filters.searchTerm !== '') {
-      console.warn('Unexpected non-empty search term')
-    }
+    setSearchTerm('')
+  }, [orderType, setSearchTerm])
+
+  useLayoutEffect(() => {
+    if (ordersTableFiltersResetSignal === 0) return
 
     setSearchTerm('')
-  }, [orderType, filters, setSearchTerm])
+  }, [ordersTableFiltersResetSignal, setSearchTerm])
 
   const resetSearchTerm = (): void => {
     setSearchTerm('')

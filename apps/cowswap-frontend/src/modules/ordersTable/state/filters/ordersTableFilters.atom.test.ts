@@ -3,6 +3,7 @@ import { createStore } from 'jotai'
 import {
   DEFAULT_ORDERS_TABLE_FILTERS,
   ordersTableFiltersAtom,
+  ordersTableFiltersResetSignalAtom,
   resetOrdersTableFiltersAtom,
 } from './ordersTableFilters.atom'
 
@@ -21,5 +22,15 @@ describe('resetOrdersTableFiltersAtom', () => {
 
     expect(store.get(ordersTableFiltersAtom)).toEqual(DEFAULT_ORDERS_TABLE_FILTERS)
     expect(store.get(ordersTableFiltersAtom)).not.toBe(DEFAULT_ORDERS_TABLE_FILTERS)
+  })
+
+  it('increments the reset signal', () => {
+    const store = createStore()
+
+    expect(store.get(ordersTableFiltersResetSignalAtom)).toBe(0)
+
+    store.set(resetOrdersTableFiltersAtom)
+
+    expect(store.get(ordersTableFiltersResetSignalAtom)).toBe(1)
   })
 })
