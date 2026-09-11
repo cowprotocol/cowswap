@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isTwapEventId } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 import { NetworkLogo } from '@cowprotocol/ui'
@@ -32,14 +33,7 @@ import { useMultipleErc20 } from 'hooks/useErc20'
 import { Helmet } from 'react-helmet'
 import { Navigate, useLocation, useParams } from 'react-router'
 import { useNetworkId } from 'state/network'
-import {
-  abbreviateString,
-  FormatAmountPrecision,
-  formattedAmount,
-  isTwapEventId,
-  isTwapSupportedChain,
-  safeTokenName,
-} from 'utils'
+import { abbreviateString, FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
 import * as styledEl from './TwapDetails.styled'
 
@@ -58,11 +52,11 @@ export function TwapDetailsPage(): ReactNode {
   const chainId = useNetworkId()
   const location = useLocation()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const enabled = isTwapEoaEnabled === true && isTwapSupportedChain(chainId) && isTwapEventId(eventId)
+  const enabled = isTwapEoaEnabled && isTwapEventId(eventId)
   const searchAllChains = getGlobalSearchState(location.state)
   const { data, error, isLoading } = useTwapOrder({
     eventId,
-    chainId: isTwapSupportedChain(chainId) ? chainId : SupportedChainId.MAINNET,
+    chainId,
     enabled,
     searchAllChains,
   })
@@ -80,9 +74,9 @@ export function TwapDetailsPage(): ReactNode {
         <title>TWAP Details - {APP_TITLE}</title>
       </Helmet>
       <StyledSearch />
-      {isLoading && !data ? <LoadingWrapper message="Loading TWAP order" /> : null}
+      {data === undefined && !error ? <LoadingWrapper message="Loading TWAP order" /> : null}
       {error ? <Notification type="error" message="Failed to fetch the TWAP order" /> : null}
-      {!isLoading && !error && !data ? <Navigate replace to={`/search/${eventId}`} /> : null}
+      {!isLoading && !error && data === null ? <Navigate replace to={`/search/${eventId}`} /> : null}
       {data ? <TwapDetails order={data.order} chainId={data.chainId} /> : null}
     </Wrapper>
   )

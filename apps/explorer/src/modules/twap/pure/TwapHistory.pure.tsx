@@ -34,7 +34,7 @@ import type { TokenErc20 } from '@gnosis.pm/dex-js'
 interface TwapHistoryProps {
   children: (content: ReactNode, pagination: ReactNode) => ReactNode
   owner: AddressKey
-  chainId: SupportedChainId
+  chainId: SupportedChainId | null | undefined
 }
 
 export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): ReactNode {
@@ -62,12 +62,12 @@ export function TwapHistory({ owner, chainId, children }: TwapHistoryProps): Rea
     </TwapPaginationContext.Provider>
   )
 
-  if (isLoading && !orders) return children(<LoadingWrapper message="Loading TWAP orders" />, null)
+  if (!orders && !error) return children(<LoadingWrapper message="Loading TWAP orders" />, null)
 
   return children(
     <>
       {error && <Notification type="error" message="Failed to fetch TWAP orders" />}
-      <TwapHistoryTable orders={orders} chainId={chainId} />
+      <TwapHistoryTable orders={orders} chainId={chainId ?? undefined} />
     </>,
     pagination,
   )
@@ -100,7 +100,7 @@ function TwapHistoryTable({
   chainId,
 }: {
   orders: TwapOrder[] | undefined
-  chainId: SupportedChainId
+  chainId: SupportedChainId | undefined
 }): ReactNode {
   const tokenAddresses = useMemo(
     () => orders?.flatMap(({ schedule }) => [schedule.sellToken, schedule.buyToken]) ?? [],
@@ -148,10 +148,10 @@ function TwapHistoryTable({
               </styledEl.EventLink>
             </td>
             <td>
-              <TwapHistoryAmount amount={intendedSellAmount} token={sellToken} chainId={chainId} />
+              <TwapHistoryAmount amount={intendedSellAmount} token={sellToken} chainId={order.chainId} />
             </td>
             <td>
-              <TwapHistoryAmount amount={intendedBuyAmount} token={buyToken} chainId={chainId} />
+              <TwapHistoryAmount amount={intendedBuyAmount} token={buyToken} chainId={order.chainId} />
             </td>
             <td>
               <ProgressBar percentage={String(progress)} />

@@ -1,9 +1,8 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { ORDERS_QUERY_INTERVAL } from 'explorer/const'
 import useSWR, { SWRResponse } from 'swr'
-import { TWAP_SUPPORTED_CHAIN_IDS } from 'utils'
 
 import { programmaticOrdersApi } from '../programmaticOrdersApi.service'
 
@@ -14,8 +13,8 @@ export interface ResolvedTwapOrder {
 
 interface UseTwapOrderParams {
   eventId: string
-  chainId: SupportedChainId
-  enabled: boolean
+  chainId: SupportedChainId | null | undefined
+  enabled: boolean | undefined
   searchAllChains: boolean
 }
 
@@ -29,7 +28,7 @@ export async function findTwapOrder(
   if (selectedOrder) return { chainId: selectedChainId, order: selectedOrder }
   if (!searchAllChains) return null
 
-  const remainingChainIds = TWAP_SUPPORTED_CHAIN_IDS.filter((chainId) => chainId !== selectedChainId)
+  const remainingChainIds = ALL_SUPPORTED_CHAIN_IDS.filter((chainId) => chainId !== selectedChainId)
   const results = await Promise.all(
     remainingChainIds.map(async (chainId): Promise<ResolvedTwapOrder | null> => {
       const order = await programmaticOrdersApi.getTwapOrder({ eventId, chainId })
@@ -47,8 +46,8 @@ export function useTwapOrder({
   searchAllChains,
 }: UseTwapOrderParams): SWRResponse<ResolvedTwapOrder | null> {
   return useSWR(
-    enabled ? ['twap-order', eventId, chainId, searchAllChains] : null,
-    () => findTwapOrder(eventId, chainId, searchAllChains),
+    enabled && chainId != null ? (['twap-order', eventId, chainId, searchAllChains] as const) : null,
+    ([, eventId, chainId, searchAllChains]) => findTwapOrder(eventId, chainId, searchAllChains),
     { refreshInterval: ORDERS_QUERY_INTERVAL },
   )
 }

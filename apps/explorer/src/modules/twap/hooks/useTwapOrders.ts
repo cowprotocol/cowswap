@@ -8,7 +8,7 @@ import { programmaticOrdersApi } from '../programmaticOrdersApi.service'
 
 interface UseTwapOrdersParams {
   owner: AddressKey
-  chainId: SupportedChainId
+  chainId: SupportedChainId | null | undefined
   limit: number
   offset: number
   enabled: boolean
@@ -22,8 +22,9 @@ export function useTwapOrders({
   enabled,
 }: UseTwapOrdersParams): SWRResponse<QueryPage<TwapOrder>> {
   return useSWR(
-    enabled ? ['twap-orders', owner, chainId, limit, offset] : null,
-    () => programmaticOrdersApi.getTwapOrders({ resolvedOwner: owner, chainId }, { limit, offset, direction: 'desc' }),
+    enabled && chainId != null ? (['twap-orders', owner, chainId, limit, offset] as const) : null,
+    ([, owner, chainId, limit, offset]) =>
+      programmaticOrdersApi.getTwapOrders({ resolvedOwner: owner, chainId }, { limit, offset, direction: 'desc' }),
     {
       keepPreviousData: true,
       refreshInterval: offset === 0 ? ORDERS_QUERY_INTERVAL : 0,

@@ -1,14 +1,78 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { createElement, type ReactNode } from 'react'
+
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
-import { TWAP_SUPPORTED_CHAIN_IDS } from 'utils'
+import { renderHook, waitFor } from '@testing-library/react'
+import { SWRConfig } from 'swr'
 
-import { findTwapOrder } from './useTwapOrder'
+import { findTwapOrder, useTwapOrder } from './useTwapOrder'
+import { useTwapOrders } from './useTwapOrders'
 
 import { programmaticOrdersApi } from '../programmaticOrdersApi.service'
 
 const EVENT_ID = '169175034500000000000001000000000029407131000000000000001050000000000000048'
 const ORDER = { eventId: EVENT_ID } as TwapOrder
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function useTwapQueries(chainId: SupportedChainId | null | undefined, enabled = true) {
+  return {
+    detail: useTwapOrder({ eventId: EVENT_ID, chainId, enabled, searchAllChains: false }),
+    history: useTwapOrders({
+      owner: getAddressKey('0x1111111111111111111111111111111111111111'),
+      chainId,
+      enabled,
+      limit: 20,
+      offset: 0,
+    }),
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function wrapper({ children }: { children: ReactNode }) {
+  return createElement(SWRConfig, { value: { provider: () => new Map(), dedupingInterval: 0 } }, children)
+}
+
+describe('TWAP query network readiness', () => {
+  afterEach(() => jest.restoreAllMocks())
+
+  it.each([null, undefined])('waits for a chain when the initial value is %s', async (missingChainId) => {
+    const getOrder = jest.spyOn(programmaticOrdersApi, 'getTwapOrder').mockResolvedValue(null)
+    const getOrders = jest.spyOn(programmaticOrdersApi, 'getTwapOrders').mockResolvedValue({ items: [], totalCount: 0 })
+    const { result, rerender } = renderHook(
+      ({ chainId }: { chainId: SupportedChainId | null | undefined }) => useTwapQueries(chainId),
+      { initialProps: { chainId: missingChainId }, wrapper },
+    )
+
+    expect(getOrder).not.toHaveBeenCalled()
+    expect(getOrders).not.toHaveBeenCalled()
+    expect(result.current.detail.data).toBeUndefined()
+    expect(result.current.history.data).toBeUndefined()
+
+    rerender({ chainId: SupportedChainId.GNOSIS_CHAIN })
+
+    await waitFor(() => {
+      expect(result.current.detail.data).toBeNull()
+      expect(result.current.history.data?.items).toEqual([])
+    })
+    expect(getOrder).toHaveBeenCalledWith({ eventId: EVENT_ID, chainId: SupportedChainId.GNOSIS_CHAIN })
+    expect(getOrders).toHaveBeenCalledWith(
+      expect.objectContaining({ chainId: SupportedChainId.GNOSIS_CHAIN }),
+      expect.anything(),
+    )
+    expect(getOrder).toHaveBeenCalledTimes(1)
+    expect(getOrders).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not fetch when the feature is disabled', () => {
+    const getOrder = jest.spyOn(programmaticOrdersApi, 'getTwapOrder').mockResolvedValue(null)
+    const getOrders = jest.spyOn(programmaticOrdersApi, 'getTwapOrders').mockResolvedValue({ items: [], totalCount: 0 })
+    renderHook(() => useTwapQueries(SupportedChainId.GNOSIS_CHAIN, false), { wrapper })
+
+    expect(getOrder).not.toHaveBeenCalled()
+    expect(getOrders).not.toHaveBeenCalled()
+  })
+})
 
 describe('findTwapOrder', () => {
   afterEach(() => {
@@ -25,7 +89,7 @@ describe('findTwapOrder', () => {
     expect(getTwapOrder).toHaveBeenCalledTimes(1)
   })
 
-  it('checks every other production chain after a global-search miss', async () => {
+  it('checks every other supported chain after a global-search miss', async () => {
     const targetChain = SupportedChainId.ARBITRUM_ONE
     const getTwapOrder = jest
       .spyOn(programmaticOrdersApi, 'getTwapOrder')
@@ -35,7 +99,7 @@ describe('findTwapOrder', () => {
       chainId: targetChain,
       order: ORDER,
     })
-    expect(getTwapOrder).toHaveBeenCalledTimes(TWAP_SUPPORTED_CHAIN_IDS.length)
+    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.length)
   })
 
   it('stops after the selected-chain miss for direct links', async () => {

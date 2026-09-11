@@ -1,10 +1,11 @@
 import { useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isTwapEventId } from '@cowprotocol/common-utils'
 
 import { useNavigate } from 'react-router'
-import { useNavigationPathPrefix, useNetworkId } from 'state/network'
-import { isAnAddressAccount, isAnOrderId, isATxHash, isEns, isTwapEventId, isTwapSupportedChain } from 'utils'
+import { useNavigationPathPrefix } from 'state/network'
+import { isAnAddressAccount, isAnOrderId, isATxHash, isEns } from 'utils'
 
 export function pathAccordingTo(query: string, isTwapEnabled = false): string {
   if (isAnAddressAccount(query)) {
@@ -26,15 +27,13 @@ export function pathAccordingTo(query: string, isTwapEnabled = false): string {
 export function useSearchSubmit(): (query: string) => void {
   const navigate = useNavigate()
   const prefixNetwork = useNavigationPathPrefix()
-  const networkId = useNetworkId()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const isTwapEnabled = isTwapEoaEnabled === true && isTwapSupportedChain(networkId)
 
   return useCallback(
     (query: string) => {
       // For now assumes /orders/ path. Needs logic to try all types for a valid response:
       // Orders, transactions, tokens, batches
-      const path = pathAccordingTo(query, isTwapEnabled)
+      const path = pathAccordingTo(query, isTwapEoaEnabled)
       const pathPrefix = prefixNetwork ? `${prefixNetwork}/${path}` : `${path}`
 
       if (path === 'address' && isEns(query)) {
@@ -45,6 +44,6 @@ export function useSearchSubmit(): (query: string) => void {
         query && query.length > 0 && navigate(`/${pathPrefix}/${query}`)
       }
     },
-    [isTwapEnabled, navigate, prefixNetwork],
+    [isTwapEoaEnabled, navigate, prefixNetwork],
   )
 }

@@ -20,7 +20,6 @@ import { useSolversFeatureFlag } from '../hooks/useSolversFeatureFlag'
 import { CowSdkUpdater } from '../sdk/cowSdk'
 import { RedirectMainnet, RedirectXdai, useNetworkId } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
-import { isTwapSupportedChain } from '../utils'
 import { environmentName } from '../utils/env'
 
 // Initialize analytics instances
@@ -131,10 +130,9 @@ const networkPrefixes = CHAIN_INFO_ARRAY.map((info) => info.urlAlias)
 /** App content */
 
 const AppContent = (): React.ReactNode => {
-  const chainId = useNetworkId()
   const isSolversEnabled = useSolversFeatureFlag()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const isTwapEnabled = isTwapEoaEnabled === true && isTwapSupportedChain(chainId)
+  const chainId = useNetworkId()
   useAnalyticsReporter({
     account: undefined, // Explorer doesn't have wallet functionality
     walletName: undefined, // Explorer doesn't have wallet functionality
@@ -155,7 +153,7 @@ const AppContent = (): React.ReactNode => {
           <Route path={pathPrefix + '/orders/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/tx/'} element={<Navigate to={pathPrefix + '/search/'} />} />
           <Route path={pathPrefix + '/orders/:orderId'} element={<Order />} />
-          {isTwapEnabled && <Route path={pathPrefix + '/twap/:eventId'} element={<TwapDetailsPage />} />}
+          {isTwapEoaEnabled && <Route path={pathPrefix + '/twap/:eventId'} element={<TwapDetailsPage />} />}
           <Route path={pathPrefix + '/address/:address'} element={<UserDetails />} />
           <Route path={pathPrefix + '/tx/:txHash'} element={<TransactionDetails />} />
           {isSolversEnabled && <Route path={pathPrefix + '/solvers'} element={<Solvers />} />}

@@ -15,7 +15,6 @@ import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
 import { useGetAccountOrders } from '../../../hooks/useGetOrders'
 import { TwapHistory } from '../../../modules/twap'
-import { isTwapSupportedChain } from '../../../utils'
 import ExplorerTabs from '../common/ExplorerTabs/ExplorerTabs'
 import TablePagination from '../common/TablePagination'
 
@@ -37,7 +36,6 @@ interface OrdersTableWidgetProps {
 export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidgetProps): ReactNode {
   const [selectedTab, setSelectedTab] = useState(1)
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const showTwap = isTwapEoaEnabled === true && isTwapSupportedChain(networkId)
   const {
     state: tableState,
     setPageSize,
@@ -74,7 +72,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     },
   ]
 
-  if (showTwap) {
+  if (isTwapEoaEnabled) {
     tabItems.push({
       id: 2,
       tab: 'TWAP',
@@ -87,7 +85,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     pagination: ReactNode = <TablePagination context={OrdersTableContext} />,
   ): ReactNode => (
     <StyledExplorerTabs
-      selectedTab={showTwap ? selectedTab : 1}
+      selectedTab={isTwapEoaEnabled ? selectedTab : 1}
       updateSelectedTab={setSelectedTab}
       tabItems={tabItems.map((tab) => (tab.id === 2 ? { ...tab, content } : tab))}
       extra={pagination}
@@ -99,7 +97,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     <OrdersTableContext.Provider value={contextValue}>
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
-      {showTwap && selectedTab === 2 ? (
+      {isTwapEoaEnabled && selectedTab === 2 ? (
         <TwapHistory key={`${networkId}:${ownerAddress}`} owner={ownerAddress} chainId={networkId}>
           {renderTabs}
         </TwapHistory>
