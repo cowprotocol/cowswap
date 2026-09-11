@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
-import { Accordion } from '@cowprotocol/ui'
+import { Accordion, SimpleStyledText } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -31,7 +31,7 @@ const getConfirmModalConfig = (): {
   priceLabel: t`Rate`,
   slippageLabel: t`Price protection`,
   slippageTooltip: (
-    <>
+    <SimpleStyledText>
       <p>
         <Trans>
           Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
@@ -44,7 +44,7 @@ const getConfirmModalConfig = (): {
           your order.
         </Trans>
       </p>
-    </>
+    </SimpleStyledText>
   ),
   limitPriceLabel: t`Limit price (incl. fees)`,
   limitPriceTooltip: (

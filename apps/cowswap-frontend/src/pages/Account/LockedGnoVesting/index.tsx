@@ -18,7 +18,7 @@ import {
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, HoverTooltip, SimpleStyledText, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -190,7 +190,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
               <HoverTooltip
                 wrapInContainer
                 content={
-                  <div>
+                  <SimpleStyledText>
                     <p>
                       <Trans>
                         <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on
@@ -200,7 +200,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                     <p>
                       <Trans>Each time you claim, you will receive the entire claimable amount.</Trans>
                     </p>
-                  </div>
+                  </SimpleStyledText>
                 }
               >
                 <HelpCircle size={14} />

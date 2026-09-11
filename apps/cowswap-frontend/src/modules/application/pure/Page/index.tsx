@@ -78,6 +78,10 @@ export const Content = styled.div`
     line-height: 1.6;
   }
 
+  > p + p {
+    margin-top: 16px;
+  }
+
   > p > img {
     width: 100%;
     height: auto;

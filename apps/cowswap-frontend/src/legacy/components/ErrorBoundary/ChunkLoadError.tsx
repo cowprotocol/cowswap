@@ -71,6 +71,10 @@ const NoConnectionContainer = styled.div`
 
 const NoConnectionDesc = styled.div`
   text-align: left;
+
+  p + p {
+    margin-top: 16px;
+  }
 `
 
 const NoConnectionImg = styled.img`
