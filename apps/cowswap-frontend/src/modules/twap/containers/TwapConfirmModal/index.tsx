@@ -6,7 +6,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { TradeConfirmation, TradeConfirmModal, useCommonTradeConfirmContext, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useCommonTradeConfirmContext,
+  useFreezeWhileConfirming,
+  useTradePriceImpact,
+} from 'modules/trade'
 
 import { TwapBadge, TwapTradeConfirmationDetails } from './TwapConfirmModal.styled'
 import { useEoaTwapPlan } from './useEoaTwapPlan'
@@ -44,6 +50,14 @@ export function TwapConfirmModal(): ReactNode {
     receiveAmountInfo,
   } = useTwapConfirmCurrencyPreview()
 
+  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
+  // the modal can never display a different amount than what was actually confirmed/signed.
+  const {
+    receiveAmountInfo: frozenReceiveAmountInfo,
+    rateInfoParams: frozenRateInfoParams,
+    slippage: frozenSlippage,
+  } = useFreezeWhileConfirming({ receiveAmountInfo, rateInfoParams, slippage })
+
   const { badgeProps, buttonProps, hasSigningPlan, isEoaTwapSuccess, onDismiss, steps } = useEoaTwapPlan({
     inputToken: inputCurrencyInfo.amount?.currency,
     inputSymbolLabel,
@@ -64,11 +78,11 @@ export function TwapConfirmModal(): ReactNode {
   )
 
   const tradeDetailsElement =
-    receiveAmountInfo && numOfParts ? (
+    frozenReceiveAmountInfo && numOfParts ? (
       <TwapTradeConfirmationDetails
-        rateInfoParams={rateInfoParams}
-        receiveAmountInfo={receiveAmountInfo}
-        slippage={slippage}
+        rateInfoParams={frozenRateInfoParams}
+        receiveAmountInfo={frozenReceiveAmountInfo}
+        slippage={frozenSlippage}
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}
