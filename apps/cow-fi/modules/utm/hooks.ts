@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react'
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, hasUtmCodes, UtmParams } from '@cowprotocol/common-utils'
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 
 import { utmAtom } from './state'
 import { cleanUpParams } from './utils'
@@ -12,7 +12,6 @@ import { cleanUpParams } from './utils'
 export function useInitializeUtm(): void {
   const pathname = usePathname()
   const router = useRouter()
-  const searchParams = useSearchParams()
   const hasProcessedUtm = useRef(false)
 
   // get atom setter
@@ -24,7 +23,7 @@ export function useInitializeUtm(): void {
       return
     }
 
-    const query = new URLSearchParams(searchParams?.toString())
+    const query = new URLSearchParams(window.location.search)
     const utm = getUtmParams(query)
 
     if (hasUtmCodes(utm)) {
@@ -38,7 +37,7 @@ export function useInitializeUtm(): void {
       waitForAnalytics().then(() => {
         // Small additional delay to ensure analytics has captured the parameters
         setTimeout(() => {
-          cleanUpParams(router, pathname, new URLSearchParams(searchParams?.toString()))
+          cleanUpParams(router, pathname, new URLSearchParams(query))
         }, 250) // Additional 250ms delay for analytics capture
       })
     } else {
