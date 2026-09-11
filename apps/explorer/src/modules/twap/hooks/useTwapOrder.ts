@@ -1,4 +1,4 @@
-import { ALL_SUPPORTED_CHAIN_IDS, type SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, isEvmChain, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { ORDERS_QUERY_INTERVAL } from 'explorer/const'
@@ -23,12 +23,17 @@ export async function findTwapOrder(
   selectedChainId: SupportedChainId,
   searchAllChains: boolean,
 ): Promise<ResolvedTwapOrder | null> {
-  const selectedOrder = await programmaticOrdersApi.getTwapOrder({ eventId, chainId: selectedChainId })
+  const selectedOrder = isEvmChain(selectedChainId)
+    ? await programmaticOrdersApi.getTwapOrder({ eventId, chainId: selectedChainId })
+    : null
 
   if (selectedOrder) return { chainId: selectedChainId, order: selectedOrder }
   if (!searchAllChains) return null
 
-  const remainingChainIds = ALL_SUPPORTED_CHAIN_IDS.filter((chainId) => chainId !== selectedChainId)
+  // The programmatic orders API accepts EVM chains only.
+  const remainingChainIds = ALL_SUPPORTED_CHAIN_IDS.filter(
+    (chainId) => chainId !== selectedChainId && isEvmChain(chainId),
+  )
   const results = await Promise.all(
     remainingChainIds.map(async (chainId): Promise<ResolvedTwapOrder | null> => {
       const order = await programmaticOrdersApi.getTwapOrder({ eventId, chainId })

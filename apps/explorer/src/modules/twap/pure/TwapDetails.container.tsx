@@ -25,6 +25,7 @@ import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
 import { FilledProgressSummary } from 'components/orders/FilledProgress/FilledProgressSummary'
 import OrdersUserDetailsTable from 'components/orders/OrdersUserDetailsTable'
 import { StatusLabel } from 'components/orders/StatusLabel'
+import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
 import { APP_TITLE, ORDERS_PAGE_SIZE } from 'explorer/const'
@@ -76,7 +77,7 @@ export function TwapDetailsPage(): ReactNode {
       <StyledSearch />
       {data === undefined && !error ? <LoadingWrapper message="Loading TWAP order" /> : null}
       {error ? <Notification type="error" message="Failed to fetch the TWAP order" /> : null}
-      {!isLoading && !error && data === null ? <Navigate replace to={`/search/${eventId}`} /> : null}
+      {!isLoading && !error && data === null ? <RedirectToSearch from="twap" /> : null}
       {data ? <TwapDetails order={data.order} chainId={data.chainId} /> : null}
     </Wrapper>
   )

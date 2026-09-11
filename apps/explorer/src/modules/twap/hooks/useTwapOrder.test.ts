@@ -1,6 +1,6 @@
 import { createElement, type ReactNode } from 'react'
 
-import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -99,7 +99,7 @@ describe('findTwapOrder', () => {
       chainId: targetChain,
       order: ORDER,
     })
-    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.length)
+    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
   })
 
   it('stops after the selected-chain miss for direct links', async () => {
@@ -107,5 +107,33 @@ describe('findTwapOrder', () => {
 
     await expect(findTwapOrder(EVENT_ID, SupportedChainId.GNOSIS_CHAIN, false)).resolves.toBeNull()
     expect(getTwapOrder).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns null for a global miss without querying non-EVM chains', async () => {
+    const getTwapOrder = jest.spyOn(programmaticOrdersApi, 'getTwapOrder').mockImplementation(async ({ chainId }) => {
+      if (!isEvmChain(chainId)) throw new Error('must be a supported EVM chain')
+      return null
+    })
+
+    await expect(findTwapOrder(EVENT_ID, SupportedChainId.GNOSIS_CHAIN, true)).resolves.toBeNull()
+    expect(getTwapOrder).toHaveBeenCalledTimes(ALL_SUPPORTED_CHAIN_IDS.filter(isEvmChain).length)
+    expect(getTwapOrder).not.toHaveBeenCalledWith(expect.objectContaining({ chainId: SupportedChainId.SOLANA }))
+  })
+
+  it('does not query the EVM API for a direct non-EVM link', async () => {
+    const getTwapOrder = jest.spyOn(programmaticOrdersApi, 'getTwapOrder')
+
+    await expect(findTwapOrder(EVENT_ID, SupportedChainId.SOLANA, false)).resolves.toBeNull()
+    expect(getTwapOrder).not.toHaveBeenCalled()
+  })
+
+  it('preserves request failures instead of reporting a missing order', async () => {
+    const error = new Error('Request failed')
+    jest.spyOn(programmaticOrdersApi, 'getTwapOrder').mockImplementation(async ({ chainId }) => {
+      if (chainId === SupportedChainId.ARBITRUM_ONE) throw error
+      return null
+    })
+
+    await expect(findTwapOrder(EVENT_ID, SupportedChainId.GNOSIS_CHAIN, true)).rejects.toBe(error)
   })
 })
