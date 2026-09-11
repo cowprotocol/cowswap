@@ -210,6 +210,87 @@ describe('validateTradeForm - xStock logic', () => {
   })
 })
 
+describe('validateTradeForm - balance vs slippage', () => {
+  const baseContext: Partial<TradeFormValidationContext> = {
+    derivedTradeState: {
+      orderKind: OrderKind.BUY,
+      inputCurrencyAmount: mockCurrencyAmount('100'),
+      outputCurrencyAmount: mockCurrencyAmount('100'),
+      inputCurrency: { address: '0x1', chainId: 1 } as unknown as Currency,
+      outputCurrency: { address: '0x2', chainId: 1 } as unknown as Currency,
+      inputCurrencyBalance: mockCurrencyAmount('120'),
+      outputCurrencyBalance: mockCurrencyAmount('1000'),
+      inputCurrencyFiatAmount: null,
+      outputCurrencyFiatAmount: null,
+      recipient: '0x123',
+      isQuoteBasedOrder: true,
+      tradeType: TradeType.SWAP,
+      slippage: null,
+    },
+    tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+    isOnline: true,
+    isSupportedWallet: true,
+    account: '0x123',
+    isApproveRequired: ApproveRequiredReason.NotRequired,
+    isWrapUnwrap: false,
+    isSafeReadonlyUser: false,
+    isSwapUnsupported: false,
+    recipientEnsAddress: null,
+    isInsufficientBalanceOrderAllowed: false,
+    isProviderNetworkUnsupported: false,
+    isProviderNetworkDeprecated: false,
+    intermediateTokenToBeImported: false,
+    isAccountProxyLoading: false,
+    isProxySetupValid: true,
+    customTokenError: undefined,
+    isRestrictedForCountry: false,
+    isBalancesLoading: false,
+    isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
+    isNonEvmReceiverConfirmed: false,
+    isCaptchaPending: false,
+    isCaptchaRequired: false,
+  }
+
+  // balance (120) covers the raw input amount (100) but not the slippage-inclusive maximum sell amount (150)
+  test('shows BalanceInsufficient for swap when balance covers input amount but not maximum sell amount with slippage', () => {
+    const context = {
+      ...baseContext,
+      swapMaximumSellAmount: mockCurrencyAmount('150'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.BalanceInsufficient)
+  })
+
+  test('does not show BalanceInsufficient for swap when balance covers the maximum sell amount with slippage', () => {
+    const context = {
+      ...baseContext,
+      swapMaximumSellAmount: mockCurrencyAmount('110'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.BalanceInsufficient)
+  })
+
+  test('falls back to raw input amount when swapMaximumSellAmount is not provided (e.g. limit/TWAP orders)', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        tradeType: TradeType.LIMIT_ORDER,
+      },
+      swapMaximumSellAmount: null,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.BalanceInsufficient)
+  })
+})
+
 describe('validateTradeForm - price impact loading', () => {
   const baseContext: Partial<TradeFormValidationContext> = {
     derivedTradeState: {
