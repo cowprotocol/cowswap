@@ -51,8 +51,8 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
-            apps/cowswap-frontend/src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
+            apps/cowswap-frontend/src/locales/*.js
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml', 'apps/cowswap-frontend/src/locales/*.po') }}
 
   test:
     name: Test
@@ -82,8 +82,8 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
-            apps/cowswap-frontend/src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
+            apps/cowswap-frontend/src/locales/*.js
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml', 'apps/cowswap-frontend/src/locales/*.po') }}
 
       - name: Unit Test
         run: pnpm run test
@@ -121,8 +121,8 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
-            apps/cowswap-frontend/src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
+            apps/cowswap-frontend/src/locales/*.js
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml', 'apps/cowswap-frontend/src/locales/*.po') }}
 
       - name: Run eslint
         run: pnpm run lint
@@ -181,8 +181,8 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: |
-            apps/cowswap-frontend/src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
+            apps/cowswap-frontend/src/locales/*.js
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml', 'apps/cowswap-frontend/src/locales/*.po') }}
 
       - name: Run typecheck
         run: pnpm run typecheck
