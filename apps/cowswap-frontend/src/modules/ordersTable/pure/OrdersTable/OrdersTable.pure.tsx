@@ -50,7 +50,8 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
     document.body.dispatchEvent(new Event('mousedown', { bubbles: true }))
   }, [])
 
-  const isRowSelectable = !!allowsOffchainSigning
+  const isTwapTable = orderType === TabOrderTypes.ADVANCED
+  const isRowSelectable = !!allowsOffchainSigning && !isTwapTable
 
   const cancellableOrders = useMemo(
     () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
@@ -79,7 +80,6 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
 
   if (!currentTab || !chainId || !balancesAndAllowances || !orderActions || !pendingOrdersPrices) return null
 
-  const isTwapTable = orderType === TabOrderTypes.ADVANCED
   const totalFilteredOrders = filteredOrders?.length || 0
   const lastPageNumber = Math.ceil(totalFilteredOrders / ORDERS_TABLE_PAGE_SIZE)
 
