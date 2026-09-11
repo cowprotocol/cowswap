@@ -37,6 +37,11 @@ export type GetAccountOrdersParams = WithNetworkId & {
   owner: string
   offset?: number
   limit?: number
+  /**
+   * Discards the cached pages and re-fetches from the API.
+   * Only honoured for the first page, see `getAccountOrders`
+   */
+  skipCache?: boolean
 }
 
 export type GetOrderCompetitionStatusParams = WithNetworkId & {
