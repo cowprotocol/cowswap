@@ -114,6 +114,34 @@ describe('useEoaTwapPartOrders', () => {
     jest.clearAllMocks()
   })
 
+  it.each([
+    ['open', OrderStatus.PENDING],
+    ['unconfirmed', OrderStatus.SCHEDULED],
+  ] as const)('inherits and clears the parent cancellation flag for %s parts', async (status, expectedStatus) => {
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('part', status))
+    const { result, rerender } = renderHook(({ order }) => useEoaTwapPartOrders(order, parent, 1, true), {
+      initialProps: { order: makeTwapOrder() },
+      wrapper: SwrTestProvider,
+    })
+
+    await waitFor(() => expect(result.current.orders[0]?.isCancelling).toBe(false))
+
+    rerender({ order: { ...makeTwapOrder(), status: TwapOrderStatus.Cancelling } })
+    await waitFor(() => expect(result.current.orders[0]?.isCancelling).toBe(true))
+    expect(result.current.orders[0]?.status).toBe(expectedStatus)
+
+    rerender({ order: makeTwapOrder() })
+    await waitFor(() => expect(result.current.orders[0]?.isCancelling).toBe(false))
+    expect(result.current.orders[0]?.status).toBe(expectedStatus)
+
+    rerender({ order: { ...makeTwapOrder(), status: TwapOrderStatus.Cancelling } })
+    await waitFor(() => expect(result.current.orders[0]?.isCancelling).toBe(true))
+
+    rerender({ order: { ...makeTwapOrder(), status: TwapOrderStatus.Cancelled } })
+    await waitFor(() => expect(result.current.orders[0]?.status).toBe(OrderStatus.CANCELLED))
+    expect(result.current.orders[0]?.isCancelling).toBe(false)
+  })
+
   it('loads candidate-only parents and promotes the same row without changing the count', async () => {
     const page = makePartPage('candidate')
     const candidate = {
