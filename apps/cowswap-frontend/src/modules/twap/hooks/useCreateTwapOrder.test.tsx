@@ -40,6 +40,9 @@ import {
 import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
+
+jest.mock('../utils/waitForTwapEventId', () => ({ waitForTwapEventId: jest.fn() }))
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
 jest.mock('wagmi', () => ({
@@ -175,6 +178,7 @@ describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
 
   beforeEach(() => {
+    jest.mocked(waitForTwapEventId).mockResolvedValue(undefined)
     jest.clearAllMocks()
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
@@ -231,6 +235,17 @@ describe('useCreateTwapOrder', () => {
     ;(uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>).mockResolvedValue(
       undefined,
     )
+  })
+
+  it.each(['1'.repeat(70), undefined])('uses the indexed event ID or transaction fallback: %s', async (eventId) => {
+    jest.mocked(waitForTwapEventId).mockResolvedValueOnce(eventId)
+    const { result } = renderHook(useCreateTwapOrder)
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(waitForTwapEventId).toHaveBeenCalledWith(expect.any(String), '0xaccount', 1)
+    expect(mockedUseTradeConfirmActions().onSuccess).toHaveBeenCalledWith(eventId ?? '0xsetuptx')
   })
 
   it('tracks the wallet off-chain signing capability instead of the EOA TWAP route', async () => {

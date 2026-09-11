@@ -74,6 +74,7 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -292,7 +293,7 @@ export function useCreateTwapOrder() {
 
         // Value passed to `tradeConfirmActions.onSuccess`. Ends up in `PostedOrderNotification`, rendering a Safe or Explorer link in a toast.
         // Must be truthy to show the success screen.
-        // - EOA: cow-shed factory setup transaction hash
+        // - EOA: indexed event ID, or setup transaction hash if indexing times out
         // - Safe: safeTxHash
         let confirmModalHash: string
 
@@ -420,6 +421,9 @@ export function useCreateTwapOrder() {
         sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
+        if (isEoaTwap) {
+          confirmModalHash = (await waitForTwapEventId(twapOrderId, account, chainId)) ?? confirmModalHash
+        }
         updateEoaTwapFlow(null)
 
         tradeConfirmActions.onSuccess(confirmModalHash)
