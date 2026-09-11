@@ -19,10 +19,17 @@ describe('utils', () => {
       expect(isAddress('f164fc0ec4e93095b804a4795bbe1e041497b92a0')).toBe(false)
     })
 
-    it('returns the address as-is for a valid Solana address', () => {
-      expect(isAddress('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')).toBe(
-        'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-      )
+    it('rejects a Solana address — this helper is EVM-only', () => {
+      expect(isAddress('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')).toBe(false)
+    })
+
+    it('rejects a BTC address — this helper is EVM-only', () => {
+      expect(isAddress('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4')).toBe(false)
+    })
+
+    // Base58-only hex (no `0` digit) also matches SOL_ADDRESS_PATTERN — must still checksum as EVM
+    it('checksums a prefix-less hex address that is also valid base58', () => {
+      expect(isAddress('abcdef1234abcdef1234abcdef1234abcdef1234')).toBe('0xAbcDEF1234ABCDEf1234ABcdef1234ABCDef1234')
     })
   })
 
