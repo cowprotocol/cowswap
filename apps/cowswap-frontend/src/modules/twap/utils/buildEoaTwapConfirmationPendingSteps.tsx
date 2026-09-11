@@ -276,15 +276,8 @@ export function getEoaTwapStepDescription(
       )
 
     case EoaTwapSigningSteps.PermitPoller:
-      return isLoading ? (
-        <>
-          <p>
-            {t`Permit submitted. Waiting for network confirmation`}
-            <ThreeDots />
-          </p>
-          <p>{tokenElement}</p>
-        </>
-      ) : (
+      // PermitPoller creates an off-chain signature, so there's no loading state for it.
+      return (
         <>
           <p>{t`Review and confirm in your wallet to continue.`}</p>
           <p>{tokenElement}</p>
