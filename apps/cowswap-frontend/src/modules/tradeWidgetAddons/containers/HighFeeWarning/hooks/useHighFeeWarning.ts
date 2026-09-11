@@ -5,7 +5,7 @@ import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
-import { ReceiveAmountInfo, useGetReceiveAmountInfo } from 'modules/trade'
+import { ReceiveAmountInfo, useFreezeWhileConfirming, useGetReceiveAmountInfo } from 'modules/trade'
 
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -29,7 +29,12 @@ interface UseHighFeeWarningReturn {
  * @description returns params related to high fee and a cb for checking/unchecking fee acceptance
  */
 export function useHighFeeWarning(): UseHighFeeWarningReturn {
-  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const liveReceiveAmountInfo = useGetReceiveAmountInfo()
+  // The warning percentage is quote-derived, so it has to freeze together with the amounts shown
+  // next to it in the confirm modal. Otherwise a quote refresh landing while the wallet prompt is
+  // open keeps re-computing the percentage against a quote the user never confirmed, and the banner
+  // ends up contradicting the frozen amounts right above it.
+  const receiveAmountInfo = useFreezeWhileConfirming(liveReceiveAmountInfo)
 
   const [feeWarningAccepted, setFeeWarningAccepted] = useAtom(feeWarningAcceptedAtom)
 
