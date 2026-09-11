@@ -9,7 +9,21 @@ export default {
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': ['babel-jest', { presets: ['@nx/react/babel'] }],
+    '^.+\\.[tj]sx?$': [
+      'babel-jest',
+      {
+        presets: ['@nx/react/babel'],
+        // `babel-plugin-macros` has to run BEFORE the JSX transform, and listing it here is the only
+        // way to get that: Babel runs top-level plugins ahead of every preset plugin. Left to the
+        // preset chain alone (`@nx/js/babel` supplies macros, `@babel/preset-react` supplies the JSX
+        // transform) `<Plural>` is rewritten to `_jsx(Plural, { value, one, few, many, other })`
+        // before macros sees it, and macros then reads that 5-property props object as a labelled
+        // expression and throws "Incorrect usage, expected exactly one property".
+        // The Vite build never hits this because `vite-plugin-babel-macros` runs macros as its own
+        // pass, before vite's React transform touches the file.
+        plugins: ['macros'],
+      },
+    ],
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
   coverageDirectory: '../../coverage/cowswap',

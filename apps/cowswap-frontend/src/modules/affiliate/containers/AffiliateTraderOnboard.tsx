@@ -5,7 +5,7 @@ import svgEarnAsTraderSrc from '@cowprotocol/assets/images/earn-as-trader.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -38,7 +38,8 @@ export function AffiliateTraderOnboard(): ReactNode {
           <Trans>
             Use a referral code to earn <strong>{traderRewardAmount}</strong> for
             <br />
-            every <strong>{triggerVolumeLabel}</strong> in eligible volume within {affiliateTimeCapDays} days.
+            every <strong>{triggerVolumeLabel}</strong> in eligible volume within{' '}
+            <Plural value={affiliateTimeCapDays} one="# day" few="# days" many="# days" other="# days" />.
             <br />
             New wallets only.
           </Trans>

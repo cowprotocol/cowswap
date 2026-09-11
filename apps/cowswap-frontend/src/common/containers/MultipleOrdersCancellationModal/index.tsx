@@ -6,8 +6,8 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { plural, t } from '@lingui/core/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
@@ -89,7 +89,12 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         <ConfirmationPendingContent
           modalMode
           onDismiss={onDismiss}
-          title={t`Cancelling ${ordersCount} orders`}
+          title={plural(ordersCount, {
+            one: 'Cancelling # order',
+            few: 'Cancelling # orders',
+            many: 'Cancelling # orders',
+            other: 'Cancelling # orders',
+          })}
           description={t`Canceling your order`}
           operationLabel={t`cancellation`}
         />
@@ -105,7 +110,13 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         topContent={
           <div>
             <p>
-              <Trans>Are you sure you want to cancel {ordersCount} orders?</Trans>
+              <Plural
+                value={ordersCount}
+                one="Are you sure you want to cancel # order?"
+                few="Are you sure you want to cancel # orders?"
+                many="Are you sure you want to cancel # orders?"
+                other="Are you sure you want to cancel # orders?"
+              />
             </p>
           </div>
         }
