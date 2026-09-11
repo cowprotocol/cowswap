@@ -17,6 +17,7 @@ import { useEoaTwapPartOrders } from './useEoaTwapPartOrders'
 
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
 import { TwapOrderStatus, type TwapOrderItem } from '../types'
+import { emulatePartAsOrder } from '../utils/emulatePartAsOrder'
 
 jest.mock('modules/ordersTable', () => ({ ORDERS_TABLE_PAGE_SIZE: 10 }))
 jest.mock('../services/programmaticOrdersApi', () => ({
@@ -112,6 +113,62 @@ function SwrTestProvider({ children }: PropsWithChildren): ReactElement {
 describe('useEoaTwapPartOrders', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+  })
+
+  it.each([
+    ['unconfirmed', 0, 1_999_999_941],
+    ['fulfilled', 0, 1_999_999_941],
+    ['unconfirmed', 20, 1_999_999_981],
+    ['fulfilled', 20, 1_999_999_981],
+  ] as const)('uses the part start for %s parts with span %s', async (status, span, startTime) => {
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(makePartPage('part', status))
+    const twapOrder = makeTwapOrder()
+    twapOrder.order.span = span
+    const { result } = renderHook(() => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders).toHaveLength(1))
+    const expectedStart = new Date(startTime * 1000)
+    expect(result.current.orders[0]?.creationTime).toEqual(expectedStart)
+
+    const safePart = emulatePartAsOrder(
+      {
+        uid: 'part',
+        index: 0,
+        chainId: twapOrder.chainId,
+        safeAddress: owner,
+        twapOrderId: twapOrder.id,
+        isCreatedInOrderBook: false,
+        isCancelling: false,
+        order: {
+          sellToken: inputToken.address,
+          buyToken: outputToken.address,
+          receiver: owner,
+          sellAmount: '10',
+          buyAmount: '5',
+          validTo: 2_000_000_000,
+          appData: twapOrder.order.appData,
+          feeAmount: '0',
+          kind: OrderKind.SELL,
+          partiallyFillable: false,
+          signingScheme: SigningScheme.EIP1271,
+          signature: '',
+        },
+      },
+      twapOrder,
+    )
+    expect(safePart.creationDate).toBe(expectedStart.toISOString())
+  })
+
+  it('falls back to the record timestamp when the part expiry is unavailable', async () => {
+    const page = makePartPage('part')
+    page.items[0].validTo = null
+    fetchEoaTwapPartOrdersMock.mockResolvedValue(page)
+    const { result } = renderHook(() => useEoaTwapPartOrders(makeTwapOrder(), parent, 1, true), {
+      wrapper: SwrTestProvider,
+    })
+    await waitFor(() => expect(result.current.orders).toHaveLength(1))
+    expect(result.current.orders[0]?.creationTime).toEqual(new Date(1_000_000_000_000))
   })
 
   it('loads candidate-only parents and promotes the same row without changing the count', async () => {
