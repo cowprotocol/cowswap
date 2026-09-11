@@ -43,10 +43,10 @@ export const Subtitle = styled.p`
 
 export const ExplorerAnchor = styled(ExternalLink)`
   ${font('FONT_SMALL_PLUS', 'medium')}
-  color: var(${UI.COLOR_PRIMARY});
+  color: var(${UI.COLOR_BLUE});
 
   &:hover {
-    color: var(${UI.COLOR_PRIMARY});
+    color: var(${UI.COLOR_INFO});
   }
 `
 

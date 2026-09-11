@@ -1,4 +1,4 @@
-import { Badge, font } from '@cowprotocol/ui'
+import { Badge, ExternalLink, font, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -19,4 +19,13 @@ export const TwapTradeConfirmationDetails = styled(TwapTradeConfirmationDetailsB
 
 export const TwapOrderStepTokenInfo = styled(OrderStepTokenInfo)`
   margin-top: 10px;
+`
+
+export const TwapNetworkExplorerLink = styled(ExternalLink)`
+  ${font('FONT_NORMAL', 'regular')}
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT_SECONDARY_HOVER});
+  }
 `

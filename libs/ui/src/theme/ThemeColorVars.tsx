@@ -182,6 +182,8 @@ export const ThemeColorVars = css`
     ${UI.COLOR_TEXT_OPACITY_15}: ${({ theme }) => transparentize(theme.text, 0.85)};
     ${UI.COLOR_TEXT_OPACITY_10}: ${({ theme }) => transparentize(theme.text, 0.9)};
     ${UI.COLOR_TEXT2}: ${({ theme }) => transparentize(theme.text, 0.3)};
+    ${UI.COLOR_TEXT_SECONDARY}: ${({ theme }) => transparentize(theme.text, 0.3)};
+    ${UI.COLOR_TEXT_SECONDARY_HOVER}: ${({ theme }) => theme.text};
     ${UI.COLOR_LINK}: var(${UI.COLOR_PRIMARY});
     ${UI.COLOR_LINK_OPACITY_10}: ${({ theme }) => transparentize(theme.info, 0.9)};
 

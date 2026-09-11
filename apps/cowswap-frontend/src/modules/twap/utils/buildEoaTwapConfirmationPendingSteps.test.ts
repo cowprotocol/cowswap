@@ -111,44 +111,89 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
   })
 
   it('keeps past-step labels stable on success', () => {
-    expect(
-      getPendingSteps(
-        buildEoaTwapConfirmationPendingSteps({
-          signingStep: {
-            step: EoaTwapSigningSteps.TwapSetup,
-            plan: DEFAULT_PLAN,
-            phase: EoaTwapSigningPhase.Sign,
-            lockDismiss: false,
-          },
-          token: USDC_MAINNET,
-        }),
-      ).map(({ id, label, status, description }) => ({ id, label, status, description: description ?? null })),
-    ).toEqual([
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.TwapSetup,
+          plan: DEFAULT_PLAN,
+          phase: EoaTwapSigningPhase.Sign,
+          lockDismiss: false,
+        },
+        token: USDC_MAINNET,
+      }),
+    )
+
+    expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
         id: EoaTwapSigningSteps.ApprovePoller,
         label: 'Approve USDC',
         status: 'success',
-        description: null,
       },
       {
         id: EoaTwapSigningSteps.TwapSetup,
         label: 'Set up TWAP',
         status: 'active',
-        description: 'Review and confirm in your wallet to continue.',
       },
       {
         id: EoaTwapSigningSteps.TwapSign,
         label: 'Sign TWAP',
         status: 'upcoming',
-        description: 'Review and confirm in your wallet to continue.',
       },
       {
         id: EoaTwapSigningSteps.SubmitTwap,
         label: 'Activating TWAP',
         status: 'upcoming',
-        description: "Sit tight! We're getting your order ready",
       },
     ])
+    expect(steps[0]?.description).toBeTruthy()
+    const approveSuccessDescription = renderToStaticMarkup(
+      getEoaTwapStepDescription(EoaTwapSigningSteps.ApprovePoller, 'success', undefined, {
+        chainId: SupportedChainId.MAINNET,
+        completedStepTxHashes: { [EoaTwapSigningSteps.ApprovePoller]: '0xapprove' },
+      }),
+    )
+
+    expect(approveSuccessDescription).toContain('Approve token ·')
+    expect(approveSuccessDescription).toContain('Confirmed')
+    expect(approveSuccessDescription).toContain('https://etherscan.io/tx/0xapprove')
+  })
+
+  it('renders expandable success descriptions for completed permit steps', () => {
+    const plan = [
+      EoaTwapSigningSteps.PermitPoller,
+      EoaTwapSigningSteps.TwapSetup,
+      EoaTwapSigningSteps.TwapSign,
+      EoaTwapSigningSteps.SubmitTwap,
+    ]
+
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.TwapSetup,
+          plan,
+          phase: EoaTwapSigningPhase.Sign,
+          lockDismiss: false,
+        },
+        token: USDC_MAINNET,
+      }),
+    )
+
+    expect(steps[0]?.status).toBe('success')
+    expect(steps[0]?.description).toBeTruthy()
+    const permitSuccessDescription = renderToStaticMarkup(
+      getEoaTwapStepDescription(EoaTwapSigningSteps.PermitPoller, 'success'),
+    )
+
+    expect(permitSuccessDescription).toContain('Permit token · Signed')
+  })
+
+  it('renders wallet-action summary layout for completed setup and sign steps', () => {
+    expect(renderToStaticMarkup(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSetup, 'success'))).toContain(
+      'Set up TWAP · Signed',
+    )
+    expect(renderToStaticMarkup(getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSign, 'success'))).toContain(
+      'Sign TWAP · Signed',
+    )
   })
 
   it('marks Sign phase as active for TwapSign after setup is confirmed', () => {

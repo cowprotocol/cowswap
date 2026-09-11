@@ -149,6 +149,8 @@ export enum UI {
   COLOR_TEXT1_OPACITY_25 = '--cow-color-text1-opacity-25',
   COLOR_TEXT1_OPACITY_10 = '--cow-color-text1-opacity-10',
   COLOR_TEXT2 = '--cow-color-text2',
+  COLOR_TEXT_SECONDARY = '--color-text-secondary',
+  COLOR_TEXT_SECONDARY_HOVER = '--color-text-secondary-hover',
   COLOR_LINK = '--cow-color-link',
   COLOR_LINK_OPACITY_10 = '--cow-color-link-opacity-10',
 

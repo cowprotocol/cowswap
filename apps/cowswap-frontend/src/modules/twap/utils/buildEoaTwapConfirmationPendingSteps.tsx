@@ -1,11 +1,11 @@
-import { ReactNode } from 'react'
+import { Fragment, ReactNode } from 'react'
 
 import type { Hex } from 'viem'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType, ExternalLink } from '@cowprotocol/ui'
+import { BadgeType } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -13,7 +13,7 @@ import { OrderStep, OrderStepStatus } from 'modules/trade'
 
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
-import { TwapOrderStepTokenInfo } from '../containers/TwapConfirmModal/TwapConfirmModal.styled'
+import { TwapOrderStepTokenInfo, TwapNetworkExplorerLink } from '../containers/TwapConfirmModal/TwapConfirmModal.styled'
 import { EoaTwapSigningPhase, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
 export const EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID = 'WalletActionsComplete'
@@ -21,6 +21,12 @@ export const EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID = 'WalletActionsComplete'
 const ACTIVATION_STEPS = new Set<EoaTwapSigningSteps>([
   EoaTwapSigningSteps.SubmitTwap,
   EoaTwapSigningSteps.SubmitTwapSlow,
+])
+
+const TOKEN_WALLET_ACTION_STEPS = new Set<EoaTwapSigningSteps>([
+  EoaTwapSigningSteps.ZeroApprovePoller,
+  EoaTwapSigningSteps.ApprovePoller,
+  EoaTwapSigningSteps.PermitPoller,
 ])
 
 export interface BuildEoaTwapConfirmationPendingStepsParams {
@@ -39,11 +45,23 @@ export interface EoaTwapCurrentStepButtonProps {
   isDisabled: boolean
 }
 
+export interface EoaTwapStepDescriptionOptions {
+  chainId?: SupportedChainId
+  completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
+}
+
 interface BuildEoaTwapWalletActionsCompleteDescriptionParams {
   walletActionSteps: EoaTwapSigningSteps[]
   completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
   token: Currency | undefined
   chainId: SupportedChainId | undefined
+}
+
+interface BuildEoaTwapWalletActionSummaryLineParams {
+  step: EoaTwapSigningSteps
+  symbol: string | undefined
+  chainId: SupportedChainId | undefined
+  completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
 }
 
 interface EoaTwapWalletActionOutcome {
@@ -102,10 +120,15 @@ export function buildEoaTwapConfirmationPendingSteps({
       status = 'upcoming'
     }
 
+    const description = getEoaTwapStepDescription(step, status, token, {
+      chainId,
+      completedStepTxHashes: signingStep.completedStepTxHashes,
+    })
+
     return {
       id: step,
       label,
-      description: getEoaTwapStepDescription(step, status, token),
+      description,
       status,
     }
   })
@@ -249,9 +272,10 @@ export function getEoaTwapStepDescription(
   step: EoaTwapSigningSteps,
   status: OrderStepStatus,
   token?: Currency,
+  options?: EoaTwapStepDescriptionOptions,
 ): ReactNode | undefined {
   if (status === 'success') {
-    return undefined
+    return buildEoaTwapStepSuccessDescription(step, token, options)
   }
 
   const isLoading = status === 'loading'
@@ -266,12 +290,12 @@ export function getEoaTwapStepDescription(
             {t`Approval submitted. Waiting for network confirmation`}
             <ThreeDots />
           </p>
-          <p>{tokenElement}</p>
+          {tokenElement}
         </>
       ) : (
         <>
           <p>{t`Review and confirm in your wallet to continue.`}</p>
-          <p>{tokenElement}</p>
+          {tokenElement}
         </>
       )
 
@@ -280,7 +304,7 @@ export function getEoaTwapStepDescription(
       return (
         <>
           <p>{t`Review and confirm in your wallet to continue.`}</p>
-          <p>{tokenElement}</p>
+          {tokenElement}
         </>
       )
 
@@ -339,6 +363,32 @@ export function getEoaTwapWalletActionSummaryLabel(
   }
 }
 
+function buildEoaTwapStepSuccessDescription(
+  step: EoaTwapSigningSteps,
+  token: Currency | undefined,
+  options?: EoaTwapStepDescriptionOptions,
+): ReactNode | undefined {
+  const summaryLine = buildEoaTwapWalletActionSummaryLine({
+    step,
+    symbol: token?.symbol,
+    chainId: options?.chainId,
+    completedStepTxHashes: options?.completedStepTxHashes,
+  })
+
+  if (!summaryLine) {
+    return undefined
+  }
+
+  const tokenElement = TOKEN_WALLET_ACTION_STEPS.has(step) && token ? <TwapOrderStepTokenInfo token={token} /> : null
+
+  return (
+    <>
+      {summaryLine}
+      {tokenElement}
+    </>
+  )
+}
+
 function buildEoaTwapWalletActionsCompleteDescription({
   walletActionSteps,
   completedStepTxHashes,
@@ -350,24 +400,49 @@ function buildEoaTwapWalletActionsCompleteDescription({
   return (
     <>
       {walletActionSteps.map((step) => {
-        const label = getEoaTwapWalletActionSummaryLabel(step, symbol)
-        const outcome = getEoaTwapWalletActionOutcome(step)
+        const summaryLine = buildEoaTwapWalletActionSummaryLine({
+          step,
+          symbol,
+          chainId,
+          completedStepTxHashes,
+        })
 
-        if (!label || !outcome) return null
+        if (!summaryLine) {
+          return null
+        }
 
-        const txHash = completedStepTxHashes?.[step]
-        const explorerUrl =
-          chainId && txHash && outcome.hasTxLink
-            ? getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)
-            : undefined
-
-        return (
-          <p key={step}>
-            {label} · {explorerUrl ? <ExternalLink href={explorerUrl}>{outcome.label} ↗</ExternalLink> : outcome.label}
-          </p>
-        )
+        return <Fragment key={step}>{summaryLine}</Fragment>
       })}
     </>
+  )
+}
+
+function buildEoaTwapWalletActionSummaryLine({
+  step,
+  symbol,
+  chainId,
+  completedStepTxHashes,
+}: BuildEoaTwapWalletActionSummaryLineParams): ReactNode {
+  const label = getEoaTwapWalletActionSummaryLabel(step, symbol)
+  const outcome = getEoaTwapWalletActionOutcome(step)
+
+  if (!label || !outcome) {
+    return null
+  }
+
+  const txHash = completedStepTxHashes?.[step]
+  const explorerUrl =
+    chainId && txHash && outcome.hasTxLink ? getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION) : undefined
+
+  return (
+    <p>
+      {label} ·{' '}
+      {explorerUrl ? (
+        <TwapNetworkExplorerLink href={explorerUrl}>{outcome.label} ↗</TwapNetworkExplorerLink>
+      ) : (
+        outcome.label
+      )}
+    </p>
   )
 }
 
