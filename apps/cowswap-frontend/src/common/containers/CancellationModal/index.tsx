@@ -4,6 +4,7 @@ import React, { ReactNode, useMemo } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/react/macro'
+import { useTwapOrderById } from 'entities/twap'
 
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
@@ -23,13 +24,14 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
 
   const context = useAtomValue(cancellationModalContextAtom)
   const ultimateOrder = useUltimateOrder(context.chainId || undefined, context.orderId || undefined)
+  const twapOrder = useTwapOrderById(context.orderId || undefined)
 
   const orderSummary = useMemo(() => {
     if (!ultimateOrder) return undefined
 
     const { inputAmount, outputAmount } = getUltimateOrderTradeAmounts(ultimateOrder)
     const receiver = ultimateOrder.bridgeOrderFromStore?.recipient ?? ultimateOrder.orderFromStore.receiver
-    const owner = ultimateOrder.orderFromStore.owner
+    const owner = twapOrder?.resolvedOwner ?? ultimateOrder.orderFromStore.owner
 
     return (
       <>
@@ -37,7 +39,7 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
         <ReceiverInfo receiver={receiver} owner={owner} customPrefix={<Trans>to receiver</Trans>} />
       </>
     )
-  }, [ultimateOrder])
+  }, [ultimateOrder, twapOrder?.resolvedOwner])
 
   return <Pure isOpen={isOpen} onDismiss={onDismiss} context={context} orderSummary={orderSummary} />
 }
