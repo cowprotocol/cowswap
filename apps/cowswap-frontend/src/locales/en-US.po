@@ -6427,8 +6427,8 @@ msgstr "Minimum receive"
 #~ msgstr "This address is blocked on the Uniswap Labs interface because it is associated with one or more"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Permit submitted. Waiting for network confirmation"
-msgstr "Permit submitted. Waiting for network confirmation"
+#~ msgid "Permit submitted. Waiting for network confirmation"
+#~ msgstr "Permit submitted. Waiting for network confirmation"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Interval time too short"
