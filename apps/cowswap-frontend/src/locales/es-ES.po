@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-10 10:43\n"
+"PO-Revision-Date: 2026-09-11 16:05\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -433,7 +433,7 @@ msgstr "vender"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating your TWAP"
-msgstr ""
+msgstr "Activando tu TWAP"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 #~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -1865,7 +1865,7 @@ msgstr "Centro de ayuda"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve funding"
-msgstr ""
+msgstr "Aprobar la financiación"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 msgid "Last updated"
@@ -1881,7 +1881,7 @@ msgstr "Última actualización"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
 msgid "TWAP setup was cancelled or not broadcast. Please try again."
-msgstr ""
+msgstr "La configuración de TWAP ha sido cancelada o no ha sido transmitida. Por favor, inténtelo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
@@ -2103,7 +2103,7 @@ msgstr "CoW Swap fue el primer DEX en ofrecer operaciones basadas en intención,
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol} for funding"
-msgstr ""
+msgstr "Aprobar {symbol} para la financiación"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
@@ -2131,7 +2131,7 @@ msgstr "El precio límite"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit funding"
-msgstr ""
+msgstr "Permitir financiación"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Creating"
@@ -3493,7 +3493,7 @@ msgstr "Maximiza tu rendimiento en las posiciones LP existentes"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Approval was cancelled or not broadcast. Please try again."
-msgstr ""
+msgstr "La aprobación ha sido cancelada o no ha sido transmitida. Por favor, inténtelo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 #~ msgid "Pool description"
