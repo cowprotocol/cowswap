@@ -364,7 +364,7 @@ async function runOnChainApprovalStep({
     }
   }
 
-  onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed })
+  onSigningStep({ step, phase: EoaTwapSigningPhase.Confirmed, stepTxHash: receipt.transactionHash })
 }
 
 function toApprovalUserError(err: unknown): Error {
@@ -409,8 +409,7 @@ async function tryGeneratePermitAllowance({
     throw new Error(t`Unable to generate permit data`)
   }
 
-  console.log(permitData)
-
   onSigningStep({ step: permitUiStep, phase: EoaTwapSigningPhase.Confirmed })
+
   return permitData
 }

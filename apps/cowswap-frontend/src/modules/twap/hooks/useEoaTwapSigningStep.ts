@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import type { Hex } from 'viem'
+
 import { eoaTwapSigningStepAtom, EoaTwapSigningStepState } from '../state/eoaTwapSigningStepAtom'
 import {
   cancelEoaTwapPlacement,
@@ -8,15 +10,24 @@ import {
   isEoaTwapPlacementCancelled,
 } from '../utils/eoaTwapPlacementCancel'
 
-export type EoaTwapFlowUpdate = Partial<EoaTwapSigningStepState> & Pick<EoaTwapSigningStepState, 'step' | 'phase'>
+export type EoaTwapFlowUpdate = Partial<Omit<EoaTwapSigningStepState, 'completedStepTxHashes'>> &
+  Pick<EoaTwapSigningStepState, 'step' | 'phase'> & {
+    /** Merged into {@link EoaTwapSigningStepState.completedStepTxHashes} for the given step. */
+    stepTxHash?: Hex
+  }
 
-export type EoaTwapFlowUpdater = (update: null | EoaTwapFlowUpdate) => void
+export type EoaTwapFlowUpdater = (update: EoaTwapFlowUpdaterArg) => void
+
+export type EoaTwapFlowUpdaterArg =
+  | null
+  | EoaTwapFlowUpdate
+  | ((prev: EoaTwapSigningStepState | null) => EoaTwapFlowUpdate)
 
 export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
   const setState = useSetAtom(eoaTwapSigningStepAtom)
 
   return useCallback(
-    (update: null | EoaTwapFlowUpdate) => {
+    (update: EoaTwapFlowUpdaterArg) => {
       if (!update) {
         cancelEoaTwapPlacement()
         setState(null)
@@ -28,16 +39,7 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
         throw new EoaTwapPlacementCancelledError()
       }
 
-      const { step, phase, plan, lockDismiss } = update
-
-      setState((prev) => ({
-        step,
-        phase,
-
-        // These two values are sticky until the end of the placement, or until overridden by a subsequent update:
-        plan: plan ?? prev?.plan ?? [],
-        lockDismiss: lockDismiss ?? prev?.lockDismiss ?? false,
-      }))
+      setState((prev) => mergeEoaTwapFlowState(prev, typeof update === 'function' ? update(prev) : update))
     },
     [setState],
   )
@@ -45,4 +47,34 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
 
 export function useEoaTwapSigningStep(): EoaTwapSigningStepState | null {
   return useAtomValue(eoaTwapSigningStepAtom)
+}
+
+function mergeEoaTwapFlowState(
+  prev: EoaTwapSigningStepState | null,
+  update: EoaTwapFlowUpdate,
+): EoaTwapSigningStepState {
+  const base: EoaTwapSigningStepState = prev ?? {
+    step: update.step,
+    phase: update.phase,
+    plan: [],
+    lockDismiss: false,
+  }
+
+  const completedStepTxHashes = update.stepTxHash
+    ? {
+        ...(base.completedStepTxHashes ?? {}),
+        [update.step]: update.stepTxHash,
+      }
+    : base.completedStepTxHashes
+
+  return {
+    step: update.step,
+    phase: update.phase,
+    // Sticky until the end of the placement, or until overridden by a subsequent update:
+    plan: update.plan ?? base.plan,
+    lockDismiss: update.lockDismiss ?? base.lockDismiss,
+    completedStepTxHashes,
+    orderId: update.orderId ?? base.orderId,
+    proxyAddress: update.proxyAddress ?? base.proxyAddress,
+  }
 }
