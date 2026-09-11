@@ -8,7 +8,9 @@
     "moduleResolution": "bundler",
     "strict": true,
     "types": ["node", "vite/client"],
-    "baseUrl": "src"
+    "paths": {
+      "*": ["./src/*"]
+    }
   },
   "files": [],
   "include": [],
