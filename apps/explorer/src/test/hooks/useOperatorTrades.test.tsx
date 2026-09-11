@@ -4,10 +4,12 @@ import { renderHook, waitFor } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
 import { useNetworkId } from 'state/network'
 import { SWRConfig } from 'swr'
-import { transformTrade } from 'utils'
+import { getProtocolFees, transformTrade } from 'utils'
 
 import { getTrades, Order, RawTrade, Trade } from 'api/operator'
 
+// Not from `api/operator`: that module is mocked below to only its HTTP call.
+import { ProtocolFeeType } from '../../api/operator/types'
 import { ALL_TRADES_PAGE_SIZE, useOrderTrades } from '../../hooks/useOperatorTrades'
 
 jest.mock('state/network', () => ({
@@ -35,6 +37,7 @@ jest.mock('../../explorer/api', () => ({
 const mockedUseNetworkId = jest.mocked(useNetworkId)
 const mockedGetTrades = jest.mocked(getTrades)
 const mockedTransformTrade = jest.mocked(transformTrade)
+const mockedGetProtocolFees = jest.mocked(getProtocolFees)
 
 const ONE = new BigNumber(1)
 const TWO = new BigNumber(2)
@@ -74,6 +77,7 @@ beforeEach(() => {
   mockedUseNetworkId.mockReset()
   mockedGetTrades.mockReset()
   mockedTransformTrade.mockReset()
+  mockedGetProtocolFees.mockClear()
 
   mockedUseNetworkId.mockReturnValue(1)
   mockedTransformTrade.mockImplementation(
@@ -183,6 +187,21 @@ describe('useOrderTrades protocol fees', () => {
 
     await waitFor(() => expect(result.current.protocolFees).toHaveLength(ALL_TRADES_PAGE_SIZE))
     expect(mockedGetTrades).toHaveBeenCalledTimes(2)
+  })
+
+  it("hands the partner fee policies from the order's app data to the fee aggregation", async () => {
+    serveFills([createFill(0)])
+    const recipient = '0x1111111111111111111111111111111111111111'
+    const order = createMockOrder({
+      fullAppData: JSON.stringify({ version: '1.1.0', metadata: { partnerFee: { volumeBps: 20, recipient } } }),
+    })
+
+    const { result } = renderHook(() => useOrderTrades(order, 0, 10), { wrapper: FreshSwrCache })
+
+    await waitFor(() => expect(result.current.protocolFees).toHaveLength(1))
+    expect(mockedGetProtocolFees).toHaveBeenLastCalledWith(expect.any(Array), [
+      { type: ProtocolFeeType.Volume, factor: 0.002, recipient },
+    ])
   })
 
   it('does not report one order’s fees while another order is loading', async () => {
