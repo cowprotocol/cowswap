@@ -491,8 +491,8 @@ msgstr "Enter slippage percentage between {0}% and {1}%."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Approving {symbol}..."
-msgstr "Approving {symbol}..."
+#~ msgid "Approving {symbol}..."
+#~ msgstr "Approving {symbol}..."
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
@@ -1382,6 +1382,11 @@ msgstr "Some orders can not be cancelled!"
 #~ msgid "The selling amount for the order is lower than the fee"
 #~ msgstr "The selling amount for the order is lower than the fee"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approving {symbol}"
+msgstr "Approving {symbol}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Orders history"
 msgstr "Orders history"
@@ -2182,8 +2187,8 @@ msgstr "Approving <0/> <1><2/></1> for trading"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Confirming with your wallet..."
-msgstr "Confirming with your wallet..."
+#~ msgid "Confirming with your wallet..."
+#~ msgstr "Confirming with your wallet..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
 msgid "This wallet has already traded on CoW Swap."
@@ -6974,6 +6979,10 @@ msgstr "Rewards hub - My Rewards"
 #~ msgid "Swaps just got smarter"
 #~ msgstr "Swaps just got smarter"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Resetting approval"
+msgstr "Resetting approval"
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -7116,8 +7125,8 @@ msgid "Valid"
 msgstr "Valid"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Resetting approval..."
-msgstr "Resetting approval..."
+#~ msgid "Resetting approval..."
+#~ msgstr "Resetting approval..."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "For this order, network costs would be"
