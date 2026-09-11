@@ -5,10 +5,10 @@ import { TWAP_SUPPORTED_CHAIN_IDS, isTwapEventId, isTwapSupportedChain } from '.
 const EVENT_ID = '169175034500000000000001000000000029407131000000000000001050000000000000048'
 
 describe('TWAP Explorer support', () => {
-  it('supports the ten production EVM chains only', () => {
-    expect(TWAP_SUPPORTED_CHAIN_IDS).toHaveLength(10)
+  it('supports the ten production EVM chains and Sepolia', () => {
+    expect(TWAP_SUPPORTED_CHAIN_IDS).toHaveLength(11)
     expect(isTwapSupportedChain(SupportedChainId.MAINNET)).toBe(true)
-    expect(isTwapSupportedChain(SupportedChainId.SEPOLIA)).toBe(false)
+    expect(isTwapSupportedChain(SupportedChainId.SEPOLIA)).toBe(true)
     expect(isTwapSupportedChain(SupportedChainId.SOLANA)).toBe(false)
   })
 
