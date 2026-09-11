@@ -109,6 +109,7 @@
       "@swc/core": true
     },
     "overrides": {
+      "@cowprotocol/sdk-composable": "https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.5.0-pr-1008-ac13280d.0/1580e993380ca973124baf16d7a6d0d8bc5b07c8",
       "@wagmi/core": "3.4.8",
       "react-router-dom": "7.13.0",
       "react-router": "7.13.0",
