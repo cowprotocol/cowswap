@@ -1,6 +1,3 @@
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
-
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -26,7 +23,6 @@ interface UseTwapConfirmCurrencyPreviewReturn {
   receiveAmountInfo: ReturnType<typeof useScaledReceiveAmountInfo>
 }
 
-// eslint-disable-next-line complexity
 export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewReturn {
   const {
     inputCurrencyAmount,
@@ -38,15 +34,15 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   } = useAdvancedOrdersDerivedState()
   const receiveAmountInfo = useScaledReceiveAmountInfo()
   const localFormValidation = useTwapFormState()
-  const { pendingTrade } = useTradeConfirmState()
+  const { isConfirming, pendingTrade } = useTradeConfirmState()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
-  const { isTwapEoaEnabled } = useFeatureFlags()
-
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
-  const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
+  const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
+  const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
+
   const inputSymbolLabel = inputCurrencyAmount?.currency?.symbol || t`token`
+  const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
+  const showExpectedToReceive = isConfirming || !!pendingTrade || !!eoaTwapSigningStep
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -55,12 +51,7 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
     label: t`Sell amount`,
   } satisfies CurrencyPreviewInfo
 
-  const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
-  const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
-
-  const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
-  const isEoaTwapPostConfirm = isEoaTwap && (!!pendingTrade || !!eoaTwapSigningStep)
-  const outputCurrencyInfo = isEoaTwapPostConfirm
+  const outputCurrencyInfo = showExpectedToReceive
     ? {
         amount: amountAfterFees,
         fiatAmount: amountAfterFeesUsd,
