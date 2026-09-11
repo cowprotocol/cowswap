@@ -204,7 +204,7 @@ describe('useEoaTwapPartOrders', () => {
     expect(result.current.orders[0]?.composableCowInfo?.isTheLastPart).toBe(true)
   })
 
-  it('ignores stale responses and clears row failures', async () => {
+  it('ignores stale responses and retains rows on refresh failures', async () => {
     let resolveStale: ((page: QueryPage<TwapPartOrder>) => void) | undefined
     fetchEoaTwapPartOrdersMock
       .mockImplementationOnce(() => new Promise((resolve) => (resolveStale = resolve)))
@@ -222,7 +222,9 @@ describe('useEoaTwapPartOrders', () => {
     expect(result.current.orders[0]?.id).toBe('current')
 
     rerender({ twapOrder: makeTwapOrder(3) })
-    await waitFor(() => expect(result.current).toEqual({ orders: [], isLoading: false }))
+    await waitFor(() => expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(3))
+    expect(result.current.orders[0]?.id).toBe('current')
+    expect(result.current.isLoading).toBe(false)
   })
 
   it('does not request zero-part parents and clears a loaded page when the count becomes zero', async () => {
@@ -242,9 +244,10 @@ describe('useEoaTwapPartOrders', () => {
   })
 
   it('refreshes an expanded part page when the parent cursor changes', async () => {
+    let resolveRefresh: ((page: QueryPage<TwapPartOrder>) => void) | undefined
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce(makePartPage('stale-part'))
-      .mockResolvedValueOnce(makePartPage('updated-part'))
+      .mockImplementationOnce(() => new Promise((resolve) => (resolveRefresh = resolve)))
     const { result, rerender } = renderHook(({ twapOrder }) => useEoaTwapPartOrders(twapOrder, parent, 1, true), {
       initialProps: { twapOrder: makeTwapOrder() },
       wrapper: SwrTestProvider,
@@ -254,9 +257,43 @@ describe('useEoaTwapPartOrders', () => {
 
     rerender({ twapOrder: makeTwapOrder(1, '2') })
 
+    expect(result.current.orders[0]?.id).toBe('stale-part')
+    expect(result.current.isLoading).toBe(false)
+    await act(async () => resolveRefresh?.(makePartPage('updated-part')))
+
     await waitFor(() => expect(result.current.orders[0]?.id).toBe('updated-part'))
     expect(fetchEoaTwapPartOrdersMock).toHaveBeenCalledTimes(2)
   })
+
+  it.each(['order', 'chain', 'page', 'disabled', 'missing'] as const)(
+    'does not retain rows when %s changes',
+    async (change) => {
+      fetchEoaTwapPartOrdersMock
+        .mockResolvedValueOnce(makePartPage('old-part'))
+        .mockImplementation(() => new Promise(() => {}))
+      const { result, rerender } = renderHook(
+        ({ order, page, enabled }: { order: TwapOrderItem | null; page: number; enabled: boolean }) =>
+          useEoaTwapPartOrders(order, parent, page, enabled),
+        { initialProps: { order: makeTwapOrder(), page: 1, enabled: true }, wrapper: SwrTestProvider },
+      )
+      await waitFor(() => expect(result.current.orders[0]?.id).toBe('old-part'))
+
+      rerender({
+        order:
+          change === 'missing'
+            ? null
+            : {
+                ...makeTwapOrder(),
+                id: change === 'order' ? 'another-order' : 'event',
+                chainId: change === 'chain' ? SupportedChainId.MAINNET : SupportedChainId.GNOSIS_CHAIN,
+              },
+        page: change === 'page' ? 2 : 1,
+        enabled: change !== 'disabled',
+      })
+      expect(result.current.orders).toEqual([])
+      expect(result.current.isLoading).toBe(change !== 'disabled' && change !== 'missing')
+    },
+  )
 
   it('refreshes parts when the parent status changes', async () => {
     fetchEoaTwapPartOrdersMock
