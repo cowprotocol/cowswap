@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { normalizeError } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { useNetworkId } from 'state/network'
 import useSWR from 'swr'
@@ -48,6 +49,7 @@ const TRADES_ERROR = 'Failed to fetch trades'
  * of them. One fetch serves both, so the order details page reads the trades once.
  */
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
+  const networkId = useNetworkId()
   const { rawTrades, error, isLoading } = useAllOrderTrades(order)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
 
@@ -57,6 +59,9 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   // Fetch blocks timestamps for the visible page only
   useEffect(() => {
     if (!pageTrades.length) return
+    // `blockNumber` carries a slot there, which the EVM RPC behind `web3.eth.getBlock` cannot
+    // resolve. Fills keep a null `executionTime` until a Solana RPC does it.
+    if (networkId && isSolanaChain(networkId)) return
 
     let cancelled = false
 
@@ -72,7 +77,7 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     return (): void => {
       cancelled = true
     }
-  }, [pageTrades])
+  }, [pageTrades, networkId])
 
   // Transform trades adding tokens and timestamps
   const trades = useMemo(() => {

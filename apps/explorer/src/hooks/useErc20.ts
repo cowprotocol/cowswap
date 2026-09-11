@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { NATIVE_TOKEN_PER_NETWORK } from 'const'
@@ -62,7 +62,9 @@ export function useMultipleErc20(
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(
     () =>
-      isTokenListLoading
+      // An SPL mint is not an ERC-20 contract, so whatever the Solana token list missed stays
+      // unknown. Trying anyway leaves the page retrying calls that can never succeed.
+      isTokenListLoading || (networkId && isSolanaChain(networkId))
         ? []
         : addresses.filter(
             (address) =>
@@ -73,7 +75,7 @@ export function useMultipleErc20(
               // Do not try to fetch native
               !isNativeToken(address),
           ),
-    [addresses, erc20s, fromTokenList, isTokenListLoading],
+    [addresses, erc20s, fromTokenList, isTokenListLoading, networkId],
   )
   // flow control
   const running = useRef({ networkId, isRunning: false })

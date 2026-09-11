@@ -29,6 +29,9 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SOLANA]: null,
 }
 
+/** The same list the swap app loads for Solana, see `libs/tokens/src/const/tokensList.json`. */
+const SOLANA_TOKEN_LIST_URL = `${COW_CDN}/token-lists/SolanaDefault.json`
+
 const EMPTY_TOKENS: TokenListByAddress = {}
 
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
@@ -47,16 +50,29 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   const { data: coingeckoList, isLoading: isCoingeckoLoading } = useTokenListByUrl(
     coingeckoUrlKey ? `https://tokens.coingecko.com/${coingeckoUrlKey}/all.json` : '',
   )
+  // The only source of SPL metadata: a mint is not a contract to read `symbol`/`decimals` off, and
+  // without decimals an order's amounts cannot be rendered at all.
+  const { data: solanaList, isLoading: isSolanaListLoading } = useTokenListByUrl(
+    chainId === SupportedChainId.SOLANA ? SOLANA_TOKEN_LIST_URL : '',
+  )
 
-  const isLoading = chainId
-    ? isCowListLoading || isHoneyswapListLoading || isCoingeckoUniswapLoading || isCoingeckoLoading
-    : false
+  const isLoading =
+    Boolean(chainId) &&
+    [isCowListLoading, isHoneyswapListLoading, isCoingeckoUniswapLoading, isCoingeckoLoading, isSolanaListLoading].some(
+      Boolean,
+    )
 
   return useMemo(() => {
     if (!chainId) return { data: EMPTY_TOKENS, isLoading: false }
 
     // Merge lists in priority order, defaulting undefined entries to INITIAL_TOKEN_LIST_PER_NETWORK
-    const mergedByChain = [coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList].reduce<TokenListPerNetwork>(
+    const mergedByChain = [
+      coingeckoUniswapList,
+      honeyswapList,
+      cowSwapList,
+      coingeckoList,
+      solanaList,
+    ].reduce<TokenListPerNetwork>(
       (acc, src) => ({ ...acc, ...(src ?? INITIAL_TOKEN_LIST_PER_NETWORK) }),
       INITIAL_TOKEN_LIST_PER_NETWORK,
     )
@@ -75,7 +91,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
     }
 
     return { data, isLoading }
-  }, [chainId, coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList, isLoading])
+  }, [chainId, coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList, solanaList, isLoading])
 }
 
 function useTokenListByUrl(tokenListUrl: string): SWRResponse<TokenListPerNetwork> {

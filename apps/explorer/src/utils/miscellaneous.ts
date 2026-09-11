@@ -1,4 +1,4 @@
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
@@ -167,12 +167,22 @@ export async function timeout<T>(params: TimeoutParams<T>): Promise<T | never> {
   throw new Error(timeoutMsg)
 }
 
+/** 32-byte order digest, 20-byte owner, 4-byte validTo. */
+const EVM_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{112}$/
+/** The 32-byte intent hash, and nothing else. */
+const SOLANA_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{64}$/
+
 /**
  * Check if a string is an orderId against regex
  *
+ * A Solana uid is exactly as long as an EVM transaction hash and {@link isATxHash} matches it, so
+ * without `networkId` a Solana order is classified as a transaction.
+ *
  * @param text Possible OrderId string to check
+ * @param networkId The chain the id belongs to. Omitted means EVM.
  */
-export const isAnOrderId = (text: string): boolean => text.match(/^0x[a-fA-F0-9]{112}$/)?.input !== undefined
+export const isAnOrderId = (text: string, networkId?: Network | null): boolean =>
+  (networkId && isSolanaChain(networkId) ? SOLANA_ORDER_ID_REGEX : EVM_ORDER_ID_REGEX).test(text)
 
 /**
  * Check if string is an address account against regex
