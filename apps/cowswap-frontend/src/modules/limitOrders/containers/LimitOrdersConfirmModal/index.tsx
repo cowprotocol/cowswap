@@ -81,9 +81,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
 
   const inputSymbol = inputAmount?.currency?.symbol || t`token`
   const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
-  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
-  const isSafeApprovalBundle =
-    useIsSafeApprovalBundle(inputAmount) && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
+  const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount) && !canUsePermit
   const buttonText = isInsufficientBalance ? (
     t`Insufficient ${inputSymbol} balance`
   ) : isSafeApprovalBundle ? (

@@ -197,6 +197,9 @@ export async function safeBundleFlow({
         order: {
           id: order.id,
           presignGnosisSafeTxHash: safeTxHash,
+          // Non-Safe atomic wallets (EIP-7702) return an EIP-5792 bundle id here, which is tracked via
+          // getCallsStatus instead of the Safe transaction service.
+          presignIsEip5792Bundle: !isSafeWallet,
           isHidden: false,
         },
         isSafeWallet,
