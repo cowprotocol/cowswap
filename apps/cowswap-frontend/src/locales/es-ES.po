@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-11 16:05\n"
+"PO-Revision-Date: 2026-09-12 09:54\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2726,7 +2726,7 @@ msgstr "Escanear"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Submitting setup transaction"
-msgstr ""
+msgstr "Enviando transacción de configuración"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
@@ -4353,7 +4353,7 @@ msgstr "Hay más de un token en la lista de tokens con el símbolo: {doubledSymb
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
-msgstr ""
+msgstr "Confirme la transacción de aprobación en su billetera conectada. Cada parte se retira justo antes de que opere."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -4543,7 +4543,7 @@ msgstr "Wrap <0/> y Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/waitForEoaTwapTxReceipt.utils.ts
 msgid "Timed out waiting for the transaction. Please try again."
-msgstr ""
+msgstr "Tiempo de espera agotado esperando la transacción. Por favor, inténtelo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "View full consent terms ↗"
@@ -5733,7 +5733,7 @@ msgstr "Ver transacción"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign the permit in your wallet. Each part is pulled right before it trades."
-msgstr ""
+msgstr "Firme el permiso en su billetera. Cada parte se retira justo antes de que se intercambie."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Preparing your connect link…"
@@ -5928,7 +5928,7 @@ msgstr "El precio de ejecución de esta orden está cerca o al precio de mercado
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit {symbol} for funding"
-msgstr ""
+msgstr "Permitir {symbol} para financiación"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "of your sell amount! Therefore, your order is unlikely to execute."
@@ -6836,7 +6836,7 @@ msgstr "Confirmar con tu wallet"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
-msgstr ""
+msgstr "Confirme la configuración en su billetera conectada. Esto se registra al momento y crea el TWAP."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #~ msgid "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
