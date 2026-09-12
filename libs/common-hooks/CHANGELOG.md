@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.1...common-hooks-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: add Dialog and surfaces improvements (#8010)
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/types@4.9.0
+
 ## [3.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.0...common-hooks-v3.9.1) (2026-08-12)
 
 ### Patch Changes

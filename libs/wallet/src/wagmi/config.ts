@@ -28,7 +28,7 @@ const wagmiTransports = SUPPORTED_REOWN_NETWORKS.reduce(
     const chainId = chain.id as EvmChains
     const url = RPC_URLS[chainId]
     if (url) {
-      acc[chainId] = http(url)
+      acc[chainId] = http(url, { batch: { batchSize: 50, wait: 300 } })
     }
     return acc
   },
@@ -86,10 +86,14 @@ OptionsController.setOptions({ ...OptionsController.state, enableInjected: false
 
 const isSafeApp = getIsSafeAppIframe()
 const isWidget = isInjectedWidget()
+// EVM reconnect is gated on wagmi's own `recentConnectorId` — the source of truth that
+// stays in sync with the wagmi connection. (Reading AppKit's `@appkit/eip155:connected_connector_id`
+// instead drifts out of sync with the wagmi store and drops the wallet on refresh.)
+// Solana is not managed by wagmi, so it uses the Solana adapter's AppKit key.
 const hasRecentConnector =
   typeof localStorage !== 'undefined' &&
   Boolean(
-    localStorage.getItem('@appkit/eip155:connected_connector_id') ||
+    localStorage.getItem(`${wagmiStorage.key}.recentConnectorId`) ||
       localStorage.getItem('@appkit/solana:connected_connector_id'),
   )
 

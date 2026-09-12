@@ -54,6 +54,7 @@ export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddr
 export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
 export { useTryFindToken } from './hooks/tokens/useTryFindToken'
 export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereTokensWithSameSymbol'
+export { useDoesSymbolResolveToToken } from './hooks/tokens/useDoesSymbolResolveToToken'
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
@@ -74,6 +75,7 @@ export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
 export { getTokenSearchFilter } from './utils/getTokenSearchFilter'
+export { excludeAlreadyActiveTokens } from './utils/tokenIdentity'
 export { getChainCurrencySymbols } from './utils/getChainCurrencySymbols'
 
 // Services

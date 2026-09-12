@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useChainsToSelect } from '../../../hooks/useChainsToSelect'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'

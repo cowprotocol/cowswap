@@ -7,7 +7,7 @@ import { ChevronDown } from 'react-feather'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { ChainChip } from './ChainChip'
 import * as styledEl from './mobileChainSelector.styled'

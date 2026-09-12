@@ -115,7 +115,6 @@ export const ValidCheckmark = styled(SVG)`
 
 export const ReceiverInput = styled.input<{ $error?: boolean }>`
   font-size: var(${UI.FONT_SIZE_LARGER});
-  font-family: var(${UI.FONT_FAMILY_MONO});
   letter-spacing: -0.2px;
   flex: 1 1 auto;
   transition: color 0.2s step-start;

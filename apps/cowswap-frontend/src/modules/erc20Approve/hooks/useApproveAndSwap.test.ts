@@ -7,7 +7,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'

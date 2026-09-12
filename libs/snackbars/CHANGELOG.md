@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.3.1](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.3.0...snackbars-v2.3.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.2.11...snackbars-v2.3.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+
 ## [2.2.11](https://github.com/cowprotocol/cowswap/compare/snackbars-v2.2.10...snackbars-v2.2.11) (2026-08-12)
 
 ### Patch Changes

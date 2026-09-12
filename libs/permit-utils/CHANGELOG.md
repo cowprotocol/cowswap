@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.5.0...permit-utils-v3.6.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.13
+
 ## [3.5.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.4.3...permit-utils-v3.5.0) (2026-08-05)
 
 ### Minor Changes

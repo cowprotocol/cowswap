@@ -324,7 +324,7 @@ export const NoActivityMessage = styled.p`
   font-size: 14px;
   color: inherit;
   width: 100%;
-  padding: 24px 0 0;
+  margin: 24px 0 0;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -337,13 +337,14 @@ export const LowerSection = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   color: inherit;
+  padding: 0 0 48px;
 
   > div {
     display: flex;
     flex-flow: column wrap;
     width: 100%;
     background-color: inherit;
-    padding: 0 0 48px;
+    padding: 0;
     color: inherit;
 
     > ${StyledLink} {

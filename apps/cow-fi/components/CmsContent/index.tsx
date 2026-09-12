@@ -18,7 +18,7 @@ interface CmsContentProps {
 const StyledH1 = styled.h1`
   font-family: ${Font.familyStudioFeixen};
   font-size: 4.2rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1.2;
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 3.2rem 0 1.6rem;
@@ -32,7 +32,7 @@ const StyledH1 = styled.h1`
 const StyledH2 = styled.h2`
   font-family: ${Font.familyStudioFeixen};
   font-size: 3.6rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1.2;
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 2.8rem 0 1.4rem;
@@ -46,7 +46,7 @@ const StyledH2 = styled.h2`
 const StyledH3 = styled.h3`
   font-family: ${Font.familyStudioFeixen};
   font-size: 3rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1.2;
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 2.4rem 0 1.2rem;
@@ -60,7 +60,7 @@ const StyledH3 = styled.h3`
 const StyledH4 = styled.h4`
   font-family: ${Font.familyStudioFeixen};
   font-size: 2.4rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1.3;
   color: var(${UI.COLOR_NEUTRAL_0});
   margin: 2rem 0 1rem;

@@ -19,13 +19,6 @@ export const ThemedGlobalStyle = createGlobalStyle`
     font-variant: none;
     font-variant-ligatures: none;
     text-rendering: optimizeLegibility;
-    font-feature-settings:
-      'liga' off,
-      'kern' on,
-      'ss01' on,
-      'ss02' on,
-      'cv01' on,
-      'cv03' on;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     color: var(${UI.COLOR_TEXT_PAPER});
     background-color: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`)};
@@ -35,7 +28,15 @@ export const ThemedGlobalStyle = createGlobalStyle`
     background: transparent;
     min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
-    /* Lock <html> too so Base UI sees the page as already locked and skips scrollbar-gutter. */
+    /*
+     * Preserve the safe body inheritance boundary used before the Inter migration.
+     * Otherwise Inter-specific ss/cv tags can select unrelated glyphs in another font.
+     */
+    font-feature-settings:
+      'liga' off,
+      'kern' on;
+
+    /* Keep the lock on <body>; making <html> an overflow container shifts sticky mobile controls. */
     &.noScroll {
       overflow: hidden;
     }

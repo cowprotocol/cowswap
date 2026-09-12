@@ -55,12 +55,13 @@ For scenarios that just need *a connected wallet that signs*, import the
 mock-wallet entrypoint instead of the Synpress one:
 
 ```ts
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { test, expect } from '../fixtures/mockWallet'
-import { CHAIN_IDS } from '../support/constants'
 
 test('my scenario', async ({ wallet, page }) => {
   wallet.stubRpc('wallet_getCapabilities', () => ({ '0xaa36a7': { atomic: { status: 'supported' } } }))
-  await wallet.openApp({ chainId: CHAIN_IDS.SEPOLIA }) // boots already connected
+  await wallet.openApp({ chainId: SupportedChainId.SEPOLIA }) // boots already connected
   // …
   expect(wallet.rpcCalls('wallet_getCapabilities').length).toBeGreaterThan(0)
 })
@@ -197,10 +198,10 @@ normally configures allowances at runtime instead:
 
 ```ts
 test('[MO-XX] approval', async ({ wallet, mocks, swapPage }) => {
-  mocks.allowances.set(wallet.address, CHAIN_IDS.SEPOLIA, {
+  mocks.allowances.set(wallet.address, SupportedChainId.SEPOLIA, {
     '0xfff9976782d46cc05630d1f6ebab18b2324d6b14': '5000000',
   })
-  await wallet.openApp({ chainId: CHAIN_IDS.SEPOLIA })
+  await wallet.openApp({ chainId: SupportedChainId.SEPOLIA })
   // ...
   expect(mocks.allowances.reads().length).toBeGreaterThan(0)
 })

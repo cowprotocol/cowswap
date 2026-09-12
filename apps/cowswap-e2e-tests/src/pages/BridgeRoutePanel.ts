@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import type { Page, Locator } from '@playwright/test'
 
 /**
@@ -20,12 +22,10 @@ export class BridgeRoutePanel {
 
   constructor(page: Page) {
     this.page = page
-    // Scoped by class substring (babel-plugin-styled-components names it after its own export,
-    // `SummaryClickable`), not just `[aria-expanded]` — the app header's nav dropdown also renders
-    // `aria-expanded`, and an unscoped `.first()` would resolve to whichever renders first in DOM
-    // order.
-    this.expandToggle = page.locator('.trade-details-accordion-toggle').first()
-    this.bridgeQuoteDetails = page.locator('.collapsible-bridge-route').first()
+    // Not just `[aria-expanded]` — the app header's nav dropdown also renders `aria-expanded`, and
+    // an unscoped `.first()` would resolve to whichever renders first in DOM order.
+    this.expandToggle = page.locator(`[data-testid="${TEST_IDS.tradeDetailsAccordionToggle}"]`).first()
+    this.bridgeQuoteDetails = page.locator(`[data-testid="${TEST_IDS.collapsibleBridgeRoute}"]`).first()
     // Not an exact match: `BridgeRouteTitle` renders "Swap on" and "CoW Protocol" either side of a
     // protocol icon, which can add whitespace/alt text into the element's normalized text content.
     this.swapStopTitle = page.getByText(/Swap on.*CoW Protocol/)

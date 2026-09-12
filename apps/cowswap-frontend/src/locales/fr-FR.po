@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-08-15 19:44\n"
+"PO-Revision-Date: 2026-09-03 13:22\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -97,7 +97,7 @@ msgstr "Le fallback handler de votre Safe a été modifié après le placement d
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve operation failed."
-msgstr "Échec de l'approbation de l'opération."
+msgstr "Échec de l’opération d’approbation."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 msgid "Set to trade"
@@ -160,7 +160,7 @@ msgstr "Ordre {value} exécuté"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the default amount, you will only have to do this once per token."
-msgstr "Vous devez autoriser les smart contracts de CoW Protocol à utiliser vos {tokenSymbol}. Si vous approuvez le montant par défaut, vous n’aurez à le faire qu’une seule fois par token."
+msgstr "Vous devez autoriser les smart contracts de CoW Protocol à utiliser votre {tokenSymbol}. Si vous approuvez le montant par défaut, vous n’aurez à le faire qu’une seule fois par token."
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 msgid "Switching network type"
@@ -194,13 +194,17 @@ msgstr "Parrainages actifs"
 msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Réponse inattendue du BFF : {resStatus}"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+msgid "Demo states"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Trading is not allowed with price impact higher than {widgetPriceImpactThreshold}%"
 msgstr "Le trading n’est pas autorisé lorsque l’impact sur le prix dépasse {widgetPriceImpactThreshold}%"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "orders history"
-msgstr "historique des ordres"
+msgstr "l'historique des ordres"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
@@ -209,7 +213,7 @@ msgstr "Échec du bridge"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "What is {accountProxyLabel}?"
-msgstr "Qu’est-ce que {accountProxyLabel} ?"
+msgstr "Qu’est-ce que le {accountProxyLabel} ?"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Your activity will appear here..."
@@ -360,7 +364,7 @@ msgstr "Sélectionner un token"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Trade your way - personalize the interface and customize your limit orders"
-msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limite"
+msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limites"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -368,7 +372,7 @@ msgstr "Réseaux pris en charge :"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
-msgstr "Portefeuilles EOA"
+msgstr "Wallets EOA"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
@@ -408,7 +412,7 @@ msgstr "token"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Easily set and manage your orders in USD"
-msgstr "Créez et gérez facilement vos ordres en USD"
+msgstr "Configurez et gérez facilement vos ordres en USD"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Click \"Wrap {nativeSymbol}\" to try again."
@@ -569,7 +573,7 @@ msgstr "Solde de {inputSymbol} insuffisant"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "got"
-msgstr "reçu"
+msgstr "obtenu"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/OrderIntent.tsx
 msgid "{sellTokenPart} for at least {buyTokenPart}"
@@ -672,6 +676,10 @@ msgstr "Contrairement à la plupart des autres plateformes d’échange, CoW Swa
 msgid "Failed to parse date and time provided"
 msgstr "Impossible d’interpréter la date et l’heure indiquées"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+msgid "Setup signature failed"
+msgstr ""
+
 #: libs/common-const/src/common.ts
 #~ msgid "Only executed swaps incur fees."
 #~ msgstr "Only executed swaps incur fees."
@@ -680,7 +688,7 @@ msgstr "Impossible d’interpréter la date et l’heure indiquées"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Sell amount"
-msgstr "Montant à vendre"
+msgstr "Montant vendu"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
@@ -762,7 +770,7 @@ msgstr "Code de parrainage actif"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Receive (before fees)"
-msgstr "Montant reçu avant frais"
+msgstr "Montant reçu (avant frais)"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the network you are in."
@@ -779,7 +787,7 @@ msgstr "pour un total de"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Sign (gas-free!) in your wallet..."
-msgstr "Signez dans votre wallet, sans frais de gas..."
+msgstr "Signez dans votre wallet (sans frais de gas !)..."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -816,7 +824,7 @@ msgstr "Voir les offres d’emploi"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/FavoriteTokensTooltip.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
-msgstr "Vos tokens favoris enregistrés. Modifiez cette liste sur la <0>page Tokens</0>."
+msgstr "Vos tokens favoris enregistrés. Modifiez cette liste sur la <0>page des Tokens</0>."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
@@ -880,7 +888,6 @@ msgstr "Approuver et swapper"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Limit order"
 msgstr "Ordre limite"
 
@@ -902,7 +909,7 @@ msgstr "Voir ↗"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote verified by CoW Protocol simulation"
-msgstr "Devis vérifié par une simulation de CoW Protocol"
+msgstr "Cotation vérifiée par une simulation de CoW Protocol"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
@@ -938,6 +945,7 @@ msgstr "Signature en cours..."
 msgid "switch network type"
 msgstr "changer de type de réseau"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirm this required setup signature in your connected wallet."
 msgstr "Confirmez cette signature de configuration requise dans votre wallet connecté."
@@ -986,6 +994,7 @@ msgstr "Vous ne trouvez pas le pool recherché ?"
 msgid "Custom slippage amount set{amountRange}."
 msgstr "Tolérance au slippage personnalisée définie{amountRange}."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr "Activation de l’ordre TWAP"
@@ -1025,7 +1034,7 @@ msgstr "Approbation partielle"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
-msgstr "Annulation de l’ordre {shortId} :<0/><1>{orderSummary}</1>"
+msgstr "Annulation de l’ordre avec l'identifiant {shortId} :<0/><1>{orderSummary}</1>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
@@ -1091,7 +1100,7 @@ msgstr "Signature en cours"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Already seen today's fortune? Return tomorrow for a fresh one!"
-msgstr "Vous avez déjà découvert la fortune du jour ? Revenez demain pour en découvrir une nouvelle !"
+msgstr "Déjà vu le message d'aujourd'hui ? Revenez demain pour un nouveau !"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Enough signatures, <0>but not executed</0>"
@@ -1117,7 +1126,7 @@ msgstr "Copié"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "To network"
-msgstr "Vers le réseau"
+msgstr "Réseau de destination"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
 #~ msgid "Can't find your token on the list?"
@@ -1142,7 +1151,7 @@ msgstr "Votre wallet est éligible aux récompenses. Après votre premier trade,
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
-msgstr "Sélectionner un compte {walletName}"
+msgstr "Sélectionner le compte {walletName}"
 
 #: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
 #~ msgid "Please connect your wallet to one of our supported networks."
@@ -1174,11 +1183,11 @@ msgstr "Déléguer des (v)COW"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
-msgstr "Sur CoW Swap, vous pouvez placer des ordres limite sur des soldes que vous ne détenez pas encore."
+msgstr "Sur CoW Swap, vous pouvez placer des ordres limites sur des soldes que vous ne détenez pas encore."
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
-msgstr "L’adresse du destinataire saisie comportait le préfixe de chaîne <0>{chainPrefixWarning}</0>, qui ne correspond pas au réseau du token reçu."
+msgstr "L’adresse du destinataire saisie comportait le préfixe de chaîne <0>{chainPrefixWarning}</0>, qui ne correspond pas au réseau du token de sortie."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
@@ -1216,7 +1225,7 @@ msgstr "Explorateur du bridge"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "You possibly have other items to claim, but not Airdrops"
-msgstr "Vous avez peut-être d’autres éléments à réclamer, mais aucun airdrop"
+msgstr "Vous avez peut-être d’autres éléments à récupérer, mais aucun airdrop"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "APR"
@@ -1304,6 +1313,10 @@ msgstr "Confirmer"
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Total vCOW balance"
 msgstr "Solde total de vCOW"
+
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
+msgid "TWAP orders"
+msgstr "Ordres TWAP"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/UnsupportedTokenButton.pure.tsx
@@ -1462,6 +1475,10 @@ msgstr "Données de prix insuffisantes pour calculer l’impact sur le prix de l
 #~ msgid "Unable to check"
 #~ msgstr "Unable to check"
 
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
+#~ msgid "Get order notifications"
+#~ msgstr "Get order notifications"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Open"
 msgstr "Ordre ouvert"
@@ -1483,7 +1500,7 @@ msgstr "Surplus reçu"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signature is"
-msgstr "la signature est"
+msgstr "signature est"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "This app/hook can only be used as a <0>{hookType}-hook</0>"
@@ -1492,6 +1509,10 @@ msgstr "Cette application ou ce hook ne peut être utilisé que comme <0>{hookTy
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Place limit order"
 msgstr "Placer un ordre limite"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
+msgid "<0>New!</0> Get Telegram notifications about your order status! <1>Get started</1>"
+msgstr "<0>Nouveau !</0> Recevez des notifications Telegram concernant le statut de votre ordre ! <1>Commencer</1>"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Become an affiliate"
@@ -1511,12 +1532,14 @@ msgstr "Proxy de compte TWAP"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started with limit orders"
-msgstr "Commencer avec les ordres limite"
+msgstr "Commencer avec les ordres limites"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
 msgstr "Réduisez l’impact sur le prix avec TWAP"
 
+#: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/AdvancedOrdersSettings.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Allows you to set partial token approvals instead of full approvals."
 msgstr "Vous permet de définir des approbations partielles de tokens plutôt que des approbations complètes."
@@ -1605,7 +1628,7 @@ msgstr "Avec un slippage élevé, vous risquez de ne pas obtenir le meilleur pri
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
-msgstr "Partagez cette réussite !"
+msgstr "Partagez cette victoire !"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Create Order"
@@ -1613,7 +1636,7 @@ msgstr "Créer un ordre"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Want to try out limit orders?"
-msgstr "Envie d’essayer les ordres limite ?"
+msgstr "Envie d’essayer les ordres limites ?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
@@ -1625,7 +1648,7 @@ msgstr "smart contracts (par ex. Safe)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Quote refresh in"
-msgstr "Actualisation du devis dans"
+msgstr "Actualisation de cotation dans"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Want TWAP with this wallet? Let us know"
@@ -1637,16 +1660,16 @@ msgstr "Aucune route trouvée pour ce token"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/ProxyRecipient.container.tsx
 msgid "This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap."
-msgstr "Ce fournisseur de bridge utilise une adresse de réception spécifique pour bridger les fonds. Cette adresse est déterministe pour chaque devis et a été vérifiée par CoW Swap."
+msgstr "Ce fournisseur de bridge utilise une adresse de réception spécifique pour bridger les fonds. Cette adresse est déterministe pour chaque cotation et a été vérifiée par CoW Swap."
 
-#: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
+#: apps/cowswap-frontend/src/modules/account/containers/AccountModal/AccountModal.container.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Account"
 msgstr "Compte"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders are now easier to use. <0/> Give them a try"
-msgstr "Les ordres limite sont désormais plus simples à utiliser. <0/> Essayez-les"
+msgstr "Les ordres limites sont désormais plus simples à utiliser. <0/> Essayez-les"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Create an issue on GitHub"
@@ -1700,7 +1723,7 @@ msgstr "En savoir plus sur la tokenomics"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
-msgstr "et a reçu un surplus de "
+msgstr "et obtenu un surplus de "
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "s"
@@ -1868,7 +1891,7 @@ msgstr "Prix du marché"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencyInputPanel/CurrencyInputPanel.tsx
 msgid "Max"
-msgstr "Max."
+msgstr "Max"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeLinking.tsx
 msgid "Checking code..."
@@ -1955,6 +1978,10 @@ msgstr "Connecter le wallet"
 msgid "View all orders"
 msgstr "Voir tous les ordres"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Review TWAP"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
 msgid "Need help"
 msgstr "Besoin d’aide"
@@ -1979,6 +2006,10 @@ msgstr "Slippage protégé contre la MEV"
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Closed"
 msgstr "Fermé"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Connect Telegram"
+msgstr "Connecter Telegram"
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "CoW Swap 404 not found"
@@ -2156,7 +2187,7 @@ msgstr "Effectuer la modification lors du placement de l’ordre"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
-msgstr "Les ordres limite, mais <0>encore plus fluides</0>"
+msgstr "Les ordres limites, mais <0>encore plus fluides</0>"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW contract not present"
@@ -2193,7 +2224,7 @@ msgstr "Token officiellement émis par {tokenIssuedByIssuer}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Invite your friends. Earn together."
-msgstr "Invitez vos proches. Gagnez ensemble."
+msgstr "Invitez vos amis. Gagnez ensemble."
 
 #: libs/common-utils/src/tooltips.ts
 #~ msgid "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
@@ -2209,7 +2240,7 @@ msgstr "Aucuns frais en cas d’échec de la transaction"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrScanModal.modal.tsx
 msgid "Camera access was denied. Please allow camera permissions in your browser settings to scan QR codes."
-msgstr "L’accès à la caméra a été refusé. Autorisez la caméra dans les paramètres de votre navigateur pour scanner les QR codes."
+msgstr "L’accès à la caméra a été refusé. Veuillez autoriser l’accès à la caméra dans les paramètres de votre navigateur pour scanner des QR codes."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -2268,7 +2299,7 @@ msgstr "Interface TWAP"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Your referral traffic"
-msgstr "Votre trafic de parrainage"
+msgstr "Trafic de vos liens de parrainage"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #~ msgid "An order’s actual execution price will vary based on the market price and network costs."
@@ -2297,7 +2328,7 @@ msgstr "Wrapper mes {nativeSymbol} et swapper"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Read more about limit orders"
-msgstr "En savoir plus sur les ordres limite"
+msgstr "En savoir plus sur les ordres limites"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
@@ -2394,7 +2425,7 @@ msgstr "Courez ! ...et essayez d’éviter les attaques sandwich"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
-msgstr "Wrapper vos {nativeSymbol} et profitez de l’expérience classique avec {wrappedSymbol} !"
+msgstr "Wrappez vos {nativeSymbol} et profitez de l’expérience classique avec {wrappedSymbol} !"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per ${triggerVolume} of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
@@ -2414,7 +2445,7 @@ msgstr "WalletConnect"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ZeroApprovalWarning/ZeroApprovalWarning.tsx
 msgid "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The first resets your spending cap to 0, and the second sets your desired spending cap. To avoid this in the future, set your spending cap to CoW Swap's recommended default amount."
-msgstr "<0>Remarque :</0> {symbol} nécessite spécifiquement 2 transactions d’approbation. La première réinitialise votre plafond de dépense à 0, puis la seconde définit le plafond souhaité. Pour éviter cela à l’avenir, utilisez le montant par défaut recommandé par CoW Swap."
+msgstr "<0>Remarque :</0> {symbol} nécessite spécifiquement 2 transactions d’approbation. La première réinitialise votre plafond de dépense à 0, puis la seconde définit le plafond de dépense souhaité. Pour éviter cela à l’avenir, définissez votre plafond de dépense sur le montant par défaut recommandé par CoW Swap."
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
@@ -2641,7 +2672,7 @@ msgstr "Token COW"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Order validity is too long"
-msgstr "Durée de validité de l’ordre trop longue"
+msgstr "La durée de validité de l'ordre est trop longue"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "so we can investigate the problem."
@@ -2682,7 +2713,7 @@ msgstr "CoW Hooks"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeNumberInput/index.tsx
 msgid "up"
-msgstr "à la hausse"
+msgstr "haut"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "Sign the {operationLabel} with your wallet."
@@ -2762,7 +2793,7 @@ msgstr "Ces frais contribuent à la maintenance et à l’amélioration de l’e
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this"
-msgstr "Partager"
+msgstr "Partager cette"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/index.tsx
 msgid "Review limit order"
@@ -2794,11 +2825,11 @@ msgstr "Données du pool"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
-msgstr "Aux prix actuels du gas, votre solde restant de {nativeSymbol} après confirmation pourrait uniquement suffire à<0>effectuer jusqu’à {txsRemaining} opération(s) de wrapping, de déwrapping ou d’approbation.</0>"
+msgstr "Aux prix actuels du gas, votre solde de {nativeSymbol} restant après confirmation pourrait uniquement suffire pour<0>effectuer jusqu’à {txsRemaining} opération(s) de wrapping, de déwrapping ou d’approbation.</0>"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
-msgstr "Le prix de ce pool est hors de la plage sélectionnée. Votre position ne génère actuellement pas de frais."
+msgstr "Le prix de ce pool est hors de la plage sélectionnée. Votre position ne génère aucun frais pour le moment."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
 #~ msgid "Receiver address (required)"
@@ -2884,7 +2915,7 @@ msgstr "Les ordres TWAP étant composés de plusieurs parties, les prix peuvent 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "are"
-msgstr "sont"
+msgstr "existe"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time before your total TWAP order ends."
@@ -2984,6 +3015,10 @@ msgstr "Autorisation insuffisante accordée pour"
 #~ msgid "Lock this code to your wallet?"
 #~ msgstr "Lock this code to your wallet?"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Try again"
+msgstr "Réessayer"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Failed to fetch manifest from {manifestUrl}. Please verify the URL and try again."
 msgstr "Impossible de récupérer le manifeste depuis {manifestUrl}. Vérifiez l’URL et réessayez."
@@ -2998,7 +3033,7 @@ msgstr "Paramètres des alertes de trade"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
-msgstr "Un problème de réseau, comme une hausse des frais de gas, retarde peut-être votre ordre. Vous pouvez attendre qu’il soit résolu{cancellationModal}"
+msgstr "Un problème de réseau, comme une hausse des frais de gas, retarde peut-être votre ordre. Vous pouvez attendre que le problème se résolve{cancellationModal}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Confirmed"
@@ -3058,7 +3093,7 @@ msgstr "contenu de la boîte de dialogue"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
-msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif, il peut être versionné et il existe"
+msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif, il peut comporter plusieurs versions. Il existe actuellement"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
@@ -3091,7 +3126,7 @@ msgstr "Vous avez {orderKind} un surplus de"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "Invalid argument \"{invalidArgument}\" provided"
-msgstr "Argument « {invalidArgument} » invalide"
+msgstr "L’argument « {invalidArgument} » fourni est invalide"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
@@ -3108,7 +3143,7 @@ msgstr "Impossible de générer les données du permit"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Place orders with a time-weighted average price"
-msgstr "Placez des ordres à prix moyen pondéré dans le temps"
+msgstr "Placez des ordres au prix moyen pondéré dans le temps"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Proxy Accounts"
@@ -3178,7 +3213,7 @@ msgstr "Une nouvelle compétition a commencé"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
 msgid "Quote expired. Please refresh."
-msgstr "Devis expiré. Veuillez l’actualiser."
+msgstr "Cotation expirée. Veuillez l’actualiser."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Successfully converted!"
@@ -3285,7 +3320,7 @@ msgstr "Votre position ne contient aucune liquidité et ne génère pas de frais
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can avoid price impact on large trades by using TWAP orders on CoW Swap."
-msgstr "Vous pouvez éviter l’impact sur le prix des trades importants en utilisant les ordres TWAP sur CoW Swap."
+msgstr "Vous pouvez éviter l’impact sur le prix lors de trades importants en utilisant les ordres TWAP sur CoW Swap."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Click to copy contract address"
@@ -3294,6 +3329,10 @@ msgstr "Cliquer pour copier l’adresse du contrat"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Unsupported wallet detected"
 msgstr "Wallet non pris en charge détecté"
+
+#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
+msgid "Limit orders"
+msgstr "Ordres limites"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Tokens Overview"
@@ -3381,9 +3420,10 @@ msgstr "En attente..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots."
-msgstr "Les pools de liquidité de CoW AMM se développent plus rapidement que ceux des autres AMM, car ils ne perdent pas d’argent au profit des bots d’arbitrage."
+msgstr "Les pools de liquidité sur CoW AMM se développent plus rapidement que ceux des autres AMM, car ils ne perdent pas d’argent au profit des bots d’arbitrage."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP"
@@ -3392,6 +3432,10 @@ msgstr "TWAP"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Insufficient liquidity for this trade"
 msgstr "Liquidité insuffisante pour ce trade"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Get a new link"
+msgstr "Obtenir un nouveau lien"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -3537,7 +3581,6 @@ msgstr "Les frais de bridge représentent au moins {formattedBridgeFeePercentage
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "TWAP order"
 msgstr "Ordre TWAP"
 
@@ -3563,7 +3606,7 @@ msgstr "Réinitialiser"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteIdTooltipContent.tsx
 msgid "Share this reference when reporting an issue with this quote."
-msgstr "Partagez cette référence lorsque vous signalez un problème lié à ce devis."
+msgstr "Partagez cette référence lorsque vous signalez un problème lié à cette cotation."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
@@ -3584,15 +3627,19 @@ msgstr "Site web"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Interface"
-msgstr "Interface des ordres limite"
+msgstr "Interface des ordres limites"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Signed: <0>{numConfirmations} out of {gnosisSafeThreshold} signers</0>"
-msgstr "Signé : <0>{numConfirmations} signataire(s) sur {gnosisSafeThreshold}</0>"
+msgstr "Signé : <0>{numConfirmations} sur {gnosisSafeThreshold} signataires</0>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "This order can be partially filled"
 msgstr "Cet ordre peut être partiellement exécuté"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "This link expired before you tapped Start in Telegram."
+msgstr "Ce lien a expiré avant que vous n’ayez appuyé sur Démarrer dans Telegram."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Build your own hook"
@@ -3633,7 +3680,7 @@ msgstr "Les {prefix}-hooks vous permettent d’exécuter automatiquement toute a
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
-msgstr "Votre ordre a expiré. Cela peut être dû à une hausse des frais de gas, à la volatilité des prix ou à un problème de réseau."
+msgstr "Votre ordre a expiré. Cela peut être dû à une hausse des frais de gas, à la volatilité des prix ou à un problème sur le réseau."
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "Not now"
@@ -3726,7 +3773,7 @@ msgstr "Copié !"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
-msgstr "CoW Swap utilise un {accountProxyLabelString} dédié, contrôlé uniquement par vous, afin de garantir un bridge fluide. Vérifiez que l’adresse du destinataire ci-dessus est <0/>"
+msgstr "CoW Swap utilise un {accountProxyLabelString} dédié, contrôlé uniquement par vous, afin de garantir un bridge en toute fluidité. Vérifiez que l’adresse du destinataire ci-dessus est <0/>"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Trade alerts enabled"
@@ -3763,7 +3810,7 @@ msgstr "Limite de gas"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Price protection"
-msgstr "Protection du prix"
+msgstr "Protection de prix"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
@@ -3840,7 +3887,7 @@ msgstr "Passer sur Ethereum"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
-msgstr "Sur CoW Swap, le placement et l’annulation des ordres limite sont gratuits. C’est unique dans la DeFi !"
+msgstr "Sur CoW Swap, le placement et l’annulation des ordres limites sont gratuits. C’est unique dans la DeFi !"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
 msgid "safeBundleFlowContext is not set!"
@@ -3938,11 +3985,11 @@ msgstr "Inclus dans le prix d’exécution estimé"
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
-msgstr "Les frais de réseau, gas inclus, sont couverts lorsque votre ordre est exécuté à un prix de marché supérieur à votre prix limite."
+msgstr "Les frais de réseau, gas inclus, sont couverts lorsque votre ordre est exécuté à un prix de marché meilleur que votre prix limite."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "Il {areIs} <0>{ordersWithPermitLength}</0> {orderWord} existant(s) utilisant une approbation du token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
+msgstr "Il {areIs} <0>{ordersWithPermitLength}</0> {orderWord} en cours utilisant une autorisation pour le token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Technical details:"
@@ -4047,7 +4094,7 @@ msgstr "Partager sur X"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Total claimable rewards:"
-msgstr "Total des récompenses réclamables :"
+msgstr "Total des récompenses à récupérer :"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn {0} {1} per ${2} of eligible volume in {3} days. Payouts happen on Ethereum mainnet."
@@ -4079,7 +4126,7 @@ msgstr "Un instant. Calcul du meilleur prix"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "both {joinedSupportedTypes}"
-msgstr "les deux : {joinedSupportedTypes}"
+msgstr "à la fois {joinedSupportedTypes}"
 
 #: libs/common-utils/src/legacyAddressUtils.ts
 #~ msgid "View on Explorer"
@@ -4103,7 +4150,7 @@ msgstr "Erreur"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
-msgstr "Une erreur est survenue et votre ordre n’a pas pu être exécuté dans ce lot. Pas d’inquiétude ! CoW Swap organise déjà une nouvelle compétition pour votre ordre."
+msgstr "Une erreur est survenue et votre ordre n’a pas pu être exécuté dans ce lot. Pas d’inquiétude ! CoW Swap organise déjà une nouvelle mise en concurrence pour votre ordre."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving token"
@@ -4111,7 +4158,7 @@ msgstr "Approbation du token"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
-msgstr "Nous ne pouvons pas calculer l’impact sur le prix de cet ordre.<0/><1/>Vous pouvez tout de même continuer, mais <2>vérifiez attentivement que les montants reçus correspondent à vos attentes.</2>"
+msgstr "Nous ne pouvons pas calculer l’impact sur le prix pour cet ordre.<0/><1/>Vous pouvez quand même continuer, mais <2>vérifiez attentivement que les montants reçus correspondent à vos attentes.</2>"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Off-chain cancellations require a signature and are free."
@@ -4168,7 +4215,7 @@ msgstr "Rechercher des hooks"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeNumberInput/index.tsx
 msgid "down"
-msgstr "à la baisse"
+msgstr "bas"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/ChainButton.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/ChainChip.tsx
@@ -4194,7 +4241,7 @@ msgstr "Solde CoW"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Keep in mind a solver might already have included the order in a solution even if this cancellation is successful."
-msgstr "Gardez à l’esprit qu’un solver peut déjà avoir inclus l’ordre dans une solution, même si cette annulation réussit."
+msgstr "Gardez à l’esprit qu’un solver peut déjà avoir inclus l’ordre dans une solution, même si cette annulation est confirmée."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
@@ -4207,7 +4254,7 @@ msgstr "Ordre soumis"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
 msgid "Quote is updating..."
-msgstr "Actualisation du devis..."
+msgstr "Actualisation de la cotation..."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started!"
@@ -4219,7 +4266,7 @@ msgstr "Définir une date personnalisée"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claimable"
-msgstr "Réclamable"
+msgstr "Récupérable"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Docs"
@@ -4255,13 +4302,13 @@ msgstr "Booooostez l’APR !"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "It is required to do a one-time approval of {wrappedSymbol} via an on-chain ERC20 Approve transaction."
-msgstr "Une approbation unique de {wrappedSymbol} est requise via une transaction ERC20 Approve on-chain."
+msgstr "Une approbation unique de {wrappedSymbol} est requise via une transaction d'approbation ERC20 on-chain."
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
 msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "La liste contient plusieurs tokens portant le symbole {doubledSymbol}.\n"
-"Sélectionnez le token souhaité dans l’interface ou utilisez son adresse plutôt que son symbole"
+msgstr "Il y a plusieurs tokens avec le symbole {doubledSymbol} dans la liste.\n"
+"Veuillez sélectionner le token souhaité dans l’interface ou utiliser son adresse au lieu du symbole"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "unfillable"
@@ -4380,12 +4427,13 @@ msgstr "Carrières"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
-msgstr "Montant de vente attendu"
+msgstr "Montant de vente estimé"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "orders"
 msgstr "ordres"
 
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Limit Order"
 msgstr "Ordre limite"
@@ -4473,6 +4521,7 @@ msgstr "Nombre de parties"
 msgid "The embedded hook dapp requested a hook-state change. Review the request before it can be applied."
 msgstr "La dapp de hook intégrée a demandé une modification de l’état du hook. Vérifiez la demande avant de l’appliquer."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Verifying approval"
 msgstr "Vérification de l’approbation"
@@ -4504,7 +4553,7 @@ msgstr "Ajouter un pre-hook"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an intermediary account that handles trading on your behalf."
-msgstr "Ce contrat est déployé pour chaque compte, qui en devient l’unique propriétaire. CoW Shed agit comme un compte intermédiaire qui gère le trading en votre nom."
+msgstr "Ce contrat est déployé pour chaque compte, qui en devient l’unique propriétaire. CoW Shed agit comme un compte intermédiaire qui effectue les échanges en votre nom."
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "The order cannot be {msg}. Please, retry in a minute"
@@ -4532,8 +4581,8 @@ msgstr "Variation du prix"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Yield"
 msgstr "Rendement"
 
@@ -4555,11 +4604,11 @@ msgstr "tokens"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "No wallet compatibility information available."
-msgstr "Aucune information disponible sur la compatibilité du wallet."
+msgstr "Aucune information de compatibilité de wallet disponible."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "submitted a solution"
-msgstr "a soumis une solution"
+msgstr "ont soumis une solution"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/MetamaskTransactionWarning/index.tsx
 msgid "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
@@ -4613,7 +4662,7 @@ msgstr "Approuver {tokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "The fill price of this order is close or at the market price and is expected to fill soon"
-msgstr "Le prix d’exécution de cet ordre est proche du prix du marché et son exécution est attendue prochainement"
+msgstr "Le prix d’exécution de cet ordre est proche ou au prix du marché et son exécution est attendue sous peu"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "My orders <0/>"
@@ -4648,7 +4697,7 @@ msgstr "Modifiez ici les paramètres des alertes de trade"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
-msgstr "Sélectionner l’entrée et la sortie"
+msgstr "Sélectionner les montants d’entrée et de sortie"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Button/LoadMoreOrdersButton.tsx
 msgid "Search older orders"
@@ -4684,6 +4733,7 @@ msgstr "Scanner le QR code"
 msgid "No signatures yet"
 msgstr "Aucune signature pour le moment"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign TWAP"
 msgstr "Signer l’ordre TWAP"
@@ -4738,7 +4788,7 @@ msgstr "Demande de signature rejetée."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Can't find a hook that you like?"
-msgstr "Vous ne trouvez pas de hook qui vous convient ?"
+msgstr "Vous ne trouvez pas le hook qui vous convient ?"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Market:"
@@ -4784,7 +4834,7 @@ msgstr "{tokenLabel} reçu"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "Please, make sure your address follows the format <0>{addressPrefix}:<your-address></0> or double-check if it is compatible with <1>{label}</1> network."
-msgstr "Assurez-vous que votre adresse respecte le format <0>{addressPrefix}:<your-address></0> ou vérifiez qu’elle est compatible avec le réseau <1>{label}</1>."
+msgstr "Assurez-vous que votre adresse respecte le format <0>{addressPrefix}:<your-address></0> ou vérifiez sa compatibilité avec le réseau <1>{label}</1>."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Recent Activity"
@@ -4820,7 +4870,7 @@ msgstr "Affiliation"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "Because you are selling {nativeSymbol} (native currency)"
-msgstr "Comme vous vendez {nativeSymbol}, la monnaie native"
+msgstr "Car vous vendez du {nativeSymbol} (monnaie native)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrdersTableWidget/OrdersTableWidget.container.tsx
 msgid "Token symbol, address"
@@ -4860,7 +4910,7 @@ msgstr "Recherche toujours en cours"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "check"
-msgstr "vérifier"
+msgstr "coché"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Are you sure you want to cancel {ordersCount} orders?"
@@ -4868,7 +4918,7 @@ msgstr "Voulez-vous vraiment annuler {ordersCount} ordres ?"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "Convert your <0/> LP tokens into CoW AMM pools and earn up to <1>+{apyDiffFormatted}%</1> more yield compared to <2/>. Or, swap"
-msgstr "Convertissez vos tokens LP <0/> vers des pools CoW AMM et obtenez jusqu’à <1>+{apyDiffFormatted}%</1> de rendement supplémentaire par rapport à <2/>. Ou swappez"
+msgstr "Convertissez vos tokens LP <0/> dans des pools CoW AMM et obtenez jusqu’à <1>+{apyDiffFormatted}%</1> de rendement supplémentaire par rapport à <2/>. Ou swappez"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/index.tsx
 #~ msgid "Only confirm if you trust this dapp and recognize the target contract and calldata below."
@@ -4897,7 +4947,7 @@ msgstr "Aucun ordre annulé trouvé"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "The {operationLabel} is submitted."
-msgstr "L’opération {operationLabel} a été soumise."
+msgstr "L’opération {operationLabel} a été envoyée."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
 msgid "Invalid manifest format at {manifestUrl}: missing cow_hook_dapp property"
@@ -4914,7 +4964,7 @@ msgstr "Les contrats Composable Cow et Settlement ne se trouvent pas sur la mêm
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Fetching price impact"
-msgstr "Récupération de l’impact sur le prix"
+msgstr "Calcul de l’impact sur le prix"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
@@ -4941,13 +4991,14 @@ msgstr "Réseau non pris en charge"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve"
 msgstr "Approuver"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Execution time"
-msgstr "Délai d’exécution"
+msgstr "Date d’exécution"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Code already taken or wallet already linked."
@@ -5013,7 +5064,7 @@ msgstr "Rechercher un réseau"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
-msgstr "CoW Swap sans connexion"
+msgstr "CoW Swap hors connexion"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs (opens in a new tab)"
@@ -5028,7 +5079,7 @@ msgstr "Alerte"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Start time first"
-msgstr "Heure de début en premier"
+msgstr "Heure de début de la première"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "View tx on explorer"
@@ -5037,7 +5088,7 @@ msgstr "Heure de début en premier"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Swap with Wrapped {nativeSymbol}"
-msgstr "Swapper avec des {nativeSymbol} wrappés"
+msgstr "Swapper avec du {nativeSymbol} wrappés"
 
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Analytics"
@@ -5089,7 +5140,7 @@ msgstr "12 heures"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signatures are"
-msgstr "les signatures sont"
+msgstr "signatures sont"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 #~ msgid "This wallet isn’t eligible for that code."
@@ -5169,7 +5220,7 @@ msgstr "Changer de réseau"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Set approval"
-msgstr "Définir l’approbation"
+msgstr "Accorder l'autorisation"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Must be before {maxDateStr} {timeZone}"
@@ -5199,7 +5250,7 @@ msgstr "Entre les monnaies"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "wrapped native"
-msgstr "monnaie native wrappée"
+msgstr "la monnaie native wrappée"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Recover {target}"
@@ -5318,17 +5369,22 @@ msgstr "PRE"
 msgid "Edit limit order"
 msgstr "Modifier l’ordre limite"
 
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
+#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
+#~ msgid "My orders"
+#~ msgstr "My orders"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/CancellingStep.tsx
 msgid "Your order is being cancelled."
 msgstr "Votre ordre est en cours d’annulation."
 
 #: apps/cowswap-frontend/src/modules/tradeSlippage/containers/HighSuggestedSlippageWarning/index.tsx
 msgid "CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
-msgstr "CoW Swap ajuste dynamiquement votre tolérance au slippage selon les frais de gas actuels et la taille du trade. Vous pouvez définir une valeur personnalisée avec l’icône des paramètres ci-dessus."
+msgstr "CoW Swap ajuste dynamiquement votre tolérance au slippage selon les prix du gas actuels et la taille du trade. Vous pouvez définir un slippage personnalisé via l’icône des paramètres ci-dessus."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Press the button below to search older orders, or create a new one!"
-msgstr "Appuyez sur le bouton ci-dessous pour rechercher des ordres plus anciens ou créez-en un nouveau !"
+msgstr "Appuyez sur le bouton ci-dessous pour rechercher des ordres plus anciens ou en créer un nouveau !"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container.tsx
 #~ msgid "CoW Swap has dynamically selected this slippage amount to account for current gas prices and trade size. Changes may result in slower execution."
@@ -5364,7 +5420,7 @@ msgstr "Maintenant"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "<0><1>Allows you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount.</5><7><8>Fill or kill</8> orders will either be filled fully or not at all.</7></4></0>"
-msgstr "<0><1>Vous permet de choisir si vos ordres limite seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
+msgstr "<0><1>Vous permet de choisir si vos ordres limites seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
@@ -5372,7 +5428,7 @@ msgstr "Mooovez <0/> d’une chaîne à l’autre, sans effort"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/QrCameraView.pure.tsx
 msgid "Scans locally in your browser. Nothing is uploaded."
-msgstr "Le scan est effectué localement dans votre navigateur. Rien n’est envoyé."
+msgstr "Le scan est effectué localement dans votre navigateur. Rien n’est envoyé en ligne."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate payouts happen on Ethereum mainnet."
@@ -5408,7 +5464,7 @@ msgstr "Exécution en cours"
 
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Another order has used up the approval amount. Set a new token approval to proceed with your order."
-msgstr "Un autre ordre a épuisé le montant approuvé. Définissez une nouvelle approbation du token pour poursuivre votre ordre."
+msgstr "Un autre ordre a consommé le montant approuvé. Définissez une nouvelle approbation du token pour poursuivre votre ordre."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 #~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -5542,7 +5598,7 @@ msgstr "approbation du token"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "including an extra "
-msgstr "dont un surplus de "
+msgstr "y compris un surplus de "
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL format"
@@ -5588,6 +5644,10 @@ msgstr "Recréer l’ordre limite"
 msgid "TWAP order split in <0>{numOfParts} equal parts</0>"
 msgstr "Ordre TWAP divisé en <0>{numOfParts} parties égales</0>"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Scan this code, or open the link on this device, then tap “Start” in the chat."
+msgstr "Scannez ce code ou ouvrez le lien sur cet appareil, puis appuyez sur “Démarrer” dans la discussion."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
 msgstr "Votre surplus total"
@@ -5619,13 +5679,17 @@ msgstr "avant cette échéance."
 msgid "View transaction"
 msgstr "Voir la transaction"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Preparing your connect link…"
+msgstr "Préparation de votre lien de connexion…"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
 #~ msgid "This list requires consent before importing."
 #~ msgstr "This list requires consent before importing."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "is"
-msgstr "est"
+msgstr "existe"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Transaction {errorType}"
@@ -5663,7 +5727,7 @@ msgstr "CoW Swap tentera de réduire ces frais lorsque cela est possible."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "versions of"
-msgstr "versions de"
+msgstr "versions du"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 msgid "Edit partial approval"
@@ -5690,7 +5754,7 @@ msgstr "L’ordre reste ouvert. Son exécution nécessite une autorisation suffi
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Sell → Buy"
-msgstr "Vendre → Acheter"
+msgstr "Vente → Achat"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Cancel order {shortId}"
@@ -5698,7 +5762,7 @@ msgstr "Annuler l’ordre {shortId}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "without worry."
-msgstr "sans inquiétude."
+msgstr "en toute sérénité."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/BundleTxWrapBanner/index.tsx
 #~ msgid "For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed, {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!"
@@ -5724,7 +5788,7 @@ msgstr "Suivez ces étapes :"
 
 #: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
 msgid "Please, connect your wallet to one of our supported networks."
-msgstr "Connectez votre wallet à l’un des réseaux pris en charge."
+msgstr "Veuillez connecter votre wallet à l’un des réseaux pris en charge."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
@@ -5763,7 +5827,7 @@ msgstr "Déwrapping en cours"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
 msgid "Unknown quote error"
-msgstr "Erreur de devis inconnue"
+msgstr "Erreur de cotation inconnue"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "Read more about unsupported wallets"
@@ -5771,7 +5835,7 @@ msgstr "En savoir plus sur les wallets non pris en charge"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No open orders found in the {limit} most recent one."
-msgstr "Aucun ordre ouvert trouvé parmi le plus récent des {limit} ordres."
+msgstr "Aucun ordre ouvert trouvé parmi vos {limit} ordres les plus récents."
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useGetOnChainCancellation.ts
 msgid "Chain Id from contracts should match (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
@@ -5788,7 +5852,7 @@ msgstr "Confirmer l’action"
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "more"
-msgstr "plus"
+msgstr "de plus"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Your referral code is saved. It will link after your first eligible trade."
@@ -5813,6 +5877,10 @@ msgstr "de votre montant à vendre ! Votre ordre a donc peu de chances d’être
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking."
 #~ msgstr "This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking."
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Something went wrong. Please try again."
+msgstr "Une erreur est survenue. Veuillez réessayer."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -5906,6 +5974,10 @@ msgstr "Minimum {0} min, maximum {1} min."
 #~ msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 #~ msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+msgid "Transaction rejected"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
 msgstr "dynamique"
@@ -5949,7 +6021,7 @@ msgstr "Il s’agit du montant vendu dans chaque partie de l’ordre TWAP."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Quote expired. Refreshing..."
-msgstr "Devis expiré. Actualisation..."
+msgstr "Cotation expirée. Actualisation..."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
@@ -5959,6 +6031,10 @@ msgstr "Devis expiré. Actualisation..."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 #~ msgid "Code binds on your first eligible trade. Earn rewards for eligible volume within the program window. Payouts happen on Ethereum mainnet."
 #~ msgstr "Code binds on your first eligible trade. Earn rewards for eligible volume within the program window. Payouts happen on Ethereum mainnet."
+
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
+msgid "Get Telegram updates when it fills or expires."
+msgstr "Recevez des mises à jour sur Telegram lorsque votre ordre est exécuté ou expire."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
@@ -5986,7 +6062,7 @@ msgstr "Le montant approuvé est insuffisant !"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "funds"
-msgstr "fonds"
+msgstr "les fonds"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Pool details"
@@ -6011,7 +6087,7 @@ msgstr "Ajouter <0/> à {walletName}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
-msgstr "Sur CoW Swap, les ordres peuvent être des ordres au marché, exécutés au prix du marché dans la limite du slippage défini, ou des ordres limite, exécutés au prix que vous indiquez."
+msgstr "Sur CoW Swap, les ordres peuvent être soit des ordres au marché (qui s’exécutent au prix du marché dans la limite de la tolérance au glissement que vous avez définie), soit des ordres limites (qui s’exécutent au prix que vous spécifiez)."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
@@ -6028,11 +6104,11 @@ msgstr "au moins"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Earn <0>{rewardAmount}</0> per <1>{triggerVolume}</1> of eligible volume over {timeCapDays} days. Rewards are paid out weekly to your Ethereum wallet."
-msgstr "Gagnez <0>{rewardAmount}</0> pour chaque volume éligible de <1>{triggerVolume}</1> réalisé sous {timeCapDays} jours. Les récompenses sont versées chaque semaine sur votre wallet Ethereum."
+msgstr "Gagnez <0>{rewardAmount}</0> par tranche de <1>{triggerVolume}</1>de volume éligible sur {timeCapDays} jours. Les récompenses sont versées chaque semaine sur votre wallet Ethereum."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "m"
-msgstr "min"
+msgstr "m"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
@@ -6056,7 +6132,7 @@ msgstr "Il s’agit du coût de règlement on-chain de votre ordre, comprenant l
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "more signature is"
-msgstr "une signature supplémentaire est"
+msgstr "signature supplémentaire est"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #~ msgid "<0><1>Allow you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6><7>Partially fillable</7> orders may be filled partially if there isn't enough liquidity to fill the full amount.</6><8><9>Fill or kill</9> orders will either be filled fully or not at all.</8></5></4></0>"
@@ -6068,7 +6144,7 @@ msgstr "une signature supplémentaire est"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
-msgstr "Slippage minimal réduit, au lieu du minimum de {minEthFlowSlippageToSignificant}%"
+msgstr "Slippage minimal réduit (au lieu de {minEthFlowSlippageToSignificant}% minimum)"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Submit"
@@ -6201,7 +6277,7 @@ msgstr "Hors plage"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
 msgid "Since prices can change significantly over time, we suggest increasing your price protection for orders with long deadlines."
-msgstr "Les prix pouvant fortement évoluer avec le temps, nous vous recommandons d’augmenter votre protection du prix pour les ordres dont l’échéance est éloignée."
+msgstr "Les prix pouvant varier considérablement au fil du temps, nous vous conseillons d’augmenter votre protection de prix pour les ordres à échéance longue."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"
@@ -6295,7 +6371,7 @@ msgstr "Prix invalide. Essayez d’augmenter le montant saisi ou reçu."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Volume referred"
-msgstr "Volume apporté"
+msgstr "Volume parrainé"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 #~ msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -6306,6 +6382,7 @@ msgstr "Volume apporté"
 #~ msgstr "Token approval bundling"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "New"
@@ -6360,9 +6437,9 @@ msgstr "Il s’agit du montant estimé que vous recevrez pour chaque partie de l
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Hooks"
 msgstr "Hooks"
 
@@ -6372,7 +6449,7 @@ msgstr "Hooks"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Only confirm if you trust this dapp and recognize the target contract and calldata above."
-msgstr "Ne confirmez que si vous faites confiance à cette dapp et reconnaissez le contrat cible ainsi que la calldata ci-dessus."
+msgstr "Ne confirmez que si vous faites confiance à cette dapp et reconnaissez le contrat cible ainsi que les calldata ci-dessus."
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
@@ -6384,7 +6461,7 @@ msgstr "au maximum "
 
 #: apps/cowswap-frontend/src/pages/games/CowRunner/index.tsx
 msgid "Sandwich icon"
-msgstr "Icône sandwich"
+msgstr "Icône de sandwich"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 #~ msgid "Updates every {AFFILIATE_REWARDS_UPDATE_INTERVAL_HOURS} hours"
@@ -6417,7 +6494,7 @@ msgstr "Ce token ne peut être tradé que pendant certaines plages horaires"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked"
-msgstr "Associé"
+msgstr "Lié"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Rewards hub - Affiliate"
@@ -6489,7 +6566,7 @@ msgstr "Jouer à MEV Slicer"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Refreshing quote..."
-msgstr "Actualisation du devis..."
+msgstr "Actualisation de la cotation..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "was sent to"
@@ -6521,7 +6598,7 @@ msgstr "Page {page} sur {maxPage}"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Each time you claim, you will receive the entire claimable amount."
-msgstr "À chaque réclamation, vous recevrez l’intégralité du montant réclamable."
+msgstr "À chaque récupération, vous recevrez l’intégralité du montant disponible."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "Selected network {activeChainLabel}"
@@ -6556,7 +6633,7 @@ msgstr "Échec de la simulation"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Successfully claimed"
-msgstr "Réclamation réussie"
+msgstr "Récupéré avec succès"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Call any smart contract with your own parameters"
@@ -6572,7 +6649,7 @@ msgstr "Le montant minimum d’un trade de tokens xStocks est de ${XSTOCK_MIN_TR
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to the classic {wrappedSymbol} experience and benefit!"
-msgstr "Passez à l’expérience classique avec {wrappedSymbol} et profitez-en !"
+msgstr "Passez à l’expérience classique avec {wrappedSymbol} et profitez de ses avantages !"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Add {hookTypeText}-hook"
@@ -6601,7 +6678,7 @@ msgstr "Partie d’un ordre TWAP divisé en {twapOrderN} parties"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claim COW <0/>"
-msgstr "Réclamer des COW <0/>"
+msgstr "Récupérer des COW <0/>"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -6622,7 +6699,7 @@ msgstr "En suggérer un"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Copy full quote ID"
-msgstr "Copier l’identifiant complet du devis"
+msgstr "Copier l’identifiant complet de la cotation"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulation report"
@@ -6636,13 +6713,17 @@ msgstr "Conseil : les tokens personnalisés sont enregistrés localement dans vo
 msgid "You receive at least"
 msgstr "Vous recevez au moins"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planWrapStep.ts
+msgid "Wrap {sellAmountStr} SOL"
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 #~ msgid "You are connected to"
 #~ msgstr "You are connected to"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown hook dapp"
-msgstr "Dapp de hook inconnue"
+msgstr "Dapp hook inconnue"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Swap now"
@@ -6650,7 +6731,7 @@ msgstr "Swapper maintenant"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 msgid "Send to {networkName} wallet"
-msgstr "Envoyer vers un wallet sur {networkName}"
+msgstr "Envoyer vers le wallet {networkName}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
@@ -6658,12 +6739,12 @@ msgstr "Une erreur inattendue est survenue"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Use a referral code to earn <0>{traderRewardAmount}</0> for<1/>every <2>{triggerVolumeLabel}</2> in eligible volume within {affiliateTimeCapDays} days.<3/>New wallets only."
-msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> pour<1/>chaque volume éligible de <2>{triggerVolumeLabel}</2> réalisé sous {affiliateTimeCapDays} jours.<3/>Réservé aux nouveaux wallets."
+msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> pour<1/>chaque tranche de <2>{triggerVolumeLabel}</2> de volume éligible sous {affiliateTimeCapDays} jours.<3/>Nouveaux wallets uniquement."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 msgid "Add"
-msgstr "Ajouter"
+msgstr "Ajouter le"
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Confirm Swap and Bridge"
@@ -6712,7 +6793,7 @@ msgstr "Les frais de swap représentent au moins {formattedFeePercentage}% du mo
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for."
-msgstr "Les ordres limite sur CoW Swap capturent le surplus : si le prix évolue en votre faveur, vous recevrez probablement davantage que demandé."
+msgstr "Les ordres limites sur CoW Swap récupèrent le surplus : si le prix évolue en votre faveur, vous recevrez probablement plus que demandé."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Your friend shared a referral code with you."
@@ -6726,6 +6807,10 @@ msgstr "Prix d’exécution moyen"
 msgid "Hook position mismatch:"
 msgstr "Position du hook incorrecte :"
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
+msgid "Track this order"
+msgstr "Suivre cet ordre"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/IframeDappContainer/index.tsx
 msgid "Loading hook..."
 msgstr "Chargement du hook..."
@@ -6736,7 +6821,7 @@ msgstr "Conditions générales"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
 msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a <1>protocol fee</1> will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limite et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
+msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limites et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "Invite your friends <0/> and earn rewards"
@@ -6749,7 +6834,7 @@ msgstr "Donner votre avis"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
-msgstr "Masquer la fortune du jour"
+msgstr "Masquer le message du jour"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Post Hooks"
@@ -6782,7 +6867,7 @@ msgstr "dans l’explorateur"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
-msgstr "Votre trade sera exécuté en 2 étapes. Vous swappez d’abord sur <0>{COW_PROTOCOL_NAME} (étape 1)</0>, puis vous bridgez via <1>{providerInfoName} (étape 2)</1>."
+msgstr "Votre trade sera exécuté en 2 étapes. Vous effectuez d’abord un swap sur <0>{COW_PROTOCOL_NAME} (étape 1)</0>, puis un bridge via <1>{providerInfoName} (étape 2)</1>."
 
 #: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
 #~ msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
@@ -6800,7 +6885,12 @@ msgstr "S’exécute à"
 #~ msgid "From (incl. costs)"
 #~ msgstr "From (incl. costs)"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Open in Telegram"
+msgstr "Ouvrir dans Telegram"
+
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Get trade alerts"
 msgstr "Recevoir des alertes de trade"
 
@@ -6921,7 +7011,7 @@ msgstr "Définir le montant de l’approbation"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "CoW Fortune of the day"
-msgstr "Fortune CoW du jour"
+msgstr "Message CoW du jour"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Order ID"
@@ -6933,7 +7023,7 @@ msgstr "Identifiant de l’ordre"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "The order was executed before it could be cancelled."
-msgstr "L’ordre a été exécuté avant de pouvoir être annulé."
+msgstr "L’ordre a été exécuté avant d’avoir pu être annulé."
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "a native currency"
@@ -6961,7 +7051,7 @@ msgstr "rendement"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote not yet verified by CoW Protocol simulation"
-msgstr "Devis pas encore vérifié par la simulation de CoW Protocol"
+msgstr "Cotation pas encore vérifiée par la simulation de CoW Protocol"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 msgid "Buy token"
@@ -7075,6 +7165,7 @@ msgstr "Impossible de charger le manifeste. Vérifiez l’URL et réessayez."
 msgid "Order Created"
 msgstr "Ordre créé"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirm the approval transaction in your connected wallet."
 msgstr "Confirmez la transaction d’approbation dans votre wallet connecté."
@@ -7093,17 +7184,21 @@ msgstr "signature en cours"
 #~ msgid "Cow meditating..."
 #~ msgstr "Cow meditating..."
 
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
+msgid "Confirm {orderTypeLabel}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
 msgstr "À propos de CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Unlike on other exchanges, you won't be charged for this! Feel free to"
-msgstr "Contrairement aux autres plateformes d’échange, aucuns frais ne vous seront facturés ! N’hésitez pas à"
+msgstr "Contrairement aux autres plateformes d’échange, aucun frais ne vous seront facturés ! N’hésitez pas à"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Error loading the claimable amount"
-msgstr "Erreur lors du chargement du montant réclamable"
+msgstr "Erreur lors du chargement du montant à récupérer"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
 msgid "Attention"
@@ -7121,6 +7216,10 @@ msgstr "L’ordre reste ouvert. Son exécution nécessite un montant suffisant d
 msgid "Connect signer"
 msgstr "Connecter un signataire"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+msgid "The wallet request was rejected or expired. Try again to continue."
+msgstr ""
+
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Referral link unavailable."
@@ -7134,17 +7233,19 @@ msgstr "Bannière de connexion du wallet"
 #~ msgid "Your friend shared a referral code with you. Connect your wallet to activate it and start earning rewards when you trade."
 #~ msgstr "Your friend shared a referral code with you. Connect your wallet to activate it and start earning rewards when you trade."
 
+#: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/AdvancedOrdersSettings.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Enable Partial Approvals"
 msgstr "Activer les approbations partielles"
 
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
-msgstr "Les frais de licence Safe App facturés ici sont prélevés par la Safe Foundation pour l’affichage de l’application dans le Safe Store. Ils sont automatiquement calculés dans ce devis. Une partie de ces frais alimentera la trésorerie de CoW DAO, qui soutient la communauté CoW."
+msgstr "Les frais de licence Safe App facturés ici sont prélevés par la Safe Foundation pour l’affichage de l’application dans le Safe Store. Ils sont automatiquement calculés dans cette cotation. Une partie de ces frais alimentera la trésorerie de CoW DAO, qui soutient la communauté CoW."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "win"
-msgstr "gain"
+msgstr "victoire"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "This order needs to be signed and executed with your {walletType} wallet"
@@ -7177,6 +7278,8 @@ msgstr "Ajouter un hook personnalisé"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planDelegateStep.ts
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Approuver {symbol}"
@@ -7263,8 +7366,8 @@ msgstr "Sélectionner"
 #~ msgstr "It isn't a valid referral code."
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
-msgid "Confirm {orderType}"
-msgstr "Confirmer {orderType}"
+#~ msgid "Confirm {orderType}"
+#~ msgstr "Confirm {orderType}"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #~ msgid "Order created"
@@ -7288,7 +7391,7 @@ msgstr "Les frais de swap représentent au moins {formattedFeePercentage}% du mo
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "There was an error trying to load claimable tokens"
-msgstr "Une erreur est survenue lors du chargement des tokens réclamables"
+msgstr "Une erreur est survenue lors du chargement des tokens récupérables"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Learn"
@@ -7300,7 +7403,7 @@ msgstr "Découvrir"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
-msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre vos <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
+msgstr "Ce prix est inférieur de {displayedPercent}% au prix actuel du marché. Vous pourriez vendre votre <0/> à perte ! Cliquez sur « Prix du marché » pour définir votre prix limite sur le prix actuel du marché."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
@@ -7312,7 +7415,7 @@ msgstr "Continuer le swap avec {wrappedSymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Linked since"
-msgstr "Associé depuis"
+msgstr "Lié depuis"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Light mode"
@@ -7336,7 +7439,7 @@ msgstr "Les frais de ce trade étaient trop faibles pour être éligibles aux r�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "You will receive this price or better for your tokens."
-msgstr "Vous recevrez ce prix ou un meilleur pour vos tokens."
+msgstr "Vous recevrez ce prix ou un meilleur prix pour vos tokens."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Add Hook"
@@ -7353,7 +7456,7 @@ msgstr "Ce graphique indique le volume éligible restant avant de débloquer la 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"
-msgstr "Montant autorisé"
+msgstr "Autoriser la dépense"
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Reset favorites"
@@ -7369,6 +7472,7 @@ msgstr "au maximum"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/OrderSteps/token-info/OrderStepTokenInfo.pure.tsx
 msgid "View on explorer"
 msgstr "Voir dans l’explorateur"
 
@@ -7391,7 +7495,7 @@ msgstr "Restauration du wallet..."
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "required"
-msgstr "requis"
+msgstr "requise"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Fetching balances"
@@ -7413,7 +7517,7 @@ msgstr "Avant les frais"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Market orders are always <0>Fill or kill</0>, while limit orders are by default <1>Partially fillable</1>, but can also be changed to <2>Fill or kill</2> through your order settings."
-msgstr "Les ordres au marché sont toujours de type <0>Fill or kill</0>. Les ordres limite sont par défaut <1>partiellement exécutables</1>, mais peuvent aussi être configurés en <2>Fill or kill</2> dans les paramètres de l’ordre."
+msgstr "Les ordres au marché sont toujours de type <0>Fill or kill</0>, tandis que les ordres limite sont par défaut <1>partiellement exécutables</1>, mais peuvent aussi être configurés en <2>Fill or kill</2> dans les paramètres de l’ordre."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."
@@ -7430,7 +7534,7 @@ msgstr "La première partie de votre ordre TWAP deviendra active dès que vous c
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
-msgstr "Si CoW Swap ne peut pas obtenir ce prix ou un meilleur, en tenant compte des frais et de la tolérance de protection du prix, votre TWAP ne sera pas exécuté. CoW Swap améliorera <0>toujours</0> ce prix lorsque cela est possible."
+msgstr "Si CoW Swap ne peut pas obtenir ce prix ou un meilleur (en tenant compte des frais et de la tolérance de protection du prix), votre ordre TWAP ne sera pas exécuté. CoW Swap améliorera <0>toujours</0> ce prix si possible."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/HowItWorks.tsx
 #~ msgid "How it works."
@@ -7523,7 +7627,7 @@ msgstr "Échec du placement de l’ordre vendant {nativeCurrencySymbol}"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "native"
-msgstr "natif"
+msgstr "la monnaie native"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
@@ -7588,6 +7692,10 @@ msgstr "CoW Swap <0>est de nouveau en ligne</0>"
 #~ msgid "This wallet isn't eligible for that code."
 #~ msgstr "This wallet isn't eligible for that code."
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
+#~ msgid "Get notified when your order fills"
+#~ msgstr "Get notified when your order fills"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
 msgstr "Rechercher des hooks..."
@@ -7636,9 +7744,13 @@ msgstr "plus élevé"
 msgid "Copy referral link"
 msgstr "Copier le lien de parrainage"
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
+msgid "Enable Telegram alerts"
+msgstr "Activer les alertes Telegram"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
-msgstr "Lorsque le prix limite est verrouillé, il reste fixe lorsque les montants changent. Lorsqu’il est déverrouillé, il s’actualise selon les modifications des montants."
+msgstr "Lorsque le prix limite est verrouillé, il reste fixe lorsque les montants changent. Lorsqu’il est déverrouillé, il s’actualise en fonction des montants."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "For this order, network costs would be <0>{formattedFeePercentage}% (<1/>)</0> of your sell amount! Therefore, your order is unlikely to execute."
@@ -7646,7 +7758,7 @@ msgstr "Pour cet ordre, les frais de réseau représenteraient <0>{formattedFeeP
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Check that you are approving an amount equal to or greater than the input amount."
-msgstr "Vérifiez que le montant approuvé est supérieur ou égal au montant saisi."
+msgstr "Vérifiez que le montant approuvé soit supérieur ou égal au montant saisi."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since this contract temporarily holds funds, there's a possibility that funds could get stuck in certain edge cases."
@@ -7697,6 +7809,7 @@ msgid "Because you are using a smart contract wallet"
 msgstr "Comme vous utilisez un wallet smart contract"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -7704,7 +7817,6 @@ msgstr "Comme vous utilisez un wallet smart contract"
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
-#: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
 msgid "Swap"
 msgstr "Swap"
 
@@ -7781,7 +7893,7 @@ msgstr "Mentions légales"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "You will be prompted to <0>wrap your {nativeSymbol} to {wrappedSymbol}</0> before placing your order."
-msgstr "Vous devrez <0>wrapper vos {nativeSymbol} en {wrappedSymbol}</0> avant de placer votre ordre."
+msgstr "Vous serez invité à <0>wrapper vos {nativeSymbol} en {wrappedSymbol}</0> avant de placer votre ordre."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Cancelling {ordersCount} orders"
@@ -7789,7 +7901,7 @@ msgstr "Annulation de {ordersCount} ordres"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "User rejected signing COW claim transaction"
-msgstr "L’utilisateur a refusé de signer la transaction de réclamation de COW"
+msgstr "L’utilisateur a refusé de signer la transaction de récupération de COW"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "I Confirm"
@@ -7831,7 +7943,7 @@ msgstr "Transaction d’annulation"
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "{walletName} account changed"
-msgstr "Le compte {walletName} a changé"
+msgstr "Compte {walletName} modifié"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Download QR code"
@@ -7855,7 +7967,7 @@ msgstr "Vous vendez"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Longer limit orders - place orders for up to a year."
-msgstr "Ordres limite plus longs : placez des ordres valables jusqu’à un an."
+msgstr "Ordres limites plus longs : placez des ordres valables jusqu’à un an."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "User rejected signing the cancellation"
@@ -7903,7 +8015,7 @@ msgstr "Déléguer maintenant"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Try new limit orders now"
-msgstr "Essayer les nouveaux ordres limite"
+msgstr "Essayer les nouveaux ordres limites"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate code created."
@@ -7982,7 +8094,7 @@ msgstr "Vendre"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Use the <0/> to see {currentTabText}"
-msgstr "Utilisez le <0/> pour afficher {currentTabText}"
+msgstr "Utilisez l’application <0/> pour voir {currentTabText}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower overall network costs"
@@ -8129,7 +8241,7 @@ msgstr "coche"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/QuotePolingProgress/index.tsx
 msgid "Quote will be updated in {time}"
-msgstr "Le devis sera actualisé dans {time}"
+msgstr "La cotation sera actualisée dans {time}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Dark mode"
@@ -8138,12 +8250,16 @@ msgstr "Mode sombre"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
 msgid "Quote ID"
-msgstr "Identifiant du devis"
+msgstr "Identifiant de cotation"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Bridge costs"
 msgstr "Frais de bridge"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+msgid "Waiting for you to tap Start…"
+msgstr "En attente d’un appui sur Démarrer…"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/MyRewards.tsx
@@ -8153,6 +8269,10 @@ msgstr "Frais de bridge"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "View cancellation"
 msgstr "Voir l’annulation"
+
+#: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
+msgid "Base Account"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
@@ -8175,13 +8295,15 @@ msgstr "Confirmer le bridge"
 msgid "<0>COW vesting from the GNO lock</0> is vested linearly over four years, starting on"
 msgstr "L’<0>acquisition des COW issus du verrouillage de GNO</0> s’effectue linéairement sur quatre ans, à compter du"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Set up TWAP"
 msgstr "Configurer l’ordre TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
-msgstr "La « Durée de chaque partie » correspond à l’intervalle entre les parties de votre ordre TWAP.<0/><1/>Une durée plus courte accélère l’exécution de chaque partie et peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
+msgstr "La « Durée de chaque partie » correspond à l’intervalle entre chaque partie de votre ordre TWAP.<0/><1/>Choisir une durée plus courte permet une exécution plus rapide de chaque partie, ce qui peut réduire les fluctuations de prix. Trouver le bon équilibre est essentiel pour une exécution optimale."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Hours"
@@ -8276,6 +8398,7 @@ msgstr "Retour à l’accueil"
 msgid "Refund started"
 msgstr "Remboursement lancé"
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 #: apps/cowswap-frontend/src/common/pure/ToggleArrow/ToggleArrow.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx

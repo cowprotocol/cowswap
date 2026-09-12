@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/core-v3.7.1...core-v3.8.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(partial-approvals): implement partial approve for limit orders/TWAP (#8011)
+
+- feat(rwa): add st0x rwa token list (#8030)
+
+### Patch Changes
+
+- fix: add coinbase tokenized stocks list (#8012)
+
+- fix(rwa): point rwa list fetching to cms prod (#8077)
+
+- fix(solvers): fetch solver info from cms prod only (#8067)
+
+- fix(rwa): lists (#8041)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/core-v3.7.0...core-v3.7.1) (2026-08-12)
 
 ### Patch Changes

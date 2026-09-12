@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.9.1...analytics-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/types@4.9.0
+
 ## [3.9.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.9.0...analytics-v3.9.1) (2026-08-12)
 
 ### Patch Changes
