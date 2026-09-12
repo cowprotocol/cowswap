@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-07 12:28\n"
+"PO-Revision-Date: 2026-09-10 10:44\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -195,8 +195,8 @@ msgid "Unexpected response from BFF: {resStatus}"
 msgstr "Resposta inesperada do BFF: {resStatus}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "Demo states"
-msgstr "Estados de demonstração"
+#~ msgid "Demo states"
+#~ msgstr "Demo states"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Trading is not allowed with price impact higher than {widgetPriceImpactThreshold}%"
@@ -430,6 +430,10 @@ msgstr "Tokens de listas inativas. Importe tokens específicos abaixo ou clique 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "sell"
 msgstr "vender"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Activating your TWAP"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 #~ msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -677,8 +681,8 @@ msgid "Failed to parse date and time provided"
 msgstr "Falha ao analisar data e hora fornecidas"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "Setup signature failed"
-msgstr "Falha na assinatura de configuração"
+#~ msgid "Setup signature failed"
+#~ msgstr "Setup signature failed"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Only executed swaps incur fees."
@@ -946,9 +950,8 @@ msgid "switch network type"
 msgstr "trocar o tipo de rede"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Confirm this required setup signature in your connected wallet."
-msgstr "Confirme esta assinatura de configuração necessária na sua carteira conectada."
+#~ msgid "Confirm this required setup signature in your connected wallet."
+#~ msgstr "Confirm this required setup signature in your connected wallet."
 
 #: apps/cowswap-frontend/src/modules/affiliate/components/ReferralCodeModal/controller.helpers.tsx
 #~ msgid "Wallet ineligible. Try another code"
@@ -994,7 +997,6 @@ msgstr "Não consegue encontrar o pool que procura?"
 msgid "Custom slippage amount set{amountRange}."
 msgstr "Valor de derrapagem personalizado definido{amountRange}."
 
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr "Ativando TWAP"
@@ -1861,6 +1863,10 @@ msgstr "Remover lista"
 msgid "Help Center"
 msgstr "Help Center"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve funding"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 msgid "Last updated"
 msgstr "Última atualização"
@@ -1872,6 +1878,10 @@ msgstr "Última atualização"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Save and verify code"
 #~ msgstr "Save and verify code"
+
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
+msgid "TWAP setup was cancelled or not broadcast. Please try again."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
@@ -2059,7 +2069,7 @@ msgstr "Saldo recuperável"
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 msgstr "Seu preço limite é {absoluteRateImpact}% menor que o preço atual de mercado. Você pode estar vendendo seu <0/> com prejuízo (embora o CoW Swap sempre tente lhe dar o melhor preço, independentemente)."
 
-#: apps/cowswap-frontend/src/modules/tradeFlow/services/solanaFlow/index.ts
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateOrderStep.ts
 msgid "Swap {sellSymbol} for {buySymbol}"
 msgstr "Trocar {sellSymbol} por {buySymbol}"
 
@@ -2091,6 +2101,10 @@ msgstr "Ordens TWAP atualmente exigem um Safe com um manipulador de fallback esp
 msgid "CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations."
 msgstr "CoW Swap foi a primeira DEX a oferecer negociação baseada em intenção, trocas sem gás, Coincidences of Wants e muitas outras inovações em DeFi."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve {symbol} for funding"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "User rejected the request."
 msgstr "O usuário rejeitou a solicitação."
@@ -2114,6 +2128,10 @@ msgstr "Atualizar em:"
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/LimitPriceRow.tsx
 msgid "The limit price"
 msgstr "O preço limite"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Permit funding"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Creating"
@@ -2706,6 +2724,10 @@ msgstr "Colar"
 msgid "Scan"
 msgstr "Escanear"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Submitting setup transaction"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
@@ -3147,6 +3169,8 @@ msgid "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find yo
 msgstr "Os solvers do CoW Swap pesquisam Uniswap, 1inch, Matcha, Sushi e muito mais para encontrar o melhor preço para você."
 
 #: apps/cowswap-frontend/src/modules/permit/utils/handlePermit.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Unable to generate permit data"
 msgstr "Não foi possível gerar dados de permissão"
 
@@ -3466,6 +3490,10 @@ msgstr "Reembolsado para"
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Maximize your yield on existing LP positions"
 msgstr "Maximize seu rendimento em posições LP existentes"
+
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
+msgid "Approval was cancelled or not broadcast. Please try again."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 #~ msgid "Pool description"
@@ -4322,6 +4350,10 @@ msgstr "Há mais de um token na lista de tokens com o símbolo: {doubledSymbol}.
 #~ msgid "unfillable"
 #~ msgstr "unfillable"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -4508,6 +4540,10 @@ msgstr "Quando você troca (vende) <0/>, os solvers atuam na transação compran
 msgid "Wrap <0/> and Swap"
 msgstr "Converter <0/> e Trocar"
 
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/waitForEoaTwapTxReceipt.utils.ts
+msgid "Timed out waiting for the transaction. Please try again."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "View full consent terms ↗"
 #~ msgstr "View full consent terms ↗"
@@ -4520,6 +4556,10 @@ msgstr "É necessário um máximo de <0>{time}</0> entre as partes. Aumente o n�
 msgid "This fee helps pay for maintenance & improvements to the trade experience"
 msgstr "Esta taxa ajuda a pagar pela manutenção e melhorias na experiência de negociação"
 
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
+#~ msgid "Timed out waiting for the approval transaction. Please try again."
+#~ msgstr "Timed out waiting for the approval transaction. Please try again."
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "No. of parts"
 msgstr "Número de partes"
@@ -4529,9 +4569,8 @@ msgid "The embedded hook dapp requested a hook-state change. Review the request 
 msgstr "O Dapp embutido do hook solicitou uma alteração do estado do hook. Revise a solicitação antes que possa ser aplicada."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Verifying approval"
-msgstr "Verificando aprovação"
+#~ msgid "Verifying approval"
+#~ msgstr "Verifying approval"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and saved "
@@ -4745,9 +4784,8 @@ msgid "No signatures yet"
 msgstr "Nenhuma assinatura ainda"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Sign TWAP"
-msgstr "Assinar TWAP"
+#~ msgid "Sign TWAP"
+#~ msgstr "Sign TWAP"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Invalid format"
@@ -5002,8 +5040,6 @@ msgstr "Rede Não Suportada"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve"
 msgstr "Aprovar"
 
@@ -5280,7 +5316,6 @@ msgstr "Minutos"
 msgid "The referral code was applied after the trader's first qualifying trade."
 msgstr "O código de afiliado foi aplicado após a primeira negociação de qualificação do trader."
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SolanaTradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "Transação de aprovação rejeitada pelo usuário"
@@ -5663,6 +5698,10 @@ msgstr "Escaneie o código ou abra o link neste dispositivo e clique em \"Inicia
 msgid "Your total surplus"
 msgstr "Seu excedente total"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolanaOrderStepper/index.tsx
+msgid "Creating order on Solana"
+msgstr "Criando ordem na Solana"
+
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
 msgstr "Desktop: Tabela de Ordens Alinhada à Esquerda"
@@ -5687,8 +5726,13 @@ msgstr "antes desse horário."
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolanaOrderStepper/index.tsx
 msgid "View transaction"
 msgstr "Ver transação"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Sign the permit in your wallet. Each part is pulled right before it trades."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Preparing your connect link…"
@@ -5881,6 +5925,10 @@ msgstr "Você não pode aplicar seu próprio código de afiliado."
 msgid "The fill price of this order is close or at the market price (<0>fills at <1/></0>, {priceDiff}% from market) and is expected to {filledValue} fill soon."
 msgstr "O preço de execução desta ordem está próximo ou no preço de mercado (<0>executa em <1/></0>, {priceDiff}% do mercado) e deve {filledValue} executar em breve."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Permit {symbol} for funding"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 msgid "of your sell amount! Therefore, your order is unlikely to execute."
 msgstr "do seu valor de venda! Portanto, sua ordem provavelmente não será executada."
@@ -5986,8 +6034,8 @@ msgstr "Mínimo de {0} min, máximo de {1} min."
 #~ msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "Transaction rejected"
-msgstr "Transação rejeitada"
+#~ msgid "Transaction rejected"
+#~ msgstr "Transaction rejected"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
@@ -6019,8 +6067,8 @@ msgid "This toggle is on by default. Toggling on/off will be supported in the fu
 msgstr "Esta opção vem ativada por padrão. A opção de ativar/desativar será oferecida futuramente."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Sign in your wallet. We'll submit the funding order automatically."
-msgstr "Acesse sua carteira. Enviaremos a solicitação de depósito automaticamente."
+#~ msgid "Sign in your wallet. We'll submit the funding order automatically."
+#~ msgstr "Sign in your wallet. We'll submit the funding order automatically."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 msgid "To at least"
@@ -6070,8 +6118,7 @@ msgstr "Tokens favoritos"
 #~ msgstr "{0} - {1}%: Recommended slippage tolerance."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.tsx
-#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapVaultRelayerApproval.ts
-#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
+#: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Approved amount is not sufficient!"
 msgstr "Valor de aprovação insuficiente!"
 
@@ -6786,6 +6833,10 @@ msgstr "Confirme com a sua carteira"
 #~ msgid "applied!"
 #~ msgstr "applied!"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #~ msgid "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
 #~ msgstr "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
@@ -7185,9 +7236,8 @@ msgid "Order Created"
 msgstr "Ordem Criada"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Confirm the approval transaction in your connected wallet."
-msgstr "Confirme a transação de aprovação na sua carteira conectada."
+#~ msgid "Confirm the approval transaction in your connected wallet."
+#~ msgstr "Confirm the approval transaction in your connected wallet."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
@@ -7236,8 +7286,8 @@ msgid "Connect signer"
 msgstr "Conectar assinante"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-msgid "The wallet request was rejected or expired. Try again to continue."
-msgstr "A solicitação da carteira foi rejeitada ou expirou. Tente novamente para continuar."
+#~ msgid "The wallet request was rejected or expired. Try again to continue."
+#~ msgstr "The wallet request was rejected or expired. Try again to continue."
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
@@ -7298,8 +7348,6 @@ msgstr "Adicionar um hook personalizado"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planDelegateStep.ts
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Aprovar {symbol}"
 
@@ -7645,8 +7693,8 @@ msgid "Enter a valid recipient"
 msgstr "Insira um destinatário válido"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Settling the funding order and registering your TWAP"
-msgstr "Liquidando a ordem de financiamento e registrando seu TWAP"
+#~ msgid "Settling the funding order and registering your TWAP"
+#~ msgstr "Settling the funding order and registering your TWAP"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Earn more by adding a referral code."
@@ -7705,7 +7753,7 @@ msgstr "Confirmar Troca"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr ""
+msgstr "Signatário da carteira necessário para cancelar uma ordem EOA TWAP"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
@@ -8333,8 +8381,6 @@ msgstr "Confirmar ponte"
 msgid "<0>COW vesting from the GNO lock</0> is vested linearly over four years, starting on"
 msgstr "<0>O vesting de COW a partir do bloqueio de GNO</0> ocorre linearmente ao longo de quatro anos, começando em"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Set up TWAP"
 msgstr "Configurar TWAP"
