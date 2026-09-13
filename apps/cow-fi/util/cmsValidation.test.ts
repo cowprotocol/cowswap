@@ -70,7 +70,7 @@ describe('cmsValidation', () => {
   })
 
   describe('revalidation allowlist', () => {
-    it('accepts only approved learn paths', () => {
+    it('accepts approved learn paths', () => {
       expect(isAllowedRevalidatePath('/learn')).toBe(true)
       expect(isAllowedRevalidatePath('/learn/articles')).toBe(true)
       expect(isAllowedRevalidatePath('/learn/articles/2')).toBe(true)
@@ -78,11 +78,26 @@ describe('cmsValidation', () => {
       expect(isAllowedRevalidatePath('/learn/aave-trade-breakdown')).toBe(true)
     })
 
-    it('rejects paths outside the learn allowlist', () => {
+    it('accepts exact resource hub, campaign, and detail paths', () => {
+      expect(isAllowedRevalidatePath('/resources')).toBe(true)
+      expect(isAllowedRevalidatePath('/resources/tokens')).toBe(true)
+      expect(isAllowedRevalidatePath('/resources/tokens/example')).toBe(true)
+      expect(isAllowedRevalidatePath('/resources/intent-hooks/hook-guide')).toBe(true)
+      expect(isAllowedRevalidatePath('/resources/constructor/example')).toBe(true)
+    })
+
+    it('rejects paths outside the learn and resources allowlists', () => {
       expect(isAllowedRevalidatePath('/')).toBe(false)
       expect(isAllowedRevalidatePath('/api/revalidate')).toBe(false)
+      expect(isAllowedRevalidatePath('/admin')).toBe(false)
       expect(isAllowedRevalidatePath('/learn//double-slash')).toBe(false)
       expect(isAllowedRevalidatePath('/learn/topic/Bad-Slug')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/Tokens')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/tokens/example/extra')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/../admin')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/tokens/../../admin')).toBe(false)
+      expect(isAllowedRevalidatePath('/resources/[campaign]/[slug]')).toBe(false)
     })
 
     it('normalizes and validates revalidation payloads', () => {
@@ -95,6 +110,15 @@ describe('cmsValidation', () => {
         tag: CMS_REVALIDATE_TAG,
         path: '/learn/topic/amm',
       })
+      expect(
+        normalizeRevalidateRequest({
+          tag: CMS_REVALIDATE_TAG,
+          path: 'resources/tokens/example',
+        }),
+      ).toEqual({
+        tag: CMS_REVALIDATE_TAG,
+        path: '/resources/tokens/example',
+      })
     })
 
     it('rejects invalid revalidation payloads', () => {
@@ -105,6 +129,9 @@ describe('cmsValidation', () => {
       expect(() => normalizeRevalidateRequest({ tag: CMS_REVALIDATE_TAG, path: '/admin' })).toThrow(
         'Unsupported revalidation path "/admin"',
       )
+      expect(() =>
+        normalizeRevalidateRequest({ tag: CMS_REVALIDATE_TAG, path: '/resources/tokens/example/extra' }),
+      ).toThrow('Unsupported revalidation path "/resources/tokens/example/extra"')
     })
   })
 })

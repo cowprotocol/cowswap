@@ -1,6 +1,6 @@
-import { CMS_BASE_URL } from '@cowprotocol/core'
-
 import Image, { ImageProps } from 'next/image'
+
+import { CMS_BASE_URL } from '../../services/cms/config'
 
 const CMS_BASE_URL_ROOT = CMS_BASE_URL.replace('/api', '') // TODO: fix this, base url should not have /api
 
