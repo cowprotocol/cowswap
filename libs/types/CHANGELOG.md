@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/types-v4.9.0...types-v4.10.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.5.0
+
 ## [4.9.0](https://github.com/cowprotocol/cowswap/compare/types-v4.8.0...types-v4.9.0) (2026-09-03)
 
 ### Minor Changes

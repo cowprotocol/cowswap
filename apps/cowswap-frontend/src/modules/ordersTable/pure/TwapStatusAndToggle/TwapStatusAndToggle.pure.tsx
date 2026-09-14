@@ -29,6 +29,7 @@ interface TwapStatusAndToggleProps {
   onToggle: () => void
   onClick: () => void
   childOrders: ChildOrderItems[]
+  parentOrderParams?: OrderParams
   approveOrderToken(token: Token): void
 }
 
@@ -42,8 +43,14 @@ export function TwapStatusAndToggle({
   onToggle,
   onClick,
   childOrders,
+  parentOrderParams,
   approveOrderToken,
 }: TwapStatusAndToggleProps) {
+  const isParentOpen = parent.status === OrderStatus.PENDING || parent.status === OrderStatus.SCHEDULED
+  const hasParentAllowanceWarning = isParentOpen && parentOrderParams?.hasEnoughAllowance === false
+  const hasParentBalanceWarning = isParentOpen && parentOrderParams?.hasEnoughBalance === false
+  const hasParentFundingWarning = isParentOpen && (hasParentAllowanceWarning || hasParentBalanceWarning)
+
   // Check if any child has insufficient balance or allowance
   const childWithAllowanceWarning = childOrders.find(
     (child) =>
@@ -70,10 +77,18 @@ export function TwapStatusAndToggle({
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={!!warningChild || isFallbackHandlerBlocked}
+        withWarning={hasParentFundingWarning || !!warningChild || isFallbackHandlerBlocked}
         WarningTooltip={
           isFallbackHandlerBlocked ? (
             <FallbackHandlerWarningTooltip />
+          ) : hasParentFundingWarning ? (
+            <WarningTooltip
+              hasEnoughBalance={!hasParentBalanceWarning}
+              hasEnoughAllowance={!hasParentAllowanceWarning}
+              inputTokenSymbol={parent.inputToken.symbol || ''}
+              isOrderScheduled={parent.status === OrderStatus.SCHEDULED}
+              onApprove={() => approveOrderToken(parent.inputToken)}
+            />
           ) : warningChild ? (
             <WarningTooltip
               hasEnoughBalance={!childWithBalanceWarning}

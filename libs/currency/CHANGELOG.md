@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.4.0...currency-v1.5.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.3.0...currency-v1.4.0) (2026-09-03)
 
 ### Minor Changes

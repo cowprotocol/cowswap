@@ -7,6 +7,7 @@ import {
   createCowLogger,
   isProdLike,
   normalizeError,
+  slowPromiseHandler,
 } from '@cowprotocol/common-utils'
 import { AccountAddress, SignerLike, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
@@ -36,14 +37,26 @@ import { encodeRegisterFromShedCalldata } from '../../../composable-cow-poller/c
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
+import { replaceSubmitTwapWithSlowInPlan } from '../../../utils/buildEoaTwapSigningStepPlan'
 import { assertTwapOrderSalt } from '../../../utils/buildTwapOrderParamsStruct'
 import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 
 import type { ComposableCowPollerSchedule } from '../../../composable-cow-poller/composable-cow-poller.types'
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
+/** Default gas limit for the executeHooks calls. */
 const DEFAULT_GAS_LIMIT = 1_000_000n
+
+/** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
+const SUBMIT_TWAP_SLOW_MS = 30_000
+
+/** Set > 0 to artificially delay receipt resolution (local testing only). */
+const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 0
+
+/** TWAP setup is valid for 30 minutes. */
 const SETUP_VALID_FOR_SEC = 1800
+
+/** Log helper. */
 const log = createCowLogger('EOA TWAP')
 
 /**
@@ -236,9 +249,9 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. Sign cow-shed EIP-712.
- * 2. Send factory executeHooks TX and wait for mining.
- * 3. Mark CreatingOrder confirmed (setup receipt is already mined).
+ * 1. Sign cow-shed EIP-712 (`TwapSetup`).
+ * 2. Sign and send factory executeHooks TX (`TwapSign`)
+ * 3. Then wait for mining (`SubmitTwap`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
@@ -354,17 +367,16 @@ export async function placeEoaTwapOrder({
   const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
+
   const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
+
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
 
   const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
 
   eoaTwapDebugLog('Signed setup multicall', { to: factoryAddress, callData })
 
-  onSigningStep({
-    step: EoaTwapSigningSteps.TwapSetup,
-    phase: EoaTwapSigningPhase.WaitingForTx,
-    lockDismiss: true,
-  })
+  onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
   const setupTxHash = await walletClient.sendTransaction({
     to: factoryAddress,
@@ -376,23 +388,55 @@ export async function placeEoaTwapOrder({
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
 
-  const receipt = await waitForEoaTwapTxReceipt(config, setupTxHash, chainId).catch((err: unknown) => {
-    const error = normalizeError(err)
-
-    if (error instanceof TransactionNotBroadcastError) {
-      throw new Error(t`TWAP setup was cancelled or not broadcast. Please try again.`)
-    }
-
-    throw error
+  onSigningStep({
+    step: EoaTwapSigningSteps.TwapSign,
+    phase: EoaTwapSigningPhase.Confirmed,
+    stepTxHash: setupTxHash,
   })
+
+  onSigningStep({
+    step: EoaTwapSigningSteps.SubmitTwap,
+    phase: EoaTwapSigningPhase.WaitingForTx,
+    lockDismiss: true,
+  })
+
+  let submitTwapStep = EoaTwapSigningSteps.SubmitTwap
+
+  const receipt = await slowPromiseHandler(
+    waitForEoaTwapTxReceipt(config, setupTxHash, chainId).catch((err: unknown) => {
+      const error = normalizeError(err)
+
+      if (error instanceof TransactionNotBroadcastError) {
+        throw new Error(t`TWAP setup was cancelled or not broadcast. Please try again.`)
+      }
+
+      throw error
+    }),
+    () => {
+      submitTwapStep = EoaTwapSigningSteps.SubmitTwapSlow
+
+      onSigningStep((prev) => ({
+        step: EoaTwapSigningSteps.SubmitTwapSlow,
+        phase: EoaTwapSigningPhase.WaitingForTx,
+        lockDismiss: true,
+        plan: replaceSubmitTwapWithSlowInPlan(prev?.plan ?? []),
+      }))
+    },
+    {
+      maxDuration: SUBMIT_TWAP_SLOW_MS,
+      fakeDelay: EOA_TWAP_FAKE_RECEIPT_DELAY_MS,
+    },
+  )
 
   if (receipt.status !== 'success') {
     throw new Error('TWAP setup transaction reverted')
   }
 
-  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
-  // Setup receipt is already mined; skip CreatingOrder WaitingForTx to avoid a UI flicker.
-  onSigningStep({ step: EoaTwapSigningSteps.CreatingOrder, phase: EoaTwapSigningPhase.Confirmed })
+  onSigningStep({
+    step: submitTwapStep,
+    phase: EoaTwapSigningPhase.Confirmed,
+    proxyAddress,
+  })
 
   return { proxyAddress, setupTxHash }
 }

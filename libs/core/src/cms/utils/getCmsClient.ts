@@ -26,6 +26,8 @@ export function getCmsClient(url: string = CMS_BASE_URL): CmsApiClient {
  * - `/solvers`: barn has no `solver_networks` data, so solvers there resolve to raw addresses instead
  *   of names and logos. Production carries both `barn` and `prod` addresses per solver.
  * - `/restricted-token-lists`: barn doesn't have them configured.
+ * - `/correlated-tokens`: barn's content type has no `network` relation, so every entry resolves to no
+ *   chainId and the volume fee stops being waived on correlated pairs.
  *
  * Everything else keeps using `getCmsClient()`: announcements, account notifications and cow-fi
  * content are environment-scoped, and barn is where they get staged.

@@ -4,7 +4,7 @@ import { i18n } from '@lingui/core'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
@@ -24,6 +24,9 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
+// Reached directly (not via the module barrel) to avoid a cycle: the barrel's `OrderSubmittedContent`
+// pulls in `TransactionSubmittedContent`, which imports this same `account` module.
+import { SolanaOrderStepper } from 'modules/orderProgressBar/pure/SolanaOrderStepper'
 import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { ConfirmDetailsItem } from 'modules/trade'
 
@@ -202,9 +205,12 @@ export function ActivityDetails(props: {
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
-    const { executedSellAmountBeforeFees, executedBuyAmount } = order.apiAdditionalInfo || {}
+    const { executedSellAmountBeforeFees, executedBuyAmount, executedSellAmount } = order.apiAdditionalInfo || {}
     const rateInputCurrencyAmount = isOrderFulfilled
-      ? CurrencyAmount.fromRawAmount(inputToken, executedSellAmountBeforeFees?.toString() || '0')
+      ? CurrencyAmount.fromRawAmount(
+          inputToken,
+          (executedSellAmountBeforeFees ?? executedSellAmount)?.toString() || '0',
+        )
       : inputAmount
 
     const rateOutputCurrencyAmount = isOrderFulfilled
@@ -479,7 +485,7 @@ export function ActivityDetails(props: {
         />
       </Summary>
 
-      <EthFlowStepper order={order} />
+      {isSolanaChain(chainId) ? <SolanaOrderStepper order={order} /> : <EthFlowStepper order={order} />}
     </>
   )
 }

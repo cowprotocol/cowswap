@@ -135,6 +135,7 @@ describe('classifyOrder', () => {
     buyAmount: '1000',
     sellAmount: '1000',
     executedBuyAmount: '0',
+    executedSellAmount: '0',
     executedSellAmountBeforeFees: '0',
     kind: OrderKind.SELL,
     signingScheme: SigningScheme.EIP712,
@@ -154,6 +155,22 @@ describe('classifyOrder', () => {
 
     it('is buy', () => {
       const order: typeof BASE_ORDER = { ...BASE_ORDER, executedBuyAmount: BASE_ORDER.buyAmount, kind: OrderKind.BUY }
+      expect(classifyOrder(order)).toBe('fulfilled')
+    })
+
+    // Solana's API doesn't return `executedSellAmountBeforeFees`, so the fallback to
+    // `executedSellAmount` has to cover both shapes it can arrive as. The casts are deliberate: the SDK
+    // types the field as a required string, which is exactly the assumption that doesn't hold here.
+    it.each([
+      ['absent', undefined],
+      ['null', null],
+    ])('is sell when executedSellAmountBeforeFees is %s but executedSellAmount is complete', (_label, missing) => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        executedSellAmountBeforeFees: missing as unknown as string,
+        executedSellAmount: BASE_ORDER.sellAmount,
+      }
+
       expect(classifyOrder(order)).toBe('fulfilled')
     })
   })
