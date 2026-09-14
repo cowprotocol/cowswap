@@ -435,7 +435,6 @@ export async function placeEoaTwapOrder({
   onSigningStep({
     step: submitTwapStep,
     phase: EoaTwapSigningPhase.Confirmed,
-    proxyAddress,
   })
 
   return { proxyAddress, setupTxHash }

@@ -74,6 +74,7 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -422,12 +423,14 @@ export function useCreateTwapOrder() {
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         if (isEoaTwap) {
+          const eventId = await waitForTwapEventId(twapOrderId, account, chainId)
+
           // Keep the review card open and replace signing steps with the inline success box.
           updateEoaTwapFlow({
             step: EoaTwapSigningSteps.Success,
             phase: EoaTwapSigningPhase.Confirmed,
             orderId: twapOrderId,
-            proxyAddress: safeAddressOrCowShedAddress,
+            eventId,
           })
         } else {
           updateEoaTwapFlow(null)
