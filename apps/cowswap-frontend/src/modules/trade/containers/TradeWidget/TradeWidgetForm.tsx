@@ -165,16 +165,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottledCallback(onSwitchTokens, 500)
 
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
   const shouldShowMyOrdersButton =
     !shouldLockForAlternativeOrder &&
-    (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
+    (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToMedium : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
     ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
-      (!isMarketOrderWidget && isUpToLarge && !lockScreen))
+      (!isMarketOrderWidget && isUpToMedium && !lockScreen))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
