@@ -28,11 +28,8 @@ export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
 
   if (quote.error instanceof BridgeProviderQuoteError) {
     const errorMessage = quote.error.message as BridgeQuoteErrors
-    const providerErrorMessage = getBridgeProviderErrorMessage(quote.error.context)
     const errorText =
-      bridgeQuoteErrorTexts[errorMessage] ||
-      (providerErrorMessage && t`Bridge error: ${providerErrorMessage}`) ||
-      DEFAULT_QUOTE_ERROR
+      bridgeQuoteErrorTexts[errorMessage] || getBridgeProviderErrorMessage(quote.error.context) || DEFAULT_QUOTE_ERROR
 
     return (
       <TradeFormBlankButton disabled={true}>
