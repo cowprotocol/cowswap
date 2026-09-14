@@ -1,4 +1,4 @@
-import { ButtonOutlined, ButtonPrimary, ExternalLink, font, UI } from '@cowprotocol/ui'
+import { ExternalLink, font, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -52,30 +52,4 @@ export const ExplorerAnchor = styled(ExternalLink)`
   &:hover {
     color: var(${UI.COLOR_INFO});
   }
-`
-
-export const Actions = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 100%;
-`
-
-export const NewTradeButton = styled(ButtonOutlined)`
-  ${font('FONT_MEDIUM', 'semibold')}
-  width: 100%;
-  min-height: 48px;
-  color: var(${UI.COLOR_TEXT});
-
-  &:hover {
-    background: var(${UI.COLOR_PRIMARY});
-    color: var(${UI.COLOR_BUTTON_TEXT});
-    border: 1px solid var(${UI.COLOR_PRIMARY});
-  }
-`
-
-export const ViewOrdersButton = styled(ButtonPrimary)`
-  ${font('FONT_MEDIUM', 'semibold')}
-  width: 100%;
-  min-height: 48px;
 `
