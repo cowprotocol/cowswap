@@ -106,9 +106,9 @@ jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
 }))
 jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   COMPOSABLE_COW_POLLER_ADDRESS: {
-    1: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
-    100: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
-    11155111: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
+    1: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    100: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    11155111: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
   },
 }))
 jest.mock('modules/accountProxy', () => ({

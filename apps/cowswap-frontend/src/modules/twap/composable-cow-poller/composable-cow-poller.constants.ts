@@ -1,4 +1,4 @@
-import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapAddressToSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
  * ComposableCowPoller: just-in-time funding for composable conditional orders.
@@ -11,7 +11,7 @@ import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
  *
  * Contract ABI: `ComposableCowPollerAbi` from `@cowprotocol/cowswap-abis`.
  *
- * Deployed on Mainnet, Gnosis, and Sepolia (pre-audit). Same CREATE2 address on each chain.
+ * Deployed on all supported networks. Same CREATE2 address on each chain.
  *
  * The only consumer is EOA TWAP (`placeEoaTwapOrder` / `pollFunds` pre-hook). That flow
  * is gated by LaunchDarkly `isTwapEoaEnabled` (off unless the flag is on), including on
@@ -22,11 +22,9 @@ import { type AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
  * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json - `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`
  * @see https://github.com/cowdao-grants/cow-shed/pull/68 - multi-chain ComposableCoW shed deploys
  */
-export const COMPOSABLE_COW_POLLER_ADDRESS: Partial<Record<SupportedChainId, AccountAddress>> = {
-  [SupportedChainId.MAINNET]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
-  [SupportedChainId.GNOSIS_CHAIN]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
-  [SupportedChainId.SEPOLIA]: '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D',
-}
+const composableCowPollerAddress = '0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E'
+export const COMPOSABLE_COW_POLLER_ADDRESS: Record<SupportedChainId, string> =
+  mapAddressToSupportedNetworks(composableCowPollerAddress)
 
 /**
  * Gas budget for the `pollFunds` pre-hook on each TWAP part
