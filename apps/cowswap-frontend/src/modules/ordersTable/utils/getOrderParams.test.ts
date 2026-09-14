@@ -118,4 +118,58 @@ describe('getOrderParams', () => {
     expect(result.hasEnoughBalance).toBeUndefined()
     expect(result.hasEnoughAllowance).toBeUndefined()
   })
+
+  describe('EOA TWAP JIT funding', () => {
+    const PART_SELL_AMOUNT = '100'
+    const EOA_TWAP_ORDER = {
+      ...BASE_ORDER,
+      isEoaTwapOrder: true,
+      partiallyFillable: true,
+    }
+
+    function funding(balance?: bigint, allowance?: bigint): BalancesAndAllowances {
+      const tokenKey = BASE_ORDER.inputToken.address.toLowerCase()
+
+      return {
+        balances: balance === undefined ? {} : { [tokenKey]: balance },
+        allowances: allowance === undefined ? {} : { [tokenKey]: allowance },
+        isLoading: false,
+      }
+    }
+
+    it('checks the next part amount instead of the full TWAP amount', () => {
+      const result = getOrderParams(1, funding(100n, 100n), EOA_TWAP_ORDER, undefined, PART_SELL_AMOUNT)
+
+      expect(result.hasEnoughBalance).toBe(true)
+      expect(result.hasEnoughAllowance).toBe(true)
+    })
+
+    it('reports insufficient balance for the next part', () => {
+      const result = getOrderParams(1, funding(99n, 100n), EOA_TWAP_ORDER, undefined, PART_SELL_AMOUNT)
+
+      expect(result.hasEnoughBalance).toBe(false)
+      expect(result.hasEnoughAllowance).toBe(true)
+    })
+
+    it('reports insufficient allowance for the next part', () => {
+      const result = getOrderParams(1, funding(100n, 99n), EOA_TWAP_ORDER, undefined, PART_SELL_AMOUNT)
+
+      expect(result.hasEnoughBalance).toBe(true)
+      expect(result.hasEnoughAllowance).toBe(false)
+    })
+
+    it('does not report a warning when JIT funding data is missing', () => {
+      const result = getOrderParams(1, funding(), EOA_TWAP_ORDER, undefined, PART_SELL_AMOUNT)
+
+      expect(result.hasEnoughBalance).toBeUndefined()
+      expect(result.hasEnoughAllowance).toBeUndefined()
+    })
+
+    it('requires the full next part even when the parent is partially fillable', () => {
+      const result = getOrderParams(1, funding(1n, 1n), EOA_TWAP_ORDER, undefined, PART_SELL_AMOUNT)
+
+      expect(result.hasEnoughBalance).toBe(false)
+      expect(result.hasEnoughAllowance).toBe(false)
+    })
+  })
 })
