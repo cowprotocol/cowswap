@@ -2,14 +2,6 @@ const MAX_DEPTH = 4
 const MAX_MESSAGE_LENGTH = 200
 const NESTED_KEYS = ['body', 'context', 'errorBody', 'error']
 
-/**
- * Finds the provider's own explanation inside a `BridgeProviderQuoteError.context`. Each provider
- * and each re-throwing layer wraps the API response body differently: `{ body: { message } }`,
- * a bare `{ message }`, or either nested under `context` / `errorBody`.
- *
- * `Error.message` is skipped on purpose - the provider SDKs set it to the HTTP status text
- * ("Bad Request") while the useful message sits in `body`.
- */
 export function getBridgeProviderErrorMessage(context: unknown, depth = 0): string | null {
   if (depth > MAX_DEPTH || typeof context !== 'object' || context === null) return null
 

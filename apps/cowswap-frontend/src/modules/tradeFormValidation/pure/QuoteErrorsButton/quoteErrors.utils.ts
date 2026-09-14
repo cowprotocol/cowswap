@@ -4,10 +4,6 @@ import { t } from '@lingui/core/macro'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
-/**
- * Only the errors we have our own copy for. The rest are omitted on purpose so the caller can fall
- * back to the provider's own explanation, which is more specific than anything generic we'd write.
- */
 export function getBridgeQuoteErrorTexts(): Partial<Record<BridgeQuoteErrors, string>> {
   return {
     [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,

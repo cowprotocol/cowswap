@@ -1,7 +1,5 @@
 import { getBridgeProviderErrorMessage } from './getBridgeProviderErrorMessage'
 
-// Mirrors ApiError from @defuse-protocol/one-click-sdk-typescript: `message` is the bare HTTP status
-// text, the real explanation lives in the parsed response `body`.
 function createOneClickApiError(message: string): Error {
   return Object.assign(new Error('Bad Request'), {
     status: 400,
