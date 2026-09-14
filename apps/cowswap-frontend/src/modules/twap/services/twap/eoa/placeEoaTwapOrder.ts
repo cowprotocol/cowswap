@@ -9,7 +9,7 @@ import {
   normalizeError,
   slowPromiseHandler,
 } from '@cowprotocol/common-utils'
-import { AccountAddress, SignerLike, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountAddress, isEvmChain, SignerLike, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
@@ -286,7 +286,7 @@ export async function placeEoaTwapOrder({
     throw new Error(`Vault relayer address is not configured for chain ${chainId}`)
   }
 
-  const pollerAddress = COMPOSABLE_COW_POLLER_ADDRESS[chainId]
+  const pollerAddress = isEvmChain(chainId) ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
 
   if (!pollerAddress) {
     throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)

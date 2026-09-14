@@ -5,6 +5,7 @@ import { useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   useIsSafeViaWc,
   useIsSafeWallet,
@@ -384,6 +385,23 @@ describe('useCreateTwapOrder', () => {
         pollerPermitData: null,
       }),
     )
+  })
+
+  it('does not place an EOA TWAP on Solana', async () => {
+    mockedUseWalletInfo.mockReturnValue({
+      chainId: SupportedChainId.SOLANA,
+      account: '0xaccount',
+    } as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).not.toHaveBeenCalled()
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+    expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
   })
 
   it('does not place an EOA TWAP or inject pollFunds on Mainnet when isTwapEoaEnabled is off', async () => {

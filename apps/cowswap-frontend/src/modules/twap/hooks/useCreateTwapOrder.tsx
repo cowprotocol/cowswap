@@ -7,7 +7,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
-import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
+import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -128,7 +128,7 @@ export function useCreateTwapOrder() {
   const { data: walletClient } = useWalletClient()
 
   // Poller permit only: ADVANCED_ORDERS disables permit for the trade spender, so look up poller as SWAP + custom spender.
-  const pollerAddress = chainId ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
+  const pollerAddress = chainId && isEvmChain(chainId) ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
   const pollerPermitInfo = usePermitInfo(inputCurrencyAmount?.currency, TradeType.SWAP, pollerAddress)
   const generatePermitHook = useGeneratePermitHook()
 
@@ -177,7 +177,7 @@ export function useCreateTwapOrder() {
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
       const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
-      if (!isSafeWallet && !isEoaTwap) {
+      if (!isEvmChain(chainId) || (!isSafeWallet && !isEoaTwap)) {
         return
       }
 
