@@ -4,15 +4,13 @@ import { t } from '@lingui/core/macro'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
-export function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
-  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
-
+/**
+ * Only the errors we have our own copy for. The rest (API_ERROR, QUOTE_ERROR, TX_BUILD_ERROR...) are
+ * left out on purpose: they carry the provider's own explanation, which is more useful than anything
+ * generic we could write, so the caller falls back to that message before the default text.
+ */
+export function getBridgeQuoteErrorTexts(): Partial<Record<BridgeQuoteErrors, string>> {
   return {
-    [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
     [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
     [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
