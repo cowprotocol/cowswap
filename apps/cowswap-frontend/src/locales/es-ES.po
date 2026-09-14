@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-14 14:10\n"
+"PO-Revision-Date: 2026-09-14 16:16\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1149,7 +1149,7 @@ msgstr "Gestionar listas de tokens"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sit tight! We're getting your order ready"
-msgstr ""
+msgstr "¡Abróchate! Estamos preparando tu orden"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 #~ msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
@@ -1382,7 +1382,7 @@ msgstr "¡Algunas órdenes no pueden ser canceladas!"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approving {symbol}"
-msgstr ""
+msgstr "Aprobando {symbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/state/params/ordersTableParams.atom.ts
 msgid "Orders history"
@@ -1408,7 +1408,7 @@ msgstr "Dapp"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Review and confirm in your wallet to continue."
-msgstr ""
+msgstr "Revisar y confirmar en tu wallet para continuar."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
@@ -1461,7 +1461,7 @@ msgstr "Personalizado"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Open in CoW Explorer"
-msgstr ""
+msgstr "Abrir en el explorador de CoW"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
@@ -1852,7 +1852,7 @@ msgstr "de"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Wallet actions complete"
-msgstr ""
+msgstr "Acciones de wallet completadas"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "Access to {displaySymbol} through this interface is subject to regulatory and location-based restrictions."
@@ -2692,7 +2692,7 @@ msgstr "Creando..."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "View in Orders"
-msgstr ""
+msgstr "Ver en Órdenes"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
@@ -3029,7 +3029,7 @@ msgstr "BFF no devolvió un precio para '{currencyAddress}' en la red '{currency
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Reset approval"
-msgstr ""
+msgstr "Reiniciar aprobación"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "This tool helps you recover your funds."
@@ -3246,7 +3246,7 @@ msgstr "{inputAmount} operado para un total de {outputAmount}"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit pending"
-msgstr ""
+msgstr "Permiso pendiente"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Enter your code"
@@ -3628,7 +3628,7 @@ msgstr "Aprenda cómo"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Insufficient {inputSymbolLabel} balance"
-msgstr ""
+msgstr "Saldo {inputSymbolLabel} insuficiente"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Enter a referral code with 5 to 20 characters"
@@ -3681,7 +3681,7 @@ msgstr "Ahora puede operar con <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Track its progress in Orders."
-msgstr ""
+msgstr "Seguimiento de su progreso en órdenes."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "How much of the order has been filled."
@@ -3872,7 +3872,7 @@ msgstr "CoW Swap utiliza un {accountProxyLabelString} dedicado, controlado sólo
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Signed"
-msgstr ""
+msgstr "Firmado"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Trade alerts enabled"
@@ -4323,7 +4323,7 @@ msgstr "Este destino no es compatible con esta red de origen"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Still activating TWAP"
-msgstr ""
+msgstr "Todavía activando TWAP"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #~ msgid "Wrap <0/> and Swap"
@@ -4362,7 +4362,7 @@ msgstr "La cotización se está actualizando..."
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve token"
-msgstr ""
+msgstr "Aprobar token"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started!"
@@ -4747,7 +4747,7 @@ msgstr "La cantidad de venta es demasiado pequeña"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating"
-msgstr ""
+msgstr "Activando"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Use the <0>Safe app</0> for advanced trading."
@@ -4804,7 +4804,7 @@ msgstr "Información de configuración de alertas de operaciones"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approval submitted. Waiting for network confirmation"
-msgstr ""
+msgstr "Aprobación enviada. Esperando confirmación de red"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
@@ -4871,7 +4871,7 @@ msgstr "Aún no hay firmas"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sign TWAP"
-msgstr ""
+msgstr "Firmar TWAP"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Invalid format"
@@ -4899,7 +4899,7 @@ msgstr "Aprobando <0>{currencySymbolOrContext}</0> para operar"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Your TWAP is active"
-msgstr ""
+msgstr "Tu TWAP está activo"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
@@ -5480,7 +5480,7 @@ msgstr "Costes de red"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Waiting for signature"
-msgstr ""
+msgstr "Esperando firma"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
@@ -5707,7 +5707,7 @@ msgstr "La \"Duración total\" es la duración que se tarda en ejecutar todas la
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "This is taking longer than usual. We're still getting your order ready."
-msgstr ""
+msgstr "Esto está tardando más de lo habitual. Aún estamos preparando tu orden."
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
@@ -6186,7 +6186,7 @@ msgstr "Cotización caducada. Actualizando..."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approval pending"
-msgstr ""
+msgstr "Aprobación pendiente"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
@@ -6305,7 +6305,7 @@ msgstr "más firma es"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Action required"
-msgstr ""
+msgstr "Acción requerida"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% minimum)"
@@ -6643,7 +6643,7 @@ msgstr "Error de compatibilidad de red"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit token"
-msgstr ""
+msgstr "Permitir token"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: URLs cannot contain spaces"
@@ -6960,7 +6960,7 @@ msgstr "Fecha"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit {symbol}"
-msgstr ""
+msgstr "Permitir {symbol}"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Rewards hub - My Rewards"
@@ -6972,7 +6972,7 @@ msgstr "Centro de Recompensas - Mis Recompensas"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Resetting approval"
-msgstr ""
+msgstr "Reiniciando aprobación"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -7258,7 +7258,7 @@ msgstr "Pool"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "New trade"
-msgstr ""
+msgstr "Nueva operación"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #~ msgid "Allow you to chose whether your limit orders will be <0>Partially fillable</0> or <1>Fill or kill</1>.<2/><3/><4>Fill or kill</4> orders will either be filled fully or not at all.<5/><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount."
@@ -7526,7 +7526,7 @@ msgstr "es obligatorio"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Still activating"
-msgstr ""
+msgstr "Todavía activando"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Operation in progress!"
