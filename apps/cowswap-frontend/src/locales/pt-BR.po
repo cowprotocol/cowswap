@@ -4025,10 +4025,6 @@ msgstr "Solver vencedor"
 msgid "Tokens from external sources."
 msgstr "Tokens de fontes externas."
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
-msgid "Bridge error: {providerErrorMessage}"
-msgstr ""
-
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Insufficient"
 msgstr "Insuficiente"

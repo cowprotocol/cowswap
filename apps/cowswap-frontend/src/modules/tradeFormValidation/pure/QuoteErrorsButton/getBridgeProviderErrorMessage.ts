@@ -3,16 +3,12 @@ const MAX_MESSAGE_LENGTH = 200
 const NESTED_KEYS = ['body', 'context', 'errorBody', 'error']
 
 /**
- * Bridge providers explain why a quote failed in the API response body, but that body reaches us
- * wrapped differently depending on the provider and on how many layers re-threw the error: the
- * provider SDK's own error (`{ body: { message } }`), the parsed body forwarded as-is (`{ message }`),
- * or either of those nested under `context` / `errorBody`.
+ * Finds the provider's own explanation inside a `BridgeProviderQuoteError.context`. Each provider
+ * and each re-throwing layer wraps the API response body differently: `{ body: { message } }`,
+ * a bare `{ message }`, or either nested under `context` / `errorBody`.
  *
- * Walk those shapes so a real reason - e.g. Near Intents' "Temporary swap limits: minimum swap amount
- * is $1,000" - reaches the user instead of a generic "try again later" they can't act on.
- *
- * `Error.message` is deliberately skipped: the provider SDKs set it to the bare HTTP status text
- * ("Bad Request"), which says nothing, while the useful message sits in `body`.
+ * `Error.message` is skipped on purpose - the provider SDKs set it to the HTTP status text
+ * ("Bad Request") while the useful message sits in `body`.
  */
 export function getBridgeProviderErrorMessage(context: unknown, depth = 0): string | null {
   if (depth > MAX_DEPTH || typeof context !== 'object' || context === null) return null
