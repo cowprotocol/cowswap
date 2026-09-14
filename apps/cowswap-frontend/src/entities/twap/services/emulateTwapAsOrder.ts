@@ -8,7 +8,7 @@ const statusMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
-  [TwapOrderStatus.PartiallyFilled]: OrderStatus.EXPIRED,
+  [TwapOrderStatus.PartiallyFilled]: OrderStatus.FULFILLED,
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
 }
 
