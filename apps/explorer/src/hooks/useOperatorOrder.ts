@@ -12,7 +12,7 @@ import {
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { useNetworkId } from 'state/network'
 import { Errors, Network, UiError } from 'types'
-import { transformOrder } from 'utils'
+import { getChainsForOrderId, transformOrder } from 'utils'
 
 import { getOrder, GetOrderParams, Order } from 'api/operator'
 
@@ -147,5 +147,5 @@ function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<
     defaultParams,
   }
 
-  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi)
+  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi, getChainsForOrderId(orderId))
 }

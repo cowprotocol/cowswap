@@ -1,4 +1,4 @@
-import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
@@ -183,6 +183,9 @@ const SOLANA_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{64}$/
  */
 export const isAnOrderId = (text: string, networkId?: Network | null): boolean =>
   (networkId && isSolanaChain(networkId) ? SOLANA_ORDER_ID_REGEX : EVM_ORDER_ID_REGEX).test(text)
+
+export const getChainsForOrderId = (orderId: string): Network[] =>
+  ALL_SUPPORTED_CHAIN_IDS.filter((chainId) => isAnOrderId(orderId, chainId))
 
 /**
  * Check if string is an address account against regex

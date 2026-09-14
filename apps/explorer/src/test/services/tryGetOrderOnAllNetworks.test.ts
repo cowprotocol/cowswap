@@ -4,6 +4,7 @@ import {
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { Network } from 'types'
+import { getChainsForOrderId } from 'utils'
 
 import { GetTxOrdersParams } from 'api/operator/types'
 
@@ -43,36 +44,27 @@ describe('tryGetOrderOnAllNetworks', () => {
     expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
     expect(result).toEqual({ order: ordersResult })
   })
+})
 
-  // Uids are chain-shaped, so crossing over can only miss — at two requests per chain.
-  test('Should not fall back across the EVM/Solana boundary', async () => {
-    const txHash = '0xTest_txHash'
-    const mockedApi = jest.fn().mockImplementation(() => Promise.resolve(null))
-    const searchList = [Network.MAINNET, Network.SEPOLIA, Network.SOLANA]
+// Uids are chain-shaped, so an order can only ever live on one family — but which one is decided by
+// the id, not by the chain being viewed, so a search from anywhere can still find and redirect to it.
+describe('getChainsForOrderId', () => {
+  const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
+  const EVM_ORDER_ID =
+    '0xeaeb698c973f691c702fdd6aacd09ea97acb7275ae26adbfdd884abda1d6697db6bad41ae76a11d10f7b0e664c5007b908bc77c9618b4c31'
 
-    const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
-      api: mockedApi,
-      defaultParams: { networkId: Network.SOLANA, txHash },
-    }
-    await tryGetOrderOnAllNetworksAndEnvironments(Network.SOLANA, getOrderApi, searchList)
-
-    // Only the initial Solana attempt: no EVM chain is worth asking.
-    expect(mockedApi).toHaveBeenCalledTimes(1)
-    expect(mockedApi).toHaveBeenCalledWith({ networkId: Network.SOLANA, txHash })
+  it('offers only Solana for a Solana uid', () => {
+    expect(getChainsForOrderId(SOLANA_ORDER_ID)).toEqual([Network.SOLANA])
   })
 
-  test('Should not fall back from an EVM chain onto Solana', async () => {
-    const txHash = '0xTest_txHash'
-    const mockedApi = jest.fn().mockImplementation(() => Promise.resolve(null))
-    const searchList = [Network.MAINNET, Network.SEPOLIA, Network.SOLANA]
+  it('offers every EVM chain but not Solana for an EVM uid', () => {
+    const chains = getChainsForOrderId(EVM_ORDER_ID)
 
-    const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
-      api: mockedApi,
-      defaultParams: { networkId: Network.SEPOLIA, txHash },
-    }
-    await tryGetOrderOnAllNetworksAndEnvironments(Network.SEPOLIA, getOrderApi, searchList)
+    expect(chains).toContain(Network.MAINNET)
+    expect(chains).not.toContain(Network.SOLANA)
+  })
 
-    expect(mockedApi).toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
-    expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.SOLANA, txHash })
+  it('offers nothing for a string that is neither', () => {
+    expect(getChainsForOrderId('0xdeadbeef')).toEqual([])
   })
 })
