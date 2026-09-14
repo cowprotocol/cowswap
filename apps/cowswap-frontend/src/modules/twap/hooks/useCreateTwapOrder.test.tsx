@@ -433,10 +433,13 @@ describe('useCreateTwapOrder', () => {
 
     const { result } = renderHook(useCreateTwapOrder)
 
+    let placementResult: boolean | undefined
+
     await act(async () => {
-      await result.current(false)
+      placementResult = await result.current(false)
     })
 
+    expect(placementResult).toBe(true)
     expect(onSuccess).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({

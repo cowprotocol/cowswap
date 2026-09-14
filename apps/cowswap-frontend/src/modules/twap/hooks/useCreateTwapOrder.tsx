@@ -172,7 +172,7 @@ export function useCreateTwapOrder() {
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line max-lines-per-function, complexity
-    async (fallbackHandlerIsNotSet: boolean) => {
+    async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
       // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
       const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
@@ -443,6 +443,10 @@ export function useCreateTwapOrder() {
 
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+
+        // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
+        // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
+        return true
       } catch (err: unknown) {
         if (err instanceof EoaTwapPlacementCancelledError) {
           return
@@ -456,6 +460,8 @@ export function useCreateTwapOrder() {
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+
+        return false
       }
     },
     [
