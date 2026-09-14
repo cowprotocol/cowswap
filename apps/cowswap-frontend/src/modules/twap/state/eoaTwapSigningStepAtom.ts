@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import type { Hex } from 'viem'
+
 export interface EoaTwapSigningStepState {
   step: EoaTwapSigningSteps
   phase: EoaTwapSigningPhase
@@ -19,18 +21,25 @@ export interface EoaTwapSigningStepState {
    * update it mid-flow).
    */
   lockDismiss: boolean
+
+  /** On-chain transaction hashes for completed wallet-action steps (approvals, setup tx). */
+  completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
+
+  /** Conditional TWAP order id, set after placement succeeds. */
+  orderId?: string
+
+  /** Cow-shed proxy that owns the TWAP, used for the temporary Explorer address link. */
+  proxyAddress?: string
 }
 
 /**
  * Progress within the current EOA TWAP signing step.
- * On-chain: Sign → WaitingForTx → (optional Verifying) → Confirmed.
- * Signature-only steps typically use Sign → Confirmed.
+ * On-chain: Sign → WaitingForTx → Confirmed.
  */
 export enum EoaTwapSigningPhase {
-  Confirmed = 'Confirmed',
   Sign = 'Sign',
-  Verifying = 'Verifying',
   WaitingForTx = 'WaitingForTx',
+  Confirmed = 'Confirmed',
 }
 
 export enum EoaTwapSigningSteps {
@@ -38,8 +47,16 @@ export enum EoaTwapSigningSteps {
   ApprovePoller = 'ApprovePoller',
   /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
   PermitPoller = 'PermitPoller',
+  /** Cow-shed EIP-712 signature for the setup multicall. */
   TwapSetup = 'TwapSetup',
-  CreatingOrder = 'CreatingOrder',
+  /** Factory executeHooks on-chain transaction. */
+  TwapSign = 'TwapSign',
+  /** Wait for the factory executeHooks transaction to be mined. */
+  SubmitTwap = 'SubmitTwap',
+  /** Same as {@link SubmitTwap}, shown when activation is taking longer than usual. */
+  SubmitTwapSlow = 'SubmitTwapSlow',
+  /** Placement finished; the review card shows the inline success box. */
+  Success = 'Success',
 }
 
 export const eoaTwapSigningStepAtom = atom<EoaTwapSigningStepState | null>(null)

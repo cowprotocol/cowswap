@@ -6,6 +6,8 @@
 
 import { Command } from '@cowprotocol/types'
 
+import { delay } from './misc'
+
 export type CancelableResult<T> = CancelledResult | SuccessResult<T>
 export type CancelCallback = Command
 export type CancelledResult = {
@@ -26,6 +28,13 @@ export type RejectCallback = (reason?: any) => void
 
 export type ResolveCallback<T> = (value: CancelableResult<T>) => void
 
+export interface SlowPromiseHandlerOptions {
+  /** Fire the slow callback after this many milliseconds if the promise is still pending. */
+  maxDuration: number
+  /** Optional artificial delay after the promise resolves (testing only). */
+  fakeDelay?: number
+}
+
 export type SuccessResult<T> = {
   cancelled: false
   data: T
@@ -34,10 +43,10 @@ export type SuccessResult<T> = {
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type ArgumentsType<T> = T extends (...args: infer A) => any ? A : never
-
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AsyncFunction<T> = (...args: any[]) => Promise<T>
+
 export function createImperativePromise<T>(promiseArg?: Promise<T> | null | undefined): ImperativePromise<T> {
   let resolve: ResolveCallback<T> | null = null
   let reject: RejectCallback | null = null
@@ -95,5 +104,37 @@ export function onlyResolvesLast<R>(
     const { promise, cancel } = createImperativePromise(initialPromise)
     cancelPrevious = cancel
     return promise
+  }
+}
+
+/**
+ * Awaits a promise and invokes `onSlow` once `maxDuration` elapses while it is still pending.
+ * The slow callback is skipped if the promise settles first.
+ */
+export async function slowPromiseHandler<T>(
+  promise: Promise<T>,
+  onSlow: () => void,
+  { maxDuration, fakeDelay = 0 }: SlowPromiseHandlerOptions,
+): Promise<T> {
+  const resolvedPromise = fakeDelay > 0 ? promise.then((value) => delay(fakeDelay).then(() => value)) : promise
+
+  const { promise: slowPromise, resolve: resolveSlow, cancel: cancelSlow } = createImperativePromise<void>()
+
+  void delay(maxDuration).then(() => {
+    resolveSlow({ cancelled: false, data: undefined })
+  })
+
+  void slowPromise.then((result) => {
+    if (result.cancelled) {
+      return
+    }
+
+    onSlow()
+  })
+
+  try {
+    return await resolvedPromise
+  } finally {
+    cancelSlow()
   }
 }

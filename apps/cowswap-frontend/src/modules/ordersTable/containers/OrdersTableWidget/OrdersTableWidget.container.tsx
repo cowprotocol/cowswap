@@ -25,7 +25,7 @@ import {
 
 import { usePartiallyUpdateOrdersTableFiltersAtom } from '../../hooks/usePartiallyUpdateOrdersTableFiltersAtom'
 import { OrdersTableContainer } from '../../pure/OrdersTable/Container/OrdersTableContainer.pure'
-import { ordersTableFiltersAtom } from '../../state/filters/ordersTableFilters.atom'
+import { ordersTableFiltersAtom, ordersTableFiltersResetSignalAtom } from '../../state/filters/ordersTableFilters.atom'
 import { ordersTableStateAtom } from '../../state/ordersTable.atoms'
 import { ordersTableParamsAtom } from '../../state/params/ordersTableParams.atom'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../state/params/ordersTableParams.constants'
@@ -49,17 +49,26 @@ export interface OrdersTableWidgetProps {
 export function OrdersTableWidget({ orderType }: OrdersTableWidgetProps): ReactNode {
   const { i18n } = useLingui()
 
-  const { searchTerm: searchTermFilter, historyStatusFilter } = useAtomValue(ordersTableFiltersAtom)
+  const filters = useAtomValue(ordersTableFiltersAtom)
+  const { searchTerm: searchTermFilter, historyStatusFilter } = filters
   const partiallyUpdateOrdersTableFilters = usePartiallyUpdateOrdersTableFiltersAtom()
+  const ordersTableFiltersResetSignal = useAtomValue(ordersTableFiltersResetSignalAtom)
 
   const [searchTerm, setSearchTerm] = useStateWithDeferredValue(searchTermFilter, (searchTerm) => {
     partiallyUpdateOrdersTableFilters({ searchTerm })
   })
 
-  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching pages.
+  // `useStateWithDeferredValue` only uses the atom value as initial state. Clear local input when switching order
+  // type pages (useOrdersTable resets filters on the parent).
   useLayoutEffect(() => {
     setSearchTerm('')
   }, [orderType, setSearchTerm])
+
+  useLayoutEffect(() => {
+    if (ordersTableFiltersResetSignal === 0) return
+
+    setSearchTerm('')
+  }, [ordersTableFiltersResetSignal, setSearchTerm])
 
   const resetSearchTerm = (): void => {
     setSearchTerm('')
