@@ -22,7 +22,7 @@ import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<void | boolean>
   onDismiss(): void
 
   inputCurrencyInfo: CurrencyPreviewInfo
