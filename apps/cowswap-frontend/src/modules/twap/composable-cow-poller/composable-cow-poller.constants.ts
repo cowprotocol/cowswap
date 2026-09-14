@@ -1,4 +1,4 @@
-import { mapAddressToSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { type AccountAddress, mapAddressToSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
  * ComposableCowPoller: just-in-time funding for composable conditional orders.
@@ -22,9 +22,11 @@ import { mapAddressToSupportedNetworks, SupportedChainId } from '@cowprotocol/co
  * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json - `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`
  * @see https://github.com/cowdao-grants/cow-shed/pull/68 - multi-chain ComposableCoW shed deploys
  */
-const composableCowPollerAddress = '0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E'
-export const COMPOSABLE_COW_POLLER_ADDRESS: Record<SupportedChainId, string> =
-  mapAddressToSupportedNetworks(composableCowPollerAddress)
+const composableCowPollerAddress = '0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E' as AccountAddress
+export const COMPOSABLE_COW_POLLER_ADDRESS = mapAddressToSupportedNetworks(composableCowPollerAddress) as Record<
+  SupportedChainId,
+  AccountAddress
+>
 
 /**
  * Gas budget for the `pollFunds` pre-hook on each TWAP part
