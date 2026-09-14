@@ -1,3 +1,6 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
+
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -23,6 +26,7 @@ interface UseTwapConfirmCurrencyPreviewReturn {
   receiveAmountInfo: ReturnType<typeof useScaledReceiveAmountInfo>
 }
 
+// eslint-disable-next-line complexity
 export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewReturn {
   const {
     inputCurrencyAmount,
@@ -36,13 +40,17 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const localFormValidation = useTwapFormState()
   const { isConfirming, pendingTrade } = useTradeConfirmState()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const { isTwapEoaEnabled } = useFeatureFlags()
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
   const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
   const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
 
   const inputSymbolLabel = inputCurrencyAmount?.currency?.symbol || t`token`
   const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
-  const showExpectedToReceive = isConfirming || !!pendingTrade || !!eoaTwapSigningStep
+  const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+  const showExpectedToReceive = isEoaTwap && (isConfirming || !!pendingTrade || !!eoaTwapSigningStep)
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
