@@ -156,18 +156,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.ImpactLoading]: {
     text: (
-      <>
+      <span>
         <Trans>Fetching price impact</Trans>
         <CenteredDots smaller />
-      </>
+      </span>
     ),
   },
   [TradeFormValidation.BalancesLoading]: {
     text: (
-      <>
+      <span>
         <Trans>Fetching balances</Trans>
         <CenteredDots smaller />
-      </>
+      </span>
     ),
   },
   [TradeFormValidation.BalancesNotLoaded]: (props: ButtonComponentProps) => {

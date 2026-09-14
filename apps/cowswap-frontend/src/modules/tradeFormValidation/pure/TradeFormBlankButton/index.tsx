@@ -21,6 +21,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
+
   border-radius: 16px;
   min-height: 58px;
   text-align: center;
@@ -117,12 +118,10 @@ export function TradeFormBlankButton({
       data-click-event={clickEvent}
     >
       {showLoader ? (
-        <>
-          <LongLoadText>
-            <Trans>Confirm with your wallet</Trans>
-          </LongLoadText>{' '}
+        <LongLoadText>
+          <Trans>Confirm with your wallet</Trans>
           <CenteredDots smaller />
-        </>
+        </LongLoadText>
       ) : (
         <>{children}</>
       )}

@@ -207,10 +207,10 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <>
+              <span>
                 {t`Resetting approval`}
                 <ThreeDots />
-              </>
+              </span>
             ),
             disabled: true,
           }
@@ -229,10 +229,10 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <>
+              <span>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </>
+              </span>
             ),
             disabled: true,
           }
@@ -251,10 +251,10 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <>
+              <span>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </>
+              </span>
             ),
             disabled: true,
           }
