@@ -1001,6 +1001,9 @@ importers:
       '@cowprotocol/sdk-bridging':
         specifier: 4.4.6
         version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-composable':
+        specifier: 1.6.0
+        version: 1.6.0(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.5.1
         version: 3.5.1
