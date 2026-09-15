@@ -6,7 +6,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
@@ -406,10 +406,13 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
+        const eventId = isEoaTwap ? await waitForTwapEventId(twapOrderId, account, chainId) : undefined
+
         emitPostedOrderEvent({
           chainId,
           id: twapOrderId,
           orderCreationHash,
+          explorerUrl: isEoaTwap ? (eventId ? getExplorerTwapOrderLink(chainId, eventId) : null) : undefined,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: updatedTwapOrder.sellAmount,
@@ -423,8 +426,6 @@ export function useCreateTwapOrder() {
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         if (isEoaTwap) {
-          const eventId = await waitForTwapEventId(twapOrderId, account, chainId)
-
           // Keep the review card open and replace signing steps with the inline success box.
           updateEoaTwapFlow({
             step: EoaTwapSigningSteps.Success,
