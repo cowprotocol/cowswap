@@ -6,7 +6,7 @@ import { EoaTwapLeaveSetupModalProps } from '../pure/EoaTwapLeaveSetupModal/EoaT
 import {
   EoaTwapLeaveConfirmationVariant,
   getEoaTwapLeaveConfirmationVariant,
-} from '../utils/getEoaTwapLeaveConfirmationVariant'
+} from '../pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils'
 
 interface UseEoaTwapLeaveConfirmationParams {
   symbol: string

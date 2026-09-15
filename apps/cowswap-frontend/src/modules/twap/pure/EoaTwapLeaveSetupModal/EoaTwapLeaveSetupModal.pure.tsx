@@ -13,12 +13,10 @@ import {
   StatusColorVariant,
 } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './EoaTwapLeaveSetupModal.styled'
-
-import { EoaTwapLeaveConfirmationVariant } from '../../utils/getEoaTwapLeaveConfirmationVariant'
+import { EoaTwapLeaveConfirmationVariant, getEoaTwapLeaveSetupModalContent } from './EoaTwapLeaveSetupModal.utils'
 
 export interface EoaTwapLeaveSetupModalProps {
   isOpen: boolean
@@ -35,18 +33,10 @@ export function EoaTwapLeaveSetupModal({
   onLeave,
   onContinue,
 }: EoaTwapLeaveSetupModalProps): ReactNode {
-  const description =
-    variant === 'afterApproval'
-      ? t`You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted.`
-      : t`You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request.`
-
-  const infoBannerTitle =
-    variant === 'afterApproval' ? t`Your ${symbol} approval stays valid` : t`Reject the wallet request to stop`
-
-  const infoBannerDescription =
-    variant === 'afterApproval'
-      ? t`You won't need to approve it again unless your allowance changes.`
-      : t`If you approve it after leaving, the order may still be submitted.`
+  const { title, description, infoBannerTitle, infoBannerDescription } = getEoaTwapLeaveSetupModalContent(
+    variant,
+    symbol,
+  )
 
   const isUpToSmall = useMediaQuery(Media.upToSmall(false))
 
@@ -62,10 +52,7 @@ export function EoaTwapLeaveSetupModal({
   return (
     <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
-        <ModalHeader
-          title={<Trans>Leave TWAP setup?</Trans>}
-          titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title}
-        />
+        <ModalHeader title={title} titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title} />
 
         <Modal.Content>
           <styledEl.Content>
