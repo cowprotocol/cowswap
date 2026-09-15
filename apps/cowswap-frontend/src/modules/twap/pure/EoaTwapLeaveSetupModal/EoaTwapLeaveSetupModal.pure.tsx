@@ -54,22 +54,20 @@ export function EoaTwapLeaveSetupModal({
       <Modal.Root>
         <ModalHeader title={title} titleAs={isUpToExtraSmall ? BottomDrawer.Title : Dialog.Title} />
 
-        <Modal.Content>
-          <styledEl.Content>
-            <styledEl.Description>{description}</styledEl.Description>
+        <Modal.Description>{description}</Modal.Description>
 
-            <InlineBanner
-              bannerType={StatusColorVariant.Info}
-              hideIcon
-              borderRadius="16px"
-              orientation={BannerOrientation.Horizontal}
-            >
-              <p>
-                <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
-              </p>
-              <p>{infoBannerDescription}</p>
-            </InlineBanner>
-          </styledEl.Content>
+        <Modal.Content>
+          <InlineBanner
+            bannerType={StatusColorVariant.Info}
+            hideIcon
+            borderRadius="16px"
+            orientation={BannerOrientation.Horizontal}
+          >
+            <p>
+              <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
+            </p>
+            <p>{infoBannerDescription}</p>
+          </InlineBanner>
         </Modal.Content>
 
         <Modal.FooterWithTwoButtons
