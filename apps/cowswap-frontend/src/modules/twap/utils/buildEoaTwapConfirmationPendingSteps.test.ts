@@ -194,7 +194,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     ).toContain('https://etherscan.io/tx/0xactivate')
   })
 
-  it('does not show wallet actions complete while SubmitTwap is loading', () => {
+  it('collapses wallet actions while SubmitTwap is loading', () => {
     const plan = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
     const steps = getPendingSteps(
@@ -211,25 +211,12 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       }),
     )
 
-    expect(steps.map(({ id }) => id)).toEqual([EoaTwapSigningSteps.SubmitTwap])
-    expect(steps.some(({ id }) => id === EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID)).toBe(false)
-  })
-
-  it('shows only the activation step while SubmitTwap is loading', () => {
-    const plan = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
-
-    const steps = getPendingSteps(
-      buildEoaTwapConfirmationPendingSteps({
-        signingStep: {
-          step: EoaTwapSigningSteps.SubmitTwap,
-          plan,
-          phase: EoaTwapSigningPhase.WaitingForTx,
-          lockDismiss: true,
-        },
-      }),
-    )
-
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
+      {
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: 'Wallet actions complete',
+        status: 'success',
+      },
       {
         id: EoaTwapSigningSteps.SubmitTwap,
         label: 'Activating TWAP',
@@ -237,9 +224,10 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       },
     ])
     expect(steps[0]?.description).toBeTruthy()
+    expect(steps[1]?.description).toBeTruthy()
   })
 
-  it('keeps activation loading after setup tx confirms while waiting for Success', () => {
+  it('marks activation as success after setup tx confirms while waiting for Success', () => {
     const plan = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
     const steps = getPendingSteps(
@@ -256,14 +244,19 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: 'Wallet actions complete',
+        status: 'success',
+      },
+      {
         id: EoaTwapSigningSteps.SubmitTwap,
         label: 'Activating TWAP',
-        status: 'loading',
+        status: 'success',
       },
     ])
   })
 
-  it('shows only the slow activation step while SubmitTwapSlow is loading', () => {
+  it('collapses wallet actions while SubmitTwapSlow is loading', () => {
     const plan = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwapSlow]
 
     const steps = getPendingSteps(
@@ -279,15 +272,20 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
 
     expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
       {
+        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
+        label: 'Wallet actions complete',
+        status: 'success',
+      },
+      {
         id: EoaTwapSigningSteps.SubmitTwapSlow,
         label: 'Still activating TWAP',
         status: 'loading',
       },
     ])
-    expect(steps[0]?.description).toBe("This is taking longer than usual. We're still getting your order ready.")
+    expect(steps[1]?.description).toBe("This is taking longer than usual. We're still getting your order ready.")
   })
 
-  it('renders wallet-action summaries on Success', () => {
+  it('renders wallet-action summaries with tx links when expanded', () => {
     const plan = [
       EoaTwapSigningSteps.ZeroApprovePoller,
       EoaTwapSigningSteps.ApprovePoller,
@@ -298,10 +296,10 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     const steps = getPendingSteps(
       buildEoaTwapConfirmationPendingSteps({
         signingStep: {
-          step: EoaTwapSigningSteps.Success,
+          step: EoaTwapSigningSteps.SubmitTwap,
           plan,
-          phase: EoaTwapSigningPhase.Confirmed,
-          lockDismiss: false,
+          phase: EoaTwapSigningPhase.WaitingForTx,
+          lockDismiss: true,
           completedStepTxHashes: {
             [EoaTwapSigningSteps.ZeroApprovePoller]: '0xzero',
             [EoaTwapSigningSteps.ApprovePoller]: '0xapprove',
@@ -312,14 +310,6 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
         chainId: SupportedChainId.MAINNET,
       }),
     )
-
-    expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
-      {
-        id: EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
-        label: 'Wallet actions complete',
-        status: 'success',
-      },
-    ])
 
     const descriptionMarkup = renderToStaticMarkup(steps[0]?.description)
 
@@ -344,20 +334,17 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     ).toBeNull()
   })
 
-  it('returns wallet actions complete for Success', () => {
-    const steps = getPendingSteps(
+  it('returns null for Success, which is not part of the plan', () => {
+    expect(
       buildEoaTwapConfirmationPendingSteps({
         signingStep: {
           step: EoaTwapSigningSteps.Success,
           plan: DEFAULT_PLAN,
           phase: EoaTwapSigningPhase.Confirmed,
-          lockDismiss: false,
+          lockDismiss: true,
         },
       }),
-    )
-
-    expect(steps).toHaveLength(1)
-    expect(steps[0]?.id).toBe(EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID)
+    ).toBeNull()
   })
 })
 

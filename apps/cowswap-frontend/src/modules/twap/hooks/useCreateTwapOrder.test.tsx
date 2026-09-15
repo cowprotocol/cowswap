@@ -230,6 +230,7 @@ describe('useCreateTwapOrder', () => {
     mockedPlaceEoaTwapOrder.mockResolvedValue({
       proxyAddress: '0xproxy',
       setupTxHash: '0xsetuptx',
+      eventId: '1'.repeat(70),
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedUseGetAmountToSignApprove.mockReturnValue(null)
     mockedUseWalletClient.mockReturnValue({
@@ -426,28 +427,11 @@ describe('useCreateTwapOrder', () => {
     expect(onSuccess).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
 
-    const successUpdate = updateEoaTwapFlow.mock.calls.find(([update]) => typeof update === 'function')?.[0]
-
-    expect(typeof successUpdate).toBe('function')
-
-    if (typeof successUpdate !== 'function') {
-      throw new Error('expected success updater')
-    }
-
-    expect(
-      successUpdate({
-        step: EoaTwapSigningSteps.SubmitTwap,
-        phase: EoaTwapSigningPhase.Confirmed,
-        plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
-        lockDismiss: true,
-      }),
-    ).toEqual({
+    expect(updateEoaTwapFlow).toHaveBeenCalledWith({
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
-      orderId: '0xtwap',
       eventId: '1'.repeat(70),
       lockDismiss: false,
-      plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
     })
   })
 
