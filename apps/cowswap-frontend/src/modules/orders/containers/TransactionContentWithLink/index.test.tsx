@@ -110,6 +110,15 @@ describe('TransactionContentWithLink', () => {
       expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
       expect(tx.hash).toBe(COW_ORDER_UID)
     })
+
+    it('uses orderUid once an eth-flow order is created on-chain', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.PENDING } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: COW_ORDER_UID, isEthFlow: true })
+
+      const tx = getRenderedTx()
+      expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
+      expect(tx.hash).toBe(COW_ORDER_UID)
+    })
   })
 
   describe('hash selection for non-safe wallet cases', () => {
@@ -148,6 +157,32 @@ describe('TransactionContentWithLink', () => {
       const tx = getRenderedTx()
       expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
       expect(tx.hash).toBe(ONCHAIN_TX_HASH)
+    })
+
+    it('uses orderUid once an eth-flow order is created on-chain', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.PENDING } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: COW_ORDER_UID, isEthFlow: true })
+
+      const tx = getRenderedTx()
+      expect(tx.hashType).toBe(HashType.ETHEREUM_TX)
+      expect(tx.hash).toBe(COW_ORDER_UID)
+    })
+
+    it.each([OrderStatus.FULFILLED, OrderStatus.EXPIRED, OrderStatus.CANCELLED])(
+      'uses orderUid for an eth-flow order in %s status',
+      (status) => {
+        useOrderMock.mockReturnValue({ status } as ReturnType<typeof useOrder>)
+        renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: COW_ORDER_UID, isEthFlow: true })
+
+        expect(getRenderedTx().hash).toBe(COW_ORDER_UID)
+      },
+    )
+
+    it('keeps using transactionHash for an eth-flow order that failed to create', () => {
+      useOrderMock.mockReturnValue({ status: OrderStatus.FAILED } as ReturnType<typeof useOrder>)
+      renderComponent({ transactionHash: ONCHAIN_TX_HASH, orderUid: COW_ORDER_UID, isEthFlow: true })
+
+      expect(getRenderedTx().hash).toBe(ONCHAIN_TX_HASH)
     })
   })
 })
