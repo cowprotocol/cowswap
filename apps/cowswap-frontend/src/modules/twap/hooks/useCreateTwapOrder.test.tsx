@@ -425,11 +425,29 @@ describe('useCreateTwapOrder', () => {
 
     expect(onSuccess).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
-    expect(updateEoaTwapFlow).toHaveBeenCalledWith({
+
+    const successUpdate = updateEoaTwapFlow.mock.calls.find(([update]) => typeof update === 'function')?.[0]
+
+    expect(typeof successUpdate).toBe('function')
+
+    if (typeof successUpdate !== 'function') {
+      throw new Error('expected success updater')
+    }
+
+    expect(
+      successUpdate({
+        step: EoaTwapSigningSteps.SubmitTwap,
+        phase: EoaTwapSigningPhase.Confirmed,
+        plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
+        lockDismiss: true,
+      }),
+    ).toEqual({
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
       orderId: '0xtwap',
       eventId: '1'.repeat(70),
+      lockDismiss: false,
+      plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
     })
   })
 

@@ -1,4 +1,4 @@
-import { encodeFunctionData, erc20Abi, maxUint256, stringToHex, type Hex, type WalletClient } from 'viem'
+import { encodeFunctionData, erc20Abi, maxUint256, type Hex, type WalletClient } from 'viem'
 import type { Config } from 'wagmi'
 import { readContract } from 'wagmi/actions'
 
@@ -9,10 +9,9 @@ import {
   normalizeError,
   slowPromiseHandler,
 } from '@cowprotocol/common-utils'
-import { AccountAddress, SignerLike, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
-import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
@@ -22,11 +21,14 @@ import {
   getCowShedHooks,
   EOA_TWAP_ACCOUNT_PROXY_CONFIG,
   EOA_TWAP_SHED_FACTORY_OPTIONS,
+  hasBytecode,
 } from 'modules/accountProxy'
+import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { TransactionNotBroadcastError } from 'common/hooks/useGetReceipt'
 
+import { buildEoaTwapTrustedExecuteTx } from './buildEoaTwapTrustedExecuteTx'
 import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
 
 import {
@@ -48,13 +50,10 @@ import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 const DEFAULT_GAS_LIMIT = 1_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
-const SUBMIT_TWAP_SLOW_MS = 30_000
+const SUBMIT_TWAP_SLOW_MS = 10_000
 
 /** Set > 0 to artificially delay receipt resolution (local testing only). */
 const EOA_TWAP_FAKE_RECEIPT_DELAY_MS = 0
-
-/** TWAP setup is valid for 30 minutes. */
-const SETUP_VALID_FOR_SEC = 1800
 
 /** Log helper. */
 const log = createCowLogger('EOA TWAP')
@@ -104,8 +103,8 @@ export interface PlaceEoaTwapOrderParams {
   account: AccountAddress
   twapOrder: TWAPOrder
   twapOrderCreationContext: null | TwapOrderCreationContext
+  twapOrderId: string
   paramsStruct: ConditionalOrderParams
-  signer: SignerLike
   config: Config
   walletClient: WalletClient
   onSigningStep: EoaTwapFlowUpdater
@@ -115,6 +114,7 @@ export interface PlaceEoaTwapOrderParams {
 export interface PlaceEoaTwapOrderResult {
   proxyAddress: AccountAddress
   setupTxHash: Hex
+  eventId: string | undefined
 }
 
 /**
@@ -249,9 +249,8 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. Sign cow-shed EIP-712 (`TwapSetup`).
- * 2. Sign and send factory executeHooks TX (`TwapSign`)
- * 3. Then wait for mining (`SubmitTwap`).
+ * 1. Send a single setup TX (`TwapSign`) calling `trustedExecuteHooks` on the cow-shed (admin path).
+ * 2. Then wait for mining (`SubmitTwap`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
@@ -259,14 +258,14 @@ export async function placeEoaTwapOrder({
   account,
   twapOrder,
   twapOrderCreationContext,
+  twapOrderId,
   paramsStruct,
-  signer,
   config,
   walletClient,
   onSigningStep,
   pollerPermitData = null,
 }: PlaceEoaTwapOrderParams): Promise<PlaceEoaTwapOrderResult> {
-  if (!twapOrderCreationContext || !signer) throw new Error('twapOrderCreationContext and signer are required')
+  if (!twapOrderCreationContext) throw new Error('twapOrderCreationContext is required')
 
   const { sellAmount } = twapOrder
 
@@ -347,40 +346,22 @@ export async function placeEoaTwapOrder({
     pollerPermitData,
   })
 
-  const deadline = BigInt(Math.ceil(Date.now() / 1000)) + BigInt(SETUP_VALID_FOR_SEC)
-
-  // TODO: Revert to this once we switch from `getCowShedHooks` to `CowShedSdk.signCalls`, once it forwards a custom
-  // EIP-712 version. CowShedSdk.signCalls would estimate gas for us.
-  /*
-  const { signedMulticall, gasLimit } = await cowShedSdk.signCalls({
-    chainId,
+  const isProxyDeployed = await hasBytecode(config, proxyAddress)
+  const setupTx = buildEoaTwapTrustedExecuteTx({
+    account: account as `0x${string}`,
+    proxyAddress: proxyAddress as `0x${string}`,
+    factoryAddress,
     calls,
-    deadline,
-    signer,
-    defaultGasLimit: DEFAULT_GAS_LIMIT,
-    // TODO: Could the estimation be too low for newly created sheds?
-    // gasLimit: DEFAULT_GAS_LIMIT,
+    isProxyDeployed,
   })
-  */
 
-  const nonceHex = stringToHex(Date.now().toString()).slice(2)
-  const nonce = `0x${(nonceHex + '0'.repeat(64)).slice(0, 64)}` as `0x${string}`
-
-  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
-
-  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
-
-  onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Confirmed })
-
-  const callData = cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature)
-
-  eoaTwapDebugLog('Signed setup multicall', { to: factoryAddress, callData })
+  eoaTwapDebugLog('Setup trustedExecuteHooks multicall', setupTx)
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
   const setupTxHash = await walletClient.sendTransaction({
-    to: factoryAddress,
-    data: callData as Hex,
+    to: setupTx.to,
+    data: setupTx.data,
     account,
     chain: walletClient.chain,
     gas: DEFAULT_GAS_LIMIT,
@@ -402,16 +383,22 @@ export async function placeEoaTwapOrder({
 
   let submitTwapStep = EoaTwapSigningSteps.SubmitTwap
 
-  const receipt = await slowPromiseHandler(
-    waitForEoaTwapTxReceipt(config, setupTxHash, chainId).catch((err: unknown) => {
-      const error = normalizeError(err)
+  const { receipt, eventId } = await slowPromiseHandler(
+    waitForEoaTwapTxReceipt(config, setupTxHash, chainId)
+      .then(async (receipt) => {
+        const eventId = await waitForTwapEventId(twapOrderId, account, chainId)
 
-      if (error instanceof TransactionNotBroadcastError) {
-        throw new Error(t`TWAP setup was cancelled or not broadcast. Please try again.`)
-      }
+        return { receipt, eventId }
+      })
+      .catch((err: unknown) => {
+        const error = normalizeError(err)
 
-      throw error
-    }),
+        if (error instanceof TransactionNotBroadcastError) {
+          throw new Error(t`TWAP setup was cancelled or not broadcast. Please try again.`)
+        }
+
+        throw error
+      }),
     () => {
       submitTwapStep = EoaTwapSigningSteps.SubmitTwapSlow
 
@@ -437,7 +424,7 @@ export async function placeEoaTwapOrder({
     phase: EoaTwapSigningPhase.Confirmed,
   })
 
-  return { proxyAddress, setupTxHash }
+  return { proxyAddress, setupTxHash, eventId }
 }
 
 function eoaTwapDebugLog(...args: unknown[]): void {
