@@ -13,7 +13,7 @@ import {
 
 import { t } from '@lingui/core/macro'
 
-import { getExplorerOrderLink } from './explorer'
+import { getExplorerOrderLink, getExplorerTwapOrderLink, isTwapEventId } from './explorer'
 import { getSafeAbsoluteUrl } from './safeLink'
 
 /**
@@ -22,11 +22,15 @@ import { getSafeAbsoluteUrl } from './safeLink'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-// returns the checksummed address if the address is valid, otherwise returns false
+/**
+ * EVM only. Returns the checksummed EVM address if valid, otherwise false.
+ *
+ * Do not make this chain-aware: it has no `chainId` and ~23 call sites rely on the EVM contract
+ * (recipient validation, quote params). For chain-agnostic checks use `isSupportedAddress` /
+ * `getAddressKey` from `@cowprotocol/cow-sdk`.
+ */
 export function isAddress(value: string | undefined | null): string | false {
   if (!value) return false
-
-  if (isSolanaAddress(value)) return value // base58, case-sensitive — no checksum transform
 
   return checksumEvmAddress(value)
 }
@@ -119,6 +123,9 @@ export function getCoWExplorerLinkTitle(): string {
 }
 
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
+  const twapLink = type === 'transaction' ? getExplorerTwapOrderLink(chainId, data) : undefined
+  if (twapLink) return twapLink
+
   if (isCowOrder(type, data)) {
     // Explorer for CoW orders:
     //    If a transaction has the size of the CoW orderId, then it's a meta-tx
@@ -149,7 +156,9 @@ export function getEtherscanUrl(
 }
 
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  return isCowOrder(type, data) ? getCoWExplorerLinkTitle() : getChainExplorerLinkTitle(chainId)
+  return isCowOrder(type, data) || (type === 'transaction' && isTwapEventId(data ?? ''))
+    ? getCoWExplorerLinkTitle()
+    : getChainExplorerLinkTitle(chainId)
 }
 
 // TODO: Add proper return type annotation

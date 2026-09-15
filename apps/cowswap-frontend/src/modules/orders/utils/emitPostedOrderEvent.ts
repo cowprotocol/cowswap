@@ -24,6 +24,7 @@ interface PendingOrderNotificationParams {
   outputAmount: CurrencyAmount<Currency>
   orderCreationHash?: string
   isEthFlow?: boolean
+  explorerUrl?: string | null
 }
 
 export function emitPostedOrderEvent(params: PendingOrderNotificationParams): void {
@@ -52,6 +53,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     inputAmount,
     outputAmount,
     orderDetails: postedOrderPayload,
+    explorerUrl: params.explorerUrl,
     isEthFlow,
   })
 }

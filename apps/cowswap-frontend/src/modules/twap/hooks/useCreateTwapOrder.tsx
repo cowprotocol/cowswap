@@ -6,7 +6,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
@@ -74,6 +74,7 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -264,6 +265,7 @@ export function useCreateTwapOrder() {
         const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
         // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
+        // TODO: This should probably be removed for v2:
         const twapOrderId = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
@@ -292,7 +294,7 @@ export function useCreateTwapOrder() {
 
         // Value passed to `tradeConfirmActions.onSuccess`. Ends up in `PostedOrderNotification`, rendering a Safe or Explorer link in a toast.
         // Must be truthy to show the success screen.
-        // - EOA: cow-shed factory setup transaction hash
+        // - EOA: indexed event ID, or setup transaction hash if indexing times out
         // - Safe: safeTxHash
         let confirmModalHash: string
 
@@ -369,7 +371,6 @@ export function useCreateTwapOrder() {
           })
 
           // Setup factory tx hash for confirm-modal / explorer link.
-          // CreatingOrder is marked Confirmed inside placeEoaTwapOrder after the receipt.
           confirmModalHash = setupTxHash
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
@@ -405,10 +406,13 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
+        const eventId = isEoaTwap ? await waitForTwapEventId(twapOrderId, account, chainId) : undefined
+
         emitPostedOrderEvent({
           chainId,
           id: twapOrderId,
           orderCreationHash,
+          explorerUrl: isEoaTwap ? (eventId ? getExplorerTwapOrderLink(chainId, eventId) : null) : undefined,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: updatedTwapOrder.sellAmount,
@@ -420,21 +424,29 @@ export function useCreateTwapOrder() {
         sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
-        updateEoaTwapFlow(null)
 
-        tradeConfirmActions.onSuccess(confirmModalHash)
+        if (isEoaTwap) {
+          // Keep the review card open and replace signing steps with the inline success box.
+          updateEoaTwapFlow({
+            step: EoaTwapSigningSteps.Success,
+            phase: EoaTwapSigningPhase.Confirmed,
+            orderId: twapOrderId,
+            eventId,
+          })
+        } else {
+          updateEoaTwapFlow(null)
+          tradeConfirmActions.onSuccess(confirmModalHash)
+
+          // Navigate to open orders after successful placement once the new order is in the store, otherwise you might
+          // be redirected back (to OPEN most likely) by the redirection logic in `observeOrdersUrl()` (`ordersTable.atoms.ts`).
+          setTimeout(() => {
+            // A freshly placed Safe TWAP order is always in WaitSigning until the Safe/SC owners sign it.
+            navigateToOrdersTableTab(OrderTabId.SIGNING)
+          })
+        }
+
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
-
-        // TODO: Clear filters if the new order is not visible before navigating.
-
-        // Navigate to open orders after successful placement once the new order is in the store, otherwise you might
-        // be redirected back (to OPEN most likely) by the redirection logic in `observeOrdersUrl()` (`ordersTable.atoms.ts`).
-        setTimeout(() => {
-          // A freshly placed Safe TWAP order is always in WaitSigning until the Safe/SC owners
-          // sign it, while a EOA TWAP order is in Open straight away.
-          navigateToOrdersTableTab(isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING)
-        })
       } catch (err: unknown) {
         if (err instanceof EoaTwapPlacementCancelledError) {
           return

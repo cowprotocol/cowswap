@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/cow-sdk'
-import { Currency, Token } from '@cowprotocol/currency'
+import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import {
@@ -25,7 +25,14 @@ import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { useDerivedTradeState, useIsWrapOrUnwrap, useNonEvmReceiverConfirmed, useTradePriceImpact } from 'modules/trade'
+import {
+  ReceiveAmountInfo,
+  useDerivedTradeState,
+  useGetReceiveAmountInfo,
+  useIsWrapOrUnwrap,
+  useNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -89,6 +96,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapMaximumSellAmount = getSwapMaximumSellAmount(tradeType, receiveAmountInfo)
+
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
@@ -135,6 +145,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         featureFlagsStatus === 'loading' ||
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      swapMaximumSellAmount,
     }
   }, [
     hasFirstLoad,
@@ -170,6 +181,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     featureFlagsStatus,
     canQuote,
     captchaInteractionRequired,
+    swapMaximumSellAmount,
   ])
 }
 
@@ -179,6 +191,15 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
+}
+
+function getSwapMaximumSellAmount(
+  tradeType: TradeType | null | undefined,
+  receiveAmountInfo: ReceiveAmountInfo | null,
+): CurrencyAmount<Currency> | null {
+  if (tradeType !== TradeType.SWAP) return null
+
+  return receiveAmountInfo?.afterSlippage.sellAmount ?? null
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {

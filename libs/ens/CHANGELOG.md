@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/ens-v3.7.0...ens-v3.7.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/ens-v3.6.0...ens-v3.7.0) (2026-09-09)
 
 ### Minor Changes

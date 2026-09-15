@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.0...ui-v3.13.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+
 ## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.1...ui-v3.13.0) (2026-09-09)
 
 ### Minor Changes

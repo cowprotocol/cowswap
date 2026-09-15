@@ -1,45 +1,16 @@
 import React from 'react'
 
-import { Media } from '@cowprotocol/ui'
-
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
 import { ReviewOrderModalAmountRow } from 'modules/trade/pure/ReviewOrderModalAmountRow'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import * as styledEl from './TwapConfirmDetails.styled'
+
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  gap: 7px;
-  padding: 0 6px 6px;
-  font-size: 13px;
-
-  > b {
-    display: block;
-    margin: 0 0 3px;
-
-    ${Media.upToSmall()} {
-      margin: 0 0 10px;
-    }
-  }
-`
-
-const TWAPSplitTitle = styled.div`
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 3px;
-
-  ${Media.upToSmall()} {
-    margin: 0 0 10px;
-  }
-`
 
 export type TwapConfirmDetailsProps = {
   startTime: number | undefined
@@ -65,12 +36,12 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   const outputPartAmountUsd = useUsdAmount(outputPartAmountToSign).value
 
   return (
-    <Wrapper>
-      <TWAPSplitTitle>
+    <styledEl.Wrapper>
+      <styledEl.TwapSplitTitle>
         <Trans>
           TWAP order split in <b>{numOfParts} equal parts</b>
         </Trans>
-      </TWAPSplitTitle>
+      </styledEl.TwapSplitTitle>
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
@@ -117,6 +88,6 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       >
         {totalDurationDisplay}
       </ConfirmDetailsItem>
-    </Wrapper>
+    </styledEl.Wrapper>
   )
 })

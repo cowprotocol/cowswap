@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.26.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.0...cowswap-v3.26.1) (2026-09-11)
+
+### Patch Changes
+
+- fix(trade): freeze confirm-modal amounts once the user clicks confirm (#8133)
+
+- fix: properly prevent solana recipient addresses on evm (#8139)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/balances-and-allowances@3.13.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ens@3.7.1
+  - @cowprotocol/tokens@3.12.1
+  - @cowprotocol/ui@3.13.1
+  - @cowprotocol/wallet@3.13.1
+  - @cowprotocol/snackbars@2.3.3
+  - @cowprotocol/multicall@3.7.1
+
 ## [3.26.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.1...cowswap-v3.26.0) (2026-09-09)
 
 ### Minor Changes

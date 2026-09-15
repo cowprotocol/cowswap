@@ -18,6 +18,7 @@ import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
 import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
+import { COMPOSABLE_COW_POLLER_ADDRESS } from '../composable-cow-poller/composable-cow-poller.constants'
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
 export function TwapUpdaters(): ReactNode {
@@ -28,10 +29,15 @@ export function TwapUpdaters(): ReactNode {
   const twapOrderSlippage = useTwapSlippage()
   const { enablePartialApprovalBySettings } = useAtomValue(advancedOrdersSettingsAtom)
 
-  const shouldLoadTwapOrders = !!((isSafeWallet || isSafeViaWc) && account && composableCowContract.address)
+  const isSafe = isSafeWallet || isSafeViaWc
+  const shouldLoadTwapOrders = !!(isSafe && account && composableCowContract.address)
   const composableCowChainId = composableCowContract.chainId
-  // TWAP orders always approve against the production vault relayer regardless of the current environment.
-  const spenderAddress = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId] : undefined
+  // Safe funds settle through the Vault Relayer; EOA funds are pulled just in time by the poller.
+  const spenderAddress = chainId
+    ? isSafe
+      ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId]
+      : COMPOSABLE_COW_POLLER_ADDRESS[chainId]
+    : undefined
 
   return (
     <>

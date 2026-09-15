@@ -402,8 +402,14 @@ describe('observeReduxOrders', () => {
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
-    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING, isEoaTwapOrder: true }
-    const safeTwapOrder = { id: 'safe-twap', status: OrderStatus.PENDING }
+    const inputToken = { address: tokenAddress }
+    const emulatedTwapOrder = {
+      id: 'emulated-twap',
+      status: OrderStatus.PENDING,
+      isEoaTwapOrder: true,
+      inputToken,
+    }
+    const safeTwapOrder = { id: 'safe-twap', status: OrderStatus.PENDING, inputToken }
     const emulatedPartOrder = { id: 'emulated-part', status: OrderStatus.PENDING }
     const virtualPartOrder = {
       composableCowInfo: { isVirtualPart: true },
@@ -440,7 +446,7 @@ describe('observeReduxOrders', () => {
       lastCheckedBlock: 123,
     })
     ;(getReduxOrdersByOrderTypeFromNetworkState as jest.Mock).mockReturnValue({
-      ordersTokensSet: new Set([tokenAddress]),
+      ordersTokensSet: new Set(),
       reduxOrders: [virtualPartOrder, discreteTwapOrder],
     })
     getOrdersTableList.mockReturnValue(ordersList)
@@ -475,6 +481,13 @@ describe('observeReduxOrders', () => {
       account,
       reduxOrdersStateInCurrentChain: { lastCheckedBlock: 123 },
       uiOrderType: UiOrderType.TWAP,
+    })
+    expect(tokenAllowancesFamily).toHaveBeenLastCalledWith({
+      connector,
+      chainId: 1,
+      account,
+      spender,
+      tokenAddresses: [tokenAddress],
     })
     expect(getOrdersTableList).toHaveBeenCalledWith(
       expectedReduxOrders,
