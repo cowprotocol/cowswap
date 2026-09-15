@@ -833,6 +833,10 @@ msgstr "Recipient is required for {chainLabel}"
 msgid "Enter a valid {chainLabel} address"
 msgstr "Enter a valid {chainLabel} address"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Signature pending"
+msgstr "Signature pending"
+
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
 msgstr "View jobs"
@@ -3115,6 +3119,7 @@ msgstr "Insufficient allowance granted for"
 #~ msgstr "Lock this code to your wallet?"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Try again"
 msgstr "Try again"
 
@@ -3933,8 +3938,8 @@ msgid "TWAP order split into {twapOrderN} parts"
 msgstr "TWAP order split into {twapOrderN} parts"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Activate TWAP"
-msgstr "Activate TWAP"
+#~ msgid "Activate TWAP"
+#~ msgstr "Activate TWAP"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
@@ -6630,8 +6635,8 @@ msgid "Boost Your Yield with One-Click Conversion"
 msgstr "Boost Your Yield with One-Click Conversion"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Activation pending"
-msgstr "Activation pending"
+#~ msgid "Activation pending"
+#~ msgstr "Activation pending"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
