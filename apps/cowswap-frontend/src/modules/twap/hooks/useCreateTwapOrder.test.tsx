@@ -44,6 +44,9 @@ import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
 import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
+
+jest.mock('../utils/waitForTwapEventId', () => ({ waitForTwapEventId: jest.fn() }))
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
 jest.mock('wagmi', () => ({
@@ -181,6 +184,7 @@ describe('useCreateTwapOrder', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
     mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
@@ -446,7 +450,7 @@ describe('useCreateTwapOrder', () => {
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
       orderId: '0xtwap',
-      proxyAddress: '0xproxy',
+      eventId: '1'.repeat(70),
     })
   })
 

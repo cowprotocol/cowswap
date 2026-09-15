@@ -17,7 +17,17 @@ const OrderAssetsInfoWrapper = styled.span<{ lineBreak?: boolean }>`
 
 interface OrderAssetsInfoProps {
   lineBreak: boolean | undefined
-  context: FilledProgressContext
+  context: Pick<
+    FilledProgressContext,
+    | 'filledAmountWithFee'
+    | 'swappedAmountWithFee'
+    | 'swappedToken'
+    | 'swappedSymbol'
+    | 'mainSymbol'
+    | 'mainToken'
+    | 'action'
+    | 'touched'
+  >
 }
 
 export function OrderAssetsInfo({ lineBreak, context }: OrderAssetsInfoProps): ReactNode {

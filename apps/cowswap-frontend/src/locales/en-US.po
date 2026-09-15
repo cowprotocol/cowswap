@@ -6856,6 +6856,7 @@ msgid "Confirm hook"
 msgstr "Confirm hook"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
 msgstr "Part of a {twapOrderN}-part TWAP order split"
 

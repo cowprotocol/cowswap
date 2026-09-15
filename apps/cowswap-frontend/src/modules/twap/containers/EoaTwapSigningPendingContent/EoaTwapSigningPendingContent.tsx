@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { getExplorerAddressLink } from '@cowprotocol/common-utils'
+import { getExplorerTwapOrderLink } from '@cowprotocol/common-utils'
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -50,12 +50,8 @@ export function EoaTwapSigningPendingContent({
   if (!signingStep) return null
 
   if (signingStep.step === EoaTwapSigningSteps.Success) {
-    // CoW Explorer does not support TWAP setup txs yet. Restore this when it does:
-    // const setupTxHash = signingStep.completedStepTxHashes?.[EoaTwapSigningSteps.TwapSign]
-    // const explorerUrl =
-    //   chainId && setupTxHash ? `${getExplorerBaseUrl(chainId)}/tx/${setupTxHash}` : undefined
     const explorerUrl =
-      chainId && signingStep.proxyAddress ? getExplorerAddressLink(chainId, signingStep.proxyAddress) : undefined
+      chainId && signingStep.eventId ? getExplorerTwapOrderLink(chainId, signingStep.eventId) : undefined
 
     return <EoaTwapSuccessContent explorerUrl={explorerUrl} onNewTrade={onDismiss} onViewOrders={onViewOrders} />
   }

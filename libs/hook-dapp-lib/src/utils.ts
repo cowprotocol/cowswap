@@ -1,4 +1,4 @@
-import { PERMIT_HOOK_DAPP_ID } from './consts'
+import { HookDappType, PERMIT_HOOK_DAPP_ID } from './consts'
 import { hookDappsRegistry } from './hookDappsRegistry'
 import { CowHook, HookDappBase } from './types'
 
@@ -8,6 +8,18 @@ const hookDapps = Object.keys(hookDappsRegistry).reduce((acc, id) => {
   acc.push({ id, ...dapp })
   return acc
 }, [] as HookDappBase[])
+
+// Display metadata only: this automatic hook must not appear in the hook store.
+const twapFundingHookDapp: HookDappBase = {
+  id: 'cowswap://twap/eoa-poll-funds',
+  name: 'TWAP funding',
+  descriptionShort: 'Transfers sell tokens into the TWAP account before a part executes.',
+  type: HookDappType.INTERNAL,
+  version: 'v1.0.0',
+  website: 'https://docs.cow.fi',
+  image:
+    'https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/libs/assets/src/images/logo-icon-cow-circle.svg',
+}
 
 // permit() function selector
 const EIP_2612_PERMIT_SELECTOR = '0xd505accf'
@@ -64,5 +76,5 @@ export function matchHooksToDappsRegistry(
   hooks: StrictCowHook[],
   additionalHookDapps: HookDappBase[] = [],
 ): HookToDappMatch[] {
-  return matchHooksToDapps(hooks, hookDapps.concat(additionalHookDapps))
+  return matchHooksToDapps(hooks, hookDapps.concat(twapFundingHookDapp, additionalHookDapps))
 }

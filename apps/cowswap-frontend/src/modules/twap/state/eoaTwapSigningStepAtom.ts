@@ -28,8 +28,8 @@ export interface EoaTwapSigningStepState {
   /** Conditional TWAP order id, set after placement succeeds. */
   orderId?: string
 
-  /** Cow-shed proxy that owns the TWAP, used for the temporary Explorer address link. */
-  proxyAddress?: string
+  /** Indexed TWAP event ID used for the Explorer details link. */
+  eventId?: string
 }
 
 /**
