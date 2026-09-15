@@ -12,17 +12,19 @@ export interface ModalFooterButtonConfig {
 
 export interface ModalFooterWithTwoButtonsProps {
   inline?: boolean
+  topBorder?: boolean
   primaryButton: ModalFooterButtonConfig
   secondaryButton: ModalFooterButtonConfig
 }
 
 export function ModalFooterWithTwoButtons({
   inline,
+  topBorder,
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
   return (
-    <ModalFooter inline={inline}>
+    <ModalFooter inline={inline} topBorder={topBorder}>
       <styledEl.TwoButtonGrid>
         <styledEl.SecondaryButton
           disabled={secondaryButton.disabled}

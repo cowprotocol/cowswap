@@ -1,19 +1,8 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
-import { useMediaQuery } from '@cowprotocol/common-hooks'
-import {
-  BannerOrientation,
-  BottomDrawer,
-  BottomDrawerOrDialog,
-  Dialog,
-  InlineBanner,
-  Media,
-  Modal,
-  ModalHeader,
-  StatusColorVariant,
-} from '@cowprotocol/ui'
+import { BannerOrientation, ConfirmBottomDrawerOrDialog, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 
 import * as styledEl from './EoaTwapLeaveSetupModal.styled'
 import { EoaTwapLeaveConfirmationVariant, getEoaTwapLeaveSetupModalContent } from './EoaTwapLeaveSetupModal.utils'
@@ -38,43 +27,31 @@ export function EoaTwapLeaveSetupModal({
     symbol,
   )
 
-  const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
-
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      if (!open) {
-        onContinue()
-      }
-    },
-    [onContinue],
+  const content = (
+    <InlineBanner
+      bannerType={StatusColorVariant.Info}
+      hideIcon
+      borderRadius="16px"
+      orientation={BannerOrientation.Horizontal}
+    >
+      <p>
+        <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
+      </p>
+      <p>{infoBannerDescription}</p>
+    </InlineBanner>
   )
 
   return (
-    <BottomDrawerOrDialog isDrawer={isUpToExtraSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
-      <Modal.Root>
-        <ModalHeader title={title} titleAs={isUpToExtraSmall ? BottomDrawer.Title : Dialog.Title} />
-
-        <Modal.Description>{description}</Modal.Description>
-
-        <Modal.Content>
-          <InlineBanner
-            bannerType={StatusColorVariant.Info}
-            hideIcon
-            borderRadius="16px"
-            orientation={BannerOrientation.Horizontal}
-          >
-            <p>
-              <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
-            </p>
-            <p>{infoBannerDescription}</p>
-          </InlineBanner>
-        </Modal.Content>
-
-        <Modal.FooterWithTwoButtons
-          secondaryButton={{ label: <Trans>Leave setup</Trans>, onClick: onLeave }}
-          primaryButton={{ label: <Trans>Continue setup</Trans>, onClick: onContinue }}
-        />
-      </Modal.Root>
-    </BottomDrawerOrDialog>
+    <ConfirmBottomDrawerOrDialog
+      isOpen={isOpen}
+      title={title}
+      description={description}
+      content={content}
+      cancelLabel={t`Leave setup`}
+      onCancel={onLeave}
+      confirmLabel={t`Continue setup`}
+      onConfirm={onContinue}
+      onDismiss={onContinue}
+    />
   )
 }

@@ -1,7 +1,6 @@
 import { t } from '@lingui/core/macro'
 
 import { ConfirmationModal } from './ConfirmationModal'
-import { ConfirmationModalHeader } from './ConfirmationModalHeader'
 
 const Fixtures = {
   default: () => (
@@ -14,7 +13,6 @@ const Fixtures = {
       onEnable={() => {}}
     />
   ),
-  header: () => <ConfirmationModalHeader onCloseClick={() => {}}>Turn on Expert mode?</ConfirmationModalHeader>,
 }
 
 export default Fixtures
