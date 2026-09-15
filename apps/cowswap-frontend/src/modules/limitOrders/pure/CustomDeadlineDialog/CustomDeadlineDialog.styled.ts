@@ -1,18 +1,26 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const CustomInput = styled.input`
+  --minHeight: 45px;
   display: flex;
+  align-items: center;
   cursor: pointer;
-  font-size: 21px;
-  border-radius: 8px;
+  font-size: 22px;
+  font-weight: 500;
+  border-radius: 16px;
   width: 100%;
-  border: 1px solid ${({ theme }) => transparentize(theme.text, 0.7)};
+  min-height: var(--minHeight);
+  border: 1px solid transparent;
   color: inherit;
-  padding: 4px 8px;
-  background: var(${UI.COLOR_PAPER});
+  padding: 10px 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+
+  ${Media.upToSmall()} {
+    font-size: 20px;
+  }
 
   &::-webkit-calendar-picker-indicator {
     filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
