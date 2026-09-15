@@ -38,7 +38,7 @@ export function EoaTwapLeaveSetupModal({
     symbol,
   )
 
-  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+  const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -50,9 +50,9 @@ export function EoaTwapLeaveSetupModal({
   )
 
   return (
-    <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
+    <BottomDrawerOrDialog isDrawer={isUpToExtraSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
-        <ModalHeader title={title} titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title} />
+        <ModalHeader title={title} titleAs={isUpToExtraSmall ? BottomDrawer.Title : Dialog.Title} />
 
         <Modal.Content>
           <styledEl.Content>
