@@ -16,8 +16,9 @@ const LOADING_PHASES: ReadonlySet<EoaTwapSigningPhase> = new Set([
 ])
 
 const APPROVAL_STEPS = new Set<EoaTwapSigningSteps>([
-  EoaTwapSigningSteps.ZeroApprove,
-  EoaTwapSigningSteps.ApproveOrPermit,
+  EoaTwapSigningSteps.ZeroApprovePoller,
+  EoaTwapSigningSteps.ApprovePoller,
+  EoaTwapSigningSteps.PermitPoller,
 ])
 
 export interface BuildEoaTwapConfirmationPendingStepsParams {
@@ -64,11 +65,15 @@ export function buildEoaTwapConfirmationPendingSteps({
 }
 
 export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: OrderStepStatus): ReactNode | undefined {
+  if (status === 'success') {
+    return undefined
+  }
+
   const isLoading = status === 'loading'
 
   switch (step) {
-    case EoaTwapSigningSteps.ZeroApprove:
-    case EoaTwapSigningSteps.ApproveOrPermit:
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
       if (isLoading) {
         return (
           <p>
@@ -77,31 +82,26 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
           </p>
         )
       }
-      return t`Confirm the approval transaction in your connected wallet.`
+      return t`Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades.`
+
+    case EoaTwapSigningSteps.PermitPoller:
+      return t`Sign the permit in your wallet. Each part is pulled right before it trades.`
 
     case EoaTwapSigningSteps.TwapSetup:
-      return t`Confirm this required setup signature in your connected wallet.`
-
-    case EoaTwapSigningSteps.FundingOrder:
       if (isLoading) {
         return (
           <p>
-            {t`Verifying approval`}
+            {t`Submitting setup transaction`}
             <ThreeDots />
           </p>
         )
       }
-      return t`Sign in your wallet. We'll submit the funding order automatically.`
+      return t`Confirm setup in your connected wallet. This registers just-in-time funding and creates the TWAP.`
 
     case EoaTwapSigningSteps.CreatingOrder:
-      // Completed step has nothing useful to re-expand:
-      if (status === 'success') {
-        return undefined
-      }
-
       return (
         <p>
-          {t`Settling the funding order and registering your TWAP`}
+          {t`Activating your TWAP`}
           <ThreeDots />
         </p>
       )
@@ -110,13 +110,13 @@ export function getEoaTwapStepDescription(step: EoaTwapSigningSteps, status: Ord
 
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
-    case EoaTwapSigningSteps.ZeroApprove:
-    case EoaTwapSigningSteps.ApproveOrPermit:
-      return symbol ? t`Approve ${symbol}` : t`Approve`
+    case EoaTwapSigningSteps.ZeroApprovePoller:
+    case EoaTwapSigningSteps.ApprovePoller:
+      return symbol ? t`Approve ${symbol} for funding` : t`Approve funding`
+    case EoaTwapSigningSteps.PermitPoller:
+      return symbol ? t`Permit ${symbol} for funding` : t`Permit funding`
     case EoaTwapSigningSteps.TwapSetup:
       return t`Set up TWAP`
-    case EoaTwapSigningSteps.FundingOrder:
-      return t`Sign TWAP`
     case EoaTwapSigningSteps.CreatingOrder:
       return t`Activating TWAP`
   }

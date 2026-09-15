@@ -2,13 +2,13 @@ import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { isEvmChain, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { SolanaTradeApproveButton, TradeApproveButton } from 'modules/erc20Approve'
+import { TradeApproveButton } from 'modules/erc20Approve'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
@@ -216,17 +216,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
-    // Solana has no ERC20 approve / permit — run the SPL delegation approve via its own button/hook.
-    if (isSolanaChain(amountToApprove.currency.chainId)) {
-      return (
-        <SolanaTradeApproveButton
-          isDisabled={isDisabled}
-          amountToApprove={amountToApprove}
-          approveClickEvent={context.approveClickEvent}
-        />
-      )
-    }
-
+    // Solana never reaches this validation: it bundles the SPL delegation into the trade transaction, so
+    // `useIsApprovalOrPermitRequired` reports `BundleApproveRequired` and `ApproveAndSwapInBundle` above
+    // is selected instead.
     return (
       <TradeApproveButton
         isDisabled={isDisabled}

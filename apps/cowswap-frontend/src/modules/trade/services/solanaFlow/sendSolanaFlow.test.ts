@@ -46,6 +46,10 @@ function dummyInstruction(): TransactionInstruction {
   return new TransactionInstruction({ keys: [], programId: OWNER, data: Buffer.from([]) })
 }
 
+function orderStep(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
+  return { instructions, summary, createsOrder: true }
+}
+
 function step(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
   return { instructions, summary }
 }
@@ -77,8 +81,31 @@ describe('sendSolanaFlow', () => {
     expect(addTransaction).toHaveBeenCalledWith({
       hash: SIGNATURE,
       summary: 'Wrap 1 SOL, Approve WSOL',
+      solanaOrderCreation: false,
       data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
     })
+  })
+
+  // The activity list hides order-creation transactions and shows the order instead, so the tag has to
+  // track what was actually bundled: mis-tagging a wrap- or delegate-only transaction would make a real
+  // transaction disappear from activity and suppress its confirmation event.
+  it('tags the transaction when a step creates an order', async () => {
+    const { context, addTransaction } = createHarness()
+
+    await sendSolanaFlow(context, [
+      step([dummyInstruction()], 'Wrap 1 SOL'),
+      orderStep([dummyInstruction()], 'Swap SOL for USDC'),
+    ])
+
+    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: true }))
+  })
+
+  it('leaves a wrap- or delegate-only transaction untagged, so it stays visible in activity', async () => {
+    const { context, addTransaction } = createHarness()
+
+    await sendSolanaFlow(context, [step([dummyInstruction()], 'Wrap 1 SOL')])
+
+    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: false }))
   })
 
   it('returns the transaction hash', async () => {

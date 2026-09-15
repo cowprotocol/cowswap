@@ -1,27 +1,20 @@
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
-import { SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
+import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
 
-import { sendSolanaTransaction } from 'modules/trade'
-
-import { SolanaSigningContext } from '../types'
+import { SolanaQuoteAndPost } from '../types'
 
 /**
- * Real Solana swap quote: amounts come from `SolanaTradingSdk.getQuote` (Jupiter-sourced, from
- * `@cowprotocol/sdk-trading-solana`), the order intent/PDA are computed for real, and
- * `postSwapOrderFromQuote` builds a real on-chain `CreateOrder` instruction and signs it through
- * `solanaSigningContext` — see the `SolanaTradingSdk` construction below.
+ * Real Solana swap quote: amounts come from `getSolanaQuote` (Jupiter-sourced, from
+ * `@cowprotocol/sdk-trading-solana`) and the order intent/PDA are computed for real. `solanaQuote` is
+ * returned alongside `quoteResults` so `solanaFlow` can build the `CreateOrder` instruction and bundle it
+ * with the wrap/delegate instructions into one transaction — quoting itself stays free of any signer.
  *
  * `orderToSign`/`appDataInfo`/`orderTypedData` stay stubbed: these are EIP-712/CoW app-data concepts
  * the Solana settlement program's order intent has no counterpart for at all. `tradeParameters` is
  * built from the real request/response below — `quoteUsingSameParameters` and `getQuoteTimeOffset`
  * (validFor-based expiry offset used by `getOrderValidTo`) both read it and need real values, not stubs.
  */
-
-export async function getSolanaQuote(
-  quoteParams: QuoteBridgeRequest,
-  solanaSigningContext?: SolanaSigningContext,
-): Promise<QuoteAndPost> {
+export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<SolanaQuoteAndPost> {
   const {
     kind,
     amount,
@@ -34,22 +27,7 @@ export async function getSolanaQuote(
     receiver,
   } = quoteParams
 
-  const sdk = new SolanaTradingSdk({
-    // TODO: It will be changed once we have order-book driven order posting
-    signAndSend: solanaSigningContext
-      ? async (instruction) => {
-          const { hash } = await sendSolanaTransaction(
-            solanaSigningContext.connection,
-            solanaSigningContext.provider,
-            solanaSigningContext.owner,
-            [instruction],
-          )
-          return { signature: hash }
-        }
-      : () => Promise.reject(new Error('Solana wallet not connected')),
-  })
-
-  return sdk.getQuote({
+  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk({
     ownerAddress: owner ?? account,
     sellTokenAddress,
     buyTokenAddress,
@@ -60,4 +38,13 @@ export async function getSolanaQuote(
     kind,
     validForSeconds: quoteParams.validFor,
   })
+
+  return {
+    quoteResults,
+    solanaQuote,
+    // Solana orders are created on-chain as one instruction inside `solanaFlow`'s bundled transaction,
+    // never posted from the quote. Kept only to satisfy `QuoteAndPost`, which every other chain's flow needs.
+    postSwapOrderFromQuote: () =>
+      Promise.reject(new Error('Solana orders are created by solanaFlow via sendSolanaFlow, not from the quote')),
+  }
 }

@@ -14,7 +14,13 @@ import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
-export function TradeApproveWithAffectedOrderList(): ReactNode {
+export interface TradeApproveWithAffectedOrderListProps {
+  forceShowAffectedOrders?: boolean
+}
+
+export function TradeApproveWithAffectedOrderList({
+  forceShowAffectedOrders = false,
+}: TradeApproveWithAffectedOrderListProps): ReactNode {
   const isBundlingSupported = useIsTxBundlingSupported()
   const { allowsOffchainSigning } = useWalletDetails()
   const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
@@ -29,13 +35,14 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
   const partialAmountToApprove = useGetPartialAmountToSignApprove()
   const finalAmountToApprove = useGetAmountToSignApprove()
 
-  const showAffectedOrders =
-    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired && !isMaxAmountToApprove(finalAmountToApprove)
-
   const isApproveOrPartialPermitRequired =
     isApproveRequired === ApproveRequiredReason.Required ||
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired ||
     isApproveRequired === ApproveRequiredReason.BundleApproveRequired
+
+  const showAffectedOrders =
+    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || forceShowAffectedOrders) &&
+    !isMaxAmountToApprove(finalAmountToApprove)
 
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 

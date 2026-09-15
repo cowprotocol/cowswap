@@ -214,6 +214,27 @@ test('resolve() returning undefined for one entry in a same-method batch defers 
   ])
 })
 
+test('an upstream response with no matching id (a bare rate-limit error, observed from Infura) still lets resolve() answer by position instead of relaying the raw error', async () => {
+  const stub = createStubContext()
+  const entries: JsonRpcEntry[] = [{ id: 13, method: METHOD, params: [] }]
+  // Real shape observed from a rate-limited Infura request: no `id`/`jsonrpc` envelope at all, so
+  // id-based lookup can never find this entry's counterpart — see [CS-310].
+  const upstream = [{ code: -32005, message: 'Too Many Requests', data: { see: 'https://infura.io/dashboard' } }]
+
+  mockRpcNodeRequest(
+    stub.context,
+    METHOD,
+    (entry, upstreamResult) => (upstreamResult === undefined ? undefined : `mocked-${entry.id}`),
+    alwaysMatches,
+  )
+  const route = createStubRoute('POST', entries, upstream)
+
+  await stub.getHandler()(route.route)
+
+  assert.equal(route.fetchCalled, true)
+  assert.deepEqual(parsedBody(route.fulfilled), [{ jsonrpc: '2.0', id: 13, result: 'mocked-13' }])
+})
+
 test('an upstream fetch failure falls back untouched instead of throwing', async () => {
   const stub = createStubContext()
   const entries: JsonRpcEntry[] = [

@@ -1,27 +1,16 @@
 jest.mock('@cowprotocol/sdk-trading-solana', () => ({
-  SolanaTradingSdk: jest.fn(),
+  getSolanaQuote: jest.fn(),
 }))
 
-jest.mock('modules/trade/services/solanaSend/sendSolanaTransaction', () => ({
-  sendSolanaTransaction: jest.fn(),
-}))
-
-import { OrderKind, QuoteAndPost, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
-import { SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
+import { getSolanaQuote as getSolanaQuoteFromSdk, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
-import { PublicKey, TransactionInstruction, Connection } from '@solana/web3.js'
-
-import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction'
+import { PublicKey } from '@solana/web3.js'
 
 import { getSolanaQuote } from './getSolanaQuote.service'
 
-import { SolanaSigningContext } from '../types'
-
-import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
-
-const MockedSolanaTradingSdk = SolanaTradingSdk as jest.MockedClass<typeof SolanaTradingSdk>
-const mockSendSolanaTransaction = sendSolanaTransaction as jest.MockedFunction<typeof sendSolanaTransaction>
+const mockGetSolanaQuoteFromSdk = getSolanaQuoteFromSdk as jest.MockedFunction<typeof getSolanaQuoteFromSdk>
 
 const owner = new PublicKey(new Uint8Array(32).fill(9))
 const sellMint = new PublicKey(new Uint8Array(32).fill(1))
@@ -44,31 +33,21 @@ const quoteParams: QuoteBridgeRequest = {
   validFor: 1800,
 }
 
-/** `getSolanaQuote` is a thin delegation to `SolanaTradingSdk.getQuote` — this is a stand-in for
- * whatever `QuoteAndPost` the SDK resolves with; the tests below only care that it's passed through
- * unchanged, not its internal shape. */
-const mockQuoteAndPost = { quoteResults: {} as QuoteResults, postSwapOrderFromQuote: jest.fn() } as QuoteAndPost
-
-/** Wires the mocked `SolanaTradingSdk` constructor so `new SolanaTradingSdk(...)` returns an object whose
- * `getQuote` is `mockGetQuote`, and captures the constructor's `signAndSend` option for assertions. */
-function mockSolanaTradingSdk(mockGetQuote: jest.Mock): void {
-  MockedSolanaTradingSdk.mockImplementation(() => ({ getQuote: mockGetQuote }) as unknown as SolanaTradingSdk)
-}
+/** Stand-in for whatever the SDK resolves with; these tests only care that both halves are passed
+ * through, not their internal shape. */
+const solanaQuote = { uid: new Uint8Array(32).fill(3) } as SolanaQuote
+const sdkResult = { quoteResults: {} as QuoteResults, solanaQuote }
 
 describe('getSolanaQuote', () => {
   beforeEach(() => {
-    MockedSolanaTradingSdk.mockReset()
-    mockSendSolanaTransaction.mockReset()
+    mockGetSolanaQuoteFromSdk.mockReset()
+    mockGetSolanaQuoteFromSdk.mockResolvedValue(sdkResult)
   })
 
-  it('maps quoteParams onto SolanaQuoteParameters and returns the SDK result unchanged', async () => {
-    const mockGetQuote = jest.fn().mockResolvedValue(mockQuoteAndPost)
-    mockSolanaTradingSdk(mockGetQuote)
+  it('maps quoteParams onto SolanaQuoteParameters', async () => {
+    await getSolanaQuote(quoteParams)
 
-    const result = await getSolanaQuote(quoteParams)
-
-    expect(result).toBe(mockQuoteAndPost)
-    expect(mockGetQuote).toHaveBeenCalledWith({
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith({
       ownerAddress: quoteParams.owner,
       sellTokenAddress: quoteParams.sellTokenAddress,
       buyTokenAddress: quoteParams.buyTokenAddress,
@@ -81,10 +60,14 @@ describe('getSolanaQuote', () => {
     })
   })
 
-  it('falls back ownerAddress/receiverAddress to account when owner/receiver are not set', async () => {
-    const mockGetQuote = jest.fn().mockResolvedValue(mockQuoteAndPost)
-    mockSolanaTradingSdk(mockGetQuote)
+  it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
+    const result = await getSolanaQuote(quoteParams)
 
+    expect(result.quoteResults).toBe(sdkResult.quoteResults)
+    expect(result.solanaQuote).toBe(solanaQuote)
+  })
+
+  it('falls back ownerAddress/receiverAddress to account when owner/receiver are not set', async () => {
     const paramsWithoutOwnerOrReceiver: QuoteBridgeRequest = {
       ...quoteParams,
       owner: undefined,
@@ -93,7 +76,7 @@ describe('getSolanaQuote', () => {
 
     await getSolanaQuote(paramsWithoutOwnerOrReceiver)
 
-    expect(mockGetQuote).toHaveBeenCalledWith(
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
       expect.objectContaining({
         ownerAddress: quoteParams.account,
         receiverAddress: quoteParams.account,
@@ -102,51 +85,14 @@ describe('getSolanaQuote', () => {
   })
 
   it('propagates a rejection from the SDK', async () => {
-    const mockGetQuote = jest.fn().mockRejectedValue(new Error('no route found'))
-    mockSolanaTradingSdk(mockGetQuote)
+    mockGetSolanaQuoteFromSdk.mockRejectedValue(new Error('no route found'))
 
     await expect(getSolanaQuote(quoteParams)).rejects.toThrow('no route found')
   })
-})
 
-describe('getSolanaQuote signAndSend', () => {
-  beforeEach(() => {
-    MockedSolanaTradingSdk.mockReset()
-    mockSendSolanaTransaction.mockReset()
-    mockSolanaTradingSdk(jest.fn().mockResolvedValue(mockQuoteAndPost))
-  })
+  it('never posts the order from the quote — solanaFlow creates it on-chain instead', async () => {
+    const { postSwapOrderFromQuote } = await getSolanaQuote(quoteParams)
 
-  it('rejects when no Solana wallet is connected', async () => {
-    await getSolanaQuote(quoteParams, undefined)
-
-    // The disconnected-wallet guard lives in the `signAndSend` passed to the `SolanaTradingSdk`
-    // constructor (rather than a check inside `getSolanaQuote` itself) — verify it directly.
-    const signAndSend = MockedSolanaTradingSdk.mock.calls[0][0].signAndSend
-    await expect(signAndSend({} as TransactionInstruction)).rejects.toThrow('Solana wallet not connected')
-    expect(mockSendSolanaTransaction).not.toHaveBeenCalled()
-  })
-
-  it('signs and sends through the connected wallet when a signing context is provided', async () => {
-    const signingContext: SolanaSigningContext = {
-      owner,
-      provider: {} as SolanaProvider,
-      connection: {} as Connection,
-    }
-
-    await getSolanaQuote(quoteParams, signingContext)
-
-    const signAndSend = MockedSolanaTradingSdk.mock.calls[0][0].signAndSend
-    mockSendSolanaTransaction.mockResolvedValue({ hash: 'tx-hash-abc', lastValidBlockHeight: 123 })
-
-    const fakeInstruction = {} as TransactionInstruction
-    const signAndSendResult = await signAndSend(fakeInstruction)
-
-    expect(mockSendSolanaTransaction).toHaveBeenCalledWith(
-      signingContext.connection,
-      signingContext.provider,
-      signingContext.owner,
-      [fakeInstruction],
-    )
-    expect(signAndSendResult).toEqual({ signature: 'tx-hash-abc' })
+    await expect(postSwapOrderFromQuote()).rejects.toThrow('created by solanaFlow')
   })
 })

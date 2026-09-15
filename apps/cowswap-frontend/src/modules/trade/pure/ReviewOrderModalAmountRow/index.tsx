@@ -23,6 +23,8 @@ export type ReviewOrderAmountRowProps = {
   highlighted?: boolean
   isLast?: boolean
   loading?: boolean
+  /** Overrides the default `confirmOrderAmount` test hook — e.g. for a row reused in a surface (the bridge route panel) that can render alongside the plain Confirm modal these rows normally tag. */
+  testId?: string
 }
 
 export function ReviewOrderModalAmountRow({
@@ -37,6 +39,7 @@ export function ReviewOrderModalAmountRow({
   highlighted = false,
   isLast = false,
   loading = false,
+  testId = TEST_IDS.confirmOrderAmount,
 }: ReviewOrderAmountRowProps): ReactElement {
   const Amount = loading ? (
     <CenteredDots />
@@ -57,7 +60,7 @@ export function ReviewOrderModalAmountRow({
 
   return (
     <ConfirmDetailsItem
-      testId={TEST_IDS.confirmOrderAmount}
+      testId={testId}
       tooltip={tooltip}
       label={highlighted ? undefined : label}
       withTimelineDot={withTimelineDot}

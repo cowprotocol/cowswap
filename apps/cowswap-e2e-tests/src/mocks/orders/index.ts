@@ -20,7 +20,13 @@ export interface OrdersMock {
     orderId: OrderUid
     owner: string
     trigger: () => Promise<void>
-    /** Overrides the 10s default — a test-only escape hatch for the negative-case unit test. */
+    /**
+     * Overrides the 10s default. Originally a test-only escape hatch to shorten it for the
+     * negative-case unit test (`index.test.ts`); also legitimate to lengthen it for a `trigger`
+     * that itself needs more than 10s under CI load (e.g. a cross-chain confirm's two separate
+     * enable-wait + click pairs) — the race is against `trigger()`'s own completion, not just the
+     * network round-trip.
+     */
     timeoutMs?: number
   }): Promise<void>
   /** Debits sell / credits buy on `balances`, and flips the order to `fulfilled` (`order`, `orderStatus`). */

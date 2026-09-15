@@ -40,6 +40,7 @@ export function classifyOrder(
     | 'invalidated'
     | 'buyAmount'
     | 'sellAmount'
+    | 'executedSellAmount'
     | 'executedBuyAmount'
     | 'executedSellAmountBeforeFees'
     | 'kind'
@@ -125,13 +126,15 @@ export function isOrderExpired(order: Pick<EnrichedOrder, 'validTo'>, threshold 
 export function isOrderFulfilled(
   order: Pick<
     EnrichedOrder,
-    'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees' | 'kind'
+    'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmount' | 'executedSellAmountBeforeFees' | 'kind'
   >,
 ): boolean {
-  const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, kind } = order
+  const { buyAmount, sellAmount, executedBuyAmount, executedSellAmountBeforeFees, executedSellAmount, kind } = order
+  // FIXME: Solana API doesn't return executedSellAmountBeforeFees. Need to ask backend to fix it
+  const filledSellAmount = executedSellAmountBeforeFees ?? executedSellAmount
 
   if (isSellOrder(kind)) {
-    return sellAmount === executedSellAmountBeforeFees
+    return sellAmount === filledSellAmount
   } else {
     return buyAmount === executedBuyAmount
   }

@@ -1,6 +1,6 @@
-import { isSolanaAddress, isSolanaChain, OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { UiOrderType } from '@cowprotocol/types'
+import { useMemo } from 'react'
+
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
@@ -10,101 +10,58 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import {
-  TradeTypeToUiOrderType,
-  useDerivedTradeState,
-  useGetReceiveAmountInfo,
-  useTradeConfirmActions,
-  useTradeTypeInfo,
-} from 'modules/trade'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
+import { useDerivedTradeState, useGetReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
+import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAllowance'
+
+import { useSolanaSigner } from './useSolanaSigner'
 import { TradeFlowParams } from './useTradeFlowContext'
 
 import { SolanaTradeFlowContext } from '../types/TradeFlowContext'
-
-interface SolanaTradeFlowContextParams {
-  chainId: SupportedChainId
-  account: string | null | undefined
-  inputAmount: CurrencyAmount<Currency> | undefined
-  outputAmount: CurrencyAmount<Currency> | undefined
-  quote: QuoteAndPost | null
-  isFinalQuote: boolean
-  uiOrderType: UiOrderType | null
-  orderKind: OrderKind | undefined
-  validTo: number
-}
-
-export function getIsSolanaTradeFlowContextReady(params: SolanaTradeFlowContextParams): boolean {
-  const { chainId, account, inputAmount, outputAmount, quote, isFinalQuote, uiOrderType, orderKind, validTo } = params
-
-  return Boolean(
-    isSolanaChain(chainId) &&
-      isSolanaAddress(account) &&
-      inputAmount &&
-      outputAmount &&
-      quote &&
-      isFinalQuote &&
-      uiOrderType &&
-      orderKind &&
-      validTo > 0,
-  )
-}
+import { buildSolanaContextKey } from '../utils/buildSolanaContextKey'
+import { buildSolanaTradeFlowContext } from '../utils/buildSolanaTradeFlowContext'
+import { getSolanaDelegationAmount } from '../utils/getSolanaDelegationAmount'
+import { getSolanaSellToken } from '../utils/getSolanaSellToken'
+import { getUiOrderType } from '../utils/getUiOrderType'
 
 export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): SolanaTradeFlowContext | null {
   const { chainId, account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeTypeInfo = useTradeTypeInfo()
-  const tradeType = tradeTypeInfo?.tradeType
-  const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const tradeQuoteState = useTradeQuote()
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
   const tradeConfirmActions = useTradeConfirmActions()
   const addTransaction = useTransactionAdder()
+  const solana = useSolanaSigner(account)
 
   const { sellAmount: inputAmount, buyAmount: outputAmount } = receiveAmountInfo?.amountsToSign ?? {}
-  const { recipient, recipientAddress, orderKind } = derivedTradeState || {}
+  const { recipient, recipientAddress, orderKind, inputCurrency } = derivedTradeState || {}
+
+  const uiOrderType = getUiOrderType(tradeTypeInfo?.tradeType)
+  const sellToken = getSolanaSellToken(inputCurrency)
+  // The quote reports its own sellToken as WSOL for a native sell (see `getSolanaSellToken`), so the
+  // wrap step's native check must read the user's actual selection, not `inputAmount.currency`.
+  const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
+  const currentDelegation = useSolanaDelegationAllowance(sellToken?.address)
+  const amountToApprove = useGetAmountToSignApprove()
+
+  const sellAmountRaw = inputAmount ? BigInt(inputAmount.quotient.toString()) : 0n
 
   const validTo = getOrderValidTo(deadline, tradeQuoteState)
+  const quote = tradeQuoteState.quote
+  const isFinalQuote = getIsFinalQuote(tradeQuoteState.fetchParams)
 
-  const isReady = getIsSolanaTradeFlowContextReady({
-    chainId,
-    account,
-    inputAmount,
-    outputAmount,
-    quote: tradeQuoteState.quote,
-    isFinalQuote: getIsFinalQuote(tradeQuoteState.fetchParams),
-    uiOrderType,
-    orderKind,
-    validTo,
-  })
-
-  return (
-    useSWR(
-      isReady && account
-        ? [
-            account,
-            chainId,
-            tradeQuoteState.quote as QuoteAndPost,
-            inputAmount as CurrencyAmount<Currency>,
-            outputAmount as CurrencyAmount<Currency>,
-            uiOrderType as UiOrderType,
-            orderKind as OrderKind,
-            validTo,
-            recipient,
-            recipientAddress,
-            closeModals,
-            dispatch,
-            addTransaction,
-            tradeConfirmActions,
-          ]
-        : null,
-      ([
+  const key = useMemo(
+    () =>
+      buildSolanaContextKey({
+        isFinalQuote,
         account,
         chainId,
-        tradeQuote,
+        quote,
         inputAmount,
         outputAmount,
         uiOrderType,
@@ -116,21 +73,36 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
         dispatch,
         addTransaction,
         tradeConfirmActions,
-      ]) => ({
-        tradeQuote,
-        account,
-        context: { chainId, inputAmount, outputAmount, orderKind, validTo },
-        callbacks: { closeModals, dispatch, addTransaction },
-        tradeConfirmActions,
-        swapFlowAnalyticsContext: {
-          account,
-          recipient,
-          recipientAddress,
-          marketLabel: [inputAmount.currency.symbol, outputAmount.currency.symbol].join(','),
-          orderType: uiOrderType,
-          isBridgeOrder: false,
-        },
+        solana,
+        sellToken,
+        currentDelegation,
+        delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
+        isNativeSell,
       }),
-    ).data || null
+    [
+      chainId,
+      account,
+      inputAmount,
+      outputAmount,
+      quote,
+      isFinalQuote,
+      uiOrderType,
+      orderKind,
+      validTo,
+      recipient,
+      recipientAddress,
+      closeModals,
+      dispatch,
+      addTransaction,
+      tradeConfirmActions,
+      solana,
+      sellToken,
+      currentDelegation,
+      amountToApprove,
+      sellAmountRaw,
+      isNativeSell,
+    ],
   )
+
+  return useSWR(key, buildSolanaTradeFlowContext).data || null
 }

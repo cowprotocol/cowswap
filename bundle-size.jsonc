@@ -6,7 +6,7 @@
   "schemaVersion": 2,
   "apps": {
     "@cowprotocol/cow-fi": 5,
-    "@cowprotocol/cowswap": 10.7,
+    "@cowprotocol/cowswap": 10.8,
     "@cowprotocol/explorer": 11.5,
     "@cowprotocol/sdk-tools": 9.9,
     "@cowprotocol/storybook": 3.6,

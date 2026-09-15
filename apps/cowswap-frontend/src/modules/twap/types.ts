@@ -52,6 +52,8 @@ export interface TwapOrderItem {
   safeTxParams?: SafeTransactionParams
   /** Indexed part-order count. Undefined for Safe and optimistic rows. */
   partOrdersCount?: number
+  /** Indexer change cursor. Undefined for Safe and optimistic rows. */
+  updatedAtBlock?: string
   executionInfo: TwapOrdersExecution
 }
 
