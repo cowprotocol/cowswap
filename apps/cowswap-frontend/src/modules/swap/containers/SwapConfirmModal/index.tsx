@@ -122,10 +122,13 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
 
   // TODO: Reduce function complexity by extracting logic
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
-    const sellCurrency = inputCurrencyInfo?.amount?.currency
-    const hasCurrentCurrency = Boolean(sellCurrency)
-    const maximumSellAmount = receiveAmountInfo?.afterSlippage.sellAmount ?? inputCurrencyInfo?.amount
-    const isBalanceEnough = getIsBalanceEnough({ sellCurrency, maximumSellAmount, balances })
+    const inputAmount = inputCurrencyInfo?.amount
+    const hasCurrentCurrency = Boolean(inputAmount?.currency)
+    const isBalanceEnough = getIsBalanceEnough({
+      inputAmount,
+      maximumSellAmount: receiveAmountInfo?.afterSlippage.sellAmount,
+      balances,
+    })
 
     return getSwapConfirmDisabledState({
       isTradeContextReady,

@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 export interface GetIsBalanceEnoughParams {
-  sellCurrency: Nullish<Currency>
+  inputAmount: Nullish<CurrencyAmount<Currency>>
   maximumSellAmount: Nullish<CurrencyAmount<Currency>>
   balances: Record<string, bigint | undefined>
 }
@@ -25,13 +25,16 @@ export interface SwapConfirmDisabledState {
   isInsufficientBalance: boolean
 }
 
-export function getIsBalanceEnough({ sellCurrency, maximumSellAmount, balances }: GetIsBalanceEnoughParams): boolean {
-  if (!sellCurrency || !maximumSellAmount) return false
+export function getIsBalanceEnough({ inputAmount, maximumSellAmount, balances }: GetIsBalanceEnoughParams): boolean {
+  const sellCurrency = inputAmount?.currency
+  const amountToCover = maximumSellAmount ?? inputAmount
 
-  const balance = balances[getAddressKey(getCurrencyAddress(sellCurrency))]
-  const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(sellCurrency, balance?.toString() ?? '0')
+  if (!sellCurrency || !amountToCover) return false
 
-  return maximumSellAmount.equalTo(balanceAsCurrencyAmount) || maximumSellAmount.lessThan(balanceAsCurrencyAmount)
+  const balance = balances[getAddressKey(getCurrencyAddress(sellCurrency))] ?? 0n
+  const sellCurrencyScale = 10n ** BigInt(sellCurrency.decimals)
+
+  return amountToCover.quotient * sellCurrencyScale <= balance * amountToCover.decimalScale
 }
 
 export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateParams): SwapConfirmDisabledState {
