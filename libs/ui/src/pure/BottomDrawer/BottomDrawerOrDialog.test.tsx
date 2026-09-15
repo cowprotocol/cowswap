@@ -32,6 +32,9 @@ jest.mock('./BottomDrawer.pure', () => ({
         }
       }}
     >
+      <button type="button" data-testid="request-close" onClick={() => onOpenChange?.(false)}>
+        request close
+      </button>
       {children}
     </div>
   ),
@@ -87,16 +90,21 @@ function renderBottomDrawerOrDialog(
     a11yTitle?: string
     className?: string
     children?: ReactNode
+    onOpenChangeComplete?: jest.Mock
     variant?: 'default' | 'narrow'
   },
 ): ReturnType<typeof render> & {
   onOpenChange: jest.Mock
+  onOpenChangeComplete: jest.Mock
 } {
+  const onOpenChangeComplete = extra?.onOpenChangeComplete ?? jest.fn()
+
   const view = render(
     <BottomDrawerOrDialog
       isOpen={isOpen}
       isDrawer={isDrawer}
       onOpenChange={onOpenChange}
+      onOpenChangeComplete={onOpenChangeComplete}
       a11yTitle={extra?.a11yTitle}
       className={extra?.className}
       variant={extra?.variant}
@@ -105,7 +113,7 @@ function renderBottomDrawerOrDialog(
     </BottomDrawerOrDialog>,
   )
 
-  return { ...view, onOpenChange }
+  return { ...view, onOpenChange, onOpenChangeComplete }
 }
 
 describe('BottomDrawerOrDialog', () => {
@@ -146,12 +154,20 @@ describe('BottomDrawerOrDialog', () => {
   })
 
   it('switches from the drawer branch to the dialog branch without notifying parent close', async () => {
-    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true, true)
+    const onOpenChange = jest.fn()
+    const onOpenChangeComplete = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange, { onOpenChangeComplete })
 
     expect(onOpenChange).not.toHaveBeenCalled()
+    expect(onOpenChangeComplete).not.toHaveBeenCalled()
 
     rerender(
-      <BottomDrawerOrDialog isOpen={true} isDrawer={false} onOpenChange={onOpenChange}>
+      <BottomDrawerOrDialog
+        isOpen={true}
+        isDrawer={false}
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
         <div>receipt</div>
       </BottomDrawerOrDialog>,
     )
@@ -162,8 +178,56 @@ describe('BottomDrawerOrDialog', () => {
     await finishSurfaceCloseTransition()
 
     expect(onOpenChange).not.toHaveBeenCalled()
+    expect(onOpenChangeComplete).not.toHaveBeenCalled()
     expect(screen.queryByTestId('bottom-drawer')).toBeNull()
     expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('true')
+  })
+
+  it('forwards close completion after branch switch when parent already closed', async () => {
+    const onOpenChange = jest.fn()
+    const onOpenChangeComplete = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange, { onOpenChangeComplete })
+
+    rerender(
+      <BottomDrawerOrDialog
+        isOpen={false}
+        isDrawer={false}
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        <div>receipt</div>
+      </BottomDrawerOrDialog>,
+    )
+
+    await finishSurfaceCloseTransition()
+
+    expect(onOpenChangeComplete).toHaveBeenCalledTimes(1)
+    expect(onOpenChangeComplete).toHaveBeenCalledWith(false)
+    expect(screen.queryByTestId('bottom-drawer')).toBeNull()
+    expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('false')
+  })
+
+  it('keeps the surface open until the parent accepts a child close request', async () => {
+    const onOpenChange = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange)
+
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('true')
+
+    await act(async () => {
+      screen.getByTestId('request-close').click()
+    })
+
+    expect(onOpenChange).toHaveBeenCalledTimes(1)
+    expect(onOpenChange).toHaveBeenCalledWith(false)
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('true')
+
+    rerender(
+      <BottomDrawerOrDialog isOpen={false} isDrawer={true} onOpenChange={onOpenChange}>
+        <div>receipt</div>
+      </BottomDrawerOrDialog>,
+    )
+
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('false')
   })
 
   it('closes on unmount so a later remount does not reopen the overlay', () => {

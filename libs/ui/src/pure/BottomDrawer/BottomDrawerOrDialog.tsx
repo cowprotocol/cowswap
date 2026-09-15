@@ -80,7 +80,6 @@ export function BottomDrawerOrDialog({
         return
       }
 
-      setSurfaceOpen(nextOpen)
       onOpenChangeRef.current(nextOpen)
     },
     [onOpenChangeRef],
@@ -90,12 +89,17 @@ export function BottomDrawerOrDialog({
     (nextOpen: boolean) => {
       if (isSwitchingBranchRef.current && !nextOpen) {
         completeBranchSwitch()
+
+        if (!isOpenRef.current) {
+          onOpenChangeCompleteRef.current?.(false)
+        }
+
         return
       }
 
       onOpenChangeCompleteRef.current?.(nextOpen)
     },
-    [completeBranchSwitch, onOpenChangeCompleteRef],
+    [completeBranchSwitch, isOpenRef, onOpenChangeCompleteRef],
   )
 
   useEffect(() => {
