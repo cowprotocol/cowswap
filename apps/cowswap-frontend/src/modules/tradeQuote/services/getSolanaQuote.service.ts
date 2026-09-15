@@ -3,6 +3,10 @@ import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-tradin
 
 import { SolanaQuoteAndPost } from '../types'
 
+/** Temporary, for testing whether small Solana orders settle at all: solvers keep producing solutions
+ * just below the limit price, so the Jupiter-sourced slippage is widened while we measure. */
+const SLIPPAGE_MULTIPLIER = 4
+
 /**
  * Real Solana swap quote: amounts come from `getSolanaQuote` (Jupiter-sourced, from
  * `@cowprotocol/sdk-trading-solana`) and the order intent/PDA are computed for real. `solanaQuote` is
@@ -27,17 +31,20 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     receiver,
   } = quoteParams
 
-  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk({
-    ownerAddress: owner ?? account,
-    sellTokenAddress,
-    buyTokenAddress,
-    receiverAddress: receiver ?? account,
-    sellTokenDecimals,
-    buyTokenDecimals,
-    amount,
-    kind,
-    validForSeconds: quoteParams.validFor,
-  })
+  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
+    {
+      ownerAddress: owner ?? account,
+      sellTokenAddress,
+      buyTokenAddress,
+      receiverAddress: receiver ?? account,
+      sellTokenDecimals,
+      buyTokenDecimals,
+      amount,
+      kind,
+      validForSeconds: quoteParams.validFor,
+    },
+    { slippageMultiplier: SLIPPAGE_MULTIPLIER },
+  )
 
   return {
     quoteResults,

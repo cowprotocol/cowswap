@@ -47,17 +47,20 @@ describe('getSolanaQuote', () => {
   it('maps quoteParams onto SolanaQuoteParameters', async () => {
     await getSolanaQuote(quoteParams)
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith({
-      ownerAddress: quoteParams.owner,
-      sellTokenAddress: quoteParams.sellTokenAddress,
-      buyTokenAddress: quoteParams.buyTokenAddress,
-      receiverAddress: quoteParams.account,
-      sellTokenDecimals: quoteParams.sellTokenDecimals,
-      buyTokenDecimals: quoteParams.buyTokenDecimals,
-      amount: quoteParams.amount,
-      kind: quoteParams.kind,
-      validForSeconds: quoteParams.validFor,
-    })
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      {
+        ownerAddress: quoteParams.owner,
+        sellTokenAddress: quoteParams.sellTokenAddress,
+        buyTokenAddress: quoteParams.buyTokenAddress,
+        receiverAddress: quoteParams.account,
+        sellTokenDecimals: quoteParams.sellTokenDecimals,
+        buyTokenDecimals: quoteParams.buyTokenDecimals,
+        amount: quoteParams.amount,
+        kind: quoteParams.kind,
+        validForSeconds: quoteParams.validFor,
+      },
+      { slippageMultiplier: 4 },
+    )
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
@@ -81,6 +84,7 @@ describe('getSolanaQuote', () => {
         ownerAddress: quoteParams.account,
         receiverAddress: quoteParams.account,
       }),
+      { slippageMultiplier: 4 },
     )
   })
 
