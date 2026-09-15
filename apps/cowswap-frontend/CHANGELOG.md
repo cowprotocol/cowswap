@@ -1,5 +1,57 @@
 # Changelog
 
+## [3.27.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.1...cowswap-v3.27.0) (2026-09-15)
+
+### Minor Changes
+
+- feat: honor partial/unlimited approval form fields in TWAP placement (#8110)
+
+- feat(solana): display order progress bar (#8108)
+
+- feat: implement tx bunling with order creation (#8112)
+
+- feat(solana): process order fulfillment (#8127)
+
+- feat: TWAP for EOA v2 SC integration (#8091)
+
+- feat: fetch twap deltas (#8109)
+
+- feat: show eoa twap funding warnings (#8104)
+
+- feat: show scheduled parts in eoa twap (#8119)
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- fix: table blinking on twap part updates (#8138)
+
+- fix: fix creation time in twap table (#8136)
+
+- fix: hide checkboxes and cancel form recipient in twap (#8148)
+
+- fix(solana): provide order ttl deadline from the settings (#8142)
+
+- fix: show twap part as cancelling (#8137)
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.14.0
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/permit-utils@3.7.1
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ens@3.7.2
+  - @cowprotocol/tokens@3.12.2
+  - @cowprotocol/ui@3.13.2
+  - @cowprotocol/wallet@3.13.2
+  - @cowprotocol/multicall@3.7.2
+  - @cowprotocol/snackbars@2.3.4
+
 ## [3.26.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.0...cowswap-v3.26.1) (2026-09-11)
 
 ### Patch Changes
