@@ -23,7 +23,7 @@ describe('getEoaTwapLeaveConfirmationVariant()', () => {
     ).toBeNull()
   })
 
-  it('returns noWayBack when lockDismiss is true', () => {
+  it('returns null when lockDismiss is true', () => {
     expect(
       getEoaTwapLeaveConfirmationVariant({
         step: EoaTwapSigningSteps.SubmitTwap,
@@ -31,7 +31,7 @@ describe('getEoaTwapLeaveConfirmationVariant()', () => {
         phase: EoaTwapSigningPhase.WaitingForTx,
         lockDismiss: true,
       }),
-    ).toBe('noWayBack')
+    ).toBeNull()
   })
 
   it('returns null when signing step is null', () => {
@@ -112,18 +112,6 @@ describe('getEoaTwapLeaveSetupModalContent()', () => {
         "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request.",
       infoBannerTitle: 'Reject the wallet request to stop',
       infoBannerDescription: 'If you approve it after leaving, the order may still be submitted.',
-    })
-  })
-
-  it('returns no-way-back copy when the order has already been submitted', () => {
-    const content = getEoaTwapLeaveSetupModalContent('noWayBack', 'USDC')
-
-    expect(content).toEqual({
-      title: 'Leave TWAP setup?',
-      description:
-        "You'll return to the TWAP form with your values preserved and a fresh quote, but this order has already been submitted.",
-      infoBannerTitle: 'Your order has alraedy been submitted',
-      infoBannerDescription: 'If you want to cancel it, you can do it once it appears in the oders table.',
     })
   })
 })
