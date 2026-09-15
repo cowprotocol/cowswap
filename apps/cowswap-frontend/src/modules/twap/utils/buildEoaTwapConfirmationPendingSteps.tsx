@@ -285,7 +285,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Sign TWAP`,
+              children: t`Try again`,
               disabled: false,
             }
           : {
