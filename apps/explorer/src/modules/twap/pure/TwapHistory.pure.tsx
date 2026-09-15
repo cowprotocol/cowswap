@@ -163,6 +163,7 @@ function TwapHistoryTable({
               <StatusLabel
                 status={order.status}
                 partiallyFilled={order.status === 'open' && order.executedAmounts.executedSellAmount > 0n}
+                filledPercentage={new BigNumber(progress).div(100)}
               />
             </td>
           </tr>

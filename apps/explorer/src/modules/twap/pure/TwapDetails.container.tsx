@@ -170,6 +170,7 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   <StatusLabel
                     status={order.status}
                     partiallyFilled={order.status === 'open' && executedAmounts.executedSellAmount > 0n}
+                    filledPercentage={new BigNumber(progress).div(100)}
                   />
                 </DetailRow>
                 <SubmissionTimeItem creationDate={new Date(order.createdAt * 1000)} showIcon />
