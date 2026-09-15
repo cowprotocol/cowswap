@@ -9,6 +9,7 @@ import {
   buildEoaTwapConfirmationPendingSteps,
   EOA_TWAP_WALLET_ACTIONS_COMPLETE_STEP_ID,
   getEoaTwapCurrentStepBadge,
+  getEoaTwapCurrentStepButton,
   getEoaTwapStepDescription,
   getEoaTwapStepLabel,
   getEoaTwapWalletActionSummaryLabel,
@@ -394,6 +395,19 @@ describe('getEoaTwapCurrentStepBadge()', () => {
     expect(getEoaTwapCurrentStepBadge(EoaTwapSigningSteps.SubmitTwapSlow, 'loading')).toEqual({
       children: 'Still activating',
       type: 'information',
+    })
+  })
+})
+
+describe('getEoaTwapCurrentStepButton()', () => {
+  beforeAll(async () => {
+    await i18n.activate('en-US')
+  })
+
+  it('returns Try again for TwapSign on error', () => {
+    expect(getEoaTwapCurrentStepButton(EoaTwapSigningSteps.TwapSign, 'error', 'USDC')).toEqual({
+      children: 'Try again',
+      disabled: false,
     })
   })
 })
