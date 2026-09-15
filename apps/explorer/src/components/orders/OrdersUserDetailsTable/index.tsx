@@ -167,9 +167,13 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
           className="span-copybtn-wrap"
           textToCopy={uid}
           contentsToDisplay={
-            <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
+            order.status === 'unconfirmed' ? (
               <TruncatedText>{uid}</TruncatedText>
-            </LinkWithPrefixNetwork>
+            ) : (
+              <LinkWithPrefixNetwork to={`/orders/${order.uid}`} rel="noopener noreferrer" target="_self">
+                <TruncatedText>{uid}</TruncatedText>
+              </LinkWithPrefixNetwork>
+            )
           }
         />
       </td>

@@ -167,7 +167,10 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Status"
                   tooltipText="The current state of this TWAP, based on its schedule, cancellation state, and executed amounts."
                 >
-                  <StatusLabel status={order.status} />
+                  <StatusLabel
+                    status={order.status}
+                    partiallyFilled={order.status === 'open' && executedAmounts.executedSellAmount > 0n}
+                  />
                 </DetailRow>
                 <SubmissionTimeItem creationDate={new Date(order.createdAt * 1000)} showIcon />
                 <DetailRow
@@ -253,7 +256,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
         label="TWAP ID"
         tooltipText="The identifier for this TWAP creation event on the selected network. It identifies this specific TWAP instance."
       >
-        <RowWithCopyButton textToCopy={order.eventId} contentsToDisplay={order.eventId} />
+        <RowWithCopyButton textToCopy={order.eventId} contentsToDisplay={abbreviateString(order.eventId, 12, 6)} />
       </DetailRow>
       <FromItem
         chainId={chainId}
@@ -271,7 +274,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
       />
       {!areAddressesEqual(order.owner, order.resolvedOwner) && (
         <DetailRow
-          label="Proxy"
+          label="TWAP account proxy"
           tooltipText="The CoW Shed smart contract that owns the part orders on behalf of the account in From. Safe orders omit this row."
         >
           <RowWithCopyButton

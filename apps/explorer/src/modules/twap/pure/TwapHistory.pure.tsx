@@ -21,7 +21,7 @@ import { TextWithTooltip } from 'explorer/components/common/TextWithTooltip'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
 import { ORDERS_PAGE_SIZE } from 'explorer/const'
 import { useMultipleErc20 } from 'hooks/useErc20'
-import { FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
+import { abbreviateString, FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
 import * as styledEl from './TwapHistory.styled'
 
@@ -120,8 +120,8 @@ function TwapHistoryTable({
             </span>
           </th>
           <th>Sell amount</th>
-          <th>Minimum buy</th>
-          <th>Progress</th>
+          <th>Buy at least</th>
+          <th>Filled</th>
           <th>Created</th>
           <th>Status</th>
         </tr>
@@ -141,7 +141,7 @@ function TwapHistoryTable({
                   textToCopy={order.eventId}
                   contentsToDisplay={
                     <LinkWithPrefixNetwork to={`/twap/${order.eventId}`}>
-                      <TruncatedText>{order.eventId}</TruncatedText>
+                      <TruncatedText>{abbreviateString(order.eventId, 12, 6)}</TruncatedText>
                     </LinkWithPrefixNetwork>
                   }
                 />
@@ -160,7 +160,10 @@ function TwapHistoryTable({
               <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
             </td>
             <td>
-              <StatusLabel status={order.status} />
+              <StatusLabel
+                status={order.status}
+                partiallyFilled={order.status === 'open' && order.executedAmounts.executedSellAmount > 0n}
+              />
             </td>
           </tr>
         )
