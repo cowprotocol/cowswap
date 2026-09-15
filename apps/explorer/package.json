@@ -31,7 +31,7 @@
     "@cowprotocol/cow-sdk": "9.2.10",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@cowprotocol/sdk-bridging": "4.4.6",
-    "@cowprotocol/sdk-composable": "1.6.0",
+    "@cowprotocol/sdk-composable": "1.6.1",
     "@cowprotocol/sdk-contracts-ts": "3.5.1",
     "@cowprotocol/sdk-subgraph": "1.2.3",
     "@cowprotocol/sdk-viem-adapter": "0.3.28",

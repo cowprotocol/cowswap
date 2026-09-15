@@ -109,7 +109,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
       info: {
         executedSellAmount: executedAmounts.executedSellAmount.toString(),
         executedBuyAmount: executedAmounts.executedBuyAmount.toString(),
-        executedFeeAmount: executedAmounts.executedFeeAmount.toString(),
+        executedFee: executedAmounts.executedFee.toString(),
       },
     }
     const createdAt = new Date(twapOrder.createdAt * 1000)

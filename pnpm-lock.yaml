@@ -635,8 +635,8 @@ importers:
         specifier: 4.4.6
         version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.0
-        version: 1.6.0(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.6.1
+        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.5.1
         version: 3.5.1
@@ -1002,8 +1002,8 @@ importers:
         specifier: 4.4.6
         version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.0
-        version: 1.6.0(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.6.1
+        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.5.1
         version: 3.5.1
@@ -1201,8 +1201,8 @@ importers:
         specifier: 9.2.10
         version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.0
-        version: 1.6.0(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.6.1
+        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.28
         version: 0.3.28(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -3383,8 +3383,8 @@ packages:
   '@cowprotocol/sdk-common@0.12.3':
     resolution: {integrity: sha512-2FRTKMS1yoiLpTTRgk1U8rUa7x7LhM/AXZjQWRMTJt6QCQjS9PzNIMCmCrrC7w0cZaXfS+BVQgK277wOuwa3pw==}
 
-  '@cowprotocol/sdk-composable@1.6.0':
-    resolution: {integrity: sha512-jWJ0WaH3wGAIG/ZU+6uZ5HCEZ1YwHlTHMWxSxYar6gjTxYT/Hfqer6ORNDBYoL922Xf8BLSbbfoX5qbvykoj0Q==}
+  '@cowprotocol/sdk-composable@1.6.1':
+    resolution: {integrity: sha512-0wK/O1UN2LkNrmE05iIPF6C1Ul083OL8wcF1puSmQlx1Y9G1HljSsfM8cvdoY99cNL7A1e/1/NYmBRkLlMNj1g==}
 
   '@cowprotocol/sdk-config@1.2.0':
     resolution: {integrity: sha512-upZ2OPycc+rikwAnfNt58qBMlYb+7zpFPzG6zT/sfE50FS1f2ba4SMtw37HVq+v0e9R32o/rWZFcDZT5Ty5yyQ==}
@@ -19723,7 +19723,7 @@ snapshots:
     dependencies:
       '@cowprotocol/sdk-config': 2.6.0
 
-  '@cowprotocol/sdk-composable@1.6.0(encoding@0.1.13)(typescript@5.9.3)':
+  '@cowprotocol/sdk-composable@1.6.1(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
       '@cowprotocol/sdk-common': 0.12.3
       '@cowprotocol/sdk-config': 2.6.0

@@ -75,7 +75,7 @@ export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedSellAmount: '0',
   executedBuyAmount: '0',
-  executedFeeAmount: '0',
+  executedFee: '0',
 }
 
 export const DEFAULT_TWAP_EXECUTION = { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO }
