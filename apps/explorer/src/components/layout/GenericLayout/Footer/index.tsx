@@ -129,7 +129,7 @@ export const Footer: React.FC<FooterType> = (props) => {
   const settlementAddress = isSolana
     ? SOLANA_SETTLEMENT_PROGRAM_ID
     : COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
-  const settlementLabel = isSolana ? 'Settlement program' : 'Settlement contract'
+  const settlementLabel = isSolana ? 'Settlement program↗' : 'Settlement contract↗'
   const settlementSourceUrl = isSolana ? footerConfig.url.contracts.solanaSettlement : url.contracts.settlement
   // SPL delegation takes the vault relayer's place on Solana, there is no counterpart to link to.
   const vaultRelayerContractAddress = !isSolana && COW_PROTOCOL_VAULT_RELAYER_ADDRESS[networkId]
@@ -159,7 +159,7 @@ export const Footer: React.FC<FooterType> = (props) => {
               type="contract"
               identifier={vaultRelayerContractAddress}
               networkId={networkId}
-              label="Vault Relayer contract"
+              label="Vault Relayer contract↗"
             />
             <a target="_blank" rel="noopener noreferrer" href={url.contracts.vaultRelayer}>
               <LogoWrapper className="github-logo" src={LOGO_MAP.imgGithubSrc} title="Open it on Github" />
