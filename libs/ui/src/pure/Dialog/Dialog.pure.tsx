@@ -19,6 +19,7 @@ function DialogComponent({
   variant = 'default',
   isOpen,
   onOpenChange,
+  onOpenChangeComplete,
   children,
   a11yTitle,
   className,
@@ -33,7 +34,7 @@ function DialogComponent({
   useBodyScrollbarLocker(isOpen)
 
   return (
-    <BaseDialog.Root open={isOpen} onOpenChange={handleOpenChange}>
+    <BaseDialog.Root open={isOpen} onOpenChange={handleOpenChange} onOpenChangeComplete={onOpenChangeComplete}>
       <BaseDialog.Portal>
         <OverlayLayer data-dialog-layer="">
           <styledEl.Backdrop data-dialog-backdrop="" forceRender />

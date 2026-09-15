@@ -550,6 +550,10 @@ msgstr ""
 msgid "amount per"
 msgstr "amount per"
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Reject the wallet request to stop"
+msgstr "Reject the wallet request to stop"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Provide a valid referral code"
 #~ msgstr "Provide a valid referral code"
@@ -1510,6 +1514,10 @@ msgstr "Not enough price data for one or both assets to calculate the price impa
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Open"
 msgstr "Order Open"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "If you approve it after leaving, the order may still be submitted."
+msgstr "If you approve it after leaving, the order may still be submitted."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -2782,6 +2790,10 @@ msgstr "Scan"
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
+msgstr "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "CoW Hooks"
 msgstr "CoW Hooks"
@@ -2972,6 +2984,10 @@ msgstr "Context is not full to cancel TWAP order"
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 #~ msgid "Receive (incl. costs)"
 #~ msgstr "Receive (incl. costs)"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+msgid "Leave setup"
+msgstr "Leave setup"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "Copy tx hash"
@@ -3230,6 +3246,10 @@ msgstr "Unable to generate permit data"
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Place orders with a time-weighted average price"
 msgstr "Place orders with a time-weighted average price"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You won't need to approve it again unless your allowance changes."
+msgstr "You won't need to approve it again unless your allowance changes."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Proxy Accounts"
@@ -4382,6 +4402,10 @@ msgstr "Set custom date"
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claimable"
 msgstr "Claimable"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Your {symbol} approval stays valid"
+msgstr "Your {symbol} approval stays valid"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Docs"
@@ -5820,6 +5844,10 @@ msgstr "Dismiss notification"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Withdraw rewards from your Gnosis validators."
 #~ msgstr "Withdraw rewards from your Gnosis validators."
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Leave TWAP setup?"
+msgstr "Leave TWAP setup?"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -8022,6 +8050,10 @@ msgstr "Expired order"
 msgid "Simulation Successful"
 msgstr "Simulation Successful"
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+msgid "Continue setup"
+msgstr "Continue setup"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Placing TWAP"
 #~ msgstr "Placing TWAP"
@@ -8181,6 +8213,10 @@ msgstr "{walletName} account changed"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Price impact is too high"
 msgstr "Price impact is too high"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
+msgstr "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Value"
