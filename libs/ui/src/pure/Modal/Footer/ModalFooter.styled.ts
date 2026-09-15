@@ -6,7 +6,7 @@ import { ButtonOutlined, ButtonPrimary } from '../../Button'
 
 export const Footer = styled.div<{ $inline?: boolean }>`
   width: 100%;
-  padding: ${({ $inline }) => ($inline ? '8px 0 0' : '8px 10px 10px')};
+  padding: ${({ $inline }) => ($inline ? '0' : '8px 10px 10px')};
 `
 
 export const TwoButtonGrid = styled.div`

@@ -5,7 +5,7 @@ import * as styledEl from './ModalFooter.styled'
 export interface ModalFooterProps {
   children: ReactNode
   className?: string
-  /** Omit horizontal padding when nested inside `Modal.Content`. */
+  /** Omit padding when nested inside `Modal.Content`. */
   inline?: boolean
 }
 

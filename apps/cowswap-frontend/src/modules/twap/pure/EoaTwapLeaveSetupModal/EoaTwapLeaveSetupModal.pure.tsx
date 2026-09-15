@@ -1,6 +1,17 @@
 import { ReactNode, useCallback } from 'react'
 
-import { BannerOrientation, Dialog, InlineBanner, Modal, ModalHeader, StatusColorVariant } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import {
+  BannerOrientation,
+  BottomDrawer,
+  BottomDrawerOrDialog,
+  Dialog,
+  InlineBanner,
+  Media,
+  Modal,
+  ModalHeader,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -37,6 +48,8 @@ export function EoaTwapLeaveSetupModal({
       ? t`You won't need to approve it again unless your allowance changes.`
       : t`If you approve it after leaving, the order may still be submitted.`
 
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+
   const handleOpenChange = useCallback(
     (open: boolean) => {
       if (!open) {
@@ -47,9 +60,12 @@ export function EoaTwapLeaveSetupModal({
   )
 
   return (
-    <Dialog isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
+    <BottomDrawerOrDialog isDrawer={isUpToSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
-        <ModalHeader title={<Trans>Leave TWAP setup?</Trans>} titleAs={Dialog.Title} />
+        <ModalHeader
+          title={<Trans>Leave TWAP setup?</Trans>}
+          titleAs={isUpToSmall ? BottomDrawer.Title : Dialog.Title}
+        />
 
         <Modal.Content>
           <styledEl.Content>
@@ -75,6 +91,6 @@ export function EoaTwapLeaveSetupModal({
           primaryButton={{ label: <Trans>Continue setup</Trans>, onClick: onContinue }}
         />
       </Modal.Root>
-    </Dialog>
+    </BottomDrawerOrDialog>
   )
 }
