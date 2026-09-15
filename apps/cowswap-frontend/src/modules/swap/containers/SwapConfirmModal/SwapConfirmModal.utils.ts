@@ -1,5 +1,6 @@
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
@@ -14,7 +15,7 @@ export interface GetSwapConfirmDisabledStateParams {
   shouldDisplayBridgeDetails: boolean
   hasBridgeQuoteAmounts: boolean
   hasCurrentCurrency: boolean
-  isBalanceEnough: boolean
+  isBalanceEnough: boolean | null
   isQuoteLoading: boolean
   quoteCounter: number
   isQuoteStale: boolean
@@ -25,11 +26,16 @@ export interface SwapConfirmDisabledState {
   isInsufficientBalance: boolean
 }
 
-export function getIsBalanceEnough({ inputAmount, maximumSellAmount, balances }: GetIsBalanceEnoughParams): boolean {
+export function getIsBalanceEnough({
+  inputAmount,
+  maximumSellAmount,
+  balances,
+}: GetIsBalanceEnoughParams): boolean | null {
   const sellCurrency = inputAmount?.currency
   const amountToCover = maximumSellAmount ?? inputAmount
 
-  if (!sellCurrency || !amountToCover) return false
+  if (!sellCurrency || !amountToCover) return null
+  if (!isQuotedInSameAsset(sellCurrency, amountToCover.currency)) return null
 
   const balance = balances[getAddressKey(getCurrencyAddress(sellCurrency))] ?? 0n
   const sellCurrencyScale = 10n ** BigInt(sellCurrency.decimals)
@@ -79,8 +85,23 @@ export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateP
     }
   }
 
+  if (isBalanceEnough === null) {
+    return {
+      disableConfirm: true,
+      isInsufficientBalance: false,
+    }
+  }
+
   return {
     disableConfirm: !isBalanceEnough,
     isInsufficientBalance: !isBalanceEnough,
   }
+}
+
+function isQuotedInSameAsset(sellCurrency: Currency, quotedCurrency: Currency): boolean {
+  if (sellCurrency.equals(quotedCurrency)) return true
+
+  const wrapped = WRAPPED_NATIVE_CURRENCIES[sellCurrency.chainId as SupportedChainId]
+
+  return Boolean(wrapped) && getIsNativeToken(sellCurrency) && quotedCurrency.equals(wrapped)
 }
