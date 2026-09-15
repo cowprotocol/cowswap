@@ -1,19 +1,12 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState, useMemo } from 'react'
 
 import { useEoaTwapSigningStep } from './useEoaTwapSigningStep'
 
+import { EoaTwapLeaveSetupModalProps } from '../pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure'
 import {
   EoaTwapLeaveConfirmationVariant,
   getEoaTwapLeaveConfirmationVariant,
 } from '../utils/getEoaTwapLeaveConfirmationVariant'
-
-export interface EoaTwapLeaveSetupModalProps {
-  isOpen: boolean
-  variant: EoaTwapLeaveConfirmationVariant
-  symbol: string
-  onLeave(): void
-  onContinue(): void
-}
 
 interface UseEoaTwapLeaveConfirmationParams {
   symbol: string
@@ -21,7 +14,7 @@ interface UseEoaTwapLeaveConfirmationParams {
 }
 
 interface UseEoaTwapLeaveConfirmationReturn {
-  isCloseHidden: boolean
+  lockDismiss: boolean
   leaveSetupModalProps: EoaTwapLeaveSetupModalProps | null
   onDismissRequest(): void
 }
@@ -33,7 +26,7 @@ export function useEoaTwapLeaveConfirmation({
   const signingStep = useEoaTwapSigningStep()
   const [leaveConfirmationVariant, setLeaveConfirmationVariant] = useState<EoaTwapLeaveConfirmationVariant | null>(null)
 
-  const isCloseHidden = signingStep?.lockDismiss === true
+  const lockDismiss = !!signingStep?.lockDismiss
 
   const onContinue = useCallback(() => {
     setLeaveConfirmationVariant(null)
@@ -48,26 +41,35 @@ export function useEoaTwapLeaveConfirmation({
     const variant = getEoaTwapLeaveConfirmationVariant(signingStep)
 
     if (!variant) {
-      onDismiss()
+      onLeave()
       return
     }
 
     setLeaveConfirmationVariant(variant)
-  }, [onDismiss, signingStep])
+  }, [onLeave, signingStep])
 
-  const leaveSetupModalProps =
-    leaveConfirmationVariant !== null
-      ? {
-          isOpen: true,
-          variant: leaveConfirmationVariant,
-          symbol,
-          onLeave,
-          onContinue,
-        }
-      : null
+  const leaveSetupModalProps = useMemo(() => {
+    return (
+      leaveConfirmationVariant
+        ? {
+            isOpen: true,
+            variant: leaveConfirmationVariant,
+            symbol,
+            onLeave,
+            onContinue,
+          }
+        : {
+            isOpen: false,
+            variant: 'walletRequest',
+            symbol: '',
+            onLeave: () => {},
+            onContinue: () => {},
+          }
+    ) satisfies EoaTwapLeaveSetupModalProps
+  }, [leaveConfirmationVariant, symbol, onLeave, onContinue])
 
   return {
-    isCloseHidden,
+    lockDismiss,
     leaveSetupModalProps,
     onDismissRequest,
   }

@@ -36,7 +36,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
   hasSigningPlan?: boolean
-  isCloseHidden?: boolean
+  lockDismiss?: boolean
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -55,8 +55,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const props = frozenProps || _props
 
   // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
-  const { title, hasSigningPlan, isCloseHidden, children } = _props
+  const { onConfirm, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
+  const { title, hasSigningPlan, lockDismiss, onDismiss, children } = _props
 
   /**
    * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
@@ -113,7 +113,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
       <ModalHeader
         title={title}
         onBack={hasSigningPlan ? undefined : onDismiss}
-        onClose={hasSigningPlan && !isCloseHidden ? _props.onDismiss : undefined}
+        onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}
         // TODO: Consider still displaying this here or somewhere else?
         rightSlot={isConfirming || isPriceStatic ? null : <QuoteCountdown />}
       />

@@ -15,20 +15,6 @@ export const Description = styled.p`
   line-height: 1.4;
 `
 
-export const InfoBannerContent = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-`
-
 export const InfoBannerTitle = styled.strong`
   ${font('FONT_SMALL_PLUS', 'semibold')}
-  display: block;
-  color: inherit;
-`
-
-export const InfoBannerDescription = styled.span`
-  ${font('FONT_SMALL_PLUS', 'regular')}
-  display: block;
-  color: inherit;
 `

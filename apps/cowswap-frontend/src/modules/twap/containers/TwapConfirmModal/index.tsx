@@ -65,7 +65,7 @@ export function TwapConfirmModal(): ReactNode {
     inputSymbolLabel,
   })
 
-  const { isCloseHidden, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
+  const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
     onDismiss,
   })
@@ -120,7 +120,7 @@ export function TwapConfirmModal(): ReactNode {
           buttonText={isInsufficientBalance ? t`Insufficient ${inputSymbolLabel} balance` : t`Place TWAP order`}
           recipient={recipient}
           hasSigningPlan={hasSigningPlan}
-          isCloseHidden={isCloseHidden}
+          lockDismiss={lockDismiss}
         >
           {(restContent) => (
             <>

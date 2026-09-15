@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import { Dialog, InlineBanner, Modal, ModalHeader, StatusColorVariant } from '@cowprotocol/ui'
+import { BannerOrientation, Dialog, InlineBanner, Modal, ModalHeader, StatusColorVariant } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -55,11 +55,17 @@ export function EoaTwapLeaveSetupModal({
           <styledEl.Content>
             <styledEl.Description>{description}</styledEl.Description>
 
-            <InlineBanner bannerType={StatusColorVariant.Info} hideIcon borderRadius="16px">
-              <styledEl.InfoBannerContent>
+            <InlineBanner
+              bannerType={StatusColorVariant.Info}
+              hideIcon
+              borderRadius="16px"
+              orientation={BannerOrientation.Horizontal}
+              iconSize={16}
+            >
+              <p>
                 <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
-                <styledEl.InfoBannerDescription>{infoBannerDescription}</styledEl.InfoBannerDescription>
-              </styledEl.InfoBannerContent>
+              </p>
+              <p>{infoBannerDescription}</p>
             </InlineBanner>
           </styledEl.Content>
         </Modal.Content>
