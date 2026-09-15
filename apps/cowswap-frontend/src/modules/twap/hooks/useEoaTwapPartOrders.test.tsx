@@ -70,7 +70,8 @@ function makePartPage(uid: string, status: TwapPartOrderStatus = 'fulfilled'): Q
         createdAt: 1_000_000_000,
         executedSellAmount,
         executedBuyAmount: status === 'fulfilled' ? 6n : 0n,
-        executedFeeAmount: status === 'fulfilled' ? 1n : 0n,
+        executedFeeAmount: 0n,
+        executedFee: status === 'fulfilled' ? 1n : 0n,
       },
     ],
   }
@@ -101,7 +102,7 @@ function makeTwapOrder(partOrdersCount = 1, updatedAtBlock = '1'): TwapOrderItem
     },
     executionInfo: {
       confirmedPartsCount: 0,
-      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFeeAmount: '0' },
+      info: { executedSellAmount: '0', executedBuyAmount: '0', executedFee: '0' },
     },
   }
 }
@@ -206,7 +207,8 @@ describe('useEoaTwapPartOrders', () => {
       status: 'unconfirmed',
       executedSellAmount: null,
       executedBuyAmount: null,
-      executedFeeAmount: null,
+      executedFeeAmount: 0n,
+      executedFee: null,
     } as TwapPartOrder
     fetchEoaTwapPartOrdersMock
       .mockResolvedValueOnce({ totalCount: 1, items: [candidate] })
@@ -239,7 +241,8 @@ describe('useEoaTwapPartOrders', () => {
         status: 'unconfirmed',
         executedSellAmount: null,
         executedBuyAmount: null,
-        executedFeeAmount: null,
+        executedFeeAmount: 0n,
+        executedFee: null,
       })),
     })
     const { result } = renderHook(() => useEoaTwapPartOrders({ ...makeTwapOrder(), status }, parent, 1, true), {
