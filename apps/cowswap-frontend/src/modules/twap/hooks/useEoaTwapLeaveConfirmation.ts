@@ -33,9 +33,13 @@ export function useEoaTwapLeaveConfirmation({
   }, [])
 
   const onLeave = useCallback(() => {
+    if (lockDismiss) {
+      return
+    }
+
     setLeaveConfirmationVariant(null)
     onDismiss()
-  }, [onDismiss])
+  }, [lockDismiss, onDismiss])
 
   const onDismissRequest = useCallback(() => {
     const variant = getEoaTwapLeaveConfirmationVariant(signingStep)
