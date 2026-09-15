@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.1...common-utils-v3.16.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): process order fulfillment (#8127)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.12.0
+
 ## [3.15.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.0...common-utils-v3.15.1) (2026-09-11)
 
 ### Patch Changes
