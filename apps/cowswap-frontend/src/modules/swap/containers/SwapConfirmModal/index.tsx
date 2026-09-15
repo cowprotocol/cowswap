@@ -1,8 +1,5 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish, UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -38,7 +35,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
 
-import { getSwapConfirmDisabledState } from './SwapConfirmModal.utils'
+import { getIsBalanceEnough, getSwapConfirmDisabledState } from './SwapConfirmModal.utils'
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
@@ -125,24 +122,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
 
   // TODO: Reduce function complexity by extracting logic
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
-    const hasCurrentCurrency = Boolean(inputCurrencyInfo?.amount?.currency)
+    const sellCurrency = inputCurrencyInfo?.amount?.currency
+    const hasCurrentCurrency = Boolean(sellCurrency)
     // Must cover the slippage-inclusive maximum sell amount, not just the expected sell amount,
     // otherwise the order can be placed while unfillable if the price moves against the user up to slippage.
     const maximumSellAmount = receiveAmountInfo?.afterSlippage.sellAmount ?? inputCurrencyInfo?.amount
-    const current = maximumSellAmount?.currency
-    let isBalanceEnough = false
-
-    if (current) {
-      const normalisedAddress = getAddressKey(getCurrencyAddress(current))
-      const balance = balances[normalisedAddress]
-      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
-
-      isBalanceEnough = Boolean(
-        balanceAsCurrencyAmount &&
-          maximumSellAmount &&
-          (maximumSellAmount.equalTo(balanceAsCurrencyAmount) || maximumSellAmount.lessThan(balanceAsCurrencyAmount)),
-      )
-    }
+    const isBalanceEnough = getIsBalanceEnough({ sellCurrency, maximumSellAmount, balances })
 
     return getSwapConfirmDisabledState({
       isTradeContextReady,

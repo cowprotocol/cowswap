@@ -1,4 +1,12 @@
-import { getSwapConfirmDisabledState, GetSwapConfirmDisabledStateParams } from './SwapConfirmModal.utils'
+import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
+
+import {
+  getIsBalanceEnough,
+  getSwapConfirmDisabledState,
+  GetSwapConfirmDisabledStateParams,
+} from './SwapConfirmModal.utils'
 
 const defaultParams: GetSwapConfirmDisabledStateParams = {
   isTradeContextReady: true,
@@ -10,6 +18,60 @@ const defaultParams: GetSwapConfirmDisabledStateParams = {
   quoteCounter: 15000,
   isQuoteStale: false,
 }
+
+describe('getIsBalanceEnough', () => {
+  const chainId = SupportedChainId.GNOSIS_CHAIN
+  const native = NATIVE_CURRENCIES[chainId]
+  const wrapped = WRAPPED_NATIVE_CURRENCIES[chainId]
+
+  const oneUnit = 10n ** BigInt(native.decimals)
+  // The quote is always denominated in the wrapped token, even when the user sells the native one
+  const maximumSellAmount = CurrencyAmount.fromRawAmount(wrapped, (oneUnit / 2n).toString())
+
+  it('reads the native balance when selling the native token', () => {
+    const balances = {
+      [getAddressKey(native.address)]: oneUnit,
+      [getAddressKey(wrapped.address)]: 0n,
+    }
+
+    expect(getIsBalanceEnough({ sellCurrency: native, maximumSellAmount, balances })).toBe(true)
+  })
+
+  it('does not fall back to the wrapped balance when the native balance is too low', () => {
+    const balances = {
+      [getAddressKey(native.address)]: 0n,
+      [getAddressKey(wrapped.address)]: oneUnit,
+    }
+
+    expect(getIsBalanceEnough({ sellCurrency: native, maximumSellAmount, balances })).toBe(false)
+  })
+
+  it('reads the wrapped balance when selling the wrapped token', () => {
+    const balances = {
+      [getAddressKey(native.address)]: 0n,
+      [getAddressKey(wrapped.address)]: oneUnit,
+    }
+
+    expect(getIsBalanceEnough({ sellCurrency: wrapped, maximumSellAmount, balances })).toBe(true)
+  })
+
+  it('treats an exactly matching balance as enough', () => {
+    const balances = { [getAddressKey(native.address)]: oneUnit / 2n }
+
+    expect(getIsBalanceEnough({ sellCurrency: native, maximumSellAmount, balances })).toBe(true)
+  })
+
+  it('treats a missing balance as zero', () => {
+    expect(getIsBalanceEnough({ sellCurrency: native, maximumSellAmount, balances: {} })).toBe(false)
+  })
+
+  it('is not enough when there is no sell currency or no maximum sell amount', () => {
+    const balances = { [getAddressKey(native.address)]: oneUnit }
+
+    expect(getIsBalanceEnough({ sellCurrency: null, maximumSellAmount, balances })).toBe(false)
+    expect(getIsBalanceEnough({ sellCurrency: native, maximumSellAmount: null, balances })).toBe(false)
+  })
+})
 
 describe('getSwapConfirmDisabledState', () => {
   it('disables confirm when quote is refreshing', () => {
