@@ -63,7 +63,6 @@ export function EoaTwapLeaveSetupModal({
               hideIcon
               borderRadius="16px"
               orientation={BannerOrientation.Horizontal}
-              iconSize={16}
             >
               <p>
                 <styledEl.InfoBannerTitle>{infoBannerTitle}</styledEl.InfoBannerTitle>
