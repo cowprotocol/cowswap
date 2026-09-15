@@ -24,6 +24,12 @@ describe('getBridgeProviderErrorMessage', () => {
     expect(getBridgeProviderErrorMessage({ message: 'Amount is too low' })).toBe('Amount is too low')
   })
 
+  it('should find the original message of a Near Intents minimum-amount error', () => {
+    const context = { originalMessage: 'Amount is too low. Try at least 1000', minAmount: '1000' }
+
+    expect(getBridgeProviderErrorMessage(context)).toBe('Amount is too low. Try at least 1000')
+  })
+
   it('should find the message nested under errorBody', () => {
     expect(getBridgeProviderErrorMessage({ errorBody: { message: 'No route found' }, type: 'quote' })).toBe(
       'No route found',
@@ -48,7 +54,7 @@ describe('getBridgeProviderErrorMessage', () => {
   it('should truncate a message too long for the trade button', () => {
     const result = getBridgeProviderErrorMessage({ message: 'a'.repeat(250) })
 
-    expect(result).toBe(`${'a'.repeat(200)}…`)
+    expect(result).toBe(`${'a'.repeat(100)}…`)
   })
 
   it('should not recurse forever on a self-referencing context', () => {
