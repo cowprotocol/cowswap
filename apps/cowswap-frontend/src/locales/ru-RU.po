@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-15 04:22\n"
+"PO-Revision-Date: 2026-09-15 14:55\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -546,6 +546,10 @@ msgstr "Мое печенье с предсказанием CoW 🐮💬: «{ope
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
 msgstr "сумма за"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Reject the wallet request to stop"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Provide a valid referral code"
@@ -1507,6 +1511,10 @@ msgstr "Недостаточно ценовых данных по активам
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Open"
 msgstr "Открыть ордер"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "If you approve it after leaving, the order may still be submitted."
+msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -2775,6 +2783,10 @@ msgstr "Отсканировать"
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "CoW Hooks"
 msgstr "CoW Hooks"
@@ -2965,6 +2977,10 @@ msgstr "Недостаточно данных для отмены TWAP-орде�
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 #~ msgid "Receive (incl. costs)"
 #~ msgstr "Receive (incl. costs)"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+msgid "Leave setup"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "Copy tx hash"
@@ -3223,6 +3239,10 @@ msgstr "Не удалось сгенерировать данные для permi
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Place orders with a time-weighted average price"
 msgstr "Размещайте ордера по средневзвешенной по времени цене (TWAP)"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You won't need to approve it again unless your allowance changes."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Proxy Accounts"
@@ -4375,6 +4395,10 @@ msgstr "Установить свою дату"
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claimable"
 msgstr "Доступно к получению"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Your {symbol} approval stays valid"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Docs"
@@ -5812,6 +5836,10 @@ msgstr "Закрыть уведомление"
 #~ msgid "Withdraw rewards from your Gnosis validators."
 #~ msgstr "Withdraw rewards from your Gnosis validators."
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "Leave TWAP setup?"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Selling {symbol} is not supported"
@@ -6846,6 +6874,7 @@ msgstr "Подтвердите свап"
 msgid "Confirm hook"
 msgstr "Подтвердить хук"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
 msgstr "Часть TWAP-ордера, разделенного на {twapOrderN} частей"
@@ -8012,6 +8041,10 @@ msgstr "Истекший ордер"
 msgid "Simulation Successful"
 msgstr "Симуляция успешна"
 
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+msgid "Continue setup"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Placing TWAP"
 #~ msgstr "Placing TWAP"
@@ -8171,6 +8204,10 @@ msgstr "Аккаунт {walletName} изменен"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Price impact is too high"
 msgstr "Влияние на цену (Price impact) слишком велико"
+
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
+msgid "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
+msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Value"
