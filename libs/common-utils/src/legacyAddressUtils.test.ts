@@ -1,6 +1,43 @@
-import { getBlockExplorerUrl, isAddress, safeShortenAddress, shortenAddress } from './legacyAddressUtils'
+import { i18n } from '@lingui/core'
+
+import { getExplorerBaseUrl } from './explorer'
+import {
+  getBlockExplorerUrl,
+  getEtherscanLink,
+  getExplorerLabel,
+  isAddress,
+  safeShortenAddress,
+  shortenAddress,
+} from './legacyAddressUtils'
 
 describe('utils', () => {
+  describe('#getEtherscanLink', () => {
+    const eventId = '1'.repeat(70)
+    const uid = `0x${'a'.repeat(112)}`
+    const hash = `0x${'b'.repeat(64)}`
+
+    it.each([1, 100, 11155111])('routes TWAP event IDs to CoW Explorer on chain %s', (chainId) => {
+      expect(getEtherscanLink(chainId, 'transaction', eventId)).toBe(`${getExplorerBaseUrl(chainId)}/twap/${eventId}`)
+    })
+
+    it('preserves order UID routing', () => {
+      expect(getEtherscanLink(1, 'transaction', uid)).toBe(`${getExplorerBaseUrl(1)}/orders/${uid}`)
+    })
+
+    it('preserves transaction hash routing', () => {
+      expect(getEtherscanLink(1, 'transaction', hash)).toBe(getBlockExplorerUrl(1, 'transaction', hash))
+    })
+
+    it('does not apply TWAP routing to other link types', () => {
+      expect(getEtherscanLink(1, 'block', eventId)).toBe(getBlockExplorerUrl(1, 'block', eventId))
+    })
+
+    it('uses the CoW Explorer label for TWAPs', () => {
+      i18n.loadAndActivate({ locale: 'en', messages: {} })
+      expect(getExplorerLabel(1, 'transaction', eventId)).toBe(getExplorerLabel(1, 'transaction', uid))
+    })
+  })
+
   describe('#isAddress', () => {
     it('returns false if not', () => {
       expect(isAddress('')).toBe(false)

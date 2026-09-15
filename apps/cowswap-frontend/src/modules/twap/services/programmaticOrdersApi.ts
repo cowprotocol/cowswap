@@ -3,7 +3,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProgrammaticOrderApi } from '@cowprotocol/sdk-composable'
 import type { QueryPage, TwapOrder, TwapPartOrder } from '@cowprotocol/sdk-composable'
 
-import { getTwapOrderStatus } from '../utils/getTwapOrderStatus'
+import { mapTwapStatus } from '../utils/mapTwapStatus'
 
 import type { TWAPOrderStruct } from '../types'
 import type { TwapOrdersList } from 'entities/twap'
@@ -105,7 +105,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
     }
     const executionInfo = {
       // TODO rename this to isCompleted, this is its only purpose and it is confusing to have a count of confirmed parts when we only ever use it as a boolean
-      confirmedPartsCount: twapOrder.status === 'Completed' ? schedule.numberOfParts : 0,
+      confirmedPartsCount: twapOrder.lifecycleStatus === 'Completed' ? schedule.numberOfParts : 0,
       info: {
         executedSellAmount: executedAmounts.executedSellAmount.toString(),
         executedBuyAmount: executedAmounts.executedBuyAmount.toString(),
@@ -121,13 +121,7 @@ function mapTwapOrders(twapOrders: TwapOrder[], updatedAtBlock = 0n): EoaTwapOrd
       safeAddress: twapOrder.owner,
       resolvedOwner: twapOrder.resolvedOwner,
       order,
-      status: getTwapOrderStatus({
-        execution: executionInfo,
-        executionDate: createdAt,
-        isCancelled: twapOrder.status === 'Cancelled',
-        isWaitingForSignature: false,
-        order,
-      }),
+      status: mapTwapStatus(twapOrder.status),
       submissionDate: createdAt.toISOString(),
       executedDate: createdAt.toISOString(),
       partOrdersCount: twapOrder.partOrdersCount,

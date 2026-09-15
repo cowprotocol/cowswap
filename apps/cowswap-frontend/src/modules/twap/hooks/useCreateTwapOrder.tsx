@@ -6,7 +6,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { createCowLogger, normalizeError } from '@cowprotocol/common-utils'
+import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
@@ -74,6 +74,7 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -293,7 +294,7 @@ export function useCreateTwapOrder() {
 
         // Value passed to `tradeConfirmActions.onSuccess`. Ends up in `PostedOrderNotification`, rendering a Safe or Explorer link in a toast.
         // Must be truthy to show the success screen.
-        // - EOA: cow-shed factory setup transaction hash
+        // - EOA: indexed event ID, or setup transaction hash if indexing times out
         // - Safe: safeTxHash
         let confirmModalHash: string
 
@@ -405,10 +406,13 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
+        const eventId = isEoaTwap ? await waitForTwapEventId(twapOrderId, account, chainId) : undefined
+
         emitPostedOrderEvent({
           chainId,
           id: twapOrderId,
           orderCreationHash,
+          explorerUrl: isEoaTwap ? (eventId ? getExplorerTwapOrderLink(chainId, eventId) : null) : undefined,
           kind: OrderKind.SELL,
           receiver: twapOrder.receiver,
           inputAmount: updatedTwapOrder.sellAmount,
@@ -427,7 +431,7 @@ export function useCreateTwapOrder() {
             step: EoaTwapSigningSteps.Success,
             phase: EoaTwapSigningPhase.Confirmed,
             orderId: twapOrderId,
-            proxyAddress: safeAddressOrCowShedAddress,
+            eventId,
           })
         } else {
           updateEoaTwapFlow(null)

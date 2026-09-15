@@ -75,6 +75,6 @@ function mergeEoaTwapFlowState(
     lockDismiss: update.lockDismiss ?? base.lockDismiss,
     completedStepTxHashes,
     orderId: update.orderId ?? base.orderId,
-    proxyAddress: update.proxyAddress ?? base.proxyAddress,
+    eventId: update.eventId ?? base.eventId,
   }
 }
