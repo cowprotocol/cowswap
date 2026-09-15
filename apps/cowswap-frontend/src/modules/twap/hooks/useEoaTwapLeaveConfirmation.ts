@@ -1,4 +1,4 @@
-import { useCallback, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useEoaTwapSigningStep } from './useEoaTwapSigningStep'
 
@@ -51,6 +51,18 @@ export function useEoaTwapLeaveConfirmation({
 
     setLeaveConfirmationVariant(variant)
   }, [onLeave, signingStep])
+
+  useEffect(() => {
+    if (!leaveConfirmationVariant) {
+      return
+    }
+
+    const currentVariant = getEoaTwapLeaveConfirmationVariant(signingStep)
+
+    if (currentVariant === null || leaveConfirmationVariant !== currentVariant) {
+      setLeaveConfirmationVariant(null)
+    }
+  }, [leaveConfirmationVariant, signingStep])
 
   const leaveSetupModalProps = useMemo(() => {
     return (
