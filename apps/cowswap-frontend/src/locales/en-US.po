@@ -550,7 +550,7 @@ msgstr ""
 msgid "amount per"
 msgstr "amount per"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Reject the wallet request to stop"
 msgstr "Reject the wallet request to stop"
 
@@ -1515,7 +1515,7 @@ msgstr "Not enough price data for one or both assets to calculate the price impa
 msgid "Order Open"
 msgstr "Order Open"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "If you approve it after leaving, the order may still be submitted."
 msgstr "If you approve it after leaving, the order may still be submitted."
 
@@ -2790,7 +2790,7 @@ msgstr "Scan"
 #~ msgid "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 #~ msgstr "You understand that it is your responsibility to comply with all laws and restrictions that apply to you."
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
 msgstr "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
 
@@ -3247,7 +3247,7 @@ msgstr "Unable to generate permit data"
 msgid "Place orders with a time-weighted average price"
 msgstr "Place orders with a time-weighted average price"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You won't need to approve it again unless your allowance changes."
 msgstr "You won't need to approve it again unless your allowance changes."
 
@@ -4403,7 +4403,7 @@ msgstr "Set custom date"
 msgid "Claimable"
 msgstr "Claimable"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Your {symbol} approval stays valid"
 msgstr "Your {symbol} approval stays valid"
 
@@ -5845,7 +5845,7 @@ msgstr "Dismiss notification"
 #~ msgid "Withdraw rewards from your Gnosis validators."
 #~ msgstr "Withdraw rewards from your Gnosis validators."
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Leave TWAP setup?"
 msgstr "Leave TWAP setup?"
 
@@ -8213,7 +8213,7 @@ msgstr "{walletName} account changed"
 msgid "Price impact is too high"
 msgstr "Price impact is too high"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
 msgstr "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
 
