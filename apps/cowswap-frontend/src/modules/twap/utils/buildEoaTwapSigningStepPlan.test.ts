@@ -7,7 +7,7 @@ const NO_APPROVAL_NEEDS = { needsApproval: false, needsZeroApproval: false }
 const REQUIRED_STEPS = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
 describe('buildEoaTwapSigningStepPlan()', () => {
-  it('always includes activation and submit steps', () => {
+  it('always includes signature and submit steps', () => {
     expect(buildEoaTwapSigningStepPlan({ poller: NO_APPROVAL_NEEDS })).toEqual(REQUIRED_STEPS)
   })
 

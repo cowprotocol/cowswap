@@ -167,12 +167,12 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     expect(permitSuccessDescription).toContain('Permit token · Signed')
   })
 
-  it('renders wallet-action summary layout for completed activation step', () => {
+  it('renders wallet-action summary layout for completed signature step', () => {
     expect(
       renderToStaticMarkup(
         getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSign, 'success', undefined, {
           chainId: SupportedChainId.MAINNET,
-          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xactivate' },
+          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xsign' },
         }),
       ),
     ).toContain('Sign TWAP ·')
@@ -180,7 +180,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       renderToStaticMarkup(
         getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSign, 'success', undefined, {
           chainId: SupportedChainId.MAINNET,
-          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xactivate' },
+          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xsign' },
         }),
       ),
     ).toContain('Confirmed')
@@ -188,10 +188,10 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       renderToStaticMarkup(
         getEoaTwapStepDescription(EoaTwapSigningSteps.TwapSign, 'success', undefined, {
           chainId: SupportedChainId.MAINNET,
-          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xactivate' },
+          completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xsign' },
         }),
       ),
-    ).toContain('https://etherscan.io/tx/0xactivate')
+    ).toContain('https://etherscan.io/tx/0xsign')
   })
 
   it('collapses wallet actions while SubmitTwap is loading', () => {
@@ -381,6 +381,13 @@ describe('getEoaTwapStepLabel()', () => {
 describe('getEoaTwapCurrentStepBadge()', () => {
   beforeAll(async () => {
     await i18n.activate('en-US')
+  })
+
+  it('returns Signature pending for TwapSign while loading', () => {
+    expect(getEoaTwapCurrentStepBadge(EoaTwapSigningSteps.TwapSign, 'loading')).toEqual({
+      children: 'Signature pending',
+      type: 'information',
+    })
   })
 
   it('returns Still activating for SubmitTwapSlow', () => {

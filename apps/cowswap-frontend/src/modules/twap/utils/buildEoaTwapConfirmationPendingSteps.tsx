@@ -169,7 +169,7 @@ export function getEoaTwapCurrentStepBadge(
     case EoaTwapSigningSteps.TwapSign:
       return isLoading
         ? {
-            children: t`Activation pending`,
+            children: t`Signature pending`,
             type: 'information',
           }
         : {
@@ -285,7 +285,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Activate TWAP`,
+              children: t`Sign TWAP`,
               disabled: false,
             }
           : {
