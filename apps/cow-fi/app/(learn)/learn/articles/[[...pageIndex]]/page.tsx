@@ -4,6 +4,12 @@ import { Article, Category, getArticles, getCategories } from '../../../../../se
 
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
+import {
+  buildArticlePageParams,
+  getValidatedArticlePageData,
+  getValidatedArticlePagination,
+  parseArticlePageIndex,
+} from '@/util/articlePagination'
 
 export type ArticlesResponse = {
   data?: Article[]
@@ -18,28 +24,12 @@ type Props = {
   params: Promise<{ pageIndex?: string[] }>
 }
 
-// Generate static params with conservative estimate
-// Based on realistic content volume - prevents phantom page generation while covering real content
 export async function generateStaticParams(): Promise<{ pageIndex: string[] }[]> {
-  // Conservative estimate: 15 pages covers ~360 articles
-  // This is generous for most sites while preventing the 1000+ phantom pages issue
-  // If you grow beyond this, just increase the number and redeploy
-  const REASONABLE_PAGE_LIMIT = 15
+  const articlesResponse = await getArticles({ page: 1, pageSize: ARTICLES_PER_PAGE })
+  const pagination = getValidatedArticlePagination(articlesResponse.meta.pagination, 1, ARTICLES_PER_PAGE)
 
-  const pages = Array.from({ length: REASONABLE_PAGE_LIMIT }, (_, i) => ({
-    pageIndex: [(i + 1).toString()],
-  }))
-
-  // Add base route: /learn/articles (no pageIndex = page 1)
-  pages.unshift({ pageIndex: [] })
-
-  return pages
+  return buildArticlePageParams(pagination.pageCount)
 }
-
-// Disable dynamic params to prevent phantom page generation from crawlers/bots
-// Only pre-rendered pages 1-15 will be accessible - pages 16+ get proper 404s
-// For production: false blocks phantom pages | For local dev: true allows on-demand generation
-export const dynamicParams = false
 
 // Next.js requires revalidate to be a literal number for static analysis
 // 12 hours (43200 seconds) - pagination pages change infrequently
@@ -49,19 +39,22 @@ export const revalidate = 43200
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async function Page({ params }: Props) {
-  // With dynamicParams = false, only pre-rendered pages are accessible
-  // Next.js handles 404s for non-existent pages automatically
-  const pageParam = (await params)?.pageIndex?.[0]
-  const page = pageParam ? parseInt(pageParam, 10) : 1
+  const page = parseArticlePageIndex((await params).pageIndex)
+  if (page === null) return notFound()
 
-  // Fetch paginated articles for display
-  const articlesResponse = await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
-  const totalArticles = articlesResponse.meta?.pagination?.total || 0
+  const firstPageResponse = await getArticles({ page: 1, pageSize: ARTICLES_PER_PAGE })
+  const firstPagePagination = getValidatedArticlePagination(firstPageResponse.meta.pagination, 1, ARTICLES_PER_PAGE)
+  const firstPageArticles = getValidatedArticlePageData<Article>(firstPageResponse.data, firstPagePagination)
 
-  // Defensive check - if CMS returns no data for a pre-rendered page, something's wrong
-  if (!articlesResponse.data || articlesResponse.data.length === 0) {
+  if (firstPagePagination.pageCount === 0 || page > firstPagePagination.pageCount) {
     return notFound()
   }
+
+  // Reuse the preflight response for the canonical first page; fetch only known-valid later pages.
+  const articlesResponse = page === 1 ? firstPageResponse : await getArticles({ page, pageSize: ARTICLES_PER_PAGE })
+  const pagination = getValidatedArticlePagination(articlesResponse.meta.pagination, page, ARTICLES_PER_PAGE)
+  const pageArticles =
+    page === 1 ? firstPageArticles : getValidatedArticlePageData<Article>(articlesResponse.data, pagination)
 
   // Get minimal articles for search - limit to reduce ISR cache busting
   // Search functionality can work with a subset of recent articles
@@ -71,7 +64,7 @@ export default async function Page({ params }: Props) {
   const articles =
     // TODO: Reduce function complexity by extracting logic
 
-    articlesResponse.data?.map((article: Article) => ({
+    pageArticles.map((article: Article) => ({
       ...article,
       id: article.id || 0,
       attributes: {
@@ -84,7 +77,7 @@ export default async function Page({ params }: Props) {
         cover: article.attributes?.cover ?? {},
         blocks: article.attributes?.blocks ?? [],
       },
-    })) || []
+    }))
 
   const categoriesResponse = await getCategories()
   const allCategories =
@@ -97,7 +90,7 @@ export default async function Page({ params }: Props) {
     <ArticlesPageComponents
       articles={articles}
       allArticles={allArticles}
-      totalArticles={totalArticles}
+      totalArticles={pagination.total}
       currentPage={page}
       allCategories={allCategories}
     />
