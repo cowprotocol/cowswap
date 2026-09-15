@@ -25,13 +25,6 @@ export interface SwapConfirmDisabledState {
   isInsufficientBalance: boolean
 }
 
-/**
- * The balance bucket to read is decided by the currency the user actually spends, while the amount
- * to cover is the slippage-inclusive maximum sell amount.
- *
- * These are not the same currency for a native sell: the quote is denominated in the wrapped token,
- * so taking the currency off the maximum sell amount reads the wrapped balance instead of the native one.
- */
 export function getIsBalanceEnough({ sellCurrency, maximumSellAmount, balances }: GetIsBalanceEnoughParams): boolean {
   if (!sellCurrency || !maximumSellAmount) return false
 

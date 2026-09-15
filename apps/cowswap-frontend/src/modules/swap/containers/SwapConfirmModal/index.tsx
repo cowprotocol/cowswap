@@ -124,8 +124,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
     const sellCurrency = inputCurrencyInfo?.amount?.currency
     const hasCurrentCurrency = Boolean(sellCurrency)
-    // Must cover the slippage-inclusive maximum sell amount, not just the expected sell amount,
-    // otherwise the order can be placed while unfillable if the price moves against the user up to slippage.
     const maximumSellAmount = receiveAmountInfo?.afterSlippage.sellAmount ?? inputCurrencyInfo?.amount
     const isBalanceEnough = getIsBalanceEnough({ sellCurrency, maximumSellAmount, balances })
 

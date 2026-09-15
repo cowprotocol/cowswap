@@ -25,7 +25,6 @@ describe('getIsBalanceEnough', () => {
   const wrapped = WRAPPED_NATIVE_CURRENCIES[chainId]
 
   const oneUnit = 10n ** BigInt(native.decimals)
-  // The quote is always denominated in the wrapped token, even when the user sells the native one
   const maximumSellAmount = CurrencyAmount.fromRawAmount(wrapped, (oneUnit / 2n).toString())
 
   it('reads the native balance when selling the native token', () => {
