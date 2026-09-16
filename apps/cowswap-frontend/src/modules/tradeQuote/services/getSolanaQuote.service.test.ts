@@ -47,26 +47,24 @@ describe('getSolanaQuote', () => {
   it('maps quoteParams onto SolanaQuoteParameters', async () => {
     await getSolanaQuote(quoteParams)
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
-      {
-        ownerAddress: quoteParams.owner,
-        sellTokenAddress: quoteParams.sellTokenAddress,
-        buyTokenAddress: quoteParams.buyTokenAddress,
-        receiverAddress: quoteParams.account,
-        sellTokenDecimals: quoteParams.sellTokenDecimals,
-        buyTokenDecimals: quoteParams.buyTokenDecimals,
-        amount: quoteParams.amount,
-        kind: quoteParams.kind,
-        validForSeconds: quoteParams.validFor,
-      },
-      { slippageBps: 50 },
-    )
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith({
+      ownerAddress: quoteParams.owner,
+      sellTokenAddress: quoteParams.sellTokenAddress,
+      buyTokenAddress: quoteParams.buyTokenAddress,
+      receiverAddress: quoteParams.account,
+      sellTokenDecimals: quoteParams.sellTokenDecimals,
+      buyTokenDecimals: quoteParams.buyTokenDecimals,
+      amount: quoteParams.amount,
+      kind: quoteParams.kind,
+      validForSeconds: quoteParams.validFor,
+      slippageBps: 50,
+    })
   })
 
   it('signs the slippage the user picked, rather than the default', async () => {
     await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), { slippageBps: 300 })
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.objectContaining({ slippageBps: 300 }))
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
@@ -89,8 +87,8 @@ describe('getSolanaQuote', () => {
       expect.objectContaining({
         ownerAddress: quoteParams.account,
         receiverAddress: quoteParams.account,
+        slippageBps: 50,
       }),
-      { slippageBps: 50 },
     )
   })
 

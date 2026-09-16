@@ -28,22 +28,20 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     receiver,
   } = quoteParams
 
-  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
-    {
-      ownerAddress: owner ?? account,
-      sellTokenAddress,
-      buyTokenAddress,
-      receiverAddress: receiver ?? account,
-      sellTokenDecimals,
-      buyTokenDecimals,
-      amount,
-      kind,
-      validForSeconds: quoteParams.validFor,
-    },
+  const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk({
+    ownerAddress: owner ?? account,
+    sellTokenAddress,
+    buyTokenAddress,
+    receiverAddress: receiver ?? account,
+    sellTokenDecimals,
+    buyTokenDecimals,
+    amount,
+    kind,
+    validForSeconds: quoteParams.validFor,
     // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance is ours
     // to set — the user's when they picked one, otherwise the same default the rest of the app uses.
-    { slippageBps: quoteParams.swapSlippageBps ?? DEFAULT_SLIPPAGE_BPS },
-  )
+    slippageBps: quoteParams.swapSlippageBps ?? DEFAULT_SLIPPAGE_BPS,
+  })
 
   return {
     quoteResults,
