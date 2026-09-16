@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSolanaAccount, useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { useSelectTokenContext } from './useSelectTokenContext'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
@@ -11,10 +11,8 @@ import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTo
 import { useTokenSelectionHandler } from '../containers/SelectTokenWidget/hooks/useTokenSelectionHandler'
 import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../state/selectTokenWidgetAtom'
 
-jest.mock('@cowprotocol/wallet', () => ({
-  ...jest.requireActual('@cowprotocol/wallet'),
-  useWalletInfo: jest.fn(),
-  useSolanaAccount: jest.fn(),
+jest.mock('entities/balancesContext/useBalancesAccountForChain', () => ({
+  useBalancesAccountForChain: jest.fn(),
 }))
 
 jest.mock('./useSelectTokenWidgetState', () => ({
@@ -34,8 +32,9 @@ jest.mock('../containers/SelectTokenWidget/hooks/useTokenSelectionHandler', () =
   useTokenSelectionHandler: jest.fn(),
 }))
 
-const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseSolanaAccount = useSolanaAccount as jest.MockedFunction<typeof useSolanaAccount>
+const mockUseBalancesAccountForChain = useBalancesAccountForChain as jest.MockedFunction<
+  typeof useBalancesAccountForChain
+>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseSourceChainId = useSourceChainId as jest.MockedFunction<typeof useSourceChainId>
 const mockUseTokenDataSources = useTokenDataSources as jest.MockedFunction<typeof useTokenDataSources>
@@ -45,11 +44,7 @@ describe('useSelectTokenContext', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseWalletInfo.mockReturnValue({
-      account: '0x0000000000000000000000000000000000000001',
-      chainId: SupportedChainId.MAINNET,
-    } as WalletInfo)
-    mockUseSolanaAccount.mockReturnValue(undefined)
+    mockUseBalancesAccountForChain.mockReturnValue('0x0000000000000000000000000000000000000001')
     mockUseSelectTokenWidgetState.mockReturnValue(DEFAULT_SELECT_TOKEN_WIDGET_STATE)
     mockUseTokenDataSources.mockReturnValue({
       userAddedTokens: [],
@@ -74,24 +69,25 @@ describe('useSelectTokenContext', () => {
 
     const { result } = renderHook(() => useSelectTokenContext())
 
+    expect(mockUseBalancesAccountForChain).toHaveBeenCalledWith(SupportedChainId.MAINNET)
     expect(result.current.isWalletConnected).toBe(true)
   })
 
   // Regression guard: a Solana account can't be derived from the connected EVM wallet. Reporting
   // "connected" here (because the EVM wallet is connected) would make the token list render a
   // balance skeleton that waits on a fetch that never happens.
-  it('is NOT connected when browsing Solana as a bridge destination without a connected Solana account', () => {
+  it('is NOT connected when useBalancesAccountForChain resolves no account (e.g. browsing Solana without a connected Solana account)', () => {
     mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'selector' })
-    mockUseSolanaAccount.mockReturnValue(undefined)
+    mockUseBalancesAccountForChain.mockReturnValue(undefined)
 
     const { result } = renderHook(() => useSelectTokenContext())
 
     expect(result.current.isWalletConnected).toBe(false)
   })
 
-  it('is connected when browsing Solana with a real connected Solana account', () => {
+  it('is connected when useBalancesAccountForChain resolves an account (e.g. a real connected Solana account)', () => {
     mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })
-    mockUseSolanaAccount.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
+    mockUseBalancesAccountForChain.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
 
     const { result } = renderHook(() => useSelectTokenContext())
 

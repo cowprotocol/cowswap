@@ -8,10 +8,10 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { Field } from 'legacy/state/types'
 
@@ -28,9 +28,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { field } = useSelectTokenWidgetState()
   const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
-  const solanaAccount = useSolanaAccount()
-  const balancesContext = useBalancesContext()
-  const balancesAccount = isSolanaChain(sourceChainId) ? solanaAccount : balancesContext.account || account
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {

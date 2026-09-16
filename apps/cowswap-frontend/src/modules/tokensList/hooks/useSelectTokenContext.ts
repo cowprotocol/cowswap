@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
-import { useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSourceChainId } from './useSourceChainId'
@@ -16,15 +16,14 @@ interface UseSelectTokenContextParams {
 }
 
 export function useSelectTokenContext(params?: UseSelectTokenContextParams): SelectTokenContext {
-  const { account } = useWalletInfo()
-  const solanaAccount = useSolanaAccount()
   const { chainId: sourceChainId } = useSourceChainId()
   const widgetState = useSelectTokenWidgetState()
   const tokenData = useTokenDataSources()
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
 
-  const isWalletConnected = isSolanaChain(sourceChainId) ? !!solanaAccount : !!account
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
+  const isWalletConnected = !!balancesAccount
 
   return useMemo(
     () => ({
