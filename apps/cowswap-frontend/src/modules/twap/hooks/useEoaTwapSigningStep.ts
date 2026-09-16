@@ -74,6 +74,7 @@ function mergeEoaTwapFlowState(
     plan: update.plan ?? base.plan,
     lockDismiss: update.lockDismiss ?? base.lockDismiss,
     completedStepTxHashes,
+    orderId: update.orderId ?? base.orderId,
     eventId: update.eventId ?? base.eventId,
   }
 }

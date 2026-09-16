@@ -4,10 +4,10 @@ import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
 const NO_APPROVAL_NEEDS = { needsApproval: false, needsZeroApproval: false }
 
-const REQUIRED_STEPS = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
+const REQUIRED_STEPS = [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
 describe('buildEoaTwapSigningStepPlan()', () => {
-  it('always includes signature and submit steps', () => {
+  it('always includes setup and sign steps', () => {
     expect(buildEoaTwapSigningStepPlan({ poller: NO_APPROVAL_NEEDS })).toEqual(REQUIRED_STEPS)
   })
 
@@ -46,9 +46,12 @@ describe('buildEoaTwapSigningStepPlan()', () => {
 
 describe('replaceSubmitTwapWithSlowInPlan()', () => {
   it('replaces SubmitTwap with SubmitTwapSlow', () => {
-    expect(replaceSubmitTwapWithSlowInPlan([EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap])).toEqual([
-      EoaTwapSigningSteps.TwapSign,
-      EoaTwapSigningSteps.SubmitTwapSlow,
-    ])
+    expect(
+      replaceSubmitTwapWithSlowInPlan([
+        EoaTwapSigningSteps.TwapSetup,
+        EoaTwapSigningSteps.TwapSign,
+        EoaTwapSigningSteps.SubmitTwap,
+      ]),
+    ).toEqual([EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwapSlow])
   })
 })

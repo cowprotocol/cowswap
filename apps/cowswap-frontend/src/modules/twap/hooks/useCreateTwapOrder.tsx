@@ -74,6 +74,7 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -299,7 +300,6 @@ export function useCreateTwapOrder() {
 
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
-        let eventId: string | undefined
 
         if (eoaPoller) {
           if (!walletClient || !eoaSigner) return
@@ -357,17 +357,13 @@ export function useCreateTwapOrder() {
             })
           }
 
-          const {
-            proxyAddress,
-            setupTxHash,
-            eventId: eventIdParam,
-          } = await placeEoaTwapOrder({
+          const { proxyAddress, setupTxHash } = await placeEoaTwapOrder({
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
             twapOrderCreationContext,
-            twapOrderId,
             paramsStruct,
+            signer: eoaSigner,
             config,
             walletClient,
             onSigningStep: updateEoaTwapFlow,
@@ -379,7 +375,6 @@ export function useCreateTwapOrder() {
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
           orderCreationHash = setupTxHash
-          eventId = eventIdParam
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -411,6 +406,8 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
+        const eventId = isEoaTwap ? await waitForTwapEventId(twapOrderId, account, chainId) : undefined
+
         emitPostedOrderEvent({
           chainId,
           id: twapOrderId,
@@ -433,8 +430,8 @@ export function useCreateTwapOrder() {
           updateEoaTwapFlow({
             step: EoaTwapSigningSteps.Success,
             phase: EoaTwapSigningPhase.Confirmed,
+            orderId: twapOrderId,
             eventId,
-            lockDismiss: false,
           })
         } else {
           updateEoaTwapFlow(null)

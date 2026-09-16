@@ -166,16 +166,13 @@ export function getEoaTwapCurrentStepBadge(
             type: hasError ? 'error' : 'alert',
           }
 
+    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
-      return isLoading
-        ? {
-            children: t`Signature pending`,
-            type: 'information',
-          }
-        : {
-            children: t`Action required`,
-            type: hasError ? 'error' : 'alert',
-          }
+      // TODO: This should probably be "Action required" as well, or use type="alert" at least:
+      return {
+        children: t`Waiting for signature`,
+        type: 'information',
+      }
 
     case EoaTwapSigningSteps.SubmitTwap:
       return {
@@ -272,27 +269,18 @@ export function getEoaTwapCurrentStepButton(
               loading: true,
             }
 
+    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
-      return isLoading
+      return hasError
         ? {
-            children: (
-              <span>
-                {t`Activating TWAP`}
-                <ThreeDots />
-              </span>
-            ),
-            disabled: true,
+            children: t`Try again`,
+            disabled: false,
           }
-        : hasError
-          ? {
-              children: t`Try again`,
-              disabled: false,
-            }
-          : {
-              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
-              disabled: true,
-              loading: true,
-            }
+        : {
+            children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
+            disabled: true,
+            loading: true,
+          }
 
     default:
       // No more button past `TwapSign`, as we are just waiting for the tx confirmation.
@@ -340,17 +328,9 @@ export function getEoaTwapStepDescription(
         </>
       )
 
+    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
-      return isLoading ? (
-        <>
-          <p>
-            {t`Transaction submitted. Waiting for network confirmation`}
-            <ThreeDots />
-          </p>
-        </>
-      ) : (
-        t`Review and confirm in your wallet to continue.`
-      )
+      return t`Review and confirm in your wallet to continue.`
 
     case EoaTwapSigningSteps.SubmitTwap:
       return t`Sit tight! We're getting your order ready`
@@ -370,6 +350,8 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
+    case EoaTwapSigningSteps.TwapSetup:
+      return t`Set up TWAP`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     case EoaTwapSigningSteps.SubmitTwap:
@@ -392,6 +374,8 @@ export function getEoaTwapWalletActionSummaryLabel(
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
+    case EoaTwapSigningSteps.TwapSetup:
+      return t`Set up TWAP`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     default:
@@ -496,9 +480,9 @@ function getEoaTwapWalletActionOutcome(step: EoaTwapSigningSteps): null | EoaTwa
     case EoaTwapSigningSteps.ApprovePoller:
       return { label: t`Confirmed`, hasTxLink: true }
     case EoaTwapSigningSteps.PermitPoller:
-      return { label: t`Signed`, hasTxLink: false }
+    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
-      return { label: t`Confirmed`, hasTxLink: true }
+      return { label: t`Signed`, hasTxLink: false }
     default:
       return null
   }

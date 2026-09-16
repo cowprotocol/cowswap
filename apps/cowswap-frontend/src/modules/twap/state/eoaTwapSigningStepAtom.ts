@@ -25,6 +25,9 @@ export interface EoaTwapSigningStepState {
   /** On-chain transaction hashes for completed wallet-action steps (approvals, setup tx). */
   completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
 
+  /** Conditional TWAP order id, set after placement succeeds. */
+  orderId?: string
+
   /** Indexed TWAP event ID used for the Explorer details link. */
   eventId?: string
 }
@@ -44,9 +47,11 @@ export enum EoaTwapSigningSteps {
   ApprovePoller = 'ApprovePoller',
   /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
   PermitPoller = 'PermitPoller',
-  /** Cow-shed `trustedExecuteHooks` setup transaction. */
+  /** Cow-shed EIP-712 signature for the setup multicall. */
+  TwapSetup = 'TwapSetup',
+  /** Factory executeHooks on-chain transaction. */
   TwapSign = 'TwapSign',
-  /** Wait for the setup transaction to be mined. */
+  /** Wait for the factory executeHooks transaction to be mined. */
   SubmitTwap = 'SubmitTwap',
   /** Same as {@link SubmitTwap}, shown when activation is taking longer than usual. */
   SubmitTwapSlow = 'SubmitTwapSlow',

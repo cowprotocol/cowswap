@@ -230,7 +230,6 @@ describe('useCreateTwapOrder', () => {
     mockedPlaceEoaTwapOrder.mockResolvedValue({
       proxyAddress: '0xproxy',
       setupTxHash: '0xsetuptx',
-      eventId: '1'.repeat(70),
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedUseGetAmountToSignApprove.mockReturnValue(null)
     mockedUseWalletClient.mockReturnValue({
@@ -426,12 +425,11 @@ describe('useCreateTwapOrder', () => {
 
     expect(onSuccess).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
-
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
+      orderId: '0xtwap',
       eventId: '1'.repeat(70),
-      lockDismiss: false,
     })
   })
 
