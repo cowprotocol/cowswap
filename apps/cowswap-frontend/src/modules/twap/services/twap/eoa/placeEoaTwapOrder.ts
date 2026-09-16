@@ -249,8 +249,9 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. Send a single setup TX (`TwapSign`) calling `trustedExecuteHooks` on the cow-shed (admin path).
- * 2. Then wait for mining (`SubmitTwap`).
+ * 1. For a new proxy, sign the setup calls (`AuthorizeTwap`).
+ * 2. Send the atomic setup transaction (`TwapSign`) through the factory or existing proxy.
+ * 3. Then wait for mining (`SubmitTwap`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
@@ -347,15 +348,26 @@ export async function placeEoaTwapOrder({
   })
 
   const isProxyDeployed = await hasBytecode(config, proxyAddress)
-  const setupTx = buildEoaTwapTrustedExecuteTx({
+  if (!isProxyDeployed) {
+    onSigningStep((prev) => ({
+      step: EoaTwapSigningSteps.AuthorizeTwap,
+      phase: EoaTwapSigningPhase.Sign,
+      plan: (prev?.plan ?? []).flatMap((step) =>
+        step === EoaTwapSigningSteps.TwapSign ? [EoaTwapSigningSteps.AuthorizeTwap, step] : [step],
+      ),
+    }))
+  }
+
+  const setupTx = await buildEoaTwapTrustedExecuteTx({
     account: account as `0x${string}`,
     proxyAddress: proxyAddress as `0x${string}`,
     factoryAddress,
     calls,
     isProxyDeployed,
+    cowShedHooks,
   })
 
-  eoaTwapDebugLog('Setup trustedExecuteHooks multicall', setupTx)
+  eoaTwapDebugLog('Setup transaction', setupTx)
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 

@@ -4804,6 +4804,11 @@ msgstr "Activating"
 msgid "Use the <0>Safe app</0> for advanced trading."
 msgstr "Use the <0>Safe app</0> for advanced trading."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Confirm TWAP"
+msgstr "Confirm TWAP"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Top"
 msgstr "Top"

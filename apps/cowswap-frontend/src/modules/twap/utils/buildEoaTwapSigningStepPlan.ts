@@ -27,7 +27,8 @@ interface AppendSpenderApprovalStepIds {
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
  * - (Optional) {@link EoaTwapSigningSteps.PermitPoller}, or {@link EoaTwapSigningSteps.ZeroApprovePoller} /
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
- * - (Required) {@link EoaTwapSigningSteps.TwapSign}: single setup TX calling `trustedExecuteHooks` on the cow-shed
+ * - New proxies add `AuthorizeTwap` before setup after the deployment check.
+ * - (Required) {@link EoaTwapSigningSteps.TwapSign}: atomic setup through the factory or existing cow-shed
  *   (optional EOA => Poller permit calldata + `registerFromShed` + optional shed => Vault Relayer approve + ComposableCoW create)
  * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the setup receipt, then the flow is done
  *

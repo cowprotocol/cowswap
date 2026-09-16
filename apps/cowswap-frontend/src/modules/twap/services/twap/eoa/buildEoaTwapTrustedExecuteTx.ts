@@ -1,9 +1,7 @@
-import { encodeFunctionData, type Hex } from 'viem'
+import { bytesToHex, encodeFunctionData, type Hex } from 'viem'
 
-import type { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
-
-/** Canonical Multicall3 address (CREATE2, same on supported EVM chains). */
-export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const
+import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
+import type { CowShedHooks, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 const COW_SHED_CALL_COMPONENTS = [
   { internalType: 'address', name: 'target', type: 'address' },
@@ -30,45 +28,13 @@ const TRUSTED_EXECUTE_HOOKS_ABI = [
   },
 ] as const
 
-const INITIALIZE_PROXY_ABI = [
-  {
-    inputs: [{ internalType: 'address', name: 'user', type: 'address' }],
-    name: 'initializeProxy',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-] as const
-
-const MULTICALL3_AGGREGATE_ABI = [
-  {
-    inputs: [
-      {
-        components: [
-          { internalType: 'address', name: 'target', type: 'address' },
-          { internalType: 'bytes', name: 'callData', type: 'bytes' },
-        ],
-        internalType: 'struct Multicall3.Call[]',
-        name: 'calls',
-        type: 'tuple[]',
-      },
-    ],
-    name: 'aggregate',
-    outputs: [
-      { internalType: 'uint256', name: 'blockNumber', type: 'uint256' },
-      { internalType: 'bytes[]', name: 'returnData', type: 'bytes[]' },
-    ],
-    stateMutability: 'payable',
-    type: 'function',
-  },
-] as const
-
 export interface BuildEoaTwapTrustedExecuteTxParams {
   account: `0x${string}`
   proxyAddress: `0x${string}`
   factoryAddress: `0x${string}`
   calls: ICoWShedCall[]
   isProxyDeployed: boolean
+  cowShedHooks: Pick<CowShedHooks, 'signCalls' | 'encodeExecuteHooksForFactory'>
 }
 
 export interface EoaTwapTrustedExecuteTx {
@@ -87,42 +53,30 @@ type TrustedExecuteHooksCall = {
 /**
  * Builds the single setup transaction for EOA TWAP:
  * - Deployed proxy: EOA (admin) calls `trustedExecuteHooks` on the cow-shed.
- * - New proxy: Multicall3 batches `initializeProxy` on the factory, then `trustedExecuteHooks` on the proxy.
+ * - New proxy: the factory deploys the proxy and executes signed hooks atomically.
  */
-export function buildEoaTwapTrustedExecuteTx({
+export async function buildEoaTwapTrustedExecuteTx({
   account,
   proxyAddress,
   factoryAddress,
   calls,
   isProxyDeployed,
-}: BuildEoaTwapTrustedExecuteTxParams): EoaTwapTrustedExecuteTx {
-  const trustedExecuteCalldata = encodeTrustedExecuteHooksCalldata(calls)
-
+  cowShedHooks,
+}: BuildEoaTwapTrustedExecuteTxParams): Promise<EoaTwapTrustedExecuteTx> {
   if (isProxyDeployed) {
     return {
       to: proxyAddress,
-      data: trustedExecuteCalldata,
+      data: encodeTrustedExecuteHooksCalldata(calls),
     }
   }
 
-  const initializeProxyCalldata = encodeFunctionData({
-    abi: INITIALIZE_PROXY_ABI,
-    functionName: 'initializeProxy',
-    args: [account],
-  })
+  const nonce = bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
+  const deadline = BigInt(Math.floor(Date.now() / 1000) + 20 * 60)
+  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712)
 
   return {
-    to: MULTICALL3_ADDRESS,
-    data: encodeFunctionData({
-      abi: MULTICALL3_AGGREGATE_ABI,
-      functionName: 'aggregate',
-      args: [
-        [
-          { target: factoryAddress, callData: initializeProxyCalldata },
-          { target: proxyAddress, callData: trustedExecuteCalldata },
-        ],
-      ],
-    }),
+    to: factoryAddress,
+    data: cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature) as Hex,
   }
 }
 
