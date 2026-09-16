@@ -2104,6 +2104,10 @@ msgstr "Pick your own code or generate one. Once saved, it becomes permanently l
 msgid "Thanks - noted!"
 msgstr "Thanks - noted!"
 
+#: apps/cowswap-frontend/src/modules/twap/const.ts
+msgid "4 Minutes"
+msgstr "4 Minutes"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Total fee"
 msgstr "Total fee"

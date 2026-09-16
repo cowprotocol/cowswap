@@ -24,7 +24,7 @@ export const DEFAULT_NUM_OF_PARTS = 2
 
 export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: msg`1 Hour`, value: ms`1 hour` }
 
-export const ORDER_DEADLINES: OrderDeadline[] = [
+const ORDER_DEADLINES_BASE: OrderDeadline[] = [
   DEFAULT_ORDER_DEADLINE,
   { label: msg`6 Hours`, value: ms`6 hour` },
   { label: msg`12 Hours`, value: ms`12 hour` },
@@ -32,6 +32,12 @@ export const ORDER_DEADLINES: OrderDeadline[] = [
   { label: msg`1 Week`, value: ms`1d` * 7 },
   { label: msg`1 Month`, value: ms`1d` * 30 },
 ]
+
+const DEV_ORDER_DEADLINE: OrderDeadline = { label: msg`4 Minutes`, value: ms`4min` }
+
+export const ORDER_DEADLINES: OrderDeadline[] = isProdLike
+  ? ORDER_DEADLINES_BASE
+  : [DEV_ORDER_DEADLINE, ...ORDER_DEADLINES_BASE]
 
 export const TWAP_ORDER_STRUCT = [
   {
