@@ -149,12 +149,18 @@ export enum UI {
   COLOR_TEXT1_OPACITY_25 = '--cow-color-text1-opacity-25',
   COLOR_TEXT1_OPACITY_10 = '--cow-color-text1-opacity-10',
   COLOR_TEXT2 = '--cow-color-text2',
+  COLOR_TEXT_SECONDARY = '--color-text-secondary',
+  COLOR_TEXT_SECONDARY_HOVER = '--color-text-secondary-hover',
   COLOR_LINK = '--cow-color-link',
   COLOR_LINK_OPACITY_10 = '--cow-color-link-opacity-10',
 
-  // Font Weights:
+  // Font Weights (values come from Font.weight in ThemeColorVars):
+  FONT_WEIGHT_ULTRALIGHT = '--cow-font-weight-ultralight',
+  FONT_WEIGHT_LIGHT = '--cow-font-weight-light',
   FONT_WEIGHT_NORMAL = '--cow-font-weight-normal',
+  FONT_WEIGHT_BOOK = '--cow-font-weight-book',
   FONT_WEIGHT_MEDIUM = '--cow-font-weight-medium',
+  FONT_WEIGHT_SEMIBOLD = '--cow-font-weight-semibold',
   FONT_WEIGHT_BOLD = '--cow-font-weight-bold',
 
   // Font Sizes:
@@ -169,14 +175,13 @@ export enum UI {
   FONT_SIZE_LARGEST = '--cow-font-size-largest',
 
   // Line Heights:
-  LINE_HEIGHT_SMALL = '--cow-line-height-small',
-  LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
-  LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
+  // LINE_HEIGHT_SMALL = '--cow-line-height-small',
+  // LINE_HEIGHT_NORMAL = '--cow-line-height-normal',
+  // LINE_HEIGHT_MEDIUM = '--cow-line-height-medium',
 
   // Font Families:
   FONT_FAMILY_PRIMARY = '--cow-font-family-primary',
   FONT_FAMILY_BRAND = '--cow-font-family-brand',
-  FONT_FAMILY_MONO = '--cow-font-family-mono',
 
   // Animation
   ANIMATION_DURATION = '--cow-animation-duration',

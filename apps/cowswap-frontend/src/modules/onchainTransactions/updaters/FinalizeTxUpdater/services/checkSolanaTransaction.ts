@@ -55,19 +55,21 @@ export function checkSolanaTransaction(
 
     dispatch(finalizeTransaction({ chainId, hash, receipt }))
 
-    emitOnchainTransactionEvent({
-      receipt: {
-        to: '',
-        from: transaction.from,
-        contractAddress: '',
-        transactionHash: hash as `0x${string}`,
-        blockNumber: slot,
-        status: status === 'success' ? 1 : 0,
-        replacementType: transaction.replacementType,
-      },
-      summary: transaction.summary || '',
-      isSafeTx: false,
-    })
+    if (!transaction.solanaOrderCreation) {
+      emitOnchainTransactionEvent({
+        receipt: {
+          to: '',
+          from: transaction.from,
+          contractAddress: '',
+          transactionHash: hash as `0x${string}`,
+          blockNumber: slot,
+          status: status === 'success' ? 1 : 0,
+          replacementType: transaction.replacementType,
+        },
+        summary: transaction.summary || '',
+        isSafeTx: false,
+      })
+    }
   }
 
   checkStatus(solanaConnection, hash, transaction)

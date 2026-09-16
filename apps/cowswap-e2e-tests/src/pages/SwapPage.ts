@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import { expect } from '@playwright/test'
 
 import { BridgeRoutePanel } from './BridgeRoutePanel'
@@ -42,7 +44,7 @@ export class SwapPage implements TradePage {
   readonly routePanel: BridgeRoutePanel
   /** `AddressInputPanel`'s wrapping `ReceiverPanel` — `id="recipient"` set by `SetRecipient`. */
   readonly recipientPanel: Locator
-  /** `AddressInputPanel.tsx`'s default className on the `<input>` itself. */
+  /** `ReceiverPanelBody.container.tsx`'s `data-testid` on the `<input>` itself. */
   readonly recipientInput: Locator
   readonly recipientPasteButton: Locator
   /** Hardcoded id on `ReceiverConfirmationRow.pure.tsx`'s "confirm this is the right chain" checkbox. */
@@ -63,65 +65,71 @@ export class SwapPage implements TradePage {
    * header has its own, differently-cased "Connect wallet" button, so this is matched `exact`.
    */
   readonly connectWalletButton: Locator
+  /**
+   * The collapsed "Trading mode" dropdown that hides the Swap/Limit/TWAP/Hooks nav links at
+   * viewports where `TradeWidgetForm`'s `showDropdown` is true. `id` set directly on
+   * `TradeWidgetLinks`'s dropdown-trigger `MenuItem` (the element with the real `onClick`, not the
+   * inner `DropdownButton` label wrapper the old class-based selector targeted).
+   */
+  readonly tradingModeDropdown: Locator
 
   constructor(page: Page) {
     this.page = page
-    this.inputAmount = page.locator('#input-currency-input .token-amount-input')
-    this.outputAmount = page.locator('#output-currency-input .token-amount-input')
+    this.inputAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
+    this.outputAmount = page.locator(`#output-currency-input [data-testid="${TEST_IDS.tokenAmountInput}"]`)
     // `CurrencySelectButton` sets `aria-label="Selected token: <symbol>"`, which is a more
     // reliable read of the selected currency than the (truncatable) rendered symbol text.
+    // `.open-currency-select-button` is a real styled-components class (also targeted by
+    // `ReceiptModal.styled.ts`'s CSS), not a bare test hook — kept as a class per the "used in
+    // CSS" rule instead of converting it to a `data-testid`.
     this.sellTokenSelect = page.locator('#input-currency-input .open-currency-select-button')
     this.buyTokenSelect = page.locator('#output-currency-input .open-currency-select-button')
     // The wallet balance shown under each amount field: `TokenAmount` sets the
     // exact-precision value + symbol (e.g. "0.5 WETH") as the `title` attribute,
     // which is the only titled element in either panel outside USD-values mode.
-    this.sellBalance = page.locator('#input-currency-input .currency-balance-text > span')
-    this.buyBalance = page.locator('#output-currency-input .currency-balance-text > span')
-    this.sellFiatAmount = page.locator('#input-currency-input [data-testid="fiat-amount"]')
-    this.buyFiatAmount = page.locator('#output-currency-input [data-testid="fiat-amount"]')
+    this.sellBalance = page.locator(`#input-currency-input [data-testid="${TEST_IDS.currencyBalanceText}"] > span`)
+    this.buyBalance = page.locator(`#output-currency-input [data-testid="${TEST_IDS.currencyBalanceText}"] > span`)
+    this.sellFiatAmount = page.locator(`#input-currency-input [data-testid="${TEST_IDS.fiatAmount}"]`)
+    this.buyFiatAmount = page.locator(`#output-currency-input [data-testid="${TEST_IDS.fiatAmount}"]`)
     // Only the output panel receives `priceImpactParams` (`TradeWidgetForm`), so price impact
     // only ever renders next to the buy-side USD estimation.
-    this.priceImpact = page.locator('#output-currency-input [data-testid="price-impact"]')
+    this.priceImpact = page.locator(`#output-currency-input [data-testid="${TEST_IDS.priceImpact}"]`)
     // `HoverTooltip`'s mouseenter/mouseleave handlers sit on the innermost wrapper div around the
     // "(X%)" text, not on the outer `[data-testid]` span — hovering the outer span can land the
     // pointer outside that inner div's box and never open the tooltip.
     this.priceImpactTooltipTrigger = this.priceImpact.locator('div div')
-    // `ReceiveAmount` renders as a sibling of `#output-currency-input`, not inside it — its
-    // "Receive (incl. fees)" label and the `HelpTooltip` icon next to it are the label's next
-    // sibling. That sibling is `HelpTooltip`'s outer `HelpTooltipContainer` span, one level above
-    // the real `HoverTooltip` hitbox div (same quirk as `priceImpactTooltipTrigger` above, but
-    // nested one div deeper here: `ReferenceElement` div > listener div > icon-wrapper div) —
-    // `div div` matches both the listener div and the icon-wrapper div nested inside it, so take
-    // the first (outermost, document-order-first) match to land on the listener div itself.
-    this.receiveAmountLabel = page.getByText('Receive (incl. fees)', { exact: true })
-    this.receiveAmountTooltipTrigger = this.receiveAmountLabel
-      .locator('xpath=following-sibling::*[1]')
-      .locator('div div')
-      .first()
-    // The exact "<amount> <symbol>" value lives in `ReceiveAmountValue`'s own `title`, one level
-    // above `TokenAmount`'s inner titled span — same convention as `sellBalance`/`buyBalance`.
-    this.receiveAmountValue = this.receiveAmountLabel.locator('xpath=../..').locator('[title]').first()
+    // `ReceiveAmount` wraps its label + `HelpTooltip` icon in its own `[data-testid]` div — no more
+    // sibling/ancestor traversal needed to reach the tooltip's real `HoverTooltip` hitbox div.
+    this.receiveAmountLabel = page.locator(`[data-testid="${TEST_IDS.receiveAmountLabel}"]`)
+    // `div div` matches both the listener div and the icon-wrapper div nested inside it (same
+    // quirk as `priceImpactTooltipTrigger` above), so take the first (outermost) match to land on
+    // the listener div itself.
+    this.receiveAmountTooltipTrigger = this.receiveAmountLabel.locator('div div').first()
+    // The exact "<amount> <symbol>" value lives directly on `ReceiveAmountValue`'s own `title` +
+    // `data-testid`.
+    this.receiveAmountValue = page.locator(`[data-testid="${TEST_IDS.receiveAmountValue}"]`)
     this.swapButton = page.locator('#do-trade-button')
     this.approveButton = page.locator('#approve-trade-button')
     this.primaryActionButton = page.locator('#do-trade-button, #approve-trade-button')
     this.arrowSeparator = page.locator('#currency-arrow-separator')
     this.maxButton = page.getByRole('button', { name: /^max$/i })
-    this.openOrders = page.locator('[data-testid="open-orders-list"]')
+    this.openOrders = page.locator(`[data-testid="${TEST_IDS.openOrdersList}"]`)
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
     this.tokens = new TokenSelector(page)
     this.routePanel = new BridgeRoutePanel(page)
     this.recipientPanel = page.locator('#recipient')
-    this.recipientInput = page.locator('input.recipient-address-input')
+    this.recipientInput = page.locator(`input[data-testid="${TEST_IDS.recipientAddressInput}"]`)
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
-    this.approveModeSelector = page.locator('.approve-mode-selector')
+    this.approveModeSelector = page.locator(`[data-testid="${TEST_IDS.approveModeSelector}"]`)
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
-    this.tradeFormActionButton = page.locator('.trade-form-blank-button')
+    this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
     this.slippageInput = page.locator('#slippage-input')
     this.wrapButton = page.getByRole('button', { name: 'Wrap', exact: true })
     this.unwrapButton = page.getByRole('button', { name: 'Unwrap', exact: true })
     this.connectWalletButton = page.getByRole('button', { name: 'Connect Wallet', exact: true })
+    this.tradingModeDropdown = page.locator('#trading-mode-dropdown-button')
   }
 
   async goto(opts: { chainId: number; sell?: string; buy?: string }): Promise<void> {
@@ -151,6 +159,27 @@ export class SwapPage implements TradePage {
       .toBe(true)
   }
 
+  /**
+   * Waits until BOTH sell and buy currency selectors show a resolved token (i.e. neither still
+   * reads `CurrencySelectButton`'s "Select a token" placeholder). Not run automatically by
+   * `goto()`/`unlockIfNeeded()` — some flows (e.g. picking a Solana/Bitcoin destination) leave one
+   * side genuinely unresolved on purpose, and would hang forever waiting on it.
+   *
+   * Call this before picking a *new* currency for one side via the token selector while relying on
+   * the app's already-resolved value for the *other*, untouched side (typically right after
+   * `goto()`, before the first `tokens.openInput()`/`openOutput()` + `searchAndPick()` call).
+   * `useNavigateOnCurrencySelection`'s `lastKnownInputCurrencyIdRef`/`lastKnownOutputCurrencyIdRef`
+   * (which exist specifically to preserve that untouched side) only latch once its currency has
+   * actually resolved in React state — right after navigation that can still be in flight, and if
+   * the picker action applies before it lands, the ref reads its unset initial value and wipes the
+   * untouched side back to "no token selected" instead of preserving it. Observed as [CS-104]'s
+   * sell balance check finding no `#input-currency-input` token at all.
+   */
+  async waitForBothCurrenciesResolved(): Promise<void> {
+    await expect(this.sellTokenSelect).not.toHaveAttribute('aria-label', 'Select a token')
+    await expect(this.buyTokenSelect).not.toHaveAttribute('aria-label', 'Select a token')
+  }
+
   async waitForQuote(): Promise<void> {
     await this.arrowSeparator.waitFor({ state: 'visible' })
     await this.page.waitForFunction(
@@ -161,10 +190,21 @@ export class SwapPage implements TradePage {
   }
 
   async enterSellAmount(amount: string): Promise<void> {
-    await this.inputAmount.fill(amount)
+    // Controlled React input can get stomped by `useSetupTradeAmountsFromUrl`'s default
+    // "1 unit" fill while Playwright's `fill()` is landing. Wait until the field is enabled,
+    // then retry until the typed amount sticks so later token selection (CS-59 / CS-68) does
+    // not see a stale default.
+    await expect(this.inputAmount).toBeEnabled()
+    await expect
+      .poll(async () => {
+        await this.inputAmount.fill(amount)
+        return this.inputAmount.inputValue()
+      })
+      .toBe(amount)
   }
 
   async enterBuyAmount(amount: string): Promise<void> {
+    await expect(this.outputAmount).toBeEnabled()
     await this.outputAmount.fill(amount)
   }
 

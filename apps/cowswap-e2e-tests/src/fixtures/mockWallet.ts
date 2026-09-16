@@ -1,5 +1,7 @@
 import { toHex, type Hex } from 'viem'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { expect, test as base, type BrowserContext, type Page } from '@playwright/test'
 
 import { sharedFixtures, type SharedFixtures } from './shared'
@@ -7,7 +9,6 @@ import { sharedFixtures, type SharedFixtures } from './shared'
 import { E2E_WALLET_INFO, injectedShim } from '../mockWallet/injectedShim'
 import { seedAutoConnect } from '../mockWallet/seedAutoConnect'
 import { createWalletEngine, type RpcCallRecord, type RpcStub, type WalletEngine } from '../mockWallet/walletEngine'
-import { CHAIN_IDS, type SupportedChainId } from '../support/constants'
 
 export interface MockWalletApi {
   readonly address: string
@@ -106,7 +107,7 @@ export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
     async ({ context, page, mockWalletKey, mockWalletAutoConnect }, use) => {
       const engine = createWalletEngine({
         privateKey: resolvePrivateKey(mockWalletKey),
-        chainId: CHAIN_IDS.SEPOLIA,
+        chainId: SupportedChainId.SEPOLIA,
         emit: (event, payload) => {
           page
             .evaluate(
@@ -124,12 +125,12 @@ export const test = base.extend<MockWalletFixtures & MockWalletOptions>({
       await context.addInitScript(injectedShim, {
         ...E2E_WALLET_INFO,
         address: engine.address,
-        chainIdHex: toHex(CHAIN_IDS.SEPOLIA),
+        chainIdHex: toHex(SupportedChainId.SEPOLIA),
       })
       if (mockWalletAutoConnect) {
         await context.addInitScript(seedAutoConnect, {
           rdns: E2E_WALLET_INFO.rdns,
-          defaultChainId: CHAIN_IDS.SEPOLIA,
+          defaultChainId: SupportedChainId.SEPOLIA,
         })
       }
 

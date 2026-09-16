@@ -1,9 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { useConnection } from 'wagmi'
+import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isInjectedWidget, logWallet, normalizeError } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 
@@ -71,7 +71,18 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
         console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
 
         await reownAppKit.disconnect()
-        connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+
+        try {
+          await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+        } catch (err: unknown) {
+          const error = normalizeError(err)
+
+          // Auto-reconnect or the bridged provider's own connect event can beat us to it -
+          // wagmi is already connected to this connector, nothing left to do.
+          if (error instanceof ConnectorAlreadyConnectedError) return
+
+          logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
+        }
       })()
     }
   }, [isDappMode, isSafeApp])

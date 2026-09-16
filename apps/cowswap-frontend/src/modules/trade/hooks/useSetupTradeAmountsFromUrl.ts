@@ -6,14 +6,13 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useLocation } from 'react-router'
 import { Writeable } from 'types'
 
+import { useNavigate } from 'common/hooks/useNavigate'
+import { useSafeEffect } from 'common/hooks/useSafeMemo'
 import {
   TRADE_URL_BUY_AMOUNT_KEY,
   TRADE_URL_ORDER_KIND_KEY,
   TRADE_URL_SELL_AMOUNT_KEY,
-} from 'modules/trade/const/tradeUrl'
-
-import { useNavigate } from 'common/hooks/useNavigate'
-import { useSafeEffect } from 'common/hooks/useSafeMemo'
+} from 'common/modules/tradeNavigation'
 import { TradeAmounts } from 'common/types'
 
 import { useDerivedTradeState } from './useDerivedTradeState'

@@ -44,6 +44,8 @@ export const CONFIG = {
     utmSource: 'cow.fi',
     utmMedium: 'web',
   },
-  tokenDisclaimer:
-    'IMPORTANT DISCLAIMER: The information presented on the Interface, including hyperlinked sites, associated applications, forums, blogs, social media accounts, and other platforms, serves as general information sourced from third-party providers. We want to emphasise that we do not provide any warranties regarding the accuracy or up-to-dateness of the content. None of the content should be interpreted as financial, tax, legal, or any other type of advice. Your use or reliance on the content is entirely at your own discretion and risk. Before making any decisions, it is crucial that you undertake your own research, review, analysis, and verification of our content. Trading carries significant risks and can result in substantial losses, so it is advisable to consult your own legal, financial, tax, or other professional advisors prior to making any decisions. None of the content on the Interface is intended as a solicitation or offer.',
+  contentDisclaimer: {
+    title: 'IMPORTANT DISCLAIMER:',
+    body: 'Content on cow.fi is provided for general informational and educational purposes only. No representation or warranty is made regarding its accuracy, completeness, or currency. Nothing in this content constitutes financial, investment, legal, tax, or other professional advice, or a recommendation, solicitation, or offer to buy, sell, hold, or use any asset, product, or service. Digital assets and decentralised technologies involve significant risks and may result in substantial losses. You should conduct your own research and consult appropriate professional advisers before making decisions. Any use of or reliance on this content is at your own risk and discretion.',
+  },
 }

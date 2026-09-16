@@ -45,7 +45,7 @@ export interface LimitOrdersConfirmModalProps {
 }
 
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): ReactNode {
-  const CONFIRM_TITLE = t`Limit Order`
+  const CONFIRM_TITLE = t`Review Limit Order`
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
   /**

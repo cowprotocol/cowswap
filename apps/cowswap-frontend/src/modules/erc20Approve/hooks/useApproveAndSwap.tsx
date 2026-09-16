@@ -1,6 +1,9 @@
 import { useCallback } from 'react'
 
+import { ExecutionRevertedError } from 'viem'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -59,12 +62,19 @@ export function useApproveAndSwap({
 
   const handlePermit = useCallback(async () => {
     if (isPermitSupported && onApproveConfirm) {
-      const isPermitSigned = await generatePermitToTrade()
-      if (isPermitSigned) {
-        onApproveConfirm(null)
-      }
+      try {
+        const isPermitSigned = await generatePermitToTrade()
+        if (isPermitSigned) {
+          onApproveConfirm(null)
+        }
 
-      return true
+        return true
+      } catch (err: unknown) {
+        const error = normalizeError(err)
+
+        if (error instanceof ExecutionRevertedError) return false
+        throw error
+      }
     }
 
     return false

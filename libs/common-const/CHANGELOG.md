@@ -1,5 +1,41 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.11.0...common-const-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.10.0...common-const-v3.11.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.9.0...common-const-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.8.0...common-const-v3.9.0) (2026-08-12)
 
 ### Minor Changes

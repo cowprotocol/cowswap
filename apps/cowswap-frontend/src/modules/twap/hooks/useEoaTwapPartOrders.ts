@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { ORDER_BOOK_API_UPDATE_INTERVAL, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { logTwap, normalizeError } from '@cowprotocol/common-utils'
 import {
   type EnrichedOrder,
@@ -14,14 +14,16 @@ import type { TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-compos
 
 import useSWR from 'swr'
 
-import { OrderStatus, type Order } from 'legacy/state/orders/actions'
+import { type Order } from 'legacy/state/orders/actions'
 
 import { ORDERS_TABLE_PAGE_SIZE } from 'modules/ordersTable'
 
 import { parseOrder, type ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
-import { type TwapOrderItem } from '../types'
+import { TwapOrderStatus, type TwapOrderItem } from '../types'
+import { getPartOrderStatus } from '../utils/getPartOrderStatus'
+import { getTwapPartStartTime } from '../utils/getTwapPartStartTime.utils'
 
 interface EoaTwapPartOrdersResult {
   orders: ParsedOrder[]
@@ -44,6 +46,7 @@ export function useEoaTwapPartOrders(
           page,
           ORDERS_TABLE_PAGE_SIZE,
           partOrdersCount,
+          twapOrder.updatedAtBlock,
           twapOrder.status,
           twapOrder.executionInfo,
         ] as const)
@@ -56,7 +59,7 @@ export function useEoaTwapPartOrders(
           page,
         })
 
-        return partPage
+        return { ...partPage, eventId, chainId, page }
       } catch (err: unknown) {
         const error = normalizeError(err)
 
@@ -70,13 +73,20 @@ export function useEoaTwapPartOrders(
     },
     {
       ...SWR_NO_REFRESH_OPTIONS,
-      refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL,
+      keepPreviousData: true,
       shouldRetryOnError: false,
     },
   )
 
   return useMemo(() => {
-    if (!partPage || !twapOrder) return { orders: [], isLoading }
+    if (!enabled || !twapOrder || partOrdersCount === 0) return { orders: [], isLoading: false }
+    if (
+      !partPage ||
+      partPage.eventId !== twapOrder.id ||
+      partPage.chainId !== twapOrder.chainId ||
+      partPage.page !== page
+    )
+      return { orders: [], isLoading }
 
     // `index` starts at 0 on every page. Add the number of parts on earlier pages
     // to find its position in the full TWAP: page 2, index 2 is the 13th part.
@@ -87,9 +97,9 @@ export function useEoaTwapPartOrders(
       orders: partPage.items.map((partOrder, index) =>
         mapPartOrder(partOrder, twapOrder, parent, offset + index === partPage.totalCount - 1),
       ),
-      isLoading,
+      isLoading: false,
     }
-  }, [isLoading, page, parent, partPage, twapOrder])
+  }, [enabled, isLoading, page, parent, partPage, partOrdersCount, twapOrder])
 }
 
 function mapApiAdditionalInfo(
@@ -100,7 +110,7 @@ function mapApiAdditionalInfo(
 ): Omit<EnrichedOrder, 'settlementContract'> {
   const executedSellAmount = (partOrder.executedSellAmount ?? 0n).toString()
   const executedBuyAmount = (partOrder.executedBuyAmount ?? 0n).toString()
-  const executedFeeAmount = (partOrder.executedFeeAmount ?? 0n).toString()
+  const executedFee = (partOrder.executedFee ?? 0n).toString()
   const validTo = partOrder.validTo ?? Math.ceil(parent.expirationTime.getTime() / 1000)
 
   return {
@@ -124,18 +134,11 @@ function mapApiAdditionalInfo(
     executedSellAmount,
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
-    executedFeeAmount,
-    totalFee: executedFeeAmount,
+    executedFeeAmount: '0',
+    executedFee,
+    totalFee: executedFee,
     invalidated: false,
   }
-}
-
-function mapLegacyPartOrderStatus(status: TwapPartOrderStatus): OrderStatus {
-  if (status === 'open') return OrderStatus.PENDING
-  if (status === 'fulfilled') return OrderStatus.FULFILLED
-  if (status === 'cancelled') return OrderStatus.CANCELLED
-
-  return OrderStatus.EXPIRED
 }
 
 function mapPartOrder(
@@ -144,12 +147,16 @@ function mapPartOrder(
   parent: ParsedOrder,
   isTheLastPart: boolean,
 ): ParsedOrder {
-  const creationTime = new Date(partOrder.createdAt * 1000).toISOString()
+  const startTime =
+    partOrder.validTo === null ? partOrder.createdAt : getTwapPartStartTime(partOrder.validTo, twapOrder.order)
+  const creationTime = new Date(startTime * 1000).toISOString()
   const apiAdditionalInfo = mapApiAdditionalInfo(partOrder, twapOrder, parent, creationTime)
+  const isVirtualPart = partOrder.status === 'unconfirmed'
   const order = {
     ...apiAdditionalInfo,
     id: partOrder.orderUid as UID,
-    status: mapLegacyPartOrderStatus(partOrder.status),
+    status: getPartOrderStatus(apiAdditionalInfo, twapOrder, isVirtualPart),
+    isCancelling: twapOrder.status === TwapOrderStatus.Cancelling,
     creationTime,
     isEoaTwapOrder: true,
     sellAmountBeforeFee: partOrder.sellAmount.toString(),
@@ -157,9 +164,10 @@ function mapPartOrder(
     outputToken: parent.outputToken,
     fullAppData: parent.fullAppData,
     composableCowInfo: {
-      isVirtualPart: false,
+      isVirtualPart,
       isTheLastPart,
       parentId: twapOrder.id,
+      twapOrderHash: twapOrder.hash,
     },
     apiAdditionalInfo,
   } satisfies Order
@@ -168,7 +176,8 @@ function mapPartOrder(
 }
 
 function mapSdkPartOrderStatus(status: TwapPartOrderStatus): SdkOrderStatus {
-  if (status === 'open') return SdkOrderStatus.OPEN
+  // Virtual parts use the scheduled/parent-aware status above, not this placeholder.
+  if (status === 'open' || status === 'unconfirmed') return SdkOrderStatus.OPEN
   if (status === 'fulfilled') return SdkOrderStatus.FULFILLED
   if (status === 'cancelled') return SdkOrderStatus.CANCELLED
 

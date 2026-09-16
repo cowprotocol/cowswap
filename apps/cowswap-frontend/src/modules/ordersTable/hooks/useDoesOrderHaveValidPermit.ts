@@ -7,9 +7,9 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { GenericOrder } from 'common/types'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'

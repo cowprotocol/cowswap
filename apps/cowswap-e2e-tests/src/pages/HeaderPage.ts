@@ -1,3 +1,5 @@
+import { TEST_IDS } from '@cowprotocol/test-ids'
+
 import type { Page, Locator } from '@playwright/test'
 
 /** The app-wide header (network selector, wallet status) — present on every route, not just Swap. */
@@ -11,7 +13,7 @@ export class HeaderPage {
     this.page = page
     this.header = page.locator('#cowswap-app-header')
     this.networkDialog = page.getByRole('dialog')
-    this.snackbarPopup = page.locator('.snackbar-popup').first()
+    this.snackbarPopup = page.locator(`[data-testid="${TEST_IDS.snackbarPopup}"]`).first()
   }
 
   /**

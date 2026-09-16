@@ -9,7 +9,7 @@ import { AccountType } from '@cowprotocol/types'
 import { accountTypeAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, render, waitFor } from '@testing-library/react'
-import { eoaTwapOrdersAtom } from 'entities/twap'
+import { eoaTwapOrdersAtom, twapOrdersAtom } from 'entities/twap'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { ordersLimitAtom } from 'modules/orders'
@@ -26,9 +26,12 @@ jest.mock('@cowprotocol/wallet', () => ({
   accountTypeAtom: jest.requireActual('jotai').atom(jest.requireActual('@cowprotocol/types').AccountType.EOA),
 }))
 jest.mock('../services/programmaticOrdersApi', () => ({
-  programmaticOrdersApi: { fetchEoaTwapOrders: jest.fn() },
+  programmaticOrdersApi: { fetchEoaTwapOrders: jest.fn(), fetchChangedEoaTwapOrders: jest.fn() },
 }))
-jest.mock('entities/twap', () => jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'))
+jest.mock('entities/twap', () => ({
+  ...jest.requireActual('entities/twap/state/eoaTwapOrdersAtom'),
+  ...jest.requireActual('entities/twap/state/twapOrdersAtom'),
+}))
 
 const EOA_A = '0x1111111111111111111111111111111111111111'
 const EOA_B = '0x2222222222222222222222222222222222222222'
@@ -36,6 +39,9 @@ const CHAIN_ID = SupportedChainId.GNOSIS_CHAIN
 
 const fetchEoaTwapOrdersMock = programmaticOrdersApi.fetchEoaTwapOrders as jest.MockedFunction<
   typeof programmaticOrdersApi.fetchEoaTwapOrders
+>
+const fetchChangedEoaTwapOrdersMock = programmaticOrdersApi.fetchChangedEoaTwapOrders as jest.MockedFunction<
+  typeof programmaticOrdersApi.fetchChangedEoaTwapOrders
 >
 const writableAccountTypeAtom = accountTypeAtom as PrimitiveAtom<AccountType | null>
 
@@ -65,6 +71,7 @@ function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {
       info: { executedSellAmount: '0', executedBuyAmount: '0', executedFeeAmount: '0' },
     },
     partOrdersCount: 0,
+    updatedAtBlock: '1',
   }
 }
 
@@ -86,7 +93,8 @@ describe('eoaTwapOrdersEffectAtom', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     localStorage.clear()
-    fetchEoaTwapOrdersMock.mockResolvedValue({ orders: {}, totalCount: 0 })
+    fetchEoaTwapOrdersMock.mockResolvedValue({ orders: {}, totalCount: 0, updatedAtBlock: '0' })
+    fetchChangedEoaTwapOrdersMock.mockResolvedValue({ orders: {}, updatedAtBlock: '0' })
   })
 
   it('loads only explicitly detected EOAs while the feature is enabled', () => {
@@ -120,7 +128,10 @@ describe('eoaTwapOrdersEffectAtom', () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
     store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
-    const resolvers = new Map<string, (result: { orders: Record<string, TwapOrderItem>; totalCount: number }) => void>()
+    const resolvers = new Map<
+      string,
+      (result: { orders: Record<string, TwapOrderItem>; totalCount: number; updatedAtBlock: string }) => void
+    >()
     fetchEoaTwapOrdersMock.mockImplementation((owner) => new Promise((resolve) => resolvers.set(owner, resolve)))
 
     render(<Effect />, { wrapper: testWrapper(store) })
@@ -134,11 +145,11 @@ describe('eoaTwapOrdersEffectAtom', () => {
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_B, CHAIN_ID, 100))
     await waitFor(() => expect(store.get(eoaTwapOrdersAtom)).toEqual({}))
 
-    act(() => resolvers.get(EOA_A)?.({ orders: { [orderA.id]: orderA }, totalCount: 1 }))
+    act(() => resolvers.get(EOA_A)?.({ orders: { [orderA.id]: orderA }, totalCount: 1, updatedAtBlock: '1' }))
     await waitFor(() => expect(store.get(eoaTwapOrdersAtom)).toEqual({}))
 
     const orderB = makeOrder('event-b', EOA_B)
-    act(() => resolvers.get(EOA_B)?.({ orders: { [orderB.id]: orderB }, totalCount: 1 }))
+    act(() => resolvers.get(EOA_B)?.({ orders: { [orderB.id]: orderB }, totalCount: 1, updatedAtBlock: '1' }))
     await waitFor(() => expect(store.get(eoaTwapOrdersAtom)).toEqual({ [orderB.id]: orderB }))
   })
 
@@ -161,7 +172,11 @@ describe('eoaTwapOrdersEffectAtom', () => {
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
     store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     store.set(eoaTwapOrdersAtom, { [cachedOrder.id]: cachedOrder })
-    fetchEoaTwapOrdersMock.mockResolvedValue({ orders: { [fetchedOrder.id]: fetchedOrder }, totalCount: 1 })
+    fetchEoaTwapOrdersMock.mockResolvedValue({
+      orders: { [fetchedOrder.id]: fetchedOrder },
+      totalCount: 1,
+      updatedAtBlock: '1',
+    })
 
     render(<Effect />, { wrapper: testWrapper(store) })
 
@@ -178,6 +193,48 @@ describe('eoaTwapOrdersEffectAtom', () => {
     })
 
     await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalledWith(EOA_A, CHAIN_ID, 200))
+  })
+
+  it('does not overwrite a local cancelling status with stale API data', async () => {
+    const store = createStore()
+    const cancellingOrder = { ...makeOrder('cancelling-event', EOA_A), status: TwapOrderStatus.Cancelling }
+    const staleApiOrder = { ...cancellingOrder, status: TwapOrderStatus.Pending }
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    store.set(eoaTwapOrdersAtom, { [cancellingOrder.id]: cancellingOrder })
+    fetchEoaTwapOrdersMock.mockResolvedValue({
+      orders: { [staleApiOrder.id]: staleApiOrder },
+      totalCount: 1,
+      updatedAtBlock: '1',
+    })
+
+    render(<Effect />, { wrapper: testWrapper(store) })
+
+    await waitFor(() => expect(fetchEoaTwapOrdersMock).toHaveBeenCalled())
+    expect(store.get(eoaTwapOrdersAtom)[cancellingOrder.id]?.status).toBe(TwapOrderStatus.Cancelling)
+  })
+
+  it('transfers a local cancellation from an optimistic hash to an indexed event', async () => {
+    const store = createStore()
+    const indexedOrder = makeOrder('indexed-event', EOA_A)
+    const optimisticOrder = {
+      ...indexedOrder,
+      id: `hash-${indexedOrder.id}`,
+      status: TwapOrderStatus.Cancelled,
+      partOrdersCount: undefined,
+    }
+    store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
+    store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
+    store.set(twapOrdersAtom, { [optimisticOrder.id]: optimisticOrder })
+    fetchEoaTwapOrdersMock.mockResolvedValue({
+      orders: { [indexedOrder.id]: indexedOrder },
+      totalCount: 1,
+      updatedAtBlock: '1',
+    })
+
+    render(<Effect />, { wrapper: testWrapper(store) })
+
+    await waitFor(() => expect(store.get(eoaTwapOrdersAtom)[indexedOrder.id]?.status).toBe(TwapOrderStatus.Cancelled))
   })
 })
 

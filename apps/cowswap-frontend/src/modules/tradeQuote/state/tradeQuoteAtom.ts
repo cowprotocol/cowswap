@@ -48,7 +48,7 @@ export const updateTradeQuoteAtom = atom(
       const prevState = get(tradeQuotesAtom)
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
-      // Don't update state if Fast quote finished after Optimal quote
+      // Don't update state if Fast quote finished after Verified quote
       if (
         prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
         nextState.quote &&

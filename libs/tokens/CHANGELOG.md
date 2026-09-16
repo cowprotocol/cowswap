@@ -1,5 +1,89 @@
 # Changelog
 
+## [3.12.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.12.1...tokens-v3.12.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ui@3.13.2
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.12.0...tokens-v3.12.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ui@3.13.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.1...tokens-v3.12.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(account): handle disconnection of injected wallets after a refresh (#7894)
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: new ondo tokens, updating fallback pin (#8123)
+
+- fix(tokens): support solana address format (#8099)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.0...tokens-v3.11.1) (2026-09-07)
+
+### Patch Changes
+
+- fix(rwa): fix rwa list migration (#8089)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.10.0...tokens-v3.11.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(rwa): add st0x rwa token list (#8030)
+
+- feat: re-enable token search (#8006)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- fix: add coinbase tokenized stocks list (#8012)
+
+- fix(rwa): lists (#8041)
+
+- fix(token-import): dedupe token present in multiple lists with different symbol (#8081)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.9.0...tokens-v3.10.0) (2026-08-12)
 
 ### Minor Changes

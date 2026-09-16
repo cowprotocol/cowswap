@@ -1,6 +1,28 @@
-import { UI } from '@cowprotocol/ui'
+import { font, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
+
+const DETAILS_ROW_GAP = '10px'
+
+const statusBgPulse = keyframes`
+  0%,
+  100% {
+    background: var(${UI.COLOR_INFO_BG});
+  }
+  50% {
+    background: var(${UI.COLOR_PRIMARY_OPACITY_25});
+  }
+`
+
+const statusDotPulse = keyframes`
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.25);
+  }
+`
 
 export const StepItem = styled.li`
   position: relative;
@@ -41,34 +63,6 @@ export const StepsIconWrapper = styled.div`
     --status-color: var(${UI.COLOR_INFO_TEXT});
   }
 
-  &[data-status='loading'] {
-    animation: statusBgPulse 1.4s ease-in-out infinite;
-  }
-
-  &[data-status='loading']::before {
-    animation: statusDotPulse 1.4s ease-in-out infinite;
-  }
-
-  @keyframes statusBgPulse {
-    0%,
-    100% {
-      background: var(${UI.COLOR_INFO_BG});
-    }
-    50% {
-      background: var(${UI.COLOR_PRIMARY_OPACITY_25});
-    }
-  }
-
-  @keyframes statusDotPulse {
-    0%,
-    100% {
-      transform: translate(-50%, -50%) scale(1);
-    }
-    50% {
-      transform: translate(-50%, -50%) scale(1.25);
-    }
-  }
-
   &[data-status='warning'] {
     --status-bg: var(${UI.COLOR_ALERT_BG});
     --status-color: var(${UI.COLOR_ALERT_TEXT});
@@ -102,6 +96,16 @@ export const StepsIconWrapper = styled.div`
     border-width: calc(var(--inner-circle-size) / 2);
   }
 
+  &[data-status='loading'] {
+    --status-bg: var(${UI.COLOR_INFO_BG});
+    animation: ${statusBgPulse} 1.4s ease-in-out infinite;
+  }
+
+  &[data-status='loading']::before {
+    animation: ${statusDotPulse} 1.4s ease-in-out infinite;
+    transition: none;
+  }
+
   &[data-status='success'],
   &[data-status='error'],
   &[data-status='warning'] {
@@ -114,6 +118,7 @@ export const StepsIconWrapper = styled.div`
     width: 1em;
     height: 1em;
     stroke: currentColor;
+    fill: none;
   }
 `
 
@@ -131,41 +136,50 @@ export const StepHeaderButton = styled.button`
     border-radius: 14px;
   }
 
-  &:not(:disabled):hover::before {
-    background: var(${UI.COLOR_TEXT_OPACITY_10});
+  &:disabled {
+    cursor: default;
   }
 `
 
-export const StepLabel = styled.strong`
+export const StepLabel = styled.span`
+  ${font('FONT_NORMAL_PLUS', 'semibold')}
+
   display: block;
   flex: 1;
-  font-size: 15px;
-  line-height: 1.4;
   text-align: left;
   margin: 0;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
 
-  [data-status='active'] &,
-  [data-status='loading'] & {
-    color: var(${UI.COLOR_TEXT});
+  [data-status='success'] & {
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 
   [data-status='upcoming'] & {
-    font-weight: var(${UI.FONT_WEIGHT_NORMAL});
+    ${font('FONT_NORMAL_PLUS', 'medium')}
+
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+
+  ${StepItem}[data-status='success']:hover & {
+    color: var(${UI.COLOR_TEXT});
   }
 `
 
-export const StepExpandIcon = styled.button`
+export const StepExpandIcon = styled.span`
   position: absolute;
   right: 0;
   top: 14px;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+  [data-status='active'] &,
+  [data-status='loading'] & {
+    color: var(${UI.COLOR_PRIMARY});
+  }
 
   & > svg {
     width: 1em;
@@ -179,12 +193,30 @@ export const StepExpandIcon = styled.button`
 `
 
 export const StepDetailsInner = styled.div`
+  ${font('FONT_NORMAL', 'regular')}
+
   display: flex;
   flex-flow: column nowrap;
-  gap: 4px;
-  padding: var(--spacing-around) 0 0 0;
+  padding: ${DETAILS_ROW_GAP} 0 0 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   & p {
     margin: 0;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+
+  /* Description stays secondary in error; the label carries the danger color. */
+  li[data-status='error'] & p {
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+`
+
+export const StepDescriptionLabel = styled.strong`
+  ${font('FONT_SMALL_PLUS', 'semibold')}
+  margin-bottom: ${DETAILS_ROW_GAP};
+  color: var(${UI.COLOR_ALERT_TEXT});
+
+  [data-status='error'] & {
+    color: var(${UI.COLOR_DANGER_TEXT});
   }
 `

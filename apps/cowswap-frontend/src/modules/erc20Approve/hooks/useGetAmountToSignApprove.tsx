@@ -3,9 +3,10 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
 import { useIsPartialApprovalModeSelected } from './useIsPartialApprovalModeSelected'

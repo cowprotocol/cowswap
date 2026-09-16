@@ -194,6 +194,71 @@ Analyze CoW Swap bundle:
 ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build
 ```
 
+## Developing against a local `cow-sdk` checkout
+
+Sometimes a feature needs `@cowprotocol/cow-sdk` changes that aren't published yet (e.g. the
+Solana trading support under active development). To develop against a sibling
+[`cow-sdk`](https://github.com/cowprotocol/cow-sdk) checkout instead of the published npm
+packages, clone it next to this repo:
+
+```text
+projects/
+├── cow-sdk/
+└── cowswap/
+```
+
+then build the package(s) you need there:
+
+```bash
+cd ../cow-sdk
+pnpm --filter @cowprotocol/cow-sdk build      # rebuilds @cowprotocol/sdk-trading too (a dependency)
+```
+
+**Two different linking mechanisms are in play, depending on whether the package is already a
+real dependency here:**
+
+- **Packages already in `package.json`** (`@cowprotocol/cow-sdk`, `@cowprotocol/sdk-trading`,
+  …): `pnpm link` doesn't work cleanly in this pnpm version — its `link <dir>` form always
+  requires a positional directory and rewrites `package.json`/the lockfile with a `link:`
+  dependency, which isn't something you want committed on top of an already-published version
+  pin. Instead, symlink the package directly inside the shared pnpm store, bypassing pnpm
+  entirely:
+
+  ```bash
+  # Find the store path pnpm resolved for the published version, e.g.:
+  ls node_modules/.pnpm | grep '@cowprotocol+cow-sdk@'
+  # Then replace that store entry's package folder with a symlink to your local build:
+  rm node_modules/.pnpm/@cowprotocol+cow-sdk@<version>*/node_modules/@cowprotocol/cow-sdk
+  ln -s /path/to/cow-sdk/packages/sdk \
+    node_modules/.pnpm/@cowprotocol+cow-sdk@<version>*/node_modules/@cowprotocol/cow-sdk
+  ```
+
+  This is **local-only and untracked by git** — it lives entirely in `node_modules`, which is
+  gitignored, and it does not survive a fresh `pnpm install` (that restores the normal
+  store-managed symlink back to the published version). Redo it whenever you reinstall.
+
+- **A package that isn't published yet at all** (no npm fallback to preserve): add a real
+  `link:` dependency directly in the consuming app's `package.json`, e.g.:
+
+  ```json
+  "@cowprotocol/sdk-trading-solana": "link:../../../cow-sdk/packages/sdk-trading-solana"
+  ```
+
+  then run `pnpm install`. Unlike the workaround above, this **is** a real, committed manifest
+  change — `pnpm install` honors it going forward, but it also means anyone installing this repo
+  (including CI) needs that exact relative path to resolve to a built `cow-sdk` checkout, or the
+  install fails outright. Only use this for a genuinely new, unpublished dependency, and treat it
+  as a temporary state to replace with a real published version pin before merging to a shared
+  branch.
+
+**After (re)linking either way:** if a dev server is already running, clear Vite's dependency
+cache so it re-bundles against the new code, then restart:
+
+```bash
+rm -rf apps/cowswap-frontend/node_modules/.vite
+pnpm start
+```
+
 # ⚙️ Configuration
 
 ## RPC Endpoints

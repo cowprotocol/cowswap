@@ -9,7 +9,7 @@ import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/brid
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSupportedChains } from './useSupportedChains'

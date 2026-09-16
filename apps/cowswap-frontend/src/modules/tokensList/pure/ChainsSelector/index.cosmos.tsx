@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { mapChainInfo } from '../../utils/mapChainInfo'
 

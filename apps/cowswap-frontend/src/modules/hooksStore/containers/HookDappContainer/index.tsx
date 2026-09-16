@@ -7,7 +7,9 @@ import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useTradeState, useTradeNavigate } from 'modules/trade'
+import { useTradeState } from 'modules/trade'
+
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 
 import {
   getValidatedIframeAddHookRequest,

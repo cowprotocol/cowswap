@@ -1,11 +1,12 @@
 import { useCallback } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useLocation } from 'react-router'
-
 import { useNavigate } from 'common/hooks/useNavigate'
+
+import { getDefaultTradeCurrenciesIds, useTradeNavigate, useTradeTypeInfoFromUrl } from '../modules/tradeNavigation'
 
 // Trade routes that handle their own chain resolution (e.g. via SwapPageRedirect).
 // Setting ?chain= on these paths causes unnecessary navigation that races with their own redirect logic.
@@ -20,16 +21,25 @@ const CHAINLESS_TRADE_ROUTES = ['/swap', '/limit', '/advanced', '/yield']
  */
 export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
   const navigate = useNavigate()
-  const location = useLocation()
+  const tradeTypeInfoFromUrl = useTradeTypeInfoFromUrl()
+  const tradeNavigate = useTradeNavigate()
+  const isOnTradePage = !!tradeTypeInfoFromUrl
 
   return useCallback(
     (chainId: SupportedChainId) => {
-      const pathname = location.pathname
+      if (chainId === getRawCurrentChainIdFromUrl()) return
+
+      if (isOnTradePage) {
+        tradeNavigate(chainId, getDefaultTradeCurrenciesIds(chainId))
+        return
+      }
+
+      const [pathname, search] = window.location.hash.slice(1).split('?')
 
       // Path-based chain (e.g. /42161/swap): replace the chain segment so the URL updates and connect flow uses it
       if (/^\/\d+\//.test(pathname)) {
         const newPathname = pathname.replace(/^\/\d+/, `/${chainId}`)
-        navigate({ pathname: newPathname, search: location.search }, { replace: true })
+        navigate({ pathname: newPathname, search: search }, { replace: true })
         return
       }
 
@@ -41,7 +51,7 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
 
-      const newSearch = replaceURLParam(location.search, 'chain', chainInfo.name)
+      const newSearch = replaceURLParam(search, 'chain', chainInfo.name)
       navigate(
         {
           pathname,
@@ -50,7 +60,7 @@ export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void 
         { replace: true },
       )
     },
-    [navigate, location],
+    [navigate, isOnTradePage, tradeNavigate],
   )
 }
 

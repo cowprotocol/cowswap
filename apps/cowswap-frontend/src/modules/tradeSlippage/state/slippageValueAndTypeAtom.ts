@@ -7,7 +7,9 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
-import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
+import { isEoaEthFlowAtom, tradeTypeAtom } from 'modules/trade'
+
+import { TradeTypeToWidgetTradeTypeMap } from 'common/modules/tradeNavigation'
 
 import { resolveSlippageConfig } from '../utils/slippage'
 

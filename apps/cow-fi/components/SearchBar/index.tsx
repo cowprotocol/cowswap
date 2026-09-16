@@ -113,7 +113,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
         // if you want to run multiple Next.js server actions in parallel, use https://github.com/icflorescu/next-server-actions-parallel
         const result = await searchArticlesAction({ searchTerm: trimmedQuery, page: 0, pageSize: PAGE_SIZE })
         startTransition(() => {
-          if (result.success && result.data) {
+          if (result.success) {
             setFilteredArticles(result.data.data)
             setTotalResults(result.data.meta.pagination.total)
             setHasMoreResults(result.data.meta.pagination.pageCount > 1)
@@ -139,7 +139,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
 
       try {
         const result = await searchArticlesAction({ searchTerm: debouncedQuery, page: nextPage, pageSize: PAGE_SIZE })
-        if (result.success && result.data) {
+        if (result.success) {
           setFilteredArticles((prevArticles) => [...prevArticles, ...result.data.data])
           setCurrentPage(nextPage)
           setHasMoreResults(nextPage < result.data.meta.pagination.pageCount - 1)

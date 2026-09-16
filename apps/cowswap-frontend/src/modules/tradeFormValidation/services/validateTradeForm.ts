@@ -1,9 +1,9 @@
 import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
-import { TradeType } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
+import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
 import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
@@ -40,6 +40,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestoringConnection,
     isCaptchaPending,
     isCaptchaRequired,
+    swapMaximumSellAmount,
   } = context
 
   const {
@@ -170,7 +171,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.BalancesNotLoaded)
     }
 
-    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+    // For Swap, the balance must cover the slippage-inclusive maximum sell amount, not just the raw input
+    // amount, otherwise the order could be unfillable if the price moves against the user up to slippage.
+    const balanceCheckAmount = swapMaximumSellAmount ?? inputCurrencyAmount
+
+    if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
     }
   }

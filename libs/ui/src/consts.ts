@@ -54,8 +54,8 @@ export const Media = {
 export const Font = {
   familyInter: `'Inter var', 'Inter', Arial, sans-serif`,
   familyStudioFeixen: `'studiofeixen', 'Inter var', 'Inter', Arial, sans-serif`,
-  familyStudioFeixenMono: `'studiofeixenmono', monospace, sans-serif`,
   familyStudioFeixenSerif: `'studiofeixenserif', Arial, serif`,
+  // Numeric source of truth for ThemeColorVars and @font-face only. Use UI.FONT_WEIGHT_* in styles.
   weight: {
     ultralight: 200,
     light: 300,
@@ -72,6 +72,7 @@ export const Font = {
  * Theme CSS vars and the `font()` mixin are derived from this map.
  */
 export const FONT_SIZING = {
+  FONT_SMALL: [12, 16],
   FONT_SMALL_PLUS: [13, 18],
   FONT_NORMAL: [14, 20],
   FONT_NORMAL_PLUS: [15, 20],

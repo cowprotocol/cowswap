@@ -203,7 +203,7 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
 `
 
 export const UsdButton = styled(ActiveCurrency)`
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   min-width: 40px;
   justify-content: center;
 

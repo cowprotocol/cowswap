@@ -18,6 +18,7 @@ interface ProtocolFeeRowProps {
   withTimelineDot: boolean
   isLast?: boolean
   loading?: boolean
+  testId?: string
 }
 
 export function ProtocolFeeRow({
@@ -27,6 +28,7 @@ export function ProtocolFeeRow({
   withTimelineDot,
   isLast = false,
   loading = false,
+  testId,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps
     ? trimTrailingZeros(
@@ -61,6 +63,7 @@ export function ProtocolFeeRow({
       }
       isLast={isLast}
       loading={loading}
+      testId={testId}
     />
   )
 }

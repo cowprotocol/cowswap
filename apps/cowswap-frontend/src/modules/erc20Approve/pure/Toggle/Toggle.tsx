@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import svgEditSrc from '@cowprotocol/assets/cow-swap/edit.svg'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -28,7 +29,7 @@ export function Toggle({
   }
 
   return (
-    <styledEl.ToggleWrapper className="approve-mode-selector">
+    <styledEl.ToggleWrapper data-testid={TEST_IDS.approveModeSelector}>
       <Option isActive={isPartialApproveSelected} onClick={() => handleSelect(true)} title={t`Partial approval`}>
         <styledEl.PartialAmountWrapper
           onClick={() => {

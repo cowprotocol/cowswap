@@ -11,9 +11,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade/types/TradeType'
-
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 

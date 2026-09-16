@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import type { Hex } from 'viem'
+
 export interface EoaTwapSigningStepState {
   step: EoaTwapSigningSteps
   phase: EoaTwapSigningPhase
@@ -15,30 +17,41 @@ export interface EoaTwapSigningStepState {
   /**
    * When true, hide back/close in `ConfirmationPendingContentShell`.
    *
-   * Set once the funding-order EIP-712 signature is requested and preserved until the end of the flow (unless any step
-   * needs to update it mid-flow).
+   * Set once the setup transaction is submitted and preserved until the end of the flow (unless any step needs to
+   * update it mid-flow).
    */
   lockDismiss: boolean
+
+  /** On-chain transaction hashes for completed wallet-action steps (approvals, setup tx). */
+  completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
+
+  /** Indexed TWAP event ID used for the Explorer details link. */
+  eventId?: string
 }
 
 /**
  * Progress within the current EOA TWAP signing step.
- * On-chain: Sign → WaitingForTx → (optional Verifying) → Confirmed.
- * Signature-only steps typically use Sign → Confirmed.
+ * On-chain: Sign → WaitingForTx → Confirmed.
  */
 export enum EoaTwapSigningPhase {
-  Confirmed = 'Confirmed',
   Sign = 'Sign',
-  Verifying = 'Verifying',
   WaitingForTx = 'WaitingForTx',
+  Confirmed = 'Confirmed',
 }
 
 export enum EoaTwapSigningSteps {
-  ZeroApprove = 'ZeroApprove',
-  ApproveOrPermit = 'ApproveOrPermit',
-  TwapSetup = 'TwapSetup',
-  FundingOrder = 'FundingOrder',
-  CreatingOrder = 'CreatingOrder',
+  ZeroApprovePoller = 'ZeroApprovePoller',
+  ApprovePoller = 'ApprovePoller',
+  /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
+  PermitPoller = 'PermitPoller',
+  /** Cow-shed `trustedExecuteHooks` setup transaction. */
+  TwapSign = 'TwapSign',
+  /** Wait for the setup transaction to be mined. */
+  SubmitTwap = 'SubmitTwap',
+  /** Same as {@link SubmitTwap}, shown when activation is taking longer than usual. */
+  SubmitTwapSlow = 'SubmitTwapSlow',
+  /** Placement finished; the review card shows the inline success box. */
+  Success = 'Success',
 }
 
 export const eoaTwapSigningStepAtom = atom<EoaTwapSigningStepState | null>(null)

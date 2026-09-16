@@ -119,7 +119,7 @@ export const NoNotifications = styled.div`
   > h4 {
     margin: 0;
     font-size: 24px;
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 
@@ -160,7 +160,7 @@ export const PromoBannerLink = styled.button`
   padding: 0;
   color: inherit;
   font-size: inherit;
-  font-weight: var(${UI.FONT_WEIGHT_BOLD});
+  font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
   text-decoration: underline;
   cursor: pointer;
 `

@@ -1,7 +1,11 @@
 import { installAllowances, type AllowancesMock } from '../mocks/allowances'
 import { installBalances, type BalancesMock } from '../mocks/balances'
+import { installBungee, type BungeeMock } from '../mocks/bridge/bungee'
+import { installNearIntents, type NearIntentsMock } from '../mocks/bridge/nearIntents'
+import { installSocketVerifier } from '../mocks/bridge/socketVerifier'
 import { installCowProtocolApi, type CowProtocolApiMock } from '../mocks/cowProtocolApi'
 import { installLaunchDarkly, type LaunchDarklyMock } from '../mocks/launchDarkly'
+import { installEthBalance } from '../mocks/nodeRpc/ethBalance'
 import { installEthBlockNumber } from '../mocks/nodeRpc/ethBlockNumber'
 import { installEthEstimateGas } from '../mocks/nodeRpc/ethEstimateGas'
 import { installEthGetCode, type EthGetCodeMock } from '../mocks/nodeRpc/ethGetCode'
@@ -9,6 +13,7 @@ import { installEthGetTransactionCount } from '../mocks/nodeRpc/ethGetTransactio
 import { installTokenNonce } from '../mocks/nodeRpc/tokenNonce'
 import { installOrdersMock, type OrdersMock } from '../mocks/orders'
 import { installSafeSdk, type SafeSdkMock } from '../mocks/safeSdk'
+import { installSlippageTolerance, type SlippageToleranceMock } from '../mocks/slippageTolerance'
 import { installUsdPrices, type UsdPricesMock } from '../mocks/usdPrices'
 import { AccountModal } from '../pages/AccountModal'
 import { AccountPage } from '../pages/AccountPage'
@@ -40,8 +45,11 @@ export interface SharedFixtures {
     orders: OrdersMock
     ethGetCode: EthGetCodeMock
     safeSdk: SafeSdkMock
+    bungee: BungeeMock
+    nearIntents: NearIntentsMock
     launchDarkly: LaunchDarklyMock
     usdPrices: UsdPricesMock
+    slippageTolerance: SlippageToleranceMock
   }
 }
 
@@ -86,7 +94,7 @@ export const sharedFixtures: Fixtures<
   // teardown. A plain (non-auto) fixture is only set up when requested, so without this the
   // whole mock stack — including `assertNoUnmatched()` — would silently never run.
   mocks: [
-    async ({ context }, use, testInfo) => {
+    async ({ context, wallet }, use, testInfo) => {
       // Diagnostic-only, opt-in via `LOG_UNMOCKED_RPC=1` — see `logUnmockedRpcRequests`'s own doc
       // comment. Registered before every other mock below (and therefore before any manually
       // installed one too, e.g. `mockApproveTransaction`, since those only get added once the test
@@ -106,17 +114,22 @@ export const sharedFixtures: Fixtures<
       const cowApi = await installCowProtocolApi(context)
       const orders = installOrdersMock(cowApi)
       const ethGetCode = installEthGetCode(context)
+      installEthBalance(context, wallet.address)
       installEthBlockNumber(context)
       installEthEstimateGas(context)
       installEthGetTransactionCount(context)
       installTokenNonce(context)
+      installSocketVerifier(context)
       // Fires regardless of whether the UI ever shows an Approve step (confirmed by tracing real
       // traffic under `LOG_UNMOCKED_RPC=1` — it hit cross-chain tests that pre-seed a sufficient
       // allowance and never click Approve), so this is global rather than opt-in per test.
       mockApproveSimulation(context)
       const safeSdk = installSafeSdk(context)
+      const bungee = installBungee(context)
+      const nearIntents = installNearIntents(context)
       const launchDarkly = await installLaunchDarkly(context)
       const usdPrices = installUsdPrices(context)
+      const slippageTolerance = installSlippageTolerance(context)
 
       await use({
         allowances,
@@ -125,13 +138,19 @@ export const sharedFixtures: Fixtures<
         orders,
         ethGetCode,
         safeSdk,
+        bungee,
+        nearIntents,
         launchDarkly,
         usdPrices,
+        slippageTolerance,
       })
 
       ethGetCode.reset()
+      bungee.reset()
+      nearIntents.reset()
       await launchDarkly.reset()
       usdPrices.reset()
+      slippageTolerance.reset()
       await safeSdk.disable()
       allowances.reset()
       balances.reportUnknownOwners()

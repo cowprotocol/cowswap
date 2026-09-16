@@ -1,5 +1,58 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.1...common-hooks-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.0...common-hooks-v3.11.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.10.0...common-hooks-v3.11.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/types@4.10.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.1...common-hooks-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: add Dialog and surfaces improvements (#8010)
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/types@4.9.0
+
 ## [3.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.9.0...common-hooks-v3.9.1) (2026-08-12)
 
 ### Patch Changes

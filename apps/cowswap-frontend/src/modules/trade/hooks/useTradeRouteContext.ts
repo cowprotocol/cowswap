@@ -5,7 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeState } from './useTradeState'
 
-import { getDefaultTradeRawState, TradeUrlParams } from '../types'
+import { TradeUrlParams } from '../../../common/modules/tradeNavigation'
+import { getDefaultTradeRawState } from '../types'
 
 export function useTradeRouteContext(): TradeUrlParams {
   const { chainId: walletChainId } = useWalletInfo()

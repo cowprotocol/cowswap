@@ -1,5 +1,62 @@
 # Changelog
 
+## [3.9.2](https://github.com/cowprotocol/cowswap/compare/core-v3.9.1...core-v3.9.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/core-v3.9.0...core-v3.9.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/core-v3.8.0...core-v3.9.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: use prod cms for correlated tokens as well (#8124)
+
+- fix: new ondo tokens, updating fallback pin (#8123)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/core-v3.7.1...core-v3.8.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(partial-approvals): implement partial approve for limit orders/TWAP (#8011)
+
+- feat(rwa): add st0x rwa token list (#8030)
+
+### Patch Changes
+
+- fix: add coinbase tokenized stocks list (#8012)
+
+- fix(rwa): point rwa list fetching to cms prod (#8077)
+
+- fix(solvers): fetch solver info from cms prod only (#8067)
+
+- fix(rwa): lists (#8041)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/core-v3.7.0...core-v3.7.1) (2026-08-12)
 
 ### Patch Changes

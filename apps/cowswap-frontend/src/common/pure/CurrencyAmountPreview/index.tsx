@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 
 import { Nullish } from 'types'
 
@@ -16,6 +17,7 @@ export interface CurrencyPreviewInfo {
   fiatAmount: Nullish<CurrencyAmount<Currency>>
   balance: Nullish<CurrencyAmount<Currency>>
   label?: Nullish<string>
+  prefix?: ReactNode
 }
 
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
@@ -38,7 +40,7 @@ export function CurrencyAmountPreview({
   priceImpactParams,
   isBridging,
 }: CurrencyPreviewProps): ReactNode {
-  const { fiatAmount, amount } = currencyInfo
+  const { fiatAmount, amount, prefix } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
@@ -48,7 +50,12 @@ export function CurrencyAmountPreview({
       <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
       <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>
-        <styledEl.Amount className="token-amount-input" amount={amount} tokenSymbol={currency} />
+        <styledEl.Amount
+          testId={TEST_IDS.currencyAmountPreviewValue}
+          amount={amount}
+          tokenSymbol={currency}
+          prefix={prefix}
+        />
         <styledEl.FiatAmountSlot fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
       </styledEl.Amounts>
     </styledEl.Container>

@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react'
 
-import { Media, Font, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -18,7 +18,7 @@ type ButtonProps = {
   borderRadius?: number
   fontSize?: number
   fontSizeMobile?: number
-  fontWeight?: number
+  fontWeight?: number | string
   paddingLR?: number
   paddingTB?: number
   paddingMobileLR?: number
@@ -49,7 +49,7 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
   min-height: ${({ minHeight }) => (minHeight ? `${minHeight}rem` : '5.6rem')};
   align-items: center;
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}rem` : '2.2rem')};
-  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
+  font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : `var(${UI.FONT_WEIGHT_BOLD})`)};
   justify-content: center;
   transition:
     color 0.2s ease-in-out,

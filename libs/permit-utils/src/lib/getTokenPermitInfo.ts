@@ -85,13 +85,23 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     console.debug(`[checkTokenIsPermittable] Couldn't fetch eip712domain for token ${tokenAddress}`)
   }
 
+  const needsTokenName = !domain?.name
+  const needsVersion = domain?.version === undefined
+
+  // Fire the remaining independent reads together so they land in a single batched RPC round trip
+  // instead of three sequential ones.
+  const [nameResult, nonceResult, versionResult] = await Promise.allSettled([
+    needsTokenName ? getTokenName(tokenAddress, chainId, config) : Promise.resolve(domain?.name),
+    eip2612PermitUtils.getTokenNonce(tokenAddress, owner),
+    needsVersion ? getTokenPermitVersion(tokenAddress, config) : Promise.resolve(domain?.version),
+  ])
+
   let tokenName = domain?.name
 
-  try {
-    if (!tokenName) {
-      tokenName = await getTokenName(tokenAddress, chainId, config)
-    }
-  } catch (e) {
+  if (nameResult.status === 'fulfilled') {
+    tokenName = nameResult.value
+  } else if (needsTokenName) {
+    const e = nameResult.reason
     if (/ETIMEDOUT/.test(e) && !tokenName) {
       // Network issue or another temporary failure, return error
       return { error: `Failed to fetch token name from contract. RPC connection error` }
@@ -109,9 +119,10 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
 
   let nonce: number
 
-  try {
-    nonce = await eip2612PermitUtils.getTokenNonce(tokenAddress, owner)
-  } catch (e) {
+  if (nonceResult.status === 'fulfilled') {
+    nonce = nonceResult.value
+  } else {
+    const e = nonceResult.reason
     if (e === 'nonce not supported' || e.message === 'nonce is NaN') {
       console.debug(`[checkTokenIsPermittable] Not a permittable token ${tokenAddress} - ${tokenName}`, e?.message || e)
       // Here we know it's not supported, return unsupported
@@ -127,18 +138,14 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
 
   let version: string | undefined = domain?.version
 
-  if (version === undefined) {
-    // If the token does not outright fails when calling with the `version` value
-    // returned by the contract, fetch it.
-
-    try {
-      // Required by USDC-mainnet as its version is `2`.
-      // There might be other tokens that need this as well.
-      version = await getTokenPermitVersion(tokenAddress, config)
-    } catch (e) {
-      // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
-      console.debug(`[checkTokenIsPermittable] Failed to get version for ${tokenAddress} - ${tokenName}`, e)
-    }
+  if (versionResult.status === 'fulfilled') {
+    version = versionResult.value
+  } else if (needsVersion) {
+    // Not a problem, we can (try to) continue without it, and will default to `1` (part of the 1inch lib)
+    console.debug(
+      `[checkTokenIsPermittable] Failed to get version for ${tokenAddress} - ${tokenName}`,
+      versionResult.reason,
+    )
   }
 
   const baseParams: BaseParams = {

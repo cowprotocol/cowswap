@@ -11,10 +11,8 @@ import { useUpdateYieldRawState } from 'modules/yield/hooks/useUpdateYieldRawSta
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
+import { TradeType, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
-import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
-
-import { TradeType } from '../types'
 import { ExtendedTradeRawState } from '../types/TradeRawState'
 
 const EMPTY_TRADE_STATE = {}

@@ -2,8 +2,9 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { renderTooltip } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -63,6 +64,10 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function
 export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
@@ -250,9 +255,13 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       <AmountParts />
 
-      {tradeWarnings}
+      {/* Local validation replaces the trade button with a disabled one, so trade hints and approval controls
+          are pointless: only the warning explaining the block stays visible */}
+      {!localFormValidation && tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+      {isPrimaryValidationPassed && !localFormValidation && (
+        <TradeApproveWithAffectedOrderList forceShowAffectedOrders={isEoaTwap} />
+      )}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

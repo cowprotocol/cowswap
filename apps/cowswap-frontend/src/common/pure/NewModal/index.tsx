@@ -106,7 +106,7 @@ const NewModalContent = styled.div<{ padding?: string; justifyContent?: string }
   h3 {
     width: 100%;
     font-size: var(${UI.FONT_SIZE_MEDIUM});
-    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
     text-align: left;
     line-height: 1.4;
     margin: 0 auto;

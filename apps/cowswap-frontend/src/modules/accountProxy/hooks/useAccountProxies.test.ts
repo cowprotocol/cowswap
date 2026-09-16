@@ -80,4 +80,16 @@ describe('useAccountProxies', () => {
 
     expect(result.current).toBeNull()
   })
+
+  it('returns no proxies for a non-EVM chain, without calling proxyOf', () => {
+    useWalletInfoMock.mockReturnValue({
+      account: ACCOUNT,
+      chainId: SupportedChainId.SOLANA,
+    } as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(() => useAccountProxies())
+
+    expect(result.current).toBeNull()
+    expect(proxyOfMock).not.toHaveBeenCalled()
+  })
 })

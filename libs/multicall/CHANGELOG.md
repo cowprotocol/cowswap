@@ -1,5 +1,56 @@
 # Changelog
 
+## [3.7.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.1...multicall-v3.7.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/wallet@3.13.2
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.0...multicall-v3.7.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.13.1
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.1...multicall-v3.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/types@4.10.0
+
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.0...multicall-v3.6.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.12.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.5.1...multicall-v3.6.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+
 ## [3.5.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.5.0...multicall-v3.5.1) (2026-08-12)
 
 ### Patch Changes

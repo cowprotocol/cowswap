@@ -4,7 +4,7 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { msg } from '@lingui/core/macro'
 
-import { TradeType } from '../types'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 export const TradeTypeToUiOrderType: Record<TradeType, UiOrderType> = {
   [TradeType.SWAP]: UiOrderType.SWAP,

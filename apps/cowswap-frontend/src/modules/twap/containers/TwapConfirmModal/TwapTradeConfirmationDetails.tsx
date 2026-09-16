@@ -144,10 +144,10 @@ export function TwapTradeConfirmationDetails({
         <Accordion.Item value={ORDER_DETAILS_ITEM} $isCollapsible={isCollapsible}>
           <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
             <Accordion.Header>
-              <styledEl.Trigger $isExpanded={isExpanded}>
+              <Accordion.Trigger>
                 <Trans>Order details</Trans>
                 <Accordion.Chevron aria-hidden />
-              </styledEl.Trigger>
+              </Accordion.Trigger>
             </Accordion.Header>
           </styledEl.TriggerSlot>
           <Accordion.Panel keepMounted>

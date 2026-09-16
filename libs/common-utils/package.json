@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-utils",
-  "version": "3.13.0",
+  "version": "3.16.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -16,6 +16,12 @@
       "import": "./src/json-utils.ts",
       "require": "./src/json-utils.ts",
       "default": "./src/json-utils.ts"
+    },
+    "./safeLink": {
+      "types": "./src/safeLink.ts",
+      "import": "./src/safeLink.ts",
+      "require": "./src/safeLink.ts",
+      "default": "./src/safeLink.ts"
     }
   },
   "publishConfig": {
@@ -31,12 +37,17 @@
         "types": "./json-utils.d.ts",
         "import": "./json-utils.mjs",
         "require": "./json-utils.js"
+      },
+      "./safeLink": {
+        "types": "./safeLink.d.ts",
+        "import": "./safeLink.mjs",
+        "require": "./safeLink.js"
       }
     }
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.2.6",
+    "@cowprotocol/cow-sdk": "9.2.10",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",

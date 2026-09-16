@@ -8,9 +8,10 @@ import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 import { correlatedTokensAtom } from 'entities/correlatedTokens'
 import { injectedWidgetPartnerFeeAtom } from 'entities/injectedWidget'
 
-import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
+import { derivedTradeStateAtom, tradeTypeAtom } from 'modules/trade'
 import { tradeQuotesAtom } from 'modules/tradeQuote'
 
+import { TradeTypeToWidgetTradeTypeMap } from 'common/modules/tradeNavigation'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { isCorrelatedTrade } from './isCorrelatedTrade'

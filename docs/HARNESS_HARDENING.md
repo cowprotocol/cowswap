@@ -1,7 +1,7 @@
 ---
 author: agents
 status: active roadmap
-last_reviewed: 2026-03-05
+last_reviewed: 2026-08-28
 source_of_truth_scope: next steps to move from partial checks to fully enforced contributor harnesses
 ---
 

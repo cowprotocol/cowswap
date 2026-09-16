@@ -1,15 +1,6 @@
-import FONT_STUDIO_FEIXEN_BOLD from '@cowprotocol/assets/fonts/StudioFeixenSans-Bold.woff2'
-
 import type { CSSObject, Theme } from '@mui/material/styles'
 
 export const globalStyles = (theme: Theme): CSSObject => ({
-  '@font-face': {
-    fontFamily: 'studiofeixen',
-    src: `url(${FONT_STUDIO_FEIXEN_BOLD}) format('woff2')`,
-    fontStyle: 'normal',
-    fontWeight: 700,
-    fontDisplay: 'swap',
-  },
   'html, input, textarea, button': {
     fontFamily: "'Inter', sans-serif",
     fontDisplay: 'fallback',

@@ -10,6 +10,7 @@ import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
+  [TwapOrderStatus.PartiallyFilled]: OrderStatus.FULFILLED,
   [TwapOrderStatus.Pending]: OrderStatus.PENDING,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
@@ -31,6 +32,7 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     id: enrichedOrder.uid,
     composableCowInfo: {
       id: order.id,
+      twapOrderHash: order.hash,
     },
     sellAmountBeforeFee: enrichedOrder.sellAmount,
     inputToken,

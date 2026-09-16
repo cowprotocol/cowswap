@@ -1,5 +1,89 @@
 # Changelog
 
+## [2.14.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.1...cow-fi-v2.14.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ui@3.13.2
+  - @cowprotocol/wallet@3.13.2
+
+## [2.14.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.0...cow-fi-v2.14.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ui@3.13.1
+  - @cowprotocol/wallet@3.13.1
+
+## [2.14.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.13.1...cow-fi-v2.14.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+### Patch Changes
+
+- fix(cow-fi): widget preview cuts off in default state (#8085)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/widget-react@3.2.7
+
+## [2.13.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.13.0...cow-fi-v2.13.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+  - @cowprotocol/wallet@3.12.1
+
+## [2.13.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.12.0...cow-fi-v2.13.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat(cow-fi): add get in touch CTA to protocol hero (#8042)
+
+- feat(disclaimer): add content disclaimer component and integrate into… (#8040)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+  - @cowprotocol/widget-react@3.2.6
+
 ## [2.12.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.11.0...cow-fi-v2.12.0) (2026-08-27)
 
 ### Minor Changes

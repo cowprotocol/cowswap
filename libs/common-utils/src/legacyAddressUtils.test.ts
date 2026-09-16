@@ -1,6 +1,46 @@
-import { getBlockExplorerUrl, isAddress, safeShortenAddress, shortenAddress } from './legacyAddressUtils'
+import { i18n } from '@lingui/core'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { getExplorerBaseUrl } from './explorer'
+import {
+  getBlockExplorerUrl,
+  getEtherscanLink,
+  getExplorerLabel,
+  isAddress,
+  isCowOrder,
+  safeShortenAddress,
+  shortenAddress,
+} from './legacyAddressUtils'
 
 describe('utils', () => {
+  describe('#getEtherscanLink', () => {
+    const eventId = '1'.repeat(70)
+    const uid = `0x${'a'.repeat(112)}`
+    const hash = `0x${'b'.repeat(64)}`
+
+    it.each([1, 100, 11155111])('routes TWAP event IDs to CoW Explorer on chain %s', (chainId) => {
+      expect(getEtherscanLink(chainId, 'transaction', eventId)).toBe(`${getExplorerBaseUrl(chainId)}/twap/${eventId}`)
+    })
+
+    it('preserves order UID routing', () => {
+      expect(getEtherscanLink(1, 'transaction', uid)).toBe(`${getExplorerBaseUrl(1)}/orders/${uid}`)
+    })
+
+    it('preserves transaction hash routing', () => {
+      expect(getEtherscanLink(1, 'transaction', hash)).toBe(getBlockExplorerUrl(1, 'transaction', hash))
+    })
+
+    it('does not apply TWAP routing to other link types', () => {
+      expect(getEtherscanLink(1, 'block', eventId)).toBe(getBlockExplorerUrl(1, 'block', eventId))
+    })
+
+    it('uses the CoW Explorer label for TWAPs', () => {
+      i18n.loadAndActivate({ locale: 'en', messages: {} })
+      expect(getExplorerLabel(1, 'transaction', eventId)).toBe(getExplorerLabel(1, 'transaction', uid))
+    })
+  })
+
   describe('#isAddress', () => {
     it('returns false if not', () => {
       expect(isAddress('')).toBe(false)
@@ -17,6 +57,19 @@ describe('utils', () => {
     })
     it('fails if too long', () => {
       expect(isAddress('f164fc0ec4e93095b804a4795bbe1e041497b92a0')).toBe(false)
+    })
+
+    it('rejects a Solana address — this helper is EVM-only', () => {
+      expect(isAddress('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')).toBe(false)
+    })
+
+    it('rejects a BTC address — this helper is EVM-only', () => {
+      expect(isAddress('bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4')).toBe(false)
+    })
+
+    // Base58-only hex (no `0` digit) also matches SOL_ADDRESS_PATTERN — must still checksum as EVM
+    it('checksums a prefix-less hex address that is also valid base58', () => {
+      expect(isAddress('abcdef1234abcdef1234abcdef1234abcdef1234')).toBe('0xAbcDEF1234ABCDEf1234ABcdef1234ABCDef1234')
     })
   })
 
@@ -47,6 +100,39 @@ describe('utils', () => {
   describe('#getBlockExplorerUrl', () => {
     it('does not introduce double slashes for bare explorer origins', () => {
       expect(getBlockExplorerUrl(1, 'transaction', 'abc', 'https://etherscan.io')).toBe('https://etherscan.io/tx/abc')
+    })
+  })
+
+  describe('#isCowOrder', () => {
+    // 56 bytes on EVM, 32 bytes on Solana. The Solana id is the same length as an EVM transaction hash,
+    // which is why the chain has to be part of the decision.
+    const EVM_ORDER_ID = `0x${'a'.repeat(112)}`
+    const SOLANA_ORDER_ID = `0x${'b'.repeat(64)}`
+    const EVM_TX_HASH = `0x${'c'.repeat(64)}`
+    // Solana transaction signatures are base58 and much longer than any order id.
+    const SOLANA_TX_SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
+
+    it('recognises a Solana order id on a Solana chain', () => {
+      expect(isCowOrder('transaction', SOLANA_ORDER_ID, SupportedChainId.SOLANA)).toBe(true)
+    })
+
+    it('does not mistake an EVM transaction hash for an order, despite the identical length', () => {
+      expect(isCowOrder('transaction', EVM_TX_HASH, SupportedChainId.MAINNET)).toBe(false)
+      expect(isCowOrder('transaction', EVM_TX_HASH)).toBe(false)
+    })
+
+    it('does not mistake a Solana transaction signature for an order', () => {
+      expect(isCowOrder('transaction', SOLANA_TX_SIGNATURE, SupportedChainId.SOLANA)).toBe(false)
+    })
+
+    it('recognises an EVM order id, with or without a chain', () => {
+      expect(isCowOrder('transaction', EVM_ORDER_ID, SupportedChainId.MAINNET)).toBe(true)
+      expect(isCowOrder('transaction', EVM_ORDER_ID)).toBe(true)
+    })
+
+    it('only ever classifies transactions', () => {
+      expect(isCowOrder('address', SOLANA_ORDER_ID, SupportedChainId.SOLANA)).toBe(false)
+      expect(isCowOrder('transaction', undefined, SupportedChainId.SOLANA)).toBe(false)
     })
   })
 })

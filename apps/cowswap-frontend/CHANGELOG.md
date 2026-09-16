@@ -1,5 +1,247 @@
 # Changelog
 
+## [3.27.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.1...cowswap-v3.27.0) (2026-09-15)
+
+### Minor Changes
+
+- feat: honor partial/unlimited approval form fields in TWAP placement (#8110)
+
+- feat(solana): display order progress bar (#8108)
+
+- feat: implement tx bunling with order creation (#8112)
+
+- feat(solana): process order fulfillment (#8127)
+
+- feat: TWAP for EOA v2 SC integration (#8091)
+
+- feat: fetch twap deltas (#8109)
+
+- feat: show eoa twap funding warnings (#8104)
+
+- feat: show scheduled parts in eoa twap (#8119)
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- fix: table blinking on twap part updates (#8138)
+
+- fix: fix creation time in twap table (#8136)
+
+- fix: hide checkboxes and cancel form recipient in twap (#8148)
+
+- fix(solana): provide order ttl deadline from the settings (#8142)
+
+- fix: show twap part as cancelling (#8137)
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.14.0
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/permit-utils@3.7.1
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ens@3.7.2
+  - @cowprotocol/tokens@3.12.2
+  - @cowprotocol/ui@3.13.2
+  - @cowprotocol/wallet@3.13.2
+  - @cowprotocol/multicall@3.7.2
+  - @cowprotocol/snackbars@2.3.4
+
+## [3.26.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.0...cowswap-v3.26.1) (2026-09-11)
+
+### Patch Changes
+
+- fix(trade): freeze confirm-modal amounts once the user clicks confirm (#8133)
+
+- fix: properly prevent solana recipient addresses on evm (#8139)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/balances-and-allowances@3.13.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ens@3.7.1
+  - @cowprotocol/tokens@3.12.1
+  - @cowprotocol/ui@3.13.1
+  - @cowprotocol/wallet@3.13.1
+  - @cowprotocol/snackbars@2.3.3
+  - @cowprotocol/multicall@3.7.1
+
+## [3.26.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.1...cowswap-v3.26.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): add bundle flow for future sol-native flow (#7984)
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+- feat: allow cancellation of EOA TWAP (#8086)
+
+- feat: update AGENTS.md to use new font mixins and constants (#8048)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+- feat: use own indexer for twap (#8069)
+
+- feat(quote): move to verified quotes (#8068)
+
+- feat: add extra slots to EOA progress tracker (#8060)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(trade): keep trade state in sync with URL (#8071)
+
+- fix: use prod cms for correlated tokens as well (#8124)
+
+- fix: hide proxy page for solana connection (#8090)
+
+- fix(trade): fix checkmark far from recipient address on narrow viewports (#8087)
+
+- fix: adjust styles for TWAP EOA tracker order details expand button (#8055)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- fix(wallet): show wallet icon for Base Account connections (#8080)
+
+- fix(tokens): support solana address format (#8099)
+
+- fix(twap): remove stray apostrophe in TWAP review part labels (#8079)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/tokens@3.12.0
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/permit-utils@3.7.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/balances-and-allowances@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/ens@3.7.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/multicall@3.7.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/widget-lib@4.7.0
+  - @cowprotocol/snackbars@2.3.2
+  - @cowprotocol/iframe-transport@2.3.7
+  - @cowprotocol/hook-dapp-lib@2.2.14
+
+## [3.25.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.25.0...cowswap-v3.25.1) (2026-09-07)
+
+### Patch Changes
+
+- fix: do not show partial approval when unsupported (#8093)
+
+- fix: keep mobile menu header visible after scroll (#8098)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+  - @cowprotocol/tokens@3.11.1
+  - @cowprotocol/snackbars@2.3.1
+  - @cowprotocol/wallet@3.12.1
+  - @cowprotocol/balances-and-allowances@3.12.1
+  - @cowprotocol/multicall@3.6.1
+
+## [3.25.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.24.0...cowswap-v3.25.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: EOA TWAP title fixes (#8052)
+
+- feat: add Dialog and surfaces improvements (#8010)
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat(notifications): promote trade alerts (#8007)
+
+- feat: add BottomDrawer + DrawerOrInline components for orders table (#8008)
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat: add multi-step tracker for EOA TWAP order creation flow (#7921)
+
+- feat(telegram): login but via link (#8015)
+
+- feat(twap): impement partiall approve feature for EOA (#8017)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(partial-approvals): implement partial approve for limit orders/TWAP (#8011)
+
+- feat: re-enable token search (#8006)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- fix: prevent font features leaking into injected UI (#8066)
+
+- fix(order-progress-bar): contain surplus tagline overflow in finished order card (#8023)
+
+- fix(notifications): do not close settings on popover click (#8059)
+
+- fix(notifications): localize trade alert flows (#8064)
+
+- fix(solvers): fetch solver info from cms prod only (#8067)
+
+- fix(notifications): unsubscribe via link (#8070)
+
+- fix(twap): label open orders as unfillable when Safe fallback handler is reset (#7802)
+
+- fix(notifications): mark-as-read not reflected in UI without unrelated re-render (#8005)
+
+- fix: fix surplus row layout for long texts (#8065)
+
+- fix: remove horizontal scrollbar in edit partial approval modal (#8013)
+
+- fix(account): avoid Invalid Date in surplus tooltip start date (#8078)
+
+- fix: align review modal titles (#8061)
+
+- fix: narrow down default focus selector to buttons only (#8062)
+
+- fix: add bottom padding to AccountModal with no activity (#8082)
+
+- fix(notifications): Replace Get trade alerts link with dismissable banner (#8018)
+
+- fix(token-import): dedupe token present in multiple lists with different symbol (#8081)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/tokens@3.11.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/balances-and-allowances@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/snackbars@2.3.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/ens@3.6.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/multicall@3.6.0
+  - @cowprotocol/permit-utils@3.6.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+  - @cowprotocol/widget-lib@4.6.0
+  - @cowprotocol/iframe-transport@2.3.6
+  - @cowprotocol/hook-dapp-lib@2.2.13
+
 ## [3.24.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.23.0...cowswap-v3.24.0) (2026-08-12)
 
 ### Minor Changes

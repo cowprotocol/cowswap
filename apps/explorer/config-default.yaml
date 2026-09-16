@@ -156,7 +156,7 @@ initialTokenSelection:
   networks:
     '100':
       sellToken: wxDAI
-      receiveToken: USDC
+      receiveToken: USDC.e
 
 # Initial Token List
 #   List of token loaded by default
@@ -195,7 +195,13 @@ initialTokenList:
     addressByNetwork:
       '1': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
       '4': '0x4DBCdF9B62e891a7cec5A2568C3F4FAF9E8Abe2b'
-      '100': '0xDDAfbb505ad214D7b80b1f830fcCc89B60fb7A83'
+
+  - id: 22
+    name: USD Coin
+    symbol: USDC.e
+    decimals: 6
+    addressByNetwork:
+      '100': '0x2a22f9c3b484c3629090FeED35F17Ff8F88f76F0'
 
   - id: 5
     name: Paxos Standard

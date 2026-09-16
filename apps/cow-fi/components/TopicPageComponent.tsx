@@ -1,7 +1,7 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { UI, Font, Media } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -89,7 +89,7 @@ const CategoryDescription = styled.div`
 
   > i {
     font-size: 16px;
-    font-weight: ${Font.weight.bold};
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
     color: var(${UI.COLOR_NEUTRAL_0});
     font-style: normal;
   }

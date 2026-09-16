@@ -1,7 +1,7 @@
 import { i18n, MessageDescriptor } from '@lingui/core'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
@@ -52,10 +52,14 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId): UntranslatedMenuItem => ({
       href: '/account/tokens',
       label: msg`Tokens`,
     },
-    {
-      href: getProxyAccountUrl(chainId),
-      label: ACCOUNT_PROXY_LABEL,
-    },
+    ...(isEvmChain(chainId)
+      ? [
+          {
+            href: getProxyAccountUrl(chainId),
+            label: ACCOUNT_PROXY_LABEL,
+          },
+        ]
+      : []),
   ],
 })
 

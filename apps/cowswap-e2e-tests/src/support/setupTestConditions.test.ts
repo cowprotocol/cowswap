@@ -1,7 +1,8 @@
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { strict as assert } from 'node:assert'
 import { test } from 'node:test'
 
-import { CHAIN_IDS } from './constants'
 import { createSetupTestConditions, type SetupTestConditionsDeps } from './setupTestConditions'
 
 import type { AllowancesMock } from '../mocks/allowances'
@@ -82,7 +83,7 @@ test('converts human-readable balances/allowances to raw atoms keyed by address'
   const setupTestConditions = createSetupTestConditions(deps)
 
   await setupTestConditions({
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     tradeType: 'swap',
     sellToken: 'WETH',
     buyToken: 'USDC',
@@ -94,11 +95,13 @@ test('converts human-readable balances/allowances to raw atoms keyed by address'
   assert.deepEqual(balances.calls, [
     [
       '0xOwner',
-      CHAIN_IDS.SEPOLIA,
+      SupportedChainId.SEPOLIA,
       { [WETH_ADDRESS]: 1_000_000_000_000_000_000n, [USDC_ADDRESS]: 56_000_000_000_000_000_000_000n },
     ],
   ])
-  assert.deepEqual(allowances.calls, [['0xOwner', CHAIN_IDS.SEPOLIA, { [WETH_ADDRESS]: 50_000_000_000_000_000_000n }]])
+  assert.deepEqual(allowances.calls, [
+    ['0xOwner', SupportedChainId.SEPOLIA, { [WETH_ADDRESS]: 50_000_000_000_000_000_000n }],
+  ])
 })
 
 test('drives swapPage for tradeType "swap" and leaves other pages untouched', async () => {
@@ -106,7 +109,7 @@ test('drives swapPage for tradeType "swap" and leaves other pages untouched', as
   const setupTestConditions = createSetupTestConditions(deps)
 
   await setupTestConditions({
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     tradeType: 'swap',
     sellToken: 'WETH',
     buyToken: 'USDC',
@@ -114,7 +117,7 @@ test('drives swapPage for tradeType "swap" and leaves other pages untouched', as
   })
 
   assert.deepEqual(swapPage.calls, [
-    `goto(${JSON.stringify({ chainId: CHAIN_IDS.SEPOLIA, sell: WETH_ADDRESS, buy: USDC_ADDRESS })})`,
+    `goto(${JSON.stringify({ chainId: SupportedChainId.SEPOLIA, sell: WETH_ADDRESS, buy: USDC_ADDRESS })})`,
     'enterSellAmount(0.5)',
     'waitForQuote()',
   ])
@@ -127,7 +130,7 @@ test('drives limitPage for tradeType "limitOrder"', async () => {
   const setupTestConditions = createSetupTestConditions(deps)
 
   await setupTestConditions({
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     tradeType: 'limitOrder',
     sellToken: 'WETH',
     buyToken: 'USDC',
@@ -143,7 +146,7 @@ test('drives twapPage for tradeType "twap"', async () => {
   const setupTestConditions = createSetupTestConditions(deps)
 
   await setupTestConditions({
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     tradeType: 'twap',
     sellToken: 'WETH',
     buyToken: 'USDC',
@@ -158,7 +161,7 @@ test('skips balances/allowances mocking when omitted', async () => {
   const setupTestConditions = createSetupTestConditions(deps)
 
   await setupTestConditions({
-    chainId: CHAIN_IDS.SEPOLIA,
+    chainId: SupportedChainId.SEPOLIA,
     tradeType: 'swap',
     sellToken: 'WETH',
     buyToken: 'USDC',
