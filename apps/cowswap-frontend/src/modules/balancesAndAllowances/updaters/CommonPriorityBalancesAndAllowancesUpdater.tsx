@@ -8,8 +8,8 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useSolanaAccount, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
@@ -28,8 +28,12 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { field } = useSelectTokenWidgetState()
   const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
+  const solanaAccount = useSolanaAccount()
   const balancesContext = useBalancesContext()
-  const balancesAccount = balancesContext.account || account
+  // Browsing Solana as a bridge destination (buy selector) doesn't switch the active wallet
+  // session, so useWalletInfo().account still resolves to the EVM address here — use the
+  // Solana-namespaced account instead so Solana balance fetching gets a valid public key.
+  const balancesAccount = isSolanaChain(sourceChainId) ? solanaAccount : balancesContext.account || account
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {

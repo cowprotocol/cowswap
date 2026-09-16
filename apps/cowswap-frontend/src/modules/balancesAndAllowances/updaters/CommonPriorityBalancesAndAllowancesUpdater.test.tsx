@@ -12,7 +12,7 @@ import {
   WatcherHealthState,
 } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
+import { useSolanaAccount, useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { render } from '@testing-library/react'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
@@ -38,6 +38,7 @@ jest.mock('@cowprotocol/balances-and-allowances', () => ({
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
+  useSolanaAccount: jest.fn(),
 }))
 
 jest.mock('entities/balancesContext/useBalancesContext', () => ({
@@ -69,6 +70,7 @@ const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.Mo
 >
 const mockPriorityTokensUpdater = PriorityTokensUpdater as jest.MockedFunction<typeof PriorityTokensUpdater>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockUseSolanaAccount = useSolanaAccount as jest.MockedFunction<typeof useSolanaAccount>
 const mockUseBalancesContext = useBalancesContext as jest.MockedFunction<typeof useBalancesContext>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseSourceChainId = useSourceChainId as jest.MockedFunction<typeof useSourceChainId>
@@ -117,6 +119,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       chainId: SupportedChainId.MAINNET,
     } as WalletInfo)
     mockUseBalancesContext.mockReturnValue({ account: undefined } as ReturnType<typeof useBalancesContext>)
+    mockUseSolanaAccount.mockReturnValue(undefined)
     mockUsePriorityTokenAddresses.mockReturnValue(new Set())
     mockUseBridgeCustomTokensForChain.mockReturnValue([])
     mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
@@ -208,6 +211,26 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
       expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+    })
+
+    // Regression guard: opening the buy selector while browsing Solana as a bridge destination
+    // doesn't switch the active wallet session, so useWalletInfo().account still resolves to the
+    // EVM address. The multicall stack must use the Solana-namespaced account instead, otherwise
+    // it fetches balances for an invalid (EVM-shaped) Solana public key and nothing loads.
+    it('uses the Solana-namespaced account (not the EVM wallet account) when browsing Solana as a bridge destination', () => {
+      mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'selector' })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: true, field: Field.OUTPUT }))
+      mockUseSolanaAccount.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
+
+      renderWithHealth(healthy())
+
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledWith(
+        expect.objectContaining({
+          account: 'SoLanaPubKey11111111111111111111111111111',
+          chainId: SupportedChainId.SOLANA,
+        }),
+        undefined,
+      )
     })
   })
 })
