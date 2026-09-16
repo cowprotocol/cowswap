@@ -250,7 +250,7 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. For a new proxy, sign the setup calls (`AuthorizeTwap`).
+ * 1. For a new proxy, sign the setup calls (`TwapSetup`).
  * 2. Send the atomic setup transaction (`TwapSign`) through the factory or existing proxy.
  * 3. Then wait for mining (`SubmitTwap`).
  */
@@ -352,10 +352,10 @@ export async function placeEoaTwapOrder({
   const isProxyDeployed = await hasBytecode(config, proxyAddress)
   if (!isProxyDeployed) {
     onSigningStep((prev) => ({
-      step: EoaTwapSigningSteps.AuthorizeTwap,
+      step: EoaTwapSigningSteps.TwapSetup,
       phase: EoaTwapSigningPhase.Sign,
       plan: (prev?.plan ?? []).flatMap((step) =>
-        step === EoaTwapSigningSteps.TwapSign ? [EoaTwapSigningSteps.AuthorizeTwap, step] : [step],
+        step === EoaTwapSigningSteps.TwapSign ? [EoaTwapSigningSteps.TwapSetup, step] : [step],
       ),
     }))
   }
