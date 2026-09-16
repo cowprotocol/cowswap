@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Modal } from '@cowprotocol/ui'
+
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
@@ -33,14 +35,12 @@ export function EoaTwapSuccessContent({
           <styledEl.ExplorerAnchor href={explorerUrl}>{t`Open in CoW Explorer`} ↗</styledEl.ExplorerAnchor>
         ) : null}
       </styledEl.SuccessBox>
-      <styledEl.Actions>
-        <styledEl.NewTradeButton type="button" onClick={onNewTrade}>
-          <Trans>New trade</Trans>
-        </styledEl.NewTradeButton>
-        <styledEl.ViewOrdersButton type="button" onClick={onViewOrders}>
-          <Trans>View in Orders</Trans>
-        </styledEl.ViewOrdersButton>
-      </styledEl.Actions>
+
+      <Modal.FooterWithTwoButtons
+        inline
+        secondaryButton={{ label: <Trans>New trade</Trans>, onClick: onNewTrade }}
+        primaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
+      />
     </>
   )
 }

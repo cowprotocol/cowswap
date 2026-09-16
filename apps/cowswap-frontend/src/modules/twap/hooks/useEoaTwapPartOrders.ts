@@ -110,7 +110,7 @@ function mapApiAdditionalInfo(
 ): Omit<EnrichedOrder, 'settlementContract'> {
   const executedSellAmount = (partOrder.executedSellAmount ?? 0n).toString()
   const executedBuyAmount = (partOrder.executedBuyAmount ?? 0n).toString()
-  const executedFeeAmount = (partOrder.executedFeeAmount ?? 0n).toString()
+  const executedFee = (partOrder.executedFee ?? 0n).toString()
   const validTo = partOrder.validTo ?? Math.ceil(parent.expirationTime.getTime() / 1000)
 
   return {
@@ -134,8 +134,9 @@ function mapApiAdditionalInfo(
     executedSellAmount,
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
-    executedFeeAmount,
-    totalFee: executedFeeAmount,
+    executedFeeAmount: '0',
+    executedFee,
+    totalFee: executedFee,
     invalidated: false,
   }
 }

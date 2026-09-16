@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.1...common-hooks-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.0...common-hooks-v3.11.1) (2026-09-11)
 
 ### Patch Changes

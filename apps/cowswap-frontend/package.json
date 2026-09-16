@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "3.26.1",
+  "version": "3.27.0",
   "private": true,
   "description": "CoW Swap",
   "main": "index.js",
@@ -57,7 +57,7 @@
     "@cowprotocol/sdk-trading": "2.4.2",
     "@cowprotocol/sdk-trading-solana": "0.5.1",
     "@cowprotocol/sdk-viem-adapter": "0.3.28",
-    "@cowprotocol/sdk-composable": "1.6.0",
+    "@cowprotocol/sdk-composable": "1.6.1",
     "@cowprotocol/snackbars": "workspace:*",
     "@cowprotocol/tokens": "workspace:*",
     "@cowprotocol/types": "workspace:*",

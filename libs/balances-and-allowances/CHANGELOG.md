@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.13.1...balances-and-allowances-v3.14.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): display order progress bar (#8108)
+
+- feat: implement tx bunling with order creation (#8112)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/tokens@3.12.2
+  - @cowprotocol/wallet@3.13.2
+
 ## [3.13.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.13.0...balances-and-allowances-v3.13.1) (2026-09-11)
 
 ### Patch Changes

@@ -24,7 +24,7 @@ export function emulateTwapAsOrder(item: TwapOrderItem): Omit<EnrichedOrder, 'se
   const creationTime = new Date(item.executedDate || item.submissionDate)
   const startTime = item.order.t0 ? item.order.t0 * 1000 : creationTime.getTime()
   const expirationTime = new Date(startTime + t * n * 1000)
-  const { executedSellAmount = '0', executedBuyAmount = '0', executedFeeAmount = '0' } = executionInfo?.info || {}
+  const { executedSellAmount = '0', executedBuyAmount = '0', executedFee = '0' } = executionInfo?.info || {}
 
   return {
     signingScheme: SigningScheme.EIP1271,
@@ -43,11 +43,12 @@ export function emulateTwapAsOrder(item: TwapOrderItem): Omit<EnrichedOrder, 'se
     signature: '',
     appData,
     feeAmount: '0',
-    totalFee: executedFeeAmount,
+    totalFee: executedFee,
     executedSellAmount,
     executedSellAmountBeforeFees: executedSellAmount,
     executedBuyAmount,
-    executedFeeAmount,
+    executedFeeAmount: '0',
+    executedFee,
     invalidated: status === TwapOrderStatus.Cancelling,
     receiver,
   }
