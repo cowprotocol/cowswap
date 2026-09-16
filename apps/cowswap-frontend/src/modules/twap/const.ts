@@ -1,7 +1,8 @@
 import { MessageDescriptor } from '@lingui/core'
 
 import { USDC } from '@cowprotocol/common-const'
-import { mapAddressToSupportedNetworks, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isProdLike } from '@cowprotocol/common-utils'
+import { mapAddressToSupportedNetworks, mapChainEnum, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 import { msg } from '@lingui/core/macro'
@@ -62,14 +63,21 @@ export const TWAP_FINAL_STATUSES = [
   TwapOrderStatus.Cancelled,
 ]
 
-export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
-  ...mapSupportedNetworks((chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 1e6)), // 1$ for most chains
-  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // 1k for mainnet
-  [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 10e18), // 10 for sepolia
-  [SupportedChainId.BNB]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BNB], 1e18), // 1 for BNB, but it has 18 decimals!
-}
+export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = isProdLike
+  ? {
+      ...mapChainEnum(SupportedChainId, (chainId: SupportedChainId) =>
+        CurrencyAmount.fromRawAmount(USDC[chainId], 1e6),
+      ), // 1$ for most chains
+      [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // $1000 for mainnet
+      [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 10e18), // $10 for sepolia
+      [SupportedChainId.BNB]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BNB], 1e18), // $1 for BNB, but it has 18 decimals!
+    }
+  : mapChainEnum(
+      SupportedChainId,
+      (chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 10 ** USDC[chainId].decimals), // $1 for all chains
+    )
 
-export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
+export const MINIMUM_PART_TIME = isProdLike ? ms`5min` / 1000 : ms`2min` / 1000 // in seconds
 export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
 
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
