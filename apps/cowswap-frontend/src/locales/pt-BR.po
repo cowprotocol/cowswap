@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-16 10:34\n"
+"PO-Revision-Date: 2026-09-16 11:46\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2096,6 +2096,10 @@ msgstr "Escolha seu próprio código ou gere um. Uma vez salvo, ele fica permane
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Thanks - noted!"
 msgstr "Obrigado - anotado!"
+
+#: apps/cowswap-frontend/src/modules/twap/const.ts
+msgid "4 Minutes"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Total fee"
