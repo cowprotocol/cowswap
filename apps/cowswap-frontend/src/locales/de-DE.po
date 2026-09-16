@@ -8,7 +8,7 @@ msgstr ""
 "Language: de\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-15 14:55\n"
+"PO-Revision-Date: 2026-09-16 10:33\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -828,6 +828,10 @@ msgstr ""
 msgid "Enter a valid {chainLabel} address"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Signature pending"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
 msgstr ""
@@ -1003,6 +1007,7 @@ msgstr ""
 msgid "Custom slippage amount set{amountRange}."
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr ""
@@ -3126,6 +3131,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirmed"
 msgstr ""
 
@@ -3155,6 +3161,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} solvers"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Transaction submitted. Waiting for network confirmation"
 msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
@@ -3916,6 +3926,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "TWAP order split into {twapOrderN} parts"
 msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#~ msgid "Activate TWAP"
+#~ msgstr "Activate TWAP"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
@@ -5499,8 +5513,8 @@ msgstr ""
 #~ msgstr "Switch to Ethereum mainnet to create a code."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Waiting for signature"
-msgstr ""
+#~ msgid "Waiting for signature"
+#~ msgstr "Waiting for signature"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
@@ -6328,6 +6342,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Action required"
 msgstr ""
 
@@ -6605,6 +6620,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "Boost Your Yield with One-Click Conversion"
 msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#~ msgid "Activation pending"
+#~ msgstr "Activation pending"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -8553,8 +8572,8 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Set up TWAP"
-msgstr ""
+#~ msgid "Set up TWAP"
+#~ msgstr "Set up TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
