@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-15 14:55\n"
+"PO-Revision-Date: 2026-09-16 10:34\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -830,6 +830,10 @@ msgstr "Destinatário é necessário para {chainLabel}"
 msgid "Enter a valid {chainLabel} address"
 msgstr "Insira um endereço {chainLabel} válido"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Signature pending"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
 msgstr "Ver vagas"
@@ -1005,6 +1009,7 @@ msgstr "Não consegue encontrar o pool que procura?"
 msgid "Custom slippage amount set{amountRange}."
 msgstr "Valor de derrapagem personalizado definido{amountRange}."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr "Ativando TWAP"
@@ -3129,6 +3134,7 @@ msgstr "Pode haver um problema de rede (como um pico de gás) que está atrasand
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirmed"
 msgstr "Confirmado"
 
@@ -3159,6 +3165,10 @@ msgstr "token vCOW não encontrado"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} solvers"
 msgstr "Solvers {solversLength}"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Transaction submitted. Waiting for network confirmation"
+msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Claim vested"
@@ -3919,6 +3929,10 @@ msgstr "detalhes"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "TWAP order split into {twapOrderN} parts"
 msgstr "Ordem TWAP dividida em {twapOrderN} partes"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#~ msgid "Activate TWAP"
+#~ msgstr "Activate TWAP"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
@@ -5502,8 +5516,8 @@ msgstr "Custos de rede"
 #~ msgstr "Switch to Ethereum mainnet to create a code."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Waiting for signature"
-msgstr ""
+#~ msgid "Waiting for signature"
+#~ msgstr "Waiting for signature"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
@@ -6331,6 +6345,7 @@ msgstr "mais assinaturas são"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Action required"
 msgstr ""
 
@@ -6608,6 +6623,10 @@ msgstr "Negociar tokens"
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "Boost Your Yield with One-Click Conversion"
 msgstr "Aumente seu retorno com a One-Click Conversion"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+#~ msgid "Activation pending"
+#~ msgstr "Activation pending"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -8556,8 +8575,8 @@ msgstr "<0>O vesting de COW a partir do bloqueio de GNO</0> ocorre linearmente a
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-msgid "Set up TWAP"
-msgstr "Configurar TWAP"
+#~ msgid "Set up TWAP"
+#~ msgstr "Set up TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
