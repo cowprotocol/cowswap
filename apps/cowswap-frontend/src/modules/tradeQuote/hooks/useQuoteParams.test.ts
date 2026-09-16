@@ -314,19 +314,22 @@ describe('useQuoteParams', () => {
     })
 
     // Solana signs exactly the tolerance it is handed, so the resolved value has to travel with the
-    // quote params even when the user never opened the setting.
+    // quote params even when the user never opened the setting. Keyed on the sell token's chain — the
+    // wallet stays on an EVM chain here, because that is what `fetchAndProcessQuote` routes on.
     it.each([
       ['default', 50],
       ['user', 100],
-    ])('should include swapSlippageBps on Solana when slippage type is %s', (type, value) => {
-      mockedUseWalletInfo.mockReturnValue({
-        account: ACCOUNT_ADDRESS,
-        chainId: SupportedChainId.SOLANA,
-      } as unknown as WalletInfo)
+    ])('should include swapSlippageBps for a Solana sell token when slippage type is %s', (type, value) => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
       mockedUseTradeSlippage.mockReturnValue({ type: type as 'default' | 'user', value })
 
       const { result } = renderHook(() => useQuoteParams(AMOUNT))
 
+      expect(result.current!.quoteParams!.sellTokenChainId).toBe(SupportedChainId.SOLANA)
       expect(result.current!.quoteParams!.swapSlippageBps).toBe(value)
     })
 

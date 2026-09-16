@@ -51,7 +51,7 @@ interface BuildQuoteParamsArgs {
 }
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -59,9 +59,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  // Solana has no auto-slippage: the SDK signs exactly the tolerance it is handed, so the effective one
-  // has to travel with the quote params — not only an explicit user override, as on EVM.
-  const userSlippageBps = tradeSlippage.type === 'user' || isSolanaChain(chainId) ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -70,6 +67,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
+
+  // Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
+  // not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
+  const userSlippageBps = tradeSlippage.type === 'user' || isSolana ? tradeSlippage.value : undefined
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
   const appDataDoc = appData?.doc
 
