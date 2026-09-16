@@ -1,11 +1,8 @@
+import { DEFAULT_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
 
 import { SolanaQuoteAndPost } from '../types'
-
-/** Temporary, for testing whether small Solana orders settle at all: solvers keep producing solutions
- * just below the limit price, so the Jupiter-sourced slippage is widened while we measure. */
-const SLIPPAGE_MULTIPLIER = 4
 
 /**
  * Real Solana swap quote: amounts come from `getSolanaQuote` (Jupiter-sourced, from
@@ -43,7 +40,9 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
       kind,
       validForSeconds: quoteParams.validFor,
     },
-    { slippageMultiplier: SLIPPAGE_MULTIPLIER },
+    // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance is ours
+    // to set — the user's when they picked one, otherwise the same default the rest of the app uses.
+    { slippageBps: quoteParams.swapSlippageBps ?? DEFAULT_SLIPPAGE_BPS },
   )
 
   return {

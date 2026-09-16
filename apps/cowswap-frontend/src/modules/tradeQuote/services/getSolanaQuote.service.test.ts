@@ -59,8 +59,14 @@ describe('getSolanaQuote', () => {
         kind: quoteParams.kind,
         validForSeconds: quoteParams.validFor,
       },
-      { slippageMultiplier: 4 },
+      { slippageBps: 50 },
     )
+  })
+
+  it('signs the slippage the user picked, rather than the default', async () => {
+    await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), { slippageBps: 300 })
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
@@ -84,7 +90,7 @@ describe('getSolanaQuote', () => {
         ownerAddress: quoteParams.account,
         receiverAddress: quoteParams.account,
       }),
-      { slippageMultiplier: 4 },
+      { slippageBps: 50 },
     )
   })
 
