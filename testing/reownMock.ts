@@ -7,3 +7,5 @@ export const useAppKit = jest.fn(() => ({
   open: jest.fn(),
   close: jest.fn(),
 }))
+
+export const useAppKitAccount = jest.fn(() => ({ address: undefined }))

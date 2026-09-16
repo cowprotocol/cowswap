@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
+import { useSourceChainId } from './useSourceChainId'
 
 import { useTokenDataSources } from '../containers/SelectTokenWidget/hooks/useTokenDataSources'
 import { useTokenSelectionHandler } from '../containers/SelectTokenWidget/hooks/useTokenSelectionHandler'
@@ -14,11 +16,16 @@ interface UseSelectTokenContextParams {
 }
 
 export function useSelectTokenContext(params?: UseSelectTokenContextParams): SelectTokenContext {
-  const { account } = useWalletInfo()
+  const { chainId: sourceChainId } = useSourceChainId()
   const widgetState = useSelectTokenWidgetState()
   const tokenData = useTokenDataSources()
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
+
+  // Also true when only the CoW Shed account-proxy override is set (no EVM wallet connected) -
+  // intentional, since that's the account balances are actually fetched for in that case.
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
+  const isWalletConnected = !!balancesAccount
 
   return useMemo(
     () => ({
@@ -29,7 +36,7 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
       unsupportedTokens: tokenData.unsupportedTokens,
       permitCompatibleTokens: tokenData.permitCompatibleTokens,
       tokenListTags: tokenData.tokenListTags,
-      isWalletConnected: !!account,
+      isWalletConnected,
     }),
     [
       tokenData.balancesState,
@@ -39,7 +46,7 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
       tokenData.unsupportedTokens,
       tokenData.permitCompatibleTokens,
       tokenData.tokenListTags,
-      account,
+      isWalletConnected,
     ],
   )
 }
