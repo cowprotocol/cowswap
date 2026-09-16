@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-16 04:55\n"
+"PO-Revision-Date: 2026-09-16 05:54\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1514,7 +1514,7 @@ msgstr "Открыть ордер"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "If you approve it after leaving, the order may still be submitted."
-msgstr ""
+msgstr "Если вы одобрите запрос в кошельке после закрытия этого окна, ордер всё равно может быть отправлен."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -2785,7 +2785,7 @@ msgstr "Отсканировать"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
-msgstr ""
+msgstr "Вы вернетесь к форме TWAP: введенные данные сохранятся, а котировка обновится. Этот ордер не будет отправлен."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "CoW Hooks"
@@ -4398,7 +4398,7 @@ msgstr "Доступно к получению"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Your {symbol} approval stays valid"
-msgstr ""
+msgstr "Ваше одобрение {symbol} останется действительным"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Docs"
@@ -8207,7 +8207,7 @@ msgstr "Влияние на цену (Price impact) слишком велико"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
-msgstr ""
+msgstr "Вы вернетесь к форме TWAP с сохранением введенных данных и обновленной котировкой. Закрытие этого окна не отменит запрос в кошельке."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Value"
