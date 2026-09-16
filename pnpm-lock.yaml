@@ -345,8 +345,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/assets
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -587,8 +587,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/balances-and-allowances
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -1729,8 +1729,8 @@ importers:
   libs/core:
     dependencies:
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
@@ -3285,8 +3285,8 @@ packages:
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
-  '@cowprotocol/cms@0.11.0':
-    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==}
+  '@cowprotocol/cms@0.15.0':
+    resolution: {integrity: sha512-u5L3wHyc8C23XK2mdJYbmNdIaJXGNjO2c/vbrfQEQFF8qIwZlUcJIHJtd0JwUWXlhGUoPTtimBkIW3Eal1kK8A==}
 
   '@cowprotocol/cow-runner-game@0.2.9':
     resolution: {integrity: sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==}
@@ -19549,7 +19549,7 @@ snapshots:
 
   '@corex/deepmerge@4.0.43': {}
 
-  '@cowprotocol/cms@0.11.0':
+  '@cowprotocol/cms@0.15.0':
     dependencies:
       openapi-fetch: 0.9.5
 
