@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-15 14:55\n"
+"PO-Revision-Date: 2026-09-16 07:47\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -549,7 +549,7 @@ msgstr "cantidad por"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Reject the wallet request to stop"
-msgstr ""
+msgstr "Rechazar la solicitud del wallet para parar"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Provide a valid referral code"
@@ -1514,7 +1514,7 @@ msgstr "Orden abierta"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "If you approve it after leaving, the order may still be submitted."
-msgstr ""
+msgstr "Si lo apruebas después de salir, la orden puede ser enviada."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
@@ -2785,7 +2785,7 @@ msgstr "Escanear"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. This order won't be submitted."
-msgstr ""
+msgstr "Volverá al formulario TWAP con sus valores conservados y un presupuesto nuevo. Esta orden no se enviará."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "CoW Hooks"
@@ -2980,7 +2980,7 @@ msgstr "El contexto no está completo para cancelar la orden TWAP"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
 msgid "Leave setup"
-msgstr ""
+msgstr "Salir de la configuración"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "Copy tx hash"
@@ -3242,7 +3242,7 @@ msgstr "Realizar órdenes con un precio medio ponderado por tiempo"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You won't need to approve it again unless your allowance changes."
-msgstr ""
+msgstr "No necesitarás aprobarlo de nuevo a menos que tu permiso cambie."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "Proxy Accounts"
@@ -4398,7 +4398,7 @@ msgstr "Reclamable"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Your {symbol} approval stays valid"
-msgstr ""
+msgstr "Tu aprobación de {symbol} permanece válida"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Docs"
@@ -5838,7 +5838,7 @@ msgstr "Descartar notificación"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Leave TWAP setup?"
-msgstr ""
+msgstr "¿Salir de la configuración de TWAP?"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -8043,7 +8043,7 @@ msgstr "Simulación exitosa"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure.tsx
 msgid "Continue setup"
-msgstr ""
+msgstr "Continuar con la configuración"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Placing TWAP"
@@ -8207,7 +8207,7 @@ msgstr "El impacto en el precio es demasiado alto"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "You'll return to the TWAP form with your values preserved and a fresh quote. Closing this tracker won't cancel the wallet request."
-msgstr ""
+msgstr "Volverás al formulario TWAP con tus valores conservados y un presupuesto nuevo. Cerrar este rastreador no cancelará la solicitud del wallet."
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Value"
