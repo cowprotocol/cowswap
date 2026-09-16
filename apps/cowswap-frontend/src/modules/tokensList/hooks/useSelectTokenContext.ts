@@ -24,10 +24,6 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
 
-  // A Solana account can't be derived from the connected EVM wallet, so when browsing Solana as
-  // a bridge destination without a connected Solana account, balances will never be fetched.
-  // Report as "not connected" here so the token list hides balances instead of showing a
-  // skeleton that waits on a fetch that will never happen.
   const isWalletConnected = isSolanaChain(sourceChainId) ? !!solanaAccount : !!account
 
   return useMemo(
