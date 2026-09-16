@@ -57,6 +57,7 @@ export async function solanaFlow(
       solanaQuote,
       sellSymbol,
       buySymbol,
+      validTo,
     })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
@@ -142,9 +143,9 @@ function buildSolanaOrder(params: {
 
   return {
     ...quoteParams,
-    // Override the quote's own receiver/validTo: they can be stale by the time the order is
-    // actually submitted (see the postSwapOrderFromQuote call above), and the local CREATING
-    // order must match what was really posted, not what the quote a moment ago.
+    // Override the quote's own receiver/validTo: the quote carries its own TTL rather than the user's
+    // deadline, and may be a moment stale. `planCreateOrderStep` applies the same `validTo` to the
+    // instruction, so the deadline shown here is the one the on-chain order actually has.
     receiver,
     validTo,
     id: orderId,

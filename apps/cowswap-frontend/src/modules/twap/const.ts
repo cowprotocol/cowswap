@@ -55,7 +55,12 @@ export const TWAP_HANDLER_ADDRESS: Record<SupportedChainId, string> = mapAddress
 
 export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStatus.Pending, TwapOrderStatus.Cancelling]
 
-export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
+export const TWAP_FINAL_STATUSES = [
+  TwapOrderStatus.Fulfilled,
+  TwapOrderStatus.PartiallyFilled,
+  TwapOrderStatus.Expired,
+  TwapOrderStatus.Cancelled,
+]
 
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
   ...mapSupportedNetworks((chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 1e6)), // 1$ for most chains
@@ -70,7 +75,7 @@ export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
 export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedSellAmount: '0',
   executedBuyAmount: '0',
-  executedFeeAmount: '0',
+  executedFee: '0',
 }
 
 export const DEFAULT_TWAP_EXECUTION = { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO }

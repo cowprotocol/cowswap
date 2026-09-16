@@ -25,6 +25,7 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
+  useFreezeWhileConfirming,
   useGetConfirmButtonLabel,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
@@ -96,24 +97,50 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const labelsAndTooltips = useLabelsAndTooltips()
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
+  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
+  // the modal can never display a different amount than what was actually confirmed/signed.
+  const {
+    shouldDisplayBridgeDetails: frozenShouldDisplayBridgeDetails,
+    receiveAmountInfo: frozenReceiveAmountInfo,
+    rateInfoParams: frozenRateInfoParams,
+    quoteResponse: frozenQuoteResponse,
+    swapContext: frozenSwapContext,
+    bridgeContext: frozenBridgeContext,
+    bridgeProvider: frozenBridgeProvider,
+    slippage: frozenSlippage,
+    deadline: frozenDeadline,
+  } = useFreezeWhileConfirming({
+    shouldDisplayBridgeDetails,
+    receiveAmountInfo,
+    rateInfoParams,
+    quoteResponse,
+    swapContext,
+    bridgeContext,
+    bridgeProvider,
+    slippage,
+    deadline,
+  })
+
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
-    const current = inputCurrencyInfo?.amount?.currency
-    const hasCurrentCurrency = Boolean(current)
+    const hasCurrentCurrency = Boolean(inputCurrencyInfo?.amount?.currency)
+    // Must cover the slippage-inclusive maximum sell amount, not just the expected sell amount,
+    // otherwise the order can be placed while unfillable if the price moves against the user up to slippage.
+    const maximumSellAmount = receiveAmountInfo?.afterSlippage.sellAmount ?? inputCurrencyInfo?.amount
+    const current = maximumSellAmount?.currency
     let isBalanceEnough = false
 
     if (current) {
       const normalisedAddress = getAddressKey(getCurrencyAddress(current))
       const balance = balances[normalisedAddress]
       const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
-      const inputAmount = inputCurrencyInfo?.amount
 
       isBalanceEnough = Boolean(
         balanceAsCurrencyAmount &&
-          inputAmount &&
-          (inputAmount.equalTo(balanceAsCurrencyAmount) || inputAmount.lessThan(balanceAsCurrencyAmount)),
+          maximumSellAmount &&
+          (maximumSellAmount.equalTo(balanceAsCurrencyAmount) || maximumSellAmount.lessThan(balanceAsCurrencyAmount)),
       )
     }
 
@@ -131,6 +158,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     balances,
     bridgeQuoteAmounts,
     inputCurrencyInfo,
+    receiveAmountInfo,
     isQuoteLoading,
     isQuoteStale,
     isTradeContextReady,
@@ -172,15 +200,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         appData={appData}
         confirmClickEvent={swapBridgeClickEvent}
       >
-        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
+        {frozenShouldDisplayBridgeDetails && frozenBridgeProvider && frozenSwapContext && frozenBridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+                <RateInfo label={t`Price`} rateInfoParams={frozenRateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
-                  bridgeProvider={bridgeProvider}
-                  swapContext={swapContext}
-                  bridgeContext={bridgeContext}
+                  bridgeProvider={frozenBridgeProvider}
+                  swapContext={frozenSwapContext}
+                  bridgeContext={frozenBridgeContext}
                   hideRecommendedSlippage
                 />
                 {restContent}
@@ -189,11 +217,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
             )
           : (restContent) => (
               <>
-                {receiveAmountInfo && slippage && (
+                {frozenReceiveAmountInfo && frozenSlippage && (
                   <TradeBasicConfirmDetails
-                    rateInfoParams={rateInfoParams}
-                    slippage={slippage}
-                    receiveAmountInfo={receiveAmountInfo}
+                    rateInfoParams={frozenRateInfoParams}
+                    slippage={frozenSlippage}
+                    receiveAmountInfo={frozenReceiveAmountInfo}
                     recipient={recipient}
                     recipientAddress={recipientAddress}
                     account={account}
@@ -203,11 +231,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     withTimelineDot={false}
                   >
                     {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-                    <RowDeadline deadline={deadline} />
+                    <RowDeadline deadline={frozenDeadline} />
                     <RowQuoteId
-                      quoteId={quoteResponse?.id}
-                      isVerified={quoteResponse?.verified}
-                      expiration={quoteResponse?.expiration}
+                      quoteId={frozenQuoteResponse?.id}
+                      isVerified={frozenQuoteResponse?.verified}
+                      expiration={frozenQuoteResponse?.expiration}
                     />
                   </TradeBasicConfirmDetails>
                 )}

@@ -72,6 +72,7 @@ export const Font = {
  * Theme CSS vars and the `font()` mixin are derived from this map.
  */
 export const FONT_SIZING = {
+  FONT_SMALL: [12, 16],
   FONT_SMALL_PLUS: [13, 18],
   FONT_NORMAL: [14, 20],
   FONT_NORMAL_PLUS: [15, 20],

@@ -61,9 +61,7 @@ export function TransactionContentWithLink(props: TransactionContentWithLinkProp
 
   if (isCreatingOnChain) {
     hash = transactionHash || ''
-  } else if (isOrder && !isEthFlow) {
-    hash = orderUid || ''
-  } else if (isSafeOrder) {
+  } else if (isOrder || isSafeOrder) {
     hash = orderUid || ''
   } else {
     hash = transactionHash || orderUid || ''
