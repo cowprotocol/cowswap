@@ -63,10 +63,12 @@ export async function buildEoaTwapTrustedExecuteTx({
   isProxyDeployed,
   cowShedHooks,
 }: BuildEoaTwapTrustedExecuteTxParams): Promise<EoaTwapTrustedExecuteTx> {
+  const trustedExecuteCalldata = encodeTrustedExecuteHooksCalldata(calls)
+
   if (isProxyDeployed) {
     return {
       to: proxyAddress,
-      data: encodeTrustedExecuteHooksCalldata(calls),
+      data: trustedExecuteCalldata,
     }
   }
 
