@@ -44,10 +44,16 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
   useIsProviderNetworkUnsupported: jest.fn(),
 }))
 jest.mock('./useQuoteParamsRecipient', () => ({ useQuoteParamsRecipient: jest.fn() }))
-jest.mock('../utils/getBridgeQuoteSigner', () => ({
-  BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
-  getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
-}))
+jest.mock('../utils/getBridgeQuoteSigner', () => {
+  const { isSolanaChain } = jest.requireActual('@cowprotocol/cow-sdk')
+  return {
+    BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
+    getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
+    NON_EVM_CHAIN_CONFIG: [
+      { isChain: isSolanaChain, isAddress: () => false, defaultRecipient: 'SolanaOwnerPlaceholder' },
+    ],
+  }
+})
 jest.mock('common/hooks/useSafeMemo', () => ({
   useSafeMemo: (fn: () => unknown, _deps: unknown[]) => fn(),
 }))
@@ -227,6 +233,21 @@ describe('useQuoteParams', () => {
       expect(qp.owner).toBe(BRIDGE_QUOTE_ACCOUNT)
       expect(qp.account).toBe(BRIDGE_QUOTE_ACCOUNT)
       expect(qp.signer).toBe('mock-signer')
+    })
+
+    it('should use the Solana placeholder for owner/account when wallet is not connected and sell chain is Solana', () => {
+      mockedUseWalletInfo.mockReturnValue({ account: undefined } as unknown as WalletInfo)
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      const qp = result.current!.quoteParams!
+      expect(qp.owner).toBe('SolanaOwnerPlaceholder')
+      expect(qp.account).toBe('SolanaOwnerPlaceholder')
     })
 
     it('should set partiallyFillable when passed', () => {

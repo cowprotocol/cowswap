@@ -2,14 +2,9 @@ import { getEoaTwapLeaveConfirmationVariant, getEoaTwapLeaveSetupModalContent } 
 
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
 
-const DEFAULT_PLAN = [
-  EoaTwapSigningSteps.ApprovePoller,
-  EoaTwapSigningSteps.TwapSetup,
-  EoaTwapSigningSteps.TwapSign,
-  EoaTwapSigningSteps.SubmitTwap,
-]
+const DEFAULT_PLAN = [EoaTwapSigningSteps.ApprovePoller, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
-const NO_APPROVAL_PLAN = [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
+const NO_APPROVAL_PLAN = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
 describe('getEoaTwapLeaveConfirmationVariant()', () => {
   it('returns null for Success step', () => {
@@ -53,24 +48,21 @@ describe('getEoaTwapLeaveConfirmationVariant()', () => {
     ).toBe('walletRequest')
   })
 
-  it.each([EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign] as const)(
-    'returns walletRequest during %s while signing',
-    (step) => {
-      expect(
-        getEoaTwapLeaveConfirmationVariant({
-          step,
-          plan: DEFAULT_PLAN,
-          phase: EoaTwapSigningPhase.Sign,
-          lockDismiss: false,
-        }),
-      ).toBe('walletRequest')
-    },
-  )
-
-  it('returns default when approval is confirmed and there is no active wallet signature', () => {
+  it('returns walletRequest during TwapSign while signing', () => {
     expect(
       getEoaTwapLeaveConfirmationVariant({
-        step: EoaTwapSigningSteps.TwapSetup,
+        step: EoaTwapSigningSteps.TwapSign,
+        plan: DEFAULT_PLAN,
+        phase: EoaTwapSigningPhase.Sign,
+        lockDismiss: false,
+      }),
+    ).toBe('walletRequest')
+  })
+
+  it('returns default when setup tx is confirmed and there is no active wallet signature', () => {
+    expect(
+      getEoaTwapLeaveConfirmationVariant({
+        step: EoaTwapSigningSteps.TwapSign,
         plan: DEFAULT_PLAN,
         phase: EoaTwapSigningPhase.Confirmed,
         lockDismiss: false,

@@ -23,7 +23,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 
-import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
@@ -121,7 +121,7 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
 
   const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
   const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
-  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+  const owner = (account || getDefaultOwnerPlaceholder(inputCurrency.chainId)) as `0x${string}`
 
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
@@ -146,4 +146,11 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
   }
 
   return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
+}
+
+/** Returns the default owner/account placeholder for quoting when no wallet is connected.
+ *  Falls back to the chain-specific non-EVM placeholder (e.g. Solana) so the sell chain's
+ *  address format is respected instead of always using the EVM placeholder. */
+function getDefaultOwnerPlaceholder(sellTokenChainId: number): string {
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(sellTokenChainId))?.defaultRecipient ?? BRIDGE_QUOTE_ACCOUNT
 }

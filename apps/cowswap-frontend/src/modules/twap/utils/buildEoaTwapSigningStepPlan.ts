@@ -27,10 +27,9 @@ interface AppendSpenderApprovalStepIds {
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
  * - (Optional) {@link EoaTwapSigningSteps.PermitPoller}, or {@link EoaTwapSigningSteps.ZeroApprovePoller} /
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
- * - (Required) {@link EoaTwapSigningSteps.TwapSetup}: cow-shed EIP-712 for the setup multicall
+ * - (Required) {@link EoaTwapSigningSteps.TwapSign}: single setup TX calling `trustedExecuteHooks` on the cow-shed
  *   (optional EOA => Poller permit calldata + `registerFromShed` + optional shed => Vault Relayer approve + ComposableCoW create)
- * - (Required) {@link EoaTwapSigningSteps.TwapSign}: factory executeHooks TX signature
- * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the factory executeHooks receipt, then the flow is done
+ * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the setup receipt, then the flow is done
  *
  * Approval steps are omitted when allowance is already sufficient.
  */
@@ -45,7 +44,7 @@ export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepP
     }),
   )
 
-  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap)
+  steps.push(EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap)
 
   return steps
 }

@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.11.0...common-const-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.10.0...common-const-v3.11.0) (2026-09-09)
 
 ### Minor Changes
