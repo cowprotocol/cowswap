@@ -3,6 +3,8 @@ import type { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { encodeTrustedExecuteHooksCalldata, buildEoaTwapTrustedExecuteTx } from './buildEoaTwapTrustedExecuteTx'
 
+const SIGNER = { getAddress: jest.fn() }
+
 const ACCOUNT = '0x00000000000000000000000000000000000000aa' as const
 const PROXY = '0x00000000000000000000000000000000000000bb' as const
 const FACTORY = '0x00000000000000000000000000000000000000cc' as const
@@ -33,6 +35,7 @@ describe('buildEoaTwapTrustedExecuteTx()', () => {
 
   it('targets the proxy when it is already deployed', async () => {
     const tx = await buildEoaTwapTrustedExecuteTx({
+      signer: SIGNER,
       account: ACCOUNT,
       proxyAddress: PROXY,
       factoryAddress: FACTORY,
@@ -49,6 +52,7 @@ describe('buildEoaTwapTrustedExecuteTx()', () => {
   it('signs the setup and routes new proxies through the factory', async () => {
     const before = Math.floor(Date.now() / 1000)
     const tx = await buildEoaTwapTrustedExecuteTx({
+      signer: SIGNER,
       account: ACCOUNT,
       proxyAddress: PROXY,
       factoryAddress: FACTORY,
@@ -63,6 +67,7 @@ describe('buildEoaTwapTrustedExecuteTx()', () => {
       expect.stringMatching(/^0x[0-9a-f]{64}$/),
       expect.any(BigInt),
       ContractsSigningScheme.EIP712,
+      SIGNER,
     )
     const [, nonce, deadline] = cowShedHooks.signCalls.mock.calls[0]
     expect(deadline).toBeGreaterThanOrEqual(BigInt(before + 20 * 60))
@@ -82,6 +87,7 @@ describe('buildEoaTwapTrustedExecuteTx()', () => {
 
     await expect(
       buildEoaTwapTrustedExecuteTx({
+        signer: SIGNER,
         account: ACCOUNT,
         proxyAddress: PROXY,
         factoryAddress: FACTORY,

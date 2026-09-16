@@ -1,5 +1,6 @@
 import { bytesToHex, encodeFunctionData, type Hex } from 'viem'
 
+import type { Signer } from '@cowprotocol/cow-sdk'
 import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
 import type { CowShedHooks, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
@@ -29,6 +30,7 @@ const TRUSTED_EXECUTE_HOOKS_ABI = [
 ] as const
 
 export interface BuildEoaTwapTrustedExecuteTxParams {
+  signer: Signer
   account: `0x${string}`
   proxyAddress: `0x${string}`
   factoryAddress: `0x${string}`
@@ -57,6 +59,7 @@ type TrustedExecuteHooksCall = {
  */
 export async function buildEoaTwapTrustedExecuteTx({
   account,
+  signer,
   proxyAddress,
   factoryAddress,
   calls,
@@ -74,7 +77,7 @@ export async function buildEoaTwapTrustedExecuteTx({
 
   const nonce = bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
   const deadline = BigInt(Math.floor(Date.now() / 1000) + 20 * 60)
-  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712)
+  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
 
   return {
     to: factoryAddress,

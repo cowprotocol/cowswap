@@ -362,6 +362,7 @@ export function useCreateTwapOrder() {
             setupTxHash,
             eventId: eventIdParam,
           } = await placeEoaTwapOrder({
+            signer: eoaSigner,
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,

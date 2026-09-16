@@ -9,7 +9,7 @@ import {
   normalizeError,
   slowPromiseHandler,
 } from '@cowprotocol/common-utils'
-import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountAddress, isEvmChain, type Signer, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
@@ -99,6 +99,7 @@ export interface GetProxyAllowancesResult {
 }
 
 export interface PlaceEoaTwapOrderParams {
+  signer: Signer
   chainId: SupportedChainId
   account: AccountAddress
   twapOrder: TWAPOrder
@@ -255,6 +256,7 @@ export function getEoaTwapOrderShedCalls({
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
+  signer,
   chainId,
   account,
   twapOrder,
@@ -359,6 +361,7 @@ export async function placeEoaTwapOrder({
   }
 
   const setupTx = await buildEoaTwapTrustedExecuteTx({
+    signer,
     account: account as `0x${string}`,
     proxyAddress: proxyAddress as `0x${string}`,
     factoryAddress,
