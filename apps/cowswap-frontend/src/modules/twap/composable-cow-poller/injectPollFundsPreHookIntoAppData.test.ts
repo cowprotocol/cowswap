@@ -11,7 +11,7 @@ import { POLL_FUNDS_HOOK_GAS_LIMIT } from './composable-cow-poller.constants'
 import { encodePollFundsCalldata } from './composable-cow-poller.utils'
 import { EOA_TWAP_POLL_FUNDS_DAPP_ID, injectPollFundsPreHookIntoAppData } from './injectPollFundsPreHookIntoAppData'
 
-const POLLER_ADDRESS = '0xf1C5e22fB6F4B974ad12cA4bc461F9746F77BB7D' as const
+const POLLER_ADDRESS = '0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E' as const
 const SCHEDULE_ID = '0x4a6d31b249226ff992ea760b06288a012f917aa317e6be37829d163e51af97ad' as const
 
 const EXISTING_PRE_HOOK: CowHook = {

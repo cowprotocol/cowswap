@@ -5,6 +5,7 @@ import { useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   useIsSafeViaWc,
   useIsSafeWallet,
@@ -109,9 +110,9 @@ jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
 }))
 jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   COMPOSABLE_COW_POLLER_ADDRESS: {
-    1: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
-    100: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
-    11155111: '0xf1c5e22fb6f4b974ad12ca4bc461f9746f77bb7d',
+    1: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    100: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    11155111: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
   },
 }))
 jest.mock('modules/accountProxy', () => ({
@@ -390,6 +391,23 @@ describe('useCreateTwapOrder', () => {
     )
   })
 
+  it('does not place an EOA TWAP on Solana', async () => {
+    mockedUseWalletInfo.mockReturnValue({
+      chainId: SupportedChainId.SOLANA,
+      account: '0xaccount',
+    } as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).not.toHaveBeenCalled()
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+    expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
+  })
+
   it('does not place an EOA TWAP or inject pollFunds on Mainnet when isTwapEoaEnabled is off', async () => {
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
 
@@ -419,10 +437,13 @@ describe('useCreateTwapOrder', () => {
 
     const { result } = renderHook(useCreateTwapOrder)
 
+    let placementResult: boolean | undefined
+
     await act(async () => {
-      await result.current(false)
+      placementResult = await result.current(false)
     })
 
+    expect(placementResult).toBe(true)
     expect(onSuccess).not.toHaveBeenCalled()
     expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({
