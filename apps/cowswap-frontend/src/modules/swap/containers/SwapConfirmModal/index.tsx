@@ -16,7 +16,6 @@ import {
   useShouldDisplayBridgeDetails,
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
-import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
@@ -118,8 +117,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     deadline,
   })
 
-  const { values: balances } = useTokensBalancesCombined()
-
   // TODO: Reduce function complexity by extracting logic
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
     const inputAmount = inputCurrencyInfo?.amount
@@ -127,7 +124,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     const isBalanceEnough = getIsBalanceEnough({
       inputAmount,
       maximumSellAmount: receiveAmountInfo?.afterSlippage.sellAmount,
-      balances,
+      balance: inputCurrencyInfo?.balance,
     })
 
     return getSwapConfirmDisabledState({
@@ -141,7 +138,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
       isQuoteStale,
     })
   }, [
-    balances,
     bridgeQuoteAmounts,
     inputCurrencyInfo,
     receiveAmountInfo,

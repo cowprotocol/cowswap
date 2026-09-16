@@ -1,5 +1,5 @@
 import { NATIVE_CURRENCIES, TokenWithLogo, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import {
@@ -28,46 +28,28 @@ describe('getIsBalanceEnough', () => {
   const inputAmount = CurrencyAmount.fromRawAmount(native, (oneUnit / 2n).toString())
   const maximumSellAmount = CurrencyAmount.fromRawAmount(wrapped, (oneUnit / 2n).toString())
 
-  it('reads the native balance when selling the native token', () => {
-    const balances = {
-      [getAddressKey(native.address)]: oneUnit,
-      [getAddressKey(wrapped.address)]: 0n,
-    }
+  function nativeBalance(raw: bigint): CurrencyAmount<TokenWithLogo> {
+    return CurrencyAmount.fromRawAmount(native, raw.toString())
+  }
 
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balances })).toBe(true)
+  it('covers a wrapped-denominated maximum from the native balance', () => {
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balance: nativeBalance(oneUnit) })).toBe(true)
   })
 
-  it('does not fall back to the wrapped balance when the native balance is too low', () => {
-    const balances = {
-      [getAddressKey(native.address)]: 0n,
-      [getAddressKey(wrapped.address)]: oneUnit,
-    }
-
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balances })).toBe(false)
-  })
-
-  it('reads the wrapped balance when selling the wrapped token', () => {
-    const balances = {
-      [getAddressKey(native.address)]: 0n,
-      [getAddressKey(wrapped.address)]: oneUnit,
-    }
-
-    const wrappedInput = CurrencyAmount.fromRawAmount(wrapped, (oneUnit / 2n).toString())
-
-    expect(getIsBalanceEnough({ inputAmount: wrappedInput, maximumSellAmount, balances })).toBe(true)
+  it('is not enough when the native balance is below the maximum', () => {
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balance: nativeBalance(0n) })).toBe(false)
   })
 
   it('covers the slippage-inclusive maximum, not the raw input amount', () => {
-    const balances = { [getAddressKey(native.address)]: oneUnit }
     const aboveBalance = CurrencyAmount.fromRawAmount(wrapped, (oneUnit * 2n).toString())
 
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount: aboveBalance, balances })).toBe(false)
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount: aboveBalance, balance: nativeBalance(oneUnit) })).toBe(
+      false,
+    )
   })
 
   it('falls back to the input amount when there is no maximum sell amount', () => {
-    const balances = { [getAddressKey(native.address)]: oneUnit }
-
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount: null, balances })).toBe(true)
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount: null, balance: nativeBalance(oneUnit) })).toBe(true)
   })
 
   it('compares by value when the amount currency uses different decimals', () => {
@@ -75,41 +57,30 @@ describe('getIsBalanceEnough', () => {
     const halfUnitSixDecimals = CurrencyAmount.fromRawAmount(sixDecimals, (10n ** 6n / 2n).toString())
 
     expect(
-      getIsBalanceEnough({
-        inputAmount,
-        maximumSellAmount: halfUnitSixDecimals,
-        balances: { [getAddressKey(native.address)]: oneUnit },
-      }),
+      getIsBalanceEnough({ inputAmount, maximumSellAmount: halfUnitSixDecimals, balance: nativeBalance(oneUnit) }),
     ).toBe(true)
 
     expect(
-      getIsBalanceEnough({
-        inputAmount,
-        maximumSellAmount: halfUnitSixDecimals,
-        balances: { [getAddressKey(native.address)]: oneUnit / 4n },
-      }),
+      getIsBalanceEnough({ inputAmount, maximumSellAmount: halfUnitSixDecimals, balance: nativeBalance(oneUnit / 4n) }),
     ).toBe(false)
   })
 
   it('treats an exactly matching balance as enough', () => {
-    const balances = { [getAddressKey(native.address)]: oneUnit / 2n }
-
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balances })).toBe(true)
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balance: nativeBalance(oneUnit / 2n) })).toBe(true)
   })
 
-  it('treats a missing balance as zero', () => {
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balances: {} })).toBe(false)
+  it('is unknown when the balance has not resolved', () => {
+    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount, balance: null })).toBe(null)
   })
 
   it('is unknown when there is no input amount', () => {
-    const balances = { [getAddressKey(native.address)]: oneUnit }
-
-    expect(getIsBalanceEnough({ inputAmount: null, maximumSellAmount, balances })).toBe(null)
-    expect(getIsBalanceEnough({ inputAmount: null, maximumSellAmount: null, balances })).toBe(null)
+    expect(getIsBalanceEnough({ inputAmount: null, maximumSellAmount, balance: nativeBalance(oneUnit) })).toBe(null)
+    expect(getIsBalanceEnough({ inputAmount: null, maximumSellAmount: null, balance: nativeBalance(oneUnit) })).toBe(
+      null,
+    )
   })
 
   it('is unknown when the quoted sell amount is an unrelated currency', () => {
-    const balances = { [getAddressKey(native.address)]: oneUnit }
     const unrelated = new TokenWithLogo(
       undefined,
       chainId,
@@ -120,7 +91,9 @@ describe('getIsBalanceEnough', () => {
     )
     const unrelatedAmount = CurrencyAmount.fromRawAmount(unrelated, (oneUnit / 2n).toString())
 
-    expect(getIsBalanceEnough({ inputAmount, maximumSellAmount: unrelatedAmount, balances })).toBe(null)
+    expect(
+      getIsBalanceEnough({ inputAmount, maximumSellAmount: unrelatedAmount, balance: nativeBalance(oneUnit) }),
+    ).toBe(null)
   })
 
   it('is unknown when the sell token is not native but the quote is in the wrapped one', () => {
@@ -133,9 +106,16 @@ describe('getIsBalanceEnough', () => {
       'Cow token',
     )
     const erc20Input = CurrencyAmount.fromRawAmount(erc20, (oneUnit / 2n).toString())
-    const balances = { [getAddressKey(erc20.address)]: oneUnit }
+    const erc20Balance = CurrencyAmount.fromRawAmount(erc20, oneUnit.toString())
 
-    expect(getIsBalanceEnough({ inputAmount: erc20Input, maximumSellAmount, balances })).toBe(null)
+    expect(getIsBalanceEnough({ inputAmount: erc20Input, maximumSellAmount, balance: erc20Balance })).toBe(null)
+  })
+
+  it('reads the wrapped balance when selling the wrapped token', () => {
+    const wrappedInput = CurrencyAmount.fromRawAmount(wrapped, (oneUnit / 2n).toString())
+    const wrappedBalance = CurrencyAmount.fromRawAmount(wrapped, oneUnit.toString())
+
+    expect(getIsBalanceEnough({ inputAmount: wrappedInput, maximumSellAmount, balance: wrappedBalance })).toBe(true)
   })
 })
 

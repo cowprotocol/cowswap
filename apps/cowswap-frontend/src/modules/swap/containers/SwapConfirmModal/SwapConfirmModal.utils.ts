@@ -1,13 +1,13 @@
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { FractionUtils, getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
 export interface GetIsBalanceEnoughParams {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   maximumSellAmount: Nullish<CurrencyAmount<Currency>>
-  balances: Record<string, bigint | undefined>
+  balance: Nullish<CurrencyAmount<Currency>>
 }
 
 export interface GetSwapConfirmDisabledStateParams {
@@ -29,18 +29,18 @@ export interface SwapConfirmDisabledState {
 export function getIsBalanceEnough({
   inputAmount,
   maximumSellAmount,
-  balances,
+  balance,
 }: GetIsBalanceEnoughParams): boolean | null {
   const sellCurrency = inputAmount?.currency
   const amountToCover = maximumSellAmount ?? inputAmount
 
-  if (!sellCurrency || !amountToCover) return null
+  if (!sellCurrency || !amountToCover || !balance) return null
   if (!isQuotedInSameAsset(sellCurrency, amountToCover.currency)) return null
 
-  const balance = balances[getAddressKey(getCurrencyAddress(sellCurrency))] ?? 0n
-  const sellCurrencyScale = 10n ** BigInt(sellCurrency.decimals)
-
-  return amountToCover.quotient * sellCurrencyScale <= balance * amountToCover.decimalScale
+  return FractionUtils.lte(
+    FractionUtils.fractionLikeToFraction(amountToCover),
+    FractionUtils.fractionLikeToFraction(balance),
+  )
 }
 
 export function getSwapConfirmDisabledState(params: GetSwapConfirmDisabledStateParams): SwapConfirmDisabledState {
