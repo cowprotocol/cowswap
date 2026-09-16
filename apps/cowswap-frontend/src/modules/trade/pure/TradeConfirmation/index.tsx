@@ -114,8 +114,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         title={title}
         onBack={hasSigningPlan ? undefined : onDismiss}
         onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}
-        // TODO: Consider still displaying this here or somewhere else?
-        rightSlot={isConfirming || isPriceStatic ? null : <QuoteCountdown />}
+        rightSlot={isConfirming || isPriceStatic || hasSigningPlan ? null : <QuoteCountdown />}
       />
 
       <Modal.Content id="trade-confirmation">
