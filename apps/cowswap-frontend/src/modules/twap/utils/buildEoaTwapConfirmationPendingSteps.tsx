@@ -376,7 +376,7 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
     case EoaTwapSigningSteps.TwapSetup:
-      return t`Set up TWAP`
+      return t`Set up Account Proxy`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     case EoaTwapSigningSteps.SubmitTwap:
@@ -400,7 +400,7 @@ export function getEoaTwapWalletActionSummaryLabel(
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
     case EoaTwapSigningSteps.TwapSetup:
-      return t`Set up TWAP`
+      return t`Set up Account Proxy`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     default:

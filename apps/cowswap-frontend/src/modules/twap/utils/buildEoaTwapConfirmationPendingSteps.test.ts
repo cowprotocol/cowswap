@@ -48,7 +48,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       }),
     )
 
-    expect(steps[0]).toMatchObject({ label: 'Set up TWAP', status: 'success' })
+    expect(steps[0]).toMatchObject({ label: 'Set up Account Proxy', status: 'success' })
     const description = renderToStaticMarkup(steps[0]?.description)
     expect(description).toContain('Signed')
     expect(description).not.toContain('href=')
