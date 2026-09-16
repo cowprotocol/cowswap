@@ -21,7 +21,6 @@ import {
   getCowShedHooks,
   EOA_TWAP_ACCOUNT_PROXY_CONFIG,
   EOA_TWAP_SHED_FACTORY_OPTIONS,
-  hasBytecode,
 } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
@@ -99,6 +98,7 @@ export interface GetProxyAllowancesResult {
 }
 
 export interface PlaceEoaTwapOrderParams {
+  isProxyDeployed: boolean
   signer: Signer
   chainId: SupportedChainId
   account: AccountAddress
@@ -256,6 +256,7 @@ export function getEoaTwapOrderShedCalls({
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
+  isProxyDeployed,
   signer,
   chainId,
   account,
@@ -349,15 +350,8 @@ export async function placeEoaTwapOrder({
     pollerPermitData,
   })
 
-  const isProxyDeployed = await hasBytecode(config, proxyAddress)
   if (!isProxyDeployed) {
-    onSigningStep((prev) => ({
-      step: EoaTwapSigningSteps.TwapSetup,
-      phase: EoaTwapSigningPhase.Sign,
-      plan: (prev?.plan ?? []).flatMap((step) =>
-        step === EoaTwapSigningSteps.TwapSign ? [EoaTwapSigningSteps.TwapSetup, step] : [step],
-      ),
-    }))
+    onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
   }
 
   const setupTx = await buildEoaTwapTrustedExecuteTx({

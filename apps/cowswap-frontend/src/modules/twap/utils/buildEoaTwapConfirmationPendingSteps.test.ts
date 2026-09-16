@@ -14,6 +14,7 @@ import {
   getEoaTwapStepLabel,
   getEoaTwapWalletActionSummaryLabel,
 } from './buildEoaTwapConfirmationPendingSteps'
+import { buildEoaTwapSigningStepPlan, replaceSubmitTwapWithSlowInPlan } from './buildEoaTwapSigningStepPlan'
 
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
@@ -215,6 +216,38 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       ),
     ).toContain('https://etherscan.io/tx/0xsign')
   })
+
+  it.each([EoaTwapSigningSteps.SubmitTwap, EoaTwapSigningSteps.SubmitTwapSlow])(
+    'keeps setup in the expanded summary during %s',
+    (step) => {
+      const initialPlan = buildEoaTwapSigningStepPlan({
+        isProxyDeployed: false,
+        poller: { needsApproval: true, needsZeroApproval: false, canUsePermit: true },
+      })
+      const plan =
+        step === EoaTwapSigningSteps.SubmitTwapSlow ? replaceSubmitTwapWithSlowInPlan(initialPlan) : initialPlan
+      const steps = getPendingSteps(
+        buildEoaTwapConfirmationPendingSteps({
+          signingStep: {
+            step,
+            plan,
+            phase: EoaTwapSigningPhase.WaitingForTx,
+            lockDismiss: true,
+            completedStepTxHashes: { [EoaTwapSigningSteps.TwapSign]: '0xsign' },
+          },
+          token: USDC_MAINNET,
+          chainId: SupportedChainId.MAINNET,
+        }),
+      )
+
+      expect(steps).toHaveLength(2)
+      const summary = renderToStaticMarkup(steps[0]?.description)
+      expect(summary).toContain('Permit USDC · Signed')
+      expect(summary).toContain('Set up Account Proxy · Signed')
+      expect(summary).toContain('Sign TWAP ·')
+      expect(summary).toContain('https://etherscan.io/tx/0xsign')
+    },
+  )
 
   it('collapses wallet actions while SubmitTwap is loading', () => {
     const plan = [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
