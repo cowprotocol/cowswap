@@ -22,6 +22,8 @@ export function useSelectTokenContext(params?: UseSelectTokenContextParams): Sel
 
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
 
+  // Also true when only the CoW Shed account-proxy override is set (no EVM wallet connected) -
+  // intentional, since that's the account balances are actually fetched for in that case.
   const balancesAccount = useBalancesAccountForChain(sourceChainId)
   const isWalletConnected = !!balancesAccount
 
