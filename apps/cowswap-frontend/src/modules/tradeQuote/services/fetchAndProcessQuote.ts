@@ -42,6 +42,8 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager: TradeQuoteManager,
   isSolanaEnabled = false,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
+  // Fast path (out-of-competition execution) — swap flow only, see cowprotocol/services#4883.
+  enableFastPath?: boolean,
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -51,6 +53,7 @@ export async function fetchAndProcessQuote(
   const advancedSettings: SwapAdvancedSettings = {
     quoteRequest: {
       priceQuality,
+      ...(enableFastPath ? { fastPath: true } : {}),
     },
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,

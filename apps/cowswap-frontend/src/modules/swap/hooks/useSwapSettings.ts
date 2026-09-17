@@ -17,6 +17,16 @@ export function useSwapDeadlineState(): StatefulValue<number> {
   )
 }
 
+export function useSwapFastPathToggleState(): StatefulValue<boolean> {
+  const updateState = useSetAtom(updateSwapSettingsAtom)
+  const settings = useSwapSettings()
+
+  return useMemo(
+    () => [settings.enableFastPath, (enableFastPath: boolean) => updateState({ enableFastPath })],
+    [settings.enableFastPath, updateState],
+  )
+}
+
 export function useSwapPartialApprovalToggleState(): StatefulValue<boolean> {
   const updateState = useSetAtom(updateSwapSettingsAtom)
   const settings = useSwapSettings()

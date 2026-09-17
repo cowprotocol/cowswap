@@ -22,12 +22,13 @@ export function SwapUpdaters(): ReactNode {
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
   const partiallyFillable = useIsHooksTradeType()
-  const { enablePartialApprovalBySettings } = useSwapSettings()
+  const { enablePartialApprovalBySettings, enableFastPath } = useSwapSettings()
 
   useSetTradeQuoteParams({
     amount: isSellOrder(orderKind) ? inputCurrencyAmount : outputCurrencyAmount,
     partiallyFillable,
     fastQuote: true,
+    enableFastPath,
   })
 
   return (
@@ -43,6 +44,7 @@ export function SwapUpdaters(): ReactNode {
           orderClass="market"
           slippageBips={percentToBps(slippage)}
           isSmartSlippage={isSmartSlippageApplied}
+          enableFastPath={enableFastPath}
         />
       )}
     </>

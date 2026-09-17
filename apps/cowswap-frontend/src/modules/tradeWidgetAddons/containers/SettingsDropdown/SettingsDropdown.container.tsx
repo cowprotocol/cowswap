@@ -30,6 +30,8 @@ interface SettingsTabProps {
   partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
   isRecipientToggleHidden?: boolean
+  // Fast path (out-of-competition execution) — swap flow only, see cowprotocol/services#4883.
+  fastPathState?: StatefulValue<boolean>
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -42,6 +44,7 @@ export function SettingsDropdown({
   partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
   isRecipientToggleHidden = false,
+  fastPathState,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -74,6 +77,17 @@ export function SettingsDropdown({
       toggleEnablePartialApprovalAux(isEnabled)
     },
     [toggleEnablePartialApprovalAux, enablePartialApproval],
+  )
+
+  const [fastPathEnabled, toggleFastPathAux] = fastPathState || [null, null]
+  const toggleFastPath = useCallback(
+    (value?: boolean) => {
+      if (fastPathEnabled === null || toggleFastPathAux === null) return
+
+      const isEnabled = value ?? !fastPathEnabled
+      toggleFastPathAux(isEnabled)
+    },
+    [toggleFastPathAux, fastPathEnabled],
   )
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -141,6 +155,24 @@ export function SettingsDropdown({
                       action: 'Toggle Hooks Enabled',
                       label: hooksEnabled ? 'Enabled' : 'Disabled',
                     })}
+                  />
+                ) : null}
+
+                {fastPathEnabled !== null ? (
+                  <SettingsBox
+                    id="toggle-fast-path-button"
+                    title={t`Enable Fast Path`}
+                    tooltip={
+                      <Trans>
+                        <b>
+                          <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
+                        </b>{' '}
+                        Opt into out-of-competition (&quot;fast path&quot;) execution — the order can be settled
+                        directly by the winning solver within a short exclusivity window.
+                      </Trans>
+                    }
+                    checked={fastPathEnabled}
+                    toggle={toggleFastPath}
                   />
                 ) : null}
               </SettingsBoxGroup>
