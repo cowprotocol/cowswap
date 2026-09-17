@@ -35,8 +35,13 @@ const quoteParams: QuoteBridgeRequest = {
 
 /** Stand-in for whatever the SDK resolves with; these tests only care that both halves are passed
  * through, not their internal shape. */
-const solanaQuote = { uid: new Uint8Array(32).fill(3) } as SolanaQuote
-const sdkResult = { quoteResults: {} as QuoteResults, solanaQuote }
+const JUPITER_SLIPPAGE_BPS = 7
+const solanaQuote = {
+  uid: new Uint8Array(32).fill(3),
+  jupiterOrder: { slippageBps: JUPITER_SLIPPAGE_BPS },
+} as SolanaQuote
+// The SDK echoes back whatever tolerance it was handed; the fixture mirrors that.
+const sdkResult = { quoteResults: { suggestedSlippageBps: 50 } as QuoteResults, solanaQuote }
 
 describe('getSolanaQuote', () => {
   beforeEach(() => {
@@ -67,10 +72,22 @@ describe('getSolanaQuote', () => {
     expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.objectContaining({ slippageBps: 300 }))
   })
 
+  // Otherwise "Auto" latches onto the user's own number, and `useSmartSlippageFromQuote` caches it in a
+  // ref that outlives a chain switch, leaking a Solana tolerance into EVM quotes.
+  it('reports the provider suggestion, not the tolerance we passed in', async () => {
+    const result = await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
+
+    expect(result.quoteResults.suggestedSlippageBps).toBe(JUPITER_SLIPPAGE_BPS)
+  })
+
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
     const result = await getSolanaQuote(quoteParams)
 
-    expect(result.quoteResults).toBe(sdkResult.quoteResults)
+    // Passed through as-is apart from the one field this service deliberately corrects.
+    expect(result.quoteResults).toMatchObject({
+      ...sdkResult.quoteResults,
+      suggestedSlippageBps: JUPITER_SLIPPAGE_BPS,
+    })
     expect(result.solanaQuote).toBe(solanaQuote)
   })
 
