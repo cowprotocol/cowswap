@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
-import iconSettingsAltSrc from '@cowprotocol/assets/images/icon-settings-alt.svg'
+import SettingsAltIcon from '@cowprotocol/assets/images/icon-settings-alt.svg?react'
 
-import SVG from 'react-inlinesvg'
-
+/**
+ * Keep this one inline to prevent a flicker and layour shift when the page loads. Do not use react-inlinesvg.
+ */
 export function SettingsIcon(): ReactNode {
-  return <SVG src={iconSettingsAltSrc} />
+  return <SettingsAltIcon />
 }
