@@ -1,6 +1,7 @@
 import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
 export interface BuildEoaTwapSigningStepPlanParams {
+  isProxyDeployed: boolean
   /** EOA => ComposableCowPoller allowance, covering the full TWAP sell pulled just in time. */
   poller: EoaTwapApprovalNeeds
 }
@@ -27,13 +28,17 @@ interface AppendSpenderApprovalStepIds {
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
  * - (Optional) {@link EoaTwapSigningSteps.PermitPoller}, or {@link EoaTwapSigningSteps.ZeroApprovePoller} /
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
- * - (Required) {@link EoaTwapSigningSteps.TwapSign}: single setup TX calling `trustedExecuteHooks` on the cow-shed
+ * - New proxies include {@link EoaTwapSigningSteps.TwapSetup} before the setup transaction.
+ * - (Required) {@link EoaTwapSigningSteps.TwapSign}: atomic setup through the factory or existing cow-shed
  *   (optional EOA => Poller permit calldata + `registerFromShed` + optional shed => Vault Relayer approve + ComposableCoW create)
  * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the setup receipt, then the flow is done
  *
  * Approval steps are omitted when allowance is already sufficient.
  */
-export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepPlanParams): EoaTwapSigningSteps[] {
+export function buildEoaTwapSigningStepPlan({
+  poller,
+  isProxyDeployed,
+}: BuildEoaTwapSigningStepPlanParams): EoaTwapSigningSteps[] {
   const steps: EoaTwapSigningSteps[] = []
 
   steps.push(
@@ -43,6 +48,10 @@ export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepP
       permit: EoaTwapSigningSteps.PermitPoller,
     }),
   )
+
+  if (!isProxyDeployed) {
+    steps.push(EoaTwapSigningSteps.TwapSetup)
+  }
 
   steps.push(EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap)
 
