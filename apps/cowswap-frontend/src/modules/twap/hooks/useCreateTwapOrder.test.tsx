@@ -17,6 +17,7 @@ import {
 import { act, renderHook } from '@testing-library/react'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
+import { hasBytecode } from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -118,6 +119,7 @@ jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
 jest.mock('modules/accountProxy', () => ({
   EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
   getCowShedHooks: jest.fn(() => ({ proxyOf: jest.fn(() => '0xproxy') })),
+  hasBytecode: jest.fn().mockResolvedValue(true),
 }))
 jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
 jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
@@ -374,7 +376,10 @@ describe('useCreateTwapOrder', () => {
     )
   })
 
-  it('skips poller allowance step when allowance already covers the TWAP sell', async () => {
+  it.each([true, false])('skips covered poller allowance when isProxyDeployed is %s', async (isProxyDeployed) => {
+    jest.mocked(hasBytecode).mockResolvedValueOnce(isProxyDeployed)
+    const updateEoaTwapFlow = jest.fn()
+    mockedUseEoaTwapFlowUpdater.mockReturnValue(updateEoaTwapFlow)
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
 
     const { result } = renderHook(useCreateTwapOrder)
@@ -384,8 +389,20 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(mockedEnsureEoaTwapSpenderAllowance).not.toHaveBeenCalled()
+    expect(hasBytecode).toHaveBeenCalledWith(expect.anything(), '0xproxy')
+    expect(updateEoaTwapFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: [
+          ...(isProxyDeployed ? [] : [EoaTwapSigningSteps.TwapSetup]),
+          EoaTwapSigningSteps.TwapSign,
+          EoaTwapSigningSteps.SubmitTwap,
+        ],
+      }),
+    )
     expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
       expect.objectContaining({
+        isProxyDeployed,
+        signer: mockedUseAppSigner.mock.results[0]?.value,
         walletClient: expect.anything(),
         pollerPermitData: null,
       }),
