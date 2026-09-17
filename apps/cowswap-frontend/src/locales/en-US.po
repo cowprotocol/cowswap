@@ -14,6 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
@@ -7956,8 +7957,8 @@ msgstr "Confirm Swap"
 #~ msgstr "Save"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
-msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr "Wallet signer is required to cancel an EOA TWAP order"
+#~ msgid "Wallet signer is required to cancel an EOA TWAP order"
+#~ msgstr "Wallet signer is required to cancel an EOA TWAP order"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
