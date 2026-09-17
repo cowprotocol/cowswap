@@ -117,7 +117,25 @@
       "use-sync-external-store": "1.5.0",
       "viem": "2.48.8",
       "wagmi": "3.6.9",
-      "zod": "3.25.76"
+      "zod": "3.25.76",
+      "@cowprotocol/cow-sdk": "9.2.11-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-app-data": "6.0.4-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-bridging": "4.4.7-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-common": "0.13.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-composable": "1.7.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-config": "2.6.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-contracts-ts": "3.5.2-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-cow-shed": "0.5.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-ethers-v5-adapter": "0.4.14-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-ethers-v6-adapter": "0.4.14-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-flash-loans": "3.3.8-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-order-book": "4.0.5-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-order-signing": "1.1.10-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-subgraph": "1.2.4-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-trading": "2.5.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-trading-solana": "0.6.0-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-viem-adapter": "0.3.29-pr-1019-e2fde8ba.0",
+      "@cowprotocol/sdk-weiroll": "0.2.5-pr-1019-e2fde8ba.0"
     },
     "peerDependencyRules": {
       "allowedVersions": {
