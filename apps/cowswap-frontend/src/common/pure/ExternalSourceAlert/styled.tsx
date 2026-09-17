@@ -19,6 +19,10 @@ export const Contents = styled.div`
     stroke: var(${UI.COLOR_DANGER_TEXT});
     stroke-width: 2px;
   }
+
+  p + p {
+    margin-top: 16px;
+  }
 `
 
 export const Title = styled.h4`

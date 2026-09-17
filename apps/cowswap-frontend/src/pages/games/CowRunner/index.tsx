@@ -25,6 +25,10 @@ const Wrapper = styled(Page)`
     text-align: center;
   }
 
+  > p {
+    margin: 0 0 16px;
+  }
+
   ${Content} {
     h1 {
       animation: blinker 0.6s cubic-bezier(1, 0, 0, 1) infinite alternate;

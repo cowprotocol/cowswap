@@ -13,8 +13,14 @@ import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,
 } from './UnsupportedCurrencyFooterMod'
 
+const DetailsText = styled.div`
+  > p {
+    margin-top: 16px;
+  }
+`
+
 const DEFAULT_DETAILS_TEXT: React.ReactNode = (
-  <div>
+  <DetailsText>
     <Trans>
       CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract
       methods which do not operate optimally with CoW Protocol.
@@ -26,7 +32,7 @@ const DEFAULT_DETAILS_TEXT: React.ReactNode = (
         .
       </p>
     </Trans>
-  </div>
+  </DetailsText>
 )
 const DEFAULT_DETAILS_TITLE: MessageDescriptor = msg`Unsupported Token`
 const DEFAULT_SHOW_DETAILS_TEXT: MessageDescriptor = msg`Read more about unsupported tokens`

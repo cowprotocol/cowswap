@@ -31,7 +31,7 @@ export const PaginationWrapper = styled.span`
 `
 
 const PaginationText = styled.p`
-  margin-right: 0.8rem;
+  margin: 0 0.8rem 0 0;
 
   &.legend {
     margin-left: 2rem;
