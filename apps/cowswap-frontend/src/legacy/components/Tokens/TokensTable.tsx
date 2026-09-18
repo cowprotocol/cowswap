@@ -50,7 +50,7 @@ type TokenTableParams = {
   prevQuery: string
   debouncedQuery: string
   isLoading?: boolean
-  emptyMessage?: ReactNode
+  emptyMessage: ReactNode
   children?: ReactNode
 }
 
@@ -73,7 +73,7 @@ export function TokenTable({
   prevQuery,
   debouncedQuery,
   isLoading,
-  emptyMessage = <Trans>No tokens to display</Trans>,
+  emptyMessage,
   children,
 }: TokenTableParams): ReactNode {
   const toggleWalletModal = useToggleWalletModal()

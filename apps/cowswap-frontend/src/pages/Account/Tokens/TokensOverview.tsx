@@ -17,7 +17,12 @@ import { AllowancesState, useTokenAllowances, useTokensBalances } from '@cowprot
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
-import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
+import {
+  useAreTokenListsLoading,
+  useFavoriteTokens,
+  useResetFavoriteTokens,
+  useTokensByAddressMap,
+} from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { msg } from '@lingui/core/macro'
@@ -25,6 +30,7 @@ import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
+import { NoResults } from 'legacy/components/Tokens/styled'
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
 import { PageTitle } from 'modules/application'
@@ -174,9 +180,17 @@ export default function TokensOverview(): ReactNode {
       <Overview>
         <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? (
-          <Trans>Unsupported network</Trans>
+          <NoResults>
+            <h3>
+              <Trans>Unsupported network</Trans> ¯\_(ツ)_/¯
+            </h3>
+          </NoResults>
         ) : isProviderNetworkDeprecated ? (
-          <Trans>Deprecated network</Trans>
+          <NoResults>
+            <h3>
+              <Trans>Deprecated network</Trans> ¯\_(ツ)_/¯
+            </h3>
+          </NoResults>
         ) : (
           <TokensTableContent
             selectedView={selectedView}
@@ -297,6 +311,8 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
     allowances,
   } = props
 
+  const areTokenListsLoading = useAreTokenListsLoading()
+
   const isAllTokensView = selectedView === PageViewKeys.ALL_TOKENS
   const tokensData = isAllTokensView ? formattedTokens : favoriteTokens
 
@@ -312,7 +328,7 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
       balances={balances}
       tokensData={tokensData}
       allowances={allowances}
-      isLoading={isAllTokensView && formattedTokens.length === 0}
+      isLoading={isAllTokensView && areTokenListsLoading && formattedTokens.length === 0}
       emptyMessage={isAllTokensView ? <Trans>No tokens to display</Trans> : <Trans>No favorite tokens</Trans>}
     >
       <Delegate dismissable rowOnMobile />
