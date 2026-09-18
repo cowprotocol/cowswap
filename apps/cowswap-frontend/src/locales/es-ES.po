@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-17 09:30\n"
+"PO-Revision-Date: 2026-09-18 05:58\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -832,7 +832,7 @@ msgstr "Introduce una dirección {chainLabel} válida"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Signature pending"
-msgstr ""
+msgstr "Firma pendiente"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "View jobs"
@@ -2100,7 +2100,7 @@ msgstr "¡Gracias - notado!"
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "4 Minutes"
-msgstr ""
+msgstr "4 Minutos"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Total fee"
@@ -3173,7 +3173,7 @@ msgstr "{solversLength} solucionadores"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Transaction submitted. Waiting for network confirmation"
-msgstr ""
+msgstr "Transacción enviada. Esperando confirmación de red"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Claim vested"
@@ -8400,7 +8400,7 @@ msgstr "Aprovechar estrategias avanzadas para un crecimiento óptimo"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Set up Account Proxy"
-msgstr ""
+msgstr "Configurar proxy de cuenta"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "Try adjusting your search term or clearing the filter"
