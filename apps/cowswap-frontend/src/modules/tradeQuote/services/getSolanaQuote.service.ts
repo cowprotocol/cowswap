@@ -44,9 +44,7 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
   })
 
   return {
-    // The SDK echoes back the tolerance we passed; the app reads this field as a provider suggestion and
-    // turns it into smart slippage. Report what Jupiter actually said.
-    quoteResults: { ...quoteResults, suggestedSlippageBps: solanaQuote.jupiterOrder.slippageBps },
+    quoteResults,
     solanaQuote,
     // Solana orders are created on-chain as one instruction inside `solanaFlow`'s bundled transaction,
     // never posted from the quote. Kept only to satisfy `QuoteAndPost`, which every other chain's flow needs.
