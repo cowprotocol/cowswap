@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.2.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v4.1.0...cowswap-abis-v4.2.0) (2026-09-15)
+
+### Minor Changes
+
+- feat: TWAP for EOA v2 SC integration (#8091)
+
 ## [4.1.0](https://github.com/cowprotocol/cowswap/compare/cowswap-abis-v4.0.0...cowswap-abis-v4.1.0) (2026-06-08)
 
 ### Minor Changes

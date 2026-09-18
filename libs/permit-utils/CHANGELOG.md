@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.0...permit-utils-v3.7.1) (2026-09-15)
+
+### Patch Changes
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.6.0...permit-utils-v3.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: configure batching & change permit logic check (#8014)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.2.14
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.5.0...permit-utils-v3.6.0) (2026-09-03)
 
 ### Minor Changes

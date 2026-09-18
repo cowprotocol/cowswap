@@ -102,6 +102,9 @@ test.describe('Market Orders', () => {
       await expect(swapPage.inputAmount).toHaveValue('1000')
 
       await swapPage.waitForQuote()
+      // 1000 USDC * 804 / 1_000_000 = 0.804 WETH. A stale 1-unit quote is ~0.000804 — wait until
+      // the output is clearly the 1000-unit quote before confirming.
+      await expect(swapPage.outputAmount).toHaveValue(/^0\.8/, { timeout: 15_000 })
 
       // Neither `waitForQuote()` nor a correct-looking `outputAmount` proves the order is about to
       // be built from the "1000" amount. Confirmed against a real CI failure: `outputAmount`

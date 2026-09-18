@@ -14,17 +14,17 @@ export function getOrderExecutedAmounts(order: Order): {
 } {
   const { apiAdditionalInfo } = order
 
-  if (!apiAdditionalInfo || !apiAdditionalInfo.executedSellAmountBeforeFees) {
+  if (!apiAdditionalInfo) {
     return {
       executedBuyAmount: JSBI.BigInt(0),
       executedSellAmount: JSBI.BigInt(0),
     }
   }
 
-  const { executedBuyAmount, executedSellAmountBeforeFees } = apiAdditionalInfo
+  const { executedBuyAmount, executedSellAmountBeforeFees, executedSellAmount } = apiAdditionalInfo
 
   return {
     executedBuyAmount: JSBI.BigInt(executedBuyAmount),
-    executedSellAmount: JSBI.BigInt(executedSellAmountBeforeFees),
+    executedSellAmount: JSBI.BigInt(executedSellAmountBeforeFees ?? executedSellAmount),
   }
 }

@@ -1,95 +1,66 @@
-import { ReactNode, useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import { ReactNode, useCallback } from 'react'
 
-import { Currency } from '@cowprotocol/currency'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { getExplorerTwapOrderLink } from '@cowprotocol/common-utils'
+import { Media } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { OrderStep, OrderSteps } from 'modules/trade'
+import { resetOrdersTableFiltersAtom, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { OrderStep, OrderSteps, useSetOrdersTableDrawerOpen } from 'modules/trade'
+import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
-import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
-
-import * as styledEl from './EoaTwapSigningPendingContent.styled'
+import { EoaTwapSuccessContent } from './EoaTwapSuccessContent.pure'
 
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
-import { buildEoaTwapConfirmationPendingSteps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
+import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
+import { EoaTwapCurrentStepButtonProps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
 
-export function EoaTwapSigningPendingContent(): ReactNode {
+export interface EoaTwapSigningPendingContentProps {
+  steps: OrderStep[]
+  buttonProps: EoaTwapCurrentStepButtonProps | null
+  onDismiss(): void
+}
+
+export function EoaTwapSigningPendingContent({
+  steps,
+  buttonProps,
+  onDismiss,
+}: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
-  const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const token = inputCurrencyAmount?.currency
-  const symbol = token?.symbol
-  const steps = useMemo(() => {
-    return signingStep ? buildEoaTwapConfirmationPendingSteps({ signingStep, symbol, token }) : undefined
-  }, [signingStep, symbol, token])
-  const demoSteps = useMemo(() => buildEoaTwapDemoOrderSteps(token), [token])
+  const { chainId } = useWalletInfo()
+  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
+  const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
+  const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
-  if (!steps) {
-    return null
+  const onViewOrders = useCallback(() => {
+    // TODO: We could improve this by only resetting the filters if we know for sure the new order is not going to be visible:
+    resetOrdersTableFilters()
+    onDismiss()
+    navigateToOrdersTableTab(OrderTabId.OPEN)
+
+    if (isUpToLarge) {
+      setOrdersTableDrawerOpen(true)
+    }
+  }, [isUpToLarge, navigateToOrdersTableTab, onDismiss, resetOrdersTableFilters, setOrdersTableDrawerOpen])
+
+  if (!signingStep) return null
+
+  if (signingStep.step === EoaTwapSigningSteps.Success) {
+    const explorerUrl =
+      chainId && signingStep.eventId ? getExplorerTwapOrderLink(chainId, signingStep.eventId) : undefined
+
+    return <EoaTwapSuccessContent explorerUrl={explorerUrl} onNewTrade={onDismiss} onViewOrders={onViewOrders} />
   }
 
   return (
     <>
       <OrderSteps steps={steps} />
-      {/* Demo-only: warning/error tracker states are not wired to the signing flow yet. */}
-      <styledEl.DemoTracker>
-        <styledEl.DemoTrackerLabel>{t`Demo states`}</styledEl.DemoTrackerLabel>
-        <OrderSteps steps={demoSteps} />
-      </styledEl.DemoTracker>
+
+      {buttonProps && <TradeFormBlankButton {...buttonProps} onClick={() => alert('Not implemented yet')} />}
     </>
   )
-}
-
-function buildEoaTwapDemoOrderSteps(token: Currency | undefined): OrderStep[] {
-  const symbol = token?.symbol
-  const approveLabel = symbol ? t`Approve ${symbol}` : t`Approve`
-  const approveDescription = t`Confirm the approval transaction in your connected wallet.`
-  const approvalToken = token ? { token } : {}
-
-  return [
-    {
-      id: 'demo-upcoming',
-      label: t`Activating TWAP`,
-      status: 'upcoming',
-    },
-    {
-      id: 'demo-active',
-      label: t`Set up TWAP`,
-      description: t`Confirm this required setup signature in your connected wallet.`,
-      status: 'active',
-    },
-    {
-      id: 'demo-loading',
-      label: t`Sign TWAP`,
-      description: (
-        <p>
-          {t`Verifying approval`}
-          <ThreeDots />
-        </p>
-      ),
-      status: 'loading',
-    },
-    {
-      id: 'demo-success',
-      label: approveLabel,
-      description: approveDescription,
-      status: 'success',
-      ...approvalToken,
-    },
-    {
-      id: 'demo-warning',
-      label: approveLabel,
-      descriptionLabel: t`Transaction rejected`,
-      description: approveDescription,
-      status: 'warning',
-      ...approvalToken,
-    },
-    {
-      id: 'demo-error',
-      label: t`Set up TWAP`,
-      descriptionLabel: t`Setup signature failed`,
-      description: t`The wallet request was rejected or expired. Try again to continue.`,
-      status: 'error',
-    },
-  ]
 }

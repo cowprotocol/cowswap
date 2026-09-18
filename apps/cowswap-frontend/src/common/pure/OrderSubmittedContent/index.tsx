@@ -63,7 +63,8 @@ export function OrderSubmittedContent({
 }: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
-    hashType: isSafeWallet && !isCowOrder('transaction', hash) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
+    hashType:
+      isSafeWallet && !isCowOrder('transaction', hash, chainId) ? HashType.GNOSIS_SAFE_TX : HashType.ETHEREUM_TX,
     safeTransaction: {
       safeTxHash: hash,
       safe: account,

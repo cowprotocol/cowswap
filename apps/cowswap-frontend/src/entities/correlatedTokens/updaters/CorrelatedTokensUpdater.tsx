@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 
 import { components } from '@cowprotocol/cms'
 import { isSupportedChainId } from '@cowprotocol/common-utils'
-import { getCmsClient } from '@cowprotocol/core'
+import { getProdCmsClient } from '@cowprotocol/core'
 import { getAddressKey, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
 import ms from 'ms.macro'
@@ -22,7 +22,7 @@ const SWR_CONFIG: SWRConfiguration = {
 
 const UPDATE_TIME_KEY = 'correlatedTokensUpdateTime'
 
-const cmsClient = getCmsClient()
+const cmsClient = getProdCmsClient()
 
 const querySerializer = (params: unknown): string => {
   return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
@@ -65,11 +65,14 @@ export function CorrelatedTokensUpdater(): null {
 
         const items = data.data as CorrelatedTokenItem[]
 
+        let skipped = 0
+
         const state = items.reduce(
           (acc, item) => {
             const chainId = item.attributes?.network?.data?.attributes?.chainId
 
             if (!chainId || !item.attributes?.tokens || !isSupportedChainId(chainId)) {
+              skipped++
               return acc
             }
 
@@ -85,6 +88,18 @@ export function CorrelatedTokensUpdater(): null {
           },
           mapSupportedNetworks<CorrelatedTokens[]>(() => []),
         )
+
+        if (skipped > 0) {
+          console.warn(
+            `Skipped ${skipped}/${items.length} correlated token lists with a missing or unsupported chainId`,
+          )
+        }
+
+        // Never cache an all-empty result: it silently re-enables the volume fee on correlated pairs
+        if (!Object.values(state).some((lists) => lists.length > 0)) {
+          console.error('Correlated tokens resolved to empty for every chain, not persisting')
+          return undefined
+        }
 
         localStorage.setItem(UPDATE_TIME_KEY, Date.now().toString())
         setCorrelatedTokens(state)

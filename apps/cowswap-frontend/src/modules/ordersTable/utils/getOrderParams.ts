@@ -20,21 +20,27 @@ export interface OrderParams {
 
 const PERCENTAGE_FOR_PARTIAL_FILLS = new Percent(5, 10000) // 0.05%
 
+// eslint-disable-next-line complexity
 export function getOrderParams(
   chainId: SupportedChainId,
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder,
   pendingOrdersPermitValidityState?: PendingOrdersPermitValidityState,
+  eoaTwapPartSellAmount?: string,
 ): OrderParams {
   const isOrderAtLeastOnceFilled = order.executionData.filledAmount.gt(0)
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
+  const eoaTwapFundingAmount = order.isEoaTwapOrder === true ? eoaTwapPartSellAmount : undefined
+  const shouldCheckFunding = order.isEoaTwapOrder !== true || eoaTwapFundingAmount !== undefined
+  const fundingAmount = CurrencyAmount.fromRawAmount(order.inputToken, eoaTwapFundingAmount ?? order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
   const isPermitInvalid = pendingOrdersPermitValidityState
     ? pendingOrdersPermitValidityState[order.id] === false
     : false
-  const shouldCheckFunding = order.isEoaTwapOrder !== true
   const permitAmount =
-    shouldCheckFunding && !isPermitInvalid ? getOrderPermitAmount(chainId, order) || undefined : undefined
+    shouldCheckFunding && order.isEoaTwapOrder !== true && !isPermitInvalid
+      ? getOrderPermitAmount(chainId, order) || undefined
+      : undefined
 
   const rateInfoParams: RateInfoParams = {
     chainId,
@@ -49,8 +55,8 @@ export function getOrderParams(
   const allowance = shouldCheckFunding ? allowances[getAddressKey(order.inputToken.address)] : undefined
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
-    partiallyFillable: order.partiallyFillable,
-    sellAmount,
+    partiallyFillable: eoaTwapFundingAmount === undefined && order.partiallyFillable,
+    sellAmount: fundingAmount,
     balance,
     // If the order has been filled at least once, we should not consider the permit amount
     allowance: !isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,

@@ -3,10 +3,15 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { act, renderHook } from '@testing-library/react'
 import { useSearchSubmit } from 'hooks/useSearchSubmit'
+import { useFlags } from 'launchdarkly-react-client-sdk'
 import { MemoryRouter, useLocation } from 'react-router'
 
 import { GlobalStateContext } from '../../hooks/useGlobalState'
 import { Theme } from '../../theme/types'
+
+jest.mock('launchdarkly-react-client-sdk', () => ({ useFlags: jest.fn() }))
+
+const useFlagsMock = jest.mocked(useFlags)
 
 interface Props {
   children?: React.ReactNode
@@ -67,6 +72,9 @@ function wrapperMemoryRouter(props: Props): React.ReactNode {
 }
 
 describe('useSearchSubmit', () => {
+  beforeEach(() => {
+    useFlagsMock.mockReturnValue({ isTwapEoaEnabled: false })
+  })
   it('should be /search/... with invalid search', () => {
     const query = 'invalid_search'
 
@@ -92,6 +100,21 @@ describe('useSearchSubmit', () => {
     expect(result.location.pathname).toBe(`/orders/${query}`)
   })
 
+  // Same length as an EVM tx hash, so the same string routes differently per chain.
+  const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
+
+  it('should be /orders/0x... for a Solana order uid on Solana', () => {
+    const result = runHook(SOLANA_ORDER_ID, { networkId: SupportedChainId.SOLANA })
+
+    expect(result.location.pathname).toBe(`/orders/${SOLANA_ORDER_ID}`)
+  })
+
+  it('should still be /tx/0x... for the same length on an EVM chain', () => {
+    const result = runHook(SOLANA_ORDER_ID, { networkId: SupportedChainId.MAINNET })
+
+    expect(result.location.pathname).toBe(`/tx/${SOLANA_ORDER_ID}`)
+  })
+
   it('should keep selected chain prefix on canonical /solvers', () => {
     const query = 'invalid_search'
 
@@ -101,5 +124,21 @@ describe('useSearchSubmit', () => {
     })
 
     expect(result.location.pathname).toBe(`/${CHAIN_INFO[SupportedChainId.ARBITRUM_ONE].urlAlias}/search/${query}`)
+  })
+
+  it('routes a TWAP event ID when the feature is enabled', () => {
+    useFlagsMock.mockReturnValue({ isTwapEoaEnabled: true })
+    const query = '169175034500000000000001000000000029407131000000000000001050000000000000048'
+    const result = runHook(query, { networkId: SupportedChainId.GNOSIS_CHAIN })
+
+    expect(result.location.pathname).toBe(`/twap/${query}`)
+    expect(result.location.state).toEqual({ twapGlobalSearch: true })
+  })
+
+  it('does not route a TWAP event ID when the feature is disabled', () => {
+    const query = '169175034500000000000001000000000029407131000000000000001050000000000000048'
+    const result = runHook(query, { networkId: SupportedChainId.GNOSIS_CHAIN })
+
+    expect(result.location.pathname).toBe(`/search/${query}`)
   })
 })

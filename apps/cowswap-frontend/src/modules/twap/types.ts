@@ -24,7 +24,7 @@ export interface TWAPOrder {
 export interface TwapOrderExecutionInfo {
   executedSellAmount: string
   executedBuyAmount: string
-  executedFeeAmount: string
+  executedFee: string
 }
 
 export interface TwapOrderInfo {
@@ -52,6 +52,8 @@ export interface TwapOrderItem {
   safeTxParams?: SafeTransactionParams
   /** Indexed part-order count. Undefined for Safe and optimistic rows. */
   partOrdersCount?: number
+  /** Indexer change cursor. Undefined for Safe and optimistic rows. */
+  updatedAtBlock?: string
   executionInfo: TwapOrdersExecution
 }
 
@@ -87,4 +89,5 @@ export enum TwapOrderStatus {
   Cancelled = 'Cancelled',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
+  PartiallyFilled = 'PartiallyFilled',
 }
