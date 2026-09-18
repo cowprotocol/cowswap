@@ -21,15 +21,19 @@ jobs:
           MENTION: '<!subteam^S0450KV6LDR|@web-squad>'
         run: |
           gh pr list --state open --limit 100 \
-            --json number,title,url,author,isDraft,reviewDecision,reviewRequests,createdAt \
+            --json number,title,url,author,isDraft,reviewDecision,reviewRequests,createdAt,updatedAt \
             > "$RUNNER_TEMP/prs.json"
 
+          # reviewDecision comes from the base branch protection rule, so PRs
+          # stacked on another feature branch report no decision and always land under
+          # "Awaiting review". Add latestReviews handling if stacked PRs become common.
           jq -r --arg mention "$MENTION" --argjson now "$(date +%s)" '
             def esc: gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
 
             def line:
-              "• <\(.url)|#\(.number)> \(.title | sub("\\s+$"; "") | esc) — @\(.author.login | esc) · "
-              + (if .days >= 14 then "⚠️ " else "" end) + "\(.days)d"
+              "• <\(.url)|#\(.number)> \(.title | sub("\\s+$"; "") | esc) — @\(.author.login // "unknown" | esc)"
+              + " · \(.days)d"
+              + (if .idle >= 14 then " · ⚠️ idle \(.idle)d" else "" end)
               + (if (.reviewRequests | length) > 0
                  then "\n    reviewers: "
                       + ([.reviewRequests[] | "@" + ((.login // .slug) | esc)] | join(", "))
@@ -43,24 +47,22 @@ jobs:
             (map(select(.isDraft)) | length) as $drafts
             | [.[] | select(.isDraft | not)]
             | sort_by(.createdAt)
-            | map(. + {days: (($now - (.createdAt | fromdateiso8601)) / 86400 | floor)})
+            | map(. + {days: (($now - (.createdAt | fromdateiso8601)) / 86400 | floor),
+                       idle: (($now - (.updatedAt | fromdateiso8601)) / 86400 | floor)})
             | . as $prs
-            | (if $drafts > 0
-               then "\n\n_\($drafts) draft\(if $drafts == 1 then "" else "s" end) not listed._"
-               else "" end) as $footer
+            | "\($mention) Open PRs: `\($prs | length)` · Draft PRs: `\($drafts)`" as $header
             | if ($prs | length) == 0 then
-                "\($mention) ✅ No open pull requests waiting for review." + $footer
+                $header + "\n\n✅ Nothing to review."
               else
-                "\($mention) there are \($prs | length) open pull requests:\n\n"
+                $header + "\n\n"
                 + ([section("⏳ Awaiting review";
                             [$prs[] | select(.reviewDecision != "CHANGES_REQUESTED"
                                              and .reviewDecision != "APPROVED")]),
                     section("❌ Changes requested";
                             [$prs[] | select(.reviewDecision == "CHANGES_REQUESTED")]),
-                    section("✅ Approved, ready to merge";
+                    section("✅ Approved";
                             [$prs[] | select(.reviewDecision == "APPROVED")])]
                    | join("\n\n"))
-                + $footer
               end
           ' "$RUNNER_TEMP/prs.json" > "$RUNNER_TEMP/digest.txt"
 
