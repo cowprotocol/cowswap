@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 
 import { BottomDrawerOrDialog } from './BottomDrawerOrDialog'
 
@@ -10,13 +10,31 @@ jest.mock('./BottomDrawer.pure', () => ({
     isOpen,
     a11yTitle,
     className,
+    onOpenChange,
+    onOpenChangeComplete,
   }: {
     children: ReactNode
     isOpen: boolean
     a11yTitle?: string
     className?: string
+    onOpenChange?: (open: boolean) => void
+    onOpenChangeComplete?: (open: boolean) => void
   }) => (
-    <div data-testid="bottom-drawer" data-open={String(isOpen)} data-a11y-title={a11yTitle} className={className}>
+    <div
+      data-testid="bottom-drawer"
+      data-open={String(isOpen)}
+      data-a11y-title={a11yTitle}
+      className={className}
+      onTransitionEnd={() => {
+        if (!isOpen) {
+          onOpenChange?.(false)
+          onOpenChangeComplete?.(false)
+        }
+      }}
+    >
+      <button type="button" data-testid="request-close" onClick={() => onOpenChange?.(false)}>
+        request close
+      </button>
       {children}
     </div>
   ),
@@ -29,12 +47,16 @@ jest.mock('../Dialog/Dialog.pure', () => ({
     a11yTitle,
     className,
     variant,
+    onOpenChange,
+    onOpenChangeComplete,
   }: {
     children: ReactNode
     isOpen: boolean
     a11yTitle?: string
     className?: string
     variant?: string
+    onOpenChange?: (open: boolean) => void
+    onOpenChangeComplete?: (open: boolean) => void
   }) => (
     <div
       data-testid="dialog"
@@ -42,11 +64,23 @@ jest.mock('../Dialog/Dialog.pure', () => ({
       data-a11y-title={a11yTitle}
       data-variant={variant}
       className={className}
+      onTransitionEnd={() => {
+        if (!isOpen) {
+          onOpenChange?.(false)
+          onOpenChangeComplete?.(false)
+        }
+      }}
     >
       {children}
     </div>
   ),
 }))
+
+async function finishSurfaceCloseTransition(): Promise<void> {
+  await act(async () => {
+    screen.getByTestId('bottom-drawer').dispatchEvent(new Event('transitionend', { bubbles: true }))
+  })
+}
 
 function renderBottomDrawerOrDialog(
   isOpen: boolean,
@@ -56,16 +90,21 @@ function renderBottomDrawerOrDialog(
     a11yTitle?: string
     className?: string
     children?: ReactNode
+    onOpenChangeComplete?: jest.Mock
     variant?: 'default' | 'narrow'
   },
 ): ReturnType<typeof render> & {
   onOpenChange: jest.Mock
+  onOpenChangeComplete: jest.Mock
 } {
+  const onOpenChangeComplete = extra?.onOpenChangeComplete ?? jest.fn()
+
   const view = render(
     <BottomDrawerOrDialog
       isOpen={isOpen}
       isDrawer={isDrawer}
       onOpenChange={onOpenChange}
+      onOpenChangeComplete={onOpenChangeComplete}
       a11yTitle={extra?.a11yTitle}
       className={extra?.className}
       variant={extra?.variant}
@@ -74,7 +113,7 @@ function renderBottomDrawerOrDialog(
     </BottomDrawerOrDialog>,
   )
 
-  return { ...view, onOpenChange }
+  return { ...view, onOpenChange, onOpenChangeComplete }
 }
 
 describe('BottomDrawerOrDialog', () => {
@@ -114,18 +153,81 @@ describe('BottomDrawerOrDialog', () => {
     expect(dialog.textContent).toContain('Content')
   })
 
-  it('closes after switching from the drawer branch to the dialog branch', () => {
-    const { onOpenChange, rerender } = renderBottomDrawerOrDialog(true, true)
+  it('switches from the drawer branch to the dialog branch without notifying parent close', async () => {
+    const onOpenChange = jest.fn()
+    const onOpenChangeComplete = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange, { onOpenChangeComplete })
 
     expect(onOpenChange).not.toHaveBeenCalled()
+    expect(onOpenChangeComplete).not.toHaveBeenCalled()
 
     rerender(
-      <BottomDrawerOrDialog isOpen={true} isDrawer={false} onOpenChange={onOpenChange}>
+      <BottomDrawerOrDialog
+        isOpen={true}
+        isDrawer={false}
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
         <div>receipt</div>
       </BottomDrawerOrDialog>,
     )
 
+    expect(onOpenChange).not.toHaveBeenCalled()
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('false')
+
+    await finishSurfaceCloseTransition()
+
+    expect(onOpenChange).not.toHaveBeenCalled()
+    expect(onOpenChangeComplete).not.toHaveBeenCalled()
+    expect(screen.queryByTestId('bottom-drawer')).toBeNull()
+    expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('true')
+  })
+
+  it('forwards close completion after branch switch when parent already closed', async () => {
+    const onOpenChange = jest.fn()
+    const onOpenChangeComplete = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange, { onOpenChangeComplete })
+
+    rerender(
+      <BottomDrawerOrDialog
+        isOpen={false}
+        isDrawer={false}
+        onOpenChange={onOpenChange}
+        onOpenChangeComplete={onOpenChangeComplete}
+      >
+        <div>receipt</div>
+      </BottomDrawerOrDialog>,
+    )
+
+    await finishSurfaceCloseTransition()
+
+    expect(onOpenChangeComplete).toHaveBeenCalledTimes(1)
+    expect(onOpenChangeComplete).toHaveBeenCalledWith(false)
+    expect(screen.queryByTestId('bottom-drawer')).toBeNull()
+    expect(screen.getByTestId('dialog').getAttribute('data-open')).toBe('false')
+  })
+
+  it('keeps the surface open until the parent accepts a child close request', async () => {
+    const onOpenChange = jest.fn()
+    const { rerender } = renderBottomDrawerOrDialog(true, true, onOpenChange)
+
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('true')
+
+    await act(async () => {
+      screen.getByTestId('request-close').click()
+    })
+
+    expect(onOpenChange).toHaveBeenCalledTimes(1)
     expect(onOpenChange).toHaveBeenCalledWith(false)
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('true')
+
+    rerender(
+      <BottomDrawerOrDialog isOpen={false} isDrawer={true} onOpenChange={onOpenChange}>
+        <div>receipt</div>
+      </BottomDrawerOrDialog>,
+    )
+
+    expect(screen.getByTestId('bottom-drawer').getAttribute('data-open')).toBe('false')
   })
 
   it('closes on unmount so a later remount does not reopen the overlay', () => {

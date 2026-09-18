@@ -99,6 +99,15 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
 
   const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
+  // Kept as one node so the sentence stays a single message and translators can move the type around
+  const cancellationType = isOffChainCancellable ? (
+    <TypeButton isOnChain$={isOnChainType} onClick={toggleType}>
+      <span>{typeLabel}</span> {isOnChainType ? <ArrowLeft size="15" /> : <ArrowRight size="15" />}
+    </TypeButton>
+  ) : (
+    typeLabel
+  )
+
   return (
     <Wrapper>
       <p>
@@ -108,15 +117,7 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
       </p>
       <CancellationSummary>{summary}</CancellationSummary>
       <p>
-        <Trans>This is an</Trans>{' '}
-        {isOffChainCancellable ? (
-          <TypeButton isOnChain$={isOnChainType} onClick={toggleType}>
-            <span>{typeLabel}</span> {isOnChainType ? <ArrowLeft size="15" /> : <ArrowRight size="15" />}
-          </TypeButton>
-        ) : (
-          typeLabel
-        )}{' '}
-        <Trans>cancellation</Trans>{' '}
+        <Trans>This is an {cancellationType} cancellation</Trans>{' '}
         <LinkStyledButton onClick={toggleShowMore}>[{showMore ? `- ` + t`less` : `+ ` + t`more`}]</LinkStyledButton>
       </p>
       {showMore && (

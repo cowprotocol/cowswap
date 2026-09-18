@@ -1,6 +1,7 @@
 import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
 export interface BuildEoaTwapSigningStepPlanParams {
+  isProxyDeployed: boolean
   /** EOA => ComposableCowPoller allowance, covering the full TWAP sell pulled just in time. */
   poller: EoaTwapApprovalNeeds
 }
@@ -27,14 +28,17 @@ interface AppendSpenderApprovalStepIds {
  * Builds the ordered list of EOA TWAP signing UI steps for the current placement.
  * - (Optional) {@link EoaTwapSigningSteps.PermitPoller}, or {@link EoaTwapSigningSteps.ZeroApprovePoller} /
  *   {@link EoaTwapSigningSteps.ApprovePoller}: ComposableCowPoller (permit preferred when supported)
- * - (Required) {@link EoaTwapSigningSteps.TwapSetup}: cow-shed EIP-712 + factory TX
- *   (optional EOA => Poller permit calldata + `registerFromShed + optional shed => Vault Relayer approve + ComposableCoW create)
- * - (Required) {@link EoaTwapSigningSteps.CreatingOrder}: mark TWAP active after the setup receipt
- *   (confirmed immediately; setup already waited for mining)
+ * - New proxies include {@link EoaTwapSigningSteps.TwapSetup} before the setup transaction.
+ * - (Required) {@link EoaTwapSigningSteps.TwapSign}: atomic setup through the factory or existing cow-shed
+ *   (optional EOA => Poller permit calldata + `registerFromShed` + optional shed => Vault Relayer approve + ComposableCoW create)
+ * - (Required) {@link EoaTwapSigningSteps.SubmitTwap}: wait for the setup receipt, then the flow is done
  *
  * Approval steps are omitted when allowance is already sufficient.
  */
-export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepPlanParams): EoaTwapSigningSteps[] {
+export function buildEoaTwapSigningStepPlan({
+  poller,
+  isProxyDeployed,
+}: BuildEoaTwapSigningStepPlanParams): EoaTwapSigningSteps[] {
   const steps: EoaTwapSigningSteps[] = []
 
   steps.push(
@@ -45,9 +49,18 @@ export function buildEoaTwapSigningStepPlan({ poller }: BuildEoaTwapSigningStepP
     }),
   )
 
-  steps.push(EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.CreatingOrder)
+  if (!isProxyDeployed) {
+    steps.push(EoaTwapSigningSteps.TwapSetup)
+  }
+
+  steps.push(EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap)
 
   return steps
+}
+
+/** Swaps {@link EoaTwapSigningSteps.SubmitTwap} for {@link EoaTwapSigningSteps.SubmitTwapSlow} mid-flow. */
+export function replaceSubmitTwapWithSlowInPlan(plan: EoaTwapSigningSteps[]): EoaTwapSigningSteps[] {
+  return plan.map((step) => (step === EoaTwapSigningSteps.SubmitTwap ? EoaTwapSigningSteps.SubmitTwapSlow : step))
 }
 
 function getSpenderApprovalSteps(

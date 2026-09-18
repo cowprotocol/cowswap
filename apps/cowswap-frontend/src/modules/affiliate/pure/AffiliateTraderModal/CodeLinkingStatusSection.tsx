@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { StatusColorVariant } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { InlineAlert, StatusMessage } from './styles'
 
@@ -39,7 +39,7 @@ export function CodeLinkingStatusSection(props: CodeLinkingStatusSectionProps): 
           {timeCapDays ? (
             <Trans>
               Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active
-              for {timeCapDays} days.
+              for <Plural value={timeCapDays} one="# day" few="# days" many="# days" other="# days" />.
             </Trans>
           ) : (
             <Trans>

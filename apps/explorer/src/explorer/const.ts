@@ -1,6 +1,7 @@
 /** Explorer app constants */
 export const ORDER_QUERY_INTERVAL = 10000 // in ms
 export const ORDERS_QUERY_INTERVAL = 30000 // in ms
+export const ORDERS_PAGE_SIZE = 20
 export const ORDERS_HISTORY_MINUTES_AGO = 10 // in minutes
 export const PENDING_ORDERS_BUFFER = 60 * 1000 //60s in ms
 

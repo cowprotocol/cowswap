@@ -40,7 +40,7 @@ describe('eoaTwapOrdersAtom', () => {
     store.set(walletInfoAtom, { account: OWNER_A, chainId: CHAIN_ID })
     store.set(eoaTwapOrdersAtom, { [order.id]: order })
 
-    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v1'))) as Record<string, unknown>
+    const persisted = JSON.parse(String(localStorage.getItem('eoa-twap-orders:v2'))) as Record<string, unknown>
     expect(Object.values(persisted)).toEqual([{ [order.id]: order }])
     expect(store.get(eoaTwapOrdersAtom)).toEqual({ [order.id]: order })
   })

@@ -61,6 +61,13 @@ export interface TradeFormValidationCommonContext {
   isRestoringConnection: boolean
   isCaptchaPending: boolean
   isCaptchaRequired: boolean
+  /**
+   * For Swap only: the maximum sell amount the order can pull from the wallet, including slippage.
+   * Used instead of the raw input amount when checking balance sufficiency, since a swap order
+   * (unlike limit/TWAP orders) must never be placed if the wallet can't cover slippage in the worst case.
+   * Null for non-swap trade types, where the raw input amount is used instead.
+   */
+  swapMaximumSellAmount: CurrencyAmount<Currency> | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

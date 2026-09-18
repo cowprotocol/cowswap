@@ -11,6 +11,7 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
  * Parent completion and cancellation take precedence over the part state. A virtual
  * part is scheduled only when no terminal status applies.
  */
+// eslint-disable-next-line complexity
 export function getPartOrderStatus(
   enrichedOrder: Omit<EnrichedOrder, 'settlementContract'>,
   parent: TwapOrderItem,
@@ -33,7 +34,9 @@ export function getPartOrderStatus(
   }
   if (isCancelled) return OrderStatus.CANCELLED
 
-  if (parent.status === TwapOrderStatus.Expired) return OrderStatus.EXPIRED
+  const hasParentExecutionFinished =
+    parent.status === TwapOrderStatus.Expired || parent.status === TwapOrderStatus.PartiallyFilled
+  if (hasParentExecutionFinished) return OrderStatus.EXPIRED
   if (isExpired) return OrderStatus.EXPIRED
 
   if (isVirtualPart) return OrderStatus.SCHEDULED
