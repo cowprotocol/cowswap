@@ -4,10 +4,19 @@ import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import type { UiOrderType } from '@cowprotocol/types'
 
+import { PublicKey } from '@solana/web3.js'
+
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { emitPostedOrderEvent } from 'modules/orders'
-import { planCreateOrderStep, planDelegateStep, planWrapStep, sendSolanaFlow, SolanaFlowStep } from 'modules/trade'
+import {
+  planCreateBuyAtaStep,
+  planCreateOrderStep,
+  planDelegateStep,
+  planWrapStep,
+  sendSolanaFlow,
+  SolanaFlowStep,
+} from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -39,7 +48,7 @@ export async function solanaFlow(
   const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
-  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate and create-order in one transaction')
+  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(swapFlowAnalyticsContext)
 
@@ -47,6 +56,9 @@ export async function solanaFlow(
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
+    // The quote's receiver, not the flow's: `intent.buyTokenAccount` was derived from it, and an
+    // owner/account mismatch would make SPL Token reject the whole bundle.
+    const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
     const {
       step: createOrderStep,
@@ -68,6 +80,7 @@ export async function solanaFlow(
     const steps = [
       planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
+      planCreateBuyAtaStep({ payer: owner, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 

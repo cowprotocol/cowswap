@@ -2653,6 +2653,10 @@ msgstr "Wallet support"
 msgid "Refunding"
 msgstr "Refunding"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateBuyAtaStep.ts
+msgid "Create {buySymbol} account"
+msgstr "Create {buySymbol} account"
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Confirm the TWAP transaction in your connected wallet."
 #~ msgstr "Confirm the TWAP transaction in your connected wallet."
