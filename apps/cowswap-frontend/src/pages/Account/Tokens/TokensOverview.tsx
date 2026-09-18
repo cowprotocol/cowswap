@@ -297,7 +297,8 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
     allowances,
   } = props
 
-  const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
+  const isAllTokensView = selectedView === PageViewKeys.ALL_TOKENS
+  const tokensData = isAllTokensView ? formattedTokens : favoriteTokens
 
   // This is a read-only balance view. Do not block rendering on WalletClient here: MetaMask iOS can leave
   // wagmi wallet-client requests pending after reconnect while balances are still available from state.
@@ -311,6 +312,8 @@ function TokensTableContent(props: TokensTableContentProps): ReactNode {
       balances={balances}
       tokensData={tokensData}
       allowances={allowances}
+      isLoading={isAllTokensView && formattedTokens.length === 0}
+      emptyMessage={isAllTokensView ? <Trans>No tokens to display</Trans> : <Trans>No favorite tokens</Trans>}
     >
       <Delegate dismissable rowOnMobile />
     </TokenTable>
