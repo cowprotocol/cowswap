@@ -28,7 +28,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
-import { useLabelsTooltips } from './tooltips'
+import { getTotalDurationTooltip, useLabelsTooltips } from './tooltips'
 
 import {
   DEFAULT_NUM_OF_PARTS,
@@ -54,7 +54,14 @@ import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-export type { LabelTooltip, LabelTooltipItems } from './tooltips'
+export type {
+  LabelTooltip,
+  LabelTooltipContent,
+  LabelTooltipFn,
+  LabelTooltipItems,
+  TotalDurationTooltipParams,
+} from './tooltips'
+export { getTotalDurationTooltip } from './tooltips'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
@@ -242,10 +249,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
           label={tooltips.totalDuration.label}
-          tooltip={renderTooltip(tooltips.totalDuration.tooltip, {
-            parts: numberOfPartsValue,
-            partDuration: timeInterval,
-          })}
+          tooltip={getTotalDurationTooltip}
+          parts={numberOfPartsValue}
+          partDuration={timeInterval}
         />
 
         <TradeTextBox label={tooltips.partDuration.label} tooltip={tooltips.partDuration.tooltip}>

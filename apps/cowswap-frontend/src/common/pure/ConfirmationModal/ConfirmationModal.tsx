@@ -1,31 +1,12 @@
-import { ReactNode } from 'react'
+import { ChangeEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
 
-import { ContentWrapper, Modal } from 'common/pure/Modal'
+import * as styledEl from './ConfirmationModal.styled'
 
-import { ConfirmationModalHeader } from './ConfirmationModalHeader'
-
-import { ConfirmedButton } from '../ConfirmedButton'
-
-const ModalContentWrapper = styled(ContentWrapper)`
-  flex: 1;
-  padding: 1.5rem;
-  color: inherit;
-  border-radius: 1.5rem;
-`
-
-const Description = styled.p`
-  line-height: 1.4;
-  margin: 0 0 1.5rem;
-`
-
-const Warning = styled.strong`
-  color: inherit;
-`
 export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
@@ -53,29 +34,62 @@ export function ConfirmationModal({
   bottomContent,
   skipInput = false,
 }: ConfirmationModalProps): ReactNode {
-  const shouldShowDescription = !!description
-  const shouldShowWarning = !!warning
+  const [inputValue, setInputValue] = useState('')
+  const shouldShowInput = !skipInput
+  const confirmDisabled = shouldShowInput && !isValidConfirm(inputValue, confirmWord)
+
+  useEffect(() => {
+    if (!isOpen) {
+      setInputValue('')
+    }
+  }, [isOpen])
+
+  const onInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => setInputValue(event.target.value ?? ''),
+    [],
+  )
+
+  const content = (
+    <>
+      {warning ? (
+        <styledEl.Instruction>
+          <styledEl.Warning>{warning}</styledEl.Warning>
+        </styledEl.Instruction>
+      ) : null}
+      {shouldShowInput ? (
+        <>
+          <styledEl.Instruction>
+            <Trans>
+              Please type the word <strong>"{confirmWord}"</strong> to {action}.
+            </Trans>
+          </styledEl.Instruction>
+          <styledEl.Input id="confirm-modal-input" onChange={onInputChange} />
+        </>
+      ) : (
+        (bottomContent ?? (
+          <styledEl.Instruction>
+            <Trans>Please click confirm to {action}.</Trans>
+          </styledEl.Instruction>
+        ))
+      )}
+    </>
+  )
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
-      <ModalContentWrapper>
-        <ConfirmationModalHeader onCloseClick={onDismiss}>{title}</ConfirmationModalHeader>
-        {shouldShowDescription && <Description>{description}</Description>}
-        {shouldShowWarning && (
-          <Description>
-            <Warning>{warning}</Warning>
-          </Description>
-        )}
-        <ConfirmedButton
-          skipInput={skipInput}
-          action={action}
-          confirmWord={confirmWord}
-          onConfirm={onEnable}
-          bottomContent={bottomContent}
-        >
-          {callToAction ? callToAction : <Trans>Confirm</Trans>}
-        </ConfirmedButton>
-      </ModalContentWrapper>
-    </Modal>
+    <ConfirmBottomDrawerOrDialog
+      isOpen={isOpen}
+      title={title}
+      description={description}
+      content={content}
+      cancelLabel={<Trans>Cancel</Trans>}
+      onCancel={onDismiss}
+      confirmLabel={callToAction ? callToAction : <Trans>Confirm</Trans>}
+      onConfirm={onEnable}
+      confirmDisabled={confirmDisabled}
+    />
   )
+}
+
+function isValidConfirm(value: string, confirmWord: string): boolean {
+  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }

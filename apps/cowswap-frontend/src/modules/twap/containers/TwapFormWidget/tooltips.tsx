@@ -19,13 +19,45 @@ const IconImage = styled.div`
 
 export interface LabelTooltip {
   label: React.ReactNode
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
+  tooltip?: React.ReactNode | LabelTooltipFn<Record<string, unknown>>
 }
+
+export type LabelTooltipContent<TParams> = React.ReactNode | LabelTooltipFn<TParams>
+
+export type LabelTooltipFn<TParams> = (params: TParams) => React.ReactNode
 
 export interface LabelTooltipItems {
   [key: string]: LabelTooltip
+}
+
+export interface TotalDurationTooltipParams {
+  parts: number
+  partDuration: number
+  totalDuration?: number
+}
+
+export function getTotalDurationTooltip({
+  parts,
+  partDuration,
+  totalDuration,
+}: TotalDurationTooltipParams): React.ReactNode {
+  const partDurationDisplay = deadlinePartsDisplay(partDuration)
+  const totalDurationDisplay = deadlinePartsDisplay(totalDuration ?? parts * partDuration)
+
+  return (
+    <>
+      <p>
+        <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
+      </p>
+      <p>
+        <Trans>
+          For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the total
+          time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
+          <b>{partDurationDisplay}</b> until the next part becomes active.
+        </Trans>
+      </p>
+    </>
+  )
 }
 
 export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
@@ -46,20 +78,7 @@ export function useLabelsTooltips(): LabelTooltipItems {
     },
     totalDuration: {
       label: t`Total duration`,
-      tooltip: ({ parts, partDuration }: { parts: number; partDuration: number }) => {
-        const partDurationDisplay = deadlinePartsDisplay(partDuration)
-        const totalDurationDisplay = deadlinePartsDisplay(parts * partDuration)
-        return (
-          <Trans>
-            The "Total duration" is the duration it takes to execute all parts of your TWAP order.
-            <br />
-            <br />
-            For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the
-            total time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
-            <b>{partDurationDisplay}</b> until the next part becomes active.
-          </Trans>
-        )
-      },
+      tooltip: getTotalDurationTooltip as unknown as LabelTooltip['tooltip'],
     },
     partDuration: {
       label: t`Part duration`,
