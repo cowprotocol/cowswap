@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-18 05:58\n"
+"PO-Revision-Date: 2026-09-18 08:27\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -19,6 +19,7 @@ msgstr ""
 "X-Crowdin-File-ID: 12\n"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet no conectada"
 
@@ -79,7 +80,7 @@ msgstr "Transacción del puente"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order placement on-chain."
-msgstr "Debido a que estás utilizando una wallet de contrato inteligente, pagarás un coste de gas separado por firmar la creacion de la orden onchain."
+msgstr "Debido a que estás utilizando una wallet de contrato inteligente, pagarás un coste de gas separado por firmar la creación de la orden on-chain."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 #~ msgid "It isn’t a valid referral code."
@@ -549,7 +550,7 @@ msgstr "cantidad por"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.utils.ts
 msgid "Reject the wallet request to stop"
-msgstr "Rechazar la solicitud del wallet para parar"
+msgstr "Rechazar la solicitud de la wallet para parar"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Provide a valid referral code"
@@ -1158,7 +1159,7 @@ msgstr "Gestionar listas de tokens"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Sit tight! We're getting your order ready"
-msgstr "¡Abróchate! Estamos preparando tu orden"
+msgstr "¡Un momento! Estamos preparando tu orden"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 #~ msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
@@ -1471,7 +1472,7 @@ msgstr "Personalizado"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Open in CoW Explorer"
-msgstr "Abrir en el explorador de CoW"
+msgstr "Abrir en CoW Explorer"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
@@ -1922,7 +1923,7 @@ msgstr "Última actualización"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/placeEoaTwapOrder.ts
 msgid "TWAP setup was cancelled or not broadcast. Please try again."
-msgstr "La configuración de TWAP ha sido cancelada o no ha sido transmitida. Por favor, inténtelo de nuevo."
+msgstr "La configuración de TWAP ha sido cancelada o no ha sido transmitida. Por favor, inténtalo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
@@ -2362,7 +2363,7 @@ msgstr "Una sola vez ilimitada"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Use Safe web app"
-msgstr "Use la web app de Safe"
+msgstr "Usa la web app de Safe"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiverInfo/index.tsx
 msgid "Receiver"
@@ -2524,7 +2525,7 @@ msgstr "<0>Nota:</0> {symbol} requiere específicamente 2 transacciones de aprob
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
-msgstr "Gane mayores beneficios con pérdida no permanente reducida"
+msgstr "Gana mayores beneficios con pérdida no permanente reducida"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/BottomBanners.container.tsx
 msgid "Funds stuck? <0>Recover your funds</0>"
@@ -3578,7 +3579,7 @@ msgstr "Maximiza tu rendimiento en las posiciones LP existentes"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Approval was cancelled or not broadcast. Please try again."
-msgstr "La aprobación ha sido cancelada o no ha sido transmitida. Por favor, inténtelo de nuevo."
+msgstr "La aprobación ha sido cancelada o no ha sido transmitida. Por favor, inténtalo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 #~ msgid "Pool description"
@@ -3716,7 +3717,7 @@ msgstr "Ahora puede operar con <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Track its progress in Orders."
-msgstr "Seguimiento de su progreso en órdenes."
+msgstr "Seguimiento de su progreso en Órdenes."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "How much of the order has been filled."
@@ -4657,7 +4658,7 @@ msgstr "Wrap <0/> y Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/waitForEoaTwapTxReceipt.utils.ts
 msgid "Timed out waiting for the transaction. Please try again."
-msgstr "Tiempo de espera agotado esperando la transacción. Por favor, inténtelo de nuevo."
+msgstr "Tiempo de espera agotado esperando la transacción. Por favor, inténtalo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "View full consent terms ↗"
@@ -5906,7 +5907,7 @@ msgstr "Impacto de precios <0>desconocido</0> - Opere cuidadosamente"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Earn while you trade"
-msgstr "Gane mientras opera"
+msgstr "Gana mientras opera"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountItem/AccountItem.pure.tsx
@@ -6320,7 +6321,7 @@ msgstr "al menos"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Earn <0>{rewardAmount}</0> per <1>{triggerVolume}</1> of eligible volume over {timeCapDays} days. Rewards are paid out weekly to your Ethereum wallet."
-msgstr "Gane <0>{rewardAmount}</0> por <1>{triggerVolume}</1> del volumen elegible durante {timeCapDays} días. Las recompensas se pagan semanalmente a tu wallet Ethereum."
+msgstr "Gana <0>{rewardAmount}</0> por <1>{triggerVolume}</1> del volumen elegible durante {timeCapDays} días. Las recompensas se pagan semanalmente a tu wallet Ethereum."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "m"
@@ -6749,7 +6750,7 @@ msgstr "segundos"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 msgid "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
-msgstr "No tienes suficiente {nativeCurrencySymbol} para cubrir la coste de red. Reduce la cantidad o añade más {nativeCurrencySymbol} a tu wallet."
+msgstr "No tienes suficiente {nativeCurrencySymbol} para cubrir el coste de red. Reduce la cantidad o añade más {nativeCurrencySymbol} a tu wallet."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "token before creation."
@@ -7893,7 +7894,7 @@ msgstr "Introduce un destinatario válido"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Earn more by adding a referral code."
-msgstr "Gane más añadiendo un código de afiliados."
+msgstr "Gana más añadiendo un código de afiliados."
 
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeEthFlowTx.ts
 msgid "Failed to place order selling {nativeCurrencySymbol}"
@@ -7947,8 +7948,8 @@ msgstr "Confirmar intercambio"
 #~ msgstr "Save"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
-msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr "Se requiere el firmante de la wallet para cancelar una orden TWAP de EOA"
+#~ msgid "Wallet signer is required to cancel an EOA TWAP order"
+#~ msgstr "Wallet signer is required to cancel an EOA TWAP order"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
