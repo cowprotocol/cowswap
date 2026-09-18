@@ -12,7 +12,7 @@ import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -70,6 +70,14 @@ import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
+function getActivityName(isOrder: boolean, orderKind: string | undefined): string {
+  if (!isOrder) return t`Transaction`
+  if (orderKind === 'sell') return t`sell order`
+  if (orderKind === 'buy') return t`buy order`
+
+  return t`order`
+}
+
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
@@ -84,7 +92,6 @@ interface OrderSummaryType {
   executionPrice?: string | undefined
   validTo: string | undefined
   fulfillmentTime?: string | undefined
-  kind?: string
   inputAmount?: CurrencyAmount<Token>
   outputAmount?: CurrencyAmount<Token>
 }
@@ -187,16 +194,7 @@ export function ActivityDetails(props: {
   let isOrderFulfilled = false
 
   if (order) {
-    const {
-      inputToken,
-      sellAmount,
-      feeAmount: feeAmountRaw,
-      outputToken,
-      buyAmount,
-      validTo,
-      kind,
-      fulfillmentTime,
-    } = order
+    const { inputToken, sellAmount, feeAmount: feeAmountRaw, outputToken, buyAmount, validTo, fulfillmentTime } = order
 
     const effectiveOutputToken = intermediateToken ?? outputToken
     const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
@@ -230,8 +228,6 @@ export function ActivityDetails(props: {
       timeStyle: 'short',
     }
 
-    const orderKind = kind.toString()
-
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
@@ -242,7 +238,6 @@ export function ActivityDetails(props: {
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(i18n.locale, DateFormatOptions)
         : undefined,
-      kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
       outputAmount,
     }
@@ -250,8 +245,12 @@ export function ActivityDetails(props: {
     orderSummary = DEFAULT_ORDER_SUMMARY
   }
 
-  const { kind, from, to, fulfillmentTime, validTo } = orderSummary
-  const activityName = isOrder ? `${kind} ` + t`order` : t`Transaction`
+  const { from, to, fulfillmentTime, validTo } = orderSummary
+  // Branch on the raw order kind, never on a translated word: the summary used to store
+  // `t`sell`` / `t`buy`` and every consumer compared it against the English literals, so all
+  // of these labels silently flipped in any other locale.
+  const orderKind = order?.kind
+  const activityName = getActivityName(isOrder, orderKind)
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 
@@ -392,15 +391,11 @@ export function ActivityDetails(props: {
                 // Regular order layout
                 <>
                   <SummaryInnerRow>
-                    <b>
-                      <Trans>From</Trans> {kind === 'buy' && ' ' && <Trans>at most</Trans>}
-                    </b>
+                    <b>{orderKind === 'buy' ? <Trans>From at most</Trans> : <Trans>From</Trans>}</b>
                     <i>{from}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
-                    <b>
-                      <Trans>To</Trans> {kind === 'sell' && ' ' && <Trans>at least</Trans>}
-                    </b>
+                    <b>{orderKind === 'sell' ? <Trans>To at least</Trans> : <Trans>To</Trans>}</b>
                     <i>{to}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
@@ -565,7 +560,12 @@ export function GnosisSafeTxDetails(props: {
           </b>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {gnosisSafeThreshold} {gnosisSafeThreshold === 1 ? t`signature is` : t`signatures are`} {t`required`}
+          {plural(gnosisSafeThreshold, {
+            one: '# signature is required',
+            few: '# signatures are required',
+            many: '# signatures are required',
+            other: '# signatures are required',
+          })}
         </TextAlert>
       </>
     )
@@ -604,8 +604,12 @@ export function GnosisSafeTxDetails(props: {
           </Trans>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {pendingSignaturesCount} {pendingSignaturesCount === 1 ? t`more signature is` : t`more signatures are`}{' '}
-          {t`required`}
+          {plural(pendingSignaturesCount, {
+            one: '# more signature is required',
+            few: '# more signatures are required',
+            many: '# more signatures are required',
+            other: '# more signatures are required',
+          })}
         </TextAlert>
       </>
     )
