@@ -23,6 +23,7 @@ export interface UseAppDataParams {
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
   refCode?: string
+  enableFastPath?: boolean
 }
 
 /**
@@ -43,6 +44,7 @@ export function AppDataInfoUpdater({
   replacedOrderUid,
   userConsent,
   refCode,
+  enableFastPath,
 }: UseAppDataParams) {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -68,6 +70,7 @@ export function AppDataInfoUpdater({
       replacedOrderUid,
       userConsent,
       refCode,
+      enableFastPath,
     }
 
     try {
@@ -92,6 +95,7 @@ export function AppDataInfoUpdater({
     isSmartSlippage,
     userConsent,
     refCode,
+    enableFastPath,
   ])
 
   return null

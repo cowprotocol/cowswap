@@ -44,6 +44,7 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
   useSwapDeadlineState,
+  useSwapFastPathToggleState,
   useSwapPartialApprovalToggleState,
   useSwapRecipientToggleState,
   useSwapSettings,
@@ -191,6 +192,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
+  const fastPathState = useSwapFastPathToggleState()
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -217,6 +219,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         partialApprovalLocked={isInfiniteApproveDisabledInWidget}
         isRecipientToggleDisabled={isNonEvmBridging}
         isRecipientToggleHidden={disableCustomRecipient}
+        fastPathState={fastPathState}
       />
     ),
     bottomContent: useCallback(

@@ -7725,6 +7725,10 @@ msgstr "Error loading the claimable amount"
 msgid "Attention"
 msgstr "Attention"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "Enable Fast Path"
+msgstr "Enable Fast Path"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/TokenList.tsx
 msgid "This route is not yet supported."
 msgstr "This route is not yet supported."
@@ -8429,6 +8433,10 @@ msgstr "MEV is lethal these days!"
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "FREE"
 msgstr "FREE"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
+msgid "<0><1/> Experimental:</0> Opt into out-of-competition (\"fast path\") execution — the order can be settled directly by the winning solver within a short exclusivity window."
+msgstr "<0><1/> Experimental:</0> Opt into out-of-competition (\"fast path\") execution — the order can be settled directly by the winning solver within a short exclusivity window."
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "1 Week"

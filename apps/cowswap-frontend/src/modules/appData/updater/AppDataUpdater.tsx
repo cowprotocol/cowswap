@@ -20,38 +20,43 @@ interface AppDataUpdaterProps {
   slippageBips: number
   isSmartSlippage?: boolean
   orderClass: AppDataOrderClass
+  // Fast path (out-of-competition execution) — swap flow only, see cowprotocol/services#4883.
+  enableFastPath?: boolean
 }
 
-export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, orderClass }: AppDataUpdaterProps) => {
-  const { chainId } = useWalletInfo()
+export const AppDataUpdater = React.memo(
+  ({ slippageBips, isSmartSlippage, orderClass, enableFastPath }: AppDataUpdaterProps) => {
+    const { chainId } = useWalletInfo()
 
-  const appCode = useAppCode()
-  const utm = useUtm()
-  const typedHooks = useAppDataHooks()
-  const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
-  const volumeFee = useVolumeFee()
-  const replacedOrderUid = useReplacedOrderUid()
-  const userConsent = useRwaConsentForAppData()
-  const { savedCode: refCode } = useAtomValue(affiliateTraderSavedCodeAtom)
-  const isRefCodeExpired = useIsRefCodeExpired()
+    const appCode = useAppCode()
+    const utm = useUtm()
+    const typedHooks = useAppDataHooks()
+    const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
+    const volumeFee = useVolumeFee()
+    const replacedOrderUid = useReplacedOrderUid()
+    const userConsent = useRwaConsentForAppData()
+    const { savedCode: refCode } = useAtomValue(affiliateTraderSavedCodeAtom)
+    const isRefCodeExpired = useIsRefCodeExpired()
 
-  if (!chainId) return null
+    if (!chainId) return null
 
-  return (
-    <AppDataUpdaterMemo
-      appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
-      slippageBips={slippageBips}
-      isSmartSlippage={isSmartSlippage}
-      orderClass={orderClass}
-      utm={utm}
-      typedHooks={typedHooks}
-      volumeFee={volumeFee}
-      replacedOrderUid={replacedOrderUid}
-      userConsent={userConsent}
-      refCode={isRefCodeExpired ? undefined : refCode}
-    />
-  )
-})
+    return (
+      <AppDataUpdaterMemo
+        appCodeWithWidgetMetadata={appCodeWithWidgetMetadata}
+        slippageBips={slippageBips}
+        isSmartSlippage={isSmartSlippage}
+        orderClass={orderClass}
+        utm={utm}
+        typedHooks={typedHooks}
+        volumeFee={volumeFee}
+        replacedOrderUid={replacedOrderUid}
+        userConsent={userConsent}
+        refCode={isRefCodeExpired ? undefined : refCode}
+        enableFastPath={enableFastPath}
+      />
+    )
+  },
+)
 
 const AppDataUpdaterMemo = React.memo((params: UseAppDataParams) => (
   <>

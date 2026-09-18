@@ -32,6 +32,8 @@ export type BuildAppDataParams = {
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
+  // Fast path (out-of-competition execution) — staging test only, see cowprotocol/services#4883.
+  enableFastPath?: boolean
 }
 
 export async function buildAppData({
@@ -47,6 +49,7 @@ export async function buildAppData({
   partnerFee,
   replacedOrderUid,
   userConsent,
+  enableFastPath,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams: AppDataRootSchema['metadata']['referrer'] = refCode ? { code: refCode } : undefined
 
@@ -70,6 +73,7 @@ export async function buildAppData({
       partnerFee,
       ...{ replacedOrder },
       ...(userConsent ? userConsent : {}),
+      ...(enableFastPath ? { enableFastPath: true } : {}),
     },
   })
 

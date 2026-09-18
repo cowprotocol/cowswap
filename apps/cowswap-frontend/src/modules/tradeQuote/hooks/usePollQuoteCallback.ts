@@ -25,7 +25,7 @@ export function usePollQuoteCallback(
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { isSolanaEnabled } = useFeatureFlags()
   const canQuote = useAtomValue(captchaCanQuoteAtom)
-  const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const { fastQuote, enableFastPath } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
@@ -78,6 +78,7 @@ export function usePollQuoteCallback(
           tradeQuoteManager,
           isSolanaEnabled,
           getCorrelatedTokensByChainId,
+          enableFastPath,
         )
       }
 
@@ -112,6 +113,7 @@ export function usePollQuoteCallback(
       tradeQuoteManager,
       isWindowVisible,
       fastQuote,
+      enableFastPath,
       getIsUnsupportedTokens,
       quotePollingParams,
       getCorrelatedTokensByChainId,

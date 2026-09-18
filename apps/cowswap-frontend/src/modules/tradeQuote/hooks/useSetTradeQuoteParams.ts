@@ -11,11 +11,12 @@ export interface SetTradeQuoteParams {
   amount: Nullish<CurrencyAmount<Currency>>
   partiallyFillable?: boolean
   fastQuote?: boolean
+  enableFastPath?: boolean
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSetTradeQuoteParams({ amount, partiallyFillable, fastQuote }: SetTradeQuoteParams) {
+export function useSetTradeQuoteParams({ amount, partiallyFillable, fastQuote, enableFastPath }: SetTradeQuoteParams) {
   const updateState = useSetAtom(tradeQuoteInputAtom)
 
   useEffect(() => {
@@ -23,6 +24,7 @@ export function useSetTradeQuoteParams({ amount, partiallyFillable, fastQuote }:
       amount: amount || null,
       fastQuote,
       partiallyFillable,
+      enableFastPath,
     })
-  }, [updateState, amount, partiallyFillable, fastQuote])
+  }, [updateState, amount, partiallyFillable, fastQuote, enableFastPath])
 }
