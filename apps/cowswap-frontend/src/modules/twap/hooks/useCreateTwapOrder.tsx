@@ -23,7 +23,12 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks, hasBytecode } from 'modules/accountProxy'
+import {
+  assertFactoryDeployed,
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+  getCowShedHooks,
+  hasBytecode,
+} from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -36,7 +41,6 @@ import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
@@ -105,7 +109,6 @@ export function useCreateTwapOrder() {
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const eoaSigner = useAppSigner()
   const config = useConfig()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -185,7 +188,7 @@ export function useCreateTwapOrder() {
       if (!inputCurrencyAmount || !outputCurrencyAmount || !appDataInfo || !twapOrder) return
 
       if (isEoaTwap) {
-        if (!eoaSigner || !walletClient || !twapOrderCreationContext) return
+        if (!walletClient || !twapOrderCreationContext) return
       } else if (
         !twapOrderCreationContext ||
         chainId !== twapOrderCreationContext.chainId ||
@@ -245,6 +248,7 @@ export function useCreateTwapOrder() {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
           const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+          await assertFactoryDeployed(config, cowShedHooks.getFactoryAddress(), `chain ${chainId}`)
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
           isProxyDeployed = await hasBytecode(config, proxyAddress)
 
@@ -304,7 +308,7 @@ export function useCreateTwapOrder() {
         let eventId: string | undefined
 
         if (eoaPoller) {
-          if (!walletClient || !eoaSigner) return
+          if (!walletClient) return
 
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
@@ -327,7 +331,6 @@ export function useCreateTwapOrder() {
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
             poller: pollerNeeds,
-            isProxyDeployed,
           })
 
           // Open the multi-step pending UI as soon as the plan is known.
@@ -366,7 +369,6 @@ export function useCreateTwapOrder() {
             eventId: eventIdParam,
           } = await placeEoaTwapOrder({
             isProxyDeployed,
-            signer: eoaSigner,
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
@@ -481,7 +483,6 @@ export function useCreateTwapOrder() {
       isSafeWallet,
       isSafeViaWc,
       allowsOffchainSigning,
-      eoaSigner,
       config,
       chainId,
       account,

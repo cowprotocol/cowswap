@@ -1,8 +1,6 @@
-import { bytesToHex, encodeFunctionData, type Hex } from 'viem'
+import { encodeFunctionData, type Hex } from 'viem'
 
-import type { Signer } from '@cowprotocol/cow-sdk'
-import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
-import type { CowShedHooks, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import type { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 const COW_SHED_CALL_COMPONENTS = [
   { internalType: 'address', name: 'target', type: 'address' },
@@ -30,13 +28,10 @@ const TRUSTED_EXECUTE_HOOKS_ABI = [
 ] as const
 
 export interface BuildEoaTwapTrustedExecuteTxParams {
-  signer: Signer
-  account: `0x${string}`
   proxyAddress: `0x${string}`
   factoryAddress: `0x${string}`
   calls: ICoWShedCall[]
   isProxyDeployed: boolean
-  cowShedHooks: Pick<CowShedHooks, 'signCalls' | 'encodeExecuteHooksForFactory'>
 }
 
 export interface EoaTwapTrustedExecuteTx {
@@ -55,33 +50,35 @@ type TrustedExecuteHooksCall = {
 /**
  * Builds the single setup transaction for EOA TWAP:
  * - Deployed proxy: EOA (admin) calls `trustedExecuteHooks` on the cow-shed.
- * - New proxy: the factory deploys the proxy and executes signed hooks atomically.
+ * - New proxy: the factory deploys the proxy and executes hooks atomically.
  */
-export async function buildEoaTwapTrustedExecuteTx({
-  account,
-  signer,
+export function buildEoaTwapTrustedExecuteTx({
   proxyAddress,
   factoryAddress,
   calls,
   isProxyDeployed,
-  cowShedHooks,
-}: BuildEoaTwapTrustedExecuteTxParams): Promise<EoaTwapTrustedExecuteTx> {
-  const trustedExecuteCalldata = encodeTrustedExecuteHooksCalldata(calls)
-
+}: BuildEoaTwapTrustedExecuteTxParams): EoaTwapTrustedExecuteTx {
   if (isProxyDeployed) {
     return {
       to: proxyAddress,
-      data: trustedExecuteCalldata,
+      data: encodeTrustedExecuteHooksCalldata(calls),
     }
   }
 
-  const nonce = bytesToHex(crypto.getRandomValues(new Uint8Array(32)))
-  const deadline = BigInt(Math.floor(Date.now() / 1000) + 20 * 60)
-  const signature = await cowShedHooks.signCalls(calls, nonce, deadline, ContractsSigningScheme.EIP712, signer)
-
   return {
     to: factoryAddress,
-    data: cowShedHooks.encodeExecuteHooksForFactory(calls, nonce, deadline, account, signature) as Hex,
+    data: encodeFunctionData({
+      abi: [
+        {
+          ...TRUSTED_EXECUTE_HOOKS_ABI[0],
+          name: 'executeOwnHooks',
+          outputs: [{ name: 'proxy', type: 'address' }],
+          stateMutability: 'payable',
+        },
+      ] as const,
+      functionName: 'executeOwnHooks',
+      args: [calls as TrustedExecuteHooksCall[]],
+    }),
   }
 }
 

@@ -5,23 +5,17 @@ import { readContract } from 'wagmi/actions'
 import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
   createCowLogger,
-  isProdLike,
   normalizeError,
   slowPromiseHandler,
 } from '@cowprotocol/common-utils'
-import { AccountAddress, isEvmChain, type Signer, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
 
-import {
-  assertFactoryDeployed,
-  getCowShedHooks,
-  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
-  EOA_TWAP_SHED_FACTORY_OPTIONS,
-} from 'modules/accountProxy'
+import { getCowShedHooks, EOA_TWAP_ACCOUNT_PROXY_CONFIG, EOA_TWAP_SHED_FACTORY_OPTIONS } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
@@ -99,7 +93,6 @@ export interface GetProxyAllowancesResult {
 
 export interface PlaceEoaTwapOrderParams {
   isProxyDeployed: boolean
-  signer: Signer
   chainId: SupportedChainId
   account: AccountAddress
   twapOrder: TWAPOrder
@@ -250,14 +243,12 @@ export function getEoaTwapOrderShedCalls({
  * - Otherwise on-chain EOA => VaultRelayer zero-approve / approve (`ZeroApprovePoller`, `ApprovePoller`).
  *
  * After that:
- * 1. For a new proxy, sign the setup calls (`TwapSetup`).
- * 2. Send the atomic setup transaction (`TwapSign`) through the factory or existing proxy.
- * 3. Then wait for mining (`SubmitTwap`).
+ * 1. Send the atomic setup transaction (`TwapSign`) through the factory or existing proxy.
+ * 2. Then wait for mining (`SubmitTwap`).
  */
 // eslint-disable-next-line max-lines-per-function
 export async function placeEoaTwapOrder({
   isProxyDeployed,
-  signer,
   chainId,
   account,
   twapOrder,
@@ -303,12 +294,6 @@ export async function placeEoaTwapOrder({
   // `proxyAddress` (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
   const proxyAddress = cowShedHooks.proxyOf(account) as AccountAddress
 
-  // Check if the factory is deployed (skip in prod-like envs):
-
-  if (!isProdLike) {
-    await assertFactoryDeployed(config, factoryAddress, `chain ${chainId}`)
-  }
-
   eoaTwapDebugLog('CowShed account:', proxyAddress)
 
   // Define trade parameters:
@@ -350,18 +335,11 @@ export async function placeEoaTwapOrder({
     pollerPermitData,
   })
 
-  if (!isProxyDeployed) {
-    onSigningStep({ step: EoaTwapSigningSteps.TwapSetup, phase: EoaTwapSigningPhase.Sign })
-  }
-
-  const setupTx = await buildEoaTwapTrustedExecuteTx({
-    signer,
-    account: account as `0x${string}`,
+  const setupTx = buildEoaTwapTrustedExecuteTx({
     proxyAddress: proxyAddress as `0x${string}`,
     factoryAddress,
     calls,
     isProxyDeployed,
-    cowShedHooks,
   })
 
   eoaTwapDebugLog('Setup transaction', setupTx)

@@ -27,7 +27,6 @@ import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 
-import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useCreateTwapOrder } from './useCreateTwapOrder'
@@ -89,7 +88,6 @@ jest.mock('modules/trade', () => ({
   useTradeConfirmActions: jest.fn(),
   useTradePriceImpact: jest.fn(),
 }))
-jest.mock('common/hooks/useAppSigner', () => ({ useAppSigner: jest.fn() }))
 jest.mock('common/hooks/useConfirmPriceImpactWithoutFee', () => ({ useConfirmPriceImpactWithoutFee: jest.fn() }))
 jest.mock('common/utils/getAreBridgeCurrencies', () => ({ getAreBridgeCurrencies: jest.fn(() => false) }))
 jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapFlowUpdater: jest.fn(() => jest.fn()) }))
@@ -111,15 +109,19 @@ jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
 }))
 jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   COMPOSABLE_COW_POLLER_ADDRESS: {
-    1: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
-    100: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
-    11155111: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    1: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    100: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    11155111: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
   },
 }))
 jest.mock('modules/accountProxy', () => ({
   EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
-  getCowShedHooks: jest.fn(() => ({ proxyOf: jest.fn(() => '0xproxy') })),
+  getCowShedHooks: jest.fn(() => ({
+    proxyOf: jest.fn(() => '0xproxy'),
+    getFactoryAddress: jest.fn(() => '0xfactory'),
+  })),
   hasBytecode: jest.fn().mockResolvedValue(true),
+  assertFactoryDeployed: jest.fn().mockResolvedValue(undefined),
 }))
 jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
 jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
@@ -154,7 +156,6 @@ const mockedUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermi
 const mockedGetCowSoundSend = getCowSoundSend as jest.MockedFunction<typeof getCowSoundSend>
 const mockedUseTradeConfirmActions = useTradeConfirmActions as jest.MockedFunction<typeof useTradeConfirmActions>
 const mockedUseTradePriceImpact = useTradePriceImpact as jest.MockedFunction<typeof useTradePriceImpact>
-const mockedUseAppSigner = useAppSigner as jest.MockedFunction<typeof useAppSigner>
 const mockedUseConfirmPriceImpactWithoutFee = useConfirmPriceImpactWithoutFee as jest.MockedFunction<
   typeof useConfirmPriceImpactWithoutFee
 >
@@ -214,7 +215,6 @@ describe('useCreateTwapOrder', () => {
       onError: jest.fn(),
     } as unknown as ReturnType<typeof useTradeConfirmActions>)
     mockedUseTradePriceImpact.mockReturnValue({ priceImpact: undefined } as ReturnType<typeof useTradePriceImpact>)
-    mockedUseAppSigner.mockReturnValue({} as ReturnType<typeof useAppSigner>)
     mockedUseConfirmPriceImpactWithoutFee.mockReturnValue({
       confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
     } as unknown as ReturnType<typeof useConfirmPriceImpactWithoutFee>)
@@ -392,17 +392,12 @@ describe('useCreateTwapOrder', () => {
     expect(hasBytecode).toHaveBeenCalledWith(expect.anything(), '0xproxy')
     expect(updateEoaTwapFlow).toHaveBeenCalledWith(
       expect.objectContaining({
-        plan: [
-          ...(isProxyDeployed ? [] : [EoaTwapSigningSteps.TwapSetup]),
-          EoaTwapSigningSteps.TwapSign,
-          EoaTwapSigningSteps.SubmitTwap,
-        ],
+        plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
       }),
     )
     expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
       expect.objectContaining({
         isProxyDeployed,
-        signer: mockedUseAppSigner.mock.results[0]?.value,
         walletClient: expect.anything(),
         pollerPermitData: null,
       }),

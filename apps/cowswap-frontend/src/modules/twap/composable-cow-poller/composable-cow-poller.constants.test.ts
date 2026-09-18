@@ -8,6 +8,6 @@ describe('COMPOSABLE_COW_POLLER_ADDRESS', () => {
   })
 
   it('defines the poller address on EVM chains', () => {
-    expect(COMPOSABLE_COW_POLLER_ADDRESS[EvmChains.MAINNET]).toBe('0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E')
+    expect(COMPOSABLE_COW_POLLER_ADDRESS[EvmChains.MAINNET]).toBe('0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3')
   })
 })
