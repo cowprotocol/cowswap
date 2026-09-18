@@ -8,7 +8,7 @@ msgstr ""
 "Language: de\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-18 09:42\n"
+"PO-Revision-Date: 2026-09-18 13:45\n"
 "Last-Translator: \n"
 "Language-Team: German\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2646,6 +2646,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 msgid "Refunding"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateBuyAtaStep.ts
+msgid "Create {buySymbol} account"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
