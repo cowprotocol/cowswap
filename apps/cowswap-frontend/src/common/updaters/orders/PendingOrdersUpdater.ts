@@ -2,6 +2,9 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
+import { type Config, useConfig } from 'wagmi'
+import { getCallsStatus } from 'wagmi/actions'
+
 import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { areAddressesEqual, EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
@@ -95,6 +98,7 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeNonce: number | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
+  config: Config
   markPollComplete?: (chainId: ChainId) => void
 }
 
@@ -145,6 +149,7 @@ export function PendingOrdersUpdater(): null {
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
+  const config = useConfig()
   const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
   const getSerializedBridgeOrderRef = useRef(getSerializedBridgeOrder)
 
@@ -214,6 +219,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeNonce,
           allTransactions,
+          config,
           markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
           isUpdating.current = false
@@ -233,6 +239,7 @@ export function PendingOrdersUpdater(): null {
       getSafeTxInfo,
       safeNonce,
       allTransactions,
+      config,
       markPollComplete,
     ],
   )
@@ -341,6 +348,50 @@ async function _updateCreatingOrders(
   await Promise.all(promises)
 }
 
+/**
+ * Track EIP-5792 approval+presign bundles submitted by EIP-7702 wallets.
+ *
+ * These orders store an EIP-5792 bundle id in `presignGnosisSafeTxHash` (flagged by
+ * `presignIsEip5792Bundle`) and cannot be resolved through the Safe transaction service. We poll the
+ * wallet with `getCallsStatus` instead: while the bundle is pending the order stays in
+ * PRESIGNATURE_PENDING, and once mined the backend reports the order as presigned so the regular poll
+ * promotes it to PENDING. If the bundle fails, we invalidate the order so it doesn't hang forever.
+ */
+async function _updateEip5792BundleStatus(
+  chainId: ChainId,
+  allPendingOrders: Order[],
+  config: Config,
+  invalidateOrdersBatch: InvalidateOrdersBatchCallback,
+  isSafeWallet: boolean,
+): Promise<void> {
+  const promises = allPendingOrders
+    .filter(
+      (order) =>
+        order.presignIsEip5792Bundle &&
+        order.presignGnosisSafeTxHash &&
+        order.status === OrderStatus.PRESIGNATURE_PENDING,
+    )
+    .map((order): Promise<void> => {
+      const bundleId = order.presignGnosisSafeTxHash as string
+
+      return getCallsStatus(config, { id: bundleId })
+        .then((result) => {
+          // 'pending' -> keep waiting; 'success' -> backend will report the order presigned and the
+          // regular poll moves it to PENDING, so nothing to do here.
+          if (result.status === 'failure') {
+            console.warn('[PendingOrdersUpdater] EIP-5792 bundle failed, invalidating order:', order.id, bundleId)
+            invalidateOrdersBatch({ ids: [order.id], chainId, isSafeWallet })
+          }
+        })
+        .catch((error) => {
+          // The wallet may not have indexed the bundle yet; keep polling on the next tick.
+          console.debug('[PendingOrdersUpdater] Failed to fetch EIP-5792 bundle status:', bundleId, error)
+        })
+    })
+
+  await Promise.all(promises)
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 async function _updateOrders({
@@ -361,6 +412,7 @@ async function _updateOrders({
   getSafeTxInfo,
   safeNonce,
   allTransactions,
+  config,
   markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
@@ -471,6 +523,8 @@ async function _updateOrders({
     cancelOrdersBatch,
     safeNonce,
   )
+  // Track EIP-5792 approval+presign bundles (EIP-7702 wallets) via getCallsStatus
+  await _updateEip5792BundleStatus(chainId, orders, config, invalidateOrdersBatch, isSafeWallet)
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
 
@@ -492,8 +546,13 @@ async function _updatePresignGnosisSafeTx(
   safeNonce: number | undefined,
 ) {
   const getSafeTxPromises = allPendingOrders
-    // Update orders that are pending for presingature
-    .filter((order) => order.presignGnosisSafeTxHash && order.status === OrderStatus.PRESIGNATURE_PENDING)
+    // Update orders that are pending for presingature (EIP-5792 bundles are tracked separately)
+    .filter(
+      (order) =>
+        order.presignGnosisSafeTxHash &&
+        !order.presignIsEip5792Bundle &&
+        order.status === OrderStatus.PRESIGNATURE_PENDING,
+    )
     .map((order): Promise<void> => {
       // Get safe info and receipt
       const presignGnosisSafeTxHash = order.presignGnosisSafeTxHash as string
