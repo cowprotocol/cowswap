@@ -28,7 +28,7 @@ jobs:
             def esc: gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
 
             def line:
-              "• <\(.url)|#\(.number)> \(.title | esc) — @\(.author.login | esc) · "
+              "• <\(.url)|#\(.number)> \(.title | sub("\\s+$"; "") | esc) — @\(.author.login | esc) · "
               + (if .days >= 14 then "⚠️ " else "" end) + "\(.days)d"
               + (if (.reviewRequests | length) > 0
                  then "\n    reviewers: "
