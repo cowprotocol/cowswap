@@ -188,6 +188,9 @@ importers:
       babel-jest:
         specifier: 30.2.0
         version: 30.2.0(@babel/core@7.28.4)
+      babel-plugin-macros:
+        specifier: 3.1.0
+        version: 3.1.0
       babel-plugin-styled-components:
         specifier: 2.1.4
         version: 2.1.4(@babel/core@7.28.4)(styled-components@5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2))(supports-color@5.5.0)
