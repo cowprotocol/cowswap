@@ -23,7 +23,7 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks, hasBytecode } from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -239,12 +239,14 @@ export function useCreateTwapOrder() {
         let salt: Hex | undefined
         let updatedAppData = appDataInfo
         let updatedTwapOrder = twapOrder
+        let isProxyDeployed = false
 
         if (eoaPoller) {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
           const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
+          isProxyDeployed = await hasBytecode(config, proxyAddress)
 
           // Schedule id is appData-independent; compute before injecting pollFunds into appData.
           const scheduleId = getComposableCowPollerScheduleId({
@@ -325,6 +327,7 @@ export function useCreateTwapOrder() {
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
             poller: pollerNeeds,
+            isProxyDeployed,
           })
 
           // Open the multi-step pending UI as soon as the plan is known.
@@ -362,6 +365,8 @@ export function useCreateTwapOrder() {
             setupTxHash,
             eventId: eventIdParam,
           } = await placeEoaTwapOrder({
+            isProxyDeployed,
+            signer: eoaSigner,
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,

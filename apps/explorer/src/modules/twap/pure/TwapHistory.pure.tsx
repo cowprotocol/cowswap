@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 
+import { useMachineTimeMs } from '@cowprotocol/common-hooks'
 import { getAddressKey, type AddressKey, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 import { TruncatedText } from '@cowprotocol/ui'
@@ -14,6 +15,8 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
+import { FilterRow, Filters, HiddenOrdersLegend } from 'components/orders/OrdersUserDetailsTable'
+import { ToggleFilter } from 'components/orders/OrdersUserDetailsTable/ToggleFilter'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import TablePagination from 'explorer/components/common/TablePagination'
@@ -95,6 +98,7 @@ function TwapHistoryAmount({
   )
 }
 
+// eslint-disable-next-line max-lines-per-function
 function TwapHistoryTable({
   orders,
   chainId,
@@ -102,6 +106,9 @@ function TwapHistoryTable({
   orders: TwapOrder[] | undefined
   chainId: SupportedChainId | undefined
 }): ReactNode {
+  const [showScheduled, setShowScheduled] = useState(false)
+  const [showCancelledAndExpired, setShowCancelledAndExpired] = useState(false)
+  const now = useMachineTimeMs(1000)
   const tokenAddresses = useMemo(
     () => orders?.flatMap(({ schedule }) => [schedule.sellToken, schedule.buyToken]) ?? [],
     [orders],
@@ -109,6 +116,19 @@ function TwapHistoryTable({
   const { value: tokens } = useMultipleErc20({ addresses: tokenAddresses, networkId: chainId })
 
   if (!orders?.length) return <styledEl.EmptyState>No TWAP orders.</styledEl.EmptyState>
+
+  const scheduled = orders.filter((order) => order.status === 'open' && order.schedule.effectiveStartTime * 1000 > now)
+  const cancelledAndExpired = orders.filter(
+    (order) =>
+      (order.status === 'cancelled' || order.status === 'expired') &&
+      order.executedAmounts.executedSellAmount === 0n &&
+      order.executedAmounts.executedBuyAmount === 0n,
+  )
+  const visibleOrders = orders.filter(
+    (order) =>
+      (showScheduled || !scheduled.includes(order)) &&
+      (showCancelledAndExpired || !cancelledAndExpired.includes(order)),
+  )
 
   return (
     <SimpleTable
@@ -126,49 +146,94 @@ function TwapHistoryTable({
           <th>Status</th>
         </tr>
       }
-      body={orders.map((order) => {
-        const sellToken = tokens[getAddressKey(order.schedule.sellToken)]
-        const buyToken = tokens[getAddressKey(order.schedule.buyToken)]
-        const intendedSellAmount = order.schedule.partSellAmount * BigInt(order.schedule.numberOfParts)
-        const intendedBuyAmount = order.schedule.minPartLimit * BigInt(order.schedule.numberOfParts)
-        const progress = getTwapProgress(order.executedAmounts.executedSellAmount, intendedSellAmount)
+      body={
+        <>
+          {visibleOrders.map((order) => {
+            const sellToken = tokens[getAddressKey(order.schedule.sellToken)]
+            const buyToken = tokens[getAddressKey(order.schedule.buyToken)]
+            const intendedSellAmount = order.schedule.partSellAmount * BigInt(order.schedule.numberOfParts)
+            const intendedBuyAmount = order.schedule.minPartLimit * BigInt(order.schedule.numberOfParts)
+            const progress = getTwapProgress(order.executedAmounts.executedSellAmount, intendedSellAmount)
 
-        return (
-          <tr key={order.eventId}>
-            <td>
-              <styledEl.EventLink>
-                <RowWithCopyButton
-                  textToCopy={order.eventId}
-                  contentsToDisplay={
-                    <LinkWithPrefixNetwork to={`/twap/${order.eventId}`}>
-                      <TruncatedText>{abbreviateString(order.eventId, 12, 6)}</TruncatedText>
-                    </LinkWithPrefixNetwork>
-                  }
-                />
-              </styledEl.EventLink>
-            </td>
-            <td>
-              <TwapHistoryAmount amount={intendedSellAmount} token={sellToken} chainId={order.chainId} />
-            </td>
-            <td>
-              <TwapHistoryAmount amount={intendedBuyAmount} token={buyToken} chainId={order.chainId} />
-            </td>
-            <td>
-              <ProgressBar percentage={String(progress)} />
-            </td>
-            <td>
-              <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
-            </td>
-            <td>
-              <StatusLabel
-                status={order.status}
-                partiallyFilled={order.status === 'open' && order.executedAmounts.executedSellAmount > 0n}
-                filledPercentage={new BigNumber(progress).div(100)}
-              />
-            </td>
-          </tr>
-        )
-      })}
+            return (
+              <tr key={order.eventId}>
+                <td>
+                  <styledEl.EventLink>
+                    <RowWithCopyButton
+                      textToCopy={order.eventId}
+                      contentsToDisplay={
+                        <LinkWithPrefixNetwork to={`/twap/${order.eventId}`}>
+                          <TruncatedText>{abbreviateString(order.eventId, 12, 6)}</TruncatedText>
+                        </LinkWithPrefixNetwork>
+                      }
+                    />
+                  </styledEl.EventLink>
+                </td>
+                <td>
+                  <TwapHistoryAmount amount={intendedSellAmount} token={sellToken} chainId={order.chainId} />
+                </td>
+                <td>
+                  <TwapHistoryAmount amount={intendedBuyAmount} token={buyToken} chainId={order.chainId} />
+                </td>
+                <td>
+                  <ProgressBar percentage={String(progress)} />
+                </td>
+                <td>
+                  <DateDisplay date={new Date(order.createdAt * 1000)} showIcon />
+                </td>
+                <td>
+                  <StatusLabel
+                    status={order.status}
+                    partiallyFilled={order.status === 'open' && order.executedAmounts.executedSellAmount > 0n}
+                    filledPercentage={new BigNumber(progress).div(100)}
+                  />
+                </td>
+              </tr>
+            )
+          })}
+          {(scheduled.length > 0 || cancelledAndExpired.length > 0) && (
+            <FilterRow>
+              <td colSpan={6}>
+                <div>
+                  <HiddenOrdersLegend>
+                    {visibleOrders.length < orders.length ? (
+                      <>
+                        <p>
+                          Showing {visibleOrders.length} out of {orders.length} orders for the current page.
+                        </p>
+                        <p>
+                          {orders.length - visibleOrders.length} orders are hidden, you can make them visible using the
+                          filters below.
+                        </p>
+                      </>
+                    ) : (
+                      <p>Showing all {orders.length} orders for the current page.</p>
+                    )}
+                  </HiddenOrdersLegend>
+                  <Filters>
+                    {scheduled.length > 0 && (
+                      <ToggleFilter
+                        checked={showScheduled}
+                        onChange={() => setShowScheduled((value) => !value)}
+                        label={(showScheduled ? 'Hide' : 'Show') + ' scheduled'}
+                        count={scheduled.length}
+                      />
+                    )}
+                    {cancelledAndExpired.length > 0 && (
+                      <ToggleFilter
+                        checked={showCancelledAndExpired}
+                        onChange={() => setShowCancelledAndExpired((value) => !value)}
+                        label={(showCancelledAndExpired ? 'Hide' : 'Show') + ' cancelled/expired'}
+                        count={cancelledAndExpired.length}
+                      />
+                    )}
+                  </Filters>
+                </div>
+              </td>
+            </FilterRow>
+          )}
+        </>
+      }
     />
   )
 }

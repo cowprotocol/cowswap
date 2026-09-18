@@ -6,6 +6,7 @@ export const DetailsTableTooltips = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
   to: 'The account address which will/did receive the bought amount.',
+  toSolana: 'The token account which will/did receive the bought amount. This is not a wallet address.',
   toBridgeProxy: (
     <span>
       The <AccountProxyLink>{ACCOUNT_PROXY_LABEL_EXPLORER}</AccountProxyLink> address which will/did receive bought

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -24,7 +24,9 @@ export function ToItem({ receiver, isBridgingOrder, bridgeProviderType, onCopy, 
     ? bridgeProviderType === 'ReceiverAccountBridgeProvider'
       ? DetailsTableTooltips.toBridgeReceiver
       : DetailsTableTooltips.toBridgeProxy
-    : DetailsTableTooltips.to
+    : isSolanaChain(chainId)
+      ? DetailsTableTooltips.toSolana
+      : DetailsTableTooltips.to
 
   return (
     <DetailRow label="To" tooltipText={toTooltip}>
@@ -35,12 +37,15 @@ export function ToItem({ receiver, isBridgingOrder, bridgeProviderType, onCopy, 
           <AddressLink address={receiver} chainId={chainId} showIcon showNetworkName={isBridgingOrder} />
         }
       />
-      <Wrapper>
-        <LinkButton to={`/address/${receiver}`}>
-          <FontAwesomeIcon icon={faHistory} />
-          Order history
-        </LinkButton>
-      </Wrapper>
+      {/* TODO: on Solana this needs the token account's owner, and a user page that supports it */}
+      {!isSolanaChain(chainId) && (
+        <Wrapper>
+          <LinkButton to={`/address/${receiver}`}>
+            <FontAwesomeIcon icon={faHistory} />
+            Order history
+          </LinkButton>
+        </Wrapper>
+      )}
     </DetailRow>
   )
 }

@@ -21,7 +21,6 @@ import {
   TargetChainId,
 } from '@cowprotocol/cow-sdk'
 
-import { IS_SOLANA_ENABLED } from './featureFlags'
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
 
@@ -175,12 +174,9 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.PLASMA,
   SupportedChainId.INK,
   SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.SOLANA,
   SupportedChainId.SEPOLIA,
 ]
-
-if (IS_SOLANA_ENABLED) {
-  SORTED_CHAIN_IDS.push(SupportedChainId.SOLANA)
-}
 
 /**
  * Sorted array of chain IDs in order of relevance.

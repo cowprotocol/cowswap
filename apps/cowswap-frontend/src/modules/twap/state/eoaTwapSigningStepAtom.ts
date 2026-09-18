@@ -44,7 +44,9 @@ export enum EoaTwapSigningSteps {
   ApprovePoller = 'ApprovePoller',
   /** EIP-2612 / Dai-like permit for ComposableCowPoller. */
   PermitPoller = 'PermitPoller',
-  /** Cow-shed `trustedExecuteHooks` setup transaction. */
+  /** Sign setup authorization when the cow-shed is not yet deployed. */
+  TwapSetup = 'TwapSetup',
+  /** Sign and submit the transaction that creates the TWAP. */
   TwapSign = 'TwapSign',
   /** Wait for the setup transaction to be mined. */
   SubmitTwap = 'SubmitTwap',
