@@ -87,7 +87,7 @@ interface RowProps {
   showPreSigning: boolean
 }
 
-const FilterRow = styled.tr`
+export const FilterRow = styled.tr`
   background: ${Color.explorer_background};
 
   @media (max-width: 1155px) {
@@ -112,7 +112,7 @@ const FilterRow = styled.tr`
   }
 `
 
-const Filters = styled.div`
+export const Filters = styled.div`
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -120,7 +120,7 @@ const Filters = styled.div`
   gap: 1rem;
 `
 
-const HiddenOrdersLegend = styled.div`
+export const HiddenOrdersLegend = styled.div`
   p {
     text-align: center;
   }
