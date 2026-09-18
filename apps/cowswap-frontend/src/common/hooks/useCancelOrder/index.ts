@@ -103,6 +103,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // Updates the cancellation context with details pertaining the order
           setContext({
             orderId: order.id,
+            order,
             chainId,
             defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
             onDismiss,
