@@ -84,7 +84,8 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
-      intent: { owner: new PublicKey(SOLANA_ACCOUNT) },
+      // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
+      intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
@@ -239,6 +240,11 @@ describe('solanaFlow', () => {
           // deadline picked after quoting is missing from the order until indexing replaces it.
           receiver: context.context.receiver,
           validTo: context.context.validTo,
+          // Amounts come from the signed intent, not the quote: the quote's are pre-slippage, so using
+          // them would show a limit price the on-chain order does not have.
+          sellAmount: '1000000',
+          buyAmount: '1900000',
+          sellAmountBeforeFee: '1000000',
         }),
       }),
       context.callbacks.dispatch,

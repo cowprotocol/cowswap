@@ -37,6 +37,9 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     amount,
     kind,
     validForSeconds: quoteParams.validFor,
+    // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
+    // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
+    slippageBps: quoteParams.swapSlippageBps,
   })
 
   return {
