@@ -75,7 +75,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
     const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
-    const showEnsTooltip = isBridging && !isNonEvmBridging && !!recipient && !!parseENSAddress(recipient)
+    const showEnsTooltip = isBridging && !isNonEvmBridging && !!recipient && !!parseENSAddress(recipient.toLowerCase())
 
     return (
       <TradeFormBlankButton disabled>
