@@ -1,4 +1,3 @@
-import { DEFAULT_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
 
@@ -38,9 +37,9 @@ export async function getSolanaQuote(quoteParams: QuoteBridgeRequest): Promise<S
     amount,
     kind,
     validForSeconds: quoteParams.validFor,
-    // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance is ours
-    // to set — the user's when they picked one, otherwise the same default the rest of the app uses.
-    slippageBps: quoteParams.swapSlippageBps ?? DEFAULT_SLIPPAGE_BPS,
+    // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
+    // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
+    slippageBps: quoteParams.swapSlippageBps,
   })
 
   return {
