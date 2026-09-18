@@ -8,7 +8,7 @@ msgstr ""
 "Language: nl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-17 09:30\n"
+"PO-Revision-Date: 2026-09-18 08:27\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -19,6 +19,7 @@ msgstr ""
 "X-Crowdin-File-ID: 12\n"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr ""
 
@@ -7943,8 +7944,8 @@ msgstr ""
 #~ msgstr "Save"
 
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
-msgid "Wallet signer is required to cancel an EOA TWAP order"
-msgstr ""
+#~ msgid "Wallet signer is required to cancel an EOA TWAP order"
+#~ msgstr "Wallet signer is required to cancel an EOA TWAP order"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Modified recipient address to"
