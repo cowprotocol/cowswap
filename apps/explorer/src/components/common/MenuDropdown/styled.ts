@@ -17,7 +17,7 @@ export const Wrapper = styled.div<{ isMobileMenuOpen: boolean }>`
     flex-wrap: wrap;
     justify-content: flex-start;
     align-items: flex-start;
-    ${Media.MediumAndUp()} {
+    ${Media.SmallAndUp()} {
       min-height: 0;
       flex-direction: inherit;
       background: transparent;

@@ -74,7 +74,7 @@ export const CloseIcon = styled(X)`
 `
 
 export const FlyoutMenu = styled.div`
-  ${Media.MediumAndUp()} {
+  ${Media.SmallAndUp()} {
     position: absolute;
     width: 272px;
     z-index: 99;
@@ -193,7 +193,7 @@ export const SelectorWrapper = styled.div`
   cursor: pointer;
   height: 100%;
 
-  ${Media.MediumAndUp()} {
+  ${Media.SmallAndUp()} {
     position: relative;
   }
 `
