@@ -72,10 +72,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
+    recipientEnsAddress,
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
     const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
-    const showEnsTooltip = isBridging && !isNonEvmBridging && !!recipient && !!parseENSAddress(recipient.toLowerCase())
+    const isEnsRecipient = !!recipient && (!!parseENSAddress(recipient.toLowerCase()) || !!recipientEnsAddress)
+    const showEnsTooltip = isBridging && !isNonEvmBridging && isEnsRecipient
 
     return (
       <TradeFormBlankButton disabled>

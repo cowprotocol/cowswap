@@ -31,6 +31,7 @@ function renderRecipientInvalidButton(params: {
   inputChainId: number
   outputChainId: number
   recipient: string
+  recipientEnsAddress?: string
 }): HTMLElement {
   const context = {
     derivedState: {
@@ -38,6 +39,7 @@ function renderRecipientInvalidButton(params: {
       outputCurrency: currencyOnChain(params.outputChainId),
       recipient: params.recipient,
     },
+    recipientEnsAddress: params.recipientEnsAddress ?? null,
   } as unknown as TradeFormButtonContext
 
   const { container } = render(
@@ -117,6 +119,19 @@ describe('tradeButtonsMap: RecipientInvalid', () => {
       inputChainId: SupportedChainId.MAINNET,
       outputChainId: SupportedChainId.BASE,
       recipient: 'VITALIK.ETH',
+    })
+
+    showTooltip(container)
+
+    expect(screen.getByText(ENS_TOOLTIP_TEXT)).toBeTruthy()
+  })
+
+  it('shows the ENS tooltip for a non-.eth name that resolves through ENS', () => {
+    const container = renderRecipientInvalidButton({
+      inputChainId: SupportedChainId.MAINNET,
+      outputChainId: SupportedChainId.BASE,
+      recipient: 'cow.box',
+      recipientEnsAddress: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
     })
 
     showTooltip(container)
