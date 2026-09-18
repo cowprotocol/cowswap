@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-18 09:42\n"
+"PO-Revision-Date: 2026-09-18 10:53\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -128,7 +128,7 @@ msgstr "<0>Соединение потеряно</0><1/>Похоже, вы не 
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{hours, plural, one {# hour} few {# hours} many {# hours} other {# hours}}"
-msgstr ""
+msgstr "{hours, plural, one {# час} few {# часа} many {# часов} other {# часа}}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
@@ -280,7 +280,7 @@ msgstr "Непредвиденная ошибка при получении да
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/TwapStatusAndToggle.pure.tsx
 msgid "{totalParts, plural, one {# part} few {# parts} many {# parts} other {# parts}}"
-msgstr ""
+msgstr "{totalParts, plural, one {# часть} few {# части} many {# частей} other {# части}}"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "is a helper contract that improves the user experience within CoW Swap for features like"
@@ -335,7 +335,7 @@ msgstr "Провайдер бриджа изменил адрес получат
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Start time first part (1/{partsCount})"
-msgstr ""
+msgstr "Время начала первой части (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation was successful. Your transaction is expected to succeed."
@@ -347,7 +347,7 @@ msgstr "Обнаружены ошибки в конфигурации видже
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more <0><1/></0> before that time."
-msgstr ""
+msgstr "Если баланс останется недостаточным к моменту создания, эта часть ордера не будет создана. Пополните баланс <0><1/></0> до этого."
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Provide liquidity"
@@ -359,7 +359,7 @@ msgstr "Добавить пост-хук"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "{symbolName} orders require a minimum transaction expiration time threshold of {minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}} to ensure the best swapping experience."
-msgstr ""
+msgstr "Ордера с {symbolName} требуют минимального срока действия транзакции в {minutes, plural, one {# минуту} few {# минуты} many {# минут} other {# минуты}} для обеспечения наилучшего результата обмена."
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 msgid "The page you are looking for does not exist."
@@ -686,7 +686,7 @@ msgstr "Получатель в  {chainName} сети. Подтвердите п
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell amount per part (1/{partsCount})"
-msgstr ""
+msgstr "Сумма продажи за часть (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
@@ -800,7 +800,7 @@ msgstr "Адрес контракта EthFlow ({actualContractAddress}) не с�
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping {inputSymbol}"
-msgstr ""
+msgstr "Разворачивание {inputSymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
 msgid "Active referral code"
@@ -1147,7 +1147,7 @@ msgstr "Подпись"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}}"
-msgstr ""
+msgstr "{minutes, plural, one {# минута} few {# минуты} many {# минут} other {# минуты}}"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Already seen today's fortune? Return tomorrow for a fresh one!"
@@ -1243,7 +1243,7 @@ msgstr "В CoW Swap, вы можете размещать лимитные ор�
 #. placeholder {0}: solversLength - 3
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "View {0, plural, one {# more} few {# more} many {# more} other {# more}}"
-msgstr ""
+msgstr "Показать {0, plural, one {еще #} few {еще #} many {еще #} other {еще #}}"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
@@ -1604,7 +1604,7 @@ msgstr "Недостаточно баланса {symbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Earn <0>{rewardAmount}</0> per <1>{triggerVolume}</1> of eligible volume over {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}. Rewards are paid out weekly to your Ethereum wallet."
-msgstr ""
+msgstr "Зарабатывайте <0>{rewardAmount}</0> за каждые <1>{triggerVolume}</1> подходящего объема за {timeCapDays, plural, one {# день} few {# дня} many {# дней} other {# дня}}. Награды выплачиваются еженедельно на ваш Ethereum-кошелек."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "This hook is not compatible with your wallet"
@@ -1624,7 +1624,7 @@ msgstr "Минимизировать влияние на цены с помощ�
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{months, plural, one {# month} few {# months} many {# months} other {# months}}"
-msgstr ""
+msgstr "{months, plural, one {# месяц} few {# месяца} many {# месяцев} other {# месяца}}"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/AdvancedOrdersSettings.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
@@ -1638,7 +1638,7 @@ msgstr "Переключиться на {wrappedNativeSymbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 msgid "Found {totalOpenOrders, plural, one {# open order} few {# open orders} many {# open orders} other {# open orders}} in the {limit} most recent ones."
-msgstr ""
+msgstr "{totalOpenOrders, plural, one {Найден # открытый ордер} few {Найдено # открытых ордера} many {Найдено # открытых ордеров} other {Найдено # открытых ордеров}} среди последних {limit}."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
 #~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
@@ -1712,7 +1712,7 @@ msgstr "Объём торгов для наград"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Insufficient <0><1/></0> balance detected."
-msgstr ""
+msgstr "Обнаружен недостаточный баланс <0><1/></0>."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
@@ -1724,7 +1724,7 @@ msgstr "Высокое проскальзывание может ухудшит�
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Buy amount per part (1/{partsCount})"
-msgstr ""
+msgstr "Сумма покупки за часть (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -1869,7 +1869,7 @@ msgstr "Влияние на цену из-за текущих уровней л�
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "You got an extra"
-msgstr ""
+msgstr "Вы получили дополнительно"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -2130,7 +2130,7 @@ msgstr "Закрыто"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this tip!"
-msgstr ""
+msgstr "Поделиться советом!"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
@@ -2235,7 +2235,7 @@ msgstr "Пользователь отклонил запрос."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 msgid "{REF_CODE_MIN_LENGTH, plural, one {The code must be at least # character long.} few {The code must be at least # characters long.} many {The code must be at least # characters long.} other {The code must be at least # characters long.}}"
-msgstr ""
+msgstr "{REF_CODE_MIN_LENGTH, plural, one {Код должен содержать как минимум # символ.} few {Код должен содержать как минимум # символа.} many {Код должен содержать как минимум # символов.} other {Код должен содержать как минимум # символа.}}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
@@ -2664,11 +2664,11 @@ msgstr "Не удалось отменить ордер на продажу {sel
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "TWAP order split in <0>{partsCount, plural, one {# equal part} few {# equal parts} many {# equal parts} other {# equal parts}}</0>"
-msgstr ""
+msgstr "TWAP-ордер разделен на <0>{partsCount, plural, one {# равную часть} few {# равные части} many {# равных частей} other {# равные части}}</0>"
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "Swap at most {inputAmountValue} {inputSymbol} for {outputAmountValue} {outputSymbol} to {toAddress}"
-msgstr ""
+msgstr "Обменять не более {inputAmountValue} {inputSymbol} на {outputAmountValue} {outputSymbol} с отправкой на {toAddress}"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "You are solely responsible for complying with your local laws."
@@ -2677,7 +2677,8 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Hey, I just saved an extra {surplus} on @CoWSwap! 🐮💸\n\n"
 "Start swapping on swap.cow.fi"
-msgstr ""
+msgstr "Только что сэкономил {surplus} на @CoWSwap! 🐮💸\n\n"
+"Обменивайте на swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -2829,7 +2830,7 @@ msgstr "Суммы одобрения (approval) недостаточно для
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "including an extra {amount}"
-msgstr ""
+msgstr "включая дополнительно {amount}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "and"
@@ -2934,7 +2935,7 @@ msgstr "Настройки лимитных ордеров"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 msgid "{action} {sellAmount} for at least {receiveAmount}"
-msgstr ""
+msgstr "{action} {sellAmount} как минимум на {receiveAmount}"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #~ msgid "Swap with {symbol}"
@@ -3141,7 +3142,7 @@ msgstr "Ваш ордер может быть исполнен не в тот м
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "sell order"
-msgstr ""
+msgstr "ордер на продажу"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "BEFORE"
@@ -3150,7 +3151,7 @@ msgstr "ДО"
 #. placeholder {0}: averageProvidersNames?.length ?? 0
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "{0, plural, one {yield over average {providersList} pool} few {yield over average {providersList} pools} many {yield over average {providersList} pools} other {yield over average {providersList} pools}}"
-msgstr ""
+msgstr "{0, plural, one {доходность выше среднего пула {providersList}} few {доходность выше средних пулов {providersList}} many {доходность выше средних пулов {providersList}} other {доходность выше средних пулов {providersList}}}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalUnsupported.tsx
 #~ msgid "Connect to verify eligibility. Code binds on your first eligible trade. Earn rewards for eligible volume within the program window. Payouts happen on Ethereum mainnet."
@@ -7482,7 +7483,7 @@ msgstr "Неизвестная валюта"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
-msgstr ""
+msgstr "Делитесь своим реферальным кодом и получайте <0>{partnerRewardAmount}</0> за каждые <1>{triggerVolumeLabel}</1> подходящего объема за {affiliateTimeCapDays, plural, one {# день} few {# дня} many {# дней} other {# дня}}."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
@@ -7511,7 +7512,8 @@ msgstr "Предсказание CoW дня"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Hey, I just got an extra {surplus} on @CoWSwap! 🐮💸\n\n"
 "Start swapping on swap.cow.fi"
-msgstr ""
+msgstr "Только что получил дополнительно {surplus} на @CoWSwap! 🐮💸\n\n"
+"Обменивайте на swap.cow.fi"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Order ID"
@@ -7942,7 +7944,7 @@ msgstr "Светлая тема"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
-msgstr ""
+msgstr "{seconds, plural, one {# секунда} few {# секунды} many {# секунд} other {# секунды}}"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #~ msgid "Approve and swap"
@@ -7966,7 +7968,7 @@ msgstr "Добавить ху"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "{ordersCount, plural, one {Cancelling # order} few {Cancelling # orders} many {Cancelling # orders} other {Cancelling # orders}}"
-msgstr ""
+msgstr "{ordersCount, plural, one {Отмена # ордера} few {Отмена # ордеров} many {Отмена # ордеров} other {Отмена # ордеров}}"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
 msgid "select"
@@ -8194,7 +8196,7 @@ msgstr "Ваш ордер был создан в указанное время. 
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping {inputSymbol}"
-msgstr ""
+msgstr "Оборачивание {inputSymbol}"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
@@ -8341,7 +8343,7 @@ msgstr "Продолжить подпись"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{days, plural, one {# day} few {# days} many {# days} other {# days}}"
-msgstr ""
+msgstr "{days, plural, one {# день} few {# дня} many {# дней} other {# дня}}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Placing TWAP"
@@ -8421,7 +8423,7 @@ msgstr "1 неделя"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{years, plural, one {# year} few {# years} many {# years} other {# years}}"
-msgstr ""
+msgstr "{years, plural, one {# год} few {# года} many {# лет} other {# года}}"
 
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
 #~ msgid "Eth flow context is not ready"
@@ -8446,7 +8448,7 @@ msgstr "Юридическая информация"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "and got an extra {amount}"
-msgstr ""
+msgstr "и дополнительно получено {amount}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "You will be prompted to <0>wrap your {nativeSymbol} to {wrappedSymbol}</0> before placing your order."
@@ -8458,7 +8460,7 @@ msgstr "Вам будет предложено <0>обернуть {nativeSymbol
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "The order remains open. Execution requires adequate allowance for <0><1/></0>. Approve the token to proceed."
-msgstr ""
+msgstr "Ордер остается открытым. Для его исполнения требуется достаточный лимит одобрения для <0><1/></0>. Одобрите токен, чтобы продолжить."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "User rejected signing COW claim transaction"
@@ -9055,7 +9057,7 @@ msgstr "Неверный URL: путь содержит несколько ид�
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "You saved an extra"
-msgstr ""
+msgstr "Вы сэкономили"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
