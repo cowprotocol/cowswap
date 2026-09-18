@@ -11,6 +11,101 @@ import type * as CSS from 'csstype'
 export type { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type { OnTradeParamsPayload } from '@cowprotocol/events'
 
+/**
+ * Configuration for settling the widget's orders through a `CowAuthWrapper`
+ * (see the `CowAuthWrapper.sol` base contract).
+ *
+ * When set, an order is no longer signed as a plain CoW order. Instead:
+ *
+ * 1. The ordinary app-data hash becomes the `nestedAppData`.
+ * 2. The order's on-chain `appData` field is replaced by the `orderAppData`
+ *    envelope hash: `keccak256(WRAPPER_AND_APP_DATA_TYPE_HASH ‖ nestedAppData ‖ hashStruct(params))`.
+ * 3. The user signs the order in the **wrapper's** EIP-712 domain
+ *    (`CowAuthWrapper` / `1` / chainId / {@link address}) using an `Order` type
+ *    whose `appData` field is replaced by a `WrapperAndAppData` struct.
+ * 4. The resulting 65-byte signature is posted alongside the order so a solver
+ *    can rebuild the wrapper's `wrapperData` blob.
+ *
+ * The order itself is posted with the `eip1271` signing scheme and the wrapper
+ * as its owner/verifier, matching `CowAuthWrapper.isValidSignature`.
+ *
+ * @example
+ * ```ts
+ * authWrapper: {
+ *   address: '0x1111...2222',
+ *   paramsType: 'SwapParams',
+ *   paramsField: 'wrapperData',
+ *   types: {
+ *     SwapParams: [
+ *       { name: 'target', type: 'address' },
+ *       { name: 'amount', type: 'uint128' },
+ *       { name: 'label', type: 'string' },
+ *     ],
+ *   },
+ *   params: { target: '0xabc...', amount: '42000', label: 'integration' },
+ * }
+ * ```
+ */
+export interface CowAuthWrapperConfig {
+  /**
+   * Address of the deployed `CowAuthWrapper` contract. Used as the EIP-712
+   * `verifyingContract`, as the order's EIP-1271 verifier, and as the order owner.
+   */
+  address: string
+
+  /**
+   * Name of the wrapper's own params struct, e.g. `'SwapParams'`. Must be a key of
+   * {@link types}.
+   *
+   * It — and every struct it references — MUST sort alphabetically BEFORE
+   * `'WrapperAndAppData'`. `CowAuthWrapper`'s constructor assembles its order type
+   * hash in that order, whereas EIP-712 (and therefore every wallet) sorts the whole
+   * referenced set. If they disagree the wallet signs a digest the wrapper can never
+   * recompute, so a config that breaks the rule is rejected outright.
+   *
+   * NOTE: this rules out the name `'WrapperParams'` used by the `BasicAuthWrapper`
+   * example contract, which sorts after `'WrapperAndAppData'`.
+   */
+  paramsType: string
+
+  /**
+   * Name of the params field inside the wrapper's `WrapperAndAppData` struct.
+   * For `"WrapperAndAppData(bytes32 nestedAppData,SwapParams wrapperData)"`
+   * this is `'wrapperData'`.
+   */
+  paramsField: string
+
+  /**
+   * EIP-712 struct definitions for {@link paramsType} and everything it references.
+   */
+  types: CowAuthWrapperTypes
+
+  /**
+   * Values of the {@link paramsType} struct. Hashed into the order's `appData`
+   * and ABI-encoded into the wrapper data handed to solvers.
+   */
+  params: Record<string, unknown>
+}
+
+/**
+ * A single field of an EIP-712 struct definition, in the same shape
+ * `eth_signTypedData_v4` expects.
+ */
+export interface CowAuthWrapperTypeField {
+  name: string
+  type: string
+}
+
+/**
+ * EIP-712 struct definitions for a {@link CowAuthWrapperConfig}: a map of struct
+ * name to its ordered field list. Must contain {@link CowAuthWrapperConfig.paramsType}
+ * and, transitively, every struct it references.
+ *
+ * Must NOT contain `Order` or `WrapperAndAppData` — those are supplied by the
+ * protocol and reserved.
+ */
+export type CowAuthWrapperTypes = Record<string, CowAuthWrapperTypeField[]>
+
 export type CowSwapTheme = 'dark' | 'light'
 
 export interface CowSwapWidgetProps {
@@ -531,6 +626,15 @@ export interface CowSwapWidgetParams {
    * Disables trading of specific token pair
    */
   tokenPairConstraints?: TokenPairConstraint[]
+
+  /**
+   * Settle this widget's orders through a `CowAuthWrapper` contract.
+   *
+   * When provided (and resolvable for the active chain and trade type), orders are
+   * signed in the wrapper's EIP-712 domain and posted with the wrapper as their
+   * EIP-1271 verifier. See {@link CowAuthWrapperConfig}.
+   */
+  authWrapper?: FlexibleConfig<CowAuthWrapperConfig>
 
   hooks?: Partial<{
     onBeforeApproval(payload: OnApprovalPayload): WidgetHookResult

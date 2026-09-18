@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 
-import { maxUint256 } from 'viem'
+import { Hash, maxUint256 } from 'viem'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -174,7 +174,7 @@ describe('useCreateTwapOrder', () => {
     } as ReturnType<typeof useAdvancedOrdersDerivedState>)
     mockedUseComposableCowContractData.mockReturnValue({} as ReturnType<typeof useComposableCowContractData>)
     mockedUseUpdateAdvancedOrdersRawState.mockReturnValue(jest.fn())
-    mockedUseAppData.mockReturnValue({ appDataKeccak256: '0xappdata', fullAppData: '{}' } as ReturnType<
+    mockedUseAppData.mockReturnValue({ appDataKeccak256: '0xappdata' as Hash, fullAppData: '{}' } as ReturnType<
       typeof useAppData
     >)
     mockedUseNavigateToOrdersTableTab.mockReturnValue(jest.fn())

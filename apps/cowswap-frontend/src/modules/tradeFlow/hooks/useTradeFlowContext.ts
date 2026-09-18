@@ -12,11 +12,13 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useAuthWrapper } from 'modules/authWrapper'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
   TradeTypeToUiOrderType,
+  TradeTypeToWidgetTradeTypeMap,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
@@ -90,6 +92,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const validTo = getOrderValidTo(deadline, tradeQuote)
 
   const settlementChainId = settlementContract.chainId
+  const authWrapper = useAuthWrapper(settlementChainId, tradeType && TradeTypeToWidgetTradeTypeMap[tradeType])
 
   return (
     useSWR(
@@ -140,6 +143,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
             walletClient,
             config,
+            authWrapper,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -176,6 +180,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         setSigningStep,
         walletClient,
         config,
+        authWrapper,
       ]) => {
         void settlementContract // in deps for memo stability
         return {
@@ -211,6 +216,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           generatePermitHook,
           permitAmountToSign,
           typedHooks,
+          authWrapper,
           orderParams: {
             account,
             chainId,

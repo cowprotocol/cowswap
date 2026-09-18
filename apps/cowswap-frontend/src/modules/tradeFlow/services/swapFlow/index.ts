@@ -10,7 +10,7 @@ import {
   normalizeError,
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
-import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
+import { SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
@@ -35,6 +35,7 @@ import { assertValidBridgeRecipient } from 'modules/tradeQuote'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+import { postTradeOrder } from '../postTradeOrder'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -53,7 +54,6 @@ export async function swapFlow(
   const {
     tradeConfirmActions,
     callbacks: { getCachedPermit, addBridgeOrder, setSigningStep },
-    tradeQuote,
     tradeQuoteState,
     bridgeQuoteAmounts,
   } = input
@@ -170,28 +170,14 @@ export async function swapFlow(
       signingScheme,
       orderToSign: unsignedOrder,
     } = await wrapErrorInOperatorError(() =>
-      tradeQuote
-        .postSwapOrderFromQuote(
-          {
-            appData: orderParams.appData.doc,
-            additionalParams: {
-              signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
-            },
-            quoteRequest: {
-              validTo: orderParams.validTo,
-              receiver: orderParams.recipient,
-            },
-          },
-          signingStepManager,
-        )
-        .finally(() => {
-          callbacks.closeModals()
-        }),
+      postTradeOrder(input, signingStepManager).finally(() => {
+        callbacks.closeModals()
+      }),
     )
 
     let presignTxHash: string | null = null
 
-    if (!orderParams.allowsOffchainSigning) {
+    if (!orderParams.allowsOffchainSigning && !input.authWrapper) {
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
       const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 

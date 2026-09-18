@@ -12,6 +12,7 @@ import type { AppDispatch } from 'legacy/state'
 import type { PostOrderParams } from 'legacy/utils/trade'
 
 import type { TypedAppDataHooks } from 'modules/appData'
+import type { ResolvedAuthWrapper } from 'modules/authWrapper'
 import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -56,6 +57,7 @@ export interface TradeFlowContext {
   generatePermitHook: GeneratePermitHook
   permitAmountToSign?: bigint
   typedHooks?: TypedAppDataHooks
+  authWrapper?: ResolvedAuthWrapper
 }
 
 export enum FlowType {

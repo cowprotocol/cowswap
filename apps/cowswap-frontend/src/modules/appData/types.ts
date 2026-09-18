@@ -1,11 +1,13 @@
 import { cowAppDataLatestScheme, CowEnv, LatestAppDataDocVersion, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import type { Hash } from 'viem'
+
 export type AppDataHooks = cowAppDataLatestScheme.OrderInteractionHooks
 
 export type AppDataInfo = {
   doc: LatestAppDataDocVersion
   fullAppData: string
-  appDataKeccak256: string
+  appDataKeccak256: Hash
   env?: CowEnv
 }
 
