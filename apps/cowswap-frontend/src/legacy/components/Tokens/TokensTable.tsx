@@ -49,6 +49,8 @@ type TokenTableParams = {
   query: string
   prevQuery: string
   debouncedQuery: string
+  isLoading?: boolean
+  emptyMessage: ReactNode
   children?: ReactNode
 }
 
@@ -70,6 +72,8 @@ export function TokenTable({
   query,
   prevQuery,
   debouncedQuery,
+  isLoading,
+  emptyMessage,
   children,
 }: TokenTableParams): ReactNode {
   const toggleWalletModal = useToggleWalletModal()
@@ -251,14 +255,12 @@ export function TokenTable({
               }
               return null
             })
-          ) : query?.trim() ? (
-            <NoResults>
-              <h3>
-                <Trans>No results found</Trans> ¯\_(ツ)_/¯
-              </h3>
-            </NoResults>
-          ) : (
+          ) : isLoading ? (
             <Loader />
+          ) : (
+            <NoResults>
+              <h3>{query?.trim() ? <Trans>No results found</Trans> : emptyMessage} ¯\_(ツ)_/¯</h3>
+            </NoResults>
           )}
         </Table>
 
