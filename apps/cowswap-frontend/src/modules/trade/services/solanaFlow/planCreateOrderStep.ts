@@ -1,14 +1,24 @@
+import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
 
 import { SolanaFlowStep } from './types'
 
+const DEFAULT_APP_DATA: SwapAdvancedSettings['appData'] = {
+  appCode: DEFAULT_APP_CODE,
+  environment: isBarnBackendEnv ? 'staging' : 'prod',
+}
+
 export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   sellSymbol: string
   buySymbol: string
   /** The user's deadline setting, which the quote knows nothing about — it carries the quote's own TTL. */
   validTo: number
+  /** Overrides the quote's own appData doc — e.g. hooks added after quoting. */
+  appData?: SwapAdvancedSettings['appData']
 }
 
 export interface PlannedCreateOrderStep {
@@ -32,10 +42,21 @@ export async function planCreateOrderStep({
   sellSymbol,
   buySymbol,
   validTo,
+  appData,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
+  // TODO: wire up a complete appData object. For now we only need to distinguish swap/limit orders
+  const appDataOverride: SwapAdvancedSettings['appData'] = {
+    ...DEFAULT_APP_DATA,
+    metadata: {
+      orderClass: {
+        orderClass: appData?.metadata?.orderClass?.orderClass === 'limit' ? 'limit' : 'market',
+      },
+    },
+  }
+
   const { instruction, orderId, signingScheme } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
-    { quoteRequest: { validTo } },
+    { quoteRequest: { validTo }, appData: appDataOverride },
   )
 
   return {

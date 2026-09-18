@@ -35,6 +35,7 @@ export async function solanaFlow(
     currentDelegation,
     delegationAmount,
     isNativeSell,
+    appData,
   } = input
   const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -58,6 +59,7 @@ export async function solanaFlow(
       sellSymbol,
       buySymbol,
       validTo,
+      appData: appData.doc,
     })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —

@@ -6,6 +6,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import type { AppDispatch } from 'legacy/state'
 import type { TransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import type { AppDataInfo } from 'modules/appData'
 import type { SolanaQuoteAndPost } from 'modules/tradeQuote'
 
 import { SolanaTradeFlowContext } from './TradeFlowContext'
@@ -31,6 +32,7 @@ export type SolanaContextKey = readonly [
   currentDelegation: bigint,
   delegationAmount: bigint,
   isNativeSell: boolean,
+  appData: AppDataInfo,
 ]
 
 /** The same dependencies before narrowing, as the hook reads them. */
@@ -55,6 +57,7 @@ export interface SolanaContextKeyParams {
   currentDelegation: bigint | undefined
   delegationAmount: bigint
   isNativeSell: boolean
+  appData: AppDataInfo | null
 }
 
 export interface SolanaTradeFlowContextParams {
