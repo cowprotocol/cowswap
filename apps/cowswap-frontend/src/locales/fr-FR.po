@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-19 17:54\n"
+"PO-Revision-Date: 2026-09-19 19:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -502,7 +502,7 @@ msgstr "Convertir en COW <0/>"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
 msgid "You can see your past transactions in Explorer"
-msgstr "Vous pouvez consulter vos transactions passées dans l’explorateur"
+msgstr "Vous pouvez consulter vos transactions passées dans l’Explorer"
 
 #. placeholder {0}: slippageWarningParams.min
 #. placeholder {1}: slippageWarningParams.max
@@ -1512,7 +1512,7 @@ msgstr "Personnalisé"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Open in CoW Explorer"
-msgstr "Ouvrir dans CoW Explorer"
+msgstr "Ouvrir dans l'explorateur CoW"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
@@ -2814,7 +2814,7 @@ msgstr "Création en cours..."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "View in Orders"
-msgstr "Voir dans la liste des ordres"
+msgstr "Voir dans les Ordres"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
@@ -3854,7 +3854,7 @@ msgstr "Vous pouvez maintenant trader <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "Track its progress in Orders."
-msgstr "Suivez sa progression dans la liste des ordres."
+msgstr "Suivez sa progression dans les Ordres."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "How much of the order has been filled."
@@ -4024,7 +4024,7 @@ msgstr "Réduisez votre slippage en divisant les ordres importants en plusieurs 
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateLinkedCodeNotification.tsx
 msgid "Code <0>{code}</0> is linked for the next {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}"
-msgstr "Le code <0>{code}</0> est associé pour {timeCapDays, plural, one {# jour} few {# jours} many {# jours} other {# jours}}"
+msgstr "Le code <0>{code}</0> est lié pour {timeCapDays, plural, one {le prochain jour} few {les # prochains jours} many {les # prochains jours} other {les # prochains jours}}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid " out of {totalSolvers}"
@@ -9061,7 +9061,7 @@ msgstr "URL invalide : le chemin contient des « / » consécutifs"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "You saved an extra"
-msgstr "Vous avez économisé en plus"
+msgstr "Vous avez économisé"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
