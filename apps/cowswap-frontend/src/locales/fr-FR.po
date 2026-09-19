@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-19 19:55\n"
+"PO-Revision-Date: 2026-09-19 20:32\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -4087,7 +4087,7 @@ msgstr "détails"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Use a referral code to earn <0>{traderRewardAmount}</0> for<1/>every <2>{triggerVolumeLabel}</2> in eligible volume within {affiliateTimeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}.<3/>New wallets only."
-msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> pour<1/>chaque volume éligible de <2>{triggerVolumeLabel}</2> réalisé sous {affiliateTimeCapDays, plural, one {# jour} few {# jours} many {# jours} other {# jours}}.<3/>Réservé aux nouveaux wallets."
+msgstr "Utilisez un code de parrainage pour gagner <0>{traderRewardAmount}</0> tous les<1/><2>{triggerVolumeLabel}</2> de volume éligible sur {affiliateTimeCapDays, plural, one {le prochain jour} few {les # prochains jours} many {les # prochains jours} other {les # prochains jours}}.<3/>Réservé aux nouveaux wallets."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Activate TWAP"
@@ -4655,7 +4655,7 @@ msgstr "Boutique de hooks"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "{ordersWithPermitLength, plural, one {There is} few {There are} many {There are} other {There are}} <0>{ordersWithPermitLength}</0> existing {ordersWithPermitLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr "{ordersWithPermitLength, plural, one {Il existe} few {Il existe} many {Il existe} other {Il existe}} <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {ordre} few {ordres} many {ordres} other {ordres}} utilisant une approbation du token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
+msgstr "{ordersWithPermitLength, plural, one {Il y a} few {Il y a} many {Il y a} other {Il y a}} <0>{ordersWithPermitLength}</0> {ordersWithPermitLength, plural, one {ordre existant utilisant} few {ordres existants utilisant} many {ordres existants utilisant} other {ordres existants utilisant}} une approbation du token <1/>. L'approbation partielle peut affecter l'exécution d'autres ordres. Ajustez le montant ou choisissez une approbation illimitée pour continuer."
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/RecoveryBanner/RecoveryBanner.container.tsx
 msgid "A recent DNS incident has been resolved. CoW Swap contracts remain safe. If you interacted with the site on April 14, review your token approvals on <0>Revoke.cash</0>."
@@ -6061,7 +6061,7 @@ msgstr "Scannez ce code ou ouvrez le lien sur cet appareil, puis appuyez sur “
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "{limit, plural, one {No open orders found in your last # order} few {No open orders found in your last # orders} many {No open orders found in your last # orders} other {No open orders found in your last # orders}}"
-msgstr "{limit, plural, one {Aucun ordre ouvert trouvé (recherche limitée à # ordre)} few {Aucun ordre ouvert parmi vos # derniers ordres} many {Aucun ordre ouvert parmi vos # derniers ordres} other {Aucun ordre ouvert parmi vos # derniers ordres}}"
+msgstr "{limit, plural, one {Aucun ordre ouvert trouvé parmi votre dernier ordre} few {Aucun ordre ouvert trouvé parmi vos # derniers ordres} many {Aucun ordre ouvert trouvé parmi vos # derniers ordres} other {Aucun ordre ouvert trouvé parmi vos # derniers ordres}}"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
@@ -6943,7 +6943,7 @@ msgstr "Erreur de compatibilité du réseau"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit token"
-msgstr "Signer l’autorisation du token"
+msgstr "Autorisation du token"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: URLs cannot contain spaces"
@@ -7487,7 +7487,7 @@ msgstr "Monnaie inconnue"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
-msgstr "Partagez votre code de parrainage et gagnez <0>{partnerRewardAmount}</0> pour chaque volume éligible de <1>{triggerVolumeLabel}</1> réalisé sous {affiliateTimeCapDays, plural, one {# jour} few {# jours} many {# jours} other {# jours}}."
+msgstr "Partagez votre code de parrainage et gagnez <0>{partnerRewardAmount}</0> tous les <1>{triggerVolumeLabel}</1> de volume éligible sur {affiliateTimeCapDays, plural, one {# jour} few {# jours} many {# jours} other {# jours}}."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
