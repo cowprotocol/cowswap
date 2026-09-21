@@ -18,14 +18,12 @@ export const COW_SHED_LATEST_VERSION_ID = `version-${COW_SHED_LATEST_VERSION}` a
  *
  * Used by EOA TWAP so the shed can own ComposableCoW conditional orders.
  *
- * The new factory supports atomic deployment and hook execution through `executeOwnHooks`.
- * Mainnet and Gnosis deployments were announced on 2026-09-17.
- * Creation checks factory bytecode before wallet approvals on every chain.
+ * Addresses come from multi-chain CREATE2 deployments of
+ * `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`.
  *
- * @see https://github.com/cowdao-grants/cow-shed/pull/84
- * @see https://github.com/cowdao-grants/cow-shed/pull/85
+ * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json — deployment registry
  *
- * EIP-712 `version` must match on-chain `COWShed.VERSION` (`"2.1.0"` in current cow-shed main).
+ * EIP-712 `version` must match on-chain `COWShed.VERSION`.
  */
 export const EOA_TWAP_SHED_EIP712_VERSION = '2.1.0' as CoWShedVersion
 
