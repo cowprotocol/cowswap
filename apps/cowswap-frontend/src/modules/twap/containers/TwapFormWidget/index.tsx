@@ -260,7 +260,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
       {!localFormValidation && tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
       {isPrimaryValidationPassed && !localFormValidation && (
-        <TradeApproveWithAffectedOrderList forceShowAffectedOrders={isEoaTwap} />
+        <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
       )}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
