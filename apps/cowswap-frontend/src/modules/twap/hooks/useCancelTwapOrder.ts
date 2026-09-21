@@ -15,6 +15,8 @@ import { useComposableCowContractData } from 'modules/advancedOrders'
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractProd } from 'common/hooks/useContract'
 
+import { resetEoaTwapSuccessScreenIfMatches } from './useEoaTwapSigningStep'
+
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
@@ -76,6 +78,8 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
       ): void => {
         const sellTokenAddress = order.inputToken.address
         const sellTokenSymbol = order.inputToken.symbol
+
+        resetEoaTwapSuccessScreenIfMatches(twapOrderId)
 
         setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
         processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
