@@ -166,7 +166,6 @@ export function getEoaTwapCurrentStepBadge(
             type: hasError ? 'error' : 'alert',
           }
 
-    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
       return isLoading
         ? {
@@ -273,7 +272,6 @@ export function getEoaTwapCurrentStepButton(
               loading: true,
             }
 
-    case EoaTwapSigningSteps.TwapSetup:
     case EoaTwapSigningSteps.TwapSign:
       return isLoading
         ? {
@@ -342,9 +340,6 @@ export function getEoaTwapStepDescription(
         </>
       )
 
-    case EoaTwapSigningSteps.TwapSetup:
-      return t`Review and confirm in your wallet to continue.`
-
     case EoaTwapSigningSteps.TwapSign:
       return isLoading ? (
         <>
@@ -375,8 +370,6 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
-    case EoaTwapSigningSteps.TwapSetup:
-      return t`Set up Account Proxy`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     case EoaTwapSigningSteps.SubmitTwap:
@@ -399,8 +392,6 @@ export function getEoaTwapWalletActionSummaryLabel(
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
       return symbol ? t`Permit ${symbol}` : t`Permit token`
-    case EoaTwapSigningSteps.TwapSetup:
-      return t`Set up Account Proxy`
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     default:
@@ -505,7 +496,6 @@ function getEoaTwapWalletActionOutcome(step: EoaTwapSigningSteps): null | EoaTwa
     case EoaTwapSigningSteps.ApprovePoller:
       return { label: t`Confirmed`, hasTxLink: true }
     case EoaTwapSigningSteps.PermitPoller:
-    case EoaTwapSigningSteps.TwapSetup:
       return { label: t`Signed`, hasTxLink: false }
     case EoaTwapSigningSteps.TwapSign:
       return { label: t`Confirmed`, hasTxLink: true }
