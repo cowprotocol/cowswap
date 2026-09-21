@@ -435,7 +435,8 @@ describe('useCreateTwapOrder', () => {
     expect(mockedPlaceSafeTwapOrder).not.toHaveBeenCalled()
   })
 
-  it('keeps the EOA confirm card open after placement instead of showing the submitted screen', async () => {
+  it('keeps the EOA confirm card open after placement and navigates to open orders', async () => {
+    jest.useFakeTimers()
     const updateEoaTwapFlow = jest.fn()
     const onSuccess = jest.fn()
     const navigateToOrdersTableTab = jest.fn()
@@ -458,7 +459,6 @@ describe('useCreateTwapOrder', () => {
 
     expect(placementResult).toBe(true)
     expect(onSuccess).not.toHaveBeenCalled()
-    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
 
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({
       step: EoaTwapSigningSteps.Success,
@@ -466,6 +466,13 @@ describe('useCreateTwapOrder', () => {
       eventId: '1'.repeat(70),
       lockDismiss: false,
     })
+
+    await act(async () => {
+      jest.runAllTimers()
+    })
+
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.OPEN)
+    jest.useRealTimers()
   })
 
   it('shows the submitted screen and navigates to signing for a Safe TWAP', async () => {

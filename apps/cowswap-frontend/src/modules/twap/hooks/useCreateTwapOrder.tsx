@@ -34,7 +34,7 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { resetOrdersTableFiltersAtom, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -105,6 +105,7 @@ export function useCreateTwapOrder() {
   const { allowsOffchainSigning } = useWalletDetails()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
+  const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
@@ -443,6 +444,13 @@ export function useCreateTwapOrder() {
             eventId,
             lockDismiss: false,
           })
+
+          // Navigate to open orders after successful placement once the new order is in the store, otherwise you might
+          // be redirected back by the redirection logic in `observeOrdersUrl()` (`ordersTable.atoms.ts`).
+          setTimeout(() => {
+            resetOrdersTableFilters()
+            navigateToOrdersTableTab(OrderTabId.OPEN)
+          })
         } else {
           updateEoaTwapFlow(null)
           tradeConfirmActions.onSuccess(confirmModalHash)
@@ -502,6 +510,7 @@ export function useCreateTwapOrder() {
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
       navigateToOrdersTableTab,
+      resetOrdersTableFilters,
       pollerAddress,
       pollerPermitInfo,
       generatePermitHook,
