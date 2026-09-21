@@ -31,6 +31,8 @@ const quoteParams: QuoteBridgeRequest = {
   signer: {} as never,
   receiver: null,
   validFor: 1800,
+  // `useQuoteParams` always fills this in on Solana — user-set or the settings default.
+  swapSlippageBps: 50,
 }
 
 /** Stand-in for whatever the SDK resolves with; these tests only care that both halves are passed
@@ -57,7 +59,14 @@ describe('getSolanaQuote', () => {
       amount: quoteParams.amount,
       kind: quoteParams.kind,
       validForSeconds: quoteParams.validFor,
+      slippageBps: 50,
     })
+  })
+
+  it('signs the slippage the user picked, rather than the default', async () => {
+    await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.objectContaining({ slippageBps: 300 }))
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
@@ -80,6 +89,7 @@ describe('getSolanaQuote', () => {
       expect.objectContaining({
         ownerAddress: quoteParams.account,
         receiverAddress: quoteParams.account,
+        slippageBps: 50,
       }),
     )
   })

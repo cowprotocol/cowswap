@@ -1,4 +1,4 @@
-import type { Page, Locator } from '@playwright/test'
+import { Page, Locator, expect } from '@playwright/test'
 
 /**
  * The wallet-details panel opened from the header's connected-wallet button. Since the
@@ -30,7 +30,13 @@ export class AccountModal {
   }
 
   async close(): Promise<void> {
-    await this.closeButton.click()
-    await this.activitiesList.waitFor({ state: 'hidden' })
+    await expect
+      .poll(async () => {
+        if (await this.activitiesList.isVisible()) {
+          await this.page.keyboard.press('Escape')
+        }
+        return this.activitiesList.isVisible()
+      })
+      .toBe(false)
   }
 }

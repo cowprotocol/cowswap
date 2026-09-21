@@ -44,10 +44,16 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
   useIsProviderNetworkUnsupported: jest.fn(),
 }))
 jest.mock('./useQuoteParamsRecipient', () => ({ useQuoteParamsRecipient: jest.fn() }))
-jest.mock('../utils/getBridgeQuoteSigner', () => ({
-  BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
-  getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
-}))
+jest.mock('../utils/getBridgeQuoteSigner', () => {
+  const { isSolanaChain } = jest.requireActual('@cowprotocol/cow-sdk')
+  return {
+    BRIDGE_QUOTE_ACCOUNT: '0xBridgeQuoteAccount',
+    getBridgeQuoteSigner: jest.fn().mockReturnValue('mock-signer'),
+    NON_EVM_CHAIN_CONFIG: [
+      { isChain: isSolanaChain, isAddress: () => false, defaultRecipient: 'SolanaOwnerPlaceholder' },
+    ],
+  }
+})
 jest.mock('common/hooks/useSafeMemo', () => ({
   useSafeMemo: (fn: () => unknown, _deps: unknown[]) => fn(),
 }))
@@ -229,6 +235,21 @@ describe('useQuoteParams', () => {
       expect(qp.signer).toBe('mock-signer')
     })
 
+    it('should use the Solana placeholder for owner/account when wallet is not connected and sell chain is Solana', () => {
+      mockedUseWalletInfo.mockReturnValue({ account: undefined } as unknown as WalletInfo)
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      const qp = result.current!.quoteParams!
+      expect(qp.owner).toBe('SolanaOwnerPlaceholder')
+      expect(qp.account).toBe('SolanaOwnerPlaceholder')
+    })
+
     it('should set partiallyFillable when passed', () => {
       const { result } = renderHook(() => useQuoteParams(AMOUNT, true))
 
@@ -290,6 +311,26 @@ describe('useQuoteParams', () => {
       const { result } = renderHook(() => useQuoteParams(AMOUNT))
 
       expect(result.current!.quoteParams!.swapSlippageBps).toBeUndefined()
+    })
+
+    // Solana signs exactly the tolerance it is handed, so the resolved value has to travel with the
+    // quote params even when the user never opened the setting. Keyed on the sell token's chain — the
+    // wallet stays on an EVM chain here, because that is what `fetchAndProcessQuote` routes on.
+    it.each([
+      ['default', 50],
+      ['user', 100],
+    ])('should include swapSlippageBps for a Solana sell token when slippage type is %s', (type, value) => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: type as 'default' | 'user', value })
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.sellTokenChainId).toBe(SupportedChainId.SOLANA)
+      expect(result.current!.quoteParams!.swapSlippageBps).toBe(value)
     })
 
     it('should not include swapSlippageBps when slippage type is default', () => {

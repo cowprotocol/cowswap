@@ -23,6 +23,7 @@ export function buildSolanaTradeFlowContext([
   currentDelegation,
   delegationAmount,
   isNativeSell,
+  appData,
 ]: SolanaContextKey): SolanaTradeFlowContext {
   return {
     tradeQuote,
@@ -34,6 +35,7 @@ export function buildSolanaTradeFlowContext([
     currentDelegation,
     delegationAmount,
     isNativeSell,
+    appData,
     context: {
       chainId,
       inputAmount,

@@ -62,7 +62,7 @@
     "prepare": "husky",
     "analyze-build": "rm -rf build/cowswap && cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build:cowswap -- --skip-nx-cache",
     "bundle:size": "node node_modules/@cowprotocol/dx/bundle-size.mjs",
-    "install:ci": "node tools/scripts/install.js"
+    "install:ci": "pnpm install --frozen-lockfile"
   },
   "browser": {
     "crypto": false
@@ -197,6 +197,7 @@
     "@vitest/coverage-c8": "0.33.0",
     "@vitest/ui": "4.0.9",
     "babel-jest": "30.2.0",
+    "babel-plugin-macros": "3.1.0",
     "babel-plugin-styled-components": "2.1.4",
     "babel-plugin-transform-import-meta": "2.3.3",
     "eslint": "9.37.0",

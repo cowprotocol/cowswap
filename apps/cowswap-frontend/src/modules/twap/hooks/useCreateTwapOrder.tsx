@@ -7,7 +7,7 @@ import { useConfig, useWalletClient } from 'wagmi'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
-import { type AccountAddress, OrderKind } from '@cowprotocol/cow-sdk'
+import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -23,7 +23,7 @@ import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks, hasBytecode } from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -74,7 +74,6 @@ import {
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
-import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 
 interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
@@ -129,7 +128,7 @@ export function useCreateTwapOrder() {
   const { data: walletClient } = useWalletClient()
 
   // Poller permit only: ADVANCED_ORDERS disables permit for the trade spender, so look up poller as SWAP + custom spender.
-  const pollerAddress = chainId ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
+  const pollerAddress = chainId && isEvmChain(chainId) ? COMPOSABLE_COW_POLLER_ADDRESS[chainId] : undefined
   const pollerPermitInfo = usePermitInfo(inputCurrencyAmount?.currency, TradeType.SWAP, pollerAddress)
   const generatePermitHook = useGeneratePermitHook()
 
@@ -173,12 +172,12 @@ export function useCreateTwapOrder() {
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line max-lines-per-function, complexity
-    async (fallbackHandlerIsNotSet: boolean) => {
+    async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
       // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
       const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
-      if (!isSafeWallet && !isEoaTwap) {
+      if (!isEvmChain(chainId) || (!isSafeWallet && !isEoaTwap)) {
         return
       }
 
@@ -240,12 +239,14 @@ export function useCreateTwapOrder() {
         let salt: Hex | undefined
         let updatedAppData = appDataInfo
         let updatedTwapOrder = twapOrder
+        let isProxyDeployed = false
 
         if (eoaPoller) {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
           const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
+          isProxyDeployed = await hasBytecode(config, proxyAddress)
 
           // Schedule id is appData-independent; compute before injecting pollFunds into appData.
           const scheduleId = getComposableCowPollerScheduleId({
@@ -300,6 +301,7 @@ export function useCreateTwapOrder() {
 
         let safeAddressOrCowShedAddress: string
         let orderStatus: TwapOrderStatus
+        let eventId: string | undefined
 
         if (eoaPoller) {
           if (!walletClient || !eoaSigner) return
@@ -325,6 +327,7 @@ export function useCreateTwapOrder() {
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
             poller: pollerNeeds,
+            isProxyDeployed,
           })
 
           // Open the multi-step pending UI as soon as the plan is known.
@@ -357,13 +360,19 @@ export function useCreateTwapOrder() {
             })
           }
 
-          const { proxyAddress, setupTxHash } = await placeEoaTwapOrder({
+          const {
+            proxyAddress,
+            setupTxHash,
+            eventId: eventIdParam,
+          } = await placeEoaTwapOrder({
+            isProxyDeployed,
+            signer: eoaSigner,
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
             twapOrderCreationContext,
+            twapOrderId,
             paramsStruct,
-            signer: eoaSigner,
             config,
             walletClient,
             onSigningStep: updateEoaTwapFlow,
@@ -375,6 +384,7 @@ export function useCreateTwapOrder() {
           safeAddressOrCowShedAddress = proxyAddress
           orderStatus = TwapOrderStatus.Pending
           orderCreationHash = setupTxHash
+          eventId = eventIdParam
         } else {
           const { safeTxHash, safeAddress } = await placeSafeTwapOrder({
             twapOrder,
@@ -406,8 +416,6 @@ export function useCreateTwapOrder() {
 
         getCowSoundSend().play()
 
-        const eventId = isEoaTwap ? await waitForTwapEventId(twapOrderId, account, chainId) : undefined
-
         emitPostedOrderEvent({
           chainId,
           id: twapOrderId,
@@ -430,8 +438,8 @@ export function useCreateTwapOrder() {
           updateEoaTwapFlow({
             step: EoaTwapSigningSteps.Success,
             phase: EoaTwapSigningPhase.Confirmed,
-            orderId: twapOrderId,
             eventId,
+            lockDismiss: false,
           })
         } else {
           updateEoaTwapFlow(null)
@@ -447,6 +455,10 @@ export function useCreateTwapOrder() {
 
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+
+        // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
+        // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
+        return true
       } catch (err: unknown) {
         if (err instanceof EoaTwapPlacementCancelledError) {
           return
@@ -460,6 +472,8 @@ export function useCreateTwapOrder() {
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+
+        return false
       }
     },
     [

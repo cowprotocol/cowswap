@@ -12,15 +12,16 @@ import { SolanaContextKey, SolanaContextKeyParams } from '../types/SolanaContext
  * must never run with a partially resolved context. Readiness is checked here rather than by the caller
  * because every input it needs is already a parameter of this function.
  */
+// eslint-disable-next-line complexity
 export function buildSolanaContextKey(params: SolanaContextKeyParams): SolanaContextKey | null {
-  const { account, quote, inputAmount, outputAmount, solana, sellToken } = params
+  const { account, quote, inputAmount, outputAmount, solana, sellToken, appData } = params
 
   const isReady = getIsSolanaTradeFlowContextReady({
     ...params,
     hasSolanaSigner: Boolean(solana && sellToken),
   })
 
-  if (!isReady || !account || !solana || !sellToken || !inputAmount || !outputAmount) return null
+  if (!isReady || !account || !solana || !sellToken || !inputAmount || !outputAmount || !appData) return null
   if (!isSolanaQuoteAndPost(quote)) return null
 
   return [
@@ -43,5 +44,6 @@ export function buildSolanaContextKey(params: SolanaContextKeyParams): SolanaCon
     params.currentDelegation ?? 0n,
     params.delegationAmount,
     params.isNativeSell,
+    appData,
   ] as const
 }
