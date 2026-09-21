@@ -1,13 +1,22 @@
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
-import type { SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
+import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import type { UiOrderType } from '@cowprotocol/types'
+
+import { PublicKey } from '@solana/web3.js'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { emitPostedOrderEvent } from 'modules/orders'
-import { planCreateOrderStep, planDelegateStep, planWrapStep, sendSolanaFlow, SolanaFlowStep } from 'modules/trade'
+import {
+  planCreateBuyAtaStep,
+  planCreateOrderStep,
+  planDelegateStep,
+  planWrapStep,
+  sendSolanaFlow,
+  SolanaFlowStep,
+} from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -40,7 +49,7 @@ export async function solanaFlow(
   const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
-  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate and create-order in one transaction')
+  logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(swapFlowAnalyticsContext)
 
@@ -48,6 +57,9 @@ export async function solanaFlow(
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
+    // The quote's receiver, not the flow's: `intent.buyTokenAccount` was derived from it, and an
+    // owner/account mismatch would make SPL Token reject the whole bundle.
+    const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
     const {
       step: createOrderStep,
@@ -70,6 +82,7 @@ export async function solanaFlow(
     const steps = [
       planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
+      planCreateBuyAtaStep({ payer: owner, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 
@@ -88,6 +101,7 @@ export async function solanaFlow(
           signingScheme,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
+          signedAmounts: solanaQuote.intent,
           receiver,
           validTo,
           inputToken: inputAmount.currency as Token,
@@ -136,15 +150,24 @@ function buildSolanaOrder(params: {
   signingScheme: SolanaSwapOrder['signingScheme']
   account: string
   quoteParams: OrderParameters
+  signedAmounts: Pick<SolanaOrderIntent, 'sellAmount' | 'buyAmount'>
   receiver: string
   validTo: number
   inputToken: Token
   outputToken: Token
 }): Order {
-  const { orderId, txHash, signingScheme, account, quoteParams, receiver, validTo, inputToken, outputToken } = params
+  const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo } = params
+  const { inputToken, outputToken } = params
+
+  const sellAmount = signedAmounts.sellAmount.toString()
+  const buyAmount = signedAmounts.buyAmount.toString()
 
   return {
     ...quoteParams,
+    // The quote's own amounts are pre-slippage; the on-chain intent carries the amounts that were
+    // actually signed. Displaying the quote here would show the user a limit price their order doesn't have.
+    sellAmount,
+    buyAmount,
     // Override the quote's own receiver/validTo: the quote carries its own TTL rather than the user's
     // deadline, and may be a moment stale. `planCreateOrderStep` applies the same `validTo` to the
     // instruction, so the deadline shown here is the one the on-chain order actually has.
@@ -159,7 +182,8 @@ function buildSolanaOrder(params: {
     status: OrderStatus.CREATING,
     creationTime: new Date().toISOString(),
     orderCreationHash: txHash,
-    sellAmountBeforeFee: quoteParams.sellAmount,
+    // Solana orders carry no fee (`feeAmount` is always '0'), so this is the signed sell amount too.
+    sellAmountBeforeFee: sellAmount,
     signingScheme,
     // The order is created on-chain by the transaction above; there is no off-chain signature to carry.
     signature: txHash,

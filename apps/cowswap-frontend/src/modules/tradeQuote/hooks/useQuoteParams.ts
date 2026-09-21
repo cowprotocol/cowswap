@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -59,7 +59,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -68,6 +67,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
+
+  // Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
+  // not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
+  const userSlippageBps = tradeSlippage.type === 'user' || isSolana ? tradeSlippage.value : undefined
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
   const appDataDoc = appData?.doc
 
