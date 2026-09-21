@@ -628,7 +628,9 @@ test.describe('Market Orders', () => {
 
       // With the order indexed, `EthFlowStepper`'s step 3 becomes the active step: "Receive USDC",
       // pending — order-progress hasn't reported a fill yet.
-      await expect(swapPage.page.getByText('Receive USDC', { exact: true })).toBeVisible()
+      await expect(
+        swapPage.page.locator('#bodyWrapper #eth-flow-stepper').getByText('Receive USDC', { exact: true }),
+      ).toBeVisible()
 
       // Settle the order now that it's posted and confirmed — mirrors `mockOrderPosting.fulfill()`,
       // minus the `postOrder` bookkeeping that flow never goes through. Credits the buy-side balance
