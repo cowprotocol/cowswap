@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-18 13:45\n"
+"PO-Revision-Date: 2026-09-21 10:07\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -873,6 +873,10 @@ msgstr "Ваши избранные токены. Редактируйте эт�
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
 msgstr "Это минимальная сумма, которую вы получите за весь TWAP-ордер при условии исполнения всех его частей."
+
+#: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
+msgid "No tokens to display"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "CoW AMM Withdraw Liquidity"
@@ -7530,6 +7534,10 @@ msgstr "ID ордера"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "The order was executed before it could be cancelled."
 msgstr "Ордер был исполнен до того, как его удалось отменить."
+
+#: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
+msgid "No favorite tokens"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "a native currency"
