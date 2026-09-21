@@ -832,6 +832,10 @@ msgstr "for a total of"
 msgid "Sign (gas-free!) in your wallet..."
 msgstr "Sign (gas-free!) in your wallet..."
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Notifications for swap and bridge and TWAP for EOA orders aren't supported yet."
+msgstr "Notifications for swap and bridge and TWAP for EOA orders aren't supported yet."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
@@ -4877,6 +4881,10 @@ msgstr "The embedded hook dapp requested a hook-state change. Review the request
 #~ msgid "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 #~ msgstr "This transaction will not succeed due to price movement. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+#~ msgid "Swap and bridge and TWAP for EOA orders notifications aren't supported yet."
+#~ msgstr "Swap and bridge and TWAP for EOA orders notifications aren't supported yet."
+
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
 msgid "Approve all"
 msgstr "Approve all"
@@ -7596,8 +7604,8 @@ msgid "Network fees and costs"
 msgstr "Network fees and costs"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
-msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
-msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
+#~ msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
+#~ msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 msgid "NEW"
@@ -7926,6 +7934,10 @@ msgstr "There was an error trying to load claimable tokens"
 msgid "Learn"
 msgstr "Learn"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Notifications for swap and bridge orders aren't supported yet."
+msgstr "Notifications for swap and bridge orders aren't supported yet."
+
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 #~ msgid "{networkLabel} address"
 #~ msgstr "{networkLabel} address"
@@ -7953,6 +7965,10 @@ msgstr "Light mode"
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "The output token cannot be transferred. There may be an issue with the output token."
 #~ msgstr "The output token cannot be transferred. There may be an issue with the output token."
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+#~ msgid "Swap and bridge, TWAP for EOA orders aren't supported yet."
+#~ msgstr "Swap and bridge, TWAP for EOA orders aren't supported yet."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
@@ -8296,6 +8312,10 @@ msgstr "Status"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/PoolInfo/index.tsx
 msgid "higher"
 msgstr "higher"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Only trade alerts are sent. No marketing messages."
+msgstr "Only trade alerts are sent. No marketing messages."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"
