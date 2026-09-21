@@ -2,6 +2,8 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   buildSolanaSwapOrder: jest.fn(),
 }))
 
+import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
@@ -10,6 +12,13 @@ import { PublicKey } from '@solana/web3.js'
 import { planCreateOrderStep } from './planCreateOrderStep'
 
 const mockBuildSolanaSwapOrder = buildSolanaSwapOrder as jest.MockedFunction<typeof buildSolanaSwapOrder>
+
+// Mirrors the planner's own default so the expectation tracks the source instead of hardcoding
+// an environment-dependent value.
+const DEFAULT_APP_DATA = {
+  appCode: DEFAULT_APP_CODE,
+  environment: isBarnBackendEnv ? 'staging' : 'prod',
+}
 
 const quote = {
   quoteResults: {},
@@ -44,7 +53,10 @@ describe('planCreateOrderStep', () => {
         quoteResults: quote.quoteResults,
         solanaQuote: quote.solanaQuote,
       },
-      { quoteRequest: { validTo: VALID_TO } },
+      {
+        quoteRequest: { validTo: VALID_TO },
+        appData: { ...DEFAULT_APP_DATA, metadata: { orderClass: { orderClass: 'market' } } },
+      },
     )
     expect(step.instructions).toEqual(['CREATE_ORDER_IX'])
   })
@@ -70,6 +82,23 @@ describe('planCreateOrderStep', () => {
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({ quoteRequest: expect.objectContaining({ validTo: VALID_TO }) }),
+    )
+  })
+
+  it('marks the order class as limit when the caller says so, market otherwise', async () => {
+    await planCreateOrderStep({
+      ...quote,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+      appData: { metadata: { orderClass: { orderClass: 'limit' } } },
+    })
+
+    expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({
+        appData: expect.objectContaining({ metadata: { orderClass: { orderClass: 'limit' } } }),
+      }),
     )
   })
 
