@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import iconTelegramSrc from '@cowprotocol/assets/images/icon-telegram.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { RowBetween, RowFixed, HoverTooltip, UI, Toggle } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -85,6 +86,7 @@ interface NotificationSettingsProps {
 export function NotificationSettings({ children, isSettingsOpen }: NotificationSettingsProps): ReactNode {
   const telegramController = useConnectTelegram(isSettingsOpen)
   const { username } = telegramController
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   return (
     <>
@@ -130,7 +132,11 @@ export function NotificationSettings({ children, isSettingsOpen }: NotificationS
         <SectionDescription>
           <Trans>Only trade alerts are sent. No marketing messages.</Trans>
           <br />
-          <Trans>Notifications for swap and bridge and TWAP for EOA orders aren't supported yet.</Trans>
+          {isTwapEoaEnabled ? (
+            <Trans>Notifications for swap and bridge and TWAP for EOA orders aren't supported yet.</Trans>
+          ) : (
+            <Trans>Notifications for swap and bridge orders aren't supported yet.</Trans>
+          )}
         </SectionDescription>
 
         <SectionHeader>
