@@ -6,6 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
 
+import { tradeConfirmStateAtom } from 'modules/trade/state/tradeConfirmStateAtom'
+
 import {
   resetEoaTwapSuccessScreenIfMatches,
   useEoaTwapFlowUpdater,
@@ -113,11 +115,18 @@ describe('useEoaTwapFlowUpdater', () => {
 describe('resetEoaTwapSuccessScreenIfMatches', () => {
   beforeEach(() => {
     jotaiStore.set(eoaTwapSigningStepAtom, null)
+    jotaiStore.set(tradeConfirmStateAtom, {
+      isOpen: true,
+      pendingTrade: null,
+      transactionHash: null,
+      error: null,
+      permitSignatureState: undefined,
+      forcePriceConfirmation: false,
+      isConfirming: true,
+    })
   })
 
   it('clears the success screen when the cancelled TWAP order matches the active success state', () => {
-    const updateEoaTwapFlow = jest.fn()
-
     jotaiStore.set(eoaTwapSigningStepAtom, {
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
@@ -126,24 +135,26 @@ describe('resetEoaTwapSuccessScreenIfMatches', () => {
       eventId: EVENT_ID,
     })
 
-    resetEoaTwapSuccessScreenIfMatches(EVENT_ID, updateEoaTwapFlow)
+    resetEoaTwapSuccessScreenIfMatches(EVENT_ID)
 
-    expect(updateEoaTwapFlow).toHaveBeenCalledWith(null)
+    expect(jotaiStore.get(eoaTwapSigningStepAtom)).toBeNull()
+    expect(jotaiStore.get(tradeConfirmStateAtom).isOpen).toBe(false)
+    expect(jotaiStore.get(tradeConfirmStateAtom).isConfirming).toBe(false)
   })
 
   it('does not clear the success screen for a different TWAP order', () => {
-    const updateEoaTwapFlow = jest.fn()
-
-    jotaiStore.set(eoaTwapSigningStepAtom, {
+    const signingState = {
       step: EoaTwapSigningSteps.Success,
       phase: EoaTwapSigningPhase.Confirmed,
       plan: DEFAULT_PLAN,
       lockDismiss: false,
       eventId: EVENT_ID,
-    })
+    }
+    jotaiStore.set(eoaTwapSigningStepAtom, signingState)
 
-    resetEoaTwapSuccessScreenIfMatches('0xother', updateEoaTwapFlow)
+    resetEoaTwapSuccessScreenIfMatches('0xother')
 
-    expect(updateEoaTwapFlow).not.toHaveBeenCalled()
+    expect(jotaiStore.get(eoaTwapSigningStepAtom)).toEqual(signingState)
+    expect(jotaiStore.get(tradeConfirmStateAtom).isOpen).toBe(true)
   })
 })

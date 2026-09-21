@@ -7,6 +7,8 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { jotaiStore } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { setCloseTradeConfirmAtom } from 'modules/trade/state/tradeConfirmStateAtom'
+
 import { eoaTwapSigningStepAtom, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 import {
   cancelEoaTwapPlacement,
@@ -28,13 +30,15 @@ export type EoaTwapFlowUpdaterArg =
   | ((prev: EoaTwapSigningStepState | null) => EoaTwapFlowUpdate)
 
 /**
- * Reset the EOA Twap success screen if the order displayed there is the cancelled one.
+ * Reset the EOA TWAP confirmation flow if the order displayed there is the cancelled one.
  */
-export function resetEoaTwapSuccessScreenIfMatches(twapOrderId: string, updateEoaTwapFlow: EoaTwapFlowUpdater): void {
+export function resetEoaTwapSuccessScreenIfMatches(twapOrderId: string): void {
   const signingStep = jotaiStore.get(eoaTwapSigningStepAtom)
 
   if (signingStep?.step === EoaTwapSigningSteps.Success && signingStep.eventId === twapOrderId) {
-    updateEoaTwapFlow(null)
+    cancelEoaTwapPlacement()
+    jotaiStore.set(eoaTwapSigningStepAtom, null)
+    jotaiStore.set(setCloseTradeConfirmAtom)
   }
 }
 

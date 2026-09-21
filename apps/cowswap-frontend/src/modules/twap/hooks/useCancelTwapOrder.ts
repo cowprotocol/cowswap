@@ -15,7 +15,7 @@ import { useComposableCowContractData } from 'modules/advancedOrders'
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractProd } from 'common/hooks/useContract'
 
-import { resetEoaTwapSuccessScreenIfMatches, useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
+import { resetEoaTwapSuccessScreenIfMatches } from './useEoaTwapSigningStep'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
@@ -35,7 +35,6 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
   const composableCowContract = useComposableCowContractData()
   const settlementContract = useGP2SettlementContractProd()
   const { t } = useLingui()
-  const updateEoaTwapFlow = useEoaTwapFlowUpdater()
 
   const composableCowChainId = composableCowContract.chainId
   const settlementChainId = settlementContract.chainId
@@ -80,7 +79,7 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
         const sellTokenAddress = order.inputToken.address
         const sellTokenSymbol = order.inputToken.symbol
 
-        resetEoaTwapSuccessScreenIfMatches(twapOrderId, updateEoaTwapFlow)
+        resetEoaTwapSuccessScreenIfMatches(twapOrderId)
 
         setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
         processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
@@ -123,7 +122,6 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
       t,
       sendBatchTransactions,
       setTwapOrderStatus,
-      updateEoaTwapFlow,
     ],
   )
 }
