@@ -41,8 +41,16 @@ jest.mock('../TradeApproveToggle', () => ({
 }))
 
 jest.mock('../ActiveOrdersWithAffectedPermit', () => ({
-  ActiveOrdersWithAffectedPermit: ({ currency }: { currency: { symbol?: string } }) => (
-    <div data-testid="affected-permit-warning">{currency.symbol}</div>
+  ActiveOrdersWithAffectedPermit: ({
+    currency,
+    approvalTarget,
+  }: {
+    currency: { symbol?: string }
+    approvalTarget?: string
+  }) => (
+    <div data-testid="affected-permit-warning">
+      {currency.symbol}:{approvalTarget ?? 'vault-relayer'}
+    </div>
   ),
 }))
 
@@ -70,18 +78,18 @@ describe('TradeApproveWithAffectedOrderList', () => {
 
     render(<TradeApproveWithAffectedOrderList />)
 
-    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW')
+    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:vault-relayer')
   })
 
-  it('shows the affected-permit warning when forceShowAffectedOrders is set (EOA TWAP)', () => {
+  it('shows the affected-permit warning when approvalTarget is poller (EOA TWAP)', () => {
     mockUseIsApprovalOrPermitRequired.mockReturnValue({
       reason: ApproveRequiredReason.Required,
       currentAllowance: 0n,
     })
 
-    render(<TradeApproveWithAffectedOrderList forceShowAffectedOrders />)
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
 
-    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW')
+    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:poller')
   })
 
   it('does not show the warning for a partial on-chain approve', () => {
@@ -121,14 +129,14 @@ describe('TradeApproveWithAffectedOrderList', () => {
     expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })
 
-  it('does not show the warning for unlimited approval even when forceShowAffectedOrders is set', () => {
+  it('does not show the warning for unlimited approval even when approvalTarget is poller', () => {
     mockUseIsApprovalOrPermitRequired.mockReturnValue({
       reason: ApproveRequiredReason.Required,
       currentAllowance: 0n,
     })
     mockUseGetAmountToSignApprove.mockReturnValue(MAX_AMOUNT)
 
-    render(<TradeApproveWithAffectedOrderList forceShowAffectedOrders />)
+    render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
 
     expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })

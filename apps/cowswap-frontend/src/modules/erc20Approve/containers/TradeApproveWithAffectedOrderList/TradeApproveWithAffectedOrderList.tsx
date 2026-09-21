@@ -14,12 +14,14 @@ import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
+import type { AffectedOrdersApprovalTarget } from '../../types/affectedOrdersApprovalTarget.types'
+
 export interface TradeApproveWithAffectedOrderListProps {
-  forceShowAffectedOrders?: boolean
+  approvalTarget?: AffectedOrdersApprovalTarget
 }
 
 export function TradeApproveWithAffectedOrderList({
-  forceShowAffectedOrders = false,
+  approvalTarget,
 }: TradeApproveWithAffectedOrderListProps): ReactNode {
   const isBundlingSupported = useIsTxBundlingSupported()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -41,7 +43,7 @@ export function TradeApproveWithAffectedOrderList({
     isApproveRequired === ApproveRequiredReason.BundleApproveRequired
 
   const showAffectedOrders =
-    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || forceShowAffectedOrders) &&
+    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || approvalTarget === 'poller') &&
     !isMaxAmountToApprove(finalAmountToApprove)
 
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
@@ -58,7 +60,12 @@ export function TradeApproveWithAffectedOrderList({
           />
         </>
       )}
-      {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}
+      {showAffectedOrders && currencyToApprove && (
+        <ActiveOrdersWithAffectedPermit
+          currency={currencyToApprove}
+          approvalTarget={approvalTarget ?? 'vault-relayer'}
+        />
+      )}
     </>
   )
 }
