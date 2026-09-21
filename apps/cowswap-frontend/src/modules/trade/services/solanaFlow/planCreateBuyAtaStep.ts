@@ -7,7 +7,7 @@ import { PublicKey } from '@solana/web3.js'
 import { SolanaFlowStep } from './types'
 
 export interface PlanCreateBuyAtaStepParams {
-  /** Funds the rent — the user, not the solver. */
+  /** Funds the rent: the owner, or the sponsor on a sponsored order. Never the solver. */
   payer: PublicKey
   /** Owner of the created account: the order's receiver, which is not always the payer. */
   receiver: PublicKey

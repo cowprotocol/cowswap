@@ -66,6 +66,12 @@ export async function solanaFlow(
     // owner/account mismatch would make SPL Token reject the whole bundle.
     const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
+    // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
+    // rented by the sponsor too — the order book allows that, and only the wrap transfer itself has to
+    // stay the owner's, since those are the funds being wrapped.
+    const sponsor = isSponsored ? getSolanaOrderSponsor(orderBookApi.context.env) : undefined
+    const rentPayer = sponsor ?? owner
+
     const {
       step: createOrderStep,
       orderId,
@@ -78,7 +84,7 @@ export async function solanaFlow(
       buySymbol,
       validTo,
       appData: appData.doc,
-      sponsor: isSponsored ? getSolanaOrderSponsor(orderBookApi.context.env) : undefined,
+      sponsor,
     })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
@@ -87,9 +93,9 @@ export async function solanaFlow(
     // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
     // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
-      planCreateBuyAtaStep({ payer: owner, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
+      planCreateBuyAtaStep({ payer: rentPayer, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 
