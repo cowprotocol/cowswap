@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { useFreezeWhileConfirming } from 'modules/trade'
@@ -20,5 +22,7 @@ export function useSwapPriceDifferenceWarningProps(): SwapPriceDifferenceWarning
   const swapAmountDifference = useSwapAmountDifference()
   const feeFiatAmount = useTradeQuoteFeeFiatAmount()
 
-  return useFreezeWhileConfirming({ swapAmountDifference, feeFiatAmount })
+  const values = useMemo(() => ({ swapAmountDifference, feeFiatAmount }), [swapAmountDifference, feeFiatAmount])
+
+  return useFreezeWhileConfirming(values)
 }

@@ -62,6 +62,16 @@ describe('useSwapPriceDifferenceWarningProps', () => {
     mockedUseTradeQuoteFeeFiatAmount.mockReturnValue(CONFIRMED_FEE)
   })
 
+  it('keeps a stable object reference while the quote values are unchanged', () => {
+    const { result, rerender } = renderWarningProps()
+
+    const firstRender = result.current.values
+
+    rerender()
+
+    expect(result.current.values).toBe(firstRender)
+  })
+
   it('follows the live quote while the user has not confirmed yet', () => {
     const { result, rerender } = renderWarningProps()
 
