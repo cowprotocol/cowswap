@@ -237,6 +237,9 @@ test.describe('Hooks store', () => {
     // (WETH allowance is unset for this wallet, same describe-block default as every other test
     // here, so the partial/full approval selector renders too) actually becomes enabled, proving
     // this isn't a partially-broken post-reset state that merely looks quoted.
+    // Same collapsed-viewport situation as [CS-129]: the selector renders below the fold at this
+    // viewport, and a plain `expect().toBeVisible()` doesn't scroll like an interaction would.
+    await swapPage.approveModeSelector.scrollIntoViewIfNeeded()
     await expect(swapPage.approveModeSelector).toBeVisible()
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })

@@ -39,22 +39,25 @@ export function useBridgeSupportedTokens(
     async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      try {
-        const result = await bridgingSdk.getBuyTokens(params)
+      // Let a failed fetch surface as an SWR error (letting SWR's own retry/backoff run) rather
+      // than swallowing it into a synthetic "no route" success value. A synthetic success is
+      // indistinguishable from a real, confirmed "unsupported" verdict to `InvalidBridgeOutputUpdater`,
+      // which reset the just-picked output/target chain on nothing more than a transient failure of
+      // this request (observed as [CS-299]'s output currency and `InvalidBridgeOutputUpdater`
+      // resetting the destination — and the sell amount along with it — moments after the picker
+      // confirmed the pick). `bridgeRouteData` staying `undefined` on error already falls through
+      // `getInvalidBridgeOutputPatch`'s own `!bridgeRouteData` guard as "unresolved, don't reset" —
+      // the same behavior `useBridgeSupportedNetworks` (its sibling, feeding the same updater) relies
+      // on for its own fetch already.
+      const result = await bridgingSdk.getBuyTokens(params)
 
-        const tokens = result.tokens.reduce<TokenWithLogo[]>(
-          (acc, token) => collectBridgeToken(acc, token, tokensByAddress),
-          [],
-        )
-        const isRouteAvailable = tokens.length > 0 ? result.isRouteAvailable : false
+      const tokens = result.tokens.reduce<TokenWithLogo[]>(
+        (acc, token) => collectBridgeToken(acc, token, tokensByAddress),
+        [],
+      )
+      const isRouteAvailable = tokens.length > 0 ? result.isRouteAvailable : false
 
-        return { isRouteAvailable, tokens }
-      } catch (error) {
-        // Treat failures as "no route" to avoid leaving the UI in an inconsistent cross-chain state
-        // (e.g. stale targetChainId + output token from a previous selection).
-        console.warn('[bridgeTokens] Failed to fetch buy tokens', error)
-        return { isRouteAvailable: false, tokens: [] }
-      }
+      return { isRouteAvailable, tokens }
     },
     SWR_NO_REFRESH_OPTIONS,
   )
