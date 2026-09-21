@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LATEST_APP_DATA_VERSION, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -7,6 +7,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
@@ -66,6 +67,12 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+
+const APP_DATA: AppDataInfo = {
+  doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
+  fullAppData: '{}',
+  appDataKeccak256: '0x' + '0'.repeat(64),
+}
 const outputAmount = CurrencyAmount.fromRawAmount(usdc, '150000000')
 // The quote always reports its sellToken as WSOL, even for a native sell — see `getSolanaSellToken`.
 const inputAmount = CurrencyAmount.fromRawAmount(wsol, SELL_AMOUNT.toString())
@@ -101,6 +108,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
+    appData: APP_DATA,
     tradeQuote: {
       quoteResults: {
         quoteResponse: {
@@ -143,6 +151,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       onOpen: jest.fn(),
       requestPermitSignature: jest.fn(),
       onDismiss: jest.fn(),
+      setConfirming: jest.fn(),
     },
     swapFlowAnalyticsContext: {
       account: SOLANA_ACCOUNT,
@@ -196,6 +205,14 @@ describe('solanaFlow', () => {
     expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ validTo: context.context.validTo }))
   })
 
+  it("passes the app's current appData doc to the order planner", async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appData: context.appData.doc }))
+  })
+
   it('delegates the amount the approve switcher chose, not the sell amount', async () => {
     const unlimited = 2n ** 64n - 1n
 
@@ -226,11 +243,11 @@ describe('solanaFlow', () => {
 
     await solanaFlow(context, buildAnalytics())
 
-    const [{ payer, receiver, buyTokenAccount }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
     expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
     expect(receiver.toBase58()).not.toBe(context.context.receiver)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
-    expect(buyTokenAccount).toBe(context.solanaQuote.intent.buyTokenAccount)
+    expect(quote).toBe(context.solanaQuote)
   })
 
   it('never posts the order from the quote', async () => {
