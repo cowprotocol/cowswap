@@ -19,8 +19,15 @@ export function useResolveEns(address: string | undefined): AddressAccount | und
   const isSolana = networkId !== null && isSolanaChain(networkId)
 
   useEffect(() => {
+    // The network selector keeps the /address/ path when switching chains, so an ENS lookup started
+    // on an EVM chain can land after the page has already moved to Solana.
+    let isStale = false
+
     async function _resolveENS(name: string): Promise<void> {
       const _address = await resolveENS(name)
+
+      if (isStale) return
+
       setAddressAccount({ address: _address, ens: name })
     }
 
@@ -32,6 +39,10 @@ export function useResolveEns(address: string | undefined): AddressAccount | und
       setAddressAccount({ address })
     } else {
       setAddressAccount({ address: null })
+    }
+
+    return () => {
+      isStale = true
     }
   }, [address, isSolana])
 
