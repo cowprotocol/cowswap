@@ -18,6 +18,8 @@ import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
 
 export interface ParsedOrder {
+  /** Indexed EOA TWAP parts bypass the legacy order store. Retain the order for cancellation. */
+  cancellationOrder?: Order
   id: string
   owner: string
   isCancelling: boolean | undefined
