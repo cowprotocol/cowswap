@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import type { AddressKey } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
 
 import { ORDERS_PAGE_SIZE } from 'explorer/const'
 import styled from 'styled-components/macro'
@@ -36,6 +36,8 @@ interface OrdersTableWidgetProps {
 export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidgetProps): ReactNode {
   const [selectedTab, setSelectedTab] = useState(1)
   const { isTwapEoaEnabled } = useFeatureFlags()
+  // TWAP is a ComposableCoW feature, so the tab has nothing to fetch on Solana.
+  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaChain(networkId)
   const {
     state: tableState,
     setPageSize,
@@ -72,7 +74,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     },
   ]
 
-  if (isTwapEoaEnabled) {
+  if (showTwapTab) {
     tabItems.push({
       id: 2,
       tab: 'TWAP',
@@ -85,7 +87,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     pagination: ReactNode = <TablePagination context={OrdersTableContext} />,
   ): ReactNode => (
     <StyledExplorerTabs
-      selectedTab={isTwapEoaEnabled ? selectedTab : 1}
+      selectedTab={showTwapTab ? selectedTab : 1}
       updateSelectedTab={setSelectedTab}
       tabItems={tabItems.map((tab) => (tab.id === 2 ? { ...tab, content } : tab))}
       extra={pagination}
@@ -97,7 +99,7 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     <OrdersTableContext.Provider value={contextValue}>
       <ConnectionStatus />
       {error && <Notification type={error.type} message={error.message} />}
-      {isTwapEoaEnabled && selectedTab === 2 ? (
+      {showTwapTab && selectedTab === 2 ? (
         <TwapHistory key={`${networkId}:${ownerAddress}`} owner={ownerAddress} chainId={networkId}>
           {renderTabs}
         </TwapHistory>

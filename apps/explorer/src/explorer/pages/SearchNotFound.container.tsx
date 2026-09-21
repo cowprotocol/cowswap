@@ -4,11 +4,11 @@ import { useParams } from 'react-router'
 
 import { SearchNotFound } from './SearchNotFound'
 
-import { useOrderSearchRedirect } from '../../hooks/useOrderSearchRedirect'
+import { useSearchRedirect } from '../../hooks/useSearchRedirect'
 
 function SearchNotFoundContainer(): ReactNode {
   const { searchString = '' } = useParams<{ searchString: string }>()
-  const { path, isLoading } = useOrderSearchRedirect(searchString)
+  const { path, isLoading } = useSearchRedirect(searchString)
 
   return <SearchNotFound redirectTo={path} isLoading={isLoading} />
 }

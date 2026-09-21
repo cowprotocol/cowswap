@@ -11,6 +11,7 @@ import { TabContent } from './styled'
 
 import { Order, OrderStatus } from '../../../api/operator'
 import { LoadingWrapper } from '../../common/LoadingWrapper'
+import { Notification } from '../../Notification'
 import { BridgeDetailsTable } from '../BridgeDetailsTable'
 import { StatusLabel } from '../StatusLabel'
 
@@ -89,7 +90,12 @@ export function getOverviewTab(
     content: (
       <>
         {children}
-        {noTokens && <p>Not able to load tokens</p>}
+        {noTokens && (
+          <Notification
+            type="warn"
+            message="Token details for this order are not available, so its amounts cannot be displayed."
+          />
+        )}
         {isLoadingForTheFirstTime && <LoadingWrapper message="Loading order" />}
       </>
     ),
