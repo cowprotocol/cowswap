@@ -7597,8 +7597,8 @@ msgid "Network fees and costs"
 msgstr "Network fees and costs"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
-msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
-msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
+#~ msgid "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
+#~ msgstr "Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet."
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
 msgid "NEW"
@@ -7955,6 +7955,10 @@ msgstr "Light mode"
 #~ msgid "The output token cannot be transferred. There may be an issue with the output token."
 #~ msgstr "The output token cannot be transferred. There may be an issue with the output token."
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Swap and bridge, TWAP for EOA orders aren't supported yet."
+msgstr "Swap and bridge, TWAP for EOA orders aren't supported yet."
+
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
 msgstr "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
@@ -8297,6 +8301,10 @@ msgstr "Status"
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/PoolInfo/index.tsx
 msgid "higher"
 msgstr "higher"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
+msgid "Only trade alerts are sent. No marketing messages."
+msgstr "Only trade alerts are sent. No marketing messages."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"

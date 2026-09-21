@@ -128,7 +128,9 @@ export function NotificationSettings({ children, isSettingsOpen }: NotificationS
           </SettingsRow>
         </SettingsCard>
         <SectionDescription>
-          <Trans>Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet.</Trans>
+          <Trans>Only trade alerts are sent. No marketing messages.</Trans>
+          <br />
+          <Trans>Swap and bridge, TWAP for EOA orders aren't supported yet.</Trans>
         </SectionDescription>
 
         <SectionHeader>
