@@ -9,8 +9,6 @@ import { useHighFeeWarning } from './useHighFeeWarning'
 
 import { useTradeConfirmState } from '../../../../trade/hooks/useTradeConfirmState'
 
-// Keep the real freeze hook so this covers the actual composition, and mock only the two seams:
-// the live quote and the confirm state that drives freezing.
 jest.mock('modules/trade', () => ({
   useGetReceiveAmountInfo: jest.fn(),
   useFreezeWhileConfirming: jest.requireActual('../../../../trade/hooks/useFreezeWhileConfirming')
@@ -37,10 +35,6 @@ const ONE_WETH = CurrencyAmount.fromRawAmount(WETH, '1000000000000000000')
 const ZERO_WETH = CurrencyAmount.fromRawAmount(WETH, '0')
 const ZERO_USDC = CurrencyAmount.fromRawAmount(USDC, '0')
 
-/**
- * Sell order buying 1 WETH, with `networkFeeInBuyCurrency` charged on top, so the resulting
- * warning percentage is simply that fee expressed against 1 WETH.
- */
 function buildReceiveAmountInfo(networkFeeInBuyCurrency: string): ReceiveAmountInfo {
   const currencies = { sellAmount: ZERO_USDC, buyAmount: ONE_WETH }
 
@@ -105,7 +99,6 @@ describe('useHighFeeWarning', () => {
 
     expect(result.current.feePercentage?.toFixed(0)).toBe('34')
 
-    // User clicks confirm, then a quote refresh lands while the wallet prompt is open.
     mockIsConfirming(true)
     mockedUseGetReceiveAmountInfo.mockReturnValue(QUOTE_50_PERCENT)
     rerender()

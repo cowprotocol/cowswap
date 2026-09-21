@@ -30,10 +30,6 @@ interface UseHighFeeWarningReturn {
  */
 export function useHighFeeWarning(): UseHighFeeWarningReturn {
   const liveReceiveAmountInfo = useGetReceiveAmountInfo()
-  // The warning percentage is quote-derived, so it has to freeze together with the amounts shown
-  // next to it in the confirm modal. Otherwise a quote refresh landing while the wallet prompt is
-  // open keeps re-computing the percentage against a quote the user never confirmed, and the banner
-  // ends up contradicting the frozen amounts right above it.
   const receiveAmountInfo = useFreezeWhileConfirming(liveReceiveAmountInfo)
 
   const [feeWarningAccepted, setFeeWarningAccepted] = useAtom(feeWarningAcceptedAtom)

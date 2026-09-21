@@ -94,14 +94,12 @@ describe('useSwapPriceDifferenceWarningProps', () => {
 
     expect(result.current.values.swapAmountDifference).toBe(CONFIRMED)
 
-    // User clicks confirm, then a quote refresh lands while the wallet prompt is open.
     act(() => result.current.setConfirming(true))
 
     mockedUseSwapAmountDifference.mockReturnValue(REFRESHED)
     mockedUseTradeQuoteFeeFiatAmount.mockReturnValue(REFRESHED_FEE)
     rerender()
 
-    // Both halves of the banner must stay on the confirmed snapshot, never a mix of the two.
     expect(result.current.values.swapAmountDifference).toBe(CONFIRMED)
     expect(result.current.values.feeFiatAmount).toBe(CONFIRMED_FEE)
   })
