@@ -53,7 +53,7 @@ Normative language:
 - `MUST NOT` write a comment that repeats the identifier below it: `// Convert to BPS` above `const slippageBps = percentageToBps(...)` adds nothing the name does not already say.
 - `MUST NOT` restate a guard or a type, narrate the change being made, or reference a task, ticket, or PR.
 - `MUST` update or delete the comment beside code you change, in the same edit. A comment that outlived the code it described misleads the next reader, which is worse than no comment.
-- `SHOULD` keep a comment to one or two lines. If the justification needs a paragraph, the code is what needs fixing.
+- `SHOULD` keep comments compact.
 - Doc comments on exported API are the exception, and only for what a type cannot express: range, default, unit.
 
 ## Command Baseline
