@@ -10,6 +10,7 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useDerivedTradeState, useGetReceiveAmountInfo, useTradeConfirmActions, useTradeTypeInfo } from 'modules/trade'
 import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
@@ -37,6 +38,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
   const tradeConfirmActions = useTradeConfirmActions()
   const addTransaction = useTransactionAdder()
   const solana = useSolanaSigner(account)
+  const appData = useAppData()
 
   const { sellAmount: inputAmount, buyAmount: outputAmount } = receiveAmountInfo?.amountsToSign ?? {}
   const { recipient, recipientAddress, orderKind, inputCurrency } = derivedTradeState || {}
@@ -78,6 +80,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
         currentDelegation,
         delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
         isNativeSell,
+        appData,
       }),
     [
       chainId,
@@ -101,6 +104,7 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
       amountToApprove,
       sellAmountRaw,
       isNativeSell,
+      appData,
     ],
   )
 

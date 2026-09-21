@@ -1,9 +1,11 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LATEST_APP_DATA_VERSION, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
+
+import type { AppDataInfo } from 'modules/appData'
 
 import { buildSolanaContextKey } from './buildSolanaContextKey'
 
@@ -30,6 +32,12 @@ const solana: SolanaTradeFlowContext['solana'] = {
   owner: new PublicKey(SOLANA_ACCOUNT),
 }
 
+const appData: AppDataInfo = {
+  doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
+  fullAppData: '{}',
+  appDataKeccak256: '0x' + '0'.repeat(64),
+}
+
 const completeParams: SolanaContextKeyParams = {
   isFinalQuote: true,
   account: SOLANA_ACCOUNT,
@@ -51,6 +59,7 @@ const completeParams: SolanaContextKeyParams = {
   currentDelegation: 5n,
   delegationAmount: 1_000_000_000n,
   isNativeSell: true,
+  appData,
 }
 
 describe('buildSolanaContextKey', () => {
@@ -62,6 +71,7 @@ describe('buildSolanaContextKey', () => {
     expect(key?.[15]).toBe(wsol)
     expect(key?.[16]).toBe(5n)
     expect(key?.[17]).toBe(1_000_000_000n)
+    expect(key?.[19]).toBe(appData)
   })
 
   it('changes the key when the user picks a different approve amount, so the context rebuilds', () => {
@@ -87,6 +97,7 @@ describe('buildSolanaContextKey', () => {
     ['no output amount', { outputAmount: undefined }],
     ['a non-Solana quote', { quote: {} as SolanaContextKeyParams['quote'] }],
     ['no quote at all', { quote: null }],
+    ['no appData', { appData: null }],
   ])('returns null with %s, so the flow never runs partially resolved', (_label, override) => {
     expect(buildSolanaContextKey({ ...completeParams, ...override })).toBeNull()
   })
