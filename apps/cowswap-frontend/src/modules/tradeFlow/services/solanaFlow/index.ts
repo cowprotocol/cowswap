@@ -2,7 +2,7 @@ import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-u
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
-import { getSolanaOrderSponsor, postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
+import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
@@ -66,10 +66,14 @@ export async function solanaFlow(
     // owner/account mismatch would make SPL Token reject the whole bundle.
     const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
+    // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
+    // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
+    // owner paying — the only thing it can do there.
+    //
     // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
-    // rented by the sponsor too — the order book allows that, and only the wrap transfer itself has to
-    // stay the owner's, since those are the funds being wrapped.
-    const sponsor = isSponsored ? getSolanaOrderSponsor(orderBookApi.context.env) : undefined
+    // rented by the sponsor too. The order book allows that; only the wrap transfer has to stay the
+    // owner's, since those are the funds being wrapped.
+    const sponsor = isSponsored ? solanaQuote.funder : undefined
     const rentPayer = sponsor ?? owner
 
     const {
@@ -101,7 +105,7 @@ export async function solanaFlow(
 
     // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
     // track: the order book submits it once it has countersigned as fee payer.
-    const txHash = isSponsored
+    const txHash = sponsor
       ? await postSponsoredBundle({ connection, provider, feePayer }, steps, tradeQuote.quoteResults)
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
