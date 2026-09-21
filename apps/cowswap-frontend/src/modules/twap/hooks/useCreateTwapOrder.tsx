@@ -433,6 +433,7 @@ export function useCreateTwapOrder() {
           outputAmount: updatedTwapOrder.buyAmount,
           owner: account,
           uiOrderType: orderType,
+          isEoaTwap,
         })
 
         sendOrderAnalytics(`${orderType}|${twapFlowAnalyticsContext.marketLabel}`, isEoaTwap)

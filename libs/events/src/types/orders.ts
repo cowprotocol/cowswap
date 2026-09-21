@@ -45,6 +45,7 @@ export type OnPostedOrderPayload = {
   receiver?: string
   orderCreationHash?: string
   isEthFlow?: boolean
+  isEoaTwap?: boolean
 }
 
 export type OnPresignedOrderPayload = BaseOrderPayload & {
