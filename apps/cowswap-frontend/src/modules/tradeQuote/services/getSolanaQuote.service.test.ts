@@ -7,6 +7,7 @@ import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { getSolanaQuote as getSolanaQuoteFromSdk, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { PublicKey } from '@solana/web3.js'
+import { orderBookApi } from 'cowSdk'
 
 import { getSolanaQuote } from './getSolanaQuote.service'
 
@@ -49,24 +50,38 @@ describe('getSolanaQuote', () => {
   it('maps quoteParams onto SolanaQuoteParameters', async () => {
     await getSolanaQuote(quoteParams)
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith({
-      ownerAddress: quoteParams.owner,
-      sellTokenAddress: quoteParams.sellTokenAddress,
-      buyTokenAddress: quoteParams.buyTokenAddress,
-      receiverAddress: quoteParams.account,
-      sellTokenDecimals: quoteParams.sellTokenDecimals,
-      buyTokenDecimals: quoteParams.buyTokenDecimals,
-      amount: quoteParams.amount,
-      kind: quoteParams.kind,
-      validForSeconds: quoteParams.validFor,
-      slippageBps: 50,
-    })
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      {
+        ownerAddress: quoteParams.owner,
+        sellTokenAddress: quoteParams.sellTokenAddress,
+        buyTokenAddress: quoteParams.buyTokenAddress,
+        receiverAddress: quoteParams.account,
+        sellTokenDecimals: quoteParams.sellTokenDecimals,
+        buyTokenDecimals: quoteParams.buyTokenDecimals,
+        amount: quoteParams.amount,
+        kind: quoteParams.kind,
+        validForSeconds: quoteParams.validFor,
+        slippageBps: 50,
+      },
+      expect.anything(),
+    )
   })
 
   it('signs the slippage the user picked, rather than the default', async () => {
     await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.objectContaining({ slippageBps: 300 }))
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ slippageBps: 300 }),
+      expect.anything(),
+    )
+  })
+
+  // Without the app's own client the SDK builds a default one pointed at prod, where Solana is not
+  // deployed — every quote comes back 404 on a barn deployment.
+  it('quotes through the app-configured order book client', async () => {
+    await getSolanaQuote(quoteParams)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), { orderBookApi })
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
@@ -91,6 +106,7 @@ describe('getSolanaQuote', () => {
         receiverAddress: quoteParams.account,
         slippageBps: 50,
       }),
+      expect.anything(),
     )
   })
 
