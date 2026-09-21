@@ -99,6 +99,8 @@ export type { BuildSolanaTransactionParams, BuiltSolanaTransaction } from './ser
 export { signSolanaTransaction } from './services/solanaSend/signSolanaTransaction'
 export { SOLANA_MAX_APPROVE_AMOUNT } from './services/solanaApprove/const'
 export { sendSolanaFlow } from './services/solanaFlow/sendSolanaFlow'
+export { signSolanaFlow } from './services/solanaFlow/signSolanaFlow'
+export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
 export { planWrapStep } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'
 export { planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
