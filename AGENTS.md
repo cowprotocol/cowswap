@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-27
+last_reviewed: 2026-09-21
 source_of_truth_scope: root coordination contract for AI and human contributors
 review_cadence: weekly during active frontend work, otherwise bi-weekly
 ---
@@ -46,6 +46,15 @@ Normative language:
 
 - `MUST NOT` normalize addresses with `address.toLowerCase()`; use `getAddressKey` from `@cowprotocol/cow-sdk`.
 - `MUST NOT` compare addresses with `===`, `toLowerCase()`, or manual string comparison; use `areAddressesEqual` from `@cowprotocol/cow-sdk`.
+
+## Comments
+
+- `MUST` limit comments to two cases: a **workaround** (a specific bug, an upstream quirk, an invariant the code cannot state) or **difficult math** (a formula, unit conversion, or derivation whose correctness cannot be checked by reading the expression).
+- `MUST NOT` write a comment that repeats the identifier below it: `// Convert to BPS` above `const slippageBps = percentageToBps(...)` adds nothing the name does not already say.
+- `MUST NOT` restate a guard or a type, narrate the change being made, or reference a task, ticket, or PR.
+- `MUST` update or delete the comment beside code you change, in the same edit. A comment that outlived the code it described misleads the next reader, which is worse than no comment.
+- `SHOULD` keep a comment to one or two lines. If the justification needs a paragraph, the code is what needs fixing.
+- Doc comments on exported API are the exception, and only for what a type cannot express: range, default, unit.
 
 ## Command Baseline
 
