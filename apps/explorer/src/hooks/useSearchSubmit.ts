@@ -9,7 +9,7 @@ import { Network } from 'types'
 import { isAnAddressAccount, isAnOrderId, isATxHash, isEns } from 'utils'
 
 export function pathAccordingTo(query: string, networkId?: Network | null, isTwapEnabled = false): string {
-  if (isAnAddressAccount(query)) {
+  if (isAnAddressAccount(query, networkId)) {
     return 'address'
   }
   // Before the tx-hash check on purpose: a Solana uid is the same length as an EVM tx hash.

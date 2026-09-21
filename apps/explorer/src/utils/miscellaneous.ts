@@ -1,4 +1,4 @@
-import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
@@ -191,8 +191,13 @@ export const getChainsForOrderId = (orderId: string): Network[] =>
  * Check if string is an address account against regex
  *
  * @param text Possible address string to check
+ * @param networkId The chain the address belongs to. Omitted means EVM.
  */
-export const isAnAddressAccount = (text: string): boolean => {
+export const isAnAddressAccount = (text: string, networkId?: Network | null): boolean => {
+  if (networkId && isSolanaChain(networkId)) {
+    return isSolanaAddress(text)
+  }
+
   if (isEns(text)) {
     return true
   } else {
