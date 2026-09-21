@@ -46,19 +46,19 @@ export function TradeApproveWithAffectedOrderList({
     (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || approvalTarget === 'poller') &&
     !isMaxAmountToApprove(finalAmountToApprove)
 
+  const showApproveToggle = isApproveOrPartialPermitRequired || showAffectedOrders
+
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
   const currencyToApprove = partialAmountToApprove.currency
 
   return (
     <>
-      {isApproveOrPartialPermitRequired && (
-        <>
-          <TradeApproveToggle
-            updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
-            amountToApprove={partialAmountToApprove}
-          />
-        </>
+      {showApproveToggle && (
+        <TradeApproveToggle
+          updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
+          amountToApprove={partialAmountToApprove}
+        />
       )}
       {showAffectedOrders && currencyToApprove && (
         <ActiveOrdersWithAffectedPermit
