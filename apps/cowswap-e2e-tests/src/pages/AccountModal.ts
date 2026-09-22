@@ -25,7 +25,7 @@ export class AccountModal {
   }
 
   /**
-   * A stray overlay (e.g. a toast or a previous dialog's backdrop still fading out) can sit on top
+   * A stray overlay (e.g. a previous dialog's backdrop still fading out) can sit on top
    * of the toggle button and intercept the click, which Playwright surfaces as a timeout rather
    * than a silent no-op. Escape dismisses most such overlays, so retry once after that instead of
    * failing outright — a second failure still throws, so a genuinely broken toggle button isn't
