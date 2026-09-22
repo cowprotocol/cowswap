@@ -22,6 +22,7 @@ import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from '
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { callWidgetHook } from 'modules/injectedWidget'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
@@ -181,6 +182,7 @@ const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.Mocked
 >
 const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
+const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
@@ -245,7 +247,7 @@ describe('useCreateTwapOrder', () => {
     )
   })
 
-  it('tracks the wallet off-chain signing capability instead of the EOA TWAP route', async () => {
+  it('tracks isEoaTwap true on EOA TWAP placement events', async () => {
     const { result } = renderHook(useCreateTwapOrder)
 
     await act(async () => {
@@ -253,8 +255,31 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(sendEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false }),
+      expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false, isEoaTwap: true }),
     )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: true }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: true }))
+  })
+
+  it('tracks isEoaTwap false on Safe TWAP placement events', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'Place Advanced Order', isEoaTwap: false }),
+    )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: false }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: false }))
   })
 
   it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {

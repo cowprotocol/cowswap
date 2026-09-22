@@ -83,6 +83,7 @@ interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
   action: string
   label: string
+  isEoaTwap: boolean
 }
 
 interface TwapConversionEvent extends TwapAnalyticsEvent {
@@ -149,11 +150,12 @@ export function useCreateTwapOrder() {
   const tradeFlowAnalytics = useTradeFlowAnalytics()
 
   const sendOrderAnalytics = useCallback(
-    (action: string, context: string) => {
+    (context: string, isEoaTwap: boolean) => {
       const analyticsEvent: TwapOrderEvent = {
         category: CowSwapAnalyticsCategory.TWAP,
         action: 'Place Order',
         label: `${UiOrderType.TWAP}|${context}`,
+        isEoaTwap,
       }
       analytics.sendEvent(analyticsEvent)
     },
@@ -161,11 +163,12 @@ export function useCreateTwapOrder() {
   )
 
   const sendTwapConversionAnalytics = useCallback(
-    (status: string, fallbackHandlerIsNotSet: boolean) => {
+    (status: string, fallbackHandlerIsNotSet: boolean, isEoaTwap: boolean) => {
       const analyticsEvent: TwapConversionEvent = {
         category: CowSwapAnalyticsCategory.TWAP,
         action: 'Conversion',
         label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+        isEoaTwap,
       }
       analytics.sendEvent(analyticsEvent)
     },
@@ -179,7 +182,7 @@ export function useCreateTwapOrder() {
     async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
       // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
-      const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+      const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
       if (!isEvmChain(chainId) || (!isSafeWallet && !isEoaTwap)) {
         return
@@ -217,6 +220,7 @@ export function useCreateTwapOrder() {
         recipientAddress: twapOrder.receiver,
         marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
         orderType,
+        isEoaTwap,
       }
 
       startEoaTwapPlacement()
@@ -282,7 +286,7 @@ export function useCreateTwapOrder() {
           allowsOffchainSigning,
         })
 
-        sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet, isEoaTwap)
 
         await uploadAppDataDocOrderbookApi({
           appDataKeccak256: updatedAppData.appDataKeccak256,
@@ -430,9 +434,10 @@ export function useCreateTwapOrder() {
           outputAmount: updatedTwapOrder.buyAmount,
           owner: account,
           uiOrderType: orderType,
+          isEoaTwap,
         })
 
-        sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
+        sendOrderAnalytics(`${orderType}|${twapFlowAnalyticsContext.marketLabel}`, isEoaTwap)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
@@ -464,7 +469,7 @@ export function useCreateTwapOrder() {
         }
 
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
-        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
 
         // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
@@ -481,7 +486,7 @@ export function useCreateTwapOrder() {
         updateEoaTwapFlow(null)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
-        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet, isEoaTwap)
 
         return false
       }
