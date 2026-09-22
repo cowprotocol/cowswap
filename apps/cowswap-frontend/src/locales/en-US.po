@@ -7692,8 +7692,8 @@ msgid "Add Hook"
 msgstr "Add Hook"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-msgid "select"
-msgstr "select"
+#~ msgid "select"
+#~ msgstr "select"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderStats.tsx
