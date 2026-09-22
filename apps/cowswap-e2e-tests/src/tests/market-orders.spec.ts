@@ -618,7 +618,9 @@ test.describe('Market Orders', () => {
       // is disabled while the order is still `creating`), so this checks the text directly. Getting
       // here requires the app to notice the mocked receipt, which it only rechecks on a new block —
       // real Sepolia block time, not a fixed poll interval — hence the generous timeout.
-      await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible({ timeout: 30_000 })
+      await expect(
+        swapPage.page.locator('#bodyWrapper #eth-flow-stepper').getByText('Creating Order', { exact: true }),
+      ).toBeVisible({ timeout: 30_000 })
 
       // Let the order-by-uid poll start succeeding — this is what flips the order from `creating` to
       // `pending`, rendered in the activities list as "Open".
