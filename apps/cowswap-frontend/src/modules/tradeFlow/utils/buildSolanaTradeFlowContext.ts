@@ -46,7 +46,7 @@ export function buildSolanaTradeFlowContext([
     },
     callbacks: { closeModals, dispatch, addTransaction },
     tradeConfirmActions,
-    swapFlowAnalyticsContext: {
+    tradeFlowAnalyticsContext: {
       account,
       recipient,
       recipientAddress,

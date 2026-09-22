@@ -119,9 +119,12 @@ supplies two additional fields (`orderClass: OrderClass.MARKET`,
 
 `modules/tradeFlow/types/SolanaContextKey.ts`:
 
-- `SolanaContextKey` tuple, `SolanaContextKeyParams`, and
-  `SolanaTradeFlowContextParams` all gain `orderClass` and `partiallyFillable`
-  entries, threaded through unchanged otherwise.
+- `SolanaContextKey` tuple and `SolanaContextKeyParams` gain `orderClass` and
+  `partiallyFillable` entries, threaded through unchanged otherwise.
+  `SolanaTradeFlowContextParams` (consumed only by
+  `getIsSolanaTradeFlowContextReady`) does **not** gain them — readiness never
+  needs to gate on order classification, only on amounts/quote/signer being
+  present.
 
 ## Fix the hardcoded `OrderClass.MARKET`
 
@@ -175,34 +178,87 @@ whole LimitOrders page via the existing `AppDataUpdater orderClass="limit"`.
 
 ## Dispatcher & UI wiring
 
-`modules/limitOrders/hooks/useHandleOrderPlacement.ts`: add a Solana branch,
-checked before the existing `shouldUseSafeBundle` branch (Solana has no
-Safe-wallet concept, same precedence swap's own dispatcher gives it in
-`getFlowType`). Calls `solanaFlow` (imported from `modules/tradeFlow`) with
-the new hook's context and the `TradeFlowAnalytics` instance already obtained
-via `useTradeFlowAnalytics()` for the existing EVM branches — no new analytics
-plumbing needed, since `TradeFlowAnalytics`'s methods already take a generic
-`TradeFlowAnalyticsContext`.
+**Discovered mid-plan and confirmed with the user:** `LimitOrdersConfirmModal`
+and `LimitOrdersDetails` (rendered inside it) are deeply coupled to the EVM
+`TradeFlowContext` shape — they read `tradeContext.allowsOffchainSigning`,
+`tradeContext.permitInfo`, `tradeContext.postOrderParams.{appData,
+isSafeWallet, account, recipient, recipientAddressOrName, partiallyFillable}`,
+`tradeContext.quoteState`, `tradeContext.chainId` directly, and
+`LimitOrdersWidget` only renders the modal at all when that EVM context is
+truthy (`confirmModal={tradeContext ? <LimitOrdersConfirmModal
+tradeContext={tradeContext} .../> : null}`). Fixing only the dispatcher and
+the `TradeButtons` gate (as originally scoped above) would leave the confirm
+screen rendering nothing at all on Solana. The swap widget already solved this
+exact problem: `SwapConfirmModal` never receives a typed trade context as a
+prop — its props are chain-agnostic (`doTrade()` callback, `isTradeContextReady:
+boolean`, currency previews, price impact, recipient), and it pulls anything
+else it needs from chain-agnostic global hooks (`useWalletInfo()`,
+`useAppData()`). All EVM-vs-Solana dispatch happens inside `useHandleSwap`,
+which builds both `TradeFlowContext` and `SolanaTradeFlowContext` internally
+and exposes only `{ callback, contextIsReady }`.
 
-`modules/limitOrders/containers/LimitOrdersWidget/index.tsx` +
-`modules/limitOrders/containers/TradeButtons/index.tsx`: remove the
-`skipTradeContextReadyGate` bypass. `isTradeContextReady` becomes
-`isSolanaChain(chainId) ? !!solanaContext : !!tradeContext`, so the confirm
-button is gated on real Solana context readiness instead of unconditionally
-enabled.
+`limitOrders` follows the same pattern:
+
+- `modules/limitOrders/hooks/useHandleOrderPlacement.ts`: drop `tradeContext`
+  as a parameter. Build both `useTradeFlowContext()` (EVM) and the new
+  `useSolanaTradeFlowContext()` (Solana) internally, exactly as
+  `useHandleSwap`/`useTradeFlow` already do. Add a Solana branch — checked
+  before the existing `shouldUseSafeBundle` branch (Solana has no Safe-wallet
+  concept, same precedence swap's own dispatcher gives it) — that calls
+  `solanaFlow` (imported from `modules/tradeFlow`) with the new hook's context
+  and the `TradeFlowAnalytics` instance already obtained via
+  `useTradeFlowAnalytics()`. Return `{ callback, isTradeContextReady,
+  isSafeApprovalBundle }` instead of a bare callback — `isSafeApprovalBundle`
+  (the EVM-only "bundled with approval" concept previously computed inside the
+  confirm modal from `tradeContext`) moves into this hook, computed from the
+  same inputs the hook already reads for its own `shouldUseSafeBundle` gate.
+  `solanaFlow` already calls `tradeConfirmActions.onSuccess`/`.onError` and
+  closes the modal itself (mirroring swap), unlike `tradeFlow`/`safeBundleFlow`
+  (EVM) which return an order id string for the caller to finish handling —
+  the hook's success branch only re-invokes `tradeConfirmActions.onSuccess`
+  when the result is a string, to avoid a double call on the Solana path.
+- `modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx` +
+  `modules/limitOrders/pure/LimitOrdersDetails/index.tsx`: shrink both
+  components' props to the chain-agnostic subset they actually need
+  (`recipient`, `recipientAddressOrName`, `partiallyFillable`, `validTo`,
+  `isSafeApprovalBundle`, currency previews, price impact, a `doTrade`
+  callback, `isTradeContextReady`) instead of the raw `TradeFlowContext`.
+  `account`/`chainId`/`appData` are read directly via `useWalletInfo()`/
+  `useAppData()` inside the modal, matching `SwapConfirmModal`. Use
+  `useFreezeWhileConfirming` (already used by `SwapConfirmModal`) in place of
+  the modal's previous ad hoc `useMemo(() => tradeContextInitial, [])` freeze.
+- `modules/limitOrders/containers/LimitOrdersWidget/index.tsx`: call the
+  restructured `useHandleOrderPlacement()` (no `tradeContext` param) at the
+  widget level (where `SwapWidget` calls `useHandleSwap`), instead of inside
+  the confirm modal. Compute `recipient`/`recipientAddressOrName`/`validTo`
+  directly from `useLimitOrdersDerivedState()` + `limitOrdersSettingsAtom` +
+  `useTradeQuote()` — the same underlying state both the EVM and Solana
+  context builders already derive these from — so the widget never needs to
+  reach into either typed context for display purposes. Gate
+  `confirmModal`/`TradeButtons` on the hook's `isTradeContextReady` (now true
+  for either chain) instead of `!!tradeContext`.
+- `modules/limitOrders/containers/TradeButtons/index.tsx`: remove the
+  `skipTradeContextReadyGate` bypass entirely — `isDisabled` becomes
+  `!warningsAccepted || !isTradeContextReady`, since `isTradeContextReady` now
+  genuinely reflects Solana readiness.
 
 ## Testing
 
 - Extend `modules/tradeFlow/services/solanaFlow/index.test.ts` to cover
   `orderClass` branching in `buildSolanaOrder()` (both `MARKET` and `LIMIT`).
-- Add a test for the new `modules/limitOrders/hooks/useSolanaTradeFlowContext.ts`
-  hook, mirroring the existing test patterns for
-  `modules/limitOrders/hooks/useTradeFlowContext.ts` /
-  `modules/tradeFlow/hooks/useSolanaTradeFlowContext.ts` (readiness gating,
-  key memoization).
-- Extend `modules/limitOrders/hooks/useHandleOrderPlacement.test.tsx` for the
-  new Solana branch (dispatches to `solanaFlow`, not `tradeFlow`, on a Solana
-  chain).
+- No new unit test for `modules/limitOrders/hooks/useSolanaTradeFlowContext.ts`
+  itself — its swap equivalent (`modules/tradeFlow/hooks/useSolanaTradeFlowContext.ts`)
+  has none either; it's a thin composition of already-tested lower-level
+  pieces (`buildSolanaContextKey`, `buildSolanaTradeFlowContext`,
+  `useSolanaSigner`) and is exercised indirectly through
+  `useHandleOrderPlacement`'s tests and manual/e2e verification.
+- Rewrite `modules/limitOrders/hooks/useHandleOrderPlacement.test.tsx` for the
+  new `(priceImpact, settingsState, tradeConfirmActions) => { callback,
+  isTradeContextReady, isSafeApprovalBundle }` signature (mocking
+  `useTradeFlowContext`/`useSolanaTradeFlowContext` instead of passing a
+  context object as an argument), and add cases for the Solana branch
+  (dispatches to `solanaFlow`, not `tradeFlow`; does not double-call
+  `tradeConfirmActions.onSuccess`).
 - Add/extend a test on `getSolanaQuote.service.ts` verifying
   `partiallyFillable` is forwarded to the SDK call.
 

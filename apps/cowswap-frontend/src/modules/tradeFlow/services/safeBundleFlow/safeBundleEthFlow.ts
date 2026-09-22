@@ -38,7 +38,7 @@ export async function safeBundleEthFlow(
   const {
     context,
     callbacks,
-    swapFlowAnalyticsContext,
+    tradeFlowAnalyticsContext,
     tradeConfirmActions,
     typedHooks,
     tradeQuote,
@@ -71,7 +71,7 @@ export async function safeBundleEthFlow(
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   analytics.wrapApproveAndPresign({
-    ...swapFlowAnalyticsContext,
+    ...tradeFlowAnalyticsContext,
     quoteId: orderParams.quoteId,
     allowsOffchainSigning: orderParams.allowsOffchainSigning,
   })
@@ -215,7 +215,7 @@ export async function safeBundleEthFlow(
       },
       callbacks.dispatch,
     )
-    analytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(tradeFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 8: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
@@ -228,7 +228,7 @@ export async function safeBundleEthFlow(
     const swapErrorMessage = getSwapErrorMessage(error, chainId as SupportedChainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
-    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

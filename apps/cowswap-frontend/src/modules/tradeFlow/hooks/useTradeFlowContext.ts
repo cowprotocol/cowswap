@@ -199,7 +199,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
           },
           tradeConfirmActions,
-          swapFlowAnalyticsContext: {
+          tradeFlowAnalyticsContext: {
             account,
             recipient,
             recipientAddress,

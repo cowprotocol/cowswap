@@ -153,7 +153,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       onDismiss: jest.fn(),
       setConfirming: jest.fn(),
     },
-    swapFlowAnalyticsContext: {
+    tradeFlowAnalyticsContext: {
       account: SOLANA_ACCOUNT,
       orderType: UiOrderType.SWAP,
       marketLabel: 'SOL,USDC',
@@ -291,8 +291,8 @@ describe('solanaFlow', () => {
     )
     expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith(ORDER_ID)
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
-    expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
+    expect(analytics.trade).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
+    expect(analytics.sign).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
   })
 
   it('emits the posted-order event so the rich "Order submitted" snackbar shows, not the raw tx summary', async () => {
@@ -305,7 +305,7 @@ describe('solanaFlow', () => {
       id: ORDER_ID,
       owner: context.account,
       kind: context.context.orderKind,
-      uiOrderType: context.swapFlowAnalyticsContext.orderType,
+      uiOrderType: context.tradeFlowAnalyticsContext.orderType,
       receiver: context.context.receiver,
       inputAmount: context.context.inputAmount,
       outputAmount: context.context.outputAmount,

@@ -71,7 +71,7 @@ export interface SolanaTradeFlowContext {
     addTransaction: TransactionAdder
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
   // The app's current appData; passed as `advancedSettings.appData` so the order carries it even if it
   // has changed since the quote (e.g. hooks added after quoting), mirroring the EVM flow's `orderParams.appData`.
   appData: AppDataInfo
@@ -97,7 +97,7 @@ export interface TradeFlowContext {
     setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
   config: Config
   permitInfo: IsTokenPermittableResult

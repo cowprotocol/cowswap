@@ -36,7 +36,7 @@ export async function solanaFlow(
     solanaQuote,
     context,
     callbacks,
-    swapFlowAnalyticsContext,
+    tradeFlowAnalyticsContext,
     account,
     solana,
     sellToken,
@@ -51,7 +51,7 @@ export async function solanaFlow(
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
   tradeConfirmActions.onSign(tradeAmounts)
-  analytics.trade(swapFlowAnalyticsContext)
+  analytics.trade(tradeFlowAnalyticsContext)
 
   try {
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
@@ -117,7 +117,7 @@ export async function solanaFlow(
       orderId,
       account,
       orderKind,
-      uiOrderType: swapFlowAnalyticsContext.orderType,
+      uiOrderType: tradeFlowAnalyticsContext.orderType,
       receiver,
       inputAmount,
       outputAmount,
@@ -128,7 +128,7 @@ export async function solanaFlow(
     // onSuccess takes the order id, not the tx hash: OrderSubmittedContent looks the order up
     // from Redux by this value via `useOrder({ id: transactionHash })`.
     tradeConfirmActions.onSuccess(orderId)
-    analytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(tradeFlowAnalyticsContext)
     callbacks.closeModals()
 
     return true
@@ -138,7 +138,7 @@ export async function solanaFlow(
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
-    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }
