@@ -191,6 +191,7 @@ const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useW
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
 const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
+// eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
   const setOptimisticAllowance = jest.fn()
@@ -380,7 +381,7 @@ describe('useCreateTwapOrder', () => {
       chainId: 1,
       tokenAddress: '0xsell',
       owner: '0xaccount',
-      spender: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+      spender: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
       amount: maxUint256,
       blockNumber: 123n,
     })
