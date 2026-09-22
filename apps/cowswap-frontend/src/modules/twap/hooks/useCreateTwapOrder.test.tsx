@@ -15,6 +15,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { hasBytecode } from 'modules/accountProxy'
@@ -50,6 +51,9 @@ import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 jest.mock('../utils/waitForTwapEventId', () => ({ waitForTwapEventId: jest.fn() }))
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
+jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({
+  useSetOptimisticAllowance: jest.fn(),
+}))
 jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
   useConfig: jest.fn(() => ({})),
@@ -134,6 +138,9 @@ jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest
 jest.mock('../utils/twapOrderToStruct', () => ({ twapOrderToStruct: jest.fn(() => ({})) }))
 
 const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
+const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFunction<
+  typeof useSetOptimisticAllowance
+>
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockedUseIsSafeViaWc = useIsSafeViaWc as jest.MockedFunction<typeof useIsSafeViaWc>
@@ -184,14 +191,17 @@ const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useW
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
 const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
+// eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
+  const setOptimisticAllowance = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
     jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
+    mockedUseSetOptimisticAllowance.mockReturnValue(setOptimisticAllowance)
     mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
@@ -235,6 +245,7 @@ describe('useCreateTwapOrder', () => {
     mockedPlaceEoaTwapOrder.mockResolvedValue({
       proxyAddress: '0xproxy',
       setupTxHash: '0xsetuptx',
+      setupBlockNumber: 123n,
       eventId: '1'.repeat(70),
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedUseGetAmountToSignApprove.mockReturnValue(null)
@@ -357,6 +368,33 @@ describe('useCreateTwapOrder', () => {
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
       expect.objectContaining({ amountToPermitOrApprove: 2_000_000n, sellTokenAmount: 1_000_000n }),
     )
+  })
+
+  it('caches the confirmed poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).toHaveBeenCalledWith({
+      chainId: 1,
+      tokenAddress: '0xsell',
+      owner: '0xaccount',
+      spender: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+      amount: maxUint256,
+      blockNumber: 123n,
+    })
+  })
+
+  it('does not cache an unchanged poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).not.toHaveBeenCalled()
   })
 
   it('does not permit a Dai-like token when the form selected a finite poller approval', async () => {

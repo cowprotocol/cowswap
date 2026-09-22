@@ -20,6 +20,7 @@ import {
 } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
@@ -107,6 +108,7 @@ export function useCreateTwapOrder() {
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
+  const setOptimisticAllowance = useSetOptimisticAllowance()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
@@ -371,6 +373,7 @@ export function useCreateTwapOrder() {
           const {
             proxyAddress,
             setupTxHash,
+            setupBlockNumber,
             eventId: eventIdParam,
           } = await placeEoaTwapOrder({
             isProxyDeployed,
@@ -385,6 +388,17 @@ export function useCreateTwapOrder() {
             onSigningStep: updateEoaTwapFlow,
             pollerPermitData,
           })
+
+          if (pollerApprovalNeeds.needsApproval) {
+            setOptimisticAllowance({
+              chainId,
+              tokenAddress: sellTokenAddress,
+              owner: account,
+              spender: eoaPoller,
+              amount: pollerAmountToApprove,
+              blockNumber: setupBlockNumber,
+            })
+          }
 
           // Setup factory tx hash for confirm-modal / explorer link.
           confirmModalHash = setupTxHash
@@ -522,6 +536,7 @@ export function useCreateTwapOrder() {
       walletClient,
       updateEoaTwapFlow,
       amountToApprove,
+      setOptimisticAllowance,
     ],
   )
 }
