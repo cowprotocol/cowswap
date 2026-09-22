@@ -41,6 +41,7 @@ const regularRawStateAtom = atomWithStorage<LimitOrdersRawState>(
   'limit-orders-atom:v4',
   getDefaultLimitOrdersState(null),
   getJotaiIsolatedStorage(),
+  { getOnInit: true },
 )
 
 const { updateAtom: regularUpdateRawStateAtom } = atomWithPartialUpdate(regularRawStateAtom)

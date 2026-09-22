@@ -5,7 +5,7 @@ import { useFeatureFlags, useMediaQuery, useTheme, useThrottledCallback } from '
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { ButtonOutlined, Media } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -241,21 +241,21 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
             <WalletStatusButton variant="widget" onWalletClick={toggleAccountModal} />
           )}
 
-          {shouldShowMyOrdersButton && (
-            <ButtonOutlined margin={'0 16px 0 auto'} minHeight={28} onClick={handleMyOrdersClick}>
-              <Trans>
-                My orders <OrdersIcon aria-hidden />
-              </Trans>
-            </ButtonOutlined>
-          )}
+          <styledEl.MyOrdersButton
+            margin={'0 16px 0 auto'}
+            minHeight={28}
+            $hidden={!shouldShowMyOrdersButton}
+            disabled={!shouldShowMyOrdersButton}
+            onClick={handleMyOrdersClick}
+          >
+            <Trans>
+              My orders <OrdersIcon aria-hidden />
+            </Trans>
+          </styledEl.MyOrdersButton>
 
           <styledEl.HeaderRight>
-            {!lockScreen && (
-              <>
-                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
-                {settingsWidget}
-              </>
-            )}
+            {!lockScreen && !isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
+            {settingsWidget}
           </styledEl.HeaderRight>
         </styledEl.Header>
 
