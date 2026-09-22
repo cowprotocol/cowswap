@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -8,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
 
-import { resetOrdersTableFiltersAtom, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { OrderStep, OrderSteps, useSetOrdersTableDrawerOpen } from 'modules/trade'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
@@ -31,21 +30,23 @@ export function EoaTwapSigningPendingContent({
 }: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
   const { chainId } = useWalletInfo()
-  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
-  const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
+  const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
-  const onViewOrders = useCallback(() => {
-    // TODO: We could improve this by only resetting the filters if we know for sure the new order is not going to be visible:
-    resetOrdersTableFilters()
+  const onViewOrders = useCallback(async () => {
+    const orderId = signingStep?.eventId
+
     onDismiss()
-    navigateToOrdersTableTab(OrderTabId.OPEN)
 
     if (isUpToLarge) {
       setOrdersTableDrawerOpen(true)
     }
-  }, [isUpToLarge, navigateToOrdersTableTab, onDismiss, resetOrdersTableFilters, setOrdersTableDrawerOpen])
+
+    if (orderId) {
+      await revealOrderInOrdersTable(orderId, OrderTabId.OPEN)
+    }
+  }, [isUpToLarge, onDismiss, revealOrderInOrdersTable, setOrdersTableDrawerOpen, signingStep?.eventId])
 
   if (!signingStep) return null
 

@@ -11,7 +11,7 @@ import * as styledEl from './EoaTwapSuccessContent.styled'
 export interface EoaTwapSuccessContentProps {
   explorerUrl?: string
   onNewTrade(): void
-  onViewOrders(): void
+  onViewOrders(): void | Promise<void>
 }
 
 export function EoaTwapSuccessContent({

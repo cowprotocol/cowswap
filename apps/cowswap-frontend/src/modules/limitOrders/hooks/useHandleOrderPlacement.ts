@@ -24,7 +24,7 @@ import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } fro
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
@@ -56,7 +56,7 @@ export function useHandleOrderPlacement(
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
-  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
+  const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
@@ -166,7 +166,7 @@ export function useHandleOrderPlacement(
 
   return useCallback(() => {
     return tradeFn()
-      .then((orderHash) => {
+      .then(async (orderHash) => {
         if (!orderHash) {
           return
         }
@@ -181,13 +181,7 @@ export function useHandleOrderPlacement(
         // Close receipt modal
         closeReceiptModal()
 
-        // TODO: Clear filters if the new order is not visible before navigating.
-
-        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
-        // still be no signing orders.
-        setTimeout(() => {
-          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
-        })
+        await revealOrderInOrdersTable(orderHash, isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -213,7 +207,7 @@ export function useHandleOrderPlacement(
     updateLimitOrdersState,
     setPartiallyFillableOverride,
     isAlternativeOrderEdit,
-    navigateToOrdersTableTab,
+    revealOrderInOrdersTable,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,

@@ -22,7 +22,7 @@ import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from '
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { callWidgetHook } from 'modules/injectedWidget'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -82,7 +82,10 @@ jest.mock('modules/injectedWidget', () => ({
   callWidgetHook: jest.fn(),
 }))
 jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
-jest.mock('modules/ordersTable', () => ({ useNavigateToOrdersTableTab: jest.fn() }))
+jest.mock('modules/ordersTable', () => ({
+  useNavigateToOrdersTableTab: jest.fn(),
+  useRevealOrderInOrdersTable: jest.fn(() => jest.fn()),
+}))
 jest.mock('modules/permit', () => ({ useGeneratePermitHook: jest.fn(), usePermitInfo: jest.fn() }))
 jest.mock('modules/sounds', () => ({ getCowSoundSend: jest.fn() }))
 jest.mock('modules/trade', () => ({
@@ -149,6 +152,9 @@ const mockedCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWi
 const mockedUseNavigateToOrdersTableTab = useNavigateToOrdersTableTab as jest.MockedFunction<
   typeof useNavigateToOrdersTableTab
 >
+const mockedUseRevealOrderInOrdersTable = useRevealOrderInOrdersTable as jest.MockedFunction<
+  typeof useRevealOrderInOrdersTable
+>
 const mockedUseGeneratePermitHook = useGeneratePermitHook as jest.MockedFunction<typeof useGeneratePermitHook>
 const mockedUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 const mockedGetCowSoundSend = getCowSoundSend as jest.MockedFunction<typeof getCowSoundSend>
@@ -205,6 +211,7 @@ describe('useCreateTwapOrder', () => {
       typeof useAppData
     >)
     mockedUseNavigateToOrdersTableTab.mockReturnValue(jest.fn())
+    mockedUseRevealOrderInOrdersTable.mockReturnValue(jest.fn().mockResolvedValue(true))
     mockedUseGeneratePermitHook.mockReturnValue(jest.fn())
     mockedUsePermitInfo.mockReturnValue({} as ReturnType<typeof usePermitInfo>)
     mockedGetCowSoundSend.mockReturnValue({ play: jest.fn() } as unknown as ReturnType<typeof getCowSoundSend>)
@@ -443,14 +450,14 @@ describe('useCreateTwapOrder', () => {
   it('keeps the EOA confirm card open after placement instead of showing the submitted screen', async () => {
     const updateEoaTwapFlow = jest.fn()
     const onSuccess = jest.fn()
-    const navigateToOrdersTableTab = jest.fn()
+    const revealOrderInOrdersTable = jest.fn().mockResolvedValue(true)
     mockedUseEoaTwapFlowUpdater.mockReturnValue(updateEoaTwapFlow)
     mockedUseTradeConfirmActions.mockReturnValue({
       onSign: jest.fn(),
       onSuccess,
       onError: jest.fn(),
     } as unknown as ReturnType<typeof useTradeConfirmActions>)
-    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+    mockedUseRevealOrderInOrdersTable.mockReturnValue(revealOrderInOrdersTable)
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
 
     const { result } = renderHook(useCreateTwapOrder)
@@ -463,7 +470,7 @@ describe('useCreateTwapOrder', () => {
 
     expect(placementResult).toBe(true)
     expect(onSuccess).not.toHaveBeenCalled()
-    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
+    expect(revealOrderInOrdersTable).toHaveBeenCalledWith('1'.repeat(70), OrderTabId.OPEN)
 
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({
       step: EoaTwapSigningSteps.Success,
@@ -473,10 +480,9 @@ describe('useCreateTwapOrder', () => {
     })
   })
 
-  it('shows the submitted screen and navigates to signing for a Safe TWAP', async () => {
-    jest.useFakeTimers()
+  it('shows the submitted screen and reveals the order in the signing tab for a Safe TWAP', async () => {
     const onSuccess = jest.fn()
-    const navigateToOrdersTableTab = jest.fn()
+    const revealOrderInOrdersTable = jest.fn().mockResolvedValue(false)
     mockedUseIsSafeWallet.mockReturnValue(true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
     mockedUseTradeConfirmActions.mockReturnValue({
@@ -484,7 +490,7 @@ describe('useCreateTwapOrder', () => {
       onSuccess,
       onError: jest.fn(),
     } as unknown as ReturnType<typeof useTradeConfirmActions>)
-    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+    mockedUseRevealOrderInOrdersTable.mockReturnValue(revealOrderInOrdersTable)
 
     const { result } = renderHook(useCreateTwapOrder)
 
@@ -493,12 +499,6 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(onSuccess).toHaveBeenCalledWith('0xsafetx')
-
-    await act(async () => {
-      jest.runAllTimers()
-    })
-
-    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.SIGNING)
-    jest.useRealTimers()
+    expect(revealOrderInOrdersTable).toHaveBeenCalledWith('0xtwap', OrderTabId.SIGNING)
   })
 })
