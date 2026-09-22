@@ -43,7 +43,7 @@ export class TokenSelector {
   private async retryOpen(button: Locator): Promise<void> {
     await button.click()
     try {
-      await this.searchInput.waitFor({ state: 'visible', timeout: 3_000 })
+      await this.searchInput.waitFor({ state: 'visible' })
     } catch {
       await button.click()
       await this.searchInput.waitFor({ state: 'visible' })
