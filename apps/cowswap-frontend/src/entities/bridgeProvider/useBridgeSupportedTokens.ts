@@ -1,5 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
 import { ALL_CHAINS_MAP, getAddressKey, TargetChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
 import { TokensByAddress, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
@@ -12,6 +13,10 @@ import { useBridgeProvidersIds } from './useBridgeProvidersIds'
 export type BridgeSupportedToken = { tokens: TokenWithLogo[]; isRouteAvailable: boolean }
 
 type BridgeTokenItem = GetProviderBuyTokens['tokens'][number]
+
+// Short and bounded: this backs a "should this destination reset?" decision, not a user-facing
+// loading state, so it shouldn't leave the trade form guessing for long.
+const GET_BUY_TOKENS_RETRY_OPTIONS: RetryOptions = { n: 2, minWait: 500, maxWait: 1500 }
 
 export function useBridgeSupportedTokens(
   params: BuyTokensParams | undefined,
@@ -39,10 +44,24 @@ export function useBridgeSupportedTokens(
     async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      // Let a failed fetch surface as a real SWR error instead of a synthetic "no route" success —
-      // the latter reads as a confirmed verdict to `InvalidBridgeOutputUpdater`, which reset the
-      // just-picked output/target chain on nothing more than a transient failure here ([CS-299]).
-      const result = await bridgingSdk.getBuyTokens(params)
+      // A single failed fetch must not read as a confirmed "no route" verdict to
+      // `InvalidBridgeOutputUpdater` — that reset the just-picked output/target chain on nothing
+      // more than a transient failure here ([CS-299]). Retry it a bounded number of times first;
+      // only once those are exhausted do we fall back to "no route", so a route that's genuinely,
+      // persistently broken still eventually clears stale cross-chain state instead of leaving it
+      // stuck forever.
+      let result: GetProviderBuyTokens
+      try {
+        result = await retry(async () => {
+          try {
+            return await bridgingSdk.getBuyTokens(params)
+          } catch {
+            throw new RetryableError()
+          }
+        }, GET_BUY_TOKENS_RETRY_OPTIONS).promise
+      } catch {
+        return { isRouteAvailable: false, tokens: [] }
+      }
 
       const tokens = result.tokens.reduce<TokenWithLogo[]>(
         (acc, token) => collectBridgeToken(acc, token, tokensByAddress),

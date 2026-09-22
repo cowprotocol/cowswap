@@ -234,6 +234,22 @@ never a logic bug in the test — check infrastructure contention first.
     rather than duplicating an inline assertion — with its full "why" comment — at every call site
     that needs it; a hardcoded expected value (e.g. `'Selected token: WETH'`) also doesn't generalize
     to tests using a non-default pair, where a generic "not still the placeholder" check does.
+- **A page-object helper that polls DOM visibility and re-sends a key/click on every tick can send
+  a genuinely redundant extra input once the underlying state already changed but the DOM is still
+  animating out — and that extra input can have real side effects elsewhere on the page.**
+  `AccountModal.close()` used to be `expect.poll(async () => { if (isVisible) press('Escape'); return
+  isVisible })`. Escape flips the account modal's own open state on the first press, but its content
+  stays visible for a bit longer through its CSS close transition — so the next poll tick, seeing
+  `activitiesList` still visible, pressed Escape *again*, confirmed directly in a Playwright report
+  showing the key sent twice. That second press has nothing left to close (the modal already closed
+  on the first one) and instead reaches whatever else on the page is also listening for it — observed
+  as `[CS-68]` losing its order-progress panel (dismissed by its own Escape-to-back handler) right
+  after the account-modal check that runs mid-test. Before attributing a flake like this to app-level
+  architecture (e.g. two Escape listeners racing), rule out a redundant-input bug in the test helper
+  first — it's simpler, and a Playwright report's own step timeline (how many times an action actually
+  fired) is hard evidence worth checking before going deep into library internals. **Fix:** send the
+  input once, then `waitFor` the end state (which rides out the transition) instead of polling
+  visibility and resending on every tick; only resend if that wait genuinely times out.
 - **Root cause 2: the default 5s `expect` timeout is tight under CPU contention.** Several
   known-load-sensitive assertions (the recipient-confirmation checkbox retry in `[CC-17]`, the
   order-progress-modal reopen in `[CS-60]`) have their own comments acknowledging they only flake

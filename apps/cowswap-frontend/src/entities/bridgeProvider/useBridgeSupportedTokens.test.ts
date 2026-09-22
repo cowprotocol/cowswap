@@ -45,25 +45,51 @@ describe('useBridgeSupportedTokens', () => {
 
   // Regression for [CS-299]: `InvalidBridgeOutputUpdater` treats any resolved `bridgeRouteData` as
   // a confirmed verdict and resets the user's just-picked output currency/target chain the moment
-  // `isRouteAvailable` reads false. Resolving a transient fetch failure into a synthetic
-  // `{ isRouteAvailable: false, tokens: [] }` success made that reset fire on nothing more than a
-  // flaky/slow request, wiping a valid selection. The fetch must fail as an SWR error instead, so
-  // `InvalidBridgeOutputUpdater`'s own `!bridgeRouteData` guard treats it as "unresolved" rather
-  // than "confirmed unsupported" (matching how its sibling `useBridgeSupportedNetworks` already
-  // behaves on a fetch failure).
-  it('surfaces a failed fetch as an SWR error instead of a synthetic "no route" result', async () => {
+  // `isRouteAvailable` reads false. Resolving a fetch failure into a synthetic
+  // `{ isRouteAvailable: false, tokens: [] }` success on the very first attempt made that reset fire
+  // on nothing more than one flaky/slow request, wiping a valid selection. A single failure must
+  // recover on retry, not fall straight through to "no route".
+  it('recovers from a transient failure instead of falling back to "no route" immediately', async () => {
+    mockGetBuyTokens.mockRejectedValueOnce(new Error('Network error')).mockResolvedValueOnce({
+      tokens: [{ chainId: SupportedChainId.GNOSIS_CHAIN, address: '0x1', decimals: 18, name: 'Token', symbol: 'TKN' }],
+      isRouteAvailable: true,
+    })
+
+    const { result } = renderHook(() =>
+      useBridgeSupportedTokens({ sellChainId: SupportedChainId.MAINNET, buyChainId: SupportedChainId.GNOSIS_CHAIN }),
+    )
+
+    await waitFor(
+      () => {
+        expect(result.current.data?.isRouteAvailable).toBe(true)
+        expect(result.current.data?.tokens).toHaveLength(1)
+      },
+      { timeout: 8000 },
+    )
+
+    expect(result.current.error).toBeUndefined()
+  }, 10_000)
+
+  // Complements the recovery case above: a route that fails *every* attempt, not just once, must
+  // still eventually resolve to "no route" so `InvalidBridgeOutputUpdater` can clear a genuinely,
+  // persistently stale destination instead of leaving it stuck forever.
+  it('falls back to "no route" once every retry attempt has failed', async () => {
     mockGetBuyTokens.mockRejectedValue(new Error('Network error'))
 
     const { result } = renderHook(() =>
       useBridgeSupportedTokens({ sellChainId: SupportedChainId.MAINNET, buyChainId: SupportedChainId.GNOSIS_CHAIN }),
     )
 
-    await waitFor(() => {
-      expect(result.current.error).toBeInstanceOf(Error)
-    })
+    await waitFor(
+      () => {
+        expect(result.current.data?.isRouteAvailable).toBe(false)
+        expect(result.current.data?.tokens).toHaveLength(0)
+      },
+      { timeout: 8000 },
+    )
 
-    expect(result.current.data).toBeUndefined()
-  })
+    expect(mockGetBuyTokens.mock.calls.length).toBeGreaterThan(1)
+  }, 10_000)
 
   it('returns route data when the fetch succeeds', async () => {
     mockGetBuyTokens.mockResolvedValue({
