@@ -69,7 +69,7 @@ export function ConfirmedButton({
             Please type the word <strong>"{confirmWord}"</strong> to {action}.
           </Trans>
         </Instruction>
-      ) : typeof bottomContent !== undefined ? (
+      ) : bottomContent !== undefined ? (
         bottomContent
       ) : (
         <Instruction>
