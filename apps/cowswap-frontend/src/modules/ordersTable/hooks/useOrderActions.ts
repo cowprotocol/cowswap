@@ -39,7 +39,8 @@ export function useOrderActions(): OrderActions {
 
   const getShowCancellationModal = useCallback(
     (order: ParsedOrder) => {
-      const rawOrder = allOrders.find((item) => item.id === order.id)
+      if (order.isEoaTwapOrder && order.composableCowInfo?.isVirtualPart) return null
+      const rawOrder = order.cancellationOrder ?? allOrders.find((item) => item.id === order.id)
 
       return rawOrder ? cancelOrder(rawOrder) : null
     },
