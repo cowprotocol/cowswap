@@ -39,16 +39,9 @@ export function useBridgeSupportedTokens(
     async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      // Let a failed fetch surface as an SWR error (letting SWR's own retry/backoff run) rather
-      // than swallowing it into a synthetic "no route" success value. A synthetic success is
-      // indistinguishable from a real, confirmed "unsupported" verdict to `InvalidBridgeOutputUpdater`,
-      // which reset the just-picked output/target chain on nothing more than a transient failure of
-      // this request (observed as [CS-299]'s output currency and `InvalidBridgeOutputUpdater`
-      // resetting the destination — and the sell amount along with it — moments after the picker
-      // confirmed the pick). `bridgeRouteData` staying `undefined` on error already falls through
-      // `getInvalidBridgeOutputPatch`'s own `!bridgeRouteData` guard as "unresolved, don't reset" —
-      // the same behavior `useBridgeSupportedNetworks` (its sibling, feeding the same updater) relies
-      // on for its own fetch already.
+      // Let a failed fetch surface as a real SWR error instead of a synthetic "no route" success —
+      // the latter reads as a confirmed verdict to `InvalidBridgeOutputUpdater`, which reset the
+      // just-picked output/target chain on nothing more than a transient failure here ([CS-299]).
       const result = await bridgingSdk.getBuyTokens(params)
 
       const tokens = result.tokens.reduce<TokenWithLogo[]>(

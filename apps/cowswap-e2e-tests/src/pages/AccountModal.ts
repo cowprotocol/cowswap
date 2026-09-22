@@ -42,14 +42,9 @@ export class AccountModal {
   }
 
   /**
-   * A single Escape flips the dialog's own open state immediately, but its content can stay
-   * visible for a bit longer through its CSS close transition — so polling on DOM visibility and
-   * re-pressing Escape on every poll tick (as this used to) sends extra, redundant presses while
-   * the first one is still just animating out. Once the dialog has genuinely (not just visually)
-   * closed, the app no longer treats that later Escape as "meant for this dialog" and lets it
-   * reach whatever else on the page is also listening for it — dismissing unrelated UI that
-   * happened to be open at the same time. `waitFor('hidden')` rides out that transition instead of
-   * fighting it; only retry the Escape itself if the dialog genuinely never closed.
+   * Content stays visible through the close transition after Escape, so polling visibility and
+   * re-pressing Escape on every tick (as this used to) sent a redundant extra press that dismissed
+   * unrelated UI still open elsewhere on the page ([CS-68]).
    */
   async close(): Promise<void> {
     if (!(await this.activitiesList.isVisible())) return
