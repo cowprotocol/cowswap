@@ -2,8 +2,9 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   getSolanaQuote: jest.fn(),
 }))
 
-import { OrderKind, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
+import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { PublicKey } from '@solana/web3.js'
@@ -36,6 +37,12 @@ const quoteParams: QuoteBridgeRequest = {
   swapSlippageBps: 50,
 }
 
+const advancedSettings: SwapAdvancedSettings = {
+  quoteRequest: {
+    priceQuality: PriceQuality.FAST,
+  },
+}
+
 /** Stand-in for whatever the SDK resolves with; these tests only care that both halves are passed
  * through, not their internal shape. */
 const solanaQuote = { uid: new Uint8Array(32).fill(3) } as SolanaQuote
@@ -48,7 +55,7 @@ describe('getSolanaQuote', () => {
   })
 
   it('maps quoteParams onto SolanaQuoteParameters', async () => {
-    await getSolanaQuote(quoteParams)
+    await getSolanaQuote(quoteParams, advancedSettings)
 
     expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
       {
@@ -62,13 +69,14 @@ describe('getSolanaQuote', () => {
         kind: quoteParams.kind,
         validForSeconds: quoteParams.validFor,
         slippageBps: 50,
+        priceQuality: PriceQuality.FAST,
       },
       expect.anything(),
     )
   })
 
   it('signs the slippage the user picked, rather than the default', async () => {
-    await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 })
+    await getSolanaQuote({ ...quoteParams, swapSlippageBps: 300 }, advancedSettings)
 
     expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
       expect.objectContaining({ slippageBps: 300 }),
@@ -79,13 +87,40 @@ describe('getSolanaQuote', () => {
   // Without the app's own client the SDK builds a default one pointed at prod, where Solana is not
   // deployed — every quote comes back 404 on a barn deployment.
   it('quotes through the app-configured order book client', async () => {
-    await getSolanaQuote(quoteParams)
+    await getSolanaQuote(quoteParams, advancedSettings)
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), { orderBookApi })
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ orderBookApi }))
+  })
+
+  it('reads priceQuality off advancedSettings.quoteRequest', async () => {
+    await getSolanaQuote(quoteParams, { quoteRequest: { priceQuality: PriceQuality.VERIFIED } })
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ priceQuality: PriceQuality.VERIFIED }),
+      expect.anything(),
+    )
+  })
+
+  it('leaves priceQuality undefined when advancedSettings has no quoteRequest', async () => {
+    await getSolanaQuote(quoteParams, {})
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ priceQuality: undefined }),
+      expect.anything(),
+    )
+  })
+
+  it('forwards advancedSettings to the SDK as-is, so it can build appData/signer-aware requests', async () => {
+    await getSolanaQuote(quoteParams, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ advancedSettings }),
+    )
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {
-    const result = await getSolanaQuote(quoteParams)
+    const result = await getSolanaQuote(quoteParams, advancedSettings)
 
     expect(result.quoteResults).toBe(sdkResult.quoteResults)
     expect(result.solanaQuote).toBe(solanaQuote)
@@ -98,7 +133,7 @@ describe('getSolanaQuote', () => {
       receiver: null,
     }
 
-    await getSolanaQuote(paramsWithoutOwnerOrReceiver)
+    await getSolanaQuote(paramsWithoutOwnerOrReceiver, advancedSettings)
 
     expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -113,11 +148,11 @@ describe('getSolanaQuote', () => {
   it('propagates a rejection from the SDK', async () => {
     mockGetSolanaQuoteFromSdk.mockRejectedValue(new Error('no route found'))
 
-    await expect(getSolanaQuote(quoteParams)).rejects.toThrow('no route found')
+    await expect(getSolanaQuote(quoteParams, advancedSettings)).rejects.toThrow('no route found')
   })
 
   it('never posts the order from the quote — solanaFlow creates it on-chain instead', async () => {
-    const { postSwapOrderFromQuote } = await getSolanaQuote(quoteParams)
+    const { postSwapOrderFromQuote } = await getSolanaQuote(quoteParams, advancedSettings)
 
     await expect(postSwapOrderFromQuote()).rejects.toThrow('created by solanaFlow')
   })

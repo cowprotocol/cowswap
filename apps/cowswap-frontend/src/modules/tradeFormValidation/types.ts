@@ -12,6 +12,7 @@ export interface TradeFormButtonContext {
   defaultText: string
   amountToApprove: CurrencyAmount<Currency> | null
   derivedState: TradeDerivedState
+  recipientEnsAddress: string | null
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
