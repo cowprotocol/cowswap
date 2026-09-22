@@ -37,8 +37,10 @@ export const useSearchInAnotherNetwork = (
       // An address belongs to one chain family, so asking the other one can only miss — and a Solana
       // pubkey is not even a valid path segment for the EVM account endpoint.
       const searchInSolana = isSolanaAddress(ownerAddress)
+      const isSameChainFamily = (net: Network): boolean => isSolanaChain(net) === searchInSolana
+
       const promises = availableChains
-        .filter((net) => net !== _networkId && isSolanaChain(net) === searchInSolana)
+        .filter((net) => net !== _networkId && isSameChainFamily(net))
         .map((network) =>
           getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
             .then((response) => {
