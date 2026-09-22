@@ -51,8 +51,6 @@ import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
-// Keep this one inline to prevent a flicker and layour shift when the page loads. Do not use react-inlinesvg.
-
 const noop: () => void = () => void 0
 
 // TODO: Break down this large function into smaller functions

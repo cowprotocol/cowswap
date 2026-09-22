@@ -21,8 +21,6 @@ import { useTradeRouteContext } from '../../hooks/useTradeRouteContext'
 import { useGetTradeStateByRoute } from '../../hooks/useTradeState'
 import { getDefaultTradeRawState } from '../../types'
 
-// Keep this one inline to prevent a flicker and layour shift when the page loads. Do not use react-inlinesvg.
-
 interface MenuItemConfig {
   route: RoutesValues
   label: string
