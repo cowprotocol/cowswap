@@ -108,6 +108,7 @@ export interface PlaceEoaTwapOrderParams {
 export interface PlaceEoaTwapOrderResult {
   proxyAddress: AccountAddress
   setupTxHash: Hex
+  setupBlockNumber: bigint
   eventId: string | undefined
 }
 
@@ -411,7 +412,7 @@ export async function placeEoaTwapOrder({
     phase: EoaTwapSigningPhase.Confirmed,
   })
 
-  return { proxyAddress, setupTxHash, eventId }
+  return { proxyAddress, setupTxHash, setupBlockNumber: receipt.blockNumber, eventId }
 }
 
 function eoaTwapDebugLog(...args: unknown[]): void {
