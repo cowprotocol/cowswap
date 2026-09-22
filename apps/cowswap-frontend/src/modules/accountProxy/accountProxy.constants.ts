@@ -37,7 +37,6 @@ export const EOA_TWAP_SHED_FACTORY_OPTIONS: ICoWShedOptions = {
 
 export const EOA_TWAP_ACCOUNT_PROXY_CONFIG: AccountProxyConfig = {
   id: 'twap-account-proxy',
-  label: msg`TWAP Account Proxy`,
   version: EOA_TWAP_SHED_EIP712_VERSION,
   factoryOptions: EOA_TWAP_SHED_FACTORY_OPTIONS,
 }
