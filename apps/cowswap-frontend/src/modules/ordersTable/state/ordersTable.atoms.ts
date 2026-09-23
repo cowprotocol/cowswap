@@ -161,10 +161,10 @@ export function observeOrdersUrl(get: Getter): void {
  * Registered with `jotai-effect` from `ordersTableStateAtom.onMount` to keep routing and table state in one flush.
  */
 export function observeReduxOrders(get: Getter, set: Setter): void {
-  const { connector, chainId, account } = get(walletInfoAtom)
+  const { chainId, account, connector } = get(walletInfoAtom)
 
-  if (!connector || !chainId || !account) {
-    logOrdersTableDebug('No connector, account or chainId, setting empty orders table state...')
+  if (!chainId || !account) {
+    logOrdersTableDebug('No account or chainId, setting empty orders table state...')
 
     set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
 
@@ -188,6 +188,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   }
 
   const reduxOrdersStateInCurrentChain = getReduxOrdersStateByChain(get(reduxOrdersStateAtom), chainId)
+
   const reduxOrdersByOrderTypeResult = getReduxOrdersByOrderTypeFromNetworkState({
     account,
     reduxOrdersStateInCurrentChain,
@@ -229,6 +230,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   const spender = spenderOverride ?? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const balancesState = get(balancesAtom)
+  // TODO: add allowancesState for Solana
   const allowancesState = get(
     tokenAllowancesFamily({
       connector,

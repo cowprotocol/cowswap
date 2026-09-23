@@ -1,4 +1,4 @@
-import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
+import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
@@ -11,6 +11,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
   planCreateBuyAtaStep,
+  planCreateLimitOrderStep,
   planCreateOrderStep,
   planDelegateStep,
   planWrapStep,
@@ -44,9 +45,8 @@ export async function solanaFlow(
     currentDelegation,
     delegationAmount,
     isNativeSell,
-    appData,
   } = input
-  const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind } = context
+  const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind, orderClass, partiallyFillable } = context
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
@@ -61,18 +61,35 @@ export async function solanaFlow(
     // owner/account mismatch would make SPL Token reject the whole bundle.
     const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
+    // A swap always signs at the quote's own market-derived price — planCreateOrderStep is correct for
+    // it. A limit order must sign at the user's chosen price instead, which getSolanaQuote has no
+    // parameter for, so it goes through planCreateLimitOrderStep, which never quotes at all.
     const {
       step: createOrderStep,
       orderId,
       signingScheme,
-    } = await planCreateOrderStep({
-      quoteResults: input.tradeQuote.quoteResults,
-      solanaQuote,
-      sellSymbol,
-      buySymbol,
-      validTo,
-      appData: appData.doc,
-    })
+      appData: signedAppData,
+    } = orderClass === OrderClass.LIMIT
+      ? await planCreateLimitOrderStep({
+          ownerAddress: account,
+          receiverAddress: receiver,
+          sellTokenAddress: getCurrencyAddress(inputAmount.currency),
+          buyTokenAddress: getCurrencyAddress(outputAmount.currency),
+          sellAmount: BigInt(inputAmount.quotient.toString()),
+          buyAmount: BigInt(outputAmount.quotient.toString()),
+          kind: orderKind,
+          validTo,
+          partiallyFillable,
+          sellSymbol,
+          buySymbol,
+        })
+      : await planCreateOrderStep({
+          quoteResults: input.tradeQuote.quoteResults,
+          solanaQuote,
+          sellSymbol,
+          buySymbol,
+          validTo,
+        })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -104,6 +121,8 @@ export async function solanaFlow(
           signedAmounts: solanaQuote.intent,
           receiver,
           validTo,
+          orderClass,
+          appData: signedAppData,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
         }),
@@ -153,11 +172,13 @@ function buildSolanaOrder(params: {
   signedAmounts: Pick<SolanaOrderIntent, 'sellAmount' | 'buyAmount'>
   receiver: string
   validTo: number
+  orderClass: OrderClass
+  appData: string
   inputToken: Token
   outputToken: Token
 }): Order {
-  const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo } = params
-  const { inputToken, outputToken } = params
+  const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
+  const { appData, inputToken, outputToken } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -173,12 +194,16 @@ function buildSolanaOrder(params: {
     // instruction, so the deadline shown here is the one the on-chain order actually has.
     receiver,
     validTo,
+    // Override the quote's own appData: it's a meaningless constant stub for Solana (getSolanaQuote.ts's
+    // ZERO_APP_DATA) — this is what was actually signed, and getUiOrderType reads exactly this field to
+    // tell a limit order apart from a market one (Solana has no real appData-doc convention to decode).
+    appData,
     id: orderId,
     owner: account,
     from: account,
     inputToken,
     outputToken,
-    class: OrderClass.MARKET,
+    class: orderClass,
     status: OrderStatus.CREATING,
     creationTime: new Date().toISOString(),
     orderCreationHash: txHash,
