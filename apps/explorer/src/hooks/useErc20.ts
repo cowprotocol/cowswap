@@ -11,6 +11,7 @@ import { isNativeToken, retry } from 'utils'
 
 import { useTokenList } from './useTokenList'
 
+import { getSplTokenInfo } from '../api/solanaOrderbook/getSplTokenInfo'
 import { erc20Api, web3 } from '../explorer/api'
 
 export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network }
@@ -62,9 +63,7 @@ export function useMultipleErc20(
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(
     () =>
-      // An SPL mint is not an ERC-20 contract, so whatever the Solana token list missed stays
-      // unknown. Trying anyway leaves the page retrying calls that can never succeed.
-      isTokenListLoading || (networkId && isSolanaChain(networkId))
+      isTokenListLoading
         ? []
         : addresses.filter(
             (address) =>
@@ -75,7 +74,7 @@ export function useMultipleErc20(
               // Do not try to fetch native
               !isNativeToken(address),
           ),
-    [addresses, erc20s, fromTokenList, isTokenListLoading, networkId],
+    [addresses, erc20s, fromTokenList, isTokenListLoading],
   )
   // flow control
   const running = useRef({ networkId, isRunning: false })
@@ -143,11 +142,15 @@ async function _fetchErc20FromNetwork(params: {
   setError: (error: UiError) => void
 }): Promise<SingleErc20State> {
   const { address, networkId, setError } = params
+  // An SPL mint is not a contract to read `symbol`/`decimals` off, so it needs its own lookup.
+  const fetchToken = isSolanaChain(networkId)
+    ? () => getSplTokenInfo(address)
+    : () => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api })
 
   try {
-    return await retry(() => getErc20Info({ tokenAddress: address, networkId, web3, erc20Api }))
+    return await retry(fetchToken)
   } catch (e) {
-    const msg = `Failed to fetch erc20 details for ${address} on network ${networkId}`
+    const msg = `Failed to fetch token details for ${address} on network ${networkId}`
     console.error(msg, e)
     setError({ message: msg, type: 'error' })
     // When failed, return null for given token
