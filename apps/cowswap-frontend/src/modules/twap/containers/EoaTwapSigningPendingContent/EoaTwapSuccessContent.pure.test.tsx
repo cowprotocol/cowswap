@@ -16,16 +16,11 @@ describe('EoaTwapSuccessContent()', () => {
     await i18n.activate('en-US')
   })
 
-  it('renders the success copy and actions', () => {
-    const onNewTrade = jest.fn()
+  it('renders the success copy and action', () => {
     const onViewOrders = jest.fn()
 
     renderSuccessContent(
-      <EoaTwapSuccessContent
-        explorerUrl="https://explorer.cow.fi/orders/0xorder"
-        onNewTrade={onNewTrade}
-        onViewOrders={onViewOrders}
-      />,
+      <EoaTwapSuccessContent explorerUrl="https://explorer.cow.fi/orders/0xorder" onViewOrders={onViewOrders} />,
     )
 
     expect(screen.getByText('Your TWAP is active')).toBeTruthy()
@@ -33,16 +28,14 @@ describe('EoaTwapSuccessContent()', () => {
     expect(screen.getByRole('link', { name: /Open in CoW Explorer/ }).getAttribute('href')).toBe(
       'https://explorer.cow.fi/orders/0xorder',
     )
-
-    fireEvent.click(screen.getByRole('button', { name: 'New trade' }))
-    expect(onNewTrade).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('button', { name: 'New trade' })).toBeNull()
 
     fireEvent.click(screen.getByRole('button', { name: 'View in Orders' }))
     expect(onViewOrders).toHaveBeenCalledTimes(1)
   })
 
   it('hides the explorer link when no url is provided', () => {
-    renderSuccessContent(<EoaTwapSuccessContent onNewTrade={jest.fn()} onViewOrders={jest.fn()} />)
+    renderSuccessContent(<EoaTwapSuccessContent onViewOrders={jest.fn()} />)
 
     expect(screen.queryByRole('link', { name: /Open in CoW Explorer/ })).toBeNull()
   })

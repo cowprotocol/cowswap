@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.12.0...common-const-v3.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat(sol): support sol orders in explorer (#8149)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.11.0...common-const-v3.12.0) (2026-09-15)
 
 ### Minor Changes

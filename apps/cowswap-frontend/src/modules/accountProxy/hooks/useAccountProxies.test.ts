@@ -49,7 +49,8 @@ describe('useAccountProxies', () => {
     const { result } = renderHook(() => useAccountProxies())
     const eoaTwapProxy = result.current?.find(({ id }) => id === 'twap-account-proxy')
 
-    expect(eoaTwapProxy?.label?.message).toBe('TWAP Account Proxy')
+    expect(eoaTwapProxy?.label).toBeUndefined()
+    expect(eoaTwapProxy?.version).toBe(EOA_TWAP_SHED_EIP712_VERSION)
     expect(eoaTwapProxy?.factoryOptions).toBe(EOA_TWAP_SHED_FACTORY_OPTIONS)
     expect(eoaTwapProxy?.account).toBe(CUSTOM_PROXY)
     expect(CowShedHooksMock).toHaveBeenCalledWith(CHAIN_ID, EOA_TWAP_SHED_FACTORY_OPTIONS, EOA_TWAP_SHED_EIP712_VERSION)

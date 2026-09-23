@@ -18,10 +18,10 @@ import { type AccountAddress, EvmChains, mapChainEnum } from '@cowprotocol/cow-s
  * Mainnet. Keep the Mainnet address here: the flag is what turns the flow on, not this map.
  *
  * @see https://github.com/cowprotocol/composable-cow/blob/main/networks.json - ComposableCoW and poller deployments
- * @see https://github.com/cowprotocol/composable-cow/pull/174 - completes the Poller v1.1.0 deployment stack on all 11 networks
+ * @see https://github.com/cowprotocol/composable-cow/pull/182 - completes the Poller v1.1.0 deployment stack on all 11 networks
  * @see https://github.com/cowdao-grants/cow-shed/blob/main/networks.json - `COWShedFactoryForComposableCoW` / `COWShedForComposableCoW`
  */
-const composableCowPollerAddress = '0x8c1cdDC5c012A2c84D531855f3946D927FE38E1E' as AccountAddress
+const composableCowPollerAddress = '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3' as AccountAddress
 
 export const COMPOSABLE_COW_POLLER_ADDRESS: Record<EvmChains, AccountAddress> = mapChainEnum(
   EvmChains,

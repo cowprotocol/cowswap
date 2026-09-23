@@ -1,9 +1,15 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import type { Hex } from 'viem'
 
-import { eoaTwapSigningStepAtom, EoaTwapSigningStepState } from '../state/eoaTwapSigningStepAtom'
+import { usePrevious } from '@cowprotocol/common-hooks'
+import { jotaiStore } from '@cowprotocol/core'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { setCloseTradeConfirmAtom } from 'modules/trade/state/tradeConfirmStateAtom'
+
+import { eoaTwapSigningStepAtom, EoaTwapSigningStepState, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 import {
   cancelEoaTwapPlacement,
   EoaTwapPlacementCancelledError,
@@ -23,10 +29,26 @@ export type EoaTwapFlowUpdaterArg =
   | EoaTwapFlowUpdate
   | ((prev: EoaTwapSigningStepState | null) => EoaTwapFlowUpdate)
 
+/**
+ * Reset the EOA TWAP confirmation flow if the order displayed there is the cancelled one.
+ */
+export function resetEoaTwapSuccessScreenIfMatches(twapOrderId: string): void {
+  const signingStep = jotaiStore.get(eoaTwapSigningStepAtom)
+
+  if (signingStep?.step === EoaTwapSigningSteps.Success && signingStep.eventId === twapOrderId) {
+    cancelEoaTwapPlacement()
+    jotaiStore.set(eoaTwapSigningStepAtom, null)
+    jotaiStore.set(setCloseTradeConfirmAtom)
+  }
+}
+
 export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
+  const { account, chainId } = useWalletInfo()
+  const prevAccount = usePrevious(account)
+  const prevChainId = usePrevious(chainId)
   const setState = useSetAtom(eoaTwapSigningStepAtom)
 
-  return useCallback(
+  const updateEoaTwapFlow = useCallback(
     (update: EoaTwapFlowUpdaterArg) => {
       if (!update) {
         cancelEoaTwapPlacement()
@@ -43,6 +65,15 @@ export function useEoaTwapFlowUpdater(): EoaTwapFlowUpdater {
     },
     [setState],
   )
+
+  useEffect(() => {
+    if ((prevChainId && chainId !== prevChainId) || (prevAccount && prevAccount !== account)) {
+      // Reset the EOA Twap success screen if the account or chain id changes:
+      updateEoaTwapFlow(null)
+    }
+  }, [account, chainId, prevAccount, prevChainId, updateEoaTwapFlow])
+
+  return updateEoaTwapFlow
 }
 
 export function useEoaTwapSigningStep(): EoaTwapSigningStepState | null {
