@@ -171,6 +171,7 @@ export async function timeout<T>(params: TimeoutParams<T>): Promise<T | never> {
 const EVM_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{112}$/
 /** The 32-byte intent hash, and nothing else. */
 const SOLANA_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{64}$/
+const EVM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/
 
 /**
  * Check if a string is an orderId against regex
@@ -190,19 +191,16 @@ export const getChainsForOrderId = (orderId: string): Network[] =>
 /**
  * Check if string is an address account against regex
  *
+ * Deliberately not chain-aware: an address of the other family still opens its user page, where the
+ * cross-network search reports which chain the orders are on. Redirecting instead would hide that.
+ *
  * @param text Possible address string to check
- * @param networkId The chain the address belongs to. Omitted means EVM.
  */
-export const isAnAddressAccount = (text: string, networkId?: Network | null): boolean => {
-  if (networkId && isSolanaChain(networkId)) {
-    return isSolanaAddress(text)
-  }
+export const isAnAddressAccount = (text: string): boolean => {
+  // Evaluated first: `isSolanaAddress` is a type guard, and testing it first narrows `text` away.
+  const isEvmAddress = EVM_ADDRESS_REGEX.test(text)
 
-  if (isEns(text)) {
-    return true
-  } else {
-    return text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined
-  }
+  return isEvmAddress || isEns(text) || isSolanaAddress(text)
 }
 
 /**

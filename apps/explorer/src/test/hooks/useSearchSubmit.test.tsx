@@ -108,18 +108,20 @@ describe('useSearchSubmit', () => {
     expect(result.location.pathname).toBe(`/address/${SOLANA_ADDRESS}`)
   })
 
-  it('should not route a base58 address to /address/ on an EVM chain', () => {
+  // An address of the other family still opens its user page, which then reports the chain its
+  // orders are on. Sending it to the search screen would hide that.
+  it('should be /address/... for a base58 address on an EVM chain', () => {
     const result = runHook(SOLANA_ADDRESS, { networkId: SupportedChainId.MAINNET })
 
-    expect(result.location.pathname).toBe(`/search/${SOLANA_ADDRESS}`)
+    expect(result.location.pathname).toBe(`/address/${SOLANA_ADDRESS}`)
   })
 
-  it('should not route an EVM address to /address/ on Solana', () => {
+  it('should be /address/... for an EVM address on Solana', () => {
     const query = '0xb6BAd41ae76A11D10f7b0E664C5007b908bC77C9'
 
     const result = runHook(query, { networkId: SupportedChainId.SOLANA })
 
-    expect(result.location.pathname).toBe(`/search/${query}`)
+    expect(result.location.pathname).toBe(`/address/${query}`)
   })
 
   // Same length as an EVM tx hash, so the same string routes differently per chain.

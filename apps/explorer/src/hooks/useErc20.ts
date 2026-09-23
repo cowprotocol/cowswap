@@ -23,9 +23,12 @@ export function useMultipleErc20(
 ): Return<Record<string, UiError>, Record<string, SingleErc20State>> {
   const { addresses, networkId } = params
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isFetching, setIsFetching] = useState(false)
   const [errors, setErrors] = useState<Errors>({})
   const { isLoading: isTokenListLoading, data: tokenListTokens } = useTokenList(networkId)
+  // A token that resolves to nothing is never stored, so without this it would be requested again on
+  // every render and keep the caller waiting forever.
+  const [attempted, setAttempted] = useState<Set<string>>(new Set())
 
   const erc20s = useMultipleErc20sState({ networkId, addresses })
   const saveErc20s = useSaveErc20s(networkId)
@@ -43,22 +46,7 @@ export function useMultipleErc20(
   )
 
   // If native token is in the list of tokens to be fetched, memoize it here
-  const nativeState = useMemo(
-    () =>
-      addresses.reduce<Record<string, TokenErc20> | undefined>((native, address) => {
-        if (native) return native
-        if (isNativeToken(address)) {
-          // Default to mainnet (ETH) when the network isn't configured
-          const nativeToken = NATIVE_TOKEN_PER_NETWORK[networkId || Network.MAINNET]
-          // Overwrite native address because otherwise it won't match the case
-          // Causing the caller to never know we got the token it was looking for
-          // return { ...nativeToken, address }
-          return { [getAddressKey(address)]: nativeToken }
-        }
-        return undefined
-      }, undefined) || {},
-    [addresses, networkId],
-  )
+  const nativeState = useMemo(() => getNativeState(addresses, networkId), [addresses, networkId])
 
   // check what on globalState has not been fetched yet
   const toFetch = useMemo(
@@ -72,10 +60,17 @@ export function useMultipleErc20(
               // Do not try to fetch the ones in a token list
               !fromTokenList[address] &&
               // Do not try to fetch native
-              !isNativeToken(address),
+              !isNativeToken(address) &&
+              // Do not try again the ones the network had nothing for
+              !attempted.has(address),
           ),
-    [addresses, erc20s, fromTokenList, isTokenListLoading],
+    [addresses, attempted, erc20s, fromTokenList, isTokenListLoading],
   )
+
+  // Reported synchronously rather than from `isFetching` alone: the request starts in an effect, so
+  // a caller reading the state in that same commit would otherwise see "done" before it began and
+  // render the orders it has, leaving whatever needed the network permanently unresolved.
+  const isLoading = isTokenListLoading || isFetching || toFetch.length > 0
   // flow control
   const running = useRef({ networkId, isRunning: false })
 
@@ -86,7 +81,7 @@ export function useMultipleErc20(
 
     running.current = { networkId, isRunning: true }
 
-    setIsLoading(true)
+    setIsFetching(true)
     setErrors({})
 
     const promises = toFetch.map(async (address) =>
@@ -99,12 +94,17 @@ export function useMultipleErc20(
 
     const fetched = await Promise.all(promises)
 
+    setAttempted((current) => new Set([...current, ...toFetch]))
     // Save to global state newly fetched tokens that are not null
     saveErc20s(fetched.filter(Boolean) as TokenErc20[])
 
-    setIsLoading(false)
+    setIsFetching(false)
     running.current = { networkId, isRunning: false }
   }, [networkId, saveErc20s, toFetch])
+
+  useEffect(() => {
+    setAttempted(new Set())
+  }, [networkId])
 
   useEffect(() => {
     // only trigger network query if not yet running or the network has changed
@@ -115,11 +115,11 @@ export function useMultipleErc20(
 
   return useMemo(
     () => ({
-      isLoading: isTokenListLoading || isLoading,
+      isLoading,
       error: errors,
       value: { ...erc20s, ...fromTokenList, ...nativeState },
     }),
-    [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState],
+    [isLoading, errors, erc20s, fromTokenList, nativeState],
   )
 }
 
@@ -156,4 +156,20 @@ async function _fetchErc20FromNetwork(params: {
     // When failed, return null for given token
     return null
   }
+}
+
+function getNativeState(addresses: string[], networkId?: Network): Record<string, TokenErc20> {
+  return (
+    addresses.reduce<Record<string, TokenErc20> | undefined>((native, address) => {
+      if (native) return native
+      if (isNativeToken(address)) {
+        // Default to mainnet (ETH) when the network isn't configured
+        const nativeToken = NATIVE_TOKEN_PER_NETWORK[networkId || Network.MAINNET]
+        // Overwrite native address because otherwise it won't match the case
+        // Causing the caller to never know we got the token it was looking for
+        return { [getAddressKey(address)]: nativeToken }
+      }
+      return undefined
+    }, undefined) || {}
+  )
 }

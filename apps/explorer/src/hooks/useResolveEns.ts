@@ -33,9 +33,11 @@ export function useResolveEns(address: string | undefined): AddressAccount | und
 
     setAddressAccount(undefined)
 
+    // An address of either family is accepted whatever the selected chain: the page then reports
+    // which chain its orders are on, rather than sending the user somewhere else.
     if (address && !isSolana && isEns(address)) {
       _resolveENS(address)
-    } else if (address && (isSolana ? isSolanaAddress(address) : isAddress(address))) {
+    } else if (address && (isSolanaAddress(address) || isAddress(address))) {
       setAddressAccount({ address })
     } else {
       setAddressAccount({ address: null })

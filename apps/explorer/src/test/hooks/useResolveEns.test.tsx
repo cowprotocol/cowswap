@@ -42,17 +42,22 @@ describe('useResolveEns', () => {
     expect(await resolve(SOLANA_ADDRESS, SupportedChainId.SOLANA)).toBe(SOLANA_ADDRESS)
   })
 
-  // Rejecting is what sends the page to the search screen, so the chain has to gate the format.
-  it('rejects a base58 pubkey on an EVM chain', async () => {
-    expect(await resolve(SOLANA_ADDRESS, SupportedChainId.MAINNET)).toBeNull()
-  })
-
   it('accepts an EVM address on an EVM chain', async () => {
     expect(await resolve(EVM_ADDRESS, SupportedChainId.MAINNET)).toBe(EVM_ADDRESS)
   })
 
-  it('rejects an EVM address on Solana', async () => {
-    expect(await resolve(EVM_ADDRESS, SupportedChainId.SOLANA)).toBeNull()
+  // Rejecting would send the page to the search screen. Accepting lets the user page open and
+  // report which chain the orders are on, which is the point of the cross-network search.
+  it('accepts a base58 pubkey on an EVM chain', async () => {
+    expect(await resolve(SOLANA_ADDRESS, SupportedChainId.MAINNET)).toBe(SOLANA_ADDRESS)
+  })
+
+  it('accepts an EVM address on Solana', async () => {
+    expect(await resolve(EVM_ADDRESS, SupportedChainId.SOLANA)).toBe(EVM_ADDRESS)
+  })
+
+  it('still rejects a string that is not an address at all', async () => {
+    expect(await resolve('not-an-address', SupportedChainId.SOLANA)).toBeNull()
   })
 
   // The network selector preserves the /address/ path across chains, so the same ENS name stays
