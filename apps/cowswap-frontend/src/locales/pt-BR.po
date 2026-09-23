@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-21 11:30\n"
+"PO-Revision-Date: 2026-09-23 11:00\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2028,7 +2028,7 @@ msgstr "Aprovar, Trocar e Fazer Ponte"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
-msgstr "Obtenha o Time-Weighted Average Price dividindo sua ordem grande em partes menores"
+msgstr "Consiga o TWAP dividindo sua ordem grande em partes menores"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "The bad news"
@@ -2510,7 +2510,7 @@ msgstr "em"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Receive at least"
-msgstr "Receba pelo menos"
+msgstr "Receber pelo menos"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "CoW Swap trades are protected from MEV, so your slippage can't be exploited!"
@@ -3194,7 +3194,7 @@ msgstr "Esta ferramenta ajuda você a recuperar seus fundos."
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.styled.tsx
 msgid "Enable trade alerts"
-msgstr "Ativar alertas de trade"
+msgstr "Ativar alertas"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #~ msgid "Approval reset"
@@ -4048,7 +4048,7 @@ msgstr "CoW Swap é a única exchange que identifica Coincidences of Wants (CoWs
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "From at most"
-msgstr "A partir de no máximo"
+msgstr "De no máximo"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/RowQuoteId.container.tsx
@@ -4091,7 +4091,7 @@ msgstr "detalhes"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 msgid "Use a referral code to earn <0>{traderRewardAmount}</0> for<1/>every <2>{triggerVolumeLabel}</2> in eligible volume within {affiliateTimeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}.<3/>New wallets only."
-msgstr "Use um código de indicação para ganhar <0>{traderRewardAmount}</0> para<1/>a cada <2>{triggerVolumeLabel}</2> em volume elegível em {affiliateTimeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}.<3/>Apenas novas carteiras."
+msgstr "Use um código de afiliado para ganhar <0>{traderRewardAmount}</0> <1/>a cada <2>{triggerVolumeLabel}</2> em volume elegível em {affiliateTimeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}.<3/>Apenas novas carteiras."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Activate TWAP"
@@ -5282,7 +5282,7 @@ msgstr "Transação concluída!"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 msgid "When orders fill or expire"
-msgstr "Quando as ordens são executadas ou expiram"
+msgstr "Saiba quando suas ordens são executadas ou expiram"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "No pool tokens available"
@@ -5364,7 +5364,7 @@ msgstr "Buscando impacto no preço"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
-msgstr "A \"Duração total\" é o tempo que leva para executar todas as partes da sua ordem TWAP.<0/><1/>Por exemplo, sua ordem consiste em <2>{parts, plural, one {# parte} few {# partes} many {# partes} other {# partes}}</2> colocadas a cada <3>{partDurationDisplay}</3>, o tempo total para concluir a ordem é <4>{totalDurationDisplay}</4>. Cada ordem limite permanece aberta por <5>{partDurationDisplay}</5> até que a próxima parte fique ativa."
+msgstr "A \"Duração total\" é o tempo que leva para executar todas as partes da sua ordem TWAP.<0/><1/>Por exemplo, se sua ordem consiste em <2>{parts, plural, one {# parte} few {# partes} many {# partes} other {# partes}}</2> colocadas a cada <3>{partDurationDisplay}</3>, o tempo total para concluir a ordem é <4>{totalDurationDisplay}</4>. Cada ordem limite permanece aberta por <5>{partDurationDisplay}</5> até que a próxima parte fique ativa."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
@@ -5571,7 +5571,7 @@ msgstr "Os <0>solvers do CoW Swap</0> estão buscando fontes de liquidez em todo
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
-msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociação, o código de indicação será vinculado e permanecerá ativo por {timeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}."
+msgstr "Sua carteira é elegível para recompensas. Após sua primeira negociação, o código de afiliado será vinculado e permanecerá ativo por {timeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -5668,7 +5668,7 @@ msgstr "Minutos"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol} first"
-msgstr "Converta {nativeSymbol} para {wrappedNativeSymbol} primeiro"
+msgstr "Converter {nativeSymbol} para {wrappedNativeSymbol} primeiro"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
@@ -6237,7 +6237,7 @@ msgstr "{nativeTokenSymbol} Reembolsado"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Unlock the Power of TWAP Orders"
-msgstr "Desbloqueie o Poder das Ordens TWAP"
+msgstr "Desbloqueie o poder das ordens TWAP"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Claim GNO from validators"
@@ -6529,7 +6529,7 @@ msgstr "Derrapagem ajustada para {slippageBpsPercentage}% para garantir execuç�
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Receive surplus of your order"
-msgstr "Receber excedente da sua ordem"
+msgstr "Receba o excedente da sua ordem"
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "CoW DAO Governance"
@@ -6617,7 +6617,7 @@ msgstr "Enviar"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "FREE order placement and cancellation"
-msgstr "colocação e cancelamento de ordens GRATUITOS"
+msgstr "Colocação e cancelamento de ordens GRATUITOS"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "No expired orders found"
@@ -7387,7 +7387,7 @@ msgstr "Abrir no Telegram"
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Get trade alerts"
-msgstr "Obter alertas de operação"
+msgstr "Ativar alertas de operação"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Collateral Swap Flashloan"
@@ -7490,7 +7490,7 @@ msgstr "Moeda Desconhecida"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 msgid "Share your referral code and earn <0>{partnerRewardAmount}</0> for every <1>{triggerVolumeLabel}</1> in eligible volume within {affiliateTimeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}."
-msgstr "Compartilhe seu código de indicação e ganhe <0>{partnerRewardAmount}</0> a cada <1>{triggerVolumeLabel}</1> em volume elegível em {affiliateTimeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}."
+msgstr "Compartilhe seu código de afiliado e ganhe <0>{partnerRewardAmount}</0> a cada <1>{triggerVolumeLabel}</1> em volume elegível em {affiliateTimeCapDays, plural, one {# dia} few {# dias} many {# dias} other {# dias}}."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
@@ -7588,7 +7588,7 @@ msgstr "Nova operação"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/UnlockWidgetScreen/index.tsx
 msgid "Learn more about <0>{orderType} orders ↗</0>"
-msgstr "Saiba mais sobre ordens <0>{orderType} ↗<0>"
+msgstr "Saiba mais sobre ordens <0>{orderType} ↗</0>"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Network fees and costs"
