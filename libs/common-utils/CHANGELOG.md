@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.16.0...common-utils-v3.17.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+- feat: add TWAP confirmation box (#8120)
+
+### Patch Changes
+
+- fix(common-utils): forward original arguments in debounce (#7920)
+
+- fix: show explorer link on solana notifications popups (#8135)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
 ## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.1...common-utils-v3.16.0) (2026-09-15)
 
 ### Minor Changes

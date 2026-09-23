@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.13.2...widget-configurator-v3.14.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- fix(widget): remove integrator typeform links (#8170)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/widget-lib@4.8.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/widget-react@3.2.8
+
 ## [3.13.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.13.1...widget-configurator-v3.13.2) (2026-09-15)
 
 ### Patch Changes
