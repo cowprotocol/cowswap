@@ -20,6 +20,7 @@ export type OnBridgingSuccessPayload = Omit<CrossChainOrder, 'provider'>
 
 export type OnCancelledOrderPayload = BaseOrderLifecyclePayload & {
   transactionHash?: string
+  isEoaTwap?: boolean
 }
 
 export type OnExpiredOrderPayload = BaseOrderLifecyclePayload

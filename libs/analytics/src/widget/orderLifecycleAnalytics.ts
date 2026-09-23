@@ -94,6 +94,7 @@ export function mapCancelledOrder(p: OnCancelledOrderPayload): AnalyticsPayload 
     ...getOrderPayload(p),
     reason: 'cancelled',
     transactionHash: p.transactionHash || '',
+    isEoaTwap: p.isEoaTwap,
   }
 }
 
