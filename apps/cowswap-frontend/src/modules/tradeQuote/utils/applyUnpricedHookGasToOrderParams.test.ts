@@ -66,4 +66,48 @@ describe('applyUnpricedHookGasToOrderParams', () => {
 
     expect(applyUnpricedHookGasToOrderParams(tinySell, [QUOTE_HOOK])).toBe(tinySell)
   })
+
+  it('rounds a fractional sellTokenPrice and gasAmount up to integer atoms', () => {
+    // Documented /quote shape: sellTokenPrice can be below 1 wei per atom, and gasAmount can be fractional.
+    const fractional = {
+      ...ORDER_PARAMS,
+      sellAmount: '20000000000000000000',
+      buyAmount: '40000000000000000000',
+      gasAmount: '150000.25',
+      gasPrice: '15000000000',
+      sellTokenPrice: '0.0004',
+    }
+    const result = applyUnpricedHookGasToOrderParams(fractional, [QUOTE_HOOK])
+    const extraFee = 13_125_000_000_000_000_000n
+    const sellAmount = 20_000_000_000_000_000_000n
+    const buyAmount = 40_000_000_000_000_000_000n
+
+    expect(result.feeAmount).toBe((1000n + extraFee).toString())
+    expect(result.sellAmount).toBe((sellAmount - extraFee).toString())
+    expect(result.buyAmount).toBe((buyAmount - (buyAmount * extraFee) / sellAmount).toString())
+    expect(result.gasAmount).toBe('500001')
+
+    const fractionalGasPrice = {
+      ...ORDER_PARAMS,
+      gasAmount: '355981.9',
+      gasPrice: '10000000.5',
+      sellTokenPrice: '501011728.05327892303466796875',
+    }
+    const precise = applyUnpricedHookGasToOrderParams(fractionalGasPrice, [QUOTE_HOOK])
+    const preciseExtraFee = 6986n
+
+    expect(precise.feeAmount).toBe((1000n + preciseExtraFee).toString())
+    expect(precise.sellAmount).toBe((1_000_000n - preciseExtraFee).toString())
+    expect(precise.gasAmount).toBe('705982')
+  })
+
+  it('leaves the quote unchanged for a nonpositive or invalid price', () => {
+    const zero = { ...ORDER_PARAMS, sellTokenPrice: '0.0' }
+    const negative = { ...ORDER_PARAMS, gasPrice: '-1.5' }
+    const invalid = { ...ORDER_PARAMS, sellTokenPrice: 'not-a-price' }
+
+    expect(applyUnpricedHookGasToOrderParams(zero, [QUOTE_HOOK])).toBe(zero)
+    expect(applyUnpricedHookGasToOrderParams(negative, [QUOTE_HOOK])).toBe(negative)
+    expect(applyUnpricedHookGasToOrderParams(invalid, [QUOTE_HOOK])).toBe(invalid)
+  })
 })
