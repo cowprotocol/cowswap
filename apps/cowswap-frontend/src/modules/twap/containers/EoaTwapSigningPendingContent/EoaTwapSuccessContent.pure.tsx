@@ -10,15 +10,10 @@ import * as styledEl from './EoaTwapSuccessContent.styled'
 
 export interface EoaTwapSuccessContentProps {
   explorerUrl?: string
-  onNewTrade(): void
   onViewOrders(): void | Promise<void>
 }
 
-export function EoaTwapSuccessContent({
-  explorerUrl,
-  onNewTrade,
-  onViewOrders,
-}: EoaTwapSuccessContentProps): ReactNode {
+export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
   return (
     <>
       <styledEl.SuccessBox>
@@ -36,11 +31,11 @@ export function EoaTwapSuccessContent({
         ) : null}
       </styledEl.SuccessBox>
 
-      <Modal.FooterWithTwoButtons
-        inline
-        secondaryButton={{ label: <Trans>New trade</Trans>, onClick: onNewTrade }}
-        primaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
-      />
+      <Modal.Footer inline>
+        <styledEl.ViewOrdersButton type="button" onClick={onViewOrders}>
+          <Trans>View in Orders</Trans>
+        </styledEl.ViewOrdersButton>
+      </Modal.Footer>
     </>
   )
 }

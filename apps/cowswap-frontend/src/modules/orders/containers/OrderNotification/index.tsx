@@ -11,6 +11,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderNotificationContent, OrderNotificationContentProps } from '../../pure/OrderNotificationContent'
 import { OrderNotificationInfo } from '../../types'
+import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
 interface BaseOrderNotificationProps extends Omit<OrderNotificationContentProps, 'orderInfo'> {
   chainId: SupportedChainId
@@ -47,7 +48,16 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     orderInfo?.outputAmount.currency.chainId,
   )
 
-  if (!orderInfo) return
+  if (!orderInfo) {
+    const title = <strong>{rest.title}</strong>
+    if (rest.skipExplorerLink) return title
+
+    return (
+      <TransactionContentWithLink orderUid={orderUid} transactionHash={rest.transactionHash}>
+        {title}
+      </TransactionContentWithLink>
+    )
+  }
 
   return (
     <OrderNotificationContent {...rest} orderInfo={orderInfo} srcChainData={srcChainData} dstChainData={dstChainData} />

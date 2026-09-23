@@ -1,5 +1,35 @@
 # Changelog
 
+## [4.13.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.12.2...explorer-v4.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat(sol): support sol orders in explorer (#8149)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: hide cancelled or expired twaps in explorer (#8166)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+### Patch Changes
+
+- fix(explorer): auto-update the user details orders table (#8140)
+
+- fix: order filled by 99.99 (#8155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/hook-dapp-lib@2.3.0
+  - @cowprotocol/types@4.11.0
+
 ## [4.12.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.12.1...explorer-v4.12.2) (2026-09-15)
 
 ### Patch Changes

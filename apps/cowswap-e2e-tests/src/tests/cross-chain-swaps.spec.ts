@@ -228,7 +228,7 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
   test('[CS-287] Cross-chain swap: Bungee provider @smoke', async ({
@@ -298,7 +298,7 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
   test('[CS-297] Cross-chain: ETH-flow source — native ETH sent cross-chain @smoke', async ({
@@ -410,7 +410,7 @@ test.describe('Cross-chain swaps', () => {
     // Same CI-load headroom as the `expectOrderToBePosted` calls above: the preceding
     // `clickSwap()`/`confirmModal.confirm()` pair alone was observed taking close to the default
     // 10s budget on a loaded runner, leaving the poll no room to ever see a sent value.
-    await expect.poll(() => ethFlow.getSentValue(), { timeout: 20_000 }).toBe(parseUnits('0.1', 18))
+    await expect.poll(() => ethFlow.getSentValue()).toBe(parseUnits('0.1', 18))
     ethFlow.confirmMined()
     orderIndexed = true
 
@@ -438,7 +438,7 @@ test.describe('Cross-chain swaps', () => {
     // The swap leg settles and the progress modal moves on to bridging — full bridge-order
     // tracking (`PendingBridgeOrdersUpdater`'s deposit/status polling) is out of scope here (see
     // the module doc comment), so this is as far as the mocked flow goes.
-    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
   test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination @smoke', async ({

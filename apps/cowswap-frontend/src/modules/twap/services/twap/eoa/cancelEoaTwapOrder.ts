@@ -22,6 +22,7 @@ export interface CancelEoaTwapOrderParams
     | 'partOrderId'
   > {
   walletClient: WalletClient
+  partOnly?: boolean
 }
 
 export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Promise<Hex> {
@@ -34,6 +35,7 @@ export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Pro
   const logContext = {
     orderId: context.orderId,
     partOrderId: context.partOrderId,
+    partOnly: context.partOnly,
   }
 
   logTwap.info('Cancelling EOA TWAP order', logContext)

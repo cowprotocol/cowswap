@@ -20,10 +20,16 @@ import {
 } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
 
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks, hasBytecode } from 'modules/accountProxy'
+import {
+  assertFactoryDeployed,
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+  getCowShedHooks,
+  hasBytecode,
+} from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -36,7 +42,6 @@ import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
@@ -79,6 +84,7 @@ interface TwapAnalyticsEvent {
   category: CowSwapAnalyticsCategory.TWAP
   action: string
   label: string
+  isEoaTwap: boolean
 }
 
 interface TwapConversionEvent extends TwapAnalyticsEvent {
@@ -102,10 +108,10 @@ export function useCreateTwapOrder() {
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
+  const setOptimisticAllowance = useSetOptimisticAllowance()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const eoaSigner = useAppSigner()
   const config = useConfig()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
@@ -145,11 +151,12 @@ export function useCreateTwapOrder() {
   const tradeFlowAnalytics = useTradeFlowAnalytics()
 
   const sendOrderAnalytics = useCallback(
-    (action: string, context: string) => {
+    (context: string, isEoaTwap: boolean) => {
       const analyticsEvent: TwapOrderEvent = {
         category: CowSwapAnalyticsCategory.TWAP,
         action: 'Place Order',
         label: `${UiOrderType.TWAP}|${context}`,
+        isEoaTwap,
       }
       analytics.sendEvent(analyticsEvent)
     },
@@ -157,11 +164,12 @@ export function useCreateTwapOrder() {
   )
 
   const sendTwapConversionAnalytics = useCallback(
-    (status: string, fallbackHandlerIsNotSet: boolean) => {
+    (status: string, fallbackHandlerIsNotSet: boolean, isEoaTwap: boolean) => {
       const analyticsEvent: TwapConversionEvent = {
         category: CowSwapAnalyticsCategory.TWAP,
         action: 'Conversion',
         label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+        isEoaTwap,
       }
       analytics.sendEvent(analyticsEvent)
     },
@@ -175,7 +183,7 @@ export function useCreateTwapOrder() {
     async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
       // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
       // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
-      const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+      const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 
       if (!isEvmChain(chainId) || (!isSafeWallet && !isEoaTwap)) {
         return
@@ -185,7 +193,7 @@ export function useCreateTwapOrder() {
       if (!inputCurrencyAmount || !outputCurrencyAmount || !appDataInfo || !twapOrder) return
 
       if (isEoaTwap) {
-        if (!eoaSigner || !walletClient || !twapOrderCreationContext) return
+        if (!walletClient || !twapOrderCreationContext) return
       } else if (
         !twapOrderCreationContext ||
         chainId !== twapOrderCreationContext.chainId ||
@@ -213,6 +221,7 @@ export function useCreateTwapOrder() {
         recipientAddress: twapOrder.receiver,
         marketLabel: [inputCurrencyAmount.currency.symbol, outputCurrencyAmount.currency.symbol].join(','),
         orderType,
+        isEoaTwap,
       }
 
       startEoaTwapPlacement()
@@ -245,6 +254,7 @@ export function useCreateTwapOrder() {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
           const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+          await assertFactoryDeployed(config, cowShedHooks.getFactoryAddress(), `chain ${chainId}`)
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
           isProxyDeployed = await hasBytecode(config, proxyAddress)
 
@@ -277,7 +287,7 @@ export function useCreateTwapOrder() {
           allowsOffchainSigning,
         })
 
-        sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('posted', fallbackHandlerIsNotSet, isEoaTwap)
 
         await uploadAppDataDocOrderbookApi({
           appDataKeccak256: updatedAppData.appDataKeccak256,
@@ -304,7 +314,7 @@ export function useCreateTwapOrder() {
         let eventId: string | undefined
 
         if (eoaPoller) {
-          if (!walletClient || !eoaSigner) return
+          if (!walletClient) return
 
           const sellTokenAddress = updatedTwapOrder.sellAmount.currency.address as `0x${string}`
           const sellToken = updatedTwapOrder.sellAmount.currency
@@ -327,7 +337,6 @@ export function useCreateTwapOrder() {
 
           const signingStepPlan = buildEoaTwapSigningStepPlan({
             poller: pollerNeeds,
-            isProxyDeployed,
           })
 
           // Open the multi-step pending UI as soon as the plan is known.
@@ -363,10 +372,10 @@ export function useCreateTwapOrder() {
           const {
             proxyAddress,
             setupTxHash,
+            setupBlockNumber,
             eventId: eventIdParam,
           } = await placeEoaTwapOrder({
             isProxyDeployed,
-            signer: eoaSigner,
             chainId,
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
@@ -378,6 +387,17 @@ export function useCreateTwapOrder() {
             onSigningStep: updateEoaTwapFlow,
             pollerPermitData,
           })
+
+          if (pollerApprovalNeeds.needsApproval) {
+            setOptimisticAllowance({
+              chainId,
+              tokenAddress: sellTokenAddress,
+              owner: account,
+              spender: eoaPoller,
+              amount: pollerAmountToApprove,
+              blockNumber: setupBlockNumber,
+            })
+          }
 
           // Setup factory tx hash for confirm-modal / explorer link.
           confirmModalHash = setupTxHash
@@ -427,14 +447,15 @@ export function useCreateTwapOrder() {
           outputAmount: updatedTwapOrder.buyAmount,
           owner: account,
           uiOrderType: orderType,
+          isEoaTwap,
         })
 
-        sendOrderAnalytics('Place Order', `${orderType}|${twapFlowAnalyticsContext.marketLabel}`)
+        sendOrderAnalytics(`${orderType}|${twapFlowAnalyticsContext.marketLabel}`, isEoaTwap)
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
-        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
 
         if (isEoaTwap) {
           // Keep the review card open and replace signing steps with the inline success box.
@@ -468,7 +489,7 @@ export function useCreateTwapOrder() {
         updateEoaTwapFlow(null)
         tradeConfirmActions.onError(errorMessage)
         tradeFlowAnalytics.error(error, errorMessage, twapFlowAnalyticsContext)
-        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet)
+        sendTwapConversionAnalytics('rejected', fallbackHandlerIsNotSet, isEoaTwap)
 
         return false
       }
@@ -478,7 +499,6 @@ export function useCreateTwapOrder() {
       isSafeWallet,
       isSafeViaWc,
       allowsOffchainSigning,
-      eoaSigner,
       config,
       chainId,
       account,
@@ -504,6 +524,7 @@ export function useCreateTwapOrder() {
       walletClient,
       updateEoaTwapFlow,
       amountToApprove,
+      setOptimisticAllowance,
     ],
   )
 }

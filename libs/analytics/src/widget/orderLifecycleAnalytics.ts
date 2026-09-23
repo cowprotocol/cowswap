@@ -164,6 +164,7 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     orderType: p.orderType,
     partiallyFillable: p.partiallyFillable,
     isEthFlow: Boolean(p.isEthFlow),
+    isEoaTwap: p.isEoaTwap,
     isCrossChain: Boolean(p.isCrossChain),
     destinationChainId: p.destinationChainId,
     kind: p.kind,
