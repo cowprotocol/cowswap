@@ -3,6 +3,7 @@
 import { atom, type Getter, type Setter } from 'jotai'
 
 import {
+  allowancesAtom,
   BalancesAndAllowances,
   balancesAtom,
   tokenAllowancesFamily,
@@ -12,7 +13,7 @@ import {
 } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -230,16 +231,20 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   const spender = spenderOverride ?? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const balancesState = get(balancesAtom)
-  // TODO: add allowancesState for Solana
-  const allowancesState = get(
-    tokenAllowancesFamily({
-      connector,
-      chainId,
-      account,
-      spender,
-      tokenAddresses: Array.from(ordersTokensSet),
-    }),
-  )
+  // Solana has no ERC-20 `allowance()` to multicall: SPL token delegation is fetched and kept in
+  // `allowancesAtom` by `usePersistSplViaMulticall` instead, so read it directly rather than routing
+  // through `tokenAllowancesFamily` (which only ever handles EVM chains).
+  const allowancesState = isSolanaChain(chainId)
+    ? (get(allowancesAtom)[chainId] ?? null)
+    : get(
+        tokenAllowancesFamily({
+          connector,
+          chainId,
+          account,
+          spender,
+          tokenAddresses: Array.from(ordersTokensSet),
+        }),
+      )
   const optimisticAllowances = get(optimisticAllowancesAtom)
   const balancesAndAllowances = getBalancesAndAllowances(
     balancesState,
