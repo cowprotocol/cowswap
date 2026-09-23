@@ -2,7 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isTwapEventId } from '@cowprotocol/common-utils'
+import { displayTime, isTwapEventId } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 import { NetworkLogo } from '@cowprotocol/ui'
@@ -81,13 +81,6 @@ export function TwapDetailsPage(): ReactNode {
       {data ? <TwapDetails order={data.order} chainId={data.chainId} /> : null}
     </Wrapper>
   )
-}
-
-function formatSeconds(seconds: number): string {
-  if (seconds % 86_400 === 0) return `${seconds / 86_400}d`
-  if (seconds % 3_600 === 0) return `${seconds / 3_600}h`
-  if (seconds % 60 === 0) return `${seconds / 60}m`
-  return `${seconds}s`
 }
 
 function formatTokenAmount(amount: bigint, token: TokenErc20 | null | undefined, chainId: SupportedChainId): ReactNode {
@@ -193,14 +186,14 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Part duration"
                   tooltipText="The time between the scheduled start of one part and the next."
                 >
-                  {formatSeconds(schedule.timeBetweenParts)}
+                  {displayTime(schedule.timeBetweenParts * 1000, true)}
                 </DetailRow>
                 {schedule.durationOfPart !== 0 && schedule.durationOfPart !== schedule.timeBetweenParts && (
                   <DetailRow
                     label="Execution window"
                     tooltipText="The time available to execute each part order after its scheduled start. This differs from the interval between parts."
                   >
-                    {formatSeconds(schedule.durationOfPart)}
+                    {displayTime(schedule.durationOfPart * 1000, true)}
                   </DetailRow>
                 )}
                 <DetailRow
@@ -238,7 +231,9 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Costs & Fees"
                   tooltipText="The total execution fees reported for the part orders, in the sell token. This value increases as more parts execute."
                 >
-                  {formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
+                  {executedAmounts.executedFee === 0n
+                    ? '-'
+                    : formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
                 </DetailRow>
                 <TwapAppData appData={schedule.appData} chainId={chainId} />
               </>
