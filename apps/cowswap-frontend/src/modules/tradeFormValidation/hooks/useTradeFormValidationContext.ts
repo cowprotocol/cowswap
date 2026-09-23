@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
+import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
 import {
@@ -26,7 +26,6 @@ import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import {
-  ReceiveAmountInfo,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsWrapOrUnwrap,
@@ -45,6 +44,7 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -97,7 +97,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const swapMaximumSellAmount = getSwapMaximumSellAmount(tradeType, receiveAmountInfo)
+  const swapMaximumSellAmount = tradeType === TradeType.SWAP ? getSwapMaximumSellAmount(receiveAmountInfo) : null
 
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
@@ -191,15 +191,6 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
-}
-
-function getSwapMaximumSellAmount(
-  tradeType: TradeType | null | undefined,
-  receiveAmountInfo: ReceiveAmountInfo | null,
-): CurrencyAmount<Currency> | null {
-  if (tradeType !== TradeType.SWAP) return null
-
-  return receiveAmountInfo?.afterSlippage.sellAmount ?? null
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {

@@ -36,12 +36,12 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     await i18n.activate('en-US')
   })
 
-  it('shows authorization as signed before the setup transaction', () => {
+  it('shows the creation transaction without a separate setup signature', () => {
     const steps = getPendingSteps(
       buildEoaTwapConfirmationPendingSteps({
         signingStep: {
           step: EoaTwapSigningSteps.TwapSign,
-          plan: [EoaTwapSigningSteps.TwapSetup, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
+          plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
           phase: EoaTwapSigningPhase.Sign,
           lockDismiss: false,
         },
@@ -49,11 +49,9 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       }),
     )
 
-    expect(steps[0]).toMatchObject({ label: 'Set up Account Proxy', status: 'success' })
-    const description = renderToStaticMarkup(steps[0]?.description)
-    expect(description).toContain('Signed')
-    expect(description).not.toContain('href=')
-    expect(steps[1]).toMatchObject({ label: 'Sign TWAP', status: 'active' })
+    expect(steps).toHaveLength(2)
+    expect(steps[0]).toMatchObject({ label: 'Sign TWAP', status: 'active' })
+    expect(steps.map(({ label }) => label)).not.toContain('Set up Account Proxy')
   })
 
   it('keeps stable labels and uses loading description for poller approve', () => {
@@ -221,7 +219,6 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     'keeps setup in the expanded summary during %s',
     (step) => {
       const initialPlan = buildEoaTwapSigningStepPlan({
-        isProxyDeployed: false,
         poller: { needsApproval: true, needsZeroApproval: false, canUsePermit: true },
       })
       const plan =
@@ -243,7 +240,7 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
       expect(steps).toHaveLength(2)
       const summary = renderToStaticMarkup(steps[0]?.description)
       expect(summary).toContain('Permit USDC · Signed')
-      expect(summary).toContain('Set up Account Proxy · Signed')
+      expect(summary).not.toContain('Set up Account Proxy')
       expect(summary).toContain('Sign TWAP ·')
       expect(summary).toContain('https://etherscan.io/tx/0xsign')
     },

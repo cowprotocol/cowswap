@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.1...permit-utils-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.0
+
 ## [3.7.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.0...permit-utils-v3.7.1) (2026-09-15)
 
 ### Patch Changes

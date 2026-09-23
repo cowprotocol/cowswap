@@ -1,15 +1,13 @@
 import type { Hex } from 'viem'
 
 import { type AccountAddress } from '@cowprotocol/cow-sdk'
+import { EOA_TWAP_POLL_FUNDS_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
 import { replaceHooksOnAppData } from 'modules/appData'
 import type { AppDataInfo, CowHook } from 'modules/appData'
 
 import { POLL_FUNDS_HOOK_GAS_LIMIT } from './composable-cow-poller.constants'
 import { encodePollFundsCalldata } from './composable-cow-poller.utils'
-
-/** Dapp id for the pollFunds pre-hook embedded in TWAP part appData. */
-export const EOA_TWAP_POLL_FUNDS_DAPP_ID = 'cowswap://twap/eoa-poll-funds'
 
 /**
  * Injects `pollFunds(scheduleId)` as a TWAP pre-hook and re-hashes appData.

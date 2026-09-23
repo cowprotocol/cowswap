@@ -15,6 +15,7 @@ import {
 } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { hasBytecode } from 'modules/accountProxy'
@@ -22,12 +23,12 @@ import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from '
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { callWidgetHook } from 'modules/injectedWidget'
+import { emitPostedOrderEvent } from 'modules/orders'
 import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 
-import { useAppSigner } from 'common/hooks/useAppSigner'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useCreateTwapOrder } from './useCreateTwapOrder'
@@ -50,6 +51,9 @@ import { waitForTwapEventId } from '../utils/waitForTwapEventId'
 jest.mock('../utils/waitForTwapEventId', () => ({ waitForTwapEventId: jest.fn() }))
 
 jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
+jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({
+  useSetOptimisticAllowance: jest.fn(),
+}))
 jest.mock('wagmi', () => ({
   ...jest.requireActual('wagmi'),
   useConfig: jest.fn(() => ({})),
@@ -89,7 +93,6 @@ jest.mock('modules/trade', () => ({
   useTradeConfirmActions: jest.fn(),
   useTradePriceImpact: jest.fn(),
 }))
-jest.mock('common/hooks/useAppSigner', () => ({ useAppSigner: jest.fn() }))
 jest.mock('common/hooks/useConfirmPriceImpactWithoutFee', () => ({ useConfirmPriceImpactWithoutFee: jest.fn() }))
 jest.mock('common/utils/getAreBridgeCurrencies', () => ({ getAreBridgeCurrencies: jest.fn(() => false) }))
 jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapFlowUpdater: jest.fn(() => jest.fn()) }))
@@ -111,15 +114,19 @@ jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
 }))
 jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   COMPOSABLE_COW_POLLER_ADDRESS: {
-    1: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
-    100: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
-    11155111: '0x8c1cddc5c012a2c84d531855f3946d927fe38e1e',
+    1: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    100: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    11155111: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
   },
 }))
 jest.mock('modules/accountProxy', () => ({
   EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
-  getCowShedHooks: jest.fn(() => ({ proxyOf: jest.fn(() => '0xproxy') })),
+  getCowShedHooks: jest.fn(() => ({
+    proxyOf: jest.fn(() => '0xproxy'),
+    getFactoryAddress: jest.fn(() => '0xfactory'),
+  })),
   hasBytecode: jest.fn().mockResolvedValue(true),
+  assertFactoryDeployed: jest.fn().mockResolvedValue(undefined),
 }))
 jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
 jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
@@ -131,6 +138,9 @@ jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest
 jest.mock('../utils/twapOrderToStruct', () => ({ twapOrderToStruct: jest.fn(() => ({})) }))
 
 const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
+const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFunction<
+  typeof useSetOptimisticAllowance
+>
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockedUseIsSafeViaWc = useIsSafeViaWc as jest.MockedFunction<typeof useIsSafeViaWc>
@@ -154,7 +164,6 @@ const mockedUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermi
 const mockedGetCowSoundSend = getCowSoundSend as jest.MockedFunction<typeof getCowSoundSend>
 const mockedUseTradeConfirmActions = useTradeConfirmActions as jest.MockedFunction<typeof useTradeConfirmActions>
 const mockedUseTradePriceImpact = useTradePriceImpact as jest.MockedFunction<typeof useTradePriceImpact>
-const mockedUseAppSigner = useAppSigner as jest.MockedFunction<typeof useAppSigner>
 const mockedUseConfirmPriceImpactWithoutFee = useConfirmPriceImpactWithoutFee as jest.MockedFunction<
   typeof useConfirmPriceImpactWithoutFee
 >
@@ -180,15 +189,19 @@ const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.Mocked
 >
 const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
+const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
+// eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
+  const setOptimisticAllowance = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
     jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
+    mockedUseSetOptimisticAllowance.mockReturnValue(setOptimisticAllowance)
     mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
@@ -214,7 +227,6 @@ describe('useCreateTwapOrder', () => {
       onError: jest.fn(),
     } as unknown as ReturnType<typeof useTradeConfirmActions>)
     mockedUseTradePriceImpact.mockReturnValue({ priceImpact: undefined } as ReturnType<typeof useTradePriceImpact>)
-    mockedUseAppSigner.mockReturnValue({} as ReturnType<typeof useAppSigner>)
     mockedUseConfirmPriceImpactWithoutFee.mockReturnValue({
       confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
     } as unknown as ReturnType<typeof useConfirmPriceImpactWithoutFee>)
@@ -233,6 +245,7 @@ describe('useCreateTwapOrder', () => {
     mockedPlaceEoaTwapOrder.mockResolvedValue({
       proxyAddress: '0xproxy',
       setupTxHash: '0xsetuptx',
+      setupBlockNumber: 123n,
       eventId: '1'.repeat(70),
     } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
     mockedUseGetAmountToSignApprove.mockReturnValue(null)
@@ -245,7 +258,7 @@ describe('useCreateTwapOrder', () => {
     )
   })
 
-  it('tracks the wallet off-chain signing capability instead of the EOA TWAP route', async () => {
+  it('tracks isEoaTwap true on EOA TWAP placement events', async () => {
     const { result } = renderHook(useCreateTwapOrder)
 
     await act(async () => {
@@ -253,8 +266,31 @@ describe('useCreateTwapOrder', () => {
     })
 
     expect(sendEvent).toHaveBeenCalledWith(
-      expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false }),
+      expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false, isEoaTwap: true }),
     )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: true }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: true }))
+  })
+
+  it('tracks isEoaTwap false on Safe TWAP placement events', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'Place Advanced Order', isEoaTwap: false }),
+    )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: false }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: false }))
   })
 
   it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {
@@ -334,6 +370,33 @@ describe('useCreateTwapOrder', () => {
     )
   })
 
+  it('caches the confirmed poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).toHaveBeenCalledWith({
+      chainId: 1,
+      tokenAddress: '0xsell',
+      owner: '0xaccount',
+      spender: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+      amount: maxUint256,
+      blockNumber: 123n,
+    })
+  })
+
+  it('does not cache an unchanged poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).not.toHaveBeenCalled()
+  })
+
   it('does not permit a Dai-like token when the form selected a finite poller approval', async () => {
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
     mockedUsePermitInfo.mockReturnValue({ type: 'dai-like', name: 'DAI' } as ReturnType<typeof usePermitInfo>)
@@ -392,17 +455,12 @@ describe('useCreateTwapOrder', () => {
     expect(hasBytecode).toHaveBeenCalledWith(expect.anything(), '0xproxy')
     expect(updateEoaTwapFlow).toHaveBeenCalledWith(
       expect.objectContaining({
-        plan: [
-          ...(isProxyDeployed ? [] : [EoaTwapSigningSteps.TwapSetup]),
-          EoaTwapSigningSteps.TwapSign,
-          EoaTwapSigningSteps.SubmitTwap,
-        ],
+        plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
       }),
     )
     expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
       expect.objectContaining({
         isProxyDeployed,
-        signer: mockedUseAppSigner.mock.results[0]?.value,
         walletClient: expect.anything(),
         pollerPermitData: null,
       }),
@@ -440,7 +498,8 @@ describe('useCreateTwapOrder', () => {
     expect(mockedPlaceSafeTwapOrder).not.toHaveBeenCalled()
   })
 
-  it('keeps the EOA confirm card open after placement instead of showing the submitted screen', async () => {
+  it('keeps the EOA confirm card open after placement and navigates to open orders', async () => {
+    jest.useFakeTimers()
     const updateEoaTwapFlow = jest.fn()
     const onSuccess = jest.fn()
     const navigateToOrdersTableTab = jest.fn()
@@ -463,7 +522,6 @@ describe('useCreateTwapOrder', () => {
 
     expect(placementResult).toBe(true)
     expect(onSuccess).not.toHaveBeenCalled()
-    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
 
     expect(updateEoaTwapFlow).toHaveBeenCalledWith({
       step: EoaTwapSigningSteps.Success,
@@ -471,6 +529,13 @@ describe('useCreateTwapOrder', () => {
       eventId: '1'.repeat(70),
       lockDismiss: false,
     })
+
+    await act(async () => {
+      jest.runAllTimers()
+    })
+
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.OPEN)
+    jest.useRealTimers()
   })
 
   it('shows the submitted screen and navigates to signing for a Safe TWAP', async () => {

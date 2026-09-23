@@ -20,6 +20,7 @@ import { useTwapConfirmCurrencyPreview } from './useTwapConfirmCurrencyPreview'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useEoaTwapLeaveConfirmation } from '../../hooks/useEoaTwapLeaveConfirmation'
+import { useEoaTwapSuccessDismiss } from '../../hooks/useEoaTwapSuccessDismiss'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
@@ -65,6 +66,8 @@ export function TwapConfirmModal(): ReactNode {
     inputSymbolLabel,
   })
 
+  const dismissSuccessState = useEoaTwapSuccessDismiss(onDismiss)
+
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
     onDismiss,
@@ -72,7 +75,7 @@ export function TwapConfirmModal(): ReactNode {
 
   const eoaTwapSigningStepElement =
     steps || isEoaTwapSuccess ? (
-      <EoaTwapSigningPendingContent steps={steps ?? []} buttonProps={buttonProps} onDismiss={onDismiss} />
+      <EoaTwapSigningPendingContent steps={steps ?? []} buttonProps={buttonProps} onViewOrders={dismissSuccessState} />
     ) : null
 
   const titleBadgeElement = badgeProps ? <TwapBadge {...badgeProps} /> : null

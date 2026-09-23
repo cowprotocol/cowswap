@@ -27,6 +27,7 @@ import {
   useTradeConfirmActions,
   useCommonTradeConfirmContext,
 } from 'modules/trade'
+import { getSwapMaximumSellAmount } from 'modules/tradeFormValidation'
 import { isQuoteExpired, useTradeQuote, useTradeQuoteCounter } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline, RowQuoteId } from 'modules/tradeWidgetAddons'
 
@@ -123,7 +124,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     const hasCurrentCurrency = Boolean(inputAmount?.currency)
     const isBalanceEnough = getIsBalanceEnough({
       inputAmount,
-      maximumSellAmount: receiveAmountInfo?.afterSlippage.sellAmount,
+      maximumSellAmount: getSwapMaximumSellAmount(receiveAmountInfo),
       balance: inputCurrencyInfo?.balance,
     })
 
