@@ -2,7 +2,7 @@ import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { isSafeAppAtom, isSafeViaWcAtom } from './walletMetadata.atoms'
+import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom } from './walletMetadata.atoms'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType, WalletInfo } from '../../api/types'
@@ -168,5 +168,72 @@ describe('walletMetadata atoms', () => {
     })
 
     expect(store.get(isSafeViaWcAtom)).toBe(true)
+  })
+
+  it('treats a non-Safe injected wallet as EOA', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(isEoaAtom)).toBe(true)
+  })
+
+  it('is not EOA while Safe-via-WC detection is still loading', () => {
+    const store = createStore()
+
+    store.set(walletInfoAtom, {
+      chainId: SupportedChainId.MAINNET,
+      account: '0x1234567890123456789012345678901234567890',
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(null)
+    expect(store.get(isEoaAtom)).toBe(null)
+  })
+
+  it('is not EOA for Safe via WalletConnect', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.WALLET_CONNECT_V2,
+      }),
+    )
+    store.set(walletDetailsAtom, {
+      isSmartContractWallet: true,
+      isSupportedWallet: true,
+      allowsOffchainSigning: false,
+      isSafeApp: false,
+      walletName: 'Safe',
+      ensName: undefined,
+      icon: undefined,
+    })
+
+    expect(store.get(isEoaAtom)).toBe(false)
+  })
+
+  it('is not EOA for a Safe account imported into an injected wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      chainId: SupportedChainId.MAINNET,
+      nonce: 0,
+    })
+
+    expect(store.get(isEoaAtom)).toBe(false)
   })
 })

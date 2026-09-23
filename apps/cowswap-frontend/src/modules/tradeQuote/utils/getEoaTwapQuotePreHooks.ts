@@ -21,7 +21,7 @@ const EOA_TWAP_QUOTE_PRE_HOOKS: CowHook[] = [
 export interface EoaTwapQuotePreHookParams {
   orderClass: string | undefined
   isTwapEoaEnabled: boolean
-  isEoa: boolean
+  isEoa: boolean | null
   chainId: SupportedChainId | undefined
 }
 
@@ -32,7 +32,7 @@ export function getEoaTwapQuotePreHooks({
   isEoa,
   chainId,
 }: EoaTwapQuotePreHookParams): CowHook[] | undefined {
-  const isEoaTwap = orderClass === 'twap' && isTwapEoaEnabled && isEoa && !!chainId && isEvmChain(chainId)
+  const isEoaTwap = orderClass === 'twap' && isTwapEoaEnabled && isEoa === true && !!chainId && isEvmChain(chainId)
 
   return isEoaTwap ? EOA_TWAP_QUOTE_PRE_HOOKS : undefined
 }

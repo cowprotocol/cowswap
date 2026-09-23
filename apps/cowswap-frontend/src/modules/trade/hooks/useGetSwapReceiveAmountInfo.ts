@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -5,7 +6,7 @@ import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
-import { useIsEoa, useWalletInfo } from '@cowprotocol/wallet'
+import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppData } from 'modules/appData'
 import {
@@ -65,7 +66,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const isEoa = useIsEoa()
+  const isEoa = useAtomValue(isEoaAtom)
   const { chainId } = useWalletInfo()
   const appData = useAppData()
 

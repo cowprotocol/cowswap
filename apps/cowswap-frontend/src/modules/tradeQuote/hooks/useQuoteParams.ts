@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useRef } from 'react'
 
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
@@ -6,7 +7,7 @@ import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/
 import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
-import { useIsEoa, useWalletInfo } from '@cowprotocol/wallet'
+import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
@@ -54,7 +55,7 @@ interface BuildQuoteParamsArgs {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account, chainId } = useWalletInfo()
-  const isEoa = useIsEoa()
+  const isEoa = useAtomValue(isEoaAtom)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()

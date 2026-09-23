@@ -28,6 +28,7 @@ describe('getEoaTwapQuotePreHooks', () => {
   it.each([
     ['the feature flag is off', { isTwapEoaEnabled: false }],
     ['the wallet is not an EOA', { isEoa: false }],
+    ['EOA detection is still loading', { isEoa: null }],
     ['the order class is market', { orderClass: 'market' }],
     ['the order class is limit', { orderClass: 'limit' }],
     ['there is no chain', { chainId: undefined }],

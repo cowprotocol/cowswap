@@ -1,6 +1,8 @@
+import { useAtomValue } from 'jotai'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getGlobalAdapter, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useIsEoa, useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { renderHook } from '@testing-library/react'
@@ -20,9 +22,13 @@ import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 import { BRIDGE_QUOTE_ACCOUNT } from '../utils/getBridgeQuoteSigner'
 
 // Mock all dependencies
+jest.mock('jotai', () => ({
+  ...jest.requireActual('jotai'),
+  useAtomValue: jest.fn(),
+}))
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
-  useIsEoa: jest.fn(),
+  isEoaAtom: Symbol('isEoaAtom'),
 }))
 jest.mock('@cowprotocol/wallet-provider', () => ({ useWalletProvider: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({
@@ -70,7 +76,7 @@ jest.mock('@cowprotocol/cow-sdk', () => ({
 }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockedUseIsEoa = useIsEoa as jest.MockedFunction<typeof useIsEoa>
+const mockedUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockedUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
 const mockedUseAppData = useAppData as jest.MockedFunction<typeof useAppData>
@@ -116,7 +122,7 @@ function setupDefaults(): void {
     account: ACCOUNT_ADDRESS,
     chainId: SupportedChainId.MAINNET,
   } as unknown as WalletInfo)
-  mockedUseIsEoa.mockReturnValue(true)
+  mockedUseAtomValue.mockReturnValue(true)
   mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
   mockedUseWalletProvider.mockReturnValue(mockProvider as unknown as ReturnType<typeof useWalletProvider>)
   const mockAdapter = { signerOrNull: jest.fn().mockReturnValue('user-signer') }
@@ -476,7 +482,7 @@ describe('useQuoteParams', () => {
     it('leaves app data unchanged for a Safe TWAP', () => {
       const doc = { appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'twap' } } }
       mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
-      mockedUseIsEoa.mockReturnValue(false)
+      mockedUseAtomValue.mockReturnValue(false)
       mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
 
       const { result } = renderHook(() => useQuoteParams('1000'))
