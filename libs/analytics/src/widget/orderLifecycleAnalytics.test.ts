@@ -165,9 +165,33 @@ describe('orderLifecycleAnalytics', () => {
     const result = mapCancelledOrder(payload)
     expect(result.reason).toBe('cancelled')
     expect(result.transactionHash).toBe('0xdeadbeef')
+    expect(result.orderId).toBe('0xuid')
+    expect(result.walletAddress).toBe('0xowner')
     expect(result.fromCurrencyAddress).toBe(defaultInputToken.address)
     expect(result.toCurrencyAddress).toBe(defaultOutputToken.address)
     expect(result.isEoaTwap).toBeUndefined()
+  })
+
+  it('uses the TWAP analytics identity when the internal order id and owner differ', () => {
+    const conditionalOrderHash = `0x${'ab'.repeat(32)}`
+    const connectedWallet = '0x1111111111111111111111111111111111111111'
+    const payload: OnCancelledOrderPayload = {
+      chainId: 1,
+      orderType: UiOrderType.TWAP,
+      order: buildOrder({
+        uid: '49821',
+        owner: '0x2222222222222222222222222222222222222222',
+      }),
+      transactionHash: '0xdeadbeef',
+      isEoaTwap: true,
+      analyticsOrderId: conditionalOrderHash,
+      analyticsWalletAddress: connectedWallet,
+    }
+
+    const result = mapCancelledOrder(payload)
+    expect(result.orderId).toBe(conditionalOrderHash)
+    expect(result.walletAddress).toBe(connectedWallet)
+    expect(result.isEoaTwap).toBe(true)
   })
 
   it('includes isEoaTwap on cancelled TWAP orders when provided', () => {

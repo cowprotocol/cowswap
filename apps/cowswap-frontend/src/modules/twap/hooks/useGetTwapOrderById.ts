@@ -8,6 +8,10 @@ import { eoaTwapOrdersAtom, emulateTwapAsOrder, isEoaTwapOrderItem, twapOrdersAt
 export type TwapOrderByIdResult = {
   order: Omit<EnrichedOrder, 'settlementContract'>
   isEoaTwap: boolean
+  /** Conditional-order hash for analytics */
+  analyticsOrderId: string
+  /** Connected wallet for analytics */
+  analyticsWalletAddress: string
 }
 
 export function useGetTwapOrderById(): (orderId: string) => TwapOrderByIdResult | null {
@@ -23,6 +27,8 @@ export function useGetTwapOrderById(): (orderId: string) => TwapOrderByIdResult 
       return {
         order: emulateTwapAsOrder(item),
         isEoaTwap: isEoaTwapOrderItem(item),
+        analyticsOrderId: item.hash ?? item.id,
+        analyticsWalletAddress: item.resolvedOwner ?? item.safeAddress,
       }
     },
     [eoaTwapOrdersList, twapOrdersList],

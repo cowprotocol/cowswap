@@ -36,6 +36,8 @@ export function finalizeOnChainCancellation(
         orderType: UiOrderType.TWAP,
         transactionHash: hash,
         isEoaTwap: twapOrderResult.isEoaTwap,
+        analyticsOrderId: twapOrderResult.analyticsOrderId,
+        analyticsWalletAddress: twapOrderResult.analyticsWalletAddress,
       })
 
       return
