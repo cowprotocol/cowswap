@@ -1,8 +1,10 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getGlobalAdapter, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
+import { useIsEoa, useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { renderHook } from '@testing-library/react'
+import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
 
 import { useAppData } from 'modules/appData'
 import { TradeDerivedState, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -18,10 +20,14 @@ import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 import { BRIDGE_QUOTE_ACCOUNT } from '../utils/getBridgeQuoteSigner'
 
 // Mock all dependencies
-jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+  useIsEoa: jest.fn(),
+}))
 jest.mock('@cowprotocol/wallet-provider', () => ({ useWalletProvider: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({
   useDebounce: <T>(value: T) => value,
+  useFeatureFlags: jest.fn(),
 }))
 jest.mock('@cowprotocol/common-utils', () => ({
   COW_PROTOCOL_ETH_FLOW_ADDRESS: { 1: '0xethflow' },
@@ -29,6 +35,7 @@ jest.mock('@cowprotocol/common-utils', () => ({
 }))
 jest.mock('@cowprotocol/common-const', () => ({
   DEFAULT_APP_CODE: 'CoW Swap',
+  ZERO_ADDRESS: '0x0000000000000000000000000000000000000000',
 }))
 jest.mock('modules/appData', () => ({ useAppData: jest.fn() }))
 jest.mock('modules/trade', () => ({
@@ -63,6 +70,8 @@ jest.mock('@cowprotocol/cow-sdk', () => ({
 }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockedUseIsEoa = useIsEoa as jest.MockedFunction<typeof useIsEoa>
+const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockedUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
 const mockedUseAppData = useAppData as jest.MockedFunction<typeof useAppData>
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
@@ -103,7 +112,12 @@ const mockOutputCurrency = {
 }
 
 function setupDefaults(): void {
-  mockedUseWalletInfo.mockReturnValue({ account: ACCOUNT_ADDRESS } as unknown as WalletInfo)
+  mockedUseWalletInfo.mockReturnValue({
+    account: ACCOUNT_ADDRESS,
+    chainId: SupportedChainId.MAINNET,
+  } as unknown as WalletInfo)
+  mockedUseIsEoa.mockReturnValue(true)
+  mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
   mockedUseWalletProvider.mockReturnValue(mockProvider as unknown as ReturnType<typeof useWalletProvider>)
   const mockAdapter = { signerOrNull: jest.fn().mockReturnValue('user-signer') }
   ;(getGlobalAdapter as jest.Mock).mockReturnValue(mockAdapter)
@@ -423,6 +437,70 @@ describe('useQuoteParams', () => {
       const { result } = renderHook(() => useQuoteParams('1000'))
 
       expect(result.current!.quoteParams!.appCode).toBe('CoW Swap')
+    })
+
+    it('prepends the EOA TWAP quote hook and keeps existing hooks', () => {
+      const existingPreHook = {
+        target: '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        callData: '0xdeadbeef',
+        gasLimit: '100000',
+      }
+      const existingPostHook = {
+        target: '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb',
+        callData: '0xcafebabe',
+        gasLimit: '50000',
+      }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseAppData.mockReturnValue({
+        doc: {
+          appCode: 'CoW Swap',
+          metadata: {
+            orderClass: { orderClass: 'twap' },
+            hooks: { pre: [existingPreHook], post: [existingPostHook] },
+          },
+        },
+      } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+      const preHooks = result.current!.appData?.metadata.hooks?.pre
+
+      expect(preHooks?.[0]).toEqual({
+        target: '0x0000000000000000000000000000000000000000',
+        callData: '0x',
+        gasLimit: POLL_FUNDS_HOOK_GAS_LIMIT,
+      })
+      expect(preHooks?.[1]).toEqual(existingPreHook)
+      expect(result.current!.appData?.metadata.hooks?.post).toEqual([existingPostHook])
+    })
+
+    it('leaves app data unchanged for a Safe TWAP', () => {
+      const doc = { appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'twap' } } }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseIsEoa.mockReturnValue(false)
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
+    })
+
+    it('leaves app data unchanged when the order class is not twap', () => {
+      const doc = { appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'market' } } }
+      mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
+    })
+
+    it('returns the original app data document when no additional pre-hooks are set', () => {
+      const doc = { appCode: 'CoW Swap', metadata: {} }
+      mockedUseAppData.mockReturnValue({ doc } as unknown as ReturnType<typeof useAppData>)
+
+      const { result } = renderHook(() => useQuoteParams('1000'))
+
+      expect(result.current!.appData).toBe(doc)
     })
   })
 })

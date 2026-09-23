@@ -46,6 +46,16 @@ export interface WalletMetaData {
 const defaultWcPeerOutput = { walletName: undefined, icon: undefined }
 
 /**
+ * True when the connected wallet is not a Safe (including Safe via WalletConnect).
+ */
+export function useIsEoa(): boolean {
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+
+  return !isSafeWallet && !isSafeViaWc
+}
+
+/**
  * Detects whether the currently connected wallet is a Safe App
  * It'll be false if connected to Safe wallet via WalletConnect
  */

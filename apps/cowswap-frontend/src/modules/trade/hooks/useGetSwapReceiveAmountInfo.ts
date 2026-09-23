@@ -1,11 +1,19 @@
 import { useMemo } from 'react'
 
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
+import { useIsEoa, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
+import { useAppData } from 'modules/appData'
+import {
+  applyUnpricedHookGasToOrderParams,
+  getEoaTwapQuotePreHooks,
+  useTradeQuote,
+  useTradeQuoteProtocolFee,
+} from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -34,7 +42,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
   const quoteResults = tradeQuote?.quote?.quoteResults
   const quoteResponse = quoteResults?.quoteResponse
-  const orderParams = quoteResponse?.quote
+  const orderParams = useOrderParamsWithEoaTwapHookGas(quoteResponse?.quote)
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
@@ -53,6 +61,26 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
       protocolFeeBps,
     }
   }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
+}
+
+function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoa = useIsEoa()
+  const { chainId } = useWalletInfo()
+  const appData = useAppData()
+
+  return useMemo(() => {
+    const additionalPreHooks = getEoaTwapQuotePreHooks({
+      orderClass: appData?.doc?.metadata?.orderClass?.orderClass,
+      isTwapEoaEnabled: !!isTwapEoaEnabled,
+      isEoa,
+      chainId,
+    })
+
+    return quotedOrderParams
+      ? applyUnpricedHookGasToOrderParams(quotedOrderParams, additionalPreHooks)
+      : quotedOrderParams
+  }, [quotedOrderParams, appData?.doc?.metadata?.orderClass?.orderClass, isTwapEoaEnabled, isEoa, chainId])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
