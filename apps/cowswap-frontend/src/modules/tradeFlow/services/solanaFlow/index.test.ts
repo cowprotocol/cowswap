@@ -65,6 +65,12 @@ const ORDER_ID = '0xdeadbeef'
 // needs to confirm the planner's own return value reaches the local order, not that specific bytes.
 const MARKET_APP_DATA_HEX = '0x' + 'aa'.repeat(32)
 const LIMIT_APP_DATA_HEX = '0x' + 'bb'.repeat(32)
+// Deliberately different from solanaQuote.intent's amounts (1_000_000n/1_900_000n) and from each other:
+// a limit order's actually-signed price must never be confused with the market quote's or with a swap's.
+const MARKET_SIGNED_SELL_AMOUNT = 1_000_000n
+const MARKET_SIGNED_BUY_AMOUNT = 1_900_000n
+const LIMIT_SIGNED_SELL_AMOUNT = 5_000_000n
+const LIMIT_SIGNED_BUY_AMOUNT = 12_000_000n
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -191,12 +197,16 @@ describe('solanaFlow', () => {
       orderId: ORDER_ID,
       signingScheme: SigningScheme.PRESIGN,
       appData: MARKET_APP_DATA_HEX,
+      sellAmount: MARKET_SIGNED_SELL_AMOUNT,
+      buyAmount: MARKET_SIGNED_BUY_AMOUNT,
     })
     mockPlanCreateLimitOrderStep.mockResolvedValue({
       step: ORDER_STEP,
       orderId: ORDER_ID,
       signingScheme: SigningScheme.PRESIGN,
       appData: LIMIT_APP_DATA_HEX,
+      sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
+      buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
     })
   })
 
@@ -293,11 +303,11 @@ describe('solanaFlow', () => {
           // deadline picked after quoting is missing from the order until indexing replaces it.
           receiver: context.context.receiver,
           validTo: context.context.validTo,
-          // Amounts come from the signed intent, not the quote: the quote's are pre-slippage, so using
-          // them would show a limit price the on-chain order does not have.
-          sellAmount: '1000000',
-          buyAmount: '1900000',
-          sellAmountBeforeFee: '1000000',
+          // Amounts come from the planner's actually-signed intent, not the quote directly: the quote's
+          // are pre-slippage, so using them would show a limit price the on-chain order does not have.
+          sellAmount: MARKET_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: MARKET_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: MARKET_SIGNED_SELL_AMOUNT.toString(),
         }),
       }),
       context.callbacks.dispatch,
@@ -330,6 +340,27 @@ describe('solanaFlow', () => {
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ appData: LIMIT_APP_DATA_HEX }) }),
+      expect.anything(),
+    )
+  })
+
+  // Regression test: the local order previously always read sellAmount/buyAmount from
+  // `solanaQuote.intent` (the market quote's own amounts) regardless of order class, so a limit order's
+  // Redux/localStorage entry showed the market-implied price instead of the price the user entered and
+  // actually signed on-chain — even though the on-chain order itself was correct.
+  it("records the limit planner's actually-signed sellAmount/buyAmount on the local order, not the market quote's", async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({
+          sellAmount: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: LIMIT_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+        }),
+      }),
       expect.anything(),
     )
   })

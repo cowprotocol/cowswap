@@ -36,12 +36,14 @@ const quote = {
 const VALID_TO = 1_700_000_600
 
 const SIGNED_APP_DATA_BYTES = new Uint8Array(32).fill(0xcd)
+const SIGNED_SELL_AMOUNT = 1_234_567n
+const SIGNED_BUY_AMOUNT = 7_654_321n
 
 const builtOrder = {
   instruction: 'CREATE_ORDER_IX',
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
-  intent: { appData: SIGNED_APP_DATA_BYTES },
+  intent: { appData: SIGNED_APP_DATA_BYTES, sellAmount: SIGNED_SELL_AMOUNT, buyAmount: SIGNED_BUY_AMOUNT },
 } as unknown as SolanaSwapOrder
 
 describe('planCreateOrderStep', () => {
@@ -114,6 +116,20 @@ describe('planCreateOrderStep', () => {
     })
 
     expect(appData).toBe(bytesToHex(SIGNED_APP_DATA_BYTES))
+  })
+
+  // buildSolanaOrder() needs the amounts actually encoded into the instruction, not the quote's own —
+  // for a swap these happen to match (no price override), but the local order must read them from here.
+  it('returns the actually-signed sellAmount/buyAmount from the built intent', async () => {
+    const { sellAmount, buyAmount } = await planCreateOrderStep({
+      ...quote,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
+
+    expect(sellAmount).toBe(SIGNED_SELL_AMOUNT)
+    expect(buyAmount).toBe(SIGNED_BUY_AMOUNT)
   })
 
   it('summarises the swap with both symbols', async () => {

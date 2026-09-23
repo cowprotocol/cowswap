@@ -69,6 +69,8 @@ export async function solanaFlow(
       orderId,
       signingScheme,
       appData: signedAppData,
+      sellAmount: signedSellAmount,
+      buyAmount: signedBuyAmount,
     } = orderClass === OrderClass.LIMIT
       ? await planCreateLimitOrderStep({
           ownerAddress: account,
@@ -118,7 +120,7 @@ export async function solanaFlow(
           signingScheme,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
-          signedAmounts: solanaQuote.intent,
+          signedAmounts: { sellAmount: signedSellAmount, buyAmount: signedBuyAmount },
           receiver,
           validTo,
           orderClass,

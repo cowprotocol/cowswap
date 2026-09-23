@@ -40,11 +40,18 @@ function buildParams(overrides: Partial<PlanCreateLimitOrderStepParams> = {}): P
   }
 }
 
+const SIGNED_SELL_AMOUNT = 111n
+const SIGNED_BUY_AMOUNT = 222n
+
 const builtOrder = {
   instruction: 'CREATE_LIMIT_ORDER_IX',
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
-  intent: { appData: hexToBytes(EXPECTED_APP_DATA_HEX as `0x${string}`) },
+  intent: {
+    appData: hexToBytes(EXPECTED_APP_DATA_HEX as `0x${string}`),
+    sellAmount: SIGNED_SELL_AMOUNT,
+    buyAmount: SIGNED_BUY_AMOUNT,
+  },
 } as unknown as SolanaSwapOrder
 
 describe('planCreateLimitOrderStep', () => {
@@ -93,6 +100,15 @@ describe('planCreateLimitOrderStep', () => {
     const { appData } = await planCreateLimitOrderStep(buildParams())
 
     expect(appData).toBe(EXPECTED_APP_DATA_HEX)
+  })
+
+  // buildSolanaOrder() must store the price the user actually signed on-chain, not whatever
+  // planCreateOrderStep's quote-derived amounts happened to be — this is the whole point of a limit order.
+  it('returns the actually-signed sellAmount/buyAmount from the built intent, not the caller-supplied params', async () => {
+    const { sellAmount, buyAmount } = await planCreateLimitOrderStep(buildParams({ sellAmount: 999n, buyAmount: 888n }))
+
+    expect(sellAmount).toBe(SIGNED_SELL_AMOUNT)
+    expect(buyAmount).toBe(SIGNED_BUY_AMOUNT)
   })
 
   it('does not send sellSymbol/buySymbol through to the SDK call — they are UI-only', async () => {

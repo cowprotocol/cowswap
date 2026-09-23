@@ -31,6 +31,8 @@ export interface PlannedCreateOrderStep {
    * not the quote's, to record what's genuinely on-chain — mirroring why `buildSolanaOrder()` already
    * overrides `sellAmount`/`buyAmount`/`receiver`/`validTo` from the signed intent instead of the quote. */
   appData: string
+  sellAmount: bigint
+  buyAmount: bigint
 }
 
 /**
@@ -67,5 +69,7 @@ export async function planCreateOrderStep({
     orderId,
     signingScheme,
     appData: bytesToHex(intent.appData),
+    sellAmount: intent.sellAmount,
+    buyAmount: intent.buyAmount,
   }
 }
