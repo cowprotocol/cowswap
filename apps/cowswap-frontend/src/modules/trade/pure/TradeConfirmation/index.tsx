@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { Modal, ModalHeader } from '@cowprotocol/ui'
 
@@ -22,7 +22,7 @@ import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<void | boolean>
   onDismiss(): void
 
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -36,6 +36,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
   hasSigningPlan?: boolean
+  lockDismiss?: boolean
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -54,25 +55,21 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const props = frozenProps || _props
 
   // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
-  const { title, hasSigningPlan, children } = _props
+  const { onConfirm, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
+  const { title, hasSigningPlan, lockDismiss, onDismiss, children } = _props
 
   /**
    * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
    * (through signing/submission) so the amounts shown can never drift from what was actually
-   * confirmed/signed. Only the reset (on abort/dismiss) happens here - the snapshot itself is
-   * captured synchronously in `handleConfirm`, not from this effect: an effect only runs after
-   * the render that flips `isConfirming` has committed, and by then `propsRef.current` may
-   * already have been overwritten by a newer render (e.g. a quote refresh) that snuck in first.
+   * confirmed/signed. The snapshot is taken on the first render after `isConfirming` flips true
+   * (not synchronously in `handleConfirm`) so parents can switch derived UI such as output labels
+   * before the freeze is captured.
    */
-  useEffect(() => {
-    if (!isConfirming) {
-      setFrozenProps(null)
-    }
+  useLayoutEffect(() => {
+    setFrozenProps(isConfirming ? (current) => current ?? propsRef.current : null)
   }, [isConfirming])
 
   const handleConfirm = useCallback(async (): Promise<void | boolean> => {
-    setFrozenProps(propsRef.current)
     tradeConfirmActions.setConfirming(true)
     try {
       const isConfirmed = await onConfirm()
@@ -92,7 +89,10 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     forcePriceConfirmation,
   )
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+  // Ignore amount changes while confirming (e.g. TWAP switching to after-fees display) — not a quote refresh.
+  const isPriceChangeActionable = isPriceChanged && !isPriceStatic && !isConfirming
+
+  const isButtonDisabled = isConfirmDisabled || isPriceChangeActionable || hasPendingTrade
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -113,9 +113,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
       <ModalHeader
         title={title}
         onBack={hasSigningPlan ? undefined : onDismiss}
-        onClose={hasSigningPlan ? onDismiss : undefined}
-        // TODO: Consider still displaying this here or somewhere else?
-        rightSlot={isConfirming || isPriceStatic ? null : <QuoteCountdown />}
+        onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}
+        rightSlot={isConfirming || isPriceStatic || hasSigningPlan ? null : <QuoteCountdown />}
       />
 
       <Modal.Content id="trade-confirmation">
@@ -129,7 +128,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         {children?.(
           <>
             {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
+            {hasSigningPlan ? null : <NoImpactWarning withoutAccepting />}
           </>,
         )}
 
@@ -139,7 +138,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
               account={props.account}
               ensName={props.ensName}
               recipient={props.recipient}
-              isPriceChanged={isPriceChanged}
+              isPriceChanged={isPriceChangeActionable}
               isPriceStatic={isPriceStatic}
               resetPriceChanged={resetPriceChanged}
             />

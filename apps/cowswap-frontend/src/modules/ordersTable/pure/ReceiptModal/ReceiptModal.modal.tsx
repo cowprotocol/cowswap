@@ -4,7 +4,13 @@ import { MessageDescriptor } from '@lingui/core'
 import { Trans as TransReact } from '@lingui/react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import {
+  ExplorerDataType,
+  getExplorerLink,
+  getExplorerTwapOrderLink,
+  isSellOrder,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
@@ -25,7 +31,7 @@ import {
 } from '@cowprotocol/ui'
 
 import { msg, t } from '@lingui/core/macro'
-import { useLingui, Trans } from '@lingui/react/macro'
+import { useLingui, Plural, Trans } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getOrderVolumeFee } from 'legacy/state/orders/utils'
@@ -201,6 +207,7 @@ function ReceiptModalContent({
   const showCustomRecipientBanner = isCustomRecipient && isCustomRecipientWarningBannerVisible && isPending(order)
 
   const twapPartOrderExists = isTwapPartOrder && TWAP_PART_ORDER_EXISTS_STATES.has(order.status)
+  const parentUrl = twapOrder ? getExplorerTwapOrderLink(chainId, twapOrder.id) : undefined
 
   const isSell = isSellOrder(order.kind)
 
@@ -209,7 +216,7 @@ function ReceiptModalContent({
   const safeTxParams = twapOrder?.safeTxParams
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
-  const twapOrderN = twapOrder?.order.n
+  const twapOrderN = twapOrder?.order.n ?? 0
 
   return (
     <Modal.Content>
@@ -217,9 +224,21 @@ function ReceiptModalContent({
         <InlineBanner bannerType={StatusColorVariant.Info}>
           <p>
             {isTwapPartOrder ? (
-              <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
+              parentUrl ? (
+                <ExternalLink href={parentUrl}>
+                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans> ↗
+                </ExternalLink>
+              ) : (
+                <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
+              )
             ) : (
-              <Trans>TWAP order split into {twapOrderN} parts</Trans>
+              <Plural
+                value={twapOrderN}
+                one="TWAP order split into # part"
+                few="TWAP order split into # parts"
+                many="TWAP order split into # parts"
+                other="TWAP order split into # parts"
+              />
             )}
           </p>
         </InlineBanner>
@@ -324,8 +343,7 @@ function ReceiptModalContent({
           <OrderTypeField order={order} />
         </styledEl.Field>
 
-        {/*TODO: add a link to explorer when it will support TWAP orders*/}
-        {(!twapOrder || twapPartOrderExists) && (
+        {(!twapOrder || twapPartOrderExists || (!isTwapPartOrder && parentUrl)) && (
           <styledEl.Field>
             {order.executionData.activityId && (
               <>

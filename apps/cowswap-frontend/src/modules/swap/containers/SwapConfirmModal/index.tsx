@@ -1,8 +1,5 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish, UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -19,7 +16,6 @@ import {
   useShouldDisplayBridgeDetails,
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
-import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
@@ -31,6 +27,7 @@ import {
   useTradeConfirmActions,
   useCommonTradeConfirmContext,
 } from 'modules/trade'
+import { getSwapMaximumSellAmount } from 'modules/tradeFormValidation'
 import { isQuoteExpired, useTradeQuote, useTradeQuoteCounter } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline, RowQuoteId } from 'modules/tradeWidgetAddons'
 
@@ -38,7 +35,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
 
-import { getSwapConfirmDisabledState } from './SwapConfirmModal.utils'
+import { getIsBalanceEnough, getSwapConfirmDisabledState } from './SwapConfirmModal.utils'
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { buildSwapBridgeClickEvent, useSwapBridgeClickEventData } from '../../hooks/useSwapBridgeClickEvent'
@@ -121,26 +118,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     deadline,
   })
 
-  const { values: balances } = useTokensBalancesCombined()
-
   // TODO: Reduce function complexity by extracting logic
   const { disableConfirm, isInsufficientBalance } = useMemo(() => {
-    const current = inputCurrencyInfo?.amount?.currency
-    const hasCurrentCurrency = Boolean(current)
-    let isBalanceEnough = false
-
-    if (current) {
-      const normalisedAddress = getAddressKey(getCurrencyAddress(current))
-      const balance = balances[normalisedAddress]
-      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
-      const inputAmount = inputCurrencyInfo?.amount
-
-      isBalanceEnough = Boolean(
-        balanceAsCurrencyAmount &&
-          inputAmount &&
-          (inputAmount.equalTo(balanceAsCurrencyAmount) || inputAmount.lessThan(balanceAsCurrencyAmount)),
-      )
-    }
+    const inputAmount = inputCurrencyInfo?.amount
+    const hasCurrentCurrency = Boolean(inputAmount?.currency)
+    const isBalanceEnough = getIsBalanceEnough({
+      inputAmount,
+      maximumSellAmount: getSwapMaximumSellAmount(receiveAmountInfo),
+      balance: inputCurrencyInfo?.balance,
+    })
 
     return getSwapConfirmDisabledState({
       isTradeContextReady,
@@ -153,9 +139,9 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
       isQuoteStale,
     })
   }, [
-    balances,
     bridgeQuoteAmounts,
     inputCurrencyInfo,
+    receiveAmountInfo,
     isQuoteLoading,
     isQuoteStale,
     isTradeContextReady,

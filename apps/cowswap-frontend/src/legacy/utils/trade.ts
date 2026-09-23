@@ -92,29 +92,30 @@ export function getOrderSubmitSummary(
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
 
-  const [inputQuantifier, outputQuantifier] = isSellOrder(kind) ? ['', t`at least `] : [t`at most `, '']
-  const inputSymbol = formatSymbol(sellToken.symbol)
-  const outputSymbol = formatSymbol(buyToken.symbol)
+  const inputSymbol = formatSymbol(sellToken.symbol) ?? ''
+  const outputSymbol = formatSymbol(buyToken.symbol) ?? ''
   // this already contains the fee in the fee amount when fee=0
   const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base =
-    t`Swap` +
-    ` ${inputQuantifier} ${inputAmountValue} ${inputSymbol} ` +
-    t`for` +
-    ` ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
+  const isSell = isSellOrder(kind)
 
   if (recipient === account) {
-    return base
-  } else {
-    const toAddress =
-      recipientAddressOrName && isAddress(recipientAddressOrName)
-        ? shortenAddress(recipientAddressOrName)
-        : recipientAddressOrName
-
-    return `${base} ` + t`to` + ` ${toAddress}`
+    return isSell
+      ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol}`
+      : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol}`
   }
+
+  const toAddress =
+    recipientAddressOrName && isAddress(recipientAddressOrName)
+      ? shortenAddress(recipientAddressOrName)
+      : (recipientAddressOrName ?? '')
+
+  // Spelled out per variant rather than wrapping the localized summary in an outer message:
+  // interpolating an already-translated sentence leaves translators unable to reorder it.
+  return isSell
+    ? t`Swap ${inputAmountValue} ${inputSymbol} for at least ${outputAmountValue} ${outputSymbol} to ${toAddress}`
+    : t`Swap at most ${inputAmountValue} ${inputSymbol} for ${outputAmountValue} ${outputSymbol} to ${toAddress}`
 }
 
 export function getSignOrderParams(params: PostOrderParams): SignOrderParams {

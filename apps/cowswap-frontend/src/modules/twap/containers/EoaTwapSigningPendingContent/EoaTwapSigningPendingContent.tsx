@@ -1,23 +1,45 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
-import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { OrderSteps } from 'modules/trade'
+import { getExplorerTwapOrderLink } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { OrderStep, OrderSteps } from 'modules/trade'
+import { TradeFormBlankButton } from 'modules/tradeFormValidation'
+
+import { EoaTwapSuccessContent } from './EoaTwapSuccessContent.pure'
 
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
-import { buildEoaTwapConfirmationPendingSteps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
+import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
+import { EoaTwapCurrentStepButtonProps } from '../../utils/buildEoaTwapConfirmationPendingSteps'
 
-export function EoaTwapSigningPendingContent(): ReactNode {
+export interface EoaTwapSigningPendingContentProps {
+  steps: OrderStep[]
+  buttonProps: EoaTwapCurrentStepButtonProps | null
+  onViewOrders(): void
+}
+
+export function EoaTwapSigningPendingContent({
+  steps,
+  buttonProps,
+  onViewOrders,
+}: EoaTwapSigningPendingContentProps): ReactNode {
   const signingStep = useEoaTwapSigningStep()
-  const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
-  const token = inputCurrencyAmount?.currency
-  const symbol = token?.symbol
-  const steps = useMemo(() => {
-    return signingStep ? buildEoaTwapConfirmationPendingSteps({ signingStep, symbol, token }) : undefined
-  }, [signingStep, symbol, token])
+  const { chainId } = useWalletInfo()
 
-  if (!steps) {
-    return null
+  if (!signingStep) return null
+
+  if (signingStep.step === EoaTwapSigningSteps.Success) {
+    const explorerUrl =
+      chainId && signingStep.eventId ? getExplorerTwapOrderLink(chainId, signingStep.eventId) : undefined
+
+    return <EoaTwapSuccessContent explorerUrl={explorerUrl} onViewOrders={onViewOrders} />
   }
 
-  return <OrderSteps steps={steps} />
+  return (
+    <>
+      <OrderSteps steps={steps} />
+
+      {buttonProps && <TradeFormBlankButton {...buttonProps} onClick={() => alert('Not implemented yet')} />}
+    </>
+  )
 }

@@ -25,7 +25,13 @@ import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { useDerivedTradeState, useIsWrapOrUnwrap, useNonEvmReceiverConfirmed, useTradePriceImpact } from 'modules/trade'
+import {
+  useDerivedTradeState,
+  useGetReceiveAmountInfo,
+  useIsWrapOrUnwrap,
+  useNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -38,6 +44,7 @@ import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeInterme
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -89,6 +96,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapMaximumSellAmount = tradeType === TradeType.SWAP ? getSwapMaximumSellAmount(receiveAmountInfo) : null
+
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
@@ -135,6 +145,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         featureFlagsStatus === 'loading' ||
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      swapMaximumSellAmount,
     }
   }, [
     hasFirstLoad,
@@ -170,6 +181,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     featureFlagsStatus,
     canQuote,
     captchaInteractionRequired,
+    swapMaximumSellAmount,
   ])
 }
 

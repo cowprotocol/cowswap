@@ -12,9 +12,10 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { useComposableCowContractData } from 'modules/advancedOrders'
 
-import { useAppSigner } from 'common/hooks/useAppSigner'
 import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCancellation'
 import { useGP2SettlementContractProd } from 'common/hooks/useContract'
+
+import { resetEoaTwapSuccessScreenIfMatches } from './useEoaTwapSigningStep'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
@@ -24,11 +25,18 @@ import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
 
+interface CancelTwapOrderOptions {
+  partOnly?: boolean
+}
+
 // eslint-disable-next-line max-lines-per-function
-export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promise<OnChainCancellation> {
+export function useCancelTwapOrder(): (
+  twapOrderId: Hex,
+  order: Order,
+  options?: CancelTwapOrderOptions,
+) => Promise<OnChainCancellation> {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
-  const appSigner = useAppSigner()
   const twapPartOrders = useAtomValue(twapPartOrdersAtom)
   const setTwapOrderStatus = useSetAtom(setTwapOrderStatusAtom)
   const sendBatchTransactions = useSendBatchTransactions()
@@ -41,7 +49,8 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
 
   return useCallback(
     // eslint-disable-next-line complexity
-    async (twapOrderId: Hex, order: Order) => {
+    async (twapOrderId: Hex, order: Order, options?: CancelTwapOrderOptions) => {
+      const { partOnly } = options ?? {}
       if (!composableCowContract.address || !settlementContract.address) {
         throw new Error(t`Context is not full to cancel TWAP order`)
       }
@@ -56,10 +65,12 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
         (a, b) => a.order.validTo - b.order.validTo,
       )[0]
       const eoaPartOrder =
-        order.isEoaTwapOrder && twapOrderHash
-          ? await programmaticOrdersApi.fetchCurrentEoaTwapPartOrder(twapOrderId, composableCowChainId)
+        order.isEoaTwapOrder && (order.composableCowInfo?.parentId || twapOrderHash)
+          ? order.composableCowInfo?.parentId
+            ? order.id
+            : (await programmaticOrdersApi.fetchCurrentEoaTwapPartOrder(twapOrderId, composableCowChainId))?.orderUid
           : undefined
-      const partOrderId = eoaPartOrder?.orderUid ?? safePartOrder?.uid
+      const partOrderId = eoaPartOrder ?? safePartOrder?.uid
       const context = {
         composableCowAddress: composableCowContract.address as Hex,
         composableCowAbi: composableCowContract.abi,
@@ -79,6 +90,12 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
         const sellTokenAddress = order.inputToken.address
         const sellTokenSymbol = order.inputToken.symbol
 
+        if (partOnly) {
+          processCancelledOrder({ txHash, orderId: order.id, sellTokenAddress, sellTokenSymbol })
+          return
+        }
+        resetEoaTwapSuccessScreenIfMatches(twapOrderId)
+
         setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
         processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
 
@@ -88,14 +105,14 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
       }
 
       if (order.isEoaTwapOrder) {
-        if (!appSigner || !walletClient) {
-          throw new Error(t`Wallet signer is required to cancel an EOA TWAP order`)
+        if (!walletClient) {
+          throw new Error(t`Wallet not connected`)
         }
 
         return {
           estimatedGas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
           sendTransaction: async (processCancelledOrder) => {
-            const txHash = await cancelEoaTwapOrder({ ...context, signer: appSigner, walletClient })
+            const txHash = await cancelEoaTwapOrder({ ...context, partOnly, walletClient })
             processTransaction(txHash, processCancelledOrder)
           },
         }
@@ -112,7 +129,6 @@ export function useCancelTwapOrder(): (twapOrderId: Hex, order: Order) => Promis
     [
       publicClient,
       walletClient,
-      appSigner,
       composableCowContract,
       settlementContract,
       composableCowChainId,
