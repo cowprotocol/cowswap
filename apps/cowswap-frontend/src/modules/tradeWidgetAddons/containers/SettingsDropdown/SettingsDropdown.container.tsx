@@ -18,6 +18,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { BackendToggle } from './BackendToggle'
 import * as styledEl from './SettingsDropdown.styled'
 import { SettingsTabController } from './SettingsTabController.container'
 
@@ -175,6 +176,9 @@ export function SettingsDropdown({
                     toggle={toggleFastPath}
                   />
                 ) : null}
+
+                {/* TESTING ONLY (fast-path preview): backend switch, swap flow only. Remove with the preview. */}
+                {fastPathState ? <BackendToggle /> : null}
               </SettingsBoxGroup>
             </SettingsDropdownSection>
           </styledEl.MenuFlyout>
