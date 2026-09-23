@@ -43,6 +43,12 @@ const advancedSettings: SwapAdvancedSettings = {
   },
 }
 
+const advancedSettings: SwapAdvancedSettings = {
+  quoteRequest: {
+    priceQuality: PriceQuality.FAST,
+  },
+}
+
 /** Stand-in for whatever the SDK resolves with; these tests only care that both halves are passed
  * through, not their internal shape. */
 const solanaQuote = { uid: new Uint8Array(32).fill(3) } as SolanaQuote
