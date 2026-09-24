@@ -1,4 +1,4 @@
-import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
@@ -171,6 +171,7 @@ export async function timeout<T>(params: TimeoutParams<T>): Promise<T | never> {
 const EVM_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{112}$/
 /** The 32-byte intent hash, and nothing else. */
 const SOLANA_ORDER_ID_REGEX = /^0x[a-fA-F0-9]{64}$/
+const EVM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/
 
 /**
  * Check if a string is an orderId against regex
@@ -190,14 +191,16 @@ export const getChainsForOrderId = (orderId: string): Network[] =>
 /**
  * Check if string is an address account against regex
  *
+ * Deliberately not chain-aware: an address of the other family still opens its user page, where the
+ * cross-network search reports which chain the orders are on. Redirecting instead would hide that.
+ *
  * @param text Possible address string to check
  */
 export const isAnAddressAccount = (text: string): boolean => {
-  if (isEns(text)) {
-    return true
-  } else {
-    return text.match(/^0x[a-fA-F0-9]{40}$/)?.input !== undefined
-  }
+  // Evaluated first: `isSolanaAddress` is a type guard, and testing it first narrows `text` away.
+  const isEvmAddress = EVM_ADDRESS_REGEX.test(text)
+
+  return isEvmAddress || isEns(text) || isSolanaAddress(text)
 }
 
 /**
