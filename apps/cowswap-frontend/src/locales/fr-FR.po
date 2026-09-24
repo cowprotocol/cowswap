@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-23 14:05\n"
+"PO-Revision-Date: 2026-09-24 15:05\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -831,7 +831,7 @@ msgstr "Signez dans votre wallet (sans frais de gas !)..."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Notifications for swap and bridge and TWAP for EOA orders aren't supported yet."
-msgstr ""
+msgstr "Les notifications pour les ordres de type swap et bridge, ainsi que pour les ordres TWAP des wallets EOA, ne sont pas encore prises en charge."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
@@ -880,7 +880,7 @@ msgstr "Il s’agit du montant minimum que vous recevrez pour l’ensemble de vo
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "No tokens to display"
-msgstr ""
+msgstr "Aucun token à afficher"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "CoW AMM Withdraw Liquidity"
@@ -957,7 +957,7 @@ msgstr "Annulation de l’ordre"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "{affectedOrdersLength, plural, one {There is} few {There are} many {There are} other {There are}} <0>{affectedOrdersLength}</0> existing {affectedOrdersLength, plural, one {TWAP order} few {TWAP orders} many {TWAP orders} other {TWAP orders}} that share this <1/> allowance for funding. Partial approval may affect the execution of other TWAP orders. Adjust the amount or choose full approval to proceed."
-msgstr ""
+msgstr "{affectedOrdersLength, plural, one {Il existe} few {Il existe} many {Il existe} other {Il existe}} <0>{affectedOrdersLength}</0> {affectedOrdersLength, plural, one {ordre TWAP} few {ordres TWAP} many {ordres TWAP} other {ordres TWAP}} partageant cette autorisation d’utilisation du token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres TWAP. Ajustez le montant ou choisissez l’approbation complète pour continuer."
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
@@ -2970,7 +2970,7 @@ msgstr "Token à vendre"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "Partial approval may block <0>{affectedOrdersLength}</0> {affectedOrdersLength, plural, one {other order} few {other orders} many {other orders} other {other orders}}"
-msgstr ""
+msgstr "L’approbation partielle peut bloquer <0>{affectedOrdersLength}</0> {affectedOrdersLength, plural, one {autre ordre} few {autres ordres} many {autres ordres} other {autres ordres}}"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/AccountIcon.tsx
 msgid "Warning sign. Wallet not supported"
@@ -3145,7 +3145,7 @@ msgstr "Le temps restant avant la fin de l’ensemble de votre ordre TWAP."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 msgid "{affectedOrdersLength, plural, one {There is} few {There are} many {There are} other {There are}} <0>{affectedOrdersLength}</0> existing {affectedOrdersLength, plural, one {order} few {orders} many {orders} other {orders}} using a <1/> token approval. Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
-msgstr ""
+msgstr "{affectedOrdersLength, plural, one {Il existe} few {Il existe} many {Il existe} other {Il existe}} <0>{affectedOrdersLength}</0> {affectedOrdersLength, plural, one {ordre} few {ordres} many {ordres} other {ordres}} utilisant une approbation du token <1/>. Une approbation partielle peut affecter l’exécution d’autres ordres. Ajustez le montant ou choisissez l’approbation complète pour continuer."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Unsupported network. Please change to Gnosis Chain"
@@ -7556,7 +7556,7 @@ msgstr "L’ordre a été exécuté avant d’avoir pu être annulé."
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "No favorite tokens"
-msgstr ""
+msgstr "Aucun token favori"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "a native currency"
@@ -7947,7 +7947,7 @@ msgstr "Découvrir"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Notifications for swap and bridge orders aren't supported yet."
-msgstr ""
+msgstr "Les notifications pour les ordres de type swap et bridge ne sont pas encore prises en charge."
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 #~ msgid "{networkLabel} address"
@@ -8326,7 +8326,7 @@ msgstr "plus élevé"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Only trade alerts are sent. No marketing messages."
-msgstr ""
+msgstr "Seules les alertes de trade sont envoyées. Aucun message marketing."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"
