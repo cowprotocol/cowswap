@@ -124,6 +124,9 @@ const tradeConfirmActions: TradeConfirmActions = {
   onOpen() {
     console.log('onOpen')
   },
+  setConfirming(isConfirming: boolean) {
+    console.log('isConfirming', isConfirming)
+  },
   requestPermitSignature() {
     console.log('requestPermitSignature')
   },
@@ -139,7 +142,6 @@ const wrapper = ({ children }: PropsWithChildren) => {
   )
 }
 
-// eslint-disable-next-line max-lines-per-function
 describe('useHandleOrderPlacement', () => {
   beforeEach(() => {
     // This file has no global clearMocks/resetMocks config, so call history otherwise carries over
@@ -281,87 +283,23 @@ describe('useHandleOrderPlacement', () => {
   })
 
   describe('partiallyFillableOverride', () => {
-    it('When partiallyFillableOverride is undefined, then no override should be passed to tradeFlow', async () => {
+    // Since the refactor in c521150a, `partiallyFillableOverrideAtom` is read and merged into
+    // `postOrderParams.partiallyFillable` by `useTradeFlowContext` itself (see useTradeFlowContext.ts),
+    // not by this hook / useLimitOrdersTradeCallback anymore. `useTradeFlowContext` is mocked here, so
+    // these tests instead verify the piece that IS still this hook's responsibility: whatever
+    // `postOrderParams` the (mocked) trade context carries reaches `tradeFlow` completely unchanged,
+    // regardless of the override atom's value — proving there's no second merge happening at this layer.
+    it('passes tradeContext through to tradeFlow unchanged, whatever the override atom holds', async () => {
       // Arrange
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
         wrapper,
       })
-      // Set override to undefined
-      act(() => {
-        atomResult.current[1](undefined)
-      })
-
-      // Act
-      const { result } = renderHook(
-        () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper },
-      )
-      await act(async () => {
-        await result.current.callback()
-      })
-
-      // Assert - tradeFlow should be called without partiallyFillable in params
-      expect(mockTradeFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: true, // Original value from tradeContextMock
-          }),
-        }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
-    })
-
-    it('When partiallyFillableOverride is true, then it should be passed to tradeFlow', async () => {
-      // Arrange
-      const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper,
-      })
-      // Set override to true
-      act(() => {
-        atomResult.current[1](true)
-      })
-
-      // Act
-      const { result } = renderHook(
-        () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper },
-      )
-      await act(async () => {
-        await result.current.callback()
-      })
-
-      // Assert - tradeFlow should be called with partiallyFillable: true
-      expect(mockTradeFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: true,
-          }),
-        }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
-    })
-
-    it('When partiallyFillableOverride is false, then it should be passed to tradeFlow', async () => {
-      // Arrange
-      const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper,
-      })
-      // Set override to false
+      // Deliberately the opposite of tradeContextMock's own `partiallyFillable: true`, and then flipped
+      // again, so if this layer were still merging the atom's value in, either call would catch it.
       act(() => {
         atomResult.current[1](false)
       })
 
-      // Act
       const { result } = renderHook(
         () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
         { wrapper },
@@ -370,20 +308,16 @@ describe('useHandleOrderPlacement', () => {
         await result.current.callback()
       })
 
-      // Assert - tradeFlow should be called with partiallyFillable: false
-      expect(mockTradeFlow).toHaveBeenCalledWith(
-        expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: false,
-          }),
-        }),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-        expect.anything(),
-      )
+      expect(mockTradeFlow).toHaveBeenCalledWith(tradeContextMock, expect.anything())
+
+      act(() => {
+        atomResult.current[1](undefined)
+      })
+      await act(async () => {
+        await result.current.callback()
+      })
+
+      expect(mockTradeFlow).toHaveBeenLastCalledWith(tradeContextMock, expect.anything())
     })
 
     it('When order is successfully placed, then partiallyFillableOverride should be reset to undefined', async () => {
@@ -412,7 +346,7 @@ describe('useHandleOrderPlacement', () => {
       })
     })
 
-    it('When using safeBundleFlow and partiallyFillableOverride is true, then it should be passed to safeBundleFlow', async () => {
+    it('passes safeBundleFlowContext through to safeBundleFlow unchanged, whatever the override atom holds', async () => {
       // Arrange
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -423,12 +357,12 @@ describe('useHandleOrderPlacement', () => {
       const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
         wrapper,
       })
-      // Set override to true
+      // Deliberately the opposite of safeBundleContext's own `partiallyFillable: false`, so if this
+      // layer were still merging the atom's value in, this would catch it.
       act(() => {
         atomResult.current[1](true)
       })
 
-      // Act
       const { result } = renderHook(
         () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
         { wrapper },
@@ -437,102 +371,7 @@ describe('useHandleOrderPlacement', () => {
         await result.current.callback()
       })
 
-      // Assert - safeBundleFlow should be called with partiallyFillable: true
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
-        params: expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: true,
-          }),
-        }),
-        priceImpact: expect.anything(),
-        settingsState: expect.anything(),
-        confirmPriceImpactWithoutFee: expect.anything(),
-        analytics: expect.anything(),
-        beforeTrade: expect.anything(),
-        config: expect.anything(),
-      })
-    })
-
-    it('When using safeBundleFlow and partiallyFillableOverride is false, then it should be passed to safeBundleFlow', async () => {
-      // Arrange
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const safeBundleContext = { postOrderParams: { partiallyFillable: true } } as any
-      mockUseSafeBundleFlowContext.mockImplementation(() => safeBundleContext)
-      mockUseIsSafeApprovalBundle.mockImplementation(() => true) // Trigger safe bundle flow
-
-      const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper,
-      })
-      // Set override to false
-      act(() => {
-        atomResult.current[1](false)
-      })
-
-      // Act
-      const { result } = renderHook(
-        () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper },
-      )
-      await act(async () => {
-        await result.current.callback()
-      })
-
-      // Assert - safeBundleFlow should be called with partiallyFillable: false
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
-        params: expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: false,
-          }),
-        }),
-        priceImpact: expect.anything(),
-        settingsState: expect.anything(),
-        confirmPriceImpactWithoutFee: expect.anything(),
-        analytics: expect.anything(),
-        beforeTrade: expect.anything(),
-        config: expect.anything(),
-      })
-    })
-
-    it('When using safeBundleFlow and partiallyFillableOverride is undefined, then no override should be passed', async () => {
-      // Arrange
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const safeBundleContext = { postOrderParams: { partiallyFillable: true } } as any
-      mockUseSafeBundleFlowContext.mockImplementation(() => safeBundleContext)
-      mockUseIsSafeApprovalBundle.mockImplementation(() => true) // Trigger safe bundle flow
-
-      const { result: atomResult } = renderHook(() => useAtom(partiallyFillableOverrideAtom), {
-        wrapper,
-      })
-      // Set override to undefined
-      act(() => {
-        atomResult.current[1](undefined)
-      })
-
-      // Act
-      const { result } = renderHook(
-        () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-        { wrapper },
-      )
-      await act(async () => {
-        await result.current.callback()
-      })
-
-      // Assert - safeBundleFlow should be called with original partiallyFillable value
-      expect(mockSafeBundleFlow).toHaveBeenCalledWith({
-        params: expect.objectContaining({
-          postOrderParams: expect.objectContaining({
-            partiallyFillable: true, // Original value from safeBundleContext
-          }),
-        }),
-        priceImpact: expect.anything(),
-        settingsState: expect.anything(),
-        confirmPriceImpactWithoutFee: expect.anything(),
-        analytics: expect.anything(),
-        beforeTrade: expect.anything(),
-        config: expect.anything(),
-      })
+      expect(mockSafeBundleFlow).toHaveBeenCalledWith(safeBundleContext, expect.anything())
     })
 
     it('When order fails, then partiallyFillableOverride should NOT be reset', async () => {
