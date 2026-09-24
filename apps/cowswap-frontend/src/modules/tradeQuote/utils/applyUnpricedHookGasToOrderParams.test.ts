@@ -61,10 +61,19 @@ describe('applyUnpricedHookGasToOrderParams', () => {
     expect(after.afterNetworkCosts.buyAmount < before.afterNetworkCosts.buyAmount).toBe(true)
   })
 
-  it('leaves the quote unchanged when the extra fee would consume the sell amount', () => {
+  it('subtracts hook gas even when the extra fee consumes the sell and buy amounts', () => {
     const tinySell = { ...ORDER_PARAMS, sellAmount: '1', buyAmount: '1' }
+    const result = applyUnpricedHookGasToOrderParams(tinySell, [QUOTE_HOOK])
+    const extraFee = (POLL_FUNDS_GAS * 3n + 1n) / 2n
+    const extraFeeBuy = (1n * extraFee) / 1n
 
-    expect(applyUnpricedHookGasToOrderParams(tinySell, [QUOTE_HOOK])).toBe(tinySell)
+    expect(extraFee > 1n).toBe(true)
+    expect(result.sellAmount).toBe((1n - extraFee).toString())
+    expect(result.buyAmount).toBe((1n - extraFeeBuy).toString())
+    expect(BigInt(result.sellAmount) < 0n).toBe(true)
+    expect(BigInt(result.buyAmount) < 0n).toBe(true)
+    expect(BigInt(result.sellAmount) + BigInt(result.feeAmount)).toBe(1n + BigInt(tinySell.feeAmount))
+    expect(result.gasAmount).toBe((241700n + POLL_FUNDS_GAS).toString())
   })
 
   it('rounds a fractional sellTokenPrice and gasAmount up to integer atoms', () => {

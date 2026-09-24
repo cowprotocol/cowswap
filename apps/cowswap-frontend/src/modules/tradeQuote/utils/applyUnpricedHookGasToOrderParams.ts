@@ -20,6 +20,10 @@ type QuoteOrderParams = Pick<
  * This adds that declared budget as `extraFee = ceil(hookGas * gasPrice / sellTokenPrice)`,
  * raises `feeAmount`, and reduces after-fee sell/buy so the user's total sell stays the
  * same and the presented receive is worse by the missing fee.
+ *
+ * Sell and buy may be zero or negative when that fee consumes the part. `sellAmount + feeAmount`
+ * is still the user's part sell, and `gasAmount` still includes the hook gas. Callers must not
+ * pass those non-positive amounts into `getQuoteAmountsAndCosts`.
  */
 export function applyUnpricedHookGasToOrderParams<T extends QuoteOrderParams>(
   orderParams: T,
@@ -75,7 +79,7 @@ function quoteWithHookGas<T extends QuoteOrderParams>(orderParams: T, hookGas: b
   const extraFeeBuy = (buyAmount * extraFee) / sellAmount
   const gasAmount = integerGasAmount(orderParams.gasAmount, hookGas)
 
-  if (extraFee <= 0n || extraFee >= sellAmount || extraFeeBuy >= buyAmount || gasAmount === undefined) {
+  if (extraFee <= 0n || gasAmount === undefined) {
     return undefined
   }
 

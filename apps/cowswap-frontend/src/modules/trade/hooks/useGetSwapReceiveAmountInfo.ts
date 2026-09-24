@@ -43,25 +43,36 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
   const quoteResults = tradeQuote?.quote?.quoteResults
   const quoteResponse = quoteResults?.quoteResponse
-  const orderParams = useOrderParamsWithEoaTwapHookGas(quoteResponse?.quote)
+  const quotedOrderParams = quoteResponse?.quote
+  const orderParams = useOrderParamsWithEoaTwapHookGas(quotedOrderParams)
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 
   return useMemo(() => {
     // Avoid states mismatch
-    if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
+    if (orderKind !== orderParams?.kind || orderKind !== quotedOrderParams?.kind) return null
+    if (!orderParams || !quotedOrderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
 
     return {
       orderParams,
+      quotedOrderParams,
       inputCurrency,
       outputCurrency,
       slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
+  }, [
+    orderKind,
+    orderParams,
+    quotedOrderParams,
+    volumeFeeBps,
+    inputCurrency,
+    outputCurrency,
+    protocolFeeBps,
+    derivedSlippage,
+  ])
 }
 
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
