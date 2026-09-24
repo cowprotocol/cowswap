@@ -1,6 +1,6 @@
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 
-import { getTwapSwapSuggestion } from './getTwapSwapSuggestion'
+import { getTwapSwapSuggestion, quotedPartCount } from './getTwapSwapSuggestion'
 
 import { DEFAULT_NUM_OF_PARTS } from '../const'
 
@@ -83,6 +83,40 @@ describe('getTwapSwapSuggestion', () => {
     expect(suggestion).toEqual({ kind: 'reduce-parts', maxParts: 2 })
     expect(ratioAtParts(2, 1_000n, 1_000n, 30) < THRESHOLD_PERCENT).toBe(true)
     expect(ratioAtParts(3, 1_000n, 1_000n, 30)).toBe(THRESHOLD_PERCENT)
+  })
+
+  it('keeps the swap-only suggestion when the stepper moves ahead of a quote that cannot reach 2 parts', () => {
+    // Settled 5-part quote: fee is 36.93% of that part. Two parts of the same order are still ~14.8%.
+    // Moving the stepper to 8 without a new quote must not invent "reduce to 2".
+    expect(quotedPartCount(24_000000n, 4_800000n)).toBe(5)
+    expect(
+      getTwapSwapSuggestion({
+        perPartNetworkBuy: 1_772995n,
+        perPartBeforeBuy: 4_800000n,
+        currentParts: 8,
+        quotedParts: 5,
+      }),
+    ).toEqual({ kind: 'swap-only' })
+    expect(
+      getTwapSwapSuggestion({
+        perPartNetworkBuy: 1_772995n,
+        perPartBeforeBuy: 4_800000n,
+        currentParts: 5,
+        quotedParts: 5,
+      }),
+    ).toEqual({ kind: 'swap-only' })
+  })
+
+  it('stays quiet when the selected count is already under the threshold on an older quote', () => {
+    // 15% on a 10-part quote. Six parts of that order are 9%.
+    expect(
+      getTwapSwapSuggestion({
+        perPartNetworkBuy: 150n,
+        perPartBeforeBuy: 1_000n,
+        currentParts: 6,
+        quotedParts: 10,
+      }),
+    ).toBeNull()
   })
 
   it('ignores a part quote that cannot be compared', () => {
