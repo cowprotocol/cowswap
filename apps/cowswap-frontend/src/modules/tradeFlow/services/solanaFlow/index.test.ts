@@ -50,6 +50,10 @@ const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typ
 // valid Solana pubkey, used here as a stand-in "connected account".
 const SOLANA_ACCOUNT = '11111111111111111111111111111111'
 const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
+// The flow's own freshly-resolved receiver — deliberately distinct from RECEIVER_ADDRESS (the quote's,
+// possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
+// parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
+const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
@@ -155,7 +159,7 @@ function buildContext({
       outputAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
-      receiver: 'ReceiverSolanaAddress1111111111111111111111',
+      receiver: RESOLVED_RECEIVER_ADDRESS,
       orderClass,
       partiallyFillable: false,
     },
@@ -269,6 +273,22 @@ describe('solanaFlow', () => {
     const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
     expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
     expect(receiver.toBase58()).not.toBe(context.context.receiver)
+    expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
+    expect(quote).toBe(context.solanaQuote)
+  })
+
+  // A limit order never quotes (planCreateLimitOrderStep derives its own buyTokenAccount straight from
+  // context.receiver — see its params), so the buy-ATA the transaction actually creates has to target the
+  // same receiver, or the order's signed intent points at an ATA that was never created and settlement
+  // fails with something like `InvalidAccountData`. The quote's own receiver is stale/irrelevant here.
+  it('creates the buy account for the resolved receiver, not the stale quote receiver, for a limit order', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    expect(receiver.toBase58()).toBe(context.context.receiver)
+    expect(receiver.toBase58()).not.toBe(RECEIVER_ADDRESS)
     expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
     expect(quote).toBe(context.solanaQuote)
   })

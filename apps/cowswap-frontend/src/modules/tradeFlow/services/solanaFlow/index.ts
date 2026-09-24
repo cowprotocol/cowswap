@@ -57,13 +57,10 @@ export async function solanaFlow(
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
     const buySymbol = outputAmount.currency.symbol ?? 'token'
     const { owner, connection, provider } = solana
-    // The quote's receiver, not the flow's: `intent.buyTokenAccount` was derived from it, and an
-    // owner/account mismatch would make SPL Token reject the whole bundle.
-    const buyAtaReceiver = new PublicKey(tradeQuote.quoteResults.tradeParameters.receiver ?? receiver)
 
-    // A swap always signs at the quote's own market-derived price — planCreateOrderStep is correct for
-    // it. A limit order must sign at the user's chosen price instead, which getSolanaQuote has no
-    // parameter for, so it goes through planCreateLimitOrderStep, which never quotes at all.
+    const buyAtaReceiver = new PublicKey(
+      orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
+    )
     const {
       step: createOrderStep,
       orderId,
