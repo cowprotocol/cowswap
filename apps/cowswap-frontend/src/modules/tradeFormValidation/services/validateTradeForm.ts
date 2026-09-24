@@ -41,6 +41,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isCaptchaPending,
     isCaptchaRequired,
     swapMaximumSellAmount,
+    solanaNativeShortfall,
   } = context
 
   const {
@@ -177,6 +178,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
+    }
+
+    if (solanaNativeShortfall) {
+      validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
     }
   }
 

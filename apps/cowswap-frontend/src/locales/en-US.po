@@ -4363,6 +4363,10 @@ msgstr "Order presigned"
 msgid "See how it works."
 msgstr "See how it works."
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Add <0/> for fees and account rent"
+msgstr "Add <0/> for fees and account rent"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Get support on Discord"

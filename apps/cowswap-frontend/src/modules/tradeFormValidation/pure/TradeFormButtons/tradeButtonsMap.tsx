@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken, parseENSAddress } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
-import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -195,6 +195,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       <TradeFormBlankButton disabled={true}>
         <span>
           <Trans>Insufficient {<TokenSymbol token={inputCurrency} />} balance</Trans>
+        </span>
+      </TradeFormBlankButton>
+    )
+  },
+  [TradeFormValidation.SolanaInsufficientNativeBalance]: ({ solanaNativeShortfall }: ButtonComponentProps) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>
+          <Trans>
+            Add <TokenAmount amount={solanaNativeShortfall} tokenSymbol={solanaNativeShortfall?.currency} /> for fees
+            and account rent
+          </Trans>
         </span>
       </TradeFormBlankButton>
     )

@@ -37,5 +37,6 @@ export function planDelegateStep({
   return {
     instructions: [instruction],
     summary: t`Approve ${symbol}`,
+    fundedAccounts: [],
   }
 }

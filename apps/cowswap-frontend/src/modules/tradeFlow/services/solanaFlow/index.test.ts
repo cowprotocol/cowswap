@@ -51,7 +51,7 @@ const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
 
-const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary })
+const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary, fundedAccounts: [] })
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
 const BUY_ATA_STEP = step('Create USDC account')

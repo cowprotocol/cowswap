@@ -23,6 +23,7 @@ export interface TradeFormButtonContext {
   confirmClickEvent?: string
   approveClickEvent?: string
   widgetPriceImpactThreshold: number | undefined
+  solanaNativeShortfall: CurrencyAmount<Currency> | null
 
   confirmTrade(): void
 
@@ -69,6 +70,11 @@ export interface TradeFormValidationCommonContext {
    * Null for non-swap trade types, where the raw input amount is used instead.
    */
   swapMaximumSellAmount: CurrencyAmount<Currency> | null
+  /**
+   * Solana only: native SOL the wallet is missing to cover account rent and the fee the trade
+   * transaction pays on top of the sell amount. Null when it can afford them or on other chains.
+   */
+  solanaNativeShortfall: CurrencyAmount<Currency> | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -109,6 +115,7 @@ export enum TradeFormValidation {
   BalancesLoading,
   BalancesNotLoaded,
   BalanceInsufficient,
+  SolanaInsufficientNativeBalance,
 
   // Approve
   ApproveAndSwapInBundle,

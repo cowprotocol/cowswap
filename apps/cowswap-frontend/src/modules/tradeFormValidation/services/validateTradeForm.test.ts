@@ -289,6 +289,41 @@ describe('validateTradeForm - balance vs slippage', () => {
     const result = validateTradeForm(context)
     expect(result || []).not.toContain(TradeFormValidation.BalanceInsufficient)
   })
+
+  test('shows SolanaInsufficientNativeBalance when the wallet cannot cover rent and fees on top of the sell amount', () => {
+    const context = {
+      ...baseContext,
+      swapMaximumSellAmount: mockCurrencyAmount('110'),
+      solanaNativeShortfall: mockCurrencyAmount('5000'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.SolanaInsufficientNativeBalance)
+  })
+
+  test('does not show SolanaInsufficientNativeBalance when there is no shortfall', () => {
+    const context = {
+      ...baseContext,
+      swapMaximumSellAmount: mockCurrencyAmount('110'),
+      solanaNativeShortfall: null,
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.SolanaInsufficientNativeBalance)
+  })
+
+  test('ranks BalanceInsufficient ahead of SolanaInsufficientNativeBalance when both apply', () => {
+    const context = {
+      ...baseContext,
+      swapMaximumSellAmount: mockCurrencyAmount('150'),
+      solanaNativeShortfall: mockCurrencyAmount('5000'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result.indexOf(TradeFormValidation.BalanceInsufficient)).toBeLessThan(
+      result.indexOf(TradeFormValidation.SolanaInsufficientNativeBalance),
+    )
+  })
 })
 
 describe('validateTradeForm - price impact loading', () => {
