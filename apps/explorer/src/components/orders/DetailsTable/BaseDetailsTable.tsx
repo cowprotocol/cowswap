@@ -17,8 +17,9 @@ import { TypeItem } from 'components/orders/DetailsTable/items/TypeItem'
 
 import { Order } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
-import { getUiOrderType } from 'utils/getUiOrderType'
+import { getUiOrderType, UiOrderType } from 'utils/getUiOrderType'
 
+import { DetailsTableTooltips } from './detailsTableTooltips'
 import { OrderIdItem } from './items/OrderIdItem'
 import { TxHashItem } from './items/TxHashItem'
 import { WarningRow } from './styled'
@@ -76,6 +77,7 @@ export function BaseDetailsTable({
 
   const isSigning = status === 'signing'
   const isBridging = !!bridgeProviderId
+  const uiOrderType = getUiOrderType(order)
 
   return (
     <SimpleTable
@@ -96,6 +98,7 @@ export function BaseDetailsTable({
             isBridgingOrder={isBridging}
             onCopy={onCopy}
             owner={owner}
+            tooltipText={uiOrderType === UiOrderType.TWAP ? DetailsTableTooltips.twapAccountProxy : undefined}
           />
           <ToItem
             chainId={chainId}
@@ -113,7 +116,7 @@ export function BaseDetailsTable({
           <SubmissionTimeItem creationDate={creationDate} showIcon />
           {executionDate && !showFillsButton && <ExecutionTimeItem executionDate={executionDate} showIcon />}
           <ExpirationTimeItem expirationDate={expirationDate} showIcon />
-          <TypeItem kind={kind} uiOrderType={getUiOrderType(order)} partiallyFillable={partiallyFillable} />
+          <TypeItem kind={kind} uiOrderType={uiOrderType} partiallyFillable={partiallyFillable} />
           <AmountItem order={order} />
           {children}
         </>

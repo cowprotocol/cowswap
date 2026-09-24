@@ -5,6 +5,8 @@ import { AccountProxyLink } from '../shared/AccountProxyLink'
 export const DetailsTableTooltips = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
+  twapAccountProxy:
+    'The CoW Shed smart contract that owns the part orders on behalf of the account in From. Safe orders omit this row.',
   to: 'The account address which will/did receive the bought amount.',
   toSolana: 'The token account which will/did receive the bought amount. This is not a wallet address.',
   toBridgeProxy: (
