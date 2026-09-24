@@ -6,7 +6,7 @@ import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { renderHook } from '@testing-library/react'
-import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
+import { POLL_FUNDS_QUOTE_GAS } from 'entities/twap/composable-cow-poller.constants'
 
 import { useAppData } from 'modules/appData'
 import { TradeDerivedState, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -473,7 +473,7 @@ describe('useQuoteParams', () => {
       expect(preHooks?.[0]).toEqual({
         target: '0x0000000000000000000000000000000000000000',
         callData: '0x',
-        gasLimit: POLL_FUNDS_HOOK_GAS_LIMIT,
+        gasLimit: POLL_FUNDS_QUOTE_GAS,
       })
       expect(preHooks?.[1]).toEqual(existingPreHook)
       expect(result.current!.appData?.metadata.hooks?.post).toEqual([existingPostHook])

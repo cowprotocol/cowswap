@@ -33,6 +33,11 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
       <Trans>Sell amount too small</Trans>
     </ButtonPrimary>
   ),
+  [TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Network costs too high</Trans>
+    </ButtonPrimary>
+  ),
   [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Interval time too short</Trans>

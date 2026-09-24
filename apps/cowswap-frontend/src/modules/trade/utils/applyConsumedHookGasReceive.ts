@@ -6,16 +6,23 @@ import type { ReceiveAmountInfo } from '../types'
 /**
  * Zeros the displayed and signed buy when hook gas consumes the part.
  * The price quote stays the original after-fee buy, because a zero quote amount is not a valid Price.
- * The network fee becomes the whole before-costs output (sell side: the whole part sell).
+ * The network fee stays the hook-adjusted sell-token fee (orderbook fee plus `extraFee`), converted
+ * to the buy token at the before-cost price, even when that fee is larger than the part.
  */
-export function applyConsumedHookGasReceive(info: ReceiveAmountInfo): ReceiveAmountInfo {
+export function applyConsumedHookGasReceive(info: ReceiveAmountInfo, networkFeeInSellAtoms: bigint): ReceiveAmountInfo {
+  const beforeSell = info.beforeNetworkCosts.sellAmount
+  const beforeBuy = info.beforeNetworkCosts.buyAmount
+  const feeSellAtoms = networkFeeInSellAtoms > 0n ? networkFeeInSellAtoms : beforeSell.quotient
+  const feeBuyAtoms =
+    beforeSell.quotient > 0n ? (feeSellAtoms * beforeBuy.quotient) / beforeSell.quotient : beforeBuy.quotient
+
   return {
     ...info,
     costs: {
       ...info.costs,
       networkFee: {
-        amountInSellCurrency: info.beforeNetworkCosts.sellAmount,
-        amountInBuyCurrency: info.beforeNetworkCosts.buyAmount,
+        amountInSellCurrency: CurrencyAmount.fromRawAmount(beforeSell.currency, feeSellAtoms),
+        amountInBuyCurrency: CurrencyAmount.fromRawAmount(beforeBuy.currency, feeBuyAtoms),
       },
     },
     afterNetworkCosts: withZeroBuy(info.afterNetworkCosts),

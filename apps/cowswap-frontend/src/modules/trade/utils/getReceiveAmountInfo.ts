@@ -59,7 +59,11 @@ export function getReceiveAmountInfo(
     amountsToSign: mapSellBuyAmounts(result.amountsToSign, currencies),
   }
 
-  return consumedByHookGas ? applyConsumedHookGasReceive(info) : info
+  const networkFeeInSellAtoms = positiveIntegerAtom(params.orderParams.feeAmount)
+
+  return consumedByHookGas
+    ? applyConsumedHookGasReceive(info, networkFeeInSellAtoms ?? beforeNetworkCosts.sellAmount.quotient)
+    : info
 }
 
 function calculateNetworkFee(
@@ -109,4 +113,11 @@ function mapSellBuyAmounts(
     sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
     buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
   }
+}
+
+function positiveIntegerAtom(amount: string): bigint | null {
+  if (!/^\d+$/.test(amount)) return null
+
+  const value = BigInt(amount)
+  return value > 0n ? value : null
 }

@@ -48,8 +48,12 @@ describe('applyConsumedHookGasReceive', () => {
     expect(result.afterSlippage.buyAmount.quotient).toBe(0n)
     expect(result.amountsToSign.buyAmount.quotient).toBe(0n)
     expect(result.amountsToSign.sellAmount.quotient).toBe(original.amountsToSign.sellAmount.quotient)
-    expect(result.costs.networkFee.amountInBuyCurrency.quotient).toBe(original.beforeNetworkCosts.buyAmount.quotient)
-    expect(result.costs.networkFee.amountInSellCurrency.quotient).toBe(original.beforeNetworkCosts.sellAmount.quotient)
+    const feeSell = BigInt(adjusted.feeAmount)
+    expect(feeSell > result.beforeNetworkCosts.sellAmount.quotient).toBe(true)
+    expect(result.costs.networkFee.amountInSellCurrency.quotient).toBe(feeSell)
+    expect(result.costs.networkFee.amountInBuyCurrency.quotient).toBe(
+      (feeSell * result.beforeNetworkCosts.buyAmount.quotient) / result.beforeNetworkCosts.sellAmount.quotient,
+    )
     expect(result.quotePrice.equalTo(original.quotePrice)).toBe(true)
     expect(result.quotePrice.quote(result.beforeNetworkCosts.sellAmount).quotient).toBe(2n)
   })

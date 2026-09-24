@@ -1,6 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
+import { POLL_FUNDS_QUOTE_GAS } from 'entities/twap/composable-cow-poller.constants'
 
 import { type EoaTwapQuotePreHookParams, getEoaTwapQuotePreHooks } from './getEoaTwapQuotePreHooks'
 
@@ -14,7 +14,7 @@ const EOA_TWAP: EoaTwapQuotePreHookParams = {
 const EXPECTED_QUOTE_HOOK = {
   target: '0x0000000000000000000000000000000000000000',
   callData: '0x',
-  gasLimit: POLL_FUNDS_HOOK_GAS_LIMIT,
+  gasLimit: POLL_FUNDS_QUOTE_GAS,
 }
 
 describe('getEoaTwapQuotePreHooks', () => {

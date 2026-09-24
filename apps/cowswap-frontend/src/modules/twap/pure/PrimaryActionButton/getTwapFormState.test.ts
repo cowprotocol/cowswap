@@ -35,6 +35,7 @@ const baseParams = {
   isWalletSupported: true,
   isTwapEoaEnabled: false,
   isSafeViaWc: false,
+  isReceiveZeroFromNetworkCosts: false,
 } as const
 
 describe('getTwapFormState()', () => {
@@ -90,6 +91,32 @@ describe('getTwapFormState()', () => {
 
       expect(result).toEqual(null)
     })
+  })
+
+  it('returns RECEIVE_ZERO_FROM_NETWORK_COSTS when network costs wipe the receive above the fiat minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
+      isReceiveZeroFromNetworkCosts: true,
+    })
+
+    expect(result).toEqual(TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS)
+  })
+
+  it('returns SELL_AMOUNT_TOO_SMALL when network costs wipe a part that is also under the fiat minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
+      sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
+      chainId: 1,
+      isReceiveZeroFromNetworkCosts: true,
+    })
+
+    expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
   })
 
   describe('Safe / tx-bundling guards', () => {

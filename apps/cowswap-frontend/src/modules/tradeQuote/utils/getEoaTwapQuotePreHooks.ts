@@ -1,20 +1,22 @@
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
+import { POLL_FUNDS_QUOTE_GAS } from 'entities/twap/composable-cow-poller.constants'
 
 import type { CowHook } from 'modules/appData'
 
 /**
  * EOA TWAP `pollFunds` pre-hook placeholder.
- * A verified quote simulates the call, so this no-op will underprices vs the real `pollFunds(scheduleId)`.
- * Presented fees are corrected with `applyUnpricedHookGasToOrderParams`, while placement injects the real hook.
+ * A verified quote simulates the call and charges gas used, not `gasLimit`. This no-op burns
+ * a few thousand gas. `gasLimit` is {@link POLL_FUNDS_QUOTE_GAS}, the expected `pollFunds`
+ * burn, and `applyUnpricedHookGasToOrderParams` adds that as the fee. Placement injects the
+ * real hook with the 350000 stipend.
  */
 const EOA_TWAP_QUOTE_PRE_HOOKS: CowHook[] = [
   {
     target: ZERO_ADDRESS,
     callData: '0x',
-    gasLimit: POLL_FUNDS_HOOK_GAS_LIMIT,
+    gasLimit: POLL_FUNDS_QUOTE_GAS,
   },
 ]
 

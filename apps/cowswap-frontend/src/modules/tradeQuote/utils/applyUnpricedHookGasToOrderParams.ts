@@ -13,11 +13,11 @@ type QuoteOrderParams = Pick<
  * Patches sell-quote amounts so the UI includes hook gas the orderbook underpriced.
  *
  * Network fee is roughly `gasAmount * gasPrice / sellTokenPrice`. A verified quote
- * sets `gasAmount` from simulation. The EOA TWAP quote pre-hook is a no-op with a
- * declared `gasLimit` (the real `pollFunds` budget), so simulation only burns a few
- * thousand gas and unused `gasLimit` is not charged.
+ * sets `gasAmount` from simulation. The EOA TWAP quote pre-hook is a no-op whose
+ * `gasLimit` is the expected `pollFunds` burn, not the placed stipend, so simulation
+ * only burns a few thousand gas and unused `gasLimit` is not charged.
  *
- * This adds that declared budget as `extraFee = ceil(hookGas * gasPrice / sellTokenPrice)`,
+ * This adds that `gasLimit` as `extraFee = ceil(hookGas * gasPrice / sellTokenPrice)`,
  * raises `feeAmount`, and reduces after-fee sell/buy so the user's total sell stays the
  * same and the presented receive is worse by the missing fee.
  *

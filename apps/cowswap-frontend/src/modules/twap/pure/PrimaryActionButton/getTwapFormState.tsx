@@ -25,6 +25,7 @@ export interface TwapFormStateParams {
   tradeFormValidationContext: TradeFormValidationContext | null
   isTwapEoaEnabled: boolean
   isSafeViaWc: boolean | null
+  isReceiveZeroFromNetworkCosts: boolean
 }
 
 export enum TwapFormState {
@@ -32,6 +33,7 @@ export enum TwapFormState {
   WALLET_NOT_SUPPORTED = 'WALLET_NOT_SUPPORTED',
   TX_BUNDLING_NOT_SUPPORTED = 'TX_BUNDLING_NOT_SUPPORTED',
   SELL_AMOUNT_TOO_SMALL = 'SELL_AMOUNT_TOO_SMALL',
+  RECEIVE_ZERO_FROM_NETWORK_COSTS = 'RECEIVE_ZERO_FROM_NETWORK_COSTS',
   PART_TIME_INTERVAL_TOO_SHORT = 'PART_TIME_INTERVAL_TOO_SHORT',
   PART_TIME_INTERVAL_TOO_LONG = 'PART_TIME_INTERVAL_TOO_LONG',
   X_STOCK_MIN_TRADE_SIZE = 'X_STOCK_MIN_TRADE_SIZE',
@@ -50,6 +52,7 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     numberOfPartsValue,
     isTwapEoaEnabled,
     isSafeViaWc,
+    isReceiveZeroFromNetworkCosts,
   } = props
 
   // When TWAP for EOA is enabled, skip Safe/tx-bundling checks so EOAs can review and confirm.
@@ -63,8 +66,18 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     }
   }
 
-  if (!isFractionFalsy(twapOrder?.buyAmount) && isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
+  // A zero buy from a missing quote must not block the button. A zero buy because network
+  // costs consumed a positive quote should. The fiat-minimum warning only applies when the
+  // part is actually under that minimum.
+  const partVolumeTooSmall = isSellAmountTooSmall(sellAmountPartFiat, chainId)
+  const hasQuotedBuy = !isFractionFalsy(twapOrder?.buyAmount) || isReceiveZeroFromNetworkCosts
+
+  if (hasQuotedBuy && partVolumeTooSmall) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL
+  }
+
+  if (isReceiveZeroFromNetworkCosts) {
+    return TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   }
 
   // Not using `twapOrder.timeInterval` because it's not filled until the order is ready
