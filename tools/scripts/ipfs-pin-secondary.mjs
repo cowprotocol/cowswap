@@ -69,31 +69,6 @@ function create4EverlandProvider(token, fetchImpl) {
   }
 }
 
-function createNinjaProvider(apiKey, fetchImpl) {
-  let submitted = false
-  return {
-    name: 'IPFS Ninja',
-    configured: Boolean(apiKey),
-    async pin(cid, { signal } = {}) {
-      if (!submitted) {
-        const payload = await jsonRequest(fetchImpl, 'https://api.ipfs.ninja/pin', {
-          method: 'POST',
-          headers: { 'X-Api-Key': apiKey, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ cid }),
-          signal,
-        })
-        submitted = true
-        return { status: statusOf(payload) ?? 'pinning' }
-      }
-      const payload = await jsonRequest(fetchImpl, `https://api.ipfs.ninja/pin/${cid}`, {
-        headers: { 'X-Api-Key': apiKey },
-        signal,
-      })
-      return { status: payload.pinned === true ? 'pinned' : (statusOf(payload) ?? 'pinning') }
-    },
-  }
-}
-
 function withDeadline(operation, timeoutMs, onTimeout = () => {}) {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(
@@ -150,10 +125,7 @@ async function waitForPin(provider, cid, { timeoutMs, pollMs, sleep, now }) {
 export async function pinSecondaryProviders(
   cid,
   {
-    providers = [
-      create4EverlandProvider(process.env.IPFS_4EVERLAND_ACCESS_TOKEN, fetch),
-      createNinjaProvider(process.env.IPFS_NINJA_API_KEY, fetch),
-    ],
+    providers = [create4EverlandProvider(process.env.IPFS_4EVERLAND_ACCESS_TOKEN, fetch)],
     credentials,
     timeoutMs = Number(process.env.IPFS_PIN_TIMEOUT_MS ?? DEFAULT_TIMEOUT_MS),
     pollMs = Number(process.env.IPFS_PIN_POLL_MS ?? DEFAULT_POLL_MS),

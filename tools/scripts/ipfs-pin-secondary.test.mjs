@@ -10,36 +10,27 @@ const provider = (name, outcome) => ({
   pin: async () => outcome,
 })
 
-test('passes when at least one secondary provider pins successfully', async () => {
+test('passes when 4EVERLAND pins successfully', async () => {
   const result = await pinSecondaryProviders(CID, {
-    providers: [
-      provider('4EVERLAND', { status: 'pinned' }),
-      provider('IPFS Ninja', { status: 'failed', error: 'quota' }),
-    ],
+    providers: [provider('4EVERLAND', { status: 'pinned' })],
   })
 
   assert.equal(result.ok, true)
-  assert.deepEqual(
-    result.results.map(({ status }) => status),
-    ['pinned', 'failed'],
-  )
+  assert.deepEqual(result.results.map(({ status }) => status), ['pinned'])
 })
 
 test('treats an already-existing pin as successful', async () => {
   const result = await pinSecondaryProviders(CID, {
-    providers: [{ name: 'IPFS Ninja', pin: async () => ({ status: 'exists' }) }],
+    providers: [{ name: '4EVERLAND', pin: async () => ({ status: 'exists' }) }],
   })
 
   assert.equal(result.ok, true)
   assert.equal(result.results[0].status, 'pinned')
 })
 
-test('fails when every secondary provider fails', async () => {
+test('fails when 4EVERLAND fails', async () => {
   const result = await pinSecondaryProviders(CID, {
-    providers: [
-      provider('4EVERLAND', { status: 'timeout' }),
-      provider('IPFS Ninja', { status: 'failed', error: 'forbidden' }),
-    ],
+    providers: [provider('4EVERLAND', { status: 'timeout' })],
   })
 
   assert.equal(result.ok, false)
