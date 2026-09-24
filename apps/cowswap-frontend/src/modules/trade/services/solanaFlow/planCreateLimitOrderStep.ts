@@ -1,4 +1,4 @@
-import { hexToBytes } from 'viem'
+import { bytesToHex, hexToBytes } from 'viem'
 
 import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
@@ -43,7 +43,7 @@ export async function planCreateLimitOrderStep({
     signingScheme,
     // The actual signed bytes, not the constant we picked — lets the caller store what's really on-chain
     // without re-deriving env logic, and stays correct if this ever stops being a hardcoded pick.
-    appData: appDataHex,
+    appData: bytesToHex(intent.appData),
     // From the built intent, not `limitOrderParams` directly — same value here (this builder never
     // overrides them), but keeps both planners reading their return the same way.
     sellAmount: intent.sellAmount,
