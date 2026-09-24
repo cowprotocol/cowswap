@@ -7,6 +7,9 @@ import { signSolanaTransaction } from '../solanaSend/signSolanaTransaction'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
+/** A slow approval can outlast the blockhash, and nothing here sends the transaction to notice. */
+const MAX_SIGN_ATTEMPTS = 3
+
 export interface SignedSolanaFlow {
   /** The owner-signed transaction as base64, ready for the order book's sponsored endpoint. */
   transaction: string
@@ -18,6 +21,9 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
+  /** Called with the deadline of the transaction about to be signed, before the wallet is asked —
+   * the countdown has to start when the blockhash is taken, not when the signature comes back. */
+  onDeadline?: (lastValidBlockHeight: number) => void
 }
 
 /**
@@ -28,12 +34,15 @@ export interface SignSolanaFlowContext {
  * submits, so the order is tracked by its uid instead.
  */
 export async function signSolanaFlow(
-  { connection, provider, feePayer }: SignSolanaFlowContext,
+  context: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
+  attemptsLeft = MAX_SIGN_ATTEMPTS,
 ): Promise<SignedSolanaFlow> {
   if (steps.length === 0) {
     throw new Error('signSolanaFlow: no steps to sign')
   }
+
+  const { connection, provider, feePayer, onDeadline } = context
 
   const { transaction, lastValidBlockHeight } = await buildSolanaTransaction({
     connection,
@@ -41,5 +50,19 @@ export async function signSolanaFlow(
     feePayer,
   })
 
-  return { transaction: await signSolanaTransaction(provider, transaction), lastValidBlockHeight }
+  onDeadline?.(lastValidBlockHeight)
+
+  const signed = await signSolanaTransaction(provider, transaction)
+
+  // A dead blockhash wastes the signature: the order book accepts it, nobody can ever submit it, and
+  // it sits until `validTo` while the user believes the order is live.
+  if ((await connection.getBlockHeight()) <= lastValidBlockHeight) {
+    return { transaction: signed, lastValidBlockHeight }
+  }
+
+  if (attemptsLeft <= 1) {
+    throw new Error('The order expired before it was signed. Please try again.')
+  }
+
+  return signSolanaFlow(context, steps, attemptsLeft - 1)
 }
