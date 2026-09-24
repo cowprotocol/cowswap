@@ -5,7 +5,7 @@ import type { Hex } from 'viem'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType } from '@cowprotocol/ui'
+import { BadgeType, LongLoadText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -232,10 +232,10 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <span>
+              <LongLoadText fontSize={15} fontWeight={500}>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
@@ -254,10 +254,10 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <span>
+              <LongLoadText fontSize={15} fontWeight={500}>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
