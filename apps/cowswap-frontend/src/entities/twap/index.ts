@@ -7,3 +7,4 @@ export * from './services/mapTwapOrderToStoreOrder'
 
 export * from './state/twapOrdersTokensAtom'
 export * from './hooks/useTwapOrderById'
+export * from './utils/isEoaTwapOrderItem'

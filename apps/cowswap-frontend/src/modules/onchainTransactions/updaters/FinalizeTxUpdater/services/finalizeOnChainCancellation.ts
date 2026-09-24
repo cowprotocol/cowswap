@@ -13,8 +13,6 @@ import { emitCancelledOrderEvent } from 'modules/orders'
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function finalizeOnChainCancellation(
   transaction: EnhancedTransactionDetails,
   receipt: TransactionReceipt,
@@ -22,21 +20,24 @@ export function finalizeOnChainCancellation(
   hash: string,
   orderId: string,
   sellTokenSymbol: string,
-) {
+): void {
   const { chainId, isSafeWallet, dispatch, cancelOrdersBatch, getTwapOrderById } = params
 
   if (receipt.status === 'success') {
     // If cancellation succeeded, mark order as cancelled
     cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
 
-    const twapOrder = getTwapOrderById(orderId)
+    const twapOrderResult = getTwapOrderById(orderId)
 
-    if (twapOrder) {
+    if (twapOrderResult) {
       emitCancelledOrderEvent({
         chainId,
-        order: twapOrder,
+        order: twapOrderResult.order,
         orderType: UiOrderType.TWAP,
         transactionHash: hash,
+        isEoaTwap: twapOrderResult.isEoaTwap,
+        analyticsOrderId: twapOrderResult.analyticsOrderId,
+        analyticsWalletAddress: twapOrderResult.analyticsWalletAddress,
       })
 
       return
