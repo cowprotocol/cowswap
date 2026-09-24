@@ -2,13 +2,13 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Percent } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
-import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
@@ -27,11 +27,23 @@ import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVeri
 import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
+import { useTwapSwapSuggestion } from '../../hooks/useTwapSwapSuggestion'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
+
+interface QuoteWarningsParams {
+  showFallbackHandlerWarning: boolean
+  showSwapSuggestion: boolean
+  isFallbackHandlerSetupAccepted: boolean
+  swapPriceDifferenceWarning: ReactNode
+  toggleFallbackHandlerSetupFlag: (isFallbackHandlerSetupAccepted: boolean) => void
+  showTradeFormWarnings: boolean
+  deadline: number
+  slippage: Percent
+}
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
@@ -44,11 +56,11 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
   const swapAmountDifference = useSwapAmountDifference()
+  const { suggestion, feeFiatAmount } = useTwapSwapSuggestion()
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
-  const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
@@ -83,17 +95,19 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
   const showTradeFormWarnings = !isConfirmationModal && canTrade
   const showFallbackHandlerWarning = showTradeFormWarnings && isFallbackHandlerRequired
+  const showSwapSuggestion = suggestion !== null
 
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
-  const swapPriceDifferenceWarning = swapAmountDifference ? (
+  const swapPriceDifferenceWarning = (suggestion || swapAmountDifference) && (
     <SwapPriceDifferenceWarning
       tradeUrlParams={tradeUrlParams}
-      feeFiatAmount={tradeQuoteFeeFiatAmount}
+      feeFiatAmount={feeFiatAmount}
+      suggestion={suggestion}
       swapAmountDifference={swapAmountDifference}
     />
-  ) : null
+  )
 
   return (
     <>
@@ -130,24 +144,16 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <BigPartTimeWarning />
         }
 
-        if (showFallbackHandlerWarning) {
-          return (
-            <>
-              {isFallbackHandlerSetupAccepted && swapPriceDifferenceWarning}
-              <FallbackHandlerWarning
-                isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
-                toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
-              />
-            </>
-          )
-        }
-
-        return (
-          <>
-            {showTradeFormWarnings && isPriceProtectionNotEnough(deadline, slippage) && <SmallPriceProtectionWarning />}
-            {swapPriceDifferenceWarning}
-          </>
-        )
+        return renderQuoteWarnings({
+          showFallbackHandlerWarning,
+          showSwapSuggestion,
+          isFallbackHandlerSetupAccepted,
+          swapPriceDifferenceWarning,
+          toggleFallbackHandlerSetupFlag,
+          showTradeFormWarnings,
+          deadline,
+          slippage,
+        })
       })()}
     </>
   )
@@ -155,6 +161,38 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
 function isUnsupportedWallet(state: TwapFormState | null): boolean {
   return state === TwapFormState.WALLET_NOT_SUPPORTED || state === TwapFormState.TX_BUNDLING_NOT_SUPPORTED
+}
+
+function renderQuoteWarnings({
+  showFallbackHandlerWarning,
+  showSwapSuggestion,
+  isFallbackHandlerSetupAccepted,
+  swapPriceDifferenceWarning,
+  toggleFallbackHandlerSetupFlag,
+  showTradeFormWarnings,
+  deadline,
+  slippage,
+}: QuoteWarningsParams): ReactNode {
+  if (showFallbackHandlerWarning) {
+    return (
+      <>
+        {(showSwapSuggestion || isFallbackHandlerSetupAccepted) && swapPriceDifferenceWarning}
+        <FallbackHandlerWarning
+          isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+          toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+        />
+      </>
+    )
+  }
+
+  return (
+    <>
+      {showTradeFormWarnings && !showSwapSuggestion && isPriceProtectionNotEnough(deadline, slippage) && (
+        <SmallPriceProtectionWarning />
+      )}
+      {swapPriceDifferenceWarning}
+    </>
+  )
 }
 
 function renderSellSizeWarning(state: TwapFormState | null, chainId: SupportedChainId): ReactNode | null {

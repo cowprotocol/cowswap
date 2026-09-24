@@ -312,6 +312,10 @@ msgstr "My Custom Hooks ({customHooksCount})"
 msgid "Network costs are higher than the value of each part, so you would receive nothing. Decrease the number of parts or increase the total sell amount."
 msgstr "Network costs are higher than the value of each part, so you would receive nothing. Decrease the number of parts or increase the total sell amount."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
+msgstr "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
+
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 #~ msgid "{label} ({feeAsPercent}%)"
 #~ msgstr "{label} ({feeAsPercent}%)"
@@ -696,8 +700,8 @@ msgid "Sell amount per part (1/{partsCount})"
 msgstr "Sell amount per part (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
-msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
-msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
+#~ msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
+#~ msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "generate"
@@ -3830,6 +3834,10 @@ msgstr "Learn how"
 msgid "Insufficient {inputSymbolLabel} balance"
 msgstr "Insufficient {inputSymbolLabel} balance"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
+msgstr "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Enter a referral code with 5 to 20 characters"
 #~ msgstr "Enter a referral code with 5 to 20 characters"
@@ -5108,6 +5116,10 @@ msgstr "Change trade alert settings here"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
 msgstr "Select input and output"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Switch to a {swapOrderLink}."
+msgstr "Switch to a {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Button/LoadMoreOrdersButton.tsx
 msgid "Search older orders"
@@ -8774,6 +8786,10 @@ msgstr "Exec. price"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
 #~ msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 #~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Considering current network costs (<0><1/></0> per part), you can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
+msgstr "Considering current network costs (<0><1/></0> per part), you can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"
