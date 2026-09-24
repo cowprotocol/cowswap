@@ -17,7 +17,7 @@ import { TypeItem } from 'components/orders/DetailsTable/items/TypeItem'
 
 import { Order } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
-import { getUiOrderType, UiOrderType } from 'utils/getUiOrderType'
+import { getUiOrderType, isEoaTwapPartOrder } from 'utils/getUiOrderType'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
 import { OrderIdItem } from './items/OrderIdItem'
@@ -98,7 +98,7 @@ export function BaseDetailsTable({
             isBridgingOrder={isBridging}
             onCopy={onCopy}
             owner={owner}
-            tooltipText={uiOrderType === UiOrderType.TWAP ? DetailsTableTooltips.twapAccountProxy : undefined}
+            tooltipText={isEoaTwapPartOrder(order) ? DetailsTableTooltips.twapAccountProxy : undefined}
           />
           <ToItem
             chainId={chainId}
