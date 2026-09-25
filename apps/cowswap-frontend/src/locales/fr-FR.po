@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-24 15:05\n"
+"PO-Revision-Date: 2026-09-24 21:55\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -385,7 +385,7 @@ msgstr "Sélectionner un token"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Trade your way - personalize the interface and customize your limit orders"
-msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limites"
+msgstr "Tradez à votre façon : personnalisez l’interface et vos ordres limite"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -1250,7 +1250,7 @@ msgstr "Déléguer des (v)COW"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
-msgstr "Sur CoW Swap, vous pouvez placer des ordres limites sur des soldes que vous ne détenez pas encore."
+msgstr "Sur CoW Swap, vous pouvez placer des ordres limite sur des soldes que vous ne détenez pas encore."
 
 #. placeholder {0}: solversLength - 3
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
@@ -1627,7 +1627,7 @@ msgstr "Ce hook n’est pas compatible avec votre wallet"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Get started with limit orders"
-msgstr "Commencer avec les ordres limites"
+msgstr "Commencer avec les ordres limite"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
@@ -1748,7 +1748,7 @@ msgstr "Créer un ordre"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "Want to try out limit orders?"
-msgstr "Envie d’essayer les ordres limites ?"
+msgstr "Envie d’essayer les ordres limite ?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "smart contracts (e.g. Safe)"
@@ -1781,7 +1781,7 @@ msgstr "Compte"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders are now easier to use. <0/> Give them a try"
-msgstr "Les ordres limites sont désormais plus simples à utiliser. <0/> Essayez-les"
+msgstr "Les ordres limite sont désormais plus simples à utiliser. <0/> Essayez-les"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Create an issue on GitHub"
@@ -2355,7 +2355,7 @@ msgstr "Effectuer la modification lors du placement de l’ordre"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
-msgstr "Les ordres limites, mais <0>encore plus fluides</0>"
+msgstr "Les ordres limite, mais <0>encore plus fluides</0>"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW contract not present"
@@ -2501,7 +2501,7 @@ msgstr "Wrapper mes {nativeSymbol} et swapper"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Read more about limit orders"
-msgstr "En savoir plus sur les ordres limites"
+msgstr "En savoir plus sur les ordres limite"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Your Safe is not connected with a signer.<0/>To place an order, you must connect using a signer of this Safe."
@@ -3599,7 +3599,7 @@ msgstr "Wallet non pris en charge détecté"
 
 #: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit orders"
-msgstr "Ordres limites"
+msgstr "Ordres limite"
 
 #: libs/common-const/src/common.ts
 #~ msgid "Tokens Overview"
@@ -3885,7 +3885,7 @@ msgstr "Frais de bridge <0/>"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderRewardsRow.tsx
 msgid "Rewards code"
-msgstr "Code de récompenses"
+msgstr "Code de récompense"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 msgid "Reset"
@@ -3914,7 +3914,7 @@ msgstr "Site web"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Interface"
-msgstr "Interface des ordres limites"
+msgstr "Interface des ordres limite"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Signed: <0>{numConfirmations} out of {gnosisSafeThreshold} signers</0>"
@@ -4198,7 +4198,7 @@ msgstr "Passer sur Ethereum"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
-msgstr "Sur CoW Swap, le placement et l’annulation des ordres limites sont gratuits. C’est unique dans la DeFi !"
+msgstr "Sur CoW Swap, le placement et l’annulation des ordres limite sont gratuits. C’est unique dans la DeFi !"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
 msgid "safeBundleFlowContext is not set!"
@@ -5852,7 +5852,7 @@ msgstr "Maintenant"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "<0><1>Allows you to choose whether your limit orders will be <2>Partially fillable</2> or <3>Fill or kill</3>.</1><4><5><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount.</5><7><8>Fill or kill</8> orders will either be filled fully or not at all.</7></4></0>"
-msgstr "<0><1>Vous permet de choisir si vos ordres limites seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
+msgstr "<0><1>Vous permet de choisir si vos ordres limite seront <2>partiellement exécutables</2> ou de type <3>Fill or kill</3>.</1><4><5>Les ordres <6>partiellement exécutables</6> peuvent être partiellement exécutés si la liquidité ne permet pas de couvrir le montant total.</5><7>Les ordres <8>Fill or kill</8> seront soit entièrement exécutés, soit pas du tout.</7></4></0>"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
@@ -6400,7 +6400,7 @@ msgstr "1 an (max.)"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "partially fillable"
-msgstr "partiellement exécutable"
+msgstr "partiellement exécutables"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Insufficient token allowance"
@@ -6561,7 +6561,7 @@ msgstr "Ajouter <0/> à {walletName}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
-msgstr "Sur CoW Swap, les ordres peuvent être soit des ordres au marché (qui s’exécutent au prix du marché dans la limite de la tolérance au glissement que vous avez définie), soit des ordres limites (qui s’exécutent au prix que vous spécifiez)."
+msgstr "Sur CoW Swap, les ordres peuvent être soit des ordres au marché (qui s’exécutent au prix du marché dans la limite de la tolérance au glissement que vous avez définie), soit des ordres limite (qui s’exécutent au prix que vous spécifiez)."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
@@ -7308,7 +7308,7 @@ msgstr "Les frais de swap représentent au moins {formattedFeePercentage}% du mo
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for."
-msgstr "Les ordres limites sur CoW Swap récupèrent le surplus : si le prix évolue en votre faveur, vous recevrez probablement plus que demandé."
+msgstr "Les ordres limite sur CoW Swap récupèrent le surplus : si le prix évolue en votre faveur, vous recevrez probablement plus que demandé."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingSubtitle.tsx
 msgid "Your friend shared a referral code with you."
@@ -7336,7 +7336,7 @@ msgstr "Conditions générales"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
 msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a <1>protocol fee</1> will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limites et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
+msgstr "À compter du {PROTOCOL_FEE_START_DATETIME_UTC}, et conformément à la <0>CIP-74</0>, des <1>frais de protocole</1> s’appliqueront à tous les ordres exécutés, y compris les ordres limite et TWAP exécutés après cette date, même s’ils ont été créés auparavant."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerOnboard.tsx
 #~ msgid "Invite your friends <0/> and earn rewards"
@@ -8577,7 +8577,7 @@ msgstr "Vous vendez"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Longer limit orders - place orders for up to a year."
-msgstr "Ordres limites plus longs : placez des ordres valables jusqu’à un an."
+msgstr "Ordres limite plus longs : placez des ordres valables jusqu’à un an."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "User rejected signing the cancellation"
@@ -8625,7 +8625,7 @@ msgstr "Déléguer maintenant"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Try new limit orders now"
-msgstr "Essayer les nouveaux ordres limites"
+msgstr "Essayer les nouveaux ordres limite"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate code created."
