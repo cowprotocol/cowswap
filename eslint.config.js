@@ -285,6 +285,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'valid-typeof': ['error', { requireStringLiterals: true }],
       'prettier/prettier': 'warn',
     },
   },
