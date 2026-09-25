@@ -34,6 +34,7 @@ const quoteParams: QuoteBridgeRequest = {
   validFor: 1800,
   // `useQuoteParams` always fills this in on Solana — user-set or the settings default.
   swapSlippageBps: 50,
+  partiallyFillable: false,
 }
 
 const advancedSettings: SwapAdvancedSettings = {
@@ -66,11 +67,30 @@ describe('getSolanaQuote', () => {
         buyTokenDecimals: quoteParams.buyTokenDecimals,
         amount: quoteParams.amount,
         kind: quoteParams.kind,
+        partiallyFillable: quoteParams.partiallyFillable,
         validForSeconds: quoteParams.validFor,
         slippageBps: 50,
         priceQuality: PriceQuality.FAST,
       },
       { advancedSettings },
+    )
+  })
+
+  it('forwards partiallyFillable: true from quoteParams to the SDK call', async () => {
+    await getSolanaQuote({ ...quoteParams, partiallyFillable: true }, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ partiallyFillable: true }),
+      expect.anything(),
+    )
+  })
+
+  it('forwards partiallyFillable: false unchanged', async () => {
+    await getSolanaQuote({ ...quoteParams, partiallyFillable: false }, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ partiallyFillable: false }),
+      expect.anything(),
     )
   })
 

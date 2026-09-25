@@ -3,6 +3,7 @@
 import { atom, type Getter, type Setter } from 'jotai'
 
 import {
+  allowancesAtom,
   BalancesAndAllowances,
   balancesAtom,
   tokenAllowancesFamily,
@@ -12,7 +13,7 @@ import {
 } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -161,10 +162,10 @@ export function observeOrdersUrl(get: Getter): void {
  * Registered with `jotai-effect` from `ordersTableStateAtom.onMount` to keep routing and table state in one flush.
  */
 export function observeReduxOrders(get: Getter, set: Setter): void {
-  const { connector, chainId, account } = get(walletInfoAtom)
+  const { chainId, account, connector } = get(walletInfoAtom)
 
-  if (!connector || !chainId || !account) {
-    logOrdersTableDebug('No connector, account or chainId, setting empty orders table state...')
+  if (!chainId || !account) {
+    logOrdersTableDebug('No account or chainId, setting empty orders table state...')
 
     set(ordersTableStateAtom, EMPTY_ORDERS_TABLE_STATE)
 
@@ -188,6 +189,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   }
 
   const reduxOrdersStateInCurrentChain = getReduxOrdersStateByChain(get(reduxOrdersStateAtom), chainId)
+
   const reduxOrdersByOrderTypeResult = getReduxOrdersByOrderTypeFromNetworkState({
     account,
     reduxOrdersStateInCurrentChain,
@@ -229,15 +231,20 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   const spender = spenderOverride ?? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const balancesState = get(balancesAtom)
-  const allowancesState = get(
-    tokenAllowancesFamily({
-      connector,
-      chainId,
-      account,
-      spender,
-      tokenAddresses: Array.from(ordersTokensSet),
-    }),
-  )
+  // Solana has no ERC-20 `allowance()` to multicall: SPL token delegation is fetched and kept in
+  // `allowancesAtom` by `usePersistSplViaMulticall` instead, so read it directly rather than routing
+  // through `tokenAllowancesFamily` (which only ever handles EVM chains).
+  const allowancesState = isSolanaChain(chainId)
+    ? (get(allowancesAtom)[chainId] ?? null)
+    : get(
+        tokenAllowancesFamily({
+          connector,
+          chainId,
+          account,
+          spender,
+          tokenAddresses: Array.from(ordersTokensSet),
+        }),
+      )
   const optimisticAllowances = get(optimisticAllowancesAtom)
   const balancesAndAllowances = getBalancesAndAllowances(
     balancesState,

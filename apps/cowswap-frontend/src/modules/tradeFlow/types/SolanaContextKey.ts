@@ -1,5 +1,5 @@
 import type { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -32,6 +32,8 @@ export type SolanaContextKey = readonly [
   currentDelegation: bigint,
   delegationAmount: bigint,
   isNativeSell: boolean,
+  orderClass: OrderClass,
+  partiallyFillable: boolean,
   appData: AppDataInfo,
 ]
 
@@ -57,6 +59,8 @@ export interface SolanaContextKeyParams {
   currentDelegation: bigint | undefined
   delegationAmount: bigint
   isNativeSell: boolean
+  orderClass: OrderClass
+  partiallyFillable: boolean
   appData: AppDataInfo | null
 }
 

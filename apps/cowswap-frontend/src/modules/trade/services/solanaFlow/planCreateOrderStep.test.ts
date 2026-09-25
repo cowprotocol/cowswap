@@ -2,6 +2,8 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   buildSolanaSwapOrder: jest.fn(),
 }))
 
+import { bytesToHex } from 'viem'
+
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
@@ -33,10 +35,15 @@ const quote = {
 // The user's deadline, deliberately different from anything the quote would carry.
 const VALID_TO = 1_700_000_600
 
+const SIGNED_APP_DATA_BYTES = new Uint8Array(32).fill(0xcd)
+const SIGNED_SELL_AMOUNT = 1_234_567n
+const SIGNED_BUY_AMOUNT = 7_654_321n
+
 const builtOrder = {
   instruction: 'CREATE_ORDER_IX',
   orderId: '0xdeadbeef',
   signingScheme: SigningScheme.PRESIGN,
+  intent: { appData: SIGNED_APP_DATA_BYTES, sellAmount: SIGNED_SELL_AMOUNT, buyAmount: SIGNED_BUY_AMOUNT },
 } as unknown as SolanaSwapOrder
 
 describe('planCreateOrderStep', () => {
@@ -85,21 +92,44 @@ describe('planCreateOrderStep', () => {
     )
   })
 
-  it('marks the order class as limit when the caller says so, market otherwise', async () => {
-    await planCreateOrderStep({
-      ...quote,
-      sellSymbol: 'SOL',
-      buySymbol: 'USDC',
-      validTo: VALID_TO,
-      appData: { metadata: { orderClass: { orderClass: 'limit' } } },
-    })
+  // This planner only ever builds a swap — a limit order goes through planCreateLimitOrderStep, which
+  // never quotes at all — so the order class it marks is always 'market'.
+  it("marks the order class as market, and builds the order at the quote's own price", async () => {
+    await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO })
 
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({
-        appData: expect.objectContaining({ metadata: { orderClass: { orderClass: 'limit' } } }),
+        appData: expect.objectContaining({ metadata: { orderClass: { orderClass: 'market' } } }),
       }),
     )
+  })
+
+  // buildSolanaOrder() in solanaFlow/index.ts needs the bytes actually signed to record on the local
+  // order — the quote's own OrderParameters.appData is a meaningless stub for Solana (see getSolanaQuote.ts).
+  it('returns the actually-signed appData as a 0x-prefixed hex string', async () => {
+    const { appData } = await planCreateOrderStep({
+      ...quote,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
+
+    expect(appData).toBe(bytesToHex(SIGNED_APP_DATA_BYTES))
+  })
+
+  // buildSolanaOrder() needs the amounts actually encoded into the instruction, not the quote's own —
+  // for a swap these happen to match (no price override), but the local order must read them from here.
+  it('returns the actually-signed sellAmount/buyAmount from the built intent', async () => {
+    const { sellAmount, buyAmount } = await planCreateOrderStep({
+      ...quote,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
+
+    expect(sellAmount).toBe(SIGNED_SELL_AMOUNT)
+    expect(buyAmount).toBe(SIGNED_BUY_AMOUNT)
   })
 
   it('summarises the swap with both symbols', async () => {

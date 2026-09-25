@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { LATEST_APP_DATA_VERSION, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -59,6 +59,8 @@ const completeParams: SolanaContextKeyParams = {
   currentDelegation: 5n,
   delegationAmount: 1_000_000_000n,
   isNativeSell: true,
+  orderClass: OrderClass.MARKET,
+  partiallyFillable: false,
   appData,
 }
 
@@ -71,7 +73,9 @@ describe('buildSolanaContextKey', () => {
     expect(key?.[15]).toBe(wsol)
     expect(key?.[16]).toBe(5n)
     expect(key?.[17]).toBe(1_000_000_000n)
-    expect(key?.[19]).toBe(appData)
+    expect(key?.[19]).toBe(OrderClass.MARKET)
+    expect(key?.[20]).toBe(false)
+    expect(key?.[21]).toBe(appData)
   })
 
   it('changes the key when the user picks a different approve amount, so the context rebuilds', () => {
