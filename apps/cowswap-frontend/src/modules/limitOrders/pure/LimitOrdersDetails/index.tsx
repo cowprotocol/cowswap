@@ -5,7 +5,7 @@ import { i18n } from '@lingui/core'
 import svgArrowDownRightSrc from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@cowprotocol/currency'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
@@ -135,9 +135,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
 
         <span>{expiryDate.toLocaleString(i18n.locale, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
-      {!isSolanaChain(chainId) && (
-        <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      )}
+      <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       <RecipientRow
         chainId={chainId}
         recipient={recipientAddressOrName || recipient}

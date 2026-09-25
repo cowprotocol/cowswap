@@ -124,6 +124,7 @@ export async function solanaFlow(
           appData: signedAppData,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
+          partiallyFillable,
         }),
         isSafeWallet: false,
       },
@@ -175,9 +176,10 @@ function buildSolanaOrder(params: {
   appData: string
   inputToken: Token
   outputToken: Token
+  partiallyFillable: boolean
 }): Order {
   const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
-  const { appData, inputToken, outputToken } = params
+  const { appData, inputToken, outputToken, partiallyFillable } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -197,6 +199,9 @@ function buildSolanaOrder(params: {
     // ZERO_APP_DATA) — this is what was actually signed, and getUiOrderType reads exactly this field to
     // tell a limit order apart from a market one (Solana has no real appData-doc convention to decode).
     appData,
+    // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
+    // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
+    partiallyFillable,
     id: orderId,
     owner: account,
     from: account,

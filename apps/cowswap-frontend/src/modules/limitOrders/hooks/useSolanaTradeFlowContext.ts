@@ -31,6 +31,7 @@ import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAl
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
 import { limitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
+import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from '../utils/calculateLimitOrdersDeadline'
 
 export function useSolanaTradeFlowContext(): SolanaTradeFlowContext | null {
@@ -38,6 +39,9 @@ export function useSolanaTradeFlowContext(): SolanaTradeFlowContext | null {
   const { inputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient, recipientAddress, orderKind } =
     useLimitOrdersDerivedState()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const partiallyFillableOverride = useAtomValue(partiallyFillableOverrideAtom)
+  const partiallyFillable =
+    typeof partiallyFillableOverride === 'boolean' ? partiallyFillableOverride : settingsState.partialFillsEnabled
   const tradeQuoteState = useTradeQuote()
   const closeModals = useCloseModals()
   const dispatch = useDispatch<AppDispatch>()
@@ -83,7 +87,7 @@ export function useSolanaTradeFlowContext(): SolanaTradeFlowContext | null {
         delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
         isNativeSell,
         orderClass: OrderClass.LIMIT,
-        partiallyFillable: settingsState.partialFillsEnabled,
+        partiallyFillable,
         appData,
       }),
     [
@@ -107,7 +111,7 @@ export function useSolanaTradeFlowContext(): SolanaTradeFlowContext | null {
       amountToApprove,
       sellAmountRaw,
       isNativeSell,
-      settingsState.partialFillsEnabled,
+      partiallyFillable,
       appData,
     ],
   )
