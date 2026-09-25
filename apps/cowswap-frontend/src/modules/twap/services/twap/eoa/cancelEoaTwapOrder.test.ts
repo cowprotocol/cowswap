@@ -3,12 +3,12 @@ import { decodeFunctionData, parseAbi, type Hex, type WalletClient } from 'viem'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
 
 import { EOA_TWAP_CANCELLATION_GAS_LIMIT, cancelEoaTwapOrder, CancelEoaTwapOrderParams } from './cancelEoaTwapOrder'
 
 jest.mock('modules/accountProxy', () => ({
-  EOA_TWAP_ACCOUNT_PROXY_CONFIG: { id: 'twap-account-proxy' },
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: { id: 'twap-account-proxy' },
   getCowShedHooks: jest.fn(),
 }))
 
@@ -81,7 +81,7 @@ describe('cancelEoaTwapOrder', () => {
 
     expect(getCowShedHooks).toHaveBeenCalledWith({
       chainId: SupportedChainId.GNOSIS_CHAIN,
-      accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+      accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG,
     })
     expect(proxyOf).toHaveBeenCalledWith(accountAddress)
     expect(sendTransaction).toHaveBeenCalledWith({

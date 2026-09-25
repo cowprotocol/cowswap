@@ -120,7 +120,7 @@ jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   },
 }))
 jest.mock('modules/accountProxy', () => ({
-  EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: {},
   getCowShedHooks: jest.fn(() => ({
     proxyOf: jest.fn(() => '0xproxy'),
     getFactoryAddress: jest.fn(() => '0xfactory'),

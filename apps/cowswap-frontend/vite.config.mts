@@ -301,6 +301,10 @@ export default defineConfig(({ mode, isPreview }) => {
         '@reown/appkit-adapter-solana',
         '@reown/appkit-controllers',
         'wagmi',
+        // AdapterContext is a singleton in sdk-common. cow-sdk sets it, while cow-shed 0.6.1 reads it.
+        // The package.json override pins cow-shed onto sdk-common 0.13.0, but pnpm/Vite can still
+        // load that package twice. Dedupe so proxyOf sees the adapter setGlobalAdapter wrote.
+        '@cowprotocol/sdk-common',
       ],
     },
 
