@@ -6400,8 +6400,8 @@ msgid "Invalid website URL in manifest. Only http(s) URLs are allowed, with http
 msgstr "Invalid website URL in manifest. Only http(s) URLs are allowed, with http limited to local development."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-msgid "Sell amount too small to bridge"
-msgstr "Sell amount too small to bridge"
+#~ msgid "Sell amount too small to bridge"
+#~ msgstr "Sell amount too small to bridge"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
