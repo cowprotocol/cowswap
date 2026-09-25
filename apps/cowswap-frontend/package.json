@@ -51,6 +51,7 @@
     "@cowprotocol/test-ids": "workspace:*",
     "@cowprotocol/permit-utils": "workspace:*",
     "@cowprotocol/sdk-bridging": "4.4.7",
+    "@cowprotocol/sdk-common": "0.13.0",
     "@cowprotocol/sdk-contracts-ts": "3.5.2",
     "@cowprotocol/sdk-cow-shed": "0.6.1",
     "@cowprotocol/sdk-order-book": "4.0.5",

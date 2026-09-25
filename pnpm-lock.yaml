@@ -636,6 +636,9 @@ importers:
       '@cowprotocol/sdk-bridging':
         specifier: 4.4.7
         version: 4.4.7(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common':
+        specifier: 0.13.0
+        version: 0.13.0
       '@cowprotocol/sdk-composable':
         specifier: 1.8.1
         version: 1.8.1(encoding@0.1.13)(typescript@5.9.3)

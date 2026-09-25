@@ -29,7 +29,7 @@ export function useAccountProxies(): AccountProxyInfo[] | null {
       const proxyAccount = sdk.proxyOf(account)
       const isDeployed = deployedAddresses?.some((address) => areAddressesEqual(address, proxyAccount)) ?? false
 
-      if (!config.alwaysShow && !isDeployed) return proxies
+      if (!(config as AccountProxyInfo).alwaysShow && !isDeployed) return proxies
 
       proxies.push({
         ...config,
