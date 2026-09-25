@@ -5,7 +5,8 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { render, screen } from '@testing-library/react'
 
-import { useGetReceiveAmountInfo, ReceiveAmountInfo } from 'modules/trade'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useGetReceiveAmountInfo, ReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { AmountParts } from '.'
@@ -15,8 +16,13 @@ jest.mock('jotai', () => ({
   useAtomValue: jest.fn(),
 }))
 
+jest.mock('modules/advancedOrders', () => ({
+  useAdvancedOrdersDerivedState: jest.fn(),
+}))
+
 jest.mock('modules/trade', () => ({
   useGetReceiveAmountInfo: jest.fn(),
+  useShouldHideQuoteAmounts: jest.fn(),
 }))
 
 jest.mock('modules/usdAmount', () => ({
@@ -42,6 +48,10 @@ jest.mock('@cowprotocol/ui', () => ({
 
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useGetReceiveAmountInfoMock = useGetReceiveAmountInfo as jest.MockedFunction<typeof useGetReceiveAmountInfo>
+const useShouldHideQuoteAmountsMock = useShouldHideQuoteAmounts as jest.MockedFunction<typeof useShouldHideQuoteAmounts>
+const useAdvancedOrdersDerivedStateMock = useAdvancedOrdersDerivedState as jest.MockedFunction<
+  typeof useAdvancedOrdersDerivedState
+>
 
 const USDC = new Token(SupportedChainId.MAINNET, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 6, 'USDC', 'USD Coin')
 const WETH = new Token(
@@ -81,6 +91,8 @@ describe('AmountParts', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useAtomValueMock.mockReturnValue({ numberOfPartsValue: 5 })
+    useShouldHideQuoteAmountsMock.mockReturnValue(false)
+    useAdvancedOrdersDerivedStateMock.mockReturnValue({} as ReturnType<typeof useAdvancedOrdersDerivedState>)
     ;(useUsdAmount as jest.Mock).mockReturnValue({ value: null })
   })
 
@@ -112,5 +124,22 @@ describe('AmountParts', () => {
 
     const [, buyAmountEl] = screen.getAllByTestId('token-amount')
     expect(buyAmountEl.textContent).toBe('1.5 WETH')
+  })
+
+  it('ignores the stale quote when the quote failed', () => {
+    const staleSellAmount = CurrencyAmount.fromRawAmount(USDC, '3000000')
+    const staleBuyAmount = CurrencyAmount.fromRawAmount(WETH, '1500000000000000000')
+
+    useShouldHideQuoteAmountsMock.mockReturnValue(true)
+    useAdvancedOrdersDerivedStateMock.mockReturnValue({
+      inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC, '10000000'),
+    } as ReturnType<typeof useAdvancedOrdersDerivedState>)
+    useGetReceiveAmountInfoMock.mockReturnValue(buildReceiveAmountInfo(staleSellAmount, staleBuyAmount))
+
+    render(<AmountParts />)
+
+    const [sellAmountEl, buyAmountEl] = screen.getAllByTestId('token-amount')
+    expect(sellAmountEl.textContent).toBe('2 USDC')
+    expect(buyAmountEl.textContent).toBe('')
   })
 })

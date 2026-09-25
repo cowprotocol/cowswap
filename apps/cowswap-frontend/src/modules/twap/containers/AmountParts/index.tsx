@@ -6,7 +6,8 @@ import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useGetReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import * as styledEl from './styled'
@@ -30,10 +31,14 @@ export function AmountParts(): ReactNode {
 
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
+  const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const receiveAmountInfo = useGetReceiveAmountInfo()
+  const shouldHideQuoteAmounts = useShouldHideQuoteAmounts()
 
-  const { sellAmount: inputPartAmount } = receiveAmountInfo?.beforeAllFees || {}
-  const { buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
+  const inputPartAmount = shouldHideQuoteAmounts
+    ? inputCurrencyAmount?.divide(numberOfPartsValue)
+    : receiveAmountInfo?.beforeAllFees.sellAmount
+  const outputPartAmount = shouldHideQuoteAmounts ? null : receiveAmountInfo?.afterPartnerFees.buyAmount
 
   const inputPartAmountUsd = useUsdAmount(inputPartAmount).value
   const outputPartAmountUsd = useUsdAmount(outputPartAmount).value
