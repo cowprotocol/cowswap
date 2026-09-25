@@ -28,7 +28,7 @@ export async function planCreateLimitOrderStep({
   const appDataHex = isBarnBackendEnv ? SOLANA_LIMIT_ORDER_STAGING_APP_DATA : SOLANA_LIMIT_ORDER_PROD_APP_DATA
   const appData = hexToBytes(appDataHex as `0x${string}`)
 
-  const { instruction, orderId, signingScheme, intent } = await buildSolanaLimitOrderOrder({
+  const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaLimitOrderOrder({
     ...limitOrderParams,
     appData,
   })
@@ -41,6 +41,7 @@ export async function planCreateLimitOrderStep({
     },
     orderId,
     signingScheme,
+    feePayer,
     // The actual signed bytes, not the constant we picked — lets the caller store what's really on-chain
     // without re-deriving env logic, and stays correct if this ever stops being a hardcoded pick.
     appData: bytesToHex(intent.appData),
