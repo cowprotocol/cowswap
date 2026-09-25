@@ -22,6 +22,12 @@ export const COW_SHED_VERSIONS: CoWShedVersion[] = [
 export const COW_SHED_LATEST_VERSION_ID = `version-${COW_SHED_2_1_0_VERSION}` as const
 
 /**
+ * Hide sheds the programmatic-orders indexer has not returned.
+ * Off: that indexer misses sheds that were deployed and used, including 1.0.0 hook proxies.
+ */
+export const SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES = false
+
+/**
  * ComposableCoW-enabled cow-shed (`COWShedForComposableCoW` + factory).
  *
  * Same EIP-712 version as the regular 2.1.0 shed, but a different factory and implementation

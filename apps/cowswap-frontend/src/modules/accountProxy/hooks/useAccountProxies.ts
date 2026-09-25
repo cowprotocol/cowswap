@@ -6,7 +6,11 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDeployedCowShedAddresses } from './useDeployedCowShedAddresses'
 
-import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, ACCOUNT_PROXY_CONFIGS } from '../accountProxy.constants'
+import {
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG,
+  ACCOUNT_PROXY_CONFIGS,
+  SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES,
+} from '../accountProxy.constants'
 import { getCowShedHooks } from '../utils/getCowShedHooks'
 
 import type { AccountProxyInfo } from '../accountProxy.types'
@@ -15,7 +19,10 @@ export function useAccountProxies(): AccountProxyInfo[] | null {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { isTwapEoaEnabled } = useFeatureFlags()
-  const deployedAddresses = useDeployedCowShedAddresses(account, isEvmChain(chainId) ? chainId : undefined)
+  const deployedAddresses = useDeployedCowShedAddresses(
+    SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES ? account : undefined,
+    SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES && isEvmChain(chainId) ? chainId : undefined,
+  )
 
   return useMemo(() => {
     if (!account || !isEvmChain(chainId)) return null
@@ -29,7 +36,9 @@ export function useAccountProxies(): AccountProxyInfo[] | null {
       const proxyAccount = sdk.proxyOf(account)
       const isDeployed = deployedAddresses?.some((address) => areAddressesEqual(address, proxyAccount)) ?? false
 
-      if (!(config as AccountProxyInfo).alwaysShow && !isDeployed) return proxies
+      const isAlwaysShown = 'alwaysShow' in config && config.alwaysShow
+
+      if (SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES && !isAlwaysShown && !isDeployed) return proxies
 
       proxies.push({
         ...config,

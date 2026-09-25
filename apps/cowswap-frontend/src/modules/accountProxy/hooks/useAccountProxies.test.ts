@@ -66,7 +66,7 @@ describe('useAccountProxies', () => {
     CowShedHooksMock.mockImplementation(() => ({ proxyOf: proxyOfMock }) as unknown as CowShedHooks)
   })
 
-  it('keeps only deployed proxies, including both 2.1.0 sheds', () => {
+  it('lists every configured proxy, including both 2.1.0 sheds', () => {
     const { result } = renderHook(() => useAccountProxies())
     const advancedOrdersProxy = result.current?.find(({ id }) => id === ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id)
 
@@ -91,28 +91,18 @@ describe('useAccountProxies', () => {
     expect(CowShedHooksMock).toHaveBeenNthCalledWith(2, CHAIN_ID, undefined, COW_SHED_2_1_0_VERSION)
   })
 
-  it('keeps always-shown proxies and drops older ones the owner has not deployed', () => {
+  it('lists older sheds while the deployment filter is off, without querying the indexer', () => {
     useDeployedCowShedAddressesMock.mockReturnValue([REGULAR_PROXY.toLowerCase()])
 
     const { result } = renderHook(() => useAccountProxies())
 
-    expect(result.current?.map(({ id }) => id)).toEqual([ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id, 'version-2.1.0'])
-  })
-
-  it('shows always-shown proxies when the owner has no deployed sheds', () => {
-    useDeployedCowShedAddressesMock.mockReturnValue([])
-
-    const { result } = renderHook(() => useAccountProxies())
-
-    expect(result.current?.map(({ id }) => id)).toEqual([ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id, 'version-2.1.0'])
-  })
-
-  it('shows always-shown proxies while deployed sheds are still loading', () => {
-    useDeployedCowShedAddressesMock.mockReturnValue(null)
-
-    const { result } = renderHook(() => useAccountProxies())
-
-    expect(result.current?.map(({ id }) => id)).toEqual([ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id, 'version-2.1.0'])
+    expect(result.current?.map(({ id }) => id)).toEqual([
+      ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id,
+      'version-2.1.0',
+      'version-1.0.1',
+      'version-1.0.0',
+    ])
+    expect(useDeployedCowShedAddressesMock).toHaveBeenCalledWith(undefined, undefined)
   })
 
   it('excludes the advanced orders proxy when the feature is disabled', () => {
