@@ -15,7 +15,7 @@ import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
 
-import { getCowShedHooks, EOA_TWAP_ACCOUNT_PROXY_CONFIG, EOA_TWAP_SHED_FACTORY_OPTIONS } from 'modules/accountProxy'
+import { getCowShedHooks, ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
@@ -289,8 +289,8 @@ export async function placeEoaTwapOrder({
 
   // TODO: This could be simplified by using `CowShedSdk` instead of `CowShedHooks`, but right now it does not support passing a custom version, and it defaults
   // to 1.0.1, so signature verification will fail.
-  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
-  const factoryAddress = EOA_TWAP_SHED_FACTORY_OPTIONS.factoryAddress as `0x${string}`
+  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
+  const factoryAddress = ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions.factoryAddress as `0x${string}`
 
   // `proxyAddress` (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
   const proxyAddress = cowShedHooks.proxyOf(account) as AccountAddress

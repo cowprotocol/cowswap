@@ -4166,6 +4166,10 @@ msgstr "{currencyNameCapitalized} orders can, in rare cases, be frontrun due to 
 msgid "Transaction Confirmed"
 msgstr "Transaction Confirmed"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
+msgid "Advanced Orders"
+msgstr "Advanced Orders"
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "This way, you'll take advantage of"
 msgstr "This way, you'll take advantage of"
