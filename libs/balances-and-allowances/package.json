@@ -24,8 +24,8 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.11",
-    "@cowprotocol/sdk-trading-solana": "0.7.0",
+    "@cowprotocol/cow-sdk": "9.2.13",
+    "@cowprotocol/sdk-trading-solana": "0.9.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",

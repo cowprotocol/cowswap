@@ -104,7 +104,7 @@ test.describe('Market Orders', () => {
       await swapPage.waitForQuote()
       // 1000 USDC * 804 / 1_000_000 = 0.804 WETH. A stale 1-unit quote is ~0.000804 — wait until
       // the output is clearly the 1000-unit quote before confirming.
-      await expect(swapPage.outputAmount).toHaveValue(/^0\.8/, { timeout: 15_000 })
+      await expect(swapPage.outputAmount).toHaveValue(/^0\.8/)
 
       // Neither `waitForQuote()` nor a correct-looking `outputAmount` proves the order is about to
       // be built from the "1000" amount. Confirmed against a real CI failure: `outputAmount`
@@ -147,14 +147,14 @@ test.describe('Market Orders', () => {
       // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on screen for at
       // least 5s before advancing here too, racing the default 5s assertion timeout — same reason
       // step 3 below needs more room than the default.
-      await expect(swapPage.orderProgressBarModal).toContainText('best price wins', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('best price wins')
 
       // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain.
       // `ExecutingStep` overrides that step's own title to "Best price found!" while active.
       // `useOrderProgressBarProps.ts`'s `MINIMUM_STEP_DISPLAY_TIME` holds each step on screen for at
       // least 5s before advancing to the next one, so this needs more room than the default 5s.
       mocks.orders.markExecuting(orderId)
-      await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Best price found!')
 
       await expectActivityStatus(accountModal, 'Open')
 
@@ -162,7 +162,7 @@ test.describe('Market Orders', () => {
       mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled.
-      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
 
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts
       // (`order.apiAdditionalInfo.executedSellAmount`/`executedBuyAmount`), not the originally
@@ -176,20 +176,15 @@ test.describe('Market Orders', () => {
       // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
       // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
       // instead of a one-shot read to ride out that gap, same as [CS-118]'s identical read.
-      await expect
-        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
-        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect
-        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
-        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
-      await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC', { timeout: 15_000 })
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '500 USDC')
       await expect(swapPage.buyBalance).toHaveAttribute(
         'title',
         `${formatUnits(BigInt(mocks.orders.getOrder(orderId)?.buyAmount ?? 0), 18)} WETH`,
-        { timeout: 15_000 },
       )
 
       await expectActivityStatus(accountModal, 'Filled')
@@ -253,16 +248,15 @@ test.describe('Market Orders', () => {
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
       // so it needs more room than the default 5s — mirrors [CS-59].
-      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
       await swapPage.page.keyboard.press('Escape')
 
       // Buy amount is fixed by the order kind — it lands exactly on the typed amount, unlike the
       // sell side, which carries the app's own slippage buffer on top of the quote (see [CS-61]).
-      await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH', { timeout: 15_000 })
+      await expect(swapPage.buyBalance).toHaveAttribute('title', '1 WETH')
       await expect(swapPage.sellBalance).toHaveAttribute(
         'title',
         `${formatUnits(INITIAL_USDC_BALANCE - BigInt(mocks.orders.getOrder(orderId)?.sellAmount ?? 0), 18)} USDC`,
-        { timeout: 15_000 },
       )
 
       await expectActivityStatus(accountModal, 'Filled')
@@ -312,7 +306,7 @@ test.describe('Market Orders', () => {
 
       await swapPage.approveButton.click()
 
-      await expect(header.snackbarPopup).toContainText('Approve WETH', { timeout: 15_000 })
+      await expect(header.snackbarPopup).toContainText('Approve WETH')
 
       // Approving a buy order auto-advances into the swap confirm screen. Its "Maximum sent" row is
       // the slippage-adjusted sell amount *without* the buy-order's +1% buffer
@@ -618,17 +612,21 @@ test.describe('Market Orders', () => {
       // is disabled while the order is still `creating`), so this checks the text directly. Getting
       // here requires the app to notice the mocked receipt, which it only rechecks on a new block —
       // real Sepolia block time, not a fixed poll interval — hence the generous timeout.
-      await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible({ timeout: 30_000 })
+      await expect(
+        swapPage.page.locator('#bodyWrapper #eth-flow-stepper').getByText('Creating Order', { exact: true }),
+      ).toBeVisible()
 
       // Let the order-by-uid poll start succeeding — this is what flips the order from `creating` to
       // `pending`, rendered in the activities list as "Open".
       orderIndexing.markIndexed()
 
-      await expectActivityStatus(accountModal, 'Open', { timeout: 15_000 })
+      await expectActivityStatus(accountModal, 'Open')
 
       // With the order indexed, `EthFlowStepper`'s step 3 becomes the active step: "Receive USDC",
       // pending — order-progress hasn't reported a fill yet.
-      await expect(swapPage.page.getByText('Receive USDC', { exact: true })).toBeVisible()
+      await expect(
+        swapPage.page.locator('#bodyWrapper #eth-flow-stepper').getByText('Receive USDC', { exact: true }),
+      ).toBeVisible()
 
       // Settle the order now that it's posted and confirmed — mirrors `mockOrderPosting.fulfill()`,
       // minus the `postOrder` bookkeeping that flow never goes through. Credits the buy-side balance
@@ -643,9 +641,9 @@ test.describe('Market Orders', () => {
       // (`!isFinished`) and shows the same generic completed screen every other order type uses —
       // there's no "Received USDC" checkmark state to catch, the stepper disappears entirely. This
       // is what makes `#order-progress-bar-modal` get mounted in the first place, per [CS-59]/[CS-60].
-      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
 
-      await expectActivityStatus(accountModal, 'Filled', { timeout: 15_000 })
+      await expectActivityStatus(accountModal, 'Filled')
 
       // The order-submitted view is still covering the swap form (`CurrencyInputPanel` only renders
       // a balance while `!disabled`) — dismiss it the same way [CS-59]/[CS-60] do.
@@ -654,10 +652,8 @@ test.describe('Market Orders', () => {
       // Native ETH leaves the wallet as soon as the creation tx is sent (it's the tx's own `value`,
       // not a separate settlement step) — by the time the order shows "Open" it's already reflected
       // here.
-      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
-      await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
-        timeout: 15_000,
-      })
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH')
+      await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`)
     })
 
     test('[CS-71] ETH-flow: order status lifecycle', async ({
@@ -713,14 +709,14 @@ test.describe('Market Orders', () => {
       // Still Creating (tx mined, order not indexed yet): "Creating Order" — the explorer link still
       // points at the same creation tx.
       ethFlow.confirmMined()
-      await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible({ timeout: 30_000 })
+      await expect(swapPage.page.getByText('Creating Order', { exact: true })).toBeVisible()
       await expect(viewTransactionLink).toHaveAttribute('href', new RegExp(ethFlow.getTxHash()))
 
       // Open (order indexed by the backend).
       orderIndexing.markIndexed()
       await accountModal.open()
       await accountModal.activitiesList.scrollIntoViewIfNeeded()
-      await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
+      await expect(accountModal.activitiesList).toContainText('Open')
 
       // Cancellable while Open (`isOrderCancellable` gates on order status alone, not order kind) —
       // precondition for the "no longer possible" check once Filled, below.
@@ -734,7 +730,7 @@ test.describe('Market Orders', () => {
       // separate settlement step), so it's already reflected here even though the order only just
       // reached "Open".
       await swapPage.page.keyboard.press('Escape')
-      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH')
 
       // Filled: settle the order — mirrors [CS-68]'s `fulfill()`-equivalent inline logic. Unlike
       // [CS-68] (which keeps the progress view open throughout), it was already dismissed above to
@@ -746,13 +742,11 @@ test.describe('Market Orders', () => {
       seedTrader(mocks, wallet, CHAIN_ID, { balances: { [USDC]: orderParams.buyAmount } })
       ethFlow.confirmFilled()
 
-      await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`, {
-        timeout: 15_000,
-      })
+      await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`)
 
       await accountModal.open()
       await accountModal.activitiesList.scrollIntoViewIfNeeded()
-      await expect(accountModal.activitiesList).toContainText('Filled', { timeout: 15_000 })
+      await expect(accountModal.activitiesList).toContainText('Filled')
 
       // No longer cancellable once Filled — `isOrderCancellable` only allows CREATING/PENDING.
       await expect(cancelLink).toBeHidden()
@@ -799,7 +793,7 @@ test.describe('Market Orders', () => {
       // `setupTestConditions`'s `waitForQuote()` only clears once the first ("fast") quote response
       // lands — the smart-slippage hook ignores that one, so the placeholder settles slightly later.
       await expect(slippageInput).toHaveValue('')
-      await expect.poll(readPlaceholderPercent, { timeout: 15_000 }).toBeCloseTo(bpsToPercentage(dynamicSlippageBps), 0)
+      await expect.poll(readPlaceholderPercent).toBeCloseTo(bpsToPercentage(dynamicSlippageBps), 0)
 
       // The suggested value stays under 2%, so the "adjusted" banner doesn't show.
       await expect(adjustedBanner).toBeHidden()
@@ -833,9 +827,9 @@ test.describe('Market Orders', () => {
       // the smart-slippage hook explicitly ignores fast quotes and keeps the last valid value until
       // the slower, BFF-informed quote lands, so the placeholder needs its own poll rather than a
       // single read right after the spinner clears.
-      await expect.poll(readPlaceholderPercent, { timeout: 15_000 }).toBeGreaterThan(2)
+      await expect.poll(readPlaceholderPercent).toBeGreaterThan(2)
       expect(await readPlaceholderPercent()).toBeCloseTo(bpsToPercentage(dynamicSlippageBps), 0)
-      await expect(adjustedBanner).toBeVisible({ timeout: 15_000 })
+      await expect(adjustedBanner).toBeVisible()
 
       const bannerText = (await adjustedBanner.textContent()) ?? ''
       const [, adjustedPercent] = /Slippage adjusted to ([\d.]+)% to ensure quick execution/.exec(bannerText) ?? []
@@ -896,7 +890,7 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.approveButton.click()
-      await expect(header.snackbarPopup).toContainText('Approve WETH', { timeout: 15_000 })
+      await expect(header.snackbarPopup).toContainText('Approve WETH')
 
       // The approval transaction is sent — and, since approving auto-advances into the swap confirm
       // screen without posting anything, no order exists yet at this point.
@@ -1056,8 +1050,8 @@ test.describe('Market Orders', () => {
       wrapTx.confirmMined()
 
       // ETH decreases and WETH increases by the same wrapped amount.
-      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH', { timeout: 15_000 })
-      await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH')
+      await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH')
     })
 
     test('[CS-104] Unwrap WETH → ETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
@@ -1110,8 +1104,8 @@ test.describe('Market Orders', () => {
 
       // WETH decreases and ETH increases by the same unwrapped amount — 1:1, no slippage or
       // protocol fee, since this flow never goes through a quote at all.
-      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH', { timeout: 15_000 })
-      await expect(swapPage.buyBalance).toHaveAttribute('title', '1.5 ETH', { timeout: 15_000 })
+      await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 WETH')
+      await expect(swapPage.buyBalance).toHaveAttribute('title', '1.5 ETH')
     })
 
     test('[CS-111] Cancel market order: off-chain soft cancellation (EOA) @smoke', async ({
@@ -1144,7 +1138,7 @@ test.describe('Market Orders', () => {
       // default 5s.
       await accountModal.open()
       await accountModal.activitiesList.scrollIntoViewIfNeeded()
-      await expect(accountModal.activitiesList).toContainText('Open', { timeout: 15_000 })
+      await expect(accountModal.activitiesList).toContainText('Open')
 
       const cancelLink = accountModal.activitiesList.getByText('Cancel order', { exact: true })
       await expect(cancelLink).toBeVisible()
@@ -1170,12 +1164,12 @@ test.describe('Market Orders', () => {
       // `PENDING_ORDERS_BUFFER` yet, so the UI shows the transient "Cancelling..." state first
       // (`isCancelling: apiStatus === 'pending' && order.invalidated`, `OrdersFromApiUpdater.ts`).
       mocks.orders.markCancelled(orderId)
-      await expect(accountModal.activitiesList).toContainText('Cancelling...', { timeout: 45_000 })
+      await expect(accountModal.activitiesList).toContainText('Cancelling...')
 
       // Once enough real time has passed since `creationDate`, `isOrderCancelled` flips true and the
       // order settles into its final "Cancelled" state — genuinely time-dependent, hence the long
       // timeout rather than a flaw in the mock.
-      await expect(accountModal.activitiesList).toContainText('Cancelled', { timeout: 60_000 })
+      await expect(accountModal.activitiesList).toContainText('Cancelled')
     })
 
     test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
@@ -1233,18 +1227,18 @@ test.describe('Market Orders', () => {
       // (`StepsWrapper`), so `SolvingStep`'s own body text ("best price wins") is what distinguishes
       // this step as the active one, same as [CS-59]. `MINIMUM_STEP_DISPLAY_TIME` holds step 1 on
       // screen for at least 5s before advancing here, hence the longer timeout.
-      await expect(swapPage.orderProgressBarModal).toContainText('best price wins', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('best price wins')
 
       // Step 3 (EXECUTING) — solver picked a winner, submitting the trade on-chain. `ExecutingStep`
       // overrides that step's own title to "Best price found!" while active.
       mocks.orders.markExecuting(orderId)
-      await expect(swapPage.orderProgressBarModal).toContainText('Best price found!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Best price found!')
 
       // Settle the order now that it's posted and confirmed.
       mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
-      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
 
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
@@ -1259,12 +1253,8 @@ test.describe('Market Orders', () => {
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      await expect
-        .poll(() => readTitledAmount(soldAmountRow), { timeout: 15_000 })
-        .toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect
-        .poll(() => readTitledAmount(receivedAmountRow), { timeout: 15_000 })
-        .toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
     test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({

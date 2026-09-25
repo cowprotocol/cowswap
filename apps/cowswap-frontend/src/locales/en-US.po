@@ -881,6 +881,10 @@ msgstr "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
 msgstr "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
 
+#: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
+msgid "No tokens to display"
+msgstr "No tokens to display"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "CoW AMM Withdraw Liquidity"
 #~ msgstr "CoW AMM Withdraw Liquidity"
@@ -2659,6 +2663,10 @@ msgstr "Wallet support"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 msgid "Refunding"
 msgstr "Refunding"
+
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateBuyAtaStep.ts
+msgid "Create {buySymbol} account"
+msgstr "Create {buySymbol} account"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Confirm the TWAP transaction in your connected wallet."
@@ -7558,6 +7566,10 @@ msgstr "Order ID"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "The order was executed before it could be cancelled."
 msgstr "The order was executed before it could be cancelled."
+
+#: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
+msgid "No favorite tokens"
+msgstr "No favorite tokens"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "a native currency"

@@ -32,7 +32,7 @@ const DEFAULT_RPC_URL: Record<TargetChainId, { url: HttpsString; usesInfura: boo
   [EvmChains.LINEA]: { url: `https://rpc.linea.build`, usesInfura: false },
   [EvmChains.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [EvmChains.OPTIMISM]: { url: `https://mainnet.optimism.io`, usesInfura: false },
-  [NonEvmChains.SOLANA]: { url: `https://api.mainnet.solana.com`, usesInfura: false },
+  [NonEvmChains.SOLANA]: { url: `https://solana-rpc.publicnode.com`, usesInfura: false },
   [NonEvmChains.BITCOIN]: { url: 'https://bitcoin-rpc.publicnode.com', usesInfura: false },
 }
 

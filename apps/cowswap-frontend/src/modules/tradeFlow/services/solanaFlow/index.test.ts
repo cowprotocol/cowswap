@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { LATEST_APP_DATA_VERSION, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -7,7 +7,9 @@ import { Connection, PublicKey } from '@solana/web3.js'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
+import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
+import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
@@ -31,17 +33,20 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
+const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
 const SOLANA_ACCOUNT = '11111111111111111111111111111111'
+const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
@@ -49,6 +54,7 @@ const SELL_AMOUNT = 1_000_000_000n
 const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary })
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
+const BUY_ATA_STEP = step('Create USDC account')
 const ORDER_STEP = step('Swap SOL for USDC')
 const ORDER_ID = '0xdeadbeef'
 
@@ -61,6 +67,12 @@ const wsol = new TokenWithLogo(
   'Wrapped SOL',
 )
 const usdc = new Token(SOLANA_CHAIN_ID, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v', 6, 'USDC')
+
+const APP_DATA: AppDataInfo = {
+  doc: { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} },
+  fullAppData: '{}',
+  appDataKeccak256: '0x' + '0'.repeat(64),
+}
 const outputAmount = CurrencyAmount.fromRawAmount(usdc, '150000000')
 // The quote always reports its sellToken as WSOL, even for a native sell — see `getSolanaSellToken`.
 const inputAmount = CurrencyAmount.fromRawAmount(wsol, SELL_AMOUNT.toString())
@@ -96,6 +108,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
     sellAmount: SELL_AMOUNT,
     currentDelegation: 0n,
     delegationAmount,
+    appData: APP_DATA,
     tradeQuote: {
       quoteResults: {
         quoteResponse: {
@@ -112,6 +125,9 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
             partiallyFillable: false,
           },
         },
+        // The receiver the quote derived `intent.buyTokenAccount` from — the buy-ATA step must use this
+        // one, not `context.receiver`, or it would name an account the order does not credit.
+        tradeParameters: { receiver: RECEIVER_ADDRESS },
       },
       postSwapOrderFromQuote: jest.fn(),
     } as unknown as SolanaTradeFlowContext['tradeQuote'],
@@ -135,6 +151,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       onOpen: jest.fn(),
       requestPermitSignature: jest.fn(),
       onDismiss: jest.fn(),
+      setConfirming: jest.fn(),
     },
     swapFlowAnalyticsContext: {
       account: SOLANA_ACCOUNT,
@@ -154,6 +171,7 @@ describe('solanaFlow', () => {
     mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
     mockPlanWrapStep.mockReturnValue(WRAP_STEP)
     mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
+    mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
     mockPlanCreateOrderStep.mockResolvedValue({
       step: ORDER_STEP,
       orderId: ORDER_ID,
@@ -161,14 +179,14 @@ describe('solanaFlow', () => {
     })
   })
 
-  it('bundles wrap, delegate and create-order into a single transaction', async () => {
+  it('bundles wrap, delegate, buy-ATA and create-order into a single transaction', async () => {
     const context = buildContext({ isNativeSell: true })
 
     const result = await solanaFlow(context, buildAnalytics())
 
     expect(result).toBe(true)
     expect(mockSendSolanaFlow).toHaveBeenCalledTimes(1)
-    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, BUY_ATA_STEP, ORDER_STEP])
   })
 
   it('passes the full sell amount to the wrap planner for a native SOL sell', async () => {
@@ -187,6 +205,14 @@ describe('solanaFlow', () => {
     expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ validTo: context.context.validTo }))
   })
 
+  it("passes the app's current appData doc to the order planner", async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appData: context.appData.doc }))
+  })
+
   it('delegates the amount the approve switcher chose, not the sell amount', async () => {
     const unlimited = 2n ** 64n - 1n
 
@@ -201,13 +227,27 @@ describe('solanaFlow', () => {
     expect(mockPlanWrapStep).toHaveBeenCalledWith(expect.objectContaining({ sellAmount: 0n }))
   })
 
-  it('drops steps the planners skip', async () => {
+  it('drops steps the planners skip, but always creates the buy account', async () => {
     mockPlanWrapStep.mockReturnValue(null)
     mockPlanDelegateStep.mockReturnValue(null)
 
     await solanaFlow(buildContext(), buildAnalytics())
 
-    expect(sentSteps()).toEqual([ORDER_STEP])
+    // The buy-ATA step has no skip condition on purpose: the instruction is idempotent, so including it
+    // unconditionally is cheaper than an RPC existence check and immune to the account appearing mid-flight.
+    expect(sentSteps()).toEqual([BUY_ATA_STEP, ORDER_STEP])
+  })
+
+  it('creates the buy account for the receiver the quote used, not the one resolved for the order', async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    expect(receiver.toBase58()).toBe(RECEIVER_ADDRESS)
+    expect(receiver.toBase58()).not.toBe(context.context.receiver)
+    expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
+    expect(quote).toBe(context.solanaQuote)
   })
 
   it('never posts the order from the quote', async () => {

@@ -4,17 +4,18 @@ import { getChainsForOrderId } from 'utils'
 
 import { useOrderByNetwork } from './useOperatorOrder'
 
-interface OrderSearchRedirect {
+interface SearchRedirect {
   path: string | null
   isLoading: boolean
 }
 
 /**
+ * Resolves a search that the current chain could not answer.
+ *
  * A Solana uid is the same shape as an EVM transaction hash, so on an EVM chain a search for one
- * goes to the transaction page and ends up on the search page once no orders turn up. This looks
- * the id up on the chains it could actually belong to, so the search still finds it.
+ * goes to the transaction page and lands here once no orders turn up.
  */
-export function useOrderSearchRedirect(searchString: string): OrderSearchRedirect {
+export function useSearchRedirect(searchString: string): SearchRedirect {
   const [candidateChain] = getChainsForOrderId(searchString)
   const { order, isLoading, errorOrderPresentInNetworkId } = useOrderByNetwork(searchString, candidateChain ?? null)
   const foundOnChain = order ? candidateChain : errorOrderPresentInNetworkId

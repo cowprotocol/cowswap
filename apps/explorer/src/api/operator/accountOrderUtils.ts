@@ -2,6 +2,8 @@ import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { orderBookSDK } from 'cowSdk'
 
+import { orderNormalizer } from 'api/solanaOrderbook'
+
 import { backoffOpts } from './operator.constants'
 import { GetAccountOrdersParams, RawOrder } from './types'
 
@@ -28,9 +30,13 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
     }
   }
 
+  const normalize = orderNormalizer(networkId)
+  const normalizeOrders = (orders: RawOrder[]): RawOrder[] => orders.map(normalize)
+
   const ordersPromise = state.prodHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, backoffOpts })
+        .then(normalizeOrders)
         .catch((error) => {
           console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
           return []
@@ -40,6 +46,7 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const ordersPromiseBarn = state.barnHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging', backoffOpts })
+        .then(normalizeOrders)
         .catch((error) => {
           console.error('[getAccountOrders] Error getting BARN orders for account', owner, networkId, error)
           return []
