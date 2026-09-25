@@ -13,7 +13,7 @@ import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundl
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
@@ -56,6 +56,9 @@ const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
 const mockUseNavigateToOpenOrdersTable = useNavigateToOrdersTableTab as jest.MockedFunction<
   typeof useNavigateToOrdersTableTab
+>
+const mockUseRevealOrderInOrdersTable = useRevealOrderInOrdersTable as jest.MockedFunction<
+  typeof useRevealOrderInOrdersTable
 >
 
 const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
@@ -115,6 +118,7 @@ describe('useHandleOrderPlacement', () => {
     mockUseNeedsApproval.mockImplementation(() => false)
     mockIsBundlingSupported.mockImplementation(() => true)
     mockUseNavigateToOpenOrdersTable.mockImplementation(() => () => {})
+    mockUseRevealOrderInOrdersTable.mockImplementation(() => jest.fn().mockResolvedValue(true))
     mockUseIsSafeApprovalBundle.mockImplementation(() => false)
   })
 

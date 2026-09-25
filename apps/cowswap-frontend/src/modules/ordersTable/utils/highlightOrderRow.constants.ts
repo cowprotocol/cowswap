@@ -1,0 +1,3 @@
+export const HIGHLIGHT_ORDER_ROW_CLASS = 'highlightOrderRow'
+export const HIGHLIGHT_ORDER_ROW_DURATION_MS = 3_000
+export const HIGHLIGHT_ORDER_ROW_TIMEOUT_MS = 1_000

@@ -1,10 +1,31 @@
 import { UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { keyframes } from 'styled-components/macro'
 
 import { RateWrapper } from 'common/pure/RateInfo'
 
 import { TableHeaderWrapper } from '../../pure/OrdersTable/Header/OrdersTableHeader.styled'
+import { HIGHLIGHT_ORDER_ROW_CLASS, HIGHLIGHT_ORDER_ROW_DURATION_MS } from '../../utils/highlightOrderRow.constants'
+
+const highlightOrderRowBlink = keyframes`
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  10%,
+  30%,
+  50%,
+  70%,
+  90% {
+    background-color: var(${UI.COLOR_ALERT_BG});
+  }
+  20%,
+  40%,
+  60%,
+  80% {
+    background-color: transparent;
+  }
+`
 
 export const TableRow = styled(TableHeaderWrapper)<{
   isChildOrder?: boolean
@@ -26,6 +47,10 @@ export const TableRow = styled(TableHeaderWrapper)<{
   &:hover {
     background: ${({ isExpanded, isChildOrder }) =>
       isExpanded && !isChildOrder ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PAPER_DARKER})`};
+  }
+
+  &.${HIGHLIGHT_ORDER_ROW_CLASS} {
+    animation: ${highlightOrderRowBlink} ${HIGHLIGHT_ORDER_ROW_DURATION_MS}ms ease-in-out;
   }
 
   > div:first-child {

@@ -10,7 +10,7 @@ import * as styledEl from './EoaTwapSuccessContent.styled'
 
 export interface EoaTwapSuccessContentProps {
   explorerUrl?: string
-  onViewOrders(): void
+  onViewOrders(): void | Promise<void>
 }
 
 export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
