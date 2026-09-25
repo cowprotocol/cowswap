@@ -116,7 +116,7 @@ function getPermitOrderTypeLabel(orderType: UiOrderType): string {
 }
 
 const SignDescription = styled.p`
-  margin-top: 50px !important;
+  margin: 50px auto 16px !important;
 `
 
 const ArrowRight = styled(SVG)`

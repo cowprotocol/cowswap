@@ -104,6 +104,7 @@ export const ContentCard = styled.div`
   p {
     line-height: ${({ theme }): string => theme.fontLineHeight};
     overflow-wrap: break-word;
+    margin: 0 0 16px;
   }
 `
 
