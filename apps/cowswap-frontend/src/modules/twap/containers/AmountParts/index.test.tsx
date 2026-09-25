@@ -7,6 +7,7 @@ import { render, screen } from '@testing-library/react'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useGetReceiveAmountInfo, ReceiveAmountInfo, useShouldHideQuoteAmounts } from 'modules/trade'
+import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { AmountParts } from '.'
@@ -23,6 +24,10 @@ jest.mock('modules/advancedOrders', () => ({
 jest.mock('modules/trade', () => ({
   useGetReceiveAmountInfo: jest.fn(),
   useShouldHideQuoteAmounts: jest.fn(),
+}))
+
+jest.mock('modules/tradeQuote', () => ({
+  useTradeQuote: jest.fn(),
 }))
 
 jest.mock('modules/usdAmount', () => ({
@@ -49,6 +54,7 @@ jest.mock('@cowprotocol/ui', () => ({
 const useAtomValueMock = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const useGetReceiveAmountInfoMock = useGetReceiveAmountInfo as jest.MockedFunction<typeof useGetReceiveAmountInfo>
 const useShouldHideQuoteAmountsMock = useShouldHideQuoteAmounts as jest.MockedFunction<typeof useShouldHideQuoteAmounts>
+const useTradeQuoteMock = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
 const useAdvancedOrdersDerivedStateMock = useAdvancedOrdersDerivedState as jest.MockedFunction<
   typeof useAdvancedOrdersDerivedState
 >
@@ -92,6 +98,7 @@ describe('AmountParts', () => {
     jest.clearAllMocks()
     useAtomValueMock.mockReturnValue({ numberOfPartsValue: 5 })
     useShouldHideQuoteAmountsMock.mockReturnValue(false)
+    mockTradeQuote({ isLoading: false, hasParamsChanged: false })
     useAdvancedOrdersDerivedStateMock.mockReturnValue({} as ReturnType<typeof useAdvancedOrdersDerivedState>)
     ;(useUsdAmount as jest.Mock).mockReturnValue({ value: null })
   })
@@ -127,19 +134,53 @@ describe('AmountParts', () => {
   })
 
   it('ignores the stale quote when the quote failed', () => {
-    const staleSellAmount = CurrencyAmount.fromRawAmount(USDC, '3000000')
-    const staleBuyAmount = CurrencyAmount.fromRawAmount(WETH, '1500000000000000000')
-
     useShouldHideQuoteAmountsMock.mockReturnValue(true)
-    useAdvancedOrdersDerivedStateMock.mockReturnValue({
-      inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC, '10000000'),
-    } as ReturnType<typeof useAdvancedOrdersDerivedState>)
-    useGetReceiveAmountInfoMock.mockReturnValue(buildReceiveAmountInfo(staleSellAmount, staleBuyAmount))
+    mockStaleQuoteWithInput()
+
+    render(<AmountParts />)
+
+    expectRecalculatedAmounts()
+  })
+
+  it('ignores the stale quote while the quote reloads for changed params', () => {
+    mockTradeQuote({ isLoading: true, hasParamsChanged: true })
+    mockStaleQuoteWithInput()
+
+    render(<AmountParts />)
+
+    expectRecalculatedAmounts()
+  })
+
+  it('keeps the current quote amounts while the quote refreshes with unchanged params', () => {
+    mockTradeQuote({ isLoading: true, hasParamsChanged: false })
+    mockStaleQuoteWithInput()
 
     render(<AmountParts />)
 
     const [sellAmountEl, buyAmountEl] = screen.getAllByTestId('token-amount')
-    expect(sellAmountEl.textContent).toBe('2 USDC')
-    expect(buyAmountEl.textContent).toBe('')
+    expect(sellAmountEl.textContent).toBe('3 USDC')
+    expect(buyAmountEl.textContent).toBe('1.5 WETH')
   })
 })
+
+function expectRecalculatedAmounts(): void {
+  const [sellAmountEl, buyAmountEl] = screen.getAllByTestId('token-amount')
+  expect(sellAmountEl.textContent).toBe('2 USDC')
+  expect(buyAmountEl.textContent).toBe('')
+}
+
+function mockStaleQuoteWithInput(): void {
+  useAdvancedOrdersDerivedStateMock.mockReturnValue({
+    inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC, '10000000'),
+  } as ReturnType<typeof useAdvancedOrdersDerivedState>)
+  useGetReceiveAmountInfoMock.mockReturnValue(
+    buildReceiveAmountInfo(
+      CurrencyAmount.fromRawAmount(USDC, '3000000'),
+      CurrencyAmount.fromRawAmount(WETH, '1500000000000000000'),
+    ),
+  )
+}
+
+function mockTradeQuote(state: Pick<TradeQuoteState, 'isLoading' | 'hasParamsChanged'>): void {
+  useTradeQuoteMock.mockReturnValue(state as TradeQuoteState)
+}
