@@ -1,5 +1,7 @@
 export * from './updaters/TradeQuoteUpdater'
 export * from './state/tradeQuoteAtom'
+export { applyUnpricedHookGasToOrderParams } from './utils/applyUnpricedHookGasToOrderParams'
+export { getEoaTwapQuotePreHooks } from './utils/getEoaTwapQuotePreHooks'
 export * from './hooks/useTradeQuote'
 export * from './hooks/useSetTradeQuoteParams'
 export * from './hooks/useQuoteParams'

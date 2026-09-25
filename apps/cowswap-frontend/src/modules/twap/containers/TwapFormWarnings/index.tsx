@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -12,6 +13,7 @@ import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
   FallbackHandlerWarning,
+  ReceiveZeroFromNetworkCostsWarning,
   SmallPartTimeWarning,
   SmallPartVolumeWarning,
   UnsupportedWalletWarning,
@@ -117,9 +119,8 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
           return <SellNativeWarningBanner />
         }
 
-        if (localFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
-          return <SmallPartVolumeWarning chainId={chainId} />
-        }
+        const sellSizeWarning = renderSellSizeWarning(localFormValidation, chainId)
+        if (sellSizeWarning) return sellSizeWarning
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_SHORT) {
           return <SmallPartTimeWarning />
@@ -154,4 +155,16 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
 function isUnsupportedWallet(state: TwapFormState | null): boolean {
   return state === TwapFormState.WALLET_NOT_SUPPORTED || state === TwapFormState.TX_BUNDLING_NOT_SUPPORTED
+}
+
+function renderSellSizeWarning(state: TwapFormState | null, chainId: SupportedChainId): ReactNode | null {
+  if (state === TwapFormState.SELL_AMOUNT_TOO_SMALL) {
+    return <SmallPartVolumeWarning chainId={chainId} />
+  }
+
+  if (state === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS) {
+    return <ReceiveZeroFromNetworkCostsWarning />
+  }
+
+  return null
 }

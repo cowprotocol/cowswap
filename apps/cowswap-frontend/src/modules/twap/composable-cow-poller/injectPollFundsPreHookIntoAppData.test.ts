@@ -1,14 +1,15 @@
-import { decodeFunctionData } from 'viem'
+import { decodeFunctionData, type Hex } from 'viem'
 
 import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
 import { EOA_TWAP_POLL_FUNDS_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
+import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
+
 import type { AppDataInfo, CowHook } from 'modules/appData'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
-import { POLL_FUNDS_HOOK_GAS_LIMIT } from './composable-cow-poller.constants'
 import { encodePollFundsCalldata } from './composable-cow-poller.utils'
 import { injectPollFundsPreHookIntoAppData } from './injectPollFundsPreHookIntoAppData'
 
@@ -103,7 +104,7 @@ describe('injectPollFundsPreHookIntoAppData()', () => {
 
     const decoded = decodeFunctionData({
       abi: ComposableCowPollerAbi,
-      data: expectedPollFundsHook().callData,
+      data: expectedPollFundsHook().callData as Hex,
     })
 
     expect(decoded.functionName).toBe('pollFunds')

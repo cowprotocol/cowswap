@@ -12,6 +12,12 @@ export interface PrimaryActionButtonContext {
   confirmTrade(): void
 }
 
+const sellAmountTooSmallButton = (): ReactElement => (
+  <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+    <Trans>Sell amount too small</Trans>
+  </ButtonPrimary>
+)
+
 const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => ReactElement> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
@@ -28,11 +34,8 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
       <Trans>Unsupported wallet</Trans>
     </ButtonPrimary>
   ),
-  [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
-    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      <Trans>Sell amount too small</Trans>
-    </ButtonPrimary>
-  ),
+  [TwapFormState.SELL_AMOUNT_TOO_SMALL]: sellAmountTooSmallButton,
+  [TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS]: sellAmountTooSmallButton,
   [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Interval time too short</Trans>

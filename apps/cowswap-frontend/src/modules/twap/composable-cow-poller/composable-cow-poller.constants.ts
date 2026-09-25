@@ -29,12 +29,6 @@ export const COMPOSABLE_COW_POLLER_ADDRESS: Record<EvmChains, AccountAddress> = 
 )
 
 /**
- * Gas budget for the `pollFunds` pre-hook on each TWAP part
- * (SLOADs + getTradeableOrder + transferFrom).
- */
-export const POLL_FUNDS_HOOK_GAS_LIMIT = '350000' as const
-
-/**
  * First registration / current funder shed-auth epoch.
  * Must match on-chain `Schedule.authEpoch` (`uint96`).
  */
