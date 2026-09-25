@@ -3,6 +3,7 @@ import { useResetAtom } from 'jotai/utils'
 import { useCallback } from 'react'
 
 import { calculateGasMargin } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { WidgetHookEvents } from '@cowprotocol/widget-lib'
@@ -20,9 +21,15 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { cancellationModalContextAtom, CancellationType, updateCancellationModalContextAtom } from './state'
+import {
+  CancellationModalContext,
+  cancellationModalContextAtom,
+  CancellationType,
+  updateCancellationModalContextAtom,
+} from './state'
 import { useOffChainCancelOrder } from './useOffChainCancelOrder'
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
+import { useSolanaCancelOrder } from './useSolanaCancelOrder'
 
 import { getSwapErrorMessage } from '../../utils/getSwapErrorMessage'
 
@@ -48,6 +55,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const resetContext = useResetAtom(cancellationModalContextAtom)
   const offChainOrderCancel = useOffChainCancelOrder()
   const sendOnChainCancellation = useSendOnChainCancellation()
+  const solanaCancelOrder = useSolanaCancelOrder()
   const getOnChainTxInfo = useGetOnChainCancellation()
   const gasPrices = useGasPrices(chainId)
   const nativeCurrency = useNativeCurrency()
@@ -72,7 +80,11 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // The callback to trigger the cancellation
       const triggerCancellation = async (type: CancellationType): Promise<void> => {
-        const cancelFn = type === 'offChain' ? offChainOrderCancel : sendOnChainCancellation
+        const cancelFn = isSolanaChain(chainId)
+          ? solanaCancelOrder
+          : type === 'offChain'
+            ? offChainOrderCancel
+            : sendOnChainCancellation
 
         try {
           setContext({ isPendingSignature: true, error: null })
@@ -113,12 +125,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // Display the actual modal
           openModal()
           // Estimate tx cost in case when OnChain cancellation is used
-          getOnChainTxInfo(order).then(({ estimatedGas }) => {
-            const gasPrice = BigInt(gasPrices?.average || '0')
-            const txCost = calculateGasMargin(estimatedGas) * gasPrice
-
-            setContext({ txCost })
-          })
+          estimateOnChainTxCost(order, chainId, getOnChainTxInfo, gasPrices, setContext)
         })()
       }
     },
@@ -128,6 +135,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       closeModal,
       sendOnChainCancellation,
       offChainOrderCancel,
+      solanaCancelOrder,
       openModal,
       resetContext,
       setContext,
@@ -137,4 +145,22 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       isPendingSignature,
     ],
   )
+}
+
+// Solana has no gas estimate here (fees are negligible); txCost stays null and the modal shows "Unknown"
+function estimateOnChainTxCost(
+  order: Order,
+  chainId: number | null,
+  getOnChainTxInfo: ReturnType<typeof useGetOnChainCancellation>,
+  gasPrices: ReturnType<typeof useGasPrices>,
+  setContext: (state: Partial<CancellationModalContext>) => void,
+): void {
+  if (isSolanaChain(chainId)) return
+
+  getOnChainTxInfo(order).then(({ estimatedGas }) => {
+    const gasPrice = BigInt(gasPrices?.average || '0')
+    const txCost = calculateGasMargin(estimatedGas) * gasPrice
+
+    setContext({ txCost })
+  })
 }

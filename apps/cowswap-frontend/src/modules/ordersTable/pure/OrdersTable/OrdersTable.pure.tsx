@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, useWalletDetails } from '@cowprotocol/wallet'
 
 import { ordersToCancelSetAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
@@ -10,6 +11,7 @@ import { usePendingOrdersPrices } from 'modules/orders'
 import { useOrderActions } from 'modules/ordersTable/hooks/useOrderActions'
 import { ordersTableStateAtom } from 'modules/ordersTable/state/ordersTable.atoms'
 
+import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { isOrderOffChainCancellable } from 'common/utils/isOrderOffChainCancellable'
 
 import { TABLE_HEADERS } from './Header/ordersTableHeader.constants'
@@ -51,11 +53,19 @@ export function OrdersTable({ orderType, currentTab }: OrdersTableProps): ReactN
   }, [])
 
   const isTwapTable = orderType === TabOrderTypes.ADVANCED
-  const isRowSelectable = !!allowsOffchainSigning && !isTwapTable
+  const isSolana = isSolanaChain(chainId)
+  // Solana has no off-chain (EIP-712) signing concept, so `allowsOffchainSigning` never applies there -
+  // its batch cancellation is a bundled on-chain transaction instead, gated only on being on a Solana chain.
+  const isRowSelectable = (!!allowsOffchainSigning || isSolana) && !isTwapTable
 
   const cancellableOrders = useMemo(
-    () => ordersPage.filter((item) => isOrderOffChainCancellable(getParsedOrderFromTableItem(item))),
-    [ordersPage],
+    () =>
+      ordersPage.filter((item) => {
+        const order = getParsedOrderFromTableItem(item)
+
+        return isSolana ? isOrderCancellable(order) : isOrderOffChainCancellable(order)
+      }),
+    [ordersPage, isSolana],
   )
 
   const allOrdersSelected = useMemo(() => {

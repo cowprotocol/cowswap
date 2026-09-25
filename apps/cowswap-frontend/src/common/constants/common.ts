@@ -27,3 +27,9 @@ export const PROTOCOL_FEE_SCALE = 100_000
 // `nonce` is required by the store shape but is an EVM concept. Nothing reads it for Solana
 // transactions — only `checkOnChainTransaction`'s replacement detection uses it.
 export const SOLANA_UNUSED_NONCE = 0
+
+// Solana batch cancellation bundles one CancelOrder instruction per order into a single transaction
+// (one wallet signature). A legacy transaction caps out around 1232 bytes, so the selection is capped
+// well below the point where a realistic batch could overflow it, rather than splitting into multiple
+// sequential transactions.
+export const MAX_SOLANA_BATCH_CANCEL_ORDERS = 15
