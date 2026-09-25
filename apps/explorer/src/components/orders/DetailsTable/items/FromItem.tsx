@@ -17,12 +17,20 @@ interface FromItemProps {
   isSigning: boolean
   isBridgingOrder: boolean
   owner: string
+  tooltipText?: string
   onCopy(label: string): void
 }
 
-export function FromItem({ chainId, isSigning, isBridgingOrder, onCopy, owner }: FromItemProps): ReactNode {
+export function FromItem({
+  chainId,
+  isSigning,
+  isBridgingOrder,
+  onCopy,
+  owner,
+  tooltipText,
+}: FromItemProps): ReactNode {
   return (
-    <DetailRow label="From" tooltipText={DetailsTableTooltips.from}>
+    <DetailRow label="From" tooltipText={tooltipText ?? DetailsTableTooltips.from}>
       {isSigning && (
         <>
           <Icon image="ALERT" color={UI.COLOR_ALERT_TEXT} />
