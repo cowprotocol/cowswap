@@ -101,4 +101,32 @@ describe('cancelEoaTwapOrder', () => {
 
     expect(sendTransaction).toHaveBeenCalledTimes(1)
   })
+
+  it('invalidates only the selected part through the Shed without removing the parent', async () => {
+    await expect(cancelEoaTwapOrder({ ...context, partOnly: true })).resolves.toBe(txHash)
+
+    const {
+      functionName,
+      args: [calls],
+    } = decodeFunctionData({
+      abi: trustedExecuteAbi,
+      data: sendTransaction.mock.calls[0][0].data,
+    })
+    expect(functionName).toBe('trustedExecuteHooks')
+    expect(sendTransaction).toHaveBeenCalledTimes(1)
+    expect(calls).toHaveLength(1)
+    expect(calls[0]).toMatchObject({ target: settlementAddress, value: 0n, allowFailure: false })
+    expect(decodeFunctionData({ abi: GPv2SettlementAbi, data: calls[0].callData })).toEqual({
+      functionName: 'invalidateOrder',
+      args: [partOrderId],
+    })
+    expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ to: proxyAddress }))
+  })
+
+  it('rejects part-only cancellation without a UID before sending', async () => {
+    await expect(cancelEoaTwapOrder({ ...context, partOnly: true, partOrderId: undefined })).rejects.toThrow(
+      'A part order UID is required',
+    )
+    expect(sendTransaction).not.toHaveBeenCalled()
+  })
 })

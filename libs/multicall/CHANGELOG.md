@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.2...multicall-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/wallet@3.14.0
+  - @cowprotocol/cowswap-abis@4.3.0
+
 ## [3.7.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.1...multicall-v3.7.2) (2026-09-15)
 
 ### Patch Changes

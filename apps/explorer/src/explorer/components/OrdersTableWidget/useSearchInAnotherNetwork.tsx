@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useAvailableChains } from '@cowprotocol/common-hooks'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { BlockchainNetwork } from './context/OrdersTableContext'
 
@@ -33,8 +34,13 @@ export const useSearchInAnotherNetwork = (
     async (_networkId: Network) => {
       setIsLoading(true)
       setError(null)
+      // An address belongs to one chain family, so asking the other one can only miss — and a Solana
+      // pubkey is not even a valid path segment for the EVM account endpoint.
+      const searchInSolana = isSolanaAddress(ownerAddress)
+      const isSameChainFamily = (net: Network): boolean => isSolanaChain(net) === searchInSolana
+
       const promises = availableChains
-        .filter((net) => net !== _networkId)
+        .filter((net) => net !== _networkId && isSameChainFamily(net))
         .map((network) =>
           getAccountOrders({ networkId: network, owner: ownerAddress, offset: 0, limit: 1 })
             .then((response) => {

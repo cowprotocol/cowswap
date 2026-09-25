@@ -100,6 +100,30 @@ describe('useSearchSubmit', () => {
     expect(result.location.pathname).toBe(`/orders/${query}`)
   })
 
+  const SOLANA_ADDRESS = '2c1E71jPXqgM8nJXiQpCEwGhXSVA8GTN4a1qTS1ibyLa'
+
+  it('should be /address/... for a base58 address on Solana', () => {
+    const result = runHook(SOLANA_ADDRESS, { networkId: SupportedChainId.SOLANA })
+
+    expect(result.location.pathname).toBe(`/address/${SOLANA_ADDRESS}`)
+  })
+
+  // An address of the other family still opens its user page, which then reports the chain its
+  // orders are on. Sending it to the search screen would hide that.
+  it('should be /address/... for a base58 address on an EVM chain', () => {
+    const result = runHook(SOLANA_ADDRESS, { networkId: SupportedChainId.MAINNET })
+
+    expect(result.location.pathname).toBe(`/address/${SOLANA_ADDRESS}`)
+  })
+
+  it('should be /address/... for an EVM address on Solana', () => {
+    const query = '0xb6BAd41ae76A11D10f7b0E664C5007b908bC77C9'
+
+    const result = runHook(query, { networkId: SupportedChainId.SOLANA })
+
+    expect(result.location.pathname).toBe(`/address/${query}`)
+  })
+
   // Same length as an EVM tx hash, so the same string routes differently per chain.
   const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
 

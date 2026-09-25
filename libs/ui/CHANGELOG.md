@@ -1,5 +1,30 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.2...ui-v3.14.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: confirm leaving TWAP flow (#8154)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+- feat: add TWAP confirmation box (#8120)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
 ## [3.13.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.1...ui-v3.13.2) (2026-09-15)
 
 ### Patch Changes
