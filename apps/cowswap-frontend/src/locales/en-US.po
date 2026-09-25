@@ -3801,6 +3801,10 @@ msgstr "on-chain"
 #~ msgid "Updates every 6 hours"
 #~ msgstr "Updates every 6 hours"
 
+#: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
+msgid "TWAP splits your swap into equal parts over time"
+msgstr "TWAP splits your swap into equal parts over time"
+
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Tokens overview"
 msgstr "Tokens overview"

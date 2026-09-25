@@ -28,6 +28,7 @@ import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
+  TwapSellAmountDescription,
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
@@ -92,6 +93,7 @@ export function AdvancedOrdersPage(): ReactNode {
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
+            topContent={<TwapSellAmountDescription />}
           >
             {(tradeWarnings) => (
               <>
