@@ -6,6 +6,7 @@ import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
+import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
 
@@ -20,6 +21,10 @@ export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   buySymbol: string
   /** The user's deadline setting, which the quote knows nothing about — it carries the quote's own TTL. */
   validTo: number
+  /** Overrides the quote's own appData doc — e.g. hooks added after quoting. */
+  appData?: SwapAdvancedSettings['appData']
+  /** Pays the fee and the order PDA's rent instead of the owner. Omitted for the self-paid flow. */
+  sponsor?: PublicKeyInitData
 }
 
 export interface PlannedCreateOrderStep {
@@ -33,6 +38,8 @@ export interface PlannedCreateOrderStep {
   appData: string
   sellAmount: bigint
   buyAmount: bigint
+  /** Who the transaction carrying the step must name as fee payer. */
+  feePayer: PublicKey
 }
 
 /**
@@ -54,10 +61,12 @@ export async function planCreateOrderStep({
   sellSymbol,
   buySymbol,
   validTo,
+  sponsor,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
-  const { instruction, orderId, signingScheme, intent } = await buildSolanaSwapOrder(
+  const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
     { quoteRequest: { validTo }, appData: DEFAULT_APP_DATA },
+    { sponsor },
   )
 
   return {
@@ -68,6 +77,7 @@ export async function planCreateOrderStep({
     },
     orderId,
     signingScheme,
+    feePayer,
     appData: bytesToHex(intent.appData),
     sellAmount: intent.sellAmount,
     buyAmount: intent.buyAmount,

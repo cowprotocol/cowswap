@@ -18,6 +18,10 @@ export interface BuildWrapSolInstructionsParams {
    * to keep the owner's total spend equal to what they typed — see `getSolanaWrapPreview`.
    */
   transferLamports: bigint
+  /** Funds the WSOL account's rent when it has to be created. Defaults to the owner; a sponsored
+   * order names the protocol's funder, which the order book allows for account creation but never
+   * for the transfer itself. */
+  rentPayer?: PublicKey
 }
 
 /**
@@ -34,6 +38,7 @@ export interface BuildWrapSolInstructionsParams {
 export function buildWrapSolInstructions({
   owner,
   transferLamports,
+  rentPayer = owner,
 }: BuildWrapSolInstructionsParams): TransactionInstruction[] {
   if (transferLamports <= 0n) {
     throw new Error('Wrap amount must be positive')
@@ -42,7 +47,7 @@ export function buildWrapSolInstructions({
   const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
 
   return [
-    createAssociatedTokenAccountIdempotentInstruction(owner, associatedTokenAccount, owner, WSOL_MINT),
+    createAssociatedTokenAccountIdempotentInstruction(rentPayer, associatedTokenAccount, owner, WSOL_MINT),
     SystemProgram.transfer({ fromPubkey: owner, toPubkey: associatedTokenAccount, lamports: transferLamports }),
     createSyncNativeInstruction(associatedTokenAccount, TOKEN_PROGRAM_ID),
   ]

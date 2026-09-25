@@ -5,6 +5,7 @@ import { useFlags } from 'launchdarkly-react-client-sdk'
 export interface FeatureFlags {
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
+  isSolanaSponsoredOrdersEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any

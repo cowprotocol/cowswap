@@ -2,9 +2,11 @@ import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
+import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
+import { orderBookApi } from 'cowSdk'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -16,6 +18,8 @@ import {
   planDelegateStep,
   planWrapStep,
   sendSolanaFlow,
+  signSolanaFlow,
+  type SignSolanaFlowContext,
   SolanaFlowStep,
 } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
@@ -26,10 +30,11 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
+  isSponsored = false,
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -61,10 +66,22 @@ export async function solanaFlow(
     const buyAtaReceiver = new PublicKey(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
+
+    // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
+    // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
+    // owner paying — the only thing it can do there.
+    //
+    // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
+    // rented by the sponsor too. The order book allows that; only the wrap transfer has to stay the
+    // owner's, since those are the funds being wrapped.
+    const sponsor = isSponsored ? solanaQuote.funder : undefined
+    const rentPayer = sponsor ?? owner
+
     const {
       step: createOrderStep,
       orderId,
       signingScheme,
+      feePayer,
       appData: signedAppData,
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
@@ -96,16 +113,17 @@ export async function solanaFlow(
     // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
     // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
-      planCreateBuyAtaStep({ payer: owner, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
+      planCreateBuyAtaStep({ payer: rentPayer, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 
-    const { hash } = await sendSolanaFlow(
-      { connection, provider, owner, addTransaction: callbacks.addTransaction },
-      steps,
-    )
+    // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
+    // track: the order book submits it once it has countersigned as fee payer.
+    const txHash = sponsor
+      ? await postSponsoredBundle({ connection, provider, feePayer }, steps, tradeQuote.quoteResults)
+      : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
     addPendingOrderStep(
       {
@@ -113,7 +131,7 @@ export async function solanaFlow(
         chainId,
         order: buildSolanaOrder({
           orderId,
-          txHash: hash,
+          txHash,
           signingScheme,
           account,
           quoteParams: tradeQuote.quoteResults.quoteResponse.quote,
@@ -140,7 +158,7 @@ export async function solanaFlow(
       receiver,
       inputAmount,
       outputAmount,
-      txHash: hash,
+      txHash,
     })
 
     logTradeFlow('SOLANA FLOW', 'STEP 2: show UI of the successfully sent transaction', orderId)
@@ -165,7 +183,7 @@ export async function solanaFlow(
 
 function buildSolanaOrder(params: {
   orderId: string
-  txHash: string
+  txHash?: string
   signingScheme: SolanaSwapOrder['signingScheme']
   account: string
   quoteParams: OrderParameters
@@ -214,8 +232,9 @@ function buildSolanaOrder(params: {
     // Solana orders carry no fee (`feeAmount` is always '0'), so this is the signed sell amount too.
     sellAmountBeforeFee: sellAmount,
     signingScheme,
-    // The order is created on-chain by the transaction above; there is no off-chain signature to carry.
-    signature: txHash,
+    // The order is created on-chain, so there is no off-chain signature to carry. A sponsored bundle has
+    // no local signature either, and `signature` is required — its uid is the only identity available.
+    signature: txHash ?? orderId,
   }
 }
 
@@ -230,7 +249,7 @@ function emitSolanaPostedOrderEvent(params: {
   receiver: string
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
-  txHash: string
+  txHash?: string
 }): void {
   const { chainId, orderId, account, orderKind, uiOrderType, receiver, inputAmount, outputAmount, txHash } = params
 
@@ -245,4 +264,25 @@ function emitSolanaPostedOrderEvent(params: {
     outputAmount,
     orderCreationHash: txHash,
   })
+}
+
+/**
+ * Signs the bundle without broadcasting and hands it to the order book, which pays for it. Returns
+ * nothing to track on chain: the signature only exists once the order book submits, so the order is
+ * followed by its uid from here on.
+ */
+async function postSponsoredBundle(
+  context: SignSolanaFlowContext,
+  steps: SolanaFlowStep[],
+  quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
+): Promise<undefined> {
+  const { transaction } = await signSolanaFlow(context, steps)
+
+  await postSolanaSponsoredOrder(
+    // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
+    { transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+    { orderBookApi },
+  )
+
+  return undefined
 }
