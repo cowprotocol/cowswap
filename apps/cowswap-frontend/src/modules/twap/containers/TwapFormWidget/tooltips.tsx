@@ -12,6 +12,9 @@ const IconImage = styled.div`
   justify-content: center;
 
   > svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
     margin: 0 3px 0 0;
   }
@@ -81,15 +84,13 @@ export function useLabelsTooltips(): LabelTooltipItems {
       label: (
         <>
           <IconImage>
-            <SVG src={svgProtectionSrc} width="16" height="16" title={t`Price protection`} />
+            <SVG src={svgProtectionSrc} width="16" height="16" title={t`Worst acceptable price`} />
           </IconImage>{' '}
-          <Trans>Price protection</Trans>
+          <Trans>Worst acceptable price</Trans>
         </>
       ),
       tooltip: (
-        <Trans>
-          Your TWAP order won't execute and is protected if the market price dips more than your set price protection.
-        </Trans>
+        <Trans>Each part trades at this price or better. If that price can't be met, the part is skipped.</Trans>
       ),
     },
     price: {
