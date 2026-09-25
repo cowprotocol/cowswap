@@ -1,12 +1,11 @@
 import {
   createAssociatedTokenAccountIdempotentInstruction,
   createSyncNativeInstruction,
-  getAssociatedTokenAddressSync,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token'
 import { PublicKey, SystemProgram, TransactionInstruction } from '@solana/web3.js'
 
-import { WSOL_MINT } from './const'
+import { getWsolAssociatedTokenAccount, WSOL_MINT } from './const'
 
 export interface BuildWrapSolInstructionsParams {
   owner: PublicKey
@@ -39,7 +38,7 @@ export function buildWrapSolInstructions({
     throw new Error('Wrap amount must be positive')
   }
 
-  const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
+  const associatedTokenAccount = getWsolAssociatedTokenAccount(owner)
 
   return [
     createAssociatedTokenAccountIdempotentInstruction(owner, associatedTokenAccount, owner, WSOL_MINT),

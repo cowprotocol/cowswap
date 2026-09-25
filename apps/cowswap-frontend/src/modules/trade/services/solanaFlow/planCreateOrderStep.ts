@@ -5,7 +5,10 @@ import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@co
 
 import { t } from '@lingui/core/macro'
 
-import { SolanaFlowStep } from './types'
+import { SolanaFlowStep, SolanaFundedAccount } from './types'
+
+// Order account layout of the settlement program: every order PDA on chain reports `space: 264`.
+const ORDER_ACCOUNT_SIZE = 264
 
 const DEFAULT_APP_DATA: SwapAdvancedSettings['appData'] = {
   appCode: DEFAULT_APP_CODE,
@@ -25,6 +28,12 @@ export interface PlannedCreateOrderStep {
   step: SolanaFlowStep
   orderId: string
   signingScheme: SolanaSwapOrder['signingScheme']
+}
+
+// The PDA carries no address: overriding `validTo` re-derives the uid it is seeded from, so the order
+// account this step creates is never the one the quote reported, and is new either way.
+export function getCreateOrderFundedAccounts(): SolanaFundedAccount[] {
+  return [{ size: ORDER_ACCOUNT_SIZE }]
 }
 
 /**
@@ -64,6 +73,7 @@ export async function planCreateOrderStep({
       instructions: [instruction],
       summary: t`Swap ${sellSymbol} for ${buySymbol}`,
       createsOrder: true,
+      fundedAccounts: getCreateOrderFundedAccounts(),
     },
     orderId,
     signingScheme,
