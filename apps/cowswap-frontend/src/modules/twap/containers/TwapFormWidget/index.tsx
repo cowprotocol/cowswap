@@ -21,6 +21,7 @@ import {
   useShouldHideTradeRateDetails,
 } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+import { TwapWorstAcceptedPriceInput } from 'modules/twap/pure/TwapWorstAcceptedPriceInput/TwapWorstAcceptedPriceInput.pure'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
@@ -30,14 +31,7 @@ import { RateInfo } from 'common/pure/RateInfo'
 import * as styledEl from './styled'
 import { useLabelsTooltips } from './tooltips'
 
-import {
-  DEFAULT_NUM_OF_PARTS,
-  DEFAULT_TWAP_SLIPPAGE,
-  MAX_PART_TIME,
-  MAX_TWAP_SLIPPAGE,
-  MINIMUM_PART_TIME,
-  ORDER_DEADLINES,
-} from '../../const'
+import { DEFAULT_NUM_OF_PARTS, MAX_PART_TIME, MINIMUM_PART_TIME, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -196,34 +190,17 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
           </styledEl.FooterBox>
         </>
       )}
-      <TradeNumberInput
-        value={+twapOrderSlippage.toFixed(2)}
-        onUserInput={onSlippageInput}
-        decimalsPlaces={2}
-        placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-        min={0}
-        max={MAX_TWAP_SLIPPAGE}
-        label={tooltips.slippage.label}
-        tooltip={renderTooltip(tooltips.slippage.tooltip)}
-        showUpDownArrows={true}
-        upDownArrowsLeftAlign={true}
-        prefixComponent={
-          <em>
-            {executionPrice && !hideQuoteAmount ? (
-              <styledEl.ExecutionPriceStyled
-                executionPrice={executionPrice}
-                isInverted={isInverted}
-                hideFiat
-                hideSeparator
-              />
-            ) : (
-              '0'
-            )}
-          </em>
-        }
-        suffix="%"
-        step={0.1}
+
+      <TwapWorstAcceptedPriceInput
+        slippageLabel={tooltips.slippage.label}
+        slippageTooltip={tooltips.slippage.tooltip}
+        twapOrderSlippage={twapOrderSlippage}
+        onSlippageInput={onSlippageInput}
+        executionPrice={executionPrice}
+        hideQuoteAmount={hideQuoteAmount}
+        isInverted={isInverted}
       />
+
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
