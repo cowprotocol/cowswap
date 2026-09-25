@@ -4,6 +4,7 @@ import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
+import { PublicKey, PublicKeyInitData } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
 
@@ -19,12 +20,16 @@ export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   validTo: number
   /** Overrides the quote's own appData doc — e.g. hooks added after quoting. */
   appData?: SwapAdvancedSettings['appData']
+  /** Pays the fee and the order PDA's rent instead of the owner. Omitted for the self-paid flow. */
+  sponsor?: PublicKeyInitData
 }
 
 export interface PlannedCreateOrderStep {
   step: SolanaFlowStep
   orderId: string
   signingScheme: SolanaSwapOrder['signingScheme']
+  /** Who the transaction carrying the step must name as fee payer. */
+  feePayer: PublicKey
 }
 
 /**
@@ -43,6 +48,7 @@ export async function planCreateOrderStep({
   buySymbol,
   validTo,
   appData,
+  sponsor,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
   // TODO: wire up a complete appData object. For now we only need to distinguish swap/limit orders
   const appDataOverride: SwapAdvancedSettings['appData'] = {
@@ -54,9 +60,10 @@ export async function planCreateOrderStep({
     },
   }
 
-  const { instruction, orderId, signingScheme } = await buildSolanaSwapOrder(
+  const { instruction, orderId, signingScheme, feePayer } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
     { quoteRequest: { validTo }, appData: appDataOverride },
+    { sponsor },
   )
 
   return {
@@ -67,5 +74,6 @@ export async function planCreateOrderStep({
     },
     orderId,
     signingScheme,
+    feePayer,
   }
 }
