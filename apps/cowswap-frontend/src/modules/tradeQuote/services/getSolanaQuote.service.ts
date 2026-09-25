@@ -31,6 +31,7 @@ export async function getSolanaQuote(
     owner,
     account,
     receiver,
+    partiallyFillable,
   } = quoteParams
 
   const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
@@ -43,6 +44,7 @@ export async function getSolanaQuote(
       buyTokenDecimals,
       amount,
       kind,
+      partiallyFillable,
       validForSeconds: quoteParams.validFor,
       // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
       // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.

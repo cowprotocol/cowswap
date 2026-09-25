@@ -132,10 +132,10 @@ function buildHookPayload(
 ): OnTradeParamsPayload {
   if (tradeFlowType === FlowType.SOLANA_SWAP && solanaFlowContext) {
     return buildTradeWidgetHookPayload({
-      orderType: solanaFlowContext.swapFlowAnalyticsContext.orderType,
+      orderType: solanaFlowContext.tradeFlowAnalyticsContext.orderType,
       inputAmount: solanaFlowContext.context.inputAmount,
       outputAmount: solanaFlowContext.context.outputAmount,
-      recipient: solanaFlowContext.swapFlowAnalyticsContext.recipient,
+      recipient: solanaFlowContext.tradeFlowAnalyticsContext.recipient,
       orderKind: solanaFlowContext.context.orderKind,
       chainId: solanaFlowContext.context.chainId,
       validTo: solanaFlowContext.context.validTo,
@@ -145,10 +145,10 @@ function buildHookPayload(
 
   // tradeFlowContext is guaranteed non-null here by the caller's earlier guard.
   return buildTradeWidgetHookPayload({
-    orderType: tradeFlowContext!.swapFlowAnalyticsContext.orderType,
+    orderType: tradeFlowContext!.tradeFlowAnalyticsContext.orderType,
     inputAmount: tradeFlowContext!.context.inputAmount,
     outputAmount: tradeFlowContext!.context.outputAmount,
-    recipient: tradeFlowContext!.swapFlowAnalyticsContext.recipient,
+    recipient: tradeFlowContext!.tradeFlowAnalyticsContext.recipient,
     orderKind: tradeFlowContext!.orderParams.kind,
     chainId: tradeFlowContext!.orderParams.chainId,
     validTo: tradeFlowContext!.orderParams.validTo,

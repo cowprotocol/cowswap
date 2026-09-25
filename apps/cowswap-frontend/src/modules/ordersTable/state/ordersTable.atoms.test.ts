@@ -1,11 +1,13 @@
 import type { Getter, Setter } from 'jotai'
 
 import {
+  allowancesAtom,
   balancesAtom,
   tokenAllowancesFamily,
   tradeSpenderAtom,
   type BalancesState,
 } from '@cowprotocol/balances-and-allowances'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
@@ -58,6 +60,7 @@ jest.mock('@cowprotocol/balances-and-allowances', () => {
   )
 
   return {
+    allowancesAtom: atom({}),
     balancesAtom: atom({}),
     tokenAllowancesFamily,
     tradeSpenderAtom: atom(undefined),
@@ -198,6 +201,7 @@ describe('getBalancesAndAllowances', () => {
   })
 })
 
+// eslint-disable-next-line max-lines-per-function
 describe('observeReduxOrders', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -494,6 +498,75 @@ describe('observeReduxOrders', () => {
       TabOrderTypes.ADVANCED,
       1,
       expect.any(Object),
+      {},
+      expect.any(Function),
+    )
+  })
+
+  // Solana has no ERC-20 `allowance()` to multicall — `tokenAllowancesFamily` always returns `null` for
+  // it — so the table must instead read SPL delegation from `allowancesAtom` directly (kept fresh by
+  // `usePersistSplViaMulticall`), or a Solana limit order can never be classified as fundable/unfundable.
+  it('reads Solana allowances directly from allowancesAtom, bypassing tokenAllowancesFamily', () => {
+    const account = '11111111111111111111111111111111'
+    const tokenAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+    const openOrder = { id: 'solana-order', status: OrderStatus.PENDING }
+    const ordersList = {
+      ...EMPTY_ORDERS_LIST,
+      [OrderTabId.OPEN]: [openOrder],
+    }
+    const balancesState: BalancesState = {
+      chainId: SupportedChainId.SOLANA,
+      error: null,
+      fromCache: false,
+      hasFirstLoad: true,
+      isLoading: false,
+      values: { [tokenAddress]: 9n },
+    }
+
+    ;(getReduxOrdersStateByChain as jest.Mock).mockReturnValue({
+      lastCheckedBlock: 123,
+    })
+    ;(getReduxOrdersByOrderTypeFromNetworkState as jest.Mock).mockReturnValue({
+      ordersTokensSet: new Set([tokenAddress]),
+      reduxOrders: [openOrder],
+    })
+    getOrdersTableList.mockReturnValue(ordersList)
+    getFilteredOrders.mockReturnValue([openOrder])
+
+    const get = createGetter(
+      new Map<unknown, unknown>([
+        [walletInfoAtom, { account, chainId: SupportedChainId.SOLANA, connector: undefined }],
+        [ordersTableOrderTypeAtom, TabOrderTypes.LIMIT],
+        [reduxOrdersStateAtom, {}],
+        [tradeSpenderAtom, undefined],
+        [balancesAtom, balancesState],
+        [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n } }],
+        [optimisticAllowancesAtom, {}],
+        [pendingOrdersPermitValidityStateAtom, {}],
+        [tabParamAtom, null],
+        [
+          ordersTableFiltersAtom,
+          {
+            historyStatusFilter: HistoryStatusFilter.ALL,
+            searchTerm: '',
+          },
+        ],
+      ]),
+    )
+    const set = jest.fn<void, [unknown, unknown]>() as Setter
+
+    observeReduxOrders(get, set)
+
+    expect(tokenAllowancesFamily).not.toHaveBeenCalled()
+    expect(getOrdersTableList).toHaveBeenCalledWith(
+      [openOrder],
+      TabOrderTypes.LIMIT,
+      SupportedChainId.SOLANA,
+      {
+        isLoading: false,
+        balances: { [tokenAddress]: 9n },
+        allowances: { [tokenAddress]: 42n },
+      },
       {},
       expect.any(Function),
     )
