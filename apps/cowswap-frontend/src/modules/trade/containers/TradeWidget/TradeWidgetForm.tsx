@@ -1,16 +1,15 @@
 import React, { type CSSProperties, ReactNode, useCallback, useMemo } from 'react'
 
-import svgOrdersSrc from '@cowprotocol/assets/svg/orders.svg'
+import OrdersIcon from '@cowprotocol/assets/svg/orders.svg?react'
 import { useFeatureFlags, useMediaQuery, useTheme, useThrottledCallback } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, isSellOrder, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { ButtonOutlined, Media } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
-import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
@@ -169,14 +168,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
-  const shouldShowMyOrdersButton =
+  const wouldShowMyOrdersButtonWithoutLockScreen =
     !shouldLockForAlternativeOrder &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
-    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
-      (!isMarketOrderWidget && isUpToLarge && !lockScreen))
+    ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge))
 
-  const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
+  const shouldShowMyOrdersButton = wouldShowMyOrdersButtonWithoutLockScreen && !lockScreen
+
+  // Trade type layout is viewport-driven only; My orders visibility is separate.
+  const showDropdown = isInjectedWidgetMode || isMobile || isUpToLarge
 
   const currencyInputCommonProps = {
     isProviderNetworkUnsupported,
@@ -238,21 +239,21 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
             <WalletStatusButton variant="widget" onWalletClick={toggleAccountModal} />
           )}
 
-          {shouldShowMyOrdersButton && (
-            <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
-              <Trans>
-                My orders <SVG src={svgOrdersSrc} />
-              </Trans>
-            </ButtonOutlined>
-          )}
+          <styledEl.MyOrdersButton
+            margin={'0 16px 0 auto'}
+            minHeight={28}
+            $hidden={!shouldShowMyOrdersButton}
+            disabled={!shouldShowMyOrdersButton}
+            onClick={handleMyOrdersClick}
+          >
+            <Trans>
+              My orders <OrdersIcon aria-hidden />
+            </Trans>
+          </styledEl.MyOrdersButton>
 
           <styledEl.HeaderRight>
-            {!lockScreen && (
-              <>
-                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
-                {settingsWidget}
-              </>
-            )}
+            {!lockScreen && !isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
+            {settingsWidget}
           </styledEl.HeaderRight>
         </styledEl.Header>
 

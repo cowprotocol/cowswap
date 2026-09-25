@@ -46,16 +46,37 @@ export const Link = styled(NavLink)`
   ${ItemWithIcon};
 `
 
-export const DropdownButton = styled.div`
+export const DropdownTriggerButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
-  color: inherit;
   gap: 4px;
-  font-size: 14px;
-  font-weight: 500;
+  margin: 0;
+  border: none;
+  background: transparent;
+  font: inherit;
+  font-size: ${({ theme }) => (theme.isWidget ? '16px' : '14px')};
+  font-weight: ${({ theme }) => (theme.isWidget ? '600' : '500')};
+  line-height: 1;
+  color: inherit;
+  cursor: pointer;
   padding: 5px 10px;
+  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
+  min-height: 28px;
+
+  &:hover:not(:disabled) {
+    background: var(${UI.COLOR_PAPER_DARKER});
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
 
   ${ItemWithIcon};
 `
