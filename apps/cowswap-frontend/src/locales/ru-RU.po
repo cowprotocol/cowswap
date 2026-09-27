@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-23 14:05\n"
+"PO-Revision-Date: 2026-09-27 03:11\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -7556,7 +7556,7 @@ msgstr "Ордер был исполнен до того, как его удал
 
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "No favorite tokens"
-msgstr ""
+msgstr "Нет избранных токенов"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "a native currency"
@@ -7947,7 +7947,7 @@ msgstr "Обучение"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Notifications for swap and bridge orders aren't supported yet."
-msgstr ""
+msgstr "Уведомления для свап и бридж ордеров ещё не поддерживаются."
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/hooks/useReceiverPlaceholder.ts
 #~ msgid "{networkLabel} address"
@@ -8326,7 +8326,7 @@ msgstr "выше"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Only trade alerts are sent. No marketing messages."
-msgstr ""
+msgstr "Отправляются только уведомления о сделках. Никаких маркетинговых сообщений."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"
