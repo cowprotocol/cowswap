@@ -70,7 +70,9 @@ export const setPartOrdersAtom = atom(null, async (get, set, nextState: TwapPart
     return acc
   }, {})
 
-  await set(twapPartOrdersAtom, newState)
+  if (!deepEqual(currentState, newState)) {
+    await set(twapPartOrdersAtom, newState)
+  }
 })
 
 export const updatePartOrdersAtom = atom(
