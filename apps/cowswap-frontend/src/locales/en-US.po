@@ -7954,6 +7954,10 @@ msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount and
 msgid "There was an error trying to load claimable tokens"
 msgstr "There was an error trying to load claimable tokens"
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/TransactionLink/index.tsx
+msgid "View on {explorerTitle} ↗"
+msgstr "View on {explorerTitle} ↗"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Learn"
 msgstr "Learn"
