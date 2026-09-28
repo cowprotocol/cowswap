@@ -89,7 +89,7 @@ describe('buildSolanaTradeFlowContext', () => {
   })
 
   it('builds the analytics market label from both symbols', () => {
-    expect(buildSolanaTradeFlowContext(key).swapFlowAnalyticsContext).toEqual(
+    expect(buildSolanaTradeFlowContext(key).tradeFlowAnalyticsContext).toEqual(
       expect.objectContaining({ marketLabel: 'WSOL,USDC', isBridgeOrder: false }),
     )
   })
