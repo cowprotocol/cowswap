@@ -55,7 +55,7 @@
     "@cowprotocol/sdk-cow-shed": "0.6.1",
     "@cowprotocol/sdk-order-book": "4.2.0",
     "@cowprotocol/sdk-trading": "2.7.2",
-    "@cowprotocol/sdk-trading-solana": "0.11.0",
+    "@cowprotocol/sdk-trading-solana": "0.12.0",
     "@cowprotocol/sdk-viem-adapter": "0.3.32",
     "@cowprotocol/sdk-composable": "1.8.2",
     "@cowprotocol/snackbars": "workspace:*",
