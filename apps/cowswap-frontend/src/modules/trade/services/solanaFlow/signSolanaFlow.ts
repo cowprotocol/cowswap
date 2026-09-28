@@ -18,6 +18,9 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
+  /** Called with the deadline of the transaction about to be signed, before the wallet is asked —
+   * the countdown has to start when the blockhash is taken, not when the signature comes back. */
+  onDeadline?: (lastValidBlockHeight: number) => void
 }
 
 /**
@@ -28,7 +31,7 @@ export interface SignSolanaFlowContext {
  * submits, so the order is tracked by its uid instead.
  */
 export async function signSolanaFlow(
-  { connection, provider, feePayer }: SignSolanaFlowContext,
+  { connection, provider, feePayer, onDeadline }: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
 ): Promise<SignedSolanaFlow> {
   if (steps.length === 0) {
@@ -40,6 +43,8 @@ export async function signSolanaFlow(
     instructions: steps.flatMap((step) => step.instructions),
     feePayer,
   })
+
+  onDeadline?.(lastValidBlockHeight)
 
   return { transaction: await signSolanaTransaction(provider, transaction), lastValidBlockHeight }
 }

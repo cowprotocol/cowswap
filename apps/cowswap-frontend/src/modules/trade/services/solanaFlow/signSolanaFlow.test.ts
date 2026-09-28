@@ -77,4 +77,23 @@ describe('signSolanaFlow', () => {
 
     expect(lastValidBlockHeight).toBe(LAST_VALID_BLOCK_HEIGHT)
   })
+
+  // The countdown has to start when the blockhash is taken, so the deadline must be out before the
+  // wallet is asked — not when the signature comes back.
+  it('announces the deadline before asking the wallet to sign', async () => {
+    const context = createContext()
+    const order: string[] = []
+    context.onDeadline = (deadline) => order.push(`deadline:${deadline}`)
+    const signTransaction = context.provider.signTransaction as jest.Mock
+    signTransaction.mockImplementation(async (transaction: Transaction) => {
+      order.push('sign')
+      transaction.partialSign(OWNER)
+
+      return transaction
+    })
+
+    await signSolanaFlow(context, [step('Swap SOL for USDC')])
+
+    expect(order).toEqual([`deadline:${LAST_VALID_BLOCK_HEIGHT}`, 'sign'])
+  })
 })

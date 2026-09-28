@@ -7,7 +7,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useSigningStep } from 'entities/trade'
+import { useSigningStep, useSolanaSigningDeadline, SolanaSigningDeadlineState } from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import {
@@ -23,6 +23,7 @@ import { TradeAmounts } from 'common/types'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { SolanaSigningCountdown } from '../../pure/SolanaSigningCountdown'
 
 const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
@@ -47,6 +48,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
   orderType: UiOrderType
   error: string | null
   pendingTrade: TradeAmounts | null
+  solanaSigningDeadline: SolanaSigningDeadlineState | null
   transactionHash: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
@@ -65,6 +67,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
+  const solanaSigningDeadline = useSolanaSigningDeadline()
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
@@ -84,6 +87,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         error={error}
         orderType={orderType}
         pendingTrade={pendingTrade}
+        solanaSigningDeadline={solanaSigningDeadline}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
         // Disable default permit flow when signingStep is set
@@ -117,6 +121,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
     onDismiss,
     orderType,
     pendingTrade,
+    solanaSigningDeadline,
     permitSignatureState,
     transactionHash,
     submittedContent,
@@ -138,6 +143,18 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
         step={step}
         onDismiss={onDismiss}
         orderType={orderType}
+      />
+    )
+  }
+
+  if (pendingTrade && solanaSigningDeadline) {
+    return (
+      <SolanaSigningCountdown
+        expiresAt={solanaSigningDeadline.expiresAt}
+        durationMs={solanaSigningDeadline.durationMs}
+        inputAmount={pendingTrade.inputAmount}
+        outputAmount={pendingTrade.outputAmount}
+        onDismiss={onDismiss}
       />
     )
   }

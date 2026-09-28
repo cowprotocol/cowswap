@@ -1,4 +1,5 @@
 import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
@@ -7,11 +8,13 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
+import { solanaSigningDeadlineAtom } from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
+  estimateSolanaSigningDeadline,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
   planCreateOrderStep,
@@ -277,13 +280,32 @@ async function postSponsoredBundle(
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
 ): Promise<undefined> {
-  const { transaction } = await signSolanaFlow(context, steps)
+  // The estimation runs while the wallet prompt is up; a fast signature can finish first, and the
+  // late result must not resurrect a countdown the flow already cleared.
+  let signingInProgress = true
 
-  await postSolanaSponsoredOrder(
-    // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-    { transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
-    { orderBookApi },
-  )
+  try {
+    const { transaction } = await signSolanaFlow(
+      {
+        ...context,
+        onDeadline: (lastValidBlockHeight) => {
+          void estimateSolanaSigningDeadline(context.connection, lastValidBlockHeight).then((deadline) => {
+            if (deadline && signingInProgress) jotaiStore.set(solanaSigningDeadlineAtom, deadline)
+          })
+        },
+      },
+      steps,
+    )
+
+    await postSolanaSponsoredOrder(
+      // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
+      { transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+      { orderBookApi },
+    )
+  } finally {
+    signingInProgress = false
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+  }
 
   return undefined
 }
