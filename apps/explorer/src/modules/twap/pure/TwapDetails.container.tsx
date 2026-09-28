@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { ACCOUNT_PROXY_LABEL_EXPLORER, CHAIN_INFO } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { displayTime, isTwapEventId } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -18,6 +18,7 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
 import { AmountRow } from 'components/orders/AmountsDisplay/AmountRow'
 import { Wrapper as AmountsWrapper } from 'components/orders/AmountsDisplay/styled'
+import { DetailsTableTooltips } from 'components/orders/DetailsTable/detailsTableTooltips'
 import { FromItem } from 'components/orders/DetailsTable/items/FromItem'
 import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/SubmissionTimeItem'
 import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
@@ -269,10 +270,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
         onCopy={() => undefined}
       />
       {!areAddressesEqual(order.owner, order.resolvedOwner) && (
-        <DetailRow
-          label="TWAP account proxy"
-          tooltipText="The CoW Shed smart contract that owns the part orders on behalf of the account in From. Safe orders omit this row."
-        >
+        <DetailRow label={ACCOUNT_PROXY_LABEL_EXPLORER} tooltipText={DetailsTableTooltips.twapAccountProxy}>
           <RowWithCopyButton
             textToCopy={order.owner}
             contentsToDisplay={<AddressLink address={order.owner} chainId={chainId} showIcon showNetworkName={false} />}

@@ -8,7 +8,7 @@ export function ReceiveZeroFromNetworkCostsWarning(): ReactNode {
   return (
     <InlineBanner>
       <strong>
-        <Trans>Network costs too high</Trans>
+        <Trans>Sell amount too small</Trans>
       </strong>
       <p>
         <Trans>
