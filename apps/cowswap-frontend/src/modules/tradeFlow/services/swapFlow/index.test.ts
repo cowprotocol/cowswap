@@ -70,7 +70,7 @@ describe('swapFlow - Send analytics payload', () => {
         recipientAddressOrName: '0xaccount',
         validTo: 1700000000,
       },
-      swapFlowAnalyticsContext: {
+      tradeFlowAnalyticsContext: {
         account: '0xaccount',
         marketLabel: 'SELL,BUY',
         orderType: UiOrderType.SWAP,

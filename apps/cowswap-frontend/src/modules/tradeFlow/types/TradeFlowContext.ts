@@ -1,7 +1,7 @@
 import type { Config } from 'wagmi'
 
 import type { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 import type { Command } from '@cowprotocol/types'
@@ -64,6 +64,11 @@ export interface SolanaTradeFlowContext {
     orderKind: OrderKind
     validTo: number
     receiver: string
+    // Protocol-level order classification, mirroring the EVM flow's `postOrderParams.class`.
+    orderClass: OrderClass
+    // Baked into the on-chain order intent at quote time (unlike EVM, where it's set later at
+    // order-post time) — must already be correct in the quote request that produced `solanaQuote`.
+    partiallyFillable: boolean
   }
   callbacks: {
     closeModals: Command
@@ -71,7 +76,7 @@ export interface SolanaTradeFlowContext {
     addTransaction: TransactionAdder
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
   // The app's current appData; passed as `advancedSettings.appData` so the order carries it even if it
   // has changed since the quote (e.g. hooks added after quoting), mirroring the EVM flow's `orderParams.appData`.
   appData: AppDataInfo
@@ -97,7 +102,7 @@ export interface TradeFlowContext {
     setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
   config: Config
   permitInfo: IsTokenPermittableResult
