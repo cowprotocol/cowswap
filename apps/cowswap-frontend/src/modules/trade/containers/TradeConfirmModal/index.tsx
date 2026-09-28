@@ -1,6 +1,5 @@
 import { ReactNode, useCallback } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
@@ -13,6 +12,7 @@ import styled from 'styled-components/macro'
 import {
   useHasNotificationSubscription,
   useOpenNotificationSidebar,
+  useTelegramNotificationsAvailability,
   useTrackOrderBannerDismissal,
 } from 'modules/notifications'
 
@@ -65,7 +65,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
   const { isDismissed: isTrackOrderBannerDismissed, dismiss: dismissTrackOrderBanner } = useTrackOrderBannerDismissal()
@@ -92,7 +92,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         submittedContent={submittedContent}
         showGetNotifiedMessage={
           showGetNotifiedMessage &&
-          areTelegramNotificationsEnabled &&
+          areTelegramNotificationsAvailable &&
           !isNotificationSubscriptionLoading &&
           !hasSubscription &&
           !isInjectedWidget() &&
