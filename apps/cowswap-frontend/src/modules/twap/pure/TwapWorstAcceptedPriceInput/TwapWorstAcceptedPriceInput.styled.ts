@@ -30,8 +30,8 @@ export const ExecutionPriceWrapper = styled.div`
 
 export const SlippageInput = styled.div`
   display: flex;
-  flex: 0 0 100px;
-  width: 100px;
+  flex: 0 0 116px;
+  width: 116px;
 
   > div {
     width: 100%;
