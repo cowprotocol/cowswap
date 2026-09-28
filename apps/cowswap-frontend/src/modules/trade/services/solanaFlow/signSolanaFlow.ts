@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
@@ -46,5 +47,14 @@ export async function signSolanaFlow(
 
   onDeadline?.(lastValidBlockHeight)
 
-  return { transaction: await signSolanaTransaction(provider, transaction), lastValidBlockHeight }
+  const signed = await signSolanaTransaction(provider, transaction)
+
+  // A dead blockhash wastes the signature: the order book takes it, no solver can ever submit it, and
+  // the order rests until `validTo` while the user believes it is live. Nothing here broadcasts, so no
+  // provider error would surface this — it has to be checked explicitly.
+  if ((await connection.getBlockHeight()) > lastValidBlockHeight) {
+    throw new Error(t`The signing window closed before the transaction was signed. Please try again.`)
+  }
+
+  return { transaction: signed, lastValidBlockHeight }
 }

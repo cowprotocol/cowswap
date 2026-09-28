@@ -499,6 +499,10 @@ msgstr "This is the current market price, including the fee."
 msgid "Convert to COW <0/>"
 msgstr "Convert to COW <0/>"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/signSolanaFlow.ts
+msgid "The signing window closed before the transaction was signed. Please try again."
+msgstr "The signing window closed before the transaction was signed. Please try again."
+
 #: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
 msgid "You can see your past transactions in Explorer"
 msgstr "You can see your past transactions in Explorer"

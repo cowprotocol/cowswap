@@ -14,11 +14,14 @@ const SPONSOR = new PublicKey('So11111111111111111111111111111111111111112')
 const BLOCKHASH = 'GHtXQBsoZHVnNFa9YevAzFr17DJjgHXk3ycTKD5xD3Zi'
 const LAST_VALID_BLOCK_HEIGHT = 1_234
 
-function createContext(): SignSolanaFlowContext & { sendTransaction: jest.Mock } {
+function createContext(currentBlockHeight = LAST_VALID_BLOCK_HEIGHT - 1): SignSolanaFlowContext & {
+  sendTransaction: jest.Mock
+} {
   const connection = {
     getLatestBlockhash: jest
       .fn()
       .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT }),
+    getBlockHeight: jest.fn().mockResolvedValue(currentBlockHeight),
   } as unknown as Connection
 
   const sendTransaction = jest.fn()
@@ -95,5 +98,13 @@ describe('signSolanaFlow', () => {
     await signSolanaFlow(context, [step('Swap SOL for USDC')])
 
     expect(order).toEqual([`deadline:${LAST_VALID_BLOCK_HEIGHT}`, 'sign'])
+  })
+
+  // A dead blockhash wastes the signature: the order book takes it, no solver can submit it, and the
+  // order rests until validTo while the user believes it is live — so the hand-over must fail loudly.
+  it('refuses to hand over a transaction whose blockhash died while the user was approving', async () => {
+    await expect(
+      signSolanaFlow(createContext(LAST_VALID_BLOCK_HEIGHT + 1), [step('Swap SOL for USDC')]),
+    ).rejects.toThrow('The signing window closed before the transaction was signed')
   })
 })
