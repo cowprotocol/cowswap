@@ -1118,6 +1118,10 @@ msgstr "Enable Hooks"
 msgid "Seamlessly swap your tokens into CoW AMM pools"
 msgstr "Seamlessly swap your tokens into CoW AMM pools"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateBufferStep.ts
+msgid "Create {buySymbol} buffer"
+msgstr "Create {buySymbol} buffer"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "Overview"
