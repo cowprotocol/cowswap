@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { OnTradeParamsPayload } from '@cowprotocol/events'
@@ -48,6 +49,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
@@ -93,6 +95,7 @@ export function useHandleSwap(
         confirmPriceImpactWithoutFee,
         analytics,
         config,
+        isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
       })
 
       if (result === true) {
@@ -110,6 +113,7 @@ export function useHandleSwap(
     priceImpactParams,
     confirmPriceImpactWithoutFee,
     analytics,
+    isSolanaSponsoredOrdersEnabled,
     ethFlowContext,
     safeBundleFlowContext,
     onChangeRecipient,
@@ -163,12 +167,13 @@ async function runFlowByType(
     confirmPriceImpactWithoutFee: ConfirmPriceImpactFn
     analytics: ReturnType<typeof useTradeFlowAnalytics>
     config: ReturnType<typeof useConfig>
+    isSolanaSponsoredOrdersEnabled: boolean
   },
 ): Promise<boolean> {
   if (tradeFlowType === FlowType.SOLANA_SWAP) {
     if (!deps.solanaFlowContext) throw new Error('Solana flow context is not ready')
     logTradeFlow('SOLANA FLOW', 'Start solana flow')
-    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics)
+    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics, deps.isSolanaSponsoredOrdersEnabled)
     return result === true
   }
   if (!tradeFlowContext) throw new Error('Trade flow context is not ready')

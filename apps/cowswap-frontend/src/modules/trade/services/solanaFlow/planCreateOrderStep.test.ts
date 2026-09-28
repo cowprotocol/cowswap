@@ -64,6 +64,7 @@ describe('planCreateOrderStep', () => {
         quoteRequest: { validTo: VALID_TO },
         appData: { ...DEFAULT_APP_DATA, metadata: { orderClass: { orderClass: 'market' } } },
       },
+      { sponsor: undefined },
     )
     expect(step.instructions).toEqual(['CREATE_ORDER_IX'])
   })
@@ -81,6 +82,24 @@ describe('planCreateOrderStep', () => {
     expect(signingScheme).toBe(SigningScheme.PRESIGN)
   })
 
+  // The fee payer decides who the transaction must name, and a sponsored order is the only case where
+  // it is not the owner.
+  it('passes the sponsor through and reports it as the fee payer', async () => {
+    const sponsor = new PublicKey(new Uint8Array(32).fill(0x99))
+    mockBuildSolanaSwapOrder.mockResolvedValue({ ...builtOrder, feePayer: sponsor } as unknown as SolanaSwapOrder)
+
+    const { feePayer } = await planCreateOrderStep({
+      ...quote,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+      sponsor,
+    })
+
+    expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(expect.anything(), expect.anything(), { sponsor })
+    expect(feePayer).toBe(sponsor)
+  })
+
   // Without this the instruction inherits the quote's own TTL, so the on-chain order expires at a time
   // the UI never showed — the deadline setting appears to be ignored.
   it("applies the user's deadline to the instruction, not just to the local order", async () => {
@@ -89,6 +108,7 @@ describe('planCreateOrderStep', () => {
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       expect.anything(),
       expect.objectContaining({ quoteRequest: expect.objectContaining({ validTo: VALID_TO }) }),
+      expect.anything(),
     )
   })
 
@@ -102,6 +122,7 @@ describe('planCreateOrderStep', () => {
       expect.objectContaining({
         appData: expect.objectContaining({ metadata: { orderClass: { orderClass: 'market' } } }),
       }),
+      expect.anything(),
     )
   })
 
