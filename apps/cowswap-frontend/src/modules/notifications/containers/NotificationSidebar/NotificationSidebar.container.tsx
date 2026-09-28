@@ -76,6 +76,12 @@ export function NotificationSidebar({
     setIsSettingsOpen(initialSettingsOpen)
   }, [initialSettingsOpen])
 
+  useEffect(() => {
+    if (!areTelegramNotificationsAvailable) {
+      setIsSettingsOpen(false)
+    }
+  }, [areTelegramNotificationsAvailable])
+
   const onDismiss = useCallback(() => {
     onClose()
     setIsSettingsOpen(false)
