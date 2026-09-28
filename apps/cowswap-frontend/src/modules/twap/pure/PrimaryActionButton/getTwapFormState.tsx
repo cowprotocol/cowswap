@@ -1,4 +1,3 @@
-import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
@@ -8,7 +7,6 @@ import type { TradeFormValidationContext } from 'modules/tradeFormValidation'
 import { getIsXstockTradeBelowLimit } from 'modules/tradeFormValidation/services/getIsXstockTradeBelowLimit'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
-import { TWAPOrder } from '../../types'
 import { isPartTimeIntervalTooLong } from '../../utils/isPartTimeIntervalTooLong'
 import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooShort'
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
@@ -17,7 +15,6 @@ export interface TwapFormStateParams {
   isWalletSupported: boolean | null
   isTxBundlingSupported: boolean | null
   verification: ExtensibleFallbackVerification | null
-  twapOrder: TWAPOrder | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
   chainId: SupportedChainId | undefined
   partTime: number | undefined
@@ -42,7 +39,6 @@ export enum TwapFormState {
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const {
     isWalletSupported,
-    twapOrder,
     isTxBundlingSupported,
     verification,
     sellAmountPartFiat,
@@ -66,13 +62,7 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     }
   }
 
-  // A zero buy from a missing quote must not block the button. A zero buy because network
-  // costs consumed a positive quote should. The fiat-minimum warning only applies when the
-  // part is actually under that minimum.
-  const partVolumeTooSmall = isSellAmountTooSmall(sellAmountPartFiat, chainId)
-  const hasQuotedBuy = !isFractionFalsy(twapOrder?.buyAmount) || isReceiveZeroFromNetworkCosts
-
-  if (hasQuotedBuy && partVolumeTooSmall) {
+  if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {
     return TwapFormState.SELL_AMOUNT_TOO_SMALL
   }
 
@@ -80,10 +70,10 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     return TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   }
 
-  // Not using `twapOrder.timeInterval` because it's not filled until the order is ready
   if (isPartTimeIntervalTooShort(partTime)) {
     return TwapFormState.PART_TIME_INTERVAL_TOO_SHORT
   }
+
   if (isPartTimeIntervalTooLong(partTime)) {
     return TwapFormState.PART_TIME_INTERVAL_TOO_LONG
   }

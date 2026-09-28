@@ -1,31 +1,12 @@
-import { COW_TOKEN_TO_CHAIN, USDC, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { USDC, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { getTwapFormState, TwapFormState } from './getTwapFormState'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
-import { TWAPOrder } from '../../types'
-
-const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]
-
-if (!COW_SEPOLIA) {
-  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
-}
-
-const twapOrder: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-  buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 10000000),
-  receiver: '0x00000000000000001',
-  numOfParts: 1,
-  startTime: 1000000,
-  timeInterval: 200,
-  span: 0,
-  appData: '0x000000',
-}
 
 const baseParams = {
-  twapOrder: { ...twapOrder },
   // Above SEPOLIA minimum part sell fiat ($10 with 18 decimals)
   sellAmountPartFiat: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18),
   chainId: SupportedChainId.SEPOLIA,
@@ -64,33 +45,17 @@ describe('getTwapFormState()', () => {
     expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
   })
 
-  describe('When sell fiat amount is under threshold', () => {
-    it('And order has buy amount, then should return SELL_AMOUNT_TOO_SMALL', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isTxBundlingSupported: true,
-        verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
-        partTime: 1000000,
-      })
-
-      expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
+  it('returns SELL_AMOUNT_TOO_SMALL when the part sell fiat is under the chain minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
+      chainId: 1,
+      partTime: 1000000,
     })
 
-    it('And order does NOT have buy amount, then should return null', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isTxBundlingSupported: true,
-        verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
-        partTime: 1000000,
-      })
-
-      expect(result).toEqual(null)
-    })
+    expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
   })
 
   it('returns RECEIVE_ZERO_FROM_NETWORK_COSTS when network costs wipe the receive above the fiat minimum', () => {
@@ -98,7 +63,6 @@ describe('getTwapFormState()', () => {
       ...baseParams,
       isTxBundlingSupported: true,
       verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-      twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
       isReceiveZeroFromNetworkCosts: true,
     })
 
@@ -110,7 +74,6 @@ describe('getTwapFormState()', () => {
       ...baseParams,
       isTxBundlingSupported: true,
       verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-      twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
       sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
       chainId: 1,
       isReceiveZeroFromNetworkCosts: true,
