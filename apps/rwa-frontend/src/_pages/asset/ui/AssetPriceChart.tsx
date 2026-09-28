@@ -6,13 +6,14 @@ import type { ReactNode } from 'react'
 import styles from './AssetPriceChart.module.css'
 import { ChartRangeSelector } from './ChartRangeSelector'
 
+import { assetChartQueryAtomFamily } from '../model/assetChartQueryAtomFamily'
 import { chartRangeAtom } from '../model/chartRangeAtom'
 
-import { PriceChart, useAssetChart } from '@/entities/asset'
+import { PriceChart } from '@/entities/asset'
 
 export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
   const range = useAtomValue(chartRangeAtom)
-  const { data, error } = useAssetChart(ticker, range)
+  const { data, error } = useAtomValue(assetChartQueryAtomFamily(ticker))
 
   return (
     <section className={styles.chartCard}>

@@ -10,12 +10,6 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./useDebounce": {
-      "types": "./src/useDebounce.ts",
-      "import": "./src/useDebounce.ts",
-      "require": "./src/useDebounce.ts",
-      "default": "./src/useDebounce.ts"
     }
   },
   "publishConfig": {
@@ -26,11 +20,6 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
-      },
-      "./useDebounce": {
-        "types": "./useDebounce.d.ts",
-        "import": "./useDebounce.mjs",
-        "require": "./useDebounce.js"
       }
     }
   },

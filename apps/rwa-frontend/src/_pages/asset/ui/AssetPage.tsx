@@ -17,7 +17,7 @@ export async function AssetPage({ params }: AssetPageProps): Promise<ReactNode> 
 
   if (!asset) notFound()
 
-  return <AssetView ticker={asset.ticker} />
+  return <AssetView asset={asset} />
 }
 
 export async function generateMetadata({ params }: AssetPageProps): Promise<Metadata> {

@@ -1,14 +1,15 @@
 'use client'
 
-import { useAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 
 import styles from './AssetsSearchInput.module.css'
 
-import { assetsSearchQueryAtom } from '../model/assetsSearchQueryAtom'
+import { assetsSearchQueryAtom, setAssetsSearchQueryAtom } from '../model/assetsSearchQueryAtom'
 
 export function AssetsSearchInput(): ReactNode {
-  const [query, setQuery] = useAtom(assetsSearchQueryAtom)
+  const query = useAtomValue(assetsSearchQueryAtom)
+  const setQuery = useSetAtom(setAssetsSearchQueryAtom)
 
   return (
     <input

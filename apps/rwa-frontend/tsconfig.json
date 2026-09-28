@@ -22,6 +22,6 @@
     "plugins": [{ "name": "next" }],
     "types": ["jest", "node"]
   },
-  "include": ["next-env.d.ts", "global.d.ts", "steiger.config.ts", "app/**/*.ts", "app/**/*.tsx", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
+  "include": ["next-env.d.ts", "global.d.ts", "steiger.config.ts", "proxy.ts", "app/**/*.ts", "app/**/*.tsx", "src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
   "exclude": ["node_modules", "jest.config.ts"]
 }

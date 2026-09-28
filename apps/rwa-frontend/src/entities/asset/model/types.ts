@@ -1,3 +1,5 @@
+import type { DegradableResponse } from '@/shared/api'
+
 export interface RwaAsset {
   ticker: string
   title: string
@@ -56,7 +58,9 @@ export interface RwaTradingTime {
 
 export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'change24h', 'price', 'ticker'] as const
 
-export interface RwaAssetsPage {
+export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}
+
+export interface RwaAssetsPage extends DegradableResponse {
   items: RwaAssetWithMarket[]
   page: number
   pageSize: number
@@ -64,7 +68,7 @@ export interface RwaAssetsPage {
   totalPages: number
 }
 
-export interface RwaAssetsSearchResult {
+export interface RwaAssetsSearchResult extends DegradableResponse {
   items: RwaAssetWithMarket[]
 }
 

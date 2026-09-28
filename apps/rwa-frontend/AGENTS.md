@@ -32,6 +32,12 @@ This file: rwa-frontend app-specific commands only.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
+- Data fetching uses Jotai: `atomWithQuery` from `jotai-tanstack-query`, with `atomFamily` from `jotai-family` for per-ticker queries. SWR is banned by ESLint. Query options live in `entities/asset/api/assetsQueries.ts`, and every query key starts with `RWA_QUERY_KEY_ROOT`.
+- There is one `QueryClient` per app instance (`_app/layout/Providers.tsx`), shared by Jotai (`queryClientAtom`) and wagmi.
+- `_app/offline/persistQueryCache.ts` persists app queries to IndexedDB and restores each query when it enters the cache. Don't add a second client-side cache for API data.
+- A response built without upstream data sets `degraded: true` (`DegradableResponse` in `@/shared/api`). `jsonResponse` sends it with `no-store`, and the IndexedDB query persistence never saves it, so an outage can't overwrite the last good data.
+- Asset pages are prerendered for upper-case tickers only (`dynamicParams = false`). `proxy.ts` redirects other casings.
+- The service worker (`public/sw.js`) is registered as `/sw.js?v=<NEXT_PUBLIC_APP_VERSION>`, so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.
 
 ## Architecture: Feature-Sliced Design
 
@@ -41,6 +47,6 @@ Follows [FSD for Next.js](https://feature-sliced.design/docs/guides/tech/with-ne
 - `src/` layers, top to bottom: `_app` → `_pages` → `widgets` → `features` → `entities` → `shared`. A layer imports only from layers below it. Slices on the same layer do not import each other.
 - `_app` and `_pages` carry the `_` prefix so they don't clash with Next.js `app`/`pages`.
 - Import other slices only through their public API (`index.ts`), e.g. `@/entities/asset`. Inside a slice, use relative imports.
-- Server-only code has a separate public API, `index.server.ts` (e.g. `@/entities/asset/index.server`). Client code must not import it.
+- Server-only code has a separate public API, `index.server.ts` (e.g. `@/entities/asset/index.server`, `@/shared/api/index.server`), and starts with `import 'server-only'`, so a client import fails the build.
 - Segments are named by purpose (`ui`, `model`, `api`, `lib`, `config`), not by kind (`components`, `hooks`, `providers`).
 - Pages first: keep code in the page slice until a second consumer needs it, then extract a feature or widget. steiger's `insignificant-slice` rule flags slices with a single consumer.

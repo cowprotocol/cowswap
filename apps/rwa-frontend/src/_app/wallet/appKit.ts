@@ -1,5 +1,3 @@
-import { cookieStorage, createStorage } from 'wagmi'
-
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 
@@ -12,8 +10,8 @@ const projectId = process.env.NEXT_PUBLIC_WC_PROJECT_ID || DEFAULT_PROJECT_ID
 export const wagmiAdapter = new WagmiAdapter({
   networks: SUPPORTED_NETWORKS,
   projectId,
+  // Defers reconnecting from localStorage until after hydration, the static HTML is always rendered disconnected
   ssr: true,
-  storage: createStorage({ storage: cookieStorage }),
 })
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig

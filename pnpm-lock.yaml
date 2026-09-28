@@ -1197,9 +1197,6 @@ importers:
 
   apps/rwa-frontend:
     dependencies:
-      '@cowprotocol/common-hooks':
-        specifier: workspace:*
-        version: link:../../libs/common-hooks
       '@cowprotocol/common-utils':
         specifier: workspace:*
         version: link:../../libs/common-utils
@@ -1218,12 +1215,21 @@ importers:
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
         version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+      '@tanstack/query-core':
+        specifier: 5.90.20
+        version: 5.90.20
       '@tanstack/react-query':
         specifier: 5.90.20
         version: 5.90.20(react@19.1.2)
       jotai:
         specifier: 2.16.2
         version: 2.16.2(@babel/core@7.28.4)(@babel/template@7.28.6)(@types/react@19.1.3)(react@19.1.2)
+      jotai-family:
+        specifier: 1.0.1
+        version: 1.0.1(jotai@2.16.2(@babel/core@7.28.4)(@babel/template@7.28.6)(@types/react@19.1.3)(react@19.1.2))
+      jotai-tanstack-query:
+        specifier: 0.11.0
+        version: 0.11.0(@tanstack/query-core@5.90.20)(@tanstack/react-query@5.90.20(react@19.1.2))(jotai@2.16.2(@babel/core@7.28.4)(@babel/template@7.28.6)(@types/react@19.1.3)(react@19.1.2))(react@19.1.2)
       lightweight-charts:
         specifier: 5.2.1
         version: 5.2.1
@@ -1239,9 +1245,9 @@ importers:
       react-dom:
         specifier: 19.1.2
         version: 19.1.2(react@19.1.2)
-      swr:
-        specifier: 2.3.3
-        version: 2.3.3(react@19.1.2)
+      server-only:
+        specifier: 0.0.1
+        version: 0.0.1
       viem:
         specifier: 2.48.8
         version: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -16422,6 +16428,9 @@ packages:
   serve-static@1.16.2:
     resolution: {integrity: sha512-VqpjJZKadQB/PEbEwvFdO43Ax5dFBZ2UECszz8bQ7pi7wt//PWe1P6MN7eCnjsatYtBT6EuiClbjSWP2WrIoTw==}
     engines: {node: '>= 0.8.0'}
+
+  server-only@0.0.1:
+    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
 
   servify@0.1.12:
     resolution: {integrity: sha512-/xE6GvsKKqyo1BAY+KxOWXcLpPsUUyji7Qg3bVD7hh1eRze5bR1uYiuDA/k3Gof1s9BTzQZEJK8sNcNGFIzeWw==}
@@ -36496,6 +36505,8 @@ snapshots:
       send: 0.19.0
     transitivePeerDependencies:
       - supports-color
+
+  server-only@0.0.1: {}
 
   servify@0.1.12:
     dependencies:

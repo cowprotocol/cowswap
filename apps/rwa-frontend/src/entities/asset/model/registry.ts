@@ -1,3 +1,5 @@
+import 'server-only'
+
 import registryJson from '../../../../data/RWAs.json'
 
 import type { RwaAsset, RwaAssetType, RwaRegistry } from './types'

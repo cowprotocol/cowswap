@@ -1,17 +1,20 @@
+import 'server-only'
+
 import { NextResponse } from 'next/server'
 
-import type { RwaApiError } from '@/shared/api'
+import { isDegradedResponse, type RwaApiError } from '@/shared/api'
 
 export function errorResponse(status: number, error: string): NextResponse<RwaApiError> {
   return NextResponse.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } })
 }
 
+/** Degraded bodies (see `DegradableResponse`) are never cached, so an upstream outage doesn't outlive itself */
 export function jsonResponse<T>(body: T, maxAgeSeconds: number): NextResponse<T> {
-  return NextResponse.json(body, {
-    headers: {
-      'Cache-Control': `public, s-maxage=${maxAgeSeconds}, stale-while-revalidate=${maxAgeSeconds * 5}`,
-    },
-  })
+  const cacheControl = isDegradedResponse(body)
+    ? 'no-store'
+    : `public, s-maxage=${maxAgeSeconds}, stale-while-revalidate=${maxAgeSeconds * 5}`
+
+  return NextResponse.json(body, { headers: { 'Cache-Control': cacheControl } })
 }
 
 export function parseEnumParam<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T | null {

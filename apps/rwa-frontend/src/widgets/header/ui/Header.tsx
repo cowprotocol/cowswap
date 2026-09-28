@@ -2,8 +2,9 @@ import type { ReactNode } from 'react'
 
 import Link from 'next/link'
 
-import { ConnectButton } from './ConnectButton'
 import styles from './Header.module.css'
+
+import { ConnectButton } from '@/features/connect-wallet'
 
 export function Header(): ReactNode {
   return (
