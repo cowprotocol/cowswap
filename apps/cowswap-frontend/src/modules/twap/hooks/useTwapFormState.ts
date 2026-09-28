@@ -13,6 +13,7 @@ import { useTwapOrder } from './useTwapOrder'
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
 import { twapTimeIntervalAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
+import { isReceiveZeroFromNetworkCosts } from '../utils/isReceiveZeroFromNetworkCosts'
 
 export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
@@ -47,5 +48,6 @@ export function useTwapFormState(): TwapFormState | null {
     numberOfPartsValue,
     isTwapEoaEnabled: !!isTwapEoaEnabled,
     isSafeViaWc,
+    isReceiveZeroFromNetworkCosts: isReceiveZeroFromNetworkCosts(receiveAmountInfo),
   })
 }

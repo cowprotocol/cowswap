@@ -48,6 +48,18 @@ export const isSafeViaWcAtom = atom((get) => {
   return peerName.includes('safe')
 })
 
+/**
+ * True when the wallet is not a Safe (including Safe via WalletConnect).
+ * While Safe-via-WC detection is still loading, returns null.
+ */
+export const isEoaAtom = atom((get): boolean | null => {
+  const isSafeViaWc = get(isSafeViaWcAtom)
+
+  if (isSafeViaWc === null) return null
+
+  return !get(isSafeWalletAtom) && !isSafeViaWc
+})
+
 export const accountTypeAsyncAtom = atom(async (get) => {
   const { chainId, account, connector } = get(walletInfoAtom)
 

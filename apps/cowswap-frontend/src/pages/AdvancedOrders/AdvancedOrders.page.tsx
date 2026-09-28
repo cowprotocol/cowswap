@@ -67,7 +67,9 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
-  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact =
+    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL ||
+    twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
