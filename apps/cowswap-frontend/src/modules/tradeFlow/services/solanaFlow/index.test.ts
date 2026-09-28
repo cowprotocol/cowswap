@@ -9,6 +9,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
+import { planCreateBufferStep } from 'modules/trade/services/solanaFlow/planCreateBufferStep'
 import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
@@ -34,12 +35,14 @@ jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolan
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateBufferStep', () => ({ planCreateBufferStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
+const mockPlanCreateBufferStep = planCreateBufferStep as jest.MockedFunction<typeof planCreateBufferStep>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
@@ -55,6 +58,7 @@ const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary }
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
 const BUY_ATA_STEP = step('Create USDC account')
+const BUFFER_STEP = step('Create USDC buffer')
 const ORDER_STEP = step('Swap SOL for USDC')
 const ORDER_ID = '0xdeadbeef'
 
@@ -172,6 +176,7 @@ describe('solanaFlow', () => {
     mockPlanWrapStep.mockReturnValue(WRAP_STEP)
     mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
     mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
+    mockPlanCreateBufferStep.mockReturnValue(BUFFER_STEP)
     mockPlanCreateOrderStep.mockResolvedValue({
       step: ORDER_STEP,
       orderId: ORDER_ID,
@@ -179,14 +184,14 @@ describe('solanaFlow', () => {
     })
   })
 
-  it('bundles wrap, delegate, buy-ATA and create-order into a single transaction', async () => {
+  it('bundles wrap, delegate, buy-ATA, buffer and create-order into a single transaction', async () => {
     const context = buildContext({ isNativeSell: true })
 
     const result = await solanaFlow(context, buildAnalytics())
 
     expect(result).toBe(true)
     expect(mockSendSolanaFlow).toHaveBeenCalledTimes(1)
-    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, BUY_ATA_STEP, ORDER_STEP])
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, BUY_ATA_STEP, BUFFER_STEP, ORDER_STEP])
   })
 
   it('passes the full sell amount to the wrap planner for a native SOL sell', async () => {
@@ -235,7 +240,25 @@ describe('solanaFlow', () => {
 
     // The buy-ATA step has no skip condition on purpose: the instruction is idempotent, so including it
     // unconditionally is cheaper than an RPC existence check and immune to the account appearing mid-flight.
-    expect(sentSteps()).toEqual([BUY_ATA_STEP, ORDER_STEP])
+    expect(sentSteps()).toEqual([BUY_ATA_STEP, BUFFER_STEP, ORDER_STEP])
+  })
+
+  // A native-SOL buy is paid straight from the settlement state PDA, so there is no buffer to create.
+  it('drops the buffer step when the buy side has no buffer', async () => {
+    mockPlanCreateBufferStep.mockReturnValue(null)
+
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, BUY_ATA_STEP, ORDER_STEP])
+  })
+
+  // The rent is donated to the protocol, so subsidising it would let a crafted mint drain the sponsor.
+  it('always has the owner pay for the buffer, never the sponsor', async () => {
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateBufferStep).toHaveBeenCalledWith(expect.objectContaining({ payer: context.solana.owner }))
   })
 
   it('creates the buy account for the receiver the quote used, not the one resolved for the order', async () => {

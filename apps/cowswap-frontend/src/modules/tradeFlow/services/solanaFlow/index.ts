@@ -12,6 +12,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
+  planCreateBufferStep,
   planCreateBuyAtaStep,
   planCreateOrderStep,
   planDelegateStep,
@@ -100,6 +101,9 @@ export async function solanaFlow(
       planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       planCreateBuyAtaStep({ payer: rentPayer, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
+      // `owner`, not `rentPayer`: a buffer belongs to the protocol and its rent is donated, so a
+      // sponsor must never fund one — a mint crafted to make it unrecoverable would drain us.
+      planCreateBufferStep({ payer: owner, quote: solanaQuote, buySymbol }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 
