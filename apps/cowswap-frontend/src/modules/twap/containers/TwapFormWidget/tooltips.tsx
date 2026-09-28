@@ -94,7 +94,7 @@ export function useLabelsTooltips(): LabelTooltipItems {
       ),
     },
     price: {
-      label: t`Rate`,
+      label: t`Quoted price`,
       tooltip: t`This is the current market price, including the fee.`,
     },
     sellAmount: {
