@@ -1,9 +1,13 @@
 import { Command } from '@cowprotocol/types'
 
+import { orderBookApi } from 'cowSdk'
 import ms from 'ms.macro'
 
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
+
+import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
@@ -36,7 +40,7 @@ export function checkSolanaTransaction(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions,
 ): Command {
-  const { chainId, dispatch, lastBlockNumber, solanaConnection } = params
+  const { chainId, dispatch, lastBlockNumber, solanaConnection, isSafeWallet, cancelOrdersBatch } = params
   const { hash } = transaction
 
   let isCancelled = false
@@ -54,6 +58,27 @@ export function checkSolanaTransaction(
     }
 
     dispatch(finalizeTransaction({ chainId, hash, receipt }))
+
+    if (transaction.onChainCancellation) {
+      const { orderId } = transaction.onChainCancellation
+
+      if (status === 'success') {
+        // A solver's fill can land around the same time as the cancellation. Check the order-book
+        // before marking it cancelled so an order that's actually fulfilled never flashes "Cancelled" -
+        // leave it alone and let the normal fulfilled-order detection pick it up instead.
+        orderBookApi.getOrderMultiEnv(orderId, { chainId }).then((order) => {
+          if (!order || isOrderFulfilled(order)) return
+
+          cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
+          emitCancelledOrderEvent({ chainId, order, transactionHash: hash })
+        })
+      } else {
+        partialOrderUpdate(
+          { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
+          dispatch,
+        )
+      }
+    }
 
     if (!transaction.solanaOrderCreation) {
       emitOnchainTransactionEvent({
