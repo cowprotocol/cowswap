@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-27 04:18\n"
+"PO-Revision-Date: 2026-09-28 10:31\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -2199,6 +2199,7 @@ msgstr "Доступно к возврату"
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вероятно, вы продадите <0/> с убытком (хотя CoW Swap всегда будет стараться дать вам лучшую цену независимо от этого)."
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateLimitOrderStep.ts
 #: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateOrderStep.ts
 msgid "Swap {sellSymbol} for {buySymbol}"
 msgstr "Поменять {sellSymbol} на {buySymbol}"
@@ -4201,8 +4202,8 @@ msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in D
 msgstr "Размещение и отмена лимитных ордеров на CoW Swap бесплатны. Это уникальная особенность в DeFi!"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
-msgid "safeBundleFlowContext is not set!"
-msgstr "safeBundleFlowContext не установлен!"
+#~ msgid "safeBundleFlowContext is not set!"
+#~ msgstr "safeBundleFlowContext is not set!"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: No manifest.json file found. Please check the URL and try again."
