@@ -105,6 +105,7 @@ export async function solanaFlow(
           sellSymbol,
           buySymbol,
           validTo,
+          sponsor,
         })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
