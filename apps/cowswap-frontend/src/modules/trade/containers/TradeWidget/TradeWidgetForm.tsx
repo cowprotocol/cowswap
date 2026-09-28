@@ -16,6 +16,7 @@ import { Nullish } from 'types'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
+import { CaptchaWidget } from 'modules/captcha'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { WalletStatusButton } from 'modules/wallet'
@@ -328,14 +329,17 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     <WrapFlowActionButton sellToken={sellToken} />
                   ) : null
                 ) : (
-                  bottomContent?.(
-                    hideTradeWarnings ? null : (
-                      <TradeWarnings
-                        enableSmartSlippage={enableSmartSlippage}
-                        isTradePriceUpdating={isTradePriceUpdating}
-                      />
-                    ),
-                  )
+                  <>
+                    <CaptchaWidget />
+                    {bottomContent?.(
+                      hideTradeWarnings ? null : (
+                        <TradeWarnings
+                          enableSmartSlippage={enableSmartSlippage}
+                          isTradePriceUpdating={isTradePriceUpdating}
+                        />
+                      ),
+                    )}
+                  </>
                 )}
               </>
             )}
