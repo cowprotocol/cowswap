@@ -1,3 +1,5 @@
+import 'server-only'
+
 import { normalizeError } from '@cowprotocol/common-utils/errors'
 
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
@@ -7,7 +9,9 @@ import { getAssetByTicker, getAssets } from '../model/registry'
 
 import type {
   RwaAsset,
+  RwaAssetResponse,
   RwaAssetsPage,
+  RwaAssetsSearchResult,
   RwaAssetWithMarket,
   RwaChartPoint,
   RwaChartRange,
@@ -25,18 +29,31 @@ export interface ListAssetsParams {
   order: RwaSortOrder
 }
 
-export async function findAssets(query: string, limit: number): Promise<RwaAssetWithMarket[]> {
+interface AssetsWithMarket {
+  items: RwaAssetWithMarket[]
+  degraded: boolean
+}
+
+interface MarketDataLoadResult {
+  byTicker: Map<string, RwaMarketData>
+  degraded: boolean
+}
+
+export async function findAssets(query: string, limit: number): Promise<RwaAssetsSearchResult> {
   return withMarketData(searchAssets(getAssets(), query).slice(0, limit))
 }
 
-export async function getAsset(ticker: string): Promise<RwaAssetWithMarket | null> {
+export async function getAsset(ticker: string): Promise<RwaAssetResponse | null> {
   const asset = getAssetByTicker(ticker)
 
   if (!asset) return null
 
-  const [withMarket] = await withMarketData([asset])
+  const {
+    items: [withMarket],
+    degraded,
+  } = await withMarketData([asset])
 
-  return withMarket
+  return { ...withMarket, degraded }
 }
 
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]> {
@@ -44,27 +61,27 @@ export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Prom
 }
 
 export async function listAssets({ page, pageSize, sort, order }: ListAssetsParams): Promise<RwaAssetsPage> {
-  const assets = await withMarketData(getAssets())
+  const { items: assets, degraded } = await withMarketData(getAssets())
   const sorted = sortAssets(assets, sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
 
-  return { items, page, pageSize, total: sorted.length, totalPages }
+  return { items, page, pageSize, total: sorted.length, totalPages, degraded }
 }
 
 // Always requested for the whole registry, so every route hits the same cached upstream request
-async function loadMarketData(): Promise<Map<string, RwaMarketData>> {
+async function loadMarketData(): Promise<MarketDataLoadResult> {
   try {
-    return await marketDataProvider.getMarketData(getAssets())
+    return { byTicker: await marketDataProvider.getMarketData(getAssets()), degraded: false }
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load market data', error)
 
-    return new Map()
+    return { byTicker: new Map(), degraded: true }
   }
 }
 
-async function withMarketData(assets: RwaAsset[]): Promise<RwaAssetWithMarket[]> {
-  const marketData = await loadMarketData()
+async function withMarketData(assets: RwaAsset[]): Promise<AssetsWithMarket> {
+  const { byTicker, degraded } = await loadMarketData()
 
-  return assets.map((asset) => ({ ...asset, market: marketData.get(asset.ticker) ?? null }))
+  return { items: assets.map((asset) => ({ ...asset, market: byTicker.get(asset.ticker) ?? null })), degraded }
 }

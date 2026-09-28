@@ -2,16 +2,17 @@ import type { ReactNode } from 'react'
 
 import styles from './AssetStats.module.css'
 
-import type { RwaAssetWithMarket } from '../model/types'
+import type { RwaAsset, RwaMarketData } from '../model/types'
 
 import { formatCompactUsd, formatPercent, formatRange, formatUsd } from '@/shared/lib/format'
 
 interface AssetStatsProps {
-  asset: RwaAssetWithMarket
+  asset: RwaAsset
+  market: RwaMarketData | null | undefined
 }
 
-export function AssetStats({ asset }: AssetStatsProps): ReactNode {
-  const { market, allowedTradingTime } = asset
+export function AssetStats({ asset, market }: AssetStatsProps): ReactNode {
+  const { allowedTradingTime } = asset
   const change = market?.change24h
   const changeClassName = change ? (change > 0 ? styles.positive : styles.negative) : ''
 

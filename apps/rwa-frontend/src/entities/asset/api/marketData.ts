@@ -1,6 +1,13 @@
+import 'server-only'
+
 import type { RwaAsset, RwaChartPoint, RwaChartRange, RwaMarketData } from '../model/types'
 
-import { type CoingeckoChartDays, type CoingeckoMarket, fetchCoinsMarkets, fetchMarketChart } from '@/shared/api'
+import {
+  type CoingeckoChartDays,
+  type CoingeckoMarket,
+  fetchCoinsMarkets,
+  fetchMarketChart,
+} from '@/shared/api/index.server'
 
 export interface MarketDataProvider {
   /** Missing tickers in the result mean the provider has no data for them */

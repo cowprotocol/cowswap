@@ -1,5 +1,6 @@
 'use client'
 
+import { useAtomValue } from 'jotai'
 import type { ReactNode } from 'react'
 
 import Link from 'next/link'
@@ -8,19 +9,11 @@ import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { TradeWidget } from './TradeWidget'
 
-import { AssetStats, useAsset } from '@/entities/asset'
+import { assetQueryAtomFamily, AssetStats, type RwaAsset } from '@/entities/asset'
 import { StatusMessage } from '@/shared/ui/status-message'
 
-export function AssetView({ ticker }: { ticker: string }): ReactNode {
-  const { data: asset, error } = useAsset(ticker)
-
-  if (error && !asset)
-    return (
-      <StatusMessage>
-        Failed to load {ticker}: {error.message}
-      </StatusMessage>
-    )
-  if (!asset) return <StatusMessage>Loading…</StatusMessage>
+export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
+  const { data, error } = useAtomValue(assetQueryAtomFamily(asset.ticker))
 
   return (
     <div className={styles.layout}>
@@ -33,7 +26,9 @@ export function AssetView({ ticker }: { ticker: string }): ReactNode {
           <span className={styles.badge}>{asset.ticker}</span>
           <span className={styles.badge}>{asset.type}</span>
         </header>
-        <AssetStats asset={asset} />
+        {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
+        {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
+        <AssetStats asset={asset} market={data?.market} />
         <AssetPriceChart ticker={asset.ticker} />
       </div>
       <aside className={styles.side}>

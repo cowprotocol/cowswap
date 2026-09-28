@@ -1,3 +1,5 @@
+import 'server-only'
+
 /** `days` param of `/coins/{id}/market_chart` */
 export type CoingeckoChartDays = '1' | '7' | '30' | '365' | 'max'
 

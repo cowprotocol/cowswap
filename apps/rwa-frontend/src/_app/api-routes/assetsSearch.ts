@@ -1,4 +1,3 @@
-import type { RwaAssetsSearchResult } from '@/entities/asset/index.server'
 import type { NextRequest } from 'next/server'
 
 import { findAssets } from '@/entities/asset/index.server'
@@ -20,7 +19,5 @@ export async function searchAssetsHandler(request: NextRequest): Promise<Respons
   if (query.length > MAX_QUERY_LENGTH) return errorResponse(400, `"q" is longer than ${MAX_QUERY_LENGTH} chars`)
   if (limit === null) return errorResponse(400, `Invalid "limit", expected 1..${MAX_LIMIT}`)
 
-  const result: RwaAssetsSearchResult = { items: await findAssets(query, limit) }
-
-  return jsonResponse(result, 60)
+  return jsonResponse(await findAssets(query, limit), 60)
 }

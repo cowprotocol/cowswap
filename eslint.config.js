@@ -412,6 +412,11 @@ module.exports = [
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@next/next/no-html-link-for-pages': 'off',
       'react-refresh/only-export-components': 'off',
+      // Core rule on purpose: the global `@typescript-eslint/no-restricted-imports` list stays in effect
+      'no-restricted-imports': [
+        'error',
+        { name: 'swr', message: 'rwa-frontend fetches data with jotai-tanstack-query `atomWithQuery`.' },
+      ],
     },
   },
   // TODO: remove this once the errors have been fixed

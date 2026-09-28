@@ -11,10 +11,12 @@ export function ServiceWorkerRegistration(): ReactNode {
   useEffect(() => {
     if (!IS_ENABLED || !('serviceWorker' in navigator)) return
 
-    navigator.serviceWorker.register('/sw.js').catch((err: unknown) => {
-      const error = normalizeError(err)
-      console.error('[rwa] Service worker registration failed', error)
-    })
+    navigator.serviceWorker
+      .register(`/sw.js?v=${process.env.NEXT_PUBLIC_APP_VERSION ?? 'dev'}`)
+      .catch((err: unknown) => {
+        const error = normalizeError(err)
+        console.error('[rwa] Service worker registration failed', error)
+      })
   }, [])
 
   return null

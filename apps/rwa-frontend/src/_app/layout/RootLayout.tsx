@@ -2,8 +2,6 @@ import type { ReactNode } from 'react'
 
 import { Providers } from './Providers'
 
-import { PersistentSwrProvider } from '../offline'
-
 import type { Metadata, Viewport } from 'next'
 
 import { OfflineBanner } from '@/shared/ui/offline-banner'
@@ -28,9 +26,7 @@ export function RootLayout({ children }: { children: ReactNode }): ReactNode {
         <Providers>
           <OfflineBanner />
           <Header />
-          <main className="page">
-            <PersistentSwrProvider>{children}</PersistentSwrProvider>
-          </main>
+          <main className="page">{children}</main>
         </Providers>
       </body>
     </html>

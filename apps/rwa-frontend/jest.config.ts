@@ -10,6 +10,7 @@ export default {
     '^@/(.*)$': '<rootDir>/src/$1',
     '\\.css$': '<rootDir>/jest/cssModuleMock.js',
     '^lightweight-charts$': '<rootDir>/jest/lightweightChartsMock.js',
+    '^server-only$': '<rootDir>/jest/serverOnlyMock.js',
   },
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   coverageDirectory: '../../coverage/apps/rwa-frontend',
