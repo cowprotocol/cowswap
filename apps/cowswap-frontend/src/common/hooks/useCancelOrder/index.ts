@@ -155,7 +155,7 @@ function estimateOnChainTxCost(
   gasPrices: ReturnType<typeof useGasPrices>,
   setContext: (state: Partial<CancellationModalContext>) => void,
 ): void {
-  if (isSolanaChain(chainId)) return
+  if (chainId && isSolanaChain(chainId)) return
 
   getOnChainTxInfo(order).then(({ estimatedGas }) => {
     const gasPrice = BigInt(gasPrices?.average || '0')

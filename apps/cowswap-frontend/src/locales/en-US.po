@@ -14,6 +14,7 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
@@ -1437,6 +1438,7 @@ msgid "Swaps not supported"
 msgstr "Swaps not supported"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
 msgid "Some orders can not be cancelled!"
 msgstr "Some orders can not be cancelled!"
 
@@ -4078,6 +4080,10 @@ msgstr "From at most"
 msgid "Copied!"
 msgstr "Copied!"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
+msgid "Max reached"
+msgstr "Max reached"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
@@ -4346,6 +4352,10 @@ msgstr "Tokens from external sources."
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #~ msgid "Insufficient"
 #~ msgstr "Insufficient"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
+msgid "Up to {MAX_SOLANA_BATCH_CANCEL_ORDERS} orders can be cancelled together"
+msgstr "Up to {MAX_SOLANA_BATCH_CANCEL_ORDERS} orders can be cancelled together"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 #~ msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
@@ -6508,6 +6518,10 @@ msgstr "Quote expired. Refreshing..."
 msgid "Approval pending"
 msgstr "Approval pending"
 
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelOrder.ts
+msgid "Cancel order {shortOrderId}"
+msgstr "Cancel order {shortOrderId}"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
 #~ msgstr "Aave Repay"
@@ -8285,6 +8299,10 @@ msgstr "CoW Swap <0>is back online</0>"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeModalContent.tsx
 #~ msgid "This wallet isn't eligible for that code."
 #~ msgstr "This wallet isn't eligible for that code."
+
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
+msgid "Cancel {ordersCount} orders"
+msgstr "Cancel {ordersCount} orders"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
 #~ msgid "Get notified when your order fills"
