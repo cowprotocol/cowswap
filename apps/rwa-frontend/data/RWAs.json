@@ -1,0 +1,358 @@
+{
+  "version": "0.1.0",
+  "lastModificationTime": "2026-09-28T00:00:00.000Z",
+  "assets": [
+    {
+      "ticker": "AAPL",
+      "title": "Apple",
+      "type": "stock",
+      "priority": 10,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x9d275685dC284C8eB1C79f6ABA7a63Dc75ec890a",
+          "symbol": "AAPLx",
+          "name": "Apple xStock",
+          "decimals": 18,
+          "coingeckoId": "apple-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x9d275685dC284C8eB1C79f6ABA7a63Dc75ec890a",
+          "symbol": "AAPLx",
+          "name": "Apple xStock",
+          "decimals": 18,
+          "coingeckoId": "apple-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x9d275685dC284C8eB1C79f6ABA7a63Dc75ec890a",
+          "symbol": "AAPLx",
+          "name": "Apple xStock",
+          "decimals": 18,
+          "coingeckoId": "apple-xstock"
+        },
+        {
+          "chainId": 1,
+          "address": "0x14c3abF95Cb9C93a8b82C1CdCB76D72Cb87b2d4c",
+          "symbol": "AAPLon",
+          "name": "Apple (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "apple-ondo-tokenized-stock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x390a684EF9cADE28A7AD0DFa61AB1Eb3842618c4",
+          "symbol": "AAPLon",
+          "name": "Apple (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "apple-ondo-tokenized-stock"
+        }
+      ]
+    },
+    {
+      "ticker": "MSFT",
+      "title": "Microsoft",
+      "type": "stock",
+      "priority": 10,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x5621737f42dAE558b81269FcB9E9E70c19Aa6b35",
+          "symbol": "MSFTx",
+          "name": "Microsoft xStock",
+          "decimals": 18,
+          "coingeckoId": "microsoft-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x5621737f42dAE558b81269FcB9E9E70c19Aa6b35",
+          "symbol": "MSFTx",
+          "name": "Microsoft xStock",
+          "decimals": 18,
+          "coingeckoId": "microsoft-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x5621737f42dAE558b81269FcB9E9E70c19Aa6b35",
+          "symbol": "MSFTx",
+          "name": "Microsoft xStock",
+          "decimals": 18,
+          "coingeckoId": "microsoft-xstock"
+        },
+        {
+          "chainId": 1,
+          "address": "0xB812837b81a3a6b81d7CD74CfB19A7f2784555E5",
+          "symbol": "MSFTon",
+          "name": "Microsoft (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "microsoft-ondo-tokenized-stock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x6Bfe75D1ad432050eA973C3A3DcD88F02e2444C3",
+          "symbol": "MSFTon",
+          "name": "Microsoft (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "microsoft-ondo-tokenized-stock"
+        }
+      ]
+    },
+    {
+      "ticker": "NVDA",
+      "title": "NVIDIA",
+      "type": "stock",
+      "priority": 9,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x2D1F7226Bd1F780AF6B9A49DCC0aE00E8Df4bDEE",
+          "symbol": "NVDAon",
+          "name": "NVIDIA (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "nvidia-ondo-tokenized-stock"
+        },
+        {
+          "chainId": 56,
+          "address": "0xA9eE28C80f960B889dFbd1902055218cBa016F75",
+          "symbol": "NVDAon",
+          "name": "NVIDIA (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "nvidia-ondo-tokenized-stock"
+        },
+        {
+          "chainId": 1,
+          "address": "0xc845b2894dBddd03858fd2D643B4eF725fE0849d",
+          "symbol": "NVDAx",
+          "name": "NVIDIA xStock",
+          "decimals": 18,
+          "coingeckoId": "nvidia-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0xc845b2894dBddd03858fd2D643B4eF725fE0849d",
+          "symbol": "NVDAx",
+          "name": "NVIDIA xStock",
+          "decimals": 18,
+          "coingeckoId": "nvidia-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0xc845b2894dBddd03858fd2D643B4eF725fE0849d",
+          "symbol": "NVDAx",
+          "name": "NVIDIA xStock",
+          "decimals": 18,
+          "coingeckoId": "nvidia-xstock"
+        }
+      ]
+    },
+    {
+      "ticker": "TSLA",
+      "title": "Tesla",
+      "type": "stock",
+      "priority": 8,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x8aD3c73F833d3F9A523aB01476625F269aEB7Cf0",
+          "symbol": "TSLAx",
+          "name": "Tesla xStock",
+          "decimals": 18,
+          "coingeckoId": "tesla-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x8aD3c73F833d3F9A523aB01476625F269aEB7Cf0",
+          "symbol": "TSLAx",
+          "name": "Tesla xStock",
+          "decimals": 18,
+          "coingeckoId": "tesla-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x8aD3c73F833d3F9A523aB01476625F269aEB7Cf0",
+          "symbol": "TSLAx",
+          "name": "Tesla xStock",
+          "decimals": 18,
+          "coingeckoId": "tesla-xstock"
+        },
+        {
+          "chainId": 1,
+          "address": "0xf6b1117ec07684D3958caD8BEb1b302bfD21103f",
+          "symbol": "TSLAon",
+          "name": "Tesla (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "tesla-ondo-tokenized-stock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x2494b603319d4D9F9715c9f4496d9E0364B59d93",
+          "symbol": "TSLAon",
+          "name": "Tesla (Ondo Tokenized)",
+          "decimals": 18,
+          "coingeckoId": "tesla-ondo-tokenized-stock"
+        }
+      ]
+    },
+    {
+      "ticker": "GOOGL",
+      "title": "Alphabet",
+      "type": "stock",
+      "priority": 7,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0xe92f673Ca36C5E2Efd2DE7628f815f84807e803F",
+          "symbol": "GOOGLx",
+          "name": "Alphabet xStock",
+          "decimals": 18,
+          "coingeckoId": "alphabet-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0xe92f673Ca36C5E2Efd2DE7628f815f84807e803F",
+          "symbol": "GOOGLx",
+          "name": "Alphabet xStock",
+          "decimals": 18,
+          "coingeckoId": "alphabet-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0xe92f673Ca36C5E2Efd2DE7628f815f84807e803F",
+          "symbol": "GOOGLx",
+          "name": "Alphabet xStock",
+          "decimals": 18,
+          "coingeckoId": "alphabet-xstock"
+        }
+      ]
+    },
+    {
+      "ticker": "AMZN",
+      "title": "Amazon",
+      "type": "stock",
+      "priority": 7,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x3557Ba345B01EFa20A1bdDC61F573BFD87195081",
+          "symbol": "AMZNx",
+          "name": "Amazon xStock",
+          "decimals": 18,
+          "coingeckoId": "amazon-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x3557Ba345B01EFa20A1bdDC61F573BFD87195081",
+          "symbol": "AMZNx",
+          "name": "Amazon xStock",
+          "decimals": 18,
+          "coingeckoId": "amazon-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x3557Ba345B01EFa20A1bdDC61F573BFD87195081",
+          "symbol": "AMZNx",
+          "name": "Amazon xStock",
+          "decimals": 18,
+          "coingeckoId": "amazon-xstock"
+        }
+      ]
+    },
+    {
+      "ticker": "META",
+      "title": "Meta Platforms",
+      "type": "stock",
+      "priority": 6,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x96702be57Cd9777f835117a809C7124fe4ec989A",
+          "symbol": "METAx",
+          "name": "Meta xStock",
+          "decimals": 18,
+          "coingeckoId": "meta-xstock"
+        },
+        {
+          "chainId": 56,
+          "address": "0x96702be57Cd9777f835117a809C7124fe4ec989A",
+          "symbol": "METAx",
+          "name": "Meta xStock",
+          "decimals": 18,
+          "coingeckoId": "meta-xstock"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x96702be57Cd9777f835117a809C7124fe4ec989A",
+          "symbol": "METAx",
+          "name": "Meta xStock",
+          "decimals": 18,
+          "coingeckoId": "meta-xstock"
+        }
+      ]
+    },
+    {
+      "ticker": "SPY",
+      "title": "SPDR S&P 500 ETF",
+      "type": "index",
+      "priority": 8,
+      "allowedTradingTime": {
+        "title": "US market open",
+        "start": "13:30 UTC",
+        "end": "20:00 UTC"
+      },
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0xFeDC5f4a6c38211c1338aa411018DFAf26612c08",
+          "symbol": "SPYon",
+          "name": "SPDR S&P 500 ETF (Ondo Tokenized ETF)",
+          "decimals": 18,
+          "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf"
+        },
+        {
+          "chainId": 56,
+          "address": "0x6a708EAD771238919D85930b5a0f10454E1C331a",
+          "symbol": "SPYon",
+          "name": "SPDR S&P 500 ETF (Ondo Tokenized ETF)",
+          "decimals": 18,
+          "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf"
+        }
+      ]
+    }
+  ]
+}
