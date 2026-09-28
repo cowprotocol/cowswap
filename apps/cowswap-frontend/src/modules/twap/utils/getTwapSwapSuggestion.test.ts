@@ -1,6 +1,6 @@
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 
-import { getTwapSwapSuggestion, quotedPartCount } from './getTwapSwapSuggestion'
+import { getTwapSwapSuggestion, quoteMatchesCurrentInput, quotedPartCount } from './getTwapSwapSuggestion'
 
 import { DEFAULT_NUM_OF_PARTS } from '../const'
 
@@ -117,6 +117,18 @@ describe('getTwapSwapSuggestion', () => {
         quotedParts: 10,
       }),
     ).toBeNull()
+  })
+
+  it('matches a quote only when its part sell is the current input split', () => {
+    expect(quoteMatchesCurrentInput(24_000000n, 4_800000n, 5)).toBe(true)
+    expect(quoteMatchesCurrentInput(100n, 33n, 3)).toBe(true)
+
+    // Stepper moved from 5 to 8. The quote is still the 5-part split.
+    expect(quoteMatchesCurrentInput(24_000000n, 4_800000n, 8)).toBe(false)
+    // Sell amount changed. Dividing the new total by the old part sell is not the quoted count.
+    expect(quoteMatchesCurrentInput(48_000000n, 4_800000n, 5)).toBe(false)
+    expect(quoteMatchesCurrentInput(0n, 4_800000n, 5)).toBe(false)
+    expect(quoteMatchesCurrentInput(24_000000n, 4_800000n, 1.5)).toBe(false)
   })
 
   it('ignores a part quote that cannot be compared', () => {

@@ -75,3 +75,14 @@ export function quotedPartCount(orderSell: bigint, partSell: bigint): number | n
 
   return quotedParts
 }
+
+/**
+ * True when `quotedPartSell` is the current order sell split into `numberOfParts`.
+ * Quote requests use that integer split, so a different sell amount or part count does not match.
+ */
+export function quoteMatchesCurrentInput(orderSell: bigint, quotedPartSell: bigint, numberOfParts: number): boolean {
+  if (orderSell <= 0n || quotedPartSell <= 0n) return false
+  if (!Number.isInteger(numberOfParts) || numberOfParts < 1) return false
+
+  return orderSell / BigInt(numberOfParts) === quotedPartSell
+}
