@@ -22,6 +22,12 @@
       "import": "./src/safeLink.ts",
       "require": "./src/safeLink.ts",
       "default": "./src/safeLink.ts"
+    },
+    "./errors": {
+      "types": "./src/errors.ts",
+      "import": "./src/errors.ts",
+      "require": "./src/errors.ts",
+      "default": "./src/errors.ts"
     }
   },
   "publishConfig": {
@@ -42,6 +48,11 @@
         "types": "./safeLink.d.ts",
         "import": "./safeLink.mjs",
         "require": "./safeLink.js"
+      },
+      "./errors": {
+        "types": "./errors.d.ts",
+        "import": "./errors.mjs",
+        "require": "./errors.js"
       }
     }
   },
