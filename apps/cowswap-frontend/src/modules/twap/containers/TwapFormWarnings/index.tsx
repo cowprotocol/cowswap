@@ -50,6 +50,7 @@ interface TwapFormWarningsProps {
   isConfirmationModal?: boolean
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
   const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
@@ -142,6 +143,17 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
 
         if (localFormValidation === TwapFormState.PART_TIME_INTERVAL_TOO_LONG) {
           return <BigPartTimeWarning />
+        }
+
+        // Balance blocks the order on the action button. A swap/TWAP price suggestion
+        // would replace that as the message the user sees.
+        if (primaryFormValidation === TradeFormValidation.BalanceInsufficient) {
+          return showFallbackHandlerWarning ? (
+            <FallbackHandlerWarning
+              isFallbackHandlerSetupAccepted={isFallbackHandlerSetupAccepted}
+              toggleFallbackHandlerSetupFlag={toggleFallbackHandlerSetupFlag}
+            />
+          ) : null
         }
 
         return renderQuoteWarnings({
