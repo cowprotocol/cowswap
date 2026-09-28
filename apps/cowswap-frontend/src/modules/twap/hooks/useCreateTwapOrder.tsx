@@ -26,7 +26,7 @@ import { Nullish } from 'types'
 
 import {
   assertFactoryDeployed,
-  EOA_TWAP_ACCOUNT_PROXY_CONFIG,
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG,
   getCowShedHooks,
   hasBytecode,
 } from 'modules/accountProxy'
@@ -254,7 +254,7 @@ export function useCreateTwapOrder() {
         if (eoaPoller) {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
-          const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+          const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
           await assertFactoryDeployed(config, cowShedHooks.getFactoryAddress(), `chain ${chainId}`)
           const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
           isProxyDeployed = await hasBytecode(config, proxyAddress)
