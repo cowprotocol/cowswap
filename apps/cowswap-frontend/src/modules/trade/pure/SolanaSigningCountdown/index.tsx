@@ -1,16 +1,16 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import iconArrowSrc from 'assets/icon/arrow.svg'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
+import { CountdownDigits } from './CountdownDigits'
 import { MilkGlass } from './MilkGlass'
 import { useRemainingMs } from './useRemainingMs'
 
@@ -30,86 +30,81 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
   const isExpired = remainingMs === 0
 
   return (
-    <NewModal {...rest}>
-      <CountdownPanel>
-        <TimerColumn>
-          <TimerValue>{formatRemaining(remainingMs)}</TimerValue>
-          <TimerLabel>
-            {isExpired ? (
-              <Trans>The signing window has closed. Cancel and try again with a fresh quote.</Trans>
-            ) : (
-              <Trans>To sign the transaction in your wallet</Trans>
-            )}
-          </TimerLabel>
-        </TimerColumn>
-        <MilkGlass fraction={durationMs > 0 ? remainingMs / durationMs : 0} />
-      </CountdownPanel>
+    <NewModal {...rest} contentPadding="56px 16px 16px">
+      <HeroGroup>
+        <Hero>
+          <TimerColumn>
+            <CountdownDigits remainingMs={remainingMs} />
+            <TimerLabel>
+              {isExpired ? (
+                <Trans>The signing window has closed. Cancel and try again with a fresh quote.</Trans>
+              ) : (
+                <Trans>To sign the transaction in your wallet</Trans>
+              )}
+            </TimerLabel>
+          </TimerColumn>
+          <MilkGlass fraction={durationMs > 0 ? remainingMs / durationMs : 0} />
+        </Hero>
 
-      <AmountsRow>
-        <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />
-        <ArrowRight src={iconArrowSrc} />
-        <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
-      </AmountsRow>
+        <AmountsRow>
+          <TokenLogo token={inputAmount?.currency} size={20} />
+          <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />
+          <Trans>for at least</Trans>
+          <TokenLogo token={outputAmount?.currency} size={20} />
+          <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
+        </AmountsRow>
+      </HeroGroup>
     </NewModal>
   )
 }
 
-function formatRemaining(remainingMs: number): string {
-  const totalSeconds = Math.ceil(remainingMs / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-
-  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
-}
-
-const CountdownPanel = styled.div`
+const HeroGroup = styled.div`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  flex-direction: column;
+  flex: 1;
   width: 100%;
-  margin-top: 56px;
-  padding: 40px 32px;
-  border-radius: var(${UI.BORDER_RADIUS_NORMAL});
+  border-radius: 21px;
+  overflow: hidden;
+`
+
+const Hero = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+  min-height: 260px;
+  padding: 24px 28px;
   background: var(${UI.COLOR_BLUE_300_PRIMARY});
-  color: var(${UI.COLOR_BLUE_900_PRIMARY});
+  color: var(${UI.COLOR_TEXT});
 `
 
 const TimerColumn = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 12px;
-  text-align: left;
-`
-
-const TimerValue = styled.strong`
-  font-size: 56px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
+  gap: 4px;
+  width: 204px;
 `
 
 const TimerLabel = styled.span`
-  font-size: 15px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 18px;
+  width: 100%;
 `
 
 const AmountsRow = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 4px;
   width: 100%;
-  margin: 24px 0;
-`
-
-const ArrowRight = styled(SVG)`
-  --size: 12px;
-  width: var(--size);
-  height: var(--size);
-
-  > path {
-    fill: currentColor;
-  }
+  min-height: 40px;
+  margin: 0;
+  padding: 10px 16px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  font-size: 13px;
+  line-height: 18px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `

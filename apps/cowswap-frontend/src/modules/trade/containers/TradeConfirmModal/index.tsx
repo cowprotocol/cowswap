@@ -2,7 +2,7 @@ import { ReactNode, useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -147,7 +147,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
     )
   }
 
-  if (pendingTrade && solanaSigningDeadline) {
+  if (pendingTrade && solanaSigningDeadline && isSolanaChain(chainId)) {
     return (
       <SolanaSigningCountdown
         expiresAt={solanaSigningDeadline.expiresAt}
