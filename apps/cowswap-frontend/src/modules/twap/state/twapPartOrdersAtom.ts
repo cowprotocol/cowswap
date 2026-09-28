@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { unwrap } from 'jotai/utils'
 
 import { deepEqual } from '@cowprotocol/common-utils'
 import { atomWithIdbStorage } from '@cowprotocol/core'
@@ -25,6 +26,7 @@ const virtualFields: (keyof TwapPartOrderItem)[] = ['isCreatedInOrderBook', 'isC
 localStorage.removeItem('twap-part-orders-list:v1')
 
 export const twapPartOrdersAtom = atomWithIdbStorage<TwapPartOrders>('twap-part-orders-list:v1', {})
+const resolvedTwapPartOrdersAtom = unwrap(twapPartOrdersAtom, (prev) => prev ?? {})
 
 const EMPTY_PART_ITEMS: TwapPartOrderItem[] = []
 
@@ -33,7 +35,7 @@ export const twapPartOrdersListAtom = atom<TwapPartOrderItem[]>((get) => {
 
   if (!account || !chainId) return EMPTY_PART_ITEMS
 
-  const twapPartOrders = get(twapPartOrdersAtom)
+  const twapPartOrders = get(resolvedTwapPartOrdersAtom)
 
   const orders = Object.values(twapPartOrders)
 
