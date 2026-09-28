@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-25 07:43\n"
+"PO-Revision-Date: 2026-09-28 10:31\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2199,6 +2199,7 @@ msgstr "Saldo recuperable"
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 msgstr "Tu precio límite es {absoluteRateImpact}% más bajo que el precio de mercado actual. Podría estar vendiendo tu <0/> con pérdida (aunque CoW Swap siempre intentará darte el mejor precio de todos modos)."
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateLimitOrderStep.ts
 #: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planCreateOrderStep.ts
 msgid "Swap {sellSymbol} for {buySymbol}"
 msgstr "Intercambia {sellSymbol} por {buySymbol}"
@@ -4201,8 +4202,8 @@ msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in D
 msgstr "Las órdenes limite en CoW Swap son gratuitas de crear y cancelar. ¡Eso es único en DeFi!"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
-msgid "safeBundleFlowContext is not set!"
-msgstr "safeBundleFlowContext no está establecido!"
+#~ msgid "safeBundleFlowContext is not set!"
+#~ msgstr "safeBundleFlowContext is not set!"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid URL: No manifest.json file found. Please check the URL and try again."
