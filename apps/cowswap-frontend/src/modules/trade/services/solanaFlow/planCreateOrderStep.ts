@@ -21,8 +21,6 @@ export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   buySymbol: string
   /** The user's deadline setting, which the quote knows nothing about — it carries the quote's own TTL. */
   validTo: number
-  /** Overrides the quote's own appData doc — e.g. hooks added after quoting. */
-  appData?: SwapAdvancedSettings['appData']
   /** Pays the fee and the order PDA's rent instead of the owner. Omitted for the self-paid flow. */
   sponsor?: PublicKeyInitData
 }
