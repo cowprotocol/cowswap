@@ -49,6 +49,5 @@ export async function planCreateLimitOrderStep({
     // overrides them), but keeps both planners reading their return the same way.
     sellAmount: intent.sellAmount,
     buyAmount: intent.buyAmount,
-    feePayer,
   }
 }
