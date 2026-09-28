@@ -12,18 +12,16 @@ const highlightOrderRowBlink = keyframes`
   100% {
     background-color: transparent;
   }
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
+  15%,
+  35% {
     background-color: var(${UI.COLOR_ALERT_BG});
   }
-  20%,
-  40%,
-  60%,
-  80% {
+  50% {
     background-color: transparent;
+  }
+  65%,
+  85% {
+    background-color: var(${UI.COLOR_ALERT_BG});
   }
 `
 
