@@ -1,10 +1,10 @@
+import { ReactNode } from 'react'
+
 import { InlineBanner } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SmallPriceProtectionWarning() {
+export function SmallPriceProtectionWarning(): ReactNode {
   return (
     <InlineBanner>
       <strong>
@@ -12,8 +12,8 @@ export function SmallPriceProtectionWarning() {
       </strong>
       <p>
         <Trans>
-          Since prices can change significantly over time, we suggest increasing your price protection for orders with
-          long deadlines.
+          Prices can change over longer durations. Parts may be skipped if your <em>worst acceptable price</em> can’t be
+          met.
         </Trans>
       </p>
     </InlineBanner>
