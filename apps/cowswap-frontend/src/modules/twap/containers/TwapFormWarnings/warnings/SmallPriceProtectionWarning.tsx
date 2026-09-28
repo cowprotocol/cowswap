@@ -12,8 +12,8 @@ export function SmallPriceProtectionWarning(): ReactNode {
       </strong>
       <p>
         <Trans>
-          Prices can change over longer durations. Parts may be skipped if your <em>worst acceptable price</em> can’t be
-          met.
+          For longer orders, consider increasing the percentage next to <em>Worst acceptable price</em>. This may help
+          more parts complete, but also allows them to trade at a worse price.
         </Trans>
       </p>
     </InlineBanner>
