@@ -21,16 +21,20 @@ export type SolanaSigningCountdownProps = NewModalProps & {
   durationMs: number
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
+  /** Replaces `onDismiss` once the window has closed — the natural exit then is back to the review
+   * screen for another attempt, not out of the modal. */
+  onExpiredDismiss?: NewModalProps['onDismiss']
 }
 
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
-  const { expiresAt, durationMs, inputAmount, outputAmount, ...rest } = props
+  const { expiresAt, durationMs, inputAmount, outputAmount, onExpiredDismiss, ...rest } = props
 
   const remainingMs = useRemainingMs(expiresAt)
   const isExpired = remainingMs === 0
+  const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
 
   return (
-    <NewModal {...rest} contentPadding="56px 16px 16px">
+    <NewModal {...rest} onDismiss={onDismiss} contentPadding="56px 16px 16px">
       <HeroGroup>
         <Hero>
           <TimerColumn>

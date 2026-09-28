@@ -1,9 +1,11 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { jotaiStore } from '@cowprotocol/core'
 import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
+import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom } from 'entities/trade'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -476,5 +478,53 @@ describe('solanaFlow', () => {
     expect(context.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(analytics.error).toHaveBeenCalled()
+  })
+
+  // After the signing window expires the wallet prompt is still open; rejecting it then is the
+  // expected retry path, so the user lands back on the review screen instead of the error modal.
+  it('returns to the review screen when a rejection arrives after the signing window closed', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    const result = await solanaFlow(context, buildAnalytics())
+
+    expect(result).toBeUndefined()
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalled()
+  })
+
+  // Only a rejection gets the soft return: any other failure after the window closed (e.g. the
+  // expired-blockhash throw) still needs its message shown.
+  it('still shows the error when a non-rejection failure arrives after the window closed', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('The signing window closed before the transaction was signed. Please try again.')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+
+  // A hung prompt from an earlier attempt can reject while a newer attempt is already signing; the
+  // stale flow must not repaint the UI under the live countdown.
+  it('touches no UI when a stale flow fails while another signing is live', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningDeadlineAtom, { expiresAt: Date.now() + 60_000, durationMs: 60_000 })
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
   })
 })

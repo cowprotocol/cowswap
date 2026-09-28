@@ -8,7 +8,7 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
-import { solanaSigningDeadlineAtom } from 'entities/trade'
+import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom } from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -29,7 +29,7 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
-import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -58,6 +58,10 @@ export async function solanaFlow(
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
+  // A previous attempt can hang forever on an unanswered wallet prompt, which leaves its (expired)
+  // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
+  jotaiStore.set(solanaSigningDeadlineAtom, null)
+  jotaiStore.set(solanaSigningAbandonedAtom, false)
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
 
@@ -180,6 +184,25 @@ export async function solanaFlow(
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
+
+    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
+    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
+    const liveDeadline = jotaiStore.get(solanaSigningDeadlineAtom)
+    // Non-null here can only belong to a newer attempt (this flow's own deadline was already
+    // cleared), whose signing screen a stale flow's error must not stomp.
+    const isAnotherSigningLive = !!liveDeadline && Date.now() < liveDeadline.expiresAt
+
+    if (isAnotherSigningLive) {
+      return
+    }
+
+    // Rejecting a prompt whose signing window already closed is the expected retry path, not an
+    // error: land the user back on the review screen so they can confirm with a fresh quote.
+    if (isRejection && isSigningWindowClosed) {
+      tradeConfirmActions.onOpen()
+
+      return
+    }
 
     tradeConfirmActions.onError(swapErrorMessage)
   }
@@ -304,6 +327,14 @@ async function postSponsoredBundle(
     )
   } finally {
     signingInProgress = false
+
+    // The wallet answered after the window closed (either way): remember it, so the flow's error
+    // handling can tell this rejection apart from the user changing their mind on a live prompt.
+    const deadline = jotaiStore.get(solanaSigningDeadlineAtom)
+    if (deadline && Date.now() >= deadline.expiresAt) {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+    }
+
     jotaiStore.set(solanaSigningDeadlineAtom, null)
   }
 
