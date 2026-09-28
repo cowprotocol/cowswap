@@ -66,7 +66,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
@@ -197,6 +197,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
         twapOrderSlippage={twapOrderSlippage}
         onSlippageInput={onSlippageInput}
         executionPrice={executionPrice}
+        inputCurrency={inputCurrency}
+        outputCurrency={outputCurrency}
         hideQuoteAmount={hideQuoteAmount}
         isInverted={isInverted}
       />

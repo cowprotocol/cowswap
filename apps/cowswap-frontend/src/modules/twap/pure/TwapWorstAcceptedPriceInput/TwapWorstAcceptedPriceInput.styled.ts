@@ -19,6 +19,8 @@ export const Inputs = styled.div`
 `
 
 export const ExecutionPriceWrapper = styled.div`
+  display: flex;
+  align-items: center;
   flex: 1 1 auto;
   height: 56px;
   border-radius: 12px;

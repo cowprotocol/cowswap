@@ -9,25 +9,40 @@ import * as styledEl from './TwapExecutionPrice.styled'
 
 export interface TwapExecutionPriceProps {
   className?: string
-  executionPrice: Price<Currency, Currency>
+  executionPrice: Price<Currency, Currency> | null
+  inputCurrency: Currency | null
+  outputCurrency: Currency | null
   isInverted: boolean
+  hideAmount?: boolean
 }
 
-export function TwapExecutionPrice({ className, executionPrice, isInverted }: TwapExecutionPriceProps): ReactNode {
-  const displayedPrice = isInverted ? executionPrice.invert() : executionPrice
-  const baseSymbol = displayedPrice.baseCurrency.symbol ?? ''
-  const quoteSymbol = displayedPrice.quoteCurrency.symbol ?? ''
+export function TwapExecutionPrice({
+  className,
+  executionPrice,
+  inputCurrency,
+  outputCurrency,
+  isInverted,
+  hideAmount = false,
+}: TwapExecutionPriceProps): ReactNode {
+  const displayedPrice = executionPrice ? (isInverted ? executionPrice.invert() : executionPrice) : null
+  const quoteCurrency = displayedPrice?.quoteCurrency ?? (isInverted ? inputCurrency : outputCurrency)
+  const baseCurrency = displayedPrice?.baseCurrency ?? (isInverted ? outputCurrency : inputCurrency)
+  const quoteSymbol = quoteCurrency?.symbol ?? ''
+  const baseSymbol = baseCurrency?.symbol ?? ''
+  const showPair = quoteSymbol !== '' && baseSymbol !== ''
 
   return (
     <styledEl.Root className={className}>
       <styledEl.Amount>
-        <TokenAmount amount={displayedPrice} hideTokenSymbol />
+        {displayedPrice && !hideAmount ? <TokenAmount amount={displayedPrice} hideTokenSymbol /> : '0'}
       </styledEl.Amount>
-      <styledEl.PairLabel>
-        <Trans>
-          {quoteSymbol} per {baseSymbol}
-        </Trans>
-      </styledEl.PairLabel>
+      {showPair && (
+        <styledEl.PairLabel>
+          <Trans>
+            {quoteSymbol} per {baseSymbol}
+          </Trans>
+        </styledEl.PairLabel>
+      )}
     </styledEl.Root>
   )
 }

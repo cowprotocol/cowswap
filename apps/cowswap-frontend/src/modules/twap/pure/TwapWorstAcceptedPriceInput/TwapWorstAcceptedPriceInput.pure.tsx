@@ -18,6 +18,8 @@ export interface TwapWorstAcceptedPriceInputProps {
   twapOrderSlippage: Percent
   onSlippageInput: (slippage: number) => void
   executionPrice: Price<Currency, Currency> | null
+  inputCurrency: Currency | null
+  outputCurrency: Currency | null
   hideQuoteAmount: boolean
   isInverted: boolean
 }
@@ -28,6 +30,8 @@ export function TwapWorstAcceptedPriceInput({
   twapOrderSlippage,
   onSlippageInput,
   executionPrice,
+  inputCurrency,
+  outputCurrency,
   hideQuoteAmount,
   isInverted,
 }: TwapWorstAcceptedPriceInputProps): ReactNode {
@@ -40,11 +44,13 @@ export function TwapWorstAcceptedPriceInput({
 
       <styledEl.Inputs>
         <styledEl.ExecutionPriceWrapper>
-          {executionPrice && !hideQuoteAmount ? (
-            <TwapExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />
-          ) : (
-            '0'
-          )}
+          <TwapExecutionPrice
+            executionPrice={executionPrice}
+            inputCurrency={inputCurrency}
+            outputCurrency={outputCurrency}
+            isInverted={isInverted}
+            hideAmount={hideQuoteAmount}
+          />
         </styledEl.ExecutionPriceWrapper>
 
         <styledEl.SlippageInput>
