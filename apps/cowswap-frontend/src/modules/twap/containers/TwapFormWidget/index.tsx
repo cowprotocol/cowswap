@@ -193,7 +193,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       <TwapWorstAcceptedPriceInput
         slippageLabel={tooltips.slippage.label}
-        slippageTooltip={tooltips.slippage.tooltip}
+        slippageTooltip={renderTooltip(tooltips.slippage.tooltip)}
         twapOrderSlippage={twapOrderSlippage}
         onSlippageInput={onSlippageInput}
         executionPrice={executionPrice}
