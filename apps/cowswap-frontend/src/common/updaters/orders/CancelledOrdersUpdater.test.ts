@@ -15,6 +15,7 @@ function createOrder(
     creationTime: new Date(NOW - 1000).toISOString(),
     status: OrderStatus.PENDING,
     cancellationHash: undefined,
+    cancellationHashTime: undefined,
     ...overrides,
   }
 }
@@ -48,8 +49,32 @@ describe('shouldRecheckCancelledOrder', () => {
     expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
   })
 
-  it('ignores an order created outside the recheck window', () => {
+  it('ignores a soft-cancelled order created outside the recheck window', () => {
     const order = createOrder({ creationTime: new Date(NOW - 10 * 60 * 1000).toISOString() })
+
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
+  })
+
+  // The window must be measured from the cancellation, not the order's creation - an order can sit
+  // open for hours before being cancelled, and that's still a fresh cancellation worth rechecking.
+  it('still rechecks a hard-cancelled Solana order created long before it was cancelled', () => {
+    const order = createOrder({
+      creationTime: new Date(NOW - 10 * 60 * 1000).toISOString(),
+      cancellationHash: 'solana-sig',
+      cancellationHashTime: new Date(NOW - 1000).toISOString(),
+      status: OrderStatus.CANCELLED,
+    })
+
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(true)
+  })
+
+  it('ignores a hard-cancelled Solana order whose cancellation itself is outside the recheck window', () => {
+    const order = createOrder({
+      creationTime: new Date(NOW - 10 * 60 * 1000).toISOString(),
+      cancellationHash: 'solana-sig',
+      cancellationHashTime: new Date(NOW - 10 * 60 * 1000).toISOString(),
+      status: OrderStatus.CANCELLED,
+    })
 
     expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
   })

@@ -142,19 +142,23 @@ export function CancelledOrdersUpdater(): null {
  * A successful EVM on-chain cancellation is settlement-contract-guaranteed final, so it can't race a
  * fill and is skipped here. Solana's on-chain cancellation instruction has no such guarantee against a
  * solver's fill landing around the same time, so hard-cancelled Solana orders still need rechecking.
+ *
+ * The recheck window is measured from `cancellationHashTime` for a hard-cancelled order, not
+ * `creationTime`: an order can be created long before it's cancelled, and it's the cancellation - not
+ * the creation - that can race a fill.
  */
 export function shouldRecheckCancelledOrder(
-  order: Pick<Order, 'owner' | 'creationTime' | 'status' | 'cancellationHash'>,
+  order: Pick<Order, 'owner' | 'creationTime' | 'status' | 'cancellationHash' | 'cancellationHashTime'>,
   account: string,
   chainId: ChainId,
   now: number,
 ): boolean {
-  const { owner, creationTime: creationTimeString, status, cancellationHash } = order
-  const creationTime = new Date(creationTimeString).getTime()
+  const { owner, creationTime, status, cancellationHash, cancellationHashTime } = order
+  const anchorTime = new Date(cancellationHash && cancellationHashTime ? cancellationHashTime : creationTime).getTime()
 
   return (
     areAddressesEqual(owner, account) &&
-    now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
+    now - anchorTime < CANCELLED_ORDERS_PENDING_TIME &&
     !(cancellationHash && status === 'cancelled' && !isSolanaChain(chainId))
   )
 }

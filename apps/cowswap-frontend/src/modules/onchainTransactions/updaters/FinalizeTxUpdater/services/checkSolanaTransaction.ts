@@ -74,7 +74,11 @@ export function checkSolanaTransaction(
         })
       } else {
         partialOrderUpdate(
-          { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
+          {
+            chainId,
+            order: { id: orderId, isCancelling: false, cancellationHash: undefined, cancellationHashTime: undefined },
+            isSafeWallet,
+          },
           dispatch,
         )
       }
