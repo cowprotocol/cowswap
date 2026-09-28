@@ -19,8 +19,6 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
-  /** Called with the deadline of the transaction about to be signed, before the wallet is asked —
-   * the countdown has to start when the blockhash is taken, not when the signature comes back. */
   onDeadline?: (lastValidBlockHeight: number) => void
 }
 
@@ -49,9 +47,6 @@ export async function signSolanaFlow(
 
   const signed = await signSolanaTransaction(provider, transaction)
 
-  // A dead blockhash wastes the signature: the order book takes it, no solver can ever submit it, and
-  // the order rests until `validTo` while the user believes it is live. Nothing here broadcasts, so no
-  // provider error would surface this — it has to be checked explicitly.
   if ((await connection.getBlockHeight()) > lastValidBlockHeight) {
     throw new Error(t`The signing window closed before the transaction was signed. Please try again.`)
   }

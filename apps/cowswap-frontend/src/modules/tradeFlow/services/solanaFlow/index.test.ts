@@ -11,6 +11,7 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
+import { tradeConfirmStateAtom } from 'modules/trade'
 import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
 import { planCreateLimitOrderStep } from 'modules/trade/services/solanaFlow/planCreateLimitOrderStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
@@ -483,6 +484,7 @@ describe('solanaFlow', () => {
   // After the signing window expires the wallet prompt is still open; rejecting it then is the
   // expected retry path, so the user lands back on the review screen instead of the error modal.
   it('returns to the review screen when a rejection arrives after the signing window closed', async () => {
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: true })
     mockSendSolanaFlow.mockImplementation(async () => {
       jotaiStore.set(solanaSigningAbandonedAtom, true)
       throw new Error('User rejected the request')
@@ -494,6 +496,23 @@ describe('solanaFlow', () => {
     expect(result).toBeUndefined()
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(context.tradeConfirmActions.onOpen).toHaveBeenCalled()
+
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: false })
+  })
+
+  // The user may reject the stale prompt long after leaving the trade modal; a silent rejection
+  // must not pop the modal back open.
+  it('stays silent on a late rejection when the trade modal is already closed', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 
   // Only a rejection gets the soft return: any other failure after the window closed (e.g. the

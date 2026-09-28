@@ -24,6 +24,7 @@ import {
   signSolanaFlow,
   type SignSolanaFlowContext,
   SolanaFlowStep,
+  tradeConfirmStateAtom,
 } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -197,9 +198,12 @@ export async function solanaFlow(
     }
 
     // Rejecting a prompt whose signing window already closed is the expected retry path, not an
-    // error: land the user back on the review screen so they can confirm with a fresh quote.
+    // error: land the user back on the review screen so they can confirm with a fresh quote. If they
+    // already left the modal entirely, stay silent rather than popping it back open.
     if (isRejection && isSigningWindowClosed) {
-      tradeConfirmActions.onOpen()
+      if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
+        tradeConfirmActions.onOpen()
+      }
 
       return
     }
