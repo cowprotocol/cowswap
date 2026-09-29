@@ -19,7 +19,14 @@ let storageInstance: LocalForage | null = null
 export function persistQueryCache(queryClient: QueryClient, rules: QueryPersistenceRules): () => void {
   void removeExpiredEntries()
 
-  return queryClient.getQueryCache().subscribe((event) => {
+  const queryCache = queryClient.getQueryCache()
+
+  // `atomWithQuery` adds queries to the cache during render, before an effect can subscribe
+  queryCache.getAll().forEach((query) => {
+    if (rules.isPersistedQuery(query.queryKey)) void restoreQuery(queryClient, query)
+  })
+
+  return queryCache.subscribe((event) => {
     const { query } = event
 
     if (!rules.isPersistedQuery(query.queryKey)) return

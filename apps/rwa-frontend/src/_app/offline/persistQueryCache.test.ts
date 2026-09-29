@@ -86,6 +86,18 @@ describe('persistQueryCache', () => {
     stop()
   })
 
+  it('restores queries added to the cache before persistence started', async () => {
+    unsubscribe()
+    mockStore.set(ASSETS_HASH, { data: { items: [1], degraded: false }, savedAt: Date.now() - 1000 })
+
+    const stop = observe(queryClient, () => new Promise(() => undefined))
+    unsubscribe = persistQueryCache(queryClient, RWA_QUERY_PERSISTENCE_RULES)
+    await flushPromises()
+
+    expect(queryClient.getQueryData(ASSETS_KEY)).toEqual({ items: [1], degraded: false })
+    stop()
+  })
+
   it('does not override data fetched before the restore finished', async () => {
     mockStore.set(ASSETS_HASH, { data: { items: ['old'], degraded: false }, savedAt: Date.now() - 1000 })
 

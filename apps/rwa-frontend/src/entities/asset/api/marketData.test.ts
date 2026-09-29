@@ -85,6 +85,31 @@ describe('coingeckoProvider.getMarketData', () => {
     expect(result.has('NONE')).toBe(false)
   })
 
+  it('does not take price from another token when the first one has no data', async () => {
+    mockFetch([
+      {
+        id: 'nvidia-xstock',
+        current_price: 231.8,
+        market_cap: 43,
+        high_24h: 232,
+        low_24h: 223,
+        price_change_percentage_24h: 2.6,
+        last_updated: '2026-09-28T13:00:00.000Z',
+      },
+    ])
+
+    const result = await coingeckoProvider.getMarketData([NVDA])
+
+    expect(result.get('NVDA')).toEqual({
+      price: null,
+      change24h: null,
+      dayLow: null,
+      dayHigh: null,
+      marketCap: 43,
+      updatedAt: null,
+    })
+  })
+
   it('throws when the upstream fails', async () => {
     mockFetch({}, false)
 
