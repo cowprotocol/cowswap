@@ -50,11 +50,13 @@ type EstimateParams = BaseParams & {
   config: Config
 }
 
+/**
+ * Non-error results are cached per token, chain, and spender for the session.
+ * `amount` and `minGasLimit` apply only when the capability check is not already cached.
+ */
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { tokenAddress, chainId, spender, amount = DEFAULT_PERMIT_VALUE, minGasLimit = DEFAULT_MIN_GAS_LIMIT } = params
-  const key = `${getTokenId({ address: tokenAddress, chainId })}-${getAddressKey(
-    spender,
-  )}-${amount.toString()}-${minGasLimit.toString()}`
+  const { tokenAddress, chainId, spender } = params
+  const key = `${getTokenId({ address: tokenAddress, chainId })}-${getAddressKey(spender)}`
 
   const cached = REQUESTS_CACHE[key]
 

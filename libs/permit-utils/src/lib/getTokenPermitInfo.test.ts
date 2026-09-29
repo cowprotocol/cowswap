@@ -50,7 +50,7 @@ describe('getTokenPermitInfo request cache', () => {
 
   function createParams(
     tokenAddress: Address,
-    overrides: Pick<Partial<GetTokenPermitInfoParams>, 'amount' | 'minGasLimit' | 'spender'> = {},
+    overrides: Pick<Partial<GetTokenPermitInfoParams>, 'amount' | 'chainId' | 'minGasLimit' | 'spender'> = {},
   ): GetTokenPermitInfoParams {
     return {
       tokenAddress,
@@ -95,28 +95,77 @@ describe('getTokenPermitInfo request cache', () => {
     expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
   })
 
-  it('does not reuse the in-flight request when the amount changes', async () => {
+  it('reuses cached capability info when the amount changes', async () => {
     const tokenAddress = '0x6666666666666666666666666666666666666666' as Address
 
+    const result = await getTokenPermitInfo(createParams(tokenAddress, { amount: 2n }))
+    await expect(getTokenPermitInfo(createParams(tokenAddress, { amount: 1n }))).resolves.toEqual(result)
+    await expect(getTokenPermitInfo(createParams(tokenAddress, { amount: 3n }))).resolves.toEqual(result)
+
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('reuses the in-flight capability check when the minimum gas limit changes', async () => {
+    const tokenAddress = '0x7777777777777777777777777777777777777777' as Address
+
+    const results = await Promise.all([
+      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 50000n })),
+      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 70000n })),
+    ])
+
+    expect(results).toEqual([
+      { type: 'eip-2612', name: 'Test Token', version: '1' },
+      { type: 'eip-2612', name: 'Test Token', version: '1' },
+    ])
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not reuse capability info across chains', async () => {
+    const tokenAddress = '0x8888888888888888888888888888888888888888' as Address
+
     await Promise.all([
-      getTokenPermitInfo(createParams(tokenAddress, { amount: 1n })),
-      getTokenPermitInfo(createParams(tokenAddress, { amount: 2n })),
+      getTokenPermitInfo(createParams(tokenAddress)),
+      getTokenPermitInfo(createParams(tokenAddress, { chainId: 100 })),
     ])
 
     expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
     expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
   })
 
-  it('does not reuse the in-flight request when the minimum gas limit changes', async () => {
-    const tokenAddress = '0x7777777777777777777777777777777777777777' as Address
-
+  it('reuses capability info for differently cased token and spender addresses', async () => {
     await Promise.all([
-      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 50000n })),
-      getTokenPermitInfo(createParams(tokenAddress, { minGasLimit: 70000n })),
+      getTokenPermitInfo(
+        createParams('0xabcdefabcdefabcdefabcdefabcdefabcdefabcd', {
+          spender: '0xabcdef0123456789abcdef0123456789abcdef01',
+        }),
+      ),
+      getTokenPermitInfo(
+        createParams('0xABCDEFABCDEFABCDEFABCDEFABCDEFABCDEFABCD', {
+          spender: '0xABCDEF0123456789ABCDEF0123456789ABCDEF01',
+        }),
+      ),
     ])
 
-    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
-    expect(mockedEstimateGas).toHaveBeenCalledTimes(2)
+    expect(mockedBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('retries a rejected capability check', async () => {
+    const tokenAddress = '0x9999999999999999999999999999999999999999' as Address
+    const error = new Error('RPC unavailable')
+    mockedGetPermitUtilsInstance.mockRejectedValueOnce(error)
+
+    await expect(getTokenPermitInfo(createParams(tokenAddress))).rejects.toBe(error)
+    await expect(getTokenPermitInfo(createParams(tokenAddress))).resolves.toEqual({
+      type: 'eip-2612',
+      name: 'Test Token',
+      version: '1',
+    })
+
+    expect(mockedGetPermitUtilsInstance).toHaveBeenCalledTimes(2)
+    expect(mockedEstimateGas).toHaveBeenCalledTimes(1)
   })
 
   it('does not cache transient error results', async () => {
