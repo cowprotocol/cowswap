@@ -475,7 +475,7 @@ export function useCreateTwapOrder() {
           tradeConfirmActions.onSuccess(confirmModalHash)
         }
 
-        await revealOrderInOrdersTable(orderIdToReveal, ordersTableTab)
+        revealOrderInOrdersTable(orderIdToReveal, ordersTableTab)
 
         // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.

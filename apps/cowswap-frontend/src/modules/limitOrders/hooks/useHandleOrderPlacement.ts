@@ -89,7 +89,7 @@ export function useHandleOrderPlacement(
         setPlacedOrderHighlight({ orderId, tabId: ordersTableTab })
 
         if (orderId) {
-          await revealOrderInOrdersTable(orderId, ordersTableTab)
+          revealOrderInOrdersTable(orderId, ordersTableTab)
         } else {
           navigateToOrdersTableTab(ordersTableTab)
         }
