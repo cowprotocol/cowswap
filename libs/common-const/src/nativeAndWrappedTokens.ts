@@ -21,6 +21,9 @@ export const NATIVE_CURRENCIES: Record<TargetChainId, TokenWithLogo> = mapAllNet
   getTokenWithLogoFromNativeCurrency,
 )
 
+NATIVE_CURRENCIES[SupportedChainId.SOLANA].logoURI =
+  'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'
+
 export const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 export const WXDAI = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 export const WETH_SEPOLIA = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA]
