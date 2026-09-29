@@ -64,6 +64,7 @@ jest.mock('@cowprotocol/ui', () => ({
 // ─── Module mocks ──────────────────────────────────────────────────────────
 
 jest.mock('modules/account', () => ({ useToggleAccountModal: () => jest.fn() }))
+jest.mock('modules/captcha', () => ({ CaptchaWidget: () => <div data-testid="captcha-widget" /> }))
 jest.mock('modules/injectedWidget', () => ({ useInjectedWidgetParams: () => ({}) }))
 jest.mock('modules/tokensList', () => ({ useOpenTokenSelectWidget: () => jest.fn() }))
 jest.mock('modules/trade', () => ({
@@ -318,5 +319,34 @@ describe('TradeWidgetForm — withRecipient visibility', () => {
 
       expect(screen.getByTestId('set-recipient')).toBeTruthy()
     })
+  })
+})
+
+describe('TradeWidgetForm — captcha', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('mounts captcha when bottom content omits trade warnings', () => {
+    setupDefaults()
+
+    renderWithI18n(
+      <TradeWidgetForm
+        {...buildProps({
+          slots: { settingsWidget: null, bottomContent: () => <div data-testid="bottom-content" /> },
+        })}
+      />,
+    )
+
+    expect(screen.getByTestId('bottom-content')).toBeTruthy()
+    expect(screen.getByTestId('captcha-widget')).toBeTruthy()
+  })
+
+  it('does not mount captcha for wrap or unwrap', () => {
+    setupDefaults({ isWrapOrUnwrap: true })
+
+    renderWithI18n(<TradeWidgetForm {...buildProps()} />)
+
+    expect(screen.queryByTestId('captcha-widget')).toBeNull()
   })
 })

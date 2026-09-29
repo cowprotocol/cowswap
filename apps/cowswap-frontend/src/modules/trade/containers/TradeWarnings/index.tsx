@@ -1,6 +1,5 @@
 import React, { ReactNode } from 'react'
 
-import { CaptchaWidget } from 'modules/captcha'
 import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
@@ -28,7 +27,6 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
       )}
       <NoImpactWarning />
       {enableSmartSlippage && <HighSuggestedSlippageWarning isTradePriceUpdating={isTradePriceUpdating} />}
-      <CaptchaWidget />
     </>
   )
 }

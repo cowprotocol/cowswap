@@ -25,6 +25,8 @@ overrides:
   viem: 2.48.8
   wagmi: 3.6.9
   zod: 3.25.76
+  '@cowprotocol/sdk-cow-shed@0.6.1>@cowprotocol/sdk-common': 0.14.1
+  '@cowprotocol/sdk-composable@1.8.1>@cowprotocol/sdk-common': 0.14.1
 
 packageExtensionsChecksum: sha256-MJ/weFfhczWAxcKBkOSA2U6hqYQqwBJPmicil25hZZ4=
 
@@ -637,6 +639,9 @@ importers:
       '@cowprotocol/sdk-bridging':
         specifier: 4.4.13
         version: 4.4.13(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common':
+        specifier: 0.14.2
+        version: 0.14.2
       '@cowprotocol/sdk-composable':
         specifier: 1.8.3
         version: 1.8.3(encoding@0.1.13)(typescript@5.9.3)

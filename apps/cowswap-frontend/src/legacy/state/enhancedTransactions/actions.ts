@@ -21,6 +21,7 @@ export type AddTransactionParams = WithChainId &
     | 'swapLockedGNOvCow'
     | 'ethFlow'
     | 'onChainCancellation'
+    | 'solanaCancelOrderIds'
     | 'solanaOrderCreation'
   >
 

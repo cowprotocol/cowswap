@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.14.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.14.0...widget-configurator-v3.14.1) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.15.0
+  - @cowprotocol/analytics@3.13.0
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/widget-lib@4.8.1
+  - @cowprotocol/widget-react@3.2.9
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.13.2...widget-configurator-v3.14.0) (2026-09-23)
 
 ### Minor Changes

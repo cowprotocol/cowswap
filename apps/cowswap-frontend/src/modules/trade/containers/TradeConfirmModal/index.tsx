@@ -39,6 +39,7 @@ export interface TradeConfirmModalProps extends React.PropsWithChildren {
   orderType: UiOrderType
   submittedContent?: ReactNode
   showGetNotifiedMessage?: boolean
+  onViewOrders?: () => void | Promise<void>
 }
 
 interface InnerComponentProps extends React.PropsWithChildren {
@@ -52,14 +53,19 @@ interface InnerComponentProps extends React.PropsWithChildren {
   permitSignatureState: string | undefined
   isSafeWallet: boolean
   submittedContent?: ReactNode
-  showGetNotifiedMessage?: boolean
+  showGetNotifiedMessage: boolean
   onGetNotifiedClick: () => void
   onDismissGetNotifiedMessage: () => void
+  onViewOrders?: () => void | Promise<void>
 }
 
-export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
-  const { children, submittedContent, orderType, showGetNotifiedMessage } = props
-
+export function TradeConfirmModal({
+  children,
+  submittedContent,
+  orderType,
+  showGetNotifiedMessage,
+  onViewOrders,
+}: TradeConfirmModalProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
@@ -90,16 +96,17 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         permitSignatureState={signingStep ? undefined : permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
-        showGetNotifiedMessage={
+        showGetNotifiedMessage={Boolean(
           showGetNotifiedMessage &&
-          areTelegramNotificationsAvailable &&
-          !isNotificationSubscriptionLoading &&
-          !hasSubscription &&
-          !isInjectedWidget() &&
-          !isTrackOrderBannerDismissed
-        }
+            areTelegramNotificationsAvailable &&
+            !isNotificationSubscriptionLoading &&
+            !hasSubscription &&
+            !isInjectedWidget() &&
+            !isTrackOrderBannerDismissed,
+        )}
         onGetNotifiedClick={handleGetNotifiedClick}
         onDismissGetNotifiedMessage={dismissTrackOrderBanner}
+        onViewOrders={onViewOrders}
       >
         {children}
       </InnerComponent>
@@ -107,24 +114,23 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   )
 }
 
-function InnerComponent(props: InnerComponentProps): ReactNode {
-  const {
-    account,
-    chainId,
-    children,
-    error,
-    isSafeWallet,
-    onDismiss,
-    orderType,
-    pendingTrade,
-    permitSignatureState,
-    transactionHash,
-    submittedContent,
-    showGetNotifiedMessage,
-    onGetNotifiedClick,
-    onDismissGetNotifiedMessage,
-  } = props
-
+function InnerComponent({
+  account,
+  chainId,
+  children,
+  error,
+  isSafeWallet,
+  onDismiss,
+  orderType,
+  pendingTrade,
+  permitSignatureState,
+  transactionHash,
+  submittedContent,
+  showGetNotifiedMessage,
+  onGetNotifiedClick,
+  onDismissGetNotifiedMessage,
+  onViewOrders,
+}: InnerComponentProps): ReactNode {
   if (error) {
     return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }
@@ -154,6 +160,7 @@ function InnerComponent(props: InnerComponentProps): ReactNode {
           showGetNotifiedMessage={showGetNotifiedMessage}
           onGetNotifiedClick={onGetNotifiedClick}
           onDismissGetNotifiedMessage={onDismissGetNotifiedMessage}
+          onViewOrders={onViewOrders}
         />
       )
     )

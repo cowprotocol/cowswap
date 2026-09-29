@@ -1,5 +1,42 @@
 # Changelog
 
+## [3.29.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.28.0...cowswap-v3.29.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: update TWAP for EOA quoting to include poll funds gas cost (#8216)
+
+- feat: clarify price impact field on TWAPs (#8234)
+
+- feat: better swap vs twap suggestions (#8227)
+
+- feat: use latest CoW Shed SDK (#8229)
+
+- feat: add isEoaTwap to analytics event for order cancellation (#8212)
+
+### Patch Changes
+
+- fix: twap history for base smart account (#8213)
+
+- fix: fix captcha missing from twap (#8242)
+
+- fix: disallow twap for safe imported in rabby (#8250)
+
+- fix: update SmallPriceProtectionWarning (#8241)
+
+- fix: sanitize widget palette (#8228)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.15.0
+  - @cowprotocol/ui@3.15.0
+  - @cowprotocol/analytics@3.13.0
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/balances-and-allowances@3.15.1
+  - @cowprotocol/multicall@3.8.1
+  - @cowprotocol/snackbars@2.3.6
+  - @cowprotocol/tokens@3.13.1
+  - @cowprotocol/widget-lib@4.8.1
+
 ## [3.28.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.27.0...cowswap-v3.28.0) (2026-09-23)
 
 ### Minor Changes

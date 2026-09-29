@@ -28,6 +28,7 @@ import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
+  TwapSellAmountDescription,
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
@@ -67,7 +68,9 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
-  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact =
+    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL ||
+    twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
@@ -92,6 +95,7 @@ export function AdvancedOrdersPage(): ReactNode {
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
+            topContent={<TwapSellAmountDescription />}
           >
             {(tradeWarnings) => (
               <>

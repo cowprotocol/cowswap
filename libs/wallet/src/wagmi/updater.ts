@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 import { Address } from 'viem'
@@ -19,7 +19,7 @@ import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
-import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
+import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
 import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
@@ -207,12 +207,12 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
   const isPossibleSafe = useIsPossibleSafe()
 
   const [safeInfo, setSafeInfo] = useState<GnosisSafeInfo | undefined>()
-  const [isKnownNotSafe, setIsKnownNotSafe] = useState(false)
+  const [isKnownNotSafe, setIsKnownNotSafe] = useAtom(isKnownNotSafeAtom)
   const shouldFetchSafeInfo = isPossibleSafe && !isKnownNotSafe
 
   useEffect(() => {
     setIsKnownNotSafe(false)
-  }, [chainId, account])
+  }, [chainId, account, setIsKnownNotSafe])
 
   useEffect(() => {
     const updateSafeInfo: () => Promise<void> = async () => {
@@ -276,7 +276,7 @@ function useSafeInfo(): GnosisSafeInfo | undefined {
       clearInterval(longSafeInfoInterval !== null ? longSafeInfoInterval : undefined)
       longSafeInfoInterval = null
     }
-  }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo])
+  }, [chainId, account, safeAppsSdk, shouldFetchSafeInfo, setIsKnownNotSafe])
 
   if (!safeInfo || !account || safeInfo.chainId !== chainId || !areAddressesEqual(safeInfo.address, account)) {
     return undefined

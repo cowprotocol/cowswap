@@ -10,35 +10,48 @@ export interface ModalFooterButtonConfig {
   type?: 'button' | 'submit'
 }
 
-export interface ModalFooterWithTwoButtonsProps {
+export type ModalFooterWithTwoButtonsProps = {
   inline?: boolean
-  primaryButton: ModalFooterButtonConfig
-  secondaryButton: ModalFooterButtonConfig
-}
+} & (
+  | { primaryButton: ModalFooterButtonConfig; secondaryButton?: ModalFooterButtonConfig }
+  | { primaryButton?: ModalFooterButtonConfig; secondaryButton: ModalFooterButtonConfig }
+)
 
 export function ModalFooterWithTwoButtons({
   inline,
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
+  const secondary = secondaryButton ? (
+    <styledEl.SecondaryButton
+      disabled={secondaryButton.disabled}
+      type={secondaryButton.type ?? 'button'}
+      onClick={secondaryButton.onClick}
+    >
+      {secondaryButton.label}
+    </styledEl.SecondaryButton>
+  ) : null
+
+  const primary = primaryButton ? (
+    <styledEl.PrimaryButton
+      disabled={primaryButton.disabled}
+      type={primaryButton.type ?? 'button'}
+      onClick={primaryButton.onClick}
+    >
+      {primaryButton.label}
+    </styledEl.PrimaryButton>
+  ) : null
+
   return (
     <ModalFooter inline={inline}>
-      <styledEl.TwoButtonGrid>
-        <styledEl.SecondaryButton
-          disabled={secondaryButton.disabled}
-          type={secondaryButton.type ?? 'button'}
-          onClick={secondaryButton.onClick}
-        >
-          {secondaryButton.label}
-        </styledEl.SecondaryButton>
-        <styledEl.PrimaryButton
-          disabled={primaryButton.disabled}
-          type={primaryButton.type ?? 'button'}
-          onClick={primaryButton.onClick}
-        >
-          {primaryButton.label}
-        </styledEl.PrimaryButton>
-      </styledEl.TwoButtonGrid>
+      {secondary && primary ? (
+        <styledEl.TwoButtonGrid>
+          {secondary}
+          {primary}
+        </styledEl.TwoButtonGrid>
+      ) : (
+        (secondary ?? primary)
+      )}
     </ModalFooter>
   )
 }
