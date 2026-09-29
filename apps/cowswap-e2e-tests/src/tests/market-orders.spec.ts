@@ -738,8 +738,7 @@ test.describe('Market Orders', () => {
       ethFlow.confirmFilled()
 
       await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
-      await swapPage.page.keyboard.press('Escape')
-      await expect(swapPage.orderProgressBarModal).toBeHidden()
+      await swapPage.dismissOrderProgressModal()
 
       await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`)
 
