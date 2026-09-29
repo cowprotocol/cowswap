@@ -1,51 +1,13 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { COW_CDN } from '@cowprotocol/common-const'
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
 import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
-import {
-  ListSourceConfig,
-  ListsSourcesByNetwork,
-  ListState,
-  TokenListsByChainState,
-  TokenListsState,
-} from '../../types'
+import { ListsSourcesByNetwork, ListState, TokenListsByChainState, TokenListsState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
-
-const TOKEN_LIST_SRC = `${COW_CDN}/token-lists`
-
-// No Uniswap token list exists for non-EVM chains (e.g. Solana) — those keys are
-// intentionally omitted. `Partial` keeps the type honest: `UNISWAP_TOKEN_LIST_URL[chainId]`
-// is `string | undefined`, which forces the empty-source guard in `curatedListSourceAtom`.
-const UNISWAP_TOKEN_LIST_URL: Partial<Record<SupportedChainId, string>> = {
-  [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.GNOSIS_CHAIN]: `${TOKEN_LIST_SRC}/Uniswap.100.json`,
-  [SupportedChainId.ARBITRUM_ONE]: `${TOKEN_LIST_SRC}/Uniswap.42161.json`,
-  [SupportedChainId.BASE]: `${TOKEN_LIST_SRC}/Uniswap.8453.json`,
-  [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.POLYGON]: `${TOKEN_LIST_SRC}/Uniswap.137.json`,
-  [SupportedChainId.AVALANCHE]: `${TOKEN_LIST_SRC}/Uniswap.43114.json`,
-  [SupportedChainId.BNB]: `${TOKEN_LIST_SRC}/Uniswap.56.json`,
-  [SupportedChainId.LINEA]: `${TOKEN_LIST_SRC}/Uniswap.59144.json`,
-  [SupportedChainId.PLASMA]: `${TOKEN_LIST_SRC}/Uniswap.9745.json`,
-  [SupportedChainId.INK]: `${TOKEN_LIST_SRC}/Uniswap.57073.json`,
-} as const satisfies Partial<Record<SupportedChainId, string>>
-
-const curatedListSourceAtom = atom((get): ListSourceConfig[] => {
-  const chainId = get(environmentAtom).chainId
-  const source = UNISWAP_TOKEN_LIST_URL[chainId]
-
-  // Chains without a Uniswap list (e.g. Solana) must not produce a config with an
-  // empty `source` — that would propagate `{ source: '' }` downstream, causing a
-  // `fetch('')` and a bogus enabled-list key under `useCuratedListOnly` (widget mode).
-  if (!source) return []
-
-  return [{ priority: 1, enabledByDefault: true, source }]
-})
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   'userAddedTokenListsAtom:v3',
@@ -54,15 +16,11 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
 )
 
 export const allListsSourcesAtom = atom((get) => {
-  const { chainId, useCuratedListOnly, isYieldEnabled } = get(environmentAtom)
+  const { chainId, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
-
-  if (useCuratedListOnly) {
-    return [...get(curatedListSourceAtom), ...lpLists, ...userAddedTokenListsForChain]
-  }
 
   return [...(DEFAULT_TOKENS_LISTS[chainId] || []), ...lpLists, ...userAddedTokenListsForChain]
 })
@@ -128,10 +86,8 @@ export function dropRepinnedDuplicates<T>(
 }
 
 export const listsStatesMapAtom = atom(async (get) => {
-  const { chainId, widgetAppCode, selectedLists, useCuratedListOnly } = get(environmentAtom)
+  const { chainId, widgetAppCode, selectedLists } = get(environmentAtom)
   const virtualListsState = get(virtualListsStateAtom)
-  const userAddedTokenLists = get(userAddedListsSourcesAtom)
-  const useeAddedTokenListsForChain = userAddedTokenLists[chainId] || []
 
   const allTokenListsInfo = await get(listsStatesByChainAtom)
   const listsState = allTokenListsInfo[chainId] || {}
@@ -151,32 +107,7 @@ export const listsStatesMapAtom = atom(async (get) => {
     ...virtualListsState,
   }
 
-  const userAddedListSources = useeAddedTokenListsForChain.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
-    return acc
-  }, {})
-
-  const virtualListSources = Object.keys(virtualListsState).reduce<{ [key: string]: boolean }>((acc, source) => {
-    acc[source] = true
-    return acc
-  }, {})
-
-  const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
-    return acc
-  }, {})
-
-  const listsSources = Object.keys(currentNetworkLists).filter((source) => {
-    return useCuratedListOnly
-      ? userAddedListSources[source] || virtualListSources[source] || lpTokenListSources[source]
-      : true
-  })
-
-  const lists = useCuratedListOnly
-    ? [...get(curatedListSourceAtom).map((val) => val.source), ...listsSources]
-    : listsSources
-
-  return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
+  return Object.keys(currentNetworkLists).reduce<{ [source: string]: ListState }>((acc, source) => {
     const list = currentNetworkLists[source]
 
     if (!list) return acc

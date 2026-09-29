@@ -69,7 +69,7 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
 
-  const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
+  const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
@@ -119,7 +119,6 @@ export function Updaters(): ReactNode {
 
       <TokensListsUpdater
         chainId={sourceChainId}
-        isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
