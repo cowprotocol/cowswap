@@ -90,10 +90,15 @@ export function getOrderPayload(payload: BaseOrderPayload & OrderTypeAnalyticsFi
 }
 
 export function mapCancelledOrder(p: OnCancelledOrderPayload): AnalyticsPayload {
+  const orderPayload = getOrderPayload(p)
+
   return {
-    ...getOrderPayload(p),
+    ...orderPayload,
+    orderId: p.analyticsOrderId ?? orderPayload.orderId,
+    walletAddress: p.analyticsWalletAddress ?? orderPayload.walletAddress,
     reason: 'cancelled',
     transactionHash: p.transactionHash || '',
+    isEoaTwap: p.isEoaTwap,
   }
 }
 

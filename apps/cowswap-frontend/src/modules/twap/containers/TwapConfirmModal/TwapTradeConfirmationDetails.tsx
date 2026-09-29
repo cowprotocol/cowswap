@@ -28,7 +28,7 @@ const getConfirmModalConfig = (): {
   minReceivedLabel: string
   minReceivedTooltip: string
 } => ({
-  priceLabel: t`Rate`,
+  priceLabel: t`Quoted price`,
   slippageLabel: t`Price protection`,
   slippageTooltip: (
     <>
