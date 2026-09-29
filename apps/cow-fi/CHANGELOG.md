@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.15.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.15.0...cow-fi-v2.15.1) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.15.0
+  - @cowprotocol/ui@3.15.0
+  - @cowprotocol/analytics@3.13.0
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/widget-react@3.2.9
+
 ## [2.15.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.2...cow-fi-v2.15.0) (2026-09-23)
 
 ### Minor Changes
