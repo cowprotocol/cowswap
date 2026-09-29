@@ -3765,7 +3765,6 @@ msgid "Boooost your current LP positions with CoW AMM’s pools."
 msgstr "Boooost your current LP positions with CoW AMM’s pools."
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
-#: apps/cowswap-frontend/src/common/pure/ConfirmedButton/ConfirmedButton.tsx
 msgid "Please type the word <0>\"{confirmWord}\"</0> to {action}."
 msgstr "Please type the word <0>\"{confirmWord}\"</0> to {action}."
 
@@ -9128,7 +9127,6 @@ msgid "User rejected transaction"
 msgstr "User rejected transaction"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
-#: apps/cowswap-frontend/src/common/pure/ConfirmedButton/ConfirmedButton.tsx
 msgid "Please click confirm to {action}."
 msgstr "Please click confirm to {action}."
 
