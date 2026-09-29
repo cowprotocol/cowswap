@@ -3,10 +3,11 @@ import type { Hex } from 'viem'
 import { type AccountAddress } from '@cowprotocol/cow-sdk'
 import { EOA_TWAP_POLL_FUNDS_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 
+import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
+
 import { replaceHooksOnAppData } from 'modules/appData'
 import type { AppDataInfo, CowHook } from 'modules/appData'
 
-import { POLL_FUNDS_HOOK_GAS_LIMIT } from './composable-cow-poller.constants'
 import { encodePollFundsCalldata } from './composable-cow-poller.utils'
 
 /**

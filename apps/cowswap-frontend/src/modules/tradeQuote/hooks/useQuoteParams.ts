@@ -1,12 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useAtomValue } from 'jotai'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
-import { useDebounce } from '@cowprotocol/common-hooks'
+import { useDebounce, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 import { Nullish } from 'types'
@@ -24,6 +25,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
+import { getEoaTwapQuotePreHooks } from '../utils/getEoaTwapQuotePreHooks'
+import { withAdditionalPreHooks } from '../utils/withAdditionalPreHooks'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
@@ -51,7 +54,9 @@ interface BuildQuoteParamsArgs {
 }
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const isEoa = useAtomValue(isEoaAtom)
+  const { isTwapEoaEnabled } = useFeatureFlags()
   const appData = useAppData()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -73,7 +78,17 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
   const userSlippageBps = tradeSlippage.type === 'user' || isSolana ? tradeSlippage.value : undefined
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
-  const appDataDoc = appData?.doc
+
+  const appDataDoc = useMemo(() => {
+    const additionalPreHooks = getEoaTwapQuotePreHooks({
+      orderClass: appData?.doc?.metadata?.orderClass?.orderClass,
+      isTwapEoaEnabled: !!isTwapEoaEnabled,
+      isEoa,
+      chainId,
+    })
+
+    return withAdditionalPreHooks(appData?.doc, additionalPreHooks)
+  }, [appData?.doc, isTwapEoaEnabled, isEoa, chainId])
 
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported || isProviderNetworkDeprecated) return

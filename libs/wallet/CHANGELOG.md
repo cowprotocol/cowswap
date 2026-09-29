@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.14.0...wallet-v3.15.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: update TWAP for EOA quoting to include poll funds gas cost (#8216)
+
+### Patch Changes
+
+- fix: disallow twap for safe imported in rabby (#8250)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.15.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.2...wallet-v3.14.0) (2026-09-23)
 
 ### Minor Changes

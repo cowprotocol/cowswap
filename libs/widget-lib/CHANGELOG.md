@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.8.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.8.0...widget-lib-v4.8.1) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.14.0
+
 ## [4.8.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.7.0...widget-lib-v4.8.0) (2026-09-23)
 
 ### Minor Changes
