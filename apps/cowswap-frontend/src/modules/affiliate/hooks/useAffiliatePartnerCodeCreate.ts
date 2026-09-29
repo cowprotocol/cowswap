@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
-
 import { type WalletClient } from 'viem'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 

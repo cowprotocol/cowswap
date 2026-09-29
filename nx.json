@@ -14,7 +14,8 @@
       "libs/widget-lib",
       "libs/widget-react",
       "libs/iframe-transport",
-      "libs/hook-dapp-lib"
+      "libs/hook-dapp-lib",
+      "libs/dx"
     ]
   },
   "targetDefaults": {

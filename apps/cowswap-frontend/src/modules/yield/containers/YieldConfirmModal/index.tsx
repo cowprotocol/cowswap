@@ -1,6 +1,6 @@
 import React, { ReactNode, useMemo } from 'react'
 
-import { Nullish } from '@cowprotocol/types'
+import { Nullish, UiOrderType } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
 
@@ -13,6 +13,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useCommonTradeConfirmContext,
+  useFreezeWhileConfirming,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
@@ -60,8 +61,16 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
 
+  // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
+  // the modal can never display a different amount than what was actually confirmed/signed.
+  const {
+    receiveAmountInfo: frozenReceiveAmountInfo,
+    rateInfoParams: frozenRateInfoParams,
+    slippage: frozenSlippage,
+  } = useFreezeWhileConfirming({ receiveAmountInfo, rateInfoParams, slippage })
+
   return (
-    <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
+    <TradeConfirmModal orderType={UiOrderType.YIELD} submittedContent={submittedContent}>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
@@ -77,11 +86,11 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
       >
         {(restContent) => (
           <>
-            {receiveAmountInfo && slippage && (
+            {frozenReceiveAmountInfo && frozenSlippage && (
               <TradeBasicConfirmDetails
-                rateInfoParams={rateInfoParams}
-                slippage={slippage}
-                receiveAmountInfo={receiveAmountInfo}
+                rateInfoParams={frozenRateInfoParams}
+                slippage={frozenSlippage}
+                receiveAmountInfo={frozenReceiveAmountInfo}
                 recipient={recipient}
                 recipientAddress={recipientAddress}
                 account={commonTradeConfirmContext.account}

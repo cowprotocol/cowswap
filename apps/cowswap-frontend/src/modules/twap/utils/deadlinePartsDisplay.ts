@@ -1,4 +1,4 @@
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 import ms from 'ms'
 
 import { TwapOrdersDeadline } from '../state/twapOrdersSettingsAtom'
@@ -23,15 +23,47 @@ export function deadlinePartsDisplay(timeInterval: number, longLabels = false): 
   const minutes = Math.floor((timeMs % oneH) / oneM)
   const seconds = Math.floor((timeMs % oneM) / oneS)
 
-  return [
-    [years, longLabels ? ' ' + t`years` : t`y`],
-    [months, longLabels ? ' ' + t`months` : t`mo`],
-    [days, longLabels ? ' ' + t`days` : t`d`],
-    [hours, longLabels ? ' ' + t`hours` : t`h`],
-    [minutes, longLabels ? ' ' + t`minutes` : t`m`],
-    [seconds, longLabels ? ' ' + t`seconds` : t`s`],
+  // The count sits inside each plural message so translators get the number and the noun together;
+  // short labels are bare abbreviations, which need no agreement.
+  const parts: [number, string][] = [
+    [
+      years,
+      longLabels
+        ? plural(years, { one: '# year', few: '# years', many: '# years', other: '# years' })
+        : `${years}${t`y`}`,
+    ],
+    [
+      months,
+      longLabels
+        ? plural(months, { one: '# month', few: '# months', many: '# months', other: '# months' })
+        : `${months}${t`mo`}`,
+    ],
+    [
+      days,
+      longLabels ? plural(days, { one: '# day', few: '# days', many: '# days', other: '# days' }) : `${days}${t`d`}`,
+    ],
+    [
+      hours,
+      longLabels
+        ? plural(hours, { one: '# hour', few: '# hours', many: '# hours', other: '# hours' })
+        : `${hours}${t`h`}`,
+    ],
+    [
+      minutes,
+      longLabels
+        ? plural(minutes, { one: '# minute', few: '# minutes', many: '# minutes', other: '# minutes' })
+        : `${minutes}${t`m`}`,
+    ],
+    [
+      seconds,
+      longLabels
+        ? plural(seconds, { one: '# second', few: '# seconds', many: '# seconds', other: '# seconds' })
+        : `${seconds}${t`s`}`,
+    ],
   ]
+
+  return parts
     .filter(([value]) => !!value)
-    .map(([value, suffix]) => `${value}${suffix}`)
+    .map(([, label]) => label)
     .join(' ')
 }

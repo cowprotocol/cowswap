@@ -1,3 +1,4 @@
+import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -7,6 +8,7 @@ export interface CancellableOrder {
   inputToken: Token
   isCancelling?: boolean
   cancellationHash?: string
+  signingScheme: SigningScheme
   status: OrderStatus
 }
 

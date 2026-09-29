@@ -13,10 +13,21 @@ interface TradeFeesAndCostsProps {
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
+  /** Overrides the fee row's default `confirmOrderAmount` test hook. */
+  feeTestId?: string
+  /** Overrides the network-costs row's default `confirmOrderAmount` test hook. */
+  networkCostsTestId?: string
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
-  const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
+  const {
+    receiveAmountInfo,
+    networkCostsSuffix,
+    networkCostsTooltipSuffix,
+    withTimelineDot = true,
+    feeTestId,
+    networkCostsTestId,
+  } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -46,6 +57,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         volumeFeeTooltip={volumeFeeTooltip}
         withTimelineDot={withTimelineDot}
         isLast={!hasNetworkCosts}
+        testId={feeTestId}
       />
 
       {hasNetworkCosts && networkFeeAmount && (
@@ -56,6 +68,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
           isLast
+          testId={networkCostsTestId}
         />
       )}
     </>

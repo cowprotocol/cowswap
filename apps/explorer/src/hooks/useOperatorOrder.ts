@@ -12,11 +12,18 @@ import {
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { useNetworkId } from 'state/network'
 import { Errors, Network, UiError } from 'types'
-import { transformOrder } from 'utils'
+import { getChainsForOrderId, transformOrder } from 'utils'
 
 import { getOrder, GetOrderParams, Order } from 'api/operator'
 
 import { useMultipleErc20 } from './useErc20'
+
+type UseOrderAndErc20sResult = {
+  order: Order | null
+  isLoading: boolean
+  errors: Errors
+  errorOrderPresentInNetworkId: Network | null
+}
 
 type UseOrderResult = {
   order: Order | null
@@ -26,88 +33,9 @@ type UseOrderResult = {
   forceUpdate?: Command
 }
 
-function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<SingleOrder>> {
-  const defaultParams: GetOrderParams = { networkId, orderId }
-  const getOrderApi: GetOrderApi<GetOrderParams, SingleOrder> = {
-    api: (_defaultParams) => getOrder(_defaultParams),
-    defaultParams,
-  }
-
-  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi)
-}
-
-export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<UiError>()
-  const [order, setOrder] = useState<Order | null>(null)
-  const [errorOrderPresentInNetworkId, setErrorOrderPresentInNetworkId] = useState<Network | null>(null)
-  // Hack to force component to update itself on demand
-  const [forcedUpdate, setForcedUpdate] = useState({})
-  const forceUpdate = useCallback((): void => setForcedUpdate({}), [])
-
-  useEffect(() => {
-    async function fetchOrder(): Promise<void> {
-      if (!networkId) return
-
-      setIsLoading(true)
-
-      try {
-        const { order: rawOrder, errorOrderPresentInNetworkId: errorOrderPresentInNetworkIdRaw } = await _getOrder(
-          networkId,
-          orderId,
-        )
-        console.log({ rawOrder, errorOrderPresentInNetworkIdRaw })
-        if (rawOrder) {
-          setOrder(transformOrder(rawOrder))
-        }
-        if (errorOrderPresentInNetworkIdRaw) {
-          setErrorOrderPresentInNetworkId(errorOrderPresentInNetworkIdRaw)
-        }
-        setError(undefined)
-      } catch (e) {
-        const msg = `Failed to fetch order`
-        console.error(`${msg}: ${orderId}`, e.message)
-        setError({ message: `${msg}: ${shortenOrderId(orderId)}`, type: 'error' })
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    fetchOrder()
-  }, [networkId, orderId, forcedUpdate])
-
-  useEffect(() => {
-    let intervalId: NodeJS.Timeout | null = null
-
-    // Only start the interval when:
-    // 1. Hook is configured to do so (`updateInterval` > 0)
-    // 2. Order exists
-    // 3. Order is not expired
-    if (updateInterval && order && order.expirationDate.getTime() > Date.now()) {
-      intervalId = setInterval(forceUpdate, updateInterval)
-    }
-
-    return (): void => {
-      intervalId && clearInterval(intervalId)
-    }
-  }, [forceUpdate, order, updateInterval])
-
-  return useMemo(
-    () => ({ order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate }),
-    [order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate],
-  )
-}
-
 export function useOrder(orderId: string, updateInterval?: number): UseOrderResult {
   const networkId = useNetworkId()
   return useOrderByNetwork(orderId, networkId, updateInterval)
-}
-
-type UseOrderAndErc20sResult = {
-  order: Order | null
-  isLoading: boolean
-  errors: Errors
-  errorOrderPresentInNetworkId: Network | null
 }
 
 /**
@@ -148,4 +76,94 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
 
     return { order, isLoading: isOrderLoading || areErc20Loading, errors, errorOrderPresentInNetworkId }
   }, [orderError, order, isOrderLoading, areErc20Loading, errors, errorOrderPresentInNetworkId, value, orderId])
+}
+
+export function useOrderByNetwork(orderId: string, networkId: Network | null, updateInterval = 0): UseOrderResult {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<UiError>()
+  const [order, setOrder] = useState<Order | null>(null)
+  const [errorOrderPresentInNetworkId, setErrorOrderPresentInNetworkId] = useState<Network | null>(null)
+  // Hack to force component to update itself on demand
+  const [forcedUpdate, setForcedUpdate] = useState({})
+  const forceUpdate = useCallback((): void => setForcedUpdate({}), [])
+
+  // Not folded into the fetch below: that one also re-runs on `forcedUpdate`, and clearing there would
+  // blank an order the poll is only refreshing.
+  useEffect(() => {
+    setOrder(null)
+    setErrorOrderPresentInNetworkId(null)
+  }, [networkId, orderId])
+
+  useEffect(() => {
+    let isStale = false
+
+    async function fetchOrder(): Promise<void> {
+      if (!networkId) return
+
+      setIsLoading(true)
+
+      try {
+        const { order: rawOrder, errorOrderPresentInNetworkId: errorOrderPresentInNetworkIdRaw } = await _getOrder(
+          networkId,
+          orderId,
+        )
+        // A lookup spans both environments and, when the order is missing, every chain the id could
+        // belong to — long enough for the caller to have moved on to a different order by now.
+        if (isStale) return
+
+        if (rawOrder) {
+          setOrder(transformOrder(rawOrder))
+        }
+        if (errorOrderPresentInNetworkIdRaw) {
+          setErrorOrderPresentInNetworkId(errorOrderPresentInNetworkIdRaw)
+        }
+        setError(undefined)
+      } catch (e) {
+        if (isStale) return
+
+        const msg = `Failed to fetch order`
+        console.error(`${msg}: ${orderId}`, e.message)
+        setError({ message: `${msg}: ${shortenOrderId(orderId)}`, type: 'error' })
+      } finally {
+        if (!isStale) setIsLoading(false)
+      }
+    }
+
+    fetchOrder()
+
+    return (): void => {
+      isStale = true
+    }
+  }, [networkId, orderId, forcedUpdate])
+
+  useEffect(() => {
+    let intervalId: NodeJS.Timeout | null = null
+
+    // Only start the interval when:
+    // 1. Hook is configured to do so (`updateInterval` > 0)
+    // 2. Order exists
+    // 3. Order is not expired
+    if (updateInterval && order && order.expirationDate.getTime() > Date.now()) {
+      intervalId = setInterval(forceUpdate, updateInterval)
+    }
+
+    return (): void => {
+      intervalId && clearInterval(intervalId)
+    }
+  }, [forceUpdate, order, updateInterval])
+
+  return useMemo(
+    () => ({ order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate }),
+    [order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate],
+  )
+}
+
+function _getOrder(networkId: Network, orderId: string): Promise<GetOrderResult<SingleOrder>> {
+  const defaultParams: GetOrderParams = { networkId, orderId }
+  const getOrderApi: GetOrderApi<GetOrderParams, SingleOrder> = {
+    api: (_defaultParams) => getOrder(_defaultParams),
+    defaultParams,
+  }
+
+  return tryGetOrderOnAllNetworksAndEnvironments<SingleOrder>(networkId, getOrderApi, getChainsForOrderId(orderId))
 }

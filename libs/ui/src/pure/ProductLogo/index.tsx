@@ -8,6 +8,7 @@ import svgCowswapChristmasDarkSrc from '@cowprotocol/assets/images/logo-cowswap-
 import svgCowswapChristmasLightSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
 import svgCowswapHalloweenSrc from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
 import svgCowswapSrc from '@cowprotocol/assets/images/logo-cowswap.svg'
+import svgCowwidgetSrc from '@cowprotocol/assets/images/logo-cowwidget.svg'
 import iconCowSrc from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import iconMevblockerSrc from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import svgMevblockerSrc from '@cowprotocol/assets/images/logo-mevblocker.svg'
@@ -21,8 +22,17 @@ import { Color } from '../../colors'
 import { Media } from '../../consts'
 import { CowSwapTheme } from '../../types'
 
+export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
+  light: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
+  darkChristmas?: { default: LogoInfo }
+  lightChristmas?: { default: LogoInfo }
+}
+
 export enum ProductVariant {
   CowSwap = 'cowSwap',
+  CowWidget = 'cowWidget',
   CowExplorer = 'cowExplorer',
   CowProtocol = 'cowProtocol',
   MevBlocker = 'mevBlocker',
@@ -37,14 +47,6 @@ interface LogoInfo {
   height?: string // Optional height for both desktop and mobile
   heightMobile?: string // Optional height specifically for mobile
   preserveOriginalColors?: boolean // If true, original SVG colors will be preserved
-}
-
-export type ThemedLogo = Partial<Record<CowSwapTheme, { default: LogoInfo; logoIconOnly?: LogoInfo }>> & {
-  light: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  dark: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  darkHalloween?: { default: LogoInfo; logoIconOnly?: LogoInfo }
-  darkChristmas?: { default: LogoInfo }
-  lightChristmas?: { default: LogoInfo }
 }
 
 const LOGOS: Record<ProductVariant, ThemedLogo> = {
@@ -99,6 +101,34 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         height: '56px',
         heightMobile: '50px',
         preserveOriginalColors: true,
+      },
+    },
+  },
+
+  // CoW Widget
+  [ProductVariant.CowWidget]: {
+    light: {
+      default: {
+        src: svgCowwidgetSrc,
+        alt: 'CoW Widget',
+        color: '#004293',
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW Widget',
+        color: '#004293',
+      },
+    },
+    dark: {
+      default: {
+        src: svgCowwidgetSrc,
+        alt: 'CoW Widget',
+        color: Color.blue300Primary,
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW Widget',
+        color: Color.blue300Primary,
       },
     },
   },

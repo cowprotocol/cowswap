@@ -1,11 +1,11 @@
 import { ReactElement } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getSafeAbsoluteUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
-
-import { i18n } from '@lingui/core'
 
 import { ERROR_MESSAGES } from './pure/AddCustomHookForm/constants'
 

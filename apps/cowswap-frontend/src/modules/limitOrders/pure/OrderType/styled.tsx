@@ -31,10 +31,6 @@ export const StyledSVG = styled(SVG)`
 `
 
 export const StyledMenuButton = styled(MenuButton)`
-  background: none;
-  border: none;
-  outline: none;
-  margin: 0;
   position: relative;
   cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   opacity: ${({ disabled }) => (disabled ? '0.7' : '1')};

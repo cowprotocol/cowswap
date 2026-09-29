@@ -4,10 +4,12 @@ import { atomWithReset } from 'jotai/utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 
+import type { Order } from 'legacy/state/orders/actions'
+
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
-export type CancellationType = 'offChain' | 'onChain'
 export type CancellationModalContext = {
+  order?: Order
   chainId: number | null
   orderId: string | null
   error: string | null
@@ -18,6 +20,7 @@ export type CancellationModalContext = {
   triggerCancellation: ((type: CancellationType) => Promise<void>) | null
   defaultType: CancellationType
 }
+export type CancellationType = 'offChain' | 'onChain'
 
 const defaultCancellationModalContext: CancellationModalContext = {
   chainId: null,

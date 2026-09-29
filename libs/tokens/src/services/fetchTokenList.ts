@@ -1,3 +1,6 @@
+import { createConfig, http } from 'wagmi'
+import { mainnet } from 'wagmi/chains'
+
 import { RPC_URLS } from '@cowprotocol/common-const'
 import {
   contenthashToUri,
@@ -7,17 +10,24 @@ import {
   uriToHttp,
 } from '@cowprotocol/common-utils'
 import { getAddressKey, isSolanaAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenList } from '@uniswap/token-lists'
 
-import { createConfig, http } from 'wagmi'
-import { mainnet } from 'wagmi/chains'
+import { TokenList } from '@uniswap/token-lists'
 
 import { ListSourceConfig, ListState } from '../types'
 import { validateTokenList } from '../utils/validateTokenList'
 
+// Read-only config used ONLY for ENS content-hash resolution on mainnet.
+// It must never touch wallets:
+// - `multiInjectedProviderDiscovery: false` — otherwise this shadow config discovers the user's
+//   injected wallets via EIP-6963 and attaches to the same providers as the real wallet adapter,
+//   auto-connecting them into its own store and breaking the adapter's reconnect (event cross-talk).
+// - `storage: null` — so it doesn't persist a second `wagmi.store` (default key) alongside the
+//   adapter's `cowswap-wallet.store`.
 const MAINNET_CONFIG = createConfig({
   chains: [mainnet],
   transports: { [mainnet.id]: http(RPC_URLS[SupportedChainId.MAINNET]) },
+  multiInjectedProviderDiscovery: false,
+  storage: null,
 })
 
 /**
@@ -26,22 +36,6 @@ const MAINNET_CONFIG = createConfig({
 export function fetchTokenList(list: ListSourceConfig): Promise<ListState> {
   const isEnsSource = parseENSAddress(list.source)
   return isEnsSource ? fetchTokenListByEnsName(list) : fetchTokenListByUrl(list)
-}
-
-async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
-  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
-}
-
-async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
-  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
-  const translatedUri = contenthashToUri(contentHashUri)
-  const urls = uriToHttp(translatedUri)
-
-  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
-    return listStateFromSourceConfig(result, list)
-  })
 }
 
 async function _fetchTokenList(
@@ -95,6 +89,35 @@ async function _fetchTokenList(
   throw new Error('Unrecognized list URL protocol.')
 }
 
+async function fetchTokenListByEnsName(list: ListSourceConfig): Promise<ListState> {
+  const contentHashUri = await resolveENSContentHash(list.source, MAINNET_CONFIG)
+  const translatedUri = contenthashToUri(contentHashUri)
+  const urls = uriToHttp(translatedUri)
+
+  return _fetchTokenList(list.source, urls, sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+async function fetchTokenListByUrl(list: ListSourceConfig): Promise<ListState> {
+  return _fetchTokenList(list.source, [list.source], sanitizeList).then((result) => {
+    return listStateFromSourceConfig(result, list)
+  })
+}
+
+/** Lightweight shape check used for token lists that contain non-EVM (Solana) addresses,
+ *  which the Uniswap JSON-schema validator can't parse. */
+function isValidTokenList(value: unknown): value is TokenList {
+  if (!value || typeof value !== 'object') return false
+  const v = value as Record<string, unknown>
+  return (
+    typeof v['name'] === 'string' &&
+    typeof v['version'] === 'object' &&
+    v['version'] !== null &&
+    Array.isArray(v['tokens'])
+  )
+}
+
 function listStateFromSourceConfig(result: ListState, list: ListSourceConfig): ListState {
   return {
     ...result,
@@ -118,21 +141,32 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   let hasNonEvmTokens = false
 
   const tokens = list.tokens.reduce<TokenList['tokens']>((acc, token) => {
-    // `getAddressKey` lowercases EVM hex addresses and leaves non-EVM (base58) addresses
-    // untouched — exactly the normalization `isAddress` (case-insensitive on EVM hex) wants.
-    const checksummed = isAddress(getAddressKey(token.address))
-    if (checksummed) {
-      acc.push({ ...token, address: checksummed })
-      return acc
-    }
+    // Checked first: `isAddress` also accepts Solana addresses (returning them unchanged), so
+    // checking it before this would classify every Solana token as "checksummed" and never mark
+    // `hasNonEvmTokens`, sending the whole list through the EVM-only schema in `validateTokenList`.
     if (isSolanaAddress(token.address)) {
       hasNonEvmTokens = true
       acc.push(token)
+      return acc
+    }
+
+    // `getAddressKey` lowercases EVM hex addresses — exactly the normalization `isAddress`
+    // (case-insensitive on EVM hex) wants.
+    const checksummed = isAddress(getAddressKey(token.address))
+    if (checksummed) {
+      acc.push({ ...token, address: checksummed })
     }
     return acc
   }, [])
 
-  const cleanedList = { ...list, tokens }
+  // Uniswap's schema requires keywords to be strings matching /^[\w ]+$/ (letters/digits/underscore/
+  // space only); drop the ones that don't rather than failing the whole list over metadata. Data is
+  // untrusted external JSON, so also guard against a non-array or non-string shape.
+  const keywords = Array.isArray(list.keywords)
+    ? list.keywords.filter((keyword): keyword is string => typeof keyword === 'string' && /^[\w ]{1,20}$/.test(keyword))
+    : undefined
+
+  const cleanedList = { ...list, tokens, keywords }
 
   if (hasNonEvmTokens) {
     // Uniswap's `validateTokenList` schema rejects non-EVM addresses by construction.
@@ -143,17 +177,4 @@ async function sanitizeList(list: TokenList): Promise<TokenList> {
   }
 
   return validateTokenList(cleanedList)
-}
-
-/** Lightweight shape check used for token lists that contain non-EVM (Solana) addresses,
- *  which the Uniswap JSON-schema validator can't parse. */
-function isValidTokenList(value: unknown): value is TokenList {
-  if (!value || typeof value !== 'object') return false
-  const v = value as Record<string, unknown>
-  return (
-    typeof v['name'] === 'string' &&
-    typeof v['version'] === 'object' &&
-    v['version'] !== null &&
-    Array.isArray(v['tokens'])
-  )
 }

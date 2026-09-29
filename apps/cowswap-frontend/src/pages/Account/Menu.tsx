@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { useExtractText } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { NavLink } from 'react-router'
 
@@ -24,7 +25,7 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
     { title: msg`Affiliate`, url: '/account/affiliate' },
     { title: msg`My Rewards`, url: '/account/my-rewards' },
     { title: msg`Tokens`, url: '/account/tokens' },
-    { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
+    ...(isEvmChain(chainId) ? [{ title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) }] : []),
   ]
 }
 

@@ -8,6 +8,7 @@ export const footerConfig = {
     contracts: {
       settlement: `https://github.com/cowprotocol/contracts/blob/v${CONTRACT_VERSION}/src/contracts/GPv2Settlement.sol`,
       vaultRelayer: `https://github.com/cowprotocol/contracts/blob/v${CONTRACT_VERSION}/src/contracts/GPv2VaultRelayer.sol`,
+      solanaSettlement: 'https://github.com/cowprotocol/solana-programs/tree/main/programs/settlement',
     },
   },
 }

@@ -1,12 +1,14 @@
 import { ReactNode, useMemo, useState } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import svgArrowDownRightSrc from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
 import { formatInputAmount } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@cowprotocol/currency'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -14,11 +16,8 @@ import styled from 'styled-components/macro'
 
 import { ExecutionPriceTooltip } from 'modules/limitOrders/pure/ExecutionPriceTooltip'
 import { OrderType } from 'modules/limitOrders/pure/OrderType'
-import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { DividerHorizontal, RecipientRow } from 'modules/trade'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
@@ -45,8 +44,12 @@ const ArrowDownRight = styled.div`
 `
 export interface LimitOrdersDetailsProps {
   rateInfoParams: RateInfoParams
-  tradeContext: TradeFlowContext
-  settingsState: LimitOrdersSettingsState
+  account: string
+  chainId: SupportedChainId
+  recipient: string | null | undefined
+  recipientAddressOrName: string | null | undefined
+  partiallyFillable: boolean
+  validTo: number
   executionPrice: Price<Currency, Currency> | null
   limitRateState: LimitRateState
   partiallyFillableOverride: PartiallyFillableOverrideDispatcherType
@@ -56,17 +59,19 @@ export interface LimitOrdersDetailsProps {
 export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
   const {
     executionPrice,
-    tradeContext,
-    settingsState,
+    account,
+    chainId,
+    recipient,
+    recipientAddressOrName,
+    partiallyFillable,
+    validTo,
     rateInfoParams,
     limitRateState,
     partiallyFillableOverride,
     children,
   } = props
-  const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
-  const validTo = calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
   const expiryDate = new Date(validTo * 1000)
   const isInvertedState = useState(false)
   const [isInverted] = isInvertedState
@@ -132,7 +137,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       <RecipientRow
-        chainId={tradeContext.chainId}
+        chainId={chainId}
         recipient={recipientAddressOrName || recipient}
         recipientAddress={recipient}
         account={account}

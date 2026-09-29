@@ -194,7 +194,9 @@ export function useSwapAndBridgeContext(
     const quoteBridgeContext: QuoteBridgeContext = {
       chainName: destChainData.label,
       bridgeFee,
-      estimatedTime: null,
+      // Prefer the ETA captured from the quote; fall back to the live status estimate
+      estimatedTime:
+        bridgeQuoteAmounts?.expectedFillTimeSeconds ?? crossChainOrder.statusResult.fillTimeInSeconds ?? null,
       recipient: crossChainOrder.bridgingParams.recipient,
       sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
@@ -229,6 +231,7 @@ export function useSwapAndBridgeContext(
     swapAndBridgeOverview,
     bridgeFee,
     bridgeMinReceiveAmount,
+    bridgeQuoteAmounts,
   ])
 
   const isLoading = isCrossChainOrderLoading

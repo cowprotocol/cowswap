@@ -2,12 +2,10 @@ import { strict as assert } from 'node:assert'
 
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-function getDuneApiKey(): string {
-  const apiKey = process.env.DUNE_API_KEY?.trim()
-
-  assert(apiKey, 'DUNE_API_KEY environment var is required')
-
-  return apiKey
+interface GetFromDuneResult<T> {
+  metadata: MetadataQuery
+  // column_names: string[]
+  rows: T[]
 }
 
 // TODO: getFromDune will be moved in a future PR to the SDK
@@ -18,12 +16,6 @@ interface MetadataQuery {
   // query_version: number,
   // result_bytes: number
   // result_rows: number
-}
-
-interface GetFromDuneResult<T> {
-  metadata: MetadataQuery
-  // column_names: string[]
-  rows: T[]
 }
 
 export async function getFromDune<T>(queryId: number): Promise<GetFromDuneResult<T>> {
@@ -38,6 +30,14 @@ export async function getFromDune<T>(queryId: number): Promise<GetFromDuneResult
   })
 
   return await response.json()
+}
+
+function getDuneApiKey(): string {
+  const apiKey = process.env.DUNE_API_KEY?.trim()
+
+  assert(apiKey, 'DUNE_API_KEY environment var is required')
+
+  return apiKey
 }
 
 // ------ End of TODO

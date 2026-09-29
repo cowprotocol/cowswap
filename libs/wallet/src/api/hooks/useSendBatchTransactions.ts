@@ -1,16 +1,15 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import type { MetaTransactionData } from '@safe-global/types-kit'
-
+import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { sendCalls } from 'wagmi/actions'
+
+import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { useSafeAppsSdk } from '../../wagmi/hooks/useSafeAppsSdk'
 import { useWalletInfo } from '../hooks'
 import { isAtomicBatchSupportedAtom } from '../state/walletCapabilitiesAtom'
-
-import type { Hex } from 'viem'
 
 export type SendBatchTxCallback = (txs: MetaTransactionData[]) => Promise<string>
 

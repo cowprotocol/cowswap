@@ -14,11 +14,6 @@ import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { APP_TITLE, TAB_QUERY_PARAM_KEY } from '../../const'
 import { ContentCard as Content, Title } from '../styled'
 
-export enum TabView {
-  ENCODE = 1,
-  DECODE = 2,
-}
-
 export type TabData = {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -26,6 +21,11 @@ export type TabData = {
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   decode: { formData: FormProps; options: any }
+}
+
+export enum TabView {
+  ENCODE = 1,
+  DECODE = 2,
 }
 
 const DEFAULT_TAB = TabView[1]

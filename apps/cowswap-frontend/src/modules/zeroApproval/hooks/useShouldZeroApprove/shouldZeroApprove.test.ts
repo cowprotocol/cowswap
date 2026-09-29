@@ -1,9 +1,8 @@
 import { BaseError } from 'viem'
+import type { Config } from 'wagmi'
 import { simulateContract } from 'wagmi/actions'
 
 import { shouldZeroApprove } from './shouldZeroApprove'
-
-import type { Config } from 'wagmi'
 
 jest.mock('wagmi/actions', () => ({
   simulateContract: jest.fn(),

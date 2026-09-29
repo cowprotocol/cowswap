@@ -56,11 +56,28 @@ const mockFetchTokens = jest.mocked(fetchTokens)
 const SELL = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
 const BUY = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb'
 
+function getListAtom(): WritableAtom<TwapOrderItem[], [TwapOrderItem[]], void> {
+  const a = mockTwapOrdersListAtom
+  if (!a) {
+    throw new Error('mockTwapOrdersListAtom not initialized')
+  }
+  return a
+}
+
+function getTokensPayload(): { tokens: TokensByAddress; chainId: SupportedChainId } {
+  const p = mockTokensPayload
+  if (!p) {
+    throw new Error('mockTokensPayload not initialized')
+  }
+  return p
+}
+
 function makeTwapOrderItem(sellToken: string, buyToken: string): TwapOrderItem {
   return {
     id: 'twap-1',
     chainId: SupportedChainId.MAINNET,
     safeAddress: '0x0000000000000000000000000000000000000001',
+    resolvedOwner: '0x0000000000000000000000000000000000000001',
     status: TwapOrderStatus.Pending,
     submissionDate: '2024-01-01T00:00:00.000Z',
     executionInfo: {
@@ -80,22 +97,6 @@ function makeTwapOrderItem(sellToken: string, buyToken: string): TwapOrderItem {
       appData: '',
     },
   }
-}
-
-function getListAtom(): WritableAtom<TwapOrderItem[], [TwapOrderItem[]], void> {
-  const a = mockTwapOrdersListAtom
-  if (!a) {
-    throw new Error('mockTwapOrdersListAtom not initialized')
-  }
-  return a
-}
-
-function getTokensPayload(): { tokens: TokensByAddress; chainId: SupportedChainId } {
-  const p = mockTokensPayload
-  if (!p) {
-    throw new Error('mockTokensPayload not initialized')
-  }
-  return p
 }
 
 describe('twapOrdersTokensAtom', () => {

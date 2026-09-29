@@ -1,5 +1,9 @@
 export type NormalizedError = Error & { code?: number }
 
+export function extractErrorCode(error: unknown): number | null {
+  return error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+}
+
 export function normalizeError(err: unknown): NormalizedError {
   if (err instanceof Error) {
     return err as NormalizedError
@@ -29,8 +33,4 @@ function extractErrorMessage(error: unknown): string {
   } catch {
     return 'Unknown error'
   }
-}
-
-export function extractErrorCode(error: unknown): number | null {
-  return error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
 }

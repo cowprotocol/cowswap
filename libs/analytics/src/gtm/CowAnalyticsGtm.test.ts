@@ -1,3 +1,5 @@
+import { logAnalytics } from '@cowprotocol/common-utils'
+
 import { CowAnalyticsGtm } from './CowAnalyticsGtm'
 
 import { AnalyticsContext } from '../CowAnalytics'
@@ -109,6 +111,95 @@ describe('CowAnalyticsGtm wallet lifecycle events', () => {
       action: 'Reject',
       label: 'SWAP|COW',
       isBridgeOrder: false,
+    })
+  })
+
+  it('keeps false isEoaTwap flags on trade events', () => {
+    analytics.sendEvent({
+      category: 'TWAP',
+      action: 'Place Order',
+      label: 'TWAP|COW,WETH',
+      isEoaTwap: false,
+    })
+
+    expect(getLastEvent('Place Order')).toMatchObject({
+      event: 'Place Order',
+      category: 'TWAP',
+      action: 'Place Order',
+      isEoaTwap: false,
+    })
+  })
+
+  it('preserves isEoaTwap on order_submitted string event payloads', () => {
+    analytics.sendEvent('order_submitted', {
+      orderType: 'TWAP',
+      isEoaTwap: false,
+    })
+
+    expect(getLastEvent('order_submitted')).toMatchObject({
+      event: 'order_submitted',
+      orderType: 'TWAP',
+      isEoaTwap: false,
+    })
+  })
+
+  it.each([
+    ['swap_executed', 'SWAP'],
+    ['swap_cancelled', 'LIMIT'],
+    ['swap_expired', 'TWAP'],
+  ])('preserves %s orderType fields on string event payloads', (event, orderType) => {
+    const orderId = `0x${orderType.toLowerCase()}`
+
+    analytics.sendEvent(event, {
+      orderId,
+      orderType,
+      walletAddress: '0x1111111111111111111111111111111111111111',
+    })
+
+    expect(getLastEvent(event)).toMatchObject({
+      event,
+      dimension_chainId: '1',
+      orderId,
+      orderType,
+      walletAddress: '0x1111111111111111111111111111111111111111',
+    })
+  })
+
+  it('omits undefined custom event params', () => {
+    analytics.sendEvent({
+      category: 'Captcha',
+      action: 'captcha_challenge_solved',
+      reason: undefined,
+    } as GtmEvent<string> & { reason?: string })
+
+    expect(getLastEvent('captcha_challenge_solved')).toEqual(
+      expect.not.objectContaining({
+        reason: expect.anything(),
+      }),
+    )
+  })
+
+  it('logs and suppresses data layer push failures', () => {
+    const warnSpy = jest.spyOn(logAnalytics, 'warn')
+
+    analytics.destroy()
+    window.cowAnalyticsInstance = undefined
+    window.dataLayer = {
+      push() {
+        throw new Error('data layer failed')
+      },
+    } as unknown as unknown[]
+    analytics = new CowAnalyticsGtm()
+
+    expect(() => analytics.sendEvent({ category: 'Trade', action: 'Quote', label: undefined })).not.toThrow()
+    expect(warnSpy).toHaveBeenCalledWith('Data layer push failed', {
+      data: {
+        event: 'Quote',
+        category: 'Trade',
+        action: 'Quote',
+        label: undefined,
+      },
+      error: expect.any(Error),
     })
   })
 })

@@ -1,8 +1,9 @@
+import { Address, BaseError, ExecutionRevertedError, Hex } from 'viem'
+import type { Config } from 'wagmi'
+import { estimateGas } from 'wagmi/actions'
+
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
-
-import { Address, Hex } from 'viem'
-import { estimateGas } from 'wagmi/actions'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from '../const'
 import { PermitHookData, PermitHookParams } from '../types'
@@ -10,45 +11,13 @@ import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
-import type { Config } from 'wagmi'
+type NormalizedError = Error & { code?: number }
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
 // User rejection detection (EIP-1193 error codes and common wallet messages)
 const USER_REJECTION_CODES = [4001, -32000]
 const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected transaction', 'transaction was rejected']
-
-function hasUserRejectionCode(error: unknown): boolean {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'code' in error &&
-    USER_REJECTION_CODES.includes(error.code as number)
-  )
-}
-
-function getErrorMessage(error: unknown): string {
-  if (typeof error === 'string') {
-    return error.toLowerCase()
-  }
-
-  if (typeof error === 'object' && error !== null && 'message' in error && typeof error.message === 'string') {
-    return error.message.toLowerCase()
-  }
-
-  return ''
-}
-
-function isUserRejectionError(error: unknown): boolean {
-  if (!error) return false
-  if (hasUserRejectionCode(error)) {
-    return true
-  }
-
-  const message = getErrorMessage(error)
-
-  return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
-}
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
@@ -60,12 +29,14 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   }
 
   const request = generatePermitHookRaw(params)
-    .catch((e) => {
+    .catch((err: unknown) => {
+      const error = normalizeError(err)
+
       // Re-throw user rejection errors so they propagate to the UI
-      if (isUserRejectionError(e)) {
-        throw e
+      if (isUserRejectionError(error) || error instanceof ExecutionRevertedError) {
+        throw error
       }
-      console.debug(`[generatePermitHook] cached request failed`, e)
+      console.debug(`[generatePermitHook] cached request failed`, error)
       return undefined
     })
     .finally(() => {
@@ -76,6 +47,40 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   REQUESTS_CACHE[permitKey] = request
 
   return request
+}
+
+async function calculateGasLimit({
+  data,
+  from,
+  to,
+  config,
+  isUserAccount,
+}: {
+  data: Hex
+  from: Address
+  to: Address
+  config: Config
+  isUserAccount: boolean
+}): Promise<bigint> {
+  try {
+    // Query the actual gas estimate
+    const actual = await estimateGas(config, { account: from, to, data })
+
+    // Add 10% to actual value to account for minor differences with real account
+    // Do not add it if this is the real user's account
+    const gasLimit = !isUserAccount ? actual + actual / 10n : actual
+
+    // Pick the biggest between estimated and default
+    return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    const revertError = isUserAccount ? getExecutionRevertedError(error) : undefined
+    if (revertError) throw revertError
+
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, error)
+
+    return DEFAULT_PERMIT_GAS_LIMIT
+  }
 }
 
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
@@ -154,36 +159,6 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   }
 }
 
-async function calculateGasLimit({
-  data,
-  from,
-  to,
-  config,
-  isUserAccount,
-}: {
-  data: Hex
-  from: Address
-  to: Address
-  config: Config
-  isUserAccount: boolean
-}): Promise<bigint> {
-  try {
-    // Query the actual gas estimate
-    const actual = await estimateGas(config, { account: from, to, data })
-
-    // Add 10% to actual value to account for minor differences with real account
-    // Do not add it if this is the real user's account
-    const gasLimit = !isUserAccount ? actual + actual / 10n : actual
-
-    // Pick the biggest between estimated and default
-    return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
-  } catch (e) {
-    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
-
-    return DEFAULT_PERMIT_GAS_LIMIT
-  }
-}
-
 function getCacheKey(params: PermitHookParams): string {
   const { inputToken, chainId, account, amount, nonce, permitInfo, spender } = params
   const owner = account ?? PERMIT_ACCOUNT.address
@@ -200,4 +175,36 @@ function getCacheKey(params: PermitHookParams): string {
     tokenName: tokenName ?? null,
     permitVersion: permitInfo.version ?? null,
   })
+}
+
+function getExecutionRevertedError(error: unknown): ExecutionRevertedError | undefined {
+  if (!(error instanceof BaseError)) return undefined
+
+  const revertError = error.walk((cause) => cause instanceof ExecutionRevertedError)
+
+  return revertError instanceof ExecutionRevertedError ? revertError : undefined
+}
+
+function isUserRejectionError(error: NormalizedError): boolean {
+  if (error.code !== undefined && USER_REJECTION_CODES.includes(error.code)) return true
+
+  const message = error.message.toLowerCase()
+  return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
+}
+
+// Keep this local: permit-utils is buildable, while common-utils is not.
+function normalizeError(err: unknown): NormalizedError {
+  if (err instanceof Error) return err
+
+  const message =
+    typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string'
+      ? err.message
+      : String(err)
+  const error = new Error(message) as NormalizedError
+
+  if (typeof err === 'object' && err !== null && 'code' in err && typeof err.code === 'number') {
+    error.code = err.code
+  }
+
+  return error
 }

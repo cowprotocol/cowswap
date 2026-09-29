@@ -7,8 +7,10 @@ export { useInjectedWidgetPalette } from './hooks/useInjectedWidgetPalette'
 export { WidgetMarkdownContent } from './pure/WidgetMarkdownContent'
 
 export { callWidgetHook } from './services/callWidgetHook'
+export { fireOnBeforeApprovalHook, WidgetHookDeclineError } from './services/fireOnBeforeApprovalHook'
 export {
   buildOrderWidgetHookPayload,
   buildOrdersWidgetHookPayload,
   buildTradeWidgetHookPayload,
 } from './services/widgetHooksPayload'
+export type { BuildTradeWidgetHookPayloadParams } from './services/widgetHooksPayload'

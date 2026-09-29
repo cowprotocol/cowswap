@@ -7,10 +7,6 @@ import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
 import { swapSettingsAtom, SwapSettingsState, updateSwapSettingsAtom } from '../state/swapSettingsAtom'
 
-export function useSwapSettings(): SwapSettingsState {
-  return useAtomValue(swapSettingsAtom)
-}
-
 export function useSwapDeadlineState(): StatefulValue<number> {
   const updateState = useSetAtom(updateSwapSettingsAtom)
   const settings = useSwapSettings()
@@ -19,6 +15,18 @@ export function useSwapDeadlineState(): StatefulValue<number> {
     () => [settings.deadline, (deadline: number) => updateState({ deadline })],
     [settings.deadline, updateState],
   )
+}
+
+export function useSwapPartialApprovalToggleState(): StatefulValue<boolean> {
+  const updateState = useSetAtom(updateSwapSettingsAtom)
+  const settings = useSwapSettings()
+
+  return useMemo(() => {
+    return [
+      settings.enablePartialApprovalBySettings,
+      (enablePartialApproval: boolean) => updateState({ enablePartialApprovalBySettings: enablePartialApproval }),
+    ]
+  }, [settings.enablePartialApprovalBySettings, updateState])
 }
 
 export function useSwapRecipientToggleState(): StatefulValue<boolean> {
@@ -40,14 +48,6 @@ export function useSwapRecipientToggleState(): StatefulValue<boolean> {
   )
 }
 
-export function useSwapPartialApprovalToggleState(): StatefulValue<boolean> {
-  const updateState = useSetAtom(updateSwapSettingsAtom)
-  const settings = useSwapSettings()
-
-  return useMemo(() => {
-    return [
-      settings.enablePartialApprovalBySettings,
-      (enablePartialApproval: boolean) => updateState({ enablePartialApprovalBySettings: enablePartialApproval }),
-    ]
-  }, [settings.enablePartialApprovalBySettings, updateState])
+export function useSwapSettings(): SwapSettingsState {
+  return useAtomValue(swapSettingsAtom)
 }

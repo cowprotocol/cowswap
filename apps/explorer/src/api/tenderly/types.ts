@@ -1,8 +1,31 @@
 import { RawTrade, RawOrder } from 'api/operator'
 
-export enum TypeOfTrace {
-  TRANSFER = 'Transfer',
-  TRADE = 'Trade',
+export interface Account {
+  alias: string
+  address?: string
+  href?: string
+}
+
+export interface Contract {
+  address: string
+  contract_name: string
+}
+
+export interface Input {
+  value: string
+}
+
+export interface Log {
+  name: TypeOfTrace
+  raw: Raw
+  inputs: Array<Input>
+}
+
+export type PublicTrade = Pick<RawTrade, 'owner' | 'sellToken' | 'buyToken' | 'sellAmount' | 'buyAmount' | 'orderUid'> &
+  Pick<RawOrder, 'feeAmount'>
+
+export interface Raw {
+  address: string
 }
 
 export interface Trace {
@@ -16,20 +39,6 @@ export interface Trace {
   transaction_id: string
 }
 
-export interface Log {
-  name: TypeOfTrace
-  raw: Raw
-  inputs: Array<Input>
-}
-
-export interface Raw {
-  address: string
-}
-
-export interface Input {
-  value: string
-}
-
 export interface Transfer {
   from: string
   to: string
@@ -38,24 +47,9 @@ export interface Transfer {
   isInternal?: boolean
 }
 
-export interface Account {
-  alias: string
-  address?: string
-  href?: string
-}
-
-export interface Contract {
-  address: string
-  contract_name: string
-}
-
-export type PublicTrade = Pick<RawTrade, 'owner' | 'sellToken' | 'buyToken' | 'sellAmount' | 'buyAmount' | 'orderUid'> &
-  Pick<RawOrder, 'feeAmount'>
-
-export enum IndexTransferInput {
-  from,
-  to,
-  value,
+export interface TxTradesAndTransfers {
+  trades: PublicTrade[]
+  transfers: Transfer[]
 }
 
 export enum IndexTradeInput {
@@ -68,7 +62,13 @@ export enum IndexTradeInput {
   orderUid,
 }
 
-export interface TxTradesAndTransfers {
-  trades: PublicTrade[]
-  transfers: Transfer[]
+export enum IndexTransferInput {
+  from,
+  to,
+  value,
+}
+
+export enum TypeOfTrace {
+  TRANSFER = 'Transfer',
+  TRADE = 'Trade',
 }

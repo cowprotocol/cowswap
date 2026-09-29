@@ -9,30 +9,6 @@ import {
 import { DEFAULT_CONFIGURATOR_FORM_VALUES } from '../../configurator.constants'
 import { isWorkspaceWidgetSdkSelectable } from '../env/env.constants'
 
-function isSemverAtLeast(version: string, minimum: string): boolean {
-  const versionParts = version.split('.').map(Number)
-  const minimumParts = minimum.split('.').map(Number)
-
-  for (let index = 0; index < Math.max(versionParts.length, minimumParts.length); index++) {
-    const diff = (versionParts[index] ?? 0) - (minimumParts[index] ?? 0)
-    if (diff !== 0) return diff > 0
-  }
-
-  return true
-}
-
-/**
- * Whether a version delivers a READY event the configurator can read.
- *
- * widget-lib started posting READY in widget-react {@link NPM_WIDGET_REACT_FIRST_VERSION_WITH_ON_READY}.
- * Older pinned releases never deliver it, so their preview is revealed on iframe `load` instead.
- */
-export function widgetSdkVersionSupportsReadyEvent(sdkVersion: WidgetSdkVersion): boolean {
-  const widgetReactVersion = sdkVersion === 'local' ? LOCAL_WIDGET_REACT_VERSION : sdkVersion
-
-  return isSemverAtLeast(widgetReactVersion, NPM_WIDGET_REACT_FIRST_VERSION_WITH_ON_READY)
-}
-
 export function getSdkEnvLabel(sdkVersion: WidgetSdkVersion): string {
   if (sdkVersion === 'local') return 'Local'
 
@@ -61,4 +37,28 @@ export function normalizeWidgetSdkVersion(value: unknown): WidgetSdkVersion {
   }
 
   return fallback
+}
+
+/**
+ * Whether a version delivers a READY event the configurator can read.
+ *
+ * widget-lib started posting READY in widget-react {@link NPM_WIDGET_REACT_FIRST_VERSION_WITH_ON_READY}.
+ * Older pinned releases never deliver it, so their preview is revealed on iframe `load` instead.
+ */
+export function widgetSdkVersionSupportsReadyEvent(sdkVersion: WidgetSdkVersion): boolean {
+  const widgetReactVersion = sdkVersion === 'local' ? LOCAL_WIDGET_REACT_VERSION : sdkVersion
+
+  return isSemverAtLeast(widgetReactVersion, NPM_WIDGET_REACT_FIRST_VERSION_WITH_ON_READY)
+}
+
+function isSemverAtLeast(version: string, minimum: string): boolean {
+  const versionParts = version.split('.').map(Number)
+  const minimumParts = minimum.split('.').map(Number)
+
+  for (let index = 0; index < Math.max(versionParts.length, minimumParts.length); index++) {
+    const diff = (versionParts[index] ?? 0) - (minimumParts[index] ?? 0)
+    if (diff !== 0) return diff > 0
+  }
+
+  return true
 }

@@ -27,6 +27,40 @@ interface SingleProtocolIconProps {
   currentLogoHeight: number
 }
 
+export function ProtocolIcons({
+  secondProtocol,
+  showOnlyFirst,
+  showOnlySecond,
+  size = DEFAULT_ICON_SIZE,
+}: ProtocolIconsProps): ReactNode {
+  const isSingleIconDisplay = !!(showOnlyFirst || showOnlySecond)
+  const currentDisplaySize = isSingleIconDisplay ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size
+  const currentLogoHeight = currentDisplaySize * LOGO_HEIGHT_RATIO
+
+  if (isSingleIconDisplay) {
+    return (
+      <SingleProtocolIcon
+        showOnlyFirst={showOnlyFirst}
+        secondProtocol={secondProtocol}
+        currentDisplaySize={currentDisplaySize}
+        currentLogoHeight={currentLogoHeight}
+      />
+    )
+  }
+
+  if (secondProtocol) {
+    return (
+      <StackedProtocolIcons
+        secondProtocol={secondProtocol}
+        currentDisplaySize={currentDisplaySize}
+        currentLogoHeight={currentLogoHeight}
+      />
+    )
+  }
+
+  return null
+}
+
 function SingleProtocolIcon({
   showOnlyFirst,
   secondProtocol,
@@ -63,38 +97,4 @@ function SingleProtocolIcon({
       {iconChild}
     </ProtocolIcon>
   )
-}
-
-export function ProtocolIcons({
-  secondProtocol,
-  showOnlyFirst,
-  showOnlySecond,
-  size = DEFAULT_ICON_SIZE,
-}: ProtocolIconsProps): ReactNode {
-  const isSingleIconDisplay = !!(showOnlyFirst || showOnlySecond)
-  const currentDisplaySize = isSingleIconDisplay ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size
-  const currentLogoHeight = currentDisplaySize * LOGO_HEIGHT_RATIO
-
-  if (isSingleIconDisplay) {
-    return (
-      <SingleProtocolIcon
-        showOnlyFirst={showOnlyFirst}
-        secondProtocol={secondProtocol}
-        currentDisplaySize={currentDisplaySize}
-        currentLogoHeight={currentLogoHeight}
-      />
-    )
-  }
-
-  if (secondProtocol) {
-    return (
-      <StackedProtocolIcons
-        secondProtocol={secondProtocol}
-        currentDisplaySize={currentDisplaySize}
-        currentLogoHeight={currentLogoHeight}
-      />
-    )
-  }
-
-  return null
 }

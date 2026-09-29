@@ -19,18 +19,6 @@ interface QuoteMeta {
   quoteExpiration: string | null
 }
 
-function normalizeQuoteMeta(
-  quoteId: string | number | undefined,
-  quoteVerified: boolean | undefined,
-  quoteExpiration: string | undefined,
-): QuoteMeta {
-  return {
-    quoteId: quoteId === undefined ? null : String(quoteId),
-    quoteVerified: !!quoteVerified,
-    quoteExpiration: quoteExpiration || null,
-  }
-}
-
 export function useQuoteSwapContext(): QuoteSwapContext | null {
   const receiveAmountInfo = useGetSwapReceiveAmountInfo()
 
@@ -86,4 +74,16 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     swapExpectedReceiveUsd,
     bridgeReceiverOverride,
   ])
+}
+
+function normalizeQuoteMeta(
+  quoteId: string | number | undefined,
+  quoteVerified: boolean | undefined,
+  quoteExpiration: string | undefined,
+): QuoteMeta {
+  return {
+    quoteId: quoteId === undefined ? null : String(quoteId),
+    quoteVerified: !!quoteVerified,
+    quoteExpiration: quoteExpiration || null,
+  }
 }

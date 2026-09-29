@@ -1,9 +1,10 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { useExtractText } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'

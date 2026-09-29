@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
+import { toHex } from 'viem'
+
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
-
-import { toHex } from 'viem'
 
 import { useNativeTokenBalance } from './useNativeTokenBalance'
 

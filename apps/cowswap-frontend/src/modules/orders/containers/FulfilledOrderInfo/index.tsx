@@ -17,16 +17,6 @@ import { OrderSummaryTemplateProps } from 'common/pure/OrderSummary/summaryTempl
 
 import * as styledEl from './styled'
 
-function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
-  return (
-    <>
-      <Trans>
-        Traded {inputAmount} for a total of {outputAmount}
-      </Trans>
-    </>
-  )
-}
-
 interface ExecutedSummaryProps {
   chainId: SupportedChainId
   orderUid: string
@@ -80,6 +70,16 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
           </styledEl.SurplusAmount>
         </styledEl.SurplusWrapper>
       )}
+    </>
+  )
+}
+
+function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
+  return (
+    <>
+      <Trans>
+        Traded {inputAmount} for a total of {outputAmount}
+      </Trans>
     </>
   )
 }

@@ -41,6 +41,15 @@ export const DAI = new TokenWithLogo(
   'Dai Stablecoin',
 )
 
+export const USDS_MAINNET = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xdc035d45d973e3ec169d2276ddab16f1e407384f', SupportedChainId.MAINNET),
+  SupportedChainId.MAINNET,
+  '0xdC035D45d973E3EC169d2276DDab16f1e407384F',
+  18,
+  'USDS',
+  'USDS Stablecoin',
+)
+
 export const GNO_MAINNET = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0x6810e776880c02933d47db1b9fc05908e5386b96', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,
@@ -142,12 +151,12 @@ export const GNO_GNOSIS_CHAIN = new TokenWithLogo(
 )
 
 export const EURE_GNOSIS_CHAIN = new TokenWithLogo(
-  cowprotocolTokenLogoUrl('0xcb444e90d8198415266c6a2724b7900fb12fc56e', SupportedChainId.GNOSIS_CHAIN),
+  cowprotocolTokenLogoUrl('0x420CA0f9B9b604cE0fd9C18EF134C705e5Fa3430', SupportedChainId.GNOSIS_CHAIN),
   SupportedChainId.GNOSIS_CHAIN,
-  '0xcb444e90d8198415266c6a2724b7900fb12fc56e',
+  '0x420CA0f9B9b604cE0fd9C18EF134C705e5Fa3430',
   18,
   'EURe',
-  'Monerium EUR emoney',
+  'Monerium EURe',
 )
 
 // Arbitrum
@@ -565,7 +574,7 @@ export const USDC_OPTIMISM = new TokenWithLogo(
 
 export const USDC: Record<TargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
+  [SupportedChainId.GNOSIS_CHAIN]: USDCe_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: USDC_ARBITRUM_ONE,
   [SupportedChainId.BASE]: USDC_BASE,
   [SupportedChainId.SEPOLIA]: USDC_SEPOLIA,
@@ -684,7 +693,7 @@ export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
 }
 
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
-const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
+const GBPE_GNOSIS_CHAIN_ADDRESS = '0x8e34bfec4f6eb781f9743d9b4af99cd23f9b7053'
 
 const MAINNET_STABLECOINS = [
   USDC_MAINNET.address,

@@ -19,10 +19,6 @@ import { RowBetween } from '../Row'
 export { BaseButton, ButtonEmpty, ButtonYellow } from './ButtonMod'
 export { BUTTON_SIZES_STYLE, ButtonSize } from './types'
 
-type ButtonSecondaryStyleProps = {
-  $fontSize?: string
-  $minHeight?: string
-}
 export type ButtonPrimaryProps = HTMLAttributes<HTMLButtonElement> &
   ButtonProps & {
     altDisabledStyle?: boolean
@@ -33,6 +29,10 @@ export type ButtonPrimaryProps = HTMLAttributes<HTMLButtonElement> &
     $borderRadius?: string
     $gap?: string
   }
+type ButtonSecondaryStyleProps = {
+  $fontSize?: string
+  $minHeight?: string
+}
 
 function getButtonStatusStyles(status?: StatusColorVariant): ReturnType<typeof css> | undefined {
   if (!status || status === StatusColorVariant.Default) {
@@ -255,16 +255,6 @@ export function ButtonConfirmed({
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
-  if (error) {
-    return <ButtonErrorStyle {...rest} />
-  } else {
-    return <ButtonPrimary {...rest} />
-  }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ButtonDropdown({ disabled = false, children, ...rest }: { disabled?: boolean } & ButtonCustomProps) {
   return (
     <ButtonPrimary {...rest} disabled={disabled}>
@@ -274,6 +264,16 @@ export function ButtonDropdown({ disabled = false, children, ...rest }: { disabl
       </RowBetween>
     </ButtonPrimary>
   )
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function ButtonError({ error, ...rest }: { error?: boolean } & ButtonCustomProps) {
+  if (error) {
+    return <ButtonErrorStyle {...rest} />
+  } else {
+    return <ButtonPrimary {...rest} />
+  }
 }
 
 export const ButtonStar = ({

@@ -6,7 +6,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import path, { dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { getReactProcessEnv } from '../../../tools/getReactProcessEnv.ts'
+// eslint-disable-next-line @nx/enforce-module-boundaries -- shared vite env helper, same pattern as other app configs
+import { getReactProcessEnv } from '../../../tools/getReactProcessEnv'
 
 import type { StorybookConfig } from '@storybook/react-vite'
 import type { Alias } from 'vite'
@@ -17,10 +18,18 @@ type WorkspacePackageJson = {
   name?: string
 }
 
-function getWorkspaceEntryPoint(packageJson: WorkspacePackageJson): string | undefined {
-  const rootExport = packageJson.exports?.['.']
+function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Record<string, string> {
+  const mode = configType === 'PRODUCTION' ? 'production' : 'development'
+  const env = {
+    REACT_APP_ENVIRONMENT: mode,
+    ...loadEnv(mode, process.cwd(), ['REACT_APP_']),
+  }
 
-  return typeof rootExport === 'string' ? rootExport : (rootExport?.import ?? rootExport?.default ?? packageJson.main)
+  return {
+    ...getReactProcessEnv(mode),
+    'process.env.REACT_APP_ENVIRONMENT': JSON.stringify(env.REACT_APP_ENVIRONMENT),
+    'process.env': JSON.stringify(env),
+  }
 }
 
 function getWorkspaceAlias(packageJsonPath: string): [string, string] | null {
@@ -56,18 +65,10 @@ function getWorkspaceAliases(): Alias[] {
   }, [])
 }
 
-function getStorybookProcessEnv(configType: 'DEVELOPMENT' | 'PRODUCTION'): Record<string, string> {
-  const mode = configType === 'PRODUCTION' ? 'production' : 'development'
-  const env = {
-    REACT_APP_ENVIRONMENT: mode,
-    ...loadEnv(mode, process.cwd(), ['REACT_APP_']),
-  }
+function getWorkspaceEntryPoint(packageJson: WorkspacePackageJson): string | undefined {
+  const rootExport = packageJson.exports?.['.']
 
-  return {
-    ...getReactProcessEnv(mode),
-    'process.env.REACT_APP_ENVIRONMENT': JSON.stringify(env.REACT_APP_ENVIRONMENT),
-    'process.env': JSON.stringify(env),
-  }
+  return typeof rootExport === 'string' ? rootExport : (rootExport?.import ?? rootExport?.default ?? packageJson.main)
 }
 
 const workspaceAliases = [
@@ -88,6 +89,9 @@ const config: StorybookConfig = {
   },
   async viteFinal(config, { configType = 'DEVELOPMENT' }) {
     return mergeConfig(config, {
+      build: {
+        manifest: true,
+      },
       define: getStorybookProcessEnv(configType),
       plugins: [macrosPlugin(), viteTsConfigPaths({ root: process.cwd() })],
       resolve: {

@@ -1,6 +1,6 @@
 import type { Order } from 'legacy/state/orders/actions'
 
-import { OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { ProgressImageWrapper } from '../ProgressImageWrapper'
 import {
   CancelledCancellingTopSection,
@@ -17,6 +17,7 @@ export interface ProgressTopSectionProps {
   stepName: OrderProgressBarStepName
   order: Order | undefined
   countdown: number
+  chainId: OrderProgressBarProps['chainId']
   randomImage: string
   shouldShowSurplus: boolean | undefined | null
   surplusPercentValue: string
@@ -33,6 +34,7 @@ export function ProgressTopSection({
   stepName,
   order,
   countdown,
+  chainId,
   randomImage,
   randomBenefit,
   shouldShowSurplus,
@@ -61,7 +63,7 @@ export function ProgressTopSection({
   if (stepName === 'solving') {
     return (
       <ProgressImageWrapper stepName={stepName}>
-        <SolvingTopSection countdown={countdown} />
+        <SolvingTopSection countdown={countdown} chainId={chainId} />
       </ProgressImageWrapper>
     )
   }

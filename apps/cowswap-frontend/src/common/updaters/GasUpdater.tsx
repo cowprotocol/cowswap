@@ -14,27 +14,6 @@ import { useGasPrices } from 'legacy/state/gas/hooks'
 
 import { gasFeeApi } from 'api/gasPrices'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
-  return now - lastUpdated > threshold
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useUpdateGasPrices() {
-  const dispatch = useDispatch<AppDispatch>()
-  const setGasPrice = useSetAtom(gasPriceAtom)
-
-  return useCallback(
-    (gasParams: UpdateGasPrices) => {
-      dispatch(updateGasPrices(gasParams))
-      setGasPrice(gasParams)
-    },
-    [dispatch, setGasPrice],
-  )
-}
-
 export function GasUpdater(): null {
   const { chainId } = useWalletInfo()
   const gas = useGasPrices(chainId)
@@ -63,4 +42,25 @@ export function GasUpdater(): null {
   }, [chainId, gas, blockNumber, updateGasPrices])
 
   return null
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
+  return now - lastUpdated > threshold
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function useUpdateGasPrices() {
+  const dispatch = useDispatch<AppDispatch>()
+  const setGasPrice = useSetAtom(gasPriceAtom)
+
+  return useCallback(
+    (gasParams: UpdateGasPrices) => {
+      dispatch(updateGasPrices(gasParams))
+      setGasPrice(gasParams)
+    },
+    [dispatch, setGasPrice],
+  )
 }

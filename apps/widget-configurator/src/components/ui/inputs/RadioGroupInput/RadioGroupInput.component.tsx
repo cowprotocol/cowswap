@@ -25,23 +25,6 @@ export interface RadioGroupInputProps<TValue extends PrimitiveValue = string> {
   tooltipAriaLabel?: string
 }
 
-function optionValueToString(value: PrimitiveValue): string {
-  return String(value)
-}
-
-function parseSelectedValue<TValue extends PrimitiveValue>(
-  rawValue: string,
-  options: readonly SelectInputOption<TValue>[],
-): TValue {
-  const matchedOption = options.find((option) => optionValueToString(option.value) === rawValue)
-
-  if (matchedOption) {
-    return matchedOption.value
-  }
-
-  return rawValue as TValue
-}
-
 export function RadioGroupInput<TValue extends PrimitiveValue = string>({
   name,
   label,
@@ -84,4 +67,21 @@ export function RadioGroupInput<TValue extends PrimitiveValue = string>({
       ) : null}
     </FormControl>
   )
+}
+
+function optionValueToString(value: PrimitiveValue): string {
+  return String(value)
+}
+
+function parseSelectedValue<TValue extends PrimitiveValue>(
+  rawValue: string,
+  options: readonly SelectInputOption<TValue>[],
+): TValue {
+  const matchedOption = options.find((option) => optionValueToString(option.value) === rawValue)
+
+  if (matchedOption) {
+    return matchedOption.value
+  }
+
+  return rawValue as TValue
 }

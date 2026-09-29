@@ -10,12 +10,6 @@ import { UI } from '../../enum'
 import { LinkStyledButton } from '../LinkStyledButton'
 import { NewTooltip } from '../Tooltip/Tooltip'
 
-export interface CopyButtonState {
-  isCopied: boolean
-}
-
-type CopyButtonChildren = ReactNode | ((state: CopyButtonState) => ReactNode)
-
 export interface CopyButtonProps
   extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'children' | 'onCopy'> {
   value: string
@@ -29,6 +23,12 @@ export interface CopyButtonProps
   timeoutMs?: number
   onCopy?: (value: string) => void
 }
+
+export interface CopyButtonState {
+  isCopied: boolean
+}
+
+type CopyButtonChildren = ReactNode | ((state: CopyButtonState) => ReactNode)
 
 const StyledCopyButton = styled(LinkStyledButton)<{ $isCopied?: boolean; $color?: string }>`
   display: inline-flex;

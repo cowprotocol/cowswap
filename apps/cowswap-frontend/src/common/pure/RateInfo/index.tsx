@@ -117,13 +117,6 @@ const InvertIcon = styled.div`
 
 export const RateWrapper = styled.button<{ rightAlign?: boolean; fontBold?: boolean }>`
   display: inline;
-  background: none;
-  border: 0;
-  outline: none;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  color: inherit;
   font-size: inherit;
   font-family: var(${UI.FONT_FAMILY_PRIMARY});
   letter-spacing: -0.1px;

@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { i18n, MessageDescriptor } from '@lingui/core'
+
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -26,6 +27,7 @@ import * as styledEl from './styled'
 
 import { OrderProgressBarProps } from '../../types'
 import { OrderProgressBar } from '../OrderProgressBar'
+import { SolanaOrderStepper } from '../SolanaOrderStepper'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, MessageDescriptor>> = {
   [ActivityStatus.CONFIRMED]: msg`Confirmed`,
@@ -109,7 +111,12 @@ export function TransactionSubmittedContent({
         <>
           {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
-          {!isFinished && <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />}
+          {!isFinished &&
+            (isSolanaChain(chainId) ? (
+              <SolanaOrderStepper order={order} />
+            ) : (
+              <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />
+            ))}
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBar
               {...orderProgressBarProps}

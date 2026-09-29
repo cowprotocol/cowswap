@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
@@ -8,11 +9,13 @@ import { useParams } from 'react-router'
 
 import { AppDataUpdater } from 'modules/appData'
 import { PageTitle } from 'modules/application'
+import { Erc20ApproveWidget } from 'modules/erc20Approve'
 import {
   AlternativeLimitOrderUpdater,
   ExecutionPriceUpdater,
   InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
+  limitOrdersSettingsAtom,
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   TriggerAppziLimitOrdersSurveyUpdater,
@@ -34,6 +37,7 @@ export function LimitOrdersPage(): ReactNode {
   const { i18n } = useLingui()
 
   const limitOrdersDerivedStateToFill = useLimitOrdersDerivedStateToFill()
+  const { enablePartialApprovalBySettings } = useAtomValue(limitOrdersSettingsAtom)
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.LIMIT_ORDERS} />
@@ -44,6 +48,7 @@ export function LimitOrdersPage(): ReactNode {
       <AppDataUpdater orderClass="limit" slippageBips={percentToBps(LIMIT_ORDER_SLIPPAGE)} />
       <QuoteObserverUpdater />
       <ExecutionPriceUpdater />
+      <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       <PromoBannerUpdater />
       {isAlternative ? (
         <>

@@ -25,6 +25,8 @@ import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApprova
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
+import { SolanaFlowScreen } from './SolanaFlowScreen'
+
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
@@ -164,15 +166,11 @@ export function TradeWidgetModals({
   }
 
   if (isWrapNativeOpen) {
-    if (wrapNativeError) {
-      return (
-        <TransactionErrorContent
-          message={wrapNativeError}
-          onDismiss={() => setWrapNativeScreenState({ isOpen: false })}
-        />
-      )
-    }
-    return <WrapNativeModal />
+    return (
+      <SolanaFlowScreen error={wrapNativeError} onDismiss={() => setWrapNativeScreenState({ isOpen: false })}>
+        <WrapNativeModal />
+      </SolanaFlowScreen>
+    )
   }
 
   if (error) {

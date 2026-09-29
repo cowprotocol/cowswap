@@ -8,11 +8,10 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isNonEvmChain } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { Field } from 'legacy/state/types'
 
@@ -29,10 +28,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { field } = useSelectTokenWidgetState()
   const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
-  const balancesContext = useBalancesContext()
-  const balancesAccount = balancesContext.account || account
-
-  const { isBwEnabled } = useFeatureFlags()
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -69,7 +65,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
   const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
-  const isWatcherActive = isBwEnabled && !isNonEvmChain(sourceChainId)
+  const isWatcherActive = isEvmChain(sourceChainId)
   // Mount the multicall stack when:
   // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
   // - the watcher is in recovery — sticky from the first failure until the next
@@ -100,7 +96,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       <>
         <BalancesWatcherUpdater
           account={balancesAccount}
-          chainId={sourceChainId}
+          chainId={sourceChainId as number as SupportedChainId}
           isBridgeMode={isBridgeMode}
           bridgeTokenList={bridgeTokenList}
         />

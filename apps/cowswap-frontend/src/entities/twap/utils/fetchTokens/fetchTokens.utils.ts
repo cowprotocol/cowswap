@@ -13,11 +13,6 @@ let inFlightPromises: Partial<Record<string, Promise<TokenWithLogo>>> = {}
 
 let cachedTokens: Record<string, TokenWithLogo> = {}
 
-export function resetFetchTokensCache(): void {
-  inFlightPromises = {}
-  cachedTokens = {}
-}
-
 export async function fetchTokens(
   chainId: SupportedChainId,
   tokensByAddress: TokensByAddress,
@@ -67,4 +62,9 @@ export async function fetchTokens(
   if (!hasAllTokens) throw new Error('Some tokens are missing but no error was thrown')
 
   return tokens
+}
+
+export function resetFetchTokensCache(): void {
+  inFlightPromises = {}
+  cachedTokens = {}
 }

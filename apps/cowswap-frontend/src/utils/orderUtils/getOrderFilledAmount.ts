@@ -25,8 +25,11 @@ export function getOrderFilledAmount(order: Order): FilledAmountResult {
   }
 
   if (isSellOrder(order.kind)) {
+    // Solana's order API doesn't return `executedFeeAmount` (unlike EVM chains), even though the SDK
+    // type declares it as required — falling back to '0' avoids `BigNumber.minus(undefined)` producing
+    // NaN, which downstream silently displays as a sell amount of 0.
     executedAmount = new BigNumber(order.apiAdditionalInfo.executedSellAmount).minus(
-      order.apiAdditionalInfo?.executedFeeAmount,
+      order.apiAdditionalInfo?.executedFeeAmount || '0',
     )
     totalAmount = new BigNumber(order.sellAmount.toString())
   } else {

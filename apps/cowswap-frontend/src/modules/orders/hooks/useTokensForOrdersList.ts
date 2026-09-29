@@ -1,13 +1,13 @@
 import { useCallback, useRef } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useConfig } from 'wagmi'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 

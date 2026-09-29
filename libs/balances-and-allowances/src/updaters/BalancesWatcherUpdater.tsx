@@ -1,6 +1,8 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
 import { AddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { environmentAtom } from '@cowprotocol/tokens'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
@@ -42,6 +44,14 @@ export function BalancesWatcherUpdater({
   const enabledTokensListsUrls = useEnabledTokensListsUrls()
   const userCustomTokens = useCustomTokensForChain(chainId)
 
+  // The token-list / custom-token atoms are keyed on `environmentAtom.chainId`,
+  // which lags the wallet chainId by one commit on a chain switch. Gate the
+  // session on the two agreeing so we don't POST the previous chain's lists.
+  // Bridge mode sources its tokens from `bridgeTokenList` (not the env atom), so
+  // it is never desynced.
+  const listsChainId = useAtomValue(environmentAtom).chainId
+  const isChainSynced = isBridgeMode || listsChainId === chainId
+
   // Bridge mode drops both token lists and user-imported tokens - the watcher tracks ONLY bridge buy-tokens for the
   // target chain. An empty `bridgeTokenList` produces `(urls=[], customTokens=[])`, which `useBalancesWatcherSession`
   // already treats as "no session" and skips the POST.
@@ -63,6 +73,7 @@ export function BalancesWatcherUpdater({
     chainId,
     tokensListsUrls: sessionBody.tokensListsUrls,
     customTokens: sessionBody.customTokens,
+    isChainSynced,
   })
 
   return (

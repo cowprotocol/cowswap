@@ -1,7 +1,8 @@
+import { parseUnits } from 'viem'
+
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import JSBI from 'jsbi'
-import { parseUnits } from 'viem'
 
 /**
  * Parses a CurrencyAmount from the passed string.

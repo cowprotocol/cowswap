@@ -19,17 +19,6 @@ export interface CustomFlowContext {
 }
 
 /**
- * Maps each view to its modal props type.
- */
-export interface ViewPropsMap {
-  [TokenSelectorView.ImportToken]: ImportTokenModalProps
-  [TokenSelectorView.ImportList]: ImportListModalProps
-  [TokenSelectorView.Main]: never
-  [TokenSelectorView.Manage]: never
-  [TokenSelectorView.LpToken]: never
-}
-
-/**
  * result of a custom flow slot.
  * - content: component to render (or null to show base view)
  * - data: additional props to pass to the modal
@@ -49,6 +38,17 @@ export type CustomFlowSlot<TView extends TokenSelectorView = TokenSelectorView> 
 ) => CustomFlowResult<TView> | null
 
 /**
+ * Registry mapping view names to their custom flow configurations.
+ */
+export type CustomFlowsRegistry = {
+  [TokenSelectorView.ImportToken]?: ViewFlowConfig<TokenSelectorView.ImportToken>
+  [TokenSelectorView.ImportList]?: ViewFlowConfig<TokenSelectorView.ImportList>
+  [TokenSelectorView.Main]?: ViewFlowConfig<TokenSelectorView.Main>
+  [TokenSelectorView.Manage]?: ViewFlowConfig<TokenSelectorView.Manage>
+  [TokenSelectorView.LpToken]?: ViewFlowConfig<TokenSelectorView.LpToken>
+}
+
+/**
  * Configuration for custom flows for a specific view.
  */
 export interface ViewFlowConfig<TView extends TokenSelectorView = TokenSelectorView> {
@@ -59,12 +59,12 @@ export interface ViewFlowConfig<TView extends TokenSelectorView = TokenSelectorV
 }
 
 /**
- * Registry mapping view names to their custom flow configurations.
+ * Maps each view to its modal props type.
  */
-export type CustomFlowsRegistry = {
-  [TokenSelectorView.ImportToken]?: ViewFlowConfig<TokenSelectorView.ImportToken>
-  [TokenSelectorView.ImportList]?: ViewFlowConfig<TokenSelectorView.ImportList>
-  [TokenSelectorView.Main]?: ViewFlowConfig<TokenSelectorView.Main>
-  [TokenSelectorView.Manage]?: ViewFlowConfig<TokenSelectorView.Manage>
-  [TokenSelectorView.LpToken]?: ViewFlowConfig<TokenSelectorView.LpToken>
+export interface ViewPropsMap {
+  [TokenSelectorView.ImportToken]: ImportTokenModalProps
+  [TokenSelectorView.ImportList]: ImportListModalProps
+  [TokenSelectorView.Main]: never
+  [TokenSelectorView.Manage]: never
+  [TokenSelectorView.LpToken]: never
 }

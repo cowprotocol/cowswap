@@ -1,10 +1,11 @@
 import { useAtomValue } from 'jotai'
 import { RefObject, useCallback, useRef } from 'react'
 
-import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { useGetCorrelatedTokensByChainId } from 'entities/correlatedTokens'
 
 import { QuoteParams } from './useQuoteParams'
@@ -16,11 +17,14 @@ import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 
+// eslint-disable-next-line max-lines-per-function
 export function usePollQuoteCallback(
   quotePollingParams: TradeQuotePollingParameters,
   quoteParamsState: QuoteParams | undefined,
   currentAmountRef: RefObject<string | null>,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
+  const { isSolanaEnabled } = useFeatureFlags()
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
   const tradeQuote = useTradeQuote()
@@ -47,7 +51,13 @@ export function usePollQuoteCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
       const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
 
-      if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
+      if (
+        !canQuote ||
+        !isQuoteUpdatePossible ||
+        !tradeQuoteManager ||
+        !quoteParams ||
+        getIsUnsupportedTokens(quoteParams)
+      ) {
         return false
       }
 
@@ -66,6 +76,7 @@ export function usePollQuoteCallback(
           quotePollingParams,
           appData,
           tradeQuoteManager,
+          isSolanaEnabled,
           getCorrelatedTokensByChainId,
         )
       }
@@ -107,6 +118,8 @@ export function usePollQuoteCallback(
       hasSmartSlippage,
       hasSmartSlippagePrev,
       currentAmountRef,
+      canQuote,
+      isSolanaEnabled,
     ],
   )
 }

@@ -34,6 +34,15 @@ const createOfflineNotification = (): SnackbarItem => ({
 })
 
 /**
+ * Component that monitors connection status and displays notifications when offline.
+ * Returns null as it's a purely side-effect component.
+ */
+export function ConnectionStatusUpdater(): null {
+  useOfflineNotification()
+  return null
+}
+
+/**
  * Custom hook to manage offline notifications with proper cleanup and no race conditions
  */
 function useOfflineNotification(): void {
@@ -71,13 +80,4 @@ function useOfflineNotification(): void {
     // Cleanup on unmount or dependency change
     return clearTimer
   }, [isOnline, addSnackbar, removeSnackbar, clearTimer])
-}
-
-/**
- * Component that monitors connection status and displays notifications when offline.
- * Returns null as it's a purely side-effect component.
- */
-export function ConnectionStatusUpdater(): null {
-  useOfflineNotification()
-  return null
 }

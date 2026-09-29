@@ -34,14 +34,6 @@ export type BuildAppDataParams = {
   userConsent?: UserConsentsMetadata
 }
 
-async function generateAppDataFromDoc(
-  doc: AppDataRootSchema,
-): Promise<Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'>> {
-  const fullAppData = await stringifyDeterministic(doc)
-  const appDataKeccak256 = toKeccak256(fullAppData)
-  return { fullAppData, appDataKeccak256 }
-}
-
 export async function buildAppData({
   slippageBips,
   isSmartSlippage,
@@ -86,6 +78,13 @@ export async function buildAppData({
   return { doc, fullAppData, appDataKeccak256 }
 }
 
+export function removePermitHookFromAppData(
+  appData: AppDataInfo,
+  typedHooks: TypedAppDataHooks | undefined,
+): Promise<AppDataInfo> {
+  return replaceHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
+}
+
 export async function replaceHooksOnAppData(
   appData: AppDataInfo,
   hooks: AppDataHooks | undefined,
@@ -117,9 +116,10 @@ export async function replaceHooksOnAppData(
   }
 }
 
-export function removePermitHookFromAppData(
-  appData: AppDataInfo,
-  typedHooks: TypedAppDataHooks | undefined,
-): Promise<AppDataInfo> {
-  return replaceHooksOnAppData(appData, removePermitHookFromHooks(typedHooks))
+async function generateAppDataFromDoc(
+  doc: AppDataRootSchema,
+): Promise<Pick<AppDataInfo, 'fullAppData' | 'appDataKeccak256'>> {
+  const fullAppData = await stringifyDeterministic(doc)
+  const appDataKeccak256 = toKeccak256(fullAppData)
+  return { fullAppData, appDataKeccak256 }
 }

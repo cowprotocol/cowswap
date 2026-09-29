@@ -12,8 +12,8 @@ import {
   serializeQuoteAmounts,
 } from './bridgeOrdersStateSerializer'
 
-export type BridgeOrdersStateSerialized<T = BridgeOrderDataSerialized[]> = PersistentStateByChainAccount<T>
 export type BridgeOrdersState = BridgeOrdersStateSerialized<BridgeOrderData[]>
+export type BridgeOrdersStateSerialized<T = BridgeOrderDataSerialized[]> = PersistentStateByChainAccount<T>
 
 export const bridgeOrdersStoreAtom = atomWithStorage<BridgeOrdersStateSerialized>(
   'bridgeOrdersAtom:v1',

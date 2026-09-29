@@ -1,5 +1,7 @@
 import React, { CSSProperties, ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
+import { useConnection } from 'wagmi'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useLocalStorageState } from '@cowprotocol/common-hooks'
 import { CowWidgetEventListeners } from '@cowprotocol/events'
@@ -7,7 +9,6 @@ import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
 import { Box, IconButton, Snackbar } from '@mui/material'
 import { X } from 'react-feather'
-import { useConnection } from 'wagmi'
 
 import {
   COW_CONFIGURATOR_PREVIEW_HOST_ATTR,
@@ -44,7 +45,7 @@ const onLoadingError: () => void = () => {
 }
 
 // eslint-disable-next-line max-lines-per-function
-export function Configurator({ title }: { title: string }): ReactNode {
+export function Configurator(): ReactNode {
   const configuratorRef = useRef<HTMLDivElement | null>(null)
   const { isConnected } = useConnection()
   const provider = useProvider()
@@ -219,7 +220,6 @@ export function Configurator({ title }: { title: string }): ReactNode {
       sx={configuradorRootSx}
     >
       <Sidebar
-        title={title}
         isOpen={isSidebarOpen}
         isResizing={isResizing}
         isSnippetOpen={isSnippetOpen}

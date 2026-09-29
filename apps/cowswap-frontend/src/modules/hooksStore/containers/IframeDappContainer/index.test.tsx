@@ -1,9 +1,10 @@
-import { CoWHookDappEvents, HookDappType } from '@cowprotocol/hook-dapp-lib'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
-import { render } from '@testing-library/react'
 import { useAccount } from 'wagmi'
+
+import { CoWHookDappEvents, HookDappType } from '@cowprotocol/hook-dapp-lib'
+
+import { render } from '@testing-library/react'
 
 import { IframeDappContainer } from '.'
 

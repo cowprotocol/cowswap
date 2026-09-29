@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import iconMinusSrc from '@cowprotocol/assets/images/icon-minus.svg'
 import iconPlusSrc from '@cowprotocol/assets/images/icon-plus.svg'
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -17,7 +17,7 @@ const Wrapper = styled.div<{ $fontSize?: number }>`
   margin: 24px 0;
   width: 100%;
   font-size: ${({ $fontSize }) => `${$fontSize ?? 24}px`};
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
 
   ${Media.upToMedium()} {
     --titleSize: 18px;
@@ -101,7 +101,7 @@ const Wrapper = styled.div<{ $fontSize?: number }>`
     font-size: inherit;
     line-height: 1.8;
     color: var(${UI.COLOR_NEUTRAL_40});
-    font-weight: ${Font.weight.regular};
+    font-weight: var(${UI.FONT_WEIGHT_NORMAL});
     margin: 0;
     padding: 0 33% var(--padding) var(--padding);
 

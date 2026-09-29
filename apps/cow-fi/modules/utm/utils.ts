@@ -7,25 +7,6 @@ interface AppRouterInstance {
   replace: (url: string) => void
 }
 
-export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
-  let cleanedParams = false
-
-  // Remove all utm_* parameters
-  const paramsToDelete: string[] = []
-  for (const [key] of query.entries()) {
-    if (key.startsWith('utm_')) {
-      paramsToDelete.push(key)
-      cleanedParams = true
-    }
-  }
-
-  paramsToDelete.forEach((param) => query.delete(param))
-
-  if (cleanedParams) {
-    router.replace((pathname || '/') + '?' + query.toString())
-  }
-}
-
 export function addUtmToUrl(href: string, utm: UtmParams): string {
   const origin = typeof window !== 'undefined' ? window.location.origin : CONFIG.url.root
   const url = new URL(href, origin)
@@ -46,4 +27,23 @@ export function addUtmToUrl(href: string, utm: UtmParams): string {
   const baseUrl = url.origin + url.pathname + url.search
   const finalHash = `${hashPath}?${hashParams.toString()}`
   return baseUrl + finalHash
+}
+
+export function cleanUpParams(router: AppRouterInstance, pathname: string | null, query: URLSearchParams) {
+  let cleanedParams = false
+
+  // Remove all utm_* parameters
+  const paramsToDelete: string[] = []
+  for (const [key] of query.entries()) {
+    if (key.startsWith('utm_')) {
+      paramsToDelete.push(key)
+      cleanedParams = true
+    }
+  }
+
+  paramsToDelete.forEach((param) => query.delete(param))
+
+  if (cleanedParams) {
+    router.replace((pathname || '/') + '?' + query.toString())
+  }
 }

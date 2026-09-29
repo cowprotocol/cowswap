@@ -5,10 +5,10 @@ import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
-import { useTradeNavigate } from './useTradeNavigate'
 import { useTradeState } from './useTradeState'
 
 import { ExtendedTradeRawState } from '../types/TradeRawState'

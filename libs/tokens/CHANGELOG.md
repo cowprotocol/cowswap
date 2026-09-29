@@ -1,5 +1,205 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.12.2...tokens-v3.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- fix(rwa): update ondo tokens (#8182)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
+## [3.12.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.12.1...tokens-v3.12.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ui@3.13.2
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.12.0...tokens-v3.12.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ui@3.13.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.1...tokens-v3.12.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(account): handle disconnection of injected wallets after a refresh (#7894)
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: new ondo tokens, updating fallback pin (#8123)
+
+- fix(tokens): support solana address format (#8099)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.11.0...tokens-v3.11.1) (2026-09-07)
+
+### Patch Changes
+
+- fix(rwa): fix rwa list migration (#8089)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.10.0...tokens-v3.11.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(rwa): add st0x rwa token list (#8030)
+
+- feat: re-enable token search (#8006)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- fix: add coinbase tokenized stocks list (#8012)
+
+- fix(rwa): lists (#8041)
+
+- fix(token-import): dedupe token present in multiple lists with different symbol (#8081)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.9.0...tokens-v3.10.0) (2026-08-12)
+
+### Minor Changes
+
+- feat(solana): approve flow (#7946)
+
+- feat: reduce bundle size by deduping ajv -0.1 MiB (#7932)
+
+### Patch Changes
+
+- fix: restore unified sol flow + bundle-size.mjs token list validation (#7994)
+
+- fix: solana token matching
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.7...tokens-v3.9.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- fix: update EURe and GBPe on Gnosis (#7954)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+
+## [3.8.7](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.6...tokens-v3.8.7) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/common-const@3.7.1
+
+## [3.8.6](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.5...tokens-v3.8.6) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+
+## [3.8.5](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.4...tokens-v3.8.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+
+## [3.8.4](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.3...tokens-v3.8.4) (2026-07-17)
+
+### Patch Changes
+
+- fix: enforce widget token list restrictions (#7834)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+
 ## [3.8.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.8.2...tokens-v3.8.3) (2026-07-08)
 
 ### Patch Changes

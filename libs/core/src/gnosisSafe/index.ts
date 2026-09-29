@@ -50,10 +50,6 @@ export const SAFE_RATE_LIMIT_MSG = 'Rate limit'
 
 export type SafeApiError = NormalizedError & { statusCode?: number }
 
-export function normalizeSafeError(err: unknown): SafeApiError {
-  return normalizeError(err)
-}
-
 export async function createSafeApiKitInstance(chainId: number): Promise<SafeApiKitType | null> {
   if (!(chainId in SAFE_API_NETWORK_ID)) {
     return null
@@ -100,6 +96,10 @@ export function getSafeWebUrl(chainId: SupportedChainId, safeAddress: string, sa
   const chainShortName = CHAIN_INFO[chainId].addressPrefix
 
   return `${SAFE_BASE_URL}/transactions/tx?safe=${chainShortName}:${safeAddress}&id=multisig_${safeAddress}_${safeTxHash}`
+}
+
+export function normalizeSafeError(err: unknown): SafeApiError {
+  return normalizeError(err)
 }
 
 async function _getClient(chainId: number): Promise<SafeApiKitType | null> {

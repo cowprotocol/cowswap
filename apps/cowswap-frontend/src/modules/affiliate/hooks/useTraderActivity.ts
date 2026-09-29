@@ -1,8 +1,7 @@
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR, { SWRResponse } from 'swr'
-
-import { safeShortenAddress } from 'utils/address'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { TraderActivityRowResponse } from '../api/bffAffiliateApi.types'

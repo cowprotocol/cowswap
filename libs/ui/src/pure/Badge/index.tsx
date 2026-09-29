@@ -7,6 +7,7 @@ const badgeBackgrounds: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFO_BG})`,
   alert: `var(${UI.COLOR_ALERT_BG})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_BG})`,
+  error: `var(${UI.COLOR_DANGER_BG})`,
   success: `var(${UI.COLOR_SUCCESS_BG})`,
   default: 'transparent',
 }
@@ -15,6 +16,7 @@ const badgeColors: Record<BadgeType, string> = {
   information: `var(${UI.COLOR_INFO_TEXT})`,
   alert: `var(${UI.COLOR_ALERT_TEXT})`,
   alert2: `var(${UI.COLOR_BADGE_YELLOW_TEXT})`,
+  error: `var(${UI.COLOR_DANGER_TEXT})`,
   success: `var(${UI.COLOR_SUCCESS_TEXT})`,
   default: `var(${UI.COLOR_DISABLED_TEXT})`,
 }

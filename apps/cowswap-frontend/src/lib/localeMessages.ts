@@ -1,24 +1,8 @@
-import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
-
 import { i18n, Messages } from '@lingui/core'
 
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
+
 import { getActiveLocale } from 'legacy/hooks/useActiveLocale'
-
-async function loadLocaleMessages(locale: SupportedLocale): Promise<Messages> {
-  const catalog = await import(`../locales/${locale}.po`)
-  return catalog.messages
-}
-
-export async function loadActiveLocaleMessages(): Promise<Messages | undefined> {
-  const activeLocale = getActiveLocale()
-  try {
-    const messages = await loadLocaleMessages(activeLocale)
-    return messages
-  } catch (error) {
-    console.error('Could not load locale file: ' + activeLocale, error)
-    return undefined
-  }
-}
 
 export async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean): Promise<void> {
   try {
@@ -39,4 +23,20 @@ export async function dynamicActivate(locale: SupportedLocale, isInternationaliz
     // Do nothing
     console.error('Could not load locale file: ' + locale, error)
   }
+}
+
+export async function loadActiveLocaleMessages(): Promise<Messages | undefined> {
+  const activeLocale = getActiveLocale()
+  try {
+    const messages = await loadLocaleMessages(activeLocale)
+    return messages
+  } catch (error) {
+    console.error('Could not load locale file: ' + activeLocale, error)
+    return undefined
+  }
+}
+
+async function loadLocaleMessages(locale: SupportedLocale): Promise<Messages> {
+  const catalog = await import(`../locales/${locale}.po`)
+  return catalog.messages
 }

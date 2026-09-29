@@ -1,6 +1,9 @@
 import { atom, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { createPublicClient, http } from 'viem'
+import { usePublicClient, useWalletClient } from 'wagmi'
+
 import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import {
@@ -15,9 +18,6 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
-
-import { createPublicClient, http } from 'viem'
-import { usePublicClient, useWalletClient } from 'wagmi'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
@@ -48,15 +48,15 @@ export const orderBookApi = new OrderBookApi({
   backoffOpts: DEFAULT_BACKOFF_OPTIONS,
 })
 
-export const metadataApiSDK = new MetadataApi()
+export const prodOrderBookApi = isBarnBackendEnv
+  ? new OrderBookApi({
+      env: 'prod',
+      ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
+      backoffOpts: DEFAULT_BACKOFF_OPTIONS,
+    })
+  : orderBookApi
 
-export function setBearerToken(token: string | null): void {
-  if (token) {
-    orderBookApi.context.bearerToken = token
-  } else {
-    delete orderBookApi.context.bearerToken
-  }
-}
+export const metadataApiSDK = new MetadataApi()
 
 export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
@@ -76,4 +76,12 @@ export function CowSdkUpdater(): null {
   }, [publicClient, walletClient, setAppSigner])
 
   return null
+}
+
+export function setBearerToken(token: string | null): void {
+  if (token) {
+    orderBookApi.context.bearerToken = token
+  } else {
+    delete orderBookApi.context.bearerToken
+  }
 }

@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo, useRef } from 'react'
 
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isNonEvmChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -22,7 +22,7 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
   const permitInfoAllChains = useAtomValue(permittableTokensAtom)
   const localPermitInfo = permitInfoAllChains[chainId] || {}
   const { allPermitInfo } = usePreGeneratedPermitInfo()
-  const defaultSpender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
+  const defaultSpender = isNonEvmChain(chainId) ? undefined : COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
   const isPermitEnabled = useIsPermitEnabled()
 

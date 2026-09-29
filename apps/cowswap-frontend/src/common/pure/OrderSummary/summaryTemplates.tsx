@@ -3,6 +3,7 @@ import { ReactElement, ReactNode } from 'react'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 export interface OrderSummaryTemplateProps {
   inputAmount: ReactElement
@@ -12,22 +13,6 @@ export interface OrderSummaryTemplateProps {
   actionTitle?: string
 }
 
-export function SellForAtLeastTemplate({
-  inputAmount,
-  outputAmount,
-  srcChainData,
-  dstChainData,
-  actionTitle,
-}: OrderSummaryTemplateProps): ReactNode {
-  return (
-    <>
-      {actionTitle ?? t`Sell`} {inputAmount}
-      {srcChainData && ` (${srcChainData.label})`} {t`for at least`} {outputAmount}
-      {dstChainData && ` (${dstChainData.label})`}
-    </>
-  )
-}
-
 export function BuyForAtMostTemplate({
   inputAmount,
   outputAmount,
@@ -35,11 +20,51 @@ export function BuyForAtMostTemplate({
   dstChainData,
   actionTitle,
 }: OrderSummaryTemplateProps): ReactNode {
-  return (
+  const action = actionTitle ? actionTitle : t`Buy`
+  const buyAmount = (
     <>
-      {actionTitle ? actionTitle : t`Buy`} {outputAmount}
-      {dstChainData && ` (${dstChainData.label})`} {t`for at most`} {inputAmount}
+      {outputAmount}
+      {dstChainData && ` (${dstChainData.label})`}
+    </>
+  )
+  const payAmount = (
+    <>
+      {inputAmount}
       {srcChainData && ` (${srcChainData.label})`}
     </>
+  )
+
+  return (
+    <Trans>
+      {action} {buyAmount} for at most {payAmount}
+    </Trans>
+  )
+}
+
+export function SellForAtLeastTemplate({
+  inputAmount,
+  outputAmount,
+  srcChainData,
+  dstChainData,
+  actionTitle,
+}: OrderSummaryTemplateProps): ReactNode {
+  const action = actionTitle ?? t`Sell`
+  const sellAmount = (
+    <>
+      {inputAmount}
+      {srcChainData && ` (${srcChainData.label})`}
+    </>
+  )
+  const receiveAmount = (
+    <>
+      {outputAmount}
+      {dstChainData && ` (${dstChainData.label})`}
+    </>
+  )
+
+  return (
+    <Trans>
+      {action} {sellAmount} for at least {receiveAmount}
+    </Trans>
   )
 }

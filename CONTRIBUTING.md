@@ -35,15 +35,16 @@ Start with issues labeled **Help Wanted**.
 
 ## 3. Pull Requests
 
-| Rule           | Requirement                                                                        |
-| -------------- | ---------------------------------------------------------------------------------- |
-| Target branch  | Open all PRs against develop                                                       |
-| PR size        | ≤ ≈400 LOC; chain "waterfall" PRs for larger work                                  |
-| Commit style   | Conventional Commits; PR title == squash message                                   |
-| Approvals      | Two reviewers (frontend, qa) required                                              |
-| Ownership      | Author assigns themselves, tags reviewers, keeps ≤ 3 open PRs, closes stale drafts |
-| CI             | All checks must pass before review                                                 |
-| Merge Strategy | Squash-merge to develop                                                            |
+| Rule           | Requirement                                                                                                                                                                                              |
+|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Target branch  | Open all PRs against develop                                                                                                                                                                             |
+| PR size        | ≤ ≈400 LOC; chain "waterfall" PRs for larger work                                                                                                                                                        |
+| Commit style   | Conventional Commits; PR title == squash message                                                                                                                                                         |
+| Approvals      | Two reviewers (frontend, qa) required                                                                                                                                                                    |
+| Ownership      | Author assigns themselves, tags reviewers, keeps ≤ 3 open PRs, closes stale drafts                                                                                                                       |
+| CI             | All checks must pass before review                                                                                                                                                                       |
+| Merge Strategy | Squash-merge to develop                                                                                                                                                                                  |
+| Open PRs limit | One developer may have up to 3 open PRs/Stacks. It is need to keep [development cycles short](https://www.projectmanagement.com/articles/789965/what-s-taking-so-long--little-s-law-holds-the-answer#_). |
 
 ### Additional PR Guidelines
 

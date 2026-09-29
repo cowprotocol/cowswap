@@ -1,40 +1,58 @@
-import { isTwapOrderFulfilled } from './isTwapOrderFulfilled'
+import { deriveTwapStatus, type ProgrammaticOrderStatus } from '@cowprotocol/sdk-composable'
+
+import { mapTwapStatus } from './mapTwapStatus'
 
 import { TwapOrdersExecution, TwapOrderStatus, TWAPOrderStruct } from '../types'
 
-export function getTwapOrderStatus(
-  order: TWAPOrderStruct,
-  isTransactionExecuted: boolean,
-  executionDate: Date | null,
-  auth: boolean | undefined,
-  { confirmedPartsCount, info: executionInfo }: TwapOrdersExecution,
-): TwapOrderStatus {
-  const isFulfilled = isTwapOrderFulfilled(order, executionInfo.executedSellAmount)
-  const isCancelled = auth === false && isTransactionExecuted
-  const isExpired = confirmedPartsCount === order.n || isTwapOrderExpired(order, executionDate)
+interface GetTwapOrderStatusParams {
+  order: TWAPOrderStruct
+  execution: TwapOrdersExecution
+  executionDate: Date | null
+  isCancelled: boolean
+  isWaitingForSignature: boolean
+}
 
-  if (isFulfilled) return TwapOrderStatus.Fulfilled
+export function getTwapOrderStatus(params: GetTwapOrderStatusParams): TwapOrderStatus {
+  const {
+    order,
+    execution: { confirmedPartsCount, info: executionInfo },
+    executionDate,
+    isCancelled,
+    isWaitingForSignature,
+  } = params
 
-  if (isCancelled) return TwapOrderStatus.Cancelled
+  const now = Math.ceil(Date.now() / 1000)
+  const effectiveStartTime = order.t0 || Math.ceil((executionDate?.getTime() ?? now * 1000) / 1000)
+  const status = getProgrammaticOrderStatus(isCancelled, confirmedPartsCount === order.n)
+  const executionStatus = deriveTwapStatus({
+    lifecycleStatus: status,
+    executedAmounts: { executedSellAmount: BigInt(executionInfo.executedSellAmount) },
+    schedule: {
+      partSellAmount: BigInt(order.partSellAmount),
+      numberOfParts: order.n,
+      effectiveStartTime,
+      timeBetweenParts: order.t,
+    },
+  })
 
-  if (isExpired) {
-    return TwapOrderStatus.Expired
-  }
-
-  // Safe tx may already be gone from the pending queue while the composable order is not yet
-  // reflected in our snapshot; `singleOrders` (auth) is the on-chain source of truth.
-  if (!isTransactionExecuted && auth !== true) return TwapOrderStatus.WaitSigning
-
-  return TwapOrderStatus.Pending
+  return executionStatus === 'open' && isWaitingForSignature
+    ? TwapOrderStatus.WaitSigning
+    : mapTwapStatus(executionStatus)
 }
 
 export function isTwapOrderExpired(order: TWAPOrderStruct, startDate: Date | null): boolean {
-  if (!startDate) return false
+  if (!order.t0 && !startDate) return false
 
-  const startTime = Math.ceil(startDate.getTime() / 1000)
+  const startTime = order.t0 || Math.ceil((startDate?.getTime() || 0) / 1000)
   const { n: numOfParts, t: timeInterval } = order
   const endTime = startTime + timeInterval * numOfParts
   const nowTimestamp = Math.ceil(Date.now() / 1000)
 
   return nowTimestamp > endTime
+}
+
+function getProgrammaticOrderStatus(isCancelled: boolean, isCompleted: boolean): ProgrammaticOrderStatus {
+  if (isCancelled) return 'Cancelled'
+  if (isCompleted) return 'Completed'
+  return 'Active'
 }

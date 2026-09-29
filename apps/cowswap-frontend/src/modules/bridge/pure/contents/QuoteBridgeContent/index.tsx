@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { displayTime } from '@cowprotocol/common-utils'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -53,12 +54,12 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
   return (
     <>
       {estimatedTime && (
-        <ConfirmDetailsItem withTimelineDot label={<EstBridgeTimeTooltip />}>
+        <ConfirmDetailsItem withTimelineDot label={<EstBridgeTimeTooltip />} testId={TEST_IDS.routeBridgeEstTime}>
           ~ {displayTime(estimatedTime * 1000, true)}
         </ConfirmDetailsItem>
       )}
       {bridgeFee && (
-        <ConfirmDetailsItem withTimelineDot label={<BridgeCosts />}>
+        <ConfirmDetailsItem withTimelineDot label={<BridgeCosts />} testId={TEST_IDS.routeBridgeCosts}>
           {bridgeFee.equalTo(0) ? (
             <SuccessTextBold>
               <Trans>FREE</Trans>
@@ -73,6 +74,7 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
           withTimelineDot
           label={t`Expected to receive`}
           tooltip={t`The estimated amount you'll receive after bridge costs.`}
+          testId={TEST_IDS.routeBridgeExpectedToReceive}
         >
           <TokenAmountDisplay displaySymbol usdValue={expectedToReceiveUsd} currencyAmount={expectedToReceive} />
         </ConfirmDetailsItem>
@@ -82,6 +84,7 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
           withTimelineDot
           label={t`Min. to deposit`}
           tooltip={t`The minimum possible outcome after swap, including costs and slippage.`}
+          testId={TEST_IDS.routeBridgeMinToDeposit}
         >
           <TokenAmountDisplay
             displaySymbol
@@ -90,7 +93,11 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
           />
         </ConfirmDetailsItem>
       )}
-      <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
+      <RecipientDetailsItem
+        recipient={recipient}
+        chainId={buyAmount.currency.chainId}
+        testId={TEST_IDS.routeBridgeRecipient}
+      />
       <MinReceive {...props} />
       {children}
     </>
@@ -115,6 +122,7 @@ function MinReceive({
   return !isFinished || !isQuoteDisplay ? (
     <ConfirmDetailsItem
       withTimelineDot={!isQuoteDisplay}
+      testId={TEST_IDS.routeBridgeMinToReceive}
       label={
         isQuoteDisplay ? (
           <ReceiveAmountTitle>

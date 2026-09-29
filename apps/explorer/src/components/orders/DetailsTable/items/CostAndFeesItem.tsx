@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
+import { useFeeDisplayFeatureFlag } from 'hooks/useFeeDisplayFeatureFlag'
 
 import { Order } from '../../../../api/operator'
 import { DetailRow } from '../../../common/DetailRow'
@@ -11,9 +12,19 @@ interface CostAndFeesItemProps {
 }
 
 export function CostAndFeesItem({ order }: CostAndFeesItemProps): ReactNode {
+  const isFeeDisplayEnabled = useFeeDisplayFeatureFlag()
+  // GasFeeDisplay falls back to the legacy fee without a usable gas cost and fee list, so the
+  // row's label, tooltip and layout have to fall back with it.
+  const showBreakdown = isFeeDisplayEnabled && Boolean(order.gasCost?.isGreaterThan(0)) && Boolean(order.protocolFees)
+
   return (
-    <DetailRow label="Costs & Fees" tooltipText={DetailsTableTooltips.fees}>
-      <GasFeeDisplay order={order} />
+    // The breakdown is a total plus an expandable table, so it stacks; the legacy fee stays inline.
+    <DetailRow
+      label={showBreakdown ? 'Costs and fees' : 'Costs & Fees'}
+      tooltipText={showBreakdown ? DetailsTableTooltips.feesBreakdown : DetailsTableTooltips.fees}
+      stack={showBreakdown}
+    >
+      <GasFeeDisplay order={order} showBreakdown={showBreakdown} />
     </DetailRow>
   )
 }

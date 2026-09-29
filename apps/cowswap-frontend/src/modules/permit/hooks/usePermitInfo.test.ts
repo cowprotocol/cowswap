@@ -1,16 +1,16 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { useConfig, usePublicClient } from 'wagmi'
+
 import { Token } from '@cowprotocol/currency'
 import { getTokenPermitInfo } from '@cowprotocol/permit-utils'
 import type { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook, waitFor } from '@testing-library/react'
-import { useConfig, usePublicClient } from 'wagmi'
-
-import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { usePermitInfo } from './usePermitInfo'
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
@@ -51,7 +51,7 @@ jest.mock('common/hooks/featureFlags/useIsPermitEnabled', () => ({
   useIsPermitEnabled: jest.fn(),
 }))
 
-jest.mock('modules/trade', () => ({
+jest.mock('common/modules/tradeNavigation', () => ({
   TradeType: {
     SWAP: 'SWAP',
     LIMIT_ORDER: 'LIMIT_ORDER',

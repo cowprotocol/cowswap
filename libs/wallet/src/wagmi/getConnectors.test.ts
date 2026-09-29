@@ -1,3 +1,6 @@
+import type { EIP1193Provider } from 'viem'
+import type { CreateConnectorFn } from 'wagmi'
+
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { injected, safe } from '@wagmi/connectors'
@@ -6,9 +9,6 @@ import { getConnectors } from './getConnectors'
 
 import { COW_WIDGET_CONNECTOR_ID } from '../reown/consts'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
-
-import type { EIP1193Provider } from 'viem'
-import type { CreateConnectorFn } from 'wagmi'
 
 let mockIsMobile = false
 const mockBrowserInjectedConnector = (() => undefined) as unknown as CreateConnectorFn

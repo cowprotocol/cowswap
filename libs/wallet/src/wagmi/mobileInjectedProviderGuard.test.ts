@@ -1,6 +1,6 @@
-import { guardMobileInjectedProvider, resetMobileInjectedProviderGuard } from './mobileInjectedProviderGuard'
-
 import type { EIP1193Provider } from 'viem'
+
+import { guardMobileInjectedProvider, resetMobileInjectedProviderGuard } from './mobileInjectedProviderGuard'
 
 let mockIsMobile = true
 

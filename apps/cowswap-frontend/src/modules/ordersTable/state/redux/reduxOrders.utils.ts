@@ -1,7 +1,7 @@
+import { Address } from 'viem'
+
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-
-import { Address } from 'viem'
 
 import { Order } from 'legacy/state/orders/actions'
 import { _concatOrdersState } from 'legacy/state/orders/hooks'

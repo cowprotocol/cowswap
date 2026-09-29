@@ -7,9 +7,30 @@ import { MenuItemKind, MenuTreeItem } from 'components/common/MenuDropdown/types
 
 import DropDown from '.'
 
+export interface MenuTreeProps {
+  isMobileMenuOpen: boolean
+  handleMobileMenuOnClick: Command
+  menuList?: MenuTreeItem[]
+  isMobile?: boolean
+}
+
 interface MenuItemWithDropDownProps {
   menuItem: MenuTreeItem
   context: MenuTreeProps
+}
+
+export function MenuTree(props: MenuTreeProps): React.ReactNode {
+  const { isMobileMenuOpen, handleMobileMenuOnClick, isMobile, menuList = MAIN_MENU } = props
+  return (
+    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
+      <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
+        {menuList.map((menuItem, index) => (
+          <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
+        ))}
+      </MenuContainer>
+      {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
+    </Wrapper>
+  )
 }
 
 function MenuItemWithDropDown(props: MenuItemWithDropDownProps): React.ReactNode | null {
@@ -26,25 +47,4 @@ function MenuItemWithDropDown(props: MenuItemWithDropDownProps): React.ReactNode
     default:
       return null
   }
-}
-
-export interface MenuTreeProps {
-  isMobileMenuOpen: boolean
-  handleMobileMenuOnClick: Command
-  menuList?: MenuTreeItem[]
-  isMobile?: boolean
-}
-
-export function MenuTree(props: MenuTreeProps): React.ReactNode {
-  const { isMobileMenuOpen, handleMobileMenuOnClick, isMobile, menuList = MAIN_MENU } = props
-  return (
-    <Wrapper isMobileMenuOpen={isMobileMenuOpen}>
-      <MenuContainer className={isMobileMenuOpen ? 'mobile-menu' : ''}>
-        {menuList.map((menuItem, index) => (
-          <MenuItemWithDropDown key={index} menuItem={menuItem} context={props} />
-        ))}
-      </MenuContainer>
-      {isMobile && <MobileMenuIcon isMobileMenuOpen={isMobileMenuOpen} onClick={handleMobileMenuOnClick} />}
-    </Wrapper>
-  )
 }

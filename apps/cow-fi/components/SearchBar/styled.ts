@@ -1,4 +1,4 @@
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -41,7 +41,7 @@ export const Input = styled.input`
   background: var(${UI.COLOR_NEUTRAL_90});
   border-radius: 56px;
   appearance: none;
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   transition: border 0.2s ease-in-out;
 
   ${Media.upToMedium()} {
@@ -162,7 +162,7 @@ export const ResultItem = styled.a<{ isSelected: boolean }>`
 `
 
 export const ResultTitle = styled.div`
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   margin-bottom: 4px;
   white-space: pre-wrap;
 `

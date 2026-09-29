@@ -1,0 +1,160 @@
+import { loadBalancesFixture, parseBalanceValue } from './fixture'
+import { hasAnyEntry, isOwnerConfigured, resolveBalanceAnyChain, resolveBalancesSnapshot } from './resolve'
+import { balanceKey, type BalanceLookup, type BalancesSessionRequest, type BalanceValue } from './types'
+
+import type { BrowserContext, Route } from '@playwright/test'
+
+export type { BalancesSessionRequest, BalanceValue }
+
+/** Matches both the production and barn balances-watcher hosts — see `BALANCES_WATCHER_BASE_URL` in `@cowprotocol/common-const`. */
+const BALANCES_WATCHER_URL_PATTERN = /^https:\/\/balances-watcher(?:\.barn)?\.cow\.fi\//
+
+const SESSION_PATH = /^\/(\d+)\/sessions\/(0x[a-fA-F0-9]{40})$/i
+const SSE_PATH = /^\/sse\/(\d+)\/balances\/(0x[a-fA-F0-9]{40})$/i
+
+/** Keyed by the same `context` `installBalances` was called with, so `getBalancesMock` can find it
+ * again without every caller having to thread the `BalancesMock` instance through by hand — see
+ * `getBalancesMock`'s own doc comment. */
+const registry = new WeakMap<BrowserContext, BalancesMock>()
+
+export interface BalancesMock {
+  /**
+   * Merge raw-atom balances into `(owner, chainId)`, token by token.
+   *
+   * Overwrites the SSE snapshot the next time the app (re)connects — the
+   * committed fixture's tokens keep their fixture value unless named here.
+   */
+  set(owner: string, chainId: number, balances: Record<string, BalanceValue>): void
+  /** Drop every override, restoring the committed fixture. */
+  clear(): void
+  /** Every `POST /{chainId}/sessions/{owner}` observed on the wire this test, in order. */
+  sessions(): readonly BalancesSessionRequest[]
+  /** Non-fatal warning about SSE connections opened for an owner/chain with no entry. */
+  reportUnknownOwners(): void
+  /** Whatever `set()` (or the fixture) last recorded for `owner`+`token`, ignoring chainId — used
+   * by `mockContractViewCall.ts` (via `getBalancesMock`) to answer a `getEthBalance` RPC read
+   * consistently with what this mock already tells the app over SSE, instead of an unrelated
+   * placeholder that could silently disagree with it. `chainId` isn't available to key on there —
+   * an RPC `getEthBalance(address)` read carries none. */
+  getBalance(owner: string, token: string): bigint | undefined
+  reset(): void
+}
+
+/**
+ * Looks up the `BalancesMock` `installBalances` registered for `context`, if any. Lets
+ * `mockContractViewCall.ts` answer a `getEthBalance` RPC read consistently with whatever this mock
+ * already tells the app over SSE, by default, for every one of its callers (`tokenNonce`,
+ * `allowances`, `socketVerifier`) — without each of them needing to thread a resolver through by
+ * hand. `undefined` only if `installBalances` was never called for this `context` (not the case in
+ * the `mocks` fixture, which always installs it first).
+ */
+export function getBalancesMock(context: BrowserContext): BalancesMock | undefined {
+  return registry.get(context)
+}
+
+export function installBalances(context: BrowserContext): BalancesMock {
+  const fixture = loadBalancesFixture()
+
+  const overrides: BalanceLookup = new Map()
+  const sessions: BalancesSessionRequest[] = []
+  const unknownOwners = new Set<string>()
+
+  const handler = async (route: Route): Promise<void> => {
+    const request = route.request()
+    const url = new URL(request.url())
+
+    const sessionMatch = SESSION_PATH.exec(url.pathname)
+    if (sessionMatch && request.method() === 'POST') {
+      return handleSession(route, sessions, Number(sessionMatch[1]), sessionMatch[2] as string)
+    }
+
+    const sseMatch = SSE_PATH.exec(url.pathname)
+    if (sseMatch && request.method() === 'GET') {
+      const chainId = Number(sseMatch[1])
+      const owner = sseMatch[2] as string
+      if (hasAnyEntry(fixture, overrides) && !isOwnerConfigured(fixture, overrides, owner, chainId)) {
+        unknownOwners.add(`${owner} (chain ${chainId})`)
+      }
+      return handleSse(route, fixture, overrides, chainId, owner)
+    }
+
+    return route.fallback()
+  }
+
+  void context.route(BALANCES_WATCHER_URL_PATTERN, handler)
+
+  const mock: BalancesMock = {
+    set(owner, chainId, balances) {
+      for (const [token, value] of Object.entries(balances)) {
+        const where = `balances.set("${owner}", ${chainId}, { "${token}" })`
+        overrides.set(balanceKey(owner, chainId, token), parseBalanceValue(value, where))
+      }
+    },
+    clear() {
+      overrides.clear()
+    },
+    sessions() {
+      return sessions
+    },
+    reportUnknownOwners() {
+      if (unknownOwners.size === 0) return
+      const list = [...unknownOwners].map((owner) => `  - ${owner}`).join('\n')
+      console.warn(
+        `[balances mock] the SSE stream was opened for owners with no entry, so they resolved to an empty snapshot:\n${list}\n` +
+          `Add them to src/mocks/balances/fixtures/balances.json, or call ` +
+          `mocks.balances.set(wallet.address, chainId, { ... }) in the spec.`,
+      )
+    },
+    getBalance(owner, token) {
+      return resolveBalanceAnyChain(fixture, overrides, owner, token)
+    },
+    reset() {
+      overrides.clear()
+      sessions.length = 0
+      unknownOwners.clear()
+    },
+  }
+
+  registry.set(context, mock)
+  return mock
+}
+
+async function handleSession(
+  route: Route,
+  sessions: BalancesSessionRequest[],
+  chainId: number,
+  owner: string,
+): Promise<void> {
+  const body = parseBody(route)
+  sessions.push({
+    chainId,
+    owner,
+    tokensListsUrls: Array.isArray(body?.tokensListsUrls) ? (body.tokensListsUrls as string[]) : [],
+    customTokens: Array.isArray(body?.customTokens) ? (body.customTokens as string[]) : [],
+  })
+  await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' })
+}
+
+async function handleSse(
+  route: Route,
+  fixture: BalanceLookup,
+  overrides: BalanceLookup,
+  chainId: number,
+  owner: string,
+): Promise<void> {
+  const snapshot = resolveBalancesSnapshot(fixture, overrides, owner, chainId)
+  // We don't implement real streaming mocks, so we don't get real time balances update
+  // To bypass that, we add retry: 800ms so it will re-open the SSE conenction often to update balances
+  // Since this is a mock, we can afford that
+  const body = `retry: 800\nevent: balance_update\ndata: ${JSON.stringify({ balances: snapshot })}\n\n`
+
+  await route.fulfill({ status: 200, contentType: 'text/event-stream', body })
+}
+
+function parseBody(route: Route): Record<string, unknown> | undefined {
+  try {
+    return route.request().postDataJSON() as Record<string, unknown>
+  } catch {
+    return undefined
+  }
+}

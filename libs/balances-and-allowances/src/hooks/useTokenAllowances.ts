@@ -1,13 +1,17 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import ms from 'ms.macro'
 import { erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import ms from 'ms.macro'
+
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+import { allowancesAtom } from '../state/allowancesAtom'
 
 export type AllowancesState = Record<string, bigint | undefined>
 
@@ -25,8 +29,11 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   */
 
   const { chainId, account } = useWalletInfo()
+  const isSolana = isSolanaChain(chainId)
 
   const spender = useTradeSpenderAddress()
+
+  const persistedAllowancesByChain = useAtomValue(allowancesAtom)
 
   const { data: allowances, isLoading } = useReadContracts({
     contracts: tokenAddresses.map((address) => ({
@@ -37,7 +44,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
       args: [account as `0x${string}`, spender as `0x${string}`],
     })),
     query: {
-      enabled: !!account && !!spender && tokenAddresses.length > 0,
+      enabled: !isSolana && !!account && !!spender && tokenAddresses.length > 0,
       refetchInterval: ms`32s`,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
@@ -45,6 +52,8 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   })
 
   const state = useMemo(() => {
+    if (isSolana) return persistedAllowancesByChain[chainId]
+
     if (!allowances?.length) return
 
     return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
@@ -54,7 +63,8 @@ export function useTokenAllowances(tokenAddresses: string[]): {
 
       return acc
     }, {})
-  }, [tokenAddresses, allowances])
+  }, [isSolana, persistedAllowancesByChain, chainId, tokenAddresses, allowances])
 
-  return useMemo(() => ({ state, isLoading }), [state, isLoading])
+  // EVM loading comes from wagmi. Solana has no allowance-loading signal for now; it will be added later.
+  return useMemo(() => ({ state, isLoading: isSolana ? false : isLoading }), [state, isSolana, isLoading])
 }

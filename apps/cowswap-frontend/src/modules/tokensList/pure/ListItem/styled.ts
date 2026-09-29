@@ -17,14 +17,8 @@ export const SettingsButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
   color: var(${UI.COLOR_TEXT});
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  outline: none;
 
   > svg {
     color: inherit;

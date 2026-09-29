@@ -1,6 +1,6 @@
-import { extractPermitData } from './extractPermitData'
-
 import type { Hex } from 'viem'
+
+import { extractPermitData } from './extractPermitData'
 
 describe('extractPermitData', () => {
   describe('unsupported permit', () => {

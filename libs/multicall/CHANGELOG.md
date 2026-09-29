@@ -1,5 +1,129 @@
 # Changelog
 
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.2...multicall-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/wallet@3.14.0
+  - @cowprotocol/cowswap-abis@4.3.0
+
+## [3.7.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.1...multicall-v3.7.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/wallet@3.13.2
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.7.0...multicall-v3.7.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.13.1
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.1...multicall-v3.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/types@4.10.0
+
+## [3.6.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.6.0...multicall-v3.6.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.12.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.5.1...multicall-v3.6.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/wallet@3.12.0
+
+## [3.5.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.5.0...multicall-v3.5.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/wallet@3.11.1
+
+## [3.5.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.7...multicall-v3.5.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/wallet@3.11.0
+  - @cowprotocol/types@4.8.0
+
+## [3.4.7](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.6...multicall-v3.4.7) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/wallet@3.10.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.4.6](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.5...multicall-v3.4.6) (2026-07-28)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/wallet@3.9.0
+
+## [3.4.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.4...multicall-v3.4.5) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.2
+
+## [3.4.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.3...multicall-v3.4.4) (2026-07-17)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.8.1
+
 ## [3.4.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.4.2...multicall-v3.4.3) (2026-07-08)
 
 ### Patch Changes

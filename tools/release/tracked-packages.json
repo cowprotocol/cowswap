@@ -27,6 +27,7 @@
     "libs/wallet",
     "libs/wallet-provider",
     "libs/widget-lib",
-    "libs/widget-react"
+    "libs/widget-react",
+    "libs/dx"
   ]
 }

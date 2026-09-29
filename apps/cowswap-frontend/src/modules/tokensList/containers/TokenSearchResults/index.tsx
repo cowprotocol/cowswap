@@ -2,11 +2,13 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
-
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
-
-import { Field } from 'legacy/state/types'
+import {
+  excludeAlreadyActiveTokens,
+  getTokenSearchFilter,
+  TokenSearchResponse,
+  useSearchToken,
+  useTokensByAddressMap,
+} from '@cowprotocol/tokens'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -19,28 +21,16 @@ import { TokenSearchContent } from '../../pure/TokenSearchContent'
 export function TokenSearchResults(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
-  const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap } = useTokenListContext()
-  const { tokenLists, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
+  const { selectTokenContext, areTokensFromBridge, allTokens, bridgeSupportedTokensMap, hasScopedListRestriction } =
+    useTokenListContext()
 
   const { onTokenListItemClick } = selectTokenContext
 
-  const { field, onSelectToken } = useSelectTokenWidgetState()
+  const { onSelectToken } = useSelectTokenWidgetState()
 
   // Search all tokens (used in both modes)
   const defaultSearchResults = useSearchToken(searchInput)
   const filter = useMemo(() => getTokenSearchFilter(searchInput), [searchInput])
-  const hasScopedListRestriction = useMemo(() => {
-    if (field === Field.INPUT) {
-      return !!(tokenLists?.length || sellTokenLists?.length)
-    }
-
-    if (field === Field.OUTPUT) {
-      return !!(tokenLists?.length || buyTokenLists?.length)
-    }
-
-    return !!(tokenLists?.length || sellTokenLists?.length || buyTokenLists?.length)
-  }, [buyTokenLists?.length, field, sellTokenLists?.length, tokenLists?.length])
-
   const searchResults: TokenSearchResponse = useMemo(() => {
     if (!hasScopedListRestriction && !areTokensFromBridge) {
       return defaultSearchResults
@@ -80,6 +70,23 @@ export function TokenSearchResults(): ReactNode {
       activeListsResult: [...filteredBridgeTokens, ...additionalTokens],
     }
   }, [allTokens, areTokensFromBridge, defaultSearchResults, filter, hasScopedListRestriction])
+
+  const tokensByAddress = useTokensByAddressMap()
+
+  /**
+   * Hide importable results whose address is already active: the same contract can sit in an active list
+   * and in an inactive one under a different symbol (CoinGecko ships AAPLC where the Coinbase RWA list
+   * ships AAPL), which otherwise renders it twice - once tradable, once behind an "Import" button.
+   */
+  const dedupedSearchResults: TokenSearchResponse = useMemo(
+    () => ({
+      ...searchResults,
+      inactiveListsResult: excludeAlreadyActiveTokens(searchResults.inactiveListsResult, tokensByAddress),
+      externalApiResult: excludeAlreadyActiveTokens(searchResults.externalApiResult, tokensByAddress),
+      blockchainResult: excludeAlreadyActiveTokens(searchResults.blockchainResult, tokensByAddress),
+    }),
+    [searchResults, tokensByAddress],
+  )
 
   const { activeListsResult } = searchResults
 
@@ -135,7 +142,7 @@ export function TokenSearchResults(): ReactNode {
         importToken={addTokenImportCallback}
         searchInput={searchInput}
         selectTokenContext={selectTokenContext}
-        searchResults={searchResults}
+        searchResults={dedupedSearchResults}
         areTokensFromBridge={areTokensFromBridge}
         bridgeSupportedTokensMap={bridgeSupportedTokensMap}
       />

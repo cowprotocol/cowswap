@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
 
-import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { ExecutionRevertedError } from 'viem'
+
+import { getWrappedToken, isRejectRequestProviderError, normalizeError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
@@ -14,12 +16,15 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
+  const { tradeType } = useDerivedTradeState() || {}
 
   const token = getWrappedToken(amountToApprove.currency)
-  const permitInfo = usePermitInfo(token, TradeType.SWAP)
+  const permitInfo = usePermitInfo(token, tradeType)
 
   return useCallback(async () => {
     if (!account || !permitInfo) return false
+
+    const amountRaw = BigInt(amountToApprove.quotient.toString())
 
     const preSignCallback = (): void =>
       updateApproveProgressModalState({
@@ -29,18 +34,24 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       })
 
     try {
+      // The ON_BEFORE_APPROVAL widget veto fires inside `generatePermit` on a genuine cache miss
+      // (passing `sellCurrency` opts this trade approval into it) and throws WidgetHookDeclineError
+      // on decline, which is caught below and reported as "not approved".
       const permitData = await generatePermit({
         inputToken: { name: token.name || '', address: token.address as `0x${string}` },
         account,
         permitInfo,
-        amount: BigInt(amountToApprove.quotient.toString()),
+        amount: amountRaw,
+        sellCurrency: amountToApprove.currency,
         preSignCallback,
         postSignCallback: resetApproveProgressModalState,
       })
 
       return !!permitData
-    } catch (error) {
-      if (isRejectRequestProviderError(error)) {
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+
+      if (isRejectRequestProviderError(error) || error instanceof ExecutionRevertedError) {
         resetApproveProgressModalState()
         throw error
       }

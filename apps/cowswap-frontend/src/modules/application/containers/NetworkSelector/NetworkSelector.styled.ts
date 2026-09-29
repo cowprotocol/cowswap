@@ -36,10 +36,7 @@ export const FlyoutHeaderTitle = styled.div`
 
 export const CloseButton = styled.button`
   align-items: center;
-  background: transparent;
-  border: 0;
   color: inherit;
-  cursor: pointer;
   display: none;
   justify-content: center;
   min-height: ${TAP_DESKTOP};

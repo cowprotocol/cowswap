@@ -34,7 +34,11 @@ const mockedFetchSolversInfo = jest.mocked(fetchSolversInfo)
 const ZERO = new BigNumber(0)
 const ONE = new BigNumber(1)
 
-const BLANC_ADDRESS = '0xBlanc0000000000000000000000000000000001'
+// Valid 42-char all-hex addresses, so `areAddressesEqual` and `shortenAddress` behave as in prod.
+// All-digit so the EIP-55 checksum is an identity and the shortened form is predictable.
+const BLANC_ADDRESS = '0x1111111111111111111111111111111111111111'
+const EXT_QUASIMODO_ADDRESS = '0x4444444444444444444444444444444444444444'
+const UNKNOWN_ADDRESS = '0x3333333333333333333333333333333333333333'
 
 const MOCK_SOLVERS: SolverInfo[] = [
   {
@@ -57,7 +61,7 @@ const CROSS_NETWORK_SOLVER: SolverInfo = {
   displayName: 'ExtQuasimodo',
   image: 'https://example.com/extquasimodo.svg',
   networks: [],
-  deployments: [],
+  deployments: [{ chainId: 1, chainName: 'mainnet', address: EXT_QUASIMODO_ADDRESS, active: true }],
 }
 
 function createMockOrder(overrides: Partial<Order> = {}): Order {
@@ -97,10 +101,10 @@ function createMockOrder(overrides: Partial<Order> = {}): Order {
   } as Order
 }
 
-function mockCompetitionStatus(solverName: string): OrderCompetitionStatus {
+function mockCompetitionStatus(solverAddress: string): OrderCompetitionStatus {
   return {
     type: 'traded' as OrderCompetitionStatus['type'],
-    value: [{ solver: solverName, executedAmounts: { sell: '1', buy: '1' } }],
+    value: [{ solver: solverAddress, executedAmounts: { sell: '1', buy: '1' } }],
   }
 }
 
@@ -178,7 +182,7 @@ describe('useOrderSolver', () => {
   })
 
   it('resolves solver from order competition status', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('projectblanc'))
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(BLANC_ADDRESS))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const { result } = renderHook(() => useOrderSolver(createMockOrder()))
@@ -211,12 +215,10 @@ describe('useOrderSolver', () => {
     })
   })
 
-  it('returns no solver when the txHash competition winner address matches no known deployment', async () => {
+  it('falls back to a shortened address when the txHash competition winner is not in CMS', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(undefined)
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(
-      mockSolverCompetitionResponse('0xUnknownAddress00000000000000000000000000'),
-    )
+    mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(UNKNOWN_ADDRESS))
 
     const order = createMockOrder({ txHash: '0xunknown' })
     const { result } = renderHook(() => useOrderSolver(order))
@@ -224,7 +226,11 @@ describe('useOrderSolver', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(mockedGetSolverCompetitionByTxHash).toHaveBeenCalledWith({ networkId: 1, txHash: '0xunknown' })
-    expect(result.current.solver).toBeUndefined()
+    expect(result.current.solver).toEqual({
+      solverId: UNKNOWN_ADDRESS,
+      displayName: '0x3333...3333',
+      image: undefined,
+    })
   })
 
   it('does not attempt txHash fallback when no txHash is available', async () => {
@@ -243,7 +249,7 @@ describe('useOrderSolver', () => {
   it('ignores competition entries that have zero executed amounts', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
       type: 'traded' as OrderCompetitionStatus['type'],
-      value: [{ solver: 'projectblanc', executedAmounts: { sell: '0', buy: '0' } }],
+      value: [{ solver: BLANC_ADDRESS, executedAmounts: { sell: '0', buy: '0' } }],
     })
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
@@ -259,7 +265,7 @@ describe('useOrderSolver', () => {
   it('falls back to txHash competition when executed amounts are malformed', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
       type: 'traded' as OrderCompetitionStatus['type'],
-      value: [{ solver: 'invalid-solver', executedAmounts: { sell: 'da1', buy: '0' } }],
+      value: [{ solver: UNKNOWN_ADDRESS, executedAmounts: { sell: 'da1', buy: '0' } }],
     })
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
     mockedGetSolverCompetitionByTxHash.mockResolvedValueOnce(mockSolverCompetitionResponse(BLANC_ADDRESS))
@@ -280,7 +286,7 @@ describe('useOrderSolver', () => {
   it('ignores malformed executed amounts without txHash fallback', async () => {
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce({
       type: 'traded' as OrderCompetitionStatus['type'],
-      value: [{ solver: 'invalid-solver', executedAmounts: { sell: '1e2', buy: '0' } }],
+      value: [{ solver: UNKNOWN_ADDRESS, executedAmounts: { sell: '1e2', buy: '0' } }],
     })
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
@@ -293,24 +299,9 @@ describe('useOrderSolver', () => {
     expect(result.current.solver).toBeUndefined()
   })
 
-  it('normalizes solver name with -Solve suffix for matching', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('CopperSolver-Solve'))
-    mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
-
-    const { result } = renderHook(() => useOrderSolver(createMockOrder()))
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false))
-
-    expect(result.current.solver).toEqual({
-      solverId: 'copperSolver',
-      displayName: 'Copper Solver',
-      image: undefined,
-    })
-  })
-
   it('matches solver metadata from the global list even when the current network has no CMS deployment', async () => {
     mockedUseNetworkId.mockReturnValue(42161)
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('extquasimodo-solve'))
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(EXT_QUASIMODO_ADDRESS))
     mockedFetchSolversInfo.mockResolvedValueOnce([CROSS_NETWORK_SOLVER])
 
     const { result } = renderHook(() => useOrderSolver(createMockOrder()))
@@ -325,8 +316,8 @@ describe('useOrderSolver', () => {
     expect(mockedFetchSolversInfo).toHaveBeenCalledWith()
   })
 
-  it('returns raw solver name when no CMS match is found', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('unknownSolver'))
+  it('falls back to a shortened address when no CMS match is found', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(UNKNOWN_ADDRESS))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const { result } = renderHook(() => useOrderSolver(createMockOrder()))
@@ -334,14 +325,14 @@ describe('useOrderSolver', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(result.current.solver).toEqual({
-      solverId: 'unknownSolver',
-      displayName: 'unknownSolver',
+      solverId: UNKNOWN_ADDRESS,
+      displayName: '0x3333...3333',
       image: undefined,
     })
   })
 
   it('handles fetchSolversInfo failure gracefully', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('projectblanc'))
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(BLANC_ADDRESS))
     mockedFetchSolversInfo.mockRejectedValueOnce(new Error('CMS down'))
 
     const { result } = renderHook(() => useOrderSolver(createMockOrder()))
@@ -349,8 +340,8 @@ describe('useOrderSolver', () => {
     await waitFor(() => expect(result.current.isLoading).toBe(false))
 
     expect(result.current.solver).toEqual({
-      solverId: 'projectblanc',
-      displayName: 'projectblanc',
+      solverId: BLANC_ADDRESS,
+      displayName: '0x1111...1111',
       image: undefined,
     })
   })
@@ -397,7 +388,7 @@ describe('useOrderSolver', () => {
   })
 
   it('clears stale solver when navigating to an order with no solver data', async () => {
-    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus('projectblanc'))
+    mockedGetOrderCompetitionStatus.mockResolvedValueOnce(mockCompetitionStatus(BLANC_ADDRESS))
     mockedFetchSolversInfo.mockResolvedValueOnce(MOCK_SOLVERS)
 
     const orderA = createMockOrder({ uid: 'order-a', txHash: '0xtxA' })
@@ -466,8 +457,8 @@ describe('useOrderSolver', () => {
     const status: OrderCompetitionStatus = {
       type: 'traded' as OrderCompetitionStatus['type'],
       value: [
-        { solver: 'loser', executedAmounts: { sell: '1', buy: '1' } },
-        { solver: 'projectblanc', executedAmounts: { sell: '2', buy: '2' } },
+        { solver: UNKNOWN_ADDRESS, executedAmounts: { sell: '1', buy: '1' } },
+        { solver: BLANC_ADDRESS, executedAmounts: { sell: '2', buy: '2' } },
       ],
     }
     mockedGetOrderCompetitionStatus.mockResolvedValueOnce(status)

@@ -1,13 +1,15 @@
 import type { Getter, Setter } from 'jotai'
 
 import {
+  allowancesAtom,
   balancesAtom,
   tokenAllowancesFamily,
   tradeSpenderAtom,
   type BalancesState,
 } from '@cowprotocol/balances-and-allowances'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { walletInfoAtom, isAtomicBatchSupportedLoadableAtom } from '@cowprotocol/wallet'
+import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { getOptimisticAllowanceKey } from 'entities/optimisticAllowance/getOptimisticAllowanceKey'
 import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
@@ -58,6 +60,7 @@ jest.mock('@cowprotocol/balances-and-allowances', () => {
   )
 
   return {
+    allowancesAtom: atom({}),
     balancesAtom: atom({}),
     tokenAllowancesFamily,
     tradeSpenderAtom: atom(undefined),
@@ -68,7 +71,6 @@ jest.mock('@cowprotocol/wallet', () => {
   const { atom } = require('jotai') as typeof import('jotai')
 
   return {
-    isAtomicBatchSupportedLoadableAtom: atom({ data: true, state: 'hasData' }),
     walletInfoAtom: atom({}),
   }
 })
@@ -199,6 +201,7 @@ describe('getBalancesAndAllowances', () => {
   })
 })
 
+// eslint-disable-next-line max-lines-per-function
 describe('observeReduxOrders', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -398,12 +401,19 @@ describe('observeReduxOrders', () => {
     )
   })
 
-  it('composes advanced orders from emulated TWAPs, emulated parts, and discrete TWAP orders', () => {
+  it('composes advanced orders without gating history on wallet batching support', () => {
     const connector = { id: 'mock-connector' }
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
-    const emulatedTwapOrder = { id: 'emulated-twap', status: OrderStatus.PENDING }
+    const inputToken = { address: tokenAddress }
+    const emulatedTwapOrder = {
+      id: 'emulated-twap',
+      status: OrderStatus.PENDING,
+      isEoaTwapOrder: true,
+      inputToken,
+    }
+    const safeTwapOrder = { id: 'safe-twap', status: OrderStatus.PENDING, inputToken }
     const emulatedPartOrder = { id: 'emulated-part', status: OrderStatus.PENDING }
     const virtualPartOrder = {
       composableCowInfo: { isVirtualPart: true },
@@ -415,7 +425,7 @@ describe('observeReduxOrders', () => {
       id: 'discrete-twap',
       status: OrderStatus.PENDING,
     }
-    const expectedReduxOrders = [emulatedTwapOrder, emulatedPartOrder, discreteTwapOrder]
+    const expectedReduxOrders = [emulatedTwapOrder, safeTwapOrder, emulatedPartOrder, discreteTwapOrder]
     const ordersList = {
       ...EMPTY_ORDERS_LIST,
       [OrderTabId.OPEN]: expectedReduxOrders,
@@ -440,7 +450,7 @@ describe('observeReduxOrders', () => {
       lastCheckedBlock: 123,
     })
     ;(getReduxOrdersByOrderTypeFromNetworkState as jest.Mock).mockReturnValue({
-      ordersTokensSet: new Set([tokenAddress]),
+      ordersTokensSet: new Set(),
       reduxOrders: [virtualPartOrder, discreteTwapOrder],
     })
     getOrdersTableList.mockReturnValue(ordersList)
@@ -457,8 +467,7 @@ describe('observeReduxOrders', () => {
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
         [tabParamAtom, null],
-        [isAtomicBatchSupportedLoadableAtom, { data: true, state: 'hasData' }],
-        [emulatedTwapOrdersAtom, [emulatedTwapOrder]],
+        [emulatedTwapOrdersAtom, [emulatedTwapOrder, safeTwapOrder]],
         [emulatedPartOrdersAtom, [emulatedPartOrder]],
         [
           ordersTableFiltersAtom,
@@ -477,11 +486,87 @@ describe('observeReduxOrders', () => {
       reduxOrdersStateInCurrentChain: { lastCheckedBlock: 123 },
       uiOrderType: UiOrderType.TWAP,
     })
+    expect(tokenAllowancesFamily).toHaveBeenLastCalledWith({
+      connector,
+      chainId: 1,
+      account,
+      spender,
+      tokenAddresses: [tokenAddress],
+    })
     expect(getOrdersTableList).toHaveBeenCalledWith(
       expectedReduxOrders,
       TabOrderTypes.ADVANCED,
       1,
       expect.any(Object),
+      {},
+      expect.any(Function),
+    )
+  })
+
+  // Solana has no ERC-20 `allowance()` to multicall — `tokenAllowancesFamily` always returns `null` for
+  // it — so the table must instead read SPL delegation from `allowancesAtom` directly (kept fresh by
+  // `usePersistSplViaMulticall`), or a Solana limit order can never be classified as fundable/unfundable.
+  it('reads Solana allowances directly from allowancesAtom, bypassing tokenAllowancesFamily', () => {
+    const account = '11111111111111111111111111111111'
+    const tokenAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+    const openOrder = { id: 'solana-order', status: OrderStatus.PENDING }
+    const ordersList = {
+      ...EMPTY_ORDERS_LIST,
+      [OrderTabId.OPEN]: [openOrder],
+    }
+    const balancesState: BalancesState = {
+      chainId: SupportedChainId.SOLANA,
+      error: null,
+      fromCache: false,
+      hasFirstLoad: true,
+      isLoading: false,
+      values: { [tokenAddress]: 9n },
+    }
+
+    ;(getReduxOrdersStateByChain as jest.Mock).mockReturnValue({
+      lastCheckedBlock: 123,
+    })
+    ;(getReduxOrdersByOrderTypeFromNetworkState as jest.Mock).mockReturnValue({
+      ordersTokensSet: new Set([tokenAddress]),
+      reduxOrders: [openOrder],
+    })
+    getOrdersTableList.mockReturnValue(ordersList)
+    getFilteredOrders.mockReturnValue([openOrder])
+
+    const get = createGetter(
+      new Map<unknown, unknown>([
+        [walletInfoAtom, { account, chainId: SupportedChainId.SOLANA, connector: undefined }],
+        [ordersTableOrderTypeAtom, TabOrderTypes.LIMIT],
+        [reduxOrdersStateAtom, {}],
+        [tradeSpenderAtom, undefined],
+        [balancesAtom, balancesState],
+        [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n } }],
+        [optimisticAllowancesAtom, {}],
+        [pendingOrdersPermitValidityStateAtom, {}],
+        [tabParamAtom, null],
+        [
+          ordersTableFiltersAtom,
+          {
+            historyStatusFilter: HistoryStatusFilter.ALL,
+            searchTerm: '',
+          },
+        ],
+      ]),
+    )
+    const set = jest.fn<void, [unknown, unknown]>() as Setter
+
+    observeReduxOrders(get, set)
+
+    expect(tokenAllowancesFamily).not.toHaveBeenCalled()
+    expect(getOrdersTableList).toHaveBeenCalledWith(
+      [openOrder],
+      TabOrderTypes.LIMIT,
+      SupportedChainId.SOLANA,
+      {
+        isLoading: false,
+        balances: { [tokenAddress]: 9n },
+        allowances: { [tokenAddress]: 42n },
+      },
       {},
       expect.any(Function),
     )

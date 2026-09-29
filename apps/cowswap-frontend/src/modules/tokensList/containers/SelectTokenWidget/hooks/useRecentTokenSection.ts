@@ -14,10 +14,12 @@ export function useRecentTokenSection(
   allTokens: TokenWithLogo[],
   favoriteTokens: TokenWithLogo[],
   activeChainId?: number,
+  allowedTokens?: TokenWithLogo[],
 ): RecentTokenSection {
   const { recentTokens, addRecentToken, clearRecentTokens } = useRecentTokens({
     allTokens,
     favoriteTokens,
+    allowedTokens,
     activeChainId,
   })
 

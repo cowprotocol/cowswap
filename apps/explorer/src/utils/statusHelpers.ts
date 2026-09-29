@@ -24,6 +24,7 @@ export function canBePartiallyFilled(status: string): status is OrderStatus {
 // eslint-disable-next-line complexity
 export function getStatusIcon(status: GenericStatus): IconDefinition {
   switch (status.toLowerCase()) {
+    case 'unconfirmed':
     case OrderStatus.Expired.toLowerCase():
       return faClock
     case OrderStatus.Filled.toLowerCase():

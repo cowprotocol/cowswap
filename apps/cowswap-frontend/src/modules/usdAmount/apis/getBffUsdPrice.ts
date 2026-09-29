@@ -1,11 +1,9 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { FractionUtils } from '@cowprotocol/common-utils'
+import { fetchWithRateLimit, FractionUtils } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@cowprotocol/currency'
 
 import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
-
-import { fetchWithRateLimit } from 'common/utils/fetch'
 
 import { UnknownCurrencyError } from './errors'
 

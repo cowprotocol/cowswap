@@ -91,10 +91,24 @@ export const RECEIVED_LABEL = msg`Received`
 export const ACCOUNT_PROXY_LABEL = msg`Account Proxy`
 export const INPUT_OUTPUT_EXPLANATION = msg`Only executed swaps incur fees.`
 
+declare global {
+  interface Window {
+    __COWSWAP_E2E__?: boolean
+  }
+}
+
+// e2e tests mock the order book API, so updaters can poll much faster without adding real load
+const IS_E2E_FAST_POLLING = typeof window !== 'undefined' && window.__COWSWAP_E2E__ === true
+const E2E_FAST_POLL_INTERVAL = ms`2s`
+
+export function getUpdaterInterval(interval: number): number {
+  return IS_E2E_FAST_POLLING ? Math.min(interval, E2E_FAST_POLL_INTERVAL) : interval
+}
+
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
-export const ORDER_BOOK_API_UPDATE_INTERVAL = ms`30s` // 30s
+export const ORDER_BOOK_API_UPDATE_INTERVAL = getUpdaterInterval(ms`30s`) // 30s
 export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
@@ -148,6 +162,7 @@ export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/refe
 export const FEE_SIZE_THRESHOLD = 10 as const // 10%
 
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10 as const
+export const MAXIMUM_ORDERS_TO_FETCH = 1000 as const
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100 as const
 
 // Start date of COW vesting for locked GNO

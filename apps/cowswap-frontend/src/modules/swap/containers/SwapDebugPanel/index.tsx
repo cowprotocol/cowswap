@@ -1,7 +1,8 @@
 import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 
+import { useChainId, useConnection, useWalletClient } from 'wagmi'
+
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { getParentOrigin } from '@cowprotocol/iframe-transport'
 import {
@@ -15,7 +16,6 @@ import {
 } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
-import { useChainId, useConnection, useWalletClient } from 'wagmi'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import {
@@ -30,7 +30,7 @@ import {
 } from 'modules/trade'
 import { useTradeFlowContext, useTradeFlowType } from 'modules/tradeFlow'
 import { useGetTradeFormValidation, useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
@@ -84,8 +84,6 @@ const CopyButton = styled.button`
   padding: 4px 8px;
   background: #123621;
   color: #d8ffe7;
-  font: inherit;
-  cursor: pointer;
 
   &:hover {
     background: #1b4a2e;
@@ -114,6 +112,94 @@ export function SwapDebugPanel(props: SwapDebugPanelProps): ReactNode {
   if (!enabled) return null
 
   return <SwapDebugPanelContent {...props} />
+}
+
+async function copyTextToClipboard(text: string): Promise<void> {
+  if (navigator.clipboard) {
+    await navigator.clipboard.writeText(text)
+
+    return
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', 'true')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '0'
+  textarea.style.left = '0'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+  textarea.select()
+
+  try {
+    if (!document.execCommand('copy')) {
+      throw new Error('Copy command failed')
+    }
+  } finally {
+    document.body.removeChild(textarea)
+  }
+}
+
+function formatCurrency(
+  currency: Currency | null | undefined,
+): { chainId: number; symbol?: string; address?: string } | null {
+  if (!currency) return null
+
+  return {
+    chainId: currency.chainId,
+    symbol: currency.symbol ?? undefined,
+    address: currency.isToken ? currency.address : undefined,
+  }
+}
+
+function formatCurrencyAmount(amount: CurrencyAmount<Currency> | null | undefined): string | null {
+  if (!amount) return null
+
+  return `${amount.toSignificant(8)} ${amount.currency.symbol ?? amount.currency.name ?? 'UNKNOWN'}`
+}
+
+function getErrorInfo(error: unknown): { name?: string; message?: string } | null {
+  if (!error) return null
+
+  if (error instanceof Error) {
+    return { name: error.name, message: error.message }
+  }
+
+  return { message: String(error) }
+}
+
+function getExpectedWagmiStorageKey({
+  isWidget,
+  isSafeAppIframe,
+}: {
+  isWidget: boolean
+  isSafeAppIframe: boolean
+}): string {
+  const safeSuffix = isSafeAppIframe ? '_safe-app' : ''
+
+  return isWidget ? `cowswap-wallet-${COW_WIDGET_CONNECTOR_ID}${safeSuffix}` : `cowswap-wallet${safeSuffix}`
+}
+
+function getWalletStorageKeys(): string[] {
+  if (typeof window === 'undefined') return []
+
+  try {
+    return Object.keys(window.localStorage).filter((key) => key.includes('cowswap-wallet') || key.includes('wagmi'))
+  } catch {
+    return []
+  }
+}
+
+function stringifyDebug(value: unknown): string {
+  return JSON.stringify(
+    value,
+    (_key: string, nestedValue: unknown) => {
+      if (typeof nestedValue === 'bigint') return `${nestedValue.toString()}n`
+
+      return nestedValue
+    },
+    2,
+  )
 }
 
 // TODO: Remove this temporary panel after the MetaMask iOS trade-flow issue is diagnosed.
@@ -173,7 +259,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       account: Boolean(walletInfo.account),
       appData: Boolean(appData),
       quote: Boolean(tradeQuote.quote),
-      quoteIsOptimal: quotePriceQuality === PriceQuality.OPTIMAL,
+      quoteIsFinal: getIsFinalQuote(tradeQuote.fetchParams),
       orderKind: Boolean(derivedTradeState?.orderKind),
       settlementContract: Boolean(settlementContract),
       uiOrderType: Boolean(uiOrderType),
@@ -188,9 +274,9 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       inputAmount,
       networkFee,
       outputAmount,
-      quotePriceQuality,
       sellAmountBeforeFee,
       settlementContract,
+      tradeQuote.fetchParams,
       tradeQuote.quote,
       uiOrderType,
       validTo,
@@ -413,92 +499,4 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
       </details>
     </Wrapper>
   )
-}
-
-function getErrorInfo(error: unknown): { name?: string; message?: string } | null {
-  if (!error) return null
-
-  if (error instanceof Error) {
-    return { name: error.name, message: error.message }
-  }
-
-  return { message: String(error) }
-}
-
-function formatCurrencyAmount(amount: CurrencyAmount<Currency> | null | undefined): string | null {
-  if (!amount) return null
-
-  return `${amount.toSignificant(8)} ${amount.currency.symbol ?? amount.currency.name ?? 'UNKNOWN'}`
-}
-
-function formatCurrency(
-  currency: Currency | null | undefined,
-): { chainId: number; symbol?: string; address?: string } | null {
-  if (!currency) return null
-
-  return {
-    chainId: currency.chainId,
-    symbol: currency.symbol ?? undefined,
-    address: currency.isToken ? currency.address : undefined,
-  }
-}
-
-function stringifyDebug(value: unknown): string {
-  return JSON.stringify(
-    value,
-    (_key: string, nestedValue: unknown) => {
-      if (typeof nestedValue === 'bigint') return `${nestedValue.toString()}n`
-
-      return nestedValue
-    },
-    2,
-  )
-}
-
-async function copyTextToClipboard(text: string): Promise<void> {
-  if (navigator.clipboard) {
-    await navigator.clipboard.writeText(text)
-
-    return
-  }
-
-  const textarea = document.createElement('textarea')
-  textarea.value = text
-  textarea.setAttribute('readonly', 'true')
-  textarea.style.position = 'fixed'
-  textarea.style.top = '0'
-  textarea.style.left = '0'
-  textarea.style.opacity = '0'
-  document.body.appendChild(textarea)
-  textarea.select()
-
-  try {
-    if (!document.execCommand('copy')) {
-      throw new Error('Copy command failed')
-    }
-  } finally {
-    document.body.removeChild(textarea)
-  }
-}
-
-function getExpectedWagmiStorageKey({
-  isWidget,
-  isSafeAppIframe,
-}: {
-  isWidget: boolean
-  isSafeAppIframe: boolean
-}): string {
-  const safeSuffix = isSafeAppIframe ? '_safe-app' : ''
-
-  return isWidget ? `cowswap-wallet-${COW_WIDGET_CONNECTOR_ID}${safeSuffix}` : `cowswap-wallet${safeSuffix}`
-}
-
-function getWalletStorageKeys(): string[] {
-  if (typeof window === 'undefined') return []
-
-  try {
-    return Object.keys(window.localStorage).filter((key) => key.includes('cowswap-wallet') || key.includes('wagmi'))
-  } catch {
-    return []
-  }
 }

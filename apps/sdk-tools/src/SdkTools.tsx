@@ -147,18 +147,6 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `
 
-function IsValid({ isValid }: { isValid: IsValidResult }): ReactNode {
-  if (isValid.isValid) {
-    return <span style={{ color: 'green' }}>true</span>
-  }
-
-  return <span style={{ color: 'red' }}>false: {isValid.reason}</span>
-}
-
-function BooleanValue({ value }: { value: boolean }): ReactNode {
-  return <span style={{ color: value ? 'green' : 'red' }}>{Boolean(value).toString()}</span>
-}
-
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SdkTools(): ReactNode {
@@ -313,4 +301,16 @@ export function SdkTools(): ReactNode {
       )}
     </Container>
   )
+}
+
+function BooleanValue({ value }: { value: boolean }): ReactNode {
+  return <span style={{ color: value ? 'green' : 'red' }}>{Boolean(value).toString()}</span>
+}
+
+function IsValid({ isValid }: { isValid: IsValidResult }): ReactNode {
+  if (isValid.isValid) {
+    return <span style={{ color: 'green' }}>true</span>
+  }
+
+  return <span style={{ color: 'red' }}>false: {isValid.reason}</span>
 }

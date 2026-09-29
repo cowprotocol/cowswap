@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { usePublicClient } from 'wagmi'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { logSafeApi } from '@cowprotocol/common-utils'
 import { normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
@@ -9,8 +11,6 @@ import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
-
-import { usePublicClient } from 'wagmi'
 
 import { useApproveCallback } from 'modules/erc20Approve'
 

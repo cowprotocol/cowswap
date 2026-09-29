@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 
+import { Chain, createPublicClient, http } from 'viem'
+
 import { bungeeAffiliateCode, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
@@ -13,7 +15,6 @@ import {
 import { AcrossBridgeProvider, BungeeBridgeProvider, NearIntentsBridgeProvider } from '@cowprotocol/sdk-bridging'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
-import { Chain, createPublicClient, http } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
 import { lens } from 'viem/chains'
 

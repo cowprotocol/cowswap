@@ -58,11 +58,11 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
 
         const executedBuyAmount = sumChildrenAmount(discreteOrders, 'executedBuyAmount').toString()
         const executedSellAmount = sumChildrenAmount(discreteOrders, 'executedSellAmount').toString()
-        const executedFeeAmount = sumChildrenAmount(discreteOrders, 'executedFeeAmount').toString()
+        const executedFee = sumChildrenAmount(discreteOrders, 'executedFee').toString()
         const confirmedPartsCount = getConfirmedPartsCount(info, discreteOrders)
 
         acc[id] = {
-          info: { executedSellAmount, executedFeeAmount, executedBuyAmount },
+          info: { executedSellAmount, executedFee, executedBuyAmount },
           confirmedPartsCount,
         }
       } else {
@@ -72,12 +72,6 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
       return acc
     }, {})
   }, [allOrdersInfo, partSets, allDiscreteOrders])
-}
-
-function sumChildrenAmount(children: Order[], key: keyof Omit<EnrichedOrder, 'settlementContract'>): bigint {
-  return children.reduce((acc, order) => {
-    return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
-  }, BigInt(0))
 }
 
 /**
@@ -130,4 +124,10 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
   const lastOrderIndex = Math.ceil((lastOrderValidTo - startTime) / timeInterval)
 
   return Math.min(Math.max(lastOrderIndex, partsPassed), numOfParts)
+}
+
+function sumChildrenAmount(children: Order[], key: keyof Omit<EnrichedOrder, 'settlementContract'>): bigint {
+  return children.reduce((acc, order) => {
+    return acc + BigInt((order.apiAdditionalInfo?.[key] || '0') as string)
+  }, BigInt(0))
 }

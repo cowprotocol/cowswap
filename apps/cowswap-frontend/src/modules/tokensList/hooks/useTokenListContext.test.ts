@@ -98,6 +98,8 @@ describe('useTokenListContext', () => {
       isLoading: false,
       tokens: [mockToken],
       favoriteTokens: [mockToken],
+      allowedRecentTokens: [mockToken],
+      hasScopedListRestriction: true,
       areTokensFromBridge: true,
       isRouteAvailable: true,
       bridgeSupportedTokensMap: { [mockToken.address.toLowerCase()]: true },
@@ -120,7 +122,26 @@ describe('useTokenListContext', () => {
   it('uses resolved default chain for active chain and exposed target chain', () => {
     const { result } = renderHook(() => useTokenListContext())
 
-    expect(mockUseRecentTokenSection).toHaveBeenCalledWith([mockToken], [mockToken], SupportedChainId.LINEA)
+    expect(mockUseRecentTokenSection).toHaveBeenCalledWith([mockToken], [mockToken], SupportedChainId.LINEA, [
+      mockToken,
+    ])
     expect(result.current.selectedTargetChainId).toBe(SupportedChainId.LINEA)
+  })
+
+  it('preserves unrestricted recent-token hydration when no allowed set is provided', () => {
+    mockUseTokensToSelect.mockReturnValue({
+      isLoading: false,
+      tokens: [mockToken],
+      favoriteTokens: [],
+      allowedRecentTokens: undefined,
+      hasScopedListRestriction: false,
+      areTokensFromBridge: false,
+      isRouteAvailable: undefined,
+      bridgeSupportedTokensMap: null,
+    })
+
+    renderHook(() => useTokenListContext())
+
+    expect(mockUseRecentTokenSection).toHaveBeenCalledWith([mockToken], [], SupportedChainId.LINEA, undefined)
   })
 })

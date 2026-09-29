@@ -1,8 +1,8 @@
+import type { EIP1193Provider } from 'viem'
+
 import { isMobile } from '@cowprotocol/common-utils'
 
 import { guardMobileInjectedProvider } from '../../wagmi/mobileInjectedProviderGuard'
-
-import type { EIP1193Provider } from 'viem'
 
 type WindowWithInjectedProvider = {
   ethereum?: unknown

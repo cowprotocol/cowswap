@@ -1,12 +1,13 @@
 import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
+import { useAccount } from 'wagmi'
+
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
-import { useAccount } from 'wagmi'
 
 import { getDappOrigin } from './getDappOrigin'
 

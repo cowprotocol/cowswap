@@ -6,13 +6,8 @@ declare module '@metamask/jazzicon' {
   export default function (diameter: number, seed: number): HTMLElement
 }
 
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
+interface Console extends Node.Console {
+  force: Node.Console
 }
 
 interface Window {
@@ -36,22 +31,6 @@ interface Window {
     isTrustWallet?: boolean
   }
   web3?: Record<string, unknown>
-  Telegram?: {
-    Login: {
-      auth(
-        options: {
-          bot_id: number
-          lang?: string
-          request_access?: string
-        },
-        callback: (data: TelegramData | false) => void,
-      ): void
-    }
-  }
-}
-
-interface Console extends Node.Console {
-  force: Node.Console
 }
 
 declare module 'content-hash' {

@@ -1,3 +1,5 @@
+import type { PublicClient } from 'viem'
+
 import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -6,7 +8,6 @@ import { checkPermitNonceAndAmount } from './checkPermitNonceAndAmount'
 import { extractPermitData } from './extractPermitData'
 
 import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
-import type { PublicClient } from 'viem'
 
 jest.mock('@cowprotocol/permit-utils', () => ({
   checkIsCallDataAValidPermit: jest.fn(),

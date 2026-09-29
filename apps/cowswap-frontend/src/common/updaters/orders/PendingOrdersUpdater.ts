@@ -28,7 +28,6 @@ import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
-  FulfillOrdersBatchCallback,
   InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
@@ -54,9 +53,19 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { fetchAndClassifyOrder } from './utils'
+import {
+  fetchAndClassifyOrder,
+  getFulfilledOrderUidsForSurplusQueue,
+  getOrdersFromTransitionData,
+  getOrderTypesByUid,
+  OrderTransitionData,
+  OrderTypesByUid,
+  resolveValidToOnCreation,
+} from './utils'
 
 import { removeOrdersToCancelAtom } from '../../../entities/ordersToCancel/ordersToCancel.atom'
+
+type FulfillOrdersBatchWithTypes = (params: FulfillOrdersBatchParams, orderTypesByUid?: OrderTypesByUid) => void
 
 interface HandlePresignedParams {
   presigned: EnrichedOrder[]
@@ -76,7 +85,7 @@ interface UpdateOrdersParams {
   orders: Order[]
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
-  fulfillOrdersBatch: FulfillOrdersBatchCallback
+  fulfillOrdersBatch: FulfillOrdersBatchWithTypes
   invalidateOrdersBatch: InvalidateOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
@@ -158,8 +167,8 @@ export function PendingOrdersUpdater(): null {
     [chainId, dispatch],
   )
 
-  const fulfillOrdersBatch = useCallback(
-    (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
+  const fulfillOrdersBatch = useCallback<FulfillOrdersBatchWithTypes>(
+    (fulfillOrdersBatchParams, orderTypesByUid) => {
       if (!account) return
 
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
@@ -167,7 +176,7 @@ export function PendingOrdersUpdater(): null {
       fulfillOrdersBatchParams.orders.forEach((order) => {
         const bridgeOrder = getSerializedBridgeOrderRef.current(chainId, order.uid)
 
-        emitFulfilledOrderEvent(chainId, order, bridgeOrder)
+        emitFulfilledOrderEvent(chainId, order, bridgeOrder, orderTypesByUid?.[order.uid])
       })
 
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
@@ -294,11 +303,13 @@ async function _updateCreatingOrders(
 ): Promise<void> {
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
-      // Filter only EthFlow orders in creating state
+      // Orders that are only known locally until the backend indexes their creation tx
+      // (EthFlow's on-chain creation tx, Solana's order creation tx): keep polling until
+      // `getOrder` finds them, then move them to the pending bucket.
 
       const promise = getOrder(chainId, order.id)
         .then((orderData) => {
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} fetched from API!!!`, orderData)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} fetched from API!!!`, orderData)
           if (!orderData) {
             return
           }
@@ -307,7 +318,7 @@ async function _updateCreatingOrders(
 
           const updatedOrder = {
             ...order,
-            validTo: orderData.ethflowData?.userValidTo || order.validTo,
+            validTo: resolveValidToOnCreation(orderData, order.validTo),
             isRefunded: ethflowData?.isRefunded,
             refundHash: ethflowData?.refundTxHash || undefined,
             openSince: Date.now(),
@@ -318,7 +329,7 @@ async function _updateCreatingOrders(
         })
         .catch((error) => {
           // Nothing to do here, keep waiting until the order shows up
-          console.debug(`[PendingOrdersUpdater] ETH FLOW order ${order.id} couldn't be fetched from API`, error)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
         })
 
       acc.push(promise)
@@ -371,62 +382,74 @@ async function _updateOrders({
   // Group resolved promises by status
   // Only pick the status that are final
   const { fulfilled, expired, cancelled, presigned } = unfilteredOrdersData.reduce<
-    Record<OrderTransitionStatus, EnrichedOrder[]>
+    Record<OrderTransitionStatus, OrderTransitionData[]>
   >(
     (acc, orderData) => {
       if (orderData && orderData.order) {
-        acc[orderData.status].push(orderData.order)
+        acc[orderData.status].push(orderData)
       }
       return acc
     },
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
-  handlePresignedOrders({ presigned, orders, getSerializedBridgeOrder, chainId, account, isSafeWallet, presignOrders })
+  handlePresignedOrders({
+    presigned: getOrdersFromTransitionData(presigned),
+    orders,
+    getSerializedBridgeOrder,
+    chainId,
+    account,
+    isSafeWallet,
+    presignOrders,
+  })
 
   if (expired.length > 0) {
+    const expiredOrders = getOrdersFromTransitionData(expired)
+
     expireOrdersBatch({
-      ids: expired.map(({ uid }) => uid),
+      ids: expiredOrders.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
 
-    expired.forEach((order) => {
-      emitExpiredOrderEvent({ order, chainId })
+    expired.forEach(({ order, orderType }) => {
+      emitExpiredOrderEvent({ order, orderType, chainId })
     })
   }
 
   if (cancelled.length > 0) {
+    const cancelledOrders = getOrdersFromTransitionData(cancelled)
+
     cancelOrdersBatch({
-      ids: cancelled.map(({ uid }) => uid),
+      ids: cancelledOrders.map(({ uid }) => uid),
       chainId,
       isSafeWallet,
     })
 
-    cancelled.forEach((order) => {
+    cancelled.forEach(({ order, orderType }) => {
       emitCancelledOrderEvent({
         chainId,
         order,
+        orderType,
       })
     })
   }
 
   if (fulfilled.length > 0) {
+    const fulfilledOrders = getOrdersFromTransitionData(fulfilled)
+    const fulfilledOrderTypesByUid = getOrderTypesByUid(fulfilled)
+
     // update redux state
-    fulfillOrdersBatch({
-      orders: fulfilled,
-      chainId,
-      isSafeWallet,
-    })
+    fulfillOrdersBatch(
+      {
+        orders: fulfilledOrders,
+        chainId,
+        isSafeWallet,
+      },
+      fulfilledOrderTypesByUid,
+    )
     // add to surplus queue
-    fulfilled.forEach((order) => {
-      const { uid, fullAppData, class: orderClass } = order
-      if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        if (!getIsBridgeOrder(order)) {
-          addOrderToSurplusQueue(uid)
-        }
-      }
-    })
+    getFulfilledOrderUidsForSurplusQueue(fulfilledOrders, fulfilledOrderTypesByUid).forEach(addOrderToSurplusQueue)
   }
 
   const replacedOrCancelledEthFlowOrders = getReplacedOrCancelledEthFlowOrders(orders, allTransactions)

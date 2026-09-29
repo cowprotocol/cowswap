@@ -1,11 +1,12 @@
-import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
+import { useConfig, useWalletClient } from 'wagmi'
+
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import type { Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
-import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
@@ -22,7 +23,7 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
-import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
+import { getIsFinalQuote, getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
@@ -101,7 +102,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         account &&
         appData &&
         tradeQuote.quote &&
-        tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
+        getIsFinalQuote(tradeQuote.fetchParams) &&
         orderKind &&
         settlementContract &&
         uiOrderType &&
@@ -198,7 +199,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             setSigningStep,
           },
           tradeConfirmActions,
-          swapFlowAnalyticsContext: {
+          tradeFlowAnalyticsContext: {
             account,
             recipient,
             recipientAddress,

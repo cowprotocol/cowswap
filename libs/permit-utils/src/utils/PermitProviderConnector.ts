@@ -1,7 +1,7 @@
 import { encodeFunctionData, decodeAbiParameters, bytesToHex, toHex } from 'viem'
+import type { Address, WalletClient, PublicClient, Hex } from 'viem'
 
 import type { AbiInput, AbiItem, EIP712TypedData, ProviderConnector } from '@1inch/permit-signed-approvals-utils'
-import type { Address, WalletClient, PublicClient, Hex } from 'viem'
 
 export class PermitProviderConnector implements ProviderConnector {
   constructor(

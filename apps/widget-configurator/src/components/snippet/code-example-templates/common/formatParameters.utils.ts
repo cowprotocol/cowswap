@@ -48,6 +48,12 @@ export function formatParameters(
   )
 }
 
+function replaceTradeTypePlaceholders(value: string): string {
+  return value.replace(/"__COW_WIDGET_TRADE_TYPE__(swap|limit|advanced|yield)"/g, (_match, tradeType) => {
+    return `TradeType.${tradeType.toUpperCase()}`
+  })
+}
+
 function replaceTradeTypesWithPlaceholders(params: CowSwapWidgetParams): CowSwapWidgetParams {
   return {
     ...params,
@@ -60,12 +66,6 @@ function replaceTradeTypesWithPlaceholders(params: CowSwapWidgetParams): CowSwap
         }
       : {}),
   }
-}
-
-function replaceTradeTypePlaceholders(value: string): string {
-  return value.replace(/"__COW_WIDGET_TRADE_TYPE__(swap|limit|advanced|yield)"/g, (_match, tradeType) => {
-    return `TradeType.${tradeType.toUpperCase()}`
-  })
 }
 
 function toTradeTypePlaceholder(tradeType: TradeType): string {

@@ -1,7 +1,7 @@
 import {
   AddressPerChain,
   BARN_ETH_FLOW_ADDRESSES,
-  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS as _COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_STAGING,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS as _COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_STAGING,
@@ -10,6 +10,12 @@ import {
 } from '@cowprotocol/cow-sdk'
 
 import { isBarnBackendEnv } from './environments'
+
+// Production-only settlement, ignoring the barn backend env override.
+// Use this when quoting/posting must always target production settlement
+// (e.g. EOA TWAP funding orders — WatchTower only runs against prod).
+export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD =
+  _COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS_PROD as AddressPerChain
 
 // When in barn backend env, use staging contracts for MAINNET only; prod for all other chains.
 export const COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS: AddressPerChain = isBarnBackendEnv

@@ -38,7 +38,7 @@ function makeParams(overrides: Partial<QuoteBridgeRequest> = {}): QuoteBridgeReq
 
 const fetchParams: TradeQuoteFetchParams = {
   hasParamsChanged: true,
-  priceQuality: PriceQuality.OPTIMAL,
+  priceQuality: PriceQuality.VERIFIED,
   fetchStartTimestamp: 1,
 }
 

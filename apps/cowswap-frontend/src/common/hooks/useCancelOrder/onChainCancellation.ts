@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
-import { calculateGasMargin } from '@cowprotocol/common-utils'
-
 import { encodeFunctionData, type Hex } from 'viem'
+import type { Config } from 'wagmi'
 import { estimateGas, writeContract } from 'wagmi/actions'
+
+import { calculateGasMargin } from '@cowprotocol/common-utils'
 
 import { Order } from 'legacy/state/orders/actions'
 
 import { logTradeFlowError } from 'modules/trade/utils/logger'
 
 import type { EthFlowContractData, SettlementContractData } from '../useContract'
-import type { Config } from 'wagmi'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
 const CANCELLATION_GAS_LIMIT_DEFAULT = 150000n

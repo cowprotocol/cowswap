@@ -1,9 +1,12 @@
-import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
-
-import { useBlockNumber } from 'entities/blockchain'
-import { useAsyncMemo } from 'use-async-memo'
 import { useConfig } from 'wagmi'
 import { getTransactionCount } from 'wagmi/actions'
+
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { useBlockNumber } from 'entities/blockchain'
+import { useAsyncMemo } from 'use-async-memo'
 
 import { useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAppDispatch } from 'legacy/state/hooks'
@@ -11,6 +14,7 @@ import { useCancelOrdersBatch } from 'legacy/state/orders/hooks'
 
 import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
+import { SOLANA_UNUSED_NONCE } from 'common/constants/common'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -29,14 +33,18 @@ export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthe
   const getTxSafeInfo = useGetSafeTxInfo()
   const getTwapOrderById = useGetTwapOrderById()
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
+  const { connection: solanaConnection } = useAppKitConnection()
 
   return useAsyncMemo(
     async () => {
       if (!lastBlockNumber || !account || !hasPendingTxs) return null
 
+      // Solana has no nonce, so there is nothing for wagmi to fetch and no replacement check to run.
       // Fallback to 0 on failure so receipt checking can still run even when the nonce fetch fails
       // (e.g. temporary RPC errors). The nonce-based replacement check will simply be skipped.
-      const transactionsCount = await getTransactionCount(config, { address: account }).catch(() => 0)
+      const transactionsCount = isSolanaChain(chainId)
+        ? SOLANA_UNUSED_NONCE
+        : await getTransactionCount(config, { address: account }).catch(() => 0)
 
       const params: CheckEthereumTransactions = {
         chainId,
@@ -51,6 +59,7 @@ export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthe
         getTwapOrderById,
         transactionsCount,
         safeInfo,
+        solanaConnection,
       }
 
       return params
@@ -69,6 +78,7 @@ export function usePendingTransactionsContext(hasPendingTxs: boolean): CheckEthe
       getTwapOrderById,
       safeInfo,
       hasPendingTxs,
+      solanaConnection,
     ],
     null,
   )

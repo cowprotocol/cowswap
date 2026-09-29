@@ -15,11 +15,6 @@ import { useIsNativeIn } from './useIsNativeInOrOut'
 
 import { useIsAlternativeOrderModalVisible } from '../state/alternativeOrder'
 
-function hasRecipientSearchParam(search: string): boolean {
-  const searchParams = new URLSearchParams(search)
-  return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
-}
-
 export function useResetRecipient(onChangeRecipient: (recipient: string | null) => void): null {
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const tradeState = useDerivedTradeState()
@@ -126,4 +121,9 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [isHooksTradeType, isNativeIn, onChangeRecipient, shouldPreserveRecipientFromUrl])
 
   return null
+}
+
+function hasRecipientSearchParam(search: string): boolean {
+  const searchParams = new URLSearchParams(search)
+  return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
 }

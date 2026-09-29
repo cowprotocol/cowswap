@@ -83,7 +83,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,
     "quoteRequest": {
-      "priceQuality": "optimal",
+      "priceQuality": "verified",
     },
     "quoteSigner": undefined,
   },

@@ -2,7 +2,8 @@ import { useAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { getUpdaterInterval, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -11,6 +12,7 @@ import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
+import { useSolanaDelegationAllowance } from 'common/hooks/useSolanaDelegationAllowance'
 
 import { getOptimisticAllowanceKey } from '../../entities/optimisticAllowance/getOptimisticAllowanceKey'
 
@@ -19,7 +21,7 @@ const OPTIMISTIC_ALLOWANCE_TTL = ms`30s`
 const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
   revalidateIfStale: false,
-  refreshInterval: ms`10s`,
+  refreshInterval: getUpdaterInterval(ms`10s`),
 }
 
 export function useTokenAllowance(
@@ -33,6 +35,8 @@ export function useTokenAllowance(
   const { contract: erc20Contract } = useTokenContract(tokenAddress)
   const tradeSpender = useTradeSpenderAddress()
   const [optimisticAllowances, setOptimisticAllowances] = useAtom(optimisticAllowancesAtom)
+  const solanaAllowance = useSolanaDelegationAllowance(tokenAddress)
+  const prevChainId = usePrevious(chainId)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
@@ -59,8 +63,10 @@ export function useTokenAllowance(
 
   // Reset state on network changes
   useEffect(() => {
-    setOptimisticAllowances({})
-  }, [chainId, setOptimisticAllowances])
+    if (prevChainId !== chainId) {
+      setOptimisticAllowances({})
+    }
+  }, [chainId, prevChainId, setOptimisticAllowances])
 
   // Clean up expired optimistic allowances
   useEffect(() => {
@@ -81,8 +87,8 @@ export function useTokenAllowance(
   return useMemo(
     () => ({
       ...swrResponse,
-      data: optimisticAllowance?.amount ?? swrResponse.data,
+      data: solanaAllowance ?? optimisticAllowance?.amount ?? swrResponse.data,
     }),
-    [optimisticAllowance?.amount, swrResponse],
+    [solanaAllowance, optimisticAllowance?.amount, swrResponse],
   )
 }

@@ -92,6 +92,26 @@ describe('getOrdersTableList', () => {
     expect(result.unfillable).toHaveLength(1)
   })
 
+  it('does not check connected-account balances for an EOA TWAP owned by its proxy', () => {
+    const order = makePendingOrder({ composableCowInfo: { id: 'generator' }, isEoaTwapOrder: true })
+    groupOrdersTable.mockReturnValue([order])
+    const setIsOrderUnfillable = jest.fn()
+
+    const result = getOrdersTableList(
+      [order as never],
+      TabOrderTypes.ADVANCED,
+      1,
+      balancesAndAllowances,
+      permitState,
+      setIsOrderUnfillable,
+    )
+
+    expect(getOrderParams).not.toHaveBeenCalled()
+    expect(setIsOrderUnfillable).not.toHaveBeenCalled()
+    expect(result.open).toHaveLength(1)
+    expect(result.unfillable).toHaveLength(0)
+  })
+
   it('marks a twap parent as unfillable when a child is known-unfillable', () => {
     const parent = makePendingOrder({ id: 'parent', isUnfillable: false })
     const child = makePendingOrder({ id: 'child', status: OrderStatus.SCHEDULED, isUnfillable: false })

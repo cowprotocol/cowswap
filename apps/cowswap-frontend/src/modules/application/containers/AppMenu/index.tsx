@@ -12,12 +12,13 @@ import { NavLink } from 'react-router'
 
 import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hooks'
 
-import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
+import { useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
+import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 
 import { HideMobile, isMobileQuery } from './styled'
 

@@ -1,5 +1,6 @@
 import { USDC_MAINNET, WBTC } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@cowprotocol/currency'
+import { UiOrderType } from '@cowprotocol/types'
 import { Identicon } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
@@ -30,7 +31,7 @@ const PermitModalFixtures = {
         outputAmount={OUTPUT_AMOUNT}
         step="approve"
         icon={WALLET_ICON}
-        orderType={'Swap'}
+        orderType={UiOrderType.SWAP}
       />
     </Wrapper>
   ),
@@ -41,7 +42,7 @@ const PermitModalFixtures = {
         outputAmount={OUTPUT_AMOUNT}
         step="submit"
         icon={WALLET_ICON}
-        orderType={'Swap'}
+        orderType={UiOrderType.SWAP}
       />
     </Wrapper>
   ),
@@ -52,7 +53,7 @@ const PermitModalFixtures = {
         outputAmount={OUTPUT_AMOUNT}
         step="approve"
         icon={WALLET_ICON}
-        orderType={'Limit Order'}
+        orderType={UiOrderType.LIMIT}
       />
     </Wrapper>
   ),
@@ -63,19 +64,19 @@ const PermitModalFixtures = {
         outputAmount={OUTPUT_AMOUNT}
         step="submit"
         icon={WALLET_ICON}
-        orderType={'Limit Order'}
+        orderType={UiOrderType.LIMIT}
       />
     </Wrapper>
   ),
   // These two cases should happen, but including for completeness as the parameters allow it
   'Missing amounts on approve': (
     <Wrapper>
-      <PermitModal inputAmount={undefined} outputAmount={undefined} step="approve" orderType={'Swap'} />
+      <PermitModal inputAmount={undefined} outputAmount={undefined} step="approve" orderType={UiOrderType.SWAP} />
     </Wrapper>
   ),
   'Missing amounts on submit': (
     <Wrapper>
-      <PermitModal inputAmount={undefined} outputAmount={undefined} step="submit" orderType={'Swap'} />
+      <PermitModal inputAmount={undefined} outputAmount={undefined} step="submit" orderType={UiOrderType.SWAP} />
     </Wrapper>
   ),
 }

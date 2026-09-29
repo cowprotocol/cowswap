@@ -5,7 +5,13 @@ import type { TokenListTags } from '@cowprotocol/tokens'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
-export type TokenSelectionHandler = (token: TokenWithLogo) => Promise<void> | void
+export interface ChainsToSelectState {
+  chains: ChainInfo[] | undefined
+  defaultChainId?: number
+  isLoading?: boolean
+  disabledChainIds?: Set<number>
+  loadingChainIds?: Set<number>
+}
 
 export interface SelectTokenContext {
   balancesState: BalancesState
@@ -16,10 +22,4 @@ export interface SelectTokenContext {
   isWalletConnected: boolean
 }
 
-export interface ChainsToSelectState {
-  chains: ChainInfo[] | undefined
-  defaultChainId?: number
-  isLoading?: boolean
-  disabledChainIds?: Set<number>
-  loadingChainIds?: Set<number>
-}
+export type TokenSelectionHandler = (token: TokenWithLogo) => Promise<void> | void

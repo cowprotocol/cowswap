@@ -1,8 +1,11 @@
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'production'
 export const ALL_ENVIRONMENTS: EnvironmentName[] = ['local', 'development', 'pr', 'production']
 
-function isEnvironmentName(value: string): value is EnvironmentName {
-  return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
+export interface EnvironmentChecks {
+  isProd: boolean
+  isPr: boolean
+  isDev: boolean
+  isLocal: boolean
 }
 
 function getConfiguredEnvironmentName(): EnvironmentName {
@@ -19,13 +22,6 @@ function getConfiguredEnvironmentName(): EnvironmentName {
   return env
 }
 
-export interface EnvironmentChecks {
-  isProd: boolean
-  isPr: boolean
-  isDev: boolean
-  isLocal: boolean
-}
-
 function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChecks {
   return {
     isLocal: environmentName === 'local',
@@ -33,6 +29,10 @@ function getEnvironmentChecks(environmentName: EnvironmentName): EnvironmentChec
     isPr: environmentName === 'pr',
     isProd: environmentName === 'production',
   }
+}
+
+function isEnvironmentName(value: string): value is EnvironmentName {
+  return ALL_ENVIRONMENTS.includes(value as EnvironmentName)
 }
 
 const configuredEnvironmentName = getConfiguredEnvironmentName()

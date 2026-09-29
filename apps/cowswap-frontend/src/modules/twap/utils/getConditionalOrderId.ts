@@ -1,8 +1,7 @@
 import { encodeAbiParameters, keccak256 } from 'viem'
+import type { Hex } from 'viem'
 
 import { ConditionalOrderParams } from '../types'
-
-import type { Hex } from 'viem'
 
 const CONDITIONAL_ORDER_PARAMS_STRUCT = {
   type: 'tuple',

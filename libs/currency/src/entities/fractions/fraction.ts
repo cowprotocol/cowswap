@@ -5,13 +5,6 @@ import { toFixed as divToFixed } from '../../utils/toFixed'
 import { toSignificant } from '../../utils/toSignificant'
 import { BigintIsh, Rounding } from '../constants'
 
-function toBigInt(value: BigintIsh): bigint {
-  if (typeof value === 'bigint') return value
-  if (typeof value === 'number') return BigInt(value)
-  if (typeof value === 'string') return BigInt(value)
-  return BigInt(value.toString())
-}
-
 export class Fraction {
   readonly numerator: bigint
   readonly denominator: bigint
@@ -141,4 +134,11 @@ export class Fraction {
       denominator: this.denominator.toString(),
     }
   }
+}
+
+function toBigInt(value: BigintIsh): bigint {
+  if (typeof value === 'bigint') return value
+  if (typeof value === 'number') return BigInt(value)
+  if (typeof value === 'string') return BigInt(value)
+  return BigInt(value.toString())
 }

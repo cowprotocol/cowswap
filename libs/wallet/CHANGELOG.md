@@ -1,5 +1,228 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.2...wallet-v3.14.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- fix(solana): adjust balancesloading state in token selector (#8167)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/ens@3.8.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/iframe-transport@2.3.8
+
+## [3.13.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.1...wallet-v3.13.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ens@3.7.2
+  - @cowprotocol/ui@3.13.2
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.0...wallet-v3.13.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ens@3.7.1
+  - @cowprotocol/ui@3.13.1
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.12.1...wallet-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: configure batching & change permit logic check (#8014)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(account): handle disconnection of injected wallets after a refresh (#7894)
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(wallet): swallow ConnectorAlreadyConnectedError in widget dapp-mode connect race (#8002)
+
+- fix(wallet): show wallet icon for Base Account connections (#8080)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/ens@3.7.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/iframe-transport@2.3.7
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.12.0...wallet-v3.12.1) (2026-09-07)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.11.1...wallet-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/ens@3.6.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/iframe-transport@2.3.6
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.11.0...wallet-v3.11.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+  - @cowprotocol/ens@3.5.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.10.0...wallet-v3.11.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- fix(wallet): wait for late injected provider before eager reconnect on mobile (#7909)
+
+- fix: use viem's default urls for wallets (#7926)
+
+- fix: set a custom default rpc for sepolia and bnb (#7940)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/core@3.7.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/ens@3.5.0
+  - @cowprotocol/types@4.8.0
+  - @cowprotocol/ui@3.10.0
+  - @cowprotocol/iframe-transport@2.3.5
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.9.0...wallet-v3.10.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: allow EIP7702 wallets to batch transactions (#7844)
+
+### Patch Changes
+
+- fix(wallet): prevent network switching (#7922)
+
+- fix: allow safes imported in other wallets to use twaps (#7915)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/core@3.6.4
+  - @cowprotocol/ens@3.4.7
+  - @cowprotocol/ui@3.9.5
+  - @cowprotocol/common-const@3.7.1
+  - @cowprotocol/iframe-transport@2.3.4
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.2...wallet-v3.9.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat: use a single getPublicClient util (#7870)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/ui@3.9.4
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/core@3.6.3
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/ens@3.4.6
+  - @cowprotocol/iframe-transport@2.3.3
+
+## [3.8.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.1...wallet-v3.8.2) (2026-07-22)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/ui@3.9.3
+  - @cowprotocol/common-hooks@3.6.1
+  - @cowprotocol/core@3.6.2
+  - @cowprotocol/ens@3.4.5
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.8.0...wallet-v3.8.1) (2026-07-17)
+
+### Patch Changes
+
+- fix: clear safe info after disconnect (#7858)
+
+- fix: increase wallet capabilities timeout from 5s to 30s (#7855)
+
+- fix: remove safe fallback (#7861)
+
+- fix: widget configurator with safe (#7807)
+
+- fix: quote loading for walletconnect (#7742)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/ui@3.9.2
+  - @cowprotocol/core@3.6.1
+  - @cowprotocol/ens@3.4.4
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.7.2...wallet-v3.8.0) (2026-07-08)
 
 ### Minor Changes

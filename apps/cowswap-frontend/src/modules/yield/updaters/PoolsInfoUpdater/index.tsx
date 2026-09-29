@@ -3,7 +3,9 @@ import { useEffect, useMemo } from 'react'
 
 import ms from 'ms.macro'
 
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { useTradeTypeInfo } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { MOCK_POOL_INFO } from './mockPoolInfo'
 
@@ -12,17 +14,6 @@ import { usePoolsInfo } from '../../hooks/usePoolsInfo'
 import { upsertPoolsInfoAtom } from '../../state/poolsInfoAtom'
 
 const POOL_INFO_CACHE_TIME = ms`1h`
-
-/**
- * The API should return info about requested pools + alternative COW AMM pools
- * When tokenAddresses is null, it should return info about all pools
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function fetchPoolsInfo(tokenAddresses: string[] | null) {
-  console.log('TODO', tokenAddresses)
-  return Promise.resolve(MOCK_POOL_INFO)
-}
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -55,4 +46,15 @@ export function PoolsInfoUpdater() {
   }, [isYield, tokensKey, upsertPoolsInfo])
 
   return null
+}
+
+/**
+ * The API should return info about requested pools + alternative COW AMM pools
+ * When tokenAddresses is null, it should return info about all pools
+ */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+function fetchPoolsInfo(tokenAddresses: string[] | null) {
+  console.log('TODO', tokenAddresses)
+  return Promise.resolve(MOCK_POOL_INFO)
 }

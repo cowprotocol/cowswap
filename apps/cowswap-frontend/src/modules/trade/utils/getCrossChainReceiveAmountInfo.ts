@@ -28,11 +28,11 @@ function calculateBridgeFee(
   return {
     amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(
       intermediateCurrency,
-      bridgeFeeAmounts.amountInBuyCurrency.toString(),
+      bridgeFeeAmounts.amountInSellCurrency.toString(),
     ),
     amountInDestinationCurrency: CurrencyAmount.fromRawAmount(
       outputCurrency,
-      bridgeFeeAmounts.amountInSellCurrency.toString(),
+      bridgeFeeAmounts.amountInBuyCurrency.toString(),
     ),
   }
 }

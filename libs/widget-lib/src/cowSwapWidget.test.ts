@@ -430,35 +430,6 @@ describe('createCowSwapWidget param validation', () => {
   })
 })
 
-function getIframe(container: HTMLElement): HTMLIFrameElement {
-  const iframe = container.querySelector('iframe')
-
-  if (!iframe) {
-    throw new Error('Expected iframe to be created')
-  }
-
-  return iframe
-}
-
-function emitWidgetEvent(iframe: HTMLIFrameElement, method: WidgetMethodsEmit, payload: object): void {
-  const origin = new URL(iframe.src).origin
-  const event = new MessageEvent('message', {
-    origin,
-    data: {
-      key: widgetIframeTransport.key,
-      method,
-      ...payload,
-    },
-  })
-
-  Object.defineProperty(event, 'source', {
-    configurable: true,
-    value: iframe.contentWindow,
-  })
-
-  window.dispatchEvent(event)
-}
-
 function createWidget(
   baseUrl?: string,
   extraParams?: Partial<CowSwapWidgetParams>,
@@ -524,4 +495,33 @@ function dispatchSafeSdkRequest(iframe: HTMLIFrameElement): void {
   })
 
   window.dispatchEvent(event)
+}
+
+function emitWidgetEvent(iframe: HTMLIFrameElement, method: WidgetMethodsEmit, payload: object): void {
+  const origin = new URL(iframe.src).origin
+  const event = new MessageEvent('message', {
+    origin,
+    data: {
+      key: widgetIframeTransport.key,
+      method,
+      ...payload,
+    },
+  })
+
+  Object.defineProperty(event, 'source', {
+    configurable: true,
+    value: iframe.contentWindow,
+  })
+
+  window.dispatchEvent(event)
+}
+
+function getIframe(container: HTMLElement): HTMLIFrameElement {
+  const iframe = container.querySelector('iframe')
+
+  if (!iframe) {
+    throw new Error('Expected iframe to be created')
+  }
+
+  return iframe
 }

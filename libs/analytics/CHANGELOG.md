@@ -1,5 +1,157 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.2...analytics-v3.12.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: add new prop for TWAP for EOA analytics (#8201)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/types@4.11.0
+
+## [3.11.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.1...analytics-v3.11.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.0...analytics-v3.11.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/common-hooks@3.11.1
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.10.0...analytics-v3.11.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/events@4.12.0
+  - @cowprotocol/types@4.10.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.9.1...analytics-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/events@4.11.0
+  - @cowprotocol/types@4.9.0
+
+## [3.9.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.9.0...analytics-v3.9.1) (2026-08-12)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/common-hooks@3.9.1
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.8.1...analytics-v3.9.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/common-hooks@3.9.0
+  - @cowprotocol/common-utils@3.12.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/events@4.10.0
+  - @cowprotocol/types@4.8.0
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.8.0...analytics-v3.8.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.11.0
+  - @cowprotocol/events@4.9.0
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-hooks@3.8.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.7.0...analytics-v3.8.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.7.0
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/common-utils@3.10.0
+  - @cowprotocol/currency@1.2.2
+  - @cowprotocol/events@4.8.1
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.6.0...analytics-v3.7.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.9.0
+  - @cowprotocol/common-hooks@3.6.1
+
+## [3.6.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.3...analytics-v3.6.0) (2026-07-17)
+
+### Minor Changes
+
+- feat: add orderType to lifecycle analytics events (#7832)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.6.0
+  - @cowprotocol/common-utils@3.8.1
+  - @cowprotocol/events@4.8.0
+
 ## [3.5.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.5.2...analytics-v3.5.3) (2026-07-08)
 
 ### Patch Changes

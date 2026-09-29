@@ -1,4 +1,4 @@
-export { OrdersPanel } from './containers/OrdersPanel'
+export { AccountModal } from './containers/AccountModal/AccountModal.container'
 export { useToggleAccountModal } from './hooks/useToggleAccountModal'
 export { useAccountModalState } from './hooks/useAccountModalState'
 export { AccountIcon } from './containers/AccountDetails/AccountIcon'

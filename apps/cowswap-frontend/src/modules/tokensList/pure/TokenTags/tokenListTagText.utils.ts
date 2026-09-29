@@ -1,4 +1,5 @@
 import { MessageDescriptor } from '@lingui/core'
+
 import { msg } from '@lingui/core/macro'
 
 const TOKENIZED_BY_PATTERN = /^Tokenized by\s+(.+)$/

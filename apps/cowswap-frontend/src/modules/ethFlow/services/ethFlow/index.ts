@@ -42,7 +42,7 @@ export async function ethFlow({
 }: EthFlowParams): Promise<void | boolean> {
   const {
     tradeConfirmActions,
-    swapFlowAnalyticsContext,
+    tradeFlowAnalyticsContext,
     context,
     callbacks,
     orderParams,
@@ -67,7 +67,11 @@ export async function ethFlow({
   orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
 
   logTradeFlow('ETH FLOW', 'STEP 2: send transaction')
-  analytics.trade(swapFlowAnalyticsContext)
+  analytics.trade({
+    ...tradeFlowAnalyticsContext,
+    quoteId: tradeQuote.quoteResults.quoteResponse.id,
+    allowsOffchainSigning: orderParams.allowsOffchainSigning,
+  })
   tradeConfirmActions.onSign(tradeAmounts)
 
   try {
@@ -193,16 +197,16 @@ export async function ethFlow({
 
     logTradeFlow('ETH FLOW', 'STEP 6: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
-    analytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(tradeFlowAnalyticsContext)
 
     return true
   } catch (err: unknown) {
     const error = normalizeError(err)
     logTradeFlow('ETH FLOW', 'STEP 7: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
-    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

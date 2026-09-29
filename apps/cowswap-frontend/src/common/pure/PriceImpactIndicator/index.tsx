@@ -31,8 +31,8 @@ export function PriceImpactIndicator({ priceImpactParams, isBridging = false }: 
   const { priceImpact, loading: priceImpactLoading } = priceImpactParams || {}
 
   return (
-    <span>
-      {priceImpact ? (
+    <span data-testid="price-impact">
+      {priceImpact && !priceImpactLoading ? (
         <PriceImpactWrapper priceImpact$={priceImpact} isBridging$={isBridging}>
           {' '}
           <HoverTooltip

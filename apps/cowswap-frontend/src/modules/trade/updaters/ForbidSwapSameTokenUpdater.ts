@@ -2,8 +2,9 @@ import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
+
 import { useDerivedTradeState } from '../hooks/useDerivedTradeState'
-import { useTradeNavigate } from '../hooks/useTradeNavigate'
 import { getDefaultTradeRawState } from '../types'
 
 export function ForbidSwapSameTokenUpdater(): null {

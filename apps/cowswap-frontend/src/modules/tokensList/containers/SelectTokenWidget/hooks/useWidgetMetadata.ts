@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { getDefaultTokenListCategories } from '../getDefaultTokenListCategories'
 
@@ -17,6 +17,20 @@ export interface WidgetMetadata {
   tokenListCategoryState: TokenListCategoryState
   modalTitle: string
   chainsPanelTitle: string
+}
+
+export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
+  const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
+
+  if (field === Field.INPUT) {
+    return isSwapTrade ? t`Swap from` : t`Sell token`
+  }
+
+  if (field === Field.OUTPUT) {
+    return isSwapTrade ? t`Swap to` : t`Buy token`
+  }
+
+  return t`Select token`
 }
 
 export function useWidgetMetadata(
@@ -38,18 +52,4 @@ export function useWidgetMetadata(
     () => ({ disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }),
     [disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle],
   )
-}
-
-export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
-  const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
-
-  if (field === Field.INPUT) {
-    return isSwapTrade ? t`Swap from` : t`Sell token`
-  }
-
-  if (field === Field.OUTPUT) {
-    return isSwapTrade ? t`Swap to` : t`Buy token`
-  }
-
-  return t`Select token`
 }

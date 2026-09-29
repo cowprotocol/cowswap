@@ -37,29 +37,6 @@ export interface CurrencyInputProps {
   onChange: (name: string, value: string | number | null | undefined) => void
 }
 
-function getTokenAmountUnit(tokenValue: string): string | undefined {
-  if (!tokenValue || isAddress(tokenValue)) {
-    return undefined
-  }
-
-  if (tokenValue.length <= MAX_TOKEN_UNIT_LENGTH) {
-    return tokenValue
-  }
-
-  return `${tokenValue.slice(0, MAX_TOKEN_UNIT_LENGTH)}...`
-}
-
-function renderTokenSuggestions(name: string, onChange: CurrencyInputProps['onChange']): ReactNode {
-  return TOKEN_SUGGESTIONS.map((token, index) => (
-    <Fragment key={token}>
-      {index > 0 ? ', ' : null}
-      <Box component="button" type="button" sx={tokenSuggestionButtonSx} onClick={() => onChange(name, token)}>
-        {token}
-      </Box>
-    </Fragment>
-  ))
-}
-
 export function CurrencyInputControl({
   label,
   name,
@@ -92,4 +69,27 @@ export function CurrencyInputControl({
       />
     </>
   )
+}
+
+function getTokenAmountUnit(tokenValue: string): string | undefined {
+  if (!tokenValue || isAddress(tokenValue)) {
+    return undefined
+  }
+
+  if (tokenValue.length <= MAX_TOKEN_UNIT_LENGTH) {
+    return tokenValue
+  }
+
+  return `${tokenValue.slice(0, MAX_TOKEN_UNIT_LENGTH)}...`
+}
+
+function renderTokenSuggestions(name: string, onChange: CurrencyInputProps['onChange']): ReactNode {
+  return TOKEN_SUGGESTIONS.map((token, index) => (
+    <Fragment key={token}>
+      {index > 0 ? ', ' : null}
+      <Box component="button" type="button" sx={tokenSuggestionButtonSx} onClick={() => onChange(name, token)}>
+        {token}
+      </Box>
+    </Fragment>
+  ))
 }

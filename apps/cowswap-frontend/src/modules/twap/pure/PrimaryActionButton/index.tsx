@@ -18,6 +18,11 @@ const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) =
       <Trans>Loading...</Trans>
     </ButtonPrimary>
   ),
+  [TwapFormState.WALLET_NOT_SUPPORTED]: () => (
+    <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
+      <Trans>Unsupported wallet</Trans>
+    </ButtonPrimary>
+  ),
   [TwapFormState.TX_BUNDLING_NOT_SUPPORTED]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
       <Trans>Unsupported wallet</Trans>

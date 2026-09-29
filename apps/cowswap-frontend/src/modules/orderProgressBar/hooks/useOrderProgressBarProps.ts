@@ -2,8 +2,10 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -20,14 +22,13 @@ import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useSolversInfo } from 'common/hooks/useSolversInfo'
+import { useSolversInfoByAddress } from 'common/hooks/useSolversInfoByAddress'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
-import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
+import { DEFAULT_STEP_NAME, getProgressBarTimerDuration, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -51,8 +52,42 @@ type UseOrderProgressBarPropsParams = {
   isBridgingTrade: boolean
 }
 
+// ENS only exists on EVM chains; on a non-EVM chain (e.g. Solana) the receiver isn't a valid
+// lookup address, so skip the lookup entirely rather than casting it to `0x${string}`.
+export function getEnsLookupAddress(
+  chainId: SupportedChainId,
+  receiver: string | null | undefined,
+): `0x${string}` | undefined {
+  if (!receiver || !isEvmChain(chainId)) {
+    return undefined
+  }
+  return receiver as `0x${string}`
+}
+
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
-export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
+
+// Steps that should be shown immediately, bypassing the minimum step-display debounce
+const IMMEDIATE_STEP_NAMES: OrderProgressBarStepName[] = [
+  OrderProgressBarStepName.FINISHED,
+  OrderProgressBarStepName.CANCELLATION_FAILED,
+  OrderProgressBarStepName.CANCELLING,
+  OrderProgressBarStepName.CANCELLED,
+  OrderProgressBarStepName.EXPIRED,
+]
+
+// A step is shown immediately when it's the first change, when the previous step has been
+// displayed long enough, or when it's a terminal/cancellation step that must not be debounced.
+export function shouldUpdateStepImmediately(
+  stepName: OrderProgressBarStepName,
+  lastTimeChangedSteps: number | undefined,
+  timeSinceLastChange: number,
+): boolean {
+  return (
+    lastTimeChangedSteps === undefined ||
+    timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
+    IMMEDIATE_STEP_NAMES.includes(stepName)
+  )
+}
 
 /**
  * Hook for fetching ProgressBar props
@@ -85,7 +120,7 @@ export function useOrderProgressBarProps(
   )
 
   const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver as `0x${string}` | undefined)?.name || undefined
+  const receiverEnsName = useENS(getEnsLookupAddress(chainId, order?.receiver))?.name || undefined
 
   const props = useMemo(() => {
     // Add supplementary stuff
@@ -152,7 +187,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   } = activityDerivedState || {}
 
   const { disableProgressBar: widgetDisabled = false } = useInjectedWidgetParams()
-  const { disableProgressBar: featureFlagDisabled } = useAtomValue(featureFlagsAtom)
+  const { disableProgressBar: featureFlagDisabled } = useFeatureFlags()
 
   // Do not build progress bar data when these conditions are set
   const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
@@ -174,16 +209,38 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     cancellationTriggered,
   } = useGetExecutingOrderState(orderId)
 
-  const solversInfo = useSolversInfo(chainId)
-  const totalSolvers = Object.keys(solversInfo).length
+  const solversInfoByAddress = useSolversInfoByAddress(chainId)
+  // Count distinct solvers, not addresses: the CMS keeps a solver's retired deployments alongside
+  // the live one, so one solver can contribute several addresses for the same chain.
+  const totalSolvers = new Set(Object.values(solversInfoByAddress).map(({ solverId }) => solverId)).size
 
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
-  const winnerSolver = useMemo(
-    () => (apiSolverCompetition?.[0] ? mergeSolverData(apiSolverCompetition[0], solversInfo) : undefined),
-    [apiSolverCompetition, solversInfo],
+  const solverCompetition = useMemo(() => {
+    const solversMap = apiSolverCompetition?.reduce(
+      (acc, entry) => {
+        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
+        if (!entry || !entry.solver || !entry.executedAmounts) {
+          return acc
+        }
+        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
+        acc[entry.solver] = mergeSolverData(entry, solversInfoByAddress)
+        return acc
+      },
+      {} as Record<string, SolverCompetition>,
+    )
+
+    return (
+      Object.values(solversMap || {})
+        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
+        .reverse()
+    )
+  }, [apiSolverCompetition, solversInfoByAddress])
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(
+    chainId,
+    isBridgingTrade ? order : undefined,
+    solverCompetition?.[0],
   )
-  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
@@ -210,28 +267,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     countdown,
     backendApiStatus,
     isUnfillable || isCancelled || isCancelling || isExpired,
+    chainId,
   )
-
-  const solverCompetition = useMemo(() => {
-    const solversMap = apiSolverCompetition?.reduce(
-      (acc, entry) => {
-        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
-        if (!entry || !entry.solver || !entry.executedAmounts) {
-          return acc
-        }
-        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
-        acc[entry.solver] = mergeSolverData(entry, solversInfo)
-        return acc
-      },
-      {} as Record<string, SolverCompetition>,
-    )
-
-    return (
-      Object.values(solversMap || {})
-        // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse()
-    )
-  }, [apiSolverCompetition, solversInfo])
 
   return useMemo(() => {
     if (disableProgressBar) {
@@ -368,6 +405,7 @@ function useCountdownStartUpdater(
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   shouldDisableCountdown: boolean,
+  chainId: SupportedChainId,
 ): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
@@ -387,12 +425,12 @@ function useCountdownStartUpdater(
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
-      setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
+      setCountdown(orderId, getProgressBarTimerDuration(chainId))
     } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown, chainId])
 }
 
 // local updaters
@@ -454,14 +492,7 @@ function useProgressBarStepNameUpdater(
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
-    if (
-      lastTimeChangedSteps === undefined ||
-      timeSinceLastChange >= MINIMUM_STEP_DISPLAY_TIME ||
-      stepName === OrderProgressBarStepName.FINISHED ||
-      stepName === OrderProgressBarStepName.CANCELLATION_FAILED ||
-      stepName === OrderProgressBarStepName.CANCELLED ||
-      stepName === OrderProgressBarStepName.EXPIRED
-    ) {
+    if (shouldUpdateStepImmediately(stepName, lastTimeChangedSteps, timeSinceLastChange)) {
       updateStepName(stepName)
 
       // schedule update for temporary steps
@@ -528,10 +559,10 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string |
 
   useEffect(() => {
     if (orderId && (backendApiStatus || value)) {
-      // Lowercase solver names as CMS might return them in different cases
+      // Normalize solver addresses as the backend and the CMS might return them in different cases
       const solverCompetition = value?.map(({ solver, ...rest }) => ({
         ...rest,
-        solver: solver.toLowerCase(),
+        solver: getAddressKey(solver),
       }))
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
@@ -544,21 +575,27 @@ const POOLING_SWR_OPTIONS = {
 
 /**
  * Merges solverCompetition data returned by the orderbook /status endpoint with
- * solver info fetched from CMS
+ * solver info fetched from CMS.
+ *
+ * The endpoint's `solver` field carries the on-chain solver address, so that address is the key
+ * the CMS display name and logo are looked up by.
  *
  * @param solverCompetition
- * @param solversInfo
+ * @param solversInfoByAddress
  */
 function mergeSolverData(
   solverCompetition: ApiSolverCompetition,
-  solversInfo: Record<string, SolverInfo>,
+  solversInfoByAddress: Record<string, SolverInfo>,
 ): SolverCompetition {
-  // Backend has the prefix `-solve` on some solvers. We should discard that for now.
-  // In the future this prefix will be removed.
-  const solverId = solverCompetition.solver.replace(/-solve$/, '')
-  const solverInfo = solversInfo[solverId.toLowerCase()]
+  const solverAddress = solverCompetition.solver
+  const solverInfo = solversInfoByAddress[getAddressKey(solverAddress)]
 
-  return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
+  if (!solverInfo) {
+    // Unknown to the CMS: display the address itself, shortened when possible.
+    return { ...solverCompetition, solverId: solverAddress, solver: safeShortenAddress(solverAddress) }
+  }
+
+  return { ...solverCompetition, ...solverInfo, solverId: solverInfo.solverId, solver: solverInfo.solverId }
 }
 
 function usePendingOrderStatus(

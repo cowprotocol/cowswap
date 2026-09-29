@@ -23,7 +23,6 @@ export const AddHookButton = styled.button`
   justify-content: center;
   font-size: 15px;
   font-weight: 500;
-  cursor: pointer;
   transition: all 0.2s ease-in-out;
 
   > svg {

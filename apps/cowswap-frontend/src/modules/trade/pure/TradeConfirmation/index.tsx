@@ -1,6 +1,6 @@
-import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-import { BackButton } from '@cowprotocol/ui'
+import { Modal, ModalHeader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -15,14 +15,14 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
-import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
+import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<void | boolean>
   onDismiss(): void
 
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -35,10 +35,13 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
+  hasSigningPlan?: boolean
+  lockDismiss?: boolean
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
-  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation, isConfirming } = useTradeConfirmState()
+  const tradeConfirmActions = useTradeConfirmActions()
   const { t } = useLingui()
   const signingStep = useSigningStep()
 
@@ -50,15 +53,35 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData, confirmClickEvent } =
-    props
+
+  // Freeze amounts/actions, but keep children live so signing-step UI (e.g. collapsible details) can update.
+  const { onConfirm, isConfirmDisabled, buttonText, isPriceStatic, appData, confirmClickEvent } = props
+  const { title, hasSigningPlan, lockDismiss, onDismiss, children } = _props
 
   /**
-   * Once user sends a transaction, we keep the confirmation content frozen
+   * Once the user clicks confirm, keep the confirmation content frozen for the rest of the flow
+   * (through signing/submission) so the amounts shown can never drift from what was actually
+   * confirmed/signed. The snapshot is taken on the first render after `isConfirming` flips true
+   * (not synchronously in `handleConfirm`) so parents can switch derived UI such as output labels
+   * before the freeze is captured.
    */
-  useEffect(() => {
-    setFrozenProps(hasPendingTrade ? propsRef.current : null)
-  }, [hasPendingTrade])
+  useLayoutEffect(() => {
+    setFrozenProps(isConfirming ? (current) => current ?? propsRef.current : null)
+  }, [isConfirming])
+
+  const handleConfirm = useCallback(async (): Promise<void | boolean> => {
+    tradeConfirmActions.setConfirming(true)
+    try {
+      const isConfirmed = await onConfirm()
+      if (!isConfirmed) {
+        tradeConfirmActions.setConfirming(false)
+      }
+      return isConfirmed
+    } catch (error) {
+      tradeConfirmActions.setConfirming(false)
+      throw error
+    }
+  }, [onConfirm, tradeConfirmActions])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
     props.inputCurrencyInfo.amount?.toExact(),
@@ -66,7 +89,10 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     forcePriceConfirmation,
   )
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+  // Ignore amount changes while confirming (e.g. TWAP switching to after-fees display) — not a quote refresh.
+  const isPriceChangeActionable = isPriceChanged && !isPriceStatic && !isConfirming
+
+  const isButtonDisabled = isConfirmDisabled || isPriceChangeActionable || hasPendingTrade
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -83,45 +109,51 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   )
 
   return (
-    <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
-      <styledEl.ContentWrapper id="trade-confirmation">
+    <Modal.Root>
+      <ModalHeader
+        title={title}
+        onBack={hasSigningPlan ? undefined : onDismiss}
+        onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}
+        rightSlot={isConfirming || isPriceStatic || hasSigningPlan ? null : <QuoteCountdown />}
+      />
+
+      <Modal.Content id="trade-confirmation">
         <ConfirmAmounts
+          variant={hasSigningPlan ? 'slim' : 'default'}
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
         />
+
         {children?.(
           <>
             {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
+            {hasSigningPlan ? null : <NoImpactWarning withoutAccepting />}
           </>,
         )}
 
-        <ConfirmWarnings
-          account={props.account}
-          ensName={props.ensName}
-          recipient={props.recipient}
-          isPriceChanged={isPriceChanged}
-          isPriceStatic={isPriceStatic}
-          resetPriceChanged={resetPriceChanged}
-        />
+        {hasSigningPlan ? null : (
+          <>
+            <ConfirmWarnings
+              account={props.account}
+              ensName={props.ensName}
+              recipient={props.recipient}
+              isPriceChanged={isPriceChangeActionable}
+              isPriceStatic={isPriceStatic}
+              resetPriceChanged={resetPriceChanged}
+            />
 
-        <ConfirmButton
-          onConfirm={onConfirm}
-          buttonText={buttonText ? buttonText : t`Confirm`}
-          isButtonDisabled={isButtonDisabled}
-          hasPendingTrade={hasPendingTrade}
-          signingStep={signingStep}
-          clickEvent={confirmClickEvent}
-        />
-      </styledEl.ContentWrapper>
-    </styledEl.WidgetWrapper>
+            <ConfirmButton
+              onConfirm={handleConfirm}
+              buttonText={buttonText ? buttonText : t`Confirm`}
+              isButtonDisabled={isButtonDisabled}
+              hasPendingTrade={hasPendingTrade}
+              signingStep={signingStep}
+              clickEvent={confirmClickEvent}
+            />
+          </>
+        )}
+      </Modal.Content>
+    </Modal.Root>
   )
 }

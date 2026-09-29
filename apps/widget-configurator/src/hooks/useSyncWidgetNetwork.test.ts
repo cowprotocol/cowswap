@@ -1,8 +1,9 @@
+import { useConnection, useSwitchChain } from 'wagmi'
+
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
-import { useConnection, useSwitchChain } from 'wagmi'
 
 import { useSyncWidgetNetwork } from './useSyncWidgetNetwork'
 

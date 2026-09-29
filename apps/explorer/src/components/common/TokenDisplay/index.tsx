@@ -47,7 +47,7 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   )
 
   return (
-    <Wrapper>
+    <Wrapper $wrap={showNetworkName}>
       <StyledImg address={imageAddress} network={network} tokenLogo={tokenLogo} />
       {isNativeToken(erc20.address) ? (
         nativeTokenDisplay

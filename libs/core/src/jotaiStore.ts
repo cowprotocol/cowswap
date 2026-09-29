@@ -28,6 +28,29 @@ export const getJotaiIsolatedStorage = <T>() => {
   return storage
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
+  const storage: AsyncStringStorage = {
+    async getItem(key: string): Promise<string | null> {
+      return localForageJotai.getItem(key).then((result) => result as string | null)
+    },
+    async setItem(key: string, newValue: string): Promise<void> {
+      await localForageJotai.setItem(key, newValue)
+    },
+    async removeItem(key: string): Promise<void> {
+      await localForageJotai.removeItem(key)
+    },
+  }
+
+  return atomWithStorage<Value>(
+    key,
+    initialValue,
+    createJSONStorage(() => storage),
+    { getOnInit: true },
+  )
+}
+
 /**
  * Creates a new jotai json storage which merges the existing local storage with given state
  *
@@ -56,25 +79,28 @@ export function getJotaiMergerStorage<T>() {
   return { ...storage, getItem }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
-  const storage: AsyncStringStorage = {
-    async getItem(key: string): Promise<string | null> {
-      return localForageJotai.getItem(key).then((result) => result as string | null)
-    },
-    async setItem(key: string, newValue: string): Promise<void> {
-      await localForageJotai.setItem(key, newValue)
-    },
-    async removeItem(key: string): Promise<void> {
-      await localForageJotai.removeItem(key)
-    },
-  }
+/**
+ * Migrates a persisted `atomWithStorage` value from an old localStorage key to a new one.
+ *
+ * Storage keys get bumped (e.g. `my-atom:v3` -> `my-atom:v4`) when the persisted shape changes.
+ * Without this, `atomWithStorage` finds nothing under the new key and silently falls back to the
+ * atom's default value, discarding everything the user had previously saved under the old key.
+ *
+ * No-ops once the new key already exists, so it's safe to call on every module load.
+ */
+export function migrateLocalStorageKey<T extends object>(oldKey: string, newKey: string, patch: Partial<T>): void {
+  if (typeof localStorage === 'undefined') return
+  if (localStorage.getItem(newKey) !== null) return
 
-  return atomWithStorage<Value>(
-    key,
-    initialValue,
-    createJSONStorage(() => storage),
-    { getOnInit: true },
-  )
+  const oldValue = localStorage.getItem(oldKey)
+
+  if (oldValue === null) return
+
+  try {
+    const parsed = JSON.parse(oldValue) as T
+
+    localStorage.setItem(newKey, JSON.stringify({ ...parsed, ...patch }))
+  } catch {
+    // Malformed old value; leave the new key unset so the atom falls back to its default.
+  }
 }

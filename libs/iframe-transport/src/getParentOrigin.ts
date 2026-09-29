@@ -14,10 +14,6 @@ export function getParentOrigin(): string | undefined {
   }
 }
 
-function normalizeOrigin(origin: string | undefined): string | undefined {
-  return origin && origin !== 'null' ? origin : undefined
-}
-
 function getAncestorOrigin(): string | undefined {
   if (typeof window === 'undefined') {
     return undefined
@@ -32,6 +28,18 @@ function getAncestorOrigin(): string | undefined {
   return ancestorOrigins[0]
 }
 
+function getParentLocationOrigin(): string | undefined {
+  if (typeof window === 'undefined' || !window.parent || window.parent === window) {
+    return undefined
+  }
+
+  try {
+    return window.parent.location.origin
+  } catch {
+    return undefined
+  }
+}
+
 function getReferrerOrigin(): string | undefined {
   if (typeof document === 'undefined' || !document.referrer) {
     return undefined
@@ -44,14 +52,6 @@ function getReferrerOrigin(): string | undefined {
   }
 }
 
-function getParentLocationOrigin(): string | undefined {
-  if (typeof window === 'undefined' || !window.parent || window.parent === window) {
-    return undefined
-  }
-
-  try {
-    return window.parent.location.origin
-  } catch {
-    return undefined
-  }
+function normalizeOrigin(origin: string | undefined): string | undefined {
+  return origin && origin !== 'null' ? origin : undefined
 }

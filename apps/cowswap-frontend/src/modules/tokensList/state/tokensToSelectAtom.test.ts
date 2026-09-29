@@ -113,6 +113,19 @@ describe('tokensToSelectAtom', () => {
       const result = await store.get(tokensToSelectAtom)
       expect(result).toEqual([token1, token2])
     })
+
+    it('does not keep favorite tokens that are outside scoped sell lists', async () => {
+      store.set(mockEnvironmentAtom, { sellSelectedLists: [LIST_A] })
+      store.set(mockFavoriteTokensListAtom, [token3])
+      store.set(mockListsStatesMapAtom, {
+        [LIST_A]: makeListState(LIST_A, [token1.address, token2.address]),
+        [LIST_B]: makeListState(LIST_B, [token3.address]),
+      })
+
+      const result = await store.get(tokensToSelectAtom)
+
+      expect(result).toEqual([token1, token2])
+    })
   })
 
   describe('buy field (Field.OUTPUT)', () => {

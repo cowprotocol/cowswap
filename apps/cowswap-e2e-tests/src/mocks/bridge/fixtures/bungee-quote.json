@@ -1,0 +1,232 @@
+{
+  "success": true,
+  "statusCode": 200,
+  "result": {
+    "originChainId": 1,
+    "destinationChainId": 8453,
+    "userAddress": "0x862a6f33094065aefe76aa1bad4e4409705d5b2e",
+    "receiverAddress": "0xfb3c7eb936caa12b5a884d612393969a557d4307",
+    "input": {
+      "token": {
+        "chainId": 1,
+        "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+        "name": "USDC",
+        "symbol": "USDC",
+        "decimals": 6,
+        "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+        "icon": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602"
+      },
+      "amount": "4961514",
+      "priceInUsd": 1,
+      "valueInUsd": 4.961514
+    },
+    "autoRoute": null,
+    "manualRoutes": [
+      {
+        "quoteId": "563bbbc427e459e4",
+        "quoteExpiry": 1786437192,
+        "output": {
+          "token": {
+            "chainId": 8453,
+            "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+            "icon": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602"
+          },
+          "amount": "4958461",
+          "priceInUsd": 1,
+          "valueInUsd": 4.958461,
+          "effectiveAmount": "4958461",
+          "effectiveValueInUsd": 4.958461,
+          "minAmountOut": "4958461",
+          "effectiveReceivedInUsd": 4.931196188937761
+        },
+        "affiliateFee": null,
+        "approvalData": {
+          "spenderAddress": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+          "amount": "4961514",
+          "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "userAddress": "0x862a6f33094065aefe76aa1bad4e4409705d5b2e"
+        },
+        "gasFee": {
+          "gasToken": {
+            "chainId": 1,
+            "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/ETH",
+            "logoURI": "https://media.socket.tech/tokens/all/ETH",
+            "chainAgnosticId": null
+          },
+          "gasLimit": "138600",
+          "gasPrice": "102224800",
+          "estimatedFee": "14539836742200",
+          "feeInUsd": 0.027264811062238596
+        },
+        "slippage": 0.3,
+        "estimatedTime": 60,
+        "routeDetails": {
+          "name": "Across",
+          "logoURI": "https://media.socket.tech/bridges/across.png",
+          "routeFee": {
+            "token": {
+              "chainId": 1,
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "symbol": "USDC",
+              "name": "USDCoin",
+              "decimals": 6,
+              "icon": "https://media.socket.tech/tokens/all/USDC",
+              "logoURI": "https://media.socket.tech/tokens/all/USDC",
+              "chainAgnosticId": "USDC"
+            },
+            "amount": "3053",
+            "feeInUsd": 0.003051,
+            "priceInUsd": 0.9993449066491976
+          },
+          "dexDetails": null
+        },
+        "refuel": null
+      },
+      {
+        "quoteId": "5baf95527b4a685b",
+        "quoteExpiry": 1786437192,
+        "output": {
+          "token": {
+            "chainId": 8453,
+            "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+            "icon": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602"
+          },
+          "amount": "4931514",
+          "priceInUsd": 1,
+          "valueInUsd": 4.931514,
+          "effectiveAmount": "4931514",
+          "effectiveValueInUsd": 4.931514,
+          "minAmountOut": "4931514",
+          "effectiveReceivedInUsd": 4.899252607401103
+        },
+        "affiliateFee": null,
+        "approvalData": {
+          "spenderAddress": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+          "amount": "4961514",
+          "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "userAddress": "0x862a6f33094065aefe76aa1bad4e4409705d5b2e"
+        },
+        "gasFee": {
+          "gasToken": {
+            "chainId": 1,
+            "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/ETH",
+            "logoURI": "https://media.socket.tech/tokens/all/ETH",
+            "chainAgnosticId": null
+          },
+          "gasLimit": "164000",
+          "gasPrice": "102224800",
+          "estimatedFee": "17204424428000",
+          "feeInUsd": 0.032261392598897036
+        },
+        "slippage": 0.3,
+        "estimatedTime": 1200,
+        "routeDetails": {
+          "name": "Circle CCTP V2",
+          "logoURI": "https://media.socket.tech/bridges/cctp.svg",
+          "routeFee": {
+            "token": {
+              "chainId": 1,
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "symbol": "USDC",
+              "name": "USDCoin",
+              "decimals": 6,
+              "icon": "https://media.socket.tech/tokens/all/USDC",
+              "logoURI": "https://media.socket.tech/tokens/all/USDC",
+              "chainAgnosticId": "USDC"
+            },
+            "amount": "30000",
+            "feeInUsd": 0.029988,
+            "priceInUsd": 0.9996
+          },
+          "dexDetails": null
+        },
+        "refuel": null
+      },
+      {
+        "quoteId": "d36e7c185bcaa9c8",
+        "quoteExpiry": 1786437192,
+        "output": {
+          "token": {
+            "chainId": 8453,
+            "address": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+            "name": "USDC",
+            "symbol": "USDC",
+            "decimals": 6,
+            "logoURI": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602",
+            "icon": "https://assets.coingecko.com/coins/images/6319/large/USDC.png?1769615602"
+          },
+          "amount": "4931008",
+          "priceInUsd": 1,
+          "valueInUsd": 4.931008,
+          "effectiveAmount": "4931008",
+          "effectiveValueInUsd": 4.931008,
+          "minAmountOut": "4931008",
+          "effectiveReceivedInUsd": 4.898746607401104
+        },
+        "affiliateFee": null,
+        "approvalData": {
+          "spenderAddress": "0x3a23F943181408EAC424116Af7b7790c94Cb97a5",
+          "amount": "4961514",
+          "tokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+          "userAddress": "0x862a6f33094065aefe76aa1bad4e4409705d5b2e"
+        },
+        "gasFee": {
+          "gasToken": {
+            "chainId": 1,
+            "address": "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+            "symbol": "ETH",
+            "name": "Ethereum",
+            "decimals": 18,
+            "icon": "https://media.socket.tech/tokens/all/ETH",
+            "logoURI": "https://media.socket.tech/tokens/all/ETH",
+            "chainAgnosticId": null
+          },
+          "gasLimit": "164000",
+          "gasPrice": "102224800",
+          "estimatedFee": "17204424428000",
+          "feeInUsd": 0.032261392598897036
+        },
+        "slippage": 0.3,
+        "estimatedTime": 60,
+        "routeDetails": {
+          "name": "Circle CCTP V2 Fast",
+          "logoURI": "https://media.socket.tech/bridges/cctp.svg",
+          "routeFee": {
+            "token": {
+              "chainId": 1,
+              "address": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "symbol": "USDC",
+              "name": "USDCoin",
+              "decimals": 6,
+              "icon": "https://media.socket.tech/tokens/all/USDC",
+              "logoURI": "https://media.socket.tech/tokens/all/USDC",
+              "chainAgnosticId": "USDC"
+            },
+            "amount": "30506",
+            "feeInUsd": 0.030494,
+            "priceInUsd": 0.999606634760375
+          },
+          "dexDetails": null
+        },
+        "refuel": null
+      }
+    ]
+  },
+  "message": null
+}

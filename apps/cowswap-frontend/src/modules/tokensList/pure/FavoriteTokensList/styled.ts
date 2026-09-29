@@ -53,10 +53,8 @@ export const List = styled.div`
 export const TokenButton = styled.button`
   display: inline-flex;
   align-items: center;
-  gap: 6px;
   justify-content: center;
-  background: none;
-  outline: none;
+  gap: 6px;
   padding: 6px 10px;
   border-radius: 10px;
   color: inherit;

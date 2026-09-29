@@ -1,4 +1,4 @@
-import { getEtherscanLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerTwapOrderLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -10,7 +10,7 @@ export function getActivityUrl(chainId: SupportedChainId, order: ParsedOrder): s
   const { activityId } = order.executionData
 
   if (getIsComposableCowParentOrder(order)) {
-    return undefined
+    return getExplorerTwapOrderLink(chainId, order.composableCowInfo?.id ?? '')
   }
 
   if (order.composableCowInfo?.isVirtualPart) {

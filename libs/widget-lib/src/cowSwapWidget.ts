@@ -218,114 +218,6 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
   }
 }
 
-function createIframeSafeSdkBridge(
-  enabled: boolean,
-  appWindow: Window,
-  iframeWindow: Window,
-  iframeOrigin: string,
-): IframeSafeSdkBridge | null {
-  if (!enabled) {
-    return null
-  }
-
-  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
-}
-
-function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
-  const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
-
-  if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
-    throw new Error('Required param `appCode` is missing')
-  }
-
-  if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
-    throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
-  }
-
-  return currentParams
-}
-
-/**
- * Update the provider for the iframeRpcProviderBridge.
- *
- * It will disconnect from the previous provider and connect to the new one.
- *
- * @param iframe iframe window
- * @param iframeRpcProviderBridge iframe RPC manager
- * @param newProvider new provider
- *
- * @returns the iframeRpcProviderBridge
- */
-function updateProvider(
-  iframe: Window,
-  iframeOrigin: string,
-  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
-  newProvider?: EthereumProvider,
-): IframeRpcProviderBridge {
-  // Disconnect from the previous provider bridge
-  if (iframeRpcProviderBridge) {
-    iframeRpcProviderBridge.disconnect()
-  }
-
-  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe, iframeOrigin)
-
-  // Connect to the new provider
-  if (newProvider) {
-    providerBridge.onConnect(newProvider)
-  }
-
-  return providerBridge
-}
-
-/**
- * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
- * @param params - Parameters for the widget.
- * @returns The generated HTMLIFrameElement.
- */
-function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
-  const iframe = document.createElement('iframe')
-
-  iframe.id = WIDGET_IFRAME_ID
-  iframe.src = buildWidgetUrl(params)
-  iframe.setAttribute('sandbox', getIframeSandbox(params))
-  iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
-  iframe.allow = WIDGET_IFRAME_ALLOW
-
-  // The container carries the user's rootStyle; the iframe simply fills it.
-  iframe.style.width = '100%'
-  iframe.style.height = '100%'
-  iframe.style.border = '0'
-  iframe.style.display = 'block'
-
-  return iframe
-}
-
-function getIframeSandbox(params: CowSwapWidgetParams): string {
-  return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
-}
-
-function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
-  const sandbox = getIframeSandbox(params)
-
-  return iframe.getAttribute('sandbox') !== sandbox
-}
-
-function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
-  const sandbox = getIframeSandbox(params)
-
-  const nextSrc = buildWidgetUrl(params)
-
-  iframe.addEventListener(
-    'load',
-    () => {
-      iframe.src = nextSrc
-    },
-    { once: true },
-  )
-  iframe.setAttribute('sandbox', sandbox)
-  iframe.src = 'about:blank'
-}
-
 function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParams, lastDynamicHeight?: string): void {
   assignElementStyles(container, params.rootStyle)
 
@@ -372,8 +264,163 @@ function applyContainerStyles(container: HTMLElement, params: CowSwapWidgetParam
   if (lastDynamicHeight) container.style.setProperty(DYNAMIC_HEIGHT_CSS_VAR, lastDynamicHeight)
 }
 
+/**
+ * Creates an iframe element for the CoW Swap Widget based on provided parameters and settings.
+ * @param params - Parameters for the widget.
+ * @returns The generated HTMLIFrameElement.
+ */
+function createIframe(params: CowSwapWidgetParams): HTMLIFrameElement {
+  const iframe = document.createElement('iframe')
+
+  iframe.id = WIDGET_IFRAME_ID
+  iframe.src = buildWidgetUrl(params)
+  iframe.setAttribute('sandbox', getIframeSandbox(params))
+  iframe.referrerPolicy = WIDGET_IFRAME_REFERRER_POLICY
+  iframe.allow = WIDGET_IFRAME_ALLOW
+
+  // The container carries the user's rootStyle; the iframe simply fills it.
+  iframe.style.width = '100%'
+  iframe.style.height = '100%'
+  iframe.style.border = '0'
+  iframe.style.display = 'block'
+
+  return iframe
+}
+
+function createIframeSafeSdkBridge(
+  enabled: boolean,
+  appWindow: Window,
+  iframeWindow: Window,
+  iframeOrigin: string,
+): IframeSafeSdkBridge | null {
+  if (!enabled) {
+    return null
+  }
+
+  return new IframeSafeSdkBridge(appWindow, iframeWindow, iframeOrigin, getParentOrigin() || null)
+}
+
 function getIframeOrigin(iframe: HTMLIFrameElement): string {
   return new URL(iframe.src).origin
+}
+
+function getIframeSandbox(params: CowSwapWidgetParams): string {
+  return params.disableWindowOpen ? WIDGET_IFRAME_SANDBOX_WITHOUT_POPUPS : WIDGET_IFRAME_SANDBOX
+}
+
+/**
+ * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
+ */
+function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowListener {
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    iframeWindow,
+    WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
+    ({ href, rel, target }) => {
+      const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
+
+      if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
+        window.open(resolvedUrl, target, rel)
+      }
+    },
+    iframeOrigin,
+  )
+}
+
+function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () => void): WindowListener {
+  let isReady = false
+
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    contentWindow,
+    WidgetMethodsEmit.READY,
+    () => {
+      if (isReady) return
+
+      isReady = true
+      onReady()
+    },
+    iframeOrigin,
+  )
+}
+
+function reloadIframe(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): void {
+  const sandbox = getIframeSandbox(params)
+
+  const nextSrc = buildWidgetUrl(params)
+
+  iframe.addEventListener(
+    'load',
+    () => {
+      iframe.src = nextSrc
+    },
+    { once: true },
+  )
+  iframe.setAttribute('sandbox', sandbox)
+  iframe.src = 'about:blank'
+}
+
+function requiresIframeReload(iframe: HTMLIFrameElement, params: CowSwapWidgetParams): boolean {
+  const sandbox = getIframeSandbox(params)
+
+  return iframe.getAttribute('sandbox') !== sandbox
+}
+
+function resolveWidgetParams(params: CowSwapWidgetParams): CowSwapWidgetParams {
+  const currentParams = { ...DEFAULT_WIDGET_PARAMS, ...params }
+
+  if (typeof currentParams.appCode !== 'string' || currentParams.appCode.trim().length === 0) {
+    throw new Error('Required param `appCode` is missing')
+  }
+
+  if (currentParams.disableWindowOpen && currentParams.standaloneMode !== false) {
+    throw new Error('`disableWindowOpen: true` requires `standaloneMode: false`')
+  }
+
+  return currentParams
+}
+
+function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
+  const trimmedUrl = url.trim()
+
+  if (!trimmedUrl) {
+    return null
+  }
+
+  try {
+    return new URL(trimmedUrl, iframeOrigin).toString()
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Sends appCode to the contentWindow of the widget once the widget is activated.
+ *
+ * @param contentWindow - Window object of the widget's iframe.
+ * @param iframeOrigin - The trusted origin of the widget's iframe.
+ * @param appCode - A unique identifier for the app.
+ */
+function sendAppCodeOnActivation(
+  contentWindow: Window,
+  iframeOrigin: string,
+  appCode: string | undefined,
+): (payload: MessageEvent<unknown>) => void {
+  return widgetIframeTransport.listenToMessageFromWindow(
+    window,
+    contentWindow,
+    WidgetMethodsEmit.ACTIVATE,
+    () => {
+      // Update the appData
+      widgetIframeTransport.postMessageToWindow(
+        contentWindow,
+        WidgetMethodsListen.UPDATE_APP_DATA,
+        { metaData: appCode ? { appCode } : undefined },
+        iframeOrigin,
+      )
+    },
+    iframeOrigin,
+  )
 }
 
 /**
@@ -406,87 +453,44 @@ function updateParams(
 }
 
 /**
- * Sends appCode to the contentWindow of the widget once the widget is activated.
+ * Update the provider for the iframeRpcProviderBridge.
  *
- * @param contentWindow - Window object of the widget's iframe.
- * @param iframeOrigin - The trusted origin of the widget's iframe.
- * @param appCode - A unique identifier for the app.
+ * It will disconnect from the previous provider and connect to the new one.
+ *
+ * @param iframe iframe window
+ * @param iframeRpcProviderBridge iframe RPC manager
+ * @param newProvider new provider
+ *
+ * @returns the iframeRpcProviderBridge
  */
-function sendAppCodeOnActivation(
-  contentWindow: Window,
+function updateProvider(
+  iframe: Window,
   iframeOrigin: string,
-  appCode: string | undefined,
-): (payload: MessageEvent<unknown>) => void {
-  return widgetIframeTransport.listenToMessageFromWindow(
-    window,
-    contentWindow,
-    WidgetMethodsEmit.ACTIVATE,
-    () => {
-      // Update the appData
-      widgetIframeTransport.postMessageToWindow(
-        contentWindow,
-        WidgetMethodsListen.UPDATE_APP_DATA,
-        { metaData: appCode ? { appCode } : undefined },
-        iframeOrigin,
-      )
-    },
-    iframeOrigin,
-  )
-}
-
-function listenToReady(contentWindow: Window, iframeOrigin: string, onReady: () => void): WindowListener {
-  let isReady = false
-
-  return widgetIframeTransport.listenToMessageFromWindow(
-    window,
-    contentWindow,
-    WidgetMethodsEmit.READY,
-    () => {
-      if (isReady) return
-
-      isReady = true
-      onReady()
-    },
-    iframeOrigin,
-  )
-}
-
-/**
- * Since deeplinks are not supported in iframes, this function intercepts the window.open calls from the widget and opens
- */
-function interceptDeepLinks(iframeOrigin: string, iframeWindow: Window): WindowListener {
-  return widgetIframeTransport.listenToMessageFromWindow(
-    window,
-    iframeWindow,
-    WidgetMethodsEmit.INTERCEPT_WINDOW_OPEN,
-    ({ href, rel, target }) => {
-      const resolvedUrl = resolveWindowOpenUrl(href.toString(), iframeOrigin)
-
-      if (resolvedUrl && isAllowedWindowOpenUrl(resolvedUrl)) {
-        window.open(resolvedUrl, target, rel)
-      }
-    },
-    iframeOrigin,
-  )
-}
-
-function resolveWindowOpenUrl(url: string, iframeOrigin: string): string | null {
-  const trimmedUrl = url.trim()
-
-  if (!trimmedUrl) {
-    return null
+  iframeRpcProviderBridge: IframeRpcProviderBridge | null,
+  newProvider?: EthereumProvider,
+): IframeRpcProviderBridge {
+  // Disconnect from the previous provider bridge
+  if (iframeRpcProviderBridge) {
+    iframeRpcProviderBridge.disconnect()
   }
 
-  try {
-    return new URL(trimmedUrl, iframeOrigin).toString()
-  } catch {
-    return null
+  const providerBridge = iframeRpcProviderBridge || new IframeRpcProviderBridge(iframe, iframeOrigin)
+
+  // Connect to the new provider
+  if (newProvider) {
+    providerBridge.onConnect(newProvider)
   }
+
+  return providerBridge
 }
 
 const DYNAMIC_HEIGHT_CSS_VAR = '--dynamicHeight'
 
 const HEIGHT_THRESHOLD = 0
+
+type WidgetHookHandlerMap = {
+  [K in WidgetHookEvents]: (payload: WidgetHookPayloadMap[K], hooks: CowSwapWidgetParams['hooks']) => WidgetHookResult
+}
 
 function listenToHeightChanges(
   container: HTMLElement,
@@ -519,10 +523,6 @@ function listenToHeightChanges(
       iframeOrigin,
     ),
   ]
-}
-
-type WidgetHookHandlerMap = {
-  [K in WidgetHookEvents]: (payload: WidgetHookPayloadMap[K], hooks: CowSwapWidgetParams['hooks']) => WidgetHookResult
 }
 
 const widgetHookHandlers: WidgetHookHandlerMap = {

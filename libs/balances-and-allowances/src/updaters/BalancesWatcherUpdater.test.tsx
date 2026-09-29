@@ -72,6 +72,7 @@ describe('BalancesWatcherUpdater', () => {
       chainId: SupportedChainId.MAINNET,
       tokensListsUrls: [ENABLED_LIST_URL],
       customTokens: [CUSTOM_TOKEN],
+      isChainSynced: true,
     })
   })
 
@@ -86,6 +87,27 @@ describe('BalancesWatcherUpdater', () => {
     render(<BalancesWatcherUpdater account={ACCOUNT} chainId={SupportedChainId.ARBITRUM_ONE} />)
 
     expect(mockUseCustomTokensForChain).toHaveBeenCalledWith(SupportedChainId.ARBITRUM_ONE)
+  })
+
+  it('marks the session out of sync when the lists chain (env) lags the session chain', () => {
+    // env defaults to MAINNET in tests, so a non-bridge ARBITRUM session means the
+    // token lists still reflect the previous chain.
+    render(<BalancesWatcherUpdater account={ACCOUNT} chainId={SupportedChainId.ARBITRUM_ONE} />)
+
+    expect(lastSessionParams().isChainSynced).toBe(false)
+  })
+
+  it('keeps bridge mode in sync regardless of the env chain', () => {
+    render(
+      <BalancesWatcherUpdater
+        account={ACCOUNT}
+        chainId={SupportedChainId.ARBITRUM_ONE}
+        isBridgeMode
+        bridgeTokenList={[BRIDGE_TOKEN]}
+      />,
+    )
+
+    expect(lastSessionParams().isChainSynced).toBe(true)
   })
 
   it('drops enabled list URLs and user custom tokens in bridge mode, using bridgeTokenList only', () => {
@@ -103,6 +125,7 @@ describe('BalancesWatcherUpdater', () => {
       chainId: SupportedChainId.ARBITRUM_ONE,
       tokensListsUrls: [],
       customTokens: [BRIDGE_TOKEN],
+      isChainSynced: true,
     })
   })
 
@@ -182,6 +205,7 @@ describe('BalancesWatcherUpdater', () => {
       chainId: SupportedChainId.MAINNET,
       tokensListsUrls: [],
       customTokens: [BRIDGE_TOKEN],
+      isChainSynced: true,
     })
   })
 })

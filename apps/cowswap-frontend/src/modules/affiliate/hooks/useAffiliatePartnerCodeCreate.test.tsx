@@ -1,3 +1,5 @@
+import type { WalletClient } from 'viem'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { act, renderHook } from '@testing-library/react'
@@ -9,8 +11,6 @@ import { useAffiliatePartnerInfo } from './useAffiliatePartnerInfo'
 
 import { bffAffiliateApi } from '../api/bffAffiliateApi'
 import { AFFILIATE_PAYOUTS_CHAIN_ID } from '../config/affiliateProgram.const'
-
-import type { WalletClient } from 'viem'
 
 jest.mock('@cowprotocol/analytics', () => {
   const actualModule = jest.requireActual('@cowprotocol/analytics')
@@ -158,32 +158,5 @@ describe('useAffiliatePartnerCodeCreate', () => {
       chainId: AFFILIATE_PAYOUTS_CHAIN_ID,
       result: 'success',
     })
-  })
-
-  it('continues code creation if the start event throws', async () => {
-    const walletClient = createWalletClient()
-
-    sendEvent.mockImplementationOnce(() => {
-      throw new Error('analytics failed')
-    })
-    createCodeMock.mockResolvedValue({ code: 'COW-123' } as Awaited<ReturnType<typeof bffAffiliateApi.createCode>>)
-
-    const { result } = renderHook(() =>
-      useAffiliatePartnerCodeCreate({
-        account: '0x1111111111111111111111111111111111111111',
-        walletClient,
-        code: 'COW-123',
-        setError,
-      }),
-    )
-
-    await act(async () => {
-      await result.current.onCreate()
-    })
-
-    expect(walletClient.signTypedData).toHaveBeenCalledTimes(1)
-    expect(createCodeMock).toHaveBeenCalledTimes(1)
-    expect(mutatePartnerInfo).toHaveBeenCalledTimes(1)
-    expect(setError.mock.calls).toEqual([[undefined]])
   })
 })

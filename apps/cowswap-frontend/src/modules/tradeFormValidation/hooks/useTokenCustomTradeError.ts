@@ -27,14 +27,14 @@ export function useTokenCustomTradeError(
   }, [isWeekendDay, error, rwaToken])
 }
 
+function isValidQuoteError(error: unknown): error is QuoteApiError {
+  return error instanceof QuoteApiError
+}
+
 function isWeekend(): boolean {
   const now = new Date()
   const utcDay = now.getUTCDay()
 
   // 0 - Sunday, 6 - Saturday
   return utcDay === 0 || utcDay === 6
-}
-
-function isValidQuoteError(error: unknown): error is QuoteApiError {
-  return error instanceof QuoteApiError
 }

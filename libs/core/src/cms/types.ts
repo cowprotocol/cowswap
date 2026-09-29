@@ -35,6 +35,7 @@ export type SolverInfo = {
 export type SolverNetwork = {
   chainId: SupportedChainId
   env: CowEnv
+  address?: string
 }
 
 export type SolversInfo = SolverInfo[]

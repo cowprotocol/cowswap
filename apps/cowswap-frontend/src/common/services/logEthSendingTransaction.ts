@@ -1,7 +1,7 @@
+import type { TransactionRequest } from 'viem'
+
 import { captureEvent } from '@sentry/browser'
 import { SentryEvents } from 'cow-react/sentry/events'
-
-import type { TransactionRequest } from 'viem'
 
 export interface EthSendingIntentionInfo {
   chainId: number

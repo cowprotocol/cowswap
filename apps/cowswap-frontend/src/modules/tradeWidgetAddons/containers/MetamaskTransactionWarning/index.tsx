@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+import { type WalletClient } from 'viem'
+import { useWalletClient } from 'wagmi'
+
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken, isMobile } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -10,8 +13,6 @@ import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMe
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
-import { type WalletClient } from 'viem'
-import { useWalletClient } from 'wagmi'
 
 const Banner = styled(InlineBanner)`
   font-size: 14px;

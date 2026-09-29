@@ -10,6 +10,14 @@ const orderBookUrls: Record<SupportedChainId, string> = customOrderBookUrls ?? f
 
 export const TURNSTILE_AUTH_URL = `${getOrderBookOrigin(orderBookUrls[SupportedChainId.MAINNET])}/auth/turnstile`
 
+function getOrderBookOrigin(url: string | undefined): string {
+  try {
+    return new URL(url || '').origin
+  } catch {
+    return new URL(fallbackOrderBookUrls[SupportedChainId.MAINNET]).origin
+  }
+}
+
 function parseOrderBookUrlFromEnv(input: string | undefined): Record<SupportedChainId, string> | undefined {
   if (!input) return undefined
 
@@ -17,13 +25,5 @@ function parseOrderBookUrlFromEnv(input: string | undefined): Record<SupportedCh
     return JSON.parse(input) as Record<SupportedChainId, string>
   } catch {
     return undefined
-  }
-}
-
-function getOrderBookOrigin(url: string | undefined): string {
-  try {
-    return new URL(url || '').origin
-  } catch {
-    return new URL(fallbackOrderBookUrls[SupportedChainId.MAINNET]).origin
   }
 }

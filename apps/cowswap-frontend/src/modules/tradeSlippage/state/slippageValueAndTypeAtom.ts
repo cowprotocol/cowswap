@@ -7,13 +7,15 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { injectedWidgetParamsAtom } from 'entities/injectedWidget'
 
-import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
+import { isEoaEthFlowAtom, tradeTypeAtom } from 'modules/trade'
+
+import { TradeTypeToWidgetTradeTypeMap } from 'common/modules/tradeNavigation'
 
 import { resolveSlippageConfig } from '../utils/slippage'
 
-type SlippageBpsPerNetwork = PersistentStateByChain<number>
-
 export type SlippageType = 'smart' | 'default' | 'user'
+
+type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',

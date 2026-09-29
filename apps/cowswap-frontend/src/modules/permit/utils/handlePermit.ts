@@ -25,6 +25,7 @@ import { HandlePermitParams } from '../types'
  */
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
   const { amount, permitInfo, inputToken, account, appData, typedHooks, generatePermitHook } = params
+  const { customSpender, preSignCallback, postSignCallback } = params
 
   if (isSupportedPermitInfo(permitInfo) && !getIsNativeToken(inputToken)) {
     // permitInfo will only be set if there's NOT enough allowance
@@ -37,6 +38,12 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
       account,
       permitInfo,
       amount,
+      customSpender,
+      // Firing the ON_BEFORE_APPROVAL widget hook (and requesting the signature) is centralized in
+      // `generatePermitHook`; passing the full currency opts this user-facing trade flow into it.
+      sellCurrency: inputToken,
+      preSignCallback,
+      postSignCallback,
     })
 
     if (!permitData) {

@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
+import { parseGwei } from 'viem'
+
 import { AVG_APPROVE_COST_GWEI } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { parseGwei } from 'viem'
 
 import { useGasPrices } from 'legacy/state/gas/hooks'
 

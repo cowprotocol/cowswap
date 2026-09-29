@@ -1,4 +1,20 @@
 /**
+ * Map from token address (or the `0xeeee…eeee` native sentinel for the chain's
+ * native currency) to balance as a decimal string. Snapshot = full map; diff =
+ * only addresses whose balance changed since the previous SSE event.
+ */
+export type BalancesMap = Record<string, string>
+
+export interface BalancesWatcherErrorPayload {
+  code: number
+  message: string
+}
+
+export interface BalanceUpdateEvent {
+  balances: BalancesMap
+}
+
+/**
  * Request body for POST /{chain_id}/sessions/{owner}.
  *
  * The server rejects (400) if both arrays are empty — callers must guard
@@ -7,22 +23,6 @@
 export interface CreateSessionRequest {
   tokensListsUrls: string[]
   customTokens: string[]
-}
-
-/**
- * Map from token address (or the `0xeeee…eeee` native sentinel for the chain's
- * native currency) to balance as a decimal string. Snapshot = full map; diff =
- * only addresses whose balance changed since the previous SSE event.
- */
-export type BalancesMap = Record<string, string>
-
-export interface BalanceUpdateEvent {
-  balances: BalancesMap
-}
-
-export interface BalancesWatcherErrorPayload {
-  code: number
-  message: string
 }
 
 export class BalancesWatcherApiError extends Error {

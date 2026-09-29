@@ -14,6 +14,7 @@ export const BRIDGING_FINAL_STATUSES = [BridgeStatus.EXECUTED, BridgeStatus.EXPI
 
 const swrOptions: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
+  refreshWhenHidden: true,
   refreshInterval: (data) => {
     if (data) {
       const isBridgingFinished = BRIDGING_FINAL_STATUSES.includes(data.statusResult.status)

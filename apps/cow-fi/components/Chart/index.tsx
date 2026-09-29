@@ -34,6 +34,13 @@ import {
 
 import LineChart from '@/components/Chart/LineChart'
 
+export type ChartProps = {
+  width: number
+  height: number
+  prices: any
+  timePeriod: TimePeriod
+}
+
 export type PricePoint = { timestamp: number; value: number }
 
 export enum TimePeriod {
@@ -44,44 +51,7 @@ export enum TimePeriod {
   YEAR,
 }
 
-export type ChartProps = {
-  width: number
-  height: number
-  prices: any
-  timePeriod: TimePeriod
-}
-
 const DATA_EMPTY = { value: 0, timestamp: 0 }
-
-export function getPriceBounds(pricePoints: PricePoint[]): [number, number] {
-  const prices = pricePoints.map((x) => x.value)
-  const min = Math.min(...prices)
-  const max = Math.max(...prices)
-  return [min, max]
-}
-
-function calculateDelta(start: number, current: number) {
-  return (current / start - 1) * 100
-}
-
-export function getDeltaArrow(delta: number | null | undefined, iconSize = 20) {
-  // Null-check not including zero
-  if (delta === null || delta === undefined) {
-    return null
-  } else if (Math.sign(delta) < 0) {
-    return <StyledDownArrow size={iconSize} key="arrow-down" aria-label="down" />
-  }
-  return <StyledUpArrow size={iconSize} key="arrow-up" aria-label="up" />
-}
-
-export function formatDelta(delta: number | null | undefined) {
-  // Null-check not including zero
-  if (delta === null || delta === undefined || delta === Infinity || isNaN(delta)) {
-    return '-'
-  }
-
-  return Math.abs(delta).toFixed(2) + '%'
-}
 
 export function Chart({ prices, height, width, timePeriod }: ChartProps) {
   const chartAvailable = !!prices && prices.length > 0
@@ -336,4 +306,34 @@ export function Chart({ prices, height, width, timePeriod }: ChartProps) {
       )}
     </>
   )
+}
+
+export function formatDelta(delta: number | null | undefined) {
+  // Null-check not including zero
+  if (delta === null || delta === undefined || delta === Infinity || isNaN(delta)) {
+    return '-'
+  }
+
+  return Math.abs(delta).toFixed(2) + '%'
+}
+
+export function getDeltaArrow(delta: number | null | undefined, iconSize = 20) {
+  // Null-check not including zero
+  if (delta === null || delta === undefined) {
+    return null
+  } else if (Math.sign(delta) < 0) {
+    return <StyledDownArrow size={iconSize} key="arrow-down" aria-label="down" />
+  }
+  return <StyledUpArrow size={iconSize} key="arrow-up" aria-label="up" />
+}
+
+export function getPriceBounds(pricePoints: PricePoint[]): [number, number] {
+  const prices = pricePoints.map((x) => x.value)
+  const min = Math.min(...prices)
+  const max = Math.max(...prices)
+  return [min, max]
+}
+
+function calculateDelta(start: number, current: number) {
+  return (current / start - 1) * 100
 }

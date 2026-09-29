@@ -1,5 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import type { Hex } from 'viem'
+
 import { isAddress } from '@cowprotocol/common-utils'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -9,15 +11,13 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { recoverSpenderFromCalldata, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { ContentWrapper, Row, Wrapper } from './styled'
 
 import { HookDappProps } from '../../types/hooks'
-
-import type { Hex } from 'viem'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation

@@ -11,12 +11,11 @@ import {
   PriorityTokensUpdater,
   WatcherHealthState,
 } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
 import { render } from '@testing-library/react'
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { Field } from 'legacy/state/types'
 
@@ -36,18 +35,13 @@ jest.mock('@cowprotocol/balances-and-allowances', () => ({
   PRIORITY_TOKENS_REFRESH_INTERVAL: 60_000,
 }))
 
-jest.mock('@cowprotocol/common-hooks', () => ({
-  ...jest.requireActual('@cowprotocol/common-hooks'),
-  useFeatureFlags: jest.fn(),
-}))
-
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('entities/balancesContext/useBalancesContext', () => ({
-  useBalancesContext: jest.fn(),
+jest.mock('entities/balancesContext/useBalancesAccountForChain', () => ({
+  useBalancesAccountForChain: jest.fn(),
 }))
 
 jest.mock('modules/tokensList', () => ({
@@ -74,9 +68,10 @@ const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.Mo
   typeof BalancesAndAllowancesUpdater
 >
 const mockPriorityTokensUpdater = PriorityTokensUpdater as jest.MockedFunction<typeof PriorityTokensUpdater>
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseBalancesContext = useBalancesContext as jest.MockedFunction<typeof useBalancesContext>
+const mockUseBalancesAccountForChain = useBalancesAccountForChain as jest.MockedFunction<
+  typeof useBalancesAccountForChain
+>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseSourceChainId = useSourceChainId as jest.MockedFunction<typeof useSourceChainId>
 const mockUsePriorityTokenAddresses = usePriorityTokenAddresses as jest.MockedFunction<typeof usePriorityTokenAddresses>
@@ -97,6 +92,14 @@ function HealthHydrator({ health, children }: { health: WatcherHealthState; chil
   return <>{children}</>
 }
 
+function healthy(): WatcherHealthState {
+  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
+}
+
+function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
+  return { status, isRecovering: true }
+}
+
 function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_STATE): void {
   render(
     <JotaiProvider>
@@ -107,24 +110,15 @@ function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_ST
   )
 }
 
-function healthy(): WatcherHealthState {
-  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
-}
-
-function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
-  return { status, isRecovering: true }
-}
-
 describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseFeatureFlags.mockReturnValue({ isBwEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockUseWalletInfo.mockReturnValue({
       account: '0x0000000000000000000000000000000000000001',
       chainId: SupportedChainId.MAINNET,
     } as WalletInfo)
-    mockUseBalancesContext.mockReturnValue({ account: undefined } as ReturnType<typeof useBalancesContext>)
+    mockUseBalancesAccountForChain.mockReturnValue('0x0000000000000000000000000000000000000001')
     mockUsePriorityTokenAddresses.mockReturnValue(new Set())
     mockUseBridgeCustomTokensForChain.mockReturnValue([])
     mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
@@ -208,16 +202,6 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       },
     )
 
-    it('mounts only the multicall stack when the bw feature flag is disabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isBwEnabled: false } as ReturnType<typeof useFeatureFlags>)
-
-      renderWithHealth(healthy())
-
-      expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
-      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
-      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
-    })
-
     it('mounts only the multicall stack on a non-EVM chain even with the bw flag on', () => {
       mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })
 
@@ -226,6 +210,26 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
       expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+    })
+
+    // Regression guard: account resolution for the multicall stack must go through
+    // useBalancesAccountForChain (not a raw EVM `useWalletInfo().account`/proxy fallback),
+    // since a Solana account can't be derived from the connected EVM wallet.
+    it('passes sourceChainId into useBalancesAccountForChain, and forwards its result to the updaters', () => {
+      mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'selector' })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: true, field: Field.OUTPUT }))
+      mockUseBalancesAccountForChain.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
+
+      renderWithHealth(healthy())
+
+      expect(mockUseBalancesAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledWith(
+        expect.objectContaining({
+          account: 'SoLanaPubKey11111111111111111111111111111',
+          chainId: SupportedChainId.SOLANA,
+        }),
+        undefined,
+      )
     })
   })
 })

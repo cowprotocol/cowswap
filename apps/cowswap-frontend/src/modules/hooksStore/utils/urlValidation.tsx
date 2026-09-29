@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import { isDevelopmentEnv } from '@cowprotocol/common-utils'
-
 import { i18n } from '@lingui/core'
+
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 
 import { ERROR_MESSAGES } from '../pure/AddCustomHookForm/constants'
 

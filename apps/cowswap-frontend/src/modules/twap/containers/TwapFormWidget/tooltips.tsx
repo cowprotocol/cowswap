@@ -1,6 +1,6 @@
 import svgProtectionSrc from '@cowprotocol/assets/cow-swap/protection.svg'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -28,6 +28,14 @@ export interface LabelTooltipItems {
   [key: string]: LabelTooltip
 }
 
+export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
+  const tooltips = useLabelsTooltips()
+  return {
+    sellAmount: tooltips.sellAmount,
+    buyAmount: tooltips.buyAmount,
+  }
+}
+
 export function useLabelsTooltips(): LabelTooltipItems {
   const { t } = useLingui()
 
@@ -46,9 +54,13 @@ export function useLabelsTooltips(): LabelTooltipItems {
             The "Total duration" is the duration it takes to execute all parts of your TWAP order.
             <br />
             <br />
-            For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the
-            total time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
-            <b>{partDurationDisplay}</b> until the next part becomes active.
+            For instance, your order consists of{' '}
+            <b>
+              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+            </b>{' '}
+            placed every <b>{partDurationDisplay}</b>, the total time to complete the order is{' '}
+            <b>{totalDurationDisplay}</b>. Each limit order remains open for <b>{partDurationDisplay}</b> until the next
+            part becomes active.
           </Trans>
         )
       },
@@ -96,13 +108,5 @@ export function useLabelsTooltips(): LabelTooltipItems {
       label: t`Start time`,
       tooltip: t`The order will start when it is validated and executed in your Safe.`,
     },
-  }
-}
-
-export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
-  const tooltips = useLabelsTooltips()
-  return {
-    sellAmount: tooltips.sellAmount,
-    buyAmount: tooltips.buyAmount,
   }
 }

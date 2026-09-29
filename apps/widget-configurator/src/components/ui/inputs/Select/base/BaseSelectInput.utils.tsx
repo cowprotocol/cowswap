@@ -13,10 +13,6 @@ import { BUTTON_ICON_SIZE, BUTTON_ICON_STROKE_WIDTH } from '../../../buttons/bas
 
 import type { PrimitiveValue, SelectInputOption } from './BaseSelectInput.types'
 
-function SelectOptionLabel({ label }: { label: string }): ReactNode {
-  return <ListItemText primary={label} disableTypography sx={selectOptionLabelContentSx} />
-}
-
 export function getOptionLabel<TValue extends PrimitiveValue>(option: SelectInputOption<TValue>): ReactNode {
   if (!option.icon) {
     return option.label
@@ -32,27 +28,8 @@ export function getOptionLabel<TValue extends PrimitiveValue>(option: SelectInpu
   )
 }
 
-export function resolveEmptyDisplayLabel<TValue extends PrimitiveValue>(
-  emptyLabel: string | boolean | undefined,
-  options: readonly SelectInputOption<TValue>[],
-): string | undefined {
-  if (emptyLabel === undefined || emptyLabel === false) return undefined
-  if (typeof emptyLabel === 'string') return emptyLabel
-
-  return options.find((option) => option.value === '')?.label ?? ''
-}
-
 export function hasEmptyLabel(emptyLabel: string | boolean | undefined): emptyLabel is string | true {
   return emptyLabel !== undefined && emptyLabel !== false
-}
-
-export function renderSingleOptionValue<TValue extends PrimitiveValue>(
-  selectedOption: SelectInputOption<TValue> | undefined,
-  emptyDisplayLabel?: string,
-): ReactNode {
-  if (!selectedOption) return emptyDisplayLabel ?? ''
-
-  return getOptionLabel(selectedOption)
 }
 
 export function renderMultiOptionValue<TValue extends PrimitiveValue>(
@@ -77,4 +54,27 @@ export function renderMultiOptionValue<TValue extends PrimitiveValue>(
       ))}
     </Box>
   )
+}
+
+export function renderSingleOptionValue<TValue extends PrimitiveValue>(
+  selectedOption: SelectInputOption<TValue> | undefined,
+  emptyDisplayLabel?: string,
+): ReactNode {
+  if (!selectedOption) return emptyDisplayLabel ?? ''
+
+  return getOptionLabel(selectedOption)
+}
+
+export function resolveEmptyDisplayLabel<TValue extends PrimitiveValue>(
+  emptyLabel: string | boolean | undefined,
+  options: readonly SelectInputOption<TValue>[],
+): string | undefined {
+  if (emptyLabel === undefined || emptyLabel === false) return undefined
+  if (typeof emptyLabel === 'string') return emptyLabel
+
+  return options.find((option) => option.value === '')?.label ?? ''
+}
+
+function SelectOptionLabel({ label }: { label: string }): ReactNode {
+  return <ListItemText primary={label} disableTypography sx={selectOptionLabelContentSx} />
 }

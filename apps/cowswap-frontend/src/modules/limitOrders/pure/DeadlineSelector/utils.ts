@@ -1,11 +1,8 @@
 import { MAX_CUSTOM_DEADLINE, MIN_CUSTOM_DEADLINE } from 'modules/limitOrders/pure/DeadlineSelector/deadlines'
 
-export function limitDateString(date: Date | number): string {
-  const _date = typeof date === 'number' ? new Date(date * 1000) : date
-
-  const [first, second] = _date.toISOString().split(':')
-
-  return [first, second].join(':')
+export function calculateMinMax(): [Date, Date] {
+  const now = Date.now()
+  return [_trimSeconds(new Date(now + MIN_CUSTOM_DEADLINE)), _trimSeconds(new Date(now + MAX_CUSTOM_DEADLINE))]
 }
 
 /**
@@ -26,15 +23,6 @@ export function formatDateToLocalTime(date: Date | number): string {
   return adjustedDateForTimezone
     .toISOString() // this returns `2017-06-01T08:30Z`
     .replace('Z', '') // we want `2017-06-01T08:30`
-}
-
-export function calculateMinMax(): [Date, Date] {
-  const now = Date.now()
-  return [_trimSeconds(new Date(now + MIN_CUSTOM_DEADLINE)), _trimSeconds(new Date(now + MAX_CUSTOM_DEADLINE))]
-}
-
-function _trimSeconds(date: Date): Date {
-  return new Date(new Date(date.setMilliseconds(0)).setSeconds(0))
 }
 
 /**
@@ -74,4 +62,16 @@ export function getTimeZoneOffset() {
     .padStart(2, '0')
 
   return `${offsetOperator}${offsetHours}:${offsetMinutes}`
+}
+
+export function limitDateString(date: Date | number): string {
+  const _date = typeof date === 'number' ? new Date(date * 1000) : date
+
+  const [first, second] = _date.toISOString().split(':')
+
+  return [first, second].join(':')
+}
+
+function _trimSeconds(date: Date): Date {
+  return new Date(new Date(date.setMilliseconds(0)).setSeconds(0))
 }

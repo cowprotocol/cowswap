@@ -1,5 +1,7 @@
 import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
@@ -7,10 +9,11 @@ import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
+import { plural } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -28,7 +31,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
-import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
@@ -181,7 +184,13 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
+                    {t`View ${plural(solversLength - 3, {
+                      one: '# more',
+                      few: '# more',
+                      many: '# more',
+                      other: '# more',
+                    })}`}{' '}
+                    <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -204,9 +213,7 @@ export function FinishedStep({
           })}
         >
           <SVG src={iconSocialXSrc} />
-          <span>
-            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-          </span>
+          <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
         </styledEl.ShareButton>
       )}
     </styledEl.FinishedStepContainer>
@@ -224,12 +231,23 @@ function ExtraAmount({
   isCustomRecipient?: boolean
   isSell?: boolean
 }): ReactNode {
+  const amount = (
+    <i>
+      +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+    </i>
+  )
+
   return (
     <styledEl.ExtraAmount>
-      {getSurplusText(isSell, isCustomRecipient)}
-      <i>
-        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-      </i>{' '}
+      {isSell ? (
+        isCustomRecipient ? (
+          <Trans>including an extra {amount}</Trans>
+        ) : (
+          <Trans>and got an extra {amount}</Trans>
+        )
+      ) : (
+        <Trans>and saved {amount}</Trans>
+      )}{' '}
       {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
     </styledEl.ExtraAmount>
   )
@@ -249,7 +267,7 @@ function ReceivedAmount({
   receiverEnsName?: string | null
 }): ReactNode {
   return (
-    <styledEl.ReceivedAmount>
+    <styledEl.ReceivedAmount data-testid={TEST_IDS.orderReceivedAmount}>
       {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
@@ -272,7 +290,7 @@ function ReceivedAmount({
 
 function SoldAmount({ order }: { order: Order }): ReactNode {
   return (
-    <styledEl.SoldAmount>
+    <styledEl.SoldAmount data-testid={TEST_IDS.orderSoldAmount}>
       <Trans>
         You sold <TokenLogo token={order.inputToken} size={20} />
       </Trans>

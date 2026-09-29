@@ -1,8 +1,8 @@
+import { keccak256, stringToBytes } from 'viem'
+
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
-
-import { keccak256, stringToBytes } from 'viem'
 
 import { processApprovalTransaction } from './approveUtils'
 

@@ -1,127 +1,100 @@
-import { Address } from 'viem'
+import { BaseError, ExecutionRevertedError } from 'viem'
+import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
 import { generatePermitHook } from './generatePermitHook'
 
-import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
+import { PermitHookParams } from '../types'
 
-import type { PermitHookParams } from '../types'
-import type { Config } from 'wagmi'
+import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
-jest.mock('../const', () => ({
-  DEFAULT_PERMIT_GAS_LIMIT: 50000n,
-  DEFAULT_PERMIT_VALUE: 1n,
-  PERMIT_ACCOUNT: {
-    address: '0x0000000000000000000000000000000000000001',
-  },
-}))
+const DEFAULT_PERMIT_GAS_LIMIT = 130_000n
 
 jest.mock('wagmi/actions', () => ({
   estimateGas: jest.fn(),
 }))
 
-jest.mock('../utils/buildPermitCallData', () => ({
-  buildEip2612PermitCallData: jest.fn(),
-  buildDaiLikePermitCallData: jest.fn(),
+jest.mock('../const', () => ({
+  DEFAULT_PERMIT_DURATION: 3_600,
+  DEFAULT_PERMIT_GAS_LIMIT: 130_000n,
+  DEFAULT_PERMIT_VALUE: 1n,
+  PERMIT_ACCOUNT: {
+    address: '0x4444444444444444444444444444444444444444',
+  },
+}))
+
+jest.mock('..', () => ({
+  oneInchPermitUtilsConsts: {
+    DAI_PERMIT_SELECTOR: '0x8fcbaf0c',
+    EIP_2612_PERMIT_SELECTOR: '0xd505accf',
+  },
 }))
 
 const mockEstimateGas = estimateGas as jest.MockedFunction<typeof estimateGas>
-const mockBuildEip2612PermitCallData = buildEip2612PermitCallData as jest.MockedFunction<
-  typeof buildEip2612PermitCallData
->
-const mockBuildDaiLikePermitCallData = buildDaiLikePermitCallData as jest.MockedFunction<
-  typeof buildDaiLikePermitCallData
->
+const mockBuildPermitCallData = jest.fn()
 
-describe('generatePermitHook request cache', () => {
-  const config = {} as Config
-  const tokenAddress = '0x1111111111111111111111111111111111111111' as Address
-  const account = '0x2222222222222222222222222222222222222222' as Address
-  const spender = '0x3333333333333333333333333333333333333333'
-  const otherSpender = '0x4444444444444444444444444444444444444444'
-
-  const eip2612Utils = {
-    getTokenNonce: jest.fn().mockResolvedValue(7),
+function getPermitParams(): PermitHookParams {
+  return {
+    account: '0x1111111111111111111111111111111111111111',
+    amount: 1n,
+    chainId: 1,
+    config: {} as Config,
+    eip2612Utils: {
+      buildPermitCallData: mockBuildPermitCallData,
+    } as unknown as Eip2612PermitUtils,
+    inputToken: {
+      address: '0x2222222222222222222222222222222222222222',
+      name: 'Test Token',
+    },
+    nonce: 0,
+    permitInfo: {
+      name: 'Test Token',
+      type: 'eip-2612',
+      version: '1',
+    },
+    spender: '0x3333333333333333333333333333333333333333',
   }
+}
 
-  function createParams(overrides: Partial<PermitHookParams> = {}): PermitHookParams {
-    return {
-      chainId: 1,
-      config,
-      eip2612Utils: eip2612Utils as unknown as PermitHookParams['eip2612Utils'],
-      inputToken: {
-        address: tokenAddress,
-        name: 'Test Token',
-      },
-      permitInfo: {
-        type: 'eip-2612',
-        name: 'Test Token',
-        version: '1',
-      },
-      spender,
-      account,
-      amount: 123n,
-      nonce: 7,
-      ...overrides,
-    }
-  }
-
+describe('generatePermitHook', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-
-    mockEstimateGas.mockResolvedValue(45000n)
-    mockBuildEip2612PermitCallData.mockResolvedValue('0xpermit')
-    mockBuildDaiLikePermitCallData.mockResolvedValue('0xpermit')
+    mockBuildPermitCallData.mockResolvedValue('0x1234')
   })
 
-  it('reuses the in-flight request when the spender is unchanged', async () => {
-    const [first, second] = await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams())])
+  it('returns the signed permit when its exact execution can be estimated', async () => {
+    mockEstimateGas.mockResolvedValue(500_000n)
 
-    expect(first).toEqual(second)
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
-  })
-
-  it('does not reuse the in-flight request when the spender changes', async () => {
-    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ spender: otherSpender }))])
-
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
-  })
-
-  it('does not reuse the in-flight request when the nonce changes', async () => {
-    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ nonce: 8 }))])
-
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
-  })
-
-  it.each([
-    ['name', { type: 'eip-2612' as const, name: 'Other Token', version: '1' }],
-    ['version', { type: 'eip-2612' as const, name: 'Test Token', version: '2' }],
-  ])('does not reuse the in-flight request when the permit %s changes', async (_, permitInfo) => {
-    await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams({ permitInfo }))])
-
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
-  })
-
-  it('does not reuse the in-flight request when the permit type changes', async () => {
-    await Promise.all([
-      generatePermitHook(createParams()),
-      generatePermitHook(createParams({ permitInfo: { type: 'dai-like', name: 'Test Token', version: '1' } })),
-    ])
-
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
-    expect(mockBuildDaiLikePermitCallData).toHaveBeenCalledTimes(1)
-  })
-
-  it('preserves an explicit zero amount in permit calldata', async () => {
-    await generatePermitHook({ ...createParams(), amount: 0n })
-
-    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledWith(
+    await expect(generatePermitHook(getPermitParams())).resolves.toEqual(
       expect.objectContaining({
-        callDataParams: expect.arrayContaining([
-          expect.objectContaining({
-            value: '0',
-          }),
-        ]),
+        gasLimit: '500000',
+      }),
+    )
+  })
+
+  it('propagates a confirmed permit execution revert for the user account', async () => {
+    const revertError = new ExecutionRevertedError({ message: 'invalid signature' })
+    mockEstimateGas.mockRejectedValue(new BaseError('Gas estimation failed', { cause: revertError }))
+
+    await expect(generatePermitHook(getPermitParams())).rejects.toBe(revertError)
+  })
+
+  it('keeps the existing default gas fallback for non-revert estimation errors', async () => {
+    mockEstimateGas.mockRejectedValue(new BaseError('RPC unavailable'))
+
+    await expect(generatePermitHook(getPermitParams())).resolves.toEqual(
+      expect.objectContaining({
+        gasLimit: DEFAULT_PERMIT_GAS_LIMIT.toString(),
+      }),
+    )
+  })
+
+  it('continues to propagate wallet rejection errors', async () => {
+    mockBuildPermitCallData.mockRejectedValue({ code: 4001, message: 'User rejected' })
+
+    await expect(generatePermitHook(getPermitParams())).rejects.toEqual(
+      expect.objectContaining({
+        code: 4001,
       }),
     )
   })

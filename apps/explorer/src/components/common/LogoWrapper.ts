@@ -1,5 +1,6 @@
 import svgEtherscanSrc from 'assets/img/etherscan-logo.svg'
 import imgGithubSrc from 'assets/img/github-logo.png'
+import svgSolanaExplorerSrc from 'assets/img/solana-explorer-logo.svg'
 import styled from 'styled-components/macro'
 
 export default styled.img`
@@ -27,4 +28,5 @@ export default styled.img`
 export const LOGO_MAP = {
   imgGithubSrc,
   svgEtherscanSrc,
+  svgSolanaExplorerSrc,
 }

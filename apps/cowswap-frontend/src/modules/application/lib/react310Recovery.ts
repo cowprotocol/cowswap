@@ -8,38 +8,11 @@ const RELOAD_SCHEDULED_KEY = 'cow_react310_reload_pending'
 
 export const MAX_RECOVERY_ATTEMPTS = 1
 
-/**
- * Clears StrictMode / same-tick dedupe flags on every document load.
- * sessionStorage survives `location.reload()`, so the attempt counter must reset on a
- * fresh document navigation — but not on reload — or the first post-reload render will
- * think recovery already ran and skip `reload()` entirely.
- */
-export function resetReact310RecoveryOnDocumentLoad(): void {
-  try {
-    sessionStorage.removeItem(RELOAD_SCHEDULED_KEY)
-    const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
-    if (entry?.type === 'reload') {
-      return
-    }
-    sessionStorage.removeItem(SESSION_RECOVERY_KEY)
-  } catch {
-    // ignore
-  }
-}
-
 export function getRecoveryAttempts(): number {
   try {
     return Number(sessionStorage.getItem(SESSION_RECOVERY_KEY) || '0')
   } catch {
     return MAX_RECOVERY_ATTEMPTS
-  }
-}
-
-function incrementRecoveryAttempts(): void {
-  try {
-    sessionStorage.setItem(SESSION_RECOVERY_KEY, String(getRecoveryAttempts() + 1))
-  } catch {
-    // ignore
   }
 }
 
@@ -63,6 +36,25 @@ export function isReactError310(error: unknown): boolean {
     message.includes('React error #310') ||
     message.includes('Rendered more hooks than during the previous render')
   )
+}
+
+/**
+ * Clears StrictMode / same-tick dedupe flags on every document load.
+ * sessionStorage survives `location.reload()`, so the attempt counter must reset on a
+ * fresh document navigation — but not on reload — or the first post-reload render will
+ * think recovery already ran and skip `reload()` entirely.
+ */
+export function resetReact310RecoveryOnDocumentLoad(): void {
+  try {
+    sessionStorage.removeItem(RELOAD_SCHEDULED_KEY)
+    const entry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+    if (entry?.type === 'reload') {
+      return
+    }
+    sessionStorage.removeItem(SESSION_RECOVERY_KEY)
+  } catch {
+    // ignore
+  }
 }
 
 /**
@@ -99,4 +91,12 @@ export function tryRecoverFromReactError310(error: unknown): boolean {
   }, 0)
 
   return true
+}
+
+function incrementRecoveryAttempts(): void {
+  try {
+    sessionStorage.setItem(SESSION_RECOVERY_KEY, String(getRecoveryAttempts() + 1))
+  } catch {
+    // ignore
+  }
 }

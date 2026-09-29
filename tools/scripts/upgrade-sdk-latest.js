@@ -19,6 +19,28 @@ const ROOT_DIR = path.resolve(__dirname, '../..')
 const APPS_DIR = path.join(ROOT_DIR, 'apps')
 const LIBS_DIR = path.join(ROOT_DIR, 'libs')
 
+function collectPackagesToUpdate(packageJsonPaths) {
+  const packages = new Set()
+
+  for (const pkgPath of packageJsonPaths) {
+    const content = fs.readFileSync(pkgPath, 'utf-8')
+    const pkg = JSON.parse(content)
+
+    for (const section of ['dependencies', 'devDependencies']) {
+      const deps = pkg[section]
+      if (!deps) continue
+
+      for (const depName of Object.keys(deps)) {
+        if (shouldUpdate(depName)) {
+          packages.add(depName)
+        }
+      }
+    }
+  }
+
+  return Array.from(packages).sort()
+}
+
 function fetchJson(url) {
   return new Promise((resolve, reject) => {
     https
@@ -73,61 +95,6 @@ function getPackageJsonPaths() {
   return paths
 }
 
-function shouldUpdate(depName) {
-  return depName === '@cowprotocol/cow-sdk' || depName.startsWith('@cowprotocol/sdk-')
-}
-
-function collectPackagesToUpdate(packageJsonPaths) {
-  const packages = new Set()
-
-  for (const pkgPath of packageJsonPaths) {
-    const content = fs.readFileSync(pkgPath, 'utf-8')
-    const pkg = JSON.parse(content)
-
-    for (const section of ['dependencies', 'devDependencies']) {
-      const deps = pkg[section]
-      if (!deps) continue
-
-      for (const depName of Object.keys(deps)) {
-        if (shouldUpdate(depName)) {
-          packages.add(depName)
-        }
-      }
-    }
-  }
-
-  return Array.from(packages).sort()
-}
-
-function updatePackageJson(pkgPath, versions) {
-  const content = fs.readFileSync(pkgPath, 'utf-8')
-  const pkg = JSON.parse(content)
-  let updated = false
-
-  for (const section of ['dependencies', 'devDependencies']) {
-    const deps = pkg[section]
-    if (!deps) continue
-
-    for (const depName of Object.keys(deps)) {
-      if (shouldUpdate(depName) && versions[depName]) {
-        const oldVersion = deps[depName]
-        const newVersion = versions[depName]
-        if (oldVersion !== newVersion) {
-          deps[depName] = newVersion
-          console.log(`  ${depName}: ${oldVersion} -> ${newVersion}`)
-          updated = true
-        }
-      }
-    }
-  }
-
-  if (updated) {
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
-  }
-
-  return updated
-}
-
 async function main() {
   console.log('Collecting SDK packages to update...\n')
 
@@ -169,6 +136,39 @@ async function main() {
     console.log(`\nUpdated ${updatedCount} package.json file(s).`)
     console.log('⚠️ Run `pnpm install --no-frozen-lockfile` to apply the changes!')
   }
+}
+
+function shouldUpdate(depName) {
+  return depName === '@cowprotocol/cow-sdk' || depName.startsWith('@cowprotocol/sdk-')
+}
+
+function updatePackageJson(pkgPath, versions) {
+  const content = fs.readFileSync(pkgPath, 'utf-8')
+  const pkg = JSON.parse(content)
+  let updated = false
+
+  for (const section of ['dependencies', 'devDependencies']) {
+    const deps = pkg[section]
+    if (!deps) continue
+
+    for (const depName of Object.keys(deps)) {
+      if (shouldUpdate(depName) && versions[depName]) {
+        const oldVersion = deps[depName]
+        const newVersion = versions[depName]
+        if (oldVersion !== newVersion) {
+          deps[depName] = newVersion
+          console.log(`  ${depName}: ${oldVersion} -> ${newVersion}`)
+          updated = true
+        }
+      }
+    }
+  }
+
+  if (updated) {
+    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+  }
+
+  return updated
 }
 
 main().catch((err) => {

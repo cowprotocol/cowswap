@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { EthereumProvider } from '@cowprotocol/widget-lib'
-
 import { useConnection } from 'wagmi'
+
+import { EthereumProvider } from '@cowprotocol/widget-lib'
 
 /**
  * Returns the active wallet's EIP-1193 provider for the widget's dapp mode.

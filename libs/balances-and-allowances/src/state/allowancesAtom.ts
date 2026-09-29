@@ -1,14 +1,16 @@
-import { atomWithStorage } from 'jotai/utils'
+import { atom } from 'jotai'
 
-import { asyncAtomFamily } from '@cowprotocol/common-utils'
-import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
-import { PersistentStateByChain } from '@cowprotocol/types'
-import { getPublicClientFromProvider } from '@cowprotocol/wallet'
-
-import ms from 'ms.macro'
 import { erc20Abi, type Address } from 'viem'
 import { Connector } from 'wagmi'
+
+import { getUpdaterInterval } from '@cowprotocol/common-const'
+import { asyncAtomFamily, getPublicClientFromProvider } from '@cowprotocol/common-utils'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
+import { PersistentStateByChain } from '@cowprotocol/types'
+
+import ms from 'ms.macro'
+
+const ALLOWANCES_UPDATE_INTERVAl = getUpdaterInterval(ms`32s`)
 
 export type AllowancesState = Record<string, bigint | undefined>
 
@@ -47,11 +49,22 @@ async function fetchAllowances(
   return buildAllowancesState(tokenAddresses, decodedResults)
 }
 
-export const allowancesAtom = atomWithStorage<PersistentStateByChain<Record<string, bigint | undefined>>>(
-  'allowancesAtom:v1',
-  mapSupportedNetworks({}),
-  getJotaiMergerStorage(),
-)
+// In-memory only: values are `bigint` (SPL delegations / EVM allowances), which `JSON.stringify` cannot
+// serialize — persisting via `atomWithStorage` throws on write. Delegations are re-fetched each session
+// by `usePersistSplViaMulticall`, so persistence is unnecessary here.
+export const allowancesAtom = atom<PersistentStateByChain<Record<string, bigint | undefined>>>(mapSupportedNetworks({}))
+
+export interface TokenAllowancesFamilyParams {
+  connector?: Connector
+  chainId: SupportedChainId
+  account?: string
+  spender?: string
+  tokenAddresses: string[]
+}
+
+function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenAllowancesFamilyParams): boolean {
+  return tokenAllowancesFamilyKey(a) === tokenAllowancesFamilyKey(b)
+}
 
 /** Stable key for atomFamily so [a,b] and [b,a] resolve to the same atom. */
 function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
@@ -61,18 +74,6 @@ function tokenAllowancesFamilyKey(params: TokenAllowancesFamilyParams): string {
     getAddressKey(params.spender ?? ''),
     ...params.tokenAddresses.map((a) => getAddressKey(a)).sort(),
   ].join(',')
-}
-
-function areTokenAllowancesParamsEqual(a: TokenAllowancesFamilyParams, b: TokenAllowancesFamilyParams): boolean {
-  return tokenAllowancesFamilyKey(a) === tokenAllowancesFamilyKey(b)
-}
-
-export interface TokenAllowancesFamilyParams {
-  connector?: Connector
-  chainId: SupportedChainId
-  account?: string
-  spender?: string
-  tokenAddresses: string[]
 }
 
 // TODO: Combine apps/cowswap-frontend/src/common/hooks/useTokenAllowance.ts and optimisticAllowancesAtom
@@ -92,7 +93,7 @@ export const tokenAllowancesFamily = asyncAtomFamily(
     areEqual: areTokenAllowancesParamsEqual,
     familyLabel: 'tokenAllowancesFamily',
     valueOnError: {} as AllowancesState,
-    refetchInterval: ms`32s`,
+    refetchInterval: ALLOWANCES_UPDATE_INTERVAl,
   },
 )
 

@@ -10,6 +10,21 @@ import { OnToastMessagePayload } from './toastMessages'
 import { OnTradeParamsPayload } from './trade'
 import { OnTransactionPayload } from './transactions'
 
+export type CowEventPayloads = CowWidgetEventPayloadMap[CowWidgetEvents]
+
+// Define types for event payloads
+export interface CowWidgetEventPayloadMap {
+  [CowWidgetEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
+  [CowWidgetEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
+  [CowWidgetEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload
+  [CowWidgetEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
+  [CowWidgetEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload
+  [CowWidgetEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload
+  [CowWidgetEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload
+  [CowWidgetEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload
+  [CowWidgetEvents.ON_BRIDGING_SUCCESS]: OnBridgingSuccessPayload
+}
+
 export enum CowWidgetEvents {
   // Toasts
   ON_TOAST_MESSAGE = 'ON_TOAST_MESSAGE',
@@ -26,18 +41,3 @@ export enum CowWidgetEvents {
   // Bridging
   ON_BRIDGING_SUCCESS = 'ON_BRIDGING_SUCCESS',
 }
-
-// Define types for event payloads
-export interface CowWidgetEventPayloadMap {
-  [CowWidgetEvents.ON_TOAST_MESSAGE]: OnToastMessagePayload
-  [CowWidgetEvents.ON_POSTED_ORDER]: OnPostedOrderPayload
-  [CowWidgetEvents.ON_FULFILLED_ORDER]: OnFulfilledOrderPayload
-  [CowWidgetEvents.ON_CANCELLED_ORDER]: OnCancelledOrderPayload
-  [CowWidgetEvents.ON_EXPIRED_ORDER]: OnExpiredOrderPayload
-  [CowWidgetEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload
-  [CowWidgetEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload
-  [CowWidgetEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload
-  [CowWidgetEvents.ON_BRIDGING_SUCCESS]: OnBridgingSuccessPayload
-}
-
-export type CowEventPayloads = CowWidgetEventPayloadMap[CowWidgetEvents]

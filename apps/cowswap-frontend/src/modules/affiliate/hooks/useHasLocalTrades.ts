@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { Address } from '@cowprotocol/cow-sdk'
 
 import { useSelector } from 'react-redux'
@@ -7,7 +8,6 @@ import { useSelector } from 'react-redux'
 import { AppState } from 'legacy/state'
 import { OrdersState } from 'legacy/state/orders/reducer'
 
-import { safeShortenAddress } from '../../../utils/address'
 import { getLocalTrades, isExecutedNonIntegratorOrder } from '../lib/affiliateProgramUtils'
 import { logAffiliate } from '../utils/logger'
 

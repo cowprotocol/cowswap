@@ -8,54 +8,20 @@ import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useBridgeProvidersReady, useBridgeSupportedNetworks, useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useLocation } from 'react-router'
 
-import { useTradeTypeInfo, parameterizeTradeRoute, parameterizeTradeSearch } from 'modules/trade'
-import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
+import { useTradeTypeInfo } from 'modules/trade'
 
 import type { RoutesValues } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import {
+  parameterizeTradeRoute,
+  parameterizeTradeSearch,
+  useTradeTypeInfoFromUrl,
+} from 'common/modules/tradeNavigation'
 
 import { getInvalidBridgeOutputPatch, getUnsupportedBridgePairPatch } from './InvalidBridgeOutputUpdater.utils'
 
 import { useUpdateSwapRawState } from '../hooks/useUpdateSwapRawState'
 import { swapRawStateAtom, SwapRawState } from '../state/swapRawStateAtom'
-
-function syncUrlAfterPatch(params: {
-  patch: Partial<SwapRawState>
-  tradeRoute: RoutesValues | undefined
-  rawState: SwapRawState
-  pathname: string
-  search: string
-  navigate: ReturnType<typeof useNavigate>
-}): void {
-  const { patch, tradeRoute, rawState, pathname, search, navigate } = params
-  const shouldSyncUrl =
-    ('outputCurrencyId' in patch && patch.outputCurrencyId === null) ||
-    ('targetChainId' in patch && patch.targetChainId === null)
-
-  if (!shouldSyncUrl || !tradeRoute) return
-
-  const nextState = { ...rawState, ...patch }
-  const nextPathname = parameterizeTradeRoute(
-    {
-      chainId: nextState.chainId ? nextState.chainId.toString() : undefined,
-      inputCurrencyId: nextState.inputCurrencyId ?? undefined,
-      outputCurrencyId: nextState.outputCurrencyId ?? undefined,
-      inputCurrencyAmount: undefined,
-      outputCurrencyAmount: undefined,
-      orderKind: undefined,
-    },
-    tradeRoute,
-  )
-  const nextTargetChainId = nextState.targetChainId ?? undefined
-  const nextSearch = parameterizeTradeSearch(
-    search,
-    nextTargetChainId ? { targetChainId: nextTargetChainId } : undefined,
-  )
-
-  if (pathname === nextPathname && search.slice(1) === nextSearch) return
-
-  navigate({ pathname: nextPathname, search: nextSearch }, { replace: true })
-}
 
 export function InvalidBridgeOutputUpdater(): null {
   const rawState = useAtomValue(swapRawStateAtom)
@@ -146,4 +112,42 @@ export function InvalidBridgeOutputUpdater(): null {
   }, [patch, updateSwapState, tradeRoute, rawState, location.pathname, location.search, navigate])
 
   return null
+}
+
+function syncUrlAfterPatch(params: {
+  patch: Partial<SwapRawState>
+  tradeRoute: RoutesValues | undefined
+  rawState: SwapRawState
+  pathname: string
+  search: string
+  navigate: ReturnType<typeof useNavigate>
+}): void {
+  const { patch, tradeRoute, rawState, pathname, search, navigate } = params
+  const shouldSyncUrl =
+    ('outputCurrencyId' in patch && patch.outputCurrencyId === null) ||
+    ('targetChainId' in patch && patch.targetChainId === null)
+
+  if (!shouldSyncUrl || !tradeRoute) return
+
+  const nextState = { ...rawState, ...patch }
+  const nextPathname = parameterizeTradeRoute(
+    {
+      chainId: nextState.chainId ? nextState.chainId.toString() : undefined,
+      inputCurrencyId: nextState.inputCurrencyId ?? undefined,
+      outputCurrencyId: nextState.outputCurrencyId ?? undefined,
+      inputCurrencyAmount: undefined,
+      outputCurrencyAmount: undefined,
+      orderKind: undefined,
+    },
+    tradeRoute,
+  )
+  const nextTargetChainId = nextState.targetChainId ?? undefined
+  const nextSearch = parameterizeTradeSearch(
+    search,
+    nextTargetChainId ? { targetChainId: nextTargetChainId } : undefined,
+  )
+
+  if (pathname === nextPathname && search.slice(1) === nextSearch) return
+
+  navigate({ pathname: nextPathname, search: nextSearch }, { replace: true })
 }

@@ -2,8 +2,7 @@ import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { UnsupportedTokensState } from '../../types'

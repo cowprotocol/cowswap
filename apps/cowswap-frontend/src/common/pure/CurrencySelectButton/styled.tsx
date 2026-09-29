@@ -83,8 +83,6 @@ export const CurrencySelectWrapper = styled.button<{
   align-items: center;
   cursor: ${({ readonlyMode }) => (readonlyMode ? 'default' : 'pointer')};
   gap: 6px;
-  border: 0;
-  outline: none;
   background: var(--button-bg);
   color: var(--button-text);
   box-shadow: var(${UI.BOX_SHADOW_2});

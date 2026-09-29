@@ -32,14 +32,6 @@ const ENS_NAME = 'vitalik.eth'
 const SOLANA_ADDRESS = '9WfjPKjYvK5iPYzWetNVuHUArE9nBxuwtfXLoW8xhkQT'
 const BTC_ADDRESS = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4'
 
-function mockState(recipient?: string, recipientAddress?: string, outputChainId?: number): void {
-  mockedUseDerivedTradeState.mockReturnValue({
-    recipient,
-    recipientAddress,
-    outputCurrency: outputChainId !== undefined ? { chainId: outputChainId } : null,
-  } as unknown as TradeDerivedState)
-}
-
 function mockBridgeQuote(providerType?: string): void {
   mockedUseTradeQuote.mockReturnValue({
     bridgeQuote: providerType
@@ -48,6 +40,14 @@ function mockBridgeQuote(providerType?: string): void {
         }
       : undefined,
   } as unknown as TradeQuoteState)
+}
+
+function mockState(recipient?: string, recipientAddress?: string, outputChainId?: number): void {
+  mockedUseDerivedTradeState.mockReturnValue({
+    recipient,
+    recipientAddress,
+    outputCurrency: outputChainId !== undefined ? { chainId: outputChainId } : null,
+  } as unknown as TradeDerivedState)
 }
 
 describe('useQuoteParamsRecipient', () => {

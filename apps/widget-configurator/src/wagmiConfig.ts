@@ -1,3 +1,7 @@
+import { http } from 'viem'
+import { createStorage } from 'wagmi'
+import type { Transport } from 'wagmi'
+
 import { VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
 import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -6,11 +10,8 @@ import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { ConnectorController } from '@reown/appkit-controllers'
 import { coinbaseWallet, safe } from '@wagmi/connectors'
-import { http } from 'viem'
-import { createStorage } from 'wagmi'
 
 import type { AppKitNetwork } from '@reown/appkit/networks'
-import type { Transport } from 'wagmi'
 
 /**
  * RPC URL for a given chain, used by AppKit's UI (balance display, ENS) and by wagmi

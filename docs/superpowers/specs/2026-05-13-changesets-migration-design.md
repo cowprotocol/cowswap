@@ -281,7 +281,7 @@ Permissions: `contents: write`, `pull-requests: write`.
 Steps:
 
 1. `actions/checkout@v4` with `fetch-depth: 0`, `fetch-tags: true`, and the
-   reused `RELEASE_PLEASE_AUTH` token. **Fetch depth and tags are essential**
+   `RELEASE_TOKEN` token. **Fetch depth and tags are essential**
    — without them `git log $TAG..HEAD` silently returns nothing.
 2. `pnpm/action-setup` + `actions/setup-node` (same pins as today).
 3. `pnpm install --frozen-lockfile`.
@@ -345,9 +345,6 @@ Internally ordered for review readability:
    - Add `.github/workflows/release.yml`.
    - Delete `.github/workflows/release-please.yml`,
      `release-please-config.json`, `.release-please-manifest.json`.
-
-The secret rename `RELEASE_PLEASE_AUTH` → `RELEASE_BOT_TOKEN` is a follow-up
-to avoid coordinating an Actions secret rename with the merge.
 
 ## First run
 

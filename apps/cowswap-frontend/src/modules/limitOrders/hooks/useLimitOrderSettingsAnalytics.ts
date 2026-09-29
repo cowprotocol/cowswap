@@ -6,6 +6,7 @@ export enum LimitOrderSettingsAction {
   TOGGLE_SETTINGS = 'Toggle Limit Order Settings',
   CUSTOM_RECIPIENT = 'Custom Recipient',
   PARTIAL_EXECUTIONS = 'Enable Partial Executions',
+  PARTIAL_APPROVALS = 'Enable Partial Approvals',
   PRICE_POSITION = 'Limit Price Position',
   LOCK_PRICE = 'Lock Limit Price',
   USD_MODE = 'Global USD Mode',
@@ -45,6 +46,9 @@ export function useLimitOrderSettingsAnalytics() {
     },
     togglePartialExecutions(enable: boolean) {
       sendToggleAnalytics(LimitOrderSettingsAction.PARTIAL_EXECUTIONS, enable)
+    },
+    togglePartialApproval(enable: boolean) {
+      sendToggleAnalytics(LimitOrderSettingsAction.PARTIAL_APPROVALS, enable)
     },
     changeLimitPricePosition(oldPosition: string, newPosition: string) {
       sendLimitOrderSettingsAnalytics(LimitOrderSettingsAction.PRICE_POSITION, `${oldPosition} -> ${newPosition}`)

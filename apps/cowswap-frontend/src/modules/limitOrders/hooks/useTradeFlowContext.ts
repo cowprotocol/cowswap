@@ -1,11 +1,12 @@
 import { useAtomValue } from 'jotai'
 
+import { useConfig, useWalletClient } from 'wagmi'
+
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
-import { useConfig, useWalletClient } from 'wagmi'
 
 import { AppDispatch } from 'legacy/state'
 
@@ -15,17 +16,19 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContractData } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
+import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
+
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useTradeFlowContext(): TradeFlowContext | null {
   const config = useConfig()
   const { data: walletClient } = useWalletClient()
@@ -40,6 +43,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const quoteState = useTradeQuote()
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
+  const partiallyFillableOverride = useAtomValue(partiallyFillableOverrideAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const amountToApprove = useGetAmountToSignApprove()
   const permitAmountToSign = amountToApprove ? BigInt(amountToApprove.quotient.toString()) : undefined
@@ -56,7 +60,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const buyToken = state.outputCurrency as Token
   const quoteId = quoteState.quote?.quoteResults.quoteResponse.id || undefined
 
-  const partiallyFillable = settingsState.partialFillsEnabled
+  const partiallyFillable =
+    typeof partiallyFillableOverride === 'boolean' ? partiallyFillableOverride : settingsState.partialFillsEnabled
 
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
@@ -86,6 +91,7 @@ export function useTradeFlowContext(): TradeFlowContext | null {
       permitInfo: !enoughAllowance ? permitInfo : undefined,
       generatePermitHook,
       permitAmountToSign,
+      amountToApprove: permitAmountToSign,
       getCachedPermit,
       quoteState,
       postOrderParams: {

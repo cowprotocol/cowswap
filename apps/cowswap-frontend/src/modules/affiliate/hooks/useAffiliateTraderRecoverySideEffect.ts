@@ -1,9 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { safeShortenAddress } from 'utils/address'
 
 import { useAffiliateTraderPastOrders } from './useAffiliateTraderPastOrders'
 import { useRefCodeFromLocalTrades } from './useRefCodeFromLocalTrades'

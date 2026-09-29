@@ -46,18 +46,19 @@ export function ContextMenuTooltip({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [openTooltip])
 
-  // Custom click handler that allows anchor tags to work
+  // Close on menu item click. Portal events still bubble through the React tree to
+  // ContextMenuTooltipButton, so stopPropagation is required to avoid re-opening.
   const handleTooltipClick = (event: MouseEvent<HTMLDivElement>): void => {
     const target = event.target as HTMLElement
+    const isAnchor = target.tagName === 'A' || Boolean(target.closest('a'))
 
-    // Don't prevent default for anchor tags - let them work naturally
-    if (target.tagName === 'A' || target.closest('a')) {
-      return
+    // Don't preventDefault for anchors, let navigation work naturally
+    if (!isAnchor) {
+      event.preventDefault()
     }
 
-    // For other elements, toggle the tooltip
-    event.preventDefault()
-    setOpenTooltip((prev) => !prev)
+    event.stopPropagation()
+    setOpenTooltip(false)
   }
 
   return (

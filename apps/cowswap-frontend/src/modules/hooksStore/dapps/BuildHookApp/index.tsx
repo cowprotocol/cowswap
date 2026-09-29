@@ -1,9 +1,10 @@
 import { useCallback, useState } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
@@ -36,6 +37,13 @@ const FIELDS: ReadonlyArray<FormFieldParams> = [
   { name: 'callData', label: msg`Calldata`, type: 'textarea', rows: 8 },
 ]
 
+interface FormFieldProps {
+  params: FormFieldParams
+  value: string
+  error: string
+  onChange(value: { name: string; value: string }): void
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -46,7 +54,9 @@ export function BuildHookApp({ context }: HookDappProps) {
   const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
   const validateInput = useCallback((name: keyof CowHook, value: string) => {
-    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} ` + t`is required` }))
+    const fieldLabel = capitalizeFirstLetter(name)
+
+    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : t`${fieldLabel} is required` }))
   }, [])
 
   const handleInputChange = useCallback(
@@ -64,7 +74,9 @@ export function BuildHookApp({ context }: HookDappProps) {
       if (key === 'dappId') return false
 
       if (!value.trim()) {
-        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} ` + t`is required`
+        const fieldLabel = capitalizeFirstLetter(key)
+
+        newErrors[key as keyof CowHook] = t`${fieldLabel} is required`
         return true
       }
       return false
@@ -103,13 +115,6 @@ export function BuildHookApp({ context }: HookDappProps) {
       </ButtonPrimary>
     </Wrapper>
   )
-}
-
-interface FormFieldProps {
-  params: FormFieldParams
-  value: string
-  error: string
-  onChange(value: { name: string; value: string }): void
 }
 
 // TODO: Add proper return type annotation

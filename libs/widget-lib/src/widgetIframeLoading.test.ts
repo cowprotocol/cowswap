@@ -56,6 +56,10 @@ describe('widgetIframeLoading error UI styling', () => {
   })
 })
 
+function failIframe(iframe: HTMLIFrameElement): void {
+  iframe.dispatchEvent(new Event('error'))
+}
+
 function setup(): { container: HTMLElement; iframe: HTMLIFrameElement; state: LoadingState } {
   const container = document.createElement('div')
   document.body.appendChild(container)
@@ -73,8 +77,4 @@ function setup(): { container: HTMLElement; iframe: HTMLIFrameElement; state: Lo
   activeStates.push(state)
 
   return { container, iframe, state }
-}
-
-function failIframe(iframe: HTMLIFrameElement): void {
-  iframe.dispatchEvent(new Event('error'))
 }

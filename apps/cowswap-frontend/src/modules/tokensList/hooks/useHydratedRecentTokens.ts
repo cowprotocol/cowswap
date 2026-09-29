@@ -13,6 +13,7 @@ interface UseHydratedRecentTokensParams {
   storedTokensByChain: StoredRecentTokensByChain
   tokensByKey: Map<string, TokenWithLogo>
   favoriteKeys: Set<string>
+  allowedTokenKeys?: Set<string>
   activeChainId?: number
   maxItems?: number
 }
@@ -21,6 +22,7 @@ export function useHydratedRecentTokens({
   storedTokensByChain,
   tokensByKey,
   favoriteKeys,
+  allowedTokenKeys,
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseHydratedRecentTokensParams): TokenWithLogo[] {
@@ -33,6 +35,10 @@ export function useHydratedRecentTokens({
       const key = getStoredTokenKey(entry)
 
       if (seenKeys.has(key) || favoriteKeys.has(key)) {
+        continue
+      }
+
+      if (allowedTokenKeys && !allowedTokenKeys.has(key)) {
         continue
       }
 
@@ -49,5 +55,5 @@ export function useHydratedRecentTokens({
     }
 
     return result
-  }, [activeChainId, favoriteKeys, maxItems, storedTokensByChain, tokensByKey])
+  }, [activeChainId, allowedTokenKeys, favoriteKeys, maxItems, storedTokensByChain, tokensByKey])
 }

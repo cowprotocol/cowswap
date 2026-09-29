@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef } from 'react'
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import ms from 'ms.macro'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
@@ -24,6 +25,7 @@ const QUOTE_VALIDATION_INTERVAL = ms`2s`
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -82,7 +84,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+  }, [canQuote, isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
@@ -109,8 +111,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
    */
   useLayoutEffect(() => {
     const interval = setInterval(() => {
-      // Do not tick while quote is loading
-      if (tradeQuoteRef.current.isLoading) return
+      // Do not tick while quoting is blocked or a quote is loading
+      if (!canQuote || tradeQuoteRef.current.isLoading) return
 
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
@@ -126,7 +128,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
     return () => {
       clearInterval(interval)
     }
-  }, [setTradeQuotePolling])
+  }, [canQuote, setTradeQuotePolling])
 
   /**
    * Once quote is expired - update quote

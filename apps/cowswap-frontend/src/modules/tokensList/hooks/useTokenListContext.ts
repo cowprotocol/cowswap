@@ -27,6 +27,7 @@ export interface TokenListContext {
   // Loading state
   areTokensLoading: boolean
   areTokensFromBridge: boolean
+  hasScopedListRestriction: boolean
 
   // Bridge support map (null when loading, populated when bridge tokens are fetched)
   bridgeSupportedTokensMap: Record<string, boolean> | null
@@ -59,6 +60,7 @@ export function useTokenListContext(): TokenListContext {
     tokensState.tokens,
     tokensState.favoriteTokens,
     activeChainId,
+    tokensState.allowedRecentTokens,
   )
 
   // Favorite tokens (empty in standalone mode)
@@ -77,6 +79,7 @@ export function useTokenListContext(): TokenListContext {
       recentTokens,
       areTokensLoading: tokensState.isLoading,
       areTokensFromBridge: tokensState.areTokensFromBridge,
+      hasScopedListRestriction: tokensState.hasScopedListRestriction,
       bridgeSupportedTokensMap: tokensState.bridgeSupportedTokensMap,
       hideFavoriteTokensTooltip: isInjectedWidget(),
       selectedTargetChainId,
@@ -88,6 +91,7 @@ export function useTokenListContext(): TokenListContext {
       tokensState.tokens,
       tokensState.isLoading,
       tokensState.areTokensFromBridge,
+      tokensState.hasScopedListRestriction,
       tokensState.bridgeSupportedTokensMap,
       favoriteTokens,
       recentTokens,

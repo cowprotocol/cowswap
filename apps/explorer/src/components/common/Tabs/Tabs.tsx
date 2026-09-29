@@ -12,16 +12,19 @@ import { Wrapper, TabList, ExtraContent } from './styled'
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'
 export { TabList } from './styled'
 
-type TabId = number
-export enum IndicatorTabSize {
-  small = 0.1,
-  big = 0.2,
-}
-
 export interface TabItemInterface {
   readonly tab: React.ReactNode
   readonly content: React.ReactNode
   readonly id: TabId
+}
+export interface TabsProps {
+  readonly className?: string
+  readonly tabItems: TabItemInterface[]
+  readonly tabTheme: TabTheme
+  readonly selectedTab?: TabId
+  readonly extra?: React.ReactNode
+  readonly extraPosition?: 'top' | 'bottom' | 'both'
+  readonly updateSelectedTab?: (activeId: TabId) => void
 }
 
 export interface TabTheme {
@@ -39,15 +42,12 @@ export interface TabTheme {
   readonly borderRadius: boolean
 }
 
-export interface TabsProps {
-  readonly className?: string
-  readonly tabItems: TabItemInterface[]
-  readonly tabTheme: TabTheme
-  readonly selectedTab?: TabId
-  readonly extra?: React.ReactNode
-  readonly extraPosition?: 'top' | 'bottom' | 'both'
-  readonly updateSelectedTab?: (activeId: TabId) => void
+export enum IndicatorTabSize {
+  small = 0.1,
+  big = 0.2,
 }
+
+type TabId = number
 
 export const DEFAULT_TAB_THEME: TabTheme = {
   activeBg: 'transparent',
@@ -63,6 +63,15 @@ export const DEFAULT_TAB_THEME: TabTheme = {
   letterSpacing: '0',
   borderRadius: false,
 }
+
+export function getTabTheme(tabStyles: Partial<TabTheme> = {}): TabTheme {
+  return {
+    ...DEFAULT_TAB_THEME,
+    ...tabStyles,
+  }
+}
+
+export default Tabs
 
 function Tabs({
   tabTheme = DEFAULT_TAB_THEME,
@@ -102,13 +111,4 @@ function Tabs({
       )}
     </Wrapper>
   )
-}
-
-export default Tabs
-
-export function getTabTheme(tabStyles: Partial<TabTheme> = {}): TabTheme {
-  return {
-    ...DEFAULT_TAB_THEME,
-    ...tabStyles,
-  }
 }

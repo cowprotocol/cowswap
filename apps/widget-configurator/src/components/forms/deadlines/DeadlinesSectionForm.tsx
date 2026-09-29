@@ -9,13 +9,6 @@ import { NumberInput } from '../../ui/inputs/NumberInput/NumberInput.component'
 
 import type { SidebarSectionFormProps } from '../forms.types'
 
-function parseDeadlineValue(rawValue: string): number | undefined {
-  const numericValue = Number(rawValue)
-  if (Number.isNaN(numericValue)) return undefined
-
-  return Math.max(1, numericValue)
-}
-
 export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
   return (
     <>
@@ -51,4 +44,11 @@ export function DeadlinesSectionForm({ values, onChange }: SidebarSectionFormPro
       />
     </>
   )
+}
+
+function parseDeadlineValue(rawValue: string): number | undefined {
+  const numericValue = Number(rawValue)
+  if (Number.isNaN(numericValue)) return undefined
+
+  return Math.max(1, numericValue)
 }

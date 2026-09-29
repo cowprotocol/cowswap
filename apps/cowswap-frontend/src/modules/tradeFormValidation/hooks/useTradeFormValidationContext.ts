@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
@@ -9,12 +10,15 @@ import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowpr
 import {
   useGnosisSafeInfo,
   useIsRestoringConnection,
+  useIsSafeWallet,
   useIsTxBundlingSupported,
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
+import { captchaInteractionRequiredAtom } from 'entities/captcha/state/captchaInteractionRequiredAtom'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
@@ -22,8 +26,8 @@ import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import {
-  TradeType,
   useDerivedTradeState,
+  useGetReceiveAmountInfo,
   useIsWrapOrUnwrap,
   useNonEvmReceiverConfirmed,
   useTradePriceImpact,
@@ -33,11 +37,14 @@ import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { TradeType } from 'common/modules/tradeNavigation'
+import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -49,6 +56,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isOnline = useIsOnline()
+  const featureFlagsStatus = useAtomValue(featureFlagsStatusAtom)
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
+  const captchaInteractionRequired = useAtomValue(captchaInteractionRequiredAtom)
   const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
   const isRestoringConnection = useIsRestoringConnection()
 
@@ -63,8 +73,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
   const isBundlingSupported = useIsTxBundlingSupported()
+  const isSafeWallet = useIsSafeWallet()
   const isWrapUnwrap = useIsWrapOrUnwrap()
-  const { isSupportedWallet } = useWalletDetails()
+  const { allowsOffchainSigning, isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
@@ -75,11 +86,18 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
+  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
+  const isBundlingSupportedForContext =
+    tradeType === TradeType.LIMIT_ORDER ? isSafeWallet && isBundlingSupported : isBundlingSupported
   const isApproveRequired = useIsApprovalOrPermitRequired({
-    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+    isBundlingSupportedOrEnabledForContext: isBundlingSupportedForContext,
+    allowsOffchainSigning,
   }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
+
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapMaximumSellAmount = tradeType === TradeType.SWAP ? getSwapMaximumSellAmount(receiveAmountInfo) : null
 
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
@@ -123,6 +141,11 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isOutputCurrencyXstock,
       isNonEvmReceiverConfirmed,
       isRestoringConnection,
+      isCaptchaPending:
+        featureFlagsStatus === 'loading' ||
+        (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
+      isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      swapMaximumSellAmount,
     }
   }, [
     hasFirstLoad,
@@ -155,11 +178,11 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     tradePriceImpact,
     isNonEvmReceiverConfirmed,
     isRestoringConnection,
+    featureFlagsStatus,
+    canQuote,
+    captchaInteractionRequired,
+    swapMaximumSellAmount,
   ])
-}
-
-function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }
 
 function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
@@ -168,4 +191,8 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
+}
+
+function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
+  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

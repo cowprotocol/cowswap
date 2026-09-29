@@ -9,16 +9,16 @@ function setAncestorOrigins(origins: string[]): void {
   })
 }
 
-function setReferrer(referrer: string): void {
-  Object.defineProperty(document, 'referrer', {
-    get: () => referrer,
+function setParent(parent: unknown): void {
+  Object.defineProperty(window, 'parent', {
+    get: () => parent,
     configurable: true,
   })
 }
 
-function setParent(parent: unknown): void {
-  Object.defineProperty(window, 'parent', {
-    get: () => parent,
+function setReferrer(referrer: string): void {
+  Object.defineProperty(document, 'referrer', {
+    get: () => referrer,
     configurable: true,
   })
 }

@@ -4,6 +4,28 @@ import { PostBundleSimulationParams } from './bundleSimulation'
 
 import { BalancesDiff, SimulationData } from '../types'
 
+export function generateNewSimulationData(
+  simulationData: SimulationData[],
+  postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
+): Record<string, SimulationData> {
+  const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
+  const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)
+
+  const simulationDataWithLowerCaseBalanceDiffKeys = simulationData.map((data) => ({
+    ...data,
+    cumulativeBalancesDiff: convertBalanceDiffToLowerCaseKeys(data.cumulativeBalancesDiff),
+  }))
+
+  const preHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(0, preHooksKeys.length)
+
+  const postHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(-postHooksKeys.length)
+
+  return {
+    ...preHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: preHooksData[index] }), {}),
+    ...postHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: postHooksData[index] }), {}),
+  }
+}
+
 export function generateSimulationDataToError(
   postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
 ): Record<string, SimulationData> {
@@ -37,26 +59,4 @@ function convertBalanceDiffToLowerCaseKeys(data: BalancesDiff): BalancesDiff {
       [lowerOuterKey]: processedInnerObj,
     }
   }, {})
-}
-
-export function generateNewSimulationData(
-  simulationData: SimulationData[],
-  postParams: Pick<PostBundleSimulationParams, 'preHooks' | 'postHooks'>,
-): Record<string, SimulationData> {
-  const preHooksKeys = postParams.preHooks.map((hookDetails) => hookDetails.uuid)
-  const postHooksKeys = postParams.postHooks.map((hookDetails) => hookDetails.uuid)
-
-  const simulationDataWithLowerCaseBalanceDiffKeys = simulationData.map((data) => ({
-    ...data,
-    cumulativeBalancesDiff: convertBalanceDiffToLowerCaseKeys(data.cumulativeBalancesDiff),
-  }))
-
-  const preHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(0, preHooksKeys.length)
-
-  const postHooksData = simulationDataWithLowerCaseBalanceDiffKeys.slice(-postHooksKeys.length)
-
-  return {
-    ...preHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: preHooksData[index] }), {}),
-    ...postHooksKeys.reduce((acc, key, index) => ({ ...acc, [key]: postHooksData[index] }), {}),
-  }
 }

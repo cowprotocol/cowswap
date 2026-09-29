@@ -1,5 +1,160 @@
 # Changelog
 
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.16.0...common-utils-v3.17.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+- feat: add TWAP confirmation box (#8120)
+
+### Patch Changes
+
+- fix(common-utils): forward original arguments in debounce (#7920)
+
+- fix: show explorer link on solana notifications popups (#8135)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.1...common-utils-v3.16.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): process order fulfillment (#8127)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.12.0
+
+## [3.15.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.15.0...common-utils-v3.15.1) (2026-09-11)
+
+### Patch Changes
+
+- fix: properly prevent solana recipient addresses on evm (#8139)
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.14.0...common-utils-v3.15.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- fix(tokens): support solana address format (#8099)
+
+- fix: handle widgetCustomTokens parameter (#7999)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.13.0...common-utils-v3.14.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.12.0...common-utils-v3.13.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
+### Patch Changes
+
+- fix(eth-flow): show short friendly message on insufficient ETH for gas (#7977)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.9.0
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.11.0...common-utils-v3.12.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+- feat(solana): wrap and unwrap flow (#7939)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.8.0
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.10.0...common-utils-v3.11.0) (2026-07-30)
+
+### Minor Changes
+
+- feat: reserve chain-specific native amount for max sell (#7841)
+
+- feat: introduce separate branches for Safe vs EOA TWAP (#7851)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+  - @cowprotocol/common-const@3.7.1
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.9.0...common-utils-v3.10.0) (2026-07-28)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat: use a single getPublicClient util (#7870)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/common-const@3.7.0
+  - @cowprotocol/currency@1.2.2
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.1...common-utils-v3.9.0) (2026-07-22)
+
+### Minor Changes
+
+- feat: track captcha analytics (#7822)
+
+## [3.8.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.8.0...common-utils-v3.8.1) (2026-07-17)
+
+### Patch Changes
+
+- fix: widget configurator with safe (#7807)
+
+- fix: quote loading for walletconnect (#7742)
+
+- fix(errors): show friendly message when wallet rejects order signing (#7781)
+
+- fix(common-utils): anchor getIntOrFloat regex to full string (#7813)
+
 ## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.7.0...common-utils-v3.8.0) (2026-07-08)
 
 ### Minor Changes

@@ -286,18 +286,10 @@ const TYPE_TO_FORMATTER_RULES = {
   [NumberType.NFTCollectionStats]: ntfCollectionStatsFormatter,
 }
 
-function getFormatterRule(input: number, type: NumberType): Format {
-  const rules = TYPE_TO_FORMATTER_RULES[type]
-  for (const rule of rules) {
-    if (
-      (rule.exact !== undefined && input === rule.exact) ||
-      (rule.upperBound !== undefined && input < rule.upperBound)
-    ) {
-      return rule.formatter
-    }
-  }
-
-  throw new Error(`formatter for type ${type} not configured correctly`)
+/** Formats USD and non-USD prices */
+export function formatFiatPrice(price: Nullish<number>, currency = 'USD'): string {
+  if (price === null || price === undefined) return '-'
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(price)
 }
 
 export function formatNumber(
@@ -324,8 +316,16 @@ export function formatUSDPrice(price: Nullish<number | string>, type: NumberType
   return formatNumberOrString(price, type)
 }
 
-/** Formats USD and non-USD prices */
-export function formatFiatPrice(price: Nullish<number>, currency = 'USD'): string {
-  if (price === null || price === undefined) return '-'
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(price)
+function getFormatterRule(input: number, type: NumberType): Format {
+  const rules = TYPE_TO_FORMATTER_RULES[type]
+  for (const rule of rules) {
+    if (
+      (rule.exact !== undefined && input === rule.exact) ||
+      (rule.upperBound !== undefined && input < rule.upperBound)
+    ) {
+      return rule.formatter
+    }
+  }
+
+  throw new Error(`formatter for type ${type} not configured correctly`)
 }

@@ -14,11 +14,6 @@ import { useTradeConfirmState } from 'modules/trade'
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { cancellationTrackedOrderIdsAtom, pruneOrdersProgressBarState } from '../state/atoms'
 
-function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChainId; order: Order }): null {
-  useOrderProgressBarProps(chainId, order)
-  return null
-}
-
 export function OrderProgressStateUpdater(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const pruneProgressState = useSetAtom(pruneOrdersProgressBarState)
@@ -71,4 +66,9 @@ export function OrderProgressStateUpdater(): ReactNode {
       ))}
     </>
   )
+}
+
+function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChainId; order: Order }): null {
+  useOrderProgressBarProps(chainId, order)
+  return null
 }

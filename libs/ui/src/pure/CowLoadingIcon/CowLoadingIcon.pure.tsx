@@ -18,22 +18,6 @@ export interface CowLoadingIconProps {
   palette?: CowLoadingIconPalette
 }
 
-function getDefaultPalette(isDarkMode: boolean): CowLoadingIconPalette {
-  const themeColors = getThemeColors(isDarkMode)
-
-  return isDarkMode
-    ? {
-        background: themeColors.paperDarkerCustom,
-        head: themeColors.text,
-        eyes: themeColors.paperDarkerCustom,
-      }
-    : {
-        background: themeColors.blue900Primary,
-        head: themeColors.paper,
-        eyes: themeColors.blue900Primary,
-      }
-}
-
 export function CowLoadingIcon({
   size = 36,
   className,
@@ -74,4 +58,20 @@ export function CowLoadingIcon({
       />
     </styledEl.Svg>
   )
+}
+
+function getDefaultPalette(isDarkMode: boolean): CowLoadingIconPalette {
+  const themeColors = getThemeColors(isDarkMode)
+
+  return isDarkMode
+    ? {
+        background: themeColors.paperDarkerCustom,
+        head: themeColors.text,
+        eyes: themeColors.paperDarkerCustom,
+      }
+    : {
+        background: themeColors.blue900Primary,
+        head: themeColors.paper,
+        eyes: themeColors.blue900Primary,
+      }
 }

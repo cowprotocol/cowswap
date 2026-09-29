@@ -16,6 +16,8 @@ export interface RowDeadlineProps {
   slippageTooltip?: React.ReactNode
 }
 
+type DeadlineTextContentsProps = { isEoaEthFlow: boolean }
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowDeadlineContent(props: RowDeadlineProps) {
@@ -40,8 +42,6 @@ export function RowDeadlineContent(props: RowDeadlineProps) {
     </StyledRowBetween>
   )
 }
-
-type DeadlineTextContentsProps = { isEoaEthFlow: boolean }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

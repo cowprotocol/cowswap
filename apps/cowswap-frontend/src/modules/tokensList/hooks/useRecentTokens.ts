@@ -6,18 +6,11 @@ import { useHydratedRecentTokens } from './useHydratedRecentTokens'
 import { useRecentTokensStorage } from './useRecentTokensStorage'
 
 import {
-  buildFavoriteTokenKeys,
+  buildTokenKeySet,
   buildTokensByKey,
   persistRecentTokenSelection as persistRecentTokenSelectionInternal,
   RECENT_TOKENS_LIMIT,
 } from '../utils/recentTokensStorage'
-
-interface UseRecentTokensParams {
-  allTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  activeChainId?: number
-  maxItems?: number
-}
 
 export interface RecentTokensState {
   recentTokens: TokenWithLogo[]
@@ -25,14 +18,24 @@ export interface RecentTokensState {
   clearRecentTokens(): void
 }
 
+interface UseRecentTokensParams {
+  allTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  allowedTokens?: TokenWithLogo[]
+  activeChainId?: number
+  maxItems?: number
+}
+
 export function useRecentTokens({
   allTokens,
   favoriteTokens,
+  allowedTokens,
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
   const tokensByKey = useMemo(() => buildTokensByKey(allTokens), [allTokens])
-  const favoriteKeys = useMemo(() => buildFavoriteTokenKeys(favoriteTokens), [favoriteTokens])
+  const favoriteKeys = useMemo(() => buildTokenKeySet(favoriteTokens), [favoriteTokens])
+  const allowedTokenKeys = useMemo(() => (allowedTokens ? buildTokenKeySet(allowedTokens) : undefined), [allowedTokens])
 
   const {
     storedTokensByChain,
@@ -47,6 +50,7 @@ export function useRecentTokens({
     storedTokensByChain,
     tokensByKey,
     favoriteKeys,
+    allowedTokenKeys,
     activeChainId,
     maxItems,
   })

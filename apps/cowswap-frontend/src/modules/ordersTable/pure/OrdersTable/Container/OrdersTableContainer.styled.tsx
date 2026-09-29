@@ -4,9 +4,10 @@ import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
   display: flex;
-  flex-flow: column wrap;
-  gap: 16px;
+  flex-flow: column nowrap;
   width: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 `
 
 export const Content = styled.div`
@@ -50,6 +51,7 @@ export const ContentDescription = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+  padding: 10px 0;
 
   > p {
     font-size: 15px;
@@ -155,8 +157,8 @@ export const TopContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  gap: 3px;
   min-height: 36px;
+  padding: 10px;
 
   ${Media.upToMedium()} {
     display: block;

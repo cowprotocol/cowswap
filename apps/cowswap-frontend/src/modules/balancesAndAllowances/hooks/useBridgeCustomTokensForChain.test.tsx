@@ -58,18 +58,18 @@ const usdcOnArbitrum = {
   name: 'USD Coin',
 } as TokenWithLogo
 
-type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 type BridgeResult = ReturnType<typeof useBridgeSupportedTokens>
-
-function createWidgetState(override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState {
-  return { ...DEFAULT_SELECT_TOKEN_WIDGET_STATE, ...override } as WidgetState
-}
+type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 
 function bridgeResult(tokens: TokenWithLogo[]): BridgeResult {
   return {
     data: { tokens, isRouteAvailable: tokens.length > 0 },
     isLoading: false,
   } as BridgeResult
+}
+
+function createWidgetState(override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState {
+  return { ...DEFAULT_SELECT_TOKEN_WIDGET_STATE, ...override } as WidgetState
 }
 
 describe('useBridgeCustomTokensForChain', () => {

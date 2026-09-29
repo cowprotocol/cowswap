@@ -1,23 +1,22 @@
 import { useCallback } from 'react'
 
+import type { TransactionReceipt, Hex } from 'viem'
+import { useConfig } from 'wagmi'
+import { getTransaction, getTransactionReceipt } from 'wagmi/actions'
+
 import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
-import { useConfig } from 'wagmi'
-import { getTransaction, getTransactionReceipt } from 'wagmi/actions'
-
-import type { TransactionReceipt, Hex } from 'viem'
-
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
 const RETRY_OPTIONS_BY_CHAIN_ID: { [chainId: number]: RetryOptions } = {}
+
+export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
 
 interface RetryResult<T> {
   promise: Promise<T>
   cancel: Command
 }
-
-export type GetReceipt = (hash: string) => RetryResult<TransactionReceipt>
 
 /**
  * Thrown when a transaction hash is not found on-chain or in the mempool.
@@ -30,6 +29,35 @@ export class TransactionNotBroadcastError extends Error {
     this.name = 'TransactionNotBroadcastError'
   }
 }
+
+/**
+ * Grace period before treating a missing hash as never-broadcast.
+ *
+ * Allows time for a freshly submitted tx to propagate. Fast L2s mine in a few seconds, so a
+ * short window avoids a long "stuck pending" UX after MetaMask Smart Transaction cancellation.
+ * Mainnet needs longer for node propagation.
+ *
+ * Used by FinalizeTxUpdater (`checkOnChainTransaction`) and EOA TWAP receipt waits.
+ */
+const FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS = 15_000
+const DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS = 30_000
+
+export const NOT_BROADCAST_GRACE_PERIOD_MS = {
+  [SupportedChainId.MAINNET]: 60_000,
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.SEPOLIA]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.ARBITRUM_ONE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.BASE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.POLYGON]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.AVALANCHE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.BNB]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.LINEA]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.PLASMA]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.INK]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+
+  // Unused. Only added to satisfy TS:
+  [SupportedChainId.SOLANA]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+} as const satisfies Record<SupportedChainId, number>
 
 export function useGetReceipt(chainId: SupportedChainId): GetReceipt {
   const config = useConfig()

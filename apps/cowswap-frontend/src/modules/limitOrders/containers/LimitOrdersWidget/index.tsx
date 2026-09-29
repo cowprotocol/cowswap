@@ -3,6 +3,7 @@ import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { msg, t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -10,6 +11,7 @@ import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
 
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
@@ -18,11 +20,12 @@ import {
   TradeWidgetParams,
   TradeWidgetSlots,
   useIsWrapOrUnwrap,
+  useTradeConfirmActions,
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -31,13 +34,14 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
+import { useHandleOrderPlacement } from '../../hooks/useHandleOrderPlacement'
 import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
 import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
-import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { BottomBanners } from '../../pure/BottomBanners/BottomBanners.pure'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
+import { calculateLimitOrdersDeadline } from '../../utils/calculateLimitOrdersDeadline'
 import { DeadlineInput } from '../DeadlineInput'
 import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
@@ -74,7 +78,7 @@ export function LimitOrdersWidget(): ReactElement {
     [isSell, inputCurrencyAmount, outputCurrencyAmount],
   )
 
-  useSetTradeQuoteParams({ amount: quoteAmount })
+  useSetTradeQuoteParams({ amount: quoteAmount, partiallyFillable: settingsState.partialFillsEnabled })
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
@@ -157,7 +161,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     feeAmount,
   } = props
 
-  const tradeContext = useTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const localFormValidation = useLimitOrdersFormState()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -166,6 +169,14 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const hideTradeRateDetails = useShouldHideTradeRateDetails()
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+
+  const tradeConfirmActions = useTradeConfirmActions()
+  const {
+    callback: doTrade,
+    isTradeContextReady,
+    isSafeApprovalBundle,
+  } = useHandleOrderPlacement(priceImpact, props.settingsState, tradeConfirmActions)
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -175,7 +186,12 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     }
   }, [search, handleUnlock])
 
-  const isTradeContextReady = !!tradeContext
+  const { account } = useWalletInfo()
+  const { recipient: rawRecipient, recipientAddress } = useLimitOrdersDerivedState()
+  const recipientAddressOrName = rawRecipient || recipientAddress
+  const resolvedRecipient = recipientAddress || rawRecipient || account || undefined
+  const quoteState = useTradeQuote()
+  const validTo = quoteState.quote ? calculateLimitOrdersDeadline(props.settingsState, quoteState) : 0
 
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
@@ -232,6 +248,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
 
+          {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
@@ -262,15 +280,18 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       inputCurrencyInfo={inputCurrencyInfo}
       outputCurrencyInfo={outputCurrencyInfo}
       confirmModal={
-        tradeContext ? (
-          <LimitOrdersConfirmModal
-            recipient={recipient}
-            tradeContext={tradeContext}
-            priceImpact={priceImpact}
-            inputCurrencyInfo={inputCurrencyPreviewInfo}
-            outputCurrencyInfo={outputCurrencyPreviewInfo}
-          />
-        ) : null
+        <LimitOrdersConfirmModal
+          doTrade={doTrade}
+          isTradeContextReady={isTradeContextReady}
+          isSafeApprovalBundle={isSafeApprovalBundle}
+          recipient={resolvedRecipient}
+          recipientAddressOrName={recipientAddressOrName}
+          partiallyFillable={props.settingsState.partialFillsEnabled}
+          validTo={validTo}
+          priceImpact={priceImpact}
+          inputCurrencyInfo={inputCurrencyPreviewInfo}
+          outputCurrencyInfo={outputCurrencyPreviewInfo}
+        />
       }
     />
   )

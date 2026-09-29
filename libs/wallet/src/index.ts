@@ -10,9 +10,12 @@ export * from './api/hooks'
 export { useOpenWalletConnectionModal } from './api/hooks/useOpenWalletConnectionModal'
 export { useWidgetProviderMetaInfo } from './api/hooks/useWidgetProviderMetaInfo'
 export { useWatchChainBlockNumber } from './api/hooks/useWatchChainBlockNumber'
+export { useSolanaAccount } from './api/hooks/useSolanaAccount'
 export { useSolanaNativeBalance } from './api/hooks/useSolanaNativeBalance'
+export { useSolanaWalletProvider } from './api/hooks/useSolanaWalletProvider'
 export { useSendBatchTransactions } from './api/hooks/useSendBatchTransactions'
 export type { SendBatchTxCallback } from './api/hooks/useSendBatchTransactions'
+export { useNetworkSwitchUnsupported } from './api/hooks/useNetworkSwitchUnsupported'
 export * from './wagmi/hooks/useWalletMetadata'
 export * from './wagmi/hooks/useIsWalletConnect'
 export * from './wagmi/hooks/useSafeAppsSdk'
@@ -35,10 +38,14 @@ export { AccountIndexSelect, type AccountIndexSelectProps } from './pure/Account
 
 // Utils
 export * from './api/utils/connection'
-export * from './wagmi/utils/isEip1193Provider.utils'
 export * from './wagmi/utils/isEip7702EOA.utils'
 export * from './wagmi/utils/isSafeConnector.utils'
-export * from './wagmi/utils/getPublicClient.utils'
+export {
+  isEip1193Provider,
+  getPublicClient,
+  getPublicClientFromEIP1193Provider,
+  getPublicClientFromProvider,
+} from '@cowprotocol/common-utils'
 
 export * from './utils/getIsSafeAppIframe'
 export * from './utils/connectWalletById'

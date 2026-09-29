@@ -5,6 +5,7 @@ import svgProgressbarStepExpiredSrc from '@cowprotocol/assets/cow-swap/progressb
 import svgProgressbarStepSolvingSrc from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
 import svgProgressbarStepUnfillableSrc from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -25,29 +26,36 @@ interface BaseTopSectionProps {
   stepName: OrderProgressBarProps['stepName']
 }
 
+interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps {
+  order: OrderProgressBarProps['order']
+  randomImage: string
+  shouldShowSurplus?: boolean | null
+  surplusPercentValue: string
+  randomBenefit: string
+}
+
 interface InitialTopSectionProps extends BaseTopSectionProps {
   order: OrderProgressBarProps['order']
 }
 
-export function InitialTopSection({ stepName, order }: InitialTopSectionProps): ReactNode {
-  return (
-    <ProgressImageWrapper stepName={stepName}>
-      <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
-    </ProgressImageWrapper>
-  )
-}
-
-export function UnfillableTopSection(): ReactNode {
-  return (
-    <img
-      src={svgProgressbarStepUnfillableSrc}
-      alt={t`Order out of market`}
-      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-    />
-  )
+interface SolvingTopSectionProps {
+  countdown: number
+  chainId: SupportedChainId
 }
 
 // delayed, submissionFailed, solved
+
+export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps): ReactNode {
+  return (
+    <ProgressImageWrapper stepName={stepName}>
+      <img
+        src={svgProgressbarStepCancelledSrc}
+        alt={t`Cancelling order`}
+        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+      />
+    </ProgressImageWrapper>
+  )
+}
 
 export function DelayedSolvedSubmissionFailedTopSection(): ReactNode {
   const { data: STEP_LOTTIE_NEXTBATCH } = useSWR(
@@ -62,35 +70,6 @@ export function DelayedSolvedSubmissionFailedTopSection(): ReactNode {
   if (!STEP_LOTTIE_NEXTBATCH) return null
 
   return <FullSizeLottie animationData={animationData} />
-}
-
-interface SolvingTopSectionProps {
-  countdown: number
-}
-
-export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactNode {
-  return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <SVG
-        src={svgProgressbarStepSolvingSrc}
-        style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-      />
-      <CircularCountdown
-        countdown={countdown || 0}
-        isDelayed={countdown === 0}
-        bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
-      />
-    </div>
-  )
 }
 
 export function ExecutingTopSection({ stepName }: BaseTopSectionProps): ReactNode {
@@ -112,12 +91,30 @@ export function ExecutingTopSection({ stepName }: BaseTopSectionProps): ReactNod
   )
 }
 
-interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps {
-  order: OrderProgressBarProps['order']
-  randomImage: string
-  shouldShowSurplus?: boolean | null
-  surplusPercentValue: string
-  randomBenefit: string
+export function ExpiredTopSection({ stepName }: BaseTopSectionProps): ReactNode {
+  return (
+    <ProgressImageWrapper stepName={stepName}>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <img
+          src={svgProgressbarStepExpiredSrc}
+          alt={t`Order expired`}
+          style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+        />
+        <styledEl.ClockAnimation>
+          <FullSizeLottie animationData={LOTTIE_TIME_EXPIRED_DARK} loop={false} />
+        </styledEl.ClockAnimation>
+      </div>
+    </ProgressImageWrapper>
+  )
 }
 
 export function FinishedCancellationFailedTopSection({
@@ -160,40 +157,46 @@ export function FinishedCancellationFailedTopSection({
   )
 }
 
-export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps): ReactNode {
+export function InitialTopSection({ stepName, order }: InitialTopSectionProps): ReactNode {
   return (
     <ProgressImageWrapper stepName={stepName}>
-      <img
-        src={svgProgressbarStepCancelledSrc}
-        alt={t`Cancelling order`}
-        style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-      />
+      <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
     </ProgressImageWrapper>
   )
 }
 
-export function ExpiredTopSection({ stepName }: BaseTopSectionProps): ReactNode {
+export function SolvingTopSection({ countdown, chainId }: SolvingTopSectionProps): ReactNode {
   return (
-    <ProgressImageWrapper stepName={stepName}>
-      <div
-        style={{
-          position: 'relative',
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <img
-          src={svgProgressbarStepExpiredSrc}
-          alt={t`Order expired`}
-          style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-        />
-        <styledEl.ClockAnimation>
-          <FullSizeLottie animationData={LOTTIE_TIME_EXPIRED_DARK} loop={false} />
-        </styledEl.ClockAnimation>
-      </div>
-    </ProgressImageWrapper>
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <SVG
+        src={svgProgressbarStepSolvingSrc}
+        style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+      />
+      <CircularCountdown
+        countdown={countdown || 0}
+        chainId={chainId}
+        isDelayed={countdown === 0}
+        bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
+      />
+    </div>
+  )
+}
+
+export function UnfillableTopSection(): ReactNode {
+  return (
+    <img
+      src={svgProgressbarStepUnfillableSrc}
+      alt={t`Order out of market`}
+      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+    />
   )
 }

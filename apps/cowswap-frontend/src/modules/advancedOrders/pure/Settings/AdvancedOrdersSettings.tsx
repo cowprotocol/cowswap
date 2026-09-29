@@ -7,6 +7,7 @@ import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
+import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -22,26 +23,35 @@ export interface SettingsProps {
 }
 
 export function AdvancedOrdersSettingsDropdown({ state, onStateChanged }: SettingsProps): ReactNode {
-  const { showRecipient } = state
+  const { showRecipient, enablePartialApprovalBySettings } = state
   // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isPartialApprovalLockedByWidget = useIsInfiniteApproveDisabledInWidget()
   const { i18n } = useLingui()
 
   return (
     <SettingsContainer>
-      {!disableCustomRecipient && (
-        <SettingsDropdownSection title={t`TWAP Settings`}>
+      <SettingsDropdownSection title={t`TWAP Settings`}>
+        {!disableCustomRecipient && (
           <SettingsBox
             title={t`Custom Recipient`}
             tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
             checked={showRecipient}
             toggle={() => onStateChanged({ showRecipient: !showRecipient })}
           />
-        </SettingsDropdownSection>
-      )}
+        )}
+
+        <SettingsBox
+          title={t`Enable Partial Approvals`}
+          tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
+          checked={isPartialApprovalLockedByWidget ? true : enablePartialApprovalBySettings}
+          toggle={() => onStateChanged({ enablePartialApprovalBySettings: !enablePartialApprovalBySettings })}
+          disabled={isPartialApprovalLockedByWidget}
+        />
+      </SettingsDropdownSection>
 
       <SettingsDropdownSection title={t`TWAP Interface`}>
         <SettingsBox

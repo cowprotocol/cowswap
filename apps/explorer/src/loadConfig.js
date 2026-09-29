@@ -8,16 +8,6 @@ const CONFIG_FILE_OVERRIDE_NAME = 'config'
 const SUPPORTED_EXTENSIONS = 'yaml|yml|json'
 const CONFIG_FILE = 'config-default.yaml'
 
-function parseJsonOrYaml(filePath) {
-  const extension = path.extname(filePath)
-  if (SUPPORTED_EXTENSIONS.split('|').includes(extension.replace('.', ''))) {
-    const content = fs.readFileSync(filePath, 'utf-8')
-    return YAML.parse(content)
-  } else {
-    throw new Error(`Unknown file extension "${extension}". Supported JSON or YAML: ${filePath} `)
-  }
-}
-
 function getCustomConfigFilePath() {
   const customPath = path.resolve(CUSTOM_FOLDER_PATH)
 
@@ -44,6 +34,16 @@ function loadConfig(isTesting = false) {
   }
 
   return config
+}
+
+function parseJsonOrYaml(filePath) {
+  const extension = path.extname(filePath)
+  if (SUPPORTED_EXTENSIONS.split('|').includes(extension.replace('.', ''))) {
+    const content = fs.readFileSync(filePath, 'utf-8')
+    return YAML.parse(content)
+  } else {
+    throw new Error(`Unknown file extension "${extension}". Supported JSON or YAML: ${filePath} `)
+  }
 }
 
 module.exports = loadConfig

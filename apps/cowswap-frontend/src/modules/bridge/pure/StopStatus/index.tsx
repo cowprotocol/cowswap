@@ -1,11 +1,12 @@
 import { ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import svgCheckmarkSrc from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import iconRefundSrc from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import svgSpinnerSrc from '@cowprotocol/assets/cow-swap/spinner.svg'
 import svgXSrc from '@cowprotocol/assets/cow-swap/x.svg'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

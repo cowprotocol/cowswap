@@ -20,3 +20,11 @@ Add screenshots if applicable. Images are nice :)
 # Background
 
 Optional: Give background information for changes you've made, that might be difficult to explain via comments
+
+# Self-checks
+
+- [ ] I have read [CONTRIBUTING.md](../CONTRIBUTING.md)
+- [ ] I have manually tested changes on Vercel preview deployment
+- [ ] I have done self-review and (or) AI review
+- [ ] I have addressed all comments from @coderabbitai
+- [ ] I have less than three open PRs/Stacks in this repo at the moment of creating this PR

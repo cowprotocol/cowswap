@@ -1,0 +1,569 @@
+import { useSetAtom } from 'jotai'
+
+import { maxUint256 } from 'viem'
+import { useWalletClient } from 'wagmi'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  useIsSafeViaWc,
+  useIsSafeWallet,
+  useSendBatchTransactions,
+  useWalletDetails,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
+
+import { act, renderHook } from '@testing-library/react'
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+import { OrderTabId } from 'entities/routes/routes.atom'
+
+import { hasBytecode } from 'modules/accountProxy'
+import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
+import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
+import { callWidgetHook } from 'modules/injectedWidget'
+import { emitPostedOrderEvent } from 'modules/orders'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { getCowSoundSend } from 'modules/sounds'
+import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
+
+import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+
+import { useCreateTwapOrder } from './useCreateTwapOrder'
+import { useEoaTwapFlowUpdater } from './useEoaTwapSigningStep'
+import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
+import { useTwapOrder } from './useTwapOrder'
+import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
+
+import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
+import {
+  ensureEoaTwapSpenderAllowance,
+  getEoaTwapApprovalNeeds,
+} from '../services/twap/eoa/ensureEoaTwapSpenderAllowance'
+import { placeEoaTwapOrder } from '../services/twap/eoa/placeEoaTwapOrder'
+import { placeSafeTwapOrder } from '../services/twap/safe/placeSafeTwapOrder'
+import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
+import { getConditionalOrderId } from '../utils/getConditionalOrderId'
+import { waitForTwapEventId } from '../utils/waitForTwapEventId'
+
+jest.mock('../utils/waitForTwapEventId', () => ({ waitForTwapEventId: jest.fn() }))
+
+jest.mock('jotai', () => ({ ...jest.requireActual('jotai'), useSetAtom: jest.fn() }))
+jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({
+  useSetOptimisticAllowance: jest.fn(),
+}))
+jest.mock('wagmi', () => ({
+  ...jest.requireActual('wagmi'),
+  useConfig: jest.fn(() => ({})),
+  useWalletClient: jest.fn(() => ({ data: { account: '0xaccount', chain: { id: 1 } } })),
+}))
+jest.mock('@cowprotocol/common-hooks', () => ({
+  ...jest.requireActual('@cowprotocol/common-hooks'),
+  useFeatureFlags: jest.fn(),
+}))
+jest.mock('@cowprotocol/wallet', () => ({
+  ...jest.requireActual('@cowprotocol/wallet'),
+  useIsSafeViaWc: jest.fn(),
+  useIsSafeWallet: jest.fn(),
+  useSendBatchTransactions: jest.fn(),
+  useWalletDetails: jest.fn(),
+  useWalletInfo: jest.fn(),
+}))
+jest.mock('modules/advancedOrders', () => ({
+  useAdvancedOrdersDerivedState: jest.fn(),
+  useUpdateAdvancedOrdersRawState: jest.fn(),
+}))
+jest.mock('modules/appData', () => ({ uploadAppDataDocOrderbookApi: jest.fn(), useAppData: jest.fn() }))
+jest.mock('modules/erc20Approve', () => ({
+  useGetAmountToSignApprove: jest.fn(),
+  isMaxAmountToApprove: (amount: { quotient: { toString(): string } } | null) =>
+    amount?.quotient.toString() === require('viem').maxUint256.toString(),
+}))
+jest.mock('modules/injectedWidget', () => ({
+  buildTradeWidgetHookPayload: jest.fn(() => ({})),
+  callWidgetHook: jest.fn(),
+}))
+jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
+jest.mock('modules/ordersTable', () => ({ useNavigateToOrdersTableTab: jest.fn() }))
+jest.mock('modules/permit', () => ({ useGeneratePermitHook: jest.fn(), usePermitInfo: jest.fn() }))
+jest.mock('modules/sounds', () => ({ getCowSoundSend: jest.fn() }))
+jest.mock('modules/trade', () => ({
+  useTradeConfirmActions: jest.fn(),
+  useTradePriceImpact: jest.fn(),
+}))
+jest.mock('common/hooks/useConfirmPriceImpactWithoutFee', () => ({ useConfirmPriceImpactWithoutFee: jest.fn() }))
+jest.mock('common/utils/getAreBridgeCurrencies', () => ({ getAreBridgeCurrencies: jest.fn(() => false) }))
+jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapFlowUpdater: jest.fn(() => jest.fn()) }))
+jest.mock('./useExtensibleFallbackContext', () => ({ useExtensibleFallbackContext: jest.fn() }))
+jest.mock('./useTwapOrder', () => ({ useTwapOrder: jest.fn() }))
+jest.mock('./useTwapOrderCreationContext', () => ({ useTwapOrderCreationContext: jest.fn() }))
+jest.mock('../services/twap/eoa/ensureEoaTwapSpenderAllowance', () => ({
+  ...jest.requireActual('../services/twap/eoa/ensureEoaTwapSpenderAllowance'),
+  ensureEoaTwapSpenderAllowance: jest.fn().mockResolvedValue(null),
+  getEoaTwapApprovalNeeds: jest.fn().mockResolvedValue({ needsApproval: false, needsZeroApproval: false }),
+}))
+jest.mock('../services/twap/eoa/placeEoaTwapOrder', () => ({ placeEoaTwapOrder: jest.fn() }))
+jest.mock('../services/twap/safe/placeSafeTwapOrder', () => ({ placeSafeTwapOrder: jest.fn() }))
+jest.mock('../composable-cow-poller/injectPollFundsPreHookIntoAppData', () => ({
+  injectPollFundsPreHookIntoAppData: jest.fn(async (appData) => appData),
+}))
+jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
+  getComposableCowPollerScheduleId: jest.fn(() => '0xschedule'),
+}))
+jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
+  COMPOSABLE_COW_POLLER_ADDRESS: {
+    1: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    100: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+    11155111: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+  },
+}))
+jest.mock('modules/accountProxy', () => ({
+  EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
+  getCowShedHooks: jest.fn(() => ({
+    proxyOf: jest.fn(() => '0xproxy'),
+    getFactoryAddress: jest.fn(() => '0xfactory'),
+  })),
+  hasBytecode: jest.fn().mockResolvedValue(true),
+  assertFactoryDeployed: jest.fn().mockResolvedValue(undefined),
+}))
+jest.mock('../state/twapOrdersListAtom', () => ({ addTwapOrderToListAtom: {} }))
+jest.mock('../utils/buildTwapOrderParamsStruct', () => ({
+  buildTwapOrderParamsStruct: jest.fn(() => ({})),
+  createTwapOrderSalt: jest.fn(() => '0xsalt'),
+  assertTwapOrderSalt: jest.fn((salt: string) => salt),
+}))
+jest.mock('../utils/getConditionalOrderId', () => ({ getConditionalOrderId: jest.fn() }))
+jest.mock('../utils/twapOrderToStruct', () => ({ twapOrderToStruct: jest.fn(() => ({})) }))
+
+const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
+const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFunction<
+  typeof useSetOptimisticAllowance
+>
+const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
+const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
+const mockedUseIsSafeViaWc = useIsSafeViaWc as jest.MockedFunction<typeof useIsSafeViaWc>
+const mockedUseIsSafeWallet = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
+const mockedUseSendBatchTransactions = useSendBatchTransactions as jest.MockedFunction<typeof useSendBatchTransactions>
+const mockedUseWalletDetails = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
+const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockedUseAdvancedOrdersDerivedState = useAdvancedOrdersDerivedState as jest.MockedFunction<
+  typeof useAdvancedOrdersDerivedState
+>
+const mockedUseUpdateAdvancedOrdersRawState = useUpdateAdvancedOrdersRawState as jest.MockedFunction<
+  typeof useUpdateAdvancedOrdersRawState
+>
+const mockedUseAppData = useAppData as jest.MockedFunction<typeof useAppData>
+const mockedCallWidgetHook = callWidgetHook as jest.MockedFunction<typeof callWidgetHook>
+const mockedUseNavigateToOrdersTableTab = useNavigateToOrdersTableTab as jest.MockedFunction<
+  typeof useNavigateToOrdersTableTab
+>
+const mockedUseGeneratePermitHook = useGeneratePermitHook as jest.MockedFunction<typeof useGeneratePermitHook>
+const mockedUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
+const mockedGetCowSoundSend = getCowSoundSend as jest.MockedFunction<typeof getCowSoundSend>
+const mockedUseTradeConfirmActions = useTradeConfirmActions as jest.MockedFunction<typeof useTradeConfirmActions>
+const mockedUseTradePriceImpact = useTradePriceImpact as jest.MockedFunction<typeof useTradePriceImpact>
+const mockedUseConfirmPriceImpactWithoutFee = useConfirmPriceImpactWithoutFee as jest.MockedFunction<
+  typeof useConfirmPriceImpactWithoutFee
+>
+const mockedUseExtensibleFallbackContext = useExtensibleFallbackContext as jest.MockedFunction<
+  typeof useExtensibleFallbackContext
+>
+const mockedUseTwapOrder = useTwapOrder as jest.MockedFunction<typeof useTwapOrder>
+const mockedUseTwapOrderCreationContext = useTwapOrderCreationContext as jest.MockedFunction<
+  typeof useTwapOrderCreationContext
+>
+const mockedPlaceEoaTwapOrder = placeEoaTwapOrder as jest.MockedFunction<typeof placeEoaTwapOrder>
+const mockedInjectPollFundsPreHookIntoAppData = injectPollFundsPreHookIntoAppData as jest.MockedFunction<
+  typeof injectPollFundsPreHookIntoAppData
+>
+const mockedGetEoaTwapApprovalNeeds = getEoaTwapApprovalNeeds as jest.MockedFunction<typeof getEoaTwapApprovalNeeds>
+const mockedEnsureEoaTwapSpenderAllowance = ensureEoaTwapSpenderAllowance as jest.MockedFunction<
+  typeof ensureEoaTwapSpenderAllowance
+>
+const mockedGetConditionalOrderId = getConditionalOrderId as jest.MockedFunction<typeof getConditionalOrderId>
+const mockedPlaceSafeTwapOrder = placeSafeTwapOrder as jest.MockedFunction<typeof placeSafeTwapOrder>
+const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.MockedFunction<
+  typeof useGetAmountToSignApprove
+>
+const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
+const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
+const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
+
+// eslint-disable-next-line max-lines-per-function
+describe('useCreateTwapOrder', () => {
+  const sendEvent = jest.fn()
+  const setOptimisticAllowance = jest.fn()
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
+
+    mockedUseSetAtom.mockReturnValue(jest.fn())
+    mockedUseSetOptimisticAllowance.mockReturnValue(setOptimisticAllowance)
+    mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
+    mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
+    mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
+    mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: false } as ReturnType<typeof useWalletDetails>)
+    mockedUseIsSafeWallet.mockReturnValue(false)
+    mockedUseIsSafeViaWc.mockReturnValue(false)
+    mockedUseSendBatchTransactions.mockReturnValue(jest.fn())
+    mockedUseAdvancedOrdersDerivedState.mockReturnValue({
+      inputCurrencyAmount: { currency: { symbol: 'SELL' } },
+      outputCurrencyAmount: { currency: { symbol: 'BUY' } },
+    } as ReturnType<typeof useAdvancedOrdersDerivedState>)
+    mockedUseUpdateAdvancedOrdersRawState.mockReturnValue(jest.fn())
+    mockedUseAppData.mockReturnValue({ appDataKeccak256: '0xappdata', fullAppData: '{}' } as ReturnType<
+      typeof useAppData
+    >)
+    mockedUseNavigateToOrdersTableTab.mockReturnValue(jest.fn())
+    mockedUseGeneratePermitHook.mockReturnValue(jest.fn())
+    mockedUsePermitInfo.mockReturnValue({} as ReturnType<typeof usePermitInfo>)
+    mockedGetCowSoundSend.mockReturnValue({ play: jest.fn() } as unknown as ReturnType<typeof getCowSoundSend>)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess: jest.fn(),
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseTradePriceImpact.mockReturnValue({ priceImpact: undefined } as ReturnType<typeof useTradePriceImpact>)
+    mockedUseConfirmPriceImpactWithoutFee.mockReturnValue({
+      confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
+    } as unknown as ReturnType<typeof useConfirmPriceImpactWithoutFee>)
+    mockedUseExtensibleFallbackContext.mockReturnValue(null)
+    mockedUseTwapOrder.mockReturnValue({
+      receiver: '0xreceiver',
+      sellAmount: {
+        currency: { address: '0xsell', name: 'SELL', symbol: 'SELL' },
+        quotient: { toString: () => '1000000' },
+      },
+      buyAmount: { currency: { symbol: 'BUY' } },
+    } as ReturnType<typeof useTwapOrder>)
+    mockedUseTwapOrderCreationContext.mockReturnValue({ chainId: 1 } as ReturnType<typeof useTwapOrderCreationContext>)
+    mockedCallWidgetHook.mockResolvedValue(true)
+    mockedGetConditionalOrderId.mockReturnValue('0xtwap')
+    mockedPlaceEoaTwapOrder.mockResolvedValue({
+      proxyAddress: '0xproxy',
+      setupTxHash: '0xsetuptx',
+      setupBlockNumber: 123n,
+      eventId: '1'.repeat(70),
+    } as Awaited<ReturnType<typeof placeEoaTwapOrder>>)
+    mockedUseGetAmountToSignApprove.mockReturnValue(null)
+    mockedUseWalletClient.mockReturnValue({
+      data: { account: '0xaccount', chain: { id: 1 } },
+    } as ReturnType<typeof useWalletClient>)
+    mockedPlaceSafeTwapOrder.mockResolvedValue({ safeTxHash: '0xsafetx', safeAddress: '0xsafe' })
+    ;(uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>).mockResolvedValue(
+      undefined,
+    )
+  })
+
+  it('tracks isEoaTwap true on EOA TWAP placement events', async () => {
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'Place Advanced Order', allowsOffchainSigning: false, isEoaTwap: true }),
+    )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: true }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: true }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: true }))
+  })
+
+  it('tracks isEoaTwap false on Safe TWAP placement events', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(sendEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ action: 'Place Advanced Order', isEoaTwap: false }),
+    )
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Conversion', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Place Order', isEoaTwap: false }))
+    expect(sendEvent).toHaveBeenCalledWith(expect.objectContaining({ action: 'Sign', isEoaTwap: false }))
+    expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: false }))
+  })
+
+  it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '999' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceSafeTwapOrder).toHaveBeenCalledWith(expect.objectContaining({ amountToApprove: 999n }))
+  })
+
+  it('places a Safe TWAP when useWalletClient has not hydrated yet', async () => {
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseWalletClient.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceSafeTwapOrder).toHaveBeenCalled()
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+  })
+
+  it('requests unlimited poller allowance for EOA when the form selected a full approval', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => maxUint256.toString() },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: maxUint256, amountToCover: 1_000_000n }),
+    )
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToPermitOrApprove: maxUint256, sellTokenAmount: 1_000_000n }),
+    )
+    expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        walletClient: expect.anything(),
+        pollerPermitData: null,
+      }),
+    )
+  })
+
+  it('uses the amount from useGetAmountToSignApprove for the EOA poller approval, not an unlimited amount', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '2000000' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 2_000_000n, amountToCover: 1_000_000n }),
+    )
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToPermitOrApprove: 2_000_000n, sellTokenAmount: 1_000_000n }),
+    )
+  })
+
+  it('caches the confirmed poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).toHaveBeenCalledWith({
+      chainId: 1,
+      tokenAddress: '0xsell',
+      owner: '0xaccount',
+      spender: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
+      amount: maxUint256,
+      blockNumber: 123n,
+    })
+  })
+
+  it('does not cache an unchanged poller allowance', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => result.current(false))
+
+    expect(setOptimisticAllowance).not.toHaveBeenCalled()
+  })
+
+  it('does not permit a Dai-like token when the form selected a finite poller approval', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUsePermitInfo.mockReturnValue({ type: 'dai-like', name: 'DAI' } as ReturnType<typeof usePermitInfo>)
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '2000000' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({
+        amountToPermitOrApprove: 2_000_000n,
+        sellTokenAmount: 1_000_000n,
+        approvalNeeds: expect.objectContaining({ canUsePermit: false }),
+      }),
+    )
+  })
+
+  it('approves the TWAP sell amount when useGetAmountToSignApprove reports no vault-relayer approval', async () => {
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
+    mockedUseGetAmountToSignApprove.mockReturnValue({
+      quotient: { toString: () => '0' },
+    } as ReturnType<typeof useGetAmountToSignApprove>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: 1_000_000n, amountToCover: 1_000_000n }),
+    )
+    expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToPermitOrApprove: 1_000_000n, sellTokenAmount: 1_000_000n }),
+    )
+  })
+
+  it.each([true, false])('skips covered poller allowance when isProxyDeployed is %s', async (isProxyDeployed) => {
+    jest.mocked(hasBytecode).mockResolvedValueOnce(isProxyDeployed)
+    const updateEoaTwapFlow = jest.fn()
+    mockedUseEoaTwapFlowUpdater.mockReturnValue(updateEoaTwapFlow)
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).not.toHaveBeenCalled()
+    expect(hasBytecode).toHaveBeenCalledWith(expect.anything(), '0xproxy')
+    expect(updateEoaTwapFlow).toHaveBeenCalledWith(
+      expect.objectContaining({
+        plan: [EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap],
+      }),
+    )
+    expect(mockedPlaceEoaTwapOrder).toHaveBeenCalledWith(
+      expect.objectContaining({
+        isProxyDeployed,
+        walletClient: expect.anything(),
+        pollerPermitData: null,
+      }),
+    )
+  })
+
+  it('does not place an EOA TWAP on Solana', async () => {
+    mockedUseWalletInfo.mockReturnValue({
+      chainId: SupportedChainId.SOLANA,
+      account: '0xaccount',
+    } as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedEnsureEoaTwapSpenderAllowance).not.toHaveBeenCalled()
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+    expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
+  })
+
+  it('does not place an EOA TWAP or inject pollFunds on Mainnet when isTwapEoaEnabled is off', async () => {
+    mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(mockedPlaceEoaTwapOrder).not.toHaveBeenCalled()
+    expect(mockedInjectPollFundsPreHookIntoAppData).not.toHaveBeenCalled()
+    expect(mockedPlaceSafeTwapOrder).not.toHaveBeenCalled()
+  })
+
+  it('keeps the EOA confirm card open after placement and navigates to open orders', async () => {
+    jest.useFakeTimers()
+    const updateEoaTwapFlow = jest.fn()
+    const onSuccess = jest.fn()
+    const navigateToOrdersTableTab = jest.fn()
+    mockedUseEoaTwapFlowUpdater.mockReturnValue(updateEoaTwapFlow)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess,
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+    mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: false, needsZeroApproval: false })
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    let placementResult: boolean | undefined
+
+    await act(async () => {
+      placementResult = await result.current(false)
+    })
+
+    expect(placementResult).toBe(true)
+    expect(onSuccess).not.toHaveBeenCalled()
+
+    expect(updateEoaTwapFlow).toHaveBeenCalledWith({
+      step: EoaTwapSigningSteps.Success,
+      phase: EoaTwapSigningPhase.Confirmed,
+      eventId: '1'.repeat(70),
+      lockDismiss: false,
+    })
+
+    await act(async () => {
+      jest.runAllTimers()
+    })
+
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.OPEN)
+    jest.useRealTimers()
+  })
+
+  it('shows the submitted screen and navigates to signing for a Safe TWAP', async () => {
+    jest.useFakeTimers()
+    const onSuccess = jest.fn()
+    const navigateToOrdersTableTab = jest.fn()
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess,
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
+
+    const { result } = renderHook(useCreateTwapOrder)
+
+    await act(async () => {
+      await result.current(false)
+    })
+
+    expect(onSuccess).toHaveBeenCalledWith('0xsafetx')
+
+    await act(async () => {
+      jest.runAllTimers()
+    })
+
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.SIGNING)
+    jest.useRealTimers()
+  })
+})

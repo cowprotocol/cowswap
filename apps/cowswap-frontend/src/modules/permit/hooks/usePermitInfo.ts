@@ -1,23 +1,23 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
+import { useConfig, usePublicClient } from 'wagmi'
+
 import {
   getIsNativeToken,
   getWrappedToken,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   isAddress,
 } from '@cowprotocol/common-utils'
-import { getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isNonEvmChain, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
-import { useConfig, usePublicClient } from 'wagmi'
-
-import { TradeType } from 'modules/trade'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
@@ -61,18 +61,15 @@ export function usePermitInfo(
   const config = useConfig()
   const publicClient = usePublicClient()
 
-  const lowerCaseAddress = token
-    ? getWrappedToken(token).address
-      ? getAddressKey(getWrappedToken(token).address!)
-      : undefined
-    : undefined
+  const tokenAddress = token ? getWrappedToken(token).address : undefined
+  const lowerCaseAddress = tokenAddress ? getAddressKey(tokenAddress) : undefined
   const isNative = !!token && getIsNativeToken(token)
 
   // Avoid building permit info in the first place if order type is not supported
   const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
 
   const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
-  const defaultSpender = chainId ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
+  const defaultSpender = chainId && !isNonEvmChain(chainId) ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
   const customSpenderAddress = customSpender ? isAddress(customSpender) || undefined : undefined
   const spender = customSpender ? customSpenderAddress : defaultSpender
   const shouldUsePreGeneratedInfo = !customSpender
@@ -96,7 +93,7 @@ export function usePermitInfo(
     preGeneratedIsLoading
 
   useEffect(() => {
-    if (shouldSkipPermitInfoLoad) {
+    if (shouldSkipPermitInfoLoad || isNonEvmChain(chainId)) {
       return
     }
 

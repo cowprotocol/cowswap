@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 
-import { uriToHttp } from '@cowprotocol/common-utils'
-
+import type { Address } from 'viem'
 import { useEnsAvatar } from 'wagmi'
+
+import { uriToHttp } from '@cowprotocol/common-utils'
 
 import { useENSName } from './useENSName'
 
 import { normalizeEnsName } from '../utils/normalize'
-
-import type { Address } from 'viem'
 
 /**
  * Returns the ENS avatar URI, if available.

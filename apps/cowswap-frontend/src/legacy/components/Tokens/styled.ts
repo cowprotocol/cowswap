@@ -110,8 +110,7 @@ export const PaginationText = styled.span`
 `
 
 export const ArrowButton = styled.button`
-  background: none;
-  border: none;
+  padding: 0 10px;
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
@@ -368,6 +367,11 @@ export const Table = styled.div`
 
 export const ApproveLabel = styled.span`
   color: ${({ theme }) => theme.green1};
+  font-weight: 500;
+`
+
+export const UnavailableLabel = styled.span`
+  opacity: 0.6;
   font-weight: 500;
 `
 

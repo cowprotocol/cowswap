@@ -1,10 +1,12 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/sdk-bridging'
 
+import { captchaCanQuoteAtom } from 'entities/captcha/state/captchaCanQuoteAtom'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
+import { QUOTE_SETTINGS } from 'tradingSdk/tradingSdk'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeQuote, useQuoteParams } from 'modules/tradeQuote'
@@ -17,6 +19,7 @@ const getQuoteOnlyResolveLast = onlyResolvesLast<CrossChainQuoteAndPost>(getQuot
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FullAmountQuoteUpdater() {
+  const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { inputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { quote, error, isLoading } = useTradeQuote()
 
@@ -27,9 +30,9 @@ export function FullAmountQuoteUpdater() {
   const updateQuoteState = useSetAtom(fullAmountQuoteAtom)
 
   useEffect(() => {
-    if (error || isLoading || !partQuoteAmount || !quoteParams) return
+    if (!canQuote || error || isLoading || !partQuoteAmount || !quoteParams) return
 
-    getQuoteOnlyResolveLast(quoteParams)
+    getQuoteOnlyResolveLast(quoteParams, QUOTE_SETTINGS)
       .then((response) => {
         const { cancelled, data } = response
 
@@ -44,7 +47,7 @@ export function FullAmountQuoteUpdater() {
       .catch((error) => {
         console.error('[TWAP FullAmountQuoteUpdater]:: fetchQuote error', error)
       })
-  }, [partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
+  }, [canQuote, partQuoteAmount, isLoading, error, quoteParams, updateQuoteState])
 
   return null
 }

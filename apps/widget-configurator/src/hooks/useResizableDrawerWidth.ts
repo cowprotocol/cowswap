@@ -8,8 +8,10 @@ const MIN_DRAWER_WIDTH = 380
 const DEFAULT_DRAWER_WIDTH = MIN_DRAWER_WIDTH
 const MIN_PREVIEW_WIDTH = 240
 
-function getViewportWidth(): number {
-  return typeof window === 'undefined' ? Number.POSITIVE_INFINITY : window.innerWidth
+interface UseResizableDrawerWidthResult {
+  drawerWidth: number
+  isResizing: boolean
+  handleResizeStart: (event: React.PointerEvent<HTMLDivElement>) => void
 }
 
 export function clampDrawerWidth(nextWidth: number, viewportWidth = getViewportWidth()): number {
@@ -17,25 +19,6 @@ export function clampDrawerWidth(nextWidth: number, viewportWidth = getViewportW
   const minAllowedWidth = Math.min(MIN_DRAWER_WIDTH, maxAllowedWidth)
 
   return Math.min(Math.max(nextWidth, minAllowedWidth), maxAllowedWidth)
-}
-
-interface UseResizableDrawerWidthResult {
-  drawerWidth: number
-  isResizing: boolean
-  handleResizeStart: (event: React.PointerEvent<HTMLDivElement>) => void
-}
-
-function setDrawerWidthCssVar(container: HTMLElement | null, cssVarName: string, width: number): void {
-  if (!container) return
-
-  container.style.setProperty(cssVarName, `${width}px`)
-}
-
-function resolveDrawerWidth(persistedValue: unknown): number {
-  const nextWidth =
-    typeof persistedValue === 'number' && Number.isFinite(persistedValue) ? persistedValue : DEFAULT_DRAWER_WIDTH
-
-  return clampDrawerWidth(nextWidth)
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -150,4 +133,21 @@ export function useResizableDrawerWidth(
     isResizing,
     handleResizeStart,
   }
+}
+
+function getViewportWidth(): number {
+  return typeof window === 'undefined' ? Number.POSITIVE_INFINITY : window.innerWidth
+}
+
+function resolveDrawerWidth(persistedValue: unknown): number {
+  const nextWidth =
+    typeof persistedValue === 'number' && Number.isFinite(persistedValue) ? persistedValue : DEFAULT_DRAWER_WIDTH
+
+  return clampDrawerWidth(nextWidth)
+}
+
+function setDrawerWidthCssVar(container: HTMLElement | null, cssVarName: string, width: number): void {
+  if (!container) return
+
+  container.style.setProperty(cssVarName, `${width}px`)
 }

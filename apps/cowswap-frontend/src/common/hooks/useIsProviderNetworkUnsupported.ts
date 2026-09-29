@@ -1,6 +1,6 @@
-import { useAvailableChains } from '@cowprotocol/common-hooks'
-
 import { useConnection } from 'wagmi'
+
+import { useAvailableChains } from '@cowprotocol/common-hooks'
 
 /**
  * Returns true when the connected wallet is on a chain not supported by the app.

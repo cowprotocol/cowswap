@@ -14,7 +14,7 @@ import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WrapNativeModal() {
-  const [, setWrapNativeState] = useWrapNativeScreenState()
+  const [{ sendAmount, receiveAmount }, setWrapNativeState] = useWrapNativeScreenState()
 
   const state = useDerivedTradeState()
 
@@ -29,10 +29,25 @@ export function WrapNativeModal() {
 
   const operationLabel = isNativeIn ? t`Wrapping` : t`Unwrapping`
 
+  const sentAmount = <TokenAmount amount={sendAmount ?? inputCurrencyAmount} tokenSymbol={inputCurrency} />
+  const receivedAmount = receiveAmount ? (
+    <TokenAmount amount={receiveAmount} tokenSymbol={outputCurrency} />
+  ) : (
+    <TokenSymbol token={outputCurrency} />
+  )
+  const inputSymbol = <TokenSymbol token={inputCurrency} />
+
   const title = (
     <span>
-      {operationLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> <Trans>to</Trans>{' '}
-      <TokenSymbol token={outputCurrency} />
+      {isNativeIn ? (
+        <Trans>
+          Wrapping {sentAmount} to {receivedAmount}
+        </Trans>
+      ) : (
+        <Trans>
+          Unwrapping {sentAmount} to {receivedAmount}
+        </Trans>
+      )}
     </span>
   )
 
@@ -40,11 +55,7 @@ export function WrapNativeModal() {
     <ConfirmationPendingContent
       onDismiss={handleDismiss}
       title={title}
-      description={
-        <>
-          {operationLabel} <TokenSymbol token={inputCurrency} />
-        </>
-      }
+      description={isNativeIn ? <Trans>Wrapping {inputSymbol}</Trans> : <Trans>Unwrapping {inputSymbol}</Trans>}
       operationLabel={operationLabel.toLowerCase()}
     />
   )

@@ -1,10 +1,9 @@
 import { useSetAtom } from 'jotai'
 import { useLayoutEffect } from 'react'
 
-import { useTradeTypeInfoFromUrl } from './useTradeTypeInfoFromUrl'
+import { TradeTypeInfo, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
 import { tradeTypeAtom } from '../state/tradeTypeAtom'
-import { TradeTypeInfo } from '../types'
 
 export function useSetupTradeTypeInfo(): TradeTypeInfo | null {
   const setTradeType = useSetAtom(tradeTypeAtom)

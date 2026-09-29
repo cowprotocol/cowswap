@@ -1,7 +1,7 @@
-import { debounce } from '@cowprotocol/common-utils'
+import { debounce, logAnalytics } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
-import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
+import { AnalyticsContext, AnalyticsEvent, CowAnalytics, OutboundLinkParams } from '../CowAnalytics'
 import { Category, GtmEvent } from '../types'
 
 type DataLayer = DataLayerEvent[]
@@ -18,6 +18,7 @@ function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unk
     value: _value,
     nonInteraction: _nonInteraction,
     isBridgeOrder: _isBridgeOrder,
+    isEoaTwap: _isEoaTwap,
     orderId: _orderId,
     orderType: _orderType,
     tokenSymbol: _tokenSymbol,
@@ -35,6 +36,7 @@ function sanitizeRecord(record: Record<string, unknown>): Record<string, unknown
 declare global {
   interface Window {
     dataLayer: unknown[]
+    enableGaLogging?: boolean
     /** GTM or noop implementation; widened from CowAnalyticsGtm so both can register. */
     cowAnalyticsInstance?: CowAnalytics
   }
@@ -84,6 +86,10 @@ declare global {
  *      - order_type: {{ClickEvent.orderType}}
  *      - token_symbol: {{ClickEvent.tokenSymbol}}
  *      - chain_id: {{ClickEvent.chainId}}
+ *      - isEoaTwap: {{ClickEvent.isEoaTwap}}
+ *
+ * For `order_submitted` (dataLayer, used by GA4 / Addressable `twap_submitted` tags),
+ * map the `isEoaTwap` data layer variable onto the event so EOA TWAP can be split from Safe TWAP.
  *
  * === USAGE IN CODE ===
  *
@@ -235,7 +241,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     })
   }
 
-  sendEvent(event: string | EventOptions, params?: unknown): void {
+  sendEvent(event: AnalyticsEvent, params?: unknown): void {
     const gtmEvent = event as GtmEvent<Category>
 
     const eventData: DataLayerEvent =
@@ -254,6 +260,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
             non_interaction: event.nonInteraction,
             ...this.getDimensions(),
             ...(gtmEvent.isBridgeOrder !== undefined && { isBridgeOrder: gtmEvent.isBridgeOrder }),
+            ...(gtmEvent.isEoaTwap !== undefined && { isEoaTwap: gtmEvent.isEoaTwap }),
             ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
             ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
             ...(gtmEvent.tokenSymbol && {
@@ -307,15 +314,18 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }
 
   private pushToDataLayer(data: DataLayerEvent): void {
-    if (typeof window !== 'undefined') {
+    try {
+      if (typeof window === 'undefined') return
+
       const dataLayerEvent = sanitizeRecord({ ...data }) as DataLayerEvent
 
-      // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
-        console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
+      if (process.env.NODE_ENV === 'development' || window.enableGaLogging === true) {
+        logAnalytics.debug('Pushing to data layer', dataLayerEvent)
       }
 
       this.dataLayer.push(dataLayerEvent)
+    } catch (error) {
+      logAnalytics.warn('Data layer push failed', { data, error })
     }
   }
 

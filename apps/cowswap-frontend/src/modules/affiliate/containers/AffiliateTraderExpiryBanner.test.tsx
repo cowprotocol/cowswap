@@ -1,10 +1,11 @@
 import { type ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { useMachineTimeMs, useTimeAgo } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { render, screen } from '@testing-library/react'
 
 import { AffiliateTraderExpiryBanner } from './AffiliateTraderExpiryBanner'

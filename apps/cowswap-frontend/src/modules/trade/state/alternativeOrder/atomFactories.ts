@@ -1,23 +1,10 @@
 import { atom, Getter, PrimitiveAtom, SetStateAction, Setter, WritableAtom } from 'jotai'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { isAlternativeOrderModalVisibleAtom } from './atoms'
 
-import { TradeType } from '../../types/TradeType'
 import { tradeTypeAtom } from '../tradeTypeAtom'
-
-function isAlternativeOrderContextEnabled(get: Getter): boolean {
-  if (!get(isAlternativeOrderModalVisibleAtom)) return false
-
-  const tradeTypeInfo = get(tradeTypeAtom)
-  return tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
-}
-
-function alternativeOrderAtomGetterFactory<AtomValue>(
-  regular: PrimitiveAtom<AtomValue>,
-  alternative: PrimitiveAtom<AtomValue>,
-) {
-  return (get: Getter) => get(isAlternativeOrderContextEnabled(get) ? alternative : regular)
-}
 
 type WritableWithOptionalSetterValue<GetterValue, SetterValue> = WritableAtom<
   GetterValue,
@@ -48,4 +35,18 @@ export function alternativeOrderReadWriteAtomFactory<AtomType>(
     alternativeOrderAtomGetterFactory<AtomType>(regular, alternative),
     alternativeOrderAtomSetterFactory<AtomType, AtomType>(regular, alternative),
   )
+}
+
+function alternativeOrderAtomGetterFactory<AtomValue>(
+  regular: PrimitiveAtom<AtomValue>,
+  alternative: PrimitiveAtom<AtomValue>,
+) {
+  return (get: Getter) => get(isAlternativeOrderContextEnabled(get) ? alternative : regular)
+}
+
+function isAlternativeOrderContextEnabled(get: Getter): boolean {
+  if (!get(isAlternativeOrderModalVisibleAtom)) return false
+
+  const tradeTypeInfo = get(tradeTypeAtom)
+  return tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 }

@@ -5,8 +5,9 @@ import { useOrderAndErc20s } from '../../../hooks/useOperatorOrder'
 import { useOrderTrades } from '../../../hooks/useOperatorTrades'
 import { useSanitizeOrderIdAndUpdateUrl } from '../../../hooks/useSanitizeOrderIdAndUpdateUrl'
 import { RedirectToNetwork, useNetworkId } from '../../../state/network'
+import { Errors } from '../../../types'
 import { ORDER_QUERY_INTERVAL } from '../../const'
-import { useTable } from '../TokensTableWidget/useTable'
+import { TableState, useTable } from '../TokensTableWidget/useTable'
 
 const RESULTS_PER_PAGE = 10
 
@@ -15,7 +16,7 @@ export const OrderWidget: React.FC = () => {
   const orderId = useSanitizeOrderIdAndUpdateUrl()
 
   const {
-    state: tableState,
+    state: baseTableState,
     setPageSize,
     setPageOffset,
     handleNextPage,
@@ -25,22 +26,21 @@ export const OrderWidget: React.FC = () => {
   const {
     order,
     isLoading: isOrderLoading,
-    errors,
+    errors: orderErrors,
     errorOrderPresentInNetworkId,
   } = useOrderAndErc20s(orderId, ORDER_QUERY_INTERVAL)
   const {
     trades,
+    protocolFees,
     error,
     isLoading: areTradesLoading,
     hasNextPage,
-  } = useOrderTrades(order, tableState.pageOffset, tableState.pageSize)
+  } = useOrderTrades(order, baseTableState.pageOffset, baseTableState.pageSize)
 
-  // eslint-disable-next-line react-hooks/immutability
-  tableState['hasNextPage'] = hasNextPage
-
+  const tableState: TableState = { ...baseTableState, hasNextPage }
+  const errors: Errors = { ...orderErrors }
   if (error) {
-    // eslint-disable-next-line react-hooks/immutability
-    errors['trades'] = error
+    errors.trades = error
   }
 
   if (errorOrderPresentInNetworkId && networkId !== errorOrderPresentInNetworkId) {
@@ -51,6 +51,7 @@ export const OrderWidget: React.FC = () => {
     <OrderDetails
       order={order}
       trades={trades}
+      protocolFees={protocolFees}
       isOrderLoading={isOrderLoading}
       areTradesLoading={areTradesLoading}
       errors={errors}

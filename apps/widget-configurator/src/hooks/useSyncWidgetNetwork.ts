@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 
+import { useConnection, useSwitchChain } from 'wagmi'
+
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { useConnection, useSwitchChain } from 'wagmi'
 
 import { WidgetMode } from '../configurator.types'
 

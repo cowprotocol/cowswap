@@ -103,10 +103,6 @@ export function IframeResizer(): null {
   return null
 }
 
-function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): boolean {
-  return isIframe() && isInjectedWidget() && Boolean(parentOrigin)
-}
-
 function getContentElement(doc: Document): HTMLElement {
   return doc.getElementById('root') ?? doc.body
 }
@@ -117,4 +113,8 @@ function getContentHeight(contentElement: HTMLElement): number {
     contentElement.clientHeight,
     Math.ceil(contentElement.getBoundingClientRect().height),
   )
+}
+
+function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): boolean {
+  return isIframe() && isInjectedWidget() && Boolean(parentOrigin)
 }

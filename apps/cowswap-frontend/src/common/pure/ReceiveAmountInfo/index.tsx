@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -54,7 +55,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
   return (
     <styledEl.Box>
-      <div>
+      <div data-testid={TEST_IDS.beforeCosts}>
         <span>
           <Trans>Before costs</Trans>
         </span>
@@ -63,20 +64,37 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
         </span>
       </div>
 
-      {hasProtocolFee && <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} />}
+      {hasProtocolFee && (
+        <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} testId={TEST_IDS.protocolFee} />
+      )}
 
-      {hasPartnerFee && <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+      {hasPartnerFee && (
+        <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} testId={TEST_IDS.partnerFee} />
+      )}
 
-      <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
+      <NetworkFeeItem
+        discount={discount}
+        networkFeeAmount={networkFeeAmount}
+        isSell={isSell}
+        hasFee={hasFee}
+        testId={TEST_IDS.networkCosts}
+      />
 
-      {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
+      {!hasAnyFee && !isEoaNotEthFlow && (
+        <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />
+      )}
 
       {bridgeFee && (
-        <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInDestinationCurrency} />
+        <FeeItem
+          title={t`Bridge costs`}
+          isSell={isSell}
+          feeAmount={bridgeFee?.amountInDestinationCurrency}
+          testId={TEST_IDS.bridgeCosts}
+        />
       )}
 
       {!isFractionFalsy(amountAfterFees) && (
-        <styledEl.TotalAmount>
+        <styledEl.TotalAmount data-testid={TEST_IDS.receiveAmountTotal}>
           <span>{!isSell ? t`From` : t`To`}</span>
           <span>
             <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />

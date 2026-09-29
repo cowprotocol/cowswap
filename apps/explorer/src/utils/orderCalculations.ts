@@ -1,5 +1,4 @@
-import { TokenErc20 } from '@gnosis.pm/dex-js'
-import { calculatePrice } from '@gnosis.pm/dex-js'
+import { TokenErc20, calculatePrice } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { TEN_BIG_NUMBER } from 'const'
 

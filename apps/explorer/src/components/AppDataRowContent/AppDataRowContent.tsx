@@ -2,9 +2,8 @@ import { ReactNode, useState } from 'react'
 
 import { AppDataWrapper } from 'components/common/AppDataWrapper'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
+import { ShowMoreButton } from 'components/common/ShowMoreButton'
 import { useAppData } from 'hooks/useAppData'
-
-import * as styledEl from './AppDataRowContent.styles'
 
 import { AppDataContent } from '../AppData/AppDataContent'
 
@@ -44,9 +43,9 @@ export function AppDataRowContent({ appData, showExpanded = false, fullAppData }
         )}
         &nbsp;
         {hasAppData && (
-          <styledEl.ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
+          <ShowMoreButton onClick={() => setShowDecodedAppData((state) => !state)}>
             {showDecodedAppData ? '[-] Show less' : '[+] Show more'}
-          </styledEl.ShowMoreButton>
+          </ShowMoreButton>
         )}
       </>
       <div className={`hidden-content ${appDataError && 'error'}`}>

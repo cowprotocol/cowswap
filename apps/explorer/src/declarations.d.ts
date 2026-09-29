@@ -2,6 +2,20 @@
 declare module 'console-feed' {
   import { AnyFunction } from 'types'
 
+  export type Callback = (encoded: any, message: LogMessage) => void
+
+  export interface HookedConsole extends Console {
+    feed: Storage
+  }
+  export interface LogMessage {
+    method: Methods
+    data?: any[]
+  }
+
+  export interface Message extends Payload {
+    data: any[]
+  }
+
   export type Methods =
     | 'log'
     | 'debug'
@@ -15,19 +29,16 @@ declare module 'console-feed' {
     | 'count'
     | 'assert'
 
-  export interface LogMessage {
-    method: Methods
-    data?: any[]
-  }
   export interface Payload extends LogMessage {
     id: string
   }
 
-  export interface Message extends Payload {
-    data: any[]
+  export interface Storage {
+    pointers: {
+      [name: string]: AnyFunction
+    }
+    src: any
   }
-
-  export type Variants = 'light' | 'dark'
 
   export interface Styles {
     // Log icons
@@ -115,6 +126,9 @@ declare module 'console-feed' {
 
     [style: string]: any
   }
+  export { ConsoleComponent as Console }
+
+  export type Variants = 'light' | 'dark'
 
   interface Props {
     logs: Message[]
@@ -125,30 +139,16 @@ declare module 'console-feed' {
     logFilter?: AnyFunction
   }
 
-  // export type Console = new () => React.PureComponent<Props, any>
-  class ConsoleComponent extends React.PureComponent<Props, any> {}
-  export { ConsoleComponent as Console }
+  export function Decode(data: any): Message
 
-  export interface Storage {
-    pointers: {
-      [name: string]: AnyFunction
-    }
-    src: any
-  }
-
-  export interface HookedConsole extends Console {
-    feed: Storage
-  }
-
-  export type Callback = (encoded: any, message: LogMessage) => void
+  export function Encode<T>(data: any): T
 
   export function Hook(console: Console, callback: Callback, encode = true): HookedConsole
 
   export function Unhook(console: HookedConsole): boolean
 
-  export function Encode<T>(data: any): T
-
-  export function Decode(data: any): Message
+  // export type Console = new () => React.PureComponent<Props, any>
+  class ConsoleComponent extends React.PureComponent<Props, any> {}
 }
 
 declare module '@walletconnect/web3-provider/*' // allows to import '@walletconnect/web3-provider/dist/umd/index.min.js'

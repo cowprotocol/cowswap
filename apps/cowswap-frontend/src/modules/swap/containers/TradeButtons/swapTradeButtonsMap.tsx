@@ -123,6 +123,17 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       />
     </Wrapper>
   ),
+  [SwapFormState.SolanaNativeSell]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
+    <ButtonError
+      id="do-trade-button"
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      disabled={isDisabled}
+      data-click-event={props.swapBridgeClickEvent}
+    >
+      <div>{props.confirmText}</div>
+    </ButtonError>
+  ),
   [SwapFormState.SellNativeInHooks]: (props: SwapTradeButtonsContext) => {
     const currency = props.inputCurrency
     const symbol = currency?.symbol

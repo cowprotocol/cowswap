@@ -1,8 +1,9 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
+
+import { isInjectedWidget, logWallet } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
 import { render, RenderResult, waitFor } from '@testing-library/react'
-import { useConnection } from 'wagmi'
 
 import { WidgetStandaloneModeUpdater } from './WidgetStandaloneMode.updater'
 
@@ -14,10 +15,13 @@ import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   isInjectedWidget: jest.fn(),
+  logWallet: { error: jest.fn() },
+  normalizeError: (err: unknown) => (err instanceof Error ? err : new Error(String(err))),
 }))
 
 jest.mock('wagmi', () => ({
   useConnection: jest.fn(),
+  ConnectorAlreadyConnectedError: class MockConnectorAlreadyConnectedError extends Error {},
 }))
 
 jest.mock('../utils/connectWalletById', () => ({
@@ -62,6 +66,7 @@ const wagmiAdapterSyncConnectionsMock = wagmiAdapter.syncConnections as jest.Moc
 const wagmiAdapterSyncConnectorsMock = wagmiAdapter.syncConnectors as jest.Mock
 const optionsControllerSetEIP6963EnabledMock = OptionsController.setEIP6963Enabled as jest.Mock
 const connectorControllerSubscribeMock = ConnectorController.subscribe as jest.Mock
+const logWalletErrorMock = logWallet.error as jest.Mock
 
 const disconnectMock = jest.fn()
 
@@ -70,12 +75,12 @@ const OTHER_CONNECTOR_ID = 'metamask'
 const DAPP_MODE = false
 const STANDALONE_MODE = true
 
-function setConnector(id: string | undefined): void {
-  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
-}
-
 function renderUpdater(standaloneMode: boolean | undefined): RenderResult {
   return render(<WidgetStandaloneModeUpdater standaloneMode={standaloneMode} />)
+}
+
+function setConnector(id: string | undefined): void {
+  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
 }
 
 beforeEach(() => {
@@ -148,6 +153,28 @@ describe('WidgetStandaloneModeUpdater', () => {
       rerender(<WidgetStandaloneModeUpdater standaloneMode={DAPP_MODE} />)
 
       expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('swallows ConnectorAlreadyConnectedError without logging (auto-reconnect or the bridge beat us to it)', async () => {
+      connectWalletByIdMock.mockRejectedValue(new ConnectorAlreadyConnectedError())
+
+      renderUpdater(DAPP_MODE)
+
+      await waitFor(() => {
+        expect(connectWalletByIdMock).toHaveBeenCalledTimes(1)
+      })
+
+      expect(logWalletErrorMock).not.toHaveBeenCalled()
+    })
+
+    it('logs unexpected connect errors', async () => {
+      connectWalletByIdMock.mockRejectedValue(new Error('provider unavailable'))
+
+      renderUpdater(DAPP_MODE)
+
+      await waitFor(() => {
+        expect(logWalletErrorMock).toHaveBeenCalledTimes(1)
+      })
     })
   })
 

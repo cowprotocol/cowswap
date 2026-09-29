@@ -7,7 +7,7 @@
 //
 // Short name = the part of pkg.name after the scope (e.g. `@cowprotocol/cowswap`
 // → `cowswap`). Matches the historical release-please tag convention and the
-// `cowswap-v*` / `explorer-v*` patterns deployment.yml listens for.
+// `cowswap-v*` / `explorer-v*` patterns deployment-v2.yml listens for.
 
 import { readFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'

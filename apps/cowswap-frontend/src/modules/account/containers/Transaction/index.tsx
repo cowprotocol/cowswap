@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { RowFixed } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { i18n } from '@lingui/core'
 
 import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'

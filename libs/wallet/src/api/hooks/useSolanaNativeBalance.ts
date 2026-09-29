@@ -1,13 +1,13 @@
 import { useMemo } from 'react'
 
+import { useQuery } from '@tanstack/react-query'
+import type { UseBalanceReturnType } from 'wagmi'
+
 import { solana } from '@cowprotocol/cow-sdk'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
-import { useQuery } from '@tanstack/react-query'
 import ms from 'ms.macro'
-
-import type { UseBalanceReturnType } from 'wagmi'
 
 const SOLANA_NATIVE_DECIMALS = solana.nativeCurrency.decimals
 const SOLANA_NATIVE_SYMBOL = solana.nativeCurrency.symbol

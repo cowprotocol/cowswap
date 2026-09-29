@@ -1,4 +1,5 @@
 import { i18n, MessageDescriptor } from '@lingui/core'
+
 import { msg } from '@lingui/core/macro'
 
 import { translateTokenListTagText } from './tokenListTagText.utils'

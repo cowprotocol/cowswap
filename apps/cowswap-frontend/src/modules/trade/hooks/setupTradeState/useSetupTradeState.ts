@@ -1,21 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { useWalletClient } from 'wagmi'
+
 import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useWalletClient } from 'wagmi'
+import { useAppKitProvider } from '@reown/appkit/react'
+
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { TradeType, useTradeNavigate, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
-import { useTradeStateFromUrl } from './useTradeStateFromUrl'
 
-import { useTradeNavigate } from '../../hooks/useTradeNavigate'
-import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from '../../types/TradeRawState'
-import { TradeType } from '../../types/TradeType'
 import { useTradeState } from '../useTradeState'
 
 const INITIAL_CHAIN_ID_FROM_URL = getRawCurrentChainIdFromUrl()
@@ -24,7 +25,7 @@ const EMPTY_TOKEN_ID = '_'
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useSetupTradeState(enableSellEqBuy = false): void {
-  useSetupTradeStateFromUrl()
+  const tradeStateFromUrl = useSetupTradeStateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
@@ -33,9 +34,11 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   // TODO M-6 COW-573
   // This flow will be reviewed and updated later, to include a wagmi alternative
   const { data: walletClient } = useWalletClient()
+  const { walletProvider: solanaWalletProvider } = useAppKitProvider('solana')
+  const hasConnectedProvider = Boolean(walletClient || solanaWalletProvider)
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
-  const tradeStateFromUrl = useTradeStateFromUrl()
+  const onSelectNetwork = useOnSelectNetwork()
   const { state, updateState } = useTradeState()
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
 
@@ -56,9 +59,13 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
   const switchNetworkInWallet = useCallback(
-    async (targetChainId: SupportedChainId, currentProviderChainId: SupportedChainId | null) => {
+    async (targetChainId: SupportedChainId, currentProviderChainId: SupportedChainId | null, selectNetwork = false) => {
       try {
-        await switchNetwork(targetChainId)
+        if (selectNetwork) {
+          await onSelectNetwork(targetChainId)
+        } else {
+          await switchNetwork(targetChainId)
+        }
       } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
@@ -77,7 +84,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       // Clean up rememberedUrlStateRef when network switching is finished
       rememberedUrlStateRef.current = null
     },
-    [switchNetwork, tradeNavigate],
+    [switchNetwork, onSelectNetwork, tradeNavigate],
   )
 
   const navigateAndSwitchNetwork = useCallback(
@@ -244,12 +251,12 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
     if (!providerChainId || providerChainId === currentChainId || !isUrlChainIdChanged) return
 
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
-    switchNetworkInWallet(targetChainId, providerChainId)
+    switchNetworkInWallet(targetChainId, providerChainId, hasConnectedProvider)
 
-    console.debug('[TRADE STATE]', 'Set chainId to provider', { walletClient, urlChainId })
+    console.debug('[TRADE STATE]', 'Set chainId to provider', { hasConnectedProvider, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [walletClient, urlChainId])
+  }, [hasConnectedProvider, urlChainId])
 
   /**
    * On chainId in provider changes

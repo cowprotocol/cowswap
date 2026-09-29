@@ -45,6 +45,15 @@ export type AppearanceStylePresetKey = (typeof APPEARANCE_STYLE_PRESET_OPTIONS)[
 
 type PresetElement = 'root' | 'bodyWrapper' | 'card'
 
+export function applyPresetStyle(onStyleJsonChange: OnStyleJsonChange, style: CSS.Properties | undefined): void {
+  if (style) {
+    onStyleJsonChange(JSON.stringify(style, null, 2))
+    return
+  }
+
+  onStyleJsonChange(null)
+}
+
 // eslint-disable-next-line max-lines-per-function
 export function getAppearanceStylePresets(
   paperBackgroundColor: string,
@@ -139,13 +148,4 @@ export function getAppearanceStylePresets(
       },
     },
   }
-}
-
-export function applyPresetStyle(onStyleJsonChange: OnStyleJsonChange, style: CSS.Properties | undefined): void {
-  if (style) {
-    onStyleJsonChange(JSON.stringify(style, null, 2))
-    return
-  }
-
-  onStyleJsonChange(null)
 }

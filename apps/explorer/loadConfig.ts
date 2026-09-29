@@ -9,6 +9,14 @@ const CONFIG_FILE = './config-default.yaml'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function loadConfig() {
+  const configPath = path.resolve(__dirname, CONFIG_FILE)
+
+  return parseJsonOrYaml(configPath)
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function parseJsonOrYaml(filePath: string) {
   const extension = path.extname(filePath)
   if (SUPPORTED_EXTENSIONS.split('|').includes(extension.replace('.', ''))) {
@@ -17,12 +25,4 @@ function parseJsonOrYaml(filePath: string) {
   } else {
     throw new Error(`Unknown file extension "${extension}". Supported JSON or YAML: ${filePath} `)
   }
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function loadConfig() {
-  const configPath = path.resolve(__dirname, CONFIG_FILE)
-
-  return parseJsonOrYaml(configPath)
 }

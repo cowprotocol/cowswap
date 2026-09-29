@@ -36,8 +36,6 @@ export const FlyoutRow = styled.button<{ $active: boolean }>`
   align-items: center;
   background-color: ${({ $active, theme }) => ($active ? theme.bg2 : 'transparent')};
   border-radius: 8px;
-  border: 0;
-  cursor: pointer;
   display: flex;
   font-weight: 400;
   justify-content: space-between;
@@ -45,7 +43,6 @@ export const FlyoutRow = styled.button<{ $active: boolean }>`
   text-align: left;
   width: 100%;
   color: ${({ $active, theme }) => ($active ? theme.white : `var(${UI.COLOR_TEXT})`)};
-  appearance: none;
 
   &:hover {
     color: ${({ theme, $active }) => ($active ? 'inherit' : theme.text1)};

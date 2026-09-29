@@ -1,15 +1,17 @@
 import React from 'react'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useIsSafeWallet, useIsSmartContractWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { render, screen } from '@testing-library/react'
 
 import { Field } from 'legacy/state/types'
 
+import { useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { TradeWidgetForm } from './TradeWidgetForm'
@@ -23,7 +25,7 @@ import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
-import { useTradeTypeInfoFromUrl } from '../../hooks/useTradeTypeInfoFromUrl'
+import { useSolanaWrapReceiveAmount } from '../../hooks/useSolanaWrapReceiveAmount'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 
 // ─── External package mocks ────────────────────────────────────────────────
@@ -57,8 +59,6 @@ jest.mock('@cowprotocol/wallet', () => ({
 jest.mock('@cowprotocol/ui', () => ({
   ButtonOutlined: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   Media: { upToSmall: () => '', upToLarge: () => '' },
-  MY_ORDERS_ID: 'my-orders',
-  SWAP_HEADER_OFFSET: 0,
 }))
 
 // ─── Module mocks ──────────────────────────────────────────────────────────
@@ -87,8 +87,20 @@ jest.mock('../../hooks/useIsQuoteUpdatePossible', () => ({ useIsQuoteUpdatePossi
 jest.mock('../../hooks/useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
 jest.mock('../../hooks/useLimitOrdersPromoBanner', () => ({ useLimitOrdersPromoBanner: jest.fn() }))
 jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAmounts: jest.fn() }))
+jest.mock('../../hooks/useSolanaWrapReceiveAmount', () => ({ useSolanaWrapReceiveAmount: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
-jest.mock('../../hooks/useTradeTypeInfoFromUrl', () => ({ useTradeTypeInfoFromUrl: jest.fn() }))
+jest.mock('common/modules/tradeNavigation', () => ({
+  // requireActual only the lightweight consts module (TradeType and friends) rather than the whole
+  // barrel — the barrel's hooks pull in common/constants/routes.ts, which this file mocks elsewhere.
+  ...jest.requireActual('common/modules/tradeNavigation/consts'),
+  useTradeTypeInfoFromUrl: jest.fn(),
+  // Called eagerly by TradeRawState.ts (getDefaultTradeRawState) when default atom state is built at
+  // module-load time, well before any test in this file runs — must stay callable even unstubbed.
+  getDefaultTradeCurrenciesIds: jest.fn(),
+}))
+jest.mock('../../hooks/useSetOrdersTableDrawerOpen', () => ({
+  useSetOrdersTableDrawerOpen: () => jest.fn(),
+}))
 jest.mock('../../state/alternativeOrder', () => ({
   useIsAlternativeOrderModalVisible: jest.fn(),
   alternativeOrderReadWriteAtomFactory: (regular: unknown) => regular,
@@ -153,24 +165,15 @@ const mockedUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<t
 const mockedUseLimitOrdersPromoBanner = useLimitOrdersPromoBanner as jest.MockedFunction<
   typeof useLimitOrdersPromoBanner
 >
+const mockedUseSolanaWrapReceiveAmount = useSolanaWrapReceiveAmount as jest.MockedFunction<
+  typeof useSolanaWrapReceiveAmount
+>
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 
 const EVM_CHAIN_ID = 1
 const BTC_CHAIN_ID = AdditionalTargetChainId.BITCOIN
 const ACCOUNT = '0xabc'
-
-function makeCurrencyInfo(chainId?: number): CurrencyInfo {
-  return {
-    field: Field.OUTPUT,
-    currency: chainId !== undefined ? ({ chainId } as unknown as Currency) : null,
-    amount: null,
-    isIndependent: false,
-    balance: null,
-    fiatAmount: null,
-    receiveAmountInfo: null,
-  }
-}
 
 function buildProps(overrides: Partial<TradeWidgetProps> = {}): TradeWidgetProps {
   return {
@@ -191,6 +194,22 @@ function buildProps(overrides: Partial<TradeWidgetProps> = {}): TradeWidgetProps
     outputCurrencyInfo: makeCurrencyInfo(),
     ...overrides,
   }
+}
+
+function makeCurrencyInfo(chainId?: number): CurrencyInfo {
+  return {
+    field: Field.OUTPUT,
+    currency: chainId !== undefined ? ({ chainId } as unknown as Currency) : null,
+    amount: null,
+    isIndependent: false,
+    balance: null,
+    fiatAmount: null,
+    receiveAmountInfo: null,
+  }
+}
+
+function renderWithI18n(ui: React.ReactElement): ReturnType<typeof render> {
+  return render(<I18nProvider i18n={i18n}>{ui}</I18nProvider>)
 }
 
 function setupDefaults({
@@ -219,10 +238,7 @@ function setupDefaults({
   ;(useIsEoaEthFlow as jest.Mock).mockReturnValue(false)
   ;(useIsQuoteUpdatePossible as jest.Mock).mockReturnValue(false)
   ;(useShouldHideQuoteAmounts as jest.Mock).mockReturnValue(false)
-}
-
-function renderWithI18n(ui: React.ReactElement): ReturnType<typeof render> {
-  return render(<I18nProvider i18n={i18n}>{ui}</I18nProvider>)
+  mockedUseSolanaWrapReceiveAmount.mockReturnValue(undefined)
 }
 
 // ─── Tests ─────────────────────────────────────────────────────────────────

@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { useExtractText } from '@cowprotocol/common-utils'
 import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
 
-import { MessageDescriptor } from '@lingui/core'
 import { ChevronDown } from 'react-feather'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'

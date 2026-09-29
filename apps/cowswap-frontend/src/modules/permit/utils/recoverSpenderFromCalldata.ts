@@ -1,6 +1,6 @@
-import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
-
 import { decodeFunctionData, type Hex } from 'viem'
+
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 
 const COMBINED_ABI = [
   ...oneInchPermitUtilsConsts.EIP_2612_PERMIT_ABI,

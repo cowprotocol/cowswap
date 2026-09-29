@@ -2,7 +2,9 @@ import { ReactNode } from 'react'
 
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 
-import { Trans } from '@lingui/react/macro'
+import { plural } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { useLoadMoreOrders } from 'modules/orders'
 
@@ -11,26 +13,29 @@ import { LoadMoreOrdersButton } from '../Button/LoadMoreOrdersButton'
 
 export interface LoadMoreOrdersSectionProps {
   totalOpenOrders: number
+  orderType: TabOrderTypes
 }
 
-export function LoadMoreOrdersSection({ totalOpenOrders }: LoadMoreOrdersSectionProps): ReactNode {
-  const { limit, hasMoreOrders } = useLoadMoreOrders()
+export function LoadMoreOrdersSection({ totalOpenOrders, orderType }: LoadMoreOrdersSectionProps): ReactNode {
+  const { t } = useLingui()
+  const { limit, hasMoreOrders, isLoading, loadMore } = useLoadMoreOrders(orderType)
 
   const paragraphs = hasMoreOrders ? (
     <>
       <p>
         {limit === AMOUNT_OF_ORDERS_TO_FETCH ? (
           <Trans>Only the {limit} most recent orders were searched.</Trans>
-        ) : totalOpenOrders === 1 ? (
-          <Trans>Found 1 open order in the {limit} most recent ones.</Trans>
         ) : (
-          <Trans>
-            Found {totalOpenOrders} open orders in the {limit} most recent ones.
-          </Trans>
+          t`Found ${plural(totalOpenOrders, {
+            one: '# open order',
+            few: '# open orders',
+            many: '# open orders',
+            other: '# open orders',
+          })} in the ${limit} most recent ones.`
         )}
       </p>
       <p>
-        <LoadMoreOrdersButton />
+        <LoadMoreOrdersButton disabled={isLoading || !hasMoreOrders} onClick={loadMore} />
       </p>
     </>
   ) : (

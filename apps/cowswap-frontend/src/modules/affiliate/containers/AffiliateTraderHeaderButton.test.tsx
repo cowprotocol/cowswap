@@ -1,8 +1,9 @@
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { fireEvent, render, screen, type RenderResult } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'

@@ -24,38 +24,6 @@ const MOBILE_FULL_WIDTH_STYLES = {
   boxSizing: 'border-box' as const,
 }
 
-function createMobileModifiers(
-  arrowElement: HTMLDivElement | null,
-): Array<Partial<Modifier<string, Record<string, unknown>>>> {
-  return [
-    {
-      name: 'offset',
-      options: {
-        offset: ({ reference }: Parameters<OffsetsFunction>[0]) => {
-          const refCenterX = reference.x + reference.width / 2
-          const viewportCenterX = window.innerWidth / 2
-          const skidding = viewportCenterX - refCenterX
-          const distance = 8
-          return [skidding, distance]
-        },
-      },
-    },
-    { name: 'preventOverflow', enabled: false },
-    { name: 'flip', enabled: false },
-    { name: 'arrow', options: { element: arrowElement, padding: 8 } },
-  ]
-}
-
-function createDesktopModifiers(
-  arrowElement: HTMLDivElement | null,
-): Array<Partial<Modifier<string, Record<string, unknown>>>> {
-  return [
-    { name: 'offset', options: { offset: [8, 8] } },
-    { name: 'arrow', options: { element: arrowElement } },
-    { name: 'preventOverflow', options: { padding: 8 } },
-  ]
-}
-
 export interface PopoverContainerProps {
   show: boolean
   bgColor?: string
@@ -78,16 +46,24 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   forceMount?: boolean
 }
 
-function useLazyPortalMount(show: boolean, forceMount: boolean): boolean {
-  const [hasMountedPortal, setHasMountedPortal] = useState<boolean>(() => show || forceMount)
-
-  useEffect(() => {
-    if ((show || forceMount) && !hasMountedPortal) {
-      setHasMountedPortal(true)
-    }
-  }, [show, forceMount, hasMountedPortal])
-
-  return forceMount || show || hasMountedPortal
+interface PopoverPortalProps {
+  shouldRender: boolean
+  show: boolean
+  isMobile: boolean
+  showMobileBackdrop: boolean
+  backdropHeight: string
+  className?: string
+  setPopperElement(value: HTMLDivElement | null): void
+  popperStyle: React.CSSProperties
+  popperAttributes: ReturnType<typeof usePopper>['attributes']['popper']
+  bgColor?: string
+  color?: string
+  borderColor?: string
+  content: React.ReactNode
+  setArrowElement(value: HTMLDivElement | null): void
+  arrowStyle: React.CSSProperties
+  arrowAttributes: ReturnType<typeof usePopper>['attributes']['arrow']
+  arrowPlacement: string
 }
 
 export default function Popover(props: PopoverProps): React.JSX.Element {
@@ -165,24 +141,36 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
   )
 }
 
-interface PopoverPortalProps {
-  shouldRender: boolean
-  show: boolean
-  isMobile: boolean
-  showMobileBackdrop: boolean
-  backdropHeight: string
-  className?: string
-  setPopperElement(value: HTMLDivElement | null): void
-  popperStyle: React.CSSProperties
-  popperAttributes: ReturnType<typeof usePopper>['attributes']['popper']
-  bgColor?: string
-  color?: string
-  borderColor?: string
-  content: React.ReactNode
-  setArrowElement(value: HTMLDivElement | null): void
-  arrowStyle: React.CSSProperties
-  arrowAttributes: ReturnType<typeof usePopper>['attributes']['arrow']
-  arrowPlacement: string
+function createDesktopModifiers(
+  arrowElement: HTMLDivElement | null,
+): Array<Partial<Modifier<string, Record<string, unknown>>>> {
+  return [
+    { name: 'offset', options: { offset: [8, 8] } },
+    { name: 'arrow', options: { element: arrowElement } },
+    { name: 'preventOverflow', options: { padding: 8 } },
+  ]
+}
+
+function createMobileModifiers(
+  arrowElement: HTMLDivElement | null,
+): Array<Partial<Modifier<string, Record<string, unknown>>>> {
+  return [
+    {
+      name: 'offset',
+      options: {
+        offset: ({ reference }: Parameters<OffsetsFunction>[0]) => {
+          const refCenterX = reference.x + reference.width / 2
+          const viewportCenterX = window.innerWidth / 2
+          const skidding = viewportCenterX - refCenterX
+          const distance = 8
+          return [skidding, distance]
+        },
+      },
+    },
+    { name: 'preventOverflow', enabled: false },
+    { name: 'flip', enabled: false },
+    { name: 'arrow', options: { element: arrowElement, padding: 8 } },
+  ]
 }
 
 function PopoverPortal({
@@ -233,4 +221,16 @@ function PopoverPortal({
       </PopoverContainer>
     </Portal>
   )
+}
+
+function useLazyPortalMount(show: boolean, forceMount: boolean): boolean {
+  const [hasMountedPortal, setHasMountedPortal] = useState<boolean>(() => show || forceMount)
+
+  useEffect(() => {
+    if ((show || forceMount) && !hasMountedPortal) {
+      setHasMountedPortal(true)
+    }
+  }, [show, forceMount, hasMountedPortal])
+
+  return forceMount || show || hasMountedPortal
 }

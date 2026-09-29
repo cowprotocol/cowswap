@@ -57,13 +57,7 @@ export const WarningContent = styled.span`
 `
 
 export const ApprovalLink = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: pointer;
   font-size: inherit;
-  color: inherit;
   text-decoration: underline;
   color: var(${UI.COLOR_PRIMARY});
   font-weight: 500;

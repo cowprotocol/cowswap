@@ -1,3 +1,5 @@
+import type { Address } from 'viem'
+import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
@@ -7,8 +9,6 @@ import { buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getEip712Domain } from '../utils/getEip712Domain'
 
 import type { GetTokenPermitInfoParams } from '../types'
-import type { Address } from 'viem'
-import type { Config } from 'wagmi'
 
 jest.mock('../const', () => ({
   DEFAULT_MIN_GAS_LIMIT: 50000n,
@@ -44,7 +44,7 @@ const mockedBuildEip2612PermitCallData = buildEip2612PermitCallData as jest.Mock
 
 describe('getTokenPermitInfo request cache', () => {
   const config = {} as Config
-  const publicClient = {}
+  const publicClient = {} as GetTokenPermitInfoParams['publicClient']
   const spender = '0x3333333333333333333333333333333333333333'
   const otherSpender = '0x4444444444444444444444444444444444444444'
 

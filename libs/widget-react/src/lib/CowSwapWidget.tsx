@@ -11,9 +11,27 @@ import {
   WIDGET_CONTAINER_ID,
 } from '@cowprotocol/widget-lib'
 
-type WidgetErrorState = { error: Error; message: string } | null
-type TryOrHandleError = (action: string, actionThatMightFail: Command) => void
+interface CreateWidgetParams {
+  container: HTMLDivElement
+  params: CowSwapWidgetParams
+  provider?: EthereumProvider
+  listeners?: CowWidgetEventListeners
+  onReady?: () => void
+  onLoadingError?: () => void
+  enableSafeSdkBridge: boolean
+}
 type MutableRef<T> = { current: T }
+type TryOrHandleError = (action: string, actionThatMightFail: Command) => void
+
+type WidgetErrorState = { error: Error; message: string } | null
+
+interface WidgetRefs {
+  paramsRef: MutableRef<CowSwapWidgetParams | null>
+  providerRef: MutableRef<EthereumProvider | undefined>
+  listenersRef: MutableRef<CowWidgetEventListeners | undefined>
+  enableSafeSdkBridgeRef: MutableRef<boolean>
+  widgetHandlerRef: MutableRef<CowSwapWidgetHandler | null>
+}
 
 // eslint-disable-next-line max-lines-per-function
 export function CowSwapWidget({
@@ -150,12 +168,42 @@ export function CowSwapWidget({
   )
 }
 
-interface WidgetRefs {
-  paramsRef: MutableRef<CowSwapWidgetParams | null>
-  providerRef: MutableRef<EthereumProvider | undefined>
-  listenersRef: MutableRef<CowWidgetEventListeners | undefined>
-  enableSafeSdkBridgeRef: MutableRef<boolean>
-  widgetHandlerRef: MutableRef<CowSwapWidgetHandler | null>
+function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
+  const nextHooks = next.hooks ?? {}
+  const nextKeys = Object.keys(nextHooks)
+
+  const prevHooks = prev.hooks ?? {}
+  const prevKeys = Object.keys(prevHooks)
+
+  return (
+    nextKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    }) ||
+    prevKeys.some((_key) => {
+      const key = _key as keyof CowSwapWidgetParams['hooks']
+      return nextHooks[key] !== prevHooks[key]
+    })
+  )
+}
+
+function createWidget({
+  container,
+  params,
+  provider,
+  listeners,
+  onReady,
+  onLoadingError,
+  enableSafeSdkBridge,
+}: CreateWidgetParams): CowSwapWidgetHandler {
+  return createCowSwapWidget(container, {
+    params,
+    provider,
+    listeners,
+    onReady,
+    enableSafeSdkBridge,
+    onLoadingError,
+  })
 }
 
 function useDestroyWidgetOnUnmount({
@@ -189,52 +237,4 @@ function WidgetError({ error }: { error: NonNullable<WidgetErrorState> }): JSX.E
       {error.error.message && <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.75em' }}>{error.error.message}</pre>}
     </div>
   )
-}
-
-function areParamsHooksDifferent(prev: CowSwapWidgetParams, next: CowSwapWidgetParams): boolean {
-  const nextHooks = next.hooks ?? {}
-  const nextKeys = Object.keys(nextHooks)
-
-  const prevHooks = prev.hooks ?? {}
-  const prevKeys = Object.keys(prevHooks)
-
-  return (
-    nextKeys.some((_key) => {
-      const key = _key as keyof CowSwapWidgetParams['hooks']
-      return nextHooks[key] !== prevHooks[key]
-    }) ||
-    prevKeys.some((_key) => {
-      const key = _key as keyof CowSwapWidgetParams['hooks']
-      return nextHooks[key] !== prevHooks[key]
-    })
-  )
-}
-
-interface CreateWidgetParams {
-  container: HTMLDivElement
-  params: CowSwapWidgetParams
-  provider?: EthereumProvider
-  listeners?: CowWidgetEventListeners
-  onReady?: () => void
-  onLoadingError?: () => void
-  enableSafeSdkBridge: boolean
-}
-
-function createWidget({
-  container,
-  params,
-  provider,
-  listeners,
-  onReady,
-  onLoadingError,
-  enableSafeSdkBridge,
-}: CreateWidgetParams): CowSwapWidgetHandler {
-  return createCowSwapWidget(container, {
-    params,
-    provider,
-    listeners,
-    onReady,
-    enableSafeSdkBridge,
-    onLoadingError,
-  })
 }

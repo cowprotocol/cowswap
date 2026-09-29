@@ -8,17 +8,17 @@ import { PENDING_ORDERS_BUFFER } from '../../../explorer/const'
 import { RAW_ORDER } from '../../data'
 import { mockTimes, DATE } from '../../testHelpers'
 
+function _creationDatePlusMilliseconds(milliseconds: number): Date {
+  const creationDate = new Date(RAW_ORDER.creationDate)
+  return new Date(creationDate.setMilliseconds(creationDate.getMilliseconds() + milliseconds))
+}
+
 function _getCurrentTimestamp(): number {
   return Math.floor(Date.now() / 1000)
 }
 
 function _getPastTimestamp(): number {
   return Math.floor(DATE.getTime() / 1000) - 1
-}
-
-function _creationDatePlusMilliseconds(milliseconds: number): Date {
-  const creationDate = new Date(RAW_ORDER.creationDate)
-  return new Date(creationDate.setMilliseconds(creationDate.getMilliseconds() + milliseconds))
 }
 
 // mockTimes set's Date.now() to creationDate plus twice time PendingBuffer const in the test context

@@ -1,5 +1,104 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.12.0...common-const-v3.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat(sol): support sol orders in explorer (#8149)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.11.0...common-const-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.10.0...common-const-v3.11.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.9.0...common-const-v3.10.0) (2026-09-03)
+
+### Minor Changes
+
+- feat(e2e): test selectors and e2e mocks (#8036)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.8.0...common-const-v3.9.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: twap for EOAs order history (#7880)
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.1...common-const-v3.8.0) (2026-08-05)
+
+### Minor Changes
+
+- feat(balances): track delegations for Solana (#7903)
+
+### Patch Changes
+
+- fix: update EURe and GBPe on Gnosis (#7954)
+
+- fix(internationalization): clear stale translations and add pt-br and fr-fr (#7943)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.3.0
+  - @cowprotocol/types@4.8.0
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.7.0...common-const-v3.7.1) (2026-07-30)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.7.0
+
+## [3.7.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.6.0...common-const-v3.7.0) (2026-07-28)
+
+### Minor Changes
+
+- feat(solana): switch between EVM/non-EVM chains (#7848)
+
+- feat(solana): load token balances (#7850)
+
+### Patch Changes
+
+- fix(bridge): fix bridge fee displaying (#7893)
+
+- fix(bridging): update bungee cctp to cctp-v2 (#7155)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.6.0
+  - @cowprotocol/currency@1.2.2
+
 ## [3.6.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.5.1...common-const-v3.6.0) (2026-07-08)
 
 ### Minor Changes

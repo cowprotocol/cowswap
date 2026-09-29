@@ -1,3 +1,5 @@
+import { getAddress } from 'viem'
+
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import {
   isBtcAddress,
@@ -10,9 +12,8 @@ import {
 } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
-import { getAddress } from 'viem'
 
-import { getExplorerOrderLink } from './explorer'
+import { getExplorerOrderLink, getExplorerTwapOrderLink, isTwapEventId } from './explorer'
 import { getSafeAbsoluteUrl } from './safeLink'
 
 /**
@@ -21,18 +22,31 @@ import { getSafeAbsoluteUrl } from './safeLink'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-export function escapeRegExp(string: string): string {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
-}
-
-// returns the checksummed address if the address is valid, otherwise returns false
+/**
+ * EVM only. Returns the checksummed EVM address if valid, otherwise false.
+ *
+ * Do not make this chain-aware: it has no `chainId` and ~23 call sites rely on the EVM contract
+ * (recipient validation, quote params). For chain-agnostic checks use `isSupportedAddress` /
+ * `getAddressKey` from `@cowprotocol/cow-sdk`.
+ */
 export function isAddress(value: string | undefined | null): string | false {
   if (!value) return false
-  const prefixed = value.startsWith('0x') ? value : `0x${value}`
+
+  return checksumEvmAddress(value)
+}
+
+/**
+ * Shortens an address for display, falling back to the original value when it cannot be shortened.
+ *
+ * Use it for values that are only *expected* to be addresses (backend payloads, user input): the
+ * full 42-char address would break the UI layout, but `shortenAddress` throws on anything that
+ * isn't a known address format, so the raw value is displayed instead.
+ */
+export function safeShortenAddress(address: string, chars?: number): string {
   try {
-    return getAddress(prefixed)
+    return shortenAddress(address, chars)
   } catch {
-    return false
+    return address
   }
 }
 
@@ -53,6 +67,15 @@ export function shortenAddress(address: string, chars = 4): string {
   throw Error(`Invalid 'address' parameter '${address}'.`)
 }
 
+function checksumEvmAddress(value: string): string | false {
+  const prefixed = value.startsWith('0x') ? value : `0x${value}`
+  try {
+    return getAddress(prefixed)
+  } catch {
+    return false
+  }
+}
+
 function isCaseSensitiveAddress(address: string): boolean {
   return isBtcAddress(address) || isSolanaAddress(address)
 }
@@ -62,6 +85,7 @@ function makeAddressShorter(address: string, chars = 4): string {
 }
 
 const COW_ORDER_ID_LENGTH = 114 // 112 (56 bytes in hex) + 2 (it's prefixed with "0x")
+const SOLANA_ORDER_ID_LENGTH = 66 // 64 (32 bytes in hex) + 2 (it's prefixed with "0x")
 
 export type BlockExplorerLinkType =
   | 'transaction'
@@ -90,8 +114,20 @@ export function getBlockExplorerUrl(
   return getEtherscanUrl(chainId, data, type, base)
 }
 
+export function getChainExplorerLinkTitle(chainId: SupportedChainId): string {
+  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+
+  return t`View on` + ` ${explorerTitle}`
+}
+export function getCoWExplorerLinkTitle(): string {
+  return t`View on Explorer`
+}
+
 export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
-  if (isCowOrder(type, data)) {
+  const twapLink = type === 'transaction' ? getExplorerTwapOrderLink(chainId, data) : undefined
+  if (twapLink) return twapLink
+
+  if (isCowOrder(type, data, chainId)) {
     // Explorer for CoW orders:
     //    If a transaction has the size of the CoW orderId, then it's a meta-tx
     return getExplorerOrderLink(chainId, data)
@@ -100,22 +136,66 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
   }
 }
 
-export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
+export function getEtherscanUrl(
+  chainId: TargetChainId,
+  data: string,
+  type: BlockExplorerLinkType,
+  base?: string,
+): string {
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath =
+    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
+    getSafeAbsoluteUrl(base) ||
+    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
 
-  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
+  if (!basePath) return ''
+
+  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
+  // a dedicated explorer URL builder must be added here before this fallback.
+  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
+  return getEvmExplorerUrl(basePath, data, type)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function isCowOrder(type: BlockExplorerLinkType, data?: string) {
-  if (!data) return false
+export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
+  return isCowOrder(type, data, chainId) || (type === 'transaction' && isTwapEventId(data ?? ''))
+    ? getCoWExplorerLinkTitle()
+    : getChainExplorerLinkTitle(chainId)
+}
 
-  return type === 'transaction' && data.length === COW_ORDER_ID_LENGTH
+/**
+ * A CoW order id is told apart from a raw transaction hash by its length, which needs the chain to be
+ * unambiguous: Solana order ids are 32 bytes, exactly the length of an EVM transaction hash. Callers that
+ * pass no `chainId` keep the EVM rule, so an EVM transaction hash is never mistaken for an order.
+ */
+export function isCowOrder(type: BlockExplorerLinkType, data?: string, chainId?: TargetChainId): boolean {
+  if (!data || type !== 'transaction') return false
+
+  if (chainId !== undefined && isSolanaChain(chainId)) {
+    return data.length === SOLANA_ORDER_ID_LENGTH
+  }
+
+  return data.length === COW_ORDER_ID_LENGTH
 }
 
 export function shortenOrderId(orderId: string): string {
   return orderId.slice(0, 6) + '...' + orderId.slice(orderId.length - 4)
+}
+
+function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
+  switch (type) {
+    case 'transaction':
+    case 'event':
+      return `${basePath}/tx/${data}`
+    case 'block':
+      return `${basePath}/block/${data}`
+    case 'address':
+    case 'token-transfer':
+    default:
+      return `${basePath}/address/${data}`
+    case 'token':
+    case 'contract':
+      return `${basePath}` // BTC has no token or contract page
+  }
 }
 
 function getEvmExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
@@ -152,36 +232,4 @@ function getSolExplorerUrl(basePath: string, data: string, type: BlockExplorerLi
     case 'block':
       return `${basePath}/block/${data}`
   }
-}
-
-function getBtcExplorerUrl(basePath: string, data: string, type: BlockExplorerLinkType): string {
-  switch (type) {
-    case 'transaction':
-    case 'event':
-      return `${basePath}/tx/${data}`
-    case 'block':
-      return `${basePath}/block/${data}`
-    case 'address':
-    case 'token-transfer':
-    default:
-      return `${basePath}/address/${data}`
-    case 'token':
-    case 'contract':
-      return `${basePath}` // BTC has no token or contract page
-  }
-}
-
-function getEtherscanUrl(chainId: TargetChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  // Allow override via environment variable for local development (e.g., Otterscan)
-  const basePath =
-    getSafeAbsoluteUrl(BLOCK_EXPLORER_URL_OVERRIDE) ||
-    getSafeAbsoluteUrl(base) ||
-    getSafeAbsoluteUrl(CHAIN_INFO[chainId]?.explorer)
-
-  if (!basePath) return ''
-
-  if (isBtcChain(chainId)) return getBtcExplorerUrl(basePath, data, type)
-  // a dedicated explorer URL builder must be added here before this fallback.
-  if (isSolanaChain(chainId)) return getSolExplorerUrl(basePath, data, type)
-  return getEvmExplorerUrl(basePath, data, type)
 }

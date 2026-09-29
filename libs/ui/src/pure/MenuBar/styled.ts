@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Font, Media } from '../../consts'
+import { Media } from '../../consts'
 import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
@@ -524,6 +524,42 @@ export const StyledDropdownContentItem = styled.li<{
 export const DropdownContentLanguages = styled(DropdownContent)`
   max-height: 200px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+
+  /* Firefox-only styles */
+  @supports (-moz-appearance: none) {
+    /* other browsers support ::-webkit-scrollbar, so we need "scrollbar-color" only for Firefox */
+    /* see https://caniuse.com/mdn-css_selectors_-webkit-scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: var(${UI.COLOR_TEXT_OPACITY_25}) var(${UI.COLOR_TEXT_OPACITY_10});
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: var(${UI.COLOR_TEXT_OPACITY_25});
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 
   ${StyledDropdownContentItem} {
     text-transform: capitalize;
@@ -668,7 +704,7 @@ export const RootNavItem = styled.li<{ isOpen?: boolean; mobileMode?: boolean }>
       align-items: center;
       justify-content: left;
       font-size: 21px;
-      font-weight: ${Font.weight.semibold};
+      font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});
       padding: 12px 16px 12px 6px;
     `}
   > svg {

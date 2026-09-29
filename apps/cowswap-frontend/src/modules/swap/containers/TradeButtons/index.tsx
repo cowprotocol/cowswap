@@ -1,7 +1,9 @@
 import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useIsSafeWallet } from '@cowprotocol/wallet'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -52,6 +54,8 @@ export function TradeButtons({
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency } = useSwapDerivedState()
+  const { chainId } = useWalletInfo()
+  const { isSolanaEnabled } = useFeatureFlags()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -112,8 +116,14 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
+  // TODO(solana): temporary bypass tied to isSolanaEnabled. The Solana order-flow context isn't wired
+  // yet, so `isTradeContextReady` is always false on Solana and would keep the approve button permanently
+  // disabled. While Solana is behind the flag, skip that gate (the Solana swap callback is a no-op until
+  // the order flow lands). Remove this when the Solana trade flow is implemented — surfaces on the grep
+  // for isSolanaEnabled when the flag is cleaned up.
+  const skipTradeContextReadyGate = isSolanaEnabled && isSolanaChain(chainId)
   const isDisabled =
-    !isTradeContextReady ||
+    (!skipTradeContextReadyGate && !isTradeContextReady) ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
     (isNonEvmBridging || shouldCheckBridgingRecipient ? !nonEvmReceiverConfirmed : false)

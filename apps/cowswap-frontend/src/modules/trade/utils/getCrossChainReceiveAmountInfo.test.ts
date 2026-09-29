@@ -38,8 +38,10 @@ const slippagePercent = new Percent(373, 10_000) // 3.7300
 const protocolFeeBps = 2
 const volumeFeeBps = 3
 const bridgeFeeAmounts = {
-  amountInBuyCurrency: 5700201003969n,
-  amountInSellCurrency: 4694n,
+  // Denominated in the bridge buy currency = destination currency (USDC, 6 decimals): 0.004694 USDC
+  amountInBuyCurrency: 4694n,
+  // Denominated in the bridge sell currency = intermediate currency (BNB, 18 decimals): 0.000005700201003969 BNB
+  amountInSellCurrency: 5700201003969n,
   feeBps: 14,
 }
 const expectedToReceiveAmount = CurrencyAmount.fromRawAmount(outputCurrency, 3353244n.toString())
@@ -154,11 +156,11 @@ describe('getCrossChainReceiveAmountInfo - adjusts SDK getQuoteAmountsAndCosts()
       expect(stringifyTokenAmount(networkFeeAmount)).toBe('0.009383 USDC (8453)')
     })
     it('Bridge fee', () => {
-      // Bridge fee in destination currency: From bridgeFeeAmounts.amountInSellCurrency
+      // Bridge fee in destination currency: From bridgeFeeAmounts.amountInBuyCurrency
       //   4694 (raw, 6 decimals) = 0.004694 USDC
       expect(stringifyTokenAmount(bridgeFee?.amountInDestinationCurrency)).toBe('0.004694 USDC (8453)')
 
-      // Bridge fee in intermediate currency: From bridgeFeeAmounts.amountInBuyCurrency
+      // Bridge fee in intermediate currency: From bridgeFeeAmounts.amountInSellCurrency
       //   5700201003969 (raw, 18 decimals) = 0.000005700201003969 BNB
       // These two amounts establish the exchange rate: 0.004694 USDC = 0.000005700201003969 BNB
       //   → 1 BNB ≈ 823.4 USDC

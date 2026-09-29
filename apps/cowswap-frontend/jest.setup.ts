@@ -29,11 +29,21 @@ jest.mock('@cowprotocol/analytics', () => {
     'tokenSymbol',
     'chainId',
   ])
+  const mockCowAnalytics = {
+    sendEvent: jest.fn(),
+  }
 
   return {
     __esModule: true,
     AnalyticsCategory: {},
     Category: {},
+    createCowTracker: (category: string, options: { enabled?: boolean } = {}) => {
+      return (event: Record<string, unknown>) => {
+        if (options.enabled === false) return
+
+        mockCowAnalytics.sendEvent({ category, ...event })
+      }
+    },
     CowAnalytics: class MockCowAnalytics {
       sendEvent = jest.fn()
     },
@@ -58,9 +68,7 @@ jest.mock('@cowprotocol/analytics', () => {
       return JSON.stringify(ga4Event)
     },
     useAnalyticsReporter: jest.fn(),
-    useCowAnalytics: jest.fn().mockImplementation(() => ({
-      sendEvent: jest.fn(),
-    })),
+    useCowAnalytics: jest.fn().mockImplementation(() => mockCowAnalytics),
     waitForAnalytics: jest.fn().mockResolvedValue(undefined),
     WebVitalsAnalytics: class MockWebVitalsAnalytics {
       constructor(_cowAnalytics?: unknown) {}

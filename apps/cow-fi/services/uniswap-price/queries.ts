@@ -1,5 +1,10 @@
 import { gql } from '@apollo/client'
 
+export enum Chain {
+  Ethereum = 'ETHEREUM',
+  EthereumGoerli = 'ETHEREUM_GOERLI',
+}
+
 export enum HistoryDuration {
   Day = 'DAY',
   Hour = 'HOUR',
@@ -7,11 +12,6 @@ export enum HistoryDuration {
   Month = 'MONTH',
   Week = 'WEEK',
   Year = 'YEAR',
-}
-
-export enum Chain {
-  Ethereum = 'ETHEREUM',
-  EthereumGoerli = 'ETHEREUM_GOERLI',
 }
 
 export const tokenPriceQuery = gql`

@@ -2,10 +2,29 @@
  * No-op analytics implementation for environments where third-party scripts must not load (e.g. embedded widget).
  */
 
-import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
+import { AnalyticsContext, AnalyticsEvent, CowAnalytics, OutboundLinkParams } from '../CowAnalytics'
 
 const state = {
   instance: null as CowAnalytics | null,
+}
+
+/** @internal Testing only */
+export function __resetNoopCowAnalyticsInstance(): void {
+  if (process.env.NODE_ENV === 'test') {
+    state.instance = null
+  }
+}
+
+/**
+ * Returns a singleton no-op CowAnalytics and registers it on window when in the browser.
+ */
+export function createNoopCowAnalytics(): CowAnalytics {
+  if (state.instance) {
+    return state.instance
+  }
+
+  state.instance = new CowAnalyticsNoop()
+  return state.instance
 }
 
 class CowAnalyticsNoop implements CowAnalytics {
@@ -30,7 +49,7 @@ class CowAnalyticsNoop implements CowAnalytics {
 
   sendPageView(_path?: string, _params?: string[], _title?: string): void {}
 
-  sendEvent(_event: string | EventOptions, _params?: unknown): void {}
+  sendEvent(_event: AnalyticsEvent, _params?: unknown): void {}
 
   sendTiming(_timingCategory: string, _timingVar: string, _timingValue: number, _timingLabel: string): void {}
 
@@ -43,23 +62,4 @@ class CowAnalyticsNoop implements CowAnalytics {
   }
 
   setContext(_key: AnalyticsContext, _value?: string): void {}
-}
-
-/**
- * Returns a singleton no-op CowAnalytics and registers it on window when in the browser.
- */
-export function createNoopCowAnalytics(): CowAnalytics {
-  if (state.instance) {
-    return state.instance
-  }
-
-  state.instance = new CowAnalyticsNoop()
-  return state.instance
-}
-
-/** @internal Testing only */
-export function __resetNoopCowAnalyticsInstance(): void {
-  if (process.env.NODE_ENV === 'test') {
-    state.instance = null
-  }
 }

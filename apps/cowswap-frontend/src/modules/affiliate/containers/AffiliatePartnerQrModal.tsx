@@ -17,8 +17,8 @@ import { getReferralLink } from '../lib/affiliateProgramUtils'
 const QR_SIZE_PX = 220
 const QR_LOGO_SIZE_PX = 64
 
-type QrColor = 'black' | 'white' | 'accent'
 type DownloadQrFileType = 'png' | 'webp'
+type QrColor = 'black' | 'white' | 'accent'
 
 const QR_COLORS: Record<QrColor, { fg: string; bg: string }> = {
   black: { fg: '#111111', bg: '#FFFFFF' },
@@ -156,7 +156,6 @@ const ColorDot = styled.button<{ $active: boolean; $color: string }>`
   border-radius: 999px;
   border: 4px solid ${({ $active }) => ($active ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_BORDER})`)};
   background: ${({ $color }) => $color};
-  cursor: pointer;
 `
 
 const QrActions = styled.div`

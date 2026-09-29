@@ -1,5 +1,6 @@
-import { render, RenderResult, waitFor } from '@testing-library/react'
 import { useConnection } from 'wagmi'
+
+import { render, RenderResult, waitFor } from '@testing-library/react'
 
 import { WidgetSafeApp } from './WidgetSafeApp.updater'
 
@@ -33,12 +34,12 @@ const disconnectMock = jest.fn()
 
 const OTHER_CONNECTOR_ID = 'metamask'
 
-function setConnector(id: string | undefined): void {
-  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
-}
-
 function renderUpdater(): RenderResult {
   return render(<WidgetSafeApp />)
+}
+
+function setConnector(id: string | undefined): void {
+  useConnectionMock.mockReturnValue({ connector: id ? { id } : undefined })
 }
 
 beforeEach(() => {

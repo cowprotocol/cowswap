@@ -27,21 +27,6 @@ import {
   updateOrderProgressBarStepName,
 } from '../state/atoms'
 
-function useUnfillableOrderIds(): string[] {
-  const { chainId, account } = useWalletInfo()
-  const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
-  const marketOrders = useMemo(
-    () => pendingOrders.filter((order) => order.class === OrderClass.MARKET),
-    [pendingOrders],
-  )
-  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
-
-  return useMemo(
-    () => computeUnfillableOrderIds(marketOrders, pendingOrdersFillability),
-    [marketOrders, pendingOrdersFillability],
-  )
-}
-
 export function OrderProgressEventsUpdater(): null {
   const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
   const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
@@ -138,4 +123,19 @@ export function OrderProgressEventsUpdater(): null {
   }, [finalizeOrderStep])
 
   return null
+}
+
+function useUnfillableOrderIds(): string[] {
+  const { chainId, account } = useWalletInfo()
+  const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
+  const marketOrders = useMemo(
+    () => pendingOrders.filter((order) => order.class === OrderClass.MARKET),
+    [pendingOrders],
+  )
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+
+  return useMemo(
+    () => computeUnfillableOrderIds(marketOrders, pendingOrdersFillability),
+    [marketOrders, pendingOrdersFillability],
+  )
 }

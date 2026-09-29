@@ -35,17 +35,6 @@ export interface TradeWidgetParams {
   customSelectTokenButton?: ReactNode
 }
 
-export interface TradeWidgetSlots {
-  settingsWidget: ReactNode
-  lockScreen?: ReactNode
-  topContent?: ReactNode
-  middleContent?: ReactNode
-  bottomContent?(warnings: ReactNode | null): ReactNode
-  outerContent?: ReactNode
-  updaters?: ReactNode
-  selectTokenWidget?: ReactNode
-}
-
 export interface TradeWidgetProps {
   id?: string
   slots: TradeWidgetSlots
@@ -56,4 +45,15 @@ export interface TradeWidgetProps {
   disableOutput?: boolean
   confirmModal?: ReactNode
   genericModal?: ReactNode
+}
+
+export interface TradeWidgetSlots {
+  settingsWidget: ReactNode
+  lockScreen?: ReactNode
+  topContent?: ReactNode
+  middleContent?: ReactNode
+  bottomContent?(warnings: ReactNode | null): ReactNode
+  outerContent?: ReactNode
+  updaters?: ReactNode
+  selectTokenWidget?: ReactNode
 }

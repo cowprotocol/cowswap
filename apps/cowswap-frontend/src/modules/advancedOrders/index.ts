@@ -3,5 +3,6 @@ export { useComposableCowContractData, type ComposableCowContractData } from './
 export * from './hooks/useAdvancedOrdersRawState'
 export * from './hooks/useAdvancedOrdersDerivedState'
 export * from './state/advancedOrdersAtom'
+export { advancedOrdersSettingsAtom } from './state/advancedOrdersSettingsAtom'
 export * from './updaters/SetupAdvancedOrderAmountsFromUrlUpdater'
 export * from './const'

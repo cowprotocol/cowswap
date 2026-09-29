@@ -1,11 +1,12 @@
 import { useAtomValue } from 'jotai'
 
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
-import { i18n } from '@lingui/core'
-import { I18nProvider } from '@lingui/react'
 import { fireEvent, render, screen, type RenderResult } from '@testing-library/react'
 import { openAffiliateFeedbackAppzi } from 'appzi'
 import { MemoryRouter } from 'react-router'

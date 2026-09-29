@@ -21,13 +21,13 @@ import * as styledEl from './WalletStatusButton.styled'
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { StatusIcon } from '../../pure/StatusIcon'
 
-export type WalletStatusButtonVariant = 'navBarDefault' | 'navBarAffiliate' | 'regularButton' | 'widget'
-
 export interface WalletStatusButtonProps {
   variant: WalletStatusButtonVariant
   /** Called when the connected wallet button is clicked. Ignored for connect and restoring variants. */
   onWalletClick?: () => void
 }
+
+export type WalletStatusButtonVariant = 'navBarDefault' | 'navBarAffiliate' | 'regularButton' | 'widget'
 
 export function WalletStatusButton({ variant, onWalletClick }: WalletStatusButtonProps): ReactNode {
   const connectionType = useConnectionType()

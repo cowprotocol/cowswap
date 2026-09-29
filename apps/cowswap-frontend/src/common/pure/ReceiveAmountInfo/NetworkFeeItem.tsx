@@ -12,9 +12,11 @@ interface NetworkFeeItemProps {
   isSell: boolean
   hasFee: boolean
   networkFeeAmount: CurrencyAmount<Currency> | undefined
+  /** Test hook — most callers don't need one, only those an e2e test targets directly. */
+  testId?: string
 }
 
-export function NetworkFeeItem({ discount, isSell, hasFee, networkFeeAmount }: NetworkFeeItemProps): ReactNode {
+export function NetworkFeeItem({ discount, isSell, hasFee, networkFeeAmount, testId }: NetworkFeeItemProps): ReactNode {
   const typeString = !isSell ? '+' : '-'
 
   const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
@@ -29,7 +31,7 @@ export function NetworkFeeItem({ discount, isSell, hasFee, networkFeeAmount }: N
   if (!networkFeeAmount) return null
 
   return (
-    <div>
+    <div data-testid={testId}>
       {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
       {hasFee ? (
         <span>

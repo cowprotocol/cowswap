@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
+import { useConfig } from 'wagmi'
+
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
-import { useConfig } from 'wagmi'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -43,6 +44,10 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
 
       if (getIsComposableCowParentOrder(order)) {
         return cancelTwapOrder(order.composableCowInfo!.id! as `0x${string}`, order)
+      }
+
+      if (order.isEoaTwapOrder && order.composableCowInfo?.parentId) {
+        return cancelTwapOrder(order.composableCowInfo.parentId as `0x${string}`, order, { partOnly: true })
       }
 
       const isEthFlowOrder = getIsNativeToken(order.inputToken)

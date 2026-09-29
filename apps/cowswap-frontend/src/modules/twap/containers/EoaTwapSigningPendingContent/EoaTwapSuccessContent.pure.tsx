@@ -1,0 +1,41 @@
+import { ReactNode } from 'react'
+
+import { Modal } from '@cowprotocol/ui'
+
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+import { Check } from 'react-feather'
+
+import * as styledEl from './EoaTwapSuccessContent.styled'
+
+export interface EoaTwapSuccessContentProps {
+  explorerUrl?: string
+  onViewOrders(): void
+}
+
+export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSuccessContentProps): ReactNode {
+  return (
+    <>
+      <styledEl.SuccessBox>
+        <styledEl.IconWrap>
+          <Check size={18} strokeWidth={3} aria-hidden />
+        </styledEl.IconWrap>
+        <styledEl.Title>
+          <Trans>Your TWAP is active</Trans>
+        </styledEl.Title>
+        <styledEl.Subtitle>
+          <Trans>Track its progress in Orders.</Trans>
+        </styledEl.Subtitle>
+        {explorerUrl ? (
+          <styledEl.ExplorerAnchor href={explorerUrl}>{t`Open in CoW Explorer`} ↗</styledEl.ExplorerAnchor>
+        ) : null}
+      </styledEl.SuccessBox>
+
+      <Modal.Footer inline>
+        <styledEl.ViewOrdersButton type="button" onClick={onViewOrders}>
+          <Trans>View in Orders</Trans>
+        </styledEl.ViewOrdersButton>
+      </Modal.Footer>
+    </>
+  )
+}

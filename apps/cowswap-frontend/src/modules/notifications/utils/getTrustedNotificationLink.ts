@@ -1,11 +1,9 @@
+import { isHttpUrl } from '@cowprotocol/common-utils'
+
 export interface TrustedNotificationLink {
   href: string
   target: '_blank' | '_parent'
   rel?: 'noopener noreferrer'
-}
-
-function isSingleSlashRelativeUrl(url: string): boolean {
-  return url.startsWith('/') && !url.startsWith('//')
 }
 
 export function getTrustedNotificationLink(url: string | null | undefined): TrustedNotificationLink | null {
@@ -28,9 +26,8 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
 
   try {
     const parsedUrl = new URL(trimmedUrl)
-    const isHttpUrl = parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
 
-    if (!isHttpUrl) {
+    if (!isHttpUrl(parsedUrl)) {
       return null
     }
 
@@ -53,4 +50,8 @@ export function getTrustedNotificationLink(url: string | null | undefined): Trus
   } catch {
     return null
   }
+}
+
+function isSingleSlashRelativeUrl(url: string): boolean {
+  return url.startsWith('/') && !url.startsWith('//')
 }

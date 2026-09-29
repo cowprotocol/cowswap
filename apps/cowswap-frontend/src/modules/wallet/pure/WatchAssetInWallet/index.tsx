@@ -23,14 +23,12 @@ export const ButtonCustom = styled.button`
   border: 1px solid ${({ theme }) => theme.border2};
   color: inherit;
   background: transparent;
-  outline: 0;
   padding: 8px 16px;
   margin: 16px 0 0;
   font-size: 14px;
   line-height: 1;
   font-weight: 500;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
-  cursor: pointer;
 
   &:hover {
     background: ${({ theme }) => theme.border2};

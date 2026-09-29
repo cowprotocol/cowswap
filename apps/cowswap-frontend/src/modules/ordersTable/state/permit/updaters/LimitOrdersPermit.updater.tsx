@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { TradeType } from 'modules/trade'
-
+import { TradeType } from 'common/modules/tradeNavigation'
 import { GenericOrder } from 'common/types'
 
 import { OrdersPermitUpdater } from './OrdersPermit.updater'

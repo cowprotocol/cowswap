@@ -4,12 +4,9 @@ import styled from 'styled-components/macro'
 
 export const WarningIndicator = styled.button<{ hasBackground?: boolean }>`
   --height: 28px;
-  margin: 0;
   background: ${({ hasBackground = true }) => (hasBackground ? `var(${UI.COLOR_DANGER_BG})` : 'transparent')};
   color: var(${UI.COLOR_DANGER});
   line-height: 0;
-  border: 0;
-  padding: 0;
   width: auto;
   height: var(--height);
   border-radius: 0 9px 9px 0;

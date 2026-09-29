@@ -3,8 +3,8 @@ import { Color } from '@cowprotocol/ui'
 
 import styled, { DefaultTheme, css, keyframes, FlattenSimpleInterpolation } from 'styled-components/macro'
 
-export type GenericStatus = string
 export type DisplayProps = { status: GenericStatus }
+export type GenericStatus = string
 export type PartiallyTagPosition = 'right' | 'bottom'
 export type PartiallyTagProps = { partialFill: boolean; tagPosition: PartiallyTagPosition; filledPercentage?: string }
 export type ShimmingProps = {

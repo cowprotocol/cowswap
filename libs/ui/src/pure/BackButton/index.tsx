@@ -1,5 +1,4 @@
-import { useEffect } from 'react'
-
+import { useOnEscape } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 
 import { ArrowLeft } from 'react-feather'
@@ -28,27 +27,14 @@ interface BackButtonProps {
   onClick(): void
 }
 
+// TODO: Replace with BackIconButton
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BackButton(props: BackButtonProps) {
   const { className, size = 22, onClick } = props
 
-  // Close on Escape press
-  useEffect(() => {
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const keyDownHandler = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClick()
-      }
-    }
-
-    document.addEventListener('keydown', keyDownHandler)
-
-    return () => {
-      document.removeEventListener('keydown', keyDownHandler)
-    }
-  }, [onClick])
+  useOnEscape(onClick)
 
   return <BackIcon size={size} className={className} onClick={onClick} />
 }

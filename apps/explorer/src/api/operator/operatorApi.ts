@@ -2,6 +2,8 @@ import { withTimeout } from '@cowprotocol/common-utils'
 
 import { orderBookSDK } from 'cowSdk'
 
+import { orderNormalizer, tradesNormalizer } from 'api/solanaOrderbook'
+
 import { backoffOpts } from './operator.constants'
 import {
   GetOrderParams,
@@ -19,14 +21,6 @@ export { getAccountOrders } from './accountOrderUtils'
 
 const ENV_REQUEST_TIMEOUT_MS = 12_000
 
-function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: BARN`)
-}
-
-function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
-  return withTimeout(promise, ENV_REQUEST_TIMEOUT_MS, `${operation}: PROD`)
-}
-
 /**
  * Gets a single order by id.
  *
@@ -36,19 +30,22 @@ function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> 
 export async function getOrder(params: GetOrderParams): Promise<RawOrder> {
   const { networkId, orderId } = params
   const context = { chainId: networkId, backoffOpts }
+  const normalize = orderNormalizer(networkId)
 
-  const orderPromise = orderBookSDK.getOrder(orderId, context).catch((error) => {
-    console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
-    throw error
-  })
+  const orderPromise = orderBookSDK
+    .getOrder(orderId, context)
+    .then(normalize)
+    .catch((error) => {
+      console.error('[getOrder] Error getting PROD order', orderId, networkId, error)
+      throw error
+    })
 
-  const orderPromiseBarn = withBarnTimeout(
-    orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }),
-    'getOrder',
-  ).catch((error) => {
-    console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
-    throw error
-  })
+  const orderPromiseBarn = withBarnTimeout(orderBookSDK.getOrder(orderId, { ...context, env: 'staging' }), 'getOrder')
+    .then(normalize)
+    .catch((error) => {
+      console.error('[getOrder] Error getting BARN order', orderId, networkId, error)
+      throw error
+    })
 
   return Promise.any([orderPromise, orderPromiseBarn])
 }
@@ -141,15 +138,16 @@ export async function getSolverCompetitionByTxHash(
 export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner, orderId: orderUid, offset, limit } = params
   const context = { chainId: networkId, backoffOpts }
+  const normalize = tradesNormalizer(networkId)
 
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid, offset, limit })
 
-  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid, offset, limit }, context)
+  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid, offset, limit }, context).then(normalize)
 
   const tradesPromiseBarn = withBarnTimeout(
     orderBookSDK.getTrades({ owner, orderUid, offset, limit }, { ...context, env: 'staging' }),
     'getTrades',
-  )
+  ).then(normalize)
 
   // There might be orders in both PROD and BARN, so we need to merge the results of both request, as the SDK doesn't do
   // it yet:
@@ -260,4 +258,18 @@ function ensureSolverCompetition(
   }
 
   return competition
+}
+
+function withBarnTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: BARN. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
+}
+
+function withProdTimeout<T>(promise: Promise<T>, operation: string): Promise<T> {
+  return withTimeout(promise, {
+    timeout: ENV_REQUEST_TIMEOUT_MS,
+    timeoutMessage: `${operation}: PROD. Timeout after ${ENV_REQUEST_TIMEOUT_MS} ms`,
+  })
 }

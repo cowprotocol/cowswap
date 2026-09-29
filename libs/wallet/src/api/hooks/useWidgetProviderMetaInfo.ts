@@ -1,10 +1,21 @@
 import { useEffect, useState } from 'react'
 
+import { type EIP1193Provider } from 'viem'
+import { useConnection } from 'wagmi'
+
 import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 
 import useSWR, { SWRResponse } from 'swr'
-import { type EIP1193Provider } from 'viem'
-import { useConnection } from 'wagmi'
+
+export function useWidgetProviderMetaInfo(): SWRResponse<ProviderMetaInfoPayload | null> {
+  const provider = useEip1193Provider()
+
+  const isWidgetEthereumProvider = provider instanceof WidgetEthereumProvider
+
+  return useSWR(isWidgetEthereumProvider ? [provider, 'useWidgetProviderMetaInfo'] : null, async ([provider]) => {
+    return new Promise((resolve) => provider.onProviderMetaInfo(resolve))
+  })
+}
 
 function useEip1193Provider(): EIP1193Provider | undefined {
   const [provider, setProvider] = useState<EIP1193Provider | undefined>()
@@ -19,14 +30,4 @@ function useEip1193Provider(): EIP1193Provider | undefined {
   }, [connector])
 
   return provider
-}
-
-export function useWidgetProviderMetaInfo(): SWRResponse<ProviderMetaInfoPayload | null> {
-  const provider = useEip1193Provider()
-
-  const isWidgetEthereumProvider = provider instanceof WidgetEthereumProvider
-
-  return useSWR(isWidgetEthereumProvider ? [provider, 'useWidgetProviderMetaInfo'] : null, async ([provider]) => {
-    return new Promise((resolve) => provider.onProviderMetaInfo(resolve))
-  })
 }

@@ -1,6 +1,9 @@
 import { useCallback } from 'react'
 
+import { ExecutionRevertedError } from 'viem'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,7 +11,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { ApproveCurrencyCallback, useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
@@ -29,6 +32,16 @@ export interface ApproveAndSwapProps {
   useModals?: boolean
 }
 
+interface ApproveAndSwapContext {
+  amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
+  onApproveConfirm?: (transactionHash: string | null) => void
+  isPartialApproveEnabledByUser?: boolean
+  isInfiniteApproveDisabled?: boolean
+  handleApprove: ApproveCurrencyCallback
+  updateTradeApproveState: UpdateApproveProgressModalState
+}
+
 export function useApproveAndSwap({
   amountToApprove,
   useModals,
@@ -42,18 +55,26 @@ export function useApproveAndSwap({
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
+  const { tradeType } = useDerivedTradeState() || {}
 
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
+  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, tradeType) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const handlePermit = useCallback(async () => {
     if (isPermitSupported && onApproveConfirm) {
-      const isPermitSigned = await generatePermitToTrade()
-      if (isPermitSigned) {
-        onApproveConfirm(null)
-      }
+      try {
+        const isPermitSigned = await generatePermitToTrade()
+        if (isPermitSigned) {
+          onApproveConfirm(null)
+        }
 
-      return true
+        return true
+      } catch (err: unknown) {
+        const error = normalizeError(err)
+
+        if (error instanceof ExecutionRevertedError) return false
+        throw error
+      }
     }
 
     return false
@@ -89,16 +110,6 @@ export function useApproveAndSwap({
     account,
     tradeSpenderAddress,
   ])
-}
-
-interface ApproveAndSwapContext {
-  amountToApprove: CurrencyAmount<Currency>
-  minAmountToSignForSwap?: CurrencyAmount<Currency>
-  onApproveConfirm?: (transactionHash: string | null) => void
-  isPartialApproveEnabledByUser?: boolean
-  isInfiniteApproveDisabled?: boolean
-  handleApprove: ApproveCurrencyCallback
-  updateTradeApproveState: UpdateApproveProgressModalState
 }
 
 async function approveAndSwap({

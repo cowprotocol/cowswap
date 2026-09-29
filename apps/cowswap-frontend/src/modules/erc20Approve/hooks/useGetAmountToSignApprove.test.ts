@@ -5,9 +5,10 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { renderHook } from '@testing-library/react'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-import { TradeType, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
@@ -136,11 +137,37 @@ describe('useGetAmountToSignApprove', () => {
 
       expect(result.current).toEqual(mockMaxAmount)
     })
-    it('should return max amount when partial approval is selected but trade type is limit order', () => {
+    it('should return partial amount when partial approval is selected and trade type is limit order', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseAtomValue.mockReturnValue(true)
       mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.LIMIT_ORDER } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+
+      const { result } = renderHook(() => useGetAmountToSignApprove())
+
+      expect(result.current).toEqual(mockPartialAmount)
+    })
+
+    it('should return partial amount when partial approval is selected and trade type is advanced orders (TWAP)', () => {
+      mockUseNeedsApproval.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
+      mockUseAtomValue.mockReturnValue(true)
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.ADVANCED_ORDERS } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+
+      const { result } = renderHook(() => useGetAmountToSignApprove())
+
+      expect(result.current).toEqual(mockPartialAmount)
+    })
+
+    it('should return max amount when partial approval is selected but trade type is yield', () => {
+      mockUseNeedsApproval.mockReturnValue(true)
+      mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
+      mockUseAtomValue.mockReturnValue(true)
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.YIELD } as ReturnType<
         typeof useDerivedTradeState
       >)
 

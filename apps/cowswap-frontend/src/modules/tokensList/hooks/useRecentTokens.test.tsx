@@ -23,16 +23,19 @@ const ADDRESS_3 = '0x3333333333333333333333333333333333333333'
 
 const DEFAULT_DECIMALS = 18
 
-function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
-  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
-}
-
 function createStoredToken(chainId: number, address: string, symbol?: string): StoredRecentToken {
   return { chainId, address, decimals: DEFAULT_DECIMALS, symbol }
 }
 
-function setStoredTokens(tokens: Record<number, StoredRecentToken[]>): void {
-  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
+function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
+  const store = createStore()
+  // Initialize atom with current localStorage state
+  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
+  return store
+}
+
+function createTestToken(chainId: number, address: string, symbol: string): TokenWithLogo {
+  return new TokenWithLogo(undefined, chainId, address, DEFAULT_DECIMALS, symbol, `${symbol} Token`, undefined, [])
 }
 
 function createTestWrapper(store: ReturnType<typeof createStore>) {
@@ -41,11 +44,8 @@ function createTestWrapper(store: ReturnType<typeof createStore>) {
   }
 }
 
-function createStoreWithLocalStorage(): ReturnType<typeof createStore> {
-  const store = createStore()
-  // Initialize atom with current localStorage state
-  store.set(recentTokensStorageAtom, readStoredTokens(RECENT_TOKENS_LIMIT))
-  return store
+function setStoredTokens(tokens: Record<number, StoredRecentToken[]>): void {
+  localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
 }
 
 describe('useRecentTokens', () => {
@@ -91,6 +91,82 @@ describe('useRecentTokens', () => {
 
     expect(result.current.recentTokens).toHaveLength(1)
     expect(result.current.recentTokens[0].symbol).toBe('TKN')
+  })
+
+  it('hydrates persisted custom tokens when no token-list restriction is active', () => {
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'CUSTOM')],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [],
+          favoriteTokens: [],
+          activeChainId: SupportedChainId.MAINNET,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toHaveLength(1)
+    expect(result.current.recentTokens[0].symbol).toBe('CUSTOM')
+  })
+
+  it('omits persisted tokens outside the allowed token set', () => {
+    const allowedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED')
+    const blockedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED')
+
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED'),
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED'),
+      ],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [allowedToken, blockedToken],
+          favoriteTokens: [],
+          allowedTokens: [allowedToken],
+          activeChainId: SupportedChainId.MAINNET,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toEqual([allowedToken])
+  })
+
+  it('filters blocked tokens before applying the recent-token limit', () => {
+    const allowedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED')
+    const blockedToken = createTestToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED')
+
+    setStoredTokens({
+      [SupportedChainId.MAINNET]: [
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_2, 'BLOCKED'),
+        createStoredToken(SupportedChainId.MAINNET, ADDRESS_1, 'ALLOWED'),
+      ],
+    })
+    const store = createStoreWithLocalStorage()
+    const wrapper = createTestWrapper(store)
+
+    const { result } = renderHook(
+      () =>
+        useRecentTokens({
+          allTokens: [allowedToken, blockedToken],
+          favoriteTokens: [],
+          allowedTokens: [allowedToken],
+          activeChainId: SupportedChainId.MAINNET,
+          maxItems: 1,
+        }),
+      { wrapper },
+    )
+
+    expect(result.current.recentTokens).toEqual([allowedToken])
   })
 
   it('does not return tokens from other chains', () => {

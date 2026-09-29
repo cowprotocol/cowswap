@@ -1,10 +1,11 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useRef } from 'react'
 
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { ConnectorAlreadyConnectedError, useConnection } from 'wagmi'
+
+import { isInjectedWidget, logWallet, normalizeError } from '@cowprotocol/common-utils'
 
 import { ConnectorController, OptionsController } from '@reown/appkit-controllers'
-import { useConnection } from 'wagmi'
 
 import { COW_WIDGET_CONNECTOR_ID, SAFE_CONNECTOR_ID } from '../reown/consts'
 import { appWalletContextAtom } from '../state/appWalletContext.atom'
@@ -12,24 +13,6 @@ import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { reownAppKit, wagmiAdapter } from '../wagmi/config'
 import { useDisconnectWallet } from '../wagmi/hooks/useDisconnectWallet'
-
-/**
- * In `libs/wallet/src/wagmi/config.ts`, we set `enableEIP6963: !isWidget`. However, if widget is being used in
- * standalone mode, we need to re-enable EIP-6963 so browser wallets are discoverable.
- */
-function syncInjectedWalletDiscovery(enableEIP6963: boolean): void {
-  OptionsController.setEIP6963Enabled(enableEIP6963)
-
-  if (!enableEIP6963) return
-
-  // Not strictly necessary, but ensures new providers are discovered immediately.
-  window.dispatchEvent(new Event('eip6963:requestProvider'))
-
-  // Note: Brave Wallet will not be discovered, even if we call `flushDeferredProviders()` here.
-  // TODO: See if that's related to Brave Shield or other setting.
-
-  void wagmiAdapter.syncConnectors()
-}
 
 interface WidgetStandaloneModeUpdaterProps {
   standaloneMode: boolean | undefined
@@ -88,7 +71,18 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
         console.debug('[WidgetStandaloneModeUpdater] connect widget connector')
 
         await reownAppKit.disconnect()
-        connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+
+        try {
+          await connectWalletById(COW_WIDGET_CONNECTOR_ID, 'injected')
+        } catch (err: unknown) {
+          const error = normalizeError(err)
+
+          // Auto-reconnect or the bridged provider's own connect event can beat us to it -
+          // wagmi is already connected to this connector, nothing left to do.
+          if (error instanceof ConnectorAlreadyConnectedError) return
+
+          logWallet.error(new Error('Failed to connect widget connector', { cause: error }))
+        }
       })()
     }
   }, [isDappMode, isSafeApp])
@@ -144,4 +138,22 @@ export function WidgetStandaloneModeUpdater({ standaloneMode }: WidgetStandalone
   }, [isWidgetConnector, isDappMode, isStandaloneMode, disconnect, connector, isSafeApp, isSafeConnector])
 
   return null
+}
+
+/**
+ * In `libs/wallet/src/wagmi/config.ts`, we set `enableEIP6963: !isWidget`. However, if widget is being used in
+ * standalone mode, we need to re-enable EIP-6963 so browser wallets are discoverable.
+ */
+function syncInjectedWalletDiscovery(enableEIP6963: boolean): void {
+  OptionsController.setEIP6963Enabled(enableEIP6963)
+
+  if (!enableEIP6963) return
+
+  // Not strictly necessary, but ensures new providers are discovered immediately.
+  window.dispatchEvent(new Event('eip6963:requestProvider'))
+
+  // Note: Brave Wallet will not be discovered, even if we call `flushDeferredProviders()` here.
+  // TODO: See if that's related to Brave Shield or other setting.
+
+  void wagmiAdapter.syncConnectors()
 }

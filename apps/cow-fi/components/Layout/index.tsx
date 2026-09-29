@@ -3,7 +3,7 @@
 import { PropsWithChildren, ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { Footer, GlobalCoWDAOStyles, Media, MenuBar, baseTheme, getGlobalFooterNavItems } from '@cowprotocol/ui'
+import { Footer, Media, MenuBar, baseTheme, getGlobalFooterNavItems } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components/macro'
@@ -46,7 +46,6 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
   useSetupPage()
   const { isSolversEnabled } = useFeatureFlags()
 
-  const GlobalStyles = GlobalCoWDAOStyles()
   const LocalStyles = createGlobalStyle(
     () => css`
       body {
@@ -57,7 +56,6 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
 
   return (
     <>
-      <GlobalStyles />
       <LocalStyles />
       {/* Override global light theme to force dark mode for MenuBar only */}
       <ThemeProvider theme={darkTheme}>

@@ -47,7 +47,6 @@ export const LoadingWrapper = styled.button<{ $isLoading: boolean }>`
   transform-style: preserve-3d;
   transform-origin: center right;
   transition: transform 0.25s;
-  border: 0;
   box-shadow: 0 0 0 3px var(${UI.COLOR_PAPER});
   background: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;

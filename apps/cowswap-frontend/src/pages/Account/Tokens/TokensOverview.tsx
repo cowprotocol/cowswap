@@ -11,19 +11,26 @@ import {
   useState,
 } from 'react'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { AllowancesState, useTokenAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
-import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
+import {
+  useAreTokenListsLoading,
+  useFavoriteTokens,
+  useResetFavoriteTokens,
+  useTokensByAddressMap,
+} from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
+import { NoResults } from 'legacy/components/Tokens/styled'
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
 import { PageTitle } from 'modules/application'
@@ -74,6 +81,62 @@ const PAGE_VIEW_ITEMS: PageViewItem[] = Object.entries(PageView).map(([key, valu
   label: value.label,
 }))
 
+interface AccountTokensData {
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+  removeAllFavoriteTokens: () => void
+}
+
+interface ResetPageParams {
+  account: string | undefined
+  chainId: number | undefined
+  selectedView: PageViewKeys
+  setPage: Dispatch<SetStateAction<number>>
+}
+
+interface TokensOverviewHeaderProps {
+  isMenuOpen: boolean
+  selectedView: PageViewKeys
+  onToggleMenu: () => void
+  onSelectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+  showResetFavorites: boolean
+  onResetFavorites: () => void
+  query: string
+  onSearchChange: ChangeEventHandler<HTMLInputElement>
+  onSearchClear: () => void
+  checkColor: string
+}
+
+interface TokensOverviewMenuItemsProps {
+  selectedView: PageViewKeys
+  onSelectView: (view: PageViewKeys) => void
+  checkColor: string
+}
+
+interface TokensTableContentProps {
+  selectedView: PageViewKeys
+  formattedTokens: TokenWithLogo[]
+  favoriteTokens: TokenWithLogo[]
+  page: number
+  setPage: Dispatch<SetStateAction<number>>
+  query: string
+  prevQuery?: string
+  debouncedQuery?: string
+  balances: TokenBalancesMap
+  allowances: AllowancesState
+}
+
+interface UseTokenSearchResult {
+  query: string
+  debouncedQuery?: string
+  prevQuery?: string
+  handleSearch: ChangeEventHandler<HTMLInputElement>
+  clearSearch: () => void
+}
+
 export default function TokensOverview(): ReactNode {
   useScrollToTop()
 
@@ -117,9 +180,17 @@ export default function TokensOverview(): ReactNode {
       <Overview>
         <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? (
-          <Trans>Unsupported network</Trans>
+          <NoResults>
+            <h3>
+              <Trans>Unsupported network</Trans> ¯\_(ツ)_/¯
+            </h3>
+          </NoResults>
         ) : isProviderNetworkDeprecated ? (
-          <Trans>Deprecated network</Trans>
+          <NoResults>
+            <h3>
+              <Trans>Deprecated network</Trans> ¯\_(ツ)_/¯
+            </h3>
+          </NoResults>
         ) : (
           <TokensTableContent
             selectedView={selectedView}
@@ -137,20 +208,6 @@ export default function TokensOverview(): ReactNode {
       </Overview>
     </>
   )
-}
-
-interface TokensOverviewHeaderProps {
-  isMenuOpen: boolean
-  selectedView: PageViewKeys
-  onToggleMenu: () => void
-  onSelectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-  showResetFavorites: boolean
-  onResetFavorites: () => void
-  query: string
-  onSearchChange: ChangeEventHandler<HTMLInputElement>
-  onSearchClear: () => void
-  checkColor: string
 }
 
 function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
@@ -219,59 +276,6 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
   )
 }
 
-interface TokensTableContentProps {
-  selectedView: PageViewKeys
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  page: number
-  setPage: Dispatch<SetStateAction<number>>
-  query: string
-  prevQuery?: string
-  debouncedQuery?: string
-  balances: TokenBalancesMap
-  allowances: AllowancesState
-}
-
-function TokensTableContent(props: TokensTableContentProps): ReactNode {
-  const {
-    selectedView,
-    formattedTokens,
-    favoriteTokens,
-    page,
-    setPage,
-    query,
-    prevQuery,
-    debouncedQuery,
-    balances,
-    allowances,
-  } = props
-
-  const tokensData = selectedView === PageViewKeys.ALL_TOKENS ? formattedTokens : favoriteTokens
-
-  // This is a read-only balance view. Do not block rendering on WalletClient here: MetaMask iOS can leave
-  // wagmi wallet-client requests pending after reconnect while balances are still available from state.
-  return (
-    <TokenTable
-      page={page}
-      query={query}
-      prevQuery={prevQuery ?? ''}
-      debouncedQuery={debouncedQuery ?? ''}
-      setPage={setPage}
-      balances={balances}
-      tokensData={tokensData}
-      allowances={allowances}
-    >
-      <Delegate dismissable rowOnMobile />
-    </TokenTable>
-  )
-}
-
-interface TokensOverviewMenuItemsProps {
-  selectedView: PageViewKeys
-  onSelectView: (view: PageViewKeys) => void
-  checkColor: string
-}
-
 function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode {
   const { selectedView, onSelectView, checkColor } = props
 
@@ -293,95 +297,43 @@ function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode
   return <>{menuItems}</>
 }
 
-function useTokensView(): {
-  selectedView: PageViewKeys
-  isMenuOpen: boolean
-  toggleMenu: () => void
-  selectView: (view: PageViewKeys) => void
-  menuRef: RefObject<HTMLDivElement | null>
-} {
-  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-  const menuRef = useRef<HTMLDivElement | null>(null)
+function TokensTableContent(props: TokensTableContentProps): ReactNode {
+  const {
+    selectedView,
+    formattedTokens,
+    favoriteTokens,
+    page,
+    setPage,
+    query,
+    prevQuery,
+    debouncedQuery,
+    balances,
+    allowances,
+  } = props
 
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen((prev) => !prev)
-  }, [])
+  const areTokenListsLoading = useAreTokenListsLoading()
 
-  const selectView = useCallback((view: PageViewKeys) => {
-    setSelectedView(view)
-    setIsMenuOpen(false)
-  }, [])
+  const isAllTokensView = selectedView === PageViewKeys.ALL_TOKENS
+  const tokensData = isAllTokensView ? formattedTokens : favoriteTokens
 
-  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
-
-  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
-}
-
-interface UseTokenSearchResult {
-  query: string
-  debouncedQuery?: string
-  prevQuery?: string
-  handleSearch: ChangeEventHandler<HTMLInputElement>
-  clearSearch: () => void
-}
-
-function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
-  const [query, setQuery] = useState<string>('')
-  const debouncedQuery = useDebounce(query, 300)
-  const prevQuery = usePrevious(debouncedQuery) ?? undefined
-
-  const handleSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    (event) => {
-      const input = event.target.value.trim().toLowerCase()
-      const checksummedInput = isAddress(input)
-      setQuery(checksummedInput || input)
-      if (page !== 1) {
-        setPage(1)
-      }
-    },
-    [page, setPage],
+  // This is a read-only balance view. Do not block rendering on WalletClient here: MetaMask iOS can leave
+  // wagmi wallet-client requests pending after reconnect while balances are still available from state.
+  return (
+    <TokenTable
+      page={page}
+      query={query}
+      prevQuery={prevQuery ?? ''}
+      debouncedQuery={debouncedQuery ?? ''}
+      setPage={setPage}
+      balances={balances}
+      tokensData={tokensData}
+      allowances={allowances}
+      isLoading={isAllTokensView && areTokenListsLoading && formattedTokens.length === 0}
+      emptyMessage={isAllTokensView ? <Trans>No tokens to display</Trans> : <Trans>No favorite tokens</Trans>}
+    >
+      <Delegate dismissable rowOnMobile />
+    </TokenTable>
   )
-
-  const clearSearch = useCallback(() => {
-    setQuery('')
-  }, [])
-
-  return { query, debouncedQuery, prevQuery, handleSearch, clearSearch }
-}
-
-function useScrollToTop(): void {
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-}
-
-interface ResetPageParams {
-  account: string | undefined
-  chainId: number | undefined
-  selectedView: PageViewKeys
-  setPage: Dispatch<SetStateAction<number>>
-}
-
-function useResetPageOnContextChange(params: ResetPageParams): void {
-  const { account, chainId, selectedView, setPage } = params
-  const prevAccount = usePrevious(account)
-  const prevChainId = usePrevious(chainId)
-  const prevSelectedView = usePrevious(selectedView)
-
-  useEffect(() => {
-    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
-      setPage(1)
-    }
-  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
-}
-
-interface AccountTokensData {
-  formattedTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  balances: TokenBalancesMap
-  allowances: AllowancesState
-  removeAllFavoriteTokens: () => void
 }
 
 function useAccountTokensData(): AccountTokensData {
@@ -413,4 +365,72 @@ function useAccountTokensData(): AccountTokensData {
     allowances,
     removeAllFavoriteTokens,
   }
+}
+
+function useResetPageOnContextChange(params: ResetPageParams): void {
+  const { account, chainId, selectedView, setPage } = params
+  const prevAccount = usePrevious(account)
+  const prevChainId = usePrevious(chainId)
+  const prevSelectedView = usePrevious(selectedView)
+
+  useEffect(() => {
+    if (chainId !== prevChainId || selectedView !== prevSelectedView || account !== prevAccount) {
+      setPage(1)
+    }
+  }, [account, chainId, prevAccount, prevChainId, prevSelectedView, selectedView, setPage])
+}
+
+function useScrollToTop(): void {
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+}
+
+function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
+  const [query, setQuery] = useState<string>('')
+  const debouncedQuery = useDebounce(query, 300)
+  const prevQuery = usePrevious(debouncedQuery) ?? undefined
+
+  const handleSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
+    (event) => {
+      const input = event.target.value.trim().toLowerCase()
+      const checksummedInput = isAddress(input)
+      setQuery(checksummedInput || input)
+      if (page !== 1) {
+        setPage(1)
+      }
+    },
+    [page, setPage],
+  )
+
+  const clearSearch = useCallback(() => {
+    setQuery('')
+  }, [])
+
+  return { query, debouncedQuery, prevQuery, handleSearch, clearSearch }
+}
+
+function useTokensView(): {
+  selectedView: PageViewKeys
+  isMenuOpen: boolean
+  toggleMenu: () => void
+  selectView: (view: PageViewKeys) => void
+  menuRef: RefObject<HTMLDivElement | null>
+} {
+  const [selectedView, setSelectedView] = useState<PageViewKeys>(PageViewKeys.ALL_TOKENS)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+  const menuRef = useRef<HTMLDivElement | null>(null)
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => !prev)
+  }, [])
+
+  const selectView = useCallback((view: PageViewKeys) => {
+    setSelectedView(view)
+    setIsMenuOpen(false)
+  }, [])
+
+  useOnClickOutside([menuRef], isMenuOpen ? toggleMenu : undefined)
+
+  return { selectedView, isMenuOpen, toggleMenu, selectView, menuRef }
 }

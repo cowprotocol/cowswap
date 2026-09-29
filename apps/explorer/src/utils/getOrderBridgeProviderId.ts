@@ -1,5 +1,4 @@
-import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
-import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme, EnrichedOrder } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_BRIDGE_PROVIDER_PREFIX } from '@cowprotocol/sdk-bridging'
 
 export function getOrderBridgeProviderId(order: EnrichedOrder): string | undefined {

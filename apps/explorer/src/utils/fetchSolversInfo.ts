@@ -1,5 +1,5 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { getCmsClient } from '@cowprotocol/core'
+import { getProdCmsClient, PROD_CMS_BASE_URL } from '@cowprotocol/core'
 
 import type {
   CmsEntity,
@@ -15,9 +15,7 @@ import type {
 
 export type { SolverDeployment, SolverInfo, SolverNetworkInfo, SolversInfo } from './fetchSolversInfo.types'
 
-const CMS_BASE_URL =
-  process.env.REACT_APP_CMS_BASE_URL || process.env.NEXT_PUBLIC_CMS_BASE_URL || 'https://cms.cow.fi/api'
-const CMS_ORIGIN = getCmsOrigin(CMS_BASE_URL)
+const CMS_ORIGIN = getCmsOrigin(PROD_CMS_BASE_URL)
 const CHAIN_INFO_BY_ID = CHAIN_INFO as Partial<Record<number, { label?: string }>>
 const SOLVERS_QUERY = [
   'fields[0]=solverId',
@@ -49,7 +47,7 @@ export async function fetchSolversInfo(network?: number): Promise<SolversInfo> {
 }
 
 async function fetchSolversInfoFromCms(): Promise<SolversInfo> {
-  const cmsClient = getCmsClient()
+  const cmsClient = getProdCmsClient()
   const { data, error, response } = await cmsClient.GET('/solvers', {
     params: {
       query: {},
