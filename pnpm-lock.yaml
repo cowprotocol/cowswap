@@ -25,24 +25,24 @@ overrides:
   viem: 2.48.8
   wagmi: 3.6.9
   zod: 3.25.76
-  '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-  '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2
-  '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f
-  '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-  '@cowprotocol/sdk-composable': https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48
-  '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-  '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-  '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607
-  '@cowprotocol/sdk-ethers-v5-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v5-adapter/0.4.17-pr-1042-2495da40.0/ecf68e43b042ac3c673ea4c9567852e662dc35fa
-  '@cowprotocol/sdk-ethers-v6-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v6-adapter/0.4.17-pr-1042-2495da40.0/a20fb8991d8d44670b7e0d6c31df4ddce46473e0
-  '@cowprotocol/sdk-flash-loans': https://npm.pkg.github.com/download/@cowprotocol/sdk-flash-loans/3.3.12-pr-1042-2495da40.0/aa3e9a5fccf9d5460a93eef0514327c05d8109df
-  '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4
-  '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777
-  '@cowprotocol/sdk-subgraph': https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd
-  '@cowprotocol/sdk-trading-solana': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961
-  '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793
-  '@cowprotocol/sdk-viem-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206
-  '@cowprotocol/sdk-weiroll': https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-2495da40.0/3b46155ad006bbf7206c72dac25064c85197638a
+  '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+  '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462
+  '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589
+  '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+  '@cowprotocol/sdk-composable': https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f
+  '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+  '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+  '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4
+  '@cowprotocol/sdk-ethers-v5-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v5-adapter/0.4.17-pr-1042-3e6f1ab0.0/79f8e59ef4961921797f48aa25450990255245b0
+  '@cowprotocol/sdk-ethers-v6-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v6-adapter/0.4.17-pr-1042-3e6f1ab0.0/399ae7191efcdcf76f86898a3e5f6d8b14d5bc66
+  '@cowprotocol/sdk-flash-loans': https://npm.pkg.github.com/download/@cowprotocol/sdk-flash-loans/3.3.12-pr-1042-3e6f1ab0.0/313bdd626efe2e5ddb6b4c9b6a5e3c9650bec033
+  '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574
+  '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a
+  '@cowprotocol/sdk-subgraph': https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5
+  '@cowprotocol/sdk-trading-solana': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e
+  '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005
+  '@cowprotocol/sdk-viem-adapter': https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db
+  '@cowprotocol/sdk-weiroll': https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-3e6f1ab0.0/9dbe1da24ad2bbc969e4fecf0f11be27db535578
 
 packageExtensionsChecksum: sha256-MJ/weFfhczWAxcKBkOSA2U6hqYQqwBJPmicil25hZZ4=
 
@@ -568,11 +568,11 @@ importers:
   apps/cowswap-e2e-tests:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-order-book':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
       '@cowprotocol/test-ids':
         specifier: workspace:*
         version: link:../../libs/test-ids
@@ -626,8 +626,8 @@ importers:
         specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
         version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../../libs/abis
@@ -653,32 +653,32 @@ importers:
         specifier: workspace:*
         version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-common':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
       '@cowprotocol/sdk-composable':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48(encoding@0.1.13)(typescript@5.9.3)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
       '@cowprotocol/sdk-cow-shed':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4
       '@cowprotocol/sdk-order-book':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
       '@cowprotocol/sdk-trading':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-trading-solana':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -1017,26 +1017,26 @@ importers:
         specifier: workspace:*
         version: link:../../libs/core
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
       '@cowprotocol/sdk-bridging':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48(encoding@0.1.13)(typescript@5.9.3)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
       '@cowprotocol/sdk-subgraph':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd(encoding@0.1.13)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5(encoding@0.1.13)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../../libs/types
@@ -1247,14 +1247,14 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-const
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48(encoding@0.1.13)(typescript@5.9.3)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/wallet':
         specifier: workspace:*
         version: link:../../libs/wallet
@@ -1359,8 +1359,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-utils
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
@@ -1470,8 +1470,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1519,8 +1519,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1528,8 +1528,8 @@ importers:
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-trading-solana':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -1589,8 +1589,8 @@ importers:
   libs/common-const:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1623,8 +1623,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1687,8 +1687,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1787,8 +1787,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@safe-global/api-kit':
         specifier: 4.2.0
         version: 4.2.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -1821,8 +1821,8 @@ importers:
   libs/currency:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       jsbi:
         specifier: 3.2.5
         version: 3.2.5
@@ -1842,8 +1842,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1870,11 +1870,11 @@ importers:
   libs/events:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-bridging':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1900,8 +1900,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1934,8 +1934,8 @@ importers:
         specifier: 1.5.2
         version: 1.5.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../hook-dapp-lib
@@ -2010,8 +2010,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2083,14 +2083,14 @@ importers:
   libs/types:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-bridging':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f
-        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589
+        version: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       eventemitter3:
         specifier: 4.0.7
         version: 4.0.7
@@ -2119,8 +2119,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2237,8 +2237,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2362,8 +2362,8 @@ importers:
   libs/widget-lib:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f
-        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4
+        version: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -3340,9 +3340,9 @@ packages:
       react: ^16.X
       react-dom: ^16.X
 
-  '@cowprotocol/cow-sdk@https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f}
-    version: 9.2.15-pr-1042-2495da40.0
+  '@cowprotocol/cow-sdk@https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4}
+    version: 9.2.15-pr-1042-3e6f1ab0.0
     peerDependencies:
       '@openzeppelin/merkle-tree': ^1.x
       cross-fetch: ^3.x
@@ -3368,66 +3368,66 @@ packages:
   '@cowprotocol/iframe-transport@2.3.6':
     resolution: {integrity: sha512-8plGKV5POqzwchMXTC42gbPKwP3Wbp8Mc1kJcKD8oCISOjvolhoTzSWUcdAkEC4+oXg/DTTfs6COsgfqstND/A==}
 
-  '@cowprotocol/sdk-app-data@https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2}
-    version: 6.0.7-pr-1042-2495da40.0
+  '@cowprotocol/sdk-app-data@https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462':
+    resolution: {integrity: sha512-rXfmBfgmERHvs9KiqqEalnpFb0CBSzE5p4juMoxm11d+LVvZCCn7z2hNmSLaSAZRT/pvEBbeAM40pxCUCv+QsQ==, tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462}
+    version: 6.0.7-pr-1042-3e6f1ab0.0
     peerDependencies:
       ajv: ^8.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-bridging@https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f}
-    version: 4.4.12-pr-1042-2495da40.0
+  '@cowprotocol/sdk-bridging@https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589}
+    version: 4.4.12-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-common@https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6}
-    version: 0.14.1-pr-1042-2495da40.0
+  '@cowprotocol/sdk-common@https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02}
+    version: 0.14.1-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-composable@https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48}
-    version: 1.8.2-pr-1042-2495da40.0
+  '@cowprotocol/sdk-composable@https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f}
+    version: 1.8.2-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-config@https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264}
-    version: 2.7.1-pr-1042-2495da40.0
+  '@cowprotocol/sdk-config@https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80}
+    version: 2.7.1-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-contracts-ts@https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6}
-    version: 3.7.1-pr-1042-2495da40.0
+  '@cowprotocol/sdk-contracts-ts@https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747}
+    version: 3.7.1-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-cow-shed@https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607}
-    version: 0.6.1-pr-1042-2495da40.0
+  '@cowprotocol/sdk-cow-shed@https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4}
+    version: 0.6.1-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-order-book@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4}
-    version: 4.2.0-pr-1042-2495da40.0
+  '@cowprotocol/sdk-order-book@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574}
+    version: 4.2.0-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-order-signing@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777}
-    version: 1.1.14-pr-1042-2495da40.0
+  '@cowprotocol/sdk-order-signing@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a}
+    version: 1.1.14-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-subgraph@https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd}
-    version: 1.2.7-pr-1042-2495da40.0
+  '@cowprotocol/sdk-subgraph@https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5}
+    version: 1.2.7-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-trading-solana@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961}
-    version: 0.12.0-pr-1042-2495da40.0
+  '@cowprotocol/sdk-trading-solana@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e}
+    version: 0.12.0-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-trading@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793}
-    version: 2.7.2-pr-1042-2495da40.0
+  '@cowprotocol/sdk-trading@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005}
+    version: 2.7.2-pr-1042-3e6f1ab0.0
 
-  '@cowprotocol/sdk-viem-adapter@https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206}
-    version: 0.3.32-pr-1042-2495da40.0
+  '@cowprotocol/sdk-viem-adapter@https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db}
+    version: 0.3.32-pr-1042-3e6f1ab0.0
     peerDependencies:
       viem: 2.48.8
 
-  '@cowprotocol/sdk-weiroll@https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-2495da40.0/3b46155ad006bbf7206c72dac25064c85197638a':
-    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-2495da40.0/3b46155ad006bbf7206c72dac25064c85197638a}
-    version: 0.2.8-pr-1042-2495da40.0
+  '@cowprotocol/sdk-weiroll@https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-3e6f1ab0.0/9dbe1da24ad2bbc969e4fecf0f11be27db535578':
+    resolution: {tarball: https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-3e6f1ab0.0/9dbe1da24ad2bbc969e4fecf0f11be27db535578}
+    version: 0.2.8-pr-1042-3e6f1ab0.0
 
   '@cowprotocol/types@1.2.0':
     resolution: {integrity: sha512-K/jOyLtffgEFs52hRKX7tyDHtIA3asnsB9So6lINCPfNetr1GhM818+kf+f3sPtOHWsBpL3pTkjJphzDVCQntQ==}
@@ -19582,15 +19582,15 @@ snapshots:
       react: 19.1.2
       react-dom: 19.1.2(react@19.1.2)
 
-  '@cowprotocol/cow-sdk@https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/cow-sdk@https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       cross-fetch: 4.0.0(encoding@0.1.13)
     optionalDependencies:
       '@openzeppelin/merkle-tree': 1.0.8
@@ -19601,7 +19601,7 @@ snapshots:
 
   '@cowprotocol/currency@1.4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       jsbi: 3.2.5
     transitivePeerDependencies:
       - '@openzeppelin/merkle-tree'
@@ -19616,8 +19616,8 @@ snapshots:
 
   '@cowprotocol/events@4.11.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types': 4.9.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
     transitivePeerDependencies:
       - '@openzeppelin/merkle-tree'
@@ -19641,23 +19641,23 @@ snapshots:
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-app-data@https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2(ajv@8.17.1)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-app-data@https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462(ajv@8.17.1)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
       ajv: 8.17.1
       json-stringify-deterministic: 1.0.12
       multiformats: 14.0.0
 
-  '@cowprotocol/sdk-bridging@https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-bridging@https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-      '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-weiroll': https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-2495da40.0/3b46155ad006bbf7206c72dac25064c85197638a
+      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+      '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-weiroll': https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-3e6f1ab0.0/9dbe1da24ad2bbc969e4fecf0f11be27db535578
       '@defuse-protocol/one-click-sdk-typescript': 0.1.25
       json-stable-stringify: 1.3.0
     transitivePeerDependencies:
@@ -19666,18 +19666,18 @@ snapshots:
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-common@https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6':
+  '@cowprotocol/sdk-common@https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02':
     dependencies:
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
 
-  '@cowprotocol/sdk-composable@https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-2495da40.0/0c7785424bd768a3ecec4ce881d362cb12d81b48(encoding@0.1.13)(typescript@5.9.3)':
+  '@cowprotocol/sdk-composable@https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.2-pr-1042-3e6f1ab0.0/fb310830c3b975147c71c27e9bb18f43aa574a2f(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-      '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777(encoding@0.1.13)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+      '@cowprotocol/sdk-cow-shed': https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a(encoding@0.1.13)
       '@openzeppelin/merkle-tree': 1.0.8
       valibot: 1.4.2(typescript@5.9.3)
     transitivePeerDependencies:
@@ -19685,57 +19685,57 @@ snapshots:
       - supports-color
       - typescript
 
-  '@cowprotocol/sdk-config@https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264':
+  '@cowprotocol/sdk-config@https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80':
     dependencies:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
 
-  '@cowprotocol/sdk-contracts-ts@https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6':
+  '@cowprotocol/sdk-contracts-ts@https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
 
-  '@cowprotocol/sdk-cow-shed@https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-2495da40.0/c8670bbe109460b58c52951c1c6505af9af37607':
+  '@cowprotocol/sdk-cow-shed@https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.1-pr-1042-3e6f1ab0.0/40c5c07e040ddaf53d35bec7c46d5176f64319f4':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
 
-  '@cowprotocol/sdk-order-book@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-book@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
       cross-fetch: 3.2.0(encoding@0.1.13)
       exponential-backoff: 3.1.3
       limiter: 3.0.0
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-signing@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-signing@https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-subgraph@https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-2495da40.0/0170e80a29371cbec46267fddd174022016051dd(encoding@0.1.13)':
+  '@cowprotocol/sdk-subgraph@https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.7-pr-1042-3e6f1ab0.0/d86b1ffe78116aac01f8cee4c670b504ea336bd5(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
       graphql: 16.12.0
       graphql-request: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading-solana@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-2495da40.0/26d4bff6d8c61e3e4f651b5531b3adc0c78ef961(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@cowprotocol/sdk-trading-solana@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.12.0-pr-1042-3e6f1ab0.0/c3e5386604c0700bf78a975c293f52c7aa61455e(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@noble/hashes': 1.8.0
       '@solana/spl-token': 0.4.14(@solana/web3.js@1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -19749,37 +19749,37 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@cowprotocol/sdk-trading@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-2495da40.0/a305c5e3a871d71de8a5545cff28e2b9e16c0793(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-trading@https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.2-pr-1042-3e6f1ab0.0/ea4106856cfa83d0996c7c0fb97e338bf4096005(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-2495da40.0/0599a4dda99c0643ee466d7000e0b21bf37e74f2(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
-      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-2495da40.0/cd63072907aaf69f660a1e9233cc12baaa85fac6
-      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-2495da40.0/b6f915c5562e848ab4f094a5a3d67fe18920e3c4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-2495da40.0/1ee6fbaf3a0baf82582adb3e779af5c29d79c777(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.7-pr-1042-3e6f1ab0.0/43fe7e7bcf5e4e502206978db264e705dab9e462(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
+      '@cowprotocol/sdk-contracts-ts': https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.1-pr-1042-3e6f1ab0.0/68cd0089437ebedb91af0d8f008765658dcf5747
+      '@cowprotocol/sdk-order-book': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.2.0-pr-1042-3e6f1ab0.0/acd39478b39ee4b048c32703d3944c8d5b181574(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.14-pr-1042-3e6f1ab0.0/0f2aeed7c5fc8b78baa01571301fd4921866209a(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-viem-adapter@https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-2495da40.0/4e300d23e18b77177706333c1b1b8da3a6070206(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+  '@cowprotocol/sdk-viem-adapter@https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.32-pr-1042-3e6f1ab0.0/564ea40999624546c1b67f0105fb9f1f033575db(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
       viem: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
 
-  '@cowprotocol/sdk-weiroll@https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-2495da40.0/3b46155ad006bbf7206c72dac25064c85197638a':
+  '@cowprotocol/sdk-weiroll@https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.8-pr-1042-3e6f1ab0.0/9dbe1da24ad2bbc969e4fecf0f11be27db535578':
     dependencies:
-      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-2495da40.0/9551e325c63c84a0c861708236194a9091f2eae6
-      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-2495da40.0/105a2118f5a64f309b79b42262be62db684a3264
+      '@cowprotocol/sdk-common': https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.1-pr-1042-3e6f1ab0.0/e51f70ec82df9794f3874e1dbe82a22fe1bcbd02
+      '@cowprotocol/sdk-config': https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.7.1-pr-1042-3e6f1ab0.0/bc4298c30b22819f9749822682e4e22e40ad5d80
 
   '@cowprotocol/types@1.2.0': {}
 
   '@cowprotocol/types@4.9.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency': 1.4.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-2495da40.0/90180f9a704d332331de7b4ab1f0952288d1d69f(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-bridging': https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.12-pr-1042-3e6f1ab0.0/33b1bdf0eb3ce97ef5b9a89efb82ebf7dc151589(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       eventemitter3: 4.0.7
     transitivePeerDependencies:
       - '@openzeppelin/merkle-tree'
@@ -19796,7 +19796,7 @@ snapshots:
 
   '@cowprotocol/widget-lib@2.3.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events': 4.11.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/iframe-transport': 2.3.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
     transitivePeerDependencies:
@@ -19809,7 +19809,7 @@ snapshots:
 
   '@cowprotocol/widget-lib@3.1.1(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events': 4.11.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/iframe-transport': 2.3.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
     transitivePeerDependencies:
@@ -19822,7 +19822,7 @@ snapshots:
 
   '@cowprotocol/widget-lib@4.6.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-2495da40.0/f381010185f648a141ab3f5ff5255e68bd81d29f(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/cow-sdk': https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.15-pr-1042-3e6f1ab0.0/c68847b97e6142d5020106ef3c53f0ddf40591b4(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events': 4.11.0(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/iframe-transport': 2.3.6(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
     transitivePeerDependencies:
