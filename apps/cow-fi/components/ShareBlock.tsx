@@ -236,13 +236,13 @@ const ShareBlockContainer = styled.div`
   border-radius: 1.8rem;
   border: 0.1rem solid var(${UI.COLOR_NEUTRAL_80});
   background: var(${UI.COLOR_NEUTRAL_98});
-  font-family: ${Font.family};
+  font-family: ${Font.familyStudioFeixen};
 `
 
 const ShareTitle = styled.div`
   flex-shrink: 0;
   font-size: 1.2rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(${UI.COLOR_NEUTRAL_40});
@@ -274,7 +274,7 @@ const ShareButton = styled.button<{ $bg: string; $bgHover: string; $color: strin
   background-color: ${({ $bg }) => $bg};
   color: ${({ $color }) => $color};
   font-size: 1.6rem;
-  font-weight: ${Font.weight.medium};
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   cursor: pointer;
   transition: background-color 0.12s ease;
 

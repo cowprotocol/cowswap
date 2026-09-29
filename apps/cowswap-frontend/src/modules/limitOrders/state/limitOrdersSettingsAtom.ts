@@ -1,7 +1,7 @@
 import { atom, Getter, SetStateAction, Setter } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiIsolatedStorage } from '@cowprotocol/core'
+import { getJotaiIsolatedStorage, migrateLocalStorageKey } from '@cowprotocol/core'
 
 import { Milliseconds, Timestamp } from 'types'
 
@@ -21,6 +21,7 @@ export interface LimitOrdersSettingsState {
   readonly limitPriceLocked: boolean
   readonly ordersTableOnLeft: boolean
   readonly isUsdValuesMode: boolean
+  readonly enablePartialApprovalBySettings: boolean
 }
 
 export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
@@ -32,11 +33,16 @@ export const defaultLimitOrdersSettings: LimitOrdersSettingsState = {
   limitPriceLocked: true,
   ordersTableOnLeft: false,
   isUsdValuesMode: false,
+  enablePartialApprovalBySettings: true,
 }
+
+migrateLocalStorageKey<LimitOrdersSettingsState>('limit-orders-settings-atom:v3', 'limit-orders-settings-atom:v4', {
+  enablePartialApprovalBySettings: true,
+})
 
 // regular
 const regularLimitOrdersSettingsAtom = atomWithStorage<LimitOrdersSettingsState>(
-  'limit-orders-settings-atom:v3',
+  'limit-orders-settings-atom:v4',
   defaultLimitOrdersSettings,
   getJotaiIsolatedStorage(),
 )

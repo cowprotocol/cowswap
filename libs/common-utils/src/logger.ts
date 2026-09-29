@@ -35,3 +35,4 @@ function logCow(level: CowLogLevel, scope: string, ...args: unknown[]): void {
 export const logSafeApi = createCowLogger('SafeAPI')
 export const logWallet = createCowLogger('Wallet')
 export const logAnalytics = createCowLogger('Analytics')
+export const logTwap = createCowLogger('TWAP')

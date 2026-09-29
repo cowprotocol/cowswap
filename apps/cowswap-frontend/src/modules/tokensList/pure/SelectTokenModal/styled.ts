@@ -2,8 +2,6 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { blankButtonMixin } from '../commonElements'
-
 export const Wrapper = styled.div<{ $hasChainPanel?: boolean; $isFullScreen?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -56,14 +54,11 @@ export const TitleActions = styled.div`
 `
 
 export const TitleActionButton = styled.button`
-  ${blankButtonMixin};
-
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 2px;
   border-radius: 8px;
-  cursor: pointer;
   color: inherit;
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
@@ -94,7 +89,6 @@ export const SearchInputWrapper = styled.div`
   }
 
   input {
-    background: transparent;
     height: 100%;
   }
 `
@@ -145,7 +139,6 @@ export const ListTitle = styled.div`
 `
 
 export const ListTitleActionButton = styled.button`
-  ${blankButtonMixin};
   font-size: 13px;
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});

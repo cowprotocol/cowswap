@@ -1,7 +1,7 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
-import { TradeType } from './TradeType'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 export interface TradeDerivedState {
   readonly inputCurrency: Currency | null

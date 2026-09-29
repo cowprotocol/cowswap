@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
+import type { TwapStatus } from '@cowprotocol/sdk-composable'
 
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -16,7 +17,7 @@ import { CornerWarningIcon, GenericStatus as StyledGenericStatus, Label, Wrapper
 export type PartiallyTagPosition = 'right' | 'bottom'
 
 export type StatusLabelProps = {
-  status: OrderStatus | BridgeStatus
+  status: OrderStatus | BridgeStatus | TwapStatus | 'unconfirmed'
   partiallyFilled?: boolean
   filledPercentage?: BigNumber
   partialTagPosition?: PartiallyTagPosition
@@ -48,7 +49,7 @@ export function StatusLabel({
   customText,
   warningLabel,
 }: StatusLabelProps): ReactNode {
-  const status = _status.toLowerCase()
+  const status = _status === 'partiallyFilled' ? OrderStatus.PartiallyFilled : _status.toLowerCase()
   const shimming = SHIMMING_STATUSES.includes(status)
   const customizeStatus = FINAL_STATUSES.includes(status)
 

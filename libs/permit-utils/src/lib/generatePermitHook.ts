@@ -1,4 +1,4 @@
-import { Address, Hex } from 'viem'
+import { Address, BaseError, ExecutionRevertedError, Hex } from 'viem'
 import type { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
@@ -9,6 +9,8 @@ import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
+
+type NormalizedError = Error & { code?: number }
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
@@ -26,12 +28,14 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   }
 
   const request = generatePermitHookRaw(params)
-    .catch((e) => {
+    .catch((err: unknown) => {
+      const error = normalizeError(err)
+
       // Re-throw user rejection errors so they propagate to the UI
-      if (isUserRejectionError(e)) {
-        throw e
+      if (isUserRejectionError(error) || error instanceof ExecutionRevertedError) {
+        throw error
       }
-      console.debug(`[generatePermitHook] cached request failed`, e)
+      console.debug(`[generatePermitHook] cached request failed`, error)
       return undefined
     })
     .finally(() => {
@@ -67,8 +71,12 @@ async function calculateGasLimit({
 
     // Pick the biggest between estimated and default
     return gasLimit > DEFAULT_PERMIT_GAS_LIMIT ? gasLimit : DEFAULT_PERMIT_GAS_LIMIT
-  } catch (e) {
-    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, e)
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    const revertError = isUserAccount ? getExecutionRevertedError(error) : undefined
+    if (revertError) throw revertError
+
+    console.debug(`[calculatePermitGasLimit] Failed to estimateGas, using default`, error)
 
     return DEFAULT_PERMIT_GAS_LIMIT
   }
@@ -155,10 +163,34 @@ function getCacheKey(params: PermitHookParams): string {
   return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isUserRejectionError(error: any): boolean {
-  if (!error) return false
-  if (USER_REJECTION_CODES.includes(error.code)) return true
-  const message = (typeof error === 'string' ? error : error.message)?.toLowerCase() || ''
+function getExecutionRevertedError(error: unknown): ExecutionRevertedError | undefined {
+  if (!(error instanceof BaseError)) return undefined
+
+  const revertError = error.walk((cause) => cause instanceof ExecutionRevertedError)
+
+  return revertError instanceof ExecutionRevertedError ? revertError : undefined
+}
+
+function isUserRejectionError(error: NormalizedError): boolean {
+  if (error.code !== undefined && USER_REJECTION_CODES.includes(error.code)) return true
+
+  const message = error.message.toLowerCase()
   return USER_REJECTION_MESSAGES.some((msg) => message.includes(msg))
+}
+
+// Keep this local: permit-utils is buildable, while common-utils is not.
+function normalizeError(err: unknown): NormalizedError {
+  if (err instanceof Error) return err
+
+  const message =
+    typeof err === 'object' && err !== null && 'message' in err && typeof err.message === 'string'
+      ? err.message
+      : String(err)
+  const error = new Error(message) as NormalizedError
+
+  if (typeof err === 'object' && err !== null && 'code' in err && typeof err.code === 'number') {
+    error.code = err.code
+  }
+
+  return error
 }

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -8,8 +8,11 @@ import { AffiliateTraderHeaderButton, useShouldShowAffiliateTraderHeaderButton }
 import {
   NotificationBell,
   NotificationSidebar,
+  useCloseNotificationSidebar,
   useHasNotificationSubscription,
   useNotificationAlertDismissal,
+  useNotificationSidebarState,
+  useOpenNotificationSidebar,
   useUnreadSidebarNotificationsCount,
 } from 'modules/notifications'
 import { WalletStatusButton } from 'modules/wallet'
@@ -33,8 +36,9 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription, isLoading } = useHasNotificationSubscription()
 
-  const [isSidebarOpen, setSidebarOpen] = useState(false)
-  const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
+  const { isOpen: isSidebarOpen, initialSettingsOpen: shouldOpenSettings } = useNotificationSidebarState()
+  const openNotificationSidebar = useOpenNotificationSidebar()
+  const closeNotificationSidebar = useCloseNotificationSidebar()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const notificationBellRef = useRef<HTMLButtonElement>(null)
 
@@ -42,8 +46,7 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
     areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
 
   const handleEnableAlerts = (): void => {
-    setShouldOpenSettings(areTelegramNotificationsEnabled)
-    setSidebarOpen(true)
+    openNotificationSidebar(areTelegramNotificationsEnabled)
     dismiss()
   }
 
@@ -51,8 +54,8 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
     if (shouldShowPopover) {
       dismiss()
     }
-    setSidebarOpen(true)
-  }, [shouldShowPopover, dismiss])
+    openNotificationSidebar()
+  }, [shouldShowPopover, dismiss, openNotificationSidebar])
 
   return (
     <>
@@ -83,10 +86,7 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
 
       <NotificationSidebar
         isOpen={isSidebarOpen}
-        onClose={() => {
-          setSidebarOpen(false)
-          setShouldOpenSettings(false)
-        }}
+        onClose={closeNotificationSidebar}
         initialSettingsOpen={shouldOpenSettings}
       />
     </>

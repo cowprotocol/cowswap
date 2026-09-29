@@ -6,6 +6,7 @@ import { DialogContent, DialogOverlay } from '@reach/dialog'
 import { animated } from '@react-spring/web'
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
+import { Z_INDEX } from 'theme'
 
 export const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -57,7 +58,7 @@ export const ContentWrapper = styled.div`
 const AnimatedDialogOverlay = animated(DialogOverlay)
 export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
   &[data-reach-dialog-overlay] {
-    z-index: 2;
+    z-index: ${Z_INDEX.modal};
     background-color: transparent;
     overflow: hidden;
 

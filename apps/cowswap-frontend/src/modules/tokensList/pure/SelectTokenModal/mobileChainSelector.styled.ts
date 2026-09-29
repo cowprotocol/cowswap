@@ -166,7 +166,6 @@ export const MoreChipButton = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
 

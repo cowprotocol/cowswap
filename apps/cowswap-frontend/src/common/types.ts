@@ -10,10 +10,12 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
  *
  * id - this parameter is specified when it's a conditional (parent) order
  * parentId - this parameter is specified when it's a discrete (child) order
+ * twapOrderHash - on-chain hash used to remove an indexed EOA TWAP order
  */
 export type ComposableCowInfo = {
   id?: string
   parentId?: string
+  twapOrderHash?: string
   isVirtualPart?: boolean
   isTheLastPart?: boolean
 }

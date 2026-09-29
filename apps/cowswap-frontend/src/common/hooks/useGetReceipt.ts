@@ -30,6 +30,35 @@ export class TransactionNotBroadcastError extends Error {
   }
 }
 
+/**
+ * Grace period before treating a missing hash as never-broadcast.
+ *
+ * Allows time for a freshly submitted tx to propagate. Fast L2s mine in a few seconds, so a
+ * short window avoids a long "stuck pending" UX after MetaMask Smart Transaction cancellation.
+ * Mainnet needs longer for node propagation.
+ *
+ * Used by FinalizeTxUpdater (`checkOnChainTransaction`) and EOA TWAP receipt waits.
+ */
+const FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS = 15_000
+const DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS = 30_000
+
+export const NOT_BROADCAST_GRACE_PERIOD_MS = {
+  [SupportedChainId.MAINNET]: 60_000,
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.SEPOLIA]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.ARBITRUM_ONE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.BASE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.POLYGON]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.AVALANCHE]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.BNB]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.LINEA]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.PLASMA]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+  [SupportedChainId.INK]: FAST_L2_NOT_BROADCAST_GRACE_PERIOD_MS,
+
+  // Unused. Only added to satisfy TS:
+  [SupportedChainId.SOLANA]: DEFAULT_NOT_BROADCAST_GRACE_PERIOD_MS,
+} as const satisfies Record<SupportedChainId, number>
+
 export function useGetReceipt(chainId: SupportedChainId): GetReceipt {
   const config = useConfig()
 

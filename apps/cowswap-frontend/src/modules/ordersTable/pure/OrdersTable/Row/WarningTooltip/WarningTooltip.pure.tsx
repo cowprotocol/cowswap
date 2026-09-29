@@ -28,6 +28,41 @@ interface WarningTooltipProps {
   onApprove: Command
 }
 
+// Shown on the status badge of a TWAP order (and its open parts) whose Safe ComposableCoW fallback
+// handler was reset, so open orders can no longer be created (see issue #5426).
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function FallbackHandlerWarningTooltip({ children }: { children?: ReactNode }) {
+  const tooltipContent = (
+    <styledEl.WarningContent>
+      <styledEl.WarningParagraph>
+        <h3>
+          <Trans>Update fallback handler</Trans>
+        </h3>
+        <p>
+          <Trans>
+            Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
+            created because of that. Please, update the fallback handler in order to make the orders work again.
+          </Trans>
+        </p>
+      </styledEl.WarningParagraph>
+    </styledEl.WarningContent>
+  )
+
+  return (
+    <styledEl.WarningIndicator hasBackground={false}>
+      <styledEl.StyledQuestionHelper
+        text={tooltipContent}
+        placement="bottom"
+        bgColor={`var(${UI.COLOR_DANGER_BG})`}
+        color={`var(${UI.COLOR_DANGER_TEXT})`}
+        Icon={<SVG src={svgFilledInfoCircleSrc} description={t`warning`} width="14" height="14" />}
+      />
+      {children}
+    </styledEl.WarningIndicator>
+  )
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function WarningTooltip({
@@ -73,28 +108,25 @@ function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProp
       </h3>
       <p>
         {isScheduled ? (
-          <>
-            <Trans>Insufficient allowance granted for</Trans>{' '}
+          <Trans>
+            Insufficient allowance granted for{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            .{' '}
-            <Trans>
-              If allowance remains insufficient at creation time, this portion will not be created. Approve the
-            </Trans>{' '}
+            . If allowance remains insufficient at creation time, this portion will not be created. Approve the{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>token before creation.</Trans>
-          </>
+            token before creation.
+          </Trans>
         ) : (
-          <>
-            <Trans>The order remains open. Execution requires adequate allowance for</Trans>{' '}
+          <Trans>
+            The order remains open. Execution requires adequate allowance for{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            . <Trans>Approve the token to proceed.</Trans>
-          </>
+            . Approve the token to proceed.
+          </Trans>
         )}
       </p>
       <styledEl.WarningActionBox>
@@ -115,31 +147,31 @@ function BalanceWarning({ symbol, isScheduled }: WarningProps) {
         <Trans>Insufficient token balance</Trans>
       </h3>
       <p>
-        <Trans>Insufficient</Trans>{' '}
-        <strong>
-          <TokenSymbol token={{ symbol }} />
-        </strong>{' '}
-        <Trans>balance detected.</Trans>
+        <Trans>
+          Insufficient{' '}
+          <strong>
+            <TokenSymbol token={{ symbol }} />
+          </strong>{' '}
+          balance detected.
+        </Trans>
         <br />
         <br />
         {isScheduled ? (
-          <>
-            <Trans>
-              If the balance remains insufficient at creation time, this order portion will not be created. Add more
-            </Trans>{' '}
+          <Trans>
+            If the balance remains insufficient at creation time, this order portion will not be created. Add more{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>before that time.</Trans>
-          </>
+            before that time.
+          </Trans>
         ) : (
-          <>
-            <Trans>The order remains open. Execution requires sufficient</Trans>{' '}
+          <Trans>
+            The order remains open. Execution requires sufficient{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            <Trans>balance.</Trans>
-          </>
+            balance.
+          </Trans>
         )}
       </p>
     </styledEl.WarningParagraph>

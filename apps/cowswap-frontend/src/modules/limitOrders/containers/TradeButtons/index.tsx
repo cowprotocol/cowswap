@@ -38,7 +38,7 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
-  const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade, true)
 
   const isDisabled = !warningsAccepted || !isTradeContextReady
 

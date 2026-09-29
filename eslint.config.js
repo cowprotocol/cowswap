@@ -285,6 +285,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'valid-typeof': ['error', { requireStringLiterals: true }],
       'prettier/prettier': 'warn',
     },
   },
@@ -377,6 +378,15 @@ module.exports = [
       complexity: ['error', 100],
       'max-lines-per-function': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
       '@typescript-eslint/no-restricted-imports': 'warn',
+    },
+  },
+
+  // Playwright E2E spec files contain large describe blocks of scaffolded placeholders.
+  {
+    files: ['apps/cowswap-e2e-tests/src/**/*.spec.ts'],
+    rules: {
+      complexity: ['error', 100],
+      'max-lines-per-function': 'off',
     },
   },
 

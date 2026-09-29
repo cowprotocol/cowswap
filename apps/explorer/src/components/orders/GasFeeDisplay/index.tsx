@@ -1,60 +1,132 @@
-// TODO: Enable once API is ready
-// import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+import { Fragment, ReactNode, useMemo } from 'react'
 
-import React, { useMemo } from 'react'
+import { shortenAddress } from '@cowprotocol/common-utils'
+import { AddressKey, getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { ZERO_BIG_NUMBER } from 'const'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
+import BigNumber from 'bignumber.js'
+import { NumbersBreakdown } from 'components/orders/NumbersBreakdown'
+import { TokenAmount } from 'components/token/TokenAmount'
+import { NATIVE_TOKEN_ADDRESS, NATIVE_TOKEN_PER_NETWORK, ZERO_BIG_NUMBER } from 'const'
+import { useMultipleErc20 } from 'hooks/useErc20'
+import { useNetworkId } from 'state/network'
 import styled from 'styled-components/macro'
 
-import { Order } from 'api/operator'
+import { Order, ProtocolFee } from 'api/operator'
 import { formatTokenAmount } from 'utils/tokenFormatting'
 
-const Wrapper = styled.div`
+import { buildLineItems, indexTokensByKey, sumByToken } from './breakdown'
+
+const LegacyWrapper = styled.div`
   > span {
     margin: 0 0.5rem 0 0;
   }
 `
 
-export type Props = { order: Order }
+export type Props = {
+  order: Order
+  /** The caller gates this on `isExplorerFeeDisplayEnabled` plus a usable gas cost and fee list. */
+  showBreakdown?: boolean
+}
 
-// TODO: Enable once API is ready
-// const fetchFeeBreakdown = async (initialFee: string): Promise<any> => {
-//   // TODO: Simulating API call to fetch fee breakdown data
-//   return new Promise((resolve) => {
-//     resolve({
-//       networkCosts: 'TODO: Get network costs here',
-//       fee: 'TODO: Get fee here',
-//       total: initialFee,
-//     })
-//   })
-// }
+export function GasFeeDisplay(props: Props): ReactNode {
+  const { order, showBreakdown = false } = props
 
-// TODO: Enable once API is ready
-// const renderFeeBreakdown = (data: any): React.ReactNode => {
-//   return (
-//     <table>
-//       <tbody>
-//         <tr>
-//           <td>Network Costs:</td>
-//           <td>{data.networkCosts}</td>
-//         </tr>
-//         <tr>
-//           <td>Fee:</td>
-//           <td>{data.fee}</td>
-//         </tr>
-//         <tr>
-//           <td>Total Costs & Fees:</td>
-//           <td>{data.total}</td>
-//         </tr>
-//       </tbody>
-//     </table>
-//   )
-// }
+  // Without both the gas cost and the fees, a total would silently omit a component.
+  if (!showBreakdown || !order.gasCost || !order.gasCost.isGreaterThan(0) || !order.protocolFees) {
+    return <LegacyFeeDisplay order={order} />
+  }
 
-export function GasFeeDisplay(props: Props): React.ReactNode | null {
-  const {
-    order: { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee },
-  } = props
+  return <CostsAndFeesBreakdown order={order} gasCost={order.gasCost} protocolFees={order.protocolFees} />
+}
+
+function CostsAndFeesBreakdown({
+  order,
+  gasCost,
+  protocolFees,
+}: {
+  order: Order
+  gasCost: BigNumber
+  protocolFees: ProtocolFee[]
+}): ReactNode {
+  const networkId = useNetworkId() ?? undefined
+
+  const feeTokenAddresses = useMemo(() => protocolFees.map((fee) => fee.tokenAddress), [protocolFees])
+  const { value: feeTokens, isLoading: areFeeTokensLoading } = useMultipleErc20({
+    networkId,
+    addresses: feeTokenAddresses,
+  })
+
+  const nativeToken = networkId
+    ? NATIVE_TOKEN_PER_NETWORK[networkId as keyof typeof NATIVE_TOKEN_PER_NETWORK]
+    : undefined
+  const nativeKey = getAddressKey(nativeToken?.address ?? NATIVE_TOKEN_ADDRESS)
+
+  const tokenByKey = useMemo(
+    () => indexTokensByKey([...Object.values(feeTokens), nativeToken, order.buyToken, order.sellToken]),
+    [feeTokens, nativeToken, order.buyToken, order.sellToken],
+  )
+
+  const lineItems = useMemo(() => buildLineItems(protocolFees, gasCost, nativeKey), [protocolFees, gasCost, nativeKey])
+
+  const totals = useMemo(() => sumByToken(lineItems), [lineItems])
+
+  // Amounts mean nothing without decimals; keep the legacy fee up until they load.
+  if (areFeeTokensLoading) return <LegacyFeeDisplay order={order} />
+
+  return (
+    <>
+      <span>
+        {totals.map(([tokenAddress, amount], index) => (
+          <Fragment key={tokenAddress}>
+            {index > 0 && ', '}
+            <FeeAmount amount={amount} token={tokenByKey.get(tokenAddress)} tokenAddress={tokenAddress} />
+          </Fragment>
+        ))}
+      </span>
+      {/* A lone network-costs row would just repeat the total. */}
+      {lineItems.length > 1 && (
+        <NumbersBreakdown>
+          <table>
+            <tbody>
+              {lineItems.map((item, index) => (
+                <tr key={index}>
+                  <td>{item.label}:</td>
+                  <td>
+                    <FeeAmount
+                      amount={item.amount}
+                      token={tokenByKey.get(item.tokenAddress)}
+                      tokenAddress={item.tokenAddress}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </NumbersBreakdown>
+      )}
+    </>
+  )
+}
+
+// No metadata means no decimals, so mark the figure unscaled rather than pass it off as an amount.
+function FeeAmount({
+  amount,
+  token,
+  tokenAddress,
+}: {
+  amount: BigNumber
+  token?: TokenErc20
+  tokenAddress: AddressKey
+}): ReactNode {
+  if (!token) return `${amount.toString(10)} (raw) ${shortenAddress(tokenAddress)}`
+
+  return <TokenAmount amount={amount} token={token} />
+}
+
+// The combined executed fee in the sell token, shown whenever the breakdown can't be.
+function LegacyFeeDisplay({ order }: { order: Order }): ReactNode {
+  const { feeAmount, sellToken, sellTokenAddress, fullyFilled, totalFee } = order
 
   const { executedFeeFormatted, totalFeeFormatted, quoteSymbol } = useMemo(() => {
     if (!sellToken) {
@@ -71,32 +143,19 @@ export function GasFeeDisplay(props: Props): React.ReactNode | null {
     return { executedFeeFormatted, totalFeeFormatted, quoteSymbol }
   }, [totalFee, feeAmount, sellToken, sellTokenAddress])
 
-  const noFee = useMemo(() => feeAmount.isZero() && totalFee.isZero(), [feeAmount, totalFee])
+  const noFee = feeAmount.isZero() && totalFee.isZero()
 
-  const FeeElement = useMemo(
-    () => (
+  return (
+    <LegacyWrapper>
       <span>
         {noFee ? '-' : `${executedFeeFormatted} ${quoteSymbol}`}
         {!fullyFilled && feeAmount.gt(ZERO_BIG_NUMBER) && (
-          <>
-            <span>
-              of {totalFeeFormatted} {quoteSymbol}
-            </span>
-          </>
+          <span>
+            {' '}
+            of {totalFeeFormatted} {quoteSymbol}
+          </span>
         )}
       </span>
-    ),
-    [noFee, executedFeeFormatted, quoteSymbol, fullyFilled, feeAmount, totalFeeFormatted],
-  )
-
-  return (
-    <Wrapper>
-      {FeeElement}
-      {/*TODO: Enable once API is ready*/}
-      {/*<NumbersBreakdown*/}
-      {/*  fetchData={() => fetchFeeBreakdown(`${formattedExecutedFee} ${quoteSymbol}`)}*/}
-      {/*  renderContent={renderFeeBreakdown}*/}
-      {/*/>*/}
-    </Wrapper>
+    </LegacyWrapper>
   )
 }

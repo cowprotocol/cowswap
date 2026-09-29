@@ -39,8 +39,8 @@ export function middleware(request: NextRequest): NextResponse {
     return response
   }
 
-  // Only process /learn routes for tracking param removal
-  if (!pathname.startsWith('/learn')) {
+  // Process /learn and /resources routes for tracking param removal
+  if (!pathname.startsWith('/learn') && !pathname.startsWith('/resources')) {
     return response
   }
 

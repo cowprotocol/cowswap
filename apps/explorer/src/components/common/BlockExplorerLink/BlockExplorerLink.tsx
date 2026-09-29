@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { BlockExplorerLinkType, getBlockExplorerUrl } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import LogoWrapper, { LOGO_MAP } from 'components/common/LogoWrapper'
@@ -65,7 +65,12 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
       <span>{label}</span>
-      {showLogo && <LogoWrapper title={`Open it on ${explorerTitle}`} src={LOGO_MAP.svgEtherscanSrc} />}
+      {showLogo && (
+        <LogoWrapper
+          title={`Open it on ${explorerTitle}`}
+          src={isSolanaChain(networkId) ? LOGO_MAP.svgSolanaExplorerSrc : LOGO_MAP.svgEtherscanSrc}
+        />
+      )}
     </ExternalLink>
   )
 }

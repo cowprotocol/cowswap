@@ -3,7 +3,8 @@ import { useEffect } from 'react'
 import { WRAPPED_NATIVE_CURRENCIES, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeNavigate } from './useTradeNavigate'
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
+
 import { useTradeState } from './useTradeState'
 
 import { getDefaultTradeRawState } from '../types/TradeRawState'

@@ -60,26 +60,17 @@ export const ToggleExpandButton = styled.div<{ isCollapsed?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
-    border: 0;
-    padding: 0;
     margin: 0 0 0 6px;
-    cursor: pointer;
-    outline: none;
-    color: inherit;
     transition: color 0.2s ease-out;
     position: relative;
-    height: var(--height);
     transition: all 0.3s;
     width: var(--size);
     height: var(--size);
     min-width: var(--size);
     min-height: var(--size);
     line-height: 1;
-    background: transparent;
     border: 1px solid ${({ theme }) => transparentize(theme.text, 0.8)};
     border-radius: 6px;
-    user-select: none;
   }
 
   > button::before,

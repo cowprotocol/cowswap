@@ -34,7 +34,6 @@ export const OptionWrapper = styled.button<{ isActive?: boolean }>`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: none;
   border-radius: 9px;
   margin: 4px;
   padding: 8px 4px;

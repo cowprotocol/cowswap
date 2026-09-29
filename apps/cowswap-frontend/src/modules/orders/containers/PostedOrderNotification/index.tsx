@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
+import { getCoWExplorerLinkTitle } from '@cowprotocol/common-utils'
 import { ToastMessageType } from '@cowprotocol/events'
+import { ExternalLink } from '@cowprotocol/ui'
 
 import { OnPostedOrderPayload } from '../../events/events'
 import { OrderNotificationInfo } from '../../types'
@@ -21,6 +23,14 @@ export function PostedOrderNotification({ title, messageType, payload }: PostedO
       orderUid={payload.orderDetails.orderUid}
       orderInfo={mapOrderNotificationInfo(payload)}
       transactionHash={payload.orderDetails.orderCreationHash}
+      skipExplorerLink={payload.explorerUrl !== undefined}
+      bottomContent={
+        payload.explorerUrl ? (
+          <p>
+            <ExternalLink href={payload.explorerUrl}>{getCoWExplorerLinkTitle()} ↗</ExternalLink>
+          </p>
+        ) : undefined
+      }
     />
   )
 }

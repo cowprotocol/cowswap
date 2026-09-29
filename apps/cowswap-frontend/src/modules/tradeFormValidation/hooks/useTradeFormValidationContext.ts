@@ -26,8 +26,8 @@ import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import {
-  TradeType,
   useDerivedTradeState,
+  useGetReceiveAmountInfo,
   useIsWrapOrUnwrap,
   useNonEvmReceiverConfirmed,
   useTradePriceImpact,
@@ -37,12 +37,14 @@ import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -94,6 +96,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapMaximumSellAmount = tradeType === TradeType.SWAP ? getSwapMaximumSellAmount(receiveAmountInfo) : null
+
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
@@ -140,6 +145,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         featureFlagsStatus === 'loading' ||
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      swapMaximumSellAmount,
     }
   }, [
     hasFirstLoad,
@@ -175,6 +181,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     featureFlagsStatus,
     canQuote,
     captchaInteractionRequired,
+    swapMaximumSellAmount,
   ])
 }
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 import type { Token } from '@cowprotocol/currency'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -10,7 +10,8 @@ import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './TwapStatusAndToggle.styled'
 
-import { WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
+import { getIsFallbackHandlerUnfillable } from '../../utils/getIsFallbackHandlerUnfillable'
+import { FallbackHandlerWarningTooltip, WarningTooltip } from '../OrdersTable/Row/WarningTooltip/WarningTooltip.pure'
 import { OrderStatusBox } from '../OrderStatusBox/OrderStatusBox.pure'
 
 import type { OrderParams } from '../../utils/getOrderParams'
@@ -22,11 +23,13 @@ interface ChildOrderItems {
 
 interface TwapStatusAndToggleProps {
   parent: ParsedOrder
-  childrenLength: number
+  totalParts: number
   isCollapsed: boolean
+  isFallbackHandlerRequired?: boolean
   onToggle: () => void
   onClick: () => void
   childOrders: ChildOrderItems[]
+  parentOrderParams?: OrderParams
   approveOrderToken(token: Token): void
 }
 
@@ -34,13 +37,20 @@ interface TwapStatusAndToggleProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapStatusAndToggle({
   parent,
-  childrenLength,
+  totalParts,
   isCollapsed,
+  isFallbackHandlerRequired,
   onToggle,
   onClick,
   childOrders,
+  parentOrderParams,
   approveOrderToken,
 }: TwapStatusAndToggleProps) {
+  const isParentOpen = parent.status === OrderStatus.PENDING || parent.status === OrderStatus.SCHEDULED
+  const hasParentAllowanceWarning = isParentOpen && parentOrderParams?.hasEnoughAllowance === false
+  const hasParentBalanceWarning = isParentOpen && parentOrderParams?.hasEnoughBalance === false
+  const hasParentFundingWarning = isParentOpen && (hasParentAllowanceWarning || hasParentBalanceWarning)
+
   // Check if any child has insufficient balance or allowance
   const childWithAllowanceWarning = childOrders.find(
     (child) =>
@@ -56,14 +66,30 @@ export function TwapStatusAndToggle({
 
   const warningChild = childWithAllowanceWarning || childWithBalanceWarning
 
+  // A reset Safe ComposableCoW fallback handler blocks a still-open order (see issue #5426). This is
+  // a per-account state (resolved in the view, not persisted onto the order); the parent status
+  // already reflects whether the TWAP is still open, so checking it is enough — surface the same
+  // danger design on the parent badge as the Fills-at column and the parts.
+  const isFallbackHandlerBlocked = getIsFallbackHandlerUnfillable(parent.status, !!isFallbackHandlerRequired)
+
   return (
     <>
       <OrderStatusBox
         order={parent}
         onClick={onClick}
-        withWarning={!!warningChild}
+        withWarning={hasParentFundingWarning || !!warningChild || isFallbackHandlerBlocked}
         WarningTooltip={
-          warningChild ? (
+          isFallbackHandlerBlocked ? (
+            <FallbackHandlerWarningTooltip />
+          ) : hasParentFundingWarning ? (
+            <WarningTooltip
+              hasEnoughBalance={!hasParentBalanceWarning}
+              hasEnoughAllowance={!hasParentAllowanceWarning}
+              inputTokenSymbol={parent.inputToken.symbol || ''}
+              isOrderScheduled={parent.status === OrderStatus.SCHEDULED}
+              onApprove={() => approveOrderToken(parent.inputToken)}
+            />
+          ) : warningChild ? (
             <WarningTooltip
               hasEnoughBalance={!childWithBalanceWarning}
               hasEnoughAllowance={!childWithAllowanceWarning}
@@ -74,14 +100,14 @@ export function TwapStatusAndToggle({
           ) : null
         }
       />
-      <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
-        {childrenLength && (
+      {totalParts > 0 && (
+        <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
           <i>
-            {childrenLength} {childrenLength > 1 ? <Trans>parts</Trans> : <Trans>part</Trans>}
+            <Plural value={totalParts} one="# part" few="# parts" many="# parts" other="# parts" />
           </i>
-        )}
-        <button />
-      </styledEl.ToggleExpandButton>
+          <button />
+        </styledEl.ToggleExpandButton>
+      )}
     </>
   )
 }

@@ -1,5 +1,32 @@
 # Changelog
 
+## [2.3.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.14...hook-dapp-lib-v2.3.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+### Patch Changes
+
+- fix: check affeced orders against poller for EOA TWAP (#8196)
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.8
+
+## [2.2.14](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.13...hook-dapp-lib-v2.2.14) (2026-09-09)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.7
+
+## [2.2.13](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.12...hook-dapp-lib-v2.2.13) (2026-09-03)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/iframe-transport@2.3.6
+
 ## [2.2.12](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.2.11...hook-dapp-lib-v2.2.12) (2026-08-05)
 
 ### Patch Changes

@@ -1,5 +1,6 @@
-import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
+
+import { UI } from '../../enum'
 
 export const Section = styled.section`
   --padding: 16px;
@@ -11,8 +12,7 @@ export const Section = styled.section`
 
   & + & {
     padding-top: calc(var(--padding) * 1.5);
-    // Same as in apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.styled.tsx:
-    border-top: 1px solid ${({ theme }) => transparentize(theme.white, 0.95)};
+    border-top: 1px solid var(${UI.COLOR_BORDER});
   }
 `
 

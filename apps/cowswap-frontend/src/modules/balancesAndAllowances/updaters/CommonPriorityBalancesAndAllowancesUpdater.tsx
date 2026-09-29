@@ -8,11 +8,10 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isEvmAddress, isNonEvmChain } from '@cowprotocol/cow-sdk'
+import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
 import { Field } from 'legacy/state/types'
 
@@ -29,10 +28,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { field } = useSelectTokenWidgetState()
   const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
   const { account } = useWalletInfo()
-  const balancesContext = useBalancesContext()
-  const balancesAccount = balancesContext.account || account
-
-  const { bwEnabledPercentage } = useFeatureFlags()
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
@@ -69,7 +65,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 
   const { isRecovering: isWatcherRecovering } = useAtomValue(balancesWatcherHealthAtom)
-  const isWatcherActive = shouldEnableBalancesWatcher(account, bwEnabledPercentage) && !isNonEvmChain(sourceChainId)
+  const isWatcherActive = isEvmChain(sourceChainId)
   // Mount the multicall stack when:
   // - the watcher isn't running at all (bw flag off, or non-EVM chain), OR
   // - the watcher is in recovery — sticky from the first failure until the next
@@ -100,7 +96,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       <>
         <BalancesWatcherUpdater
           account={balancesAccount}
-          chainId={sourceChainId}
+          chainId={sourceChainId as number as SupportedChainId}
           isBridgeMode={isBridgeMode}
           bridgeTokenList={bridgeTokenList}
         />
@@ -110,20 +106,4 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   }
 
   return multicallStack
-}
-
-// Percentage-based rollout: hashes the wallet address into a stable 0..99
-// bucket and enables the watcher for buckets below `percentage`. Same account
-// -> same bucket, so the toggle is sticky per wallet across sessions/tabs.
-// - 100 -> everyone (including not-yet-connected wallets)
-// - 0 / undefined / out-of-range / non-number -> nobody
-// Non-EVM (e.g. Solana base58) accounts are rejected before BigInt() to avoid
-// a render-time SyntaxError; sourceChainId alone can't guard this because it
-// may be selector-derived while the wallet is on a non-EVM chain.
-function shouldEnableBalancesWatcher(account: string | undefined, percentage: number | boolean | undefined): boolean {
-  if (percentage === 100) return true
-  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) return false
-  if (!isEvmAddress(account)) return false
-
-  return BigInt(account) % 100n < percentage
 }

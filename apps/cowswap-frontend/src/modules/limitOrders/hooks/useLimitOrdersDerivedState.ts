@@ -11,10 +11,10 @@ import {
   limitOrdersDerivedStateAtom,
   limitOrdersRawStateAtom,
 } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useIsWidgetUnlocked } from './useIsWidgetUnlocked'
 

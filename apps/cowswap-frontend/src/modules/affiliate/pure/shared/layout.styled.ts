@@ -49,7 +49,6 @@ export const MiniAction = styled.button`
   font-size: 13px;
   font-weight: 500;
   line-height: 1;
-  cursor: pointer;
   text-transform: lowercase;
   transition: all 0.2s ease-in-out;
 

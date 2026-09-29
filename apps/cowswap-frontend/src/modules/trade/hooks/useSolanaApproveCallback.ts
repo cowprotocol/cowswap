@@ -1,0 +1,53 @@
+import { useSetAtom } from 'jotai'
+import { useMemo } from 'react'
+
+import { allowancesAtom } from '@cowprotocol/balances-and-allowances'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
+
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
+import { Nullish } from 'types'
+
+import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
+
+import { SOLANA_MAX_APPROVE_AMOUNT } from '../services/solanaApprove/const'
+import { solanaApproveCallback } from '../services/solanaApprove/solanaApproveCallback'
+
+export type SolanaApproveCallback = (amount?: bigint) => Promise<{ hash: string } | null>
+
+export function useSolanaApproveCallback(token: Nullish<TokenWithLogo>): SolanaApproveCallback | null {
+  const { chainId, account } = useWalletInfo()
+  const provider = useSolanaWalletProvider()
+  const { connection } = useAppKitConnection()
+  const addTransaction = useTransactionAdder()
+  const setAllowances = useSetAtom(allowancesAtom)
+
+  return useMemo(() => {
+    if (!isSolanaChain(chainId) || !account || !token || !provider || !connection) {
+      return null
+    }
+
+    return async (amount: bigint = SOLANA_MAX_APPROVE_AMOUNT) => {
+      const approveAmount = amount > SOLANA_MAX_APPROVE_AMOUNT ? SOLANA_MAX_APPROVE_AMOUNT : amount
+
+      const result = await solanaApproveCallback({
+        account,
+        token,
+        amount: approveAmount,
+        connection,
+        provider,
+        addTransaction,
+      })
+
+      if (result) {
+        setAllowances((state) => ({
+          ...state,
+          [chainId]: { ...state[chainId], [getAddressKey(token.address)]: approveAmount },
+        }))
+      }
+
+      return result
+    }
+  }, [chainId, account, token, provider, connection, addTransaction, setAllowances])
+}

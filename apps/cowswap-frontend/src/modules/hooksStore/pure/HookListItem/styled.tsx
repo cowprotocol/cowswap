@@ -4,13 +4,10 @@ import styled, { css } from 'styled-components/macro'
 
 const BaseButton = css`
   display: flex;
-  cursor: pointer;
-  outline: none;
   font-size: 14px;
   text-decoration: none;
   padding: 11px;
   line-height: 1;
-  margin: 0;
   border-radius: 21px;
   min-width: 84px;
   justify-content: center;
@@ -21,7 +18,6 @@ export const LinkButton = styled.button<{ disabled?: boolean }>`
   ${BaseButton}
   background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY})`};
   color: ${({ disabled }) => `var(${disabled ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_PAPER})`};
-  border: none;
   font-weight: 600;
   font-size: 16px;
   cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
@@ -193,13 +189,6 @@ export const HookDappDetails = styled.div<{ isDescriptionView?: boolean }>`
 
 export const Link = styled.button`
   display: inline-block;
-  cursor: pointer;
-  margin: 0;
-  background: none;
-  border: none;
-  outline: none;
-  color: inherit;
-
   font-weight: 600;
   font-size: 12px;
   text-decoration: underline;

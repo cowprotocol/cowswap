@@ -13,13 +13,14 @@ import { CorrelatedTokensUpdater } from './CorrelatedTokensUpdater'
 import { correlatedTokensAtom } from '../state/correlatedTokensAtom'
 
 // Define GET inside the factory so it is guaranteed to be a jest.fn() when
-// the component captures `cmsClient = getCmsClient()` at module load time.
+// the component captures `cmsClient = getProdCmsClient()` at module load time.
 jest.mock('@cowprotocol/core', () => ({
-  getCmsClient: jest.fn().mockReturnValue({ GET: jest.fn() }),
+  getProdCmsClient: jest.fn().mockReturnValue({ GET: jest.fn() }),
 }))
 
 // Retrieve the stable mock reference after the factory has run.
-const mockGet: jest.Mock = (jest.requireMock('@cowprotocol/core') as { getCmsClient: jest.Mock }).getCmsClient().GET
+const mockGet: jest.Mock = (jest.requireMock('@cowprotocol/core') as { getProdCmsClient: jest.Mock }).getProdCmsClient()
+  .GET
 
 const UPDATE_TIME_KEY = 'correlatedTokensUpdateTime'
 
@@ -238,6 +239,27 @@ describe('CorrelatedTokensUpdater', () => {
 
     await waitFor(() => localStorage.getItem(UPDATE_TIME_KEY) !== null)
 
+    expect(store.get(correlatedTokensAtom)[SupportedChainId.MAINNET]).toEqual([])
+  })
+
+  // Regression: barn CMS serves correlated-tokens without the `network` relation, so every entry is
+  // skipped. Caching that empty result kept the volume fee applied to correlated pairs for 10 minutes.
+  it('should not cache the update timestamp when no chain resolved any list', async () => {
+    localStorage.setItem(UPDATE_TIME_KEY, '0') // expired timestamp forces a fetch
+    mockGet.mockResolvedValue({
+      data: { data: [{ attributes: { tokens: { '0xabc': 'TOKEN1' } } }] }, // no network relation
+      error: null,
+    })
+
+    const { store, TestComponent } = getWrapper()
+
+    act(() => {
+      render(<CorrelatedTokensUpdater />, { wrapper: TestComponent })
+    })
+
+    await waitFor(() => expect(mockGet).toHaveBeenCalled())
+
+    expect(localStorage.getItem(UPDATE_TIME_KEY)).toBe('0')
     expect(store.get(correlatedTokensAtom)[SupportedChainId.MAINNET]).toEqual([])
   })
 })

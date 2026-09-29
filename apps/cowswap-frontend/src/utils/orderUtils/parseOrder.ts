@@ -18,9 +18,12 @@ import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
 
 export interface ParsedOrder {
+  /** Indexed EOA TWAP parts bypass the legacy order store. Retain the order for cancellation. */
+  cancellationOrder?: Order
   id: string
   owner: string
   isCancelling: boolean | undefined
+  isEoaTwapOrder?: boolean
   isUnfillable?: boolean
   receiver: string | undefined
   inputToken: Token
@@ -75,13 +78,13 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const fullyFilled = isOrderFilled(order)
   const partiallyFilled = isPartiallyFilled(order)
   const filledPercentDisplay = filledPercentage.times(100).toString()
-
-  const executedPrice = JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0))
-    ? new Price({
-        baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
-        quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
-      })
-    : null
+  const executedPrice =
+    JSBI.greaterThan(executedBuyAmount, JSBI.BigInt(0)) && JSBI.greaterThan(executedSellAmount, JSBI.BigInt(0))
+      ? new Price({
+          baseAmount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
+          quoteAmount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
+        })
+      : null
   const showCreationTxLink =
     (order.status === OrderStatus.CREATING || order.status === OrderStatus.FAILED) &&
     order.orderCreationHash &&
@@ -112,6 +115,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     id: order.id,
     owner: order.owner,
     isCancelling: order.isCancelling,
+    isEoaTwapOrder: order.isEoaTwapOrder,
     isUnfillable: order.isUnfillable,
     inputToken: order.inputToken,
     outputToken: order.outputToken,

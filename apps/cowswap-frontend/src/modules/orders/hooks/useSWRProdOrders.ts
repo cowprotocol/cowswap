@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { ORDER_BOOK_API_UPDATE_INTERVAL } from '@cowprotocol/common-const'
@@ -9,8 +10,9 @@ import useSWR from 'swr'
 
 import { getOrders } from 'api/cowProtocol'
 
-import { useApiOrders } from './useApiOrders'
 import { useSWROrdersRequest } from './useSWROrdersRequest'
+
+import { apiOrdersAtom } from '../state/apiOrdersAtom'
 
 const EMPTY_ORDERS: EnrichedOrder[] = []
 
@@ -19,7 +21,7 @@ const EMPTY_ORDERS: EnrichedOrder[] = []
 export function useSWRProdOrders(): EnrichedOrder[] {
   const { chainId } = useWalletInfo()
   const requestParams = useSWROrdersRequest()
-  const apiOrders = useApiOrders()
+  const { orders: apiOrders } = useAtomValue(apiOrdersAtom)
 
   const { data: loadedProdOrders = EMPTY_ORDERS } = useSWR<EnrichedOrder[]>(
     ['prod-orders', requestParams, chainId],

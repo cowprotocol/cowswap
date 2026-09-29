@@ -39,12 +39,13 @@ export interface ShouldZeroApproveParams {
   tokenAddress: Nullish<Address>
   owner?: Nullish<Address>
   spender: Nullish<Address>
-  amountToApprove: Nullish<CurrencyAmount<Currency>>
+  amountToApprove: bigint | Nullish<CurrencyAmount<Currency>>
   forceApprove?: boolean
   approvalState?: ApprovalState
   config: Nullish<Config>
 }
 
+// eslint-disable-next-line complexity
 export async function shouldZeroApprove({
   approvalState,
   tokenAddress,
@@ -61,12 +62,15 @@ export async function shouldZeroApprove({
     return null
   }
 
+  const amountToApproveBigint =
+    typeof amountToApprove === 'bigint' ? amountToApprove : BigInt(amountToApprove.quotient.toString())
+
   try {
     await simulateContract(config, {
       address: tokenAddress,
       abi: erc20Abi,
       functionName: 'approve',
-      args: [spender, BigInt(amountToApprove.quotient.toString())],
+      args: [spender, amountToApproveBigint],
       account: owner,
     })
 

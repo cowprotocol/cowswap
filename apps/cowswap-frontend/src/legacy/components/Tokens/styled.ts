@@ -110,8 +110,7 @@ export const PaginationText = styled.span`
 `
 
 export const ArrowButton = styled.button`
-  background: none;
-  border: none;
+  padding: 0 10px;
 `
 
 export const Arrow = styled.div<{ faded: boolean }>`
@@ -371,11 +370,8 @@ export const ApproveLabel = styled.span`
   font-weight: 500;
 `
 
-// Neutral (muted) label for the Solana "not delegated" placeholder — deliberately not the green
-// `ApproveLabel`, since a dash is an empty state rather than an approval.
-export const NotDelegatedLabel = styled.span`
-  color: inherit;
-  opacity: 0.5;
+export const UnavailableLabel = styled.span`
+  opacity: 0.6;
   font-weight: 500;
 `
 

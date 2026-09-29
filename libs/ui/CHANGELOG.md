@@ -1,5 +1,138 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.2...ui-v3.14.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: confirm leaving TWAP flow (#8154)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+- feat: add TWAP confirmation box (#8120)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/types@4.11.0
+
+## [3.13.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.1...ui-v3.13.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.13.0...ui-v3.13.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.1...ui-v3.13.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: remove Feixen font from widget configurator (#8049)
+
+- feat: fix inconsistent font weight constants (#8050)
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+- feat: update AGENTS.md to use new font mixins and constants (#8048)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix: adjust styles for TWAP EOA tracker order details expand button (#8055)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.7.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/currency@1.5.0
+  - @cowprotocol/types@4.10.0
+
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.12.0...ui-v3.12.1) (2026-09-07)
+
+### Patch Changes
+
+- fix: keep mobile menu header visible after scroll (#8098)
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.11.0...ui-v3.12.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: add Dialog and surfaces improvements (#8010)
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat: add BottomDrawer + DrawerOrInline components for orders table (#8008)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat: implement remaining Figma designs for multi-step tracker (#7989)
+
+### Patch Changes
+
+- fix(notifications): unsubscribe via link (#8070)
+
+- fix: exclude inputs from default outline (#8053)
+
+- fix: narrow down default focus selector to buttons only (#8062)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/currency@1.4.0
+  - @cowprotocol/types@4.9.0
+
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.10.0...ui-v3.11.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/assets@2.6.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
 ## [3.10.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.9.5...ui-v3.10.0) (2026-08-05)
 
 ### Minor Changes

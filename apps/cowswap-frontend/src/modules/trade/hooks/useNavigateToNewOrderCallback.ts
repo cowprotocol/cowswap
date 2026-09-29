@@ -9,10 +9,8 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { parameterizeTradeRoute, TradeUrlParams } from 'common/modules/tradeNavigation'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
-
-import { TradeUrlParams } from '../types/TradeRawState'
-import { parameterizeTradeRoute } from '../utils/parameterizeTradeRoute'
 
 type NavigateToNewOrderCallback = (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
 

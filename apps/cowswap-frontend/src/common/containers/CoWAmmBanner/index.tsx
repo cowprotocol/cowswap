@@ -13,7 +13,7 @@ import { t } from '@lingui/core/macro'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
-import { useTradeNavigate, getDefaultTradeRawState } from 'modules/trade'
+import { getDefaultTradeRawState } from 'modules/trade'
 import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
@@ -21,6 +21,7 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { BANNER_IDS } from 'common/constants/banners'
 import { Routes } from 'common/constants/routes'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 import { CoWAmmBannerContent } from 'common/pure/CoWAmmBannerContent'
 
 interface BannerProps {

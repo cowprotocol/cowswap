@@ -3,7 +3,7 @@
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 
-import { Color, Font, Media, UI } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -43,7 +43,7 @@ const Badge = styled.span`
   align-items: center;
   width: fit-content;
   font-size: 1.2rem;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   letter-spacing: 0.08em;
   text-transform: uppercase;
   padding: 0.6rem 1.2rem;
@@ -55,7 +55,7 @@ const Badge = styled.span`
 const Title = styled.h1`
   font-size: 4rem;
   line-height: 1.15;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   color: var(${UI.COLOR_NEUTRAL_0});
 
   ${Media.upToMedium()} {
@@ -108,7 +108,7 @@ const PrimaryLink = styled.a`
   color: ${Color.cowfi_orange_pale};
   font-size: 2.1rem;
   text-align: center;
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
   text-decoration: none;
   line-height: 1.2;
   transition:
@@ -132,7 +132,7 @@ const FallbackText = styled.p`
 
 const InlineLink = styled.a`
   color: var(${UI.COLOR_NEUTRAL_10});
-  font-weight: ${Font.weight.bold};
+  font-weight: var(${UI.FONT_WEIGHT_BOLD});
 `
 
 export default function MevBlockerRedirectPage(): ReactNode {

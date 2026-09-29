@@ -5,6 +5,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SafeInfoResponse } from '@safe-global/api-kit'
 
 export const ConnectionType = {
+  // wagmi's `baseAccount` connector doesn't expose a static `.type` like the other
+  // connector factories do, so this is hardcoded to match its runtime connector.type.
+  BASE_ACCOUNT: 'baseAccount',
   COINBASE_WALLET: coinbaseWallet.type,
   GNOSIS_SAFE: safe.type,
   INJECTED: injected.type,

@@ -1,11 +1,13 @@
 import { useCallback } from 'react'
 
-import { getWrappedToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { ExecutionRevertedError } from 'viem'
+
+import { getWrappedToken, isRejectRequestProviderError, normalizeError } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
@@ -14,9 +16,10 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const updateApproveProgressModalState = useUpdateApproveProgressModalState()
   const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
+  const { tradeType } = useDerivedTradeState() || {}
 
   const token = getWrappedToken(amountToApprove.currency)
-  const permitInfo = usePermitInfo(token, TradeType.SWAP)
+  const permitInfo = usePermitInfo(token, tradeType)
 
   return useCallback(async () => {
     if (!account || !permitInfo) return false
@@ -45,8 +48,10 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       })
 
       return !!permitData
-    } catch (error) {
-      if (isRejectRequestProviderError(error)) {
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+
+      if (isRejectRequestProviderError(error) || error instanceof ExecutionRevertedError) {
         resetApproveProgressModalState()
         throw error
       }

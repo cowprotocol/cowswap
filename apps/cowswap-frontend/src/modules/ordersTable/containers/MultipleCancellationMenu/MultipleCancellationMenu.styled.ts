@@ -25,11 +25,7 @@ export const ActionButton = styled.button`
   text-decoration: none;
   font-size: 12px;
   padding: 6px 8px;
-  margin: 0;
   gap: 2px;
-  border: 0;
-  outline: none;
-  cursor: pointer;
   transition:
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
@@ -51,11 +47,6 @@ export const TextButton = styled.button`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 12px;
   font-weight: 500;
-  padding: 0;
-  cursor: pointer;
-  background: none;
-  outline: none;
-  border: none;
   text-decoration: underline;
 
   &:hover {

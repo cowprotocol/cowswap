@@ -2,6 +2,7 @@
 
 import _AirdropAbi from './abis/Airdrop'
 import _ComposableCoWAbi from './abis/ComposableCoW'
+import _ComposableCowPollerAbi from './abis/ComposableCowPoller'
 import _CowShedContractAbi from './abis/CowShedContract'
 import _CoWSwapEthFlowAbi from './abis/CoWSwapEthFlow'
 import _GPv2SettlementAbi from './abis/GPv2Settlement'
@@ -25,6 +26,7 @@ import _WethAbi from './abis-legacy/weth'
 
 export const GPv2SettlementAbi = _GPv2SettlementAbi
 export const ComposableCoWAbi = _ComposableCoWAbi
+export const ComposableCowPollerAbi = _ComposableCowPollerAbi
 export const vCowAbi = _vCowAbi
 export const SignatureVerifierMuxerAbi = _SignatureVerifierMuxerAbi
 export const MerkleDropAbi = _MerkleDropAbi

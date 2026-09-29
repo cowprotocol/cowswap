@@ -13,9 +13,9 @@ import useSWR from 'swr'
 import { Order } from 'legacy/state/orders/actions'
 
 import { usePermitInfo } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { TradeType } from 'common/modules/tradeNavigation'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 
 import { useDoesOrderHaveValidPermit } from './useDoesOrderHaveValidPermit'

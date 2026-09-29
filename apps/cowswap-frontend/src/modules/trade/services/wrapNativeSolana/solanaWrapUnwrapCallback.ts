@@ -1,17 +1,12 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import {
-  formatTokenAmount,
-  getIsNativeToken,
-  getProviderErrorMessage,
-  isRejectRequestProviderError,
-} from '@cowprotocol/common-utils'
+import { formatTokenAmount, getIsNativeToken, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
-import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
 
 import { WrapUnwrapCallbackParams } from 'legacy/hooks/useWrapCallback'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -22,6 +17,9 @@ import { buildUnwrapSolInstructions } from './buildUnwrapSolInstructions'
 import { buildWrapSolInstructions } from './buildWrapSolInstructions'
 import { getSolanaUnwrapPreview } from './getSolanaUnwrapPreview'
 import { getSolanaWrapPreview } from './getSolanaWrapPreview'
+
+import { handleSolanaSendError } from '../solanaSend/handleSolanaSendError'
+import { sendSolanaTransaction } from '../solanaSend/sendSolanaTransaction'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
@@ -65,10 +63,6 @@ interface SolanaWrapPlan extends SolanaWrapUnwrapPreview {
   instructions: TransactionInstruction[]
 }
 
-/** A wallet's own signing confirmation can fail on an expired blockhash if the owner takes a while to
- * approve — refetching and retrying is the standard mitigation, not a sign of a broken transaction. */
-const MAX_SEND_ATTEMPTS = 3
-
 /**
  * Solana counterpart to `wrapUnwrapCallback`, mirroring its control flow: open the pending modal, send,
  * record the transaction, close. Only the transaction building differs.
@@ -89,7 +83,7 @@ export async function solanaWrapUnwrapCallback(
   } = context
 
   const isNativeIn = getIsNativeToken(amount.currency)
-  const useModals = params.useModals
+  const useModals = params.useModals ?? true
   const operationMessage = getSolanaOperationMessage(isNativeIn)
 
   try {
@@ -103,7 +97,7 @@ export async function solanaWrapUnwrapCallback(
     useModals && openTransactionConfirmationModal({ sendAmount, receiveAmount })
     sendWrapEvent(analytics, 'Send', operationMessage, amount)
 
-    const { hash, lastValidBlockHeight } = await sendWithFreshBlockhash(connection, provider, owner, instructions)
+    const { hash, lastValidBlockHeight } = await sendSolanaTransaction(connection, provider, owner, instructions)
 
     sendWrapEvent(analytics, 'Sign', operationMessage, amount)
 
@@ -191,58 +185,9 @@ function handleSendError(
   const isRejected = isRejectRequestProviderError(error)
 
   sendWrapEvent(analytics, isRejected ? 'Reject' : 'Error', operationMessage, amount)
-
   console.error(`${isRejected ? t`Reject` : t`Error`} ${t`Signing transaction`}`, error)
 
-  if (isRejected) {
-    useModals && closeModals()
-
-    return null
-  }
-
-  if (useModals) {
-    // Show the error inside the modal (transitions from pending → error screen)
-    openErrorModal(getProviderErrorMessage(error) || t`Transaction failed`)
-
-    return null
-  }
-
-  throw typeof error === 'string' ? new Error(error) : error
-}
-
-function isBlockhashExpiredError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error)
-
-  return /blockhash not found/i.test(message) || /block ?height exceeded/i.test(message)
-}
-
-/**
- * Fetches a blockhash and sends right before each attempt, rather than once up front: the wallet
- * provider's own signing UI runs between our fetch and the user's approval, and a slow approval can
- * carry the transaction past that blockhash's ~60-90s validity window. Retrying with a freshly fetched
- * blockhash is the standard mitigation — anything other than that specific failure is rethrown as-is.
- */
-async function sendWithFreshBlockhash(
-  connection: Connection,
-  provider: SolanaProvider,
-  owner: PublicKey,
-  instructions: TransactionInstruction[],
-  attemptsLeft = MAX_SEND_ATTEMPTS,
-): Promise<{ hash: string; lastValidBlockHeight: number }> {
-  // The wallet provider populates neither the blockhash nor the fee payer, so the transaction has to
-  // be complete before it is handed over.
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
-  const transaction = new Transaction({ feePayer: owner, blockhash, lastValidBlockHeight }).add(...instructions)
-
-  try {
-    const hash = await provider.sendTransaction(transaction, connection)
-
-    return { hash, lastValidBlockHeight }
-  } catch (error) {
-    if (attemptsLeft <= 1 || !isBlockhashExpiredError(error)) throw error
-
-    return sendWithFreshBlockhash(connection, provider, owner, instructions, attemptsLeft - 1)
-  }
+  return handleSolanaSendError(error, { useModals, closeModals, openErrorModal })
 }
 
 function sendWrapEvent(

@@ -1,15 +1,15 @@
 import { ReactNode } from 'react'
 
 import iconTelegramSrc from '@cowprotocol/assets/images/icon-telegram.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { RowBetween, RowFixed, HoverTooltip, UI, Toggle } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { ConnectTelegram } from './ConnectTelegram'
 import { useConnectTelegram } from './ConnectTelegram/useConnectTelegram'
-
-const DISABLED_TOGGLE_TOOLTIP_MESSAGE = 'This toggle is on by default. Toggling on/off will be supported in the future.'
 
 const DisabledToggleTooltip = styled.span`
   display: block;
@@ -80,24 +80,30 @@ const TelegramUsername = styled.div`
 
 interface NotificationSettingsProps {
   children: ReactNode
+  isSettingsOpen: boolean
 }
 
-export function NotificationSettings({ children }: NotificationSettingsProps): ReactNode {
-  const telegramController = useConnectTelegram()
+export function NotificationSettings({ children, isSettingsOpen }: NotificationSettingsProps): ReactNode {
+  const telegramController = useConnectTelegram(isSettingsOpen)
   const { username } = telegramController
+  const { isTwapEoaEnabled } = useFeatureFlags()
 
   return (
     <>
       {children}
 
       <SettingsContainer>
-        <SectionHeader>Alert types</SectionHeader>
+        <SectionHeader>
+          <Trans>Alert types</Trans>
+        </SectionHeader>
         <SettingsCard>
           <SettingsRow className="disabled">
             <RowBetween>
-              <span>Order fills</span>
+              <span>
+                <Trans>Order fills</Trans>
+              </span>
               <HoverTooltip
-                content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
+                content={<DisabledToggleTooltipMessage />}
                 placement="bottom"
                 wrapInContainer={false}
                 className="toggle-wrapper"
@@ -109,9 +115,11 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <Divider />
           <SettingsRow className="disabled">
             <RowBetween>
-              <span>Order expired</span>
+              <span>
+                <Trans>Order expirations</Trans>
+              </span>
               <HoverTooltip
-                content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
+                content={<DisabledToggleTooltipMessage />}
                 placement="bottom"
                 wrapInContainer={false}
                 className="toggle-wrapper"
@@ -122,10 +130,18 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           </SettingsRow>
         </SettingsCard>
         <SectionDescription>
-          Only trade alerts are sent. No marketing messages. Swap and bridge orders aren't supported yet.
+          <Trans>Only trade alerts are sent. No marketing messages.</Trans>
+          <br />
+          {isTwapEoaEnabled ? (
+            <Trans>Notifications for swap and bridge and TWAP for EOA orders aren't supported yet.</Trans>
+          ) : (
+            <Trans>Notifications for swap and bridge orders aren't supported yet.</Trans>
+          )}
         </SectionDescription>
 
-        <SectionHeader>Alert channels</SectionHeader>
+        <SectionHeader>
+          <Trans>Alert channels</Trans>
+        </SectionHeader>
         <SettingsCard>
           <SettingsRow>
             <RowBetween>
@@ -142,5 +158,13 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
         </SettingsCard>
       </SettingsContainer>
     </>
+  )
+}
+
+function DisabledToggleTooltipMessage(): ReactNode {
+  return (
+    <DisabledToggleTooltip>
+      <Trans>This toggle is on by default. Toggling on/off will be supported in the future.</Trans>
+    </DisabledToggleTooltip>
   )
 }

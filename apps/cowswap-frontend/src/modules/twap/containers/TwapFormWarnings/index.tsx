@@ -7,7 +7,6 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
-import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
@@ -22,7 +21,7 @@ import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarnin
 
 import { getHasTwapFormInput, getTwapSellAmountUsdBucket } from '../../analytics/twapDemandAnalytics.utils'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
-import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
+import { useSwapPriceDifferenceWarningProps } from '../../hooks/useSwapPriceDifferenceWarningProps'
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
@@ -41,12 +40,11 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
-  const swapAmountDifference = useSwapAmountDifference()
+  const { swapAmountDifference, feeFiatAmount } = useSwapPriceDifferenceWarningProps()
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
-  const tradeQuoteFeeFiatAmount = useTradeQuoteFeeFiatAmount()
   const { canTrade, walletIsNotConnected } = useTwapWarningsContext()
   const tradeUrlParams = useTradeRouteContext()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrencyFiatAmount } = useAdvancedOrdersDerivedState()
@@ -88,7 +86,7 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const swapPriceDifferenceWarning = swapAmountDifference ? (
     <SwapPriceDifferenceWarning
       tradeUrlParams={tradeUrlParams}
-      feeFiatAmount={tradeQuoteFeeFiatAmount}
+      feeFiatAmount={feeFiatAmount}
       swapAmountDifference={swapAmountDifference}
     />
   ) : null

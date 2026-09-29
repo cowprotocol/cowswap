@@ -86,7 +86,8 @@ function filterByAddress(parsedOrder: ParsedOrder, searchTermLower: string): boo
 }
 
 function filterByStatus(parsedOrder: ParsedOrder, status: HistoryStatusFilter): boolean {
-  if (status === HistoryStatusFilter.FILLED) return isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
+  if (status === HistoryStatusFilter.FILLED)
+    return parsedOrder.status === OrderStatus.FULFILLED || isOrderFilled(parsedOrder) || isPartiallyFilled(parsedOrder)
 
   if (status === HistoryStatusFilter.CANCELLED)
     return (

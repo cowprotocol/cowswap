@@ -2,18 +2,24 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { renderTooltip } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
-import { useGetTradeFormValidations, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import {
+  useGetTradeFormValidations,
+  useIsTradeFormValidationPassed,
+  useShouldHideTradeRateDetails,
+} from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -58,6 +64,10 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function
 export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
+  const isSafeWallet = useIsSafeWallet()
+  const isSafeViaWc = useIsSafeViaWc()
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
@@ -75,6 +85,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
 
   const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -244,8 +255,13 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
       <AmountParts />
 
-      {tradeWarnings}
+      {/* Local validation replaces the trade button with a disabled one, so trade hints and approval controls
+          are pointless: only the warning explaining the block stays visible */}
+      {!localFormValidation && tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
+      {isPrimaryValidationPassed && !localFormValidation && (
+        <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
+      )}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

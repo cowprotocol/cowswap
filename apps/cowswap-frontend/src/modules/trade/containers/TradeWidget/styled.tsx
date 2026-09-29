@@ -54,6 +54,10 @@ export const Header = styled.div`
 
 export const OuterContentWrapper = styled.div`
   margin-top: 10px;
+
+  &:empty {
+    display: none;
+  }
 `
 
 export const HeaderRight = styled.div`

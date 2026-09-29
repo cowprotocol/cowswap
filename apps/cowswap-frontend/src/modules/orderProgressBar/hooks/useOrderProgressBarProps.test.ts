@@ -1,8 +1,8 @@
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
-import { buildSolverCompetition, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
+import { getEnsLookupAddress, buildSolverCompetition, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -96,6 +96,20 @@ describe('shouldUpdateStepImmediately', () => {
 
   it('shows the first step immediately when there is no previous change timestamp', () => {
     expect(shouldUpdateStepImmediately(OrderProgressBarStepName.SOLVING, undefined, 0)).toBe(true)
+  })
+})
+
+describe('getEnsLookupAddress', () => {
+  it('returns the receiver address on an EVM chain', () => {
+    expect(getEnsLookupAddress(SupportedChainId.MAINNET, '0xreceiver')).toBe('0xreceiver')
+  })
+
+  it('returns undefined on a non-EVM chain, so the ENS hook skips the lookup', () => {
+    expect(getEnsLookupAddress(SupportedChainId.SOLANA, 'SomeBase58SolanaAddress')).toBeUndefined()
+  })
+
+  it('returns undefined when there is no receiver', () => {
+    expect(getEnsLookupAddress(SupportedChainId.MAINNET, undefined)).toBeUndefined()
   })
 })
 

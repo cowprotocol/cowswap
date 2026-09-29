@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -59,7 +59,8 @@ export function AffiliateLinkedCodeNotification({
       </Title>
       <Body>
         <Trans>
-          Code <strong>{code}</strong> is linked for the next {timeCapDays} days
+          Code <strong>{code}</strong> is linked for the next{' '}
+          <Plural value={timeCapDays} one="# day" few="# days" many="# days" other="# days" />
         </Trans>
       </Body>
       <RewardsLink to={Routes.ACCOUNT_AFFILIATE_TRADER}>

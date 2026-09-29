@@ -11,14 +11,27 @@ import { UiOrderType } from '@cowprotocol/types'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { getOrder } from 'api/cowProtocol'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
-import { fetchAndClassifyOrder, getOrdersFromTransitionData, getOrderTypesByUid, OrderTransitionData } from './utils'
+import {
+  fetchAndClassifyOrder,
+  getFulfilledOrderUidsForSurplusQueue,
+  getOrdersFromTransitionData,
+  getOrderTypesByUid,
+  OrderTransitionData,
+  resolveValidToOnCreation,
+} from './utils'
 
 jest.mock('api/cowProtocol', () => ({
   getOrder: jest.fn(),
 }))
 
+jest.mock('common/utils/getIsBridgeOrder', () => ({
+  getIsBridgeOrder: jest.fn(() => false),
+}))
+
 const getOrderMock = getOrder as jest.MockedFunction<typeof getOrder>
+const getIsBridgeOrderMock = getIsBridgeOrder as jest.MockedFunction<typeof getIsBridgeOrder>
 
 const CHAIN_ID = SupportedChainId.MAINNET
 
@@ -123,6 +136,65 @@ describe('order updater utils', () => {
 
       await expect(fetchAndClassifyOrder(storedOrder, CHAIN_ID)).resolves.toBeNull()
       expect(getOrderMock).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('getFulfilledOrderUidsForSurplusQueue', () => {
+    afterEach(() => {
+      getIsBridgeOrderMock.mockReturnValue(false)
+    })
+
+    it('queues a swap order even when the API response omits class/fullAppData (Solana orders)', () => {
+      // Solana order-book responses don't include `class`/`fullAppData`, unlike EVM's EnrichedOrder,
+      // so the order type must come from the already-computed orderTypesByUid, not the API order itself.
+      const solanaShapedOrder = buildApiOrder({ uid: '0xsolana-order', class: undefined, fullAppData: undefined })
+
+      const result = getFulfilledOrderUidsForSurplusQueue([solanaShapedOrder], { '0xsolana-order': UiOrderType.SWAP })
+
+      expect(result).toEqual(['0xsolana-order'])
+    })
+
+    it('does not queue non-swap order types', () => {
+      const limitOrder = buildApiOrder({ uid: '0xlimit' })
+
+      const result = getFulfilledOrderUidsForSurplusQueue([limitOrder], { '0xlimit': UiOrderType.LIMIT })
+
+      expect(result).toEqual([])
+    })
+
+    it('does not queue bridge orders', () => {
+      const bridgeOrder = buildApiOrder({ uid: '0xbridge' })
+      getIsBridgeOrderMock.mockReturnValue(true)
+
+      const result = getFulfilledOrderUidsForSurplusQueue([bridgeOrder], { '0xbridge': UiOrderType.SWAP })
+
+      expect(result).toEqual([])
+    })
+  })
+
+  describe('resolveValidToOnCreation', () => {
+    it("falls back to the order-book's generic validTo when there is no ethFlow data (Solana orders)", () => {
+      // Solana orders have no `ethflowData`, so the deadline the user actually set (baked into the
+      // order-book's validTo when the order was created) must come from here, not the stale value
+      // the locally-built order started with before it was indexed.
+      const orderData = buildApiOrder({ validTo: 1788785059, ethflowData: undefined })
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1788785059)
+    })
+
+    it('prefers ethFlow userValidTo over the generic validTo when present', () => {
+      const orderData = buildApiOrder({
+        validTo: 1788785059,
+        ethflowData: { userValidTo: 1788790000 } as EnrichedOrder['ethflowData'],
+      })
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1788790000)
+    })
+
+    it('falls back to the stored validTo if the API response has neither', () => {
+      const orderData = buildApiOrder({ validTo: undefined, ethflowData: undefined } as Partial<EnrichedOrder>)
+
+      expect(resolveValidToOnCreation(orderData, 1700000000)).toBe(1700000000)
     })
   })
 

@@ -9,14 +9,6 @@ export const readNotificationsAtom = atomWithStorage<number[]>(
   getJotaiIsolatedStorage(),
 )
 
-export const markNotificationsAsReadAtom = atom(null, (get, set, ids: number[]) => {
-  const state = get(readNotificationsAtom)
-
-  state.push(...ids.filter((id) => !state.includes(id)))
-
-  set(readNotificationsAtom, state)
-})
-
 export const markNotificationsAsReadCloneArrayAtom = atom(null, (get, set, ids: number[]) => {
   const state = new Set(get(readNotificationsAtom))
 

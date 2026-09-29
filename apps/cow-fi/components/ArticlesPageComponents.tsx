@@ -1,7 +1,7 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 
   > h1 {
     font-size: 28px;
-    font-weight: ${Font.weight.medium};
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     color: var(${UI.COLOR_NEUTRAL_50});
     text-align: center;
 

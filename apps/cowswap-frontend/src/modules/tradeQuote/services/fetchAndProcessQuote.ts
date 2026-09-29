@@ -1,5 +1,5 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SwapAdvancedSettings, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { SwapAdvancedSettings, QuoteAndPost, isSolanaChain } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   BridgeQuoteErrors,
@@ -17,14 +17,22 @@ import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsQuoteApiTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 import { coWBFFClient } from 'common/services/bff'
 
+import { getSolanaQuote } from './getSolanaQuote.service'
+
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { SolanaQuoteAndPost, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
-const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getFinalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
+// Same per-tier "only the latest call wins" protection the EVM path gets above — without it, a slow
+// FAST Solana quote resolving after a newer OPTIMAL one (or an earlier poll's request resolving after
+// a later one) could overwrite it in TradeQuoteManager.
+const getFastSolanaQuote = onlyResolvesLast<SolanaQuoteAndPost>(getSolanaQuote)
+const getOptimalSolanaQuote = onlyResolvesLast<SolanaQuoteAndPost>(getSolanaQuote)
 
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
@@ -32,6 +40,7 @@ export async function fetchAndProcessQuote(
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
+  isSolanaEnabled = false,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
@@ -63,7 +72,14 @@ export async function fetchAndProcessQuote(
   if (isBridge) {
     await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   } else {
-    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    await fetchSwapQuote(
+      fetchParams,
+      quoteParams,
+      advancedSettings,
+      tradeQuoteManager,
+      processQuoteError,
+      isSolanaEnabled,
+    )
   }
 }
 
@@ -119,12 +135,32 @@ async function fetchSwapQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (errorLocation: string, error: unknown) => void,
+  isSolanaEnabled: boolean,
 ): Promise<void> {
-  const { priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+  const isFinalQuote = getIsFinalQuote(fetchParams)
 
-  const request = isOptimalQuote
-    ? getOptimalQuote(quoteParams, advancedSettings)
+  if (isSolanaEnabled && isSolanaChain(quoteParams.sellTokenChainId)) {
+    const solanaRequest = isFinalQuote
+      ? getOptimalSolanaQuote(quoteParams, advancedSettings)
+      : getFastSolanaQuote(quoteParams, advancedSettings)
+
+    try {
+      const { cancelled, data } = await solanaRequest
+
+      if (cancelled) {
+        return
+      }
+
+      tradeQuoteManager.onResponse(data, null, fetchParams, quoteParams)
+    } catch (error) {
+      processQuoteError('fetchSwapQuote', error)
+    }
+
+    return
+  }
+
+  const request = isFinalQuote
+    ? getFinalQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
 
   try {

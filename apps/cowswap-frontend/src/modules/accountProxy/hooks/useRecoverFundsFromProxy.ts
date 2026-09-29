@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { useConfig, useWalletClient } from 'wagmi'
 
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -39,10 +40,10 @@ export function useRecoverFundsFromProxy({
   const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
   const { data: walletClient } = useWalletClient()
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const config = useConfig()
 
-  const proxyAddress = account && cowShedHooks ? cowShedHooks.proxyOf(account) : undefined
+  const proxyAddress = account && cowShedHooks && isEvmChain(chainId) ? cowShedHooks.proxyOf(account) : undefined
   const factoryAddress = cowShedHooks ? cowShedHooks.getFactoryAddress() : undefined
 
   const callback = useCallback(async () => {

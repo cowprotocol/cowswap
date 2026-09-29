@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-04-02
+last_reviewed: 2026-09-21
 source_of_truth_scope: root coordination contract for AI and human contributors
 review_cadence: weekly during active frontend work, otherwise bi-weekly
 ---
@@ -37,6 +37,8 @@ Normative language:
 - `MUST` prefer existing shared utilities/hooks over creating near-duplicates.
 - `MUST` pin dependency versions in `package.json` files (exact semver) for `dependencies`, `devDependencies`, `optionalDependencies`, `resolutions`, and `pnpm.overrides`; `workspace:*` and explicit package artifact sources (`https://...tgz`, `file:`, `link:`, `portal:`, `patch:`) are allowed. `peerDependencies` MAY use semver ranges because they express integrator compatibility.
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
+- `MUST NOT` test log messages or logger calls; they do not need test coverage.
+- `MUST` type promise rejection values explicitly as `(err: unknown)` and normalize them once with `const error = normalizeError(err)` before use.
 - Both SWR and Jotai `atomWithQuery` are acceptable for data fetching. The team is evaluating migration; no forced migration yet.
 - Avoid introducing new `common/** -> modules/**` imports; treat existing cases as legacy debt and track cleanup in `docs/QUALITY.md`.
 
@@ -44,6 +46,15 @@ Normative language:
 
 - `MUST NOT` normalize addresses with `address.toLowerCase()`; use `getAddressKey` from `@cowprotocol/cow-sdk`.
 - `MUST NOT` compare addresses with `===`, `toLowerCase()`, or manual string comparison; use `areAddressesEqual` from `@cowprotocol/cow-sdk`.
+
+## Comments
+
+- `MUST` limit comments to two cases: a **workaround** (a specific bug, an upstream quirk, an invariant the code cannot state) or **difficult math** (a formula, unit conversion, or derivation whose correctness cannot be checked by reading the expression).
+- `MUST NOT` write a comment that repeats the identifier below it: `// Convert to BPS` above `const slippageBps = percentageToBps(...)` adds nothing the name does not already say.
+- `MUST NOT` restate a guard or a type, narrate the change being made, or reference a task, ticket, or PR.
+- `MUST` update or delete the comment beside code you change, in the same edit. A comment that outlived the code it described misleads the next reader, which is worse than no comment.
+- `SHOULD` keep comments compact.
+- Doc comments on exported API are the exception, and only for what a type cannot express: range, default, unit.
 
 ## Command Baseline
 
@@ -58,11 +69,14 @@ Normative language:
 
 - Architecture and dependency map: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md)
 - Naming, file structure, imports, component shape: [`docs/MODULE_CONVENTIONS.md`](./docs/MODULE_CONVENTIONS.md)
+- Typography tokens, `font()` mixin, Feixen allowlist: [`docs/FONT_CONVENTIONS.md`](./docs/FONT_CONVENTIONS.md)
+- Shared UI typography (`font()` mixin, `FONT_SIZING`): [`libs/ui/AGENTS.md`](./libs/ui/AGENTS.md)
 - Jotai/query, persistence, migrations: [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
 - Quality grades and known gaps: [`docs/QUALITY.md`](./docs/QUALITY.md)
 - Hardening roadmap (next enforcement steps): [`docs/HARNESS_HARDENING.md`](./docs/HARNESS_HARDENING.md)
 - Frontend-specific additive rules: [`apps/cowswap-frontend/AGENTS.md`](./apps/cowswap-frontend/AGENTS.md)
 - Other app-local commands/overrides: `apps/*/AGENTS.md`
+- E2E tests (Playwright): `apps/cowswap-e2e-tests/AGENTS.md`
 
 ## Branch-Scoped AGENTS Task Protocol
 

@@ -4,11 +4,11 @@ import { currencyAmountToTokenAmount, FractionUtils } from '@cowprotocol/common-
 import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
-
-import { TradeType } from '../types'
 
 const BUY_ORDER_APPROVE_AMOUNT_THRESHOLD = new Percent(1, 100) // 1%
 

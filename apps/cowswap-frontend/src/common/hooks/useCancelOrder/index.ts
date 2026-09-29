@@ -84,7 +84,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           onDismiss()
           if (!isPendingSignature) return
 
-          const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e)
+          const swapErrorMessage = getSwapErrorMessage(e?.body?.description || e, chainId)
           setContext({ error: swapErrorMessage })
         }
         setContext({ isPendingSignature: false })
@@ -103,6 +103,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           // Updates the cancellation context with details pertaining the order
           setContext({
             orderId: order.id,
+            order,
             chainId,
             defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
             onDismiss,

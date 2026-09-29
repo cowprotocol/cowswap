@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-08-28
 source_of_truth_scope: naming, file structure, exports/imports, and React module hygiene
 ---
 
@@ -47,6 +47,7 @@ source_of_truth_scope: naming, file structure, exports/imports, and React module
   ```ts
   import * as styledEl from './X.styled'
   ```
+- Typography tokens, `font()` mixin, and Studio Feixen allowlist: [`FONT_CONVENTIONS.md`](./FONT_CONVENTIONS.md).
 
 ## TypeScript Rules
 

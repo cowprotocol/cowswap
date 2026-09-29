@@ -1,3 +1,5 @@
+import { ExecutionRevertedError } from 'viem'
+
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -7,6 +9,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { renderHook, waitFor } from '@testing-library/react'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { useDerivedTradeState } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
@@ -35,6 +40,15 @@ jest.mock('../state')
 jest.mock('modules/injectedWidget', () => ({
   useIsInfiniteApproveDisabledInWidget: jest.fn(),
 }))
+jest.mock('modules/trade', () => ({
+  TradeType: {
+    SWAP: 'SWAP',
+    LIMIT_ORDER: 'LIMIT_ORDER',
+    ADVANCED_ORDERS: 'ADVANCED_ORDERS',
+    YIELD: 'YIELD',
+  },
+  useDerivedTradeState: jest.fn(),
+}))
 
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -52,6 +66,7 @@ const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jes
 const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
   typeof useIsInfiniteApproveDisabledInWidget
 >
+const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 type WalletInfo = ReturnType<typeof useWalletInfo>
 
 // eslint-disable-next-line max-lines-per-function
@@ -95,6 +110,7 @@ describe('useApproveAndSwap', () => {
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
     mockUseIsInfiniteApproveDisabled.mockReturnValue(false)
+    mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.SWAP } as ReturnType<typeof useDerivedTradeState>)
   })
 
   describe('permit flow', () => {
@@ -122,6 +138,25 @@ describe('useApproveAndSwap', () => {
       })
     })
 
+    it('should query permit support with the real trade type instead of a hardcoded one', () => {
+      mockUseDerivedTradeState.mockReturnValue({ tradeType: TradeType.ADVANCED_ORDERS } as ReturnType<
+        typeof useDerivedTradeState
+      >)
+
+      renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      expect(mockUseTokenSupportsPermit).toHaveBeenCalledWith(mockAmountToApprove.currency, TradeType.ADVANCED_ORDERS)
+    })
+
     it('should not fall back to on-chain approve when permit signing fails', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
@@ -145,6 +180,34 @@ describe('useApproveAndSwap', () => {
         expect(mockHandleApprove).not.toHaveBeenCalled()
         expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
+    })
+
+    it('should fall back to on-chain approve when the signed permit execution reverts', async () => {
+      mockUseTokenSupportsPermit.mockReturnValue(true)
+      mockGeneratePermitToTrade.mockRejectedValue(new ExecutionRevertedError({ message: 'invalid signature' }))
+      const mockTxReceipt = createMockTransactionReceipt()
+      const mockResult: TradeApproveResult<ApprovalTxReceipt> = {
+        txResponse: mockTxReceipt,
+        approvedAmount: mockAmount,
+      }
+      mockHandleApprove.mockResolvedValue(mockResult)
+
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
+      )
+
+      await result.current()
+
+      expect(mockGeneratePermitToTrade).toHaveBeenCalled()
+      expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+      expect(mockOnApproveConfirm).toHaveBeenCalledWith(mockTxReceipt.transactionHash)
     })
 
     it('should not call onApproveConfirm if onApproveConfirm callback is not provided', async () => {

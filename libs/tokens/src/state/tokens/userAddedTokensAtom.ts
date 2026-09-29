@@ -5,7 +5,7 @@ import { getAddress } from 'viem'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
-import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { getAddressKey, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
@@ -37,7 +37,7 @@ export const addUserTokenAtom = atom(null, (get, set, tokens: TokenWithLogo[]) =
       ...tokens.reduce<{ [key: string]: Token }>((acc, token) => {
         if (token.chainId === chainId) {
           // Only add token if its chainId matches the current chainId
-          acc[token.address.toLowerCase()] = token
+          acc[getAddressKey(token.address)] = token
         }
         return acc
       }, {}),
@@ -51,9 +51,10 @@ export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
   const stateCopy = { ...userAddedTokensState[chainId] }
 
   tokens.forEach((token) => {
-    // Important! We need to remove the token from the state using both the original and lowercase address
-    // Because state might be spoiled with mixed case addresses
+    // Important! We need to remove the token from the state using the original, lowercase and
+    // checksummed address, because state might be spoiled with mixed case (EVM) addresses
     delete stateCopy[token]
+    delete stateCopy[getAddressKey(token)]
     delete stateCopy[token.toLowerCase()]
     try {
       delete stateCopy[getAddress(token as `0x${string}`)]
@@ -67,7 +68,7 @@ export const removeUserTokensAtom = atom(null, (get, set, tokens: string[]) => {
 })
 
 export const removeUserTokenAtom = atom(null, (get, set, token: TokenWithLogo) => {
-  set(removeUserTokensAtom, [token.address.toLowerCase()])
+  set(removeUserTokensAtom, [token.address])
 })
 
 export const resetUserTokensAtom = atom(null, (get, set) => {

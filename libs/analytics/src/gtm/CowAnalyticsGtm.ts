@@ -18,6 +18,7 @@ function getAdditionalEventParams(event: GtmEvent<Category>): Record<string, unk
     value: _value,
     nonInteraction: _nonInteraction,
     isBridgeOrder: _isBridgeOrder,
+    isEoaTwap: _isEoaTwap,
     orderId: _orderId,
     orderType: _orderType,
     tokenSymbol: _tokenSymbol,
@@ -85,6 +86,10 @@ declare global {
  *      - order_type: {{ClickEvent.orderType}}
  *      - token_symbol: {{ClickEvent.tokenSymbol}}
  *      - chain_id: {{ClickEvent.chainId}}
+ *      - isEoaTwap: {{ClickEvent.isEoaTwap}}
+ *
+ * For `order_submitted` (dataLayer, used by GA4 / Addressable `twap_submitted` tags),
+ * map the `isEoaTwap` data layer variable onto the event so EOA TWAP can be split from Safe TWAP.
  *
  * === USAGE IN CODE ===
  *
@@ -255,6 +260,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
             non_interaction: event.nonInteraction,
             ...this.getDimensions(),
             ...(gtmEvent.isBridgeOrder !== undefined && { isBridgeOrder: gtmEvent.isBridgeOrder }),
+            ...(gtmEvent.isEoaTwap !== undefined && { isEoaTwap: gtmEvent.isEoaTwap }),
             ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
             ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
             ...(gtmEvent.tokenSymbol && {

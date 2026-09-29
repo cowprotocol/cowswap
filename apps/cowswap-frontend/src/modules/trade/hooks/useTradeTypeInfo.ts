@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
+import { TradeTypeInfo } from '../../../common/modules/tradeNavigation'
 import { tradeTypeAtom } from '../state/tradeTypeAtom'
-import { TradeTypeInfo } from '../types'
 
 export function useTradeTypeInfo(): TradeTypeInfo | null {
   return useAtomValue(tradeTypeAtom)

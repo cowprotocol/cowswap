@@ -4,7 +4,7 @@ import type { ReactNode } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import iconBulbCowSrc from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import { Font, Media, UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
@@ -135,7 +135,7 @@ const Wrapper = styled.div`
 
   h1 {
     font-size: 28px;
-    font-weight: ${Font.weight.medium};
+    font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
     color: var(${UI.COLOR_NEUTRAL_50});
     text-align: center;
     padding: 0 10px;

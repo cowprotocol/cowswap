@@ -51,12 +51,13 @@ export interface BaseOrder extends OrderCreation {
   status: OrderStatus
   creationTime: string // Creation time of the order. Encoded as ISO 8601 UTC
   isCancelling?: boolean // Intermediate state while the order has been cancelled but order is still pending
+  isEoaTwapOrder?: boolean
   isUnfillable?: boolean // Whether the order is out of the market, due to price movements since placement
   fulfillmentTime?: string // Fulfillment time of the order. Encoded as ISO 8601 UTC
   fulfilledTransactionHash?: string // Hash of transaction when Order was fulfilled
 
-  // EthFlow
-  orderCreationHash?: string
+  // EthFlow / Solana
+  orderCreationHash?: string // EthFlow: order creation tx hash. Solana: order creation transaction signature
   isRefunded?: boolean
   refundHash?: string
 

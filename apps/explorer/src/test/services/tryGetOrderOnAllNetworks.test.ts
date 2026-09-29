@@ -4,6 +4,7 @@ import {
   tryGetOrderOnAllNetworksAndEnvironments,
 } from 'services/helpers/tryGetOrderOnAllNetworks'
 import { Network } from 'types'
+import { getChainsForOrderId } from 'utils'
 
 import { GetTxOrdersParams } from 'api/operator/types'
 
@@ -42,5 +43,28 @@ describe('tryGetOrderOnAllNetworks', () => {
 
     expect(mockedApi).not.toHaveBeenCalledWith({ networkId: Network.MAINNET, txHash })
     expect(result).toEqual({ order: ordersResult })
+  })
+})
+
+// Uids are chain-shaped, so an order can only ever live on one family — but which one is decided by
+// the id, not by the chain being viewed, so a search from anywhere can still find and redirect to it.
+describe('getChainsForOrderId', () => {
+  const SOLANA_ORDER_ID = '0x7dcc25777cc80edcf5dcbb2d3a78df351a2e61eee9cf0373727a11452f26917f'
+  const EVM_ORDER_ID =
+    '0xeaeb698c973f691c702fdd6aacd09ea97acb7275ae26adbfdd884abda1d6697db6bad41ae76a11d10f7b0e664c5007b908bc77c9618b4c31'
+
+  it('offers only Solana for a Solana uid', () => {
+    expect(getChainsForOrderId(SOLANA_ORDER_ID)).toEqual([Network.SOLANA])
+  })
+
+  it('offers every EVM chain but not Solana for an EVM uid', () => {
+    const chains = getChainsForOrderId(EVM_ORDER_ID)
+
+    expect(chains).toContain(Network.MAINNET)
+    expect(chains).not.toContain(Network.SOLANA)
+  })
+
+  it('offers nothing for a string that is neither', () => {
+    expect(getChainsForOrderId('0xdeadbeef')).toEqual([])
   })
 })

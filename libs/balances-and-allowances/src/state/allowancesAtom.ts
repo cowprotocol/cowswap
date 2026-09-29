@@ -3,11 +3,14 @@ import { atom } from 'jotai'
 import { erc20Abi, type Address } from 'viem'
 import { Connector } from 'wagmi'
 
+import { getUpdaterInterval } from '@cowprotocol/common-const'
 import { asyncAtomFamily, getPublicClientFromProvider } from '@cowprotocol/common-utils'
 import { getAddressKey, mapSupportedNetworks, SupportedChainId, EvmChains, isEvmChain } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import ms from 'ms.macro'
+
+const ALLOWANCES_UPDATE_INTERVAl = getUpdaterInterval(ms`32s`)
 
 export type AllowancesState = Record<string, bigint | undefined>
 
@@ -90,7 +93,7 @@ export const tokenAllowancesFamily = asyncAtomFamily(
     areEqual: areTokenAllowancesParamsEqual,
     familyLabel: 'tokenAllowancesFamily',
     valueOnError: {} as AllowancesState,
-    refetchInterval: ms`32s`,
+    refetchInterval: ALLOWANCES_UPDATE_INTERVAl,
   },
 )
 

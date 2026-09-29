@@ -11,16 +11,20 @@ import { Nullish } from 'types'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './useShouldZeroApprove/shouldZeroApprove'
 
-export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, needsApproval: boolean): boolean {
+export function useNeedsZeroApproval(
+  inputAmount: Nullish<CurrencyAmount<Token>>,
+  amountToApprove: Nullish<bigint>,
+  needsApproval: boolean,
+): boolean {
   const spender = useTradeSpenderAddress()
   const { account } = useWalletInfo()
-  const token = amount ? getWrappedToken(amount.currency) : undefined
+  const token = inputAmount ? getWrappedToken(inputAmount.currency) : undefined
   const tokenAddress = token?.address
   const config = useConfig()
   const [shouldZeroApprove, setShouldZeroApprove] = useState(false)
 
   useEffect(() => {
-    if (!needsApproval || !tokenAddress || !spender || !amount || !account || !config) {
+    if (!needsApproval || !tokenAddress || !spender || !amountToApprove || !account || !config) {
       setShouldZeroApprove(false)
       return
     }
@@ -31,7 +35,7 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
       tokenAddress,
       owner: account,
       spender,
-      amountToApprove: amount,
+      amountToApprove,
       forceApprove: true,
       config,
     }).then((res) => {
@@ -42,8 +46,7 @@ export function useNeedsZeroApproval(amount: Nullish<CurrencyAmount<Token>>, nee
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [needsApproval, tokenAddress, spender, account, amount?.quotient?.toString(), config])
+  }, [needsApproval, tokenAddress, spender, account, amountToApprove, config])
 
   return shouldZeroApprove
 }

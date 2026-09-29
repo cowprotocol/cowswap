@@ -1,4 +1,4 @@
-import { ButtonOutlined, Font, Media, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -56,7 +56,7 @@ export const LinkedCodeText = styled.span`
   text-overflow: ellipsis;
   overflow: hidden;
   color: inherit;
-  font-family: ${Font.familyMono};
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
 
   ${Media.upToSmall()} {
     font-size: 14px;

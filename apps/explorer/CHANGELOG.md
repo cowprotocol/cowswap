@@ -1,5 +1,141 @@
 # Changelog
 
+## [4.13.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.12.2...explorer-v4.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat(sol): support sol orders in explorer (#8149)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: hide cancelled or expired twaps in explorer (#8166)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+### Patch Changes
+
+- fix(explorer): auto-update the user details orders table (#8140)
+
+- fix: order filled by 99.99 (#8155)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/hook-dapp-lib@2.3.0
+  - @cowprotocol/types@4.11.0
+
+## [4.12.2](https://github.com/cowprotocol/cowswap/compare/explorer-v4.12.1...explorer-v4.12.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ui@3.13.2
+
+## [4.12.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.12.0...explorer-v4.12.1) (2026-09-11)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.15.1
+  - @cowprotocol/analytics@3.11.1
+  - @cowprotocol/common-hooks@3.11.1
+  - @cowprotocol/core@3.9.1
+  - @cowprotocol/ui@3.13.1
+
+## [4.12.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.11.1...explorer-v4.12.0) (2026-09-09)
+
+### Minor Changes
+
+- feat(solana): fetch quote from Jupiter (#8075)
+
+### Patch Changes
+
+- fix(solana): derive pda address from sdk from program id (#8103)
+
+- fix(default-tokens): update Gnosis USDC to USDC.e (#8072)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.13.0
+  - @cowprotocol/analytics@3.11.0
+  - @cowprotocol/common-const@3.11.0
+  - @cowprotocol/common-hooks@3.11.0
+  - @cowprotocol/common-utils@3.15.0
+  - @cowprotocol/core@3.9.0
+  - @cowprotocol/types@4.10.0
+  - @cowprotocol/hook-dapp-lib@2.2.14
+
+## [4.11.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.11.0...explorer-v4.11.1) (2026-09-07)
+
+### Patch Changes
+
+- fix(explorer): restore explorer's font size removed on the global reset (#8088)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.12.1
+
+## [4.11.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.10.0...explorer-v4.11.0) (2026-09-03)
+
+### Minor Changes
+
+- feat: CSS reset additions (button, input) (#8001)
+
+- feat(sdk): bump to latest sdk packages (#8054)
+
+- feat(explorer): show network costs and protocol fee breakdown on order details (#7588)
+
+### Patch Changes
+
+- fix(rwa): point rwa list fetching to cms prod (#8077)
+
+- fix(solvers): fetch solver info from cms prod only (#8067)
+
+- fix(explorer): scope TokenDisplay flex-wrap to bridge network labels (#7995)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.8.0
+  - @cowprotocol/common-hooks@3.10.0
+  - @cowprotocol/ui@3.12.0
+  - @cowprotocol/common-const@3.10.0
+  - @cowprotocol/analytics@3.10.0
+  - @cowprotocol/common-utils@3.14.0
+  - @cowprotocol/types@4.9.0
+  - @cowprotocol/hook-dapp-lib@2.2.13
+
+## [4.10.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.9.0...explorer-v4.10.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: reduce bundle size by removing unused fonts -1.19 MiB (#7931)
+
+### Patch Changes
+
+- fix: restore bundle optimization pr + removing bw ff
+
+- fix(explorer): bridge label word-wrap and order history chain icon (#7973)
+
+- fix: reduce cowfi contexts to a single user like other apps (#7976)
+
+- fix: restore translations + reverted fix
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.11.0
+  - @cowprotocol/common-utils@3.13.0
+  - @cowprotocol/common-const@3.9.0
+  - @cowprotocol/analytics@3.9.1
+  - @cowprotocol/common-hooks@3.9.1
+  - @cowprotocol/core@3.7.1
+
 ## [4.9.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.8.0...explorer-v4.9.0) (2026-08-05)
 
 ### Minor Changes

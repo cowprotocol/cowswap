@@ -24,7 +24,7 @@ export interface TWAPOrder {
 export interface TwapOrderExecutionInfo {
   executedSellAmount: string
   executedBuyAmount: string
-  executedFeeAmount: string
+  executedFee: string
 }
 
 export interface TwapOrderInfo {
@@ -43,8 +43,17 @@ export interface TwapOrderItem {
   // - Safe address for Safe TWAP
   // - Proxy (CoW Shed) address for EOA TWAP
   safeAddress: string
+  /** Canonical owner: the EOA controlling a CoW Shed, otherwise `safeAddress`. */
+  resolvedOwner: string
+  /** Creation-event identity used by the UI. */
   id: string
+  /** ComposableCoW hash. For legacy Safe rows this is `id`. */
+  hash?: string
   safeTxParams?: SafeTransactionParams
+  /** Indexed part-order count. Undefined for Safe and optimistic rows. */
+  partOrdersCount?: number
+  /** Indexer change cursor. Undefined for Safe and optimistic rows. */
+  updatedAtBlock?: string
   executionInfo: TwapOrdersExecution
 }
 
@@ -80,4 +89,5 @@ export enum TwapOrderStatus {
   Cancelled = 'Cancelled',
   Expired = 'Expired',
   Fulfilled = 'Fulfilled',
+  PartiallyFilled = 'PartiallyFilled',
 }

@@ -54,12 +54,14 @@ runs:
       run: |
         set -euo pipefail
         user_id=$(curl -sf \
+          -H "Authorization: Bearer ${APP_TOKEN}" \
           -H "Accept: application/vnd.github+json" \
           "https://api.github.com/users/${APP_SLUG}%5Bbot%5D" \
           | jq -r .id)
         echo "user-id=${user_id}" >> "$GITHUB_OUTPUT"
       env:
         APP_SLUG: ${{ steps.app-token.outputs.app-slug }}
+        APP_TOKEN: ${{ steps.app-token.outputs.token }}
 
     - name: Checkout code
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

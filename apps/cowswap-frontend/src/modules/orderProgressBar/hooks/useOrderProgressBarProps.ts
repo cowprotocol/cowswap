@@ -5,7 +5,7 @@ import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { safeShortenAddress } from '@cowprotocol/common-utils'
 import { SolverInfo } from '@cowprotocol/core'
-import { CompetitionOrderStatus, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, getAddressKey, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
@@ -50,6 +50,18 @@ type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
   isBridgingTrade: boolean
+}
+
+// ENS only exists on EVM chains; on a non-EVM chain (e.g. Solana) the receiver isn't a valid
+// lookup address, so skip the lookup entirely rather than casting it to `0x${string}`.
+export function getEnsLookupAddress(
+  chainId: SupportedChainId,
+  receiver: string | null | undefined,
+): `0x${string}` | undefined {
+  if (!receiver || !isEvmChain(chainId)) {
+    return undefined
+  }
+  return receiver as `0x${string}`
 }
 
 const MINIMUM_STEP_DISPLAY_TIME = ms`5s`
@@ -108,7 +120,7 @@ export function useOrderProgressBarProps(
   )
 
   const surplusData = useGetSurplusData(order)
-  const receiverEnsName = useENS(order?.receiver as `0x${string}` | undefined)?.name || undefined
+  const receiverEnsName = useENS(getEnsLookupAddress(chainId, order?.receiver))?.name || undefined
 
   const props = useMemo(() => {
     // Add supplementary stuff

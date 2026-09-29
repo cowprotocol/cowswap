@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { getIsNativeToken, getWrappedToken, parseENSAddress } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
@@ -72,10 +72,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.RecipientInvalid]: ({
     derivedState: { inputCurrency, outputCurrency, recipient },
+    recipientEnsAddress,
   }: ButtonComponentProps) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
     const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
-    const showEnsTooltip = isBridging && recipient && !isNonEvmBridging
+    const isEnsRecipient = !!recipient && (!!parseENSAddress(recipient.toLowerCase()) || !!recipientEnsAddress)
+    const showEnsTooltip = isBridging && !isNonEvmBridging && isEnsRecipient
 
     return (
       <TradeFormBlankButton disabled>
@@ -156,18 +158,18 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.ImpactLoading]: {
     text: (
-      <>
+      <span>
         <Trans>Fetching price impact</Trans>
         <CenteredDots smaller />
-      </>
+      </span>
     ),
   },
   [TradeFormValidation.BalancesLoading]: {
     text: (
-      <>
+      <span>
         <Trans>Fetching balances</Trans>
         <CenteredDots smaller />
-      </>
+      </span>
     ),
   },
   [TradeFormValidation.BalancesNotLoaded]: (props: ButtonComponentProps) => {
@@ -216,6 +218,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { amountToApprove, supportsPartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
+    // Solana never reaches this validation: it bundles the SPL delegation into the trade transaction, so
+    // `useIsApprovalOrPermitRequired` reports `BundleApproveRequired` and `ApproveAndSwapInBundle` above
+    // is selected instead.
     return (
       <TradeApproveButton
         isDisabled={isDisabled}

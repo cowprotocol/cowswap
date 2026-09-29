@@ -108,7 +108,26 @@ describe('orderLifecycleAnalytics', () => {
       quoteId: '42',
       isCrossChain: true,
       destinationChainId: 100,
+      isEoaTwap: undefined,
     })
+  })
+
+  it('includes isEoaTwap on posted TWAP orders when provided', () => {
+    const payload: OnPostedOrderPayload = {
+      owner: '0xowner',
+      orderUid: '0xuid',
+      chainId: 1,
+      inputToken: defaultInputToken,
+      outputToken: defaultOutputToken,
+      inputAmount: BigInt('1000000000000000000'),
+      outputAmount: BigInt('2500000'),
+      orderType: UiOrderType.TWAP,
+      kind: OrderKind.SELL,
+      isEoaTwap: true,
+    }
+
+    expect(mapPostedOrder(payload).isEoaTwap).toBe(true)
+    expect(mapPostedOrder({ ...payload, isEoaTwap: false }).isEoaTwap).toBe(false)
   })
 
   it('formats fulfilled order amounts and cross-chain flag', () => {

@@ -4,7 +4,9 @@ import BigNumber from 'bignumber.js'
 
 import { USDT, WETH } from './erc20s'
 
-import { Order, RawOrder, RawTrade, OrderStatus as OrderStatusInner } from '../../api/operator'
+// Not from `api/operator`: its index requires `operatorMock`, which requires this file — under jest
+// that cycle evaluates this module before the index has re-exported the enums.
+import { Order, OrderStatus as OrderStatusInner, RawOrder, RawTrade } from '../../api/operator/types'
 import { ZERO_BIG_NUMBER } from '../../const'
 
 export const RAW_ORDER = {
@@ -50,6 +52,8 @@ export const RICH_ORDER: Order = {
   executedFeeAmount: new BigNumber(RAW_ORDER.executedFeeAmount),
   executedFee: ZERO_BIG_NUMBER,
   totalFee: ZERO_BIG_NUMBER,
+  // Overrides the raw `string | null` carried over from the RAW_ORDER spread.
+  gasCost: undefined,
   cancelled: RAW_ORDER.invalidated,
   status: OrderStatusInner.Open,
   partiallyFilled: false,

@@ -3,7 +3,7 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 
 import { Nullish } from 'types'
 
-import { TradeType } from 'modules/trade'
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import { usePermitInfo } from './usePermitInfo'
 

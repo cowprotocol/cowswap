@@ -36,7 +36,7 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
 
   const { balancesAndAllowances } = ordersTableState
 
-  const isRowSelectable = allowsOffchainSigning
+  const isRowSelectable = allowsOffchainSigning && !isTwapTable
 
   const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
 

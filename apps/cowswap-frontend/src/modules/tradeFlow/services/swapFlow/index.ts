@@ -76,7 +76,7 @@ export async function swapFlow(
     permitInfo,
     generatePermitHook,
     permitAmountToSign,
-    swapFlowAnalyticsContext,
+    tradeFlowAnalyticsContext,
     callbacks,
   } = input
   const { chainId } = context
@@ -116,7 +116,7 @@ export async function swapFlow(
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')
     analytics.trade({
-      ...swapFlowAnalyticsContext,
+      ...tradeFlowAnalyticsContext,
       quoteId: orderParams.quoteId,
       allowsOffchainSigning: orderParams.allowsOffchainSigning,
     })
@@ -276,7 +276,7 @@ export async function swapFlow(
 
     logTradeFlow('SWAP FLOW', 'STEP 7: show UI of the successfully sent transaction', orderId)
     tradeConfirmActions.onSuccess(orderId)
-    analytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(tradeFlowAnalyticsContext)
 
     return true
   } catch (err: unknown) {
@@ -292,10 +292,10 @@ export async function swapFlow(
     const swapErrorMessage =
       isBridgingOrder && isCoWShedEip1271SignatureError
         ? BridgeInvalidEip1271SignatureError
-        : getSwapErrorMessage(error)
+        : getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
-    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

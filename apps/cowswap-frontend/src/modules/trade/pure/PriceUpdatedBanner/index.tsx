@@ -26,12 +26,8 @@ const StyledBanner = styled(InlineBanner)`
 const AcceptButton = styled.button`
   background: var(${UI.COLOR_PRIMARY});
   color: var(${UI.COLOR_BUTTON_TEXT});
-  cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  border: none;
-  box-shadow: none;
-  outline: none;
   padding: 10px 20px;
   border-radius: 8px;
   margin: 0 0 0 auto;

@@ -10,12 +10,10 @@ import { Trans } from '@lingui/react/macro'
 export const ProxyAccountLoading = (): ReactNode => {
   const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
   return (
-    <>
-      <span>
-        <Trans>Loading {accountProxyLabel}</Trans>
-      </span>
+    <span>
+      <Trans>Loading {accountProxyLabel}</Trans>
       <CenteredDots smaller />
-    </>
+    </span>
   )
 }
 

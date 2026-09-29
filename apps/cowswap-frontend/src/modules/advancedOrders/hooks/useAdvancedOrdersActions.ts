@@ -36,7 +36,7 @@ export function useAdvancedOrdersActions() {
 
   const onUserInput = useCallback(
     (field: Field, typedValue: string) => {
-      debouncedTradeAmountAnalytics([field, Number(typedValue)])
+      debouncedTradeAmountAnalytics(field, Number(typedValue))
       updateCurrencyAmount({
         amount: { isTyped: true, value: typedValue },
         currency: inputCurrency,

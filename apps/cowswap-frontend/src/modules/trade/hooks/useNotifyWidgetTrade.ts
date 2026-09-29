@@ -7,11 +7,13 @@ import { TokenInfo } from '@cowprotocol/types'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import { AmountsToSign, useAmountsToSignFromQuote } from './useAmountsToSignFromQuote'
 import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { TradeTypeToUiOrderType } from '../const/common'
-import { TradeDerivedState, TradeType } from '../types'
+import { TradeDerivedState } from '../types'
 
 const ZERO_AMOUNT: AtomsAndUnits = {
   atoms: BigInt(0),

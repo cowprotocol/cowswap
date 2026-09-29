@@ -74,4 +74,22 @@ describe('useSetupTradeStateFromUrl', () => {
       targetChainId: null,
     })
   })
+
+  // Regression test for CS-287's flaky multi-second `waitForQuote()` hang: `sellAmount` is
+  // stripped from the URL shortly after load by `useSetupTradeAmountsFromUrl`'s `cleanParams`,
+  // which must not cause this hook to hand consumers a new object (and re-trigger `setState`) when
+  // none of the fields it actually derives (chainId/currencies/targetChainId/recipient) changed.
+  it('keeps a stable reference and does not re-notify when only an unrelated search param changes', () => {
+    setup('?targetChainId=8453&sellAmount=100')
+
+    const { result, rerender } = renderHook(() => useSetupTradeStateFromUrl())
+    const firstResult = result.current
+    expect(mockSetState).toHaveBeenCalledTimes(1)
+
+    mockUseLocation.mockReturnValue({ search: '?targetChainId=8453' } as ReturnType<typeof useLocation>)
+    rerender()
+
+    expect(result.current).toBe(firstResult)
+    expect(mockSetState).toHaveBeenCalledTimes(1)
+  })
 })

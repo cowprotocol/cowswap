@@ -49,7 +49,8 @@ describe('useAccountProxies', () => {
     const { result } = renderHook(() => useAccountProxies())
     const eoaTwapProxy = result.current?.find(({ id }) => id === 'twap-account-proxy')
 
-    expect(eoaTwapProxy?.label?.message).toBe('TWAP Account Proxy')
+    expect(eoaTwapProxy?.label).toBeUndefined()
+    expect(eoaTwapProxy?.version).toBe(EOA_TWAP_SHED_EIP712_VERSION)
     expect(eoaTwapProxy?.factoryOptions).toBe(EOA_TWAP_SHED_FACTORY_OPTIONS)
     expect(eoaTwapProxy?.account).toBe(CUSTOM_PROXY)
     expect(CowShedHooksMock).toHaveBeenCalledWith(CHAIN_ID, EOA_TWAP_SHED_FACTORY_OPTIONS, EOA_TWAP_SHED_EIP712_VERSION)
@@ -79,5 +80,17 @@ describe('useAccountProxies', () => {
     const { result } = renderHook(() => useAccountProxies())
 
     expect(result.current).toBeNull()
+  })
+
+  it('returns no proxies for a non-EVM chain, without calling proxyOf', () => {
+    useWalletInfoMock.mockReturnValue({
+      account: ACCOUNT,
+      chainId: SupportedChainId.SOLANA,
+    } as ReturnType<typeof useWalletInfo>)
+
+    const { result } = renderHook(() => useAccountProxies())
+
+    expect(result.current).toBeNull()
+    expect(proxyOfMock).not.toHaveBeenCalled()
   })
 })

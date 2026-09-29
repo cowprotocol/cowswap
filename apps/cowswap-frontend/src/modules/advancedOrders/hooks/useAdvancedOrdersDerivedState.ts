@@ -3,8 +3,9 @@ import { useMemo } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
 
-import { TradeType } from 'modules/trade'
 import { useBuildTradeDerivedState } from 'modules/trade/hooks/useBuildTradeDerivedState'
+
+import { TradeType } from 'common/modules/tradeNavigation'
 
 import {
   advancedOrdersAtom,

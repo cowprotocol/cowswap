@@ -58,11 +58,11 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
 
         const executedBuyAmount = sumChildrenAmount(discreteOrders, 'executedBuyAmount').toString()
         const executedSellAmount = sumChildrenAmount(discreteOrders, 'executedSellAmount').toString()
-        const executedFeeAmount = sumChildrenAmount(discreteOrders, 'executedFeeAmount').toString()
+        const executedFee = sumChildrenAmount(discreteOrders, 'executedFee').toString()
         const confirmedPartsCount = getConfirmedPartsCount(info, discreteOrders)
 
         acc[id] = {
-          info: { executedSellAmount, executedFeeAmount, executedBuyAmount },
+          info: { executedSellAmount, executedFee, executedBuyAmount },
           confirmedPartsCount,
         }
       } else {

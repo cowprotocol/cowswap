@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter, OrderKind } from '@cowprotocol/cow-sdk'
+import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -23,7 +23,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 
-import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
@@ -59,7 +59,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const userSlippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -68,6 +67,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
+
+  // Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
+  // not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
+  const userSlippageBps = tradeSlippage.type === 'user' || isSolana ? tradeSlippage.value : undefined
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
   const appDataDoc = appData?.doc
 
@@ -119,7 +123,7 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
 
   const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
   const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
-  const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+  const owner = (account || getDefaultOwnerPlaceholder(inputCurrency.chainId)) as `0x${string}`
 
   const quoteParams: QuoteBridgeRequest = {
     kind: orderKind,
@@ -144,4 +148,11 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
   }
 
   return { quoteParams, inputCurrency, appData: appDataDoc, hasSmartSlippage }
+}
+
+/** Returns the default owner/account placeholder for quoting when no wallet is connected.
+ *  Falls back to the chain-specific non-EVM placeholder (e.g. Solana) so the sell chain's
+ *  address format is respected instead of always using the EVM placeholder. */
+function getDefaultOwnerPlaceholder(sellTokenChainId: number): string {
+  return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(sellTokenChainId))?.defaultRecipient ?? BRIDGE_QUOTE_ACCOUNT
 }

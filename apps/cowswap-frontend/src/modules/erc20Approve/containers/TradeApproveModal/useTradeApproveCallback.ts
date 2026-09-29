@@ -8,7 +8,7 @@ import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wal
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 
-import { processApprovalTransaction } from './approveUtils'
+import { processApprovalTransaction, toApprovalTxReceipt } from './approveUtils'
 import { useApprovalAnalytics } from './useApprovalAnalytics'
 import { useHandleApprovalError } from './useHandleApprovalError'
 
@@ -164,17 +164,7 @@ async function processTransactionConfirmation({
   TradeApproveResult<ApprovalTxReceipt>
 > {
   const txResponse = await publicClient.waitForTransactionReceipt({ hash })
-
-  const receipt: ApprovalTxReceipt = {
-    status: txResponse.status,
-    blockNumber: txResponse.blockNumber,
-    transactionHash: txResponse.transactionHash,
-    logs: txResponse.logs.map((log) => ({
-      address: log.address,
-      topics: [...log.topics],
-      data: log.data,
-    })),
-  }
+  const receipt = toApprovalTxReceipt(txResponse)
 
   if (!chainId) {
     return { txResponse: receipt, approvedAmount: undefined }

@@ -60,8 +60,6 @@ export const Description = styled.span`
 export const AddButton = styled.button<{ disabled?: boolean }>`
   background: ${({ disabled }) => `var(${disabled ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PRIMARY})`};
   color: ${({ disabled }) => `var(${disabled ? UI.COLOR_TEXT_OPACITY_50 : UI.COLOR_PAPER})`};
-  border: none;
-  outline: none;
   font-weight: 600;
   font-size: 16px;
   padding: 11px;

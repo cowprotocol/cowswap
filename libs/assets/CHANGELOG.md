@@ -1,5 +1,19 @@
 # Changelog
 
+## [2.7.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.6.0...assets-v2.7.0) (2026-09-09)
+
+### Minor Changes
+
+- feat: remove Feixen font from widget configurator (#8049)
+
+- feat: remove Feixen mono, only used in the Recipient input (#8047)
+
+## [2.6.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.5.0...assets-v2.6.0) (2026-08-12)
+
+### Minor Changes
+
+- feat: approve for token list page (#7967)
+
 ## [2.5.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.4.0...assets-v2.5.0) (2026-06-25)
 
 ### Minor Changes

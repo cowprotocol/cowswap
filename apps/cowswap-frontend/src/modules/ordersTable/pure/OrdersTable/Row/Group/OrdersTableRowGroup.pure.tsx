@@ -1,24 +1,33 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@cowprotocol/currency'
 
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
+import { useTwapOrderById } from 'entities/twap'
 import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { PendingOrderPrices } from 'modules/orders'
+import { useEoaTwapPartOrders, useIsFallbackHandlerRequired } from 'modules/twap'
+
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { OrderRow } from '../../../../containers/OrderRow/OrderRow.container'
 import { OrderActions, OrderTableGroup } from '../../../../state/ordersTable.types'
 import { ORDERS_TABLE_PAGE_SIZE } from '../../../../state/params/ordersTableParams.constants'
-import { getOrderParams } from '../../../../utils/getOrderParams'
+import { getOrderParams, type OrderParams } from '../../../../utils/getOrderParams'
 import { TwapStatusAndToggle } from '../../../TwapStatusAndToggle/TwapStatusAndToggle.pure'
 import { OrdersTablePagination } from '../../Pagination/OrdersTablePagination.pure'
 
 const GroupBox = styled.div``
+const PartPageState = styled.div`
+  padding: 16px;
+  text-align: center;
+`
 
 const Pagination = styled(OrdersTablePagination)`
   background: ${({ theme }) => transparentize(theme.text, 0.91)};
@@ -42,6 +51,7 @@ export interface OrdersTableRowGroupProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableRowGroup({
   item,
   prices,
@@ -57,12 +67,26 @@ export function OrdersTableRowGroup({
 }: OrdersTableRowGroupProps): ReactNode {
   const { parent, children } = item
 
+  // Per-account condition (the Safe's ComposableCoW fallback handler was reset); resolved here in the
+  // view and passed to the status badge rather than persisted onto the order (see issue #5426).
+  const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
+
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const childrenLength = children.length
+  const twapOrder = useTwapOrderById(parent.id)
+  const isEoaTwapOrder = parent.isEoaTwapOrder === true
+  const isOptimisticEoaOrder = isEoaTwapOrder && twapOrder?.partOrdersCount === undefined
+  // Safe and optimistic EOA orders use local children; indexed EOA orders fetch their parts.
+  const usesLocalChildren = !isEoaTwapOrder || isOptimisticEoaOrder
+  const childrenLength = usesLocalChildren ? children.length : (twapOrder?.partOrdersCount ?? 0)
   const step = currentPage * ORDERS_TABLE_PAGE_SIZE
-  const childrenPage = children.slice(step - ORDERS_TABLE_PAGE_SIZE, step)
+  const indexedParts = useEoaTwapPartOrders(twapOrder, parent, currentPage, !usesLocalChildren && !isCollapsed)
+  const childrenPage = usesLocalChildren ? children.slice(step - ORDERS_TABLE_PAGE_SIZE, step) : indexedParts.orders
+
+  useEffect(() => {
+    if (currentPage > Math.max(1, Math.ceil(childrenLength / ORDERS_TABLE_PAGE_SIZE))) setCurrentPage(1)
+  }, [childrenLength, currentPage])
 
   const isParentSigning = parent.status === OrderStatus.PRESIGNATURE_PENDING
 
@@ -78,11 +102,11 @@ export function OrdersTableRowGroup({
     balancesAndAllowances,
   }
 
+  const eoaTwapPartSellAmount = isEoaTwapOrder ? twapOrder?.order.partSellAmount : undefined
+  const parentOrderParams = getOrderParams(chainId, balancesAndAllowances, parent, undefined, eoaTwapPartSellAmount)
+
   // Create an array of child order data with their orderParams
-  const childrenWithParams = children.map((child) => ({
-    order: child,
-    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
-  }))
+  const childrenWithParams = buildChildrenWithParams(usesLocalChildren ? children : [], chainId, balancesAndAllowances)
 
   return (
     <GroupBox>
@@ -91,26 +115,33 @@ export function OrdersTableRowGroup({
         key={parent.id}
         isRowSelected={isRowSelected}
         order={parent}
-        orderParams={getOrderParams(chainId, balancesAndAllowances, parent)}
+        orderParams={parentOrderParams}
         onClick={() => orderActions.selectReceiptOrder(parent)}
         isExpanded={!isCollapsed}
-        childOrders={children}
+        childOrders={usesLocalChildren ? children : undefined}
       >
         {isParentSigning ? undefined : (
           <TwapStatusAndToggle
             approveOrderToken={orderActions.approveOrderToken}
             parent={parent}
-            childrenLength={childrenLength}
+            totalParts={twapOrder?.order.n ?? childrenLength}
             isCollapsed={isCollapsed}
+            isFallbackHandlerRequired={isFallbackHandlerRequired}
             onToggle={() => setIsCollapsed((state) => !state)}
             onClick={() => orderActions.selectReceiptOrder(parent)}
             childOrders={childrenWithParams}
+            parentOrderParams={parentOrderParams}
           />
         )}
       </OrderRow>
 
       {!isCollapsed && (
         <div>
+          {indexedParts.isLoading && (
+            <PartPageState>
+              <Trans>Loading...</Trans>
+            </PartPageState>
+          )}
           {childrenPage.map((child) => (
             <OrderRow
               {...commonProps}
@@ -118,7 +149,13 @@ export function OrdersTableRowGroup({
               isChild={true}
               isRowSelected={false}
               order={child}
-              orderParams={getOrderParams(chainId, balancesAndAllowances, child)}
+              orderParams={getOrderParams(
+                chainId,
+                balancesAndAllowances,
+                child,
+                undefined,
+                isEoaTwapOrder ? child.sellAmount : undefined,
+              )}
               onClick={() => orderActions.selectReceiptOrder(child)}
             />
           ))}
@@ -135,4 +172,15 @@ export function OrdersTableRowGroup({
       )}
     </GroupBox>
   )
+}
+
+function buildChildrenWithParams(
+  children: ParsedOrder[],
+  chainId: SupportedChainId,
+  balancesAndAllowances: BalancesAndAllowances,
+): Array<{ order: ParsedOrder; orderParams: OrderParams }> {
+  return children.map((child) => ({
+    order: child,
+    orderParams: getOrderParams(chainId, balancesAndAllowances, child),
+  }))
 }

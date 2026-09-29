@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -21,6 +23,7 @@ interface ContentItem {
   withTimelineDot?: boolean
   label?: ReactNode
   content: ReactNode
+  testId?: string
 }
 
 interface QuoteDetailsContentProps {
@@ -57,13 +60,17 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
 
   return (
     <>
-      <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
-        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
+      <TradeFeesAndCosts
+        receiveAmountInfo={receiveAmountInfo}
+        feeTestId={TEST_IDS.routeSwapFee}
+        networkCostsTestId={TEST_IDS.routeSwapNetworkCosts}
+      />
+      {contents.filter(isTruthy).map(({ withTimelineDot, label, content, testId }, index) => (
+        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label} testId={testId}>
           {content}
         </ConfirmDetailsItem>
       ))}
-      {!isBridgeQuoteRecipient && (
+      {!isBridgeQuoteRecipient && isEvmChain(sellAmount.currency.chainId) && (
         <ProxyAccountBanner
           recipient={recipient}
           bridgeReceiverOverride={bridgeReceiverOverride}
@@ -81,6 +88,7 @@ function createExpectedReceiveContent(
 ): ContentItem {
   return {
     withTimelineDot: true,
+    testId: TEST_IDS.routeSwapExpectedToReceive,
     label: (
       <>
         {t`Expected to receive`}{' '}
@@ -105,6 +113,7 @@ function createMinReceiveContent(
   minReceiveUsdValue: QuoteSwapContext['minReceiveUsdValue'],
 ): ContentItem {
   return {
+    testId: TEST_IDS.routeSwapMinToReceive,
     label: (
       <ReceiveAmountTitle>
         <b>
@@ -123,6 +132,7 @@ function createMinReceiveContent(
 function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExpiration?: string | null): ContentItem {
   return {
     withTimelineDot: true,
+    testId: TEST_IDS.routeSwapQuoteId,
     label: (
       <>
         {t`Quote ID`} <QuoteVerificationBadge isVerified={quoteVerified} />
@@ -140,6 +150,7 @@ function createRecipientContent(
 ): ContentItem {
   return {
     withTimelineDot: true,
+    testId: TEST_IDS.routeSwapRecipient,
     label: (
       <>
         {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
