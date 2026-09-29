@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-29 15:49\n"
+"PO-Revision-Date: 2026-09-29 16:45\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -316,11 +316,11 @@ msgstr "Мои кастомные хуки ({customHooksCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
-msgstr ""
+msgstr "Учитывая текущие сетевые расходы (<0><1/></0> на каждую часть), переключитесь на {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/ReceiveZeroFromNetworkCostsWarning.tsx
 msgid "Network costs are higher than the value of each part, so you would receive nothing. Decrease the number of parts or increase the total sell amount."
-msgstr ""
+msgstr "Сетевые расходы превышают стоимость каждой части, поэтому вы ничего не получите. Уменьшите количество частей или увеличьте общую сумму продажи."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 #~ msgid "{label} ({feeAsPercent}%)"
@@ -555,7 +555,7 @@ msgstr "Нет"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Market sell order"
-msgstr ""
+msgstr "Рыночный ордер на продажу"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Refund completed!"
@@ -734,7 +734,7 @@ msgstr "Не удалось распознать указанную дату и 
 
 #: libs/common-const/src/common.ts
 msgid "Only executed swaps incur fees."
-msgstr ""
+msgstr "Комиссия взимается только за исполненные свапы."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
@@ -784,7 +784,7 @@ msgstr "Сделки, совершенные через интеграторов
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Limit sell order"
-msgstr ""
+msgstr "Лимитный ордер на продажу"
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "One-click convert, <0>boost yield</0>"
@@ -936,7 +936,7 @@ msgstr "Попытка подключения не удалась. Пожалу�
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Hooks sell order"
-msgstr ""
+msgstr "Ордер на продажу с хуками"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/InvalidCoWShedSetup/InvalidCoWShedSetup.container.tsx
 msgid "CoW Shed setup is invalid!"
@@ -1096,7 +1096,7 @@ msgstr "Импорт промежуточного токена"
 
 #: libs/ui/src/pure/MenuBar/index.tsx
 msgid "Language {locale} not found"
-msgstr ""
+msgstr "Язык {locale} не найден"
 
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
@@ -1184,7 +1184,7 @@ msgstr "Подпись"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP buy order"
-msgstr ""
+msgstr "TWAP-ордер на покупку"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{minutes, plural, one {# minute} few {# minutes} many {# minutes} other {# minutes}}"
@@ -1628,7 +1628,7 @@ msgstr "Излишки получены"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Market buy order"
-msgstr ""
+msgstr "Рыночный ордер на покупку"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #~ msgid "signature is"
@@ -1926,7 +1926,7 @@ msgstr "Вы получили дополнительно"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Worst acceptable price"
-msgstr ""
+msgstr "Худшая приемлемая цена"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -5739,7 +5739,7 @@ msgstr "Переключите сеть"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Hooks buy order"
-msgstr ""
+msgstr "Ордер на покупку с хуками"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
@@ -8222,7 +8222,7 @@ msgstr "Рыночные ордера всегда исполняются как
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP sell order"
-msgstr ""
+msgstr "TWAP-ордер на продажу"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."
