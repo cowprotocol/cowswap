@@ -8,7 +8,7 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
-import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom } from 'entities/trade'
+import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -307,9 +307,26 @@ async function postSponsoredBundle(
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
 ): Promise<undefined> {
-  // The estimation runs while the wallet prompt is up; a fast signature can finish first, and the
-  // late result must not resurrect a countdown the flow already cleared.
-  let signingInProgress = true
+  // A wallet prompt can rest unanswered indefinitely, so by the time this attempt settles the shared
+  // atoms may already belong to a newer attempt — every write below is gated on the atom still
+  // holding this attempt's own value.
+  let ownDeadline: SolanaSigningDeadlineState | null = null
+  let isSettled = false
+
+  const settleSigning = (): void => {
+    if (isSettled) return
+    isSettled = true
+
+    if (!ownDeadline || jotaiStore.get(solanaSigningDeadlineAtom) !== ownDeadline) return
+
+    // The wallet answered after the window closed: lets the error handling route the rejection
+    // back to the review screen instead of the error modal.
+    if (Date.now() >= ownDeadline.expiresAt) {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+    }
+
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+  }
 
   try {
     const { transaction } = await signSolanaFlow(
@@ -317,12 +334,19 @@ async function postSponsoredBundle(
         ...context,
         onDeadline: (lastValidBlockHeight) => {
           void estimateSolanaSigningDeadline(context.connection, lastValidBlockHeight).then((deadline) => {
-            if (deadline && signingInProgress) jotaiStore.set(solanaSigningDeadlineAtom, deadline)
+            if (!deadline || isSettled) return
+
+            ownDeadline = deadline
+            jotaiStore.set(solanaSigningDeadlineAtom, deadline)
           })
         },
       },
       steps,
     )
+
+    // Settled at the signature, not after the POST: the countdown must not keep ticking (and claim
+    // the window closed) while the signed bundle is being handed to the order book.
+    settleSigning()
 
     await postSolanaSponsoredOrder(
       // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
@@ -330,16 +354,7 @@ async function postSponsoredBundle(
       { orderBookApi },
     )
   } finally {
-    signingInProgress = false
-
-    // The wallet answered after the window closed (either way): remember it, so the flow's error
-    // handling can tell this rejection apart from the user changing their mind on a live prompt.
-    const deadline = jotaiStore.get(solanaSigningDeadlineAtom)
-    if (deadline && Date.now() >= deadline.expiresAt) {
-      jotaiStore.set(solanaSigningAbandonedAtom, true)
-    }
-
-    jotaiStore.set(solanaSigningDeadlineAtom, null)
+    settleSigning()
   }
 
   return undefined

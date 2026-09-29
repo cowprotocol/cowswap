@@ -2,6 +2,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
 import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
@@ -18,7 +19,9 @@ import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreat
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
 import { sendSolanaFlow } from 'modules/trade/services/solanaFlow/sendSolanaFlow'
+import { signSolanaFlow } from 'modules/trade/services/solanaFlow/signSolanaFlow'
 import { SolanaFlowStep } from 'modules/trade/services/solanaFlow/types'
+import { estimateSolanaSigningDeadline } from 'modules/trade/services/solanaSend/estimateSolanaSigningDeadline'
 import * as addPendingOrderStepModule from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
@@ -35,6 +38,14 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => ({ signSolanaFlow: jest.fn() }))
+jest.mock('modules/trade/services/solanaSend/estimateSolanaSigningDeadline', () => ({
+  estimateSolanaSigningDeadline: jest.fn(),
+}))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
+  postSolanaSponsoredOrder: jest.fn(),
+}))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
@@ -48,6 +59,11 @@ const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typ
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
+const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
+const mockEstimateSolanaSigningDeadline = estimateSolanaSigningDeadline as jest.MockedFunction<
+  typeof estimateSolanaSigningDeadline
+>
+const mockPostSolanaSponsoredOrder = postSolanaSponsoredOrder as jest.MockedFunction<typeof postSolanaSponsoredOrder>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
@@ -121,6 +137,7 @@ function buildContext({
       uid: new Uint8Array(32).fill(7),
       orderPda: new PublicKey(new Uint8Array(32).fill(4)),
       programId: new PublicKey(new Uint8Array(32).fill(5)),
+      funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
@@ -192,31 +209,34 @@ function sentSteps(): SolanaFlowStep[] {
   return mockSendSolanaFlow.mock.calls[0][1]
 }
 
-describe('solanaFlow', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-    mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
-    mockPlanWrapStep.mockReturnValue(WRAP_STEP)
-    mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
-    mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
-    mockPlanCreateOrderStep.mockResolvedValue({
-      step: ORDER_STEP,
-      orderId: ORDER_ID,
-      signingScheme: SigningScheme.PRESIGN,
-      appData: MARKET_APP_DATA_HEX,
-      sellAmount: MARKET_SIGNED_SELL_AMOUNT,
-      buyAmount: MARKET_SIGNED_BUY_AMOUNT,
-    })
-    mockPlanCreateLimitOrderStep.mockResolvedValue({
-      step: ORDER_STEP,
-      orderId: ORDER_ID,
-      signingScheme: SigningScheme.PRESIGN,
-      appData: LIMIT_APP_DATA_HEX,
-      sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
-      buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
-    })
+beforeEach(() => {
+  jest.clearAllMocks()
+  mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
+  mockSignSolanaFlow.mockResolvedValue({ transaction: 'signed-tx', lastValidBlockHeight: 1_234 })
+  mockEstimateSolanaSigningDeadline.mockResolvedValue(null)
+  mockPostSolanaSponsoredOrder.mockResolvedValue(undefined as never)
+  mockPlanWrapStep.mockReturnValue(WRAP_STEP)
+  mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
+  mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
+  mockPlanCreateOrderStep.mockResolvedValue({
+    step: ORDER_STEP,
+    orderId: ORDER_ID,
+    signingScheme: SigningScheme.PRESIGN,
+    appData: MARKET_APP_DATA_HEX,
+    sellAmount: MARKET_SIGNED_SELL_AMOUNT,
+    buyAmount: MARKET_SIGNED_BUY_AMOUNT,
   })
+  mockPlanCreateLimitOrderStep.mockResolvedValue({
+    step: ORDER_STEP,
+    orderId: ORDER_ID,
+    signingScheme: SigningScheme.PRESIGN,
+    appData: LIMIT_APP_DATA_HEX,
+    sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
+    buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
+  })
+})
 
+describe('solanaFlow', () => {
   it('bundles wrap, delegate, buy-ATA and create-order into a single transaction', async () => {
     const context = buildContext({ isNativeSell: true })
 
@@ -545,5 +565,74 @@ describe('solanaFlow', () => {
     expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
 
     jotaiStore.set(solanaSigningDeadlineAtom, null)
+  })
+})
+
+describe('solanaFlow · sponsored', () => {
+  const flushDeadlineEstimation = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0))
+
+  // The settle in postSponsoredBundle runs whenever a hung attempt finally gets its wallet answer;
+  // by then the deadline atom may hold a NEWER attempt's live countdown, which must survive.
+  it("leaves a newer attempt's live countdown untouched when a stale attempt settles", async () => {
+    const liveDeadline = { expiresAt: Date.now() + 60_000, durationMs: 40_000 }
+    mockSignSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningDeadlineAtom, liveDeadline)
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), true)
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(liveDeadline)
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+  })
+
+  // Once the wallet returns the signature the outcome no longer depends on the user, so a countdown
+  // ticking (and expiring) through the order book POST would be a lie.
+  it('clears the countdown at the signature, before the order book POST', async () => {
+    const deadline = { expiresAt: Date.now() + 40_000, durationMs: 40_000 }
+    mockEstimateSolanaSigningDeadline.mockResolvedValue(deadline)
+    mockSignSolanaFlow.mockImplementation(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await flushDeadlineEstimation()
+      expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(deadline)
+
+      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234 }
+    })
+    let deadlineAtPostTime: unknown = 'never-posted'
+    mockPostSolanaSponsoredOrder.mockImplementation(async () => {
+      deadlineAtPostTime = jotaiStore.get(solanaSigningDeadlineAtom)
+
+      return undefined as never
+    })
+
+    const result = await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(result).toBe(true)
+    expect(deadlineAtPostTime).toBeNull()
+  })
+
+  it('routes a rejection that arrives after the window closed back to the review screen', async () => {
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: true })
+    const expiredDeadline = { expiresAt: Date.now() - 1_000, durationMs: 40_000 }
+    mockEstimateSolanaSigningDeadline.mockResolvedValue(expiredDeadline)
+    mockSignSolanaFlow.mockImplementation(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await flushDeadlineEstimation()
+
+      throw new Error('User rejected the request')
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), true)
+
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+
+    jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: false })
   })
 })
