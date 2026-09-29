@@ -1,12 +1,14 @@
 import { type EnrichedOrder, OrderKind, OrderStatus, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { collectPages } from '../lib/collectPages'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, type TradeLeg, toTradeLeg } from '../lib/tradeLeg'
 
 import type { RwaToken } from '@/entities/asset'
 
 import { orderBookApi } from '@/shared/api'
 
-const ORDERS_PAGE_SIZE = 100
+const ORDERS_PAGE_SIZE = 1000
+const MAX_ORDERS_PAGES = 10
 const OPEN_STATUSES: readonly OrderStatus[] = [OrderStatus.OPEN, OrderStatus.PRESIGNATURE_PENDING]
 
 export interface OpenOrder extends TradeLeg {
@@ -36,15 +38,17 @@ export async function getOpenOrders({ owner, tokens }: OpenOrdersQuery): Promise
 }
 
 async function getChainOpenOrders(chainId: SupportedChainId, owner: string, tokens: RwaToken[]): Promise<OpenOrder[]> {
-  const orders = await orderBookApi.getOrders({ owner, limit: ORDERS_PAGE_SIZE }, { chainId })
+  const openOrders = await collectPages(
+    (offset, limit) => orderBookApi.getOrders({ owner, offset, limit }, { chainId }),
+    (order) => {
+      if (!OPEN_STATUSES.includes(order.status)) return null
 
-  const openOrders = orders.flatMap((order) => {
-    if (!OPEN_STATUSES.includes(order.status)) return []
+      const leg = toTradeLeg(chainId, tokens, order)
 
-    const leg = toTradeLeg(chainId, tokens, order)
-
-    return leg ? [{ ...leg, ...getOrderDetails(order) }] : []
-  })
+      return leg ? { ...leg, ...getOrderDetails(order) } : null
+    },
+    { pageSize: ORDERS_PAGE_SIZE, maxPages: MAX_ORDERS_PAGES },
+  )
 
   return resolveCounterTokens(chainId, openOrders)
 }

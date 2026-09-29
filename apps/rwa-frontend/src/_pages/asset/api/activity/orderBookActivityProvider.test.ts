@@ -67,7 +67,7 @@ describe('orderBookActivityProvider', () => {
       limit: 10,
     })
 
-    expect(getTradesMock).toHaveBeenCalledWith({ owner: OWNER, limit: 100 }, { chainId: 1 })
+    expect(getTradesMock).toHaveBeenCalledWith({ owner: OWNER, offset: 0, limit: 1000 }, { chainId: 1 })
     expect(activity).toEqual([
       expect.objectContaining({ orderUid: '0x03', chainId: 42161, side: 'sell', timestamp: 2000, txHash: null }),
       expect.objectContaining({ orderUid: '0x01', chainId: 1, side: 'buy', timestamp: 1000, txHash: '0xaa' }),
@@ -82,6 +82,34 @@ describe('orderBookActivityProvider', () => {
     const [item] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
 
     expect(item.timestamp).toBe(null)
+  })
+
+  it('finds trades beyond the first page', async () => {
+    const unrelated = trade({ buyToken: '0x0000000000000000000000000000000000000001' })
+
+    getTradesMock.mockImplementation(async ({ offset }: { offset: number }, { chainId }: { chainId: number }) => {
+      if (chainId !== 1) return []
+
+      return offset === 0
+        ? Array.from({ length: 1000 }, () => unrelated)
+        : [trade({ orderUid: '0xold', blockNumber: 50 })]
+    })
+
+    const activity = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(activity.map(({ orderUid }) => orderUid)).toEqual(['0xold'])
+  })
+
+  it('reads each block timestamp once', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1 ? [trade({ blockNumber: 400 })] : [],
+    )
+
+    await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+    const [item] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(item.timestamp).toBe(4000)
+    expect(getBlockMock).toHaveBeenCalledTimes(1)
   })
 
   it('applies the limit', async () => {

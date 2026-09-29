@@ -54,8 +54,8 @@ describe('getOpenOrders', () => {
 
     const orders = await getOpenOrders({ owner: OWNER, tokens: [AAPLX_MAINNET, AAPLX_ARBITRUM] })
 
-    expect(getOrdersMock).toHaveBeenCalledWith({ owner: OWNER, limit: 100 }, { chainId: 1 })
-    expect(getOrdersMock).toHaveBeenCalledWith({ owner: OWNER, limit: 100 }, { chainId: 42161 })
+    expect(getOrdersMock).toHaveBeenCalledWith({ owner: OWNER, offset: 0, limit: 1000 }, { chainId: 1 })
+    expect(getOrdersMock).toHaveBeenCalledWith({ owner: OWNER, offset: 0, limit: 1000 }, { chainId: 42161 })
     expect(orders.map(({ uid }) => uid)).toEqual(['0x04', '0x01'])
     expect(orders[1]).toMatchObject({
       side: 'buy',
@@ -63,6 +63,21 @@ describe('getOpenOrders', () => {
       counterToken: { symbol: 'USDC', decimals: 6 },
       filledFraction: 0.25,
     })
+  })
+
+  it('finds open orders beyond the first page', async () => {
+    const unrelated = order({ buyToken: '0x0000000000000000000000000000000000000001' })
+
+    getOrdersMock.mockImplementation(async ({ offset }: { offset: number }, { chainId }: { chainId: number }) => {
+      if (chainId !== 1) return []
+
+      return offset === 0 ? Array.from({ length: 1000 }, () => unrelated) : [order({ uid: '0xold' })]
+    })
+
+    const orders = await getOpenOrders({ owner: OWNER, tokens: [AAPLX_MAINNET] })
+
+    expect(getOrdersMock).toHaveBeenCalledWith({ owner: OWNER, offset: 1000, limit: 1000 }, { chainId: 1 })
+    expect(orders.map(({ uid }) => uid)).toEqual(['0xold'])
   })
 
   it('measures the fill of sell orders by the sold amount', async () => {

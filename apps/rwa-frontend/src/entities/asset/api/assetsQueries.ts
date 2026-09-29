@@ -26,6 +26,8 @@ import { RWA_QUERY_KEY_ROOT, rwaFetcher } from '@/shared/api'
 type RwaQueryOptions<T> = AtomWithQueryOptions<T, Error>
 
 const MARKET_REFRESH_INTERVAL_MS = 60_000
+/** Same as the `/api/v1/token-list` cache max-age */
+const TOKEN_LIST_STALE_TIME_MS = 60 * 60 * 1000
 
 export function assetChartQueryOptions(ticker: string, range: RwaChartRange): RwaQueryOptions<RwaChart> {
   return {
@@ -65,7 +67,7 @@ export function tokenListQueryOptions(): RwaQueryOptions<RwaTokenList> {
   return {
     queryKey: [RWA_QUERY_KEY_ROOT, 'token-list'],
     queryFn: () => rwaFetcher<RwaTokenList>(getTokenListUrl()),
-    staleTime: Infinity,
+    staleTime: TOKEN_LIST_STALE_TIME_MS,
   }
 }
 
