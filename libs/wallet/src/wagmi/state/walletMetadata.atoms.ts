@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { loadable } from 'jotai/utils'
 
-import { getPublicClient } from '@cowprotocol/common-utils'
+import { getPublicClient, logWallet, normalizeError } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
@@ -58,6 +58,9 @@ export const isEoaAtom = atom((get): boolean | null => {
   if (isSafeViaWc === null) return null
   if (get(isSafeWalletAtom) || isSafeViaWc) return false
 
+  // If the RPC check fails, fall back to the Safe detection above.
+  if (get(accountTypeLoadableAtom).state === 'hasError') return true
+
   const accountType = get(accountTypeAtom)
   if (accountType === null) return null
 
@@ -86,10 +89,10 @@ export const accountTypeAsyncAtom = atom(async (get) => {
     }
 
     return AccountType.SMART_CONTRACT
-  } catch (e) {
-    console.debug(`checkIsSmartContractWallet: failed to check address ${account}`, e.message)
-    // If we cannot determine yet, return undefined to avoid false negatives during init
-    return null
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    logWallet.warn(`checkIsSmartContractWallet: failed to check address ${account}`, error.message)
+    throw error
   }
 })
 
