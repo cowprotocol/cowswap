@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { getDefaultStore, type PrimitiveAtom, useSetAtom } from 'jotai'
 
 import { maxUint256 } from 'viem'
 import { useWalletClient } from 'wagmi'
@@ -7,8 +7,11 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
-  useIsSafeViaWc,
+  isEoaAtom,
+  isSafeAppAtom,
+  isSafeViaWcAtom,
   useIsSafeWallet,
+  useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
   useWalletInfo,
@@ -65,7 +68,10 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 }))
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
-  useIsSafeViaWc: jest.fn(),
+  isEoaAtom: jest.requireActual('jotai').atom(true),
+  isSafeAppAtom: jest.requireActual('jotai').atom(false),
+  isSafeViaWcAtom: jest.requireActual('jotai').atom(false),
+  useIsTxBundlingSupported: jest.fn(),
   useIsSafeWallet: jest.fn(),
   useSendBatchTransactions: jest.fn(),
   useWalletDetails: jest.fn(),
@@ -124,7 +130,7 @@ jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   },
 }))
 jest.mock('modules/accountProxy', () => ({
-  EOA_TWAP_ACCOUNT_PROXY_CONFIG: {},
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: {},
   getCowShedHooks: jest.fn(() => ({
     proxyOf: jest.fn(() => '0xproxy'),
     getFactoryAddress: jest.fn(() => '0xfactory'),
@@ -147,7 +153,6 @@ const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.Mocked
 >
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
-const mockedUseIsSafeViaWc = useIsSafeViaWc as jest.MockedFunction<typeof useIsSafeViaWc>
 const mockedUseIsSafeWallet = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
 const mockedUseSendBatchTransactions = useSendBatchTransactions as jest.MockedFunction<typeof useSendBatchTransactions>
 const mockedUseWalletDetails = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
@@ -194,13 +199,21 @@ const mockedUseGetAmountToSignApprove = useGetAmountToSignApprove as jest.Mocked
 const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useWalletClient>
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
 const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
+const writableIsEoaAtom = isEoaAtom as PrimitiveAtom<boolean>
+const writableIsSafeAppAtom = isSafeAppAtom as PrimitiveAtom<boolean | null>
+const writableIsSafeViaWcAtom = isSafeViaWcAtom as PrimitiveAtom<boolean | null>
 
+// eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
   const setOptimisticAllowance = jest.fn()
 
   beforeEach(() => {
     jest.clearAllMocks()
+    getDefaultStore().set(writableIsEoaAtom, true)
+    getDefaultStore().set(writableIsSafeAppAtom, false)
+    getDefaultStore().set(writableIsSafeViaWcAtom, false)
+    jest.mocked(useIsTxBundlingSupported).mockReturnValue(true)
     jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
@@ -210,7 +223,6 @@ describe('useCreateTwapOrder', () => {
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
     mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: false } as ReturnType<typeof useWalletDetails>)
     mockedUseIsSafeWallet.mockReturnValue(false)
-    mockedUseIsSafeViaWc.mockReturnValue(false)
     mockedUseSendBatchTransactions.mockReturnValue(jest.fn())
     mockedUseAdvancedOrdersDerivedState.mockReturnValue({
       inputCurrencyAmount: { currency: { symbol: 'SELL' } },
@@ -277,8 +289,10 @@ describe('useCreateTwapOrder', () => {
     expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: true }))
   })
 
-  it('tracks isEoaTwap false on Safe TWAP placement events', async () => {
+  it('tracks isEoaTwap false on Safe WalletConnect TWAP placement events', async () => {
     mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsEoaAtom, false)
+    getDefaultStore().set(writableIsSafeViaWcAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
 
     const { result } = renderHook(useCreateTwapOrder)
@@ -298,6 +312,8 @@ describe('useCreateTwapOrder', () => {
 
   it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {
     mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsEoaAtom, false)
+    getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
     mockedUseGetAmountToSignApprove.mockReturnValue({
       quotient: { toString: () => '999' },
@@ -314,6 +330,8 @@ describe('useCreateTwapOrder', () => {
 
   it('places a Safe TWAP when useWalletClient has not hydrated yet', async () => {
     mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsEoaAtom, false)
+    getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
     mockedUseWalletClient.mockReturnValue({ data: undefined } as ReturnType<typeof useWalletClient>)
 
@@ -538,6 +556,8 @@ describe('useCreateTwapOrder', () => {
     const onSuccess = jest.fn()
     const revealOrderInOrdersTable = jest.fn().mockResolvedValue(false)
     mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsEoaAtom, false)
+    getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
     mockedUseTradeConfirmActions.mockReturnValue({
       onSign: jest.fn(),

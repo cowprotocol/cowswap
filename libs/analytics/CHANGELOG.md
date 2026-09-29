@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.12.0...analytics-v3.13.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: add isEoaTwap to analytics event for order cancellation (#8212)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.14.0
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.11.2...analytics-v3.12.0) (2026-09-23)
 
 ### Minor Changes

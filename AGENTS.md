@@ -60,7 +60,7 @@ Normative language:
 
 - Install: `pnpm install`
 - i18n: `pnpm i18n`
-- Start: `pnpm start`, `pnpm start:cowswap`, `pnpm start:explorer`, `pnpm start:widget`, `pnpm start:cowfi`
+- Start: `pnpm start`, `pnpm start:cowswap`, `pnpm start:explorer`, `pnpm start:widget`, `pnpm start:cowfi`, `pnpm start:rwa`
 - Lint/test/typecheck: `pnpm lint`, `pnpm test`, `pnpm typecheck`
 - Project target: `pnpx nx run <project>:<target>`
 - Harness checks: `pnpm agents:check`

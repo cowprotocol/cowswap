@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useWalletDetails } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 import { Trash2 } from 'react-feather'
 
@@ -52,7 +52,14 @@ export function MultipleCancellationMenu({ pendingOrders }: MultipleCancellation
       {ordersToCancelCount ? (
         <>
           <styledEl.ActionButton onClick={cancelSelectedOrders}>
-            <Trash2 size={14} /> <Trans>Cancel</Trans> {ordersToCancelCount} <Trans>selected</Trans>
+            <Trash2 size={14} />{' '}
+            <Plural
+              value={ordersToCancelCount}
+              one="Cancel # selected"
+              few="Cancel # selected"
+              many="Cancel # selected"
+              other="Cancel # selected"
+            />
           </styledEl.ActionButton>
           <styledEl.TextButton onClick={clearSelection}>
             <Trans>Clear selection</Trans>
