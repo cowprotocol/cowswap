@@ -5,13 +5,12 @@ import { maxUint256, type Hex } from 'viem'
 import { useConfig, useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowprotocol/common-utils'
 import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
-import { Media } from '@cowprotocol/ui'
 import {
   useIsSafeViaWc,
   useIsSafeWallet,
@@ -36,7 +35,7 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { useRevealOrderInOrdersTable } from 'modules/ordersTable'
+import { placedOrderHighlightAtom, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -108,8 +107,8 @@ export function useCreateTwapOrder() {
   const { allowsOffchainSigning } = useWalletDetails()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
+  const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
-  const isOrdersTableInDrawer = useMediaQuery(Media.upToLarge(false))
   const setOptimisticAllowance = useSetOptimisticAllowance()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
@@ -459,6 +458,10 @@ export function useCreateTwapOrder() {
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
 
+        const ordersTableTab = isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING
+        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderId) : twapOrderId
+        setPlacedOrderHighlight({ orderId: orderIdToReveal, tabId: ordersTableTab })
+
         if (isEoaTwap) {
           // Keep the review card open and replace signing steps with the inline success box.
           updateEoaTwapFlow({
@@ -467,17 +470,12 @@ export function useCreateTwapOrder() {
             eventId,
             lockDismiss: false,
           })
-
-          // On small screens the orders table stays behind this card until the drawer opens.
-          if (!isOrdersTableInDrawer) {
-            await revealOrderInOrdersTable(eventId ?? twapOrderId, OrderTabId.OPEN)
-          }
         } else {
           updateEoaTwapFlow(null)
           tradeConfirmActions.onSuccess(confirmModalHash)
-
-          await revealOrderInOrdersTable(twapOrderId, OrderTabId.SIGNING)
         }
+
+        await revealOrderInOrdersTable(orderIdToReveal, ordersTableTab)
 
         // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
@@ -518,11 +516,11 @@ export function useCreateTwapOrder() {
       priceImpact,
       tradeConfirmActions,
       addTwapOrderToList,
+      setPlacedOrderHighlight,
       updateAdvancedOrdersState,
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
-      isOrdersTableInDrawer,
       revealOrderInOrdersTable,
       pollerAddress,
       pollerPermitInfo,

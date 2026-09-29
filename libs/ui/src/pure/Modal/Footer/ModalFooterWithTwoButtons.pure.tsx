@@ -10,35 +10,45 @@ export interface ModalFooterButtonConfig {
   type?: 'button' | 'submit'
 }
 
-export interface ModalFooterWithTwoButtonsProps {
+export type ModalFooterWithTwoButtonsProps = {
   inline?: boolean
-  primaryButton: ModalFooterButtonConfig
-  secondaryButton: ModalFooterButtonConfig
-}
+} & (
+  | { primaryButton: ModalFooterButtonConfig; secondaryButton?: ModalFooterButtonConfig }
+  | { primaryButton?: ModalFooterButtonConfig; secondaryButton: ModalFooterButtonConfig }
+)
 
 export function ModalFooterWithTwoButtons({
   inline,
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
+  const secondary = secondaryButton ? <FooterButton Button={styledEl.SecondaryButton} config={secondaryButton} /> : null
+  const primary = primaryButton ? <FooterButton Button={styledEl.PrimaryButton} config={primaryButton} /> : null
+
   return (
     <ModalFooter inline={inline}>
-      <styledEl.TwoButtonGrid>
-        <styledEl.SecondaryButton
-          disabled={secondaryButton.disabled}
-          type={secondaryButton.type ?? 'button'}
-          onClick={secondaryButton.onClick}
-        >
-          {secondaryButton.label}
-        </styledEl.SecondaryButton>
-        <styledEl.PrimaryButton
-          disabled={primaryButton.disabled}
-          type={primaryButton.type ?? 'button'}
-          onClick={primaryButton.onClick}
-        >
-          {primaryButton.label}
-        </styledEl.PrimaryButton>
-      </styledEl.TwoButtonGrid>
+      {secondary && primary ? (
+        <styledEl.TwoButtonGrid>
+          {secondary}
+          {primary}
+        </styledEl.TwoButtonGrid>
+      ) : (
+        (secondary ?? primary)
+      )}
     </ModalFooter>
+  )
+}
+
+function FooterButton({
+  Button,
+  config,
+}: {
+  Button: typeof styledEl.PrimaryButton | typeof styledEl.SecondaryButton
+  config: ModalFooterButtonConfig
+}): ReactNode {
+  return (
+    <Button disabled={config.disabled} type={config.type ?? 'button'} onClick={config.onClick}>
+      {config.label}
+    </Button>
   )
 }

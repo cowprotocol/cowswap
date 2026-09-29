@@ -31,11 +31,10 @@ export function EoaTwapSuccessContent({ explorerUrl, onViewOrders }: EoaTwapSucc
         ) : null}
       </styledEl.SuccessBox>
 
-      <Modal.Footer inline>
-        <styledEl.ViewOrdersButton type="button" onClick={onViewOrders}>
-          <Trans>View in Orders</Trans>
-        </styledEl.ViewOrdersButton>
-      </Modal.Footer>
+      <Modal.FooterWithTwoButtons
+        inline
+        secondaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
+      />
     </>
   )
 }

@@ -35,7 +35,12 @@ import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverrid
 
 jest.mock('modules/limitOrders/services/tradeFlow')
 jest.mock('modules/limitOrders/services/safeBundleFlow')
-jest.mock('modules/ordersTable')
+jest.mock('modules/ordersTable', () => ({
+  useNavigateToOrdersTableTab: jest.fn(),
+  useRevealOrderInOrdersTable: jest.fn(),
+  placedOrderHighlightAtom: jest.requireActual('modules/ordersTable/state/placedOrderHighlightAtom')
+    .placedOrderHighlightAtom,
+}))
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('modules/limitOrders/hooks/useTradeFlowContext')

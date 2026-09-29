@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
+import { BackButton, ButtonPrimary, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -49,6 +49,7 @@ export interface OrderSubmittedContentProps {
   showGetNotifiedMessage?: boolean
   onGetNotifiedClick?: () => void
   onDismissGetNotifiedMessage?: () => void
+  onViewOrders?: () => void | Promise<void>
 }
 
 export function OrderSubmittedContent({
@@ -60,6 +61,7 @@ export function OrderSubmittedContent({
   showGetNotifiedMessage,
   onGetNotifiedClick,
   onDismissGetNotifiedMessage,
+  onViewOrders,
 }: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
@@ -86,6 +88,12 @@ export function OrderSubmittedContent({
           <Trans>Continue</Trans>
         </ActionButton>
       )}
+      {onViewOrders ? (
+        <Modal.FooterWithTwoButtons
+          inline
+          secondaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
+        />
+      ) : null}
     </Wrapper>
   )
 }

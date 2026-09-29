@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -16,8 +16,9 @@ import { useTradeFlowContext } from 'modules/limitOrders/hooks/useTradeFlowConte
 import { PriceImpactDeclineError, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
+import { placedOrderHighlightAtom, useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
+import { tradeConfirmStateAtom } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
@@ -49,6 +50,8 @@ export function useHandleOrderPlacement(
   const closeReceiptModal = useCloseReceiptModal()
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
+  const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
+  const store = useStore()
   const setPartiallyFillableOverride = useSetAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
@@ -82,8 +85,11 @@ export function useHandleOrderPlacement(
         closeReceiptModal()
 
         const ordersTableTab = isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN
-        if (typeof orderHash === 'string') {
-          await revealOrderInOrdersTable(orderHash, ordersTableTab)
+        const orderId = typeof orderHash === 'string' ? orderHash : store.get(tradeConfirmStateAtom).transactionHash
+        setPlacedOrderHighlight({ orderId, tabId: ordersTableTab })
+
+        if (orderId) {
+          await revealOrderInOrdersTable(orderId, ordersTableTab)
         } else {
           navigateToOrdersTableTab(ordersTableTab)
         }
@@ -114,6 +120,8 @@ export function useHandleOrderPlacement(
     isAlternativeOrderEdit,
     revealOrderInOrdersTable,
     navigateToOrdersTableTab,
+    setPlacedOrderHighlight,
+    store,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,

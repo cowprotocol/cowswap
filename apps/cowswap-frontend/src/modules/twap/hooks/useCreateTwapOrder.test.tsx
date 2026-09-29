@@ -4,7 +4,7 @@ import { maxUint256 } from 'viem'
 import { useWalletClient } from 'wagmi'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   useIsSafeViaWc,
@@ -62,7 +62,6 @@ jest.mock('wagmi', () => ({
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useFeatureFlags: jest.fn(),
-  useMediaQuery: jest.fn(),
 }))
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
@@ -89,6 +88,8 @@ jest.mock('modules/injectedWidget', () => ({
 jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 jest.mock('modules/ordersTable', () => ({
   useRevealOrderInOrdersTable: jest.fn(() => jest.fn()),
+  placedOrderHighlightAtom: jest.requireActual('modules/ordersTable/state/placedOrderHighlightAtom')
+    .placedOrderHighlightAtom,
 }))
 jest.mock('modules/permit', () => ({ useGeneratePermitHook: jest.fn(), usePermitInfo: jest.fn() }))
 jest.mock('modules/sounds', () => ({ getCowSoundSend: jest.fn() }))
@@ -146,7 +147,6 @@ const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.Mocked
 >
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
-const mockedUseMediaQuery = useMediaQuery as jest.MockedFunction<typeof useMediaQuery>
 const mockedUseIsSafeViaWc = useIsSafeViaWc as jest.MockedFunction<typeof useIsSafeViaWc>
 const mockedUseIsSafeWallet = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
 const mockedUseSendBatchTransactions = useSendBatchTransactions as jest.MockedFunction<typeof useSendBatchTransactions>
@@ -195,7 +195,6 @@ const mockedUseWalletClient = useWalletClient as jest.MockedFunction<typeof useW
 const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction<typeof useEoaTwapFlowUpdater>
 const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
-// eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
   const sendEvent = jest.fn()
   const setOptimisticAllowance = jest.fn()
@@ -208,7 +207,6 @@ describe('useCreateTwapOrder', () => {
     mockedUseSetOptimisticAllowance.mockReturnValue(setOptimisticAllowance)
     mockedUseCowAnalytics.mockReturnValue({ sendEvent } as unknown as ReturnType<typeof useCowAnalytics>)
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
-    mockedUseMediaQuery.mockReturnValue(false)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
     mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: false } as ReturnType<typeof useWalletDetails>)
     mockedUseIsSafeWallet.mockReturnValue(false)
@@ -534,20 +532,6 @@ describe('useCreateTwapOrder', () => {
       eventId: '1'.repeat(70),
       lockDismiss: false,
     })
-  })
-
-  it('defers revealing an EOA TWAP while the orders table is in the closed drawer', async () => {
-    mockedUseMediaQuery.mockReturnValue(true)
-    const revealOrderInOrdersTable = jest.fn().mockResolvedValue(true)
-    mockedUseRevealOrderInOrdersTable.mockReturnValue(revealOrderInOrdersTable)
-
-    const { result } = renderHook(useCreateTwapOrder)
-
-    await act(async () => {
-      await result.current(false)
-    })
-
-    expect(revealOrderInOrdersTable).not.toHaveBeenCalled()
   })
 
   it('shows the submitted screen and reveals the order in the signing tab for a Safe TWAP', async () => {

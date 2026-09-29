@@ -1,5 +1,7 @@
 import { useSetAtom } from 'jotai'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+
 import { renderHook } from '@testing-library/react'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
@@ -8,6 +10,11 @@ import { useRevealOrderInOrdersTable } from './useRevealOrderInOrdersTable'
 
 import { resetOrdersTableFiltersAtom } from '../state/filters/ordersTableFilters.atom'
 import { highlightOrderRow } from '../utils/highlightOrderRow.utils'
+
+jest.mock('@cowprotocol/common-hooks', () => ({
+  ...jest.requireActual('@cowprotocol/common-hooks'),
+  useMediaQuery: jest.fn(),
+}))
 
 jest.mock('jotai', () => ({
   ...jest.requireActual('jotai'),
@@ -22,6 +29,7 @@ jest.mock('../utils/highlightOrderRow.utils', () => ({
   highlightOrderRow: jest.fn(),
 }))
 
+const mockedUseMediaQuery = useMediaQuery as jest.MockedFunction<typeof useMediaQuery>
 const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
 const mockedUseNavigateToOrdersTableTab = useNavigateToOrdersTableTab as jest.MockedFunction<
   typeof useNavigateToOrdersTableTab
@@ -34,6 +42,7 @@ describe('useRevealOrderInOrdersTable', () => {
 
   beforeEach(() => {
     jest.clearAllMocks()
+    mockedUseMediaQuery.mockReturnValue(false)
     mockedUseSetAtom.mockImplementation((atom) => {
       if (atom === resetOrdersTableFiltersAtom) {
         return resetOrdersTableFilters
@@ -66,5 +75,28 @@ describe('useRevealOrderInOrdersTable', () => {
     expect(resetOrdersTableFilters).toHaveBeenCalledTimes(1)
     expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.SIGNING)
     expect(mockedHighlightOrderRow).toHaveBeenCalledTimes(2)
+  })
+
+  it('is a no-op while the orders table is in the closed drawer', async () => {
+    mockedUseMediaQuery.mockReturnValue(true)
+
+    const { result } = renderHook(() => useRevealOrderInOrdersTable())
+
+    await expect(result.current('order-1', OrderTabId.OPEN)).resolves.toBe(false)
+
+    expect(mockedHighlightOrderRow).not.toHaveBeenCalled()
+    expect(resetOrdersTableFilters).not.toHaveBeenCalled()
+    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
+  })
+
+  it('highlights a drawer order when the caller asks to reveal it anyway', async () => {
+    mockedUseMediaQuery.mockReturnValue(true)
+    mockedHighlightOrderRow.mockResolvedValue(true)
+
+    const { result } = renderHook(() => useRevealOrderInOrdersTable())
+
+    await expect(result.current('order-1', OrderTabId.OPEN, { revealWhenInDrawer: true })).resolves.toBe(true)
+
+    expect(mockedHighlightOrderRow).toHaveBeenCalledTimes(1)
   })
 })

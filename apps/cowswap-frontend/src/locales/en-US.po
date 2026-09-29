@@ -2831,6 +2831,7 @@ msgstr "d"
 msgid "Creating..."
 msgstr "Creating..."
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "View in Orders"
 msgstr "View in Orders"
