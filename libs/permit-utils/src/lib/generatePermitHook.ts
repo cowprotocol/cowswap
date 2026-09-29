@@ -13,7 +13,7 @@ import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
 
 type NormalizedError = Error & { code?: number }
 
-const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
+const REQUESTS_CACHE = new WeakMap<Config, Map<string, Promise<PermitHookData | undefined>>>()
 
 // User rejection detection (EIP-1193 error codes and common wallet messages)
 const USER_REJECTION_CODES = [4001, -32000]
@@ -21,8 +21,9 @@ const USER_REJECTION_MESSAGES = ['user denied', 'user rejected', 'rejected trans
 
 export async function generatePermitHook(params: PermitHookParams): Promise<PermitHookData | undefined> {
   const permitKey = getCacheKey(params)
+  const requestsCache = REQUESTS_CACHE.get(params.config) ?? new Map<string, Promise<PermitHookData | undefined>>()
 
-  const cachedRequest = REQUESTS_CACHE[permitKey]
+  const cachedRequest = requestsCache.get(permitKey)
 
   if (cachedRequest) {
     return await cachedRequest
@@ -40,11 +41,11 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
       return undefined
     })
     .finally(() => {
-      // Remove consumed request to avoid stale data
-      delete REQUESTS_CACHE[permitKey]
+      requestsCache.delete(permitKey)
     })
 
-  REQUESTS_CACHE[permitKey] = request
+  requestsCache.set(permitKey, request)
+  REQUESTS_CACHE.set(params.config, requestsCache)
 
   return request
 }

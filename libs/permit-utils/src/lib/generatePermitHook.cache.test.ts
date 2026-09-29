@@ -74,11 +74,51 @@ describe('generatePermitHook request cache', () => {
     mockBuildDaiLikePermitCallData.mockResolvedValue('0xpermit')
   })
 
-  it('reuses the in-flight request when the spender is unchanged', async () => {
+  it('reuses the in-flight request when the config and signing context are unchanged', async () => {
     const [first, second] = await Promise.all([generatePermitHook(createParams()), generatePermitHook(createParams())])
 
     expect(first).toEqual(second)
     expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(1)
+    expect(mockEstimateGas).toHaveBeenCalledTimes(1)
+  })
+
+  it('estimates gas independently for different configs while sharing requests within each config', async () => {
+    const otherConfig = {} as Config
+    mockEstimateGas.mockImplementation(async (requestConfig) => (requestConfig === config ? 60000n : 90000n))
+
+    const [first, second, repeated] = await Promise.all([
+      generatePermitHook(createParams()),
+      generatePermitHook(createParams({ config: otherConfig })),
+      generatePermitHook(createParams({ config: otherConfig })),
+    ])
+
+    expect(first?.gasLimit).toBe('60000')
+    expect(second?.gasLimit).toBe('90000')
+    expect(repeated).toEqual(second)
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+    expect(mockEstimateGas).toHaveBeenCalledTimes(2)
+  })
+
+  it('generates a fresh request after a request completes', async () => {
+    mockEstimateGas.mockResolvedValueOnce(60000n).mockResolvedValueOnce(90000n)
+
+    const first = await generatePermitHook(createParams())
+    const second = await generatePermitHook(createParams())
+
+    expect(first?.gasLimit).toBe('60000')
+    expect(second?.gasLimit).toBe('90000')
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+  })
+
+  it('allows a fresh request after a user rejection', async () => {
+    const rejection = new Error('User rejected request')
+    mockBuildEip2612PermitCallData.mockRejectedValueOnce(rejection)
+
+    await expect(generatePermitHook(createParams())).rejects.toBe(rejection)
+    await expect(generatePermitHook(createParams())).resolves.toEqual(expect.objectContaining({ callData: '0xpermit' }))
+
+    expect(mockBuildEip2612PermitCallData).toHaveBeenCalledTimes(2)
+    expect(mockEstimateGas).toHaveBeenCalledTimes(1)
   })
 
   it('does not reuse the in-flight request when the spender changes', async () => {
