@@ -63,12 +63,14 @@ export function CareersPageContent({
           </SectionTitleWrapper>
 
           {/* Jobs content */}
-          <SectionTitleWrapper maxWidth={900} margin="0 auto">
-            <SectionTitleText fontSize={32}>
-              We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
-              {department !== 'All' && ` in ${department}`}:
-            </SectionTitleText>
-          </SectionTitleWrapper>
+          {jobsCountForDepartment > 0 && (
+            <SectionTitleWrapper maxWidth={900} margin="0 auto">
+              <SectionTitleText fontSize={32}>
+                We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
+                {department !== 'All' && ` in ${department}`}:
+              </SectionTitleText>
+            </SectionTitleWrapper>
+          )}
 
           {jobsCount < 1 && (
             <SectionTitleWrapper maxWidth={900} margin="0 auto">

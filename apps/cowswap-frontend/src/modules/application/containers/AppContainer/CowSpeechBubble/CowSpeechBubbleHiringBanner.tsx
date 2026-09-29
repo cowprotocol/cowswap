@@ -5,6 +5,7 @@ import { ClosableBanner } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { useLingui, Trans } from '@lingui/react/macro'
+import useSWR from 'swr'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { BANNER_IDS } from 'common/constants/banners'
@@ -16,6 +17,7 @@ import { Arrow, Cursor, JobsLink, TypingLine } from './CowSpeechBubble.styled'
 
 const TYPING_MESSAGE = msg`Mooo, we're hiring!`
 const CAREERS_URL = 'https://jobs.ashbyhq.com/cow-dao?utm_source=laMjao1z57'
+const JOBS_URL = 'https://api.ashbyhq.com/posting-api/job-board/cow-dao'
 const BUBBLE_DELAY_MS = 3000
 
 interface CowSpeechBubbleHiringContentProps {
@@ -23,7 +25,10 @@ interface CowSpeechBubbleHiringContentProps {
 }
 
 export function CowSpeechBubbleHiringBanner(): ReactNode {
+  const { data: jobsCount, isLoading } = useSWR(JOBS_URL, getJobsCount, { revalidateOnFocus: false })
   const callback = useCallback((close: () => void) => <CowSpeechBubbleHiringContent onClose={close} />, [])
+
+  if (isLoading || jobsCount === 0) return null
 
   return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
 }
@@ -67,4 +72,16 @@ function CowSpeechBubbleHiringContent({ onClose }: CowSpeechBubbleHiringContentP
       </JobsLink>
     </CowSpeechBubble>
   ) : null
+}
+
+async function getJobsCount(url: string): Promise<number> {
+  const response = await fetch(url)
+
+  if (!response.ok) throw new Error(`Ashby returned ${response.status}`)
+
+  const data = (await response.json()) as { jobs?: { isListed?: boolean }[] }
+
+  if (!Array.isArray(data.jobs)) throw new Error('Invalid Ashby jobs response')
+
+  return data.jobs.filter((job) => job.isListed).length
 }
