@@ -8,7 +8,7 @@ msgstr ""
 "Language: nl\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-29 14:38\n"
+"PO-Revision-Date: 2026-09-29 15:49\n"
 "Last-Translator: \n"
 "Language-Team: Dutch\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -19,6 +19,7 @@ msgstr ""
 "X-Crowdin-File-ID: 12\n"
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
 msgid "Wallet not connected"
 msgstr ""
@@ -1462,6 +1463,7 @@ msgid "Swaps not supported"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/hooks/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
 msgid "Some orders can not be cancelled!"
 msgstr ""
 
@@ -1937,6 +1939,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Allows you to choose a destination address for the swap other than the connected one."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+msgid "Failed to cancel {ordersCount} orders"
 msgstr ""
 
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
@@ -2720,6 +2726,7 @@ msgstr ""
 #~ msgid "Confirm the TWAP transaction in your connected wallet."
 #~ msgstr "Confirm the TWAP transaction in your connected wallet."
 
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeOnChainCancellation.ts
 msgid "Failed to cancel order selling {sellTokenSymbol}"
 msgstr ""
@@ -2873,6 +2880,7 @@ msgstr ""
 msgid "Creating..."
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure.tsx
 msgid "View in Orders"
 msgstr ""
@@ -4134,6 +4142,10 @@ msgstr ""
 msgid "Copied!"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
+msgid "Max reached"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr ""
@@ -4409,6 +4421,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #~ msgid "Insufficient"
 #~ msgstr "Insufficient"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
+msgid "Up to {MAX_SOLANA_BATCH_CANCEL_ORDERS} orders can be cancelled together"
+msgstr ""
 
 #. placeholder {0}: reason ? `: "${reason}"` : ''
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
@@ -6589,6 +6605,10 @@ msgstr ""
 msgid "Approval pending"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelOrder.ts
+#~ msgid "Cancel order {shortOrderId}"
+#~ msgstr "Cancel order {shortOrderId}"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Repay"
 #~ msgstr "Aave Repay"
@@ -8384,6 +8404,10 @@ msgstr ""
 #~ msgid "This wallet isn't eligible for that code."
 #~ msgstr "This wallet isn't eligible for that code."
 
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useSolanaCancelMultipleOrders.ts
+#~ msgid "Cancel {ordersCount} orders"
+#~ msgstr "Cancel {ordersCount} orders"
+
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
 #~ msgid "Get notified when your order fills"
 #~ msgstr "Get notified when your order fills"
@@ -8801,8 +8825,8 @@ msgid "Clear"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/index.tsx
-msgid "Continue"
-msgstr ""
+#~ msgid "Continue"
+#~ msgstr "Continue"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 #~ msgid "CowSwap 404 not found"
