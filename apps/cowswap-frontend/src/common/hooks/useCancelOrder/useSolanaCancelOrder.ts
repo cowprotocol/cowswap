@@ -2,12 +2,11 @@ import { useCallback } from 'react'
 
 import { hexToBytes } from 'viem'
 
-import { isBarnBackendEnv, shortenOrderId } from '@cowprotocol/common-utils'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { isSolanaAddress } from '@cowprotocol/cow-sdk'
 import { findOrderPda, getSolanaSettlementProgramId, SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
 import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
 
@@ -45,12 +44,8 @@ export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
 
       cancelPendingOrder({ id: order.id, chainId })
       setOrderCancellationHash({ chainId, id: order.id, hash })
-      // `checkSolanaTransaction`'s finalize notification reads `summary` directly (unlike the EVM path,
-      // which derives its own text from `onChainCancellation` instead) - Solana needs it set explicitly.
-      const shortOrderId = shortenOrderId(order.id)
       addTransaction({
         hash,
-        summary: t`Cancel order ${shortOrderId}`,
         onChainCancellation: { orderId: order.id, sellTokenSymbol: order.inputToken.symbol || '' },
       })
     },

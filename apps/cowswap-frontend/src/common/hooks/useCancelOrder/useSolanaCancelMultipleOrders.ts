@@ -59,8 +59,7 @@ export function useSolanaCancelMultipleOrders(): (orders: CancellableOrder[]) =>
       ordersToCancel.forEach((order) => {
         setOrderCancellationHash({ chainId, id: order.id, hash })
       })
-      const ordersCount = ordersToCancel.length
-      addTransaction({ hash, summary: t`Cancel ${ordersCount} orders` })
+      addTransaction({ hash, solanaCancelOrderIds: ordersToCancel.map((order) => order.id) })
     },
     [account, provider, connection, chainId, setOrderCancellationHash, addTransaction],
   )

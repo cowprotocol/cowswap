@@ -95,7 +95,6 @@ describe('useSolanaCancelOrder', () => {
     expect(setOrderCancellationHash).toHaveBeenCalledWith({ chainId, id: orderId, hash: txHash })
     expect(transactionAdder).toHaveBeenCalledWith({
       hash: txHash,
-      summary: expect.stringContaining('Cancel order'),
       onChainCancellation: { orderId, sellTokenSymbol: 'USDC' },
     })
   })

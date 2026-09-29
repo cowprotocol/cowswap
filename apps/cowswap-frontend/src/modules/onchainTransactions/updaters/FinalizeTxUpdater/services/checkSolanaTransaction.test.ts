@@ -7,6 +7,7 @@ import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTr
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { updateOrder } from 'legacy/state/orders/actions'
 
+import { emitOnchainTransactionEvent } from 'modules/onchainTransactions/utils/emitOnchainTransactionEvent'
 import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { checkSolanaTransaction, HISTORICAL_LOOKUP_GRACE_PERIOD_MS } from './checkSolanaTransaction'
@@ -23,6 +24,10 @@ jest.mock('cowSdk', () => ({
 
 jest.mock('modules/orders', () => ({
   emitCancelledOrderEvent: jest.fn(),
+}))
+
+jest.mock('modules/onchainTransactions/utils/emitOnchainTransactionEvent', () => ({
+  emitOnchainTransactionEvent: jest.fn(),
 }))
 
 const SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
@@ -277,6 +282,10 @@ describe('checkSolanaTransaction', () => {
         order: UNFILLED_ORDER,
         transactionHash: SIGNATURE,
       })
+
+      // Like EVM's on-chain cancellation, a successful cancellation gets no activity-list entry or
+      // completion snackbar of its own.
+      expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
     })
 
     // The exact race a user hit: cancelling an order right as a solver's fill lands. Without this
@@ -301,7 +310,7 @@ describe('checkSolanaTransaction', () => {
       expect(emitCancelledOrderEvent).not.toHaveBeenCalled()
     })
 
-    it('clears the cancelling flag without marking the order cancelled when the cancellation fails on chain', async () => {
+    it('clears the cancelling flag and emits a failure snackbar when the cancellation fails on chain', async () => {
       const { params, dispatch, cancelOrdersBatch } = createParams({
         status: {
           slot: 42,
@@ -324,6 +333,81 @@ describe('checkSolanaTransaction', () => {
       )
 
       expect(cancelOrdersBatch).not.toHaveBeenCalled()
+      // Unlike the silent success path, a failed cancellation does get a snackbar - same as EVM.
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: 'Failed to cancel order selling COW' }),
+      )
+    })
+  })
+
+  describe('when the transaction cancels several orders in one batch', () => {
+    const ORDER_IDS = ['0xorder1', '0xorder2']
+    const batchCancelTransaction = {
+      ...createTransaction(),
+      solanaCancelOrderIds: ORDER_IDS,
+    } as EnhancedTransactionDetails
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('marks every order in the batch as cancelled once the cancellation lands on chain', async () => {
+      const { params, cancelOrdersBatch } = createParams({
+        status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      })
+      ;(orderBookApi.getOrderMultiEnv as jest.Mock).mockImplementation(async (orderId: string) => ({
+        uid: orderId,
+        kind: 'sell',
+        sellAmount: '100',
+        buyAmount: '200',
+        executedSellAmount: '0',
+        executedBuyAmount: '0',
+        executedSellAmountBeforeFees: '0',
+      }))
+
+      checkSolanaTransaction(batchCancelTransaction, params)
+
+      await waitFor(() => expect(cancelOrdersBatch).toHaveBeenCalledTimes(ORDER_IDS.length))
+
+      ORDER_IDS.forEach((orderId) => {
+        expect(cancelOrdersBatch).toHaveBeenCalledWith({
+          chainId: SupportedChainId.SOLANA,
+          ids: [orderId],
+          isSafeWallet: false,
+        })
+      })
+      expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
+    })
+
+    it('clears every order in the batch and emits a single failure snackbar when the cancellation fails on chain', async () => {
+      const { params, dispatch, cancelOrdersBatch } = createParams({
+        status: {
+          slot: 42,
+          confirmations: 1,
+          err: { InstructionError: [0, 'Custom'] },
+          confirmationStatus: 'confirmed',
+        },
+      })
+
+      checkSolanaTransaction(batchCancelTransaction, params)
+
+      await waitFor(() =>
+        ORDER_IDS.forEach((orderId) => {
+          expect(dispatch).toHaveBeenCalledWith(
+            updateOrder({
+              chainId: SupportedChainId.SOLANA,
+              order: { id: orderId, isCancelling: false, cancellationHash: undefined },
+              isSafeWallet: false,
+            }),
+          )
+        }),
+      )
+
+      expect(cancelOrdersBatch).not.toHaveBeenCalled()
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledTimes(1)
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: `Failed to cancel ${ORDER_IDS.length} orders` }),
+      )
     })
   })
 })

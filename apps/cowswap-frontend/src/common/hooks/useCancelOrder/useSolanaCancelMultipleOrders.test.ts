@@ -99,7 +99,7 @@ describe('useSolanaCancelMultipleOrders', () => {
     expect(setOrderCancellationHash).toHaveBeenCalledTimes(2)
     expect(setOrderCancellationHash).toHaveBeenCalledWith({ chainId, id: orderA.id, hash: txHash })
     expect(setOrderCancellationHash).toHaveBeenCalledWith({ chainId, id: orderB.id, hash: txHash })
-    expect(transactionAdder).toHaveBeenCalledWith({ hash: txHash, summary: 'Cancel 2 orders' })
+    expect(transactionAdder).toHaveBeenCalledWith({ hash: txHash, solanaCancelOrderIds: [orderA.id, orderB.id] })
   })
 
   it('throws without sending when an order is not cancellable', async () => {
