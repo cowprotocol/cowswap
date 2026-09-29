@@ -40,11 +40,31 @@ describe('OrderSubmittedContent()', () => {
     fireEvent.click(screen.getByRole('button', { name: 'View in Orders' }))
 
     expect(onViewOrders).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
   })
 
   it('hides View in Orders when no handler is provided', () => {
     renderSubmittedContent(<OrderSubmittedContent {...defaultProps} />)
 
     expect(screen.queryByRole('button', { name: 'View in Orders' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
+  })
+
+  it('keeps View in Orders when the track-order banner is shown', () => {
+    const onViewOrders = jest.fn()
+
+    renderSubmittedContent(
+      <OrderSubmittedContent
+        {...defaultProps}
+        onViewOrders={onViewOrders}
+        showGetNotifiedMessage
+        onGetNotifiedClick={jest.fn()}
+        onDismissGetNotifiedMessage={jest.fn()}
+      />,
+    )
+
+    expect(screen.getByText('Track this order')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'View in Orders' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull()
   })
 })

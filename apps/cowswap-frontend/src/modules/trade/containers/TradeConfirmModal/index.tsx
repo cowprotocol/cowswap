@@ -53,7 +53,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
   permitSignatureState: string | undefined
   isSafeWallet: boolean
   submittedContent?: ReactNode
-  showGetNotifiedMessage?: boolean
+  showGetNotifiedMessage: boolean
   onGetNotifiedClick: () => void
   onDismissGetNotifiedMessage: () => void
   onViewOrders?: () => void | Promise<void>
@@ -114,25 +114,23 @@ export function TradeConfirmModal({
   )
 }
 
-function InnerComponent(props: InnerComponentProps): ReactNode {
-  const {
-    account,
-    chainId,
-    children,
-    error,
-    isSafeWallet,
-    onDismiss,
-    orderType,
-    pendingTrade,
-    permitSignatureState,
-    transactionHash,
-    submittedContent,
-    showGetNotifiedMessage,
-    onGetNotifiedClick,
-    onDismissGetNotifiedMessage,
-    onViewOrders,
-  } = props
-
+function InnerComponent({
+  account,
+  chainId,
+  children,
+  error,
+  isSafeWallet,
+  onDismiss,
+  orderType,
+  pendingTrade,
+  permitSignatureState,
+  transactionHash,
+  submittedContent,
+  showGetNotifiedMessage,
+  onGetNotifiedClick,
+  onDismissGetNotifiedMessage,
+  onViewOrders,
+}: InnerComponentProps): ReactNode {
   if (error) {
     return <TransactionErrorContent message={error} onDismiss={onDismiss} />
   }

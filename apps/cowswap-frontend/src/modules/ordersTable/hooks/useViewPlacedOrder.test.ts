@@ -5,7 +5,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { act, renderHook } from '@testing-library/react'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
-import { useSetOrdersTableDrawerOpen, useTradeConfirmActions } from 'modules/trade'
+import { useSetOrdersTableDrawerOpen, useTradeConfirmActions, TradeConfirmActions } from 'modules/trade'
 
 import { useNavigateToOrdersTableTab } from './tabs/useNavigateToOrdersTableTab'
 import { useRevealOrderInOrdersTable } from './useRevealOrderInOrdersTable'
@@ -50,7 +50,13 @@ const mockedUseSetOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen as jest.Mo
 const mockedUseTradeConfirmActions = useTradeConfirmActions as jest.MockedFunction<typeof useTradeConfirmActions>
 
 describe('useViewPlacedOrder()', () => {
+  const onSign = jest.fn()
+  const onError = jest.fn()
+  const onSuccess = jest.fn()
+  const onOpen = jest.fn()
   const onDismiss = jest.fn()
+  const requestPermitSignature = jest.fn()
+  const setConfirming = jest.fn()
   const setOrdersTableDrawerOpen = jest.fn()
   const revealOrderInOrdersTable = jest.fn()
   const navigateToOrdersTableTab = jest.fn()
@@ -60,7 +66,15 @@ describe('useViewPlacedOrder()', () => {
     mockedUseSetOrdersTableDrawerOpen.mockReturnValue(setOrdersTableDrawerOpen)
     mockedUseRevealOrderInOrdersTable.mockReturnValue(revealOrderInOrdersTable)
     mockedUseNavigateToOrdersTableTab.mockReturnValue(navigateToOrdersTableTab)
-    mockedUseTradeConfirmActions.mockReturnValue({ onDismiss } as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign,
+      onError,
+      onSuccess,
+      onOpen,
+      onDismiss,
+      requestPermitSignature,
+      setConfirming,
+    } satisfies TradeConfirmActions)
     mockedUseAtomValue.mockImplementation((atom) => {
       if (atom === placedOrderHighlightAtom) {
         return { orderId: '0xorder', tabId: OrderTabId.OPEN }
