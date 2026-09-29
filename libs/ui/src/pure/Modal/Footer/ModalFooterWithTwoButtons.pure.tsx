@@ -8,7 +8,10 @@ export interface ModalFooterButtonConfig {
   label: ReactNode
   onClick(): void
   type?: 'button' | 'submit'
+  variant?: ModalFooterButtonVariant
 }
+
+export type ModalFooterButtonVariant = 'default' | 'error'
 
 export type ModalFooterWithTwoButtonsProps = {
   inline?: boolean
@@ -34,14 +37,17 @@ export function ModalFooterWithTwoButtons({
     </styledEl.SecondaryButton>
   ) : null
 
+  const PrimaryButtonComponent =
+    primaryButton?.variant === 'error' ? styledEl.PrimaryErrorButton : styledEl.PrimaryButton
+
   const primary = primaryButton ? (
-    <styledEl.PrimaryButton
+    <PrimaryButtonComponent
       disabled={primaryButton.disabled}
       type={primaryButton.type ?? 'button'}
       onClick={primaryButton.onClick}
     >
       {primaryButton.label}
-    </styledEl.PrimaryButton>
+    </PrimaryButtonComponent>
   ) : null
 
   return (

@@ -130,6 +130,7 @@ export enum UI {
 
   // Misc
   MODAL_BACKDROP = '--cow-modal-backdrop',
+  MODAL_BACKDROP_OPACITY = '--cow-modal-backdrop-opacity',
   BORDER_RADIUS_NORMAL = '--cow-border-radius-normal',
   BORDER_RADIUS_LARGE = '--cow-border-radius-large',
   PADDING_NORMAL = '--cow-padding-normal',

@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components/macro'
 import { Media } from '../../../consts'
 import { UI } from '../../../enum'
 import { font } from '../../../utils/font'
-import { ButtonOutlined, ButtonPrimary } from '../../Button'
+import { ButtonErrorStyle, ButtonOutlined, ButtonPrimary } from '../../Button'
 
 export const Footer = styled.div<{ $inline?: boolean; $topBorder?: boolean }>`
   width: 100%;
@@ -42,6 +42,12 @@ export const SecondaryButton = styled(ButtonOutlined)`
 `
 
 export const PrimaryButton = styled(ButtonPrimary)`
+  ${font('FONT_MEDIUM', 'semibold')}
+  width: 100%;
+  min-height: 48px;
+`
+
+export const PrimaryErrorButton = styled(ButtonErrorStyle)`
   ${font('FONT_MEDIUM', 'semibold')}
   width: 100%;
   min-height: 48px;

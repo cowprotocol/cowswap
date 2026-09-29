@@ -37,6 +37,7 @@ export function ConfirmationModal({
   const [inputValue, setInputValue] = useState('')
   const shouldShowInput = !skipInput
   const confirmDisabled = shouldShowInput && !isValidConfirm(inputValue, confirmWord)
+  const showDefaultClickInstruction = !shouldShowInput && bottomContent === undefined
 
   useEffect(() => {
     if (!isOpen) {
@@ -49,6 +50,22 @@ export function ConfirmationModal({
     [],
   )
 
+  const instruction = shouldShowInput ? (
+    <Trans>
+      Please type the word <strong>"{confirmWord}"</strong> to {action}.
+    </Trans>
+  ) : showDefaultClickInstruction ? (
+    <Trans>Please click confirm to {action}.</Trans>
+  ) : null
+
+  const descriptionContent =
+    description || instruction ? (
+      <>
+        {description ? <p>{description}</p> : null}
+        {instruction ? <p>{instruction}</p> : null}
+      </>
+    ) : undefined
+
   const content = (
     <>
       {warning ? (
@@ -56,22 +73,8 @@ export function ConfirmationModal({
           <styledEl.Warning>{warning}</styledEl.Warning>
         </styledEl.Instruction>
       ) : null}
-      {shouldShowInput ? (
-        <>
-          <styledEl.Instruction>
-            <Trans>
-              Please type the word <strong>"{confirmWord}"</strong> to {action}.
-            </Trans>
-          </styledEl.Instruction>
-          <styledEl.Input id="confirm-modal-input" onChange={onInputChange} />
-        </>
-      ) : (
-        (bottomContent ?? (
-          <styledEl.Instruction>
-            <Trans>Please click confirm to {action}.</Trans>
-          </styledEl.Instruction>
-        ))
-      )}
+      {shouldShowInput ? <styledEl.Input id="confirm-modal-input" onChange={onInputChange} /> : null}
+      {!shouldShowInput && bottomContent !== undefined ? bottomContent : null}
     </>
   )
 
@@ -79,13 +82,15 @@ export function ConfirmationModal({
     <ConfirmBottomDrawerOrDialog
       isOpen={isOpen}
       title={title}
-      description={description}
+      description={descriptionContent}
       content={content}
       cancelLabel={<Trans>Cancel</Trans>}
       onCancel={onDismiss}
       confirmLabel={callToAction ? callToAction : <Trans>Confirm</Trans>}
       onConfirm={onEnable}
       confirmDisabled={confirmDisabled}
+      confirmVariant="error"
+      footerTopBorder
     />
   )
 }

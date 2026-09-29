@@ -1,10 +1,10 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { INPUT_MIN_HEIGHT_PX, Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
 export const CustomInput = styled.input`
-  --minHeight: 45px;
+  --minHeight: ${INPUT_MIN_HEIGHT_PX}px;
   display: flex;
   align-items: center;
   cursor: pointer;
