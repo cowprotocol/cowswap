@@ -54,7 +54,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       chainId: buyToken.chainId,
       tradeType: TradeType.SWAP,
       enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
-      sell: { asset: SELL_ASSET },
+      sell: { asset: SELL_ASSET, amount: '1000' },
       buy: { asset: buyToken.address },
       customTokens: asset.tokens.map(toTokenInfo),
       standaloneMode: false,
