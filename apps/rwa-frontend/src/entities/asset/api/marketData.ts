@@ -97,17 +97,24 @@ function sumNullable(values: (number | null)[]): number | null {
 
 function toMarketData(ids: string[], marketsById: Map<string, CoingeckoMarket>): RwaMarketData | null {
   const markets = ids.flatMap((id) => marketsById.get(id) ?? [])
-  // The first token with a coingeckoId in RWAs.json is the reference one for price and chart
-  const primary = markets[0]
 
-  if (!primary) return null
+  if (!markets.length) return null
+
+  // The first token with a coingeckoId in RWAs.json is the reference one for price and chart, even when it has no data
+  const [primaryId] = ids
+  const primary = primaryId ? marketsById.get(primaryId) : undefined
+
+  return { ...toPriceData(primary), marketCap: sumNullable(markets.map((market) => market.market_cap)) }
+}
+
+function toPriceData(market: CoingeckoMarket | undefined): Omit<RwaMarketData, 'marketCap'> {
+  if (!market) return { price: null, change24h: null, dayLow: null, dayHigh: null, updatedAt: null }
 
   return {
-    price: primary.current_price,
-    change24h: primary.price_change_percentage_24h,
-    dayLow: primary.low_24h,
-    dayHigh: primary.high_24h,
-    marketCap: sumNullable(markets.map((market) => market.market_cap)),
-    updatedAt: primary.last_updated,
+    price: market.current_price,
+    change24h: market.price_change_percentage_24h,
+    dayLow: market.low_24h,
+    dayHigh: market.high_24h,
+    updatedAt: market.last_updated,
   }
 }
