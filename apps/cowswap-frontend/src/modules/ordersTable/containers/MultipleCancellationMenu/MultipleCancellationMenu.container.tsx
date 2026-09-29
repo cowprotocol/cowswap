@@ -5,7 +5,7 @@ import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
 import { Trash2 } from 'react-feather'
 
@@ -64,7 +64,14 @@ export function MultipleCancellationMenu({ pendingOrders }: MultipleCancellation
       {ordersToCancelCount ? (
         <>
           <styledEl.ActionButton onClick={cancelSelectedOrders}>
-            <Trash2 size={14} /> <Trans>Cancel</Trans> {ordersToCancelCount} <Trans>selected</Trans>
+            <Trash2 size={14} />{' '}
+            <Plural
+              value={ordersToCancelCount}
+              one="Cancel # selected"
+              few="Cancel # selected"
+              many="Cancel # selected"
+              other="Cancel # selected"
+            />
           </styledEl.ActionButton>
           {isSolana && ordersToCancelCount >= MAX_SOLANA_BATCH_CANCEL_ORDERS && (
             <styledEl.TextButton
