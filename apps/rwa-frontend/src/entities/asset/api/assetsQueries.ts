@@ -3,9 +3,23 @@ import { keepPreviousData } from '@tanstack/query-core'
 import { atomFamily } from 'jotai-family'
 import { type AtomWithQueryOptions, atomWithQuery } from 'jotai-tanstack-query'
 
-import { type AssetsPageQuery, getAssetsSearchUrl, getAssetsUrl, getAssetUrl, getChartUrl } from './assetsApi'
+import {
+  type AssetsPageQuery,
+  getAssetsSearchUrl,
+  getAssetsUrl,
+  getAssetUrl,
+  getChartUrl,
+  getTokenListUrl,
+} from './assetsApi'
 
-import type { RwaAssetResponse, RwaAssetsPage, RwaAssetsSearchResult, RwaChart, RwaChartRange } from '../model/types'
+import type {
+  RwaAssetResponse,
+  RwaAssetsPage,
+  RwaAssetsSearchResult,
+  RwaChart,
+  RwaChartRange,
+  RwaTokenList,
+} from '../model/types'
 
 import { RWA_QUERY_KEY_ROOT, rwaFetcher } from '@/shared/api'
 
@@ -47,4 +61,14 @@ export function assetsSearchQueryOptions(query: string): RwaQueryOptions<RwaAsse
   }
 }
 
+export function tokenListQueryOptions(): RwaQueryOptions<RwaTokenList> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'token-list'],
+    queryFn: () => rwaFetcher<RwaTokenList>(getTokenListUrl()),
+    staleTime: Infinity,
+  }
+}
+
 export const assetQueryAtomFamily = atomFamily((ticker: string) => atomWithQuery(() => assetQueryOptions(ticker)))
+
+export const tokenListQueryAtom = atomWithQuery(() => tokenListQueryOptions())

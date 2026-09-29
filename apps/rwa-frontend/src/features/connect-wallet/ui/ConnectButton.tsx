@@ -8,6 +8,8 @@ import { useAppKit } from '@reown/appkit/react'
 
 import styles from './ConnectButton.module.css'
 
+import { shortenAddress } from '@/shared/lib/format'
+
 export function ConnectButton(): ReactNode {
   const { open } = useAppKit()
   const { address, isConnected } = useConnection()
@@ -17,8 +19,4 @@ export function ConnectButton(): ReactNode {
       {isConnected && address ? shortenAddress(address) : 'Connect wallet'}
     </button>
   )
-}
-
-function shortenAddress(address: string): string {
-  return `${address.slice(0, 6)}…${address.slice(-4)}`
 }
