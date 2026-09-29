@@ -22,8 +22,25 @@ export function ModalFooterWithTwoButtons({
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
-  const secondary = secondaryButton ? <FooterButton Button={styledEl.SecondaryButton} config={secondaryButton} /> : null
-  const primary = primaryButton ? <FooterButton Button={styledEl.PrimaryButton} config={primaryButton} /> : null
+  const secondary = secondaryButton ? (
+    <styledEl.SecondaryButton
+      disabled={secondaryButton.disabled}
+      type={secondaryButton.type ?? 'button'}
+      onClick={secondaryButton.onClick}
+    >
+      {secondaryButton.label}
+    </styledEl.SecondaryButton>
+  ) : null
+
+  const primary = primaryButton ? (
+    <styledEl.PrimaryButton
+      disabled={primaryButton.disabled}
+      type={primaryButton.type ?? 'button'}
+      onClick={primaryButton.onClick}
+    >
+      {primaryButton.label}
+    </styledEl.PrimaryButton>
+  ) : null
 
   return (
     <ModalFooter inline={inline}>
@@ -36,19 +53,5 @@ export function ModalFooterWithTwoButtons({
         (secondary ?? primary)
       )}
     </ModalFooter>
-  )
-}
-
-function FooterButton({
-  Button,
-  config,
-}: {
-  Button: typeof styledEl.PrimaryButton | typeof styledEl.SecondaryButton
-  config: ModalFooterButtonConfig
-}): ReactNode {
-  return (
-    <Button disabled={config.disabled} type={config.type ?? 'button'} onClick={config.onClick}>
-      {config.label}
-    </Button>
   )
 }
