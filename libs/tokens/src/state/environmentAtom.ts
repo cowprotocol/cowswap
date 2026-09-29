@@ -5,7 +5,6 @@ import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 
 interface TokensModuleEnvironment {
   chainId: SupportedChainId
-  useCuratedListOnly?: boolean
   enableLpTokensByDefault?: boolean
   hideFavoriteTokens?: boolean
   isYieldEnabled?: boolean
