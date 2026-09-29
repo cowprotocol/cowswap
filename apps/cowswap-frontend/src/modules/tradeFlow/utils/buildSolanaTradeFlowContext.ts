@@ -23,6 +23,8 @@ export function buildSolanaTradeFlowContext([
   currentDelegation,
   delegationAmount,
   isNativeSell,
+  orderClass,
+  partiallyFillable,
   appData,
 ]: SolanaContextKey): SolanaTradeFlowContext {
   return {
@@ -43,10 +45,12 @@ export function buildSolanaTradeFlowContext([
       orderKind,
       validTo,
       receiver: resolveSolanaReceiver({ recipient, recipientAddress, account }),
+      orderClass,
+      partiallyFillable,
     },
     callbacks: { closeModals, dispatch, addTransaction },
     tradeConfirmActions,
-    swapFlowAnalyticsContext: {
+    tradeFlowAnalyticsContext: {
       account,
       recipient,
       recipientAddress,

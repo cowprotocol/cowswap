@@ -8,6 +8,7 @@ import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { PublicKey } from '@solana/web3.js'
+import { orderBookApi } from 'cowSdk'
 
 import { getSolanaQuote } from './getSolanaQuote.service'
 
@@ -34,6 +35,7 @@ const quoteParams: QuoteBridgeRequest = {
   validFor: 1800,
   // `useQuoteParams` always fills this in on Solana — user-set or the settings default.
   swapSlippageBps: 50,
+  partiallyFillable: false,
 }
 
 const advancedSettings: SwapAdvancedSettings = {
@@ -66,11 +68,30 @@ describe('getSolanaQuote', () => {
         buyTokenDecimals: quoteParams.buyTokenDecimals,
         amount: quoteParams.amount,
         kind: quoteParams.kind,
+        partiallyFillable: quoteParams.partiallyFillable,
         validForSeconds: quoteParams.validFor,
         slippageBps: 50,
         priceQuality: PriceQuality.FAST,
       },
-      { advancedSettings },
+      expect.anything(),
+    )
+  })
+
+  it('forwards partiallyFillable: true from quoteParams to the SDK call', async () => {
+    await getSolanaQuote({ ...quoteParams, partiallyFillable: true }, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ partiallyFillable: true }),
+      expect.anything(),
+    )
+  })
+
+  it('forwards partiallyFillable: false unchanged', async () => {
+    await getSolanaQuote({ ...quoteParams, partiallyFillable: false }, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({ partiallyFillable: false }),
+      expect.anything(),
     )
   })
 
@@ -81,6 +102,14 @@ describe('getSolanaQuote', () => {
       expect.objectContaining({ slippageBps: 300 }),
       expect.anything(),
     )
+  })
+
+  // Without the app's own client the SDK builds a default one pointed at prod, where Solana is not
+  // deployed — every quote comes back 404 on a barn deployment.
+  it('quotes through the app-configured order book client', async () => {
+    await getSolanaQuote(quoteParams, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({ orderBookApi }))
   })
 
   it('reads priceQuality off advancedSettings.quoteRequest', async () => {
@@ -104,7 +133,10 @@ describe('getSolanaQuote', () => {
   it('forwards advancedSettings to the SDK as-is, so it can build appData/signer-aware requests', async () => {
     await getSolanaQuote(quoteParams, advancedSettings)
 
-    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(expect.anything(), { advancedSettings })
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ advancedSettings }),
+    )
   })
 
   it('exposes solanaQuote alongside quoteResults so the flow can build the CreateOrder instruction', async () => {

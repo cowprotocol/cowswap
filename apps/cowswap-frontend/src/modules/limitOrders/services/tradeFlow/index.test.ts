@@ -108,15 +108,15 @@ describe('limit orders tradeFlow - permit amount', () => {
   })
 
   function runTradeFlow(params: TradeFlowContext): Promise<unknown> {
-    return tradeFlow(
-      params,
-      { priceImpact: undefined } as never,
-      {} as never,
-      analytics as never,
-      jest.fn().mockResolvedValue(true),
-      jest.fn().mockResolvedValue(undefined),
-      jest.fn(),
-    )
+    return tradeFlow(params, {
+      priceImpact: { priceImpact: undefined } as never,
+      settingsState: {} as never,
+      analytics: analytics as never,
+      confirmPriceImpactWithoutFee: jest.fn().mockResolvedValue(true),
+      beforePermit: jest.fn().mockResolvedValue(undefined),
+      beforeTrade: jest.fn(),
+      config: {} as never,
+    })
   }
 
   it('signs the permit with the bounded amount from permitAmountToSign', async () => {

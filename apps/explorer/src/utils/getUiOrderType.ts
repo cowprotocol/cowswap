@@ -1,3 +1,4 @@
+import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
 import { cowAppDataLatestScheme, OrderClass } from '@cowprotocol/cow-sdk'
 
 import { Order } from 'api/operator'
@@ -26,10 +27,17 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIQUIDITY,
 }
 
-export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrderType {
-  const appData = decodeFullAppData(fullAppData)
+export function getUiOrderType({ fullAppData, class: orderClass, solana, appData }: Order): UiOrderType {
+  // TODO: wire up real appData
+  if (solana && (appData === SOLANA_LIMIT_ORDER_STAGING_APP_DATA || appData === SOLANA_LIMIT_ORDER_PROD_APP_DATA))
+    return UiOrderType.LIMIT
 
-  const appDataOrderClass = appData?.metadata?.orderClass as cowAppDataLatestScheme.OrderClass | undefined | string
+  const decodedAppData = decodeFullAppData(fullAppData)
+
+  const appDataOrderClass = decodedAppData?.metadata?.orderClass as
+    | cowAppDataLatestScheme.OrderClass
+    | undefined
+    | string
   const orderClassAsString =
     typeof appDataOrderClass === 'string'
       ? appDataOrderClass.toUpperCase()

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Icon, UI } from '@cowprotocol/ui'
 
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
@@ -34,15 +34,12 @@ export function FromItem({ chainId, isSigning, isBridgingOrder, onCopy, owner }:
         onCopy={() => onCopy('ownerAddress')}
         contentsToDisplay={<AddressLink address={owner} chainId={chainId} showIcon showNetworkName={isBridgingOrder} />}
       />
-      {/* TODO: enable once the explorer user page supports Solana */}
-      {!isSolanaChain(chainId) && (
-        <Wrapper>
-          <LinkButton to={`/address/${owner}`}>
-            <FontAwesomeIcon icon={faHistory} />
-            Order history
-          </LinkButton>
-        </Wrapper>
-      )}
+      <Wrapper>
+        <LinkButton to={`/address/${owner}`}>
+          <FontAwesomeIcon icon={faHistory} />
+          Order history
+        </LinkButton>
+      </Wrapper>
     </DetailRow>
   )
 }
