@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useCurrentBridgingAccountProxy } from 'modules/accountProxy'
 import { useGetSwapReceiveAmountInfo } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -35,12 +35,12 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     return normalizeQuoteMeta(quoteResponse?.id, quoteResponse?.verified, quoteResponse?.expiration)
   }, [quote, quoteError])
 
-  const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress
+  const proxyAddress = useCurrentBridgingAccountProxy()
   const bridgeReceiverOverride = bridgeQuote?.bridgeReceiverOverride || null
-  const recipient = bridgeReceiverOverride || cowShedAddress || BRIDGE_QUOTE_ACCOUNT
+  const recipient = bridgeReceiverOverride || proxyAddress || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !quoteAmounts || !recipient) return null
+    if (!receiveAmountInfo || !quoteAmounts || !proxyAddress) return null
 
     const { sellAmount } = receiveAmountInfo.afterSlippage
     const sellToken = sellAmount.currency
@@ -57,6 +57,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       ...quoteMeta,
       isSlippageModified,
       recipient,
+      proxyAddress,
       bridgeReceiverOverride,
       expectedReceive: quoteAmounts.swapExpectedReceive,
       minReceiveAmount: quoteAmounts.swapMinReceiveAmount,
@@ -70,6 +71,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     quoteMeta,
     isSlippageModified,
     recipient,
+    proxyAddress,
     swapMinReceiveAmountUsd,
     swapExpectedReceiveUsd,
     bridgeReceiverOverride,

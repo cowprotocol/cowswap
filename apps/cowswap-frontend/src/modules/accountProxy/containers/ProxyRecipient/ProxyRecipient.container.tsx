@@ -11,8 +11,6 @@ import styled from 'styled-components/macro'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
-import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxy'
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -26,6 +24,7 @@ const Wrapper = styled.div`
 
 interface ProxyRecipientProps {
   recipient: string
+  proxyAddress: string
   bridgeReceiverOverride: string | null
   chainId: number
   size?: number
@@ -33,19 +32,17 @@ interface ProxyRecipientProps {
 
 export function ProxyRecipient({
   recipient,
+  proxyAddress,
   bridgeReceiverOverride,
   chainId,
   size = 14,
 }: ProxyRecipientProps): ReactNode {
-  const proxyAddress = useCurrentAccountProxyAddress()
   const { i18n } = useLingui()
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
   const targetAddress = bridgeReceiverOverride || proxyAddress
 
-  if (!targetAddress) return
-
-  if (!bridgeReceiverOverride && proxyAddress && recipient && !areAddressesEqual(recipient, proxyAddress)) {
+  if (!bridgeReceiverOverride && !areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       t`Provided proxy address does not match ${accountProxyLabelString} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
