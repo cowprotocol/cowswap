@@ -2,7 +2,12 @@ import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
-import { getEnsLookupAddress, buildSolverCompetition, getProgressBarStepName, shouldUpdateStepImmediately } from './useOrderProgressBarProps'
+import {
+  getEnsLookupAddress,
+  buildSolverCompetition,
+  getProgressBarStepName,
+  shouldUpdateStepImmediately,
+} from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
@@ -139,6 +144,16 @@ describe('buildSolverCompetition', () => {
 
     expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
     // Winner stays at index 0 and is the highest-ranked (last) `baseline` occurrence, not the first.
+    expect((result[0] as unknown as { marker: string }).marker).toBe('last')
+  })
+
+  it('keeps the highest-ranked occurrence when the same address repeats', () => {
+    const result = buildSolverCompetition(
+      [entry(ADDR_LIVE, 'first'), entry(ADDR_OTHER, 'barter'), entry(ADDR_LIVE, 'last')],
+      byAddress,
+    )
+
+    expect(result.map((s) => s.solverId)).toEqual(['baseline', 'barter'])
     expect((result[0] as unknown as { marker: string }).marker).toBe('last')
   })
 
