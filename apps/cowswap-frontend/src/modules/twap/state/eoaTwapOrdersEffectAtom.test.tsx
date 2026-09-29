@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { isSafeViaWcAtom, isSafeWalletAtom, walletInfoAtom } from '@cowprotocol/wallet'
+import { isEoaAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, render, waitFor } from '@testing-library/react'
 import { eoaTwapOrdersAtom, twapOrdersAtom } from 'entities/twap'
@@ -22,8 +22,7 @@ import { TwapOrderItem, TwapOrderStatus } from '../types'
 
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
-  isSafeWalletAtom: jest.requireActual('jotai').atom(false),
-  isSafeViaWcAtom: jest.requireActual('jotai').atom(false),
+  isEoaAtom: jest.requireActual('jotai').atom(true),
 }))
 jest.mock('../services/programmaticOrdersApi', () => ({
   programmaticOrdersApi: { fetchEoaTwapOrders: jest.fn(), fetchChangedEoaTwapOrders: jest.fn() },
@@ -43,8 +42,7 @@ const fetchEoaTwapOrdersMock = programmaticOrdersApi.fetchEoaTwapOrders as jest.
 const fetchChangedEoaTwapOrdersMock = programmaticOrdersApi.fetchChangedEoaTwapOrders as jest.MockedFunction<
   typeof programmaticOrdersApi.fetchChangedEoaTwapOrders
 >
-const writableIsSafeWalletAtom = isSafeWalletAtom as PrimitiveAtom<boolean>
-const writableIsSafeViaWcAtom = isSafeViaWcAtom as PrimitiveAtom<boolean | null>
+const writableIsEoaAtom = isEoaAtom as PrimitiveAtom<boolean | null>
 
 function makeOrder(id: string, resolvedOwner: string): TwapOrderItem {
   return {
@@ -98,10 +96,10 @@ describe('eoaTwapOrdersEffectAtom', () => {
     fetchChangedEoaTwapOrdersMock.mockResolvedValue({ orders: {}, updatedAtBlock: '0' })
   })
 
-  it('waits for the feature flag and Safe-via-WalletConnect detection', async () => {
+  it('waits for the feature flag and EOA eligibility', async () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
-    store.set(writableIsSafeViaWcAtom, null)
+    store.set(writableIsEoaAtom, null)
     store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
     render(<Effect />, { wrapper: testWrapper(store) })
 
@@ -109,7 +107,7 @@ describe('eoaTwapOrdersEffectAtom', () => {
 
     act(() => {
       store.set(featureFlagsAtom, { isTwapEoaEnabled: false })
-      store.set(writableIsSafeViaWcAtom, false)
+      store.set(writableIsEoaAtom, true)
     })
 
     expect(fetchEoaTwapOrdersMock).not.toHaveBeenCalled()
@@ -130,12 +128,11 @@ describe('eoaTwapOrdersEffectAtom', () => {
     await waitFor(() => expect(store.get(eoaTwapOrdersAtom)[order.id]).toEqual(order))
   })
 
-  it.each(['Safe wallet', 'Safe via WalletConnect'] as const)('does not load TWAP orders for %s', (safeType) => {
+  it('does not load TWAP orders when EOA eligibility is false', () => {
     const store = createStore()
     store.set(walletInfoAtom, { account: EOA_A, chainId: CHAIN_ID })
     store.set(featureFlagsAtom, { isTwapEoaEnabled: true })
-    store.set(writableIsSafeWalletAtom, safeType === 'Safe wallet')
-    store.set(writableIsSafeViaWcAtom, safeType === 'Safe via WalletConnect')
+    store.set(writableIsEoaAtom, false)
     render(<Effect />, { wrapper: testWrapper(store) })
 
     expect(fetchEoaTwapOrdersMock).not.toHaveBeenCalled()
