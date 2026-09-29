@@ -15,6 +15,7 @@ const baseParams = {
   tradeFormValidationContext: null,
   isTwapEoaEnabled: false,
   isSafeApp: true,
+  isSafeViaWc: false,
   isEoa: false,
   isReceiveZeroFromNetworkCosts: false,
 } as const
@@ -119,18 +120,26 @@ describe('getTwapFormState()', () => {
       expect(result).toEqual(null)
     })
 
-    it('Blocks Safe via WalletConnect even when EOA flag is on', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isSafeApp: false,
-        isTxBundlingSupported: false,
-        verification: null,
-        isTwapEoaEnabled: true,
-        isEoa: false,
-      })
+    it.each([
+      [true, null],
+      [false, TwapFormState.TX_BUNDLING_NOT_SUPPORTED],
+      [null, TwapFormState.LOADING_SAFE_INFO],
+    ] as const)(
+      'Checks Safe via WalletConnect batching support (%s) even when EOA flag is on',
+      (supported, expected) => {
+        const result = getTwapFormState({
+          ...baseParams,
+          isSafeApp: false,
+          isSafeViaWc: true,
+          isTxBundlingSupported: supported,
+          verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+          isTwapEoaEnabled: true,
+          isEoa: false,
+        })
 
-      expect(result).toEqual(TwapFormState.WALLET_NOT_SUPPORTED)
-    })
+        expect(result).toEqual(expected)
+      },
+    )
 
     it('Keeps Safe guards while wallet support is still loading', () => {
       const result = getTwapFormState({

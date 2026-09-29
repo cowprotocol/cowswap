@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isEoaAtom, isSafeAppAtom, useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
+import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom, useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useGetReceiveAmountInfo } from 'modules/trade'
@@ -32,6 +32,7 @@ export function useTwapFormState(): TwapFormState | null {
 
   const verification = useFallbackHandlerVerification()
   const isSafeApp = useAtomValue(isSafeAppAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
   const isEoa = useAtomValue(isEoaAtom)
   const isTxBundlingSupported = useIsTxBundlingSupported()
 
@@ -45,6 +46,7 @@ export function useTwapFormState(): TwapFormState | null {
     numberOfPartsValue,
     isTwapEoaEnabled: !!isTwapEoaEnabled,
     isSafeApp,
+    isSafeViaWc,
     isEoa,
     isReceiveZeroFromNetworkCosts: isReceiveZeroFromNetworkCosts(receiveAmountInfo),
   })

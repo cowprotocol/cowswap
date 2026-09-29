@@ -14,7 +14,9 @@ import { UiOrderType } from '@cowprotocol/types'
 import {
   isEoaAtom,
   isSafeAppAtom,
+  isSafeViaWcAtom,
   useIsSafeWallet,
+  useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
   useWalletInfo,
@@ -113,6 +115,8 @@ export function useCreateTwapOrder() {
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
   const isSafeApp = useAtomValue(isSafeAppAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
+  const isTxBundlingSupported = useIsTxBundlingSupported()
   const isEoa = useAtomValue(isEoaAtom)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const config = useConfig()
@@ -184,7 +188,7 @@ export function useCreateTwapOrder() {
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line max-lines-per-function, complexity
     async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
-      const isSafeTwap = isSafeApp === true && isSafeWallet
+      const isSafeTwap = (isSafeApp === true || isSafeViaWc === true) && isSafeWallet && isTxBundlingSupported === true
       const isEoaTwap = isSafeApp === false && !!isTwapEoaEnabled && isEoa === true
 
       if (!isEvmChain(chainId) || (!isSafeTwap && !isEoaTwap)) {
@@ -511,6 +515,8 @@ export function useCreateTwapOrder() {
       isSafeWallet,
       isEoa,
       isSafeApp,
+      isSafeViaWc,
+      isTxBundlingSupported,
       allowsOffchainSigning,
       config,
       chainId,

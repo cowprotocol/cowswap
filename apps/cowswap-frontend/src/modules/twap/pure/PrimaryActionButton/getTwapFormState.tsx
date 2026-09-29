@@ -21,6 +21,7 @@ export interface TwapFormStateParams {
   tradeFormValidationContext: TradeFormValidationContext | null
   isTwapEoaEnabled: boolean
   isSafeApp: boolean | null
+  isSafeViaWc: boolean | null
   isEoa: boolean | null
   isReceiveZeroFromNetworkCosts: boolean
 }
@@ -47,13 +48,14 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     numberOfPartsValue,
     isTwapEoaEnabled,
     isSafeApp,
+    isSafeViaWc,
     isEoa,
     isReceiveZeroFromNetworkCosts,
   } = props
 
-  if (isSafeApp === null) return TwapFormState.LOADING_SAFE_INFO
+  if (isSafeApp === null || isSafeViaWc === null) return TwapFormState.LOADING_SAFE_INFO
 
-  if (isSafeApp) {
+  if (isSafeApp || isSafeViaWc) {
     if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
     if (verification === null || isTxBundlingSupported === null) {

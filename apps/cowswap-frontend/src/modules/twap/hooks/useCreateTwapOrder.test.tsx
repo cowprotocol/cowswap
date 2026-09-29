@@ -9,7 +9,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   isEoaAtom,
   isSafeAppAtom,
+  isSafeViaWcAtom,
   useIsSafeWallet,
+  useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
   useWalletInfo,
@@ -68,6 +70,8 @@ jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   isEoaAtom: jest.requireActual('jotai').atom(true),
   isSafeAppAtom: jest.requireActual('jotai').atom(false),
+  isSafeViaWcAtom: jest.requireActual('jotai').atom(false),
+  useIsTxBundlingSupported: jest.fn(),
   useIsSafeWallet: jest.fn(),
   useSendBatchTransactions: jest.fn(),
   useWalletDetails: jest.fn(),
@@ -193,6 +197,7 @@ const mockedUseEoaTwapFlowUpdater = useEoaTwapFlowUpdater as jest.MockedFunction
 const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 const writableIsEoaAtom = isEoaAtom as PrimitiveAtom<boolean>
 const writableIsSafeAppAtom = isSafeAppAtom as PrimitiveAtom<boolean | null>
+const writableIsSafeViaWcAtom = isSafeViaWcAtom as PrimitiveAtom<boolean | null>
 
 // eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
@@ -203,6 +208,8 @@ describe('useCreateTwapOrder', () => {
     jest.clearAllMocks()
     getDefaultStore().set(writableIsEoaAtom, true)
     getDefaultStore().set(writableIsSafeAppAtom, false)
+    getDefaultStore().set(writableIsSafeViaWcAtom, false)
+    jest.mocked(useIsTxBundlingSupported).mockReturnValue(true)
     jest.mocked(waitForTwapEventId).mockResolvedValue('1'.repeat(70))
 
     mockedUseSetAtom.mockReturnValue(jest.fn())
@@ -278,10 +285,10 @@ describe('useCreateTwapOrder', () => {
     expect(mockedEmitPostedOrderEvent).toHaveBeenCalledWith(expect.objectContaining({ isEoaTwap: true }))
   })
 
-  it('tracks isEoaTwap false on Safe TWAP placement events', async () => {
+  it('tracks isEoaTwap false on Safe WalletConnect TWAP placement events', async () => {
     mockedUseIsSafeWallet.mockReturnValue(true)
     getDefaultStore().set(writableIsEoaAtom, false)
-    getDefaultStore().set(writableIsSafeAppAtom, true)
+    getDefaultStore().set(writableIsSafeViaWcAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
 
     const { result } = renderHook(useCreateTwapOrder)
