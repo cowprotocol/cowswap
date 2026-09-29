@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -16,8 +16,9 @@ import { useTradeFlowContext } from 'modules/limitOrders/hooks/useTradeFlowConte
 import { PriceImpactDeclineError, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { placedOrderHighlightAtom, useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
+import { tradeConfirmStateAtom } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
@@ -47,8 +48,12 @@ export function useHandleOrderPlacement(
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
+  const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
+  const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
+  const store = useStore()
   const setPartiallyFillableOverride = useSetAtom(partiallyFillableOverrideAtom)
+  // tx bundling stuff
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const canUsePermit = Boolean(tradeContext?.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo))
   const isSafeApprovalBundle = isSafeBundle && Boolean(tradeContext?.postOrderParams.isSafeWallet) && !canUsePermit
@@ -61,14 +66,14 @@ export function useHandleOrderPlacement(
 
   const callback = useCallback(() => {
     return tradeFn()
-      .then((result) => {
-        if (!result) {
+      .then(async (orderHash) => {
+        if (!orderHash) {
           return
         }
 
         // solanaFlow already called tradeConfirmActions.onSuccess with the real order id itself.
-        if (typeof result === 'string') {
-          tradeConfirmActions.onSuccess(result)
+        if (typeof orderHash === 'string') {
+          tradeConfirmActions.onSuccess(orderHash)
         }
 
         updateLimitOrdersState({ recipient: null })
@@ -79,13 +84,15 @@ export function useHandleOrderPlacement(
         // Close receipt modal
         closeReceiptModal()
 
-        // TODO: Clear filters if the new order is not visible before navigating.
+        const ordersTableTab = isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN
+        const orderId = typeof orderHash === 'string' ? orderHash : store.get(tradeConfirmStateAtom).transactionHash
+        setPlacedOrderHighlight({ orderId, tabId: ordersTableTab })
 
-        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
-        // still be no signing orders.
-        setTimeout(() => {
-          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
-        })
+        if (orderId) {
+          revealOrderInOrdersTable(orderId, ordersTableTab)
+        } else {
+          navigateToOrdersTableTab(ordersTableTab)
+        }
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -111,7 +118,10 @@ export function useHandleOrderPlacement(
     updateLimitOrdersState,
     setPartiallyFillableOverride,
     isAlternativeOrderEdit,
+    revealOrderInOrdersTable,
     navigateToOrdersTableTab,
+    setPlacedOrderHighlight,
+    store,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
