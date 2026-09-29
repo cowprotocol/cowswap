@@ -96,14 +96,14 @@ export function TradeConfirmModal({
         permitSignatureState={signingStep ? undefined : permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
-        showGetNotifiedMessage={
+        showGetNotifiedMessage={Boolean(
           showGetNotifiedMessage &&
-          areTelegramNotificationsEnabled &&
-          !isNotificationSubscriptionLoading &&
-          !hasSubscription &&
-          !isInjectedWidget() &&
-          !isTrackOrderBannerDismissed
-        }
+            areTelegramNotificationsEnabled &&
+            !isNotificationSubscriptionLoading &&
+            !hasSubscription &&
+            !isInjectedWidget() &&
+            !isTrackOrderBannerDismissed,
+        )}
         onGetNotifiedClick={handleGetNotifiedClick}
         onDismissGetNotifiedMessage={dismissTrackOrderBanner}
         onViewOrders={onViewOrders}
