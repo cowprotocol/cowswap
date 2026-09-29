@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-29 12:03\n"
+"PO-Revision-Date: 2026-09-29 14:38\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -313,13 +313,21 @@ msgstr "¿Estás seguro de que quieres cancelar la orden <0>{shortId}</0>?"
 msgid "My Custom Hooks ({customHooksCount})"
 msgstr "Mis Hooks personalizados ({customHooksCount})"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/ReceiveZeroFromNetworkCostsWarning.tsx
+msgid "Network costs are higher than the value of each part, so you would receive nothing. Decrease the number of parts or increase the total sell amount."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 #~ msgid "{label} ({feeAsPercent}%)"
 #~ msgstr "{label} ({feeAsPercent}%)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
-msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
-msgstr "Tu orden de TWAP no se ejecutará y está protegida si el precio de mercado cae más que la protección de tu precio establecido."
+#~ msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
+#~ msgstr "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "If you fall into any of these categories, select Cancel."
@@ -696,8 +704,8 @@ msgid "Sell amount per part (1/{partsCount})"
 msgstr "Cantidad de venta por parte (1/{partsCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
-msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
-msgstr "Teniendo en cuenta los costes actuales de la red (<0><1/></0> por trozo), puedes ahorrar más reduciendo el número de partes o cambiando a un {swapOrderLink}."
+#~ msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
+#~ msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "generate"
@@ -1538,6 +1546,11 @@ msgstr "Símbolo"
 msgid "Bridge transaction costs."
 msgstr "Costes de la transacción del puente."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/ReceiveZeroFromNetworkCostsWarning.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
+#~ msgid "Network costs too high"
+#~ msgstr "Network costs too high"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/DeadlineSelector/index.tsx
 msgid "Custom"
@@ -1908,6 +1921,11 @@ msgstr "Impacto en el precio debido a los niveles de liquidez actuales y las com
 msgid "You got an extra"
 msgstr "Obtuviste un extra"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
+msgid "Worst acceptable price"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Share on Twitter"
@@ -2058,6 +2076,10 @@ msgstr "Volver"
 #: apps/cowswap-frontend/src/modules/trade/hooks/useGetConfirmButtonLabel.ts
 msgid "Approve, Swap & Bridge"
 msgstr "Aprobación, intercambio y puente"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
+msgid "For longer orders, consider increasing the percentage next to <0>Worst acceptable price</0>. This may help more parts complete, but also allows them to trade at a worse price."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
@@ -3605,6 +3627,7 @@ msgstr "¡Potencieeee APR sin gas!"
 msgid "In case you want to give allowance only for the trade amount, use the advanced mode. You can also change the amount manually."
 msgstr "En caso de que quiera dar permiso sólo para la cantidad de la operación, utilice el modo avanzado. También puede cambiar la cantidad manualmente."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/ReceiveZeroFromNetworkCostsWarning.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
 msgstr "La cantidad de venta es demasiado pequeña"
@@ -3838,6 +3861,10 @@ msgstr "on-chain"
 #~ msgid "Updates every 6 hours"
 #~ msgstr "Updates every 6 hours"
 
+#: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
+msgid "TWAP splits your swap into equal parts over time"
+msgstr ""
+
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Tokens overview"
 msgstr "Resumen de tokens"
@@ -3857,6 +3884,10 @@ msgstr "Aprenda cómo"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Insufficient {inputSymbolLabel} balance"
 msgstr "Saldo {inputSymbolLabel} insuficiente"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Enter a referral code with 5 to 20 characters"
@@ -4159,8 +4190,6 @@ msgid "Gas limit"
 msgstr "Límite de gas"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Price protection"
 msgstr "Protección de precio"
 
@@ -4207,6 +4236,10 @@ msgstr "Las órdenes {currencyNameCapitalized} pueden, en raras ocasiones, ser f
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Transaction Confirmed"
 msgstr "Transacción confirmada"
+
+#: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
+msgid "Advanced Orders"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "This way, you'll take advantage of"
@@ -5145,6 +5178,10 @@ msgstr "Cambiar la configuración de las alertas de operaciones aquí"
 msgid "Select input and output"
 msgstr "Seleccionar entrada y salida"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Switch to a {swapOrderLink}."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Button/LoadMoreOrdersButton.tsx
 msgid "Search older orders"
 msgstr "Buscar órdenes anteriores"
@@ -5713,6 +5750,10 @@ msgstr "Para anular esto, introduce la cantidad de deslizamiento deseada{amountR
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Between currencies"
 msgstr "Entre monedas"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
+msgid "Each part trades at this price or better. If that price can't be met, the part is skipped."
+msgstr ""
 
 #. Explains how much a referrer earns for referred trading volume within 90 days.
 #. js-lingui-explicit-id
@@ -6462,8 +6503,8 @@ msgstr "Permiso de token insuficiente"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
-msgid "Rate"
-msgstr "Tasa"
+#~ msgid "Rate"
+#~ msgstr "Rate"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeNumberInput/index.tsx
 msgid "Decrease Value"
@@ -6638,6 +6679,11 @@ msgstr "Las órdenes de CoW Swap pueden ser órdenes de mercado (que se ejecutan
 msgid "m"
 msgstr "m"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
+msgid "Quoted price"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
 msgstr "Listas"
@@ -6810,8 +6856,8 @@ msgid "Out of range"
 msgstr "Fuera de rango"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
-msgid "Since prices can change significantly over time, we suggest increasing your price protection for orders with long deadlines."
-msgstr "Dado que los precios pueden cambiar significativamente con el tiempo, te sugerimos aumentar tu protección de precios para órdenes con plazos largos."
+#~ msgid "Since prices can change significantly over time, we suggest increasing your price protection for orders with long deadlines."
+#~ msgstr "Since prices can change significantly over time, we suggest increasing your price protection for orders with long deadlines."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"
@@ -7318,6 +7364,7 @@ msgstr "La orden comenzará cuando sea validada y ejecutada en tu Safe."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/ConfirmButton.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Confirm with your wallet"
 msgstr "Confirmar con tu wallet"
 
@@ -7485,6 +7532,10 @@ msgstr "Información"
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
 msgstr "El surplus que CoW Swap te ha generado en {nativeSymbol} a través de todos tus intercambios desde {startDate}"
+
+#: apps/cowswap-frontend/src/common/pure/ExecutionPrice/TwapExecutionPrice.pure.tsx
+msgid "{quoteSymbol} per {baseSymbol}"
+msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Type or generate a code (subject to availability). Saving locks this code to your wallet and can't be changed. Links/codes don't reveal your wallet."
@@ -8458,6 +8509,10 @@ msgstr "Continuar con la configuración"
 msgid "{days, plural, one {# day} few {# days} many {# days} other {# days}}"
 msgstr "{days, plural, one {# día} few {# días} many {# días} other {# días}}"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPriceProtectionWarning.tsx
+#~ msgid "Prices can change over longer durations. Parts may be skipped if your <0>worst acceptable price</0> can’t be met."
+#~ msgstr "Prices can change over longer durations. Parts may be skipped if your <0>worst acceptable price</0> can’t be met."
+
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Placing TWAP"
 #~ msgstr "Placing TWAP"
@@ -8835,6 +8890,10 @@ msgstr "Precio Ejec."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderIneligible.tsx
 #~ msgid "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
 #~ msgstr "This wallet has already traded on CoW Swap. <0/> Referral rewards are for new wallets only."
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "Considering current network costs (<0><1/></0> per part), you can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"
