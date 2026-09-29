@@ -1,177 +1,80 @@
-import { useAtom } from 'jotai'
+import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
-import { useConfig } from 'wagmi'
-
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { getAddress } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { UiOrderType } from '@cowprotocol/types'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
-import { WidgetHookEvents } from '@cowprotocol/widget-lib'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useLingui } from '@lingui/react/macro'
 import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundleFlowContext'
-import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
-import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
-import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
+import { useSolanaTradeFlowContext } from 'modules/limitOrders/hooks/useSolanaTradeFlowContext'
+import { useTradeFlowContext } from 'modules/limitOrders/hooks/useTradeFlowContext'
+import { PriceImpactDeclineError, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { placedOrderHighlightAtom, useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/OrdersReceiptModal.hooks'
-import { useTradeFlowAnalytics } from 'modules/trade'
+import { tradeConfirmStateAtom } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
 import { OperatorError } from 'api/cowProtocol/errors/OperatorError'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
-import { TradeAmounts } from 'common/types'
-import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+import { useLimitOrdersTradeCallback } from './useLimitOrdersTradeCallback'
+
+export interface UseHandleOrderPlacementResult {
+  callback: () => Promise<void>
+  isTradeContextReady: boolean
+  isSafeApprovalBundle: boolean
+}
+
 export function useHandleOrderPlacement(
-  tradeContext: TradeFlowContext,
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
-): () => Promise<void> {
-  const config = useConfig()
-  const isBridge = getAreBridgeCurrencies(
-    tradeContext.postOrderParams.inputAmount.currency,
-    tradeContext.postOrderParams.outputAmount.currency,
-  )
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
+): UseHandleOrderPlacementResult {
+  const { chainId } = useWalletInfo()
+  const isSolana = isSolanaChain(chainId)
+  const tradeContext = useTradeFlowContext()
+  const solanaContext = useSolanaTradeFlowContext()
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
+  const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
-  const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
+  const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
+  const store = useStore()
+  const setPartiallyFillableOverride = useSetAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
-  const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
-  const canUsePermit = tradeContext.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo)
-  // Temporary: keep limit-order bundles Safe-only until EIP-5792 order lifecycle tracking lands.
-  const shouldUseSafeBundle = isSafeBundle && tradeContext.postOrderParams.isSafeWallet && !canUsePermit
+  const canUsePermit = Boolean(tradeContext?.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo))
+  const isSafeApprovalBundle = isSafeBundle && Boolean(tradeContext?.postOrderParams.isSafeWallet) && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
-  const analytics = useTradeFlowAnalytics()
-  const { t } = useLingui()
   const isSmartContractWallet = useIsSmartContractWallet()
 
-  const beforePermit = useCallback(async () => {
-    if (!tradeContext) return
+  const isTradeContextReady = isSolana ? !!solanaContext : !!tradeContext
 
-    const {
-      postOrderParams: { inputAmount },
-      getCachedPermit,
-    } = tradeContext
-    const inputCurrency = inputAmount.currency
+  const tradeFn = useLimitOrdersTradeCallback(priceImpact, settingsState, tradeConfirmActions)
 
-    const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
-
-    if (cachedPermit) return
-
-    tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext))
-  }, [tradeConfirmActions, tradeContext])
-
-  const beforeTrade = useCallback(() => {
-    if (!tradeContext) return
-
-    tradeConfirmActions.onSign(buildTradeAmounts(tradeContext))
-  }, [tradeContext, tradeConfirmActions])
-
-  const tradeFn = useCallback(async () => {
-    const isWidgetHookPassed = await callWidgetHook(
-      WidgetHookEvents.ON_BEFORE_TRADE,
-      buildTradeWidgetHookPayload({
-        orderType: UiOrderType.LIMIT,
-        inputAmount: tradeContext.postOrderParams.inputAmount,
-        outputAmount: tradeContext.postOrderParams.outputAmount,
-        recipient: tradeContext.postOrderParams.recipient,
-        orderKind: tradeContext.postOrderParams.kind,
-        chainId: tradeContext.chainId,
-        validTo: tradeContext.quoteState
-          ? calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
-          : undefined,
-      }),
-    )
-
-    if (!isWidgetHookPassed) {
-      return
-    }
-
-    const partiallyFillableState =
-      typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
-
-    if (shouldUseSafeBundle) {
-      if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
-
-      return safeBundleFlow({
-        params: {
-          ...safeBundleFlowContext,
-          postOrderParams: {
-            ...safeBundleFlowContext.postOrderParams,
-            ...partiallyFillableState,
-          },
-        },
-        priceImpact,
-        settingsState,
-        confirmPriceImpactWithoutFee,
-        analytics,
-        beforeTrade,
-        config,
-      })
-    }
-
-    return tradeFlow(
-      {
-        ...tradeContext,
-        postOrderParams: {
-          ...tradeContext.postOrderParams,
-          ...partiallyFillableState,
-        },
-      },
-      priceImpact,
-      settingsState,
-      analytics,
-      confirmPriceImpactWithoutFee,
-      beforePermit,
-      beforeTrade,
-    )
-  }, [
-    config,
-    shouldUseSafeBundle,
-    tradeContext,
-    partiallyFillableOverride,
-    priceImpact,
-    settingsState,
-    analytics,
-    confirmPriceImpactWithoutFee,
-    beforePermit,
-    beforeTrade,
-    safeBundleFlowContext,
-    t,
-  ])
-
-  return useCallback(() => {
+  const callback = useCallback(() => {
     return tradeFn()
-      .then((orderHash) => {
+      .then(async (orderHash) => {
         if (!orderHash) {
           return
         }
 
-        tradeConfirmActions.onSuccess(orderHash)
+        // solanaFlow already called tradeConfirmActions.onSuccess with the real order id itself.
+        if (typeof orderHash === 'string') {
+          tradeConfirmActions.onSuccess(orderHash)
+        }
 
         updateLimitOrdersState({ recipient: null })
         // Reset override after successful order placement
@@ -181,13 +84,15 @@ export function useHandleOrderPlacement(
         // Close receipt modal
         closeReceiptModal()
 
-        // TODO: Clear filters if the new order is not visible before navigating.
+        const ordersTableTab = isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN
+        const orderId = typeof orderHash === 'string' ? orderHash : store.get(tradeConfirmStateAtom).transactionHash
+        setPlacedOrderHighlight({ orderId, tabId: ordersTableTab })
 
-        // Navigate to open orders after successful placement once the new order is in the store, otherwise you'll be redirected back to OPEN as there would
-        // still be no signing orders.
-        setTimeout(() => {
-          navigateToOrdersTableTab(isSmartContractWallet ? OrderTabId.SIGNING : OrderTabId.OPEN)
-        })
+        if (orderId) {
+          revealOrderInOrdersTable(orderId, ordersTableTab)
+        } else {
+          navigateToOrdersTableTab(ordersTableTab)
+        }
 
         // Analytics event to track alternative modal usage, only if was using alternative modal
         if (isAlternativeOrderEdit !== undefined) {
@@ -204,7 +109,7 @@ export function useHandleOrderPlacement(
         if (error instanceof OperatorError) {
           tradeConfirmActions.onError(error.message || error.description)
         } else {
-          tradeConfirmActions.onError(getSwapErrorMessage(error, tradeContext.chainId))
+          tradeConfirmActions.onError(getSwapErrorMessage(error, chainId))
         }
       })
   }, [
@@ -213,20 +118,18 @@ export function useHandleOrderPlacement(
     updateLimitOrdersState,
     setPartiallyFillableOverride,
     isAlternativeOrderEdit,
+    revealOrderInOrdersTable,
     navigateToOrdersTableTab,
+    setPlacedOrderHighlight,
+    store,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,
     isSmartContractWallet,
-    tradeContext.chainId,
+    chainId,
   ])
-}
 
-function buildTradeAmounts(tradeContext: TradeFlowContext): TradeAmounts {
-  return {
-    inputAmount: tradeContext.postOrderParams.inputAmount,
-    outputAmount: tradeContext.postOrderParams.outputAmount,
-  }
+  return { callback, isTradeContextReady, isSafeApprovalBundle }
 }
 
 function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {

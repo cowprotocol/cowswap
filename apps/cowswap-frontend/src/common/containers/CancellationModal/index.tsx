@@ -23,8 +23,12 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
   const { isOpen, onDismiss } = props
 
   const context = useAtomValue(cancellationModalContextAtom)
-  const ultimateOrder = useUltimateOrder(context.chainId || undefined, context.orderId || undefined)
-  const twapOrder = useTwapOrderById(context.orderId || undefined)
+  const storedOrder = useUltimateOrder(context.chainId || undefined, context.orderId || undefined)
+  const ultimateOrder = useMemo(
+    () => storedOrder ?? (context.order ? { orderFromStore: context.order } : undefined),
+    [storedOrder, context.order],
+  )
+  const twapOrder = useTwapOrderById(context.order?.composableCowInfo?.parentId || context.orderId || undefined)
 
   const orderSummary = useMemo(() => {
     if (!ultimateOrder) return undefined

@@ -98,6 +98,10 @@ export function OrderFillsAtWithDistance({
     )
   }
 
+  if (order.status === OrderStatus.SCHEDULED) {
+    return '-'
+  }
+
   // Regular order display logic
   const distance =
     getIsFinalizedOrder(order) ||

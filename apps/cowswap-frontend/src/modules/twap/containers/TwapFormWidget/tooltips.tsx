@@ -1,6 +1,6 @@
 import svgProtectionSrc from '@cowprotocol/assets/cow-swap/protection.svg'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -12,6 +12,9 @@ const IconImage = styled.div`
   justify-content: center;
 
   > svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
     margin: 0 3px 0 0;
   }
@@ -51,9 +54,13 @@ export function getTotalDurationTooltip({
       </p>
       <p>
         <Trans>
-          For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the total
-          time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
-          <b>{partDurationDisplay}</b> until the next part becomes active.
+          For instance, your order consists of{' '}
+          <b>
+            <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+          </b>{' '}
+          placed every <b>{partDurationDisplay}</b>, the total time to complete the order is{' '}
+          <b>{totalDurationDisplay}</b>. Each limit order remains open for <b>{partDurationDisplay}</b> until the next
+          part becomes active.
         </Trans>
       </p>
     </>
@@ -96,19 +103,17 @@ export function useLabelsTooltips(): LabelTooltipItems {
       label: (
         <>
           <IconImage>
-            <SVG src={svgProtectionSrc} width="16" height="16" title={t`Price protection`} />
+            <SVG src={svgProtectionSrc} width="16" height="16" title={t`Worst acceptable price`} />
           </IconImage>{' '}
-          <Trans>Price protection</Trans>
+          <Trans>Worst acceptable price</Trans>
         </>
       ),
       tooltip: (
-        <Trans>
-          Your TWAP order won't execute and is protected if the market price dips more than your set price protection.
-        </Trans>
+        <Trans>Each part trades at this price or better. If that price can't be met, the part is skipped.</Trans>
       ),
     },
     price: {
-      label: t`Rate`,
+      label: t`Quoted price`,
       tooltip: t`This is the current market price, including the fee.`,
     },
     sellAmount: {

@@ -7,7 +7,7 @@ import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useNetworkSwitchUnsupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -62,7 +62,8 @@ export function AffiliatePartnerOnboard(): ReactNode {
         <HeroSubtitle $maxWidth={400}>
           <Trans>
             Share your referral code and earn <strong>{partnerRewardAmount}</strong> for every{' '}
-            <strong>{triggerVolumeLabel}</strong> in eligible volume within {affiliateTimeCapDays} days.
+            <strong>{triggerVolumeLabel}</strong> in eligible volume within{' '}
+            <Plural value={affiliateTimeCapDays} one="# day" few="# days" many="# days" other="# days" />.
           </Trans>
         </HeroSubtitle>
         <HeroActions>

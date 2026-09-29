@@ -24,6 +24,7 @@ export interface TradeFlowAnalyticsContext {
   orderType: UiOrderType
   quoteId?: number
   allowsOffchainSigning?: boolean
+  isEoaTwap?: boolean
 }
 
 export function useTradeFlowAnalytics(): TradeFlowAnalytics {
@@ -31,7 +32,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
 
   return useMemo(() => {
     const sendTradeAnalytics = (action: string, context: TradeFlowAnalyticsContext, value?: number): void => {
-      const { orderType, marketLabel, isBridgeOrder, quoteId, allowsOffchainSigning } = context
+      const { orderType, marketLabel, isBridgeOrder, quoteId, allowsOffchainSigning, isEoaTwap } = context
 
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.TRADE,
@@ -41,6 +42,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
         isBridgeOrder,
         ...(quoteId !== undefined && { quoteId }),
         ...(allowsOffchainSigning !== undefined && { allowsOffchainSigning }),
+        ...(isEoaTwap !== undefined && { isEoaTwap }),
       } as GtmEvent<CowSwapAnalyticsCategory.TRADE>)
     }
 

@@ -24,11 +24,23 @@ interface PendingOrderNotificationParams {
   outputAmount: CurrencyAmount<Currency>
   orderCreationHash?: string
   isEthFlow?: boolean
+  isEoaTwap?: boolean
   explorerUrl?: string | null
 }
 
 export function emitPostedOrderEvent(params: PendingOrderNotificationParams): void {
-  const { chainId, id, receiver, owner, uiOrderType, orderCreationHash, inputAmount, outputAmount, isEthFlow } = params
+  const {
+    chainId,
+    id,
+    receiver,
+    owner,
+    uiOrderType,
+    orderCreationHash,
+    inputAmount,
+    outputAmount,
+    isEthFlow,
+    isEoaTwap,
+  } = params
 
   const postedOrderPayload: OnPostedOrderPayload = {
     orderUid: id,
@@ -46,6 +58,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     outputToken: currencyToTokenInfo(outputAmount.currency),
     receiver: receiver || undefined,
     isEthFlow,
+    isEoaTwap,
   }
 
   WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_POSTED_ORDER, postedOrderPayload)

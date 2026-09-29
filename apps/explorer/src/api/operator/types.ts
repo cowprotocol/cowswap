@@ -11,6 +11,8 @@ import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 import { Network } from 'types'
 
+import type { SolanaOrderDetails } from 'api/solanaOrderbook/types'
+
 export type TxHash = string
 
 export enum OrderStatus {
@@ -37,6 +39,11 @@ export type GetAccountOrdersParams = WithNetworkId & {
   owner: string
   offset?: number
   limit?: number
+  /**
+   * Discards the cached pages and re-fetches from the API.
+   * Only honoured for the first page, see `getAccountOrders`
+   */
+  skipCache?: boolean
 }
 
 export type GetOrderCompetitionStatusParams = WithNetworkId & {
@@ -84,6 +91,7 @@ export type Order = Pick<
   | 'class'
   | 'fullAppData'
   | 'executedFeeToken'
+  | 'solana'
 > & {
   receiver: string
   txHash?: string
@@ -129,7 +137,11 @@ export type ProtocolFee = {
 }
 
 // TODO: drop the `gasCost` intersection once `EnrichedOrder` in @cowprotocol/cow-sdk declares it.
-export type RawOrder = EnrichedOrder & { gasCost?: string | null }
+export type RawOrder = EnrichedOrder & {
+  gasCost?: string | null
+  /** Always set for Solana orders, never for EVM ones — components can branch on its presence. */
+  solana?: SolanaOrderDetails
+}
 
 export type RawOrderStatusFromAPI = (typeof RAW_ORDER_STATUS)[keyof typeof RAW_ORDER_STATUS]
 

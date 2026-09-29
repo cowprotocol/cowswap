@@ -1,5 +1,182 @@
 # Changelog
 
+## [3.29.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.28.0...cowswap-v3.29.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: update TWAP for EOA quoting to include poll funds gas cost (#8216)
+
+- feat: clarify price impact field on TWAPs (#8234)
+
+- feat: better swap vs twap suggestions (#8227)
+
+- feat: use latest CoW Shed SDK (#8229)
+
+- feat: add isEoaTwap to analytics event for order cancellation (#8212)
+
+### Patch Changes
+
+- fix: twap history for base smart account (#8213)
+
+- fix: fix captcha missing from twap (#8242)
+
+- fix: disallow twap for safe imported in rabby (#8250)
+
+- fix: update SmallPriceProtectionWarning (#8241)
+
+- fix: sanitize widget palette (#8228)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.15.0
+  - @cowprotocol/ui@3.15.0
+  - @cowprotocol/analytics@3.13.0
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/balances-and-allowances@3.15.1
+  - @cowprotocol/multicall@3.8.1
+  - @cowprotocol/snackbars@2.3.6
+  - @cowprotocol/tokens@3.13.1
+  - @cowprotocol/widget-lib@4.8.1
+
+## [3.28.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.27.0...cowswap-v3.28.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: one-signature EOA TWAP flow (#8162)
+
+- feat: confirm leaving TWAP flow (#8154)
+
+- feat: 1 sig flow for first time twap creation (#8185)
+
+- feat: remove TWAP proxy label (#8202)
+
+- feat: show twaps in explorer (#8129)
+
+- feat: cancel a single twap part (#8184)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+- feat: update TWAP SC addresses for all chains (#8152)
+
+- feat: lower TWAP limits on dev envs (#8169)
+
+- feat: add new prop for TWAP for EOA analytics (#8201)
+
+- feat: optimistic allowance on eoa twap (#8203)
+
+- feat: add 4-minute total duration for easier 2-part testing (#8171)
+
+- feat: add TWAP confirmation box (#8120)
+
+- feat: cancel twap with 1 signature (#8177)
+
+### Patch Changes
+
+- fix(common-utils): forward original arguments in debounce (#7920)
+
+- fix(orders): link to the CoW explorer once an ETH-flow order is created (#8160)
+
+- fix(i18n): pluralization (#8116)
+
+- fix: move to open tab automatically and single button in success screen (#8199)
+
+- fix: Clear the TWAP confirmation screen automatically in some scenarios (#8191)
+
+- fix: revert in twap (#8174)
+
+- fix(swap): include slippage in Swap balance validation (#8128)
+
+- fix: show explorer link on solana notifications popups (#8135)
+
+- fix(solana): fix quote owner parameter (#8168)
+
+- fix(swap): include network costs in the Swap balance check for sell orders (#8207)
+
+- fix: fix missing fill and market prices in eoa twap (#8193)
+
+- fix(solana): adjust balancesloading state in token selector (#8167)
+
+- fix: check affeced orders against poller for EOA TWAP (#8196)
+
+- fix(swap): read the native balance when confirming a native sell (#8156)
+
+- fix: order filled by 99.99 (#8155)
+
+- fix(notifications): note TWAP for EOA in the unsupported orders copy (#8194)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/widget-lib@4.8.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/balances-and-allowances@3.15.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/ens@3.8.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/hook-dapp-lib@2.3.0
+  - @cowprotocol/multicall@3.8.0
+  - @cowprotocol/permit-utils@3.8.0
+  - @cowprotocol/tokens@3.13.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/wallet@3.14.0
+  - @cowprotocol/cowswap-abis@4.3.0
+  - @cowprotocol/snackbars@2.3.5
+  - @cowprotocol/iframe-transport@2.3.8
+
+## [3.27.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.1...cowswap-v3.27.0) (2026-09-15)
+
+### Minor Changes
+
+- feat: honor partial/unlimited approval form fields in TWAP placement (#8110)
+
+- feat(solana): display order progress bar (#8108)
+
+- feat: implement tx bunling with order creation (#8112)
+
+- feat(solana): process order fulfillment (#8127)
+
+- feat: TWAP for EOA v2 SC integration (#8091)
+
+- feat: fetch twap deltas (#8109)
+
+- feat: show eoa twap funding warnings (#8104)
+
+- feat: show scheduled parts in eoa twap (#8119)
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- fix: table blinking on twap part updates (#8138)
+
+- fix: fix creation time in twap table (#8136)
+
+- fix: hide checkboxes and cancel form recipient in twap (#8148)
+
+- fix(solana): provide order ttl deadline from the settings (#8142)
+
+- fix: show twap part as cancelling (#8137)
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
+- Updated dependencies []:
+  - @cowprotocol/balances-and-allowances@3.14.0
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/cowswap-abis@4.2.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/permit-utils@3.7.1
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ens@3.7.2
+  - @cowprotocol/tokens@3.12.2
+  - @cowprotocol/ui@3.13.2
+  - @cowprotocol/wallet@3.13.2
+  - @cowprotocol/multicall@3.7.2
+  - @cowprotocol/snackbars@2.3.4
+
 ## [3.26.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.26.0...cowswap-v3.26.1) (2026-09-11)
 
 ### Patch Changes

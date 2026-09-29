@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.5.0...currency-v1.6.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.4.0...currency-v1.5.0) (2026-09-09)
 
 ### Minor Changes

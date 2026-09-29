@@ -7,7 +7,7 @@ import { TokensByAddress } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { Media } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { VampireAttackContext } from 'modules/yield/types'
@@ -102,6 +102,14 @@ export function CoWAmmBannerContent({
     return sortedAverageProviders?.map((key) => LP_PROVIDER_NAMES[key as LpTokenProvider]).filter(isTruthy)
   }, [sortedAverageProviders])
 
+  const providersList = averageProvidersNames?.join(', ') ?? ''
+  const averageYieldText = plural(averageProvidersNames?.length ?? 0, {
+    one: `yield over average ${providersList} pool`,
+    few: `yield over average ${providersList} pools`,
+    many: `yield over average ${providersList} pools`,
+    other: `yield over average ${providersList} pools`,
+  })
+
   const context: CoWAmmBannerContext = useSafeMemoObject({
     title,
     ctaText,
@@ -141,9 +149,7 @@ export function CoWAmmBannerContent({
               isTokenSelectorView={isTokenSelectorView}
             />
           ) : isCowAmmAverageBetter && averageProvidersNames ? (
-            t`yield over average` +
-            ` ${averageProvidersNames.join(', ')}` +
-            (averageProvidersNames.length > 1 ? t`pools` : t`pool`)
+            averageYieldText
           ) : (
             t`pools available to get yield on your assets!`
           )}

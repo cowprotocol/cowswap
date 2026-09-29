@@ -7,7 +7,7 @@ peer-to-peer among its users or into any on-chain liquidity source while
 providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
-|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
 | 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
@@ -34,11 +34,15 @@ pnpm upgrade-sdk-latest
 pnpm install
 ```
 
-Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
+Or, to test `@cowprotocol/sdk` preview builds published from an SDK pull request:
 
-- run `pnpm upgrade-sdk-preview https://github.com/cowprotocol/cow-sdk/pull/787` with a link to SDK PR with deployed previews
-- run `PACKAGE_READ_AUTH_TOKEN=XXX pnpm run install:ci` instead of just `pnpm install`
+```bash
+PACKAGE_READ_AUTH_TOKEN=XXX pnpm upgrade-sdk-preview https://github.com/cowprotocol/cow-sdk/pull/787
+```
+
 - the token must be generated in GitHub with `read:packages` permissions
+- this pins each preview in the root `package.json` `pnpm.overrides` and updates `pnpm-lock.yaml`; commit both together
+- to drop the preview, delete the `@cowprotocol` entries from `pnpm.overrides` and run `pnpm install --no-frozen-lockfile`
 
 ## Run
 
@@ -160,7 +164,7 @@ objects, wallet fixtures, and troubleshooting.
 
 Most specs — including the PR smoke subset run in CI — use a fast mock wallet fixture and need no
 setup beyond the env vars above. A separate Synpress fixture drives a real MetaMask extension for
-scenarios that must exercise actual wallet UI; only specs using *that* fixture need a pre-built
+scenarios that must exercise actual wallet UI; only specs using _that_ fixture need a pre-built
 cache:
 
 ```bash
@@ -369,7 +373,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
-|-----------|--------------------------------------|------------------------------|--------------------------------------------------------------------------------------|
+| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
 | **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 

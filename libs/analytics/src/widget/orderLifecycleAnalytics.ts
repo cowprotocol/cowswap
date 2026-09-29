@@ -90,10 +90,15 @@ export function getOrderPayload(payload: BaseOrderPayload & OrderTypeAnalyticsFi
 }
 
 export function mapCancelledOrder(p: OnCancelledOrderPayload): AnalyticsPayload {
+  const orderPayload = getOrderPayload(p)
+
   return {
-    ...getOrderPayload(p),
+    ...orderPayload,
+    orderId: p.analyticsOrderId ?? orderPayload.orderId,
+    walletAddress: p.analyticsWalletAddress ?? orderPayload.walletAddress,
     reason: 'cancelled',
     transactionHash: p.transactionHash || '',
+    isEoaTwap: p.isEoaTwap,
   }
 }
 
@@ -164,6 +169,7 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     orderType: p.orderType,
     partiallyFillable: p.partiallyFillable,
     isEthFlow: Boolean(p.isEthFlow),
+    isEoaTwap: p.isEoaTwap,
     isCrossChain: Boolean(p.isCrossChain),
     destinationChainId: p.destinationChainId,
     kind: p.kind,

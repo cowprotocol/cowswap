@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { FractionUtils } from '@cowprotocol/common-utils'
@@ -11,9 +11,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useCombinedPendingOrders } from 'legacy/state/orders/hooks'
 
 import { updateSpotPricesAtom } from 'modules/orders/state/spotPricesAtom'
+import { emulatedTwapOrdersAtom } from 'modules/twap'
 import { getUsdPriceStateKey, UsdPriceState } from 'modules/usdAmount'
 import { useUsdPrices } from 'modules/usdAmount/hooks/useUsdPrice'
 
+import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useSafeMemo } from '../../hooks/useSafeMemo'
@@ -31,7 +33,7 @@ type MarketRecord = Record<
 /**
  * Spot Prices Updater
  *
- * Goes over all pending LIMIT orders and aggregates all markets
+ * Aggregates markets from pending limit and TWAP orders.
  * Fetches the spot prices for all markets based on USD prices from usdPricesAtom
  */
 export function SpotPricesUpdater(): null {
@@ -99,10 +101,11 @@ function isUsdPriceStateReady(
 }
 
 function useMarkets(chainId: SupportedChainId, account: string | undefined): MarketRecord {
+  const twapOrders = useAtomValue(emulatedTwapOrdersAtom)
   const pending = useCombinedPendingOrders({ chainId, account })
 
   return useSafeMemo(() => {
-    return pending.reduce<Record<string, { chainId: number; inputCurrency: Token; outputCurrency: Token }>>(
+    return [...pending, ...twapOrders.filter((order) => !getIsFinalizedOrder(order))].reduce<MarketRecord>(
       (acc, order) => {
         // Do not query spot prices for SWAP
         if (getUiOrderType(order) === UiOrderType.SWAP) return acc
@@ -124,5 +127,5 @@ function useMarkets(chainId: SupportedChainId, account: string | undefined): Mar
       },
       {},
     )
-  }, [pending])
+  }, [pending, twapOrders, chainId])
 }

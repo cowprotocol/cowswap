@@ -1,11 +1,14 @@
 import { i18n } from '@lingui/core'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { getExplorerBaseUrl } from './explorer'
 import {
   getBlockExplorerUrl,
   getEtherscanLink,
   getExplorerLabel,
   isAddress,
+  isCowOrder,
   safeShortenAddress,
   shortenAddress,
 } from './legacyAddressUtils'
@@ -97,6 +100,39 @@ describe('utils', () => {
   describe('#getBlockExplorerUrl', () => {
     it('does not introduce double slashes for bare explorer origins', () => {
       expect(getBlockExplorerUrl(1, 'transaction', 'abc', 'https://etherscan.io')).toBe('https://etherscan.io/tx/abc')
+    })
+  })
+
+  describe('#isCowOrder', () => {
+    // 56 bytes on EVM, 32 bytes on Solana. The Solana id is the same length as an EVM transaction hash,
+    // which is why the chain has to be part of the decision.
+    const EVM_ORDER_ID = `0x${'a'.repeat(112)}`
+    const SOLANA_ORDER_ID = `0x${'b'.repeat(64)}`
+    const EVM_TX_HASH = `0x${'c'.repeat(64)}`
+    // Solana transaction signatures are base58 and much longer than any order id.
+    const SOLANA_TX_SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
+
+    it('recognises a Solana order id on a Solana chain', () => {
+      expect(isCowOrder('transaction', SOLANA_ORDER_ID, SupportedChainId.SOLANA)).toBe(true)
+    })
+
+    it('does not mistake an EVM transaction hash for an order, despite the identical length', () => {
+      expect(isCowOrder('transaction', EVM_TX_HASH, SupportedChainId.MAINNET)).toBe(false)
+      expect(isCowOrder('transaction', EVM_TX_HASH)).toBe(false)
+    })
+
+    it('does not mistake a Solana transaction signature for an order', () => {
+      expect(isCowOrder('transaction', SOLANA_TX_SIGNATURE, SupportedChainId.SOLANA)).toBe(false)
+    })
+
+    it('recognises an EVM order id, with or without a chain', () => {
+      expect(isCowOrder('transaction', EVM_ORDER_ID, SupportedChainId.MAINNET)).toBe(true)
+      expect(isCowOrder('transaction', EVM_ORDER_ID)).toBe(true)
+    })
+
+    it('only ever classifies transactions', () => {
+      expect(isCowOrder('address', SOLANA_ORDER_ID, SupportedChainId.SOLANA)).toBe(false)
+      expect(isCowOrder('transaction', undefined, SupportedChainId.SOLANA)).toBe(false)
     })
   })
 })

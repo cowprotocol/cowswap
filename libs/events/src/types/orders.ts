@@ -20,6 +20,11 @@ export type OnBridgingSuccessPayload = Omit<CrossChainOrder, 'provider'>
 
 export type OnCancelledOrderPayload = BaseOrderLifecyclePayload & {
   transactionHash?: string
+  isEoaTwap?: boolean
+  /** Conditional-order hash for analytics. `order.uid` stays the internal event id. */
+  analyticsOrderId?: string
+  /** Connected wallet for analytics. `order.owner` stays the onchain owner. */
+  analyticsWalletAddress?: string
 }
 
 export type OnExpiredOrderPayload = BaseOrderLifecyclePayload
@@ -45,6 +50,7 @@ export type OnPostedOrderPayload = {
   receiver?: string
   orderCreationHash?: string
   isEthFlow?: boolean
+  isEoaTwap?: boolean
 }
 
 export type OnPresignedOrderPayload = BaseOrderPayload & {

@@ -1,5 +1,18 @@
 # Changelog
 
+## [4.11.0](https://github.com/cowprotocol/cowswap/compare/types-v4.10.0...types-v4.11.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.6.0
+
 ## [4.10.0](https://github.com/cowprotocol/cowswap/compare/types-v4.9.0...types-v4.10.0) (2026-09-09)
 
 ### Minor Changes

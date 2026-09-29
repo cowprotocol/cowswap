@@ -1,4 +1,4 @@
-import { HookDappType, PERMIT_HOOK_DAPP_ID } from './consts'
+import { EOA_TWAP_POLL_FUNDS_DAPP_ID, HookDappType, PERMIT_HOOK_DAPP_ID } from './consts'
 import { hookDappsRegistry } from './hookDappsRegistry'
 import { CowHook, HookDappBase } from './types'
 
@@ -11,7 +11,7 @@ const hookDapps = Object.keys(hookDappsRegistry).reduce((acc, id) => {
 
 // Display metadata only: this automatic hook must not appear in the hook store.
 const twapFundingHookDapp: HookDappBase = {
-  id: 'cowswap://twap/eoa-poll-funds',
+  id: EOA_TWAP_POLL_FUNDS_DAPP_ID,
   name: 'TWAP funding',
   descriptionShort: 'Transfers sell tokens into the TWAP account before a part executes.',
   type: HookDappType.INTERNAL,
@@ -35,6 +35,10 @@ type StrictCowHook = Omit<CowHook, 'dappId'> & { dappId?: string }
 
 export function doesHookHavePermit(hook: { callData: string }): boolean {
   return hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)
+}
+
+export function isEoaTwapPollFundsHook(hook: { dappId?: string }): boolean {
+  return hook.dappId === EOA_TWAP_POLL_FUNDS_DAPP_ID
 }
 
 export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[]): HookToDappMatch[] {

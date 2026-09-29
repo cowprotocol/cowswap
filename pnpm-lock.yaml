@@ -25,6 +25,8 @@ overrides:
   viem: 2.48.8
   wagmi: 3.6.9
   zod: 3.25.76
+  '@cowprotocol/sdk-cow-shed@0.6.1>@cowprotocol/sdk-common': 0.14.1
+  '@cowprotocol/sdk-composable@1.8.1>@cowprotocol/sdk-common': 0.14.1
 
 packageExtensionsChecksum: sha256-MJ/weFfhczWAxcKBkOSA2U6hqYQqwBJPmicil25hZZ4=
 
@@ -188,6 +190,9 @@ importers:
       babel-jest:
         specifier: 30.2.0
         version: 30.2.0(@babel/core@7.28.4)
+      babel-plugin-macros:
+        specifier: 3.1.0
+        version: 3.1.0
       babel-plugin-styled-components:
         specifier: 2.1.4
         version: 2.1.4(@babel/core@7.28.4)(styled-components@5.3.11(@babel/core@7.28.4)(react-dom@19.1.2(react@19.1.2))(react-is@19.1.2)(react@19.1.2))(supports-color@5.5.0)
@@ -259,7 +264,7 @@ importers:
         version: 30.2.0
       jsdom:
         specifier: 27.0.0
-        version: 27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10)
+        version: 27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10)
       jsonc-eslint-parser:
         specifier: 2.3.0
         version: 2.3.0
@@ -331,7 +336,7 @@ importers:
         version: 5.1.4(typescript@5.9.3)(vite@7.3.1(@types/node@24.7.1)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1))
       vitest:
         specifier: 4.0.9
-        version: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
+        version: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
 
   apps/cow-fi:
     dependencies:
@@ -345,8 +350,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/assets
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -547,11 +552,11 @@ importers:
   apps/cowswap-e2e-tests:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-order-book':
-        specifier: 4.0.4
-        version: 4.0.4(encoding@0.1.13)
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
       '@cowprotocol/test-ids':
         specifier: workspace:*
         version: link:../../libs/test-ids
@@ -564,10 +569,10 @@ importers:
         version: 1.49.1
       '@synthetixio/synpress':
         specifier: 4.0.10
-        version: 4.0.10(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
+        version: 4.0.10(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.23))(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@synthetixio/synpress-metamask':
         specifier: 0.0.11
-        version: 0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)
+        version: 0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.23))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)
       exceljs:
         specifier: 4.4.0
         version: 4.4.0
@@ -587,8 +592,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/balances-and-allowances
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
@@ -605,8 +610,8 @@ importers:
         specifier: https://registry.npmjs.org/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz
         version: 0.2.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../../libs/abis
@@ -632,29 +637,32 @@ importers:
         specifier: workspace:*
         version: link:../../libs/permit-utils
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.6
-        version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.12
+        version: 4.4.12(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common':
+        specifier: 0.14.1
+        version: 0.14.1
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.1
-        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.2
+        version: 1.8.2(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 3.5.1
-        version: 3.5.1
+        specifier: 3.7.1
+        version: 3.7.1
       '@cowprotocol/sdk-cow-shed':
-        specifier: 0.4.8
-        version: 0.4.8
+        specifier: 0.6.1
+        version: 0.6.1
       '@cowprotocol/sdk-order-book':
-        specifier: 4.0.4
-        version: 4.0.4(encoding@0.1.13)
+        specifier: 4.2.0
+        version: 4.2.0(encoding@0.1.13)
       '@cowprotocol/sdk-trading':
-        specifier: 2.4.2
-        version: 2.4.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 2.7.2
+        version: 2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-trading-solana':
-        specifier: 0.5.1
-        version: 0.5.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 0.12.0
+        version: 0.12.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.28
-        version: 0.3.28(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: 0.3.32
+        version: 0.3.32(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/snackbars':
         specifier: workspace:*
         version: link:../../libs/snackbars
@@ -993,26 +1001,26 @@ importers:
         specifier: workspace:*
         version: link:../../libs/core
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../../libs/hook-dapp-lib
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.6
-        version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.12
+        version: 4.4.12(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.1
-        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.2
+        version: 1.8.2(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
-        specifier: 3.5.1
-        version: 3.5.1
+        specifier: 3.7.1
+        version: 3.7.1
       '@cowprotocol/sdk-subgraph':
-        specifier: 1.2.3
-        version: 1.2.3(encoding@0.1.13)
+        specifier: 1.2.7
+        version: 1.2.7(encoding@0.1.13)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.28
-        version: 0.3.28(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: 0.3.32
+        version: 0.3.32(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../../libs/types
@@ -1192,20 +1200,45 @@ importers:
         specifier: 0.1.0
         version: 0.1.0
 
+  apps/rwa-frontend:
+    dependencies:
+      next:
+        specifier: 16.3.6
+        version: 16.3.6(@babel/core@7.28.4)(@types/node@24.7.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(sass@1.88.0)
+      react:
+        specifier: 19.1.2
+        version: 19.1.2
+      react-dom:
+        specifier: 19.1.2
+        version: 19.1.2(react@19.1.2)
+    devDependencies:
+      '@testing-library/react':
+        specifier: 16.3.0
+        version: 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.1.3(@types/react@19.1.3))(@types/react@19.1.3)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
+      '@types/react':
+        specifier: 19.1.3
+        version: 19.1.3
+      '@types/react-dom':
+        specifier: 19.1.3
+        version: 19.1.3(@types/react@19.1.3)
+      '@vercel/config':
+        specifier: 0.1.0
+        version: 0.1.0
+
   apps/sdk-tools:
     dependencies:
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../../libs/common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.6.1
-        version: 1.6.1(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.2
+        version: 1.8.2(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-viem-adapter':
-        specifier: 0.3.28
-        version: 0.3.28(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
+        specifier: 0.3.32
+        version: 0.3.32(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/wallet':
         specifier: workspace:*
         version: link:../../libs/wallet
@@ -1310,8 +1343,8 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
@@ -1421,8 +1454,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1470,8 +1503,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1479,8 +1512,8 @@ importers:
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-trading-solana':
-        specifier: 0.5.1
-        version: 0.5.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
+        specifier: 0.12.0
+        version: 0.12.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@cowprotocol/tokens':
         specifier: workspace:*
         version: link:../tokens
@@ -1540,8 +1573,8 @@ importers:
   libs/common-const:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1574,8 +1607,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1638,8 +1671,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -1729,8 +1762,8 @@ importers:
   libs/core:
     dependencies:
       '@cowprotocol/cms':
-        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.11.0.tgz
-        version: 0.11.0
+        specifier: https://registry.npmjs.org/@cowprotocol/cms/-/cms-0.15.0.tgz
+        version: 0.15.0
       '@cowprotocol/common-const':
         specifier: workspace:*
         version: link:../common-const
@@ -1738,8 +1771,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@safe-global/api-kit':
         specifier: 4.2.0
         version: 4.2.0(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -1772,8 +1805,8 @@ importers:
   libs/currency:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       jsbi:
         specifier: 3.2.5
         version: 3.2.5
@@ -1793,8 +1826,8 @@ importers:
         specifier: workspace:*
         version: link:../common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1821,11 +1854,11 @@ importers:
   libs/events:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.6
-        version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.12
+        version: 4.4.12(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/types':
         specifier: workspace:*
         version: link:../types
@@ -1851,8 +1884,8 @@ importers:
         specifier: workspace:*
         version: link:../common-const
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/cowswap-abis':
         specifier: workspace:*
         version: link:../abis
@@ -1885,8 +1918,8 @@ importers:
         specifier: 1.5.2
         version: 1.5.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/hook-dapp-lib':
         specifier: workspace:*
         version: link:../hook-dapp-lib
@@ -1961,8 +1994,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2034,14 +2067,14 @@ importers:
   libs/types:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
       '@cowprotocol/sdk-bridging':
-        specifier: 4.4.6
-        version: 4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 4.4.12
+        version: 4.4.12(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       eventemitter3:
         specifier: 4.0.7
         version: 4.0.7
@@ -2070,8 +2103,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2188,8 +2221,8 @@ importers:
         specifier: workspace:*
         version: link:../core
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/currency':
         specifier: workspace:*
         version: link:../currency
@@ -2313,8 +2346,8 @@ importers:
   libs/widget-lib:
     dependencies:
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.10
-        version: 9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.15
+        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../events
@@ -3285,8 +3318,8 @@ packages:
   '@corex/deepmerge@4.0.43':
     resolution: {integrity: sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==}
 
-  '@cowprotocol/cms@0.11.0':
-    resolution: {integrity: sha512-QpvqGf3RyZHD9eF12ISbb33uByYVGlCq49KNUNr8bxuMl9qhdZU50s/VOEA5X6FsXWFePXA2Zp71SUuMsEbXFg==}
+  '@cowprotocol/cms@0.15.0':
+    resolution: {integrity: sha512-u5L3wHyc8C23XK2mdJYbmNdIaJXGNjO2c/vbrfQEQFF8qIwZlUcJIHJtd0JwUWXlhGUoPTtimBkIW3Eal1kK8A==}
 
   '@cowprotocol/cow-runner-game@0.2.9':
     resolution: {integrity: sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==}
@@ -3309,8 +3342,8 @@ packages:
       multiformats:
         optional: true
 
-  '@cowprotocol/cow-sdk@9.2.10':
-    resolution: {integrity: sha512-2o/AIOqu07Iag+SneGBekhzv95DFaETt2qNMUY4NkKye3M1+ahU5qIkR06NxB8geFt0JDrwbq3UiETlrsyy8Dw==}
+  '@cowprotocol/cow-sdk@9.2.15':
+    resolution: {integrity: sha512-xZLRFoSso3t1ARh3LPIAGsUu7jA9D3UbRnO1oy/Q1w6ejBYLf0Do6N77wq4Yvh7sOLRch8W6Sc6t6KveZ4Z60A==}
     peerDependencies:
       '@openzeppelin/merkle-tree': ^1.x
       cross-fetch: ^3.x
@@ -3362,17 +3395,17 @@ packages:
       ajv: ^8.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-app-data@6.0.3':
-    resolution: {integrity: sha512-p/KKTMxM0NN/yBWCtF9cuMxi4P8GYUlVaz9sp/l6TE2qDcg/N2IJJVpbh+gmk5uausa989F8Q5k1g2MxKJ5hmw==}
+  '@cowprotocol/sdk-app-data@6.0.7':
+    resolution: {integrity: sha512-06CXOw85b2yLJZ/C1rjQB6dP5HcFcGG9x68aqCmLotVWjxAp7aynkZl8t+4X2YpH+JKLzxkaMphrYh2ok00nMw==}
     peerDependencies:
       ajv: ^8.x
       multiformats: ^9.x
 
+  '@cowprotocol/sdk-bridging@4.4.12':
+    resolution: {integrity: sha512-0hsGEPN2ugukuSk/vK6P1xT31TRK6A1nHWJDfAHOnrtQL/QT0YqEwZrjGAaTYBVBB14ZbipQQT0wxXNRuz6/0w==}
+
   '@cowprotocol/sdk-bridging@4.4.3':
     resolution: {integrity: sha512-jcCLjgY7PZPrB7oAKGQZG6y0gJBJ3BnD3tq+GvCyO6Nbn3pItOkmLgqE4ioX7ToPhGb42QwvfxfzTtRaCZr4Mw==}
-
-  '@cowprotocol/sdk-bridging@4.4.6':
-    resolution: {integrity: sha512-31HqcvHWGx5SghVGBLn2GtVaSWXh6+6al8ICagBMVXxVF52je2gEy/gGyd0/Ckq+leoYdLxMwmTdreCG15JmWg==}
 
   '@cowprotocol/sdk-common@0.10.1':
     resolution: {integrity: sha512-2EYpgXDwD0F5KR9W+jT2Vr/vzaJ8meAvEPm4fGjJUVr2otrUkhUG7ayx68L1AgKZWYzDtNrlM/+1EeyEjjEaWg==}
@@ -3380,11 +3413,11 @@ packages:
   '@cowprotocol/sdk-common@0.12.1':
     resolution: {integrity: sha512-eh8o2b8iLHNRnS7ATRDNOkISp67KHV7JDzYn1qd/reCVPLlnN/lRDnNomT+A8uPU1aYV2eNkCkbLyTkkQ5bT4g==}
 
-  '@cowprotocol/sdk-common@0.12.3':
-    resolution: {integrity: sha512-2FRTKMS1yoiLpTTRgk1U8rUa7x7LhM/AXZjQWRMTJt6QCQjS9PzNIMCmCrrC7w0cZaXfS+BVQgK277wOuwa3pw==}
+  '@cowprotocol/sdk-common@0.14.1':
+    resolution: {integrity: sha512-lPsqiMUi7LoL4Uqx+lP/sYODZAu72Grz9+RTGze7/+nK6v+MDOAG12GfBjx0g5fd57NzaVE1g5swQaVzPHOi1g==}
 
-  '@cowprotocol/sdk-composable@1.6.1':
-    resolution: {integrity: sha512-0wK/O1UN2LkNrmE05iIPF6C1Ul083OL8wcF1puSmQlx1Y9G1HljSsfM8cvdoY99cNL7A1e/1/NYmBRkLlMNj1g==}
+  '@cowprotocol/sdk-composable@1.8.2':
+    resolution: {integrity: sha512-OJSA9498/WGVCrntmztUCl5Op8ccWCLpY439BTumyI8gTEAgtqaAGQXx/gOtZ0n0SeVoCumbsfdqvaMFZGV9gQ==}
 
   '@cowprotocol/sdk-config@1.2.0':
     resolution: {integrity: sha512-upZ2OPycc+rikwAnfNt58qBMlYb+7zpFPzG6zT/sfE50FS1f2ba4SMtw37HVq+v0e9R32o/rWZFcDZT5Ty5yyQ==}
@@ -3392,8 +3425,8 @@ packages:
   '@cowprotocol/sdk-config@2.4.0':
     resolution: {integrity: sha512-NMJOqq3LfIjlFFUHd4zbx3Rc3YJl/oCklEaAxw10VHVDNMFMqcdK3tR6W9CPTILR8zAv5DDy1C2cPErXpcrzkQ==}
 
-  '@cowprotocol/sdk-config@2.6.0':
-    resolution: {integrity: sha512-G6sXNaE85fnMFk1Vo28jgswttvmbO2akdL/ek+FUjljrKKU/pPKdgWINeOpjfZjSZVQBM1xz97tePjuovZUycA==}
+  '@cowprotocol/sdk-config@2.7.1':
+    resolution: {integrity: sha512-odE8bmrSIl2x1DOQg1N109Jb28AAW/Qjvn98qn+l3MqmfOexxSzyNdxqOK3aRXbaat9TmsmOL2MUnZD8pS7SFg==}
 
   '@cowprotocol/sdk-contracts-ts@2.5.0':
     resolution: {integrity: sha512-UZSmqUO+XPwxQ/w75nwkLBK/sjUHdYgWBPhA4EV5x8y5XdBm5Dk8UqrLUemgAAVKwuXaWcoqhkoJWKrV2/gqGQ==}
@@ -3401,14 +3434,14 @@ packages:
   '@cowprotocol/sdk-contracts-ts@3.4.0':
     resolution: {integrity: sha512-mPnwaUp0rLX6o8dH9hXZoA0Nj5kpPaQMGePTpxq+DfggZc4Y17d6Re2rzaHJMoWMDm9zG+82xIXQnn4JWEwK7A==}
 
-  '@cowprotocol/sdk-contracts-ts@3.5.1':
-    resolution: {integrity: sha512-cTafpX8JP2O6QVnh+vCPH/APJOoPV19JqsCMVU2w6f6yzcB7M74sVxFN7urQSl7nBuBc8eGaW9624B/kQcRGKQ==}
+  '@cowprotocol/sdk-contracts-ts@3.7.1':
+    resolution: {integrity: sha512-aSANpZNrJpNlz4QT3pvikpMfZH5NkQkdGEw+ISXtE+17clREtu/PkbvIb+jMMOSdgxycqJe9A9FlBswMv08HpA==}
 
   '@cowprotocol/sdk-cow-shed@0.4.6':
     resolution: {integrity: sha512-cTtCyiLhbXtBGdRbeb33guHgeOt30wHYS5QkXsZozxVtofaLSX/0qT+52s88Jz6KpMGhbA01o3ipw56hhr5e+A==}
 
-  '@cowprotocol/sdk-cow-shed@0.4.8':
-    resolution: {integrity: sha512-SM8uyPVUWq2ifz7W050MuRe+xbCuU8zthw/ev3RFVp6P5XUMkXVn77JR+F6fIU9sa2pf2lI8WdkG1Nu6bdnN+w==}
+  '@cowprotocol/sdk-cow-shed@0.6.1':
+    resolution: {integrity: sha512-HmBb1rp/vw9bdno958t+NHCEZMGmKRlhjR/Yw3iSKl6jYLVpu84kR4A7q8zq6U/cxGeK/Nl/5yt+D9/lm9Ymrw==}
 
   '@cowprotocol/sdk-order-book@2.1.0':
     resolution: {integrity: sha512-mbWNDV2hRnd9wXT7n5/HOw8RufprusLVOW+Du/u/3syLApDaPUjtUvqTzEg3n3qxeqccAz99OeCW2i8BojUL9A==}
@@ -3416,23 +3449,23 @@ packages:
   '@cowprotocol/sdk-order-book@4.0.2':
     resolution: {integrity: sha512-IuR6LARLtIrfRNkEqgPRkK5/1HRpR3+YktbkfqrH8B3Bi2YzMQxRVxu+N8KtEdC5fbHvkLixKKDDwN2gKAI3bA==}
 
-  '@cowprotocol/sdk-order-book@4.0.4':
-    resolution: {integrity: sha512-gSXqQ8Nvl0lkhdswZ4TtZVoagzFe2ynTblKh/Cw9Y2L5vUxS9DbBjbIPuEbwvKAx5zsx5C77h2xysJtgqeE/uA==}
+  '@cowprotocol/sdk-order-book@4.2.0':
+    resolution: {integrity: sha512-99QZYQt/tW0dq3nLbTgO9wVVUNxBKmij2IHb1ar9cxn53ulyOvmTk7cJhPdG7bPRpjPONlkc9FTKh4gcu6r+/g==}
 
   '@cowprotocol/sdk-order-signing@0.3.0':
     resolution: {integrity: sha512-7+SVwsxW7tMipXhu+Se1pzvKm9XfSvHMNZbF28t0VCKigA39bUY9n5LZ6KLF9GTejswK6Rn/BKo6f7sl0RjKFw==}
 
+  '@cowprotocol/sdk-order-signing@1.1.14':
+    resolution: {integrity: sha512-yWPMLqaBkaXVdg8cQkwkYOv66CI38ELc+r5i4WfDhdWGdP33Yvy28KM0QhcSiUQ/WYAwZ8EyKBVVaKRVvYwi3Q==}
+
   '@cowprotocol/sdk-order-signing@1.1.7':
     resolution: {integrity: sha512-0n1/Jsk/YHWfXoTx7IC9T5sCDd5NllRotkptjcV7cUWXS8HZVaUuw0EI+17gFHd/S+dro5s8e8Bmydvxq//8XQ==}
 
-  '@cowprotocol/sdk-order-signing@1.1.9':
-    resolution: {integrity: sha512-1j+5sQWSRiQk4DoNXn9bn8bwVZI6mcoffNrUo4+R5FJ06bqeEn9YP8L6+jIQLgFBFbzUdzskqtwWa3MvvAUSMA==}
+  '@cowprotocol/sdk-subgraph@1.2.7':
+    resolution: {integrity: sha512-bzDVonhU1GkWjwnhsYAASFFZoyOO6ABxqZW2XP5odBWdpR6l4TE6xYGk6stR7XmXCdp55iZYv7YvtVM6tyuX0Q==}
 
-  '@cowprotocol/sdk-subgraph@1.2.3':
-    resolution: {integrity: sha512-DtZFJBieWvyRc/UCInXaRDNs7KVjTo4Pae3gbN/17O1eVthvmVmevV4WCE4H2nYnVO2GL7NtEl+e7UCFFAArgQ==}
-
-  '@cowprotocol/sdk-trading-solana@0.5.1':
-    resolution: {integrity: sha512-RuU+PVhL4dHdzoV0mNJ4Omssyv1v3CQX8ah5fs2e0iCDSKaOim54LTAgA6Y0lehms2NU4DJKbMUrIA43s76Xlg==}
+  '@cowprotocol/sdk-trading-solana@0.12.0':
+    resolution: {integrity: sha512-Uy0+nKyaoDeG5IYf/Jv+NDW9aFwQ8jfJz1rG/QlhUFFs9JV1KSonuGjom6v11/AbSaj72ZM8jPgx1epJ6iGmhA==}
 
   '@cowprotocol/sdk-trading@1.3.0':
     resolution: {integrity: sha512-xzBwRWCSTPoKDyc2DjgjMhvE2vUMkSkag3hGNTLDb8smJD0zTVhk0oruEQiX7T0MrgGgwgenxeF4ZpywtWhAZg==}
@@ -3440,19 +3473,19 @@ packages:
   '@cowprotocol/sdk-trading@2.3.0':
     resolution: {integrity: sha512-fuDfMTN/7t4PzXe0vcAHS09sEBMJqYIHx5gDgWMI65kMo9xnVJwHXHXV5nF2OpaTkvyOb6Z9CT7TIsSEmIAWrw==}
 
-  '@cowprotocol/sdk-trading@2.4.2':
-    resolution: {integrity: sha512-YBvCXqg+EgU9MQU+IZCxcwfQ6d1YqGM+zWqnIBw3m+wuluSQfYIsIvcizih3LxRI7DLF5Foi6Nt9WRctxuTW6w==}
+  '@cowprotocol/sdk-trading@2.7.2':
+    resolution: {integrity: sha512-mf1ttsg64nIxYtGyeiwpbMCTvdbjypk3QEaUgRVjniJ3hWNCEQksq1KQZamb4HazUfdSO9dfwnywq/B+j1X9tg==}
 
-  '@cowprotocol/sdk-viem-adapter@0.3.28':
-    resolution: {integrity: sha512-57Nzd42qqPk2u6mx2fj+3CidGXk1kCvd95+gK1YqlVUOpSP9mhFKVht0sNRYg7WsqRb8fD17nsCabmPxF6D40A==}
+  '@cowprotocol/sdk-viem-adapter@0.3.32':
+    resolution: {integrity: sha512-031z+FttM0v4EBFuHuiO97k6oN+r9XiWewzaC9ljvbd8Qku+OKWJffrZOrB6IhMAMQNfB33pArQdbb8VcGGIsw==}
     peerDependencies:
       viem: 2.48.8
 
   '@cowprotocol/sdk-weiroll@0.2.2':
     resolution: {integrity: sha512-zsU/LM3PR/fQqsg3y6wY3mu1vLlB6+TSqWOdsCihT05bhGI+a7L8ZgCqkRRgiWksuqOog4IS6dsVaikNObmYpw==}
 
-  '@cowprotocol/sdk-weiroll@0.2.4':
-    resolution: {integrity: sha512-y+wO/5eqsEYCak4z1RvPVyp9G3ZOUuls6tRGUkvgYBCdsvs8mRgPvUgLoaUR3ZjXaAsWaXD0GhbGwrphSdOf7g==}
+  '@cowprotocol/sdk-weiroll@0.2.8':
+    resolution: {integrity: sha512-8AK90t8+SzfdHTteoZ1hZwAUlzvG7kKDKDdpFvKYU9cGvc+gx/x51ez4wUWcecI4PuvugE22PAyQMXxcEQBsew==}
 
   '@cowprotocol/types@1.2.0':
     resolution: {integrity: sha512-K/jOyLtffgEFs52hRKX7tyDHtIA3asnsB9So6lINCPfNetr1GhM818+kf+f3sPtOHWsBpL3pTkjJphzDVCQntQ==}
@@ -3570,6 +3603,9 @@ packages:
 
   '@emnapi/runtime@1.10.0':
     resolution: {integrity: sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==}
+
+  '@emnapi/runtime@1.11.3':
+    resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
 
   '@emnapi/wasi-threads@1.1.0':
     resolution: {integrity: sha512-WI0DdZ8xFSbgMjR1sFsKABJ/C5OnRrjT06JXbZKexJGrDuPTzZdDYfFlsgcCXCyf+suG5QU2e/y1Wo2V/OapLQ==}
@@ -4697,14 +4733,36 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@img/sharp-darwin-arm64@0.35.5':
+    resolution: {integrity: sha512-QRUlFQ0WxvdWyqqG/WtI3iupfD5rBzmCHXSdPsY91sAtVtTo7Q4cb6zOccZ3gqEqkr0f1As1ehLqmEpDsRf+lg==}
+    engines: {node: '>=20.9.0'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@img/sharp-darwin-x64@0.34.5':
     resolution: {integrity: sha512-YNEFAF/4KQ/PeW0N+r+aVVsoIY0/qxxikF2SWdp+NRkmMB7y9LBZAVqQ4yhGCm/H3H270OSykqmQMKLBhBJDEw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [x64]
     os: [darwin]
 
+  '@img/sharp-darwin-x64@0.35.5':
+    resolution: {integrity: sha512-+BR255RhDlpygUpOc/Jdt1nT6DQ3XG/ERo5wbcdOf5Q320dKtPCKPLR1LJs9VGXRaMa8l1uUa0tkCNOXiAxZUw==}
+    engines: {node: '>=20.9.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@img/sharp-freebsd-wasm32@0.35.5':
+    resolution: {integrity: sha512-Y/z91nEZ4uIBX5X3nfTovjU9lHNKFYbL2lpHCLVNmXQK03VIZvXBBt0KxbPGp2SdGSF+2mQU4e+hQaWOt86iAw==}
+    engines: {node: '>=20.9.0'}
+    os: [freebsd]
+
   '@img/sharp-libvips-darwin-arm64@1.2.4':
     resolution: {integrity: sha512-zqjjo7RatFfFoP0MkQ51jfuFZBnVE2pRiaydKJ1G/rHZvnsrHAOcQALIi9sA5co5xenQdTugCvtb1cuf78Vf4g==}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@img/sharp-libvips-darwin-arm64@1.3.4':
+    resolution: {integrity: sha512-5R89nBYiRdUlSWJxPhO+GVtaXzXSxKnRu/xqMn3KTA3L9EB9Oy/P+Nn2f2vlhPuUdy/Zusb2DarbyTpGCfEDuw==}
     cpu: [arm64]
     os: [darwin]
 
@@ -4713,8 +4771,19 @@ packages:
     cpu: [x64]
     os: [darwin]
 
+  '@img/sharp-libvips-darwin-x64@1.3.4':
+    resolution: {integrity: sha512-iR2OKH80yi0U+dUplyh3/xdpFvps6YkCwsXenIJxqxR1v9o+xtKTGbS9H7cps+2Vxjc8B1j96p75NmTGjIhtpQ==}
+    cpu: [x64]
+    os: [darwin]
+
   '@img/sharp-libvips-linux-arm64@1.2.4':
     resolution: {integrity: sha512-excjX8DfsIcJ10x1Kzr4RcWe1edC9PquDRRPx3YVCvQv+U5p7Yin2s32ftzikXojb1PIFc/9Mt28/y+iRklkrw==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-libvips-linux-arm64@1.3.4':
+    resolution: {integrity: sha512-Y3dgX/6lE2QhQb+Gxy0WZxfg9MEm/JBjamZpS2IklP7xIQoKN4hzAm7KcMVGtaVDt3neE9OKBC7vAfonA/Lr1A==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
@@ -4725,8 +4794,20 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-libvips-linux-arm@1.3.4':
+    resolution: {integrity: sha512-LmRtTsOHuvM2+wlO2Db37dx5MiZhB0FvSunciw48YjdOkZz9KAiRbm8ujeMOA1INqmei5NapFxYEK1D1ZSidmw==}
+    cpu: [arm]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-libvips-linux-ppc64@1.2.4':
     resolution: {integrity: sha512-FMuvGijLDYG6lW+b/UvyilUWu5Ayu+3r2d1S8notiGCIyYU/76eig1UfMmkZ7vwgOrzKzlQbFSuQfgm7GYUPpA==}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-libvips-linux-ppc64@1.3.4':
+    resolution: {integrity: sha512-Le6boB8Tai0Nis+gIxIpKx68UDVVIqdR8Tin5Yf1z2LJJQLDJvCDRqRu+jC2qCoD+eIomonmOwB4smBRxfVpYQ==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
@@ -4737,8 +4818,20 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-libvips-linux-riscv64@1.3.4':
+    resolution: {integrity: sha512-aHkkIEHPRdQEegJN20MLmGtxYD9R2wQr3Cwpddnu5+YKMt6Uzax7S9h5gpZTo8wyrGuZSlfQ63OevL5mTyOC7Q==}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-libvips-linux-s390x@1.2.4':
     resolution: {integrity: sha512-qmp9VrzgPgMoGZyPvrQHqk02uyjA0/QrTO26Tqk6l4ZV0MPWIW6LTkqOIov+J1yEu7MbFQaDpwdwJKhbJvuRxQ==}
+    cpu: [s390x]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-libvips-linux-s390x@1.3.4':
+    resolution: {integrity: sha512-ra/mB6MikESDUO7Yg+Mi95bFBb9GsObURuhnOv3OqknjGe9sZrG8tCe9q0xSIGrtLgvgw0gKnFWcK4blSgQOuQ==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
@@ -4749,14 +4842,32 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-libvips-linux-x64@1.3.4':
+    resolution: {integrity: sha512-GJ//SSXbnwSDes02umB3nDJLFcQzw8a18V8fyhqr6tV515tOEMdImjjxj1AoafMRz56F3PHgftnj1QEKSU1zkw==}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-libvips-linuxmusl-arm64@1.2.4':
     resolution: {integrity: sha512-FVQHuwx1IIuNow9QAbYUzJ+En8KcVm9Lk5+uGUQJHaZmMECZmOlix9HnH7n1TRkXMS0pGxIJokIVB9SuqZGGXw==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
+  '@img/sharp-libvips-linuxmusl-arm64@1.3.4':
+    resolution: {integrity: sha512-hvulFwtjUcagsis6BBxHwGFwWoNZjgYmULGVrZcyfNbjA8hKILbRxGg15/7w5HDyXHXUos/j6baAWqnCyQ2DWA==}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@img/sharp-libvips-linuxmusl-x64@1.2.4':
     resolution: {integrity: sha512-+LpyBk7L44ZIXwz/VYfglaX/okxezESc6UxDSoyo2Ks6Jxc4Y7sGjpgU9s4PMgqgjj1gZCylTieNamqA1MF7Dg==}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@img/sharp-libvips-linuxmusl-x64@1.3.4':
+    resolution: {integrity: sha512-6zXKeE/p39I1AmA3cJG35eyBGNqNddLnUXjhwBnsGjFPWqf5VKkDBEqaEkPDoTEtkxwi2vv8Tcr2mDyP4So7Fg==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
@@ -4768,9 +4879,23 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-linux-arm64@0.35.5':
+    resolution: {integrity: sha512-LYVx5JTsOM2CBzmxreh+nl64/3H6Xb09iSLknqH47z2T2DFFxDeFLP5y4dJwe6H7uGQlHPyEEtIqyo3DYsRwdQ==}
+    engines: {node: '>=20.9.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-linux-arm@0.34.5':
     resolution: {integrity: sha512-9dLqsvwtg1uuXBGZKsxem9595+ujv0sJ6Vi8wcTANSFpwV/GONat5eCkzQo/1O6zRIkh0m/8+5BjrRr7jDUSZw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [arm]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-linux-arm@0.35.5':
+    resolution: {integrity: sha512-LEaXK2WdXVK5ykcw0buWyPMsmLLL2vpHLD6yrNSW+JGEL3BZPA4tpKN6iaMc4AxTTAoaX/sU1rOL51lcIz48ZQ==}
+    engines: {node: '>=20.9.0'}
     cpu: [arm]
     os: [linux]
     libc: [glibc]
@@ -4782,9 +4907,23 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-linux-ppc64@0.35.5':
+    resolution: {integrity: sha512-QVxAAq8evVRI9ia2vqgwrmWucn5Dfv+JdWzj75pD8omHLPSP7f8p20O8jxzjCcuCEQEOtYOZUmX1hkiZ0kdevA==}
+    engines: {node: '>=20.9.0'}
+    cpu: [ppc64]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-linux-riscv64@0.34.5':
     resolution: {integrity: sha512-51gJuLPTKa7piYPaVs8GmByo7/U7/7TZOq+cnXJIHZKavIRHAP77e3N2HEl3dgiqdD/w0yUfiJnII77PuDDFdw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [riscv64]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-linux-riscv64@0.35.5':
+    resolution: {integrity: sha512-LtdreXguaavKODPIfzJ4kffx7UNt1omwtK0rch4EBbbSTXPnxWmYSayXdLJw0fJzQ97kHt1gL/yh4tvU+nCyRQ==}
+    engines: {node: '>=20.9.0'}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
@@ -4796,9 +4935,23 @@ packages:
     os: [linux]
     libc: [glibc]
 
+  '@img/sharp-linux-s390x@0.35.5':
+    resolution: {integrity: sha512-UZasTOFiYzotTsGOCu42BfUzP6Tu6Do/947iRm1RsLKvlllxwGcn4RN27LibGWceix4Y+Pmw3jsnTcCQIgWjqA==}
+    engines: {node: '>=20.9.0'}
+    cpu: [s390x]
+    os: [linux]
+    libc: [glibc]
+
   '@img/sharp-linux-x64@0.34.5':
     resolution: {integrity: sha512-MEzd8HPKxVxVenwAa+JRPwEC7QFjoPWuS5NZnBt6B3pu7EG2Ge0id1oLHZpPJdn3OQK+BQDiw9zStiHBTJQQQQ==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@img/sharp-linux-x64@0.35.5':
+    resolution: {integrity: sha512-SxFtLTeJInhAA9Q836kux2vZNeOBQEx658qvbboZScr0wIARym3IcGmW7KpVD5sbVg0Ojy+udFQdayYIZyoNog==}
+    engines: {node: '>=20.9.0'}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
@@ -4810,9 +4963,23 @@ packages:
     os: [linux]
     libc: [musl]
 
+  '@img/sharp-linuxmusl-arm64@0.35.5':
+    resolution: {integrity: sha512-9HbMclmI1zlNkFRs3z9/eBtDjfD0sGlrX1z6b1qwmiFY5ElDLh4BC0LPBdVp7z1DXFiKlIcznf+ZlsuZzLxQqg==}
+    engines: {node: '>=20.9.0'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@img/sharp-linuxmusl-x64@0.34.5':
     resolution: {integrity: sha512-Jg8wNT1MUzIvhBFxViqrEhWDGzqymo3sV7z7ZsaWbZNDLXRJZoRGrjulp60YYtV4wfY8VIKcWidjojlLcWrd8Q==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
+  '@img/sharp-linuxmusl-x64@0.35.5':
+    resolution: {integrity: sha512-4KOphqB035HrVdqLZfCgMzzERrQkkzOwRhl4OAkRO1YCldbaFjySXMaK534Mo0V+LndnlJk+sbUyLeU0ULyD1A==}
+    engines: {node: '>=20.9.0'}
     cpu: [x64]
     os: [linux]
     libc: [musl]
@@ -4822,9 +4989,24 @@ packages:
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
     cpu: [wasm32]
 
+  '@img/sharp-wasm32@0.35.5':
+    resolution: {integrity: sha512-Ptsga1su4tQx+LLF1ECS9U6nz5kmrXKo6XVbtR48Ke3ZRxxgaWBu7IDtEe1quo8hiupwm6WFqxVlXaSf7IINGQ==}
+    engines: {node: '>=20.9.0'}
+
+  '@img/sharp-webcontainers-wasm32@0.35.5':
+    resolution: {integrity: sha512-hfhF/FmoQyTUkA0bIKFOtw536BQSeBMe6BF6QyWlrPxT754+TFLaZ7sKKTfvvM0yJgKgaYTwnFCIZ/GuDw5SUA==}
+    engines: {node: '>=20.9.0'}
+    cpu: [wasm32]
+
   '@img/sharp-win32-arm64@0.34.5':
     resolution: {integrity: sha512-WQ3AgWCWYSb2yt+IG8mnC6Jdk9Whs7O0gxphblsLvdhSpSTtmu69ZG1Gkb6NuvxsNACwiPV6cNSZNzt0KPsw7g==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [arm64]
+    os: [win32]
+
+  '@img/sharp-win32-arm64@0.35.5':
+    resolution: {integrity: sha512-X4t7g+7ZA5DKblCBEXGjUqqemj4vczING/5viFwAL8h4N3qYeyjwdCvRLHi4EdOUI+2Z7UFlp1VM+p/AuEtm6Q==}
+    engines: {node: '>=20.9.0'}
     cpu: [arm64]
     os: [win32]
 
@@ -4834,9 +5016,21 @@ packages:
     cpu: [ia32]
     os: [win32]
 
+  '@img/sharp-win32-ia32@0.35.5':
+    resolution: {integrity: sha512-5Zm82LoBc43nhwNybZlG7Y1KO//Zhsn306fQl29ZOuStHLGTo3BWL83q3cznX0poxSAMuYL1On/BHBxkBeKr6A==}
+    engines: {node: ^20.9.0}
+    cpu: [ia32]
+    os: [win32]
+
   '@img/sharp-win32-x64@0.34.5':
     resolution: {integrity: sha512-+29YMsqY2/9eFEiW93eqWnuLcWcufowXewwSNIT6UwZdUUCrM3oFjMWH/Z6/TMmb4hlFenmfAVbpWeup2jryCw==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
+    cpu: [x64]
+    os: [win32]
+
+  '@img/sharp-win32-x64@0.35.5':
+    resolution: {integrity: sha512-x76eH0vEiHlcMQu8Y8IenntaACtddpT6W0wmXtWrnKcnKI7ME5DdgqhAD6SEWOEl1v2zDvkZDhFA9KnURwpfqg==}
+    engines: {node: '>=20.9.0'}
     cpu: [x64]
     os: [win32]
 
@@ -5670,6 +5864,9 @@ packages:
   '@next/env@15.5.18':
     resolution: {integrity: sha512-hAV85Ckd9QR6RvH04MEKwsfLTksvFpO47j9xwtoIuvuPnlwecpSi+uZTtm8HirVbtlI2Fnz//xpcSTjFdyJk+g==}
 
+  '@next/env@16.3.6':
+    resolution: {integrity: sha512-x9Vblze1EbtltQYnNH38xCPWU3TVfBd1eXqA3+w9+BTpedkkdNpAaltXlGQ/nsc1+E0mVTNrtcbX3GoO09zeLQ==}
+
   '@next/eslint-plugin-next@16.1.5':
     resolution: {integrity: sha512-gUWcEsOl+1W7XakmouClcJ0TNFCkblvDUho31wulbDY9na0C6mGtBTSXGRU5GXJY65GjGj0zNaCD/GaBp888Mg==}
 
@@ -5682,14 +5879,33 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@next/swc-darwin-arm64@16.3.6':
+    resolution: {integrity: sha512-E/7GEqaUkt8mk/T8v9lAnrhzR06kdq1ZBkC12F8tAMkdIadwNp3H1KqHynDHrpcTlGCUdq/qu6vUL2aYVyYBdw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@next/swc-darwin-x64@15.5.18':
     resolution: {integrity: sha512-znn71QmDuxm+BOaglihMZfvyySMnNljkVIY5Z2TCssBmm+WqL6c19VhtH5ktFkHa8EZ2bnTUpcNcmNSQsg67og==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [darwin]
 
+  '@next/swc-darwin-x64@16.3.6':
+    resolution: {integrity: sha512-yBE893/nDWTlaiBD1p+qgt7NUen4U5R6FXyH0s67Npq1S3E0cVSef1WIXC2xBRgQvwAvJq6DnS6Y6PrY0cy4Ew==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [darwin]
+
   '@next/swc-linux-arm64-gnu@15.5.18':
     resolution: {integrity: sha512-yPPe5MNL+igZUa+OsqQJisqSfh6oarIuA1Q0BDxljGJhRQyZeP+WRHh7rs/jZUGMh5aY0YdIjXZG0VohkKkUdw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [glibc]
+
+  '@next/swc-linux-arm64-gnu@16.3.6':
+    resolution: {integrity: sha512-KJDpjBqBPYlvkivmyrp+Qys6k/7ksbqGQvRVc6ZEGfR+cjQxx+nUkJaWmNZJsmoOrqYNbaXByF8wa0lBwDhB3Q==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [linux]
@@ -5702,8 +5918,22 @@ packages:
     os: [linux]
     libc: [musl]
 
+  '@next/swc-linux-arm64-musl@16.3.6':
+    resolution: {integrity: sha512-mqNg2K+hvWskSRb/QM+Ix412DvBsuSF0XV+frTSw5vmoucNnIlynFwKYew8D01bfATErMOM7Bujrf0BA5DRKFA==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [linux]
+    libc: [musl]
+
   '@next/swc-linux-x64-gnu@15.5.18':
     resolution: {integrity: sha512-oUfg2EgJmU3R0OCOWiokGFUTvZiPfXtriXiuF3YNxRoROCdgvTedHIzYoeKH34gsZxS/V7mHbfq2hpAHwhH1/A==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [glibc]
+
+  '@next/swc-linux-x64-gnu@16.3.6':
+    resolution: {integrity: sha512-nFncBNGAYouRHjRVaITs9beZRfhX4ssVwpnvPIAbkZVH6LtGoAVlH4bJ8Cnf9SOo9bsXgPFer/GdHtEE3JNOkw==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [linux]
@@ -5716,14 +5946,33 @@ packages:
     os: [linux]
     libc: [musl]
 
+  '@next/swc-linux-x64-musl@16.3.6':
+    resolution: {integrity: sha512-5Mf3cHDGR/Iz0ng2Bj3zUR3p5QS9YK3Hn2QiAfavFmyF48zwThAjpFoiTKNIcOHLYS4zEk+gzyJ/9deQ2ZB8yQ==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [linux]
+    libc: [musl]
+
   '@next/swc-win32-arm64-msvc@15.5.18':
     resolution: {integrity: sha512-ir1v7enP52K2HNz3tQQvwF+x7VNxBk1ciiZ18WBPvxf4C59IqdfmHPJYK3vH7rSxpuCVw/8C712wTXNAtEp+NA==}
     engines: {node: '>= 10'}
     cpu: [arm64]
     os: [win32]
 
+  '@next/swc-win32-arm64-msvc@16.3.6':
+    resolution: {integrity: sha512-0jkJy0C2kbrJWTk4YLa3xk80pVBpx8FCHJym7CnUfDAXe/FWv5qT7SQJbR0KuemyxaEDlEx5WT4VQJoTW+/9Qw==}
+    engines: {node: '>= 10'}
+    cpu: [arm64]
+    os: [win32]
+
   '@next/swc-win32-x64-msvc@15.5.18':
     resolution: {integrity: sha512-LIu5me6QTANCd25E7I5uIEfvgQ06RK7tvHAbYo3zCb3VpxQEPvMcSpd87NwUABDT6MbGPdEGR5VRiK4PPTJhQg==}
+    engines: {node: '>= 10'}
+    cpu: [x64]
+    os: [win32]
+
+  '@next/swc-win32-x64-msvc@16.3.6':
+    resolution: {integrity: sha512-/YXjI1e5OXcZ7YpxRwgP/1jAV/SBKTzeVKqN2mk7mLpcICsyn3Gl5+dIfDTJp70M0ccMhyMMRso4v6mPDCGepg==}
     engines: {node: '>= 10'}
     cpu: [x64]
     os: [win32]
@@ -7698,6 +7947,9 @@ packages:
   '@swc/helpers@0.5.17':
     resolution: {integrity: sha512-5IKx/Y13RsYd+sauPb2x+U/xZikHjolzfuDgTAl/Tdf3Q8rslRvC19NKDLgAJQ6wsqADk10ntlv08nPFw/gO/A==}
 
+  '@swc/helpers@0.5.23':
+    resolution: {integrity: sha512-5lSsMOTXURePglDfvuAQUqkGek9Hg2kksOYay2m0+XR++b2NWYL/4sWyuvVBIs8oKnJaxkdi9whaL/sqN13afw==}
+
   '@swc/plugin-styled-components@9.1.0':
     resolution: {integrity: sha512-c0eVq3KLZq614zMRu3HcJ9BR/2ZFEn4j42Oyo3zsKxiMP2w33CQOAO4IqQ+BhK8EKnpIptbpGEGfBsIF7H2U4w==}
 
@@ -9437,6 +9689,11 @@ packages:
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
+
+  baseline-browser-mapping@2.11.26:
+    resolution: {integrity: sha512-GLQdD3y6UF8iVuMJl5fHgE4jdn/ua7n+toKfLgNlg3BqQtOZjpy68T8Tup8/wGWZCDlm7KMg7tPb4MPn7oN0TQ==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
 
   baseline-browser-mapping@2.9.18:
     resolution: {integrity: sha512-e23vBV1ZLfjb9apvfPk4rHVu2ry6RIr2Wfs+O324okSidrX7pTAnEJPCh/O5BtRlr7QtZI7ktOP3vsqr7Z5XoA==}
@@ -14098,6 +14355,11 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
+  nanoid@3.3.19:
+    resolution: {integrity: sha512-Y2tUNy4ouw6tq5oDSKeQYGOyhkUBhNOcGV/02KC+6kd9eDGqdZd++mjMiIDilrBYvjEnCYvVtsuHCuP+okSfug==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
   napi-postinstall@0.3.4:
     resolution: {integrity: sha512-PHI5f1O0EP5xJ9gQmFGMS6IZcrVvTjpXjz7Na41gTE7eE2hK11lg04CECCYEEjdc17EV4DO+fkGEtt7TpTaTiQ==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
@@ -14135,6 +14397,27 @@ packages:
   next@15.5.18:
     resolution: {integrity: sha512-eKL8zUJkX9Y5lE+RX/2YJoItVdGlIscyVyboeD9wSpp0PaGqjoA4tTpT2qPqz9ax+5IzGESyLSeZ/RCwbSZ2uQ==}
     engines: {node: ^18.18.0 || ^19.8.0 || >= 20.0.0}
+    hasBin: true
+    peerDependencies:
+      '@opentelemetry/api': ^1.1.0
+      '@playwright/test': ^1.51.1
+      babel-plugin-react-compiler: '*'
+      react: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      react-dom: ^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0
+      sass: ^1.3.0
+    peerDependenciesMeta:
+      '@opentelemetry/api':
+        optional: true
+      '@playwright/test':
+        optional: true
+      babel-plugin-react-compiler:
+        optional: true
+      sass:
+        optional: true
+
+  next@16.3.6:
+    resolution: {integrity: sha512-L+otWM/aQbYTx98aZhgEoMb4bZAXx1YVW4UMA/vuCyCoWG5HJyZUili8QAkqzrcC+5///tsz3s0M+SlyB5bLMw==}
+    engines: {node: '>=20.9.0'}
     hasBin: true
     peerDependencies:
       '@opentelemetry/api': ^1.1.0
@@ -14947,6 +15230,10 @@ packages:
 
   postcss@8.4.31:
     resolution: {integrity: sha512-PS08Iboia9mts/2ygV3eLpY5ghnUcfLV/EXTOW1E2qYxJKGGBUtNjN76FYHnMs36RmARn41bC0AZmn+rR0OVpQ==}
+    engines: {node: ^10 || ^12 || >=14}
+
+  postcss@8.5.23:
+    resolution: {integrity: sha512-g50586zr4bZmwFiTlflMu8E0bDTb5I5gertgwAKmsdUlTQIhZtunzUlD1WSzwcVWPoAVpsrA6vlfCD7oXvRwgg==}
     engines: {node: ^10 || ^12 || >=14}
 
   postcss@8.5.6:
@@ -16084,6 +16371,15 @@ packages:
     resolution: {integrity: sha512-Ou9I5Ft9WNcCbXrU9cMgPBcCK8LiwLqcbywW3t4oDV37n1pzpuNLsYiAV8eODnjbtQlSDwZ2cUEeQz4E54Hltg==}
     engines: {node: ^18.17.0 || ^20.3.0 || >=21.0.0}
 
+  sharp@0.35.5:
+    resolution: {integrity: sha512-Ywn4OnzGukp7CDMrp08RQ50YKmuwG47brZgIVPTvBaaAfQlRlygrRqSrxdCiL9M+LlzLBiJ68IR1QqvzHyjC7g==}
+    engines: {node: '>=20.9.0'}
+    peerDependencies:
+      '@types/node': '*'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -16246,8 +16542,8 @@ packages:
   spdx-expression-parse@3.0.1:
     resolution: {integrity: sha512-cbqHunsQWnJNE6KhVSMsMeH5H/L9EpymbzqTQ3uLwNCLZ1Q481oWaofqH7nO6V07xlXwY6PhQdQ2IedWx/ZK4Q==}
 
-  spdx-license-ids@3.0.23:
-    resolution: {integrity: sha512-CWLcCCH7VLu13TgOH+r8p1O/Znwhqv/dbb6lqWy67G+pT1kHmeD/+V36AVb/vq8QMIQwVShJ6Ssl5FPh0fuSdw==}
+  spdx-license-ids@3.0.24:
+    resolution: {integrity: sha512-cLS9TtWkIQFyLkJ3/5aFQAOHOSKTlOs/7WDut/XPSdjom1fJhUdkepeJAKXa9Y05+FabHd0sti+Et559vDtkpQ==}
 
   spdy-transport@3.0.0:
     resolution: {integrity: sha512-hsLVFE5SjA6TCisWeJXFKniGGOpBgMLmerfO2aCyCU5s7nJ/rpAepqmFifv/GCbSbueEeAJJnmSQ2rKC/g8Fcw==}
@@ -19549,7 +19845,7 @@ snapshots:
 
   '@corex/deepmerge@4.0.43': {}
 
-  '@cowprotocol/cms@0.11.0':
+  '@cowprotocol/cms@0.15.0':
     dependencies:
       openapi-fetch: 0.9.5
 
@@ -19576,15 +19872,15 @@ snapshots:
       - ajv
       - encoding
 
-  '@cowprotocol/cow-sdk@9.2.10(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/cow-sdk@9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 6.0.3(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.9(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.4.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.14(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       cross-fetch: 4.0.0(encoding@0.1.13)
     optionalDependencies:
       '@openzeppelin/merkle-tree': 1.0.8
@@ -19668,12 +19964,30 @@ snapshots:
       json-stringify-deterministic: 1.0.12
       multiformats: 14.0.0
 
-  '@cowprotocol/sdk-app-data@6.0.3(ajv@8.17.1)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-app-data@6.0.7(ajv@8.17.1)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
+      '@cowprotocol/sdk-common': 0.14.1
       ajv: 8.17.1
       json-stringify-deterministic: 1.0.12
       multiformats: 14.0.0
+
+  '@cowprotocol/sdk-bridging@4.4.12(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
+    dependencies:
+      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
+      '@cowprotocol/sdk-cow-shed': 0.6.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-weiroll': 0.2.8
+      '@defuse-protocol/one-click-sdk-typescript': 0.1.25
+      json-stable-stringify: 1.3.0
+    transitivePeerDependencies:
+      - ajv
+      - debug
+      - encoding
+      - multiformats
 
   '@cowprotocol/sdk-bridging@4.4.3(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
@@ -19693,24 +20007,6 @@ snapshots:
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-bridging@4.4.6(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 6.0.3(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
-      '@cowprotocol/sdk-cow-shed': 0.4.8
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.4.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
-      '@cowprotocol/sdk-weiroll': 0.2.4
-      '@defuse-protocol/one-click-sdk-typescript': 0.1.25
-      json-stable-stringify: 1.3.0
-    transitivePeerDependencies:
-      - ajv
-      - debug
-      - encoding
-      - multiformats
-
   '@cowprotocol/sdk-common@0.10.1':
     dependencies:
       '@cowprotocol/sdk-config': 1.2.0
@@ -19719,17 +20015,18 @@ snapshots:
     dependencies:
       '@cowprotocol/sdk-config': 2.4.0
 
-  '@cowprotocol/sdk-common@0.12.3':
+  '@cowprotocol/sdk-common@0.14.1':
     dependencies:
-      '@cowprotocol/sdk-config': 2.6.0
+      '@cowprotocol/sdk-config': 2.7.1
 
-  '@cowprotocol/sdk-composable@1.6.1(encoding@0.1.13)(typescript@5.9.3)':
+  '@cowprotocol/sdk-composable@1.8.2(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.9(encoding@0.1.13)
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
+      '@cowprotocol/sdk-cow-shed': 0.6.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.14(encoding@0.1.13)
       '@openzeppelin/merkle-tree': 1.0.8
       valibot: 1.4.2(typescript@5.9.3)
     transitivePeerDependencies:
@@ -19747,7 +20044,7 @@ snapshots:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
 
-  '@cowprotocol/sdk-config@2.6.0':
+  '@cowprotocol/sdk-config@2.7.1':
     dependencies:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
@@ -19762,10 +20059,10 @@ snapshots:
       '@cowprotocol/sdk-common': 0.12.1
       '@cowprotocol/sdk-config': 2.4.0
 
-  '@cowprotocol/sdk-contracts-ts@3.5.1':
+  '@cowprotocol/sdk-contracts-ts@3.7.1':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
 
   '@cowprotocol/sdk-cow-shed@0.4.6':
     dependencies:
@@ -19773,11 +20070,11 @@ snapshots:
       '@cowprotocol/sdk-config': 2.4.0
       '@cowprotocol/sdk-contracts-ts': 3.4.0
 
-  '@cowprotocol/sdk-cow-shed@0.4.8':
+  '@cowprotocol/sdk-cow-shed@0.6.1':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
 
   '@cowprotocol/sdk-order-book@2.1.0(encoding@0.1.13)':
     dependencies:
@@ -19799,10 +20096,10 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-book@4.0.4(encoding@0.1.13)':
+  '@cowprotocol/sdk-order-book@4.2.0(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
       cross-fetch: 3.2.0(encoding@0.1.13)
       exponential-backoff: 3.1.3
       limiter: 3.0.0
@@ -19818,6 +20115,15 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@cowprotocol/sdk-order-signing@1.1.14(encoding@0.1.13)':
+    dependencies:
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+    transitivePeerDependencies:
+      - encoding
+
   '@cowprotocol/sdk-order-signing@1.1.7(encoding@0.1.13)':
     dependencies:
       '@cowprotocol/sdk-common': 0.12.1
@@ -19827,31 +20133,26 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-signing@1.1.9(encoding@0.1.13)':
+  '@cowprotocol/sdk-subgraph@1.2.7(encoding@0.1.13)':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  '@cowprotocol/sdk-subgraph@1.2.3(encoding@0.1.13)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
       graphql: 16.12.0
       graphql-request: 4.3.0(encoding@0.1.13)(graphql@16.12.0)
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-trading-solana@0.5.1(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@cowprotocol/sdk-trading-solana@0.12.0(ajv@8.17.1)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(multiformats@14.0.0)(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.4.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+      '@cowprotocol/sdk-trading': 2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
+      '@noble/hashes': 1.8.0
       '@solana/spl-token': 0.4.14(@solana/web3.js@1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10))(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@solana/web3.js': 1.98.4(bufferutil@4.0.8)(encoding@0.1.13)(typescript@5.9.3)(utf-8-validate@5.0.10)
+      deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
       - bufferutil
@@ -19891,23 +20192,23 @@ snapshots:
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-trading@2.4.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
+  '@cowprotocol/sdk-trading@2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
-      '@cowprotocol/sdk-app-data': 6.0.3(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
-      '@cowprotocol/sdk-contracts-ts': 3.5.1
-      '@cowprotocol/sdk-order-book': 4.0.4(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.9(encoding@0.1.13)
+      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
+      '@cowprotocol/sdk-contracts-ts': 3.7.1
+      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
+      '@cowprotocol/sdk-order-signing': 1.1.14(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
       - encoding
       - multiformats
 
-  '@cowprotocol/sdk-viem-adapter@0.3.28(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
+  '@cowprotocol/sdk-viem-adapter@0.3.32(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
+      '@cowprotocol/sdk-common': 0.14.1
       viem: 2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
 
   '@cowprotocol/sdk-weiroll@0.2.2':
@@ -19915,10 +20216,10 @@ snapshots:
       '@cowprotocol/sdk-common': 0.12.1
       '@cowprotocol/sdk-config': 2.4.0
 
-  '@cowprotocol/sdk-weiroll@0.2.4':
+  '@cowprotocol/sdk-weiroll@0.2.8':
     dependencies:
-      '@cowprotocol/sdk-common': 0.12.3
-      '@cowprotocol/sdk-config': 2.6.0
+      '@cowprotocol/sdk-common': 0.14.1
+      '@cowprotocol/sdk-config': 2.7.1
 
   '@cowprotocol/types@1.2.0': {}
 
@@ -20052,9 +20353,9 @@ snapshots:
     dependencies:
       '@csstools/css-tokenizer': 3.0.4
 
-  '@csstools/css-syntax-patches-for-csstree@1.0.14(postcss@8.5.6)':
+  '@csstools/css-syntax-patches-for-csstree@1.0.14(postcss@8.5.23)':
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.5.23
 
   '@csstools/css-tokenizer@3.0.4': {}
 
@@ -20112,6 +20413,11 @@ snapshots:
   '@emnapi/runtime@1.10.0':
     dependencies:
       tslib: 2.8.1
+
+  '@emnapi/runtime@1.11.3':
+    dependencies:
+      tslib: 2.8.1
+    optional: true
 
   '@emnapi/wasi-threads@1.1.0':
     dependencies:
@@ -21109,39 +21415,84 @@ snapshots:
       '@img/sharp-libvips-darwin-arm64': 1.2.4
     optional: true
 
+  '@img/sharp-darwin-arm64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-darwin-arm64': 1.3.4
+    optional: true
+
   '@img/sharp-darwin-x64@0.34.5':
     optionalDependencies:
       '@img/sharp-libvips-darwin-x64': 1.2.4
     optional: true
 
+  '@img/sharp-darwin-x64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-darwin-x64': 1.3.4
+    optional: true
+
+  '@img/sharp-freebsd-wasm32@0.35.5':
+    dependencies:
+      '@img/sharp-wasm32': 0.35.5
+    optional: true
+
   '@img/sharp-libvips-darwin-arm64@1.2.4':
+    optional: true
+
+  '@img/sharp-libvips-darwin-arm64@1.3.4':
     optional: true
 
   '@img/sharp-libvips-darwin-x64@1.2.4':
     optional: true
 
+  '@img/sharp-libvips-darwin-x64@1.3.4':
+    optional: true
+
   '@img/sharp-libvips-linux-arm64@1.2.4':
+    optional: true
+
+  '@img/sharp-libvips-linux-arm64@1.3.4':
     optional: true
 
   '@img/sharp-libvips-linux-arm@1.2.4':
     optional: true
 
+  '@img/sharp-libvips-linux-arm@1.3.4':
+    optional: true
+
   '@img/sharp-libvips-linux-ppc64@1.2.4':
+    optional: true
+
+  '@img/sharp-libvips-linux-ppc64@1.3.4':
     optional: true
 
   '@img/sharp-libvips-linux-riscv64@1.2.4':
     optional: true
 
+  '@img/sharp-libvips-linux-riscv64@1.3.4':
+    optional: true
+
   '@img/sharp-libvips-linux-s390x@1.2.4':
+    optional: true
+
+  '@img/sharp-libvips-linux-s390x@1.3.4':
     optional: true
 
   '@img/sharp-libvips-linux-x64@1.2.4':
     optional: true
 
+  '@img/sharp-libvips-linux-x64@1.3.4':
+    optional: true
+
   '@img/sharp-libvips-linuxmusl-arm64@1.2.4':
     optional: true
 
+  '@img/sharp-libvips-linuxmusl-arm64@1.3.4':
+    optional: true
+
   '@img/sharp-libvips-linuxmusl-x64@1.2.4':
+    optional: true
+
+  '@img/sharp-libvips-linuxmusl-x64@1.3.4':
     optional: true
 
   '@img/sharp-linux-arm64@0.34.5':
@@ -21149,9 +21500,19 @@ snapshots:
       '@img/sharp-libvips-linux-arm64': 1.2.4
     optional: true
 
+  '@img/sharp-linux-arm64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-arm64': 1.3.4
+    optional: true
+
   '@img/sharp-linux-arm@0.34.5':
     optionalDependencies:
       '@img/sharp-libvips-linux-arm': 1.2.4
+    optional: true
+
+  '@img/sharp-linux-arm@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-arm': 1.3.4
     optional: true
 
   '@img/sharp-linux-ppc64@0.34.5':
@@ -21159,9 +21520,19 @@ snapshots:
       '@img/sharp-libvips-linux-ppc64': 1.2.4
     optional: true
 
+  '@img/sharp-linux-ppc64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-ppc64': 1.3.4
+    optional: true
+
   '@img/sharp-linux-riscv64@0.34.5':
     optionalDependencies:
       '@img/sharp-libvips-linux-riscv64': 1.2.4
+    optional: true
+
+  '@img/sharp-linux-riscv64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-riscv64': 1.3.4
     optional: true
 
   '@img/sharp-linux-s390x@0.34.5':
@@ -21169,9 +21540,19 @@ snapshots:
       '@img/sharp-libvips-linux-s390x': 1.2.4
     optional: true
 
+  '@img/sharp-linux-s390x@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-s390x': 1.3.4
+    optional: true
+
   '@img/sharp-linux-x64@0.34.5':
     optionalDependencies:
       '@img/sharp-libvips-linux-x64': 1.2.4
+    optional: true
+
+  '@img/sharp-linux-x64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linux-x64': 1.3.4
     optional: true
 
   '@img/sharp-linuxmusl-arm64@0.34.5':
@@ -21179,9 +21560,19 @@ snapshots:
       '@img/sharp-libvips-linuxmusl-arm64': 1.2.4
     optional: true
 
+  '@img/sharp-linuxmusl-arm64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linuxmusl-arm64': 1.3.4
+    optional: true
+
   '@img/sharp-linuxmusl-x64@0.34.5':
     optionalDependencies:
       '@img/sharp-libvips-linuxmusl-x64': 1.2.4
+    optional: true
+
+  '@img/sharp-linuxmusl-x64@0.35.5':
+    optionalDependencies:
+      '@img/sharp-libvips-linuxmusl-x64': 1.3.4
     optional: true
 
   '@img/sharp-wasm32@0.34.5':
@@ -21189,13 +21580,32 @@ snapshots:
       '@emnapi/runtime': 1.10.0
     optional: true
 
+  '@img/sharp-wasm32@0.35.5':
+    dependencies:
+      '@emnapi/runtime': 1.11.3
+    optional: true
+
+  '@img/sharp-webcontainers-wasm32@0.35.5':
+    dependencies:
+      '@img/sharp-wasm32': 0.35.5
+    optional: true
+
   '@img/sharp-win32-arm64@0.34.5':
+    optional: true
+
+  '@img/sharp-win32-arm64@0.35.5':
     optional: true
 
   '@img/sharp-win32-ia32@0.34.5':
     optional: true
 
+  '@img/sharp-win32-ia32@0.35.5':
+    optional: true
+
   '@img/sharp-win32-x64@0.34.5':
+    optional: true
+
+  '@img/sharp-win32-x64@0.35.5':
     optional: true
 
   '@inquirer/external-editor@1.0.3(@types/node@24.7.1)':
@@ -22451,6 +22861,8 @@ snapshots:
 
   '@next/env@15.5.18': {}
 
+  '@next/env@16.3.6': {}
+
   '@next/eslint-plugin-next@16.1.5':
     dependencies:
       fast-glob: 3.3.1
@@ -22462,25 +22874,49 @@ snapshots:
   '@next/swc-darwin-arm64@15.5.18':
     optional: true
 
+  '@next/swc-darwin-arm64@16.3.6':
+    optional: true
+
   '@next/swc-darwin-x64@15.5.18':
+    optional: true
+
+  '@next/swc-darwin-x64@16.3.6':
     optional: true
 
   '@next/swc-linux-arm64-gnu@15.5.18':
     optional: true
 
+  '@next/swc-linux-arm64-gnu@16.3.6':
+    optional: true
+
   '@next/swc-linux-arm64-musl@15.5.18':
+    optional: true
+
+  '@next/swc-linux-arm64-musl@16.3.6':
     optional: true
 
   '@next/swc-linux-x64-gnu@15.5.18':
     optional: true
 
+  '@next/swc-linux-x64-gnu@16.3.6':
+    optional: true
+
   '@next/swc-linux-x64-musl@15.5.18':
+    optional: true
+
+  '@next/swc-linux-x64-musl@16.3.6':
     optional: true
 
   '@next/swc-win32-arm64-msvc@15.5.18':
     optional: true
 
+  '@next/swc-win32-arm64-msvc@16.3.6':
+    optional: true
+
   '@next/swc-win32-x64-msvc@15.5.18':
+    optional: true
+
+  '@next/swc-win32-x64-msvc@16.3.6':
     optional: true
 
   '@noble/ciphers@1.3.0': {}
@@ -22864,7 +23300,7 @@ snapshots:
       tsconfig-paths: 4.2.0
       tslib: 2.8.1
       vite: 7.3.1(@types/node@24.7.1)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
-      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
+      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -22884,7 +23320,7 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       vite: 7.3.1(@types/node@24.7.1)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
-      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
+      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@babel/traverse'
       - '@swc-node/register'
@@ -25461,6 +25897,26 @@ snapshots:
       '@swc/core-win32-x64-msvc': 1.15.26
       '@swc/helpers': 0.5.17
 
+  '@swc/core@1.15.26(@swc/helpers@0.5.23)':
+    dependencies:
+      '@swc/counter': 0.1.3
+      '@swc/types': 0.1.26
+    optionalDependencies:
+      '@swc/core-darwin-arm64': 1.15.26
+      '@swc/core-darwin-x64': 1.15.26
+      '@swc/core-linux-arm-gnueabihf': 1.15.26
+      '@swc/core-linux-arm64-gnu': 1.15.26
+      '@swc/core-linux-arm64-musl': 1.15.26
+      '@swc/core-linux-ppc64-gnu': 1.15.26
+      '@swc/core-linux-s390x-gnu': 1.15.26
+      '@swc/core-linux-x64-gnu': 1.15.26
+      '@swc/core-linux-x64-musl': 1.15.26
+      '@swc/core-win32-arm64-msvc': 1.15.26
+      '@swc/core-win32-ia32-msvc': 1.15.26
+      '@swc/core-win32-x64-msvc': 1.15.26
+      '@swc/helpers': 0.5.23
+    optional: true
+
   '@swc/counter@0.1.3': {}
 
   '@swc/helpers@0.5.15':
@@ -25468,6 +25924,10 @@ snapshots:
       tslib: 2.8.1
 
   '@swc/helpers@0.5.17':
+    dependencies:
+      tslib: 2.8.1
+
+  '@swc/helpers@0.5.23':
     dependencies:
       tslib: 2.8.1
 
@@ -25496,7 +25956,7 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@synthetixio/synpress-cache@0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)':
+  '@synthetixio/synpress-cache@0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.23))(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)':
     dependencies:
       axios: 1.6.7
       chalk: 5.3.0
@@ -25507,7 +25967,7 @@ snapshots:
       gradient-string: 2.0.2
       playwright-core: 1.48.2
       progress: 2.0.3
-      tsup: 8.0.2(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
+      tsup: 8.0.2(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.23))(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
       unzipper: 0.10.14
       zod: 3.25.76
     transitivePeerDependencies:
@@ -25523,10 +25983,10 @@ snapshots:
     dependencies:
       '@playwright/test': 1.49.1
 
-  '@synthetixio/synpress-metamask@0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)':
+  '@synthetixio/synpress-metamask@0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.23))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)':
     dependencies:
       '@playwright/test': 1.49.1
-      '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
+      '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.23))(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
       '@synthetixio/synpress-core': 0.0.11(@playwright/test@1.49.1)
       '@viem/anvil': 0.0.7(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       fs-extra: 11.2.0
@@ -25543,13 +26003,13 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@synthetixio/synpress@4.0.10(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
+  '@synthetixio/synpress@4.0.10(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.23))(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)':
     dependencies:
       '@playwright/test': 1.49.1
       '@synthetixio/ethereum-wallet-mock': 0.0.11(@depay/solana-web3.js@1.98.3)(@depay/web3-blockchains@9.8.13)(@playwright/test@1.49.1)(bufferutil@4.0.8)(ethers@6.16.0(bufferutil@4.0.8)(utf-8-validate@5.0.10))(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
-      '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
+      '@synthetixio/synpress-cache': 0.0.11(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.23))(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)
       '@synthetixio/synpress-core': 0.0.11(@playwright/test@1.49.1)
-      '@synthetixio/synpress-metamask': 0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.17))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)
+      '@synthetixio/synpress-metamask': 0.0.11(patch_hash=100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f)(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@playwright/test@1.49.1)(@swc/core@1.15.26(@swc/helpers@0.5.23))(bufferutil@4.0.8)(playwright-core@1.48.2)(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - '@depay/solana-web3.js'
       - '@depay/web3-blockchains'
@@ -26623,7 +27083,7 @@ snapshots:
       magic-string: 0.30.21
       picocolors: 1.1.1
       std-env: 3.10.0
-      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
+      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
 
   '@vitest/expect@3.2.4':
     dependencies:
@@ -26684,7 +27144,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
+      vitest: 4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -27895,6 +28355,8 @@ snapshots:
 
   base64-js@1.5.1: {}
 
+  baseline-browser-mapping@2.11.26: {}
+
   baseline-browser-mapping@2.9.18: {}
 
   basic-auth@2.0.1:
@@ -28941,10 +29403,10 @@ snapshots:
       '@asamuzakjp/css-color': 3.1.7
       rrweb-cssom: 0.8.0
 
-  cssstyle@5.3.1(postcss@8.5.6):
+  cssstyle@5.3.1(postcss@8.5.23):
     dependencies:
       '@asamuzakjp/css-color': 4.0.5
-      '@csstools/css-syntax-patches-for-csstree': 1.0.14(postcss@8.5.6)
+      '@csstools/css-syntax-patches-for-csstree': 1.0.14(postcss@8.5.23)
       css-tree: 3.1.0
     transitivePeerDependencies:
       - postcss
@@ -32375,10 +32837,10 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10):
+  jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10):
     dependencies:
       '@asamuzakjp/dom-selector': 6.6.1
-      cssstyle: 5.3.1(postcss@8.5.6)
+      cssstyle: 5.3.1(postcss@8.5.23)
       data-urls: 6.0.0
       decimal.js: 10.5.0
       html-encoding-sniffer: 4.0.0
@@ -33600,6 +34062,8 @@ snapshots:
 
   nanoid@3.3.11: {}
 
+  nanoid@3.3.19: {}
+
   napi-postinstall@0.3.4: {}
 
   natural-compare@1.4.0: {}
@@ -33648,6 +34112,32 @@ snapshots:
       sharp: 0.34.5
     transitivePeerDependencies:
       - '@babel/core'
+      - babel-plugin-macros
+
+  next@16.3.6(@babel/core@7.28.4)(@types/node@24.7.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)(sass@1.88.0):
+    dependencies:
+      '@next/env': 16.3.6
+      '@swc/helpers': 0.5.23
+      baseline-browser-mapping: 2.11.26
+      caniuse-lite: 1.0.30001766
+      postcss: 8.5.23
+      react: 19.1.2
+      react-dom: 19.1.2(react@19.1.2)
+      styled-jsx: 5.1.6(@babel/core@7.28.4)(babel-plugin-macros@3.1.0)(react@19.1.2)
+    optionalDependencies:
+      '@next/swc-darwin-arm64': 16.3.6
+      '@next/swc-darwin-x64': 16.3.6
+      '@next/swc-linux-arm64-gnu': 16.3.6
+      '@next/swc-linux-arm64-musl': 16.3.6
+      '@next/swc-linux-x64-gnu': 16.3.6
+      '@next/swc-linux-x64-musl': 16.3.6
+      '@next/swc-win32-arm64-msvc': 16.3.6
+      '@next/swc-win32-x64-msvc': 16.3.6
+      sass: 1.88.0
+      sharp: 0.35.5(@types/node@24.7.1)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@types/node'
       - babel-plugin-macros
 
   no-case@3.0.4:
@@ -34409,13 +34899,13 @@ snapshots:
       read-cache: 1.0.0
       resolve: 1.22.11
 
-  postcss-load-config@4.0.2(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3)):
+  postcss-load-config@4.0.2(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3)):
     dependencies:
       lilconfig: 3.1.1
       yaml: 2.8.1
     optionalDependencies:
-      postcss: 8.5.6
-      ts-node: 10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3)
+      postcss: 8.5.23
+      ts-node: 10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3)
 
   postcss-loader@6.2.1(postcss@8.5.6)(webpack@5.102.1(@swc/core@1.15.26(@swc/helpers@0.5.17))):
     dependencies:
@@ -34584,6 +35074,12 @@ snapshots:
   postcss@8.4.31:
     dependencies:
       nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+
+  postcss@8.5.23:
+    dependencies:
+      nanoid: 3.3.19
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
@@ -35895,6 +36391,40 @@ snapshots:
       '@img/sharp-win32-x64': 0.34.5
     optional: true
 
+  sharp@0.35.5(@types/node@24.7.1):
+    dependencies:
+      '@img/colour': 1.1.0
+      detect-libc: 2.1.2
+      semver: 7.8.0
+    optionalDependencies:
+      '@img/sharp-darwin-arm64': 0.35.5
+      '@img/sharp-darwin-x64': 0.35.5
+      '@img/sharp-freebsd-wasm32': 0.35.5
+      '@img/sharp-libvips-darwin-arm64': 1.3.4
+      '@img/sharp-libvips-darwin-x64': 1.3.4
+      '@img/sharp-libvips-linux-arm': 1.3.4
+      '@img/sharp-libvips-linux-arm64': 1.3.4
+      '@img/sharp-libvips-linux-ppc64': 1.3.4
+      '@img/sharp-libvips-linux-riscv64': 1.3.4
+      '@img/sharp-libvips-linux-s390x': 1.3.4
+      '@img/sharp-libvips-linux-x64': 1.3.4
+      '@img/sharp-libvips-linuxmusl-arm64': 1.3.4
+      '@img/sharp-libvips-linuxmusl-x64': 1.3.4
+      '@img/sharp-linux-arm': 0.35.5
+      '@img/sharp-linux-arm64': 0.35.5
+      '@img/sharp-linux-ppc64': 0.35.5
+      '@img/sharp-linux-riscv64': 0.35.5
+      '@img/sharp-linux-s390x': 0.35.5
+      '@img/sharp-linux-x64': 0.35.5
+      '@img/sharp-linuxmusl-arm64': 0.35.5
+      '@img/sharp-linuxmusl-x64': 0.35.5
+      '@img/sharp-webcontainers-wasm32': 0.35.5
+      '@img/sharp-win32-arm64': 0.35.5
+      '@img/sharp-win32-ia32': 0.35.5
+      '@img/sharp-win32-x64': 0.35.5
+      '@types/node': 24.7.1
+    optional: true
+
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
@@ -36062,16 +36592,16 @@ snapshots:
   spdx-correct@3.2.0:
     dependencies:
       spdx-expression-parse: 3.0.1
-      spdx-license-ids: 3.0.23
+      spdx-license-ids: 3.0.24
 
   spdx-exceptions@2.5.0: {}
 
   spdx-expression-parse@3.0.1:
     dependencies:
       spdx-exceptions: 2.5.0
-      spdx-license-ids: 3.0.23
+      spdx-license-ids: 3.0.24
 
-  spdx-license-ids@3.0.23: {}
+  spdx-license-ids@3.0.24: {}
 
   spdy-transport@3.0.0:
     dependencies:
@@ -36822,7 +37352,7 @@ snapshots:
     optionalDependencies:
       '@swc/core': 1.15.26(@swc/helpers@0.5.17)
 
-  ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3):
+  ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.12
@@ -36840,7 +37370,7 @@ snapshots:
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     optionalDependencies:
-      '@swc/core': 1.15.26(@swc/helpers@0.5.17)
+      '@swc/core': 1.15.26(@swc/helpers@0.5.23)
     optional: true
 
   tsconfck@3.0.3(typescript@5.9.3):
@@ -36875,7 +37405,7 @@ snapshots:
 
   tsscmp@1.0.6: {}
 
-  tsup@8.0.2(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.17))(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3):
+  tsup@8.0.2(@microsoft/api-extractor@7.52.7(@types/node@25.2.0))(@swc/core@1.15.26(@swc/helpers@0.5.23))(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))(typescript@5.9.3):
     dependencies:
       bundle-require: 4.2.1(esbuild@0.19.12)
       cac: 6.7.14
@@ -36885,7 +37415,7 @@ snapshots:
       execa: 5.1.1
       globby: 11.1.0
       joycon: 3.1.1
-      postcss-load-config: 4.0.2(postcss@8.5.6)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.17))(@types/node@25.2.0)(typescript@5.9.3))
+      postcss-load-config: 4.0.2(postcss@8.5.23)(ts-node@10.9.1(@swc/core@1.15.26(@swc/helpers@0.5.23))(@types/node@25.2.0)(typescript@5.9.3))
       resolve-from: 5.0.0
       rollup: 4.52.4
       source-map: 0.8.0-beta.0
@@ -36893,8 +37423,8 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       '@microsoft/api-extractor': 7.52.7(@types/node@25.2.0)
-      '@swc/core': 1.15.26(@swc/helpers@0.5.17)
-      postcss: 8.5.6
+      '@swc/core': 1.15.26(@swc/helpers@0.5.23)
+      postcss: 8.5.23
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
@@ -37497,7 +38027,7 @@ snapshots:
       tsx: 4.22.0
       yaml: 2.8.1
 
-  vitest@4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1):
+  vitest@4.0.9(@types/debug@4.1.12)(@types/node@24.7.1)(@vitest/ui@4.0.9)(jiti@2.6.1)(jsdom@27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10))(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.9
       '@vitest/mocker': 4.0.9(vite@7.3.1(@types/node@24.7.1)(jiti@2.6.1)(less@4.4.2)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.46.0)(tsx@4.22.0)(yaml@2.8.1))
@@ -37523,7 +38053,7 @@ snapshots:
       '@types/debug': 4.1.12
       '@types/node': 24.7.1
       '@vitest/ui': 4.0.9(vitest@4.0.9)
-      jsdom: 27.0.0(bufferutil@4.0.8)(postcss@8.5.6)(utf-8-validate@5.0.10)
+      jsdom: 27.0.0(bufferutil@4.0.8)(postcss@8.5.23)(utf-8-validate@5.0.10)
     transitivePeerDependencies:
       - jiti
       - less

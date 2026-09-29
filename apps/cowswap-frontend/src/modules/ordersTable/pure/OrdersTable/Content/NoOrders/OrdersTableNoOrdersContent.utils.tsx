@@ -3,7 +3,7 @@ import React from 'react'
 import { AMOUNT_OF_ORDERS_TO_FETCH } from '@cowprotocol/common-const'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { plural, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { TabOrderTypes, OrderTabId } from 'entities/routes/routes.atom'
 
@@ -116,7 +116,14 @@ export function getTitle({
   if (currentTab === OrderTabId.UNFILLABLE) return t`No unfillable orders`
 
   if (currentTab === OrderTabId.OPEN) {
-    return hasMoreOrders ? t`No open orders found in your last ${limit} orders` : t`No open orders found`
+    return hasMoreOrders
+      ? plural(limit, {
+          one: 'No open orders found in your last # order',
+          few: 'No open orders found in your last # orders',
+          many: 'No open orders found in your last # orders',
+          other: 'No open orders found in your last # orders',
+        })
+      : t`No open orders found`
   }
 
   if (currentTab === OrderTabId.SIGNING) return t`No signing orders`

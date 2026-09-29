@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useENSAddress } from '@cowprotocol/ens'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -41,6 +42,7 @@ export function useTradeFormButtonContext(
     quote.error,
   )
   const { error: balancesError } = useTokensBalancesCombined()
+  const { address: recipientEnsAddress } = useENSAddress(derivedState?.recipient)
   const widgetPriceImpactThreshold = injectedWidgetParams?.disableTrade?.whenPriceImpactIsHigherThan
 
   return useMemo(() => {
@@ -50,6 +52,7 @@ export function useTradeFormButtonContext(
       defaultText,
       amountToApprove,
       derivedState,
+      recipientEnsAddress,
       quote,
       isSupportedWallet,
       confirmTrade,
@@ -68,6 +71,7 @@ export function useTradeFormButtonContext(
     defaultText,
     amountToApprove,
     derivedState,
+    recipientEnsAddress,
     quote,
     isSupportedWallet,
     confirmTrade,

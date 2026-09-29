@@ -31,7 +31,7 @@ export function getTabsAndCurrentTab({ hasHydratedOrders, ordersList, tabParam }
     },
     {
       id: OrderTabId.OPEN,
-      title: msg`Open`,
+      title: msg({ message: 'Open', context: 'Orders table tab' }),
       count: ordersList[OrderTabId.OPEN].length,
     },
     {

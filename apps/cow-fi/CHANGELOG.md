@@ -1,5 +1,51 @@
 # Changelog
 
+## [2.15.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.15.0...cow-fi-v2.15.1) (2026-09-29)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.15.0
+  - @cowprotocol/ui@3.15.0
+  - @cowprotocol/analytics@3.13.0
+  - @cowprotocol/events@4.14.0
+  - @cowprotocol/widget-react@3.2.9
+
+## [2.15.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.2...cow-fi-v2.15.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: confirm leaving TWAP flow (#8154)
+
+- feat(cow-fi): add Resources section for programmatic CMS content (#7846)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/analytics@3.12.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/events@4.13.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/wallet@3.14.0
+  - @cowprotocol/widget-react@3.2.8
+
+## [2.14.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.1...cow-fi-v2.14.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/analytics@3.11.2
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ui@3.13.2
+  - @cowprotocol/wallet@3.13.2
+
 ## [2.14.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.14.0...cow-fi-v2.14.1) (2026-09-11)
 
 ### Patch Changes

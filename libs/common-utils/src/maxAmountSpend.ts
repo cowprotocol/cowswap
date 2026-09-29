@@ -5,14 +5,15 @@ import { getIsNativeToken } from './getIsNativeToken'
 
 // Amount of native currency to leave for gas when selling the max amount.
 // Values were derived from researched live gas costs per chain (see PR discussion).
-const MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET: bigint = 10n ** 16n // 0.01 native (Mainnet, Sepolia)
-const MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON: bigint = 10n ** 17n // 0.1 POL (Polygon: high gas price relative to POL's USD value)
-const MIN_NATIVE_CURRENCY_FOR_GAS_MID: bigint = 3n * 10n ** 15n // 0.003 native (BNB Chain, Linea)
-const MIN_NATIVE_CURRENCY_FOR_GAS_LOW: bigint = 10n ** 15n // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
+// Avoid BigInt literals / ** — Webpack/Babel can rewrite them to Math.pow/Number and crash.
+const MIN_NATIVE_CURRENCY_FOR_GAS_MAINNET = BigInt('10000000000000000') // 0.01 native (Mainnet, Sepolia)
+const MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON = BigInt('100000000000000000') // 0.1 POL (Polygon: high gas price relative to POL's USD value)
+const MIN_NATIVE_CURRENCY_FOR_GAS_MID = BigInt('3000000000000000') // 0.003 native (BNB Chain, Linea)
+const MIN_NATIVE_CURRENCY_FOR_GAS_LOW = BigInt('1000000000000000') // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
 // SOL has 9 decimals, unlike the 18-decimal tiers above, so it needs its own value rather than the
 // LOW fallback. Covers the ~5_000 lamport fee plus the 2_039_280 lamport rent-exempt reserve that
 // creating the wrapped-SOL associated token account requires.
-const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA: bigint = 10n ** 7n // 0.01 SOL
+const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA = BigInt('10000000') // 0.01 SOL
 
 // Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.
 const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
@@ -45,7 +46,7 @@ export function maxAmountSpend(
     if (currencyAmount.quotient > minNativeCurrencyForGas) {
       return CurrencyAmount.fromRawAmount(currencyAmount.currency, currencyAmount.quotient - minNativeCurrencyForGas)
     } else {
-      return CurrencyAmount.fromRawAmount(currencyAmount.currency, 0n)
+      return CurrencyAmount.fromRawAmount(currencyAmount.currency, BigInt(0))
     }
   }
   return currencyAmount

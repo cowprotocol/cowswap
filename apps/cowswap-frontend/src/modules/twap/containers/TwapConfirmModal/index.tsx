@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useViewPlacedOrder } from 'modules/ordersTable'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -65,6 +66,9 @@ export function TwapConfirmModal(): ReactNode {
     inputSymbolLabel,
   })
 
+  const dismissSuccessState = useViewPlacedOrder(onDismiss)
+  const onViewOrders = useViewPlacedOrder()
+
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
     onDismiss,
@@ -72,7 +76,7 @@ export function TwapConfirmModal(): ReactNode {
 
   const eoaTwapSigningStepElement =
     steps || isEoaTwapSuccess ? (
-      <EoaTwapSigningPendingContent steps={steps ?? []} buttonProps={buttonProps} onDismiss={onDismiss} />
+      <EoaTwapSigningPendingContent steps={steps ?? []} buttonProps={buttonProps} onViewOrders={dismissSuccessState} />
     ) : null
 
   const titleBadgeElement = badgeProps ? <TwapBadge {...badgeProps} /> : null
@@ -107,7 +111,7 @@ export function TwapConfirmModal(): ReactNode {
 
   return (
     <>
-      <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage>
+      <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage onViewOrders={onViewOrders}>
         <TradeConfirmation
           {...commonTradeConfirmContext}
           title={titleElement}

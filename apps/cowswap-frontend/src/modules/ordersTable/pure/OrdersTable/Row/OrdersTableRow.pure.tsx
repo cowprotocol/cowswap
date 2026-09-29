@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import React, { ReactNode } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { ordersToCancelSetAtom } from 'entities/ordersToCancel/ordersToCancel.atom'
@@ -36,7 +37,9 @@ export function OrdersTableRow({ currentTab, isTwapTable, item }: OrderTableRowP
 
   const { balancesAndAllowances } = ordersTableState
 
-  const isRowSelectable = allowsOffchainSigning && !isTwapTable
+  // Solana has no off-chain (EIP-712) signing concept, so `allowsOffchainSigning` never applies there -
+  // its batch cancellation is a bundled on-chain transaction instead, gated only on being on a Solana chain.
+  const isRowSelectable = (allowsOffchainSigning || isSolanaChain(chainId)) && !isTwapTable
 
   const { inputToken, outputToken } = getParsedOrderFromTableItem(item)
 

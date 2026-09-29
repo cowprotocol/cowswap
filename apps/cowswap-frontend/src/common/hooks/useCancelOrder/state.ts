@@ -4,9 +4,12 @@ import { atomWithReset } from 'jotai/utils'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 
+import type { Order } from 'legacy/state/orders/actions'
+
 import { MAINNET_NATIVE_CURRENCY } from 'lib/hooks/useNativeCurrency'
 
 export type CancellationModalContext = {
+  order?: Order
   chainId: number | null
   orderId: string | null
   error: string | null

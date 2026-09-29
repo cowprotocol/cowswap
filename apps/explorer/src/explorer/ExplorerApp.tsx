@@ -68,7 +68,7 @@ const SearchNotFound = React.lazy(
   () =>
     import(
       /* webpackChunkName: "SearchNotFound_chunk"*/
-      './pages/SearchNotFound'
+      './pages/SearchNotFound.container'
     ),
 )
 

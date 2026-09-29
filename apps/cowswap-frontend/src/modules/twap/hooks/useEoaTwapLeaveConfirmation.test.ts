@@ -9,12 +9,7 @@ jest.mock('./useEoaTwapSigningStep', () => ({ useEoaTwapSigningStep: jest.fn() }
 
 const mockUseEoaTwapSigningStep = useEoaTwapSigningStep as jest.MockedFunction<typeof useEoaTwapSigningStep>
 
-const DEFAULT_PLAN = [
-  EoaTwapSigningSteps.ApprovePoller,
-  EoaTwapSigningSteps.TwapSetup,
-  EoaTwapSigningSteps.TwapSign,
-  EoaTwapSigningSteps.SubmitTwap,
-]
+const DEFAULT_PLAN = [EoaTwapSigningSteps.ApprovePoller, EoaTwapSigningSteps.TwapSign, EoaTwapSigningSteps.SubmitTwap]
 
 describe('useEoaTwapLeaveConfirmation()', () => {
   const onDismiss = jest.fn()

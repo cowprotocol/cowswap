@@ -237,6 +237,9 @@ test.describe('Hooks store', () => {
     // (WETH allowance is unset for this wallet, same describe-block default as every other test
     // here, so the partial/full approval selector renders too) actually becomes enabled, proving
     // this isn't a partially-broken post-reset state that merely looks quoted.
+    // Same collapsed-viewport situation as [CS-129]: the selector renders below the fold at this
+    // viewport, and a plain `expect().toBeVisible()` doesn't scroll like an interaction would.
+    await swapPage.approveModeSelector.scrollIntoViewIfNeeded()
     await expect(swapPage.approveModeSelector).toBeVisible()
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
@@ -349,9 +352,7 @@ test.describe('Hooks store', () => {
         // immediate read.
         const hookLogo = confirmationModal.locator('img[alt="Build your own hook"]')
         await expect(hookLogo).toBeVisible()
-        await expect
-          .poll(() => hookLogo.evaluate((img: HTMLImageElement) => img.naturalWidth), { timeout: 15_000 })
-          .toBeGreaterThan(0)
+        await expect.poll(() => hookLogo.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
         await hookRow.click()
         await expect(confirmationModal.getByText('Simulation successful', { exact: true })).toBeVisible()
 
@@ -361,7 +362,7 @@ test.describe('Hooks store', () => {
 
     await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
     mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, parseUnits('10', 18), 0n)
-    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!', { timeout: 15_000 })
+    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
     await swapPage.page.keyboard.press('Escape')
 
     // `mocks.orders`'s `buildOpenOrder` already echoes the posted `appData` back as `fullAppData`

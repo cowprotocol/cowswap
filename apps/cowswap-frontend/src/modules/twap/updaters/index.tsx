@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 
 import { TradeSpenderOverrideUpdater } from '@cowprotocol/balances-and-allowances'
 import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@cowprotocol/common-utils'
+import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
@@ -36,7 +37,9 @@ export function TwapUpdaters(): ReactNode {
   const spenderAddress = chainId
     ? isSafe
       ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD[chainId]
-      : COMPOSABLE_COW_POLLER_ADDRESS[chainId]
+      : isEvmChain(chainId)
+        ? COMPOSABLE_COW_POLLER_ADDRESS[chainId]
+        : undefined
     : undefined
 
   return (
