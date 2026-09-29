@@ -1,8 +1,8 @@
 import { useMemo, useState, type ReactNode } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { ACCOUNT_PROXY_LABEL_EXPLORER, CHAIN_INFO } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isTwapEventId } from '@cowprotocol/common-utils'
+import { displayTime, isTwapEventId } from '@cowprotocol/common-utils'
 import { areAddressesEqual, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 import { NetworkLogo } from '@cowprotocol/ui'
@@ -18,6 +18,7 @@ import { TokenDisplay } from 'components/common/TokenDisplay'
 import { Notification } from 'components/Notification'
 import { AmountRow } from 'components/orders/AmountsDisplay/AmountRow'
 import { Wrapper as AmountsWrapper } from 'components/orders/AmountsDisplay/styled'
+import { DetailsTableTooltips } from 'components/orders/DetailsTable/detailsTableTooltips'
 import { FromItem } from 'components/orders/DetailsTable/items/FromItem'
 import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/SubmissionTimeItem'
 import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
@@ -81,13 +82,6 @@ export function TwapDetailsPage(): ReactNode {
       {data ? <TwapDetails order={data.order} chainId={data.chainId} /> : null}
     </Wrapper>
   )
-}
-
-function formatSeconds(seconds: number): string {
-  if (seconds % 86_400 === 0) return `${seconds / 86_400}d`
-  if (seconds % 3_600 === 0) return `${seconds / 3_600}h`
-  if (seconds % 60 === 0) return `${seconds / 60}m`
-  return `${seconds}s`
 }
 
 function formatTokenAmount(amount: bigint, token: TokenErc20 | null | undefined, chainId: SupportedChainId): ReactNode {
@@ -193,14 +187,14 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Part duration"
                   tooltipText="The time between the scheduled start of one part and the next."
                 >
-                  {formatSeconds(schedule.timeBetweenParts)}
+                  {displayTime(schedule.timeBetweenParts * 1000, true)}
                 </DetailRow>
                 {schedule.durationOfPart !== 0 && schedule.durationOfPart !== schedule.timeBetweenParts && (
                   <DetailRow
                     label="Execution window"
                     tooltipText="The time available to execute each part order after its scheduled start. This differs from the interval between parts."
                   >
-                    {formatSeconds(schedule.durationOfPart)}
+                    {displayTime(schedule.durationOfPart * 1000, true)}
                   </DetailRow>
                 )}
                 <DetailRow
@@ -238,7 +232,9 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                   label="Costs & Fees"
                   tooltipText="The total execution fees reported for the part orders, in the sell token. This value increases as more parts execute."
                 >
-                  {formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
+                  {executedAmounts.executedFee === 0n
+                    ? '-'
+                    : formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
                 </DetailRow>
                 <TwapAppData appData={schedule.appData} chainId={chainId} />
               </>
@@ -274,10 +270,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
         onCopy={() => undefined}
       />
       {!areAddressesEqual(order.owner, order.resolvedOwner) && (
-        <DetailRow
-          label="TWAP account proxy"
-          tooltipText="The CoW Shed smart contract that owns the part orders on behalf of the account in From. Safe orders omit this row."
-        >
+        <DetailRow label={ACCOUNT_PROXY_LABEL_EXPLORER} tooltipText={DetailsTableTooltips.twapAccountProxy}>
           <RowWithCopyButton
             textToCopy={order.owner}
             contentsToDisplay={<AddressLink address={order.owner} chainId={chainId} showIcon showNetworkName={false} />}

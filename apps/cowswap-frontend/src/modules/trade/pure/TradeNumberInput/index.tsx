@@ -148,7 +148,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
             placeholder={placeholder}
             value={displayedValue}
             onBlur={(e) => {
-              validateInput(e.target.value)
+              validateInput(limitDecimalPlaces(e.target.value, decimalsPlaces))
               setIsFocused(false)
             }}
             onFocus={() => setIsFocused(true)}
@@ -202,4 +202,13 @@ function increaseValue(value: string, step: number, min: number | undefined): st
   }
 
   return min?.toString() || step.toString()
+}
+
+/** Cut extra decimal digits. `10.129` with 2 places stays `10.12`, including a trailing dot. */
+function limitDecimalPlaces(value: string, decimalsPlaces: number): string {
+  if (!decimalsPlaces || !value.includes('.')) return value
+
+  const [quotient, decimals = ''] = value.split('.')
+
+  return `${quotient}.${decimals.slice(0, decimalsPlaces)}`
 }

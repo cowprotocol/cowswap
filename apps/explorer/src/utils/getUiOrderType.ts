@@ -1,4 +1,5 @@
 import { cowAppDataLatestScheme, OrderClass } from '@cowprotocol/cow-sdk'
+import { isEoaTwapPollFundsHook } from '@cowprotocol/hook-dapp-lib'
 
 import { Order } from 'api/operator'
 import { decodeFullAppData } from 'utils/decodeFullAppData'
@@ -45,4 +46,11 @@ export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrd
   // 3. Fallback to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
   return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass]
+}
+
+export function isEoaTwapPartOrder({ fullAppData }: Pick<Order, 'fullAppData'>): boolean {
+  const metadata = decodeFullAppData(fullAppData)?.metadata as cowAppDataLatestScheme.Metadata | undefined
+  const preHooks = metadata?.hooks?.pre
+
+  return preHooks?.some(isEoaTwapPollFundsHook) ?? false
 }

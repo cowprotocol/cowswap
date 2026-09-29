@@ -2,7 +2,6 @@ import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const Row = styled.div`
@@ -35,8 +34,4 @@ export const FooterBox = styled.div`
   ${RateWrapper} {
     text-align: right;
   }
-`
-
-export const ExecutionPriceStyled = styled(ExecutionPrice)`
-  font-size: 16px;
 `
