@@ -50,8 +50,7 @@ export const isSafeViaWcAtom = atom((get) => {
 
 /**
  * True when the wallet is not a Safe (including Safe via WalletConnect).
- * Returns null while the connector or account type loads. A smart account returns false
- * until the Safe lookup confirms it is not a Safe.
+ * Returns null while the connector, account type, or Safe lookup is unresolved.
  */
 export const isEoaAtom = atom((get): boolean | null => {
   const isSafeViaWc = get(isSafeViaWcAtom)
@@ -62,7 +61,9 @@ export const isEoaAtom = atom((get): boolean | null => {
   const accountType = get(accountTypeAtom)
   if (accountType === null) return null
 
-  return accountType !== AccountType.SMART_CONTRACT || get(isKnownNotSafeAtom)
+  if (accountType === AccountType.SMART_CONTRACT && !get(isKnownNotSafeAtom)) return null
+
+  return true
 })
 
 export const accountTypeAsyncAtom = atom(async (get) => {
