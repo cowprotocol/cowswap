@@ -13,9 +13,9 @@ const baseParams = {
   partTime: 300,
   numberOfPartsValue: 1,
   tradeFormValidationContext: null,
-  isWalletSupported: true,
   isTwapEoaEnabled: false,
-  isSafeViaWc: false,
+  isSafeApp: true,
+  isEoa: false,
   isReceiveZeroFromNetworkCosts: false,
 } as const
 
@@ -23,7 +23,8 @@ describe('getTwapFormState()', () => {
   it('returns WALLET_NOT_SUPPORTED for a non-Safe wallet', () => {
     const result = getTwapFormState({
       ...baseParams,
-      isWalletSupported: false,
+      isSafeApp: false,
+      isEoa: true,
       isTxBundlingSupported: true,
       verification: ExtensibleFallbackVerification.HAS_NOTHING,
       sellAmountPartFiat: null,
@@ -108,36 +109,36 @@ describe('getTwapFormState()', () => {
     it('Skips Safe guards when EOA flag is on so unsupported wallets can proceed', () => {
       const result = getTwapFormState({
         ...baseParams,
-        isWalletSupported: false,
+        isSafeApp: false,
+        isEoa: true,
         isTxBundlingSupported: false,
         verification: null,
         isTwapEoaEnabled: true,
-        isSafeViaWc: false,
       })
 
       expect(result).toEqual(null)
     })
 
-    it('Keeps Safe guards for Safe via WalletConnect even when EOA flag is on', () => {
+    it('Blocks Safe via WalletConnect even when EOA flag is on', () => {
       const result = getTwapFormState({
         ...baseParams,
+        isSafeApp: false,
         isTxBundlingSupported: false,
         verification: null,
         isTwapEoaEnabled: true,
-        isSafeViaWc: true,
+        isEoa: false,
       })
 
-      expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
+      expect(result).toEqual(TwapFormState.WALLET_NOT_SUPPORTED)
     })
 
-    it('Keeps Safe guards while Safe-via-WC status is still loading', () => {
+    it('Keeps Safe guards while wallet support is still loading', () => {
       const result = getTwapFormState({
         ...baseParams,
-        isWalletSupported: null,
+        isSafeApp: null,
         isTxBundlingSupported: null,
         verification: null,
         isTwapEoaEnabled: true,
-        isSafeViaWc: null,
       })
 
       expect(result).toEqual(TwapFormState.LOADING_SAFE_INFO)

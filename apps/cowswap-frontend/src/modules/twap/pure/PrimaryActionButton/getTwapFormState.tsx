@@ -12,7 +12,6 @@ import { isPartTimeIntervalTooShort } from '../../utils/isPartTimeIntervalTooSho
 import { isSellAmountTooSmall } from '../../utils/isSellAmountTooSmall'
 
 export interface TwapFormStateParams {
-  isWalletSupported: boolean | null
   isTxBundlingSupported: boolean | null
   verification: ExtensibleFallbackVerification | null
   sellAmountPartFiat: Nullish<CurrencyAmount<Currency>>
@@ -21,7 +20,8 @@ export interface TwapFormStateParams {
   numberOfPartsValue: number
   tradeFormValidationContext: TradeFormValidationContext | null
   isTwapEoaEnabled: boolean
-  isSafeViaWc: boolean | null
+  isSafeApp: boolean | null
+  isEoa: boolean | null
   isReceiveZeroFromNetworkCosts: boolean
 }
 
@@ -38,7 +38,6 @@ export enum TwapFormState {
 
 export function getTwapFormState(props: TwapFormStateParams): TwapFormState | null {
   const {
-    isWalletSupported,
     isTxBundlingSupported,
     verification,
     sellAmountPartFiat,
@@ -47,19 +46,22 @@ export function getTwapFormState(props: TwapFormStateParams): TwapFormState | nu
     tradeFormValidationContext,
     numberOfPartsValue,
     isTwapEoaEnabled,
-    isSafeViaWc,
+    isSafeApp,
+    isEoa,
     isReceiveZeroFromNetworkCosts,
   } = props
 
-  // When TWAP for EOA is enabled, skip Safe/tx-bundling checks so EOAs can review and confirm.
-  // Keep the checks while Safe-via-WC is true or still loading (null), so it is not treated as an EOA.
-  if (!isTwapEoaEnabled || isSafeViaWc !== false) {
-    if (isWalletSupported === false) return TwapFormState.WALLET_NOT_SUPPORTED
+  if (isSafeApp === null) return TwapFormState.LOADING_SAFE_INFO
+
+  if (isSafeApp) {
     if (isTxBundlingSupported === false) return TwapFormState.TX_BUNDLING_NOT_SUPPORTED
 
-    if (verification === null || isTxBundlingSupported === null || isWalletSupported === null) {
+    if (verification === null || isTxBundlingSupported === null) {
       return TwapFormState.LOADING_SAFE_INFO
     }
+  } else {
+    if (!isTwapEoaEnabled || isEoa === false) return TwapFormState.WALLET_NOT_SUPPORTED
+    if (isEoa === null) return TwapFormState.LOADING_SAFE_INFO
   }
 
   if (isSellAmountTooSmall(sellAmountPartFiat, chainId)) {

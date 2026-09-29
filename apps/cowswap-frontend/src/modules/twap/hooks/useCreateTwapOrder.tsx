@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { maxUint256, type Hex } from 'viem'
@@ -12,7 +12,8 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import {
-  useIsSafeViaWc,
+  isEoaAtom,
+  isSafeAppAtom,
   useIsSafeWallet,
   useSendBatchTransactions,
   useWalletDetails,
@@ -111,7 +112,8 @@ export function useCreateTwapOrder() {
   const setOptimisticAllowance = useSetOptimisticAllowance()
   const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeApp = useAtomValue(isSafeAppAtom)
+  const isEoa = useAtomValue(isEoaAtom)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const config = useConfig()
 
@@ -182,11 +184,10 @@ export function useCreateTwapOrder() {
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line max-lines-per-function, complexity
     async (fallbackHandlerIsNotSet: boolean): Promise<boolean | undefined> => {
-      // Safe via WalletConnect is not an EOA. `isSafeWallet` can be false while Safe info is still
-      // loading or the Safe API fails; never route that case into EOA TWAP (cow-shed factory).
-      const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
+      const isSafeTwap = isSafeApp === true && isSafeWallet
+      const isEoaTwap = isSafeApp === false && !!isTwapEoaEnabled && isEoa === true
 
-      if (!isEvmChain(chainId) || (!isSafeWallet && !isEoaTwap)) {
+      if (!isEvmChain(chainId) || (!isSafeTwap && !isEoaTwap)) {
         return
       }
 
@@ -508,7 +509,8 @@ export function useCreateTwapOrder() {
     [
       isTwapEoaEnabled,
       isSafeWallet,
-      isSafeViaWc,
+      isEoa,
+      isSafeApp,
       allowsOffchainSigning,
       config,
       chainId,

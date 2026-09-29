@@ -170,7 +170,7 @@ describe('walletMetadata atoms', () => {
     expect(store.get(isSafeViaWcAtom)).toBe(true)
   })
 
-  it('treats a non-Safe injected wallet as EOA', () => {
+  it('waits for an injected wallet account type before treating it as EOA', () => {
     const store = createStore()
 
     setWalletInfoConnector(
@@ -180,7 +180,7 @@ describe('walletMetadata atoms', () => {
       }),
     )
 
-    expect(store.get(isEoaAtom)).toBe(true)
+    expect(store.get(isEoaAtom)).toBe(null)
   })
 
   it('is not EOA while Safe-via-WC detection is still loading', () => {

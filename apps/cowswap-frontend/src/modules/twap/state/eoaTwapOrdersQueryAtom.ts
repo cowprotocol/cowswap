@@ -1,5 +1,5 @@
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { isSafeViaWcAtom, isSafeWalletAtom, walletInfoAtom } from '@cowprotocol/wallet'
+import { isEoaAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { atomWithQuery, queryClientAtom } from 'jotai-tanstack-query'
 import ms from 'ms.macro'
@@ -37,12 +37,7 @@ export const eoaTwapOrdersQueryAtom = atomWithQuery<EoaTwapOrdersQueryData>((get
 
       return { ...changes, totalCount: previous.totalCount, orders: { ...previous.orders, ...changes.orders } }
     },
-    enabled:
-      get(featureFlagsAtom).isTwapEoaEnabled === true &&
-      !get(isSafeWalletAtom) &&
-      get(isSafeViaWcAtom) === false &&
-      !!chainId &&
-      !!owner,
+    enabled: get(featureFlagsAtom).isTwapEoaEnabled === true && get(isEoaAtom) === true && !!chainId && !!owner,
     placeholderData: (previousData, previousQuery) =>
       previousQuery?.queryKey[1] === chainId && previousQuery.queryKey[2] === owner ? previousData : undefined,
     refetchInterval: EOA_TWAP_ORDERS_UPDATE_INTERVAL,

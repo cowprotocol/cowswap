@@ -5,7 +5,7 @@ import { getPublicClient } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
-import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
+import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
@@ -50,14 +50,19 @@ export const isSafeViaWcAtom = atom((get) => {
 
 /**
  * True when the wallet is not a Safe (including Safe via WalletConnect).
- * While Safe-via-WC detection is still loading, returns null.
+ * Returns null while the connector or account type loads. A smart account returns false
+ * until the Safe lookup confirms it is not a Safe.
  */
 export const isEoaAtom = atom((get): boolean | null => {
   const isSafeViaWc = get(isSafeViaWcAtom)
 
   if (isSafeViaWc === null) return null
+  if (get(isSafeWalletAtom) || isSafeViaWc) return false
 
-  return !get(isSafeWalletAtom) && !isSafeViaWc
+  const accountType = get(accountTypeAtom)
+  if (accountType === null) return null
+
+  return accountType !== AccountType.SMART_CONTRACT || get(isKnownNotSafeAtom)
 })
 
 export const accountTypeAsyncAtom = atom(async (get) => {
