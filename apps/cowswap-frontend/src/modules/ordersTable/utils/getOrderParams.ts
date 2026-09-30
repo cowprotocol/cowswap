@@ -5,6 +5,7 @@ import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getIsAllowanceDeferredToSettlement } from 'utils/orderUtils/getIsAllowanceDeferredToSettlement'
+import { getOrderFundingTokenAddress } from 'utils/orderUtils/getOrderFundingTokenAddress'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -52,7 +53,7 @@ export function getOrderParams(
   }
 
   const { balances, allowances } = balancesAndAllowances
-  const balance = shouldCheckFunding ? balances[getAddressKey(order.inputToken.address)] : undefined
+  const balance = shouldCheckFunding ? balances[getAddressKey(getOrderFundingTokenAddress(chainId, order))] : undefined
   const allowance = shouldCheckFunding ? allowances[getAddressKey(order.inputToken.address)] : undefined
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({

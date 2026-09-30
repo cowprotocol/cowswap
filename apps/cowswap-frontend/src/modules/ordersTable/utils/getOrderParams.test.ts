@@ -1,4 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { getOrderParams } from './getOrderParams'
 
@@ -137,6 +139,39 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, NO_ALLOWANCE, BASE_ORDER)
 
       expect(result.hasEnoughAllowance).toBeUndefined()
+    })
+
+    describe('native sell', () => {
+      const NATIVE_KEY = getAddressKey(NATIVE_CURRENCIES[1].address)
+      const NATIVE_SPONSORED_ORDER = { ...BASE_ORDER, isSponsored: true, isNativeSell: true }
+
+      function withNativeBalance(balance: bigint): BalancesAndAllowances {
+        return { balances: { [NATIVE_KEY]: balance }, allowances: {}, isLoading: false }
+      }
+
+      // The wrap producing the sold WSOL is in the same deferred bundle as the delegation, so the WSOL
+      // balance is still zero while the order rests — the native balance is what actually backs it.
+      it('reads the balance from the native token, not the sold wrapped token', () => {
+        const result = getOrderParams(1, withNativeBalance(BigInt(BASE_ORDER.sellAmount)), NATIVE_SPONSORED_ORDER)
+
+        expect(result.hasEnoughBalance).toBe(true)
+        expect(result.hasEnoughAllowance).toBe(true)
+      })
+
+      it('still reports insufficient native balance', () => {
+        const result = getOrderParams(1, withNativeBalance(0n), NATIVE_SPONSORED_ORDER)
+
+        expect(result.hasEnoughBalance).toBe(false)
+      })
+
+      it('reads the balance from the sold token for a self-paid native sell', () => {
+        const result = getOrderParams(1, withNativeBalance(BigInt(BASE_ORDER.sellAmount)), {
+          ...BASE_ORDER,
+          isNativeSell: true,
+        })
+
+        expect(result.hasEnoughBalance).toBeUndefined()
+      })
     })
   })
 

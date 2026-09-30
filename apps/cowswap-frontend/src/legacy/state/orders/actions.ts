@@ -59,6 +59,7 @@ export interface BaseOrder extends OrderCreation {
   // EthFlow / Solana
   orderCreationHash?: string // EthFlow: order creation tx hash. Solana: order creation transaction signature
   isSponsored?: boolean
+  isNativeSell?: boolean
   isRefunded?: boolean
   refundHash?: string
 

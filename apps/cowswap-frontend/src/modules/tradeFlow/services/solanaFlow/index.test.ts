@@ -406,6 +406,28 @@ describe('solanaFlow', () => {
     )
   })
 
+  // The wrap lives in the same deferred bundle, so the orders table needs to know the sold WSOL does
+  // not exist yet and the native balance is what backs the order.
+  it('records whether a sponsored order is a native sell', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: true }) }),
+      expect.anything(),
+    )
+  })
+
+  it('records an SPL sell as not native', async () => {
+    await solanaFlow(buildContext({ isNativeSell: false }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: false }) }),
+      expect.anything(),
+    )
+  })
+
   it('does not mark a self-paid order as sponsored', async () => {
     await solanaFlow(buildContext(), buildAnalytics())
 

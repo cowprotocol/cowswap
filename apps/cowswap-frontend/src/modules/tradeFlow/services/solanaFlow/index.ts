@@ -145,6 +145,7 @@ export async function solanaFlow(
           outputToken: outputAmount.currency as Token,
           partiallyFillable,
           isSponsored: sponsor !== undefined,
+          isNativeSell,
         }),
         isSafeWallet: false,
       },
@@ -198,9 +199,10 @@ function buildSolanaOrder(params: {
   outputToken: Token
   partiallyFillable: boolean
   isSponsored: boolean
+  isNativeSell: boolean
 }): Order {
   const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
-  const { appData, inputToken, outputToken, partiallyFillable, isSponsored } = params
+  const { appData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -224,6 +226,7 @@ function buildSolanaOrder(params: {
     // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
     partiallyFillable,
     isSponsored,
+    isNativeSell,
     id: orderId,
     owner: account,
     from: account,
