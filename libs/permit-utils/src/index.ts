@@ -1,4 +1,4 @@
-export { DEFAULT_MIN_GAS_LIMIT, PERMIT_ACCOUNT } from './const'
+export { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from './const'
 
 export { checkIsCallDataAValidPermit } from './lib/checkIsCallDataAValidPermit'
 export { generatePermitHook } from './lib/generatePermitHook'

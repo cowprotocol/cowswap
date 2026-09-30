@@ -10,6 +10,14 @@ import { AddPermitTokenParams } from '../types'
 
 type PermittableTokens = Record<string, PermitInfo>
 
+export function getPermittableTokenKey(tokenAddress: string, spender: string): string {
+  return `${getAddressKey(tokenAddress)}-${getAddressKey(spender)}`
+}
+
+export function getTokenAddressFromPermittableTokenKey(permitTokenKey: string): string {
+  return permitTokenKey.split('-')[0]
+}
+
 /**
  * Atom that stores the permittable tokens info for each chain on localStorage.
  * It's meant to be shared across different tabs, thus no special storage handling.
@@ -18,7 +26,7 @@ type PermittableTokens = Record<string, PermitInfo>
  */
 
 export const permittableTokensAtom = atomWithStorage<PersistentStateByChain<PermittableTokens>>(
-  'permittableTokens:v3',
+  'permittableTokens:v4',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),
 )
@@ -28,13 +36,13 @@ export const permittableTokensAtom = atomWithStorage<PersistentStateByChain<Perm
  */
 export const addPermitInfoForTokenAtom = atom(
   null,
-  (get, set, { chainId, tokenAddress, permitInfo }: AddPermitTokenParams) => {
+  (get, set, { chainId, tokenAddress, spender, permitInfo }: AddPermitTokenParams) => {
     const permittableTokens = { ...get(permittableTokensAtom) }
     const permittableTokensForChain = permittableTokens[chainId] || {}
 
     permittableTokens[chainId] = {
       ...permittableTokensForChain,
-      [getAddressKey(tokenAddress)]: permitInfo,
+      [getPermittableTokenKey(tokenAddress, spender)]: permitInfo,
     }
 
     set(permittableTokensAtom, permittableTokens)
