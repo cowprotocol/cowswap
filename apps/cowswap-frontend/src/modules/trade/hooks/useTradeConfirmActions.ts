@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+
 import { useResetSigningStep } from 'entities/trade'
 
 import { TradeAmounts } from 'common/types'
@@ -20,7 +22,7 @@ export interface TradeConfirmActions {
   onError(error: string): void
   onSuccess(transactionHash: string): void
   onOpen(forcePriceConfirmation?: boolean): void
-  requestPermitSignature(pendingTrade: TradeAmounts): void
+  requestPermitSignature(pendingTrade: TradeAmounts, permitAmount?: CurrencyAmount<Currency>): void
   onDismiss(): void
   /**
    * Marks the confirm flow as in progress (from the moment the confirm button is clicked) or
@@ -54,8 +56,8 @@ export function useTradeConfirmActions(): TradeConfirmActions {
         resetSigningStep()
         setOpenTradeConfirm(typeof forcePriceConfirmation === 'boolean' ? forcePriceConfirmation : undefined)
       },
-      requestPermitSignature(pendingTrade: TradeAmounts) {
-        setPermitSignatureRequested(pendingTrade)
+      requestPermitSignature(pendingTrade: TradeAmounts, permitAmount?: CurrencyAmount<Currency>) {
+        setPermitSignatureRequested(pendingTrade, permitAmount)
       },
       onDismiss() {
         setCloseTradeConfirm()

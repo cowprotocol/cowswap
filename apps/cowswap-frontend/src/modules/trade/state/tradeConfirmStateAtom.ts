@@ -1,5 +1,7 @@
 import { atom } from 'jotai'
 
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+
 import { TradeAmounts } from 'common/types'
 
 interface TradeConfirmModalState {
@@ -8,6 +10,7 @@ interface TradeConfirmModalState {
   transactionHash: string | null
   error: string | null
   permitSignatureState: undefined | 'requested' | 'signed'
+  permitAmount: CurrencyAmount<Currency> | null
   /**
    * When true, the user will be forced to confirm the price before placing an order
    * The confirmation is happening through "Price updated" banner
@@ -27,6 +30,7 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
   transactionHash: null,
   error: null,
   permitSignatureState: undefined,
+  permitAmount: null,
   forcePriceConfirmation: false,
   isConfirming: false,
 })
@@ -38,6 +42,7 @@ export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmat
     pendingTrade: null,
     transactionHash: null,
     permitSignatureState: undefined,
+    permitAmount: null,
     forcePriceConfirmation,
     isConfirming: false,
   }))
@@ -50,6 +55,7 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
     error: null,
     pendingTrade: null,
     permitSignatureState: undefined,
+    permitAmount: null,
     forcePriceConfirmation: false,
     isConfirming: false,
   }))
@@ -63,6 +69,7 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
     pendingTrade: null,
     transactionHash: null,
     permitSignatureState: undefined,
+    permitAmount: null,
     forcePriceConfirmation: false,
     isConfirming: false,
   }))
@@ -75,13 +82,17 @@ export const setConfirmingTradeConfirmAtom = atom(null, (get, set, isConfirming:
   }))
 })
 
-export const setPermitSignatureRequestedTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
-  set(tradeConfirmStateAtom, () => ({
-    ...get(tradeConfirmStateAtom),
-    pendingTrade,
-    permitSignatureState: 'requested',
-  }))
-})
+export const setPermitSignatureRequestedTradeConfirmAtom = atom(
+  null,
+  (get, set, pendingTrade: TradeAmounts, permitAmount?: CurrencyAmount<Currency>) => {
+    set(tradeConfirmStateAtom, () => ({
+      ...get(tradeConfirmStateAtom),
+      pendingTrade,
+      permitSignatureState: 'requested',
+      permitAmount: permitAmount ?? null,
+    }))
+  },
+)
 
 export const setPendingTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
   const currentState = get(tradeConfirmStateAtom)

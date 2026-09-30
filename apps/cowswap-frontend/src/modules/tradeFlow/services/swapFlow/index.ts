@@ -11,7 +11,7 @@ import {
   reportPermitWithDefaultSigner,
 } from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
-import { Percent } from '@cowprotocol/currency'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
@@ -105,7 +105,12 @@ export async function swapFlow(
       preSignCallback: shouldSignPermit
         ? () => {
             setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
-            tradeConfirmActions.requestPermitSignature(tradeAmounts)
+            tradeConfirmActions.requestPermitSignature(
+              tradeAmounts,
+              permitAmountToSign !== undefined
+                ? CurrencyAmount.fromRawAmount(inputCurrency, permitAmountToSign.toString())
+                : undefined,
+            )
           }
         : undefined,
     })
