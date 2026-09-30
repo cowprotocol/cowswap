@@ -6,6 +6,7 @@ export { AccountProxiesPage } from './containers/AccountProxiesPage/AccountProxi
 export { ProxyRecipient } from './containers/ProxyRecipient/ProxyRecipient.container'
 export { InvalidCoWShedSetup } from './containers/InvalidCoWShedSetup/InvalidCoWShedSetup.container'
 export { useCurrentAccountProxy, useCurrentAccountProxyAddress } from './hooks/useCurrentAccountProxy'
+export { useCurrentBridgingAccountProxy } from './hooks/useCurrentBridgingAccountProxy'
 export { getProxyAccountUrl } from './utils/getProxyAccountUrl'
 export { getCowShedHooks } from './utils/getCowShedHooks'
 export { assertFactoryDeployed, hasBytecode } from './utils/assertFactoryDeployed'
