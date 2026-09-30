@@ -15,6 +15,7 @@ import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreat
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
 import { sendSolanaFlow } from 'modules/trade/services/solanaFlow/sendSolanaFlow'
+import { signSolanaFlow } from 'modules/trade/services/solanaFlow/signSolanaFlow'
 import { SolanaFlowStep } from 'modules/trade/services/solanaFlow/types'
 import * as addPendingOrderStepModule from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -32,6 +33,8 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => ({ signSolanaFlow: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({ postSolanaSponsoredOrder: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
@@ -39,6 +42,7 @@ jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ plan
 jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
+const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
@@ -54,6 +58,8 @@ const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
 // possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
 // parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
 const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// The back end's rotating sponsor account, reported by the quote.
+const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
@@ -120,6 +126,7 @@ function buildContext({
       programId: new PublicKey(new Uint8Array(32).fill(5)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
+      funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
@@ -381,6 +388,29 @@ describe('solanaFlow', () => {
           sellAmountBeforeFee: LIMIT_SIGNED_SELL_AMOUNT.toString(),
         }),
       }),
+      expect.anything(),
+    )
+  })
+
+  // The bundle carrying the SPL delegation is only submitted by the order book once a solver wins, so
+  // the orders table has to know not to read the delegation from chain while the order waits — otherwise
+  // every pending sponsored order is labelled unfillable.
+  it('marks the local order as sponsored', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: true }) }),
+      expect.anything(),
+    )
+  })
+
+  it('does not mark a self-paid order as sponsored', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
       expect.anything(),
     )
   })

@@ -109,6 +109,37 @@ describe('getOrderParams', () => {
     })
   })
 
+  describe('sponsored orders', () => {
+    const NO_ALLOWANCE: BalancesAndAllowances = {
+      ...BASE_BALANCES_AND_ALLOWANCES,
+      allowances: {},
+    }
+
+    it('treats the allowance as satisfied while no delegation exists on chain', () => {
+      const result = getOrderParams(1, NO_ALLOWANCE, { ...BASE_ORDER, isSponsored: true })
+
+      expect(result.hasEnoughAllowance).toBe(true)
+      expect(result.hasEnoughBalance).toBe(true)
+    })
+
+    it('still reports insufficient balance', () => {
+      const result = getOrderParams(1, NO_ALLOWANCE, {
+        ...BASE_ORDER,
+        isSponsored: true,
+        sellAmount: String(+BASE_ORDER.sellAmount + 1),
+      })
+
+      expect(result.hasEnoughAllowance).toBe(true)
+      expect(result.hasEnoughBalance).toBe(false)
+    })
+
+    it('checks the allowance for a self-paid order', () => {
+      const result = getOrderParams(1, NO_ALLOWANCE, BASE_ORDER)
+
+      expect(result.hasEnoughAllowance).toBeUndefined()
+    })
+  })
+
   it('does not check connected-wallet funding for EOA TWAP orders', () => {
     const result = getOrderParams(1, BASE_BALANCES_AND_ALLOWANCES, {
       ...BASE_ORDER,
