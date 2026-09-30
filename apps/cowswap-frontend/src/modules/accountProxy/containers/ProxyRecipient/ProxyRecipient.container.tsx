@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 
 interface ProxyRecipientProps {
   recipient: string
-  proxyAddress: string
+  proxyAddress?: string
   bridgeReceiverOverride: string | null
   chainId: number
   size?: number
@@ -42,7 +42,9 @@ export function ProxyRecipient({
 
   const targetAddress = bridgeReceiverOverride || proxyAddress
 
-  if (!bridgeReceiverOverride && !areAddressesEqual(recipient, proxyAddress)) {
+  if (!targetAddress) return
+
+  if (!bridgeReceiverOverride && proxyAddress && recipient && !areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       t`Provided proxy address does not match ${accountProxyLabelString} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )

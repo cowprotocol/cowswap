@@ -40,7 +40,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
   const recipient = bridgeReceiverOverride || proxyAddress || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !quoteAmounts || !proxyAddress) return null
+    if (!receiveAmountInfo || !quoteAmounts) return null
 
     const { sellAmount } = receiveAmountInfo.afterSlippage
     const sellToken = sellAmount.currency
