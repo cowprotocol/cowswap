@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 interface OrderFundingToken {
   address: string
-  symbol: string | undefined
+  symbol?: string
 }
 
 /**
