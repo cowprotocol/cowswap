@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.29.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.0...cowswap-v3.29.1) (2026-09-30)
+
+### Patch Changes
+
+- fix: wrong proxy address in swap confirmation screen (#8260)
+
 ## [3.29.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.28.0...cowswap-v3.29.0) (2026-09-29)
 
 ### Minor Changes
