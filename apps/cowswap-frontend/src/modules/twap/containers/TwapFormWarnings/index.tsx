@@ -10,6 +10,7 @@ import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
+import { useSwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import {
   FallbackHandlerWarning,
@@ -24,7 +25,6 @@ import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarnin
 
 import { getHasTwapFormInput, getTwapSellAmountUsdBucket } from '../../analytics/twapDemandAnalytics.utils'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
-import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapSwapSuggestion } from '../../hooks/useTwapSwapSuggestion'

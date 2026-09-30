@@ -104,6 +104,12 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
   })
 }
 
+// A cancellation tx (single-order `onChainCancellation` or batched `solanaCancelOrderIds`) has no
+// activity-list entry of its own on any chain — the order it cancels carries that instead.
+export function isNotOnChainCancellationTx(tx: EnhancedTransactionDetails): boolean {
+  return !tx.onChainCancellation && !tx.solanaCancelOrderIds
+}
+
 export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
   const txs = useTransactionsByHash({ hashes: ids })
   const orders = useOrdersById({ chainId, ids })
@@ -266,10 +272,6 @@ function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
 
 function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {
   return !tx.ethFlow
-}
-
-function isNotOnChainCancellationTx(tx: EnhancedTransactionDetails): boolean {
-  return !tx.onChainCancellation
 }
 
 // Solana orders are created by an on-chain transaction, like ETH-flow — the order (shown with its own

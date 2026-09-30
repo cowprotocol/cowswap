@@ -38,7 +38,7 @@ import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { resetOrdersTableFiltersAtom, useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { placedOrderHighlightAtom, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
@@ -110,9 +110,9 @@ export function useCreateTwapOrder() {
   const { allowsOffchainSigning } = useWalletDetails()
   const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
-  const resetOrdersTableFilters = useSetAtom(resetOrdersTableFiltersAtom)
+  const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
+  const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const setOptimisticAllowance = useSetOptimisticAllowance()
-  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const isSafeWallet = useIsSafeWallet()
   const isSafeApp = useAtomValue(isSafeAppAtom)
   const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
@@ -460,6 +460,13 @@ export function useCreateTwapOrder() {
 
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
+        tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
+        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
+
+        const ordersTableTab = isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING
+        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderId) : twapOrderId
+        setPlacedOrderHighlight({ orderId: orderIdToReveal, tabId: ordersTableTab })
+
         if (isEoaTwap) {
           // Keep the review card open and replace signing steps with the inline success box.
           updateEoaTwapFlow({
@@ -468,27 +475,12 @@ export function useCreateTwapOrder() {
             eventId,
             lockDismiss: false,
           })
-
-          // Navigate to open orders after successful placement once the new order is in the store, otherwise you might
-          // be redirected back by the redirection logic in `observeOrdersUrl()` (`ordersTable.atoms.ts`).
-          setTimeout(() => {
-            resetOrdersTableFilters()
-            navigateToOrdersTableTab(OrderTabId.OPEN)
-          })
         } else {
           updateEoaTwapFlow(null)
           tradeConfirmActions.onSuccess(confirmModalHash)
-
-          // Navigate to open orders after successful placement once the new order is in the store, otherwise you might
-          // be redirected back (to OPEN most likely) by the redirection logic in `observeOrdersUrl()` (`ordersTable.atoms.ts`).
-          setTimeout(() => {
-            // A freshly placed Safe TWAP order is always in WaitSigning until the Safe/SC owners sign it.
-            navigateToOrdersTableTab(OrderTabId.SIGNING)
-          })
         }
 
-        tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
-        sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
+        revealOrderInOrdersTable(orderIdToReveal, ordersTableTab)
 
         // Keep the confirm modal frozen (quote countdown hidden, amounts locked) while the EOA
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
@@ -532,12 +524,12 @@ export function useCreateTwapOrder() {
       priceImpact,
       tradeConfirmActions,
       addTwapOrderToList,
+      setPlacedOrderHighlight,
       updateAdvancedOrdersState,
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
-      navigateToOrdersTableTab,
-      resetOrdersTableFilters,
+      revealOrderInOrdersTable,
       pollerAddress,
       pollerPermitInfo,
       generatePermitHook,

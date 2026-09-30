@@ -121,7 +121,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithDeleted)
@@ -145,7 +144,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithoutDeleted)
@@ -170,7 +168,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateAllDeleted)
@@ -197,7 +194,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, {
@@ -226,7 +222,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, {
@@ -242,7 +237,7 @@ describe('listsStatesByChainAtom - token lists state', () => {
       expect(Object.keys(listsStatesMap)).toEqual([older])
     })
 
-    it('keeps virtual widget lists when curated-only mode is enabled', async () => {
+    it('keeps virtual widget lists when selected lists exclude them', async () => {
       const store = createStore()
 
       const stateWithoutWidgetLists: TokenListsByChainState = {
@@ -256,7 +251,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
         chainId: MOCK_CHAIN_ID,
         widgetAppCode: 'widget-test',
         selectedLists: ['widgetcustomtokens'],
-        useCuratedListOnly: true,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithoutWidgetLists)
@@ -284,7 +278,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, initialState)
@@ -378,7 +371,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, initialState)

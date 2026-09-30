@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useViewPlacedOrder } from 'modules/ordersTable'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -20,7 +21,6 @@ import { useTwapConfirmCurrencyPreview } from './useTwapConfirmCurrencyPreview'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useEoaTwapLeaveConfirmation } from '../../hooks/useEoaTwapLeaveConfirmation'
-import { useEoaTwapSuccessDismiss } from '../../hooks/useEoaTwapSuccessDismiss'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
@@ -66,7 +66,8 @@ export function TwapConfirmModal(): ReactNode {
     inputSymbolLabel,
   })
 
-  const dismissSuccessState = useEoaTwapSuccessDismiss(onDismiss)
+  const dismissSuccessState = useViewPlacedOrder(onDismiss)
+  const onViewOrders = useViewPlacedOrder()
 
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
@@ -110,7 +111,7 @@ export function TwapConfirmModal(): ReactNode {
 
   return (
     <>
-      <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage>
+      <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage onViewOrders={onViewOrders}>
         <TradeConfirmation
           {...commonTradeConfirmContext}
           title={titleElement}
