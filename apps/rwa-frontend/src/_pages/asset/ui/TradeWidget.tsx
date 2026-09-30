@@ -13,6 +13,7 @@ import dynamic from 'next/dynamic'
 import styles from './TradeWidget.module.css'
 
 import { getTokenKey } from '../lib/tokenKey'
+import { resolveTradeToken } from '../lib/tradeToken'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 
@@ -46,10 +47,12 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const [side, setSide] = useAtom(tradeSideAtom)
   const [selectedTokenKey, setSelectedTokenKey] = useAtom(tradeTokenKeyAtom)
 
-  const selectedToken = asset.tokens.find((token) => getTokenKey(token) === selectedTokenKey)
-  const chainId = getTradeChainId(asset.tokens, selectedToken, isConnected ? walletChainId : undefined)
-  const chainTokens = useMemo(() => asset.tokens.filter((token) => token.chainId === chainId), [asset.tokens, chainId])
-  const assetToken = selectedToken?.chainId === chainId ? selectedToken : chainTokens[0]
+  const tradeToken = useMemo(
+    () => resolveTradeToken(asset.tokens, selectedTokenKey, isConnected ? walletChainId : undefined),
+    [asset.tokens, selectedTokenKey, isConnected, walletChainId],
+  )
+  const assetToken = tradeToken?.assetToken
+  const chainTokens = tradeToken?.chainTokens ?? []
 
   const params = useMemo((): CowSwapWidgetParams | null => {
     if (!assetToken || !isSupportedChain(assetToken.chainId)) return null
@@ -111,17 +114,6 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       <CowSwapWidget params={params} provider={provider} />
     </section>
   )
-}
-
-/** The wallet chain wins over the selected token's one, because the widget follows the wallet */
-function getTradeChainId(
-  tokens: RwaToken[],
-  selectedToken: RwaToken | undefined,
-  walletChainId: number | undefined,
-): number | undefined {
-  if (walletChainId !== undefined && tokens.some((token) => token.chainId === walletChainId)) return walletChainId
-
-  return selectedToken?.chainId ?? tokens[0]?.chainId
 }
 
 function toTokenInfo({ chainId, address, name, decimals, symbol }: RwaToken): TokenInfo {
