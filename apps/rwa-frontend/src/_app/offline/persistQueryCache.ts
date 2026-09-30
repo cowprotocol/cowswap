@@ -14,10 +14,16 @@ interface PersistedEntry {
 
 const MAX_ENTRY_AGE_MS = 7 * 24 * 60 * 60 * 1000
 
+const STORAGE_NAME = 'rwa'
+// Bump when a persisted response changes shape: entries of the previous store would be restored as the new type
+const STORE_NAME = 'queryCache:v2'
+const PREVIOUS_STORE_NAMES = ['queryCache:v1']
+
 let storageInstance: LocalForage | null = null
 
 export function persistQueryCache(queryClient: QueryClient, rules: QueryPersistenceRules): () => void {
   void removeExpiredEntries()
+  void dropPreviousStores()
 
   const queryCache = queryClient.getQueryCache()
 
@@ -63,8 +69,18 @@ export async function removeExpiredEntries(): Promise<void> {
   }
 }
 
+async function dropPreviousStores(): Promise<void> {
+  await Promise.all(
+    PREVIOUS_STORE_NAMES.map((storeName) =>
+      getStorage()
+        .dropInstance({ name: STORAGE_NAME, storeName })
+        .catch(() => undefined),
+    ),
+  )
+}
+
 function getStorage(): LocalForage {
-  storageInstance ??= createInstance({ name: 'rwa', storeName: 'queryCache:v1' })
+  storageInstance ??= createInstance({ name: STORAGE_NAME, storeName: STORE_NAME })
 
   return storageInstance
 }

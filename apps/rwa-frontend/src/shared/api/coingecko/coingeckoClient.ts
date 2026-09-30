@@ -7,6 +7,8 @@ export interface CoingeckoMarket {
   id: string
   current_price: number | null
   market_cap: number | null
+  total_volume: number | null
+  image: string | null
   high_24h: number | null
   low_24h: number | null
   price_change_percentage_24h: number | null

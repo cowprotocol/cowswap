@@ -8,5 +8,6 @@ export const AAPLX_MAINNET: RwaToken = {
   symbol: 'AAPLx',
   name: 'Apple xStock',
   decimals: 18,
+  issuer: 'xStocks',
 }
 export const AAPLX_ARBITRUM: RwaToken = { ...AAPLX_MAINNET, chainId: 42161 }
