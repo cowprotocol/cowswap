@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-29 15:49\n"
+"PO-Revision-Date: 2026-09-30 15:06\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -316,11 +316,11 @@ msgstr "Mis Hooks personalizados ({customHooksCount})"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
-msgstr ""
+msgstr "Teniendo en cuenta los costes actuales de la red (<0><1/></0> por parte), cambie a {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/ReceiveZeroFromNetworkCostsWarning.tsx
 msgid "Network costs are higher than the value of each part, so you would receive nothing. Decrease the number of parts or increase the total sell amount."
-msgstr ""
+msgstr "Los costes de la red son mayores que el valor de cada parte, por lo que no recibirías nada. Reduce el número de partes o aumenta la cantidad total de venta."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 #~ msgid "{label} ({feeAsPercent}%)"
@@ -555,7 +555,7 @@ msgstr "No"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Market sell order"
-msgstr ""
+msgstr "Orden de venta de mercado"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Refund completed!"
@@ -9211,7 +9211,7 @@ msgstr "La cantidad introducida no es válida"
 
 #: libs/common-const/src/common.ts
 msgid "Mev Slicer"
-msgstr ""
+msgstr "Cortador de Mev"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "{seconds, plural, one {second} few {seconds} many {seconds} other {seconds}}"
