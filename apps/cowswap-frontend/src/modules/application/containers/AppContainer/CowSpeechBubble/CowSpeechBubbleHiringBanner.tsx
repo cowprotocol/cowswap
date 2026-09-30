@@ -25,10 +25,10 @@ interface CowSpeechBubbleHiringContentProps {
 }
 
 export function CowSpeechBubbleHiringBanner(): ReactNode {
-  const { data: jobsCount, isLoading } = useSWR(JOBS_URL, getJobsCount, { revalidateOnFocus: false })
+  const { data: jobsCount } = useSWR(JOBS_URL, getJobsCount, { revalidateOnFocus: false })
   const callback = useCallback((close: () => void) => <CowSpeechBubbleHiringContent onClose={close} />, [])
 
-  if (isLoading || jobsCount === 0) return null
+  if (!jobsCount) return null
 
   return <ClosableBanner storageKey={BANNER_IDS.HIRING_SPEECH_BUBBLE} callback={callback} />
 }
