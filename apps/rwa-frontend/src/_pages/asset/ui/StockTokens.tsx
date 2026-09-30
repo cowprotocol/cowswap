@@ -111,6 +111,8 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
 }
 
 function StockTokenRow({ token, market, onTrade }: StockTokenRowProps): ReactNode {
+  const network = getChainLabel(token.chainId)
+
   return (
     <tr>
       <td>
@@ -122,15 +124,25 @@ function StockTokenRow({ token, market, onTrade }: StockTokenRowProps): ReactNod
           </div>
         </div>
       </td>
-      <td>{getChainLabel(token.chainId)}</td>
+      <td>{network}</td>
       <td className={tableStyles.numeric}>{formatUsd(market?.price)}</td>
       <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
       <td>
         <div className={styles.actions}>
-          <button type="button" className={styles.buy} onClick={() => onTrade('buy')}>
+          <button
+            type="button"
+            className={styles.buy}
+            aria-label={`Buy ${token.symbol} on ${network}`}
+            onClick={() => onTrade('buy')}
+          >
             Buy
           </button>
-          <button type="button" className={styles.sell} onClick={() => onTrade('sell')}>
+          <button
+            type="button"
+            className={styles.sell}
+            aria-label={`Sell ${token.symbol} on ${network}`}
+            onClick={() => onTrade('sell')}
+          >
             Sell
           </button>
         </div>
