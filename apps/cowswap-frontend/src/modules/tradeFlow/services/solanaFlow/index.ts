@@ -281,7 +281,7 @@ async function postSponsoredBundle(
 
   await postSolanaSponsoredOrder(
     // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-    { transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+    { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
     { orderBookApi },
   )
 
