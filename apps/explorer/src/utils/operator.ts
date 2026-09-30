@@ -74,7 +74,12 @@ export function getOrderStatus(order: RawOrder): OrderStatus {
  *
  * @returns Sell surplus
  */
-export function getSellSurplus(order: RawOrder): Surplus {
+export function getSellSurplus(
+  order: Pick<
+    RawOrder,
+    'partiallyFillable' | 'buyAmount' | 'sellAmount' | 'executedBuyAmount' | 'executedSellAmountBeforeFees'
+  >,
+): Surplus {
   const { partiallyFillable } = order
 
   const surplus = partiallyFillable ? _getPartialFillSellSurplus(order) : _getFillOrKillSellSurplus(order)
@@ -82,7 +87,7 @@ export function getSellSurplus(order: RawOrder): Surplus {
   return surplus || ZERO_SURPLUS
 }
 
-function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
+function _getFillOrKillSellSurplus(order: Pick<RawOrder, 'buyAmount' | 'executedBuyAmount'>): Surplus | null {
   const { buyAmount, executedBuyAmount } = order
 
   const buyAmountBigNumber = new BigNumber(buyAmount.toString())
