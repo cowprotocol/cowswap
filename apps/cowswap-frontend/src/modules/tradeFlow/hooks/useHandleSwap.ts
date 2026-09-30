@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { MutableRefObject, useCallback, useEffect, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
@@ -16,6 +16,7 @@ import {
   TradeWidgetActions,
   logTradeFlow,
   useDerivedTradeState,
+  useTradeConfirmState,
   useTradeFlowAnalytics,
   useTradePriceImpact,
 } from 'modules/trade'
@@ -61,7 +62,7 @@ export function useHandleSwap(
             : tradeFlowContext,
         ) && !!tradeFlowContext
 
-  const flowInProgressRef = useRef(false)
+  const activeFlowRef = useActiveFlowRef()
 
   const callback = useCallback(async () => {
     if (tradeFlowType === FlowType.SOLANA_SWAP) {
@@ -69,24 +70,22 @@ export function useHandleSwap(
     } else if (!tradeFlowContext) {
       return
     }
-    if (flowInProgressRef.current) return
-    flowInProgressRef.current = true
-
-    const hookPayload = buildHookPayload(
-      tradeFlowType,
-      solanaFlowContext,
-      tradeFlowContext,
-      derivedTradeState?.slippage,
-    )
-
-    const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
-
-    if (!isWidgetHookPassed) {
-      flowInProgressRef.current = false
-      return
-    }
+    if (activeFlowRef.current) return
+    const flowId = Symbol()
+    activeFlowRef.current = flowId
 
     try {
+      const hookPayload = buildHookPayload(
+        tradeFlowType,
+        solanaFlowContext,
+        tradeFlowContext,
+        derivedTradeState?.slippage,
+      )
+
+      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
+
+      if (!isWidgetHookPassed) return
+
       const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
         ethFlowContext,
         safeBundleFlowContext,
@@ -103,9 +102,10 @@ export function useHandleSwap(
         onUserInput(Field.INPUT, '')
       }
     } finally {
-      flowInProgressRef.current = false
+      if (activeFlowRef.current === flowId) activeFlowRef.current = null
     }
   }, [
+    activeFlowRef,
     config,
     tradeFlowContext,
     solanaFlowContext,
@@ -222,6 +222,19 @@ async function runFlowByType(
     deps.analytics,
   )
   return result === true
+}
+
+function useActiveFlowRef(): MutableRefObject<symbol | null> {
+  const activeFlowRef = useRef<symbol | null>(null)
+  const { isOpen: isConfirmModalOpen } = useTradeConfirmState()
+
+  // Safe over WalletConnect with a nested Safe signer never settles wallet_sendCalls after the inner signer rejects,
+  // so dismissing the confirm modal must release the lock, otherwise every later confirm click is silently dropped.
+  useEffect(() => {
+    if (!isConfirmModalOpen) activeFlowRef.current = null
+  }, [isConfirmModalOpen])
+
+  return activeFlowRef
 }
 
 function useTradeFlow(params: TradeFlowParams): {
