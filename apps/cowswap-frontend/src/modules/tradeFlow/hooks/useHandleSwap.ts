@@ -65,11 +65,7 @@ export function useHandleSwap(
   const activeFlowRef = useActiveFlowRef()
 
   const callback = useCallback(async () => {
-    if (tradeFlowType === FlowType.SOLANA_SWAP) {
-      if (!solanaFlowContext) return
-    } else if (!tradeFlowContext) {
-      return
-    }
+    if (!(tradeFlowType === FlowType.SOLANA_SWAP ? solanaFlowContext : tradeFlowContext)) return
     if (activeFlowRef.current) return
     const flowId = Symbol()
     activeFlowRef.current = flowId
@@ -84,7 +80,7 @@ export function useHandleSwap(
 
       const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
 
-      if (!isWidgetHookPassed) return
+      if (!isWidgetHookPassed || activeFlowRef.current !== flowId) return
 
       const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
         ethFlowContext,
@@ -97,7 +93,7 @@ export function useHandleSwap(
         isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
       })
 
-      if (result === true) {
+      if (result === true && activeFlowRef.current === flowId) {
         onChangeRecipient(null)
         onUserInput(Field.INPUT, '')
       }

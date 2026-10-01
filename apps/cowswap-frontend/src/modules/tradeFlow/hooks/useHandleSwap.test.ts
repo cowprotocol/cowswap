@@ -45,19 +45,16 @@ const tradeFlowContext = {
   orderParams: {},
 }
 
+const widgetActions = {
+  onUserInput: jest.fn(),
+  onChangeRecipient: jest.fn(),
+  onCurrencySelection: jest.fn(),
+  onSwitchTokens: jest.fn(),
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function renderUseHandleSwap() {
-  return renderHook(() =>
-    useHandleSwap(
-      { deadline: 0 },
-      {
-        onUserInput: jest.fn(),
-        onChangeRecipient: jest.fn(),
-        onCurrencySelection: jest.fn(),
-        onSwitchTokens: jest.fn(),
-      },
-    ),
-  )
+  return renderHook(() => useHandleSwap({ deadline: 0 }, widgetActions))
 }
 
 describe('useHandleSwap', () => {
@@ -98,5 +95,54 @@ describe('useHandleSwap', () => {
     })
 
     expect(mockSwapFlow).toHaveBeenCalledTimes(2)
+  })
+  it('does not start the wallet flow when the modal was dismissed while the widget hook was pending', async () => {
+    let resolveWidgetHook: (passed: boolean) => void = () => undefined
+    ;(callWidgetHook as jest.Mock).mockReturnValueOnce(new Promise((resolve) => (resolveWidgetHook = resolve)))
+    const { result, rerender } = renderUseHandleSwap()
+
+    await act(async () => {
+      void result.current.callback()
+    })
+
+    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
+    rerender()
+
+    await act(async () => {
+      resolveWidgetHook(true)
+    })
+
+    expect(mockSwapFlow).not.toHaveBeenCalled()
+  })
+
+  it('does not reset the form when a dismissed flow settles late', async () => {
+    let resolveSwapFlow: (result: boolean) => void = () => undefined
+    mockSwapFlow.mockReturnValueOnce(new Promise((resolve) => (resolveSwapFlow = resolve)))
+    const { result, rerender } = renderUseHandleSwap()
+
+    await act(async () => {
+      void result.current.callback()
+    })
+
+    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
+    rerender()
+
+    await act(async () => {
+      resolveSwapFlow(true)
+    })
+
+    expect(widgetActions.onUserInput).not.toHaveBeenCalled()
+    expect(widgetActions.onChangeRecipient).not.toHaveBeenCalled()
+  })
+  it('resets the form after a successful flow', async () => {
+    mockSwapFlow.mockResolvedValueOnce(true)
+    const { result } = renderUseHandleSwap()
+
+    await act(async () => {
+      await result.current.callback()
+    })
+
+    expect(widgetActions.onUserInput).toHaveBeenCalled()
+    expect(widgetActions.onChangeRecipient).toHaveBeenCalledWith(null)
   })
 })
