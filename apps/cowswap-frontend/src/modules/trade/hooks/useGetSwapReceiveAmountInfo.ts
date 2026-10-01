@@ -28,8 +28,6 @@ interface ReceiveAmountCurrencies {
   outputCurrency: Nullish<Currency>
 }
 
-type TradeQuoteResults = NonNullable<NonNullable<ReturnType<typeof useTradeQuote>>['quote']>['quoteResults']
-
 export function useGetSwapReceiveAmountInfo(): ReceiveAmountInfo | null {
   const params = useSwapReceiveAmountInfoParams()
 
@@ -77,18 +75,6 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   ])
 }
 
-/**
- * A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
- * response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
- * the user asked for, which is the one every amount has to be labelled with.
- */
-function getBuyTokenKey(isSolana: boolean, quoteResults: TradeQuoteResults | undefined): string | undefined {
-  const quotedBuyToken = quoteResults?.quoteResponse?.quote?.buyToken
-  const buyToken = isSolana ? (quoteResults?.tradeParameters.buyToken ?? quotedBuyToken) : quotedBuyToken
-
-  return buyToken ? getAddressKey(buyToken) : undefined
-}
-
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoa = useAtomValue(isEoaAtom)
@@ -111,14 +97,16 @@ function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | u
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
   const { chainId } = useWalletInfo()
-  const tradeQuote = useTradeQuote()
-  const quoteResults = tradeQuote?.quote?.quoteResults
-  const quoteResponse = quoteResults?.quoteResponse
+  const quoteResults = useTradeQuote().quote?.quoteResults
+  const quote = quoteResults?.quoteResponse?.quote
 
-  const inputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
-  )
-  const outputCurrency = useTokenByAddress(getBuyTokenKey(isSolanaChain(chainId), quoteResults))
+  // A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
+  // response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
+  // the user asked for, which is the one every amount has to be labelled with.
+  const buyToken = isSolanaChain(chainId) ? quoteResults?.tradeParameters.buyToken : quote?.buyToken
+
+  const inputCurrency = useTokenByAddress(quote?.sellToken && getAddressKey(quote.sellToken))
+  const outputCurrency = useTokenByAddress(buyToken && getAddressKey(buyToken))
 
   return { inputCurrency, outputCurrency }
 }
