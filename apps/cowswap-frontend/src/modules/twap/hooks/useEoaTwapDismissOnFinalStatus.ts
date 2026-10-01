@@ -2,13 +2,14 @@ import { useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { eoaTwapOrdersAtom } from 'entities/twap'
+import ms from 'ms.macro'
 
 import { useEoaTwapSigningStep } from './useEoaTwapSigningStep'
 
 import { TWAP_FINAL_STATUSES } from '../const'
 import { EoaTwapSigningSteps } from '../state/eoaTwapSigningStepAtom'
 
-const MAX_TIMEOUT_MS = 2 ** 31 - 1
+const MAX_TIMEOUT_MS = ms`24d`
 
 export function useEoaTwapDismissOnFinalStatus(onDismiss: () => void): void {
   const signingStep = useEoaTwapSigningStep()
