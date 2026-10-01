@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.29.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.1...cowswap-v3.29.2) (2026-09-30)
+
+### Patch Changes
+
+- fix(twap): hide approval options when poller allowance covers trade (#8266)
+
 ## [3.29.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.0...cowswap-v3.29.1) (2026-09-30)
 
 ### Patch Changes

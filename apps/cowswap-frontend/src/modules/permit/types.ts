@@ -7,6 +7,7 @@ import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 export type AddPermitTokenParams = {
   chainId: SupportedChainId
   tokenAddress: string
+  spender: string
   permitInfo: PermitInfo
 }
 

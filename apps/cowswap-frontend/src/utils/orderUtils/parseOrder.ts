@@ -24,6 +24,8 @@ export interface ParsedOrder {
   owner: string
   isCancelling: boolean | undefined
   isEoaTwapOrder?: boolean
+  isSponsored?: boolean
+  isNativeSell?: boolean
   isUnfillable?: boolean
   receiver: string | undefined
   inputToken: Token
@@ -116,6 +118,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
     owner: order.owner,
     isCancelling: order.isCancelling,
     isEoaTwapOrder: order.isEoaTwapOrder,
+    isSponsored: order.isSponsored,
+    isNativeSell: order.isNativeSell,
     isUnfillable: order.isUnfillable,
     inputToken: order.inputToken,
     outputToken: order.outputToken,
