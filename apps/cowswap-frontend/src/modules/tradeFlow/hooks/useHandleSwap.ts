@@ -13,6 +13,7 @@ import { Field } from 'legacy/state/types'
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import {
+  TradeConfirmActions,
   TradeWidgetActions,
   logTradeFlow,
   useDerivedTradeState,
@@ -69,6 +70,7 @@ export function useHandleSwap(
     if (activeFlowRef.current) return
     const flowId = Symbol()
     activeFlowRef.current = flowId
+    const isCurrent = (): boolean => activeFlowRef.current === flowId
 
     try {
       const hookPayload = buildHookPayload(
@@ -80,12 +82,12 @@ export function useHandleSwap(
 
       const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
 
-      if (!isWidgetHookPassed || activeFlowRef.current !== flowId) return
+      if (!isWidgetHookPassed || !isCurrent()) return
 
-      const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
+      const result = await runFlowByType(tradeFlowType, withCurrentConfirmActions(tradeFlowContext, isCurrent), {
         ethFlowContext,
         safeBundleFlowContext,
-        solanaFlowContext,
+        solanaFlowContext: withCurrentConfirmActions(solanaFlowContext, isCurrent),
         priceImpactParams,
         confirmPriceImpactWithoutFee,
         analytics,
@@ -93,12 +95,12 @@ export function useHandleSwap(
         isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
       })
 
-      if (result === true && activeFlowRef.current === flowId) {
+      if (result === true && isCurrent()) {
         onChangeRecipient(null)
         onUserInput(Field.INPUT, '')
       }
     } finally {
-      if (activeFlowRef.current === flowId) activeFlowRef.current = null
+      if (isCurrent()) activeFlowRef.current = null
     }
   }, [
     activeFlowRef,
@@ -245,4 +247,25 @@ function useTradeFlow(params: TradeFlowParams): {
   const solanaFlowContext = useSolanaTradeFlowContext(params)
 
   return { tradeFlowType, tradeFlowContext, safeBundleFlowContext, solanaFlowContext }
+}
+
+// A superseded flow can still settle (its wallet request finally answers) while a newer trade owns the confirm modal.
+function withCurrentConfirmActions<T extends { tradeConfirmActions: TradeConfirmActions }>(
+  context: T | null,
+  isCurrent: () => boolean,
+): T | null {
+  if (!context) return null
+
+  const actions = context.tradeConfirmActions
+
+  return {
+    ...context,
+    tradeConfirmActions: {
+      ...actions,
+      onSign: (pendingTrade) => isCurrent() && actions.onSign(pendingTrade),
+      onError: (error) => isCurrent() && actions.onError(error),
+      onSuccess: (orderId) => isCurrent() && actions.onSuccess(orderId),
+      requestPermitSignature: (pendingTrade) => isCurrent() && actions.requestPermitSignature(pendingTrade),
+    },
+  }
 }

@@ -3,6 +3,8 @@ import { act, renderHook } from '@testing-library/react'
 import { callWidgetHook } from 'modules/injectedWidget'
 import { useTradeConfirmState } from 'modules/trade'
 
+import { TradeAmounts } from 'common/types'
+
 import { useHandleSwap } from './useHandleSwap'
 import { useTradeFlowContext } from './useTradeFlowContext'
 import { useTradeFlowType } from './useTradeFlowType'
@@ -43,6 +45,12 @@ const tradeFlowContext = {
   context: { inputAmount: { currency: {} }, outputAmount: { currency: {} } },
   tradeFlowAnalyticsContext: {},
   orderParams: {},
+  tradeConfirmActions: {
+    onSign: jest.fn(),
+    onError: jest.fn(),
+    onSuccess: jest.fn(),
+    requestPermitSignature: jest.fn(),
+  },
 }
 
 const widgetActions = {
@@ -144,5 +152,45 @@ describe('useHandleSwap', () => {
 
     expect(widgetActions.onUserInput).toHaveBeenCalled()
     expect(widgetActions.onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+  it('keeps a superseded flow from closing the newer trade or releasing its lock', async () => {
+    let rejectFirstWalletRequest: () => void = () => undefined
+    mockSwapFlow.mockImplementationOnce(
+      (context) =>
+        new Promise((resolve) => {
+          rejectFirstWalletRequest = () => {
+            context.tradeConfirmActions.onError('User rejected')
+            resolve(false)
+          }
+        }),
+    )
+    mockSwapFlow.mockImplementationOnce((context) => {
+      context.tradeConfirmActions.onSign({} as TradeAmounts)
+      return new Promise(() => undefined)
+    })
+    const { result, rerender } = renderUseHandleSwap()
+
+    await act(async () => {
+      void result.current.callback()
+    })
+
+    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
+    rerender()
+    mockUseTradeConfirmState.mockReturnValue({ isOpen: true })
+    rerender()
+
+    await act(async () => {
+      void result.current.callback()
+    })
+    await act(async () => {
+      rejectFirstWalletRequest()
+    })
+    await act(async () => {
+      void result.current.callback()
+    })
+
+    expect(tradeFlowContext.tradeConfirmActions.onSign).toHaveBeenCalledTimes(1)
+    expect(tradeFlowContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(mockSwapFlow).toHaveBeenCalledTimes(2)
   })
 })
