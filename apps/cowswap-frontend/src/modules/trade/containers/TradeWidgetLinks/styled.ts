@@ -94,13 +94,13 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     css`
       opacity: 0.4;
 
-      > span:hover {
+      ${DisabledLink}:hover {
         background: transparent;
       }
     `}
 
   > a,
-  > span {
+  ${DisabledLink} {
     display: flex;
     align-items: center;
     justify-content: flex-start;

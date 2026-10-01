@@ -167,6 +167,8 @@ const MenuItem = ({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
+  const { t } = useLingui()
+
   const content = (
     <>
       {item.label}
@@ -179,10 +181,14 @@ const MenuItem = ({
   )
 
   if (isDisabled) {
+    const reason = t`TWAP is not available on Solana yet`
+
     return (
       <styledEl.MenuItem isDisabled isDropdownVisible={isDropdownVisible}>
-        <HoverTooltip wrapInContainer placement="top" content={<Trans>TWAP is not available on Solana yet</Trans>}>
-          <styledEl.DisabledLink>{content}</styledEl.DisabledLink>
+        <HoverTooltip wrapInContainer placement="top" content={reason}>
+          <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
+            {content}
+          </styledEl.DisabledLink>
         </HoverTooltip>
       </styledEl.MenuItem>
     )
