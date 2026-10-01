@@ -28,6 +28,7 @@ import {
   pageParamAtom,
 } from 'entities/routes/routes.atom'
 import { eoaTwapOrdersAtom } from 'entities/twap/state/eoaTwapOrdersAtom'
+import { twapOrdersAtom } from 'entities/twap/state/twapOrdersAtom'
 import { observe } from 'jotai-effect'
 
 import { OrderStatus, Order } from 'legacy/state/orders/actions'
@@ -268,7 +269,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
 
     // TODO: We should not have side-effects during reads. This should eventually be removed...
     setIsOrderUnfillable,
-    get(eoaTwapOrdersAtom),
+    { ...get(twapOrdersAtom), ...get(eoaTwapOrdersAtom) },
   )
 
   logOrdersTableDebug('4. ordersList =', ordersList)

@@ -39,7 +39,7 @@ export function getOrdersTableList(
   balancesAndAllowances: BalancesAndAllowances,
   pendingOrdersPermitValidityState: PendingOrdersPermitValidityState,
   setIsOrderUnfillable: (params: SetIsOrderUnfillableParams) => void,
-  eoaTwapOrders: TwapOrdersList = {},
+  twapOrders: TwapOrdersList = {},
 ): OrdersTableList {
   // Then, categorize orders into their respective lists
   return groupOrdersTable(orders)
@@ -70,7 +70,7 @@ export function getOrdersTableList(
             balancesAndAllowances,
             order,
             pendingOrdersPermitValidityState,
-            order.isEoaTwapOrder ? eoaTwapOrders[order.id]?.order.partSellAmount : undefined,
+            order.isEoaTwapOrder ? twapOrders[order.id]?.order.partSellAmount : undefined,
           ),
           order.isUnfillable ?? false,
         )

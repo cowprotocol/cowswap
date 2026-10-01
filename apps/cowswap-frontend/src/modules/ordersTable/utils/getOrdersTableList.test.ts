@@ -96,7 +96,7 @@ describe('getOrdersTableList', () => {
 
   it('marks an EOA TWAP as unfillable when the next part is not funded', () => {
     const order = makePendingOrder({ composableCowInfo: { id: 'generator' }, isEoaTwapOrder: true })
-    const eoaTwapOrders = { [order.id]: { order: { partSellAmount: '500' } } } as unknown as TwapOrdersList
+    const twapOrders = { [order.id]: { order: { partSellAmount: '500' } } } as unknown as TwapOrdersList
     groupOrdersTable.mockReturnValue([{ parent: order, children: [] }])
     getOrderParams.mockReturnValue({ hasEnoughBalance: false, hasEnoughAllowance: true })
     const setIsOrderUnfillable = jest.fn()
@@ -108,7 +108,7 @@ describe('getOrdersTableList', () => {
       balancesAndAllowances,
       permitState,
       setIsOrderUnfillable,
-      eoaTwapOrders,
+      twapOrders,
     )
 
     expect(getOrderParams).toHaveBeenCalledTimes(1)

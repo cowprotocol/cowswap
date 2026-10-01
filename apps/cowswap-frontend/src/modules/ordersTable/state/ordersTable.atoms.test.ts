@@ -22,6 +22,7 @@ import {
   tabParamAtom,
 } from 'entities/routes/routes.atom'
 import { eoaTwapOrdersAtom } from 'entities/twap/state/eoaTwapOrdersAtom'
+import { twapOrdersAtom } from 'entities/twap/state/twapOrdersAtom'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -73,6 +74,14 @@ jest.mock('@cowprotocol/wallet', () => {
 
   return {
     walletInfoAtom: atom({}),
+  }
+})
+
+jest.mock('entities/twap/state/twapOrdersAtom', () => {
+  const { atom } = require('jotai') as typeof import('jotai')
+
+  return {
+    twapOrdersAtom: atom({}),
   }
 })
 
@@ -218,7 +227,11 @@ describe('observeReduxOrders', () => {
 
   it('recomputes orders table state from observed atom values', () => {
     const connector = { id: 'mock-connector' }
-    const eoaTwapOrders = { 'eoa-twap-order': { id: 'eoa-twap-order' } }
+    const optimisticTwapOrders = {
+      'optimistic-eoa-twap-order': { id: 'optimistic-eoa-twap-order' },
+      'eoa-twap-order': { id: 'eoa-twap-order', partOrdersCount: undefined },
+    }
+    const eoaTwapOrders = { 'eoa-twap-order': { id: 'eoa-twap-order', partOrdersCount: 2 } }
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
@@ -270,6 +283,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, allowancesState],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [twapOrdersAtom, optimisticTwapOrders],
         [eoaTwapOrdersAtom, eoaTwapOrders],
         [tabParamAtom, null],
         [
@@ -305,7 +319,10 @@ describe('observeReduxOrders', () => {
       },
       {},
       expect.any(Function),
-      eoaTwapOrders,
+      {
+        'optimistic-eoa-twap-order': { id: 'optimistic-eoa-twap-order' },
+        'eoa-twap-order': { id: 'eoa-twap-order', partOrdersCount: 2 },
+      },
     )
     expect(getFilteredOrders).toHaveBeenCalledWith([openOrder], {
       historyStatusFilter: HistoryStatusFilter.ALL,
@@ -385,6 +402,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, {}],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [twapOrdersAtom, {}],
         [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [
@@ -480,6 +498,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, {}],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [twapOrdersAtom, {}],
         [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [emulatedTwapOrdersAtom, [emulatedTwapOrder, safeTwapOrder]],
@@ -559,6 +578,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n } }],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [twapOrdersAtom, {}],
         [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [
