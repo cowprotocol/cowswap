@@ -22,6 +22,7 @@ import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
+import { getOrderFundingToken } from 'utils/orderUtils/getOrderFundingToken'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -164,7 +165,7 @@ export function OrderRow({
     isFallbackHandlerUnfillable ||
     (!percentIsAlmostHundred(filledPercentDisplay) && (isExecutedPriceZero || withWarning))
 
-  const inputTokenSymbol = order.inputToken.symbol || ''
+  const inputTokenSymbol = getOrderFundingToken(chainId, order).symbol || ''
 
   const warningReason = isFallbackHandlerUnfillable
     ? WarningReason.FallbackHandler
