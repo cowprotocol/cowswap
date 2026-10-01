@@ -67,7 +67,7 @@ export interface SwapWidgetProps {
 const DEFAULT_ENABLED_RECIPIENT: StatefulValue<boolean> = [true, () => void 0]
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
@@ -112,15 +112,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
 
-  const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
   const isEoaEthFlow = useIsEoaEthFlow()
-
-  useEffect(() => {
-    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
-    setIsHydrated(true)
-  }, [])
 
   useEffect(() => {
     if (isEoaEthFlow && !isSellOrder(orderKind)) {
@@ -196,9 +190,11 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isNetworkDeprecated = useIsProviderNetworkDeprecated()
 
-  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
+  const isWalletTypeReady = !isConnected || isSmartContractWallet !== undefined
+
+  // Guarded render: wait for wallet-type resolution and no active eager-connect. Show only for confirmed EOAs or truly disconnected users.
   const shouldShowLockScreen =
-    isHydrated &&
+    isWalletTypeReady &&
     !isUnlocked &&
     !isNetworkUnsupported &&
     !isNetworkDeprecated &&

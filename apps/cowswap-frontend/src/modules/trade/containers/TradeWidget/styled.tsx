@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { ButtonOutlined, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
@@ -66,6 +66,19 @@ export const HeaderRight = styled.div`
   gap: 5px;
   align-items: center;
   font-size: 0;
+`
+
+export const MyOrdersButton = styled(ButtonOutlined)<{ $hidden: boolean }>`
+  opacity: ${({ $hidden }) => ($hidden ? 0 : 1)};
+  filter: ${({ $hidden }) => ($hidden ? 'blur(4px)' : 'none')};
+  pointer-events: ${({ $hidden }) => ($hidden ? 'none' : 'auto')};
+  transition:
+    opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+    filter var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:disabled {
+    opacity: ${({ $hidden }) => ($hidden ? 0 : 0.4)};
+  }
 `
 
 export const CurrencySeparatorBox = styled.div<{ compactView: boolean }>`

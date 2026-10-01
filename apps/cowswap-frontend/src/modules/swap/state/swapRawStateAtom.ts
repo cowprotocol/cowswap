@@ -32,7 +32,9 @@ export function getDefaultSwapState(chainId: SupportedChainId | null): SwapRawSt
 }
 
 export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = atomWithPartialUpdate(
-  atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage()),
+  atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage(), {
+    getOnInit: true,
+  }),
 )
 
 export const swapDerivedStateAtom = atom<SwapDerivedState>(DEFAULT_SWAP_DERIVED_STATE)
