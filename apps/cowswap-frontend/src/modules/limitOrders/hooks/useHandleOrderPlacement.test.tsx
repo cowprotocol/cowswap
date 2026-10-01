@@ -419,4 +419,30 @@ describe('useHandleOrderPlacement', () => {
       expect(atomResult.current[0]).toBe(true)
     })
   })
+  it('ignores an older attempt that settles after a newer order was placed', async () => {
+    let rejectFirstWalletRequest: () => void = () => undefined
+    mockTradeFlow.mockImplementationOnce(
+      () => new Promise((_resolve, reject) => (rejectFirstWalletRequest = () => reject(new Error('User rejected')))),
+    )
+    mockTradeFlow.mockImplementationOnce(() => new Promise(() => undefined))
+    const onError = jest.spyOn(tradeConfirmActions, 'onError')
+
+    const { result } = renderHook(
+      () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
+      { wrapper },
+    )
+    let firstAttempt: Promise<void> = Promise.resolve()
+
+    await act(async () => {
+      firstAttempt = result.current.callback()
+      void result.current.callback()
+    })
+    await act(async () => {
+      rejectFirstWalletRequest()
+      await firstAttempt
+    })
+
+    expect(onError).not.toHaveBeenCalled()
+    onError.mockRestore()
+  })
 })

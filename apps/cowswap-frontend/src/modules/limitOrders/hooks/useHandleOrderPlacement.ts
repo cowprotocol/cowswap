@@ -1,5 +1,5 @@
 import { useSetAtom, useStore } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
@@ -64,12 +64,13 @@ export function useHandleOrderPlacement(
 
   const tradeFn = useLimitOrdersTradeCallback(priceImpact, settingsState, tradeConfirmActions)
 
+  // An older attempt can settle (its wallet request finally answers) while a newer order owns the confirm modal.
+  const latestAttemptRef = useRef(0)
   const callback = useCallback(() => {
+    const attempt = ++latestAttemptRef.current
     return tradeFn()
       .then(async (orderHash) => {
-        if (!orderHash) {
-          return
-        }
+        if (!orderHash || attempt !== latestAttemptRef.current) return
 
         // solanaFlow already called tradeConfirmActions.onSuccess with the real order id itself.
         if (typeof orderHash === 'string') {
@@ -100,7 +101,7 @@ export function useHandleOrderPlacement(
         }
       })
       .catch((error) => {
-        if (error instanceof PriceImpactDeclineError) return
+        if (attempt !== latestAttemptRef.current || error instanceof PriceImpactDeclineError) return
         if (error instanceof WidgetHookDeclineError) {
           tradeConfirmActions.onDismiss()
           return
