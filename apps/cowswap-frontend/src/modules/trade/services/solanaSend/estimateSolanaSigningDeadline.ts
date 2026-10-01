@@ -10,6 +10,13 @@ const FALLBACK_SLOT_TIME_MS = 400
 
 const PERFORMANCE_SAMPLES_COUNT = 4
 
+/**
+ * The estimate is optimistic — it assumes the current slot rate holds and ignores the time the
+ * signed bundle still needs to reach the order book. Capping the window keeps the countdown on the
+ * safe side of the real blockhash death.
+ */
+const MAX_WINDOW_MS = 30_000
+
 export interface SolanaSigningDeadline {
   /** Epoch ms after which the blockhash is expected to be dead. */
   expiresAt: number
@@ -42,7 +49,7 @@ export async function estimateSolanaSigningDeadline(
       : FALLBACK_SLOT_TIME_MS
 
     const remainingBlocks = Math.max(0, lastValidBlockHeight - currentBlockHeight)
-    const durationMs = Math.round(remainingBlocks * slotTimeMs)
+    const durationMs = Math.min(Math.round(remainingBlocks * slotTimeMs), MAX_WINDOW_MS)
 
     return { expiresAt: Date.now() + durationMs, durationMs }
   } catch {

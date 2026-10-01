@@ -82,10 +82,13 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
 
   // The wallet prompt can't be cancelled programmatically, so the flow keeps pending in the
   // background; the abandoned flag keeps its eventual rejection from opening the error modal.
+  // The quote kept refreshing through the closed window, so the review screen is reopened with
+  // price confirmation forced: the next attempt signs whatever the fresh quote says, which is not
+  // what the user confirmed the first time.
   const onSolanaSigningExpiredDismiss = useCallback(() => {
     setSolanaSigningAbandoned(true)
     setSolanaSigningDeadline(null)
-    tradeConfirmActions.onOpen()
+    tradeConfirmActions.onOpen(true)
   }, [setSolanaSigningAbandoned, setSolanaSigningDeadline, tradeConfirmActions])
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()

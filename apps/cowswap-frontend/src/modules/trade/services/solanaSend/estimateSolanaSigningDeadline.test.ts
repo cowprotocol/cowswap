@@ -43,9 +43,17 @@ describe('estimateSolanaSigningDeadline', () => {
   it('falls back to 400ms per slot when no usable samples are reported', async () => {
     const connection = createConnection({ blockHeight: 1_000, samples: [{ numSlots: 0, samplePeriodSecs: 60 }] })
 
+    const deadline = await estimateSolanaSigningDeadline(connection, 1_050)
+
+    expect(deadline).toEqual({ durationMs: 20_000, expiresAt: 1_020_000 })
+  })
+
+  it('caps the window at 30s even when the chain reports a longer one', async () => {
+    const connection = createConnection({ blockHeight: 1_000, samples: [{ numSlots: 0, samplePeriodSecs: 60 }] })
+
     const deadline = await estimateSolanaSigningDeadline(connection, 1_100)
 
-    expect(deadline).toEqual({ durationMs: 40_000, expiresAt: 1_040_000 })
+    expect(deadline).toEqual({ durationMs: 30_000, expiresAt: 1_030_000 })
   })
 
   it('reports a zero window when the height already passed', async () => {

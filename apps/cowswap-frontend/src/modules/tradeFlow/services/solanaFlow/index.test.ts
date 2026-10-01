@@ -630,7 +630,8 @@ describe('solanaFlow · sponsored', () => {
     await solanaFlow(context, buildAnalytics(), true)
 
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalled()
+    // `true` forces the "Price Updated" banner: the quote refreshed while the prompt was open.
+    expect(context.tradeConfirmActions.onOpen).toHaveBeenCalledWith(true)
     expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
 
     jotaiStore.set(tradeConfirmStateAtom, { ...jotaiStore.get(tradeConfirmStateAtom), isOpen: false })

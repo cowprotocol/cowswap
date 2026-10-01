@@ -202,7 +202,9 @@ export async function solanaFlow(
     // already left the modal entirely, stay silent rather than popping it back open.
     if (isRejection && isSigningWindowClosed) {
       if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
-        tradeConfirmActions.onOpen()
+        // Forced price confirmation: the quote moved on while the prompt was open, so the user has
+        // to accept the rate they would actually sign now.
+        tradeConfirmActions.onOpen(true)
       }
 
       return
