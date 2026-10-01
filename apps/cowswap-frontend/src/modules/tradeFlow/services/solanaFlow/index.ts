@@ -34,6 +34,14 @@ import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getS
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
+/**
+ * An unanswered wallet prompt keeps its flow running forever, so a retry starts while the previous
+ * attempt is still pending. Only the newest run owns the confirm-screen state; every older one goes
+ * silent. The deadline atom cannot stand in for this: a fresh attempt has no deadline until its RPC
+ * round-trips land, and never gets one when the estimate fails.
+ */
+let latestAttemptId = 0
+
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
@@ -59,6 +67,7 @@ export async function solanaFlow(
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
+  const attemptId = ++latestAttemptId
   // A previous attempt can hang forever on an unanswered wallet prompt, which leaves its (expired)
   // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
   jotaiStore.set(solanaSigningDeadlineAtom, null)
@@ -186,16 +195,14 @@ export async function solanaFlow(
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
-    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
-    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
-    const liveDeadline = jotaiStore.get(solanaSigningDeadlineAtom)
-    // Non-null here can only belong to a newer attempt (this flow's own deadline was already
-    // cleared), whose signing screen a stale flow's error must not stomp.
-    const isAnotherSigningLive = !!liveDeadline && Date.now() < liveDeadline.expiresAt
-
-    if (isAnotherSigningLive) {
+    // The user retried while this attempt's prompt was still open: its screen belongs to the newer
+    // run now, and a stale failure must not repaint it.
+    if (attemptId !== latestAttemptId) {
       return
     }
+
+    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
+    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
 
     // Rejecting a prompt whose signing window already closed is the expected retry path, not an
     // error: land the user back on the review screen so they can confirm with a fresh quote. If they

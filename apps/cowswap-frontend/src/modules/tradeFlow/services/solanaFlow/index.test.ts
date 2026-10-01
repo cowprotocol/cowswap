@@ -6,7 +6,7 @@ import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
-import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom } from 'entities/trade'
+import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -208,6 +208,21 @@ function buildContext({
 function sentSteps(): SolanaFlowStep[] {
   return mockSendSolanaFlow.mock.calls[0][1]
 }
+
+const tick = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0))
+
+/** Stands in for an unanswered wallet prompt: the flow stays pending until the test rejects it. */
+function deferRejection(): { promise: Promise<never>; reject(error: Error): void } {
+  let reject: (error: Error) => void = () => undefined
+  const promise = new Promise<never>((_, rejectPromise) => {
+    reject = rejectPromise
+  })
+
+  return { promise, reject: (error) => reject(error) }
+}
+
+/** A prompt that is never answered at all — the state a retry sits in while the test runs. */
+const neverSettles = (): Promise<never> => new Promise<never>(() => undefined)
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -550,44 +565,98 @@ describe('solanaFlow', () => {
     expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 
-  // A hung prompt from an earlier attempt can reject while a newer attempt is already signing; the
-  // stale flow must not repaint the UI under the live countdown.
-  it('touches no UI when a stale flow fails while another signing is live', async () => {
-    mockSendSolanaFlow.mockImplementation(async () => {
-      jotaiStore.set(solanaSigningDeadlineAtom, { expiresAt: Date.now() + 60_000, durationMs: 60_000 })
-      throw new Error('User rejected the request')
-    })
-    const context = buildContext()
+  // A hung prompt from an earlier attempt can reject while a newer attempt is already running; the
+  // stale flow must not repaint the UI the newer one owns. This path never has a deadline to go by,
+  // so the attempt itself has to be recognised as stale.
+  it('touches no UI when a stale flow fails while a newer attempt is running', async () => {
+    const staleSign = deferRejection()
+    mockSendSolanaFlow.mockImplementationOnce(() => staleSign.promise)
+    const staleContext = buildContext()
+    const staleRun = solanaFlow(staleContext, buildAnalytics())
+    await tick()
 
-    await solanaFlow(context, buildAnalytics())
+    mockSendSolanaFlow.mockImplementationOnce(() => neverSettles())
+    void solanaFlow(buildContext(), buildAnalytics())
+    await tick()
 
-    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+    staleSign.reject(new Error('User rejected the request'))
+    await staleRun
 
-    jotaiStore.set(solanaSigningDeadlineAtom, null)
+    expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(staleContext.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 })
 
 describe('solanaFlow · sponsored', () => {
-  const flushDeadlineEstimation = (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 0))
+  /**
+   * Replays the retry the countdown screen is built around: the first prompt is left unanswered past
+   * its window, the user cancels back to the review screen and confirms again, and only then does the
+   * wallet deliver the stale prompt's answer. Returns the abandoned attempt, still pending.
+   */
+  async function startStaleAttemptUnderRetry(params: {
+    staleDeadline: SolanaSigningDeadlineState
+    retryDeadline: SolanaSigningDeadlineState | null
+  }): Promise<{ context: SolanaTradeFlowContext; run: Promise<boolean | void>; reject(error: Error): void }> {
+    const staleSign = deferRejection()
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce(params.staleDeadline)
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
 
-  // The settle in postSponsoredBundle runs whenever a hung attempt finally gets its wallet answer;
-  // by then the deadline atom may hold a NEWER attempt's live countdown, which must survive.
-  it("leaves a newer attempt's live countdown untouched when a stale attempt settles", async () => {
-    const liveDeadline = { expiresAt: Date.now() + 60_000, durationMs: 40_000 }
-    mockSignSolanaFlow.mockImplementation(async () => {
-      jotaiStore.set(solanaSigningDeadlineAtom, liveDeadline)
-      throw new Error('User rejected the request')
+      return staleSign.promise
     })
     const context = buildContext()
+    const run = solanaFlow(context, buildAnalytics(), true)
+    await tick()
 
-    await solanaFlow(context, buildAnalytics(), true)
+    jotaiStore.set(solanaSigningAbandonedAtom, true)
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
 
-    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(liveDeadline)
-    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce(params.retryDeadline)
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), true)
+    await tick()
+
+    return { context, run, reject: staleSign.reject }
+  }
+
+  // The settle in postSponsoredBundle runs whenever a hung attempt finally gets its wallet answer;
+  // by then the deadline atom holds a NEWER attempt's live countdown, which must survive.
+  it("leaves a newer attempt's live countdown untouched when a stale attempt settles", async () => {
+    const retryDeadline = { expiresAt: Date.now() + 30_000, durationMs: 30_000 }
+    const stale = await startStaleAttemptUnderRetry({
+      staleDeadline: { expiresAt: Date.now() - 1_000, durationMs: 30_000 },
+      retryDeadline,
+    })
+
+    stale.reject(new Error('User rejected the request'))
+    await stale.run
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(retryDeadline)
+    expect(stale.context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(stale.context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
 
     jotaiStore.set(solanaSigningDeadlineAtom, null)
+  })
+
+  // The retry owns the screen from its very first line, long before its own deadline estimate lands —
+  // and never gets one at all when that estimate fails. Recognising the stale attempt cannot depend
+  // on the newer one having published a countdown.
+  it('touches no UI when a stale flow fails before the newer attempt has a deadline', async () => {
+    const stale = await startStaleAttemptUnderRetry({
+      staleDeadline: { expiresAt: Date.now() - 1_000, durationMs: 30_000 },
+      retryDeadline: null,
+    })
+
+    stale.reject(new Error('User rejected the request'))
+    await stale.run
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+    expect(stale.context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    expect(stale.context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 
   // Once the wallet returns the signature the outcome no longer depends on the user, so a countdown
@@ -597,7 +666,7 @@ describe('solanaFlow · sponsored', () => {
     mockEstimateSolanaSigningDeadline.mockResolvedValue(deadline)
     mockSignSolanaFlow.mockImplementation(async (signContext) => {
       signContext.onDeadline?.(1_234)
-      await flushDeadlineEstimation()
+      await tick()
       expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(deadline)
 
       return { transaction: 'signed-tx', lastValidBlockHeight: 1_234 }
@@ -621,7 +690,7 @@ describe('solanaFlow · sponsored', () => {
     mockEstimateSolanaSigningDeadline.mockResolvedValue(expiredDeadline)
     mockSignSolanaFlow.mockImplementation(async (signContext) => {
       signContext.onDeadline?.(1_234)
-      await flushDeadlineEstimation()
+      await tick()
 
       throw new Error('User rejected the request')
     })
