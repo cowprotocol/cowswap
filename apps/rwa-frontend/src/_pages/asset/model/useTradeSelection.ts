@@ -6,7 +6,7 @@ import { useChainId, useConnection } from 'wagmi'
 import { networkStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
 
-import { getBestQuotedToken, type QuotedToken, toQuotedTokens } from '../lib/quotedTokens'
+import { getAutoToken, getBestQuotedToken, type QuotedToken, toQuotedTokens } from '../lib/quotedTokens'
 import { resolveTradeChainId, resolveTradeToken, type TradeToken } from '../lib/tradeToken'
 
 import type { TradeSide } from '../lib/tradeLeg'
@@ -37,13 +37,15 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
   const quotesQuery = useAtomValue(tradeQuotesQueryAtomFamily(networkParams))
   const { data: stats } = useAtomValue(networkStatsQueryAtomFamily(networkParams))
   // `keepPreviousData` keeps the quotes of the previous side or network while the new ones load
-  const quotes = quotesQuery.data?.chainId === chainId && quotesQuery.data.side === side ? quotesQuery.data : undefined
+  const chainQuotes = quotesQuery.data?.chainId === chainId ? quotesQuery.data : undefined
+  const quotes = chainQuotes?.side === side ? chainQuotes : undefined
 
   return useMemo(() => {
     const chainTokens = asset.tokens.filter((token) => token.chainId === chainId)
     const quotedTokens = toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined)
     const bestToken = getBestQuotedToken(quotedTokens, side)
-    const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, bestToken?.address ?? null)
+    const autoToken = getAutoToken(chainTokens, chainQuotes)
+    const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, autoToken?.address ?? null)
 
     if (!tradeToken) return null
 
@@ -56,5 +58,5 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
       isQuotesLoading: !quotes && !quotesQuery.error,
       quotesError: quotes ? null : quotesQuery.error,
     }
-  }, [asset.tokens, chainId, quotes, stats, side, selectedTokenKey, quotesQuery.error])
+  }, [asset.tokens, chainId, chainQuotes, quotes, stats, side, selectedTokenKey, quotesQuery.error])
 }

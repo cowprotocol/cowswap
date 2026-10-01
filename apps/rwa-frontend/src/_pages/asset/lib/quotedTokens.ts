@@ -13,10 +13,24 @@ export interface QuotedToken {
   stats: RwaTokenNetworkStats | undefined
 }
 
-/** The cheapest share to buy, or the most paid one to sell. `null` when no token has a quote */
+/**
+ * The token Auto trades, ranked by the latest quotes on the network. While the quotes of a new side load, those are
+ * the previous side's, so the widget keeps its token instead of falling back to the first one
+ */
+export function getAutoToken(chainTokens: RwaToken[], chainQuotes: RwaAssetQuotes | undefined): RwaToken | null {
+  if (!chainQuotes) return null
+
+  return getBestQuotedToken(toQuotedTokens(chainTokens, chainQuotes, undefined), chainQuotes.side)
+}
+
+/**
+ * The cheapest share to buy, or the most paid one to sell. Unverified quotes are skipped: identical requests have
+ * returned amounts an order of magnitude apart. `null` when no token has a verified quote
+ */
 export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQuotes['side']): RwaToken | null {
   const priced = quotedTokens.filter(
-    (quoted): quoted is QuotedToken & { pricePerShare: number } => quoted.pricePerShare !== null,
+    (quoted): quoted is QuotedToken & { pricePerShare: number } =>
+      quoted.pricePerShare !== null && quoted.quote?.verified === true,
   )
   const [best] = [...priced].sort((a, b) =>
     side === 'buy' ? a.pricePerShare - b.pricePerShare : b.pricePerShare - a.pricePerShare,

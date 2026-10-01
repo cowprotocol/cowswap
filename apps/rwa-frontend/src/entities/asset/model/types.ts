@@ -61,6 +61,7 @@ export interface RwaToken {
   coingeckoId?: string
 }
 
+/** Market data of one CoinGecko coin, which is shared by the token deployments on all networks */
 export interface RwaTokenMarketData {
   /** USD */
   price: number | null
@@ -71,7 +72,6 @@ export interface RwaTokenMarketData {
   logoUrl: string | null
 }
 
-/** Market data of one CoinGecko coin, which is shared by the token deployments on all networks */
 export interface RwaTokenNetworkStats {
   address: string
   /** USD, supply on the network times the token price */
@@ -156,6 +156,8 @@ export interface RwaTokenQuote {
   address: string
   /** Atoms of the asset token, received on `buy` and spent on `sell`. `null` when there is no quote */
   amount: string | null
+  /** `true` when the order book simulated the trade. Unverified amounts can be far off */
+  verified: boolean
   /** Order book `errorType` (e.g. `NoLiquidity`), or `Unavailable` when the order book could not be reached */
   error: string | null
 }

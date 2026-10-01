@@ -42,9 +42,16 @@ class TransientQuotesError extends Error {
   }
 }
 
-const getCachedTokenQuotes = unstable_cache(fetchTokenQuotes, ['rwa-quotes'], {
-  revalidate: QUOTES_REVALIDATE_SECONDS,
-})
+/**
+ * `unstable_cache` serves an expired entry of any age while it refreshes in the background, so the minute bucket in
+ * the key keeps quotes from being older than `QUOTES_REVALIDATE_SECONDS`
+ */
+const getCachedTokenQuotes = unstable_cache(
+  (chainId: SupportedChainId, side: RwaQuoteSide, addresses: string[], _minuteBucket: number) =>
+    fetchTokenQuotes(chainId, side, addresses),
+  ['rwa-quotes'],
+  { revalidate: QUOTES_REVALIDATE_SECONDS },
+)
 
 export async function getTokenQuotes(
   chainId: SupportedChainId,
@@ -52,7 +59,9 @@ export async function getTokenQuotes(
   addresses: string[],
 ): Promise<TokenQuotesResult> {
   try {
-    return { quotes: await getCachedTokenQuotes(chainId, side, addresses), degraded: false }
+    const minuteBucket = Math.floor(Date.now() / (QUOTES_REVALIDATE_SECONDS * 1000))
+
+    return { quotes: await getCachedTokenQuotes(chainId, side, addresses, minuteBucket), degraded: false }
   } catch (err: unknown) {
     if (err instanceof TransientQuotesError) return { quotes: err.quotes, degraded: true }
 
@@ -67,18 +76,20 @@ async function fetchTokenQuote(
   quoteToken: QuoteToken,
 ): Promise<TokenQuoteResult> {
   try {
-    const { quote } = await getServerOrderBookApi().getQuote(toQuoteRequest(side, address, quoteToken), { chainId })
+    const { quote, verified } = await getServerOrderBookApi().getQuote(toQuoteRequest(side, address, quoteToken), {
+      chainId,
+    })
     const amount = side === 'buy' ? quote.buyAmount : (BigInt(quote.sellAmount) + BigInt(quote.feeAmount)).toString()
 
-    return { quote: { address, amount, error: null }, isTransient: false }
+    return { quote: { address, amount, verified, error: null }, isTransient: false }
   } catch (err: unknown) {
     const errorType = getQuoteErrorType(err)
 
-    if (errorType) return { quote: { address, amount: null, error: errorType }, isTransient: false }
+    if (errorType) return { quote: { address, amount: null, verified: false, error: errorType }, isTransient: false }
 
     console.error(`[rwa] Failed to quote ${address} on chain ${chainId}`, err)
 
-    return { quote: { address, amount: null, error: UNAVAILABLE_ERROR }, isTransient: true }
+    return { quote: { address, amount: null, verified: false, error: UNAVAILABLE_ERROR }, isTransient: true }
   }
 }
 

@@ -180,6 +180,11 @@ function TradeTokenOption({
           {pricePerShare !== null ? (
             <>
               <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
+              {!quote?.verified && (
+                <span className={styles.secondary} title="The order book could not simulate this trade">
+                  Unverified quote
+                </span>
+              )}
               {stockPrice && (
                 <span className={styles.premium}>
                   {formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock price
