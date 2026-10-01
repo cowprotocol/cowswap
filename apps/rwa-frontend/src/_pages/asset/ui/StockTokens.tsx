@@ -3,10 +3,9 @@
 import { useAtomValue } from 'jotai'
 import { type ReactNode, useMemo, useState } from 'react'
 
-import Image from 'next/image'
-
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
+import { TokenLogo } from './TokenLogo'
 
 import { getTokenKey } from '../lib/tokenKey'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
@@ -19,7 +18,6 @@ import { formatCompactUsd, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
 
 const ALL = ''
-const LOGO_SIZE = 28
 
 interface StockTokenRowProps {
   token: RwaToken
@@ -117,7 +115,7 @@ function StockTokenRow({ token, market, onTrade }: StockTokenRowProps): ReactNod
     <tr>
       <td>
         <div className={styles.token}>
-          <TokenLogo symbol={token.symbol} market={market} />
+          <TokenLogo symbol={token.symbol} logoUrl={market?.logoUrl} />
           <div>
             {token.symbol}
             <span className={tableStyles.secondary}>{token.issuer}</span>
@@ -149,10 +147,4 @@ function StockTokenRow({ token, market, onTrade }: StockTokenRowProps): ReactNod
       </td>
     </tr>
   )
-}
-
-function TokenLogo({ symbol, market }: { symbol: string; market: RwaTokenMarketData | undefined }): ReactNode {
-  if (!market?.logoUrl) return <span className={styles.logoPlaceholder}>{symbol.charAt(0)}</span>
-
-  return <Image className={styles.logo} src={market.logoUrl} alt="" width={LOGO_SIZE} height={LOGO_SIZE} unoptimized />
 }

@@ -1,4 +1,4 @@
-import type { RwaChartRange, RwaSortField, RwaSortOrder } from '../model/types'
+import type { RwaChartRange, RwaQuoteSide, RwaSortField, RwaSortOrder } from '../model/types'
 
 import { RWA_API_PREFIX } from '@/shared/api'
 
@@ -27,6 +27,16 @@ export function getAssetUrl(ticker: string): string {
 
 export function getChartUrl(ticker: string, range: RwaChartRange): string {
   return `${RWA_API_PREFIX}chart/${encodeURIComponent(ticker)}?range=${range}`
+}
+
+export function getNetworkStatsUrl(ticker: string, chainId: number): string {
+  return `${RWA_API_PREFIX}network-stats/${encodeURIComponent(ticker)}?chainId=${chainId}`
+}
+
+export function getQuotesUrl(ticker: string, chainId: number, side: RwaQuoteSide): string {
+  const params = new URLSearchParams({ chainId: String(chainId), side })
+
+  return `${RWA_API_PREFIX}quotes/${encodeURIComponent(ticker)}?${params}`
 }
 
 export function getTokenListUrl(): string {

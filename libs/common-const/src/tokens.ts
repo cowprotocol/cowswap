@@ -1,6 +1,6 @@
 import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './cowContracts'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'

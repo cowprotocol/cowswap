@@ -1,1 +1,8 @@
-export { getChainLabel, getEvmChainInfo, getExplorerTxUrl, getPublicClient, toViemChain } from './chains'
+export {
+  getChainLabel,
+  getChainLogoUrl,
+  getEvmChainInfo,
+  getExplorerTxUrl,
+  getPublicClient,
+  toViemChain,
+} from './chains'

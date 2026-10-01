@@ -1,21 +1,35 @@
 import 'server-only'
 
-import type { RwaAsset, RwaChartPoint, RwaChartRange, RwaMarketData, RwaTokenMarketData } from '../model/types'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
+import type {
+  RwaAsset,
+  RwaChartPoint,
+  RwaChartRange,
+  RwaMarketData,
+  RwaToken,
+  RwaTokenMarketData,
+  RwaTokenNetworkStats,
+} from '../model/types'
 
 import {
   type CoingeckoChartDays,
   type CoingeckoMarket,
   fetchCoinsMarkets,
   fetchMarketChart,
+  fetchOnchainTokens,
 } from '@/shared/api/index.server'
 
 export interface MarketDataProvider {
   /** Missing tickers in the result mean the provider has no data for them */
   getMarketData(assets: RwaAsset[]): Promise<Map<string, RwaMarketData>>
   getChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]>
+  /** `tokens` are on `chainId`, `market` gives their prices */
+  getNetworkStats(chainId: number, tokens: RwaToken[], market: RwaMarketData | null): Promise<RwaTokenNetworkStats[]>
 }
 
 const MARKETS_REVALIDATE_SECONDS = 60
+const ONCHAIN_REVALIDATE_SECONDS = 60
 
 const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
   '1D': '1',
@@ -62,6 +76,29 @@ export const coingeckoProvider: MarketDataProvider = {
 
     return toChartPoints(chart.prices)
   },
+
+  async getNetworkStats(chainId, tokens, market) {
+    const onchainTokens = await fetchOnchainTokens(
+      chainId,
+      tokens.map((token) => token.address),
+      ONCHAIN_REVALIDATE_SECONDS,
+    )
+    const byAddress = new Map(
+      (onchainTokens ?? []).map(({ attributes }) => [getAddressKey(attributes.address), attributes]),
+    )
+
+    return tokens.map((token) => {
+      const attributes = byAddress.get(getAddressKey(token.address))
+      const price = token.coingeckoId ? (market?.tokens[token.coingeckoId]?.price ?? null) : null
+      const supply = toFiniteNumber(attributes?.normalized_total_supply)
+
+      return {
+        address: token.address,
+        onchainCap: supply !== null && price !== null ? supply * price : null,
+        dexVolume24h: toFiniteNumber(attributes?.volume_usd.h24),
+      }
+    })
+  },
 }
 
 export function toChartPoints(prices: [number, number][]): RwaChartPoint[] {
@@ -93,6 +130,12 @@ function sumNullable(values: (number | null)[]): number | null {
   const defined = values.filter((value): value is number => value !== null)
 
   return defined.length ? defined.reduce((acc, value) => acc + value, 0) : null
+}
+
+function toFiniteNumber(value: string | null | undefined): number | null {
+  const number = Number(value ?? undefined)
+
+  return Number.isFinite(number) ? number : null
 }
 
 function toMarketData(ids: string[], marketsById: Map<string, CoingeckoMarket>): RwaMarketData | null {

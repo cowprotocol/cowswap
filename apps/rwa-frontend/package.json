@@ -6,6 +6,7 @@
   "license": "ISC",
   "scripts": {},
   "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.2.15",
     "@cowprotocol/widget-lib": "workspace:*",
