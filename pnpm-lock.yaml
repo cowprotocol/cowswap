@@ -1197,6 +1197,9 @@ importers:
 
   apps/rwa-frontend:
     dependencies:
+      '@cowprotocol/common-const':
+        specifier: workspace:*
+        version: link:../../libs/common-const
       '@cowprotocol/common-utils':
         specifier: workspace:*
         version: link:../../libs/common-utils

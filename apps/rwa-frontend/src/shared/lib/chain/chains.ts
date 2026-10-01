@@ -12,6 +12,14 @@ export function getChainLabel(chainId: number): string {
   return getChainInfo(chainId)?.label ?? `Chain ${chainId}`
 }
 
+export function getChainLogoUrl(chainId: number, isDark: boolean): string | null {
+  const logo = getChainInfo(chainId)?.logo
+
+  if (!logo) return null
+
+  return isDark ? logo.dark : logo.light
+}
+
 export function getEvmChainInfo(chainId: number): EvmChainInfo | undefined {
   const chain = getChainInfo(chainId)
 
