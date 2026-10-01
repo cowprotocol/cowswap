@@ -46,6 +46,17 @@ export const Link = styled(NavLink)`
   ${ItemWithIcon};
 `
 
+export const DisabledLink = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  gap: 4px;
+  font-weight: inherit;
+  line-height: 1;
+  cursor: not-allowed;
+`
+
 export const DropdownButton = styled.div`
   display: flex;
   align-items: center;
@@ -73,12 +84,23 @@ export const Wrapper = styled.div`
   }
 `
 
-export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean }>`
+export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: boolean; isDisabled?: boolean }>`
   display: flex;
   align-items: center;
   color: inherit;
 
-  > a {
+  ${({ isDisabled }) =>
+    isDisabled &&
+    css`
+      opacity: 0.4;
+
+      > span:hover {
+        background: transparent;
+      }
+    `}
+
+  > a,
+  > span {
     display: flex;
     align-items: center;
     justify-content: flex-start;

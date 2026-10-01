@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, HoverTooltip, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -68,6 +69,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId
+      const isDisabled = item.route === Routes.ADVANCED_ORDERS && !!chainId && isSolanaChain(+chainId)
 
       const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
       const itemTradeState = getTradeStateByType(item.route)
@@ -98,6 +100,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           routePath={routePath}
           item={item}
           isActive={isActive}
+          isDisabled={isDisabled}
           onClick={() => handleMenuItemClick(item)}
           isDropdownVisible={isDropdown && isDropdownVisible}
         />
@@ -151,25 +154,43 @@ const MenuItem = ({
   routePath,
   item,
   isActive,
+  isDisabled,
   onClick,
   isDropdownVisible,
 }: {
   isActive: boolean
+  isDisabled?: boolean
   isDropdownVisible: boolean
   item: MenuItemConfig
   onClick: Command
   routePath: string
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}) => (
-  <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
-    <styledEl.Link to={routePath}>
+}) => {
+  const content = (
+    <>
       {item.label}
       {(!isActive && item.badgeImage) || item.badge ? (
         <Badge {...(item.badgeType && { type: item.badgeType })}>
           {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
         </Badge>
       ) : null}
-    </styledEl.Link>
-  </styledEl.MenuItem>
-)
+    </>
+  )
+
+  if (isDisabled) {
+    return (
+      <styledEl.MenuItem isDisabled isDropdownVisible={isDropdownVisible}>
+        <HoverTooltip wrapInContainer placement="top" content={<Trans>TWAP is not available on Solana yet</Trans>}>
+          <styledEl.DisabledLink>{content}</styledEl.DisabledLink>
+        </HoverTooltip>
+      </styledEl.MenuItem>
+    )
+  }
+
+  return (
+    <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
+      <styledEl.Link to={routePath}>{content}</styledEl.Link>
+    </styledEl.MenuItem>
+  )
+}
