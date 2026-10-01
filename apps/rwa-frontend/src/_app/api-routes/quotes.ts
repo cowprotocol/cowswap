@@ -36,7 +36,7 @@ export async function getQuotesHandler(
   if (side === null) return errorResponse(400, `Invalid "side", expected one of: ${RWA_QUOTE_SIDES.join(', ')}`)
 
   try {
-    return jsonResponse(await getAssetQuotes(asset, chainId, side), QUOTES_MAX_AGE_SECONDS)
+    return jsonResponse(await getAssetQuotes(asset, chainId, side), QUOTES_MAX_AGE_SECONDS, 0)
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load quotes', error)

@@ -9,7 +9,17 @@ import { getServerOrderBookApi } from '@/shared/api/index.server'
 
 const getQuoteMock = jest.fn()
 
-jest.mock('next/cache', () => ({ unstable_cache: (fn: unknown) => fn }))
+const mockCachedCall = jest.fn()
+
+jest.mock('next/cache', () => ({
+  unstable_cache:
+    (fn: (...args: unknown[]) => unknown) =>
+    (...args: unknown[]) => {
+      mockCachedCall(...args)
+
+      return fn(...args)
+    },
+}))
 jest.mock('@/shared/api/index.server', () => ({ getServerOrderBookApi: jest.fn() }))
 
 const AAPLX = '0x9d275685dC284C8eB1C79f6ABA7a63Dc75ec890a'
@@ -20,8 +30,8 @@ function orderBookError(status: number, body: unknown): OrderBookApiError {
   return new OrderBookApiError(new Response(null, { status }), body)
 }
 
-function quoteResponse(sellAmount: string, buyAmount: string, feeAmount = '0'): unknown {
-  return { quote: { sellAmount, buyAmount, feeAmount } }
+function quoteResponse(sellAmount: string, buyAmount: string, feeAmount = '0', verified = true): unknown {
+  return { quote: { sellAmount, buyAmount, feeAmount }, verified }
 }
 
 describe('getTokenQuotes', () => {
@@ -33,6 +43,19 @@ describe('getTokenQuotes', () => {
   afterEach(() => {
     jest.restoreAllMocks()
     getQuoteMock.mockReset()
+    mockCachedCall.mockReset()
+  })
+
+  it('keys the cache by minute, so cached quotes never outlive a minute', async () => {
+    getQuoteMock.mockResolvedValue(quoteResponse('1', '2'))
+    const nowMock = jest.spyOn(Date, 'now')
+
+    nowMock.mockReturnValue(119_999)
+    await getTokenQuotes(SupportedChainId.MAINNET, 'buy', [AAPLX])
+    nowMock.mockReturnValue(120_000)
+    await getTokenQuotes(SupportedChainId.MAINNET, 'buy', [AAPLX])
+
+    expect(mockCachedCall.mock.calls.map((args: unknown[]) => args[3])).toEqual([1, 2])
   })
 
   it('sells 1000 USDC on buy and returns the received asset amount', async () => {
@@ -50,7 +73,7 @@ describe('getTokenQuotes', () => {
       { chainId: SupportedChainId.MAINNET },
     )
     expect(result).toEqual({
-      quotes: [{ address: AAPLX, amount: '3010000000000000000', error: null }],
+      quotes: [{ address: AAPLX, amount: '3010000000000000000', verified: true, error: null }],
       degraded: false,
     })
   })
@@ -69,7 +92,15 @@ describe('getTokenQuotes', () => {
       }),
       { chainId: SupportedChainId.MAINNET },
     )
-    expect(result.quotes).toEqual([{ address: AAPLX, amount: '3020000000000000000', error: null }])
+    expect(result.quotes).toEqual([{ address: AAPLX, amount: '3020000000000000000', verified: true, error: null }])
+  })
+
+  it('keeps whether the order book verified the quote', async () => {
+    getQuoteMock.mockResolvedValue(quoteResponse('1', '2', '0', false))
+
+    const result = await getTokenQuotes(SupportedChainId.BNB, 'buy', [AAPLX])
+
+    expect(result.quotes).toEqual([{ address: AAPLX, amount: '2', verified: false, error: null }])
   })
 
   it('uses the 18 decimals of BNB USDC', async () => {
@@ -90,8 +121,8 @@ describe('getTokenQuotes', () => {
 
     expect(await getTokenQuotes(SupportedChainId.MAINNET, 'buy', [AAPLX, AAPLON])).toEqual({
       quotes: [
-        { address: AAPLX, amount: '2', error: null },
-        { address: AAPLON, amount: null, error: 'NoLiquidity' },
+        { address: AAPLX, amount: '2', verified: true, error: null },
+        { address: AAPLON, amount: null, verified: false, error: 'NoLiquidity' },
       ],
       degraded: false,
     })
@@ -106,8 +137,8 @@ describe('getTokenQuotes', () => {
 
     expect(await getTokenQuotes(SupportedChainId.MAINNET, 'buy', [AAPLX, AAPLON])).toEqual({
       quotes: [
-        { address: AAPLX, amount: '2', error: null },
-        { address: AAPLON, amount: null, error: 'Unavailable' },
+        { address: AAPLX, amount: '2', verified: true, error: null },
+        { address: AAPLON, amount: null, verified: false, error: 'Unavailable' },
       ],
       degraded: true,
     })
