@@ -21,6 +21,7 @@ import {
   TabOrderTypes,
   tabParamAtom,
 } from 'entities/routes/routes.atom'
+import { eoaTwapOrdersAtom } from 'entities/twap/state/eoaTwapOrdersAtom'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -72,6 +73,14 @@ jest.mock('@cowprotocol/wallet', () => {
 
   return {
     walletInfoAtom: atom({}),
+  }
+})
+
+jest.mock('entities/twap/state/eoaTwapOrdersAtom', () => {
+  const { atom } = require('jotai') as typeof import('jotai')
+
+  return {
+    eoaTwapOrdersAtom: atom({}),
   }
 })
 
@@ -209,6 +218,7 @@ describe('observeReduxOrders', () => {
 
   it('recomputes orders table state from observed atom values', () => {
     const connector = { id: 'mock-connector' }
+    const eoaTwapOrders = { 'eoa-twap-order': { id: 'eoa-twap-order' } }
     const account = '0x2222222222222222222222222222222222222222'
     const spender = '0x3333333333333333333333333333333333333333'
     const tokenAddress = '0x1111111111111111111111111111111111111111'
@@ -260,6 +270,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, allowancesState],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [eoaTwapOrdersAtom, eoaTwapOrders],
         [tabParamAtom, null],
         [
           ordersTableFiltersAtom,
@@ -294,6 +305,7 @@ describe('observeReduxOrders', () => {
       },
       {},
       expect.any(Function),
+      eoaTwapOrders,
     )
     expect(getFilteredOrders).toHaveBeenCalledWith([openOrder], {
       historyStatusFilter: HistoryStatusFilter.ALL,
@@ -373,6 +385,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, {}],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [
           ordersTableFiltersAtom,
@@ -398,6 +411,7 @@ describe('observeReduxOrders', () => {
       expect.any(Object),
       {},
       expect.any(Function),
+      {},
     )
   })
 
@@ -466,6 +480,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, {}],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [emulatedTwapOrdersAtom, [emulatedTwapOrder, safeTwapOrder]],
         [emulatedPartOrdersAtom, [emulatedPartOrder]],
@@ -500,6 +515,7 @@ describe('observeReduxOrders', () => {
       expect.any(Object),
       {},
       expect.any(Function),
+      {},
     )
   })
 
@@ -543,6 +559,7 @@ describe('observeReduxOrders', () => {
         [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n } }],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
+        [eoaTwapOrdersAtom, {}],
         [tabParamAtom, null],
         [
           ordersTableFiltersAtom,
@@ -569,6 +586,7 @@ describe('observeReduxOrders', () => {
       },
       {},
       expect.any(Function),
+      {},
     )
   })
 })
