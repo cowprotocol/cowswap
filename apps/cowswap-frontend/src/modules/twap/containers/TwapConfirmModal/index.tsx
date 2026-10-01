@@ -19,6 +19,7 @@ import { useEoaTwapPlan } from './useEoaTwapPlan'
 import { useTwapConfirmCurrencyPreview } from './useTwapConfirmCurrencyPreview'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useEoaTwapDismissOnFinalStatus } from '../../hooks/useEoaTwapDismissOnFinalStatus'
 import { useEoaTwapLeaveConfirmation } from '../../hooks/useEoaTwapLeaveConfirmation'
 import { useEoaTwapSuccessDismiss } from '../../hooks/useEoaTwapSuccessDismiss'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
@@ -67,6 +68,8 @@ export function TwapConfirmModal(): ReactNode {
   })
 
   const dismissSuccessState = useEoaTwapSuccessDismiss(onDismiss)
+
+  useEoaTwapDismissOnFinalStatus(onDismiss)
 
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
