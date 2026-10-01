@@ -94,8 +94,10 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     css`
       opacity: 0.4;
 
-      ${DisabledLink}:hover {
-        background: transparent;
+      > div,
+      > div > div {
+        display: flex;
+        flex: 1;
       }
     `}
 
@@ -114,7 +116,7 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     color: inherit;
 
     &:hover {
-      background: var(${UI.COLOR_PAPER_DARKER});
+      background: ${({ isDisabled }) => (isDisabled ? 'transparent' : `var(${UI.COLOR_PAPER_DARKER})`)};
     }
 
     ${({ isActive }) =>
