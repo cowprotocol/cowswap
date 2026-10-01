@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -27,6 +27,8 @@ interface ReceiveAmountCurrencies {
   inputCurrency: Nullish<Currency>
   outputCurrency: Nullish<Currency>
 }
+
+type TradeQuoteResults = NonNullable<NonNullable<ReturnType<typeof useTradeQuote>>['quote']>['quoteResults']
 
 export function useGetSwapReceiveAmountInfo(): ReceiveAmountInfo | null {
   const params = useSwapReceiveAmountInfoParams()
@@ -75,6 +77,18 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   ])
 }
 
+/**
+ * A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
+ * response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
+ * the user asked for, which is the one every amount has to be labelled with.
+ */
+function getBuyTokenKey(isSolana: boolean, quoteResults: TradeQuoteResults | undefined): string | undefined {
+  const quotedBuyToken = quoteResults?.quoteResponse?.quote?.buyToken
+  const buyToken = isSolana ? (quoteResults?.tradeParameters.buyToken ?? quotedBuyToken) : quotedBuyToken
+
+  return buyToken ? getAddressKey(buyToken) : undefined
+}
+
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoa = useAtomValue(isEoaAtom)
@@ -96,15 +110,15 @@ function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | u
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
+  const { chainId } = useWalletInfo()
   const tradeQuote = useTradeQuote()
-  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const quoteResults = tradeQuote?.quote?.quoteResults
+  const quoteResponse = quoteResults?.quoteResponse
 
   const inputCurrency = useTokenByAddress(
     quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
   )
-  const outputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.buyToken ? getAddressKey(quoteResponse.quote.buyToken) : undefined,
-  )
+  const outputCurrency = useTokenByAddress(getBuyTokenKey(isSolanaChain(chainId), quoteResults))
 
   return { inputCurrency, outputCurrency }
 }
