@@ -65,6 +65,9 @@ interface ProcessTransactionConfirmationParams {
   }) => void
 }
 
+// An older approval can settle (its wallet request finally answers) while a newer one owns the shared progress modal.
+let latestApproveAttempt = 0
+
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
   const symbol = currency?.symbol
 
@@ -84,9 +87,14 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
   return useCallback(
     async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
+      const attempt = ++latestApproveAttempt
+      const updateProgress = whenLatest(attempt, updateApproveProgressModalState)
+      const resetProgress = whenLatest(attempt, resetApproveProgressModalState)
+      const handleError = whenLatest(attempt, handleApprovalError)
+
       if (useModals) {
         const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
-        updateApproveProgressModalState({ currency, approveInProgress: true, amountToApprove })
+        updateProgress({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
@@ -95,11 +103,11 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         const response = await approveCallback(amount)
 
         if (!response) {
-          resetApproveProgressModalState()
+          resetProgress()
           return undefined
         }
 
-        updateApproveProgressModalState({ isPendingInProgress: true })
+        updateProgress({ isPendingInProgress: true })
 
         approvalAnalytics('Sign', symbol)
 
@@ -123,10 +131,10 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           return { txResponse: { hash: response.hash }, approvedAmount: undefined }
         }
       } catch (err: unknown) {
-        handleApprovalError(err)
+        handleError(err)
         return undefined
       } finally {
-        updateApproveProgressModalState({
+        updateProgress({
           currency,
           approveInProgress: false,
           amountToApprove: undefined,
@@ -185,4 +193,10 @@ async function processTransactionConfirmation({
   }
 
   return { txResponse: receipt, approvedAmount: approvedAmount?.amount }
+}
+
+function whenLatest<Args extends unknown[]>(attempt: number, fn: (...args: Args) => void): (...args: Args) => void {
+  return (...args) => {
+    if (attempt === latestApproveAttempt) fn(...args)
+  }
 }
