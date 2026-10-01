@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getAddressKey, isSolanaChain, type OrderParameters } from '@cowprotocol/cow-sdk'
+import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -12,6 +12,7 @@ import { useAppData } from 'modules/appData'
 import {
   applyUnpricedHookGasToOrderParams,
   getEoaTwapQuotePreHooks,
+  isSolanaQuoteAndPost,
   useTradeQuote,
   useTradeQuoteProtocolFee,
 } from 'modules/tradeQuote'
@@ -96,14 +97,14 @@ function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | u
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
-  const { chainId } = useWalletInfo()
-  const quoteResults = useTradeQuote().quote?.quoteResults
+  const tradeQuote = useTradeQuote().quote
+  const quoteResults = tradeQuote?.quoteResults
   const quote = quoteResults?.quoteResponse?.quote
 
   // A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
   // response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
   // the user asked for, which is the one every amount has to be labelled with.
-  const buyToken = isSolanaChain(chainId) ? quoteResults?.tradeParameters.buyToken : quote?.buyToken
+  const buyToken = isSolanaQuoteAndPost(tradeQuote) ? quoteResults?.tradeParameters.buyToken : quote?.buyToken
 
   const inputCurrency = useTokenByAddress(quote?.sellToken && getAddressKey(quote.sellToken))
   const outputCurrency = useTokenByAddress(buyToken && getAddressKey(buyToken))
