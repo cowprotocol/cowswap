@@ -21,7 +21,7 @@ const compat = new FlatCompat({
 module.exports = [
   pluginLingui.configs['flat/recommended'],
   {
-    ignores: ['static-files/', '.nx/', '**/.next/', 'build/', 'dist/'],
+    ignores: ['static-files/', '.nx/', '**/.next/', 'apps/rwa-frontend/next-env.d.ts', 'build/', 'dist/'],
   },
   {
     plugins: {
@@ -285,6 +285,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'valid-typeof': ['error', { requireStringLiterals: true }],
       'prettier/prettier': 'warn',
     },
   },
@@ -399,6 +400,18 @@ module.exports = [
       ...nextPlugin.configs.recommended.rules,
       ...nextPlugin.configs['core-web-vitals'].rules,
       '@next/next/no-html-link-for-pages': ['error', 'apps/cow-fi/pages'],
+    },
+  },
+  {
+    files: ['apps/rwa-frontend/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      '@next/next/no-html-link-for-pages': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
   // TODO: remove this once the errors have been fixed

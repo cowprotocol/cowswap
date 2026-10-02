@@ -78,10 +78,12 @@ export function TradeFormBlankButton({
   useEffect(() => {
     if (!ref?.current) return
 
-    const text = ref.current.innerText
+    const isLongText = ref.current.innerText.length > LONG_TEXT_LENGTH
 
-    setHasLongText(text.length > LONG_TEXT_LENGTH)
-  }, [children])
+    // `children` changes on every parent render; an unconditional setState here schedules a re-render per render,
+    // which under fast typing chains into React's "Maximum update depth exceeded"
+    if (isLongText !== hasLongText) setHasLongText(isLongText)
+  }, [children, hasLongText])
 
   // Combine local onClick logic with incoming onClick
   // TODO: Add proper return type annotation

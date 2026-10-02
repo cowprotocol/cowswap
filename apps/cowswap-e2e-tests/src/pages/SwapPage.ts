@@ -185,7 +185,6 @@ export class SwapPage implements TradePage {
     await this.page.waitForFunction(
       () => !document.querySelector('#currency-arrow-separator')?.getAttribute('data-isLoading'),
       undefined,
-      { timeout: 30_000 },
     )
   }
 
@@ -222,6 +221,11 @@ export class SwapPage implements TradePage {
   async clickPrimaryAction(): Promise<void> {
     await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
+  }
+
+  async dismissOrderProgressModal(): Promise<void> {
+    await this.page.keyboard.press('Escape')
+    await expect(this.orderProgressBarModal).toBeHidden()
   }
 
   /** Opens the settings dropdown, sets a custom slippage percentage, and closes it again. */

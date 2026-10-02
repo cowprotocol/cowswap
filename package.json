@@ -21,7 +21,9 @@
     "storybook:build": "nx run storybook:build",
     "start:cowfi": "cross-env PORT=3001 nx run cow-fi:dev",
     "start:sdk-tools": "nx run sdk-tools:serve",
+    "start:rwa": "cross-env PORT=3002 nx run rwa-frontend:dev",
     "e2e": "nx run cowswap-e2e-tests:e2e",
+    "e2e:patient": "cross-env TIMEOUT_MULTIPLIER=20 nx run cowswap-e2e-tests:e2e",
     "e2e:build-cache": "nx run cowswap-e2e-tests:e2e:build-cache",
     "e2e:smoke": "nx run cowswap-e2e-tests:e2e:smoke",
     "e2e:ui": "nx run cowswap-e2e-tests:e2e:ui",
@@ -33,6 +35,7 @@
     "build:widget": "nx build widget-configurator --no-cloud",
     "build:cowfi": "nx build cow-fi --no-cloud && pnpm run postbuild:cowfi",
     "build:sdk-tools": "nx build sdk-tools",
+    "build:rwa": "nx build rwa-frontend --no-cloud",
     "postbuild:cowfi": "next-sitemap --config ./apps/cow-fi/next-sitemap.config.js",
     "clean": "git clean -fixd -e .env.local",
     "build:cosmos": "nx run cowswap-frontend:build:cosmos",
@@ -117,9 +120,7 @@
       "use-sync-external-store": "1.5.0",
       "viem": "2.48.8",
       "wagmi": "3.6.9",
-      "zod": "3.25.76",
-      "@cowprotocol/sdk-cow-shed@0.6.1>@cowprotocol/sdk-common": "0.13.0",
-      "@cowprotocol/sdk-composable@1.8.1>@cowprotocol/sdk-common": "0.13.0"
+      "zod": "3.25.76"
     },
     "peerDependencyRules": {
       "allowedVersions": {
@@ -199,6 +200,7 @@
     "@vitest/coverage-c8": "0.33.0",
     "@vitest/ui": "4.0.9",
     "babel-jest": "30.2.0",
+    "babel-plugin-macros": "3.1.0",
     "babel-plugin-styled-components": "2.1.4",
     "babel-plugin-transform-import-meta": "2.3.3",
     "eslint": "9.37.0",

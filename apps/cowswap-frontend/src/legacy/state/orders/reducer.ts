@@ -434,6 +434,7 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.cancellationHash = hash
+        orderObject.order.cancellationHashTime = new Date().toISOString()
       }
     })
     .addCase(requestOrderCancellation, (state, action) => {

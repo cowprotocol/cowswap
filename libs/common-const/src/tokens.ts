@@ -41,6 +41,15 @@ export const DAI = new TokenWithLogo(
   'Dai Stablecoin',
 )
 
+export const USDS_MAINNET = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xdc035d45d973e3ec169d2276ddab16f1e407384f', SupportedChainId.MAINNET),
+  SupportedChainId.MAINNET,
+  '0xdC035D45d973E3EC169d2276DDab16f1e407384F',
+  18,
+  'USDS',
+  'USDS Stablecoin',
+)
+
 export const GNO_MAINNET = new TokenWithLogo(
   cowprotocolTokenLogoUrl('0x6810e776880c02933d47db1b9fc05908e5386b96', SupportedChainId.MAINNET),
   SupportedChainId.MAINNET,

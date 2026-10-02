@@ -18,7 +18,7 @@ export function AffiliateTraderRewardsRow(): ReactNode {
     <StyledRowBetween>
       <RowFixed>
         <TextWrapper>
-          <Trans>Rewards code</Trans>
+          <Trans>Referral code</Trans>
         </TextWrapper>
         <HoverTooltip
           wrapInContainer

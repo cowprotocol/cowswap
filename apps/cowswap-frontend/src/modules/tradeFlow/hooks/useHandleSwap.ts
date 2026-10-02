@@ -2,6 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { OnTradeParamsPayload } from '@cowprotocol/events'
@@ -48,6 +49,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
@@ -93,6 +95,7 @@ export function useHandleSwap(
         confirmPriceImpactWithoutFee,
         analytics,
         config,
+        isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
       })
 
       if (result === true) {
@@ -110,6 +113,7 @@ export function useHandleSwap(
     priceImpactParams,
     confirmPriceImpactWithoutFee,
     analytics,
+    isSolanaSponsoredOrdersEnabled,
     ethFlowContext,
     safeBundleFlowContext,
     onChangeRecipient,
@@ -128,10 +132,10 @@ function buildHookPayload(
 ): OnTradeParamsPayload {
   if (tradeFlowType === FlowType.SOLANA_SWAP && solanaFlowContext) {
     return buildTradeWidgetHookPayload({
-      orderType: solanaFlowContext.swapFlowAnalyticsContext.orderType,
+      orderType: solanaFlowContext.tradeFlowAnalyticsContext.orderType,
       inputAmount: solanaFlowContext.context.inputAmount,
       outputAmount: solanaFlowContext.context.outputAmount,
-      recipient: solanaFlowContext.swapFlowAnalyticsContext.recipient,
+      recipient: solanaFlowContext.tradeFlowAnalyticsContext.recipient,
       orderKind: solanaFlowContext.context.orderKind,
       chainId: solanaFlowContext.context.chainId,
       validTo: solanaFlowContext.context.validTo,
@@ -141,10 +145,10 @@ function buildHookPayload(
 
   // tradeFlowContext is guaranteed non-null here by the caller's earlier guard.
   return buildTradeWidgetHookPayload({
-    orderType: tradeFlowContext!.swapFlowAnalyticsContext.orderType,
+    orderType: tradeFlowContext!.tradeFlowAnalyticsContext.orderType,
     inputAmount: tradeFlowContext!.context.inputAmount,
     outputAmount: tradeFlowContext!.context.outputAmount,
-    recipient: tradeFlowContext!.swapFlowAnalyticsContext.recipient,
+    recipient: tradeFlowContext!.tradeFlowAnalyticsContext.recipient,
     orderKind: tradeFlowContext!.orderParams.kind,
     chainId: tradeFlowContext!.orderParams.chainId,
     validTo: tradeFlowContext!.orderParams.validTo,
@@ -163,12 +167,13 @@ async function runFlowByType(
     confirmPriceImpactWithoutFee: ConfirmPriceImpactFn
     analytics: ReturnType<typeof useTradeFlowAnalytics>
     config: ReturnType<typeof useConfig>
+    isSolanaSponsoredOrdersEnabled: boolean
   },
 ): Promise<boolean> {
   if (tradeFlowType === FlowType.SOLANA_SWAP) {
     if (!deps.solanaFlowContext) throw new Error('Solana flow context is not ready')
     logTradeFlow('SOLANA FLOW', 'Start solana flow')
-    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics)
+    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics, deps.isSolanaSponsoredOrdersEnabled)
     return result === true
   }
   if (!tradeFlowContext) throw new Error('Trade flow context is not ready')
