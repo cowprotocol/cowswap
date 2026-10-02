@@ -123,7 +123,7 @@ function getQuoteErrorType(err: unknown): string | null {
 
 function toQuoteRequest(side: RwaQuoteSide, address: string, quoteToken: QuoteToken): OrderQuoteRequest {
   const usdAmount = parseUnits(String(QUOTE_AMOUNT_USD), quoteToken.decimals).toString()
-  const common = { from: zeroAddress, priceQuality: PriceQuality.OPTIMAL }
+  const common = { from: zeroAddress, priceQuality: PriceQuality.VERIFIED }
 
   return side === 'buy'
     ? {
