@@ -1,11 +1,21 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
+import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
+import { useAppData } from 'modules/appData'
+import {
+  applyUnpricedHookGasToOrderParams,
+  getEoaTwapQuotePreHooks,
+  isSolanaQuoteAndPost,
+  useTradeQuote,
+  useTradeQuoteProtocolFee,
+} from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -34,37 +44,70 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
   const quoteResults = tradeQuote?.quote?.quoteResults
   const quoteResponse = quoteResults?.quoteResponse
-  const orderParams = quoteResponse?.quote
+  const quotedOrderParams = quoteResponse?.quote
+  const orderParams = useOrderParamsWithEoaTwapHookGas(quotedOrderParams)
   const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 
   return useMemo(() => {
     // Avoid states mismatch
-    if (orderKind !== orderParams?.kind) return null
-    if (!orderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
+    if (orderKind !== orderParams?.kind || orderKind !== quotedOrderParams?.kind) return null
+    if (!orderParams || !quotedOrderParams || !inputCurrency || !outputCurrency || !derivedSlippage) return null
 
     return {
       orderParams,
+      quotedOrderParams,
       inputCurrency,
       outputCurrency,
       slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
     }
-  }, [orderKind, orderParams, volumeFeeBps, inputCurrency, outputCurrency, protocolFeeBps, derivedSlippage])
+  }, [
+    orderKind,
+    orderParams,
+    quotedOrderParams,
+    volumeFeeBps,
+    inputCurrency,
+    outputCurrency,
+    protocolFeeBps,
+    derivedSlippage,
+  ])
+}
+
+function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {
+  const { isTwapEoaEnabled } = useFeatureFlags()
+  const isEoa = useAtomValue(isEoaAtom)
+  const { chainId } = useWalletInfo()
+  const appData = useAppData()
+
+  return useMemo(() => {
+    const additionalPreHooks = getEoaTwapQuotePreHooks({
+      orderClass: appData?.doc?.metadata?.orderClass?.orderClass,
+      isTwapEoaEnabled: !!isTwapEoaEnabled,
+      isEoa,
+      chainId,
+    })
+
+    return quotedOrderParams
+      ? applyUnpricedHookGasToOrderParams(quotedOrderParams, additionalPreHooks)
+      : quotedOrderParams
+  }, [quotedOrderParams, appData?.doc?.metadata?.orderClass?.orderClass, isTwapEoaEnabled, isEoa, chainId])
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
-  const tradeQuote = useTradeQuote()
-  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const tradeQuote = useTradeQuote().quote
+  const quoteResults = tradeQuote?.quoteResults
+  const quote = quoteResults?.quoteResponse?.quote
 
-  const inputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
-  )
-  const outputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.buyToken ? getAddressKey(quoteResponse.quote.buyToken) : undefined,
-  )
+  // A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
+  // response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
+  // the user asked for, which is the one every amount has to be labelled with.
+  const buyToken = isSolanaQuoteAndPost(tradeQuote) ? quoteResults?.tradeParameters.buyToken : quote?.buyToken
+
+  const inputCurrency = useTokenByAddress(quote?.sellToken && getAddressKey(quote.sellToken))
+  const outputCurrency = useTokenByAddress(buyToken && getAddressKey(buyToken))
 
   return { inputCurrency, outputCurrency }
 }

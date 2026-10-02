@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDispatch } from 'react-redux'
@@ -80,6 +81,8 @@ export function useSolanaTradeFlowContext({ deadline }: TradeFlowParams): Solana
         currentDelegation,
         delegationAmount: getSolanaDelegationAmount(amountToApprove, sellAmountRaw),
         isNativeSell,
+        orderClass: OrderClass.MARKET,
+        partiallyFillable: false,
         appData,
       }),
     [

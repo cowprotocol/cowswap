@@ -31,7 +31,7 @@ function getTokenWithLogoFromNativeCurrency(chainId: TargetChainId): TokenWithLo
     : ADDITIONAL_TARGET_CHAINS_MAP[chainId].nativeCurrency
 
   return new TokenWithLogo(
-    undefined,
+    nativeCurrency.logoUrl,
     chainId,
     nativeCurrency.address,
     nativeCurrency.decimals,

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { getAddressKey, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
@@ -20,6 +21,8 @@ import {
 import type { SolanaFundedAccount } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
 /**
  * How much native SOL the wallet is short of what the trade transaction actually costs, or `null`
  * when it can afford it or the cost isn't known yet.
@@ -33,17 +36,22 @@ export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()
   const { values: balances } = useTokensBalancesCombined()
-  const inputCurrency = useDerivedTradeState()?.inputCurrency
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
+  const derivedState = useDerivedTradeState()
+  const inputCurrency = derivedState?.inputCurrency
+  const tradeType = derivedState?.tradeType
   const sellAmount = useGetReceiveAmountInfo()?.amountsToSign.sellAmount
 
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
 
+  const isSponsored = getIsSponsoredTrade(Boolean(isSolanaSponsoredOrdersEnabled), tradeType, solanaQuote)
+
   const fundedAccounts = useMemo(() => {
-    if (!isSolanaChain(chainId) || !account || !solanaQuote) return null
+    if (!isSolanaChain(chainId) || !account || !solanaQuote || isSponsored) return null
 
     return planSolanaTradeFundedAccounts({ owner: new PublicKey(account), quote: solanaQuote, isNativeSell })
-  }, [chainId, account, solanaQuote, isNativeSell])
+  }, [chainId, account, solanaQuote, isNativeSell, isSponsored])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the comparison below.
@@ -65,6 +73,17 @@ export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
 
     return shortfall > 0n ? CurrencyAmount.fromRawAmount(nativeCurrency, shortfall.toString()) : null
   }, [overhead, chainId, balances, isNativeSell, sellAmount])
+}
+
+// Mirrors `solanaFlow`'s sponsor pick: a sponsored order is rented and fee-paid by the quote's funder,
+// so the owner needs no SOL beyond the sell amount — pricing the overhead anyway would block a trade
+// that can in fact go through. Limit orders never go through the sponsored path.
+function getIsSponsoredTrade(
+  isSolanaSponsoredOrdersEnabled: boolean,
+  tradeType: TradeType | null | undefined,
+  solanaQuote: { funder?: PublicKey } | null,
+): boolean {
+  return Boolean(isSolanaSponsoredOrdersEnabled && tradeType !== TradeType.LIMIT_ORDER && solanaQuote?.funder)
 }
 
 function toFundedAccountsKey(fundedAccounts: SolanaFundedAccount[]): string {

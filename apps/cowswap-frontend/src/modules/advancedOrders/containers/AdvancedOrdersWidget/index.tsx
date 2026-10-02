@@ -61,6 +61,7 @@ export type AdvancedOrdersWidgetProps = {
   params: AdvancedOrdersWidgetParams
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: ReactElement
+  topContent?: ReactNode
   children(warnings: ReactNode): ReactNode
 }
 
@@ -73,6 +74,7 @@ export function AdvancedOrdersWidget({
   params,
   confirmContent,
   mapCurrencyInfo,
+  topContent,
 }: AdvancedOrdersWidgetProps) {
   const { i18n } = useLingui()
   const { title, orderType, buttonText, buttonLink, subtitle } = UNLOCK_SCREEN
@@ -123,6 +125,7 @@ export function AdvancedOrdersWidget({
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
+    topContent,
     bottomContent(warnings) {
       return children(warnings)
     },

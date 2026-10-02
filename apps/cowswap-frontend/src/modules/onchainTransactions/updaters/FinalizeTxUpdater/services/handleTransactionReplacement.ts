@@ -23,7 +23,11 @@ export function handleTransactionReplacement(
   if (transaction.onChainCancellation) {
     const { orderId } = transaction.onChainCancellation
     partialOrderUpdate(
-      { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
+      {
+        chainId,
+        order: { id: orderId, isCancelling: false, cancellationHash: undefined, cancellationHashTime: undefined },
+        isSafeWallet,
+      },
       dispatch,
     )
   }

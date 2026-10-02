@@ -185,6 +185,18 @@ describe('classifyOrder', () => {
       const order: typeof BASE_ORDER = { ...BASE_ORDER, invalidated: true }
       expect(classifyOrder(order)).toBe('cancelled')
     })
+
+    // Solana's API doesn't return `invalidated` at all, so `classifyOrder` has to fall back to the raw
+    // `status` field for it. The cast is deliberate: the SDK types the field as a required boolean,
+    // which is exactly the assumption that doesn't hold here.
+    it('is cancelled when invalidated is absent but status is cancelled', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        invalidated: undefined as unknown as boolean,
+        status: OrderStatus.CANCELLED,
+      }
+      expect(classifyOrder(order)).toBe('cancelled')
+    })
   })
   describe('presignaturePending', () => {
     it('is pending pre-signature', () => {

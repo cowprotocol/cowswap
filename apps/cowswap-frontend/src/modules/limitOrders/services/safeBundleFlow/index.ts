@@ -1,54 +1,39 @@
 import { maxUint256 } from 'viem'
-import { Config } from 'wagmi'
 
 import { captureError, ERROR_TYPES, normalizeError } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
-import { Percent } from '@cowprotocol/currency'
-import { Command, UiOrderType } from '@cowprotocol/types'
+import { UiOrderType } from '@cowprotocol/types'
 import type { MetaTransactionData } from '@safe-global/types-kit'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
-import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
 import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, SafeBundleFlowContext } from 'modules/limitOrders/services/types'
-import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
 import { buildZeroApproveTx } from 'modules/operations/bundle/buildZeroApproveTx'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { TradeFlowAnalytics, TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import { shouldZeroApprove as shouldZeroApproveFn } from 'modules/zeroApproval'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+
+import { TradeFlowParams } from '../../hooks/useTradeFlowParams'
 
 const LOG_PREFIX = 'LIMIT ORDER SAFE BUNDLE FLOW'
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export async function safeBundleFlow({
-  params,
-  priceImpact,
-  settingsState,
-  confirmPriceImpactWithoutFee,
-  analytics,
-  beforeTrade,
-  config,
-}: {
-  params: SafeBundleFlowContext
-  priceImpact: PriceImpact
-  settingsState: LimitOrdersSettingsState
-  confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>
-  analytics: TradeFlowAnalytics
-  beforeTrade?: Command
-  config: Config
-}): Promise<string> {
+export async function safeBundleFlow(
+  params: SafeBundleFlowContext,
+  { priceImpact, confirmPriceImpactWithoutFee, analytics, beforeTrade, settingsState, config }: TradeFlowParams,
+): Promise<string> {
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
   const isTooLowRate = params.rateImpact < LOW_RATE_THRESHOLD_PERCENT
 

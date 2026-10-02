@@ -2,6 +2,8 @@ import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
 
+import { orderBookApi } from 'cowSdk'
+
 import { SolanaQuoteAndPost } from '../types'
 
 /**
@@ -29,6 +31,7 @@ export async function getSolanaQuote(
     owner,
     account,
     receiver,
+    partiallyFillable,
   } = quoteParams
 
   const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
@@ -41,13 +44,16 @@ export async function getSolanaQuote(
       buyTokenDecimals,
       amount,
       kind,
+      partiallyFillable,
       validForSeconds: quoteParams.validFor,
       // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
       // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
       slippageBps: quoteParams.swapSlippageBps,
       priceQuality: advancedSettings.quoteRequest?.priceQuality,
     },
-    { advancedSettings },
+    // The app's own client, so quotes land on the environment the rest of the app talks to. Without it
+    // the SDK builds a default one, which is prod — where Solana is not deployed.
+    { advancedSettings, orderBookApi },
   )
 
   return {

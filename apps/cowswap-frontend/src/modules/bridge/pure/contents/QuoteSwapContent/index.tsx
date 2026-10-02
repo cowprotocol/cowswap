@@ -41,6 +41,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
     quoteExpiration,
     slippage,
     recipient,
+    proxyAddress,
     bridgeReceiverOverride,
     minReceiveAmount,
     minReceiveUsdValue,
@@ -52,7 +53,8 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
   const contents = [
     createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
-    !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
+    !isBridgeQuoteRecipient &&
+      createRecipientContent(recipient, proxyAddress, bridgeReceiverOverride, sellAmount.currency.chainId),
     isRewardsRowEnabled && createRewardsContent(),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
     quoteId ? createQuoteIdContent(quoteId, quoteVerified, quoteExpiration) : null,
@@ -145,6 +147,7 @@ function createQuoteIdContent(quoteId: string, quoteVerified?: boolean, quoteExp
 
 function createRecipientContent(
   recipient: QuoteSwapContext['recipient'],
+  proxyAddress: QuoteSwapContext['proxyAddress'],
   bridgeReceiverOverride: QuoteSwapContext['bridgeReceiverOverride'],
   chainId: number,
 ): ContentItem {
@@ -156,7 +159,14 @@ function createRecipientContent(
         {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
       </>
     ),
-    content: <ProxyRecipient recipient={recipient} bridgeReceiverOverride={bridgeReceiverOverride} chainId={chainId} />,
+    content: (
+      <ProxyRecipient
+        recipient={recipient}
+        proxyAddress={proxyAddress}
+        bridgeReceiverOverride={bridgeReceiverOverride}
+        chainId={chainId}
+      />
+    ),
   }
 }
 

@@ -1,5 +1,5 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { LATEST_APP_DATA_VERSION, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -10,10 +10,12 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
+import { planCreateLimitOrderStep } from 'modules/trade/services/solanaFlow/planCreateLimitOrderStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
 import { planWrapStep } from 'modules/trade/services/solanaFlow/planWrapStep'
 import { sendSolanaFlow } from 'modules/trade/services/solanaFlow/sendSolanaFlow'
+import { signSolanaFlow } from 'modules/trade/services/solanaFlow/signSolanaFlow'
 import { SolanaFlowStep } from 'modules/trade/services/solanaFlow/types'
 import * as addPendingOrderStepModule from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -31,22 +33,33 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => ({ signSolanaFlow: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({ postSolanaSponsoredOrder: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
+const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
+const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
 const SOLANA_ACCOUNT = '11111111111111111111111111111111'
 const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
+// The flow's own freshly-resolved receiver — deliberately distinct from RECEIVER_ADDRESS (the quote's,
+// possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
+// parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
+const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// The back end's rotating sponsor account, reported by the quote.
+const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
@@ -57,6 +70,17 @@ const DELEGATE_STEP = step('Approve WSOL')
 const BUY_ATA_STEP = step('Create USDC account')
 const ORDER_STEP = step('Swap SOL for USDC')
 const ORDER_ID = '0xdeadbeef'
+// Distinct fixture hex strings standing in for whatever each planner actually signed — real values would
+// be the pre-agreed Solana appData constants (see common/constants/solanaAppData.ts), but this test only
+// needs to confirm the planner's own return value reaches the local order, not that specific bytes.
+const MARKET_APP_DATA_HEX = '0x' + 'aa'.repeat(32)
+const LIMIT_APP_DATA_HEX = '0x' + 'bb'.repeat(32)
+// Deliberately different from solanaQuote.intent's amounts (1_000_000n/1_900_000n) and from each other:
+// a limit order's actually-signed price must never be confused with the market quote's or with a swap's.
+const MARKET_SIGNED_SELL_AMOUNT = 1_000_000n
+const MARKET_SIGNED_BUY_AMOUNT = 1_900_000n
+const LIMIT_SIGNED_SELL_AMOUNT = 5_000_000n
+const LIMIT_SIGNED_BUY_AMOUNT = 12_000_000n
 
 const wsol = new TokenWithLogo(
   undefined,
@@ -88,7 +112,19 @@ function buildAnalytics(): TradeFlowAnalytics {
   }
 }
 
-function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = {}): SolanaTradeFlowContext {
+function buildContext({
+  isNativeSell = true,
+  delegationAmount = SELL_AMOUNT,
+  orderClass = OrderClass.MARKET,
+  buyAmount = outputAmount,
+  quoteBuyToken = usdc.address,
+}: {
+  isNativeSell?: boolean
+  delegationAmount?: bigint
+  orderClass?: OrderClass
+  buyAmount?: CurrencyAmount<Token>
+  quoteBuyToken?: string
+} = {}): SolanaTradeFlowContext {
   return {
     account: SOLANA_ACCOUNT,
     isNativeSell,
@@ -98,6 +134,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       programId: new PublicKey(new Uint8Array(32).fill(5)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
+      funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
@@ -114,7 +151,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
         quoteResponse: {
           quote: {
             sellToken: wsol.address,
-            buyToken: usdc.address,
+            buyToken: quoteBuyToken,
             receiver: null,
             sellAmount: SELL_AMOUNT.toString(),
             buyAmount: outputAmount.quotient.toString(),
@@ -134,10 +171,12 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
     context: {
       chainId: SOLANA_CHAIN_ID,
       inputAmount,
-      outputAmount,
+      outputAmount: buyAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
-      receiver: 'ReceiverSolanaAddress1111111111111111111111',
+      receiver: RESOLVED_RECEIVER_ADDRESS,
+      orderClass,
+      partiallyFillable: false,
     },
     callbacks: {
       closeModals: jest.fn(),
@@ -153,7 +192,7 @@ function buildContext({ isNativeSell = true, delegationAmount = SELL_AMOUNT } = 
       onDismiss: jest.fn(),
       setConfirming: jest.fn(),
     },
-    swapFlowAnalyticsContext: {
+    tradeFlowAnalyticsContext: {
       account: SOLANA_ACCOUNT,
       orderType: UiOrderType.SWAP,
       marketLabel: 'SOL,USDC',
@@ -176,6 +215,17 @@ describe('solanaFlow', () => {
       step: ORDER_STEP,
       orderId: ORDER_ID,
       signingScheme: SigningScheme.PRESIGN,
+      appData: MARKET_APP_DATA_HEX,
+      sellAmount: MARKET_SIGNED_SELL_AMOUNT,
+      buyAmount: MARKET_SIGNED_BUY_AMOUNT,
+    })
+    mockPlanCreateLimitOrderStep.mockResolvedValue({
+      step: ORDER_STEP,
+      orderId: ORDER_ID,
+      signingScheme: SigningScheme.PRESIGN,
+      appData: LIMIT_APP_DATA_HEX,
+      sellAmount: LIMIT_SIGNED_SELL_AMOUNT,
+      buyAmount: LIMIT_SIGNED_BUY_AMOUNT,
     })
   })
 
@@ -203,14 +253,6 @@ describe('solanaFlow', () => {
     await solanaFlow(context, buildAnalytics())
 
     expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ validTo: context.context.validTo }))
-  })
-
-  it("passes the app's current appData doc to the order planner", async () => {
-    const context = buildContext()
-
-    await solanaFlow(context, buildAnalytics())
-
-    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appData: context.appData.doc }))
   })
 
   it('delegates the amount the approve switcher chose, not the sell amount', async () => {
@@ -250,12 +292,49 @@ describe('solanaFlow', () => {
     expect(quote).toBe(context.solanaQuote)
   })
 
+  // A limit order never quotes (planCreateLimitOrderStep derives its own buyTokenAccount straight from
+  // context.receiver — see its params), so the buy-ATA the transaction actually creates has to target the
+  // same receiver, or the order's signed intent points at an ATA that was never created and settlement
+  // fails with something like `InvalidAccountData`. The quote's own receiver is stale/irrelevant here.
+  it('creates the buy account for the resolved receiver, not the stale quote receiver, for a limit order', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    const [{ payer, receiver, quote }] = mockPlanCreateBuyAtaStep.mock.calls[0]
+    expect(receiver.toBase58()).toBe(context.context.receiver)
+    expect(receiver.toBase58()).not.toBe(RECEIVER_ADDRESS)
+    expect(payer.toBase58()).toBe(SOLANA_ACCOUNT)
+    expect(quote).toBe(context.solanaQuote)
+  })
+
   it('never posts the order from the quote', async () => {
     const context = buildContext()
 
     await solanaFlow(context, buildAnalytics())
 
     expect(context.tradeQuote.postSwapOrderFromQuote).not.toHaveBeenCalled()
+  })
+
+  // A native-SOL buy is priced against WSOL (`toSplMint` in getSolanaQuote) while the order credits
+  // lamports, so the quote response and the order disagree on the buy mint. `useGetExecutedBridgeSummary`
+  // reads a `buyToken` that differs from `outputToken` as a bridge intermediate token and labels the
+  // surplus with it, which showed "Surplus 0.0032 WSOL" on an order that paid out native SOL.
+  it('stores the buy token the order credits, not the one the quote was priced in', async () => {
+    const nativeSol = NATIVE_CURRENCIES[SOLANA_CHAIN_ID]
+    const context = buildContext({
+      buyAmount: CurrencyAmount.fromRawAmount(nativeSol, '150000000'),
+      quoteBuyToken: wsol.address,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ buyToken: nativeSol.address, outputToken: nativeSol }),
+      }),
+      expect.anything(),
+    )
   })
 
   it('adds a pending order and reports success', async () => {
@@ -280,19 +359,171 @@ describe('solanaFlow', () => {
           // deadline picked after quoting is missing from the order until indexing replaces it.
           receiver: context.context.receiver,
           validTo: context.context.validTo,
-          // Amounts come from the signed intent, not the quote: the quote's are pre-slippage, so using
-          // them would show a limit price the on-chain order does not have.
-          sellAmount: '1000000',
-          buyAmount: '1900000',
-          sellAmountBeforeFee: '1000000',
+          // Amounts come from the planner's actually-signed intent, not the quote directly: the quote's
+          // are pre-slippage, so using them would show a limit price the on-chain order does not have.
+          sellAmount: MARKET_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: MARKET_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: MARKET_SIGNED_SELL_AMOUNT.toString(),
         }),
       }),
       context.callbacks.dispatch,
     )
     expect(context.tradeConfirmActions.onSuccess).toHaveBeenCalledWith(ORDER_ID)
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
-    expect(analytics.trade).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
-    expect(analytics.sign).toHaveBeenCalledWith(context.swapFlowAnalyticsContext)
+    expect(analytics.trade).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
+    expect(analytics.sign).toHaveBeenCalledWith(context.tradeFlowAnalyticsContext)
+  })
+
+  // The quote's own OrderParameters.appData is a meaningless stub for Solana (ZERO_APP_DATA in
+  // getSolanaQuote.ts) — the local order has to carry what the planner actually signed instead, the same
+  // way it already overrides sellAmount/buyAmount/receiver/validTo from the signed intent, not the quote.
+  // This is load-bearing: getUiOrderType reads this exact field to recognize a Solana limit order at all.
+  it("records the market planner's actually-signed appData on the local order, not the quote's stub", async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ appData: MARKET_APP_DATA_HEX }) }),
+      expect.anything(),
+    )
+  })
+
+  it("records the limit planner's actually-signed appData on the local order, not the quote's stub", async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ appData: LIMIT_APP_DATA_HEX }) }),
+      expect.anything(),
+    )
+  })
+
+  // Regression test: the local order previously always read sellAmount/buyAmount from
+  // `solanaQuote.intent` (the market quote's own amounts) regardless of order class, so a limit order's
+  // Redux/localStorage entry showed the market-implied price instead of the price the user entered and
+  // actually signed on-chain — even though the on-chain order itself was correct.
+  it("records the limit planner's actually-signed sellAmount/buyAmount on the local order, not the market quote's", async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({
+          sellAmount: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+          buyAmount: LIMIT_SIGNED_BUY_AMOUNT.toString(),
+          sellAmountBeforeFee: LIMIT_SIGNED_SELL_AMOUNT.toString(),
+        }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  // The bundle carrying the SPL delegation is only submitted by the order book once a solver wins, so
+  // the orders table has to know not to read the delegation from chain while the order waits — otherwise
+  // every pending sponsored order is labelled unfillable.
+  it('marks the local order as sponsored', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: true }) }),
+      expect.anything(),
+    )
+  })
+
+  // The wrap lives in the same deferred bundle, so the orders table needs to know the sold WSOL does
+  // not exist yet and the native balance is what backs the order.
+  it('records whether a sponsored order is a native sell', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: true }) }),
+      expect.anything(),
+    )
+  })
+
+  it('records an SPL sell as not native', async () => {
+    await solanaFlow(buildContext({ isNativeSell: false }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: false }) }),
+      expect.anything(),
+    )
+  })
+
+  it('does not mark a self-paid order as sponsored', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
+      expect.anything(),
+    )
+  })
+
+  it('sets the local order class from context.orderClass (LIMIT)', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ class: OrderClass.LIMIT }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  it('sets the local order class from context.orderClass (MARKET)', async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ class: OrderClass.MARKET }),
+      }),
+      expect.anything(),
+    )
+  })
+
+  // A limit order never quotes for its price: planCreateLimitOrderStep takes only the raw intent fields,
+  // so its amounts can never silently become whatever the market happened to be at quote time.
+  it('dispatches a limit order to planCreateLimitOrderStep with the raw intent fields, not the quote planner', async () => {
+    const context = buildContext({ orderClass: OrderClass.LIMIT })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        ownerAddress: context.account,
+        receiverAddress: context.context.receiver,
+        sellTokenAddress: context.context.inputAmount.currency.address,
+        buyTokenAddress: context.context.outputAmount.currency.address,
+        sellAmount: BigInt(context.context.inputAmount.quotient.toString()),
+        buyAmount: BigInt(context.context.outputAmount.quotient.toString()),
+        kind: context.context.orderKind,
+        validTo: context.context.validTo,
+        partiallyFillable: context.context.partiallyFillable,
+      }),
+    )
+    expect(mockPlanCreateOrderStep).not.toHaveBeenCalled()
+  })
+
+  it('dispatches a market order to planCreateOrderStep (the quote-priced planner), not the limit one', async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ quoteResults: context.tradeQuote.quoteResults, solanaQuote: context.solanaQuote }),
+    )
+    expect(mockPlanCreateLimitOrderStep).not.toHaveBeenCalled()
   })
 
   it('emits the posted-order event so the rich "Order submitted" snackbar shows, not the raw tx summary', async () => {
@@ -305,7 +536,7 @@ describe('solanaFlow', () => {
       id: ORDER_ID,
       owner: context.account,
       kind: context.context.orderKind,
-      uiOrderType: context.swapFlowAnalyticsContext.orderType,
+      uiOrderType: context.tradeFlowAnalyticsContext.orderType,
       receiver: context.context.receiver,
       inputAmount: context.context.inputAmount,
       outputAmount: context.context.outputAmount,

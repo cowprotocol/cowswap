@@ -96,10 +96,16 @@ interface NotificationsListProps {
   children: ReactNode
   hasSubscription: boolean | undefined
   onToggleSettings: (() => void) | undefined
+  isUnsupportedChain?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
-export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps): ReactNode {
+export function NotificationsList({
+  children,
+  hasSubscription,
+  onToggleSettings,
+  isUnsupportedChain,
+}: NotificationsListProps): ReactNode {
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadCloneArrayAtom)
@@ -129,6 +135,13 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
     <>
       {children}
       <ListWrapper>
+        {isUnsupportedChain && (
+          <PromoBanner>
+            <p>
+              <Trans>Trade notifications are not yet available on Solana.</Trans>
+            </p>
+          </PromoBanner>
+        )}
         {onToggleSettings && hasSubscription === false && (
           <NotificationsPromoBanner onToggleSettings={onToggleSettings} />
         )}

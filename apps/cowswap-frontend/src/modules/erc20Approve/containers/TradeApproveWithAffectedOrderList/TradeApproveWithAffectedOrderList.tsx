@@ -43,7 +43,8 @@ export function TradeApproveWithAffectedOrderList({
     isApproveRequired === ApproveRequiredReason.BundleApproveRequired
 
   const showAffectedOrders =
-    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || approvalTarget === 'poller') &&
+    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired ||
+      (approvalTarget === 'poller' && isApproveOrPartialPermitRequired)) &&
     !isMaxAmountToApprove(finalAmountToApprove)
 
   const showApproveToggle = isApproveOrPartialPermitRequired || showAffectedOrders

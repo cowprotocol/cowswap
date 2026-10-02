@@ -28,6 +28,7 @@ import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
+  TwapSellAmountDescription,
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
@@ -38,6 +39,7 @@ import {
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -67,12 +69,18 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
-  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact =
+    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL ||
+    twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
+  }
+
+  if (!isTwapSupportedChain(Number(params.chainId))) {
+    return <TradeRouteRedirect route={Routes.SWAP} />
   }
 
   return (
@@ -92,6 +100,7 @@ export function AdvancedOrdersPage(): ReactNode {
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
+            topContent={<TwapSellAmountDescription />}
           >
             {(tradeWarnings) => (
               <>
