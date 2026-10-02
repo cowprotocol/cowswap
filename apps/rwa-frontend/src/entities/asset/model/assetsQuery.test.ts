@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { countByType, filterAssets, paginate, searchAssets, sortAssets } from './assetsQuery'
+import { countByType, filterAssets, getDefaultSortOrder, paginate, searchAssets, sortAssets } from './assetsQuery'
 
 import type { RwaAssetListItem, RwaMarketData, RwaToken } from './types'
 
@@ -79,6 +79,18 @@ describe('sortAssets', () => {
 
   it('sorts by ticker alphabetically', () => {
     expect(tickers(sortAssets([NVDA, MSFT, AAPL], 'ticker', 'asc'))).toEqual(['AAPL', 'MSFT', 'NVDA'])
+  })
+
+  it('sorts by title case-insensitively', () => {
+    const alphabet = asset('GOOGL', 'alphabet', 0, null)
+
+    expect(tickers(sortAssets([AAPL, alphabet, MSFT], 'title', 'asc'))).toEqual(['GOOGL', 'AAPL', 'MSFT'])
+  })
+
+  it('defaults text fields to ascending and numbers to descending', () => {
+    expect(getDefaultSortOrder('title')).toBe('asc')
+    expect(getDefaultSortOrder('ticker')).toBe('asc')
+    expect(getDefaultSortOrder('dexVolume24h')).toBe('desc')
   })
 
   it('does not mutate the input', () => {

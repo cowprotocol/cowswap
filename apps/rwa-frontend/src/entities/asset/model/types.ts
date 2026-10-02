@@ -157,6 +157,7 @@ export const RWA_SORT_FIELDS = [
   'change24h',
   'price',
   'ticker',
+  'title',
 ] as const
 
 export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}

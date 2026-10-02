@@ -14,7 +14,7 @@ import { assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
-import { RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
+import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { usePrefersDarkScheme } from '@/shared/lib/theme'
@@ -43,7 +43,7 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
             <th className={styles.watchColumn}>
               <span className={styles.visuallyHidden}>Watchlist</span>
             </th>
-            <SortableHeader field="ticker" title="Asset" />
+            <SortableHeader field="title" title="Asset" />
             <SortableHeader field="price" title="Stock price" numeric />
             <SortableHeader field="change24h" title="24H change" numeric />
             <SortableHeader field="dexVolume24h" title="24h DEX volume" numeric className={styles.optional} />
@@ -152,10 +152,9 @@ function SortableHeader({ field, title, numeric = false, className }: SortableHe
   const isActive = sort === field
 
   const onClick = (): void => {
-    const defaultOrder = field === 'ticker' ? 'asc' : 'desc'
     const flippedOrder = order === 'asc' ? 'desc' : 'asc'
 
-    setSort({ sort: field, order: isActive ? flippedOrder : defaultOrder })
+    setSort({ sort: field, order: isActive ? flippedOrder : getDefaultSortOrder(field) })
     setPage(1)
   }
 

@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 
-import { listAssets } from '@/entities/asset/index.server'
+import { getDefaultSortOrder, listAssets } from '@/entities/asset/index.server'
 import {
   RWA_ASSET_TYPES,
   RWA_SORT_FIELDS,
@@ -17,8 +17,8 @@ const SORT_ORDERS: readonly RwaSortOrder[] = ['asc', 'desc']
 
 /**
  * Query: `page` (1-based, default 1), `pageSize` (1..100, default 20),
- * `sort` (priority | marketCap | onchainCap | dexVolume24h | change24h | price | ticker, default priority),
- * `order` (asc | desc, default desc; ticker defaults to asc),
+ * `sort` (priority | marketCap | onchainCap | dexVolume24h | change24h | price | ticker | title, default priority),
+ * `order` (asc | desc, default desc; ticker and title default to asc),
  * `type` (stock | index), `issuer`, `chainId`, `q` (matches ticker, title or token symbol),
  * `tickers` (comma-separated, up to 100; empty matches nothing)
  */
@@ -28,7 +28,7 @@ export async function getAssetsHandler(request: NextRequest): Promise<Response> 
   const page = parseIntegerParam(params.get('page'), 1, 1, Number.MAX_SAFE_INTEGER)
   const pageSize = parseIntegerParam(params.get('pageSize'), DEFAULT_PAGE_SIZE, 1, MAX_PAGE_SIZE)
   const sort = parseEnumParam(params.get('sort'), RWA_SORT_FIELDS, 'priority')
-  const order = parseEnumParam(params.get('order'), SORT_ORDERS, sort === 'ticker' ? 'asc' : 'desc')
+  const order = parseEnumParam(params.get('order'), SORT_ORDERS, sort ? getDefaultSortOrder(sort) : 'desc')
   const filter = parseFilter(params)
 
   if (page === null) return errorResponse(400, 'Invalid "page"')

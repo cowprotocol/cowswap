@@ -7,4 +7,7 @@ export interface AssetsSortState {
   order: RwaSortOrder
 }
 
-export const assetsSortAtom = atomWithStorage<AssetsSortState>('rwaAssetsSort:v1', { sort: 'priority', order: 'desc' })
+export const assetsSortAtom = atomWithStorage<AssetsSortState>('rwaAssetsSort:v2', {
+  sort: 'dexVolume24h',
+  order: 'desc',
+})
