@@ -1,5 +1,10 @@
 # RWA Market Overview Implementation Plan
 
+Status: completed
+Owner: Alexandr Kazachenko
+Created: 2026-10-02
+Target PR: #8285
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add the home page hero ("Explore tokenized real-world assets") and three cards (Market overview, Most traded, Top movers) above the assets explorer. The cards get their data from a new `GET /api/v1/market-overview`.
