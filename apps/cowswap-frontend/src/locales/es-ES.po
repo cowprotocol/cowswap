@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-30 20:26\n"
+"PO-Revision-Date: 2026-10-02 12:37\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -4929,6 +4929,10 @@ msgstr "vale"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
 msgstr "Ver cuenta"
+
+#: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
+msgid "TWAP is not available on Solana yet"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping {sentAmount} to {receivedAmount}"
