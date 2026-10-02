@@ -1,8 +1,7 @@
 import { AAPLX_ARBITRUM, AAPLX_MAINNET } from './fixtures'
-import { getTokenKey } from './tokenKey'
 import { resolveTradeChainId, resolveTradeToken } from './tradeToken'
 
-import type { RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaToken } from '@/entities/asset'
 
 const AAPLON_MAINNET: RwaToken = {
   ...AAPLX_MAINNET,

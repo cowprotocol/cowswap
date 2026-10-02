@@ -1,33 +1,32 @@
 'use client'
 
-import { useAtomValue } from 'jotai'
 import type { ReactNode } from 'react'
 
 import styles from './AccountTable.module.css'
+import { TokenCell } from './TokenCell'
 import { TradeSide } from './TradeSide'
 
 import { formatAssetAmount, formatCounterAmount, formatLegPrice } from '../lib/formatTradeLeg'
-import { activityQueryAtomFamily } from '../model/accountQueryAtoms'
 
-import type { RwaAsset } from '@/entities/asset'
+import type { Activity } from '../api/activity'
 
-import { getChainLabel, getExplorerTxUrl } from '@/shared/lib/chain'
+import { getExplorerTxUrl } from '@/shared/lib/chain'
 import { formatDateTime } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
 
-interface ActivityTabProps {
-  asset: RwaAsset
-  owner: string
+interface ActivityTableProps {
+  /** `undefined` while loading */
+  activity: Activity[] | undefined
+  error: Error | null
+  emptyText: string
 }
 
-export function ActivityTab({ asset, owner }: ActivityTabProps): ReactNode {
-  const { data: activity, error } = useAtomValue(activityQueryAtomFamily({ owner, asset }))
-
+export function ActivityTable({ activity, error, emptyText }: ActivityTableProps): ReactNode {
   if (!activity) {
     return <StatusMessage>{error ? `Failed to load activity: ${error.message}` : 'Loading activity…'}</StatusMessage>
   }
 
-  if (!activity.length) return <StatusMessage>You have no {asset.ticker} activity yet</StatusMessage>
+  if (!activity.length) return <StatusMessage>{emptyText}</StatusMessage>
 
   return (
     <div className={styles.scroll}>
@@ -36,9 +35,9 @@ export function ActivityTab({ asset, owner }: ActivityTabProps): ReactNode {
           <tr>
             <th>Date</th>
             <th>Type</th>
+            <th>Token</th>
             <th className={styles.numeric}>Amount</th>
             <th className={styles.numeric}>Price</th>
-            <th>Network</th>
             <th>Transaction</th>
           </tr>
         </thead>
@@ -52,6 +51,9 @@ export function ActivityTab({ asset, owner }: ActivityTabProps): ReactNode {
                 <td>
                   <TradeSide side={item.side} />
                 </td>
+                <td>
+                  <TokenCell token={item.assetToken} />
+                </td>
                 <td className={styles.numeric}>
                   {formatAssetAmount(item)}
                   <span className={styles.secondary}>
@@ -59,7 +61,6 @@ export function ActivityTab({ asset, owner }: ActivityTabProps): ReactNode {
                   </span>
                 </td>
                 <td className={styles.numeric}>{formatLegPrice(item)}</td>
-                <td>{getChainLabel(item.chainId)}</td>
                 <td>
                   {txUrl ? (
                     <a className={styles.link} href={txUrl} target="_blank" rel="noopener noreferrer">

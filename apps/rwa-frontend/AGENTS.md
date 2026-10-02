@@ -36,7 +36,7 @@ This file: rwa-frontend app-specific commands only.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
 - `/api/v1/token-list` is the token list of `data/RWAs.json`. Balances are streamed from the balances watcher for the tokens in that list.
-- Account activity must come through `ActivityProvider` (`_pages/asset/api/activity`). It is backed by the CoW order book trades for now; swap the implementation there, not in the UI.
+- Account activity must come through `ActivityProvider` (`widgets/account/api/activity`). It is backed by the CoW order book trades for now; swap the implementation there, not in the UI.
 - Data fetching uses Jotai: `atomWithQuery` from `jotai-tanstack-query`, with `atomFamily` from `jotai-family` for per-ticker queries. SWR is banned by ESLint. Query options live in `entities/asset/api/assetsQueries.ts`, and every query key starts with `RWA_QUERY_KEY_ROOT`.
 - There is one `QueryClient` per app instance (`_app/layout/Providers.tsx`), shared by Jotai (`queryClientAtom`) and wagmi.
 - `_app/offline/persistQueryCache.ts` persists app queries to IndexedDB and restores each query when it enters the cache. Don't add a second client-side cache for API data.

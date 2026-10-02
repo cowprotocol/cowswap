@@ -1,8 +1,8 @@
 import { atom } from 'jotai'
 
-import type { TradeSide } from '../lib/tradeLeg'
+import type { RwaQuoteSide } from '@/entities/asset'
 
-export const tradeSideAtom = atom<TradeSide>('buy')
+export const tradeSideAtom = atom<RwaQuoteSide>('buy')
 
 /** `getTokenKey` of the asset token picked by the user, `null` to pick the best quote */
 export const tradeTokenKeyAtom = atom<string | null>(null)

@@ -13,7 +13,7 @@ import { type BalancesMap, type BalancesWatcherSubscription, watchBalances } fro
 
 const RESTART_DELAY_MS = 30_000
 
-export interface AssetBalances {
+export interface AccountBalances {
   /** Non-zero balances only, `null` until every chain has sent its first snapshot or failed */
   positions: Position[] | null
   error: Error | null
@@ -31,7 +31,7 @@ interface ChainBalancesCallbacks {
 }
 
 /** Streams the owner's balances of all the RWA tokens, and returns the ones of `tokens` */
-export function useAssetBalances(owner: string | undefined, tokens: RwaToken[]): AssetBalances {
+export function useAccountBalances(owner: string | undefined, tokens: RwaToken[]): AccountBalances {
   const { data: tokenList, error: tokenListError } = useAtomValue(tokenListQueryAtom)
   const chainIds = useMemo(() => getSupportedChainIds(tokens), [tokens])
   const [balances, setBalances] = useState<Partial<Record<number, BalancesMap>>>({})
@@ -56,7 +56,7 @@ export function useAssetBalances(owner: string | undefined, tokens: RwaToken[]):
     return () => stops.forEach((stop) => stop())
   }, [owner, tokenList, chainIds])
 
-  return useMemo((): AssetBalances => {
+  return useMemo((): AccountBalances => {
     const error = tokenListError ?? chainIds.map((chainId) => errors[chainId]).find(Boolean) ?? null
     const isLoaded = chainIds.every((chainId) => balances[chainId] || errors[chainId])
 
