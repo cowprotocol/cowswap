@@ -149,16 +149,28 @@ describe('HomePage', () => {
 
     fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
     fireEvent.change(screen.getByRole('combobox', { name: 'Issuer' }), { target: { value: 'Ondo' } })
-    fireEvent.click(screen.getByRole('button', { name: '24h DEX volume' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>
-      expect(screen.getByRole('columnheader', { name: '24h DEX volume' }).getAttribute('aria-sort')).toBe('descending'),
+      expect(screen.getByRole('columnheader', { name: 'Asset' }).getAttribute('aria-sort')).toBe('ascending'),
     )
     const lastUrl = String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])
 
     expect(lastUrl).toContain('type=index')
     expect(lastUrl).toContain('issuer=Ondo')
-    expect(lastUrl).toContain('sort=dexVolume24h')
+    expect(lastUrl).toContain('sort=title')
+    expect(lastUrl).toContain('order=asc')
+  })
+
+  it('sorts by DEX volume by default and ignores the v1 stored sort', async () => {
+    localStorage.setItem('rwaAssetsSort:v1', JSON.stringify({ sort: 'marketCap', order: 'desc' }))
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    const header = await screen.findByRole('columnheader', { name: '24h DEX volume' })
+
+    expect(header.getAttribute('aria-sort')).toBe('descending')
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('sort=dexVolume24h')
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {

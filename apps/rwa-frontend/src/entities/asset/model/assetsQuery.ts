@@ -1,5 +1,7 @@
 import type { RwaAsset, RwaAssetListItem, RwaAssetsFilter, RwaAssetType, RwaSortField, RwaSortOrder } from './types'
 
+const TEXT_SORT_FIELDS: readonly RwaSortField[] = ['ticker', 'title']
+
 type SortValueGetter = (asset: RwaAssetListItem) => number | string | null
 
 const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
@@ -10,6 +12,7 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   change24h: (asset) => asset.market?.change24h ?? null,
   price: (asset) => asset.market?.price ?? null,
   ticker: (asset) => asset.ticker,
+  title: (asset) => asset.title,
 }
 
 export function countByType(assets: RwaAsset[], filter: RwaAssetsFilter): Record<RwaAssetType, number> {
@@ -30,6 +33,10 @@ export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsF
       hasMatchingToken(asset, filter) &&
       (!needle || getSearchScore(asset, needle) > 0),
   )
+}
+
+export function getDefaultSortOrder(sort: RwaSortField): RwaSortOrder {
+  return TEXT_SORT_FIELDS.includes(sort) ? 'asc' : 'desc'
 }
 
 export function paginate<T>(items: T[], page: number, pageSize: number): { items: T[]; totalPages: number } {
@@ -73,7 +80,9 @@ export function sortAssets(assets: RwaAssetListItem[], sort: RwaSortField, order
 }
 
 function compareValues(a: number | string, b: number | string): number {
-  if (typeof a === 'string' || typeof b === 'string') return String(a).localeCompare(String(b))
+  if (typeof a === 'string' || typeof b === 'string') {
+    return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' })
+  }
 
   return a - b
 }
