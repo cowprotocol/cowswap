@@ -24,9 +24,10 @@ export interface TradeConfirmActions {
   onDismiss(): void
   /**
    * Marks the confirm flow as in progress (from the moment the confirm button is clicked) or
-   * aborted (reset back to false). While `true`, the confirm modal freezes its displayed amounts.
+   * aborted (reset back to false). Stale session IDs are ignored. While `true`, the confirm modal
+   * freezes its displayed amounts.
    */
-  setConfirming(isConfirming: boolean): void
+  setConfirming(isConfirming: boolean, sessionId: number): void
 }
 
 export function useTradeConfirmActions(): TradeConfirmActions {
@@ -60,8 +61,8 @@ export function useTradeConfirmActions(): TradeConfirmActions {
       onDismiss() {
         setCloseTradeConfirm()
       },
-      setConfirming(isConfirming: boolean) {
-        setConfirmingAtom(isConfirming)
+      setConfirming(isConfirming: boolean, sessionId: number) {
+        setConfirmingAtom({ isConfirming, sessionId })
       },
     }
   }, [
