@@ -199,9 +199,9 @@ export const ButtonErrorStyle = styled(ButtonPrimary)`
   color: var(${UI.COLOR_PAPER});
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
 
-  &:focus,
-  &:hover,
-  &:active {
+  &:focus:not(:disabled),
+  &:hover:not(:disabled),
+  &:active:not(:disabled) {
     background: var(${UI.COLOR_DANGER});
     color: var(${UI.COLOR_PAPER});
   }

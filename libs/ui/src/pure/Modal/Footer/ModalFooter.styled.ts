@@ -1,13 +1,20 @@
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { Media } from '../../../consts'
 import { UI } from '../../../enum'
 import { font } from '../../../utils/font'
-import { ButtonOutlined, ButtonPrimary } from '../../Button'
+import { ButtonErrorStyle, ButtonOutlined, ButtonPrimary } from '../../Button'
 
-export const Footer = styled.div<{ $inline?: boolean }>`
+export const Footer = styled.div<{ $inline?: boolean; $topBorder?: boolean }>`
   width: 100%;
   padding: ${({ $inline }) => ($inline ? '0' : '8px 10px 10px')};
+
+  ${({ $topBorder }) =>
+    $topBorder &&
+    css`
+      border-top: 1px solid var(${UI.COLOR_BORDER});
+      padding-top: 10px;
+    `}
 `
 
 export const TwoButtonGrid = styled.div`
@@ -35,6 +42,12 @@ export const SecondaryButton = styled(ButtonOutlined)`
 `
 
 export const PrimaryButton = styled(ButtonPrimary)`
+  ${font('FONT_MEDIUM', 'semibold')}
+  width: 100%;
+  min-height: 48px;
+`
+
+export const PrimaryErrorButton = styled(ButtonErrorStyle)`
   ${font('FONT_MEDIUM', 'semibold')}
   width: 100%;
   min-height: 48px;
