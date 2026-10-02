@@ -45,3 +45,4 @@ export {
 export { AssetStats } from './ui/AssetStats'
 export { AssetsTable } from './ui/AssetsTable'
 export { PriceChart } from './ui/PriceChart'
+export { getTokenKey } from './lib/tokenKey'
