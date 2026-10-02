@@ -68,7 +68,7 @@ describe('getPortfolioTotals', () => {
       getPrice,
     )
 
-    expect(getPortfolioTotals(holdings)).toEqual({ value: 400, assets: 2, tokens: 3, networks: 2 })
+    expect(getPortfolioTotals(holdings)).toEqual({ value: 400, assets: 2, tokens: 3, networks: 2, unpricedAssets: 1 })
   })
 
   it('has no value without prices', () => {
