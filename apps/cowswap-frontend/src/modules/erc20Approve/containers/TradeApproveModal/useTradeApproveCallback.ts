@@ -66,6 +66,7 @@ interface ProcessTransactionConfirmationParams {
 }
 
 // An older approval can settle (its wallet request finally answers) while a newer one owns the shared progress modal.
+// Only modal approvals claim it, so a modal-less one never strands a pending modal.
 let latestApproveAttempt = 0
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
@@ -87,7 +88,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
   return useCallback(
     async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
-      const attempt = ++latestApproveAttempt
+      const attempt = claimApproveAttempt(useModals)
       const updateProgress = whenLatest(attempt, updateApproveProgressModalState)
       const resetProgress = whenLatest(attempt, resetApproveProgressModalState)
       const handleError = whenLatest(attempt, handleApprovalError)
@@ -158,6 +159,10 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       handleApprovalError,
     ],
   ) as TradeApproveCallback
+}
+
+function claimApproveAttempt(useModals: boolean): number {
+  return useModals ? ++latestApproveAttempt : latestApproveAttempt
 }
 
 async function processTransactionConfirmation({

@@ -520,4 +520,20 @@ describe('useTradeApproveCallback', () => {
 
     expect(mockUpdateTradeApproveState).not.toHaveBeenCalled()
   })
+  it('lets a modal-less approval run without stranding a pending modal approval', async () => {
+    let rejectModalApproval: () => void = () => undefined
+    mockApproveCallback.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => (rejectModalApproval = () => reject({ code: 4001, message: 'rejected' }))),
+    )
+    mockApproveCallback.mockImplementationOnce(() => new Promise(() => undefined))
+    const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
+
+    const modalApproval = result.current(mockAmount)
+    void result.current(mockAmount, { useModals: false })
+    rejectModalApproval()
+    await modalApproval
+
+    expect(mockUpdateTradeApproveState).toHaveBeenCalledWith(expect.objectContaining({ approveInProgress: false }))
+  })
 })

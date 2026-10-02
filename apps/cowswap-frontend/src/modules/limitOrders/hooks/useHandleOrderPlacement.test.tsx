@@ -25,7 +25,7 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
 import { WithModalProvider } from 'utils/withModalProvider'
 
-import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+import { useHandleOrderPlacement, UseHandleOrderPlacementResult } from './useHandleOrderPlacement'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { WithMockedWeb3 } from '../../../test-utils'
@@ -419,7 +419,7 @@ describe('useHandleOrderPlacement', () => {
       expect(atomResult.current[0]).toBe(true)
     })
   })
-  it('ignores an older attempt that settles after a newer order was placed', async () => {
+  it('ignores an older attempt that settles after a newer order was placed from a remounted widget', async () => {
     let rejectFirstWalletRequest: () => void = () => undefined
     mockTradeFlow.mockImplementationOnce(
       () => new Promise((_resolve, reject) => (rejectFirstWalletRequest = () => reject(new Error('User rejected')))),
@@ -427,15 +427,20 @@ describe('useHandleOrderPlacement', () => {
     mockTradeFlow.mockImplementationOnce(() => new Promise(() => undefined))
     const onError = jest.spyOn(tradeConfirmActions, 'onError')
 
-    const { result } = renderHook(
-      () => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
-      { wrapper },
-    )
+    const renderPlacement = (): ReturnType<typeof renderHook<UseHandleOrderPlacementResult, unknown>> =>
+      renderHook(() => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions), {
+        wrapper,
+      })
+    const first = renderPlacement()
     let firstAttempt: Promise<void> = Promise.resolve()
 
     await act(async () => {
-      firstAttempt = result.current.callback()
-      void result.current.callback()
+      firstAttempt = first.result.current.callback()
+    })
+    first.unmount()
+    const second = renderPlacement()
+    await act(async () => {
+      void second.result.current.callback()
     })
     await act(async () => {
       rejectFirstWalletRequest()

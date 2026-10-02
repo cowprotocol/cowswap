@@ -611,4 +611,43 @@ describe('useCreateTwapOrder', () => {
     expect(onError).not.toHaveBeenCalled()
     expect(updateEoaTwapFlow).not.toHaveBeenCalledWith(null)
   })
+  it('keeps an older Safe TWAP placement that succeeds late from resetting the newer form', async () => {
+    const onSuccess = jest.fn()
+    const updateAdvancedOrdersState = jest.fn()
+    let signFirstSafeRequest: () => void = () => undefined
+    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsEoaAtom, false)
+    getDefaultStore().set(writableIsSafeViaWcAtom, true)
+    mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
+    mockedUseTradeConfirmActions.mockReturnValue({
+      onSign: jest.fn(),
+      onSuccess,
+      onError: jest.fn(),
+    } as unknown as ReturnType<typeof useTradeConfirmActions>)
+    mockedUseUpdateAdvancedOrdersRawState.mockReturnValue(updateAdvancedOrdersState)
+    mockedPlaceSafeTwapOrder.mockImplementationOnce(
+      () =>
+        new Promise(
+          (resolve) => (signFirstSafeRequest = () => resolve({ safeTxHash: '0xstaletx', safeAddress: '0xsafe' })),
+        ),
+    )
+    mockedPlaceSafeTwapOrder.mockImplementationOnce(() => new Promise(() => undefined))
+
+    const { result } = renderHook(useCreateTwapOrder)
+    let firstPlacement: Promise<boolean | undefined> = Promise.resolve(undefined)
+
+    await act(async () => {
+      firstPlacement = result.current(false)
+    })
+    await act(async () => {
+      void result.current(false)
+    })
+    await act(async () => {
+      signFirstSafeRequest()
+      await firstPlacement
+    })
+
+    expect(onSuccess).not.toHaveBeenCalled()
+    expect(updateAdvancedOrdersState).not.toHaveBeenCalled()
+  })
 })
