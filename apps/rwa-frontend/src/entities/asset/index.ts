@@ -27,6 +27,7 @@ export {
   type RwaToken,
   type RwaTokenList,
   type RwaTokenListToken,
+  type RwaTokenMarketData,
   type RwaTradingTime,
 } from './model/types'
 export { AssetStats } from './ui/AssetStats'

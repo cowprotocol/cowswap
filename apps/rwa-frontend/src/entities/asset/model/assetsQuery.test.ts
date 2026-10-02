@@ -23,13 +23,24 @@ function asset(
       symbol,
       name: symbol,
       decimals: 18,
+      issuer: 'Ondo',
     })),
     market: marketData,
   }
 }
 
 function market(overrides: Partial<RwaMarketData>): RwaMarketData {
-  return { price: 1, change24h: 0, dayLow: 1, dayHigh: 1, marketCap: 1, updatedAt: null, ...overrides }
+  return {
+    price: 1,
+    change24h: 0,
+    dayLow: 1,
+    dayHigh: 1,
+    marketCap: 1,
+    volume24h: 1,
+    tokens: {},
+    updatedAt: null,
+    ...overrides,
+  }
 }
 
 const AAPL = asset('AAPL', 'Apple', 10, market({ marketCap: 100, change24h: 1 }), ['AAPLx', 'AAPLon'])

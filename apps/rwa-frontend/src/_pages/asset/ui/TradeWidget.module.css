@@ -23,3 +23,30 @@
   border-radius: var(--radius);
   background: var(--color-surface);
 }
+
+.sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.sides button {
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.sides .buy {
+  background: var(--color-positive);
+  color: #ffffff;
+}
+
+.sides .sell {
+  background: var(--color-negative);
+  color: #ffffff;
+}

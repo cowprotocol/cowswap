@@ -17,6 +17,7 @@ const NVDA: RwaAsset = {
       symbol: 'NVDAon',
       name: 'NVIDIA (Ondo Tokenized)',
       decimals: 18,
+      issuer: 'Ondo',
       coingeckoId: 'nvidia-ondo-tokenized-stock',
     },
     {
@@ -25,6 +26,7 @@ const NVDA: RwaAsset = {
       symbol: 'NVDAon',
       name: 'NVIDIA (Ondo Tokenized)',
       decimals: 18,
+      issuer: 'Ondo',
       coingeckoId: 'nvidia-ondo-tokenized-stock',
     },
     {
@@ -33,6 +35,7 @@ const NVDA: RwaAsset = {
       symbol: 'NVDAx',
       name: 'NVIDIA xStock',
       decimals: 18,
+      issuer: 'xStocks',
       coingeckoId: 'nvidia-xstock',
     },
   ],
@@ -48,12 +51,14 @@ function mockFetch(body: unknown, ok = true): jest.Mock {
 }
 
 describe('coingeckoProvider.getMarketData', () => {
-  it('takes price from the first token and sums market caps of unique tokens', async () => {
+  it('takes price from the first token and sums market caps and volumes of unique tokens', async () => {
     const fetchMock = mockFetch([
       {
         id: 'nvidia-xstock',
         current_price: 231.8,
         market_cap: 43,
+        total_volume: 5,
+        image: 'https://coin-images.coingecko.com/nvidia-xstock.png',
         high_24h: 232,
         low_24h: 223,
         price_change_percentage_24h: 2.6,
@@ -63,6 +68,8 @@ describe('coingeckoProvider.getMarketData', () => {
         id: 'nvidia-ondo-tokenized-stock',
         current_price: 231.5,
         market_cap: 39,
+        total_volume: 7,
+        image: null,
         high_24h: 230,
         low_24h: 223.2,
         price_change_percentage_24h: 2.5,
@@ -80,7 +87,17 @@ describe('coingeckoProvider.getMarketData', () => {
       dayLow: 223.2,
       dayHigh: 230,
       marketCap: 82,
+      volume24h: 12,
       updatedAt: '2026-09-28T13:01:00.000Z',
+      tokens: {
+        'nvidia-xstock': {
+          price: 231.8,
+          marketCap: 43,
+          volume24h: 5,
+          logoUrl: 'https://coin-images.coingecko.com/nvidia-xstock.png',
+        },
+        'nvidia-ondo-tokenized-stock': { price: 231.5, marketCap: 39, volume24h: 7, logoUrl: null },
+      },
     })
     expect(result.has('NONE')).toBe(false)
   })
@@ -91,6 +108,8 @@ describe('coingeckoProvider.getMarketData', () => {
         id: 'nvidia-xstock',
         current_price: 231.8,
         market_cap: 43,
+        total_volume: 5,
+        image: 'https://coin-images.coingecko.com/nvidia-xstock.png',
         high_24h: 232,
         low_24h: 223,
         price_change_percentage_24h: 2.6,
@@ -106,7 +125,16 @@ describe('coingeckoProvider.getMarketData', () => {
       dayLow: null,
       dayHigh: null,
       marketCap: 43,
+      volume24h: 5,
       updatedAt: null,
+      tokens: {
+        'nvidia-xstock': {
+          price: 231.8,
+          marketCap: 43,
+          volume24h: 5,
+          logoUrl: 'https://coin-images.coingecko.com/nvidia-xstock.png',
+        },
+      },
     })
   })
 

@@ -54,6 +54,7 @@ function validateToken(token: RwaToken, path: string): string[] {
   if (!isAddress(token.address)) errors.push(`${path}.address: invalid address ${token.address}`)
   if (!token.symbol) errors.push(`${path}.symbol: required`)
   if (!token.name) errors.push(`${path}.name: required`)
+  if (!token.issuer) errors.push(`${path}.issuer: required`)
   if (!Number.isInteger(token.decimals) || token.decimals < 0) errors.push(`${path}.decimals: invalid`)
 
   return errors
