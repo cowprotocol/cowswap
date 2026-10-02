@@ -1,7 +1,9 @@
+import { getDefaultStore } from 'jotai'
+
 import { act, renderHook } from '@testing-library/react'
 
 import { callWidgetHook } from 'modules/injectedWidget'
-import { useTradeConfirmState } from 'modules/trade'
+import { tradeConfirmStateAtom } from 'modules/trade'
 
 import { TradeAmounts } from 'common/types'
 
@@ -20,9 +22,9 @@ jest.mock('modules/injectedWidget', () => ({
   callWidgetHook: jest.fn(),
 }))
 jest.mock('modules/trade', () => ({
+  ...jest.requireActual('modules/trade/state/tradeConfirmStateAtom'),
   logTradeFlow: jest.fn(),
   useDerivedTradeState: jest.fn(),
-  useTradeConfirmState: jest.fn(),
   useTradeFlowAnalytics: jest.fn(),
   useTradePriceImpact: jest.fn(),
 }))
@@ -39,7 +41,12 @@ jest.mock('../services/solanaFlow', () => ({ solanaFlow: jest.fn() }))
 jest.mock('../services/swapFlow', () => ({ swapFlow: jest.fn() }))
 
 const mockSwapFlow = swapFlow as jest.MockedFunction<typeof swapFlow>
-const mockUseTradeConfirmState = useTradeConfirmState as jest.Mock
+const store = getDefaultStore()
+
+function setModalOpen(isOpen: boolean): void {
+  const state = store.get(tradeConfirmStateAtom)
+  store.set(tradeConfirmStateAtom, { ...state, isOpen, sessionId: state.sessionId + 1 })
+}
 
 const tradeFlowContext = {
   context: { inputAmount: { currency: {} }, outputAmount: { currency: {} } },
@@ -71,7 +78,8 @@ describe('useHandleSwap', () => {
     ;(useTradeFlowContext as jest.Mock).mockReturnValue(tradeFlowContext)
     ;(useTradeFlowType as jest.Mock).mockReturnValue(FlowType.REGULAR)
     ;(callWidgetHook as jest.Mock).mockResolvedValue(true)
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: true })
+    setModalOpen(false)
+    setModalOpen(true)
     mockSwapFlow.mockReturnValue(new Promise(() => undefined))
   })
 
@@ -87,16 +95,14 @@ describe('useHandleSwap', () => {
   })
 
   it('accepts a new confirm after the modal was dismissed while the wallet request never settles', async () => {
-    const { result, rerender } = renderUseHandleSwap()
+    const { result } = renderUseHandleSwap()
 
     await act(async () => {
       void result.current.callback()
     })
 
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
-    rerender()
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: true })
-    rerender()
+    setModalOpen(false)
+    setModalOpen(true)
 
     await act(async () => {
       void result.current.callback()
@@ -107,14 +113,13 @@ describe('useHandleSwap', () => {
   it('does not start the wallet flow when the modal was dismissed while the widget hook was pending', async () => {
     let resolveWidgetHook: (passed: boolean) => void = () => undefined
     ;(callWidgetHook as jest.Mock).mockReturnValueOnce(new Promise((resolve) => (resolveWidgetHook = resolve)))
-    const { result, rerender } = renderUseHandleSwap()
+    const { result } = renderUseHandleSwap()
 
     await act(async () => {
       void result.current.callback()
     })
 
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
-    rerender()
+    setModalOpen(false)
 
     await act(async () => {
       resolveWidgetHook(true)
@@ -126,14 +131,13 @@ describe('useHandleSwap', () => {
   it('does not reset the form when a dismissed flow settles late', async () => {
     let resolveSwapFlow: (result: boolean) => void = () => undefined
     mockSwapFlow.mockReturnValueOnce(new Promise((resolve) => (resolveSwapFlow = resolve)))
-    const { result, rerender } = renderUseHandleSwap()
+    const { result } = renderUseHandleSwap()
 
     await act(async () => {
       void result.current.callback()
     })
 
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
-    rerender()
+    setModalOpen(false)
 
     await act(async () => {
       resolveSwapFlow(true)
@@ -168,16 +172,14 @@ describe('useHandleSwap', () => {
       context.tradeConfirmActions.onSign({} as TradeAmounts)
       return new Promise(() => undefined)
     })
-    const { result, rerender } = renderUseHandleSwap()
+    const { result } = renderUseHandleSwap()
 
     await act(async () => {
       void result.current.callback()
     })
 
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: false })
-    rerender()
-    mockUseTradeConfirmState.mockReturnValue({ isOpen: true })
-    rerender()
+    setModalOpen(false)
+    setModalOpen(true)
 
     await act(async () => {
       void result.current.callback()
@@ -192,5 +194,36 @@ describe('useHandleSwap', () => {
     expect(tradeFlowContext.tradeConfirmActions.onSign).toHaveBeenCalledTimes(1)
     expect(tradeFlowContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(mockSwapFlow).toHaveBeenCalledTimes(2)
+  })
+
+  it('ignores a wallet response from a widget that was remounted', async () => {
+    let settleFirstFlow: () => void = () => undefined
+    mockSwapFlow.mockImplementationOnce(
+      (context) =>
+        new Promise((resolve) => {
+          settleFirstFlow = () => {
+            context.tradeConfirmActions.onError('Old request failed')
+            resolve(false)
+          }
+        }),
+    )
+
+    const first = renderUseHandleSwap()
+    await act(async () => {
+      void first.result.current.callback()
+    })
+    first.unmount()
+
+    setModalOpen(false)
+    setModalOpen(true)
+    const second = renderUseHandleSwap()
+    await act(async () => {
+      void second.result.current.callback()
+    })
+    await act(async () => {
+      settleFirstFlow()
+    })
+
+    expect(tradeFlowContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
   })
 })

@@ -1,4 +1,5 @@
-import { MutableRefObject, useCallback, useEffect, useRef } from 'react'
+import { useStore } from 'jotai'
+import { useCallback, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
@@ -16,8 +17,8 @@ import {
   TradeConfirmActions,
   TradeWidgetActions,
   logTradeFlow,
+  tradeConfirmStateAtom,
   useDerivedTradeState,
-  useTradeConfirmState,
   useTradeFlowAnalytics,
   useTradePriceImpact,
 } from 'modules/trade'
@@ -63,14 +64,15 @@ export function useHandleSwap(
             : tradeFlowContext,
         ) && !!tradeFlowContext
 
-  const activeFlowRef = useActiveFlowRef()
+  const store = useStore()
+  const activeSessionRef = useRef<number | null>(null)
 
   const callback = useCallback(async () => {
     if (!(tradeFlowType === FlowType.SOLANA_SWAP ? solanaFlowContext : tradeFlowContext)) return
-    if (activeFlowRef.current) return
-    const flowId = Symbol()
-    activeFlowRef.current = flowId
-    const isCurrent = (): boolean => activeFlowRef.current === flowId
+    const sessionId = store.get(tradeConfirmStateAtom).sessionId
+    if (activeSessionRef.current === sessionId) return
+    activeSessionRef.current = sessionId
+    const isCurrent = (): boolean => store.get(tradeConfirmStateAtom).sessionId === sessionId
 
     try {
       const hookPayload = buildHookPayload(
@@ -100,10 +102,10 @@ export function useHandleSwap(
         onUserInput(Field.INPUT, '')
       }
     } finally {
-      if (isCurrent()) activeFlowRef.current = null
+      if (activeSessionRef.current === sessionId) activeSessionRef.current = null
     }
   }, [
-    activeFlowRef,
+    store,
     config,
     tradeFlowContext,
     solanaFlowContext,
@@ -141,15 +143,16 @@ function buildHookPayload(
     })
   }
 
-  // tradeFlowContext is guaranteed non-null here by the caller's earlier guard.
+  if (!tradeFlowContext) throw new Error('Trade flow context is not ready')
+
   return buildTradeWidgetHookPayload({
-    orderType: tradeFlowContext!.tradeFlowAnalyticsContext.orderType,
-    inputAmount: tradeFlowContext!.context.inputAmount,
-    outputAmount: tradeFlowContext!.context.outputAmount,
-    recipient: tradeFlowContext!.tradeFlowAnalyticsContext.recipient,
-    orderKind: tradeFlowContext!.orderParams.kind,
-    chainId: tradeFlowContext!.orderParams.chainId,
-    validTo: tradeFlowContext!.orderParams.validTo,
+    orderType: tradeFlowContext.tradeFlowAnalyticsContext.orderType,
+    inputAmount: tradeFlowContext.context.inputAmount,
+    outputAmount: tradeFlowContext.context.outputAmount,
+    recipient: tradeFlowContext.tradeFlowAnalyticsContext.recipient,
+    orderKind: tradeFlowContext.orderParams.kind,
+    chainId: tradeFlowContext.orderParams.chainId,
+    validTo: tradeFlowContext.orderParams.validTo,
     slippageBps: slippage ? percentToBps(slippage) : undefined,
   })
 }
@@ -220,19 +223,6 @@ async function runFlowByType(
     deps.analytics,
   )
   return result === true
-}
-
-function useActiveFlowRef(): MutableRefObject<symbol | null> {
-  const activeFlowRef = useRef<symbol | null>(null)
-  const { isOpen: isConfirmModalOpen } = useTradeConfirmState()
-
-  // Safe over WalletConnect with a nested Safe signer never settles wallet_sendCalls after the inner signer rejects,
-  // so dismissing the confirm modal must release the lock, otherwise every later confirm click is silently dropped.
-  useEffect(() => {
-    if (!isConfirmModalOpen) activeFlowRef.current = null
-  }, [isConfirmModalOpen])
-
-  return activeFlowRef
 }
 
 function useTradeFlow(params: TradeFlowParams): {

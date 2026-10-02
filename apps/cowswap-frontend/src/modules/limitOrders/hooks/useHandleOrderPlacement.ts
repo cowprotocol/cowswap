@@ -2,6 +2,7 @@ import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -35,10 +36,6 @@ export interface UseHandleOrderPlacementResult {
   isSafeApprovalBundle: boolean
 }
 
-// An older attempt can settle (its wallet request finally answers) while a newer order owns the confirm modal.
-// Module-level: the alternative-order modal remounts the widget between attempts.
-let latestOrderPlacementAttempt = 0
-
 export function useHandleOrderPlacement(
   priceImpact: PriceImpact,
   settingsState: LimitOrdersSettingsState,
@@ -69,10 +66,10 @@ export function useHandleOrderPlacement(
   const tradeFn = useLimitOrdersTradeCallback(priceImpact, settingsState, tradeConfirmActions)
 
   const callback = useCallback(() => {
-    const attempt = ++latestOrderPlacementAttempt
+    const sessionId = store.get(tradeConfirmStateAtom).sessionId
     return tradeFn()
       .then(async (orderHash) => {
-        if (!orderHash || attempt !== latestOrderPlacementAttempt) return
+        if (!orderHash || sessionId !== store.get(tradeConfirmStateAtom).sessionId) return
 
         // solanaFlow already called tradeConfirmActions.onSuccess with the real order id itself.
         if (typeof orderHash === 'string') {
@@ -102,8 +99,9 @@ export function useHandleOrderPlacement(
           alternativeModalAnalytics(isAlternativeOrderEdit)
         }
       })
-      .catch((error) => {
-        if (attempt !== latestOrderPlacementAttempt || error instanceof PriceImpactDeclineError) return
+      .catch((err: unknown) => {
+        const error = normalizeError(err)
+        if (sessionId !== store.get(tradeConfirmStateAtom).sessionId || error instanceof PriceImpactDeclineError) return
         if (error instanceof WidgetHookDeclineError) {
           tradeConfirmActions.onDismiss()
           return

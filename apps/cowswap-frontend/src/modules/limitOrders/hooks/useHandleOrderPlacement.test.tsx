@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useStore } from 'jotai'
 import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
@@ -29,7 +29,7 @@ import { useHandleOrderPlacement, UseHandleOrderPlacementResult } from './useHan
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { WithMockedWeb3 } from '../../../test-utils'
-import { TradeConfirmActions } from '../../trade'
+import { tradeConfirmStateAtom, TradeConfirmActions } from '../../trade'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 
@@ -438,6 +438,9 @@ describe('useHandleOrderPlacement', () => {
       firstAttempt = first.result.current.callback()
     })
     first.unmount()
+    const { result: confirmState } = renderHook(() => useStore(), { wrapper })
+    const previousState = confirmState.current.get(tradeConfirmStateAtom)
+    confirmState.current.set(tradeConfirmStateAtom, { ...previousState, sessionId: previousState.sessionId + 1 })
     const second = renderPlacement()
     await act(async () => {
       void second.result.current.callback()

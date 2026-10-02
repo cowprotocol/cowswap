@@ -116,6 +116,7 @@ describe('resetEoaTwapSuccessScreenIfMatches', () => {
   beforeEach(() => {
     jotaiStore.set(eoaTwapSigningStepAtom, null)
     jotaiStore.set(tradeConfirmStateAtom, {
+      sessionId: 0,
       isOpen: true,
       pendingTrade: null,
       transactionHash: null,
