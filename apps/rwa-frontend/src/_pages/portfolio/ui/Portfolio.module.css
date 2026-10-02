@@ -16,6 +16,16 @@
   font-size: 13px;
 }
 
+.warning {
+  align-self: flex-start;
+  margin: 4px 0 0;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 13px;
+}
+
 .summary {
   display: flex;
   flex-direction: column;

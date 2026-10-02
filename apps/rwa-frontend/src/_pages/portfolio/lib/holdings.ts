@@ -20,6 +20,8 @@ export interface PortfolioTotals {
   assets: number
   tokens: number
   networks: number
+  /** Held assets left out of `value` because they have no price */
+  unpricedAssets: number
 }
 
 export interface TokenHolding {
@@ -68,5 +70,6 @@ export function getPortfolioTotals(holdings: Holding[]): PortfolioTotals {
     assets: holdings.length,
     tokens: tokens.length,
     networks: new Set(tokens.map(({ token }) => token.chainId)).size,
+    unpricedAssets: holdings.length - priced.length,
   }
 }

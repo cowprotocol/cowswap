@@ -5,29 +5,26 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { getBalancesWatcherTokens } from '../lib/balancesWatcherTokens'
+import { watchChainBalances } from './watchChainBalances'
+
 import { getSupportedChainIds } from '../lib/tradeLeg'
 
-import { type RwaToken, type RwaTokenList, tokenListQueryAtom } from '@/entities/asset'
-import { type BalancesMap, type BalancesWatcherSubscription, watchBalances } from '@/shared/api'
+import type { BalancesMap } from '@/shared/api'
 
-const RESTART_DELAY_MS = 30_000
+import { type RwaToken, tokenListQueryAtom } from '@/entities/asset'
 
 export interface AccountBalances {
   /** Non-zero balances only, `null` until every chain has sent its first snapshot or failed */
   positions: Position[] | null
   error: Error | null
+  /** Chains whose balances are missing from `positions` */
+  failedChainIds: number[]
 }
 
 export interface Position {
   token: RwaToken
   /** Atoms, decimal string */
   balance: string
-}
-
-interface ChainBalancesCallbacks {
-  onBalances(balances: BalancesMap): void
-  onError(error: Error): void
 }
 
 /** Streams the owner's balances of all the RWA tokens, and returns the ones of `tokens` */
@@ -60,7 +57,9 @@ export function useAccountBalances(owner: string | undefined, tokens: RwaToken[]
     const error = tokenListError ?? chainIds.map((chainId) => errors[chainId]).find(Boolean) ?? null
     const isLoaded = chainIds.every((chainId) => balances[chainId] || errors[chainId])
 
-    if (!isLoaded) return { positions: null, error: tokenListError }
+    const failedChainIds = chainIds.filter((chainId) => errors[chainId])
+
+    if (!isLoaded) return { positions: null, error: tokenListError, failedChainIds }
 
     const positions = tokens.flatMap((token) => {
       const balance = balances[token.chainId]?.[getAddressKey(token.address)]
@@ -68,39 +67,8 @@ export function useAccountBalances(owner: string | undefined, tokens: RwaToken[]
       return balance && BigInt(balance) > 0n ? [{ token, balance }] : []
     })
 
-    return { positions, error }
+    return { positions, error, failedChainIds }
   }, [balances, chainIds, errors, tokenListError, tokens])
-}
-
-/** Restarts the session after a failure: the watcher only resumes from a fresh snapshot */
-function watchChainBalances(
-  chainId: number,
-  owner: string,
-  tokenList: RwaTokenList,
-  callbacks: ChainBalancesCallbacks,
-): () => void {
-  let subscription: BalancesWatcherSubscription | null = null
-  let restartTimer: ReturnType<typeof setTimeout> | undefined
-
-  const start = (): void => {
-    subscription = watchBalances({
-      chainId,
-      owner,
-      tokens: getBalancesWatcherTokens(tokenList, chainId),
-      onBalances: callbacks.onBalances,
-      onError: (error) => {
-        callbacks.onError(error)
-        restartTimer = setTimeout(start, RESTART_DELAY_MS)
-      },
-    })
-  }
-
-  start()
-
-  return () => {
-    clearTimeout(restartTimer)
-    subscription?.close()
-  }
 }
 
 function withoutKey<T>(record: Partial<Record<number, T>>, key: number): Partial<Record<number, T>> {

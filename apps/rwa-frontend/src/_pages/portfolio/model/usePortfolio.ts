@@ -27,6 +27,8 @@ export interface Portfolio {
   /** `holdings` matching the filter */
   filteredHoldings: Holding[] | null
   balancesError: Error | null
+  /** Chains whose balances are missing from `holdings` */
+  failedChainIds: number[]
   orders: { data: OpenOrder[] | undefined; error: Error | null }
   activity: { data: Activity[] | undefined; error: Error | null }
   /** Newest first, unfiltered */
@@ -45,7 +47,7 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
   )
   const params = useMemo((): AccountQueryParams => ({ owner, scope: PORTFOLIO_SCOPE, tokens }), [owner, tokens])
 
-  const { positions, error: balancesError } = useAccountBalances(owner, tokens)
+  const { positions, error: balancesError, failedChainIds } = useAccountBalances(owner, tokens)
   const markets = useAtomValue(portfolioMarketsQueryAtom).data
   const orders = useAtomValue(openOrdersQueryAtomFamily(params))
   const activity = useAtomValue(activityQueryAtomFamily(params))
@@ -76,6 +78,7 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
           getPrice,
         ),
       balancesError,
+      failedChainIds,
       orders: { data: filterLegs(orders.data), error: orders.error },
       activity: { data: filterLegs(activity.data), error: activity.error },
       recentActivity: activity.data,
@@ -87,5 +90,16 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
       },
       pricesUpdatedAt: markets?.items.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
     }
-  }, [activity, assets, assetsByTokenKey, balancesError, filter, markets, marketsByTicker, orders, positions])
+  }, [
+    activity,
+    assets,
+    assetsByTokenKey,
+    balancesError,
+    failedChainIds,
+    filter,
+    markets,
+    marketsByTicker,
+    orders,
+    positions,
+  ])
 }

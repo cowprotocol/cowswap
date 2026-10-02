@@ -56,7 +56,12 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
 
   return (
     <>
-      <PortfolioSummary owner={owner} holdings={portfolio.holdings} error={balancesError} />
+      <PortfolioSummary
+        owner={owner}
+        holdings={portfolio.holdings}
+        error={balancesError}
+        failedChainIds={portfolio.failedChainIds}
+      />
       <div className={styles.cards}>
         <AllocationCard portfolio={portfolio} />
         <RecentActivityCard portfolio={portfolio} onViewAll={() => setActiveTab('activity')} />
