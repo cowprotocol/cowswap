@@ -5,7 +5,6 @@ import { type ReactNode, useState } from 'react'
 
 import Image from 'next/image'
 
-import { TokenLogo } from './TokenLogo'
 import styles from './TradeTokenSelector.module.css'
 
 import { isRankedQuote } from '../lib/quotedTokens'
@@ -21,6 +20,7 @@ import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData } from '@/entit
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { usePrefersDarkScheme } from '@/shared/lib/theme'
+import { TokenLogo } from '@/shared/ui/token-logo'
 
 const TRADE_SIDES: { side: TradeSide; title: string }[] = [
   { side: 'buy', title: 'Buy' },
