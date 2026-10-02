@@ -43,4 +43,11 @@ describe('getTokenAccountOwner', () => {
 
     await expect(getTokenAccountOwner(TOKEN_ACCOUNT)).rejects.toThrow('503')
   })
+
+  // A JSON-RPC error arrives under HTTP 200, so the status alone does not catch it.
+  it('throws when the endpoint answers with a JSON-RPC error', async () => {
+    fetchMock.mockReturnValueOnce(jsonResponse({ error: { message: 'Node is behind by 500 slots' } }))
+
+    await expect(getTokenAccountOwner(TOKEN_ACCOUNT)).rejects.toThrow('Node is behind by 500 slots')
+  })
 })

@@ -18,7 +18,6 @@ interface RpcResponse<T> {
   error?: { message?: string }
 }
 
-/** @see {@link solanaRpcCall} for the failure contract. */
 export async function getParsedAccount<TInfo>(address: AddressKey): Promise<ParsedAccount<TInfo> | undefined> {
   const result = await solanaRpcCall<GetAccountInfoResult<TInfo>>('getAccountInfo', [
     address,
@@ -28,10 +27,6 @@ export async function getParsedAccount<TInfo>(address: AddressKey): Promise<Pars
   return result?.value?.data?.parsed
 }
 
-/**
- * Rejects rather than resolving empty on a transport failure, so callers can tell "the chain has
- * nothing for this address" from "the request did not get through" and retry only the latter.
- */
 async function solanaRpcCall<T>(method: string, params: unknown[]): Promise<T | undefined> {
   const response = await fetch(SOLANA_RPC_URL, {
     method: 'POST',
@@ -43,7 +38,11 @@ async function solanaRpcCall<T>(method: string, params: unknown[]): Promise<T | 
     throw new Error(`Solana RPC ${method} responded ${response.status}`)
   }
 
-  const { result }: RpcResponse<T> = await response.json()
+  const { result, error }: RpcResponse<T> = await response.json()
+
+  if (error) {
+    throw new Error(`Solana RPC ${method} failed: ${error.message ?? 'unknown error'}`)
+  }
 
   return result
 }
