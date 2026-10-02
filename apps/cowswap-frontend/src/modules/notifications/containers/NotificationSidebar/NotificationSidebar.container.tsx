@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import iconNotificationSettingsSrc from '@cowprotocol/assets/images/icon-notification-settings.svg'
-import { useMediaQuery, useOnClickOutside, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -23,13 +23,14 @@ import {
 
 import { useHasNotificationSubscription } from '../../hooks/useHasNotificationSubscription'
 import { useNotificationSettingsPopoverDismissal } from '../../hooks/useNotificationSettingsPopoverDismissal'
+import { useTelegramNotificationsAvailability } from '../../hooks/useTelegramNotificationsAvailability'
 import { NotificationSettingsPopover } from '../../pure/NotificationSettingsPopover'
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
 
 interface NotificationsHeaderProps {
   isMobile: boolean
-  areTelegramNotificationsEnabled: boolean
+  areTelegramNotificationsAvailable: boolean
   hasSubscription: boolean
   onDismiss: () => void
   onToggleSettings: () => void
@@ -62,7 +63,7 @@ export function NotificationSidebar({
   const isMobile = useMediaQuery(Media.upToSmall(false))
   const isAnyModalOpen = useAtomValue(openModalState)
 
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { isAvailable: areTelegramNotificationsAvailable, isUnsupportedChain } = useTelegramNotificationsAvailability()
   const { hasSubscription } = useHasNotificationSubscription()
   const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
     useNotificationSettingsPopoverDismissal()
@@ -74,6 +75,12 @@ export function NotificationSidebar({
   useEffect(() => {
     setIsSettingsOpen(initialSettingsOpen)
   }, [initialSettingsOpen])
+
+  useEffect(() => {
+    if (!areTelegramNotificationsAvailable) {
+      setIsSettingsOpen(false)
+    }
+  }, [areTelegramNotificationsAvailable])
 
   const onDismiss = useCallback(() => {
     onClose()
@@ -102,7 +109,7 @@ export function NotificationSidebar({
 
   const notificationSidebarElement = (
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
-      {isSettingsOpen ? (
+      {isSettingsOpen && areTelegramNotificationsAvailable ? (
         <NotificationSettings isSettingsOpen={isSettingsOpen}>
           <SettingsHeader onBack={toggleSettingsOpen} />
         </NotificationSettings>
@@ -110,11 +117,12 @@ export function NotificationSidebar({
         <NotificationsList
           key={listKey}
           hasSubscription={hasSubscription}
-          onToggleSettings={areTelegramNotificationsEnabled ? toggleSettingsOpen : undefined}
+          onToggleSettings={areTelegramNotificationsAvailable ? toggleSettingsOpen : undefined}
+          isUnsupportedChain={isUnsupportedChain}
         >
           <NotificationsHeader
             isMobile={isMobile}
-            areTelegramNotificationsEnabled={areTelegramNotificationsEnabled}
+            areTelegramNotificationsAvailable={areTelegramNotificationsAvailable}
             hasSubscription={hasSubscription}
             onDismiss={onDismiss}
             onToggleSettings={toggleSettingsOpen}
@@ -136,7 +144,7 @@ export function NotificationSidebar({
 
 function NotificationsHeader({
   isMobile,
-  areTelegramNotificationsEnabled,
+  areTelegramNotificationsAvailable,
   hasSubscription,
   onDismiss,
   onToggleSettings,
@@ -161,7 +169,7 @@ function NotificationsHeader({
       <h3>
         <Trans>Notifications</Trans>
       </h3>
-      {areTelegramNotificationsEnabled &&
+      {areTelegramNotificationsAvailable &&
         (hasSubscription ? (
           <NotificationSettingsPopover
             show={shouldShowSettingsPopover}

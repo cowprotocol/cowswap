@@ -6,6 +6,8 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { isEoaTwapOrderItem } from '../utils/isEoaTwapOrderItem'
+
 import type { TwapOrdersList } from './twapOrdersAtom'
 
 const MAX_PERSISTED_ORDERS = 1000
@@ -23,7 +25,16 @@ export const eoaTwapOrdersAtom = atom(
     const { account, chainId } = get(walletInfoAtom)
     if (!account || !chainId) return {}
 
-    return get(persistedEoaTwapOrdersAtom)[getStorageKey(chainId, account)] ?? {}
+    const orders = get(persistedEoaTwapOrdersAtom)[getStorageKey(chainId, account)] ?? {}
+
+    const eoaOrders: TwapOrdersList = {}
+    for (const [id, order] of Object.entries(orders)) {
+      if (isEoaTwapOrderItem(order)) {
+        eoaOrders[id] = order
+      }
+    }
+
+    return eoaOrders
   },
   (get, set, update: SetStateAction<TwapOrdersList>): void => {
     const { account, chainId } = get(walletInfoAtom)
@@ -35,6 +46,7 @@ export const eoaTwapOrdersAtom = atom(
     const updatedOrders = typeof update === 'function' ? update(currentOrders) : update
     const latestOrders: TwapOrdersList = Object.fromEntries(
       Object.values(updatedOrders)
+        .filter(isEoaTwapOrderItem)
         .sort((a, b) => Date.parse(b.submissionDate) - Date.parse(a.submissionDate))
         .slice(0, MAX_PERSISTED_ORDERS)
         .map((order) => [order.id, order]),

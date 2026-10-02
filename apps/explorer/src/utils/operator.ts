@@ -33,6 +33,22 @@ type PartialFillSurplusParams = {
   executedBuyAmount: string
 }
 
+export function getFillOrKillSellSurplus(order: Pick<RawOrder, 'buyAmount' | 'executedBuyAmount'>): Surplus {
+  const { buyAmount, executedBuyAmount } = order
+
+  const buyAmountBigNumber = new BigNumber(buyAmount.toString())
+  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
+
+  // Difference between what you got minus what you wanted to get is the surplus
+  const difference = executedBuyAmountBigNumber.minus(buyAmountBigNumber)
+
+  const amount = difference.gt(ZERO_BIG_NUMBER) ? difference : ZERO_BIG_NUMBER
+
+  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
+
+  return { amount, percentage }
+}
+
 /**
  * Get order filled amount, both as raw amount (in atoms) and as percentage (from 0 to 1)
  *
@@ -77,25 +93,9 @@ export function getOrderStatus(order: RawOrder): OrderStatus {
 export function getSellSurplus(order: RawOrder): Surplus {
   const { partiallyFillable } = order
 
-  const surplus = partiallyFillable ? _getPartialFillSellSurplus(order) : _getFillOrKillSellSurplus(order)
+  const surplus = partiallyFillable ? _getPartialFillSellSurplus(order) : getFillOrKillSellSurplus(order)
 
   return surplus || ZERO_SURPLUS
-}
-
-function _getFillOrKillSellSurplus(order: RawOrder): Surplus | null {
-  const { buyAmount, executedBuyAmount } = order
-
-  const buyAmountBigNumber = new BigNumber(buyAmount.toString())
-  const executedBuyAmountBigNumber = new BigNumber(executedBuyAmount)
-
-  // Difference between what you got minus what you wanted to get is the surplus
-  const difference = executedBuyAmountBigNumber.minus(buyAmountBigNumber)
-
-  const amount = difference.gt(ZERO_BIG_NUMBER) ? difference : ZERO_BIG_NUMBER
-
-  const percentage = amount.dividedBy(executedBuyAmountBigNumber)
-
-  return { amount, percentage }
 }
 
 /**

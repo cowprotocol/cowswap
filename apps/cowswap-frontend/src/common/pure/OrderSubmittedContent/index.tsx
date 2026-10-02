@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BackButton, ButtonPrimary } from '@cowprotocol/ui'
+import { BackButton, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -36,10 +36,6 @@ const Caption = styled.h3`
   margin: 0;
 `
 
-const ActionButton = styled(ButtonPrimary)`
-  margin-top: 30px;
-`
-
 export interface OrderSubmittedContentProps {
   onDismiss(): void
   chainId: SupportedChainId
@@ -49,8 +45,12 @@ export interface OrderSubmittedContentProps {
   showGetNotifiedMessage?: boolean
   onGetNotifiedClick?: () => void
   onDismissGetNotifiedMessage?: () => void
+  onViewOrders?: () => void | Promise<void>
 }
 
+/**
+ * Limit/TWAP via TradeConfirmModal. Swap/Yield use modules/orderProgressBar OrderSubmittedContent instead.
+ */
 export function OrderSubmittedContent({
   chainId,
   account,
@@ -60,6 +60,7 @@ export function OrderSubmittedContent({
   showGetNotifiedMessage,
   onGetNotifiedClick,
   onDismissGetNotifiedMessage,
+  onViewOrders,
 }: OrderSubmittedContentProps): ReactNode {
   const tx = {
     hash,
@@ -79,13 +80,17 @@ export function OrderSubmittedContent({
         <Trans>Order Submitted</Trans>
       </Caption>
       <EnhancedTransactionLink chainId={chainId} tx={tx} />
+
       {showGetNotifiedMessage && onGetNotifiedClick && onDismissGetNotifiedMessage ? (
         <TrackOrderBanner onEnableClick={onGetNotifiedClick} onClose={onDismissGetNotifiedMessage} />
-      ) : (
-        <ActionButton onClick={onDismiss}>
-          <Trans>Continue</Trans>
-        </ActionButton>
-      )}
+      ) : null}
+
+      {onViewOrders ? (
+        <Modal.FooterWithTwoButtons
+          inline
+          secondaryButton={{ label: <Trans>View in Orders</Trans>, onClick: onViewOrders }}
+        />
+      ) : null}
     </Wrapper>
   )
 }

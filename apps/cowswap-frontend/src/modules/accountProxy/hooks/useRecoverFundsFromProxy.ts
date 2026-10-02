@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 
 import { useConfig, useWalletClient } from 'wagmi'
 
-import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -10,6 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import ms from 'ms.macro'
 
 import { recoverFundsFromProxy } from '../services/recoverFundsFromProxy.service'
+import { isEvmProxyOwner } from '../utils/isEvmProxyOwner'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
@@ -43,7 +43,7 @@ export function useRecoverFundsFromProxy({
   const { account, chainId } = useWalletInfo()
   const config = useConfig()
 
-  const proxyAddress = account && cowShedHooks && isEvmChain(chainId) ? cowShedHooks.proxyOf(account) : undefined
+  const proxyAddress = cowShedHooks && isEvmProxyOwner(account, chainId) ? cowShedHooks.proxyOf(account) : undefined
   const factoryAddress = cowShedHooks ? cowShedHooks.getFactoryAddress() : undefined
 
   const callback = useCallback(async () => {

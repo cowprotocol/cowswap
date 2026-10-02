@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
 import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
@@ -53,13 +53,13 @@ jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ plan
 jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
 const mockSendSolanaFlow = sendSolanaFlow as jest.MockedFunction<typeof sendSolanaFlow>
+const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
-const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSolanaFlow>
 const mockEstimateSolanaSigningDeadline = estimateSolanaSigningDeadline as jest.MockedFunction<
   typeof estimateSolanaSigningDeadline
 >
@@ -73,6 +73,8 @@ const RECEIVER_ADDRESS = '5k75h1UBx8gJp6kTkPcbkgAgPmrPBiLHLLXmzMfVsBEZ'
 // possibly-stale one) so tests can tell which one a given code path actually used. Must be a real,
 // parseable base58 pubkey: `solanaFlow` now passes it through `new PublicKey(...)` for limit orders.
 const RESOLVED_RECEIVER_ADDRESS = new PublicKey(new Uint8Array(32).fill(6)).toBase58()
+// The back end's rotating sponsor account, reported by the quote.
+const FUNDER_ADDRESS = new PublicKey(new Uint8Array(32).fill(8)).toBase58()
 const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
@@ -129,7 +131,15 @@ function buildContext({
   isNativeSell = true,
   delegationAmount = SELL_AMOUNT,
   orderClass = OrderClass.MARKET,
-}: { isNativeSell?: boolean; delegationAmount?: bigint; orderClass?: OrderClass } = {}): SolanaTradeFlowContext {
+  buyAmount = outputAmount,
+  quoteBuyToken = usdc.address,
+}: {
+  isNativeSell?: boolean
+  delegationAmount?: bigint
+  orderClass?: OrderClass
+  buyAmount?: CurrencyAmount<Token>
+  quoteBuyToken?: string
+} = {}): SolanaTradeFlowContext {
   return {
     account: SOLANA_ACCOUNT,
     isNativeSell,
@@ -140,6 +150,7 @@ function buildContext({
       funder: new PublicKey(new Uint8Array(32).fill(9)),
       // Post-slippage amounts: these are what gets signed on chain, and what the stored order must carry.
       intent: { owner: new PublicKey(SOLANA_ACCOUNT), sellAmount: 1_000_000n, buyAmount: 1_900_000n },
+      funder: FUNDER_ADDRESS,
     } as unknown as SolanaTradeFlowContext['solanaQuote'],
     solana: {
       connection: {} as Connection,
@@ -156,7 +167,7 @@ function buildContext({
         quoteResponse: {
           quote: {
             sellToken: wsol.address,
-            buyToken: usdc.address,
+            buyToken: quoteBuyToken,
             receiver: null,
             sellAmount: SELL_AMOUNT.toString(),
             buyAmount: outputAmount.quotient.toString(),
@@ -176,7 +187,7 @@ function buildContext({
     context: {
       chainId: SOLANA_CHAIN_ID,
       inputAmount,
-      outputAmount,
+      outputAmount: buyAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
       receiver: RESOLVED_RECEIVER_ADDRESS,
@@ -339,6 +350,27 @@ describe('solanaFlow', () => {
     expect(context.tradeQuote.postSwapOrderFromQuote).not.toHaveBeenCalled()
   })
 
+  // A native-SOL buy is priced against WSOL (`toSplMint` in getSolanaQuote) while the order credits
+  // lamports, so the quote response and the order disagree on the buy mint. `useGetExecutedBridgeSummary`
+  // reads a `buyToken` that differs from `outputToken` as a bridge intermediate token and labels the
+  // surplus with it, which showed "Surplus 0.0032 WSOL" on an order that paid out native SOL.
+  it('stores the buy token the order credits, not the one the quote was priced in', async () => {
+    const nativeSol = NATIVE_CURRENCIES[SOLANA_CHAIN_ID]
+    const context = buildContext({
+      buyAmount: CurrencyAmount.fromRawAmount(nativeSol, '150000000'),
+      quoteBuyToken: wsol.address,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ buyToken: nativeSol.address, outputToken: nativeSol }),
+      }),
+      expect.anything(),
+    )
+  })
+
   it('adds a pending order and reports success', async () => {
     const context = buildContext()
     const analytics = buildAnalytics()
@@ -419,6 +451,51 @@ describe('solanaFlow', () => {
           sellAmountBeforeFee: LIMIT_SIGNED_SELL_AMOUNT.toString(),
         }),
       }),
+      expect.anything(),
+    )
+  })
+
+  // The bundle carrying the SPL delegation is only submitted by the order book once a solver wins, so
+  // the orders table has to know not to read the delegation from chain while the order waits — otherwise
+  // every pending sponsored order is labelled unfillable.
+  it('marks the local order as sponsored', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: true }) }),
+      expect.anything(),
+    )
+  })
+
+  // The wrap lives in the same deferred bundle, so the orders table needs to know the sold WSOL does
+  // not exist yet and the native balance is what backs the order.
+  it('records whether a sponsored order is a native sell', async () => {
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+
+    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), true)
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: true }) }),
+      expect.anything(),
+    )
+  })
+
+  it('records an SPL sell as not native', async () => {
+    await solanaFlow(buildContext({ isNativeSell: false }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isNativeSell: false }) }),
+      expect.anything(),
+    )
+  })
+
+  it('does not mark a self-paid order as sponsored', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ isSponsored: false }) }),
       expect.anything(),
     )
   })

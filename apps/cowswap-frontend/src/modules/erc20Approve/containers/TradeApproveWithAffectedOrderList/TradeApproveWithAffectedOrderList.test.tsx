@@ -92,7 +92,7 @@ describe('TradeApproveWithAffectedOrderList', () => {
     expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:poller')
   })
 
-  it('shows the partial/full toggle when poller allowance already covers the trade (post-permit)', () => {
+  it('hides the approval controls when poller allowance already covers the trade', () => {
     mockUseIsApprovalOrPermitRequired.mockReturnValue({
       reason: ApproveRequiredReason.NotRequired,
       currentAllowance: BigInt(PARTIAL_AMOUNT.quotient.toString()),
@@ -101,8 +101,8 @@ describe('TradeApproveWithAffectedOrderList', () => {
 
     render(<TradeApproveWithAffectedOrderList approvalTarget="poller" />)
 
-    expect(screen.getByTestId('trade-approve-toggle')).not.toBeNull()
-    expect(screen.getByTestId('affected-permit-warning').textContent).toBe('COW:poller')
+    expect(screen.queryByTestId('trade-approve-toggle')).toBeNull()
+    expect(screen.queryByTestId('affected-permit-warning')).toBeNull()
   })
 
   it('does not show the warning for a partial on-chain approve', () => {

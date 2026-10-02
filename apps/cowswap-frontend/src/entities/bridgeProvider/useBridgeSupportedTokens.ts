@@ -1,7 +1,7 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { retry, RetryableError, RetryOptions } from '@cowprotocol/common-utils'
-import { ALL_CHAINS_MAP, getAddressKey, TargetChainId } from '@cowprotocol/cow-sdk'
+import { ALL_CHAINS_MAP, areAddressesEqual, getAddressKey, TargetChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
 import { TokensByAddress, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
@@ -111,6 +111,7 @@ function resolveTokenAddressAndLogo(
   if (!address) return null
 
   const listToken = tokensByAddress[getAddressKey(address)]
-  const logoUrl = listToken?.logoURI || token.logoUrl || nativeCurrency?.logoUrl
+  const isNative = !!nativeCurrency && areAddressesEqual(address, nativeCurrency.address)
+  const logoUrl = listToken?.logoURI || token.logoUrl || (isNative ? nativeCurrency.logoUrl : undefined)
   return { address, logoUrl }
 }

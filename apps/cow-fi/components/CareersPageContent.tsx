@@ -63,12 +63,14 @@ export function CareersPageContent({
           </SectionTitleWrapper>
 
           {/* Jobs content */}
-          <SectionTitleWrapper maxWidth={900} margin="0 auto">
-            <SectionTitleText fontSize={32}>
-              We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
-              {department !== 'All' && ` in ${department}`}:
-            </SectionTitleText>
-          </SectionTitleWrapper>
+          {jobsCountForDepartment > 0 && (
+            <SectionTitleWrapper maxWidth={900} margin="0 auto">
+              <SectionTitleText fontSize={32}>
+                We&apos;re currently hiring for {jobsCountForDepartment} position{jobsCountForDepartment > 1 && 's'}
+                {department !== 'All' && ` in ${department}`}:
+              </SectionTitleText>
+            </SectionTitleWrapper>
+          )}
 
           {jobsCount < 1 && (
             <SectionTitleWrapper maxWidth={900} margin="0 auto">
@@ -159,39 +161,41 @@ export function CareersPageContent({
                     </>
                   ))}
 
-            <TopicCard
-              bgColor={Color.cowamm_green}
-              textColor={Color.cowamm_dark_green}
-              padding={'32px'}
-              gap={16}
-              asProp="div"
-              height="100%"
-              fullWidth
-            >
-              <TopicCardInner contentAlign="left" height="100%">
-                <TopicTitle fontSize={34}>💸 Refer a friend and earn up to 6,000 in USDC or USD!</TopicTitle>
+            {jobsCount > 0 && (
+              <TopicCard
+                bgColor={Color.cowamm_green}
+                textColor={Color.cowamm_dark_green}
+                padding={'32px'}
+                gap={16}
+                asProp="div"
+                height="100%"
+                fullWidth
+              >
+                <TopicCardInner contentAlign="left" height="100%">
+                  <TopicTitle fontSize={34}>💸 Refer a friend and earn up to 6,000 in USDC or USD!</TopicTitle>
 
-                <TopicDescription fontSize={24} fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`} margin="0 0 24px">
-                  Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
-                  earn up to $6,000 in USD or USDC{' '}
-                </TopicDescription>
-                <Link
-                  linkType={LinkType.TopicButton}
-                  bgColor={Color.cowamm_dark_green}
-                  color={Color.cowamm_green}
-                  href="/careers/refer-to-earn"
-                  onClick={() =>
-                    analytics.sendEvent({
-                      category: CowFiCategory.CAREERS,
-                      action: 'Click referral',
-                      label: 'refer-to-earn',
-                    })
-                  }
-                >
-                  Refer-to-Earn details
-                </Link>
-              </TopicCardInner>
-            </TopicCard>
+                  <TopicDescription fontSize={24} fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`} margin="0 0 24px">
+                    Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
+                    earn up to $6,000 in USD or USDC{' '}
+                  </TopicDescription>
+                  <Link
+                    linkType={LinkType.TopicButton}
+                    bgColor={Color.cowamm_dark_green}
+                    color={Color.cowamm_green}
+                    href="/careers/refer-to-earn"
+                    onClick={() =>
+                      analytics.sendEvent({
+                        category: CowFiCategory.CAREERS,
+                        action: 'Click referral',
+                        label: 'refer-to-earn',
+                      })
+                    }
+                  >
+                    Refer-to-Earn details
+                  </Link>
+                </TopicCardInner>
+              </TopicCard>
+            )}
           </TopicList>
 
           {/* Disclaimer content */}

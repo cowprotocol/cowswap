@@ -1,47 +1,31 @@
-import { COW_TOKEN_TO_CHAIN, USDC, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { USDC, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { getTwapFormState, TwapFormState } from './getTwapFormState'
 
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
-import { TWAPOrder } from '../../types'
-
-const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]
-
-if (!COW_SEPOLIA) {
-  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
-}
-
-const twapOrder: TWAPOrder = {
-  sellAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-  buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 10000000),
-  receiver: '0x00000000000000001',
-  numOfParts: 1,
-  startTime: 1000000,
-  timeInterval: 200,
-  span: 0,
-  appData: '0x000000',
-}
 
 const baseParams = {
-  twapOrder: { ...twapOrder },
   // Above SEPOLIA minimum part sell fiat ($10 with 18 decimals)
   sellAmountPartFiat: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18),
   chainId: SupportedChainId.SEPOLIA,
   partTime: 300,
   numberOfPartsValue: 1,
   tradeFormValidationContext: null,
-  isWalletSupported: true,
   isTwapEoaEnabled: false,
+  isSafeApp: true,
   isSafeViaWc: false,
+  isEoa: false,
+  isReceiveZeroFromNetworkCosts: false,
 } as const
 
 describe('getTwapFormState()', () => {
   it('returns WALLET_NOT_SUPPORTED for a non-Safe wallet', () => {
     const result = getTwapFormState({
       ...baseParams,
-      isWalletSupported: false,
+      isSafeApp: false,
+      isEoa: true,
       isTxBundlingSupported: true,
       verification: ExtensibleFallbackVerification.HAS_NOTHING,
       sellAmountPartFiat: null,
@@ -63,33 +47,41 @@ describe('getTwapFormState()', () => {
     expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
   })
 
-  describe('When sell fiat amount is under threshold', () => {
-    it('And order has buy amount, then should return SELL_AMOUNT_TOO_SMALL', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isTxBundlingSupported: true,
-        verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
-        partTime: 1000000,
-      })
-
-      expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
+  it('returns SELL_AMOUNT_TOO_SMALL when the part sell fiat is under the chain minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
+      chainId: 1,
+      partTime: 1000000,
     })
 
-    it('And order does NOT have buy amount, then should return null', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isTxBundlingSupported: true,
-        verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
-        twapOrder: { ...twapOrder, buyAmount: CurrencyAmount.fromRawAmount(COW_SEPOLIA, 0) },
-        sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
-        chainId: 1,
-        partTime: 1000000,
-      })
+    expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
+  })
 
-      expect(result).toEqual(null)
+  it('returns RECEIVE_ZERO_FROM_NETWORK_COSTS when network costs wipe the receive above the fiat minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      isReceiveZeroFromNetworkCosts: true,
     })
+
+    expect(result).toEqual(TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS)
+  })
+
+  it('returns SELL_AMOUNT_TOO_SMALL when network costs wipe a part that is also under the fiat minimum', () => {
+    const result = getTwapFormState({
+      ...baseParams,
+      isTxBundlingSupported: true,
+      verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+      sellAmountPartFiat: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),
+      chainId: 1,
+      isReceiveZeroFromNetworkCosts: true,
+    })
+
+    expect(result).toEqual(TwapFormState.SELL_AMOUNT_TOO_SMALL)
   })
 
   describe('Safe / tx-bundling guards', () => {
@@ -118,36 +110,44 @@ describe('getTwapFormState()', () => {
     it('Skips Safe guards when EOA flag is on so unsupported wallets can proceed', () => {
       const result = getTwapFormState({
         ...baseParams,
-        isWalletSupported: false,
+        isSafeApp: false,
+        isEoa: true,
         isTxBundlingSupported: false,
         verification: null,
         isTwapEoaEnabled: true,
-        isSafeViaWc: false,
       })
 
       expect(result).toEqual(null)
     })
 
-    it('Keeps Safe guards for Safe via WalletConnect even when EOA flag is on', () => {
+    it.each([
+      [true, null],
+      [false, TwapFormState.TX_BUNDLING_NOT_SUPPORTED],
+      [null, TwapFormState.LOADING_SAFE_INFO],
+    ] as const)(
+      'Checks Safe via WalletConnect batching support (%s) even when EOA flag is on',
+      (supported, expected) => {
+        const result = getTwapFormState({
+          ...baseParams,
+          isSafeApp: false,
+          isSafeViaWc: true,
+          isTxBundlingSupported: supported,
+          verification: ExtensibleFallbackVerification.HAS_DOMAIN_VERIFIER,
+          isTwapEoaEnabled: true,
+          isEoa: false,
+        })
+
+        expect(result).toEqual(expected)
+      },
+    )
+
+    it('Keeps Safe guards while wallet support is still loading', () => {
       const result = getTwapFormState({
         ...baseParams,
-        isTxBundlingSupported: false,
-        verification: null,
-        isTwapEoaEnabled: true,
-        isSafeViaWc: true,
-      })
-
-      expect(result).toEqual(TwapFormState.TX_BUNDLING_NOT_SUPPORTED)
-    })
-
-    it('Keeps Safe guards while Safe-via-WC status is still loading', () => {
-      const result = getTwapFormState({
-        ...baseParams,
-        isWalletSupported: null,
+        isSafeApp: null,
         isTxBundlingSupported: null,
         verification: null,
         isTwapEoaEnabled: true,
-        isSafeViaWc: null,
       })
 
       expect(result).toEqual(TwapFormState.LOADING_SAFE_INFO)

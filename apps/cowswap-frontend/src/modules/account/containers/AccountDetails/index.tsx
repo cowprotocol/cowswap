@@ -3,7 +3,7 @@ import { Fragment, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { styled, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { styled } from '@cowprotocol/common-hooks'
 import {
   getEtherscanLink,
   getExplorerAddressLink,
@@ -33,7 +33,11 @@ import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hoo
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import { useHasNotificationSubscription, useOpenNotificationSidebar } from 'modules/notifications'
+import {
+  useHasNotificationSubscription,
+  useOpenNotificationSidebar,
+  useTelegramNotificationsAvailability,
+} from 'modules/notifications'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
@@ -100,7 +104,7 @@ export function AccountDetails({
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
 
@@ -110,7 +114,7 @@ export function AccountDetails({
   }
 
   const showGetNotifiedRow =
-    areTelegramNotificationsEnabled && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
+    areTelegramNotificationsAvailable && !isNotificationSubscriptionLoading && !hasSubscription && !isInjectedWidget()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
   const explorerLabel = account ? getExplorerLabel(chainId, 'address', account) : undefined

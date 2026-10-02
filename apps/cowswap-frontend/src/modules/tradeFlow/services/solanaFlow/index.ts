@@ -161,6 +161,8 @@ export async function solanaFlow(
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
           partiallyFillable,
+          isSponsored: sponsor !== undefined,
+          isNativeSell,
         }),
         isSafeWallet: false,
       },
@@ -235,9 +237,11 @@ function buildSolanaOrder(params: {
   inputToken: Token
   outputToken: Token
   partiallyFillable: boolean
+  isSponsored: boolean
+  isNativeSell: boolean
 }): Order {
   const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
-  const { appData, inputToken, outputToken, partiallyFillable } = params
+  const { appData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -260,6 +264,13 @@ function buildSolanaOrder(params: {
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
     // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
     partiallyFillable,
+    // Override the quote's own buyToken: a native-SOL buy is priced against WSOL (`toSplMint` in
+    // getSolanaQuote), while the order names the native sentinel. Readers that compare `buyToken`
+    // against `outputToken` — `useGetExecutedBridgeSummary` reads the difference as a bridge
+    // intermediate token — otherwise attribute the surplus to WSOL.
+    buyToken: outputToken.address,
+    isSponsored,
+    isNativeSell,
     id: orderId,
     owner: account,
     from: account,
@@ -359,7 +370,7 @@ async function postSponsoredBundle(
 
     await postSolanaSponsoredOrder(
       // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-      { transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+      { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
       { orderBookApi },
     )
   } finally {

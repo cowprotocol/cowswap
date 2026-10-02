@@ -2,7 +2,7 @@ import type { Hex, WalletClient } from 'viem'
 
 import { isRejectRequestProviderError, logTwap, normalizeError } from '@cowprotocol/common-utils'
 
-import { EOA_TWAP_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
 
 import { encodeTrustedExecuteHooksCalldata } from './buildEoaTwapTrustedExecuteTx'
 
@@ -41,7 +41,7 @@ export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Pro
   logTwap.info('Cancelling EOA TWAP order', logContext)
 
   try {
-    const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: EOA_TWAP_ACCOUNT_PROXY_CONFIG })
+    const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
     const calls = cancelTwapOrderTxs(context).map(({ to, data }) => ({
       target: to,
       callData: data,

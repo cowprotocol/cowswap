@@ -41,6 +41,7 @@ export async function planCreateLimitOrderStep({
     },
     orderId,
     signingScheme,
+    feePayer,
     // The actual signed bytes, not the constant we picked — lets the caller store what's really on-chain
     // without re-deriving env logic, and stays correct if this ever stops being a hardcoded pick.
     appData: bytesToHex(intent.appData),
@@ -48,6 +49,5 @@ export async function planCreateLimitOrderStep({
     // overrides them), but keeps both planners reading their return the same way.
     sellAmount: intent.sellAmount,
     buyAmount: intent.buyAmount,
-    feePayer,
   }
 }

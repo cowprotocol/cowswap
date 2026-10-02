@@ -3,7 +3,7 @@ import { type Config, useConfig } from 'wagmi'
 import { readContract, getStorageAt } from 'wagmi/actions'
 
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
-import { areAddressesEqual, isEvmChain, type SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -15,6 +15,7 @@ import { toKeccak256 } from 'common/utils/toKeccak256'
 import { useCowShedHooks } from './useCowShedHooks'
 
 import { hasBytecode } from '../utils/assertFactoryDeployed'
+import { isEvmProxyOwner } from '../utils/isEvmProxyOwner'
 
 function slot(name: string): Hex {
   return encodeAbiParameters(
@@ -84,10 +85,9 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
   const config = useConfig()
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
-  const isEvmWallet = isEvmChain(chainId)
 
   return useSWR(
-    account && cowShedHooks && isEvmWallet
+    cowShedHooks && isEvmProxyOwner(account, chainId)
       ? [account, chainId as SupportedChainId, 'useCurrentAccountProxyAddress']
       : null,
     async ([account, chainId]) => {
