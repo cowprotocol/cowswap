@@ -1,12 +1,19 @@
+import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useSigningStep } from 'entities/trade'
+import {
+  useSigningStep,
+  useSolanaSigningDeadline,
+  SolanaSigningDeadlineState,
+  solanaSigningDeadlineAtom,
+  solanaSigningAbandonedAtom,
+} from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import {
@@ -23,6 +30,7 @@ import { TradeAmounts } from 'common/types'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { SolanaSigningCountdown } from '../../pure/SolanaSigningCountdown'
 
 const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
@@ -48,6 +56,8 @@ interface InnerComponentProps extends React.PropsWithChildren {
   orderType: UiOrderType
   error: string | null
   pendingTrade: TradeAmounts | null
+  solanaSigningDeadline: SolanaSigningDeadlineState | null
+  onSolanaSigningExpiredDismiss: Command
   transactionHash: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
@@ -69,8 +79,23 @@ export function TradeConfirmModal({
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
-  const { onDismiss } = useTradeConfirmActions()
+  const tradeConfirmActions = useTradeConfirmActions()
+  const { onDismiss } = tradeConfirmActions
   const signingStep = useSigningStep()
+  const solanaSigningDeadline = useSolanaSigningDeadline()
+  const setSolanaSigningDeadline = useSetAtom(solanaSigningDeadlineAtom)
+  const setSolanaSigningAbandoned = useSetAtom(solanaSigningAbandonedAtom)
+
+  // The wallet prompt can't be cancelled programmatically, so the flow keeps pending in the
+  // background; the abandoned flag keeps its eventual rejection from opening the error modal.
+  // The quote kept refreshing through the closed window, so the review screen is reopened with
+  // price confirmation forced: the next attempt signs whatever the fresh quote says, which is not
+  // what the user confirmed the first time.
+  const onSolanaSigningExpiredDismiss = useCallback(() => {
+    setSolanaSigningAbandoned(true)
+    setSolanaSigningDeadline(null)
+    tradeConfirmActions.onOpen(true)
+  }, [setSolanaSigningAbandoned, setSolanaSigningDeadline, tradeConfirmActions])
   const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
@@ -90,6 +115,8 @@ export function TradeConfirmModal({
         error={error}
         orderType={orderType}
         pendingTrade={pendingTrade}
+        solanaSigningDeadline={solanaSigningDeadline}
+        onSolanaSigningExpiredDismiss={onSolanaSigningExpiredDismiss}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
         // Disable default permit flow when signingStep is set
@@ -123,6 +150,8 @@ function InnerComponent({
   onDismiss,
   orderType,
   pendingTrade,
+  solanaSigningDeadline,
+  onSolanaSigningExpiredDismiss,
   permitSignatureState,
   transactionHash,
   submittedContent,
@@ -144,6 +173,19 @@ function InnerComponent({
         step={step}
         onDismiss={onDismiss}
         orderType={orderType}
+      />
+    )
+  }
+
+  if (pendingTrade && solanaSigningDeadline && isSolanaChain(chainId)) {
+    return (
+      <SolanaSigningCountdown
+        expiresAt={solanaSigningDeadline.expiresAt}
+        durationMs={solanaSigningDeadline.durationMs}
+        inputAmount={pendingTrade.inputAmount}
+        outputAmount={pendingTrade.outputAmount}
+        onDismiss={onDismiss}
+        onExpiredDismiss={onSolanaSigningExpiredDismiss}
       />
     )
   }

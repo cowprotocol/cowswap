@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
@@ -18,6 +19,11 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
+  onDeadline?: (lastValidBlockHeight: number) => void
+}
+
+export function getSigningWindowClosedError(): Error {
+  return new Error(t`The signing window closed before the transaction was signed. Please try again.`)
 }
 
 /**
@@ -28,7 +34,7 @@ export interface SignSolanaFlowContext {
  * submits, so the order is tracked by its uid instead.
  */
 export async function signSolanaFlow(
-  { connection, provider, feePayer }: SignSolanaFlowContext,
+  { connection, provider, feePayer, onDeadline }: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
 ): Promise<SignedSolanaFlow> {
   if (steps.length === 0) {
@@ -41,5 +47,13 @@ export async function signSolanaFlow(
     feePayer,
   })
 
-  return { transaction: await signSolanaTransaction(provider, transaction), lastValidBlockHeight }
+  onDeadline?.(lastValidBlockHeight)
+
+  const signed = await signSolanaTransaction(provider, transaction)
+
+  if ((await connection.getBlockHeight()) > lastValidBlockHeight) {
+    throw getSigningWindowClosedError()
+  }
+
+  return { transaction: signed, lastValidBlockHeight }
 }
