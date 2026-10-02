@@ -8,6 +8,9 @@ export const DetailsTableTooltips = {
   twapAccountProxy: 'The CoW Shed smart contract that owns the part orders on behalf of the account in From.',
   to: 'The account address which will/did receive the bought amount.',
   toSolana: 'The token account which will/did receive the bought amount. This is not a wallet address.',
+  toSolanaOwner: 'The wallet which owns the token account the bought amount will/did be paid into.',
+  solanaTokenAccount:
+    'The token account the bought amount will/did be paid into. It is owned by the wallet shown in To.',
   toBridgeProxy: (
     <span>
       The <AccountProxyLink>{ACCOUNT_PROXY_LABEL_EXPLORER}</AccountProxyLink> address which will/did receive bought
