@@ -230,7 +230,7 @@ export function useCreateTwapOrder() {
         isEoaTwap,
       }
 
-      startEoaTwapPlacement()
+      const placementSignal = startEoaTwapPlacement()
 
       try {
         const isWidgetHookPassed = await callWidgetHook(
@@ -475,7 +475,7 @@ export function useCreateTwapOrder() {
             eventId,
             lockDismiss: false,
           })
-        } else {
+        } else if (!placementSignal.aborted) {
           updateEoaTwapFlow(null)
           tradeConfirmActions.onSuccess(confirmModalHash)
         }
@@ -486,7 +486,8 @@ export function useCreateTwapOrder() {
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
         return true
       } catch (err: unknown) {
-        if (err instanceof EoaTwapPlacementCancelledError) {
+        // A Safe request can settle long after a newer placement took over the confirm modal.
+        if (err instanceof EoaTwapPlacementCancelledError || placementSignal.aborted) {
           return
         }
 
