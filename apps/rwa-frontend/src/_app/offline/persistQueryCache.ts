@@ -16,8 +16,8 @@ const MAX_ENTRY_AGE_MS = 7 * 24 * 60 * 60 * 1000
 
 const STORAGE_NAME = 'rwa'
 // Bump when a persisted response changes shape: entries of the previous store would be restored as the new type
-const STORE_NAME = 'queryCache:v2'
-const PREVIOUS_STORE_NAMES = ['queryCache:v1']
+const STORE_NAME = 'queryCache:v3'
+const PREVIOUS_STORE_NAMES = ['queryCache:v1', 'queryCache:v2']
 
 let storageInstance: LocalForage | null = null
 
