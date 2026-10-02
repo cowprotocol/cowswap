@@ -22,7 +22,7 @@ export const PageWrapper = styled.div<{
   grid-template-areas: ${({ hideOrdersTable }) => (hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
   gap: 20px;
 
-  ${Media.LargeAndUp()} {
+  ${Media.MediumAndUp()} {
     grid-template-columns: ${({ isUnlocked, hideOrdersTable, secondaryOnLeft, stacked }) =>
       stacked
         ? '1fr'
