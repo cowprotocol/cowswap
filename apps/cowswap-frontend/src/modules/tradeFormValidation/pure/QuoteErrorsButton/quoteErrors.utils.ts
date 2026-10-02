@@ -4,20 +4,12 @@ import { t } from '@lingui/core/macro'
 
 import { QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
-export function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
-  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
-
+export function getBridgeQuoteErrorTexts(): Partial<Record<BridgeQuoteErrors, string>> {
   return {
-    [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
-    [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
     [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
     [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
-    [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
   }
 }
 

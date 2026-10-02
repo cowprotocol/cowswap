@@ -8,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
+import { getBridgeProviderErrorMessage } from './getBridgeProviderErrorMessage'
 import { getBridgeQuoteErrorTexts, getDefaultQuoteError } from './quoteErrors.utils'
 
 import { TradeFormButtonContext } from '../../types'
@@ -27,7 +28,8 @@ export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
 
   if (quote.error instanceof BridgeProviderQuoteError) {
     const errorMessage = quote.error.message as BridgeQuoteErrors
-    const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
+    const errorText =
+      bridgeQuoteErrorTexts[errorMessage] || getBridgeProviderErrorMessage(quote.error.context) || DEFAULT_QUOTE_ERROR
 
     return (
       <TradeFormBlankButton disabled={true}>
