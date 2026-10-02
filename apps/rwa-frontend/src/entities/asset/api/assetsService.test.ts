@@ -67,6 +67,56 @@ describe('assetsService', () => {
   })
 })
 
+describe('listAssets', () => {
+  beforeEach(() => {
+    ;[getMarketDataMock, getChartMock, getNetworkStatsMock].forEach((mock) => mock.mockReset())
+    jest.spyOn(console, 'error').mockImplementation(() => undefined)
+    getMarketDataMock.mockResolvedValue(new Map([['NVDA', NVDA_MARKET]]))
+    getNetworkStatsMock.mockImplementation(async (_chainId: number, tokens: RwaToken[]) =>
+      tokens.map((token) => ({
+        address: token.address,
+        onchainCap: 10,
+        dexVolume24h: token.symbol.startsWith('NVDA') ? 100 : 1,
+      })),
+    )
+    getChartMock.mockResolvedValue([{ time: 1, value: 2 }])
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+    ;[getMarketDataMock, getChartMock, getNetworkStatsMock].forEach((mock) => mock.mockReset())
+  })
+
+  it('sorts by DEX volume and loads the series of the page only', async () => {
+    const page = await listAssets({ page: 1, pageSize: 2, sort: 'dexVolume24h', order: 'desc' })
+
+    expect(page.degraded).toBe(false)
+    expect(page.items[0]).toMatchObject({ ticker: 'NVDA', series: [{ time: 1, value: 2 }] })
+    expect(page.items[0]?.dexVolume24h).toBeGreaterThan(page.items[1]?.dexVolume24h ?? Infinity)
+    expect(getChartMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('filters and counts the types with the other filters applied', async () => {
+    const page = await listAssets({ page: 1, pageSize: 20, sort: 'priority', order: 'desc', type: 'index' })
+    const all = await listAssets({ page: 1, pageSize: 20, sort: 'priority', order: 'desc' })
+
+    expect(page.items.every((item) => item.type === 'index')).toBe(true)
+    expect(page.typeCounts).toEqual(all.typeCounts)
+    expect(page.typeCounts.stock + page.typeCounts.index).toBe(all.total)
+    expect(page.issuers).toEqual(['Ondo', 'xStocks'])
+    expect(page.chainIds).toEqual([1, 56, 42161])
+  })
+
+  it('nulls the network totals and degrades when one network fails', async () => {
+    getNetworkStatsMock.mockRejectedValueOnce(new Error('GeckoTerminal responded with 429'))
+
+    const page = await listAssets({ page: 1, pageSize: 20, sort: 'priority', order: 'desc' })
+
+    expect(page.degraded).toBe(true)
+    expect(page.items.every((item) => item.dexVolume24h === null && item.onchainCap === null)).toBe(true)
+  })
+})
+
 describe('getMarketOverview', () => {
   const NVDA_OVERVIEW_MARKET = {
     ...NVDA_MARKET,

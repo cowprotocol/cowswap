@@ -26,13 +26,22 @@ export function jsonResponse<T>(
   return NextResponse.json(body, { headers: { 'Cache-Control': cacheControl } })
 }
 
-export function parseEnumParam<T extends string>(value: string | null, allowed: readonly T[], fallback: T): T | null {
+export function parseEnumParam<T extends string, F extends T | undefined = T>(
+  value: string | null,
+  allowed: readonly T[],
+  fallback: F,
+): T | F | null {
   if (value === null || value === '') return fallback
 
   return allowed.find((item) => item === value) ?? null
 }
 
-export function parseIntegerParam(value: string | null, fallback: number, min: number, max: number): number | null {
+export function parseIntegerParam<F extends number | undefined = number>(
+  value: string | null,
+  fallback: F,
+  min: number,
+  max: number,
+): number | F | null {
   if (value === null || value === '') return fallback
 
   const parsed = Number(value)

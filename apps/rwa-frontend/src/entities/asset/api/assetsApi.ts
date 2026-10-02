@@ -1,8 +1,8 @@
-import type { RwaChartRange, RwaQuoteSide, RwaSortField, RwaSortOrder } from '../model/types'
+import type { RwaAssetsFilter, RwaChartRange, RwaQuoteSide, RwaSortField, RwaSortOrder } from '../model/types'
 
 import { RWA_API_PREFIX } from '@/shared/api'
 
-export interface AssetsPageQuery {
+export interface AssetsPageQuery extends RwaAssetsFilter {
   page: number
   pageSize: number
   sort: RwaSortField
@@ -15,8 +15,24 @@ export function getAssetsSearchUrl(query: string, limit = 10): string {
   return `${RWA_API_PREFIX}assets-search?${params}`
 }
 
-export function getAssetsUrl({ page, pageSize, sort, order }: AssetsPageQuery): string {
+export function getAssetsUrl({
+  page,
+  pageSize,
+  sort,
+  order,
+  type,
+  issuer,
+  chainId,
+  query,
+  tickers,
+}: AssetsPageQuery): string {
   const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), sort, order })
+
+  if (type) params.set('type', type)
+  if (issuer) params.set('issuer', issuer)
+  if (chainId !== undefined) params.set('chainId', String(chainId))
+  if (query) params.set('q', query)
+  if (tickers) params.set('tickers', tickers.join(','))
 
   return `${RWA_API_PREFIX}assets?${params}`
 }
