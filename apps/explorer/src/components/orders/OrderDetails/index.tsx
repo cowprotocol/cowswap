@@ -25,7 +25,7 @@ import { formatPercentage } from 'utils'
 
 import { useCrossChainOrder } from 'modules/bridge'
 
-import { Order, ORDER_FINAL_FAILED_STATUSES, ProtocolFee, Trade } from 'api/operator'
+import { Order, ORDER_FINAL_FAILED_STATUSES, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
 import { TitleUid, StyledExplorerTabs, TabContent } from './styled'
@@ -38,8 +38,6 @@ import { StatusLabel } from '../StatusLabel'
 type Props = {
   order: Order | null
   trades: Trade[]
-  // Derived from *all* trades, not the current fills page. Undefined while unknown.
-  protocolFees?: ProtocolFee[]
   isOrderLoading: boolean
   areTradesLoading: boolean
   errors: Errors
@@ -72,7 +70,6 @@ const tabItems = (
   _order: Order | null,
   crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
-  protocolFees: ProtocolFee[] | undefined,
   areTradesLoading: boolean,
   isOrderLoading: boolean,
   onChangeTab: (tab: TabView) => void,
@@ -83,7 +80,7 @@ const tabItems = (
   solvedBy?: OrderSolverInfo,
   isSolvedByLoading?: boolean,
 ): TabItemInterface[] => {
-  const order = enrichOrderFromTrades(_order, trades, hasMultipleTrades, protocolFees)
+  const order = enrichOrderFromTrades(_order, trades, hasMultipleTrades)
   const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
@@ -151,26 +148,11 @@ const tabItems = (
   return [overviewTab, fillsTab]
 }
 
-/**
- * Returns the order enriched from its trades: the fee breakdown, plus txHash and executionDate when
- * there is a single trade (a fill or kill, or a partial fill with one trade so far).
- */
-function enrichOrderFromTrades(
-  order: Order | null,
-  trades: Trade[],
-  hasMultipleTrades: boolean,
-  protocolFees: ProtocolFee[] | undefined,
-): Order | null {
-  if (!order) return order
-
-  const enriched = { ...order, protocolFees }
-
-  if (trades.length === 1 && !hasMultipleTrades) {
-    enriched.txHash = trades[0].txHash || undefined
-    enriched.executionDate = trades[0].executionTime || undefined
+function enrichOrderFromTrades(order: Order | null, trades: Trade[], hasMultipleTrades: boolean): Order | null {
+  if (order && trades.length === 1 && !hasMultipleTrades) {
+    return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
-
-  return enriched
+  return order
 }
 
 function hasMultipleTradesForOrder(trades: Trade[], tableState: TableState): boolean {
@@ -186,7 +168,6 @@ export const OrderDetails: React.FC<Props> = (props) => {
     areTradesLoading,
     errors,
     trades,
-    protocolFees,
     tableState,
     setPageSize,
     setPageOffset,
@@ -206,7 +187,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
   const hasMultipleTrades = hasMultipleTradesForOrder(trades, tableState)
   const isMultiFill = order?.partiallyFillable && !order.txHash && hasMultipleTrades
-  const orderWithTxHash = enrichOrderFromTrades(order, trades, hasMultipleTrades, protocolFees)
+  const orderWithTxHash = enrichOrderFromTrades(order, trades, hasMultipleTrades)
   const { solver: solvedBy, isLoading: isSolvedByLoading } = useOrderSolver(
     showSolverDetails && !isMultiFill ? orderWithTxHash : null,
   )
@@ -278,7 +259,6 @@ export const OrderDetails: React.FC<Props> = (props) => {
             order,
             crossChainOrderResponse,
             trades,
-            protocolFees,
             areTradesLoading,
             isOrderLoading,
             onChangeTab,
