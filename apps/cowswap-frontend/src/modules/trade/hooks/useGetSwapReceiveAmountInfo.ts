@@ -12,6 +12,7 @@ import { useAppData } from 'modules/appData'
 import {
   applyUnpricedHookGasToOrderParams,
   getEoaTwapQuotePreHooks,
+  isSolanaQuoteAndPost,
   useTradeQuote,
   useTradeQuoteProtocolFee,
 } from 'modules/tradeQuote'
@@ -96,15 +97,17 @@ function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | u
 }
 
 function useQuoteCurrencies(): ReceiveAmountCurrencies {
-  const tradeQuote = useTradeQuote()
-  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const tradeQuote = useTradeQuote().quote
+  const quoteResults = tradeQuote?.quoteResults
+  const quote = quoteResults?.quoteResponse?.quote
 
-  const inputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.sellToken ? getAddressKey(quoteResponse.quote.sellToken) : undefined,
-  )
-  const outputCurrency = useTokenByAddress(
-    quoteResponse?.quote?.buyToken ? getAddressKey(quoteResponse.quote.buyToken) : undefined,
-  )
+  // A native-SOL buy is quoted against WSOL (`toSplMint` in `@cowprotocol/sdk-trading-solana`), so the
+  // response echoes the wrapped mint while settlement credits lamports. `tradeParameters` keeps the mint
+  // the user asked for, which is the one every amount has to be labelled with.
+  const buyToken = isSolanaQuoteAndPost(tradeQuote) ? quoteResults?.tradeParameters.buyToken : quote?.buyToken
+
+  const inputCurrency = useTokenByAddress(quote?.sellToken && getAddressKey(quote.sellToken))
+  const outputCurrency = useTokenByAddress(buyToken && getAddressKey(buyToken))
 
   return { inputCurrency, outputCurrency }
 }

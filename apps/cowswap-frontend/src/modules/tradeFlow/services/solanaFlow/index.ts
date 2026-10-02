@@ -225,6 +225,11 @@ function buildSolanaOrder(params: {
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
     // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
     partiallyFillable,
+    // Override the quote's own buyToken: a native-SOL buy is priced against WSOL (`toSplMint` in
+    // getSolanaQuote), while the order names the native sentinel. Readers that compare `buyToken`
+    // against `outputToken` — `useGetExecutedBridgeSummary` reads the difference as a bridge
+    // intermediate token — otherwise attribute the surplus to WSOL.
+    buyToken: outputToken.address,
     isSponsored,
     isNativeSell,
     id: orderId,

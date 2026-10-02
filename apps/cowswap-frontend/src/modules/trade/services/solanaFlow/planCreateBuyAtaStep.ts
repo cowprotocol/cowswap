@@ -1,3 +1,5 @@
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
@@ -19,14 +21,20 @@ export interface PlanCreateBuyAtaStepParams {
  * Without this, an order buying a token the receiver has never held can never settle: `FinalizeSettle`
  * credits an account that was never created, and SPL Token answers `InvalidAccountData`.
  * Idempotent, so an existing account costs a little compute instead of an RPC check before signing.
+ *
+ * Skipped for a native-SOL buy: settlement pays that out as lamports, so there is no token account.
  */
 export function planCreateBuyAtaStep({
   payer,
   receiver,
   quote,
   buySymbol,
-}: PlanCreateBuyAtaStepParams): SolanaFlowStep {
+}: PlanCreateBuyAtaStepParams): SolanaFlowStep | null {
   const { intent, buyTokenProgramId } = quote
+
+  if (getIsNativeToken(SupportedChainId.SOLANA, intent.buyMint.toBase58())) {
+    return null
+  }
 
   return {
     instructions: [

@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -116,7 +116,15 @@ function buildContext({
   isNativeSell = true,
   delegationAmount = SELL_AMOUNT,
   orderClass = OrderClass.MARKET,
-}: { isNativeSell?: boolean; delegationAmount?: bigint; orderClass?: OrderClass } = {}): SolanaTradeFlowContext {
+  buyAmount = outputAmount,
+  quoteBuyToken = usdc.address,
+}: {
+  isNativeSell?: boolean
+  delegationAmount?: bigint
+  orderClass?: OrderClass
+  buyAmount?: CurrencyAmount<Token>
+  quoteBuyToken?: string
+} = {}): SolanaTradeFlowContext {
   return {
     account: SOLANA_ACCOUNT,
     isNativeSell,
@@ -143,7 +151,7 @@ function buildContext({
         quoteResponse: {
           quote: {
             sellToken: wsol.address,
-            buyToken: usdc.address,
+            buyToken: quoteBuyToken,
             receiver: null,
             sellAmount: SELL_AMOUNT.toString(),
             buyAmount: outputAmount.quotient.toString(),
@@ -163,7 +171,7 @@ function buildContext({
     context: {
       chainId: SOLANA_CHAIN_ID,
       inputAmount,
-      outputAmount,
+      outputAmount: buyAmount,
       orderKind: OrderKind.SELL,
       validTo: Math.floor(Date.now() / 1000) + 600,
       receiver: RESOLVED_RECEIVER_ADDRESS,
@@ -306,6 +314,27 @@ describe('solanaFlow', () => {
     await solanaFlow(context, buildAnalytics())
 
     expect(context.tradeQuote.postSwapOrderFromQuote).not.toHaveBeenCalled()
+  })
+
+  // A native-SOL buy is priced against WSOL (`toSplMint` in getSolanaQuote) while the order credits
+  // lamports, so the quote response and the order disagree on the buy mint. `useGetExecutedBridgeSummary`
+  // reads a `buyToken` that differs from `outputToken` as a bridge intermediate token and labels the
+  // surplus with it, which showed "Surplus 0.0032 WSOL" on an order that paid out native SOL.
+  it('stores the buy token the order credits, not the one the quote was priced in', async () => {
+    const nativeSol = NATIVE_CURRENCIES[SOLANA_CHAIN_ID]
+    const context = buildContext({
+      buyAmount: CurrencyAmount.fromRawAmount(nativeSol, '150000000'),
+      quoteBuyToken: wsol.address,
+    })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({
+        order: expect.objectContaining({ buyToken: nativeSol.address, outputToken: nativeSol }),
+      }),
+      expect.anything(),
+    )
   })
 
   it('adds a pending order and reports success', async () => {
