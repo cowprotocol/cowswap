@@ -7,7 +7,7 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
-import type { RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
+import type { RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
 
 const NVDA: RwaMarketOverviewItem = {
   ticker: 'NVDA',
@@ -38,14 +38,25 @@ const OVERVIEW: RwaMarketOverview = {
   degraded: false,
 }
 
-function mockApi(overview: RwaMarketOverview | null): void {
-  global.fetch = jest.fn((url: string) =>
-    Promise.resolve(
-      url.endsWith('/market-overview') && overview
-        ? { ok: true, status: 200, json: () => Promise.resolve(overview) }
+const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
+  items: [],
+  page: 1,
+  pageSize: 20,
+  total: 0,
+  totalPages: 0,
+  degraded: true,
+}
+
+function mockApi(overview: RwaMarketOverview | null, assetsPage: RwaAssetsPage | null = null): void {
+  global.fetch = jest.fn((url: string) => {
+    const body = url.endsWith('/market-overview') ? overview : url.includes('/assets?') ? assetsPage : null
+
+    return Promise.resolve(
+      body
+        ? { ok: true, status: 200, json: () => Promise.resolve(body) }
         : { ok: false, status: 500, json: () => Promise.resolve({ error: 'Upstream failed' }) },
-    ),
-  ) as unknown as typeof fetch
+    )
+  }) as unknown as typeof fetch
 }
 
 function renderHomePage(): RenderResult {
@@ -118,10 +129,11 @@ describe('HomePage', () => {
   })
 
   it('tells degraded data apart from an empty market', async () => {
-    mockApi({ ...OVERVIEW, mostTraded: [], gainers: [], degraded: true })
+    mockApi({ ...OVERVIEW, mostTraded: [], gainers: [], degraded: true }, DEGRADED_ASSETS_PAGE)
     renderHomePage()
 
-    expect(await screen.findByText('Market data is temporarily unavailable')).toBeTruthy()
+    expect(await screen.findAllByText('Data temporarily unavailable')).toHaveLength(2)
+    expect(await screen.findAllByText('Market data is temporarily unavailable')).toHaveLength(1)
     expect(screen.queryByText('No DEX trades in the last 24 hours')).toBeNull()
     expect(screen.queryByText('No gainers in the last 24 hours')).toBeNull()
   })

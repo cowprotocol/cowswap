@@ -20,13 +20,10 @@ export function MarketOverview(): ReactNode {
   const degraded = data?.degraded ?? false
 
   return (
-    <>
-      {degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
-      <div className={styles.grid}>
-        <MarketTotalsCard overview={data} />
-        <MostTradedCard items={data?.mostTraded} degraded={degraded} />
-        <TopMoversCard gainers={data?.gainers} losers={data?.losers} degraded={degraded} />
-      </div>
-    </>
+    <div className={styles.grid}>
+      <MarketTotalsCard overview={data} />
+      <MostTradedCard items={data?.mostTraded} degraded={degraded} />
+      <TopMoversCard gainers={data?.gainers} losers={data?.losers} degraded={degraded} />
+    </div>
   )
 }
