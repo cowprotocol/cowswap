@@ -163,15 +163,8 @@ describe('toChartPoints', () => {
 })
 
 describe('coingeckoProvider.getNetworkStats', () => {
-  const MARKET = {
-    price: 231.5,
-    change24h: null,
-    dayLow: null,
-    dayHigh: null,
-    marketCap: null,
-    volume24h: null,
-    updatedAt: null,
-    tokens: { 'nvidia-ondo-tokenized-stock': { price: 230, marketCap: null, volume24h: null, logoUrl: null } },
+  const TOKEN_MARKETS = {
+    'nvidia-ondo-tokenized-stock': { price: 230, marketCap: null, volume24h: null, logoUrl: null },
   }
 
   it('values the network supply at the token price and keeps the DEX volume', async () => {
@@ -192,7 +185,7 @@ describe('coingeckoProvider.getNetworkStats', () => {
     const stats = await coingeckoProvider.getNetworkStats(
       1,
       [ondo, xstock].filter((t) => t !== undefined),
-      MARKET,
+      TOKEN_MARKETS,
     )
 
     expect(String(fetchMock.mock.calls[0][0])).toContain('/networks/eth/tokens/multi/')
@@ -207,9 +200,108 @@ describe('coingeckoProvider.getNetworkStats', () => {
 
     const [ondo] = NVDA.tokens
 
-    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [], MARKET)).toEqual([
+    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [], TOKEN_MARKETS)).toEqual([
       { address: ondo?.address, onchainCap: null, dexVolume24h: null },
     ])
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('coingeckoProvider.getHourlyDexVolume', () => {
+  const NOW_SECONDS = 1_790_000_000
+  const LAST_HOUR = 1_789_999_200
+  const env = { ...process.env }
+
+  beforeEach(() => {
+    process.env.COINGECKO_API_KEY = 'key'
+    process.env.COINGECKO_API_PLAN = 'pro'
+    jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000)
+  })
+
+  afterEach(() => {
+    process.env = { ...env }
+    jest.restoreAllMocks()
+  })
+
+  const [ondoEth, ondoBsc] = NVDA.tokens
+  const tokens = [ondoEth, ondoBsc].filter((t) => t !== undefined)
+
+  it('sums hourly candle volumes of every token into a 24h window', async () => {
+    const fetchMock = mockFetch({
+      data: {
+        attributes: {
+          ohlcv_list: [
+            [LAST_HOUR, 1, 1, 1, 1, 10],
+            [LAST_HOUR - 3600, 1, 1, 1, 1, 5],
+          ],
+        },
+      },
+    })
+
+    const series = await coingeckoProvider.getHourlyDexVolume(tokens)
+
+    expect(String(fetchMock.mock.calls[0][0])).toBe(
+      `https://pro-api.coingecko.com/api/v3/onchain/networks/eth/tokens/${ondoEth?.address}/ohlcv/hour?aggregate=1&limit=24&currency=usd`,
+    )
+    expect(series).toHaveLength(24)
+    expect(series?.[23]).toEqual({ time: LAST_HOUR, value: 20 })
+    expect(series?.[22]).toEqual({ time: LAST_HOUR - 3600, value: 10 })
+    expect(series?.[0]).toEqual({ time: LAST_HOUR - 23 * 3600, value: 0 })
+  })
+
+  it('treats 404 as a token without candles', async () => {
+    global.fetch = jest.fn().mockResolvedValue({ ok: false, status: 404, json: () => Promise.resolve({}) })
+
+    const series = await coingeckoProvider.getHourlyDexVolume(tokens)
+
+    expect(series).toHaveLength(24)
+    expect(series?.every(({ value }) => value === 0)).toBe(true)
+  })
+
+  it('returns null without the Pro plan', async () => {
+    process.env.COINGECKO_API_PLAN = 'demo'
+    const fetchMock = mockFetch({})
+
+    expect(await coingeckoProvider.getHourlyDexVolume(tokens)).toBeNull()
+    expect(fetchMock).not.toHaveBeenCalled()
+  })
+
+  it('throws on other upstream errors', async () => {
+    mockFetch({}, false)
+
+    await expect(coingeckoProvider.getHourlyDexVolume(tokens)).rejects.toThrow('responded with 429')
+  })
+})
+
+describe('coingeckoProvider.getPriceHistory', () => {
+  it('maps every coin to its 7D price points', async () => {
+    const fetchMock = mockFetch({
+      prices: [
+        [1_000, 1],
+        [2_000, 2],
+      ],
+    })
+
+    const histories = await coingeckoProvider.getPriceHistory(['a', 'b'], '7')
+
+    expect(String(fetchMock.mock.calls[0][0])).toContain('/coins/a/market_chart?vs_currency=usd&days=7')
+    expect(histories).toEqual(
+      new Map([
+        [
+          'a',
+          [
+            { time: 1, value: 1 },
+            { time: 2, value: 2 },
+          ],
+        ],
+        [
+          'b',
+          [
+            { time: 1, value: 1 },
+            { time: 2, value: 2 },
+          ],
+        ],
+      ]),
+    )
   })
 })

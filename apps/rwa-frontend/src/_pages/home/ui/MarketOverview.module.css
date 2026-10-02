@@ -1,0 +1,247 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius) * 2);
+  background: var(--color-bg);
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cardTitle {
+  margin: 0;
+  font-size: 17px;
+}
+
+.cardSubtitle,
+.cardHint,
+.totalLabel,
+.axis,
+.cardFooter,
+.assetTicker,
+.empty {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.totals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.total {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.totalValue {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.info {
+  cursor: help;
+}
+
+.capChart {
+  height: 56px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.capChart .sparkline {
+  width: 100%;
+  height: 100%;
+}
+
+.axis,
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.statusOpen,
+.statusClosed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text);
+}
+
+.statusOpen::before,
+.statusClosed::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  content: '';
+}
+
+.statusOpen::before {
+  background: var(--color-positive);
+}
+
+.statusClosed::before {
+  background: var(--color-text-secondary);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.row:hover .assetTitle {
+  text-decoration: underline;
+}
+
+.asset {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.assetTitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.rowSparkline {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 56px;
+  height: 24px;
+}
+
+.rowSparkline .sparkline {
+  width: 100%;
+  height: 100%;
+}
+
+.sparkline {
+  display: block;
+  overflow: visible;
+}
+
+.sparklineLine {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.sparklineArea {
+  fill: currentColor;
+  opacity: 0.15;
+}
+
+.neutral {
+  color: var(--color-accent);
+}
+
+.positive {
+  color: var(--color-positive);
+}
+
+.negative {
+  color: var(--color-negative);
+}
+
+.segmented {
+  display: flex;
+  padding: 2px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.segmented button {
+  padding: 2px 8px;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.segmented .segmentActive {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.skeleton {
+  display: block;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.skeletonValue {
+  width: 96px;
+  height: 30px;
+}
+
+.skeletonChart {
+  width: 100%;
+  height: 100%;
+}
+
+.skeletonLogo {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.skeletonText {
+  flex: 1;
+  height: 28px;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}
