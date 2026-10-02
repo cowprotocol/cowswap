@@ -17,6 +17,7 @@ This file: rwa-frontend app-specific commands only.
 - FSD check: `pnpx nx run rwa-frontend:lint-fsd` ([steiger](https://github.com/feature-sliced/steiger))
 - Test: `pnpx nx run rwa-frontend:test`
 - Typecheck: `pnpm exec tsc -p apps/rwa-frontend/tsconfig.app.json --noEmit`
+- Rebuild `data/RWAs.json` from the CoinGecko RWA API: `pnpm --filter @cowprotocol/rwa-frontend update-registry` (run manually, needs `COINGECKO_API_KEY`)
 
 ## Environment
 
