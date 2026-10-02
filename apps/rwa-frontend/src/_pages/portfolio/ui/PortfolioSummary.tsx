@@ -14,21 +14,29 @@ interface PortfolioSummaryProps {
   error: Error | null
   /** Chains whose balances are missing from `holdings` */
   failedChainIds: number[]
+  arePricesLoading: boolean
 }
 
-export function PortfolioSummary({ owner, holdings, error, failedChainIds }: PortfolioSummaryProps): ReactNode {
+export function PortfolioSummary({
+  owner,
+  holdings,
+  error,
+  failedChainIds,
+  arePricesLoading,
+}: PortfolioSummaryProps): ReactNode {
   const totals = holdings && getPortfolioTotals(holdings)
-  const exclusions = totals && getTotalExclusions(totals.unpricedAssets, failedChainIds)
+  const exclusions = totals && getTotalExclusions(arePricesLoading ? null : totals.unpricedAssets, failedChainIds)
+  const isValueLoading = !totals || (arePricesLoading && totals.assets > 0)
 
   return (
     <section className={styles.summary} aria-label="Portfolio value">
       <p className={styles.secondary}>Wallet · {shortenAddress(owner)}</p>
       <p className={styles.secondary}>Estimated underlying value · All wallet assets · All networks</p>
       <p className={styles.total}>
-        {totals ? (
-          `≈ ${formatUsd(totals.value ?? (totals.assets ? null : 0))}`
-        ) : (
+        {isValueLoading ? (
           <span className={styles.skeletonTotal} aria-busy="true" />
+        ) : (
+          `≈ ${formatUsd(totals.value ?? (totals.assets ? null : 0))}`
         )}
       </p>
       <p className={styles.secondary}>

@@ -61,6 +61,7 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
         holdings={portfolio.holdings}
         error={balancesError}
         failedChainIds={portfolio.failedChainIds}
+        arePricesLoading={portfolio.arePricesLoading}
       />
       <div className={styles.cards}>
         <AllocationCard portfolio={portfolio} />

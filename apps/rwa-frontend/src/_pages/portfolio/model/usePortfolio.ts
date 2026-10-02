@@ -37,6 +37,8 @@ export interface Portfolio {
   getLogoUrl(asset: RwaAsset, token?: RwaToken): string | null
   /** ISO 8601, `null` while market data is loading */
   pricesUpdatedAt: string | null
+  /** No market data and no error yet: every holding is unpriced until it loads */
+  arePricesLoading: boolean
 }
 
 export function usePortfolio(owner: string, assets: RwaAsset[], filter: PortfolioFilter): Portfolio {
@@ -48,7 +50,7 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
   const params = useMemo((): AccountQueryParams => ({ owner, scope: PORTFOLIO_SCOPE, tokens }), [owner, tokens])
 
   const { positions, error: balancesError, failedChainIds } = useAccountBalances(owner, tokens)
-  const markets = useAtomValue(portfolioMarketsQueryAtom).data
+  const { data: markets, error: marketsError } = useAtomValue(portfolioMarketsQueryAtom)
   const orders = useAtomValue(openOrdersQueryAtomFamily(params))
   const activity = useAtomValue(activityQueryAtomFamily(params))
 
@@ -89,6 +91,7 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
         return (coingeckoId && marketsByTicker.get(asset.ticker)?.market?.tokens[coingeckoId]?.logoUrl) || null
       },
       pricesUpdatedAt: markets?.items.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
+      arePricesLoading: !markets && !marketsError,
     }
   }, [
     activity,
@@ -98,6 +101,7 @@ export function usePortfolio(owner: string, assets: RwaAsset[], filter: Portfoli
     failedChainIds,
     filter,
     markets,
+    marketsError,
     marketsByTicker,
     orders,
     positions,
