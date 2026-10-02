@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 
 import Link from 'next/link'
 
-import { AccountTabs } from './AccountTabs'
+import { AssetAccount } from './AssetAccount'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { StockTokens } from './StockTokens'
@@ -33,7 +33,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <AssetStats asset={asset} market={data?.market} />
         <AssetPriceChart ticker={asset.ticker} />
         <StockTokens asset={asset} />
-        <AccountTabs asset={asset} />
+        <AssetAccount asset={asset} />
       </div>
       <aside className={styles.side}>
         <TradeWidget asset={asset} />

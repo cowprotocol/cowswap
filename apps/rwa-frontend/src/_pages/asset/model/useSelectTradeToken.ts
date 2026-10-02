@@ -5,10 +5,7 @@ import { useChainId, useConnection, useSwitchChain } from 'wagmi'
 
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
 
-import { getTokenKey } from '../lib/tokenKey'
-
-import type { TradeSide } from '../lib/tradeLeg'
-import type { RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
 
 export const TRADE_WIDGET_ID = 'trade-widget'
 
@@ -33,13 +30,13 @@ export function useSelectTradeNetwork(): (chainId: number) => void {
 }
 
 /** Picks a token from the "Stock tokens" table, then scrolls to the widget */
-export function useSelectTradeToken(): (token: RwaToken, side: TradeSide) => void {
+export function useSelectTradeToken(): (token: RwaToken, side: RwaQuoteSide) => void {
   const setSide = useSetAtom(tradeSideAtom)
   const selectNetwork = useSelectTradeNetwork()
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
 
   return useCallback(
-    (token: RwaToken, side: TradeSide) => {
+    (token: RwaToken, side: RwaQuoteSide) => {
       setSide(side)
       selectNetwork(token.chainId)
       setTokenKey(getTokenKey(token))
