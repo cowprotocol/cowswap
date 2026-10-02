@@ -228,14 +228,6 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                     }}
                   />
                 </DetailRow>
-                <DetailRow
-                  label="Costs & Fees"
-                  tooltipText="The total execution fees reported for the part orders, in the sell token. This value increases as more parts execute."
-                >
-                  {executedAmounts.executedFee === 0n
-                    ? '-'
-                    : formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
-                </DetailRow>
                 <TwapAppData appData={schedule.appData} chainId={chainId} />
               </>
             }
