@@ -15,6 +15,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
+  getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
   planCreateOrderStep,
@@ -339,6 +340,8 @@ async function postSponsoredBundle(
   let ownDeadline: SolanaSigningDeadlineState | null = null
   let isSettled = false
 
+  const hasShownWindowClosed = (): boolean => !!ownDeadline && Date.now() >= ownDeadline.expiresAt
+
   const settleSigning = (): void => {
     if (isSettled) return
     isSettled = true
@@ -347,7 +350,7 @@ async function postSponsoredBundle(
 
     // The wallet answered after the window closed: lets the error handling route the rejection
     // back to the review screen instead of the error modal.
-    if (Date.now() >= ownDeadline.expiresAt) {
+    if (hasShownWindowClosed()) {
       jotaiStore.set(solanaSigningAbandonedAtom, true)
     }
 
@@ -358,12 +361,13 @@ async function postSponsoredBundle(
     const { transaction } = await signSolanaFlow(
       {
         ...context,
-        onDeadline: (lastValidBlockHeight) => {
-          void estimateSolanaSigningDeadline(context.connection, lastValidBlockHeight).then((deadline) => {
-            // The estimate measures the window from the CURRENT block height, so a slow resolve from an
-            // attempt whose prompt was never answered yields a ~zero window — and without the
-            // current-attempt check it would paint an instant 00:00 over the newer attempt's countdown.
-            if (!deadline || isSettled || !isCurrentAttempt()) return
+        onDeadline: () => {
+          void estimateSolanaSigningDeadline(context.connection).then((deadline) => {
+            // Painted only while this attempt still owns the screen (a stale attempt's late estimate
+            // must not stomp a newer one) and only while the window is still alive — a pathologically
+            // slow estimate would otherwise open the countdown straight onto 00:00. In both skip cases
+            // the chain-level check at signing still guards the real window.
+            if (isSettled || !isCurrentAttempt() || deadline.expiresAt <= Date.now()) return
 
             ownDeadline = deadline
             jotaiStore.set(solanaSigningDeadlineAtom, deadline)
@@ -372,6 +376,14 @@ async function postSponsoredBundle(
       },
       steps,
     )
+
+    // The real blockhash usually outlives the displayed window (the estimate is capped), so the
+    // chain-level check in signSolanaFlow happily passes a signature the UI already told the user to
+    // abandon. Honor the screen's promise instead: a signature approved after the shown window closed
+    // — or one belonging to an attempt the user already retried past — is discarded, never posted.
+    if (!isCurrentAttempt() || hasShownWindowClosed()) {
+      throw getSigningWindowClosedError()
+    }
 
     // Settled at the signature, not after the POST: the countdown must not keep ticking (and claim
     // the window closed) while the signed bundle is being handed to the order book.

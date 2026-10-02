@@ -22,6 +22,10 @@ export interface SignSolanaFlowContext {
   onDeadline?: (lastValidBlockHeight: number) => void
 }
 
+export function getSigningWindowClosedError(): Error {
+  return new Error(t`The signing window closed before the transaction was signed. Please try again.`)
+}
+
 /**
  * Sponsored counterpart to `sendSolanaFlow`: assembles the same steps into one transaction and has the
  * wallet sign it, but never broadcasts — the order book does that after countersigning as fee payer.
@@ -48,7 +52,7 @@ export async function signSolanaFlow(
   const signed = await signSolanaTransaction(provider, transaction)
 
   if ((await connection.getBlockHeight()) > lastValidBlockHeight) {
-    throw new Error(t`The signing window closed before the transaction was signed. Please try again.`)
+    throw getSigningWindowClosedError()
   }
 
   return { transaction: signed, lastValidBlockHeight }
