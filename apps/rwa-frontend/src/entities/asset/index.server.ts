@@ -11,4 +11,12 @@ export {
 export { getAssetByTicker, getAssets, getRegistry } from './model/registry'
 export { buildRwaTokenList } from './model/tokenList'
 export { validateRegistry } from './model/validateRegistry'
-export { RWA_CHART_RANGES, RWA_QUOTE_SIDES, RWA_SORT_FIELDS, type RwaChart, type RwaSortOrder } from './model/types'
+export {
+  RWA_ASSET_TYPES,
+  RWA_CHART_RANGES,
+  RWA_QUOTE_SIDES,
+  RWA_SORT_FIELDS,
+  type RwaAssetsFilter,
+  type RwaChart,
+  type RwaSortOrder,
+} from './model/types'

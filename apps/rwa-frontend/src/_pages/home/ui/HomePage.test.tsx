@@ -2,12 +2,12 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, type RenderResult, screen } from '@testing-library/react'
+import { fireEvent, render, type RenderResult, screen, waitFor } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
 
-import type { RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
+import type { RwaAssetListItem, RwaAssetsPage, RwaMarketOverview, RwaMarketOverviewItem } from '@/entities/asset'
 
 const NVDA: RwaMarketOverviewItem = {
   ticker: 'NVDA',
@@ -38,12 +38,54 @@ const OVERVIEW: RwaMarketOverview = {
   degraded: false,
 }
 
-const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
-  items: [],
+const NVDA_LIST_ITEM: RwaAssetListItem = {
+  ticker: 'NVDA',
+  title: 'NVIDIA',
+  type: 'stock',
+  priority: 10,
+  tokens: [
+    {
+      chainId: 1,
+      address: '0x0000000000000000000000000000000000000001',
+      symbol: 'NVDAx',
+      name: 'NVIDIA xStock',
+      decimals: 18,
+      issuer: 'xStocks',
+    },
+    {
+      chainId: 1,
+      address: '0x0000000000000000000000000000000000000002',
+      symbol: 'NVDAon',
+      name: 'NVIDIA (Ondo Tokenized)',
+      decimals: 18,
+      issuer: 'Ondo',
+    },
+  ],
+  market: null,
+  logoUrl: null,
+  onchainCap: 180_000_000,
+  dexVolume24h: 12_400_000,
+  series: null,
+}
+
+const ASSETS_PAGE: RwaAssetsPage = {
+  items: [NVDA_LIST_ITEM],
   page: 1,
   pageSize: 20,
+  total: 1,
+  totalPages: 1,
+  typeCounts: { stock: 3, index: 2 },
+  issuers: ['Ondo', 'xStocks'],
+  chainIds: [1],
+  degraded: false,
+}
+
+const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
+  ...ASSETS_PAGE,
+  items: [],
   total: 0,
   totalPages: 0,
+  typeCounts: { stock: 0, index: 0 },
   degraded: true,
 }
 
@@ -78,12 +120,60 @@ describe('HomePage', () => {
     })
   })
 
-  it('renders the heading and the search', () => {
+  afterEach(() => {
+    localStorage.clear()
+  })
+
+  it('renders the heading and the table filter', () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Explore tokenized real-world assets' })).toBeTruthy()
-    expect(screen.getByRole('searchbox', { name: 'Search assets' })).toBeTruthy()
+    expect(screen.getByRole('searchbox', { name: 'Filter assets' })).toBeTruthy()
+  })
+
+  it('renders the type tabs with counts and the asset rows', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    expect(await screen.findByRole('tab', { name: 'All assets 5' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'Stocks 3' })).toBeTruthy()
+    expect(screen.getByRole('tab', { name: 'ETFs 2' })).toBeTruthy()
+    expect(screen.getByText('2 issuers')).toBeTruthy()
+    expect(screen.getByText('$180M')).toBeTruthy()
+  })
+
+  it('requests the selected type, issuer and sort', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
+    fireEvent.change(screen.getByRole('combobox', { name: 'Issuer' }), { target: { value: 'Ondo' } })
+    fireEvent.click(screen.getByRole('button', { name: '24h DEX volume' }))
+
+    await waitFor(() =>
+      expect(screen.getByRole('columnheader', { name: '24h DEX volume' }).getAttribute('aria-sort')).toBe('descending'),
+    )
+    const lastUrl = String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])
+
+    expect(lastUrl).toContain('type=index')
+    expect(lastUrl).toContain('issuer=Ondo')
+    expect(lastUrl).toContain('sort=dexVolume24h')
+  })
+
+  it('stores starred assets and requests them in the watchlist mode', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Save NVIDIA to watchlist' }))
+
+    expect(screen.getByRole('button', { name: 'Remove NVIDIA from watchlist' })).toBeTruthy()
+    expect(JSON.parse(localStorage.getItem('rwaWatchlist:v1') ?? '[]')).toEqual(['NVDA'])
+
+    fireEvent.click(screen.getByRole('button', { name: 'Watchlist' }))
+    await screen.findByRole('button', { name: 'Watchlist', pressed: true })
+
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('tickers=NVDA')
   })
 
   it('renders the cards from the overview', async () => {

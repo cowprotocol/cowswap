@@ -1,5 +1,6 @@
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
+import { getReferenceLogoUrl } from '../lib/referenceLogoUrl'
 import { sumNullable } from '../lib/sumNullable'
 
 import type {
@@ -148,12 +149,10 @@ export function toOverviewItem(
   market: RwaMarketData | undefined,
   totals: AssetStatsTotals | undefined,
 ): RwaMarketOverviewItem {
-  const referenceId = asset.tokens.find((token) => token.coingeckoId)?.coingeckoId
-
   return {
     ticker: asset.ticker,
     title: asset.title,
-    logoUrl: referenceId ? (market?.tokens[referenceId]?.logoUrl ?? null) : null,
+    logoUrl: getReferenceLogoUrl(asset, market),
     change24h: market?.change24h ?? null,
     dexVolume24h: totals?.dexVolume24h ?? null,
     series: null,

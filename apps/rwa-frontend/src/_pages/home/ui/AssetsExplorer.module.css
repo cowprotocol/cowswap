@@ -1,11 +1,147 @@
 .explorer {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
+  padding: 0 0 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-bg);
 }
 
-.toolbar {
+.explorer > :not(.tabs, .filters) {
+  margin: 0 8px;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 8px 24px 0;
+  overflow-x: auto;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.tab[aria-selected='true'] {
+  color: var(--color-text);
+}
+
+.tab[aria-selected='true']::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--color-accent);
+  content: '';
+}
+
+.tabCount {
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 24px;
+}
+
+.filterInput {
+  display: flex;
+  flex: 1 1 240px;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  color: var(--color-text-secondary);
+  cursor: text;
+}
+
+.filterInput:focus-within {
+  border-color: var(--color-accent);
+}
+
+.filterInput input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  outline: none;
+}
+
+.filterControls {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+.filterSelect,
+.watchlistButton {
+  height: 36px;
+  border-color: var(--color-border);
+  background: var(--color-bg);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filterSelect {
+  padding: 0 12px;
+}
+
+.watchlistButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 8px;
+  border-radius: 12px;
+}
+
+.watchlistButton[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .tabs,
+  .filters {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .watchlistButton {
+    margin-left: 0;
+  }
 }

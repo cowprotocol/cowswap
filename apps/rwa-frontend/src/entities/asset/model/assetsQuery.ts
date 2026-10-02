@@ -1,13 +1,35 @@
-import type { RwaAsset, RwaAssetWithMarket, RwaSortField, RwaSortOrder } from './types'
+import type { RwaAsset, RwaAssetListItem, RwaAssetsFilter, RwaAssetType, RwaSortField, RwaSortOrder } from './types'
 
-type SortValueGetter = (asset: RwaAssetWithMarket) => number | string | null
+type SortValueGetter = (asset: RwaAssetListItem) => number | string | null
 
 const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   priority: (asset) => asset.priority,
   marketCap: (asset) => asset.market?.marketCap ?? null,
+  onchainCap: (asset) => asset.onchainCap,
+  dexVolume24h: (asset) => asset.dexVolume24h,
   change24h: (asset) => asset.market?.change24h ?? null,
   price: (asset) => asset.market?.price ?? null,
   ticker: (asset) => asset.ticker,
+}
+
+export function countByType(assets: RwaAsset[], filter: RwaAssetsFilter): Record<RwaAssetType, number> {
+  const counts: Record<RwaAssetType, number> = { stock: 0, index: 0 }
+
+  for (const asset of filterAssets(assets, { ...filter, type: undefined })) counts[asset.type]++
+
+  return counts
+}
+
+export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsFilter): T[] {
+  const needle = filter.query?.trim().toLowerCase()
+
+  return assets.filter(
+    (asset) =>
+      (!filter.type || asset.type === filter.type) &&
+      (!filter.tickers || filter.tickers.includes(asset.ticker)) &&
+      hasMatchingToken(asset, filter) &&
+      (!needle || getSearchScore(asset, needle) > 0),
+  )
 }
 
 export function paginate<T>(items: T[], page: number, pageSize: number): { items: T[]; totalPages: number } {
@@ -31,11 +53,7 @@ export function searchAssets<T extends RwaAsset>(assets: T[], query: string): T[
   return scored.sort((a, b) => b.score - a.score || b.asset.priority - a.asset.priority).map(({ asset }) => asset)
 }
 
-export function sortAssets(
-  assets: RwaAssetWithMarket[],
-  sort: RwaSortField,
-  order: RwaSortOrder,
-): RwaAssetWithMarket[] {
+export function sortAssets(assets: RwaAssetListItem[], sort: RwaSortField, order: RwaSortOrder): RwaAssetListItem[] {
   const getValue = SORT_VALUE_GETTERS[sort]
   const direction = order === 'asc' ? 1 : -1
 
@@ -71,4 +89,12 @@ function getSearchScore(asset: RwaAsset, needle: string): number {
   if (ticker.includes(needle) || title.includes(needle) || symbols.some((symbol) => symbol.includes(needle))) return 1
 
   return 0
+}
+
+function hasMatchingToken(asset: RwaAsset, { issuer, chainId }: RwaAssetsFilter): boolean {
+  if (!issuer && chainId === undefined) return true
+
+  return asset.tokens.some(
+    (token) => (!issuer || token.issuer === issuer) && (chainId === undefined || token.chainId === chainId),
+  )
 }
