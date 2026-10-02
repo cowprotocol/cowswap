@@ -140,7 +140,12 @@ export async function solanaFlow(
     // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
     // track: the order book submits it once it has countersigned as fee payer.
     const txHash = sponsor
-      ? await postSponsoredBundle({ connection, provider, feePayer }, steps, tradeQuote.quoteResults)
+      ? await postSponsoredBundle(
+          { connection, provider, feePayer },
+          steps,
+          tradeQuote.quoteResults,
+          () => attemptId === latestAttemptId,
+        )
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
     addPendingOrderStep(
@@ -326,6 +331,7 @@ async function postSponsoredBundle(
   context: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
+  isCurrentAttempt: () => boolean,
 ): Promise<undefined> {
   // A wallet prompt can rest unanswered indefinitely, so by the time this attempt settles the shared
   // atoms may already belong to a newer attempt — every write below is gated on the atom still
@@ -354,7 +360,10 @@ async function postSponsoredBundle(
         ...context,
         onDeadline: (lastValidBlockHeight) => {
           void estimateSolanaSigningDeadline(context.connection, lastValidBlockHeight).then((deadline) => {
-            if (!deadline || isSettled) return
+            // The estimate measures the window from the CURRENT block height, so a slow resolve from an
+            // attempt whose prompt was never answered yields a ~zero window — and without the
+            // current-attempt check it would paint an instant 00:00 over the newer attempt's countdown.
+            if (!deadline || isSettled || !isCurrentAttempt()) return
 
             ownDeadline = deadline
             jotaiStore.set(solanaSigningDeadlineAtom, deadline)

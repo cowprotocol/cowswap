@@ -719,6 +719,40 @@ describe('solanaFlow · sponsored', () => {
     jotaiStore.set(solanaSigningDeadlineAtom, null)
   })
 
+  // The estimate measures the window from the CURRENT block height, so when it resolves late — the
+  // prompt of its own attempt left unanswered while the user already retried — it reports a ~zero
+  // window. Written to the atom, that paints an instant 00:00 over the newer attempt's screen.
+  it("drops a stale attempt's late deadline estimate instead of painting 00:00 over the retry", async () => {
+    let resolveStaleEstimate: (deadline: SolanaSigningDeadlineState | null) => void = () => undefined
+    mockEstimateSolanaSigningDeadline.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveStaleEstimate = resolve
+        }),
+    )
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), true)
+    await tick()
+
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce(null)
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+
+      return neverSettles()
+    })
+    void solanaFlow(buildContext(), buildAnalytics(), true)
+    await tick()
+
+    resolveStaleEstimate({ expiresAt: Date.now() - 1, durationMs: 0 })
+    await tick()
+
+    expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBeNull()
+  })
+
   // The retry owns the screen from its very first line, long before its own deadline estimate lands —
   // and never gets one at all when that estimate fails. Recognising the stale attempt cannot depend
   // on the newer one having published a countdown.
