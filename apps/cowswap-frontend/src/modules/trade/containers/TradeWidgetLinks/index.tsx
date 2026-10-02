@@ -1,6 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, HoverTooltip, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
@@ -14,6 +13,7 @@ import { useLocation } from 'react-router'
 import { Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { TradeUrlParams, addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import * as styledEl from './styled'
 
@@ -69,7 +69,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId
-      const isDisabled = item.route === Routes.ADVANCED_ORDERS && !!chainId && isSolanaChain(+chainId)
+      const isDisabled = item.route === Routes.ADVANCED_ORDERS && !isTwapSupportedChain(Number(chainId))
 
       const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
       const itemTradeState = getTradeStateByType(item.route)

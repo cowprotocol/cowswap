@@ -15,10 +15,12 @@ import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hook
 import { useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
+import { Routes } from 'common/constants/routes'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import { HideMobile, isMobileQuery } from './styled'
 
@@ -71,11 +73,16 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
     })),
   }
 
+  const tradeMenuItems = useMemo(
+    () => menuItems.filter((item) => item.route !== Routes.ADVANCED_ORDERS || isTwapSupportedChain(chainId)),
+    [menuItems, chainId],
+  )
+
   const navItems = useMemo(() => {
     return [
       {
         label: t`Trade`,
-        children: menuItems.map((item) => {
+        children: tradeMenuItems.map((item) => {
           const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
@@ -93,7 +100,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       },
       ...NAV_ITEMS(chainId, !!isSolversEnabled),
     ]
-  }, [t, menuItems, chainId, getTradeUrlParams, isSolversEnabled])
+  }, [t, tradeMenuItems, chainId, getTradeUrlParams, isSolversEnabled])
 
   if (isInjectedWidgetMode) return null
 
