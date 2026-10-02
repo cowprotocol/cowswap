@@ -13,6 +13,11 @@ describe('getTotalExclusions', () => {
     expect(getTotalExclusions(0, [1, 56])).toBe('Excludes balances on Ethereum, BNB')
   })
 
+  it('does not count unpriced assets while prices load', () => {
+    expect(getTotalExclusions(null, [])).toBeNull()
+    expect(getTotalExclusions(null, [56])).toBe('Excludes balances on BNB')
+  })
+
   it('counts the unpriced assets', () => {
     expect(getTotalExclusions(1, [])).toBe('Excludes 1 asset without a price')
     expect(getTotalExclusions(2, [56])).toBe('Excludes balances on BNB and 2 assets without a price')
