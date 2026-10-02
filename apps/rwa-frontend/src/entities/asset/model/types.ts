@@ -35,6 +35,42 @@ export interface RwaMarketData {
   updatedAt: string | null
 }
 
+export interface RwaMarketOverview extends DegradableResponse {
+  totals: RwaMarketOverviewTotals
+  /** Max 3, by 24h DEX volume */
+  mostTraded: RwaMarketOverviewItem[]
+  /** Max 3, `change24h > 0` */
+  gainers: RwaMarketOverviewItem[]
+  /** Max 3, `change24h < 0` */
+  losers: RwaMarketOverviewItem[]
+  /** ISO 8601, latest `RwaMarketData.updatedAt` */
+  updatedAt: string | null
+  /** `allowedTradingTime` of the first registry asset that has one */
+  tradingTime: RwaTradingTime | null
+}
+
+export interface RwaMarketOverviewItem {
+  ticker: string
+  title: string
+  /** `RwaTokenMarketData.logoUrl` of the reference token */
+  logoUrl: string | null
+  /** Percent */
+  change24h: number | null
+  /** USD, all networks */
+  dexVolume24h: number | null
+  /** Hourly DEX volume in `mostTraded`, 1D price in movers */
+  series: RwaChartPoint[] | null
+}
+
+export interface RwaMarketOverviewTotals {
+  /** USD */
+  onchainCap: number | null
+  /** USD */
+  dexVolume24h: number | null
+  /** 7 days */
+  onchainCapSeries: RwaChartPoint[] | null
+}
+
 /** Stats of every asset token on one network */
 export interface RwaNetworkStats extends DegradableResponse {
   ticker: string

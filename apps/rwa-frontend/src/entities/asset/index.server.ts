@@ -4,6 +4,7 @@ export {
   getAssetChart,
   getAssetNetworkStats,
   getAssetQuotes,
+  getMarketOverview,
   type ListAssetsParams,
   listAssets,
 } from './api/assetsService'

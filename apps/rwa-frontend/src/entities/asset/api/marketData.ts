@@ -2,6 +2,9 @@ import 'server-only'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { sumNullable } from '../lib/sumNullable'
+import { fillHourlySeries } from '../model/marketOverview'
+
 import type {
   RwaAsset,
   RwaChartPoint,
@@ -15,8 +18,10 @@ import type {
 import {
   type CoingeckoChartDays,
   type CoingeckoMarket,
+  type CoingeckoOhlcvCandle,
   fetchCoinsMarkets,
   fetchMarketChart,
+  fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
 } from '@/shared/api/index.server'
 
@@ -24,12 +29,23 @@ export interface MarketDataProvider {
   /** Missing tickers in the result mean the provider has no data for them */
   getMarketData(assets: RwaAsset[]): Promise<Map<string, RwaMarketData>>
   getChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]>
-  /** `tokens` are on `chainId`, `market` gives their prices */
-  getNetworkStats(chainId: number, tokens: RwaToken[], market: RwaMarketData | null): Promise<RwaTokenNetworkStats[]>
+  /** `tokens` are on `chainId`, `tokenMarkets` (keyed by `coingeckoId`) gives their prices */
+  getNetworkStats(
+    chainId: number,
+    tokens: RwaToken[],
+    tokenMarkets: Record<string, RwaTokenMarketData>,
+  ): Promise<RwaTokenNetworkStats[]>
+  /** USD per hour over the last 24h summed over `tokens`, `null` when the provider has no candles for any of them */
+  getHourlyDexVolume(tokens: RwaToken[]): Promise<RwaChartPoint[] | null>
+  /** Keyed by coin id */
+  getPriceHistory(coingeckoIds: string[], days: '7'): Promise<Map<string, RwaChartPoint[]>>
 }
 
 const MARKETS_REVALIDATE_SECONDS = 60
 const ONCHAIN_REVALIDATE_SECONDS = 60
+const OHLCV_REVALIDATE_SECONDS = 300
+const PRICE_HISTORY_REVALIDATE_SECONDS = 3600
+const DEX_VOLUME_HOURS = 24
 
 const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
   '1D': '1',
@@ -77,7 +93,7 @@ export const coingeckoProvider: MarketDataProvider = {
     return toChartPoints(chart.prices)
   },
 
-  async getNetworkStats(chainId, tokens, market) {
+  async getNetworkStats(chainId, tokens, tokenMarkets) {
     const onchainTokens = await fetchOnchainTokens(
       chainId,
       tokens.map((token) => token.address),
@@ -89,7 +105,7 @@ export const coingeckoProvider: MarketDataProvider = {
 
     return tokens.map((token) => {
       const attributes = byAddress.get(getAddressKey(token.address))
-      const price = token.coingeckoId ? (market?.tokens[token.coingeckoId]?.price ?? null) : null
+      const price = token.coingeckoId ? (tokenMarkets[token.coingeckoId]?.price ?? null) : null
       const supply = toFiniteNumber(attributes?.normalized_total_supply)
 
       return {
@@ -98,6 +114,33 @@ export const coingeckoProvider: MarketDataProvider = {
         dexVolume24h: toFiniteNumber(attributes?.volume_usd.h24),
       }
     })
+  },
+
+  async getHourlyDexVolume(tokens) {
+    const candleLists = await Promise.all(
+      tokens.map((token) =>
+        fetchOnchainTokenOhlcv(token.chainId, token.address, 'hour', DEX_VOLUME_HOURS, OHLCV_REVALIDATE_SECONDS),
+      ),
+    )
+    const indexed = candleLists.filter((candles): candles is CoingeckoOhlcvCandle[] => candles !== null)
+
+    if (!indexed.length) return null
+
+    const volumes = indexed.flat().map(([time, , , , , volume]) => ({ time, value: volume }))
+
+    return fillHourlySeries(volumes, Math.floor(Date.now() / 1000), DEX_VOLUME_HOURS)
+  },
+
+  async getPriceHistory(coingeckoIds, days) {
+    const histories = await Promise.all(
+      coingeckoIds.map(async (id) => {
+        const chart = await fetchMarketChart(id, days, PRICE_HISTORY_REVALIDATE_SECONDS)
+
+        return [id, toChartPoints(chart.prices)] as const
+      }),
+    )
+
+    return new Map(histories)
   },
 }
 
@@ -124,12 +167,6 @@ function getCoingeckoIds(asset: RwaAsset): string[] {
   const ids = asset.tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : []))
 
   return [...new Set(ids)]
-}
-
-function sumNullable(values: (number | null)[]): number | null {
-  const defined = values.filter((value): value is number => value !== null)
-
-  return defined.length ? defined.reduce((acc, value) => acc + value, 0) : null
 }
 
 function toFiniteNumber(value: string | null | undefined): number | null {
