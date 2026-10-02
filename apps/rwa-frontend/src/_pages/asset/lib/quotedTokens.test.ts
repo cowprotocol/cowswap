@@ -15,7 +15,7 @@ function quotes(
   side: RwaAssetQuotes['side'],
   aaplxAmount: string | null,
   aaplonAmount: string | null,
-  isAaplonVerified = true,
+  verifiedQuotes: 'all' | 'aaplx' | 'none' = 'all',
 ): RwaAssetQuotes {
   return {
     ticker: 'AAPL',
@@ -26,10 +26,10 @@ function quotes(
       {
         address: AAPLX_MAINNET.address.toLowerCase(),
         amount: aaplxAmount,
-        verified: aaplxAmount !== null,
+        verified: aaplxAmount !== null && verifiedQuotes !== 'none',
         error: aaplxAmount ? null : 'NoLiquidity',
       },
-      { address: AAPLON_MAINNET.address, amount: aaplonAmount, verified: isAaplonVerified, error: null },
+      { address: AAPLON_MAINNET.address, amount: aaplonAmount, verified: verifiedQuotes === 'all', error: null },
     ],
     degraded: false,
   }
@@ -37,7 +37,7 @@ function quotes(
 
 describe('toQuotedTokens', () => {
   it('converts quoted amounts into a USD price per share', () => {
-    const [aaplx, aaplon] = toQuotedTokens(CHAIN_TOKENS, quotes('buy', '4000000000000000000', null), undefined)
+    const [aaplx, aaplon] = toQuotedTokens(CHAIN_TOKENS, quotes('buy', '4000000000000000000', null), undefined, null)
 
     expect(aaplx?.pricePerShare).toBe(250)
     expect(aaplx?.quote?.error).toBeNull()
@@ -45,7 +45,7 @@ describe('toQuotedTokens', () => {
   })
 
   it('has no prices while quotes are loading', () => {
-    expect(toQuotedTokens(CHAIN_TOKENS, undefined, undefined).map(({ pricePerShare }) => pricePerShare)).toEqual([
+    expect(toQuotedTokens(CHAIN_TOKENS, undefined, undefined, null).map(({ pricePerShare }) => pricePerShare)).toEqual([
       null,
       null,
     ])
@@ -59,7 +59,7 @@ describe('toQuotedTokens', () => {
       degraded: false,
     }
 
-    expect(toQuotedTokens(CHAIN_TOKENS, undefined, stats).map((quoted) => quoted.stats?.onchainCap)).toEqual([
+    expect(toQuotedTokens(CHAIN_TOKENS, undefined, stats, null).map((quoted) => quoted.stats?.onchainCap)).toEqual([
       undefined,
       5,
     ])
@@ -68,41 +68,70 @@ describe('toQuotedTokens', () => {
 
 describe('getBestQuotedToken', () => {
   it('picks the cheapest share to buy', () => {
-    const quoted = toQuotedTokens(CHAIN_TOKENS, quotes('buy', '4000000000000000000', '5000000000000000000'), undefined)
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('buy', '4000000000000000000', '5000000000000000000'),
+      undefined,
+      null,
+    )
 
     expect(getBestQuotedToken(quoted, 'buy')).toBe(AAPLON_MAINNET)
   })
 
   it('picks the most paid share to sell', () => {
-    const quoted = toQuotedTokens(CHAIN_TOKENS, quotes('sell', '4000000000000000000', '5000000000000000000'), undefined)
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('sell', '4000000000000000000', '5000000000000000000'),
+      undefined,
+      null,
+    )
 
     expect(getBestQuotedToken(quoted, 'sell')).toBe(AAPLX_MAINNET)
   })
 
   it('picks the only quoted token', () => {
-    const quoted = toQuotedTokens(CHAIN_TOKENS, quotes('buy', null, '5000000000000000000'), undefined)
+    const quoted = toQuotedTokens(CHAIN_TOKENS, quotes('buy', null, '5000000000000000000'), undefined, null)
 
     expect(getBestQuotedToken(quoted, 'buy')).toBe(AAPLON_MAINNET)
   })
 
   it('returns null without quotes', () => {
-    expect(getBestQuotedToken(toQuotedTokens([AAPLX_ARBITRUM], undefined, undefined), 'buy')).toBeNull()
+    expect(getBestQuotedToken(toQuotedTokens([AAPLX_ARBITRUM], undefined, undefined, null), 'buy')).toBeNull()
   })
 
   it('skips an unverified quote even when it is cheaper', () => {
     const quoted = toQuotedTokens(
       CHAIN_TOKENS,
-      quotes('buy', '4000000000000000000', '50000000000000000000', false),
+      quotes('buy', '4000000000000000000', '50000000000000000000', 'aaplx'),
       undefined,
+      null,
     )
 
     expect(getBestQuotedToken(quoted, 'buy')).toBe(AAPLX_MAINNET)
   })
 
-  it('returns null when only unverified quotes are priced', () => {
-    const quoted = toQuotedTokens(CHAIN_TOKENS, quotes('buy', null, '5000000000000000000', false), undefined)
+  it('ranks unverified quotes when no quote is verified', () => {
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('buy', '4000000000000000000', '5000000000000000000', 'none'),
+      undefined,
+      null,
+    )
 
-    expect(getBestQuotedToken(quoted, 'buy')).toBeNull()
+    expect(getBestQuotedToken(quoted, 'buy')).toBe(AAPLON_MAINNET)
+  })
+
+  it('skips a price far from the stock price', () => {
+    // $1000 for 0.32 shares is $3125 a share, against a $230 stock price
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('sell', '4000000000000000000', '320000000000000000'),
+      undefined,
+      230,
+    )
+
+    expect(quoted.map(({ isPriceOutlier }) => isPriceOutlier)).toEqual([false, true])
+    expect(getBestQuotedToken(quoted, 'sell')).toBe(AAPLX_MAINNET)
   })
 })
 
@@ -110,11 +139,11 @@ describe('getAutoToken', () => {
   it('ranks the quotes by their own side, so the previous side keeps its token while the new side loads', () => {
     const sellQuotes = quotes('sell', '4000000000000000000', '5000000000000000000')
 
-    expect(getAutoToken(CHAIN_TOKENS, sellQuotes)).toBe(AAPLX_MAINNET)
-    expect(getAutoToken(CHAIN_TOKENS, { ...sellQuotes, side: 'buy' })).toBe(AAPLON_MAINNET)
+    expect(getAutoToken(CHAIN_TOKENS, sellQuotes, null)).toBe(AAPLX_MAINNET)
+    expect(getAutoToken(CHAIN_TOKENS, { ...sellQuotes, side: 'buy' }, null)).toBe(AAPLON_MAINNET)
   })
 
   it('returns null without quotes on the network', () => {
-    expect(getAutoToken(CHAIN_TOKENS, undefined)).toBeNull()
+    expect(getAutoToken(CHAIN_TOKENS, undefined, null)).toBeNull()
   })
 })

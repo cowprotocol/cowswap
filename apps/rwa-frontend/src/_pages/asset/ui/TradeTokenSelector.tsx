@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { TokenLogo } from './TokenLogo'
 import styles from './TradeTokenSelector.module.css'
 
+import { isRankedQuote } from '../lib/quotedTokens'
 import { getTokenKey } from '../lib/tokenKey'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
@@ -40,6 +41,8 @@ interface TradeTokenOptionProps {
   isBest: boolean
   isLoading: boolean
   isStatsShown: boolean
+  /** Set when other tokens have verified quotes */
+  isUnverifiedShown: boolean
   onSelect(): void
 }
 
@@ -55,7 +58,8 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
   const [isStatsShown, setIsStatsShown] = useState(true)
   const { side, quotedTokens, bestToken, assetToken, isAutoSelected } = selection
   const sideTitle = side === 'buy' ? 'Buy' : 'Sell'
-  const pricedCount = quotedTokens.filter(({ pricePerShare }) => pricePerShare !== null).length
+  const rankedCount = quotedTokens.filter(isRankedQuote).length
+  const hasVerifiedQuote = quotedTokens.some((quoted) => isRankedQuote(quoted) && quoted.quote?.verified)
 
   return (
     <div className={styles.selector}>
@@ -113,9 +117,10 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
               market={market}
               isSelected={quoted.token === assetToken}
               isSelectedByUser={quoted.token === assetToken && !isAutoSelected}
-              isBest={pricedCount > 1 && quoted.token === bestToken}
+              isBest={rankedCount > 1 && quoted.token === bestToken}
               isLoading={selection.isQuotesLoading}
               isStatsShown={isStatsShown}
+              isUnverifiedShown={hasVerifiedQuote && !quoted.quote?.verified}
               onSelect={() => setTokenKey(getTokenKey(quoted.token))}
             />
           </li>
@@ -147,13 +152,14 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 }
 
 function TradeTokenOption({
-  quoted: { token, quote, pricePerShare, stats },
+  quoted: { token, quote, pricePerShare, isPriceOutlier, stats },
   market,
   isSelected,
   isSelectedByUser,
   isBest,
   isLoading,
   isStatsShown,
+  isUnverifiedShown,
   onSelect,
 }: TradeTokenOptionProps): ReactNode {
   const logoUrl = token.coingeckoId ? market?.tokens[token.coingeckoId]?.logoUrl : undefined
@@ -177,10 +183,14 @@ function TradeTokenOption({
           {isSelectedByUser && !isBest && <span className={styles.secondary}>Selected by you</span>}
         </span>
         <span className={styles.quote}>
-          {pricePerShare !== null ? (
+          {isPriceOutlier ? (
+            <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
+              Insufficient liquidity
+            </span>
+          ) : pricePerShare !== null ? (
             <>
               <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
-              {!quote?.verified && (
+              {isUnverifiedShown && (
                 <span className={styles.secondary} title="The order book could not simulate this trade">
                   Unverified quote
                 </span>
