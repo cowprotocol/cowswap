@@ -4939,6 +4939,10 @@ msgstr "is worth"
 msgid "View account"
 msgstr "View account"
 
+#: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
+msgid "TWAP is not available on Solana yet"
+msgstr "TWAP is not available on Solana yet"
+
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping {sentAmount} to {receivedAmount}"
 msgstr "Unwrapping {sentAmount} to {receivedAmount}"
