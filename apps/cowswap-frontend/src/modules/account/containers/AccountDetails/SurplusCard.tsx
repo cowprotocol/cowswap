@@ -4,6 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   ExternalLink,
   FiatAmount,
+  font,
   HelpTooltip,
   Media,
   QuestionTooltipIconWrapper,
@@ -102,22 +103,22 @@ const Wrapper = styled.div`
     }
   }
 
-  ${InfoCard} > div > span {
+  ${InfoCard} > div > p {
     display: flex;
     flex-flow: column wrap;
     align-items: center;
     justify-content: center;
     color: inherit;
+    ${font('FONT_SMALL_PLUS', 'medium')}
+    width: 100%;
+    text-align: center;
   }
 
-  ${InfoCard} > div > span > i,
+  ${InfoCard} > div > p > strong,
     ${InfoCard} > div > a,
-    ${InfoCard} > div > span > p {
+    ${InfoCard} > div > p > span {
     display: flex;
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 1.1;
+    ${font('FONT_SMALL_PLUS', 'medium')}
     width: 100%;
     text-align: center;
     justify-content: center;
@@ -125,7 +126,7 @@ const Wrapper = styled.div`
     color: inherit;
   }
 
-  ${InfoCard} > div > span > i {
+  ${InfoCard} > div > p > strong {
     opacity: 0.6;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 
@@ -134,11 +135,7 @@ const Wrapper = styled.div`
     }
   }
 
-  ${InfoCard} > div > span > p {
-    color: inherit;
-  }
-
-  ${InfoCard} > div > span > b {
+  ${InfoCard} > div > p > b {
     font-size: 28px;
     font-weight: bold;
     color: var(${UI.COLOR_SUCCESS});
@@ -146,6 +143,11 @@ const Wrapper = styled.div`
     text-align: center;
     margin: 12px auto 0;
     word-break: break-all;
+  }
+
+  ${InfoCard} > div > p > span {
+    display: block;
+    margin: 12px auto 0;
   }
 
   ${InfoCard} > div > a {
@@ -190,30 +192,34 @@ export function SurplusCard() {
       <TotalSurplusUpdater />
       <InfoCard>
         <div>
-          <span>
-            <i>
+          <p>
+            <strong>
               <Trans>Your total surplus</Trans>{' '}
               <HelpTooltip
                 text={t`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}`}
               />
-            </i>
-          </span>
-          <span>
+            </strong>
+          </p>
+
+          <p>
             {isLoading ? (
-              <p>
-                <Trans>Loading...</Trans>
-              </p>
+              <Trans>Loading...</Trans>
             ) : showSurplusAmount ? (
               <b>
                 +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
               </b>
             ) : (
-              <p>
+              <span>
                 <Trans>No surplus for the given time period</Trans>
-              </p>
+              </span>
             )}
-          </span>
-          <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
+          </p>
+
+          {surplusUsdAmount && (
+            <small>
+              <FiatAmount amount={surplusUsdAmount} accurate={false} />
+            </small>
+          )}
         </div>
         <div>
           <ExternalLink href={'https://cow.fi/learn/announcing-cow-swap-surplus-notifications'}>

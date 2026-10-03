@@ -13,7 +13,7 @@ import {
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@cowprotocol/currency'
-import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
+import { ButtonPrimary, HoverTooltip, SimpleStyledText, TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -152,7 +152,7 @@ export default function Profile() {
       </VestingBreakdown>
     ),
     vested: (
-      <div>
+      <SimpleStyledText>
         <Trans>
           <p>
             <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert
@@ -163,7 +163,7 @@ export default function Profile() {
           </p>
           <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
         </Trans>
-      </div>
+      </SimpleStyledText>
     ),
   }
 

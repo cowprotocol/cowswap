@@ -63,7 +63,7 @@ export const BannerInnerWrapper = styled.div`
 
   > p {
     padding: 0 10px;
-    margin-bottom: 0;
+    margin: 16px 0 0;
   }
 
   > p,
