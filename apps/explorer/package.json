@@ -47,6 +47,7 @@
     "@rjsf/core": "4.2.3",
     "@sentry/react": "7.80.0",
     "@sentry/tracing": "7.80.0",
+    "@solana/kit": "8.0.0",
     "@uniswap/token-lists": "1.0.0-beta.33",
     "bignumber.js": "9.1.2",
     "bn.js": "5.2.1",

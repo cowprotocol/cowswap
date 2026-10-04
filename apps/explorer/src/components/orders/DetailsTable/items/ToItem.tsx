@@ -18,11 +18,26 @@ interface ToItemProps {
   isBridgingOrder: boolean
   bridgeProviderType
   onCopy(label: string): void
+  /** Solana only, where the receiver is a token account whose owner these two can recover. */
+  orderOwner?: string
+  buyTokenAddress?: string
 }
 
-export function ToItem({ receiver, isBridgingOrder, bridgeProviderType, onCopy, chainId }: ToItemProps): ReactNode {
+export function ToItem({
+  receiver,
+  isBridgingOrder,
+  bridgeProviderType,
+  onCopy,
+  chainId,
+  orderOwner,
+  buyTokenAddress,
+}: ToItemProps): ReactNode {
   const isSolana = isSolanaChain(chainId)
-  const { owner: tokenAccountOwner, isLoading } = useSolanaTokenAccountOwner(isSolana ? receiver : undefined)
+  const { owner: tokenAccountOwner, isLoading } = useSolanaTokenAccountOwner({
+    tokenAccount: isSolana ? receiver : undefined,
+    orderOwner,
+    buyMint: buyTokenAddress,
+  })
 
   const recipient = tokenAccountOwner ?? receiver
   // Orders are keyed by owner, so a token account's history page would always come back empty.
