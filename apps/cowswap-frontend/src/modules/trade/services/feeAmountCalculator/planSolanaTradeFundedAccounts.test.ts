@@ -2,6 +2,9 @@
  * PublicKey.isOnCurve misreports every point as on-curve under jsdom, exhausting findProgramAddressSync's bumps.
  * @jest-environment node
  */
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { getAssociatedTokenAddressSync, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
@@ -32,6 +35,21 @@ describe('planSolanaTradeFundedAccounts', () => {
     expect(accounts[0].address?.equals(getWsolAssociatedTokenAccount(OWNER))).toBe(true)
     expect(accounts[1].address?.equals(quoteFor(TOKEN_PROGRAM_ID).intent.buyTokenAccount)).toBe(true)
     expect(accounts[2].address).toBeUndefined()
+  })
+
+  // A native-SOL buy creates no token account (settlement pays lamports). Without this skip the
+  // pre-flight would try to unpack the System Program sentinel as a mint, throw, and silently
+  // disable the shortfall check for every buy-native trade.
+  it('declares only the order PDA on a native buy, mirroring the skipped buy-ATA step', () => {
+    const nativeQuote = {
+      intent: { buyMint: new PublicKey(NATIVE_CURRENCIES[SupportedChainId.SOLANA].address), buyTokenAccount: OWNER },
+      buyTokenProgramId: undefined,
+    } as BuyAtaQuote
+
+    const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote: nativeQuote, isNativeSell: false })
+
+    expect(accounts).toHaveLength(1)
+    expect(accounts[0].address).toBeUndefined()
   })
 
   it('drops the wrapped-SOL account when the sell token is not native', () => {

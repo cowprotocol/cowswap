@@ -19,8 +19,15 @@ export interface PlanCreateBuyAtaStepParams {
   buySymbol: string
 }
 
+// Empty for a native-SOL buy — the skip lives here, not only in the step, so the pre-flight
+// `planSolanaTradeFundedAccounts` never prices a buy account the bundle won't create (the native
+// sentinel is the System Program address, which `getSolanaTradeOverhead` cannot unpack as a mint).
 export function getCreateBuyAtaFundedAccounts(quote: BuyAtaQuote): SolanaFundedAccount[] {
   const { intent, buyTokenProgramId } = quote
+
+  if (getIsNativeToken(SupportedChainId.SOLANA, intent.buyMint.toBase58())) {
+    return []
+  }
 
   return [
     {
@@ -47,8 +54,9 @@ export function planCreateBuyAtaStep({
   buySymbol,
 }: PlanCreateBuyAtaStepParams): SolanaFlowStep | null {
   const { intent, buyTokenProgramId } = quote
+  const fundedAccounts = getCreateBuyAtaFundedAccounts(quote)
 
-  if (getIsNativeToken(SupportedChainId.SOLANA, intent.buyMint.toBase58())) {
+  if (fundedAccounts.length === 0) {
     return null
   }
 
@@ -63,6 +71,6 @@ export function planCreateBuyAtaStep({
       ),
     ],
     summary: t`Create ${buySymbol} account`,
-    fundedAccounts: getCreateBuyAtaFundedAccounts(quote),
+    fundedAccounts,
   }
 }
