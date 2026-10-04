@@ -12,11 +12,10 @@ const MIN_NATIVE_CURRENCY_FOR_GAS_MID = BigInt('3000000000000000') // 0.003 nati
 const MIN_NATIVE_CURRENCY_FOR_GAS_LOW = BigInt('1000000000000000') // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
 // SOL has 9 decimals, unlike the 18-decimal tiers above, so it needs its own value rather than the
 // LOW fallback. A trade transaction funds the wrapped-SOL account, the buy-token account and the order
-// PDA on top of the ~5_000 lamport fee plus the same again reserved for a follow-up cancel, and the
-// wallet itself must stay rent-exempt: ~5_628_480 lamports at the rent rate of 2026-09. Only a
-// fallback: callers pass the live figure from `useSolanaTradeOverhead` as `nativeReserve` when it is
-// known; this covers the first render and sponsored trades (where the static cushion also absorbs
-// the funder vanishing before signing).
+// PDA on top of the ~5_000 lamport fee, and the wallet itself must stay rent-exempt: ~5_623_480
+// lamports at the rent rate of 2026-09. Only a fallback: callers pass the live figure from
+// `useSolanaTradeOverhead` as `nativeReserve` when it is known; this covers the first render and
+// sponsored trades (where the static cushion also absorbs the funder vanishing before signing).
 const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA = BigInt('10000000') // 0.01 SOL
 
 // Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.

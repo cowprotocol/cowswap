@@ -7,15 +7,9 @@ import { SolanaFundedAccount } from '../solanaFlow/types'
 // for both, so the bundle carries a single signature.
 const SIGNATURE_FEE_LAMPORTS = 5000n
 
-// An unfilled order is cancelled by a separate follow-up transaction (one `cancelOrder` instruction,
-// fee-paid by the owner — see `useSolanaCancelOrder`). Reserved upfront so placing an order can never
-// strand the user with one they cannot afford to cancel.
-const CANCEL_FEE_RESERVE_LAMPORTS = SIGNATURE_FEE_LAMPORTS
-
 /**
  * Lamports a Solana trade needs on top of the sell amount: rent for every account its steps declare
- * they create, the signature fee, the fee of a potential follow-up cancel transaction, and the
- * reserve the fee payer must still hold once it settles.
+ * they create, the signature fee, and the reserve the fee payer must still hold once it settles.
  *
  * Knows nothing about wrapping, buy-token accounts or orders — it prices whatever the steps declare,
  * so a new step that creates an account is covered without touching this. Rent is read from the chain
@@ -41,10 +35,7 @@ export async function getSolanaTradeOverhead(
   const sizes = [0, ...unfunded.map(({ size }) => resolveSize(size, mintInfos))]
   const rents = await Promise.all(sizes.map((size) => connection.getMinimumBalanceForRentExemption(size)))
 
-  return rents.reduce<bigint>(
-    (total, rent) => total + BigInt(rent),
-    SIGNATURE_FEE_LAMPORTS + CANCEL_FEE_RESERVE_LAMPORTS,
-  )
+  return rents.reduce<bigint>((total, rent) => total + BigInt(rent), SIGNATURE_FEE_LAMPORTS)
 }
 
 function resolveSize(size: SolanaFundedAccount['size'], mintInfos: Map<string, AccountInfo<Buffer> | null>): number {
