@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -23,6 +23,14 @@ interface ToItemProps {
   buyTokenAddress?: string
 }
 
+interface ToTooltipParams {
+  isBridgingOrder: boolean
+  bridgeProviderType: ToItemProps['bridgeProviderType']
+  isSolana: boolean
+  hasRecipient: boolean
+  hasTokenAccount: boolean
+}
+
 export function ToItem({
   receiver,
   isBridgingOrder,
@@ -42,7 +50,15 @@ export function ToItem({
   const recipient = tokenAccountOwner ?? receiver
   // Orders are keyed by owner, so a token account's history page would always come back empty.
   const showOrderHistory = !isSolana || !!tokenAccountOwner
-  const toTooltip = getToTooltip(isBridgingOrder, bridgeProviderType, isSolana, !!tokenAccountOwner)
+  // A native SOL buy is credited to the wallet directly, leaving no token account to show.
+  const hasTokenAccount = !!tokenAccountOwner && !areAddressesEqual(recipient, receiver)
+  const toTooltip = getToTooltip({
+    isBridgingOrder,
+    bridgeProviderType,
+    isSolana,
+    hasRecipient: !!tokenAccountOwner,
+    hasTokenAccount,
+  })
 
   return (
     <>
@@ -63,7 +79,7 @@ export function ToItem({
           </Wrapper>
         )}
       </DetailRow>
-      {tokenAccountOwner && (
+      {hasTokenAccount && (
         <DetailRow label="Token account" tooltipText={DetailsTableTooltips.solanaTokenAccount}>
           <RowWithCopyButton
             textToCopy={receiver}
@@ -76,12 +92,13 @@ export function ToItem({
   )
 }
 
-function getToTooltip(
-  isBridgingOrder: boolean,
-  bridgeProviderType: ToItemProps['bridgeProviderType'],
-  isSolana: boolean,
-  hasTokenAccountOwner: boolean,
-): ReactNode {
+function getToTooltip({
+  isBridgingOrder,
+  bridgeProviderType,
+  isSolana,
+  hasRecipient,
+  hasTokenAccount,
+}: ToTooltipParams): ReactNode {
   if (isBridgingOrder) {
     return bridgeProviderType === 'ReceiverAccountBridgeProvider'
       ? DetailsTableTooltips.toBridgeReceiver
@@ -89,6 +106,7 @@ function getToTooltip(
   }
 
   if (!isSolana) return DetailsTableTooltips.to
+  if (hasTokenAccount) return DetailsTableTooltips.toSolanaOwner
 
-  return hasTokenAccountOwner ? DetailsTableTooltips.toSolanaOwner : DetailsTableTooltips.toSolana
+  return hasRecipient ? DetailsTableTooltips.to : DetailsTableTooltips.toSolana
 }

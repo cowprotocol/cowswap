@@ -1,4 +1,4 @@
-import { AddressKey } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, AddressKey } from '@cowprotocol/cow-sdk'
 
 import useSWR from 'swr'
 
@@ -15,6 +15,28 @@ export interface SolanaTokenAccountOwnerParams {
   /** The order's owner, whose own associated token account the receiver is unless it was customised. */
   orderOwner: AddressKey | undefined
   buyMint: AddressKey | undefined
+}
+
+export async function resolveOwner(
+  tokenAccount: AddressKey,
+  orderOwner: AddressKey | undefined,
+  buyMint: AddressKey | undefined,
+): Promise<string | null> {
+  // A native SOL buy is paid out as lamports, so the book names the wallet itself where every other
+  // order names a token account. Nothing to read or derive, and no collision to fear: a wallet is
+  // owned by the system program and cannot hold an SPL balance.
+  if (orderOwner && areAddressesEqual(tokenAccount, orderOwner)) return orderOwner
+
+  const owner = await getTokenAccountOwner(tokenAccount)
+
+  if (owner) return owner
+
+  // Reached only once the read came back empty, never on a failed one — it throws, and SWR records
+  // that as an error instead. An account that exists may have been transferred away from the owner
+  // it was derived for, and only a completed read rules that out.
+  if (!orderOwner || !buyMint) return null
+
+  return (await isAssociatedTokenAccountOf(tokenAccount, orderOwner, buyMint)) ? orderOwner : null
 }
 
 /**
@@ -34,21 +56,4 @@ export function useSolanaTokenAccountOwner({
   )
 
   return { owner: data ?? undefined, isLoading }
-}
-
-async function resolveOwner(
-  tokenAccount: AddressKey,
-  orderOwner: AddressKey | undefined,
-  buyMint: AddressKey | undefined,
-): Promise<string | null> {
-  const owner = await getTokenAccountOwner(tokenAccount)
-
-  if (owner) return owner
-
-  // Reached only once the read came back empty, never on a failed one — it throws, and SWR records
-  // that as an error instead. An account that exists may have been transferred away from the owner
-  // it was derived for, and only a completed read rules that out.
-  if (!orderOwner || !buyMint) return null
-
-  return (await isAssociatedTokenAccountOf(tokenAccount, orderOwner, buyMint)) ? orderOwner : null
 }
