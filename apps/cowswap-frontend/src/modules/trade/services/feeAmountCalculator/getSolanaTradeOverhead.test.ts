@@ -30,7 +30,8 @@ const WALLET_RENT = 650_240
 const TOKEN_ACCOUNT_RENT = 1_488_440
 const TOKEN_2022_ACCOUNT_RENT = 1_554_480
 const ORDER_RENT = 1_991_360
-const SIGNATURE_FEE = 5_000n
+// The trade's own signature fee plus the reserved fee of a potential follow-up cancel transaction.
+const SIGNATURE_AND_CANCEL_FEES = 10_000n
 const ORDER_ACCOUNT_SIZE = 264
 
 const RENT_BY_SIZE: Record<number, number> = {
@@ -110,7 +111,7 @@ describe('getSolanaTradeOverhead', () => {
 
     const overhead = await getSolanaTradeOverhead(connection, [ORDER_ACCOUNT])
 
-    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + SIGNATURE_FEE)
+    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + SIGNATURE_AND_CANCEL_FEES)
   })
 
   it('skips the rent of accounts that already exist on chain', async () => {
@@ -118,7 +119,7 @@ describe('getSolanaTradeOverhead', () => {
 
     const overhead = await getSolanaTradeOverhead(connection, [WSOL_FUNDED_ACCOUNT, BUY_ACCOUNT, ORDER_ACCOUNT])
 
-    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + SIGNATURE_FEE)
+    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + SIGNATURE_AND_CANCEL_FEES)
   })
 
   it('charges every declared account when none of them exist yet', async () => {
@@ -126,7 +127,9 @@ describe('getSolanaTradeOverhead', () => {
 
     const overhead = await getSolanaTradeOverhead(connection, [WSOL_FUNDED_ACCOUNT, BUY_ACCOUNT, ORDER_ACCOUNT])
 
-    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + BigInt(TOKEN_ACCOUNT_RENT) * 2n + SIGNATURE_FEE)
+    expect(overhead).toBe(
+      BigInt(WALLET_RENT) + BigInt(ORDER_RENT) + BigInt(TOKEN_ACCOUNT_RENT) * 2n + SIGNATURE_AND_CANCEL_FEES,
+    )
   })
 
   it('resolves a token account size from its mint rather than assuming the base size', async () => {
@@ -144,14 +147,14 @@ describe('getSolanaTradeOverhead', () => {
 
     expect(connection.getMinimumBalanceForRentExemption).toHaveBeenCalledWith(TOKEN_2022_ACCOUNT_SIZE)
     expect(connection.getMinimumBalanceForRentExemption).not.toHaveBeenCalledWith(ACCOUNT_SIZE)
-    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(TOKEN_2022_ACCOUNT_RENT) + SIGNATURE_FEE)
+    expect(overhead).toBe(BigInt(WALLET_RENT) + BigInt(TOKEN_2022_ACCOUNT_RENT) + SIGNATURE_AND_CANCEL_FEES)
   })
 
-  it('costs nothing but the fee and the payer reserve when no step creates an account', async () => {
+  it('costs nothing but the fees and the payer reserve when no step creates an account', async () => {
     const connection = createConnection([])
 
     const overhead = await getSolanaTradeOverhead(connection, [])
 
-    expect(overhead).toBe(BigInt(WALLET_RENT) + SIGNATURE_FEE)
+    expect(overhead).toBe(BigInt(WALLET_RENT) + SIGNATURE_AND_CANCEL_FEES)
   })
 })

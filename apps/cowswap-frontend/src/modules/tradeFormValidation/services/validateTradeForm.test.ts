@@ -312,6 +312,24 @@ describe('validateTradeForm - balance vs slippage', () => {
     expect(result || []).not.toContain(TradeFormValidation.SolanaInsufficientNativeBalance)
   })
 
+  // A Solana limit order pays the order PDA's rent and the fee at signing time, so the
+  // place-without-balance convention must not lift this check.
+  test('shows SolanaInsufficientNativeBalance for a limit order even when placing without balance is allowed', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        tradeType: TradeType.LIMIT_ORDER,
+      },
+      isInsufficientBalanceOrderAllowed: true,
+      swapMaximumSellAmount: null,
+      solanaNativeShortfall: mockCurrencyAmount('5000'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result).toContain(TradeFormValidation.SolanaInsufficientNativeBalance)
+  })
+
   test('ranks BalanceInsufficient ahead of SolanaInsufficientNativeBalance when both apply', () => {
     const context = {
       ...baseContext,

@@ -179,10 +179,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
     }
+  }
 
-    if (solanaNativeShortfall) {
-      validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
-    }
+  // Outside the `canPlaceOrderWithoutBalance` gate: that convention is about the *sell* funds of an
+  // off-chain order arriving later, while on Solana even a limit order pays the order PDA's rent and
+  // the fee at signing time. The hook is already null on other chains and for sponsored trades.
+  if (!!account && solanaNativeShortfall) {
+    validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
   }
 
   const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
