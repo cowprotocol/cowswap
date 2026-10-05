@@ -25,3 +25,5 @@ export interface ExpansionControl {
 export type SupplyVariant = 'circulating' | 'total'
 
 export type TimeRange = (typeof TIME_RANGES)[number]
+
+export type ChartMode = 'simple' | 'advanced'
