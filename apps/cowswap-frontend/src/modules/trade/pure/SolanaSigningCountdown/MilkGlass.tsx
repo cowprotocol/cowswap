@@ -26,16 +26,23 @@ const GLASS_FINE_EDGE_REFLECTION_PATH = 'M3 0H6L3 50H0L3 0Z'
 const MILK_MOUSTACHE_PATH =
   'M0 3.13844C1 -0.861561 7 -0.861561 9 2.13844C11 -0.861561 17 -0.861561 18 3.13844C16 7.13844 11 6.13844 9 4.13844C7 6.13844 2 7.13844 0 3.13844Z'
 
+/** Glass ink on the expired (amber) hero, from the exported Figma assets. */
+const EXPIRED_INK = '#996815'
+
 export interface MilkGlassProps {
   /** Remaining share of the signing window, 0..1: 1 renders a full glass, 0 an empty one. */
   fraction: number
+  /** Recolors the glass for the amber expired hero; reflections stay white in both. */
+  isExpired?: boolean
 }
 
-export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
+export function MilkGlass({ fraction, isExpired = false }: MilkGlassProps): ReactNode {
   const level = Math.min(1, Math.max(0, fraction))
   const drainY = (1 - level) * DRAIN_TRAVEL_PX
   // The design fades the moustache in over the last fifth of the window and out again just before zero.
   const isMoustacheVisible = level > 0.03 && level <= 0.2
+  const strokeColor = isExpired ? EXPIRED_INK : 'white'
+  const markColor = isExpired ? EXPIRED_INK : '#00234E'
 
   return (
     <Vessel viewBox={`0 0 ${VESSEL_WIDTH} ${VESSEL_HEIGHT}`} role="img" aria-hidden="true" overflow="visible">
@@ -45,7 +52,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
         </clipPath>
       </defs>
 
-      <ellipse cx="75" cy="205.5" rx="58" ry="4.5" opacity="0.1" fill="#00234E" />
+      <ellipse cx="75" cy="205.5" rx="58" ry="4.5" opacity="0.1" fill={markColor} />
       <path d={GLASS_SILHOUETTE_PATH} transform="translate(5 4)" opacity="0.12" fill="white" />
 
       <g clipPath="url(#solana-signing-milk-glass-clip)">
@@ -61,7 +68,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
         transform="translate(4 4)"
         opacity="0.75"
         fill="none"
-        stroke="white"
+        stroke={strokeColor}
         strokeWidth="2"
       />
       <path
@@ -69,7 +76,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
         transform="translate(5 -2)"
         opacity="0.8"
         fill="none"
-        stroke="white"
+        stroke={strokeColor}
         strokeWidth="2"
       />
       <path
@@ -77,7 +84,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
         transform="translate(48.75 108)"
         fillRule="evenodd"
         clipRule="evenodd"
-        fill="#00234E"
+        fill={markColor}
       />
       <path d={GLASS_REFLECTION_PATH} transform="translate(17 24)" opacity="0.35" fill="white" />
       <path d={GLASS_FINE_EDGE_REFLECTION_PATH} transform="translate(127 32)" opacity="0.4" fill="white" />
