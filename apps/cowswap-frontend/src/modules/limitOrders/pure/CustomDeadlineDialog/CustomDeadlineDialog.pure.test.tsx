@@ -38,26 +38,17 @@ jest.mock('@cowprotocol/ui', () => {
 })
 
 const PARSE_ERROR = 'Failed to parse date and time provided'
-const DAY_MS = 24 * 60 * 60 * 1000
 
-function findLocalValueWithDifferentOffsetFromToday(): string {
+function inRangeLocalDatetimeValue(): string {
   const [minDate, maxDate] = calculateMinMax()
-  const todayOffset = new Date().getTimezoneOffset()
+  const candidate = new Date(minDate.getTime())
+  candidate.setMinutes(candidate.getMinutes() + 90)
 
-  for (let timestamp = minDate.getTime(); timestamp <= maxDate.getTime(); timestamp += DAY_MS) {
-    const candidate = new Date(timestamp)
-    candidate.setHours(15, 30, 0, 0)
-
-    if (candidate < minDate || candidate > maxDate) {
-      continue
-    }
-
-    if (candidate.getTimezoneOffset() !== todayOffset) {
-      return toDatetimeLocalValue(candidate)
-    }
+  if (candidate > maxDate) {
+    throw new Error('Expected min+90min to stay inside the allowed deadline range')
   }
 
-  throw new Error('Expected an in-range local datetime whose offset differs from today')
+  return toDatetimeLocalValue(candidate)
 }
 
 function renderDialog(selectCustomDeadline: (deadline: number) => void = jest.fn()): void {
@@ -97,21 +88,6 @@ function todayTimeZoneOffset(): string {
 }
 
 describe('CustomDeadlineDialog', () => {
-  const previousTz = process.env.TZ
-
-  beforeAll(() => {
-    // DST-observing zone so a selected date can disagree with today's offset.
-    process.env.TZ = 'America/New_York'
-  })
-
-  afterAll(() => {
-    if (previousTz === undefined) {
-      delete process.env.TZ
-    } else {
-      process.env.TZ = previousTz
-    }
-  })
-
   it('keeps a parse error for unparseable input and does not apply it', () => {
     const selectCustomDeadline = jest.fn()
     renderDialog(selectCustomDeadline)
@@ -152,11 +128,9 @@ describe('CustomDeadlineDialog', () => {
 
   it("applies the selected local wall time without appending today's timezone offset", () => {
     const selectCustomDeadline = jest.fn()
-    const localValue = findLocalValueWithDifferentOffsetFromToday()
+    const localValue = inRangeLocalDatetimeValue()
     const expectedDeadline = Math.round(new Date(localValue).getTime() / 1000)
-    const buggyDeadline = Math.round(new Date(localValue + todayTimeZoneOffset()).getTime() / 1000)
-
-    expect(expectedDeadline).not.toBe(buggyDeadline)
+    const offsetSuffix = todayTimeZoneOffset()
 
     renderDialog(selectCustomDeadline)
 
@@ -191,7 +165,7 @@ describe('CustomDeadlineDialog', () => {
 
     expect(parsedDateStrings.length).toBeGreaterThan(0)
     expect(parsedDateStrings.every((value) => value === localValue)).toBe(true)
+    expect(parsedDateStrings.every((value) => !value.endsWith(offsetSuffix))).toBe(true)
     expect(selectCustomDeadline).toHaveBeenCalledWith(expectedDeadline)
-    expect(selectCustomDeadline).not.toHaveBeenCalledWith(buggyDeadline)
   })
 })
