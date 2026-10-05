@@ -72,6 +72,27 @@ describe('ConfirmationModal', () => {
       expect(screen.queryByText(INSTRUCTION)).not.toBeNull()
     })
 
+    it('should render a ReactNode description without wrapping it in a paragraph', () => {
+      renderComponent({
+        skipInput: true,
+        description: (
+          <>
+            <p>You're switching from Ethereum to Solana.</p>
+            <p>This requires connecting a different wallet.</p>
+          </>
+        ),
+      })
+
+      const firstParagraph = screen.getByText("You're switching from Ethereum to Solana.")
+      const secondParagraph = screen.getByText('This requires connecting a different wallet.')
+
+      expect(firstParagraph.tagName).toBe('P')
+      expect(firstParagraph.parentElement?.tagName).not.toBe('P')
+      expect(secondParagraph.tagName).toBe('P')
+      expect(secondParagraph.parentElement?.tagName).not.toBe('P')
+      expect(screen.queryByText(INSTRUCTION)).not.toBeNull()
+    })
+
     it('should render nothing above the button when bottomContent is null', () => {
       renderComponent({ skipInput: true, bottomContent: null })
 

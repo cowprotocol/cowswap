@@ -59,7 +59,7 @@ export function ConfirmationModal({
   const descriptionContent =
     description || instruction ? (
       <>
-        {description ? <p>{description}</p> : null}
+        {description ? typeof description === 'string' ? <p>{description}</p> : description : null}
         {instruction ? <p>{instruction}</p> : null}
       </>
     ) : undefined
