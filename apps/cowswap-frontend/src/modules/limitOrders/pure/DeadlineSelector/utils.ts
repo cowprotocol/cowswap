@@ -41,29 +41,6 @@ export function getInputStartDate(customDeadline: number | null, minDate: Date):
   return minDate
 }
 
-/**
- * Get client side timezone offset
- *
- * @returns {(+|-)HH:mm} - Where `HH` is 2 digits hours and `mm` 2 digits minutes.
- *
- * From https://stackoverflow.com/a/30377368/1272513 on 2023/01/31
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getTimeZoneOffset() {
-  const timezoneOffset = new Date().getTimezoneOffset()
-  const offset = Math.abs(timezoneOffset)
-  const offsetOperator = timezoneOffset < 0 ? '+' : '-'
-  const offsetHours = Math.floor(offset / 60)
-    .toString()
-    .padStart(2, '0')
-  const offsetMinutes = Math.floor(offset % 60)
-    .toString()
-    .padStart(2, '0')
-
-  return `${offsetOperator}${offsetHours}:${offsetMinutes}`
-}
-
 export function limitDateString(date: Date | number): string {
   const _date = typeof date === 'number' ? new Date(date * 1000) : date
 

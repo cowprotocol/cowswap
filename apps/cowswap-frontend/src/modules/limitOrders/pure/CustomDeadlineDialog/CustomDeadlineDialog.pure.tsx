@@ -9,13 +9,7 @@ import { t } from '@lingui/core/macro'
 
 import * as styledEl from './CustomDeadlineDialog.styled'
 
-import {
-  calculateMinMax,
-  formatDateToLocalTime,
-  getInputStartDate,
-  getTimeZoneOffset,
-  limitDateString,
-} from '../DeadlineSelector/utils'
+import { calculateMinMax, formatDateToLocalTime, getInputStartDate, limitDateString } from '../DeadlineSelector/utils'
 
 const CUSTOM_DEADLINE_INPUT_ID = 'custom-deadline'
 const CUSTOM_DEADLINE_ERROR_ID = 'custom-deadline-error'
@@ -97,7 +91,7 @@ export function CustomDeadlineDialog({
   }, [])
 
   const handleApply = useCallback(() => {
-    const newDeadline = Math.round(new Date(value + getTimeZoneOffset()).getTime() / 1000)
+    const newDeadline = Math.round(new Date(value).getTime() / 1000)
 
     if (Number.isNaN(newDeadline)) {
       setError(t`Failed to parse date and time provided`)
