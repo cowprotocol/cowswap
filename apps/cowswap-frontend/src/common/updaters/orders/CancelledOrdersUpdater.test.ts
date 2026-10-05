@@ -1,5 +1,3 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { shouldRecheckCancelledOrder } from './CancelledOrdersUpdater'
@@ -24,15 +22,13 @@ describe('shouldRecheckCancelledOrder', () => {
   it('rechecks a soft-cancelled order on any chain', () => {
     const order = createOrder({ cancellationHash: undefined })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.MAINNET, NOW)).toBe(true)
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(true)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(true)
   })
 
-  // A successful EVM on-chain cancellation is settlement-contract-guaranteed final, so it's skipped.
-  it('skips a hard-cancelled order on EVM', () => {
+  it('rechecks a hard-cancelled order on EVM to detect an earlier fill', () => {
     const order = createOrder({ cancellationHash: '0xhash', status: OrderStatus.CANCELLED })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.MAINNET, NOW)).toBe(false)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(true)
   })
 
   // Solana's cancel instruction has no such guarantee against a same-time solver fill, so it must
@@ -40,19 +36,19 @@ describe('shouldRecheckCancelledOrder', () => {
   it('still rechecks a hard-cancelled order on Solana', () => {
     const order = createOrder({ cancellationHash: 'solana-sig', status: OrderStatus.CANCELLED })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(true)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(true)
   })
 
   it('ignores an order owned by a different account', () => {
     const order = createOrder({ owner: '0xsomeoneelse' })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(false)
   })
 
   it('ignores a soft-cancelled order created outside the recheck window', () => {
     const order = createOrder({ creationTime: new Date(NOW - 10 * 60 * 1000).toISOString() })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(false)
   })
 
   // The window must be measured from the cancellation, not the order's creation - an order can sit
@@ -65,7 +61,7 @@ describe('shouldRecheckCancelledOrder', () => {
       status: OrderStatus.CANCELLED,
     })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(true)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(true)
   })
 
   it('ignores a hard-cancelled Solana order whose cancellation itself is outside the recheck window', () => {
@@ -76,6 +72,22 @@ describe('shouldRecheckCancelledOrder', () => {
       status: OrderStatus.CANCELLED,
     })
 
-    expect(shouldRecheckCancelledOrder(order, ACCOUNT, SupportedChainId.SOLANA, NOW)).toBe(false)
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(false)
+  })
+  it('rechecks an old EVM order from its recent cancellation time', () => {
+    const order = createOrder({
+      creationTime: new Date(NOW - 60 * 60 * 1000).toISOString(),
+      cancellationHash: '0xhash',
+      cancellationHashTime: new Date(NOW - 1000).toISOString(),
+      status: OrderStatus.CANCELLED,
+    })
+    expect(shouldRecheckCancelledOrder(order, ACCOUNT, NOW)).toBe(true)
+    expect(
+      shouldRecheckCancelledOrder(
+        { ...order, cancellationHashTime: new Date(NOW - 10 * 60 * 1000).toISOString() },
+        ACCOUNT,
+        NOW,
+      ),
+    ).toBe(false)
   })
 })

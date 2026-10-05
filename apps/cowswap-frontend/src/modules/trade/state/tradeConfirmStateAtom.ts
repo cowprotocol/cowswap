@@ -3,6 +3,7 @@ import { atom } from 'jotai'
 import { TradeAmounts } from 'common/types'
 
 interface TradeConfirmModalState {
+  sessionId: number
   isOpen: boolean
   pendingTrade: TradeAmounts | null
   transactionHash: string | null
@@ -22,6 +23,7 @@ interface TradeConfirmModalState {
 }
 
 export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
+  sessionId: 0,
   isOpen: false,
   pendingTrade: null,
   transactionHash: null,
@@ -33,6 +35,7 @@ export const tradeConfirmStateAtom = atom<TradeConfirmModalState>({
 
 export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmation: boolean = false) => {
   set(tradeConfirmStateAtom, () => ({
+    sessionId: get(tradeConfirmStateAtom).sessionId + 1,
     isOpen: true,
     error: null,
     pendingTrade: null,
@@ -46,6 +49,7 @@ export const setOpenTradeConfirmAtom = atom(null, (get, set, forcePriceConfirmat
 export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
   set(tradeConfirmStateAtom, () => ({
     ...get(tradeConfirmStateAtom),
+    sessionId: get(tradeConfirmStateAtom).sessionId + 1,
     isOpen: false,
     error: null,
     pendingTrade: null,
@@ -58,6 +62,7 @@ export const setCloseTradeConfirmAtom = atom(null, (get, set) => {
 export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => {
   set(tradeConfirmStateAtom, () => ({
     ...get(tradeConfirmStateAtom),
+    sessionId: get(tradeConfirmStateAtom).sessionId + 1,
     error,
     isOpen: false,
     pendingTrade: null,
@@ -68,12 +73,17 @@ export const setErrorTradeConfirmAtom = atom(null, (get, set, error: string) => 
   }))
 })
 
-export const setConfirmingTradeConfirmAtom = atom(null, (get, set, isConfirming: boolean) => {
-  set(tradeConfirmStateAtom, () => ({
-    ...get(tradeConfirmStateAtom),
-    isConfirming,
-  }))
-})
+export const setConfirmingTradeConfirmAtom = atom(
+  null,
+  (get, set, params: { isConfirming: boolean; sessionId: number }) => {
+    if (get(tradeConfirmStateAtom).sessionId !== params.sessionId) return
+
+    set(tradeConfirmStateAtom, () => ({
+      ...get(tradeConfirmStateAtom),
+      isConfirming: params.isConfirming,
+    }))
+  },
+)
 
 export const setPermitSignatureRequestedTradeConfirmAtom = atom(null, (get, set, pendingTrade: TradeAmounts) => {
   set(tradeConfirmStateAtom, () => ({
