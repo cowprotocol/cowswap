@@ -1,0 +1,212 @@
+@startuml rwa-coingecko-data-flow
+title rwa-frontend: CoinGecko data flow (upstream -> server -> API routes -> query atoms -> UI)
+
+left to right direction
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam ArrowFontSize 10
+skinparam linetype ortho
+
+legend top right
+  |= Edge label |= Meaning |
+  | ×N | upstream calls per one cache miss |
+  | rv | Next data cache revalidate (s): `next.revalidate` or `unstable_cache` |
+  | s-maxage | CDN `Cache-Control` of the route (SWR = 5 × s-maxage) |
+  | refetch | TanStack `refetchInterval` (client poll) |
+  Registry: 922 assets, 3426 tokens (all with coingeckoId), up to 19 tokens per asset
+  Any `degraded: true` body is sent `no-store` and is not persisted to IndexedDB
+endlegend
+
+' ───────────────────────── External ─────────────────────────
+cloud "CoinGecko REST\n(api / pro-api.coingecko.com/api/v3)" as CG {
+  [GET /rwas/markets\n?per_page=250&page=N&sparkline=true] as EP_RWA
+  [GET /coins/markets\n?ids=…(≤250)] as EP_COINS
+  [GET /coins/{id}/market_chart\n?days=1|7|30|365|max] as EP_CHART
+  [GET /rwas/list, /rwas/{id}?tokens=true,\n/coins/{id}] as EP_REG
+}
+cloud "CoinGecko onchain\n(/api/v3/onchain, or GeckoTerminal\nwhen no API key)" as CGO {
+  [GET /networks/{net}/tokens/multi/{≤30 addrs}] as EP_MULTI
+  [GET /networks/{net}/tokens/{addr}/ohlcv/hour\n(Pro plan only, else skipped)] as EP_OHLCV
+}
+
+' ───────────────────────── Build time ─────────────────────────
+package "Build / manual (scripts/updateRegistry.mjs)" as BUILD {
+  [update-registry] as UPD
+  database "data/RWAs.json\n(registry, asset logoUrl)" as REG
+}
+UPD --> EP_REG : list + details\n(concurrent)
+UPD --> EP_RWA : all pages
+UPD --> EP_COINS : batches of 250
+UPD --> REG : writes
+
+' ───────────────────────── Server ─────────────────────────
+package "Next.js server" as SERVER {
+  package "shared/api/coingecko/coingeckoClient.ts\n(fetch + Next data cache, keyed by URL)" as CLIENT {
+    [fetchRwaMarkets()] as F_RWA
+    [fetchCoinsMarkets(ids)] as F_COINS
+    [fetchMarketChart(id, days)] as F_CHART
+    [fetchOnchainTokens(chainId, addrs)] as F_MULTI
+    [fetchOnchainTokenOhlcv(chainId, addr)] as F_OHLCV
+  }
+
+  package "entities/asset/api/marketData.ts (coingeckoProvider)" as PROVIDER {
+    [getRwaMarkets(registry size)\nunstable_cache: one snapshot, rv 60] as P_RWA
+    [getTokenMarkets(tokens)] as P_TOK
+    [getChart(asset, range)\nfirst token's coingeckoId] as P_CHART
+    [getNetworkStats(chainId, tokens)] as P_NET
+    [getHourlyDexVolume(tokens)] as P_VOL
+  }
+
+  package "entities/asset/api/assetsService.ts" as SERVICE {
+    [loadRwaMarkets()\n(always full set)] as S_LOADRWA
+    [listAssets()] as S_LIST
+    [findAssets()] as S_FIND
+    [getMarketOverview()] as S_OVERVIEW
+    [getAsset()] as S_ASSET
+    [getAssetChart()] as S_CHART
+    [getAssetNetworkStats()] as S_NET
+    [getAssetQuotes()] as S_QUOTES
+  }
+
+  package "_app/api-routes → app/api/v1/*" as ROUTES {
+    [GET /api/v1/assets\ns-maxage 60] as R_ASSETS
+    [GET /api/v1/assets-search\ns-maxage 60] as R_SEARCH
+    [GET /api/v1/market-overview\ns-maxage 60] as R_OVERVIEW
+    [GET /api/v1/asset/{ticker}\ns-maxage 60] as R_ASSET
+    [GET /api/v1/chart/{ticker}?range\ns-maxage 300 (1D) / 3600] as R_CHART
+    [GET /api/v1/network-stats/{ticker}?chainId\ns-maxage 60] as R_NET
+    [GET /api/v1/quotes/{ticker}\ns-maxage 60, no SWR] as R_QUOTES
+    [GET /api/v1/token-list\nforce-static, s-maxage 3600] as R_TL
+  }
+
+  [Server pages: AssetPage / PortfolioPage\n(generateStaticParams, metadata)] as SSR
+}
+
+' client -> upstream
+F_RWA --> EP_RWA : uncached\n×4 concurrent pages (922 / 250)
+F_COINS --> EP_COINS : rv 60\n×ceil(ids/250)
+F_CHART --> EP_CHART : rv 300 (1D) / 900 (1W)\n/ 3600 (1M, 1Y, ALL)
+F_MULTI --> EP_MULTI : rv 60\n×ceil(addrs/30)
+F_OHLCV --> EP_OHLCV : rv 300\n×1 per token
+
+' provider -> client
+P_RWA --> F_RWA
+P_TOK --> F_COINS
+P_CHART --> F_CHART
+P_NET --> F_MULTI
+P_VOL --> F_OHLCV : ×tokens of asset (≤19)
+
+' service -> provider
+S_LOADRWA --> P_RWA
+S_LIST --> S_LOADRWA
+S_LIST --> S_LOADRWA : 1D series = last 24h\nof sparkline_in_7d
+S_FIND --> S_LOADRWA
+S_OVERVIEW --> S_LOADRWA : totals + marketCapSeries\n+ movers 1D series\n(from sparkline_in_7d)
+S_OVERVIEW --> P_VOL : ×3 most traded
+S_ASSET --> S_LOADRWA
+S_ASSET --> P_TOK : all tokens of asset
+S_CHART --> P_CHART : selected range
+S_NET --> P_TOK : same URL as getAsset\n(data-cache hit)
+S_NET --> P_NET
+
+' routes -> service
+R_ASSETS --> S_LIST
+R_SEARCH --> S_FIND
+R_OVERVIEW --> S_OVERVIEW
+R_ASSET --> S_ASSET
+R_CHART --> S_CHART
+R_NET --> S_NET
+R_QUOTES --> S_QUOTES
+R_TL --> REG
+SSR --> REG : registry only,\nno CoinGecko
+S_LIST ..> REG
+S_FIND ..> REG
+S_OVERVIEW ..> REG
+
+cloud "CoW order book API" as COW
+S_QUOTES --> COW : not CoinGecko
+
+' ───────────────────────── Browser ─────────────────────────
+package "Browser" as BROWSER {
+  database "IndexedDB\n(persistQueryCache, queryCache:v5)" as IDB
+  package "Query atoms (jotai-tanstack-query, staleTime 60s)\nentities/asset/api/assetsQueries.ts" as ATOMS {
+    [assetsPageQueryAtom\n(home: page, sort, filters, q, watchlist)] as A_PAGE
+    [portfolioMarketsQueryAtomFamily(heldTickers)] as A_PORT
+    [headerSearchResultQueryAtom\n(debounced q, limit)] as A_SEARCH
+    [marketOverviewQueryAtom\nrefetch 60s] as A_OVERVIEW
+    [assetQueryAtomFamily(ticker)\nrefetch 60s] as A_ASSET
+    [assetChartQueryAtomFamily(ticker, range)\nno refetch] as A_CHART
+    [networkStatsQueryAtomFamily(ticker, chainId)\nrefetch 60s] as A_NET
+    [tradeQuotesQueryAtomFamily(ticker, chainId, side)\nrefetch 60s] as A_QUOTES
+    [tokenListQueryAtom\nstaleTime 1h] as A_TL
+  }
+
+  package "Home page (/)" as UI_HOME {
+    [AssetsExplorer / AssetsTable\n(price, change, mcap, vol, sparkline;\nlogo from registry)] as U_TABLE
+    [AssetsFilters / AssetsTypeTabs\n(typeCounts, issuers, chainIds)] as U_FILTERS
+    [MarketTotalsCard\n(mcap, vol, mcap sparkline)] as U_TOTALS
+    [MostTradedCard\n(hourly DEX volume)] as U_MOST
+    [TopMoversCard\n(gainers / losers + 1D sparkline)] as U_MOVERS
+  }
+  package "Asset page (/asset/{ticker})" as UI_ASSET {
+    [AssetView / AssetStats] as U_STATS
+    [StockTokens / TradeTokenSelector /\nPositionsTab / useTradeSelection] as U_TOKENS
+    [AssetPriceChart\n(ChartRangeSelector)] as U_CHART
+    [TradeWidget\n(onchain cap, DEX vol, quotes)] as U_TRADE
+  }
+  package "Portfolio (/portfolio)" as UI_PORT {
+    [HoldingsTable / AllocationCard /\nRecentActivityCard\n(uses market price only;\nlogo from registry)] as U_HOLD
+  }
+  [Header: HeaderSearch\n(logo, ticker suggestions)] as U_SEARCH
+  [widgets/account: useAccountBalances\n→ balances watcher] as U_BAL
+}
+
+' atoms -> routes
+A_PAGE --> R_ASSETS
+A_PORT --> R_ASSETS : tickers=…&pageSize=100
+A_SEARCH --> R_SEARCH
+A_OVERVIEW --> R_OVERVIEW
+A_ASSET --> R_ASSET
+A_CHART --> R_CHART
+A_NET --> R_NET
+A_QUOTES --> R_QUOTES
+A_TL --> R_TL
+ATOMS ..> IDB : persist / restore\n(skips degraded)
+
+' UI -> atoms
+U_TABLE --> A_PAGE
+U_FILTERS --> A_PAGE
+U_TOTALS --> A_OVERVIEW
+U_MOST --> A_OVERVIEW
+U_MOVERS --> A_OVERVIEW
+U_STATS --> A_ASSET
+U_TOKENS --> A_ASSET
+U_CHART --> A_CHART
+U_TRADE --> A_NET
+U_TRADE --> A_QUOTES
+U_TRADE --> A_ASSET : stock price
+U_HOLD --> A_PORT
+U_SEARCH --> A_SEARCH
+U_BAL --> A_TL
+
+' ───────────────────────── Optimization hotspots ─────────────────────────
+note as HOT
+  <b>Optimization hotspots</b>
+  1. <b>/rwas/markets</b> is the shared backbone: 4 concurrent pages every 60s,
+     used by /assets, /assets-search, /market-overview, /asset. The sparkline=true
+     payload feeds MarketTotalsCard.marketCapSeries and every 1D sparkline
+     (table rows, top movers), so those cost no market_chart calls.
+  2. The pages are cached as one snapshot (unstable_cache), so every route
+     sees the same moment. Mapped snapshot is ~0.8 MB of the 2 MB entry limit.
+  3. market_chart is only called by the asset page chart (one URL per ticker × range).
+  4. Market overview: up to 3 × 19 OHLCV calls
+     (most traded, Pro only) per 300s cache miss.
+  5. /asset and /network-stats both call /coins/markets for the asset's
+     tokens; the identical sorted-ids URL makes the second a data-cache hit.
+  6. Client polls every 60s (overview, asset, network-stats, quotes), aligned
+     with s-maxage 60 + SWR 300, so most polls are absorbed by the CDN.
+end note
+HOT .. S_LIST
+@enduml

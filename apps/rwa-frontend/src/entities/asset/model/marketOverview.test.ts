@@ -1,6 +1,6 @@
 import {
-  aggregateNetworkStats,
-  buildOnchainCapSeries,
+  buildDailySeries,
+  buildMarketCapSeries,
   fillHourlySeries,
   latestUpdatedAt,
   rankMostTraded,
@@ -8,16 +8,16 @@ import {
   toOverviewItem,
 } from './marketOverview'
 
-import type { RwaAsset, RwaMarketData, RwaMarketOverviewItem, RwaToken } from './types'
+import type { RwaAggregateMarket, RwaAsset, RwaMarketData, RwaMarketOverviewItem, RwaToken } from './types'
 
 const HOUR = 3600
 
-function asset(ticker: string, tokens: RwaToken[]): RwaAsset {
-  return { ticker, title: ticker, type: 'stock', priority: 0, tokens }
+function asset(ticker: string, tokens: RwaToken[], logoUrl?: string): RwaAsset {
+  return { ticker, coingeckoId: ticker.toLowerCase(), title: ticker, logoUrl, type: 'stock', priority: 0, tokens }
 }
 
-function item(ticker: string, change24h: number | null, dexVolume24h: number | null): RwaMarketOverviewItem {
-  return { ticker, title: ticker, logoUrl: null, change24h, dexVolume24h, series: null }
+function item(ticker: string, change24h: number | null, volume24h: number | null): RwaMarketOverviewItem {
+  return { ticker, title: ticker, logoUrl: null, change24h, volume24h, series: null }
 }
 
 function market(overrides: Partial<RwaMarketData>): RwaMarketData {
@@ -34,71 +34,20 @@ function market(overrides: Partial<RwaMarketData>): RwaMarketData {
   }
 }
 
-function token(chainId: number, address: string, coingeckoId?: string): RwaToken {
-  return { chainId, address, symbol: 'T', name: 'Token', decimals: 18, issuer: 'Ondo', coingeckoId }
-}
-
-const A1 = '0x1111111111111111111111111111111111111111'
-const A56 = '0x2222222222222222222222222222222222222222'
-const B1 = '0x3333333333333333333333333333333333333333'
-
-describe('aggregateNetworkStats', () => {
-  const assets = [asset('A', [token(1, A1, 'a-coin'), token(56, A56, 'a-coin')]), asset('B', [token(1, B1, 'b-coin')])]
-  const marketByTicker = new Map([
-    ['A', market({ tokens: { 'a-coin': { price: 50, marketCap: null, volume24h: null, logoUrl: null } } })],
-  ])
-
-  it('sums per asset and in total, skipping null parts', () => {
-    const result = aggregateNetworkStats(
-      assets,
-      [
-        { chainId: 1, tokens: [{ address: A1.toUpperCase().replace('0X', '0x'), onchainCap: 100, dexVolume24h: 10 }] },
-        { chainId: 56, tokens: [{ address: A56, onchainCap: null, dexVolume24h: null }] },
-      ],
-      marketByTicker,
-    )
-
-    expect(result.byTicker.get('A')).toEqual({ onchainCap: 100, dexVolume24h: 10 })
-    expect(result.byTicker.get('B')).toEqual({ onchainCap: null, dexVolume24h: null })
-    expect(result.onchainCap).toBe(100)
-    expect(result.dexVolume24h).toBe(10)
-  })
-
-  it('derives the onchain supply per coin from cap and price', () => {
-    const result = aggregateNetworkStats(
-      assets,
-      [
-        { chainId: 1, tokens: [{ address: A1, onchainCap: 100, dexVolume24h: 0 }] },
-        { chainId: 56, tokens: [{ address: A56, onchainCap: 50, dexVolume24h: 0 }] },
-      ],
-      marketByTicker,
-    )
-
-    expect(result.supplyByCoin).toEqual(new Map([['a-coin', 3]]))
-  })
-})
-
 describe('toOverviewItem', () => {
-  it('takes the logo of the reference token and the asset DEX volume', () => {
-    const nvda = asset('NVDA', [token(1, A1), token(1, A56, 'ref-coin')])
-    const nvdaMarket = market({
-      change24h: 1.5,
-      tokens: { 'ref-coin': { price: 1, marketCap: null, volume24h: null, logoUrl: 'ref.png' } },
-    })
-
-    expect(toOverviewItem(nvda, nvdaMarket, { onchainCap: 1, dexVolume24h: 7 })).toEqual({
+  it('takes the logo of the asset and the change and volume of the RWA market', () => {
+    expect(toOverviewItem(asset('NVDA', [], 'nvda.png'), aggregate({ change24h: 1.5, volume24h: 7 }))).toEqual({
       ticker: 'NVDA',
       title: 'NVDA',
-      logoUrl: 'ref.png',
+      logoUrl: 'nvda.png',
       change24h: 1.5,
-      dexVolume24h: 7,
+      volume24h: 7,
       series: null,
     })
-    expect(toOverviewItem(nvda, undefined, undefined)).toMatchObject({
-      logoUrl: null,
-      change24h: null,
-      dexVolume24h: null,
-    })
+  })
+
+  it('has a null logo for an asset without one', () => {
+    expect(toOverviewItem(asset('NVDA', []), aggregate({})).logoUrl).toBeNull()
   })
 })
 
@@ -160,38 +109,6 @@ describe('fillHourlySeries', () => {
   })
 })
 
-describe('buildOnchainCapSeries', () => {
-  it('aligns coins on one hourly grid, carries prices forward and backfills late starts', () => {
-    const series = buildOnchainCapSeries(
-      new Map([
-        ['a', 2],
-        ['b', 1],
-        ['no-history', 1000],
-      ]),
-      new Map([
-        [
-          'a',
-          [
-            { time: 10 * HOUR + 5, value: 100 },
-            { time: 11 * HOUR + 10, value: 110 },
-          ],
-        ],
-        ['b', [{ time: 11 * HOUR + 20, value: 50 }]],
-        ['no-history', []],
-      ]),
-    )
-
-    expect(series).toEqual([
-      { time: 10 * HOUR, value: 250 },
-      { time: 11 * HOUR, value: 270 },
-    ])
-  })
-
-  it('returns null when no coin has history', () => {
-    expect(buildOnchainCapSeries(new Map([['a', 1]]), new Map())).toBeNull()
-  })
-})
-
 describe('latestUpdatedAt', () => {
   it('picks the latest timestamp and ignores nulls', () => {
     expect(
@@ -202,5 +119,98 @@ describe('latestUpdatedAt', () => {
       ]),
     ).toBe('2026-09-28T13:05:00.000Z')
     expect(latestUpdatedAt([])).toBeNull()
+  })
+})
+
+function aggregate(overrides: Partial<RwaAggregateMarket>): RwaAggregateMarket {
+  return {
+    price: null,
+    change24h: null,
+    dayLow: null,
+    dayHigh: null,
+    marketCap: null,
+    volume24h: null,
+    updatedAt: null,
+    sparkline7d: [],
+    ...overrides,
+  }
+}
+
+describe('buildMarketCapSeries', () => {
+  it('sums end-aligned sparklines of different lengths at constant supply', () => {
+    const series = buildMarketCapSeries([
+      // supply 10, 3 hours ending at 13:00
+      aggregate({ price: 10, marketCap: 100, sparkline7d: [9, 10, 11], updatedAt: '2026-10-02T13:20:00.000Z' }),
+      // supply 5, 1 hour ending at 13:00
+      aggregate({ price: 2, marketCap: 10, sparkline7d: [4], updatedAt: '2026-10-02T13:05:00.000Z' }),
+    ])
+    const at = (iso: string): number => Date.parse(iso) / 1000
+
+    expect(series).toEqual([
+      { time: at('2026-10-02T11:00:00.000Z'), value: 90 },
+      { time: at('2026-10-02T12:00:00.000Z'), value: 100 },
+      { time: at('2026-10-02T13:00:00.000Z'), value: 130 },
+    ])
+  })
+
+  it('aligns every sparkline to the latest update hour', () => {
+    const series = buildMarketCapSeries([
+      aggregate({ price: 1, marketCap: 1, sparkline7d: [1, 2], updatedAt: '2026-10-02T13:59:00.000Z' }),
+      aggregate({ price: 1, marketCap: 10, sparkline7d: [1, 2], updatedAt: '2026-10-02T14:01:00.000Z' }),
+    ])
+    const at = (iso: string): number => Date.parse(iso) / 1000
+
+    expect(series).toEqual([
+      { time: at('2026-10-02T13:00:00.000Z'), value: 11 },
+      { time: at('2026-10-02T14:00:00.000Z'), value: 22 },
+    ])
+  })
+
+  it('never adds NaN from a sparkline point or a market cap', () => {
+    const series = buildMarketCapSeries([
+      aggregate({ price: 1, marketCap: 2, sparkline7d: [1, NaN, 3], updatedAt: '2026-10-02T13:00:00.000Z' }),
+      aggregate({ price: 1, marketCap: NaN, sparkline7d: [5, 5, 5], updatedAt: '2026-10-02T13:00:00.000Z' }),
+    ])
+
+    expect(series?.map(({ value }) => value)).toEqual([2, 6])
+  })
+
+  it('skips markets without a price, market cap, sparkline or update time', () => {
+    const series = buildMarketCapSeries([
+      aggregate({ price: 0, marketCap: 100, sparkline7d: [1], updatedAt: '2026-10-02T13:00:00.000Z' }),
+      aggregate({ price: 1, marketCap: null, sparkline7d: [1], updatedAt: '2026-10-02T13:00:00.000Z' }),
+      aggregate({ price: 1, marketCap: 100, sparkline7d: [], updatedAt: '2026-10-02T13:00:00.000Z' }),
+      aggregate({ price: 1, marketCap: 100, sparkline7d: [1], updatedAt: null }),
+    ])
+
+    expect(series).toBeNull()
+  })
+})
+
+describe('buildDailySeries', () => {
+  it('takes the last 24 hours of the sparkline, ending at the update hour', () => {
+    const sparkline7d = Array.from({ length: 30 }, (_, index) => index)
+    const series = buildDailySeries(aggregate({ sparkline7d, updatedAt: '2026-10-02T13:20:00.000Z' }))
+    const lastHour = Date.parse('2026-10-02T13:00:00.000Z') / 1000
+
+    expect(series).toHaveLength(25)
+    expect(series?.[0]).toEqual({ time: lastHour - 24 * HOUR, value: 5 })
+    expect(series?.[24]).toEqual({ time: lastHour, value: 29 })
+  })
+
+  it('keeps a shorter sparkline whole and drops non-finite points', () => {
+    const series = buildDailySeries(aggregate({ sparkline7d: [1, NaN, 3], updatedAt: '2026-10-02T13:00:00.000Z' }))
+    const lastHour = Date.parse('2026-10-02T13:00:00.000Z') / 1000
+
+    expect(series).toEqual([
+      { time: lastHour - 2 * HOUR, value: 1 },
+      { time: lastHour, value: 3 },
+    ])
+  })
+
+  it('returns null without points or an update time', () => {
+    expect(buildDailySeries(aggregate({ sparkline7d: [], updatedAt: '2026-10-02T13:00:00.000Z' }))).toBeNull()
+    expect(buildDailySeries(aggregate({ sparkline7d: [NaN], updatedAt: '2026-10-02T13:00:00.000Z' }))).toBeNull()
+    expect(buildDailySeries(aggregate({ sparkline7d: [1, 2], updatedAt: null }))).toBeNull()
   })
 })

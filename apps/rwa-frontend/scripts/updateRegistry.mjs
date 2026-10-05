@@ -51,9 +51,9 @@ async function main() {
 
   console.log(`Fetching ${rwas.length} RWAs`)
 
-  const [details, marketCaps, decimalsByPlatform] = await Promise.all([
+  const [details, rwaMarkets, decimalsByPlatform] = await Promise.all([
     mapConcurrent(rwas, (rwa) => coingecko(`/rwas/${encodeURIComponent(rwa.id)}?tokens=true`)),
-    fetchRwaMarketCaps(),
+    fetchRwaMarkets(),
     fetchTokenListDecimals(Object.keys(platformChainIds)),
   ])
 
@@ -63,7 +63,7 @@ async function main() {
 
   const assets = []
 
-  for (const rwa of [...details].sort(byDesc((rwa) => marketCaps.get(rwa.id) ?? 0))) {
+  for (const rwa of [...details].sort(byDesc((rwa) => rwaMarkets.get(rwa.id)?.marketCap ?? 0))) {
     const ticker = rwa.symbol.toUpperCase()
 
     if (!/^[A-Z0-9.]+$/.test(ticker)) {
@@ -83,7 +83,9 @@ async function main() {
 
     assets.push({
       ticker,
+      coingeckoId: rwa.id,
       title: existing?.title ?? rwa.name,
+      logoUrl: rwaMarkets.get(rwa.id)?.logoUrl,
       type: ASSET_TYPES[rwa.asset_type],
       priority: existing?.priority ?? DEFAULT_PRIORITY,
       allowedTradingTime: existing ? existing.allowedTradingTime : DEFAULT_TRADING_TIME,
@@ -117,9 +119,10 @@ async function buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform
 
       if (!chainId || !address || !isAddress(address, { strict: false })) continue
 
-      const decimals = decimalsByPlatform[platform]?.get(getAddress(address)) ?? (await fetchCoinDecimals(coin.id, platform))
+      const decimals =
+        decimalsByPlatform[platform]?.get(getAddress(address)) ?? (await fetchCoinDecimals(coin.id, platform))
 
-      if (decimals === undefined) {
+      if (!Number.isInteger(decimals) || decimals < 0) {
         console.warn(`Skipping ${coin.id} on ${platform}: unknown decimals`)
         continue
       }
@@ -154,17 +157,27 @@ async function fetchPlatformChainIds() {
   )
 }
 
-/** RWA id -> tokenized market cap, USD */
-async function fetchRwaMarketCaps() {
-  const marketCaps = new Map()
+/** RWA id -> tokenized market cap (USD) and logo */
+async function fetchRwaMarkets() {
+  const markets = new Map()
 
   for (let page = 1; ; page++) {
     const items = await coingecko(`/rwas/markets?per_page=${PAGE_SIZE}&page=${page}`)
 
-    items.forEach((item) => marketCaps.set(item.id, item.tokenized_market_data?.market_cap ?? 0))
+    items.forEach((item) =>
+      markets.set(item.id, {
+        marketCap: item.tokenized_market_data?.market_cap ?? 0,
+        logoUrl: toLogoUrl(item.image),
+      }),
+    )
 
-    if (items.length < PAGE_SIZE) return marketCaps
+    if (items.length < PAGE_SIZE) return markets
   }
+}
+
+/** CoinGecko answers `missing_large.png`, a relative path, for RWAs without an image */
+function toLogoUrl(image) {
+  return typeof image === 'string' && URL.canParse(image) && new URL(image).protocol === 'https:' ? image : undefined
 }
 
 /** Coin id -> market cap, USD */
@@ -215,7 +228,16 @@ async function fetchCoinDecimals(coinId, platform) {
 
 async function coingecko(path) {
   for (let attempt = 0; ; attempt++) {
-    const response = await fetch(`${BASE_URL}${path}`, { headers: HEADERS })
+    let response
+
+    try {
+      response = await fetch(`${BASE_URL}${path}`, { headers: HEADERS })
+    } catch (err) {
+      if (attempt >= MAX_RETRIES) throw err
+
+      await sleep(2 ** attempt * 1000)
+      continue
+    }
 
     if ((response.status === 429 || response.status >= 500) && attempt < MAX_RETRIES) {
       const retryAfter = Number(response.headers.get('retry-after'))

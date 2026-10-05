@@ -3,10 +3,15 @@
  */
 import { coingeckoProvider, toChartPoints } from './marketData'
 
+jest.mock('next/cache', () => ({
+  unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
+}))
+
 import type { RwaAsset } from '../model/types'
 
 const NVDA: RwaAsset = {
   ticker: 'NVDA',
+  coingeckoId: 'nvda',
   title: 'NVIDIA',
   type: 'stock',
   priority: 9,
@@ -41,6 +46,12 @@ const NVDA: RwaAsset = {
   ],
 }
 
+const FULL_RWA_PAGE = Array.from({ length: 250 }, (_, index) => ({
+  id: `rwa-${index}`,
+  image: null,
+  tokenized_market_data: null,
+}))
+
 const NO_DATA: RwaAsset = { ...NVDA, ticker: 'NONE', tokens: [{ ...NVDA.tokens[0], coingeckoId: undefined }] }
 
 function mockFetch(body: unknown, ok = true): jest.Mock {
@@ -49,101 +60,6 @@ function mockFetch(body: unknown, ok = true): jest.Mock {
 
   return fetchMock
 }
-
-describe('coingeckoProvider.getMarketData', () => {
-  it('takes price from the first token and sums market caps and volumes of unique tokens', async () => {
-    const fetchMock = mockFetch([
-      {
-        id: 'nvidia-xstock',
-        current_price: 231.8,
-        market_cap: 43,
-        total_volume: 5,
-        image: 'https://coin-images.coingecko.com/nvidia-xstock.png',
-        high_24h: 232,
-        low_24h: 223,
-        price_change_percentage_24h: 2.6,
-        last_updated: '2026-09-28T13:00:00.000Z',
-      },
-      {
-        id: 'nvidia-ondo-tokenized-stock',
-        current_price: 231.5,
-        market_cap: 39,
-        total_volume: 7,
-        image: null,
-        high_24h: 230,
-        low_24h: 223.2,
-        price_change_percentage_24h: 2.5,
-        last_updated: '2026-09-28T13:01:00.000Z',
-      },
-    ])
-
-    const result = await coingeckoProvider.getMarketData([NVDA, NO_DATA])
-
-    expect(fetchMock).toHaveBeenCalledTimes(1)
-    expect(String(fetchMock.mock.calls[0][0])).toContain('ids=nvidia-ondo-tokenized-stock,nvidia-xstock')
-    expect(result.get('NVDA')).toEqual({
-      price: 231.5,
-      change24h: 2.5,
-      dayLow: 223.2,
-      dayHigh: 230,
-      marketCap: 82,
-      volume24h: 12,
-      updatedAt: '2026-09-28T13:01:00.000Z',
-      tokens: {
-        'nvidia-xstock': {
-          price: 231.8,
-          marketCap: 43,
-          volume24h: 5,
-          logoUrl: 'https://coin-images.coingecko.com/nvidia-xstock.png',
-        },
-        'nvidia-ondo-tokenized-stock': { price: 231.5, marketCap: 39, volume24h: 7, logoUrl: null },
-      },
-    })
-    expect(result.has('NONE')).toBe(false)
-  })
-
-  it('does not take price from another token when the first one has no data', async () => {
-    mockFetch([
-      {
-        id: 'nvidia-xstock',
-        current_price: 231.8,
-        market_cap: 43,
-        total_volume: 5,
-        image: 'https://coin-images.coingecko.com/nvidia-xstock.png',
-        high_24h: 232,
-        low_24h: 223,
-        price_change_percentage_24h: 2.6,
-        last_updated: '2026-09-28T13:00:00.000Z',
-      },
-    ])
-
-    const result = await coingeckoProvider.getMarketData([NVDA])
-
-    expect(result.get('NVDA')).toEqual({
-      price: null,
-      change24h: null,
-      dayLow: null,
-      dayHigh: null,
-      marketCap: 43,
-      volume24h: 5,
-      updatedAt: null,
-      tokens: {
-        'nvidia-xstock': {
-          price: 231.8,
-          marketCap: 43,
-          volume24h: 5,
-          logoUrl: 'https://coin-images.coingecko.com/nvidia-xstock.png',
-        },
-      },
-    })
-  })
-
-  it('throws when the upstream fails', async () => {
-    mockFetch({}, false)
-
-    await expect(coingeckoProvider.getMarketData([NVDA])).rejects.toThrow('responded with 429')
-  })
-})
 
 describe('toChartPoints', () => {
   it('converts ms timestamps to seconds and keeps time strictly ascending', () => {
@@ -273,35 +189,144 @@ describe('coingeckoProvider.getHourlyDexVolume', () => {
   })
 })
 
-describe('coingeckoProvider.getPriceHistory', () => {
-  it('maps every coin to its 7D price points', async () => {
-    const fetchMock = mockFetch({
-      prices: [
-        [1_000, 1],
-        [2_000, 2],
-      ],
+describe('coingeckoProvider.getRwaMarkets', () => {
+  it('pages until a short page and maps the tokenized market data', async () => {
+    const lastPage = [
+      {
+        id: 'nvidia',
+        image: 'nvda.png',
+        tokenized_market_data: {
+          current_price: 180,
+          market_cap: 1000,
+          total_volume: 50,
+          high_24h: 182,
+          low_24h: 175,
+          price_change_percentage_24h: 1.5,
+          last_updated: '2026-10-02T13:00:00Z',
+          sparkline_in_7d: { price: [170, 180] },
+        },
+      },
+    ]
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(FULL_RWA_PAGE) })
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(lastPage) })
+    global.fetch = fetchMock
+
+    const markets = await coingeckoProvider.getRwaMarkets(1)
+
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(String(fetchMock.mock.calls[0][0])).toContain('/rwas/markets?per_page=250&page=1&sparkline=true')
+    expect(String(fetchMock.mock.calls[1][0])).toContain('/rwas/markets?per_page=250&page=2&sparkline=true')
+    expect(markets.size).toBe(251)
+    expect(markets.get('nvidia')).toEqual({
+      price: 180,
+      change24h: 1.5,
+      dayLow: 175,
+      dayHigh: 182,
+      marketCap: 1000,
+      volume24h: 50,
+      updatedAt: '2026-10-02T13:00:00Z',
+      sparkline7d: [170, 180],
     })
+    expect(markets.get('rwa-0')).toEqual({
+      price: null,
+      change24h: null,
+      dayLow: null,
+      dayHigh: null,
+      marketCap: null,
+      volume24h: null,
+      updatedAt: null,
+      sparkline7d: [],
+    })
+  })
 
-    const histories = await coingeckoProvider.getPriceHistory(['a', 'b'], '7')
-
-    expect(String(fetchMock.mock.calls[0][0])).toContain('/coins/a/market_chart?vs_currency=usd&days=7')
-    expect(histories).toEqual(
-      new Map([
-        [
-          'a',
-          [
-            { time: 1, value: 1 },
-            { time: 2, value: 2 },
-          ],
-        ],
-        [
-          'b',
-          [
-            { time: 1, value: 1 },
-            { time: 2, value: 2 },
-          ],
-        ],
-      ]),
+  it('requests the expected pages concurrently', async () => {
+    const pending: ((page: unknown[]) => void)[] = []
+    const fetchMock = jest.fn(
+      () =>
+        new Promise((resolve) => {
+          pending.push((page) => resolve({ ok: true, status: 200, json: () => Promise.resolve(page) }))
+        }),
     )
+    global.fetch = fetchMock
+
+    const result = coingeckoProvider.getRwaMarkets(400)
+    await Promise.resolve()
+
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(String(fetchMock.mock.calls[1]?.[0])).toContain('&page=2&')
+
+    pending[0]?.(FULL_RWA_PAGE)
+    pending[1]?.([{ id: 'nvidia', image: null, tokenized_market_data: null }])
+
+    expect((await result).size).toBe(251)
+  })
+
+  it('continues past the expected pages while the last page is full', async () => {
+    const fetchMock = jest
+      .fn()
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve(FULL_RWA_PAGE) })
+      .mockResolvedValueOnce({ ok: true, status: 200, json: () => Promise.resolve([]) })
+    global.fetch = fetchMock
+
+    const markets = await coingeckoProvider.getRwaMarkets(250)
+
+    expect(fetchMock).toHaveBeenCalledTimes(2)
+    expect(markets.size).toBe(250)
+  })
+
+  it('maps keys missing inside tokenized_market_data to null', async () => {
+    mockFetch([{ id: 'sparse', tokenized_market_data: { current_price: 5 } }] as unknown as Record<string, unknown>[])
+
+    const markets = await coingeckoProvider.getRwaMarkets(1)
+
+    expect(markets.get('sparse')).toEqual({
+      price: 5,
+      change24h: null,
+      dayLow: null,
+      dayHigh: null,
+      marketCap: null,
+      volume24h: null,
+      updatedAt: null,
+      sparkline7d: [],
+    })
+  })
+
+  it('throws on upstream errors', async () => {
+    mockFetch({}, false)
+
+    await expect(coingeckoProvider.getRwaMarkets(1)).rejects.toThrow('responded with 429')
+  })
+})
+
+describe('coingeckoProvider.getTokenMarkets', () => {
+  it('requests the unique coins of the tokens only and keys them by coin id', async () => {
+    const fetchMock = mockFetch([
+      {
+        id: 'nvidia-xstock',
+        current_price: 231.8,
+        market_cap: 43,
+        total_volume: 5,
+        image: 'xstock.png',
+        high_24h: 232,
+        low_24h: 223,
+        price_change_percentage_24h: 2.6,
+        last_updated: '2026-09-28T13:00:00.000Z',
+      },
+    ])
+
+    const markets = await coingeckoProvider.getTokenMarkets(NVDA.tokens)
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(String(fetchMock.mock.calls[0][0])).toContain('ids=nvidia-ondo-tokenized-stock,nvidia-xstock')
+    expect(markets).toEqual({ 'nvidia-xstock': { price: 231.8, marketCap: 43, volume24h: 5, logoUrl: 'xstock.png' } })
+  })
+
+  it('makes no request when no token has a coingeckoId', async () => {
+    const fetchMock = mockFetch([])
+
+    expect(await coingeckoProvider.getTokenMarkets(NO_DATA.tokens)).toEqual({})
+    expect(fetchMock).not.toHaveBeenCalled()
   })
 })

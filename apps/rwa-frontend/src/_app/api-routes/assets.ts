@@ -17,7 +17,7 @@ const SORT_ORDERS: readonly RwaSortOrder[] = ['asc', 'desc']
 
 /**
  * Query: `page` (1-based, default 1), `pageSize` (1..100, default 20),
- * `sort` (priority | marketCap | onchainCap | dexVolume24h | change24h | price | ticker | title, default priority),
+ * `sort` (priority | marketCap | volume24h | change24h | price | ticker | title, default priority),
  * `order` (asc | desc, default desc; ticker and title default to asc),
  * `type` (stock | index), `issuer`, `chainId`, `q` (matches ticker, title or token symbol),
  * `tickers` (comma-separated, up to 100; empty matches nothing)

@@ -7,8 +7,7 @@ type SortValueGetter = (asset: RwaAssetListItem) => number | string | null
 const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   priority: (asset) => asset.priority,
   marketCap: (asset) => asset.market?.marketCap ?? null,
-  onchainCap: (asset) => asset.onchainCap,
-  dexVolume24h: (asset) => asset.dexVolume24h,
+  volume24h: (asset) => asset.market?.volume24h ?? null,
   change24h: (asset) => asset.market?.change24h ?? null,
   price: (asset) => asset.market?.price ?? null,
   ticker: (asset) => asset.ticker,

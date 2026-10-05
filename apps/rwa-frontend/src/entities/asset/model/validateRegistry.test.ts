@@ -9,6 +9,7 @@ import type { RwaAsset, RwaRegistry } from './types'
 
 const VALID_ASSET: RwaAsset = {
   ticker: 'NVDA',
+  coingeckoId: 'nvidia',
   title: 'NVIDIA',
   type: 'stock',
   priority: 1,
@@ -38,8 +39,22 @@ describe('validateRegistry', () => {
     expect(validateRegistry(registryWith([VALID_ASSET]))).toEqual([])
   })
 
+  it('accepts an https logo and rejects other logo URLs', () => {
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, logoUrl: 'https://example.com/nvda.png' }]))).toEqual([])
+    expect(
+      validateRegistry(
+        registryWith([
+          { ...VALID_ASSET, logoUrl: 'http://example.com/nvda.png' },
+          { ...VALID_ASSET, ticker: 'AAPL', coingeckoId: 'apple', logoUrl: 'not a url' },
+        ]),
+      ),
+    ).toEqual(['assets[0].logoUrl: must be an https URL', 'assets[1].logoUrl: must be an https URL'])
+  })
+
   it('rejects duplicate tickers', () => {
-    expect(validateRegistry(registryWith([VALID_ASSET, VALID_ASSET]))).toEqual(['assets[1].ticker: duplicate "NVDA"'])
+    expect(validateRegistry(registryWith([VALID_ASSET, { ...VALID_ASSET, coingeckoId: 'nvidia-2' }]))).toEqual([
+      'assets[1].ticker: duplicate "NVDA"',
+    ])
   })
 
   it('rejects invalid asset fields', () => {
@@ -68,6 +83,18 @@ describe('validateRegistry', () => {
   it('rejects an asset without tokens', () => {
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [] }]))).toEqual([
       'assets[0].tokens: at least one token is required',
+    ])
+  })
+
+  it('rejects a missing coingeckoId', () => {
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, coingeckoId: '' }]))).toEqual([
+      'assets[0].coingeckoId: required',
+    ])
+  })
+
+  it('rejects a duplicate coingeckoId', () => {
+    expect(validateRegistry(registryWith([VALID_ASSET, { ...VALID_ASSET, ticker: 'NVDA2' }]))).toEqual([
+      'assets[1].coingeckoId: duplicate "nvidia"',
     ])
   })
 })

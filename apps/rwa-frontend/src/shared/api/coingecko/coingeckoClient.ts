@@ -36,6 +36,22 @@ export interface CoingeckoOnchainToken {
   }
 }
 
+export interface CoingeckoRwaMarket {
+  id: string
+  /** USD */
+  tokenized_market_data: {
+    current_price: number | null
+    market_cap: number | null
+    total_volume: number | null
+    high_24h: number | null
+    low_24h: number | null
+    price_change_percentage_24h: number | null
+    last_updated: string | null
+    /** Hourly, oldest first */
+    sparkline_in_7d?: { price: number[] }
+  } | null
+}
+
 interface CoingeckoConfig {
   baseUrl: string
   headers: Record<string, string>
@@ -52,6 +68,7 @@ interface OnchainTokensResponse {
 
 const MARKETS_BATCH_SIZE = 250
 const ONCHAIN_BATCH_SIZE = 30
+const RWA_MARKETS_PAGE_SIZE = 250
 const GECKOTERMINAL_BASE_URL = 'https://api.geckoterminal.com/api/v2'
 
 /** GeckoTerminal network ids */
@@ -146,6 +163,21 @@ export async function fetchOnchainTokens(
   })
 }
 
+/**
+ * Requests the pages that `expectedCount` markets fill concurrently, then the next ones until a short page.
+ * Uncached: the data cache would keep each page from a different moment, so the caller caches the whole list
+ */
+export async function fetchRwaMarkets(expectedCount: number): Promise<CoingeckoRwaMarket[]> {
+  const expectedPages = Math.max(1, Math.ceil(expectedCount / RWA_MARKETS_PAGE_SIZE))
+  const pages = await Promise.all(Array.from({ length: expectedPages }, (_, index) => fetchRwaMarketsPage(index + 1)))
+
+  for (let page = expectedPages + 1; (pages[pages.length - 1]?.length ?? 0) === RWA_MARKETS_PAGE_SIZE; page++) {
+    pages.push(await fetchRwaMarketsPage(page))
+  }
+
+  return pages.flat()
+}
+
 function chunk<T>(items: T[], size: number): T[][] {
   const chunks: T[][] = []
 
@@ -173,6 +205,13 @@ async function fetchJsonOrNotFound<T>(
   const response = await request(url, headers, revalidate)
 
   return response.status === 404 ? null : readJson<T>(url, response)
+}
+
+function fetchRwaMarketsPage(page: number): Promise<CoingeckoRwaMarket[]> {
+  return coingeckoFetch<CoingeckoRwaMarket[]>(
+    `/rwas/markets?per_page=${RWA_MARKETS_PAGE_SIZE}&page=${page}&sparkline=true`,
+    0,
+  )
 }
 
 function getConfig(): CoingeckoConfig {

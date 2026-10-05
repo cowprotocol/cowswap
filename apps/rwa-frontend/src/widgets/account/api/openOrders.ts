@@ -3,7 +3,7 @@ import { type EnrichedOrder, OrderKind, OrderStatus, type SupportedChainId } fro
 import { collectPages } from '../lib/collectPages'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, type TradeLeg, toTradeLeg } from '../lib/tradeLeg'
 
-import type { RwaToken } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 import { orderBookApi } from '@/shared/api'
 
@@ -25,7 +25,7 @@ export interface OpenOrder extends TradeLeg {
 export interface OpenOrdersQuery {
   owner: string
   /** Only the orders involving these tokens are returned */
-  tokens: RwaToken[]
+  tokens: RwaTokenSummary[]
 }
 
 /** Newest first */
@@ -37,7 +37,11 @@ export async function getOpenOrders({ owner, tokens }: OpenOrdersQuery): Promise
   return orders.sort((a, b) => b.creationDate.localeCompare(a.creationDate))
 }
 
-async function getChainOpenOrders(chainId: SupportedChainId, owner: string, tokens: RwaToken[]): Promise<OpenOrder[]> {
+async function getChainOpenOrders(
+  chainId: SupportedChainId,
+  owner: string,
+  tokens: RwaTokenSummary[],
+): Promise<OpenOrder[]> {
   const openOrders = await collectPages(
     (offset, limit) => orderBookApi.getOrders({ owner, offset, limit }, { chainId }),
     (order) => {

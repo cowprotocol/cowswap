@@ -46,8 +46,8 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
             <SortableHeader field="title" title="Asset" />
             <SortableHeader field="price" title="Stock price" numeric />
             <SortableHeader field="change24h" title="24H change" numeric />
-            <SortableHeader field="dexVolume24h" title="24h DEX volume" numeric className={styles.optional} />
-            <SortableHeader field="onchainCap" title="Onchain market cap" numeric className={styles.optional} />
+            <SortableHeader field="volume24h" title="24h volume" numeric className={styles.optional} />
+            <SortableHeader field="marketCap" title="Market cap" numeric className={styles.optional} />
             <th className={`${styles.numeric} ${styles.chartColumn}`}>24H chart</th>
           </tr>
         </thead>
@@ -87,8 +87,8 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
       </td>
       <td className={styles.numeric}>{formatUsd(asset.market?.price)}</td>
       <td className={`${styles.numeric} ${changeClassName(change)}`}>{formatPercent(change)}</td>
-      <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.dexVolume24h)}</td>
-      <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.onchainCap)}</td>
+      <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.market?.volume24h)}</td>
+      <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.market?.marketCap)}</td>
       <td className={`${styles.numeric} ${styles.chartColumn}`}>
         <span className={styles.sparkline}>
           <Sparkline series={asset.series} tone={getTone(change)} />

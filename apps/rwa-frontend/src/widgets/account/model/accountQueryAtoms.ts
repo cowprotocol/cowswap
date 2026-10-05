@@ -6,7 +6,7 @@ import { atomWithQuery } from 'jotai-tanstack-query'
 import { activityProvider } from '../api/activity'
 import { getOpenOrders } from '../api/openOrders'
 
-import type { RwaToken } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 import { RWA_QUERY_KEY_ROOT } from '@/shared/api'
 
@@ -14,7 +14,7 @@ export interface AccountQueryParams {
   owner: string
   /** Identifies `tokens` in the query key, e.g. an asset ticker */
   scope: string
-  tokens: RwaToken[]
+  tokens: RwaTokenSummary[]
 }
 
 const OPEN_ORDERS_REFRESH_INTERVAL_MS = 15_000

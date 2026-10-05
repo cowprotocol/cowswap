@@ -14,7 +14,7 @@ import {
   setHeaderSearchQueryAtom,
 } from '../model/headerSearchAtoms'
 
-import { getReferenceLogoUrl, RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
+import { RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
 interface SearchSuggestionsProps {
@@ -157,7 +157,7 @@ function SearchSuggestions({ listboxId, items, activeTicker, onSelect, onHover }
           onMouseEnter={() => onHover(index)}
           onClick={() => onSelect(item.ticker)}
         >
-          <TokenLogo symbol={item.ticker} logoUrl={getReferenceLogoUrl(item, item.market)} />
+          <TokenLogo symbol={item.ticker} logoUrl={item.logoUrl} />
           <span className={styles.optionText}>
             <span className={styles.optionTitle}>{item.title}</span>
             <span className={styles.optionMeta}>

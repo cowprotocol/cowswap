@@ -21,6 +21,7 @@ export {
   type RwaAssetQuotes,
   type RwaAssetListItem,
   type RwaAssetResponse,
+  type RwaAssetSummary,
   type RwaAssetsFilter,
   type RwaAssetsPage,
   type RwaAssetsSearchResult,
@@ -42,6 +43,7 @@ export {
   type RwaTokenList,
   type RwaTokenListToken,
   type RwaTokenQuote,
+  type RwaTokenSummary,
   type RwaTokenMarketData,
   type RwaTokenNetworkStats,
   type RwaTradingTime,
@@ -49,5 +51,4 @@ export {
 export { AssetStats } from './ui/AssetStats'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
-export { getReferenceLogoUrl } from './lib/referenceLogoUrl'
 export { getTokenKey } from './lib/tokenKey'
