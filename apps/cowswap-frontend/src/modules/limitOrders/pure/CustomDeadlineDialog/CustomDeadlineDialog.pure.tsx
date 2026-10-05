@@ -55,6 +55,14 @@ export function CustomDeadlineDialog({
 
     try {
       const newDeadline = new Date(value).getTime()
+
+      if (Number.isNaN(newDeadline)) {
+        if (!value) {
+          return
+        }
+        throw new Error()
+      }
+
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
       const minDateStr = minDate.toLocaleString(i18n.locale)
       const maxDateStr = maxDate.toLocaleString(i18n.locale)
@@ -87,6 +95,11 @@ export function CustomDeadlineDialog({
 
   const handleApply = useCallback(() => {
     const newDeadline = Math.round(new Date(value + getTimeZoneOffset()).getTime() / 1000)
+
+    if (Number.isNaN(newDeadline)) {
+      setError(t`Failed to parse date and time provided`)
+      return
+    }
 
     selectCustomDeadline(newDeadline)
     onDismiss()
