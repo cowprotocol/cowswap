@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Media, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -102,12 +102,15 @@ const HeroGroup = styled.div`
 
 const Hero = styled.div<{ $isExpired: boolean }>`
   display: flex;
+  flex-wrap: wrap;
   flex: 1;
   align-items: center;
-  gap: clamp(12px, 5%, 28px);
+  align-content: center;
+  justify-content: center;
+  gap: 16px 28px;
   width: 100%;
   min-height: 260px;
-  padding: 24px clamp(16px, 5%, 28px);
+  padding: 24px 28px;
   background: ${({ $isExpired }) => ($isExpired ? EXPIRED_HERO_BG : `var(${UI.COLOR_BLUE_300_PRIMARY})`)};
   color: var(${UI.COLOR_TEXT});
 `
@@ -118,14 +121,18 @@ const TimerColumn = styled.div<{ $isExpired: boolean }>`
   align-items: flex-start;
   gap: ${({ $isExpired }) => ($isExpired ? '8px' : '4px')};
   width: 204px;
-  min-width: 0;
+
+  /* Below this the hero row no longer fits and the glass wraps under the timer, so center to match. */
+  ${Media.upToExtraSmall()} {
+    align-items: center;
+    text-align: center;
+  }
 `
 
 const GlassBox = styled.div`
   display: flex;
   justify-content: center;
-  flex: 0 1 150px;
-  min-width: 80px;
+  flex: 0 0 150px;
 `
 
 const TimerLabel = styled.span`
