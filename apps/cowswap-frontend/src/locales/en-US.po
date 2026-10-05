@@ -732,6 +732,7 @@ msgid "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your
 msgstr "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/CustomDeadlineDialog/CustomDeadlineDialog.pure.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/CustomDeadlineDialog/CustomDeadlineDialog.pure.tsx
 msgid "Failed to parse date and time provided"
 msgstr "Failed to parse date and time provided"
 
