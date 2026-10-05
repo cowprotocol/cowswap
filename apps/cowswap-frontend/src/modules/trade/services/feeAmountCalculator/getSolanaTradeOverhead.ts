@@ -7,6 +7,12 @@ import { SolanaFundedAccount } from '../solanaFlow/types'
 // for both, so the bundle carries a single signature.
 const SIGNATURE_FEE_LAMPORTS = 5000n
 
+// Wallets inject their own ComputeBudget instructions into a transaction that carries none (QA saw a
+// ~200k-CU budget added on a wrap), so the real fee is the base plus a priority fee unknowable at
+// form time. Without headroom, a MAX'd transaction leaves the fee payer below rent exemption by
+// exactly that injected fee. 0.001 SOL covers wallets' auto-fee ceilings.
+const PRIORITY_FEES_RESERVE_LAMPORTS = 1_000_000n
+
 /**
  * Lamports a Solana trade needs on top of the sell amount: rent for every declared account, the
  * signature fee, and the fee payer's own rent-exempt reserve. Rent is read live — it does change.
@@ -34,7 +40,10 @@ export async function getSolanaTradeOverhead(
   const sizes = [0, ...unfunded.map(({ size }) => resolveSize(size, mintInfos))]
   const rents = await Promise.all(sizes.map((size) => connection.getMinimumBalanceForRentExemption(size)))
 
-  return rents.reduce<bigint>((total, rent) => total + BigInt(rent), SIGNATURE_FEE_LAMPORTS)
+  return rents.reduce<bigint>(
+    (total, rent) => total + BigInt(rent),
+    SIGNATURE_FEE_LAMPORTS + PRIORITY_FEES_RESERVE_LAMPORTS,
+  )
 }
 
 function resolveSize(size: SolanaFundedAccount['size'], mintInfos: Map<string, AccountInfo<Buffer> | null>): number {
