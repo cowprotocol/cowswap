@@ -111,7 +111,7 @@ function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTr
 }
 
 function isEthFlowOrderExpired(order: Order | undefined): boolean {
-  return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
+  return !!order && isOrderExpired(order)
 }
 
 function mapOrderToEthFlowStepperState(
