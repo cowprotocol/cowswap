@@ -7,15 +7,15 @@ import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
+import * as styledEl from './CustomDeadlineDialog.styled'
+
 import {
   calculateMinMax,
   formatDateToLocalTime,
   getInputStartDate,
   getTimeZoneOffset,
   limitDateString,
-} from 'modules/limitOrders/pure/DeadlineSelector/utils'
-
-import * as styledEl from './CustomDeadlineDialog.styled'
+} from '../DeadlineSelector/utils'
 
 const CUSTOM_DEADLINE_INPUT_ID = 'custom-deadline'
 const CUSTOM_DEADLINE_ERROR_ID = 'custom-deadline-error'

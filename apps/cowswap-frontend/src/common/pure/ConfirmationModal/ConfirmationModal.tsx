@@ -7,6 +7,9 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './ConfirmationModal.styled'
 
+const CONFIRM_MODAL_INPUT_ID = 'confirm-modal-input'
+const CONFIRM_MODAL_INSTRUCTION_ID = 'confirm-modal-instruction'
+
 export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
@@ -71,14 +74,19 @@ export function ConfirmationModal({
     description || instruction ? (
       <>
         {description ? typeof description === 'string' ? <p>{description}</p> : description : null}
-        {instruction ? <p>{instruction}</p> : null}
+        {instruction ? <p id={shouldShowInput ? CONFIRM_MODAL_INSTRUCTION_ID : undefined}>{instruction}</p> : null}
       </>
     ) : undefined
 
   const content = (
     <>
       {shouldShowInput ? (
-        <styledEl.Input id="confirm-modal-input" onChange={onInputChange} onKeyDown={onInputKeyDown} />
+        <styledEl.Input
+          id={CONFIRM_MODAL_INPUT_ID}
+          aria-labelledby={CONFIRM_MODAL_INSTRUCTION_ID}
+          onChange={onInputChange}
+          onKeyDown={onInputKeyDown}
+        />
       ) : null}
       {!shouldShowInput && bottomContent !== undefined ? bottomContent : null}
     </>

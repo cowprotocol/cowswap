@@ -113,7 +113,9 @@ describe('ConfirmationModal', () => {
       renderComponent()
 
       expect(screen.queryByText(TYPE_INSTRUCTION)).not.toBeNull()
-      expect(screen.queryByRole('textbox')).not.toBeNull()
+      expect(
+        screen.queryByRole('textbox', { name: /Please type the word.*"confirm".*to continue with this swap/i }),
+      ).not.toBeNull()
       expect(screen.queryByText(INSTRUCTION)).toBeNull()
     })
 
