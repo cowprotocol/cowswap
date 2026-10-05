@@ -145,7 +145,7 @@ export function getAboutFooterNavChildren(): NavItemChildrenProps[] {
       utmContent: 'footer-about-governance',
     },
     {
-      href: 'https://dune.com/cowprotocol/cow-revenue',
+      href: 'https://tokenterminal.com/explorer/projects/cow-protocol/metrics/revenue',
       label: 'Revenue',
       external: true,
       utmContent: 'footer-about-revenue',
