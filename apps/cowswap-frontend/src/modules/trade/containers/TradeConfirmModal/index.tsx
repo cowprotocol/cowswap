@@ -86,11 +86,8 @@ export function TradeConfirmModal({
   const setSolanaSigningDeadline = useSetAtom(solanaSigningDeadlineAtom)
   const setSolanaSigningAbandoned = useSetAtom(solanaSigningAbandonedAtom)
 
-  // The wallet prompt can't be cancelled programmatically, so the flow keeps pending in the
-  // background; the abandoned flag keeps its eventual rejection from opening the error modal.
-  // The quote kept refreshing through the closed window, so the review screen is reopened with
-  // price confirmation forced: the next attempt signs whatever the fresh quote says, which is not
-  // what the user confirmed the first time.
+  // The wallet prompt can't be cancelled programmatically: the abandoned flag silences its eventual
+  // rejection, and price confirmation is forced because the quote kept refreshing meanwhile.
   const onSolanaSigningExpiredDismiss = useCallback(() => {
     setSolanaSigningAbandoned(true)
     setSolanaSigningDeadline(null)

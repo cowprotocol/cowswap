@@ -2,12 +2,8 @@ import { ReactNode } from 'react'
 
 import styled, { keyframes } from 'styled-components/macro'
 
-/**
- * Faithful rebuild of the Figma "Milk glass / Fixed vessel" (node 3431:13117, 150x210): every path,
- * offset, opacity and stroke below is taken verbatim from the exported layers, composed into one SVG
- * so the draining milk can be clipped by the same inner-glass mask the design uses. Artwork colors
- * are intentionally literal, matching the exported assets.
- */
+// Rebuild of the Figma "Milk glass" (node 3431:13117): paths, offsets and literal colors are taken
+// verbatim from the exported layers, so the draining milk can reuse the design's inner-glass mask.
 const VESSEL_WIDTH = 150
 const VESSEL_HEIGHT = 210
 

@@ -3,21 +3,12 @@ import { Connection } from '@solana/web3.js'
 /** `MAX_PROCESSING_AGE`: a blockhash stays usable for this many blocks after it was issued. */
 const BLOCKHASH_VALID_BLOCKS = 150
 
-/**
- * SIMD-0525 is migrating slot time from 400ms towards 200ms while `MAX_PROCESSING_AGE` stays at
- * 150 slots, so the wall-clock signing window keeps shrinking (~40s at ~260ms/slot as of Sep 2026).
- * The recent-performance samples reflect whatever the cluster currently runs at; this constant only
- * covers the case where none are available.
- */
+// Used only when no performance samples are available; SIMD-0525 is moving real slot time towards 200ms.
 const FALLBACK_SLOT_TIME_MS = 400
 
 const PERFORMANCE_SAMPLES_COUNT = 4
 
-/**
- * The estimate is optimistic — it assumes the current slot rate holds and ignores the time the
- * signed bundle still needs to reach the order book. Capping the window keeps the countdown on the
- * safe side of the real blockhash death.
- */
+// Keeps the optimistic estimate on the safe side of the real blockhash death.
 const MAX_WINDOW_MS = 30_000
 
 export interface SolanaSigningDeadline {
@@ -28,13 +19,8 @@ export interface SolanaSigningDeadline {
 
 /**
  * Wall-clock signing window for a transaction whose blockhash was fetched just before this call.
- *
- * That freshness is why no block height is read back: a fresh blockhash is valid for exactly
- * `BLOCKHASH_VALID_BLOCKS` from now, and re-measuring the distance via a second RPC read can only
- * inject error — a rate-limited read resolving a minute late, or a node ahead of the one that issued
- * the blockhash, both read as an already-dead window and paint an instant 00:00. The window is
- * anchored to the call time instead, so a slow samples request shortens what is left to show but
- * never moves the deadline itself.
+ * Deliberately no block-height read-back: a slow or inconsistent RPC reads a fresh blockhash as
+ * already dead and paints an instant 00:00, so the window is anchored to the call time instead.
  */
 export async function estimateSolanaSigningDeadline(connection: Connection): Promise<SolanaSigningDeadline> {
   const anchorMs = Date.now()

@@ -27,11 +27,8 @@ export function getSigningWindowClosedError(): Error {
 }
 
 /**
- * Sponsored counterpart to `sendSolanaFlow`: assembles the same steps into one transaction and has the
+ * Sponsored counterpart to `sendSolanaFlow`: assembles the steps into one transaction and has the
  * wallet sign it, but never broadcasts — the order book does that after countersigning as fee payer.
- *
- * Nothing is recorded in the transaction list here. There is no signature to watch until the order book
- * submits, so the order is tracked by its uid instead.
  */
 export async function signSolanaFlow(
   { connection, provider, feePayer, onDeadline }: SignSolanaFlowContext,

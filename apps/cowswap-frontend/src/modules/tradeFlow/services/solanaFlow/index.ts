@@ -35,12 +35,8 @@ import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getS
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
-/**
- * An unanswered wallet prompt keeps its flow running forever, so a retry starts while the previous
- * attempt is still pending. Only the newest run owns the confirm-screen state; every older one goes
- * silent. The deadline atom cannot stand in for this: a fresh attempt has no deadline until its RPC
- * round-trips land, and never gets one when the estimate fails.
- */
+// An unanswered wallet prompt keeps its flow pending forever, so a retry runs alongside it: only the
+// newest run may touch the confirm-screen state, and every stale one goes silent.
 let latestAttemptId = 0
 
 // eslint-disable-next-line max-lines-per-function,complexity
@@ -212,13 +208,10 @@ export async function solanaFlow(
     const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
     const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
 
-    // Rejecting a prompt whose signing window already closed is the expected retry path, not an
-    // error: land the user back on the review screen so they can confirm with a fresh quote. If they
-    // already left the modal entirely, stay silent rather than popping it back open.
+    // Rejecting a prompt whose window already closed is the expected retry path, not an error: back
+    // to the review screen (with forced price confirmation), or silence if the modal was left.
     if (isRejection && isSigningWindowClosed) {
       if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
-        // Forced price confirmation: the quote moved on while the prompt was open, so the user has
-        // to accept the rate they would actually sign now.
         tradeConfirmActions.onOpen(true)
       }
 
@@ -324,9 +317,8 @@ function emitSolanaPostedOrderEvent(params: {
 }
 
 /**
- * Signs the bundle without broadcasting and hands it to the order book, which pays for it. Returns
- * nothing to track on chain: the signature only exists once the order book submits, so the order is
- * followed by its uid from here on.
+ * Signs the bundle without broadcasting and hands it to the order book, which pays for it and
+ * submits — so nothing to track on chain here, the order is followed by its uid.
  */
 async function postSponsoredBundle(
   context: SignSolanaFlowContext,
@@ -334,9 +326,8 @@ async function postSponsoredBundle(
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
   isCurrentAttempt: () => boolean,
 ): Promise<undefined> {
-  // A wallet prompt can rest unanswered indefinitely, so by the time this attempt settles the shared
-  // atoms may already belong to a newer attempt — every write below is gated on the atom still
-  // holding this attempt's own value.
+  // By the time a hung attempt settles, the shared atoms may belong to a newer attempt — every
+  // write below is gated on the atom still holding this attempt's own value.
   let ownDeadline: SolanaSigningDeadlineState | null = null
   let isSettled = false
 
@@ -363,10 +354,8 @@ async function postSponsoredBundle(
         ...context,
         onDeadline: () => {
           void estimateSolanaSigningDeadline(context.connection).then((deadline) => {
-            // Painted only while this attempt still owns the screen (a stale attempt's late estimate
-            // must not stomp a newer one) and only while the window is still alive — a pathologically
-            // slow estimate would otherwise open the countdown straight onto 00:00. In both skip cases
-            // the chain-level check at signing still guards the real window.
+            // Painted only while this attempt still owns the screen and the window is still alive —
+            // a stale or pathologically late estimate would otherwise open the countdown onto 00:00.
             if (isSettled || !isCurrentAttempt() || deadline.expiresAt <= Date.now()) return
 
             ownDeadline = deadline
@@ -377,10 +366,8 @@ async function postSponsoredBundle(
       steps,
     )
 
-    // The real blockhash usually outlives the displayed window (the estimate is capped), so the
-    // chain-level check in signSolanaFlow happily passes a signature the UI already told the user to
-    // abandon. Honor the screen's promise instead: a signature approved after the shown window closed
-    // — or one belonging to an attempt the user already retried past — is discarded, never posted.
+    // The real blockhash outlives the capped window, so the chain-level check alone would pass a
+    // signature the screen already told the user to abandon (or one from a retried-past attempt).
     if (!isCurrentAttempt() || hasShownWindowClosed()) {
       throw getSigningWindowClosedError()
     }
