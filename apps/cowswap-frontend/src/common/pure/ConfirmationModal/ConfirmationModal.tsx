@@ -11,7 +11,6 @@ export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
   description?: ReactNode
-  warning?: string
   callToAction?: string
   onDismiss: Command
   onEnable: Command
@@ -25,7 +24,6 @@ export function ConfirmationModal({
   isOpen,
   title,
   description,
-  warning,
   callToAction,
   onDismiss,
   onEnable,
@@ -68,11 +66,6 @@ export function ConfirmationModal({
 
   const content = (
     <>
-      {warning ? (
-        <styledEl.Instruction>
-          <styledEl.Warning>{warning}</styledEl.Warning>
-        </styledEl.Instruction>
-      ) : null}
       {shouldShowInput ? <styledEl.Input id="confirm-modal-input" onChange={onInputChange} /> : null}
       {!shouldShowInput && bottomContent !== undefined ? bottomContent : null}
     </>

@@ -3885,6 +3885,10 @@ msgstr "on-chain"
 #~ msgid "Updates every 6 hours"
 #~ msgstr "Updates every 6 hours"
 
+#: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
+msgid "This requires connecting a different wallet, and your current wallet will be disconnected."
+msgstr "This requires connecting a different wallet, and your current wallet will be disconnected."
+
 #: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
 msgid "TWAP splits your swap into equal parts over time"
 msgstr "TWAP splits your swap into equal parts over time"
@@ -8848,8 +8852,8 @@ msgid "Order expired"
 msgstr "Order expired"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
-msgid "Your current wallet will be disconnected."
-msgstr "Your current wallet will be disconnected."
+#~ msgid "Your current wallet will be disconnected."
+#~ msgstr "Your current wallet will be disconnected."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulate"
@@ -8920,8 +8924,8 @@ msgid "View List"
 msgstr "View List"
 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
-msgid "This requires connecting a different wallet."
-msgstr "This requires connecting a different wallet."
+#~ msgid "This requires connecting a different wallet."
+#~ msgstr "This requires connecting a different wallet."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Add liquidity to any of the CoW AMM pools"

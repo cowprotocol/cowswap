@@ -2,15 +2,6 @@ import { INPUT_MIN_HEIGHT_PX, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Instruction = styled.p`
-  line-height: 1.4;
-  margin: 0 0 1rem;
-`
-
-export const Warning = styled.strong`
-  color: inherit;
-`
-
 export const Input = styled.input`
   --minHeight: ${INPUT_MIN_HEIGHT_PX}px;
   box-sizing: border-box;
