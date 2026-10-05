@@ -7,6 +7,8 @@
  *
  * Hand-edited fields of assets and tokens that are already in the file are kept:
  * asset `title`, `priority`, `allowedTradingTime` and token `symbol`, `name`, `issuer`.
+ *
+ * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped.
  */
 import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -19,7 +21,8 @@ import { areAddressesEqual, isSupportedChain } from '@cowprotocol/cow-sdk'
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 
 const ASSET_TYPES = { stock: 'stock', etf: 'index' }
-const ISSUER_NAMES = { 'ondo-tokenized-assets': 'Ondo' }
+/** CoinGecko issuer id -> registry issuer name. Must match `ALLOWED_ISSUERS` in `validateRegistry.ts` */
+const ALLOWED_ISSUERS = { 'ondo-tokenized-assets': 'Ondo', 'xstocks-ecosystem': 'xStocks' }
 const DEFAULT_PRIORITY = 0
 const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
 
@@ -57,7 +60,13 @@ async function main() {
     fetchTokenListDecimals(Object.keys(platformChainIds)),
   ])
 
-  const coinIds = [...new Set(details.flatMap((rwa) => (rwa.tokens ?? []).map((token) => token.id)))]
+  const coinIds = [
+    ...new Set(
+      details.flatMap((rwa) =>
+        (rwa.tokens ?? []).filter((token) => ALLOWED_ISSUERS[token.issuer_details?.id]).map((token) => token.id),
+      ),
+    ),
+  ]
   const tokenMarketCaps = await fetchCoinMarketCaps(coinIds)
   const existingAssets = new Map(registry.assets.map((asset) => [asset.ticker, asset]))
 
@@ -114,6 +123,10 @@ async function buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform
   const tokens = []
 
   for (const coin of coins) {
+    const issuer = ALLOWED_ISSUERS[coin.issuer_details?.id]
+
+    if (!issuer) continue
+
     for (const [platform, address] of Object.entries(coin.platforms ?? {})) {
       const chainId = platformChainIds[platform]
 
@@ -137,7 +150,7 @@ async function buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform
         symbol: previous?.symbol ?? coin.symbol.toUpperCase(),
         name: previous?.name ?? coin.name,
         decimals,
-        issuer: previous?.issuer ?? ISSUER_NAMES[coin.issuer_details?.id] ?? coin.issuer_details?.name ?? 'Unknown',
+        issuer: previous?.issuer ?? issuer,
         coingeckoId: coin.id,
       })
     }

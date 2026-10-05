@@ -6,6 +6,9 @@ import type { RwaAsset, RwaRegistry, RwaToken, RwaTradingTime } from './types'
 
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
+/** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
+const ALLOWED_ISSUERS: readonly string[] = ['Ondo', 'xStocks']
+
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []
   const tickers = new Set<string>()
@@ -75,7 +78,11 @@ function validateToken(token: RwaToken, path: string): string[] {
   if (!isAddress(token.address)) errors.push(`${path}.address: invalid address ${token.address}`)
   if (!token.symbol) errors.push(`${path}.symbol: required`)
   if (!token.name) errors.push(`${path}.name: required`)
-  if (!token.issuer) errors.push(`${path}.issuer: required`)
+  if (!token.issuer) {
+    errors.push(`${path}.issuer: required`)
+  } else if (!ALLOWED_ISSUERS.includes(token.issuer)) {
+    errors.push(`${path}.issuer: "${token.issuer}" is not an allowed issuer (${ALLOWED_ISSUERS.join(', ')})`)
+  }
   if (!Number.isInteger(token.decimals) || token.decimals < 0) errors.push(`${path}.decimals: invalid`)
 
   return errors

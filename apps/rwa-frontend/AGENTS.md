@@ -31,14 +31,14 @@ This file: rwa-frontend app-specific commands only.
 
 ## App rules
 
-- `data/RWAs.json` is the asset registry, rebuilt with `update-registry`. Every asset has a unique `coingeckoId` (the CoinGecko RWA id). `validateRegistry.test.ts` validates it, so run the tests after editing it.
+- `data/RWAs.json` is the asset registry, rebuilt with `update-registry`. It holds Ondo and xStocks tokens only: the script skips other issuers and the assets left without tokens, and `validateRegistry` rejects them. Change the allowlist in both `scripts/updateRegistry.mjs` and `validateRegistry.ts`. Every asset has a unique `coingeckoId` (the CoinGecko RWA id). `validateRegistry.test.ts` validates it, so run the tests after editing it.
 - The asset logo (`RwaAsset.logoUrl`) is static registry data written by `update-registry`; token logos come from `/coins/markets` on the asset page.
 - Price, 24h change, day range, market cap and volume of an asset come from CoinGecko `/rwas/markets` (the tokenized market over every chain and issuer), keyed by `coingeckoId`. Per-token data (`/coins/markets`) and onchain stats are loaded only for the asset page. The table and top-movers 1D sparklines are the last 24h of the `/rwas/markets` 7d sparkline, so they cost no extra request. The first token with a `coingeckoId` is the reference for the asset page price chart.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
 - `/api/v1/token-list` is the token list of `data/RWAs.json`. Balances come from the balances watcher for the tokens in that list: the asset page streams them (`useAccountBalances`), the portfolio loads one snapshot per chain, cached for a minute, with a manual refresh (`useAccountBalanceSnapshots`).
-- Every balances watcher SSE stream holds one of the browser's 6 HTTP/1.1 connections to its host. Snapshot loads go through the shared `limitConcurrency` slot pool in `balanceSnapshotAtoms.ts`; don't open watcher streams outside it on pages that load many chains.
+- Every balances watcher SSE stream holds one of the browser's 6 HTTP/1.1 connections to its host. Every watcher request goes through the pool in `widgets/account/model/watcherConnections.ts`: snapshot loads with `withWatcherConnection`, live streams with `holdWatcherConnection`. An asset on more than 6 networks streams 5 and loads the rest once (`splitWatchedChains`).
 - Account activity must come through `ActivityProvider` (`widgets/account/api/activity`). It is backed by the CoW order book trades for now; swap the implementation there, not in the UI.
 - Data fetching uses Jotai: `atomWithQuery` from `jotai-tanstack-query`, with `atomFamily` from `jotai-family` for per-ticker queries. SWR is banned by ESLint. Query options live in `entities/asset/api/assetsQueries.ts`, and every query key starts with `RWA_QUERY_KEY_ROOT`.
 - There is one `QueryClient` per app instance (`_app/layout/Providers.tsx`), shared by Jotai (`queryClientAtom`) and wagmi.

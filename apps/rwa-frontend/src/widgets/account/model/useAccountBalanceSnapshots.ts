@@ -10,7 +10,7 @@ import { getBalancesQueryKey, chainsBalancesQueryAtomFamily } from './balanceSna
 import { type ChainBalancesSnapshot, combineChainBalances } from '../lib/chainBalances'
 import { getSupportedChainIds } from '../lib/tradeLeg'
 
-import { type RwaTokenSummary, tokenListQueryAtom } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 export interface AccountBalanceSnapshots<T extends RwaTokenSummary = RwaTokenSummary> extends ChainBalancesSnapshot<T> {
   /** Reloads the balances of every chain, even fresh ones */
@@ -24,16 +24,15 @@ export function useAccountBalanceSnapshots<T extends RwaTokenSummary>(
 ): AccountBalanceSnapshots<T> {
   const chainIds = useMemo(() => getSupportedChainIds(tokens), [tokens])
   const queryClient = useAtomValue(queryClientAtom)
-  const { error: tokenListError } = useAtomValue(tokenListQueryAtom)
   const results = useAtomValue(chainsBalancesQueryAtomFamily({ owner, chainIds }))
 
+  // Each balances query loads a missing token list first, so this also retries a failed one
   const refresh = useCallback(() => {
     void queryClient.refetchQueries({ queryKey: getBalancesQueryKey(owner) })
   }, [owner, queryClient])
 
-  return useMemo(() => {
-    const snapshot = combineChainBalances(tokens, chainIds, results)
-
-    return { ...snapshot, error: tokenListError ?? snapshot.error, refresh }
-  }, [chainIds, refresh, results, tokenListError, tokens])
+  return useMemo(
+    () => ({ ...combineChainBalances(tokens, chainIds, results), refresh }),
+    [chainIds, refresh, results, tokens],
+  )
 }

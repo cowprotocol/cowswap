@@ -15,7 +15,7 @@ legend top right
   | rv | Next data cache revalidate (s): `next.revalidate` or `unstable_cache` |
   | s-maxage | CDN `Cache-Control` of the route (SWR = 5 × s-maxage) |
   | refetch | TanStack `refetchInterval` (client poll) |
-  Registry: 922 assets, 3426 tokens (all with coingeckoId), up to 19 tokens per asset
+  Registry: 482 assets, 1251 tokens (Ondo and xStocks only, all with coingeckoId), up to 7 networks per asset
   Any `degraded: true` body is sent `no-store` and is not persisted to IndexedDB
 endlegend
 
@@ -96,7 +96,7 @@ P_RWA --> F_RWA
 P_TOK --> F_COINS
 P_CHART --> F_CHART
 P_NET --> F_MULTI
-P_VOL --> F_OHLCV : ×tokens of asset (≤19)
+P_VOL --> F_OHLCV : ×tokens of asset (≤8)
 
 ' service -> provider
 S_LOADRWA --> P_RWA
@@ -201,7 +201,7 @@ note as HOT
   2. The pages are cached as one snapshot (unstable_cache), so every route
      sees the same moment. Mapped snapshot is ~0.8 MB of the 2 MB entry limit.
   3. market_chart is only called by the asset page chart (one URL per ticker × range).
-  4. Market overview: up to 3 × 19 OHLCV calls
+  4. Market overview: up to 3 × 8 OHLCV calls
      (most traded, Pro only) per 300s cache miss.
   5. /asset and /network-stats both call /coins/markets for the asset's
      tokens; the identical sorted-ids URL makes the second a data-cache hit.
