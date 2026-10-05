@@ -243,7 +243,7 @@ describe('coingeckoProvider.getRwaMarkets', () => {
 
   it('requests the expected pages concurrently', async () => {
     const pending: ((page: unknown[]) => void)[] = []
-    const fetchMock = jest.fn(
+    const fetchMock = jest.fn().mockImplementation(
       () =>
         new Promise((resolve) => {
           pending.push((page) => resolve({ ok: true, status: 200, json: () => Promise.resolve(page) }))

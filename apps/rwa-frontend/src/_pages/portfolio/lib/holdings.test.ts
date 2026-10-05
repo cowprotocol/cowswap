@@ -1,6 +1,6 @@
 import { buildHoldings, getPortfolioTotals } from './holdings'
 
-import type { RwaAsset, RwaToken } from '@/entities/asset'
+import type { RwaAsset, RwaAssetSummary, RwaToken } from '@/entities/asset'
 
 const AAPLX: RwaToken = {
   chainId: 1,
@@ -40,7 +40,7 @@ const SPY: RwaAsset = {
 }
 
 const PRICES: Record<string, number> = { AAPL: 200, QQQ: 500 }
-const getPrice = (asset: RwaAsset): number | null => PRICES[asset.ticker] ?? null
+const getPrice = (asset: RwaAssetSummary): number | null => PRICES[asset.ticker] ?? null
 
 describe('buildHoldings', () => {
   it('sums the tokens of an asset across networks and values them at the asset price', () => {

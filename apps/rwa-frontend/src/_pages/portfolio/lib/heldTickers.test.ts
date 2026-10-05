@@ -1,6 +1,6 @@
 import { getHeldTickersKey, MAX_PORTFOLIO_MARKETS } from './heldTickers'
 
-import type { RwaAsset, RwaToken } from '@/entities/asset'
+import type { RwaAsset, RwaAssetSummary, RwaToken, RwaTokenSummary } from '@/entities/asset'
 import type { Position } from '@/widgets/account'
 
 function asset(ticker: string): RwaAsset {
@@ -22,7 +22,7 @@ function token(symbol: string): RwaToken {
   }
 }
 
-const bySymbol = (tokenToFind: RwaToken): RwaAsset | undefined =>
+const bySymbol = (tokenToFind: RwaTokenSummary): RwaAssetSummary | undefined =>
   tokenToFind.symbol === 'UNKNOWN' ? undefined : asset(tokenToFind.symbol.replace(/(x|on)$/, ''))
 
 describe('getHeldTickersKey', () => {
