@@ -14,6 +14,8 @@ import { getParsedOrderFromTableItem, isParsedOrder } from './orderTableGroupUti
 import { OrdersTableList, OrderTableItem } from '../state/ordersTable.types'
 import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
 
+import type { TwapOrdersList } from 'entities/twap'
+
 /*
 TODO: Arbitrary limit to mitigate performance issues for users that have many orders. We could consider:
 
@@ -37,6 +39,7 @@ export function getOrdersTableList(
   balancesAndAllowances: BalancesAndAllowances,
   pendingOrdersPermitValidityState: PendingOrdersPermitValidityState,
   setIsOrderUnfillable: (params: SetIsOrderUnfillableParams) => void,
+  twapOrders: TwapOrdersList = {},
 ): OrdersTableList {
   // Then, categorize orders into their respective lists
   return groupOrdersTable(orders)
@@ -61,12 +64,16 @@ export function getOrdersTableList(
 
         // When allowance/balance is temporarily unavailable, keep the current persisted flag.
         // This avoids incorrectly flipping an already-unfillable order back to fillable.
-        const unfillableParams = order.isEoaTwapOrder
-          ? { hasKnownFillability: false, isUnfillable: false }
-          : getUnfillableParams(
-              getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState),
-              order.isUnfillable ?? false,
-            )
+        const unfillableParams = getUnfillableParams(
+          getOrderParams(
+            chainId,
+            balancesAndAllowances,
+            order,
+            pendingOrdersPermitValidityState,
+            order.isEoaTwapOrder ? twapOrders[order.id]?.order.partSellAmount : undefined,
+          ),
+          order.isUnfillable ?? false,
+        )
         const { hasKnownFillability } = unfillableParams
         let { isUnfillable } = unfillableParams
 

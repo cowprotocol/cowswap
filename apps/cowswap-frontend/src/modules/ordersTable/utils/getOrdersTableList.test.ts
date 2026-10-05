@@ -11,6 +11,8 @@ import { getOrdersTableList } from './getOrdersTableList'
 import { PendingOrdersPermitValidityState } from '../state/permit/pendingOrdersPermitValidity.atom'
 import { ordersMock } from '../test/ordersTable.mock'
 
+import type { TwapOrdersList } from 'entities/twap'
+
 jest.mock('./groupOrdersTable', () => ({
   groupOrdersTable: jest.fn(),
 }))
@@ -92,9 +94,34 @@ describe('getOrdersTableList', () => {
     expect(result.unfillable).toHaveLength(1)
   })
 
-  it('does not check connected-account balances for an EOA TWAP owned by its proxy', () => {
+  it('marks an EOA TWAP as unfillable when the next part is not funded', () => {
+    const order = makePendingOrder({ composableCowInfo: { id: 'generator' }, isEoaTwapOrder: true })
+    const twapOrders = { [order.id]: { order: { partSellAmount: '500' } } } as unknown as TwapOrdersList
+    groupOrdersTable.mockReturnValue([{ parent: order, children: [] }])
+    getOrderParams.mockReturnValue({ hasEnoughBalance: false, hasEnoughAllowance: true })
+    const setIsOrderUnfillable = jest.fn()
+
+    const result = getOrdersTableList(
+      [order as never],
+      TabOrderTypes.ADVANCED,
+      1,
+      balancesAndAllowances,
+      permitState,
+      setIsOrderUnfillable,
+      twapOrders,
+    )
+
+    expect(getOrderParams).toHaveBeenCalledTimes(1)
+    expect(getOrderParams).toHaveBeenCalledWith(1, balancesAndAllowances, order, permitState, '500')
+    expect(setIsOrderUnfillable).toHaveBeenCalledWith({ chainId: 1, id: order.id, isUnfillable: true })
+    expect(result.open).toHaveLength(1)
+    expect(result.unfillable).toHaveLength(1)
+  })
+
+  it('keeps an EOA TWAP fillable while its indexed part amount is unknown', () => {
     const order = makePendingOrder({ composableCowInfo: { id: 'generator' }, isEoaTwapOrder: true })
     groupOrdersTable.mockReturnValue([order])
+    getOrderParams.mockReturnValue({ hasEnoughBalance: undefined, hasEnoughAllowance: undefined })
     const setIsOrderUnfillable = jest.fn()
 
     const result = getOrdersTableList(
@@ -106,7 +133,7 @@ describe('getOrdersTableList', () => {
       setIsOrderUnfillable,
     )
 
-    expect(getOrderParams).not.toHaveBeenCalled()
+    expect(getOrderParams).toHaveBeenCalledWith(1, balancesAndAllowances, order, permitState, undefined)
     expect(setIsOrderUnfillable).not.toHaveBeenCalled()
     expect(result.open).toHaveLength(1)
     expect(result.unfillable).toHaveLength(0)
