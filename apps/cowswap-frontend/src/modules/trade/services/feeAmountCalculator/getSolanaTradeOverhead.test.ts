@@ -153,5 +153,8 @@ describe('getSolanaTradeOverhead', () => {
     const overhead = await getSolanaTradeOverhead(connection, [])
 
     expect(overhead).toBe(BigInt(WALLET_RENT) + SIGNATURE_FEE)
+    // The RPC rejects an empty `getMultipleAccounts` batch, so nothing may be looked up here —
+    // this is the wrap/unwrap path, which declares no accounts at all.
+    expect(connection.getMultipleAccountsInfo).not.toHaveBeenCalled()
   })
 })

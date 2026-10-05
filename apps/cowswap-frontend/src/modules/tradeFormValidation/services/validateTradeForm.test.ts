@@ -330,6 +330,23 @@ describe('validateTradeForm - balance vs slippage', () => {
     expect(result).toContain(TradeFormValidation.SolanaInsufficientNativeBalance)
   })
 
+  // A wrap/unwrap is a plain owner-paid transaction: when the wallet cannot cover its fee and own
+  // rent-exempt reserve, the shortfall button must win over the Wrap/Unwrap action button —
+  // `useGetTradeFormValidation` picks validations[0].
+  test('ranks SolanaInsufficientNativeBalance ahead of WrapUnwrapFlow in wrap/unwrap mode', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      solanaNativeShortfall: mockCurrencyAmount('5000'),
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result.indexOf(TradeFormValidation.SolanaInsufficientNativeBalance)).toBeLessThan(
+      result.indexOf(TradeFormValidation.WrapUnwrapFlow),
+    )
+  })
+
   test('ranks BalanceInsufficient ahead of SolanaInsufficientNativeBalance when both apply', () => {
     const context = {
       ...baseContext,

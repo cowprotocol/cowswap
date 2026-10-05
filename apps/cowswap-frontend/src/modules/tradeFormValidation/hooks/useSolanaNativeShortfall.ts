@@ -7,7 +7,7 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
-import { useDerivedTradeState, useGetReceiveAmountInfo } from 'modules/trade'
+import { useDerivedTradeState, useGetReceiveAmountInfo, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 
@@ -22,9 +22,15 @@ import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
   const { chainId } = useWalletInfo()
   const { values: balances } = useTokensBalancesCombined()
-  const inputCurrency = useDerivedTradeState()?.inputCurrency
-  const sellAmount = useGetReceiveAmountInfo()?.amountsToSign.sellAmount
+  const derivedState = useDerivedTradeState()
+  const inputCurrency = derivedState?.inputCurrency
+  const isWrapUnwrap = useIsWrapOrUnwrap()
+  const quoteSellAmount = useGetReceiveAmountInfo()?.amountsToSign.sellAmount
   const overhead = useSolanaTradeOverhead()
+
+  // A wrap has no quote, so there is no signed amount to read — the typed amount is what the
+  // transaction transfers. An unwrap sells WSOL, not SOL, so `isNativeSell` keeps it at zero below.
+  const sellAmount = isWrapUnwrap ? derivedState?.inputCurrencyAmount : quoteSellAmount
 
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
 

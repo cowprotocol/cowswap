@@ -8,12 +8,8 @@ import { SolanaFundedAccount } from '../solanaFlow/types'
 const SIGNATURE_FEE_LAMPORTS = 5000n
 
 /**
- * Lamports a Solana trade needs on top of the sell amount: rent for every account its steps declare
- * they create, the signature fee, and the reserve the fee payer must still hold once it settles.
- *
- * Knows nothing about wrapping, buy-token accounts or orders — it prices whatever the steps declare,
- * so a new step that creates an account is covered without touching this. Rent is read from the chain
- * rather than hardcoded: it is a network parameter and does change.
+ * Lamports a Solana trade needs on top of the sell amount: rent for every declared account, the
+ * signature fee, and the fee payer's own rent-exempt reserve. Rent is read live — it does change.
  */
 export async function getSolanaTradeOverhead(
   connection: Connection,
@@ -22,7 +18,10 @@ export async function getSolanaTradeOverhead(
   const addresses = fundedAccounts.flatMap(({ address }) => (address ? [address] : []))
   const mints = fundedAccounts.flatMap(({ size }) => (typeof size === 'number' ? [] : [size.mint]))
 
-  const accountInfos = await connection.getMultipleAccountsInfo([...addresses, ...mints])
+  // An empty declaration list (a wrap/unwrap) still prices the fee and the payer reserve below, but
+  // there is nothing to look up — and the RPC rejects an empty `getMultipleAccounts` batch.
+  const accountInfos =
+    addresses.length + mints.length > 0 ? await connection.getMultipleAccountsInfo([...addresses, ...mints]) : []
   const existingAddresses = new Set(
     addresses.filter((_, index) => accountInfos[index]).map((address) => address.toBase58()),
   )

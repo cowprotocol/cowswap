@@ -9,7 +9,12 @@ import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
 
-import { getSolanaTradeOverhead, planSolanaTradeFundedAccounts, useDerivedTradeState } from 'modules/trade'
+import {
+  getSolanaTradeOverhead,
+  planSolanaTradeFundedAccounts,
+  useDerivedTradeState,
+  useIsWrapOrUnwrap,
+} from 'modules/trade'
 import type { SolanaFundedAccount } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
@@ -27,6 +32,7 @@ export function useSolanaTradeOverhead(): bigint | null {
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()
   const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
+  const isWrapUnwrap = useIsWrapOrUnwrap()
   const derivedState = useDerivedTradeState()
   const inputCurrency = derivedState?.inputCurrency
   const tradeType = derivedState?.tradeType
@@ -37,10 +43,15 @@ export function useSolanaTradeOverhead(): bigint | null {
   const isSponsored = getIsSponsoredTrade(Boolean(isSolanaSponsoredOrdersEnabled), tradeType, solanaQuote)
 
   const fundedAccounts = useMemo(() => {
-    if (!isSolanaChain(chainId) || !account || !solanaQuote || isSponsored) return null
+    if (!isSolanaChain(chainId) || !account) return null
+
+    // A wrap/unwrap is a plain owner-paid transaction — never sponsored, no quote involved.
+    if (isWrapUnwrap) return []
+
+    if (!solanaQuote || isSponsored) return null
 
     return planSolanaTradeFundedAccounts({ owner: new PublicKey(account), quote: solanaQuote, isNativeSell })
-  }, [chainId, account, solanaQuote, isNativeSell, isSponsored])
+  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the callers' comparisons.
