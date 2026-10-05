@@ -42,14 +42,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
   const isMoustacheVisible = level > 0.03 && level <= 0.2
 
   return (
-    <svg
-      viewBox={`0 0 ${VESSEL_WIDTH} ${VESSEL_HEIGHT}`}
-      width={VESSEL_WIDTH}
-      height={VESSEL_HEIGHT}
-      role="img"
-      aria-hidden="true"
-      overflow="visible"
-    >
+    <Vessel viewBox={`0 0 ${VESSEL_WIDTH} ${VESSEL_HEIGHT}`} role="img" aria-hidden="true" overflow="visible">
       <defs>
         <clipPath id="solana-signing-milk-glass-clip">
           <path d={INNER_GLASS_MASK_PATH} transform="translate(11 8)" />
@@ -98,7 +91,7 @@ export function MilkGlass({ fraction }: MilkGlassProps): ReactNode {
         fill="white"
         style={{ opacity: isMoustacheVisible ? 1 : 0, transition: 'opacity 0.5s ease-out' }}
       />
-    </svg>
+    </Vessel>
   )
 }
 
@@ -107,6 +100,12 @@ const sway = keyframes`
   25% { transform: translateX(12px); }
   75% { transform: translateX(-12px); }
   100% { transform: translateX(0); }
+`
+
+const Vessel = styled.svg`
+  width: 100%;
+  max-width: ${VESSEL_WIDTH}px;
+  height: auto;
 `
 
 const SwayingSurface = styled.g`

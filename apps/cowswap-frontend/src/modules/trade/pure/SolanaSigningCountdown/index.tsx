@@ -47,7 +47,9 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
               )}
             </TimerLabel>
           </TimerColumn>
-          <MilkGlass fraction={durationMs > 0 ? remainingMs / durationMs : 0} />
+          <GlassBox>
+            <MilkGlass fraction={durationMs > 0 ? remainingMs / durationMs : 0} />
+          </GlassBox>
         </Hero>
 
         <AmountsRow>
@@ -75,10 +77,10 @@ const Hero = styled.div`
   display: flex;
   flex: 1;
   align-items: center;
-  gap: 28px;
+  gap: clamp(12px, 5%, 28px);
   width: 100%;
   min-height: 260px;
-  padding: 24px 28px;
+  padding: 24px clamp(16px, 5%, 28px);
   background: var(${UI.COLOR_BLUE_300_PRIMARY});
   color: var(${UI.COLOR_TEXT});
 `
@@ -89,6 +91,14 @@ const TimerColumn = styled.div`
   align-items: flex-start;
   gap: 4px;
   width: 204px;
+  min-width: 0;
+`
+
+const GlassBox = styled.div`
+  display: flex;
+  justify-content: center;
+  flex: 0 1 150px;
+  min-width: 80px;
 `
 
 const TimerLabel = styled.span`
