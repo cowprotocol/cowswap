@@ -3,6 +3,18 @@ import { INPUT_MIN_HEIGHT_PX, Media, UI } from '@cowprotocol/ui'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
+export const InputLabel = styled.label`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+`
+
 export const CustomInput = styled.input`
   --minHeight: ${INPUT_MIN_HEIGHT_PX}px;
   display: flex;

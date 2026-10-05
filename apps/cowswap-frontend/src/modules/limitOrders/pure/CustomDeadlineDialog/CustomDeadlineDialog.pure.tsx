@@ -17,6 +17,9 @@ import {
 
 import * as styledEl from './CustomDeadlineDialog.styled'
 
+const CUSTOM_DEADLINE_INPUT_ID = 'custom-deadline'
+const CUSTOM_DEADLINE_ERROR_ID = 'custom-deadline-error'
+
 interface CustomDeadlineDialogProps {
   isOpen: boolean
   customDeadline: number | null
@@ -107,9 +110,12 @@ export function CustomDeadlineDialog({
 
   const content = (
     <>
+      <styledEl.InputLabel htmlFor={CUSTOM_DEADLINE_INPUT_ID}>{t`Set custom deadline`}</styledEl.InputLabel>
       <styledEl.CustomInput
         type="datetime-local"
-        id="custom-deadline"
+        id={CUSTOM_DEADLINE_INPUT_ID}
+        aria-invalid={!!error}
+        aria-describedby={error ? CUSTOM_DEADLINE_ERROR_ID : undefined}
         onChange={onChange}
         // For some reason, `min/max` values require the same format as `value`,
         // but they don't need to be in the user's timezone
@@ -121,7 +127,7 @@ export function CustomDeadlineDialog({
         pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}"
         onFocus={onFocus}
       />
-      {error ? <styledEl.ErrorText>{error}</styledEl.ErrorText> : null}
+      {error ? <styledEl.ErrorText id={CUSTOM_DEADLINE_ERROR_ID}>{error}</styledEl.ErrorText> : null}
     </>
   )
 

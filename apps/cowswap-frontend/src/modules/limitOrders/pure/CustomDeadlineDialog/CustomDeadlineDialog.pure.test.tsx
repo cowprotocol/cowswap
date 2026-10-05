@@ -58,14 +58,17 @@ describe('CustomDeadlineDialog', () => {
     renderDialog(selectCustomDeadline)
 
     const consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined)
-    const input = screen.getByDisplayValue(/.+/) as HTMLInputElement
+    const input = screen.getByLabelText('Set custom deadline') as HTMLInputElement
     // datetime-local rejects non-dates. The text fallback is what can submit an unparseable value.
     input.type = 'text'
     fireEvent.change(input, { target: { value: 'not-a-date' } })
 
     const applyButton = screen.getByRole('button', { name: 'Apply' })
+    const error = screen.getByText(PARSE_ERROR)
 
-    expect(screen.getByText(PARSE_ERROR)).toBeTruthy()
+    expect(error).toBeTruthy()
+    expect(input.getAttribute('aria-invalid')).toBe('true')
+    expect(input.getAttribute('aria-describedby')).toBe(error.id)
     expect((applyButton as HTMLButtonElement).disabled).toBe(true)
     fireEvent.click(applyButton)
     expect(selectCustomDeadline).not.toHaveBeenCalled()
@@ -76,7 +79,11 @@ describe('CustomDeadlineDialog', () => {
     const selectCustomDeadline = jest.fn()
     renderDialog(selectCustomDeadline)
 
+    const input = screen.getByLabelText('Set custom deadline')
+
     expect(screen.queryByText(PARSE_ERROR)).toBeNull()
+    expect(input.getAttribute('aria-invalid')).toBe('false')
+    expect(input.getAttribute('aria-describedby')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }))
 
     expect(selectCustomDeadline).toHaveBeenCalledTimes(1)
