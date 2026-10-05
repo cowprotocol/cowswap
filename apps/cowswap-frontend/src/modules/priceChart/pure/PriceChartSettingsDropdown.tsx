@@ -9,6 +9,7 @@ import { Menu } from '@reach/menu-button'
 
 import { SettingsButton, SettingsIcon, SettingsMenu, SettingsMenuFlyout } from 'modules/trade'
 
+import { priceChartModeAtom } from '../state/priceChartModeAtom'
 import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
 import type { ExpansionControl } from '../lib/priceChart.types'
@@ -19,6 +20,7 @@ interface PriceChartSettingsDropdownProps {
 
 export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDropdownProps): ReactNode {
   const { t } = useLingui()
+  const [chartMode, setChartMode] = useAtom(priceChartModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [supplyVariant, setSupplyVariant] = useAtom(priceChartSupplyVariantAtom)
 
@@ -33,6 +35,12 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
         <SettingsMenuFlyout portal={false}>
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
+              <SettingsBox
+                title={t`Advanced price chart`}
+                tooltip={t`Use the advanced TradingView chart.`}
+                checked={chartMode === 'advanced'}
+                toggle={() => setChartMode((value) => (value === 'advanced' ? 'simple' : 'advanced'))}
+              />
               {!isUpToLarge && (
                 <SettingsBox
                   title={t`Maximum width`}
