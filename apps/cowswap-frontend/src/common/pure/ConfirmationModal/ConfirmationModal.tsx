@@ -1,4 +1,4 @@
-import { ChangeEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
+import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
@@ -48,6 +48,17 @@ export function ConfirmationModal({
     [],
   )
 
+  const onInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      if (event.key !== 'Enter' || confirmDisabled) {
+        return
+      }
+
+      onEnable()
+    },
+    [confirmDisabled, onEnable],
+  )
+
   const instruction = shouldShowInput ? (
     <Trans>
       Please type the word <strong>"{confirmWord}"</strong> to {action}.
@@ -66,7 +77,9 @@ export function ConfirmationModal({
 
   const content = (
     <>
-      {shouldShowInput ? <styledEl.Input id="confirm-modal-input" onChange={onInputChange} /> : null}
+      {shouldShowInput ? (
+        <styledEl.Input id="confirm-modal-input" onChange={onInputChange} onKeyDown={onInputKeyDown} />
+      ) : null}
       {!shouldShowInput && bottomContent !== undefined ? bottomContent : null}
     </>
   )

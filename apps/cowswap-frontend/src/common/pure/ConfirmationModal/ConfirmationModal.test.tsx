@@ -3,7 +3,7 @@ import React, { ReactElement, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-import { render, RenderResult, screen } from '@testing-library/react'
+import { fireEvent, render, RenderResult, screen } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
@@ -132,6 +132,28 @@ describe('ConfirmationModal', () => {
 
       expect(screen.queryByText('Custom bottom content')).toBeNull()
       expect(screen.queryByText(TYPE_INSTRUCTION)).not.toBeNull()
+    })
+
+    it('should call onEnable when Enter is pressed with a valid confirmation word', () => {
+      const onEnable = jest.fn()
+      renderComponent({ onEnable })
+
+      const input = screen.getByRole('textbox')
+      fireEvent.change(input, { target: { value: 'confirm' } })
+      fireEvent.keyDown(input, { key: 'Enter' })
+
+      expect(onEnable).toHaveBeenCalledTimes(1)
+    })
+
+    it('should not call onEnable when Enter is pressed with an invalid confirmation word', () => {
+      const onEnable = jest.fn()
+      renderComponent({ onEnable })
+
+      const input = screen.getByRole('textbox')
+      fireEvent.change(input, { target: { value: 'wrong' } })
+      fireEvent.keyDown(input, { key: 'Enter' })
+
+      expect(onEnable).not.toHaveBeenCalled()
     })
   })
 })
