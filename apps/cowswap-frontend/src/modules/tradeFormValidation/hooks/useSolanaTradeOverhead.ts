@@ -68,10 +68,17 @@ export function useSolanaTradeOverhead(): bigint | null {
   }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
-  // so typing must not refetch. The amount only enters the callers' comparisons.
+  // so typing must not refetch. The amount only enters the callers' comparisons. `rpcEndpoint` keys the
+  // cache to the active network — rent minimums are a cluster property, and the account lookups below
+  // resolve against whatever cluster the connection points at — matching `useSolanaNativeBalance`.
   const { data: overhead } = useSWR(
     connection && request
-      ? [toFundedAccountsKey(request.fundedAccounts), request.ownerPaysFees, 'solanaTradeOverhead']
+      ? [
+          toFundedAccountsKey(request.fundedAccounts),
+          request.ownerPaysFees,
+          connection.rpcEndpoint,
+          'solanaTradeOverhead',
+        ]
       : null,
     () =>
       connection && request
