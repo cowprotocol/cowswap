@@ -39,6 +39,7 @@ import {
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -76,6 +77,10 @@ export function AdvancedOrdersPage(): ReactNode {
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
+  }
+
+  if (!isTwapSupportedChain(Number(params.chainId))) {
+    return <TradeRouteRedirect route={Routes.SWAP} />
   }
 
   return (

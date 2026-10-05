@@ -68,7 +68,11 @@ export type OrderTableRowData = Pick<
   | 'executedBuyAmount'
   | 'partiallyFilled'
   | 'filledPercentage'
-> & { status: StatusLabelProps['status']; statusLabel?: string }
+> &
+  Partial<Pick<Order, 'surplusAmount' | 'surplusPercentage'>> & {
+    status: StatusLabelProps['status']
+    statusLabel?: string
+  }
 
 export type Props = SimpleTableProps & {
   orders: OrderTableRowData[] | undefined
@@ -199,7 +203,7 @@ const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndE
         )}
       </td>
       <td>{renderSpinnerWhenNoValue(limitPriceSettled) || limitPriceSettled}</td>
-      <td>{hasOrderDetails(order) ? <OrderSurplusDisplayStyledByRow order={order} /> : '-'}</td>
+      <td>{hasSurplus(order) ? <OrderSurplusDisplayStyledByRow order={order} /> : '-'}</td>
       <td>{hasOrderDetails(order) && <Tags order={order} />}</td>
       <td>
         <DateDisplay date={creationDate} showIcon={true} />
@@ -348,7 +352,13 @@ const OrdersUserDetailsTable: React.FC<Props> = (props) => {
 }
 
 function hasOrderDetails(order: OrderTableRowData): order is Order {
-  return 'surplusAmount' in order
+  return 'owner' in order
+}
+
+function hasSurplus(
+  order: OrderTableRowData,
+): order is OrderTableRowData & Pick<Order, 'surplusAmount' | 'surplusPercentage'> {
+  return order.surplusAmount !== undefined && order.surplusPercentage !== undefined
 }
 
 export default OrdersUserDetailsTable
