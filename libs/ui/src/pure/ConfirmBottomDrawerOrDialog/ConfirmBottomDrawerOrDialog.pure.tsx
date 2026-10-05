@@ -46,11 +46,11 @@ export function ConfirmBottomDrawerOrDialog({
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
-      if (!open) {
+      if (!open && isOpen) {
         onDismiss()
       }
     },
-    [onDismiss],
+    [isOpen, onDismiss],
   )
 
   return (

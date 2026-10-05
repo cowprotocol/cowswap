@@ -99,4 +99,27 @@ describe('ConfirmBottomDrawerOrDialog', () => {
 
     expect(onDismiss).toHaveBeenCalledTimes(1)
   })
+
+  it('does not call onDismiss when a close event arrives while already closed', () => {
+    const onDismiss = jest.fn()
+
+    render(
+      <ConfirmBottomDrawerOrDialog
+        isOpen={false}
+        title="Confirm action"
+        content={<div>Custom content</div>}
+        cancelLabel="Cancel"
+        onCancel={jest.fn()}
+        confirmLabel="Confirm"
+        onConfirm={jest.fn()}
+        onDismiss={onDismiss}
+      />,
+    )
+
+    act(() => {
+      screen.getByTestId('request-close').click()
+    })
+
+    expect(onDismiss).not.toHaveBeenCalled()
+  })
 })
