@@ -13,13 +13,20 @@ const SIGNATURE_FEE_LAMPORTS = 5000n
 // exactly that injected fee. 0.001 SOL covers wallets' auto-fee ceilings.
 const PRIORITY_FEES_RESERVE_LAMPORTS = 1_000_000n
 
+export interface SolanaTradeOverheadOptions {
+  /** False on a sponsored trade. */
+  ownerPaysFees?: boolean
+}
+
 /**
  * Lamports a Solana trade needs on top of the sell amount: rent for every declared account, the
- * signature fee, and the fee payer's own rent-exempt reserve. Rent is read live — it does change.
+ * fees (unless a sponsor pays them), and the wallet's own rent-exempt reserve. Rent is read live —
+ * it does change.
  */
 export async function getSolanaTradeOverhead(
   connection: Connection,
   fundedAccounts: SolanaFundedAccount[],
+  { ownerPaysFees = true }: SolanaTradeOverheadOptions = {},
 ): Promise<bigint> {
   const addresses = fundedAccounts.flatMap(({ address }) => (address ? [address] : []))
   const mints = fundedAccounts.flatMap(({ size }) => (typeof size === 'number' ? [] : [size.mint]))
@@ -40,10 +47,9 @@ export async function getSolanaTradeOverhead(
   const sizes = [0, ...unfunded.map(({ size }) => resolveSize(size, mintInfos))]
   const rents = await Promise.all(sizes.map((size) => connection.getMinimumBalanceForRentExemption(size)))
 
-  return rents.reduce<bigint>(
-    (total, rent) => total + BigInt(rent),
-    SIGNATURE_FEE_LAMPORTS + PRIORITY_FEES_RESERVE_LAMPORTS,
-  )
+  const fees = ownerPaysFees ? SIGNATURE_FEE_LAMPORTS + PRIORITY_FEES_RESERVE_LAMPORTS : 0n
+
+  return rents.reduce<bigint>((total, rent) => total + BigInt(rent), fees)
 }
 
 function resolveSize(size: SolanaFundedAccount['size'], mintInfos: Map<string, AccountInfo<Buffer> | null>): number {

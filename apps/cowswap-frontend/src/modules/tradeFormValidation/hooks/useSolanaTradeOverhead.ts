@@ -20,12 +20,15 @@ import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
+interface OverheadRequest {
+  fundedAccounts: SolanaFundedAccount[]
+  ownerPaysFees: boolean
+}
+
 /**
- * Lamports the current trade's transaction needs on top of the sell amount: rent for every account
- * the bundle creates, the signature fee, and the fee payer's own rent-exempt reserve.
- *
- * `null` while unknown (no quote yet, RPC pending/failed) or when the owner won't pay it at all —
- * non-Solana chains and sponsored trades, where the quote's funder covers the fee and every rent.
+ * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve.
+ * On a sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
+ * still debits the owner). `null` while unknown or when nothing debits the wallet at all.
  */
 export function useSolanaTradeOverhead(): bigint | null {
   const { chainId, account } = useWalletInfo()
@@ -42,30 +45,46 @@ export function useSolanaTradeOverhead(): bigint | null {
 
   const isSponsored = getIsSponsoredTrade(Boolean(isSolanaSponsoredOrdersEnabled), tradeType, solanaQuote)
 
-  const fundedAccounts = useMemo(() => {
+  const request = useMemo<OverheadRequest | null>(() => {
     if (!isSolanaChain(chainId) || !account) return null
 
     // A wrap/unwrap is a plain owner-paid transaction — never sponsored, no quote involved.
-    if (isWrapUnwrap) return []
+    if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees: true }
 
-    if (!solanaQuote || isSponsored) return null
+    if (!solanaQuote) return null
 
-    return planSolanaTradeFundedAccounts({ owner: new PublicKey(account), quote: solanaQuote, isNativeSell })
+    if (isSponsored) {
+      return isNativeSell ? { fundedAccounts: [], ownerPaysFees: false } : null
+    }
+
+    return {
+      fundedAccounts: planSolanaTradeFundedAccounts({
+        owner: new PublicKey(account),
+        quote: solanaQuote,
+        isNativeSell,
+      }),
+      ownerPaysFees: true,
+    }
   }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the callers' comparisons.
   const { data: overhead } = useSWR(
-    connection && fundedAccounts ? [toFundedAccountsKey(fundedAccounts), 'solanaTradeOverhead'] : null,
-    () => (connection && fundedAccounts ? getSolanaTradeOverhead(connection, fundedAccounts) : null),
+    connection && request
+      ? [toFundedAccountsKey(request.fundedAccounts), request.ownerPaysFees, 'solanaTradeOverhead']
+      : null,
+    () =>
+      connection && request
+        ? getSolanaTradeOverhead(connection, request.fundedAccounts, { ownerPaysFees: request.ownerPaysFees })
+        : null,
   )
 
   return overhead ?? null
 }
 
 // Mirrors `solanaFlow`'s sponsor pick: a sponsored order is rented and fee-paid by the quote's funder,
-// so the owner needs no SOL beyond the sell amount — pricing the overhead anyway would block a trade
-// that can in fact go through. Limit orders never go through the sponsored path.
+// so the owner pays nothing beyond the sell amount — only the wallet's own rent-exempt reserve still
+// applies, and only when the sell debits it (a native sell). Limit orders never go through this path.
 function getIsSponsoredTrade(
   isSolanaSponsoredOrdersEnabled: boolean,
   tradeType: TradeType | null | undefined,

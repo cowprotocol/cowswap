@@ -158,4 +158,14 @@ describe('getSolanaTradeOverhead', () => {
     // this is the wrap/unwrap path, which declares no accounts at all.
     expect(connection.getMultipleAccountsInfo).not.toHaveBeenCalled()
   })
+
+  // A sponsored native sell: the funder pays the fees and every rent, but the wrap transfer debits
+  // the owner's wallet, which must still end at or above its own rent-exempt minimum.
+  it('charges only the wallet reserve when a sponsor pays the fees', async () => {
+    const connection = createConnection([])
+
+    const overhead = await getSolanaTradeOverhead(connection, [], { ownerPaysFees: false })
+
+    expect(overhead).toBe(BigInt(WALLET_RENT))
+  })
 })

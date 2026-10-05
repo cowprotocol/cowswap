@@ -14,9 +14,8 @@ const MIN_NATIVE_CURRENCY_FOR_GAS_LOW = BigInt('1000000000000000') // 0.001 nati
 // LOW fallback. A trade transaction funds the wrapped-SOL account, the buy-token account and the order
 // PDA on top of the fees (~5_000 lamports plus ~0.001 SOL reserved for wallet-injected priority fees),
 // and the wallet itself must stay rent-exempt: ~6_623_480 lamports at the rent rate of 2026-09. Only a
-// fallback: callers pass the live figure from `useSolanaTradeOverhead` as `nativeReserve` when it is
-// known; this covers the first render and sponsored trades (where the static cushion also absorbs the
-// funder vanishing before signing).
+// fallback for the first render — callers pass the live figure from `useSolanaTradeOverhead` as
+// `nativeReserve` once it is known (just the wallet's rent-exempt reserve on a sponsored trade).
 const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA = BigInt('10000000') // 0.01 SOL
 
 // Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.
