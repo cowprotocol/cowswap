@@ -1898,6 +1898,10 @@ msgstr "Order Cancelled"
 msgid "Please contact CoW Swap support!"
 msgstr "Please contact CoW Swap support!"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
+msgid "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet."
+msgstr "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet."
+
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 msgid "CoW AMM"
 msgstr "CoW AMM"
@@ -7155,10 +7159,6 @@ msgstr "Unsupported"
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "seconds"
 #~ msgstr "seconds"
-
-#: apps/cowswap-frontend/src/modules/trade/services/solanaSend/handleSolanaSendError.ts
-msgid "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet."
-msgstr "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet."
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 msgid "You don't have enough {nativeCurrencySymbol} to cover the network fee. Reduce the amount or add more {nativeCurrencySymbol} to your wallet."
