@@ -124,6 +124,24 @@ describe('walletMetadata atoms', () => {
     setWalletInfoConnector(
       store,
       createMockConnector({
+        type: ConnectionType.WALLET_CONNECT_V2,
+      }),
+    )
+    store.set(walletDetailsAtom, {
+      isSmartContractWallet: true,
+      isSupportedWallet: true,
+      allowsOffchainSigning: false,
+      isSafeApp: false,
+      walletName: 'Safe',
+      ensName: undefined,
+      icon: undefined,
+    })
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(true)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
         id: 'io.rabby',
         type: ConnectionType.INJECTED,
       }),
@@ -136,6 +154,27 @@ describe('walletMetadata atoms', () => {
       chainId: SupportedChainId.MAINNET,
     })
 
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
+  })
+
+  it('keeps network switching available for a Safe imported into an injected non-Rabby wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 0,
+      chainId: SupportedChainId.MAINNET,
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(true)
     expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
   })
 

@@ -56,12 +56,22 @@ export const isSafeViaWcAtom = atom((get) => {
   return peerName.includes('safe')
 })
 
+/**
+ * True when the connected wallet cannot change networks.
+ * Safe Apps and WalletConnect peers whose name includes "safe" cannot switch.
+ * Rabby, injected imported Safes (for example Ambire), and other wallets can.
+ */
 export const isNetworkSwitchUnsupportedAtom = atom((get): boolean => {
   const { connector } = get(walletInfoAtom)
 
   if (connector?.id === RABBY_RDNS) return false
+  if (get(isSafeAppAtom) === true) return true
+  if (connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
 
-  return get(isSafeViaWcAtom) === true || get(isSafeAppAtom) === true
+  const { walletName } = get(walletDetailsAtom)
+  const peerName = walletName?.toLowerCase() || ''
+
+  return peerName.includes('safe')
 })
 
 /**
