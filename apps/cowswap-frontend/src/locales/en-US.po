@@ -3638,6 +3638,7 @@ msgstr "Wrap operation failed."
 #~ msgid "User rejected signing the order"
 #~ msgstr "User rejected signing the order"
 
+#: apps/cowswap-frontend/src/pages/Account/index.tsx
 #: libs/common-const/src/common.ts
 #: libs/common-const/src/common.ts
 msgid "Account Proxy"
