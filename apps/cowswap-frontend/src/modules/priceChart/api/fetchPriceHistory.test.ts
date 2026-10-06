@@ -2,7 +2,7 @@ import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { fetchPriceChartData } from './fetchPriceChartData'
+import { fetchPriceHistory } from './fetchPriceHistory'
 
 import type { CandleInterval } from '../lib/chart.types'
 
@@ -26,7 +26,7 @@ function createResponse(body: unknown, status = 200): Response {
   } as Response
 }
 
-describe('fetchPriceChartData', () => {
+describe('fetchPriceHistory', () => {
   beforeEach(() => {
     mockedFetchWithTimeout.mockReset()
   })
@@ -45,7 +45,7 @@ describe('fetchPriceChartData', () => {
     mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 1, bars }))
 
     await expect(
-      fetchPriceChartData({
+      fetchPriceHistory({
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,
@@ -75,7 +75,7 @@ describe('fetchPriceChartData', () => {
   it('requests weekly bars with the BFF interval', async () => {
     mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 2, bars: [] }))
 
-    await fetchPriceChartData({
+    await fetchPriceHistory({
       address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       chainId: SupportedChainId.MAINNET,
       from: 1710000000,
@@ -89,7 +89,7 @@ describe('fetchPriceChartData', () => {
 
   it('rejects unsupported intervals before requesting the BFF', async () => {
     await expect(
-      fetchPriceChartData({
+      fetchPriceHistory({
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,
@@ -105,7 +105,7 @@ describe('fetchPriceChartData', () => {
     mockedFetchWithTimeout.mockResolvedValue(createResponse({ message: 'Provider failed' }, 502))
 
     await expect(
-      fetchPriceChartData({
+      fetchPriceHistory({
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,

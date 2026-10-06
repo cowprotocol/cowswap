@@ -1,5 +1,3 @@
-import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-
 import type { CANDLE_INTERVALS } from './priceChart.constants'
 
 export interface Candle {
@@ -12,12 +10,6 @@ export interface Candle {
 }
 
 export type CandleInterval = (typeof CANDLE_INTERVALS)[number]
-
-export interface ChartAsset {
-  address: string
-  chainId: SupportedChainId
-  symbol: string
-}
 
 export type ChartMetric = 'marketCap' | 'price'
 

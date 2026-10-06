@@ -6,8 +6,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { createChartAssets } from '../../lib/chartAssets.utils'
-
 import { PriceChartHeader } from '.'
 
 jest.mock('../ChartSettingsDropdown', () => ({ ChartSettingsDropdown: () => null }))
@@ -20,13 +18,13 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeAsset={undefined}
+          activeCurrency={undefined}
           change={0.0086}
           metric="price"
           onSelectMetric={jest.fn()}
-          onSelectAsset={jest.fn()}
+          onSelectCurrency={jest.fn()}
           price={336.5}
-          assets={[]}
+          currencies={[]}
         />
       </I18nProvider>,
     )
@@ -38,17 +36,17 @@ describe('PriceChartHeader', () => {
   })
 
   it('selects a token asset', () => {
-    const assets = createChartAssets(NATIVE_CURRENCIES[SupportedChainId.MAINNET], USDC_MAINNET)
-    const onSelectAsset = jest.fn()
+    const currencies = [NATIVE_CURRENCIES[SupportedChainId.MAINNET], USDC_MAINNET]
+    const onSelectCurrency = jest.fn()
 
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeAsset={assets[0]}
+          activeCurrency={currencies[0]}
           metric="price"
           onSelectMetric={jest.fn()}
-          onSelectAsset={onSelectAsset}
-          assets={assets}
+          onSelectCurrency={onSelectCurrency}
+          currencies={currencies}
         />
       </I18nProvider>,
     )
@@ -56,7 +54,7 @@ describe('PriceChartHeader', () => {
     expect(screen.queryByText('Price chart')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'USDC' }))
 
-    expect(onSelectAsset).toHaveBeenCalledWith(assets[1])
+    expect(onSelectCurrency).toHaveBeenCalledWith(currencies[1])
   })
 
   it('switches between price and market cap', () => {
@@ -65,11 +63,11 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeAsset={undefined}
+          activeCurrency={undefined}
           metric="price"
           onSelectMetric={onSelectMetric}
-          onSelectAsset={jest.fn()}
-          assets={[]}
+          onSelectCurrency={jest.fn()}
+          currencies={[]}
         />
       </I18nProvider>,
     )
@@ -83,13 +81,13 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeAsset={undefined}
+          activeCurrency={undefined}
           change={0.02}
           metric="marketCap"
           onSelectMetric={jest.fn()}
-          onSelectAsset={jest.fn()}
+          onSelectCurrency={jest.fn()}
           price={1_230_000_000}
-          assets={[]}
+          currencies={[]}
         />
       </I18nProvider>,
     )

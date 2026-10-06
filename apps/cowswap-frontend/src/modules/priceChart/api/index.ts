@@ -1,3 +1,3 @@
-export * from './fetchPriceChartData'
+export * from './fetchPriceHistory'
 export * from './fetchTokenSupply'
 export * from './logPriceChart'

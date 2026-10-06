@@ -21,7 +21,7 @@ interface PriceChartResponse {
   bars: Candle[]
 }
 
-export async function fetchPriceChartData(params: PriceHistoryQuery): Promise<Candle[]> {
+export async function fetchPriceHistory(params: PriceHistoryQuery): Promise<Candle[]> {
   const { interval } = params
 
   if (!CANDLE_INTERVALS.includes(interval)) {

@@ -1,9 +1,13 @@
-import { fetchPriceChartData, fetchTokenSupply } from '../api'
+import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getAddressKey, isSupportedChain } from '@cowprotocol/cow-sdk'
+import type { Currency } from '@cowprotocol/currency'
 
-import type { Candle, ChartMetric, CandleInterval, SupplyVariant, ChartAsset } from './chart.types'
+import { fetchPriceHistory, fetchTokenSupply } from '../api'
 
-export async function loadMarketCapSupply(asset: ChartAsset, supplyVariant: SupplyVariant): Promise<number> {
-  const supplies = await fetchTokenSupply(asset)
+import type { Candle, ChartMetric, CandleInterval, SupplyVariant } from './chart.types'
+
+export async function loadMarketCapSupply(currency: Currency, supplyVariant: SupplyVariant): Promise<number> {
+  const supplies = await fetchTokenSupply(currency)
   const supply = supplies[`${supplyVariant}Supply`]
 
   // TODO would be nice to use valibot or zod
@@ -15,27 +19,30 @@ export async function loadMarketCapSupply(asset: ChartAsset, supplyVariant: Supp
 }
 
 export async function loadPriceChartHistory(
-  asset: ChartAsset,
+  currency: Currency,
   from: number,
   to: number,
   interval: CandleInterval,
   metric: ChartMetric,
   supplyVariant: SupplyVariant,
 ): Promise<Candle[]> {
-  const { address, chainId } = asset
-  const bars = await fetchPriceChartData({ address, chainId, from, interval, to })
+  const { chainId } = currency
+  if (!isSupportedChain(chainId)) throw new Error(`Unsupported price chart chain: ${chainId}`)
 
-  return metric === 'price' ? bars : toMarketCapBars(asset, bars, supplyVariant)
+  const address = getAddressKey(getWrappedToken(currency).address)
+  const bars = await fetchPriceHistory({ address, chainId, from, interval, to })
+
+  return metric === 'price' ? bars : toMarketCapBars(currency, bars, supplyVariant)
 }
 
 export async function toMarketCapBars(
-  asset: ChartAsset,
+  currency: Currency,
   bars: Candle[],
   supplyVariant: SupplyVariant,
 ): Promise<Candle[]> {
   if (!bars.length) return bars
 
-  const supply = await loadMarketCapSupply(asset, supplyVariant)
+  const supply = await loadMarketCapSupply(currency, supplyVariant)
 
   return bars.map((bar) => ({
     ...bar,

@@ -1,4 +1,4 @@
-import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import { BFF_BASE_URL, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -6,6 +6,7 @@ import { fetchTokenSupply } from './fetchTokenSupply'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   fetchWithTimeout: jest.fn(),
+  getWrappedToken: jest.requireActual('@cowprotocol/common-utils').getWrappedToken,
 }))
 
 const mockedFetchWithTimeout = jest.mocked(fetchWithTimeout)
@@ -17,13 +18,10 @@ describe('fetchTokenSupply', () => {
       json: async () => ({ circulatingSupply: 120, totalSupply: 150 }),
     } as Response)
 
-    await expect(
-      fetchTokenSupply({
-        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-        chainId: SupportedChainId.MAINNET,
-        symbol: 'WETH',
-      }),
-    ).resolves.toEqual({ circulatingSupply: 120, totalSupply: 150 })
+    await expect(fetchTokenSupply(NATIVE_CURRENCIES[SupportedChainId.MAINNET])).resolves.toEqual({
+      circulatingSupply: 120,
+      totalSupply: 150,
+    })
 
     expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
       `${BFF_BASE_URL}/1/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/supply`,

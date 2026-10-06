@@ -1,5 +1,6 @@
 import { MutableRefObject, ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
+import type { Currency } from '@cowprotocol/currency'
 import { UI } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -26,14 +27,14 @@ import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
 
 import type { TimeRange } from './simplePriceChart.utils'
-import type { Candle, ChartMetric, SupplyVariant, ChartAsset, ExpansionControl } from '../lib/chart.types'
+import type { Candle, ChartMetric, SupplyVariant, ExpansionControl } from '../lib/chart.types'
 
 export interface SimplePriceChartProps {
-  activeAsset: ChartAsset | undefined
-  assets: ChartAsset[]
+  activeCurrency: Currency | undefined
+  currencies: Currency[]
   metric: ChartMetric
   onSelectMetric: (metric: ChartMetric) => void
-  onSelectAsset: (asset: ChartAsset) => void
+  onSelectCurrency: (currency: Currency) => void
   sizeControl?: ExpansionControl
   supplyVariant?: SupplyVariant
 }
@@ -77,12 +78,12 @@ type SimplePriceChartType = 'candles' | 'line'
 // Source: https://github.com/Uniswap/interface/tree/main/apps/web/src/components/Charts
 
 export function SimplePriceChart({
-  activeAsset,
+  activeCurrency,
   metric,
   onSelectMetric,
-  onSelectAsset,
+  onSelectCurrency,
   sizeControl,
-  assets,
+  currencies,
   supplyVariant = 'circulating',
 }: SimplePriceChartProps): ReactNode {
   const { darkMode } = useTheme()
@@ -95,7 +96,11 @@ export function SimplePriceChart({
   const [period, setPeriod] = useState<TimeRange>(DEFAULT_PERIOD)
   const [chartType, setChartType] = useState<SimplePriceChartType>('line')
   const [tooltip, setTooltip] = useState<SimplePriceChartTooltipData>()
-  const { data = EMPTY_CANDLES, isPending, isError } = usePriceChartHistory(activeAsset, period, metric, supplyVariant)
+  const {
+    data = EMPTY_CANDLES,
+    isPending,
+    isError,
+  } = usePriceChartHistory(activeCurrency, period, metric, supplyVariant)
   const showStatus = isPending || isError || data.length === 0
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
 
@@ -147,26 +152,26 @@ export function SimplePriceChart({
     chartRef.current?.timeScale().fitContent()
   }, [chartType, darkMode, data, i18n.locale])
 
-  if (!assets.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
+  if (!currencies.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
 
   return (
     <styledEl.PanelWrapper>
       <PriceChartHeader
-        activeAsset={activeAsset}
+        activeCurrency={activeCurrency}
         change={priceSummary?.change}
         metric={metric}
         onSelectMetric={onSelectMetric}
-        onSelectAsset={onSelectAsset}
+        onSelectCurrency={onSelectCurrency}
         price={priceSummary?.price}
         sizeControl={sizeControl}
-        assets={assets}
+        currencies={currencies}
       />
       <styledEl.ChartFrame>
         <styledEl.ChartCanvas ref={chartContainerRef} />
         {tooltip && !showStatus ? <SimplePriceChartTooltip data={tooltip} metric={metric} /> : null}
         {showStatus ? (
           <styledEl.OverlayState>
-            <PriceChartStatus assetSymbol={activeAsset?.symbol} isPending={isPending} isError={isError} />
+            <PriceChartStatus assetSymbol={activeCurrency?.symbol} isPending={isPending} isError={isError} />
           </styledEl.OverlayState>
         ) : null}
       </styledEl.ChartFrame>

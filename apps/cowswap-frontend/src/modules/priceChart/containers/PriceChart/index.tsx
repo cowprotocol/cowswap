@@ -1,15 +1,14 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import type { Currency } from '@cowprotocol/currency'
 
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
-import { createChartAssets, getChartAssetKey } from '../../lib/chartAssets.utils'
-import { loadSavedChartPair, saveChartPair } from '../../lib/chartSelection.utils'
 import { SimplePriceChart } from '../../simple/SimplePriceChart'
+import { priceChartPairAtom } from '../../state/priceChartPairAtom'
 import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
 
-import type { ChartMetric, ChartAsset, ChartPair, ExpansionControl } from '../../lib/chart.types'
+import type { ChartMetric, ExpansionControl } from '../../lib/chart.types'
 
 export interface PriceChartProps {
   inputCurrency: Currency | null
@@ -21,24 +20,26 @@ export function PriceChart({ inputCurrency, outputCurrency, sizeControl }: Price
   const { isPriceChartEnabled } = usePriceChartFeatureFlags()
   const supplyVariant = useAtomValue(priceChartSupplyVariantAtom)
   const [metric, setMetric] = useState<ChartMetric>('price')
-  const assets = useMemo(() => createChartAssets(inputCurrency, outputCurrency), [inputCurrency, outputCurrency])
-  const [selectedPair, setSelectedPair] = useState<ChartPair>(() => loadSavedChartPair() ?? 'sell-usd')
-  const activeAsset = selectedPair === 'buy-usd' ? assets[1] || assets[0] : assets[0]
-  const handleSelectAsset = useCallback(
-    (asset: ChartAsset) => {
-      const pair = assets[0] && getChartAssetKey(asset) === getChartAssetKey(assets[0]) ? 'sell-usd' : 'buy-usd'
+  const currencies = useMemo(
+    () => (inputCurrency && outputCurrency ? [inputCurrency, outputCurrency] : []),
+    [inputCurrency, outputCurrency],
+  )
+  const [selectedPair, setSelectedPair] = useAtom(priceChartPairAtom)
+  const activeCurrency = selectedPair === 'buy-usd' ? currencies[1] : currencies[0]
+  const handleSelectCurrency = useCallback(
+    (currency: Currency) => {
+      const pair = inputCurrency?.equals(currency) ? 'sell-usd' : 'buy-usd'
       setSelectedPair(pair)
-      saveChartPair(pair)
     },
-    [assets],
+    [inputCurrency, setSelectedPair],
   )
   const chartProps = {
-    activeAsset,
+    activeCurrency,
     metric,
     onSelectMetric: setMetric,
-    onSelectAsset: handleSelectAsset,
+    onSelectCurrency: handleSelectCurrency,
     sizeControl,
-    assets,
+    currencies,
     supplyVariant,
   }
   if (!isPriceChartEnabled) return null

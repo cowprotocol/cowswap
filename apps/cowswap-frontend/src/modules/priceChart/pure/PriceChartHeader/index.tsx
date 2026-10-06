@@ -1,35 +1,38 @@
 import { ReactNode } from 'react'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import type { Currency } from '@cowprotocol/currency'
+
 import { useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-import { getChartAssetKey } from '../../lib/chartAssets.utils'
 import { formatPriceChartValue } from '../../lib/priceSummary.utils'
 import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
 
-import type { ChartMetric, ExpansionControl, ChartAsset } from '../../lib/chart.types'
+import type { ChartMetric, ExpansionControl } from '../../lib/chart.types'
 
 interface PriceChartHeaderProps {
-  activeAsset: ChartAsset | undefined
+  activeCurrency: Currency | undefined
   change?: number
   metric: ChartMetric
   onSelectMetric: (metric: ChartMetric) => void
-  onSelectAsset: (asset: ChartAsset) => void
+  onSelectCurrency: (currency: Currency) => void
   price?: number
   sizeControl?: ExpansionControl
-  assets: ChartAsset[]
+  currencies: Currency[]
 }
 
 export function PriceChartHeader({
-  activeAsset,
+  activeCurrency,
   change,
   metric,
   onSelectMetric,
-  onSelectAsset,
+  onSelectCurrency,
   price,
   sizeControl,
-  assets,
+  currencies,
 }: PriceChartHeaderProps): ReactNode {
   const { i18n, t } = useLingui()
   const formattedValue = price === undefined ? undefined : formatPriceChartValue(price, i18n.locale)
@@ -68,16 +71,16 @@ export function PriceChartHeader({
       </styledEl.Heading>
       <styledEl.HeaderControls>
         <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
-          {assets.map((asset) => (
+          {currencies.map((currency) => (
             <styledEl.SegmentedControlButton
-              $isActive={Boolean(activeAsset && getChartAssetKey(asset) === getChartAssetKey(activeAsset))}
-              aria-pressed={Boolean(activeAsset && getChartAssetKey(asset) === getChartAssetKey(activeAsset))}
-              key={getChartAssetKey(asset)}
-              onClick={() => onSelectAsset(asset)}
-              title={`${asset.symbol}/USD`}
+              $isActive={Boolean(activeCurrency?.equals(currency))}
+              aria-pressed={Boolean(activeCurrency?.equals(currency))}
+              key={`${currency.chainId}:${getAddressKey(getCurrencyAddress(currency))}`}
+              onClick={() => onSelectCurrency(currency)}
+              title={`${currency.symbol || 'TOKEN'}/USD`}
               type="button"
             >
-              {asset.symbol}
+              {currency.symbol || 'TOKEN'}
             </styledEl.SegmentedControlButton>
           ))}
         </styledEl.SegmentedControl>

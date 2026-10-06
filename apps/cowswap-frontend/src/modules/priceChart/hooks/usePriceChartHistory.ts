@@ -1,34 +1,47 @@
 import { keepPreviousData, skipToken, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 
-import { getChartAssetKey } from '../lib/chartAssets.utils'
+import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import type { Currency } from '@cowprotocol/currency'
+
 import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
 import { getTimeRangeConfig } from '../simple/simplePriceChart.utils'
 
-import type { Candle, ChartAsset, ChartMetric, SupplyVariant } from '../lib/chart.types'
+import type { Candle, ChartMetric, SupplyVariant } from '../lib/chart.types'
 import type { TimeRange } from '../simple/simplePriceChart.utils'
 
 export function usePriceChartHistory(
-  asset: ChartAsset | undefined,
+  currency: Currency | undefined,
   period: TimeRange,
   metric: ChartMetric,
   supplyVariant: SupplyVariant,
 ): UseQueryResult<Candle[]> {
   const queryClient = useQueryClient()
-  const assetKey = asset ? getChartAssetKey(asset) : undefined
+  const token = currency ? getWrappedToken(currency) : undefined
+  const chainId = token?.chainId
+  const address = token ? getAddressKey(token.address) : undefined
   return useQuery({
-    queryKey: ['priceChart', 'history', assetKey, period, metric, metric === 'marketCap' ? supplyVariant : null],
-    queryFn: asset
+    queryKey: [
+      'priceChart',
+      'history',
+      chainId,
+      address,
+      period,
+      metric,
+      metric === 'marketCap' ? supplyVariant : null,
+    ],
+    queryFn: currency
       ? async () => {
           const bars = await queryClient.fetchQuery({
-            queryKey: ['priceChart', 'prices', assetKey, period],
+            queryKey: ['priceChart', 'prices', chainId, address, period],
             queryFn: () => {
               const { from, interval, to } = getTimeRangeConfig(period, Date.now() / 1000)
-              return loadPriceChartHistory(asset, from, to, interval, 'price', supplyVariant)
+              return loadPriceChartHistory(currency, from, to, interval, 'price', supplyVariant)
             },
             retry: false,
           })
 
-          return metric === 'price' ? bars : toMarketCapBars(asset, bars, supplyVariant)
+          return metric === 'price' ? bars : toMarketCapBars(currency, bars, supplyVariant)
         }
       : skipToken,
     placeholderData: keepPreviousData,

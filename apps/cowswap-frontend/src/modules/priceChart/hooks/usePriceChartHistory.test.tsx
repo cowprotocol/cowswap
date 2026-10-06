@@ -2,27 +2,25 @@ import type { ReactNode } from 'react'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+import { USDC_MAINNET, NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Token, type Currency } from '@cowprotocol/currency'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
 
 import { usePriceChartHistory } from './usePriceChartHistory'
 
-import { fetchPriceChartData, fetchTokenSupply } from '../api'
+import { fetchPriceHistory, fetchTokenSupply } from '../api'
 
-import type { Candle, ChartAsset, ChartMetric, SupplyVariant } from '../lib/chart.types'
+import type { Candle, ChartMetric, SupplyVariant } from '../lib/chart.types'
 import type { TimeRange } from '../simple/simplePriceChart.utils'
 
-jest.mock('../api', () => ({ fetchPriceChartData: jest.fn(), fetchTokenSupply: jest.fn() }))
+jest.mock('../api', () => ({ fetchPriceHistory: jest.fn(), fetchTokenSupply: jest.fn() }))
 
-const ASSET: ChartAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  chainId: SupportedChainId.MAINNET,
-  symbol: 'USDC',
-}
+const CURRENCY = USDC_MAINNET
 const BARS: Candle[] = [{ timestamp: 1, open: 1, high: 3, low: 1, close: 2, volume: 5 }]
 const INITIAL_PROPS = {
-  asset: ASSET as ChartAsset | undefined,
+  currency: CURRENCY as Currency | undefined,
   period: '1D' as TimeRange,
   metric: 'price' as ChartMetric,
   supplyVariant: 'circulating' as SupplyVariant,
@@ -48,29 +46,29 @@ function deferredHistory(): { promise: Promise<Candle[]>; resolve: (bars: Candle
 }
 
 function useHistory(props: typeof INITIAL_PROPS): ReturnType<typeof usePriceChartHistory> {
-  return usePriceChartHistory(props.asset, props.period, props.metric, props.supplyVariant)
+  return usePriceChartHistory(props.currency, props.period, props.metric, props.supplyVariant)
 }
 
 describe('usePriceChartHistory', () => {
   beforeEach(() => {
     jest.resetAllMocks()
-    jest.mocked(fetchPriceChartData).mockResolvedValue(BARS)
+    jest.mocked(fetchPriceHistory).mockResolvedValue(BARS)
     jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply: 10, totalSupply: 20 })
   })
 
   it('does not request history without an asset or after its removal', async () => {
     const { result, rerender } = renderHook(useHistory, {
       wrapper: createWrapper(),
-      initialProps: { ...INITIAL_PROPS, asset: undefined },
+      initialProps: { ...INITIAL_PROPS, currency: undefined },
     })
     expect(result.current.isEnabled).toBe(false)
-    expect(fetchPriceChartData).not.toHaveBeenCalled()
+    expect(fetchPriceHistory).not.toHaveBeenCalled()
 
     rerender(INITIAL_PROPS)
     expect(result.current.isPending).toBe(true)
     await waitFor(() => expect(result.current.data).toEqual(BARS))
 
-    rerender({ ...INITIAL_PROPS, asset: undefined })
+    rerender({ ...INITIAL_PROPS, currency: undefined })
     expect(result.current.isEnabled).toBe(false)
   })
 
@@ -88,7 +86,7 @@ describe('usePriceChartHistory', () => {
 
     rerender({ ...INITIAL_PROPS, supplyVariant: 'total' })
     await waitFor(() => expect(result.current.data).toEqual(BARS))
-    expect(fetchPriceChartData).toHaveBeenCalledTimes(1)
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
   })
 
   it('shares cached history across chart mounts', async () => {
@@ -99,19 +97,19 @@ describe('usePriceChartHistory', () => {
 
     const second = renderHook(useHistory, { wrapper, initialProps: INITIAL_PROPS })
     await waitFor(() => expect(second.result.current.data).toEqual(BARS))
-    expect(fetchPriceChartData).toHaveBeenCalledTimes(1)
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
   })
 
   it('keeps previous bars during a range change and reports empty history after resolution', async () => {
     const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
     await waitFor(() => expect(result.current.data).toEqual(BARS))
     const next = deferredHistory()
-    jest.mocked(fetchPriceChartData).mockReturnValueOnce(next.promise)
+    jest.mocked(fetchPriceHistory).mockReturnValueOnce(next.promise)
 
     rerender({ ...INITIAL_PROPS, period: '1W' })
     expect(result.current.data).toEqual(BARS)
     expect(result.current.isPlaceholderData).toBe(true)
-    await waitFor(() => expect(fetchPriceChartData).toHaveBeenCalledTimes(2))
+    await waitFor(() => expect(fetchPriceHistory).toHaveBeenCalledTimes(2))
     await act(async () => next.resolve([]))
     await waitFor(() => expect(result.current.isPlaceholderData).toBe(false))
     expect(result.current.isSuccess).toBe(true)
@@ -120,25 +118,48 @@ describe('usePriceChartHistory', () => {
 
   it('does not display a late response from the previous chain', async () => {
     const first = deferredHistory()
-    jest.mocked(fetchPriceChartData).mockReturnValueOnce(first.promise)
+    jest.mocked(fetchPriceHistory).mockReturnValueOnce(first.promise)
     const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
-    await waitFor(() => expect(fetchPriceChartData).toHaveBeenCalledTimes(1))
+    await waitFor(() => expect(fetchPriceHistory).toHaveBeenCalledTimes(1))
     const nextBars = [{ ...BARS[0], close: 7 }]
-    jest.mocked(fetchPriceChartData).mockResolvedValueOnce(nextBars)
+    jest.mocked(fetchPriceHistory).mockResolvedValueOnce(nextBars)
 
-    rerender({ ...INITIAL_PROPS, asset: { ...ASSET, chainId: SupportedChainId.GNOSIS_CHAIN } })
+    rerender({
+      ...INITIAL_PROPS,
+      currency: new Token(SupportedChainId.GNOSIS_CHAIN, CURRENCY.address, CURRENCY.decimals, CURRENCY.symbol),
+    })
     await waitFor(() => expect(result.current.data).toEqual(nextBars))
     await act(async () => first.resolve(BARS))
     expect(result.current.data).toEqual(nextBars)
-    expect(fetchPriceChartData).toHaveBeenCalledTimes(2)
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
   })
 
   it.each(['price', 'marketCap'] as const)('reports a %s request failure without stale bars', async (metric) => {
-    if (metric === 'price') jest.mocked(fetchPriceChartData).mockRejectedValueOnce(new Error('History unavailable'))
+    if (metric === 'price') jest.mocked(fetchPriceHistory).mockRejectedValueOnce(new Error('History unavailable'))
     else jest.mocked(fetchTokenSupply).mockRejectedValueOnce(new Error('Supply unavailable'))
     const { result } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: { ...INITIAL_PROPS, metric } })
 
     await waitFor(() => expect(result.current.isError).toBe(true))
     expect(result.current.data).toBeUndefined()
+  })
+
+  it('shares USD history between native and wrapped currencies', async () => {
+    const nativeCurrency = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+    const wrappedCurrency = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+    const { result, rerender } = renderHook(useHistory, {
+      wrapper: createWrapper(),
+      initialProps: { ...INITIAL_PROPS, currency: nativeCurrency },
+    })
+    await waitFor(() => expect(result.current.data).toEqual(BARS))
+    expect(fetchPriceHistory).toHaveBeenCalledWith(
+      expect.objectContaining({
+        chainId: SupportedChainId.MAINNET,
+        address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+      }),
+    )
+
+    rerender({ ...INITIAL_PROPS, currency: wrappedCurrency })
+    await waitFor(() => expect(result.current.data).toEqual(BARS))
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
   })
 })
