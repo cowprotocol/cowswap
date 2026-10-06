@@ -34,7 +34,10 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => ({ signSolanaFlow: jest.fn() }))
-jest.mock('@cowprotocol/sdk-trading-solana', () => ({ postSolanaSponsoredOrder: jest.fn() }))
+jest.mock('@cowprotocol/sdk-trading-solana', () => ({
+  postSolanaSponsoredOrder: jest.fn(),
+  SolanaTradingSdk: jest.fn(),
+}))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
