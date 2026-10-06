@@ -33,7 +33,7 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
-import { GeoDataUpdater } from 'modules/rwa'
+import { GeoDataUpdater, useShouldExcludeRwaTokenLists } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { useTradeTypeInfo } from 'modules/trade'
 import { eoaTwapOrdersEffectAtom } from 'modules/twap'
@@ -76,6 +76,7 @@ export function Updaters(): ReactNode {
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const { standaloneMode } = useInjectedWidgetParams()
   const balancesAccount = useBalancesAccountForChain(sourceChainId)
+  const excludeRwaTokenLists = useShouldExcludeRwaTokenLists()
 
   return (
     <>
@@ -121,6 +122,7 @@ export function Updaters(): ReactNode {
         chainId={sourceChainId}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
+        excludeRwaLists={excludeRwaTokenLists}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
