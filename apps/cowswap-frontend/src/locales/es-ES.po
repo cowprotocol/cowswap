@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-06 11:08\n"
+"PO-Revision-Date: 2026-10-06 14:59\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -513,6 +513,10 @@ msgstr "Este es el precio actual del mercado, incluida la tasa."
 msgid "Convert to COW <0/>"
 msgstr "Convertir a COW <0/>"
 
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/signSolanaFlow.ts
+msgid "The signing window closed before the transaction was signed. Please try again."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
 msgid "You can see your past transactions in Explorer"
 msgstr "Puedes ver tus transacciones anteriores en el Explorador"
@@ -597,7 +601,7 @@ msgstr "Rechazar la solicitud de la wallet para parar"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 msgid "Transaction blockhash expired. Sign a new one."
-msgstr ""
+msgstr "El blockhash de la transacción ha caducado. Vuelve a firmar."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/PayoutConfirmation.tsx
 msgid "I have access to this address on Ethereum."
@@ -1810,6 +1814,10 @@ msgstr "Actualización de cotización en"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Want TWAP with this wallet? Let us know"
 msgstr "¿Quieres TWAP con esta wallet? Háznoslo saber"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Back to review"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
@@ -3099,6 +3107,10 @@ msgstr "disponible para tu pool {poolName}"
 msgid "Native"
 msgstr "Nativo"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "To sign the transaction in your wallet"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #~ msgid "Loading tokens..."
 #~ msgstr "Loading tokens..."
@@ -4107,6 +4119,10 @@ msgstr "Moneda nativa (por ejemplo, ETH)"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "This token list is not available in your region."
 msgstr "Esta lista de tokens no está disponible en tu región."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Review your swap to get a fresh signing request."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
@@ -5770,7 +5786,7 @@ msgstr "Este token no aparece en la(s) lista(s) de tokens activa(s). Asegúrate 
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 msgid "If CoW Swap cannot get this price or better (taking into account fees), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
-msgstr ""
+msgstr "Si CoW Swap no puede obtener este precio o mejor (teniendo en cuenta las comisiones), tu TWAP no se ejecutará. CoW Swap <0>siempre</0> mejorará este precio si es posible."
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "To override this, enter your desired slippage amount{amountRange}, but this may result in slower execution."
@@ -6009,7 +6025,7 @@ msgstr "Se ejecuta a"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/MultipleCancellationMenu.container.tsx
 msgid "{ordersToCancelCount, plural, one {Cancel # selected} few {Cancel # selected} many {Cancel # selected} other {Cancel # selected}}"
-msgstr ""
+msgstr "{ordersToCancelCount, plural, one {Cancelar # seleccionada} few {Cancelar # seleccionadas} many {Cancelar # seleccionadas} other {Cancelar # seleccionadas}}"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
@@ -6563,7 +6579,7 @@ msgstr "Intercambiar como máximo {inputAmountValue} {inputSymbol} por {outputAm
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
-msgstr "El swap no cumplía la invariante x*y de Uniswap = k Esto generalmente significa que uno de los tokens que estás intercambiando incorpora un comportamiento personalizado en la transferencia."
+msgstr "El swap no cumplía la invariante x*y = k de Uniswap. Esto generalmente significa que uno de los tokens que estás intercambiando incorpora un comportamiento personalizado en la transferencia."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Transaction rejected"
@@ -6662,6 +6678,10 @@ msgstr "Orden con límite"
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 msgid "Approved amount is not sufficient!"
 msgstr "¡La cantidad aprobada no es suficiente!"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+#~ msgid "The signing window has closed. Cancel and try again with a fresh quote."
+#~ msgstr "The signing window has closed. Cancel and try again with a fresh quote."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "funds"
@@ -6884,6 +6904,11 @@ msgstr "Orden caducada"
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token:"
 #~ msgstr "Selected token:"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Signing time expired"
+msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"
@@ -7832,9 +7857,9 @@ msgstr "Cambiar cámara"
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 msgstr "Al precio actual del gas, el saldo restante de {nativeSymbol} después de la confirmación puede ser <0>insuficiente para cualquier otra transacción en cadena.</0>"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
-#~ msgid "for at least"
-#~ msgstr "for at least"
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "for at least"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/WalletNotConnected/WalletNotConnected.pure.tsx
 msgid "Connect wallet to recover funds"
@@ -8467,6 +8492,7 @@ msgid "Transaction failed"
 msgstr "Transacción fallida"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Aprobar gasto <0/> <1/> en CoW Swap"
 
@@ -8875,7 +8901,7 @@ msgstr "Costes de red inferiores"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "An error occurred when trying to execute this swap. You may need to increase your slippage tolerance. If that does not work, there may be an incompatibility with the token you are trading. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr ""
+msgstr "Ocurrió un error al intentar ejecutar este intercambio. Es posible que tengas que aumentar tu tolerancia de slippage. Si eso no funciona, puede haber una incompatibilidad con el token que estás intercambiando. Nota: los tokens con comisión por transferencia y los tokens rebase son incompatibles con Uniswap V3."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #~ msgid "If the balance remains insufficient at creation time, this order portion will not be created. Add more"
@@ -8931,7 +8957,7 @@ msgstr "Precio Ejec."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per part), you can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
-msgstr ""
+msgstr "Teniendo en cuenta los costes de red actuales (<0><1/></0> por parte), puedes situarte por debajo del umbral de coste del {FEE_SIZE_THRESHOLD}% reduciendo a {maxParts} partes o menos, o cambiar a una {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "You sold <0/>"

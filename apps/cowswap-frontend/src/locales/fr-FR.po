@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-06 12:22\n"
+"PO-Revision-Date: 2026-10-06 13:49\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -512,6 +512,10 @@ msgstr "Il s’agit du prix actuel du marché, frais inclus."
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Convert to COW <0/>"
 msgstr "Convertir en COW <0/>"
+
+#: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/signSolanaFlow.ts
+msgid "The signing window closed before the transaction was signed. Please try again."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/swap/containers/DeprecatedNetworkBanner/DeprecatedNetworkBanner.container.tsx
 msgid "You can see your past transactions in Explorer"
@@ -1811,6 +1815,10 @@ msgstr "Actualisation de cotation dans"
 msgid "Want TWAP with this wallet? Let us know"
 msgstr "Vous souhaitez utiliser TWAP avec ce wallet ? Faites-le-nous savoir"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Back to review"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
 msgstr "Aucune route trouvée pour ce token"
@@ -3099,6 +3107,10 @@ msgstr "disponible pour votre pool {poolName}"
 msgid "Native"
 msgstr "Natif"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "To sign the transaction in your wallet"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #~ msgid "Loading tokens..."
 #~ msgstr "Loading tokens..."
@@ -4107,6 +4119,10 @@ msgstr "Monnaie native (par ex. ETH)"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "This token list is not available in your region."
 msgstr "Cette liste de tokens n’est pas disponible dans votre région."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Review your swap to get a fresh signing request."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
@@ -6663,6 +6679,10 @@ msgstr "Ordres limite"
 msgid "Approved amount is not sufficient!"
 msgstr "Le montant approuvé est insuffisant !"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+#~ msgid "The signing window has closed. Cancel and try again with a fresh quote."
+#~ msgstr "The signing window has closed. Cancel and try again with a fresh quote."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/WidgetPageTitle.container.tsx
 msgid "funds"
 msgstr "les fonds"
@@ -6884,6 +6904,11 @@ msgstr "Ordre expiré"
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token:"
 #~ msgstr "Selected token:"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "Signing time expired"
+msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"
@@ -7832,9 +7857,9 @@ msgstr "Changer de caméra"
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 msgstr "Aux prix actuels du gas, votre solde restant de {nativeSymbol} après confirmation pourrait être <0>insuffisant pour toute autre transaction on-chain.</0>"
 
-#: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
-#~ msgid "for at least"
-#~ msgstr "for at least"
+#: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
+msgid "for at least"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/WalletNotConnected/WalletNotConnected.pure.tsx
 msgid "Connect wallet to recover funds"
@@ -8466,6 +8491,7 @@ msgstr "Prix d’exécution estimé"
 msgid "Transaction failed"
 msgstr "Échec de la transaction"
 
+#: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Autoriser CoW Swap à dépenser <0/> <1/>"
