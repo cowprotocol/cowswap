@@ -1,5 +1,96 @@
 # Changelog
 
+## [3.30.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.2...cowswap-v3.30.0) (2026-10-06)
+
+### Minor Changes
+
+- feat: highlight new order row and smart filter clearing (#8205)
+
+- feat(solana): support limit orders (#8208)
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat(solana): support buy native sol orders (#8279)
+
+- feat(token-lists): remove curated token lists (#8261)
+
+- feat(solana): disable twap for sol (#8283)
+
+- feat(solana): create receiver ATA account (#8175)
+
+- feat(solana): support order cancellation (#8232)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix: prevent recipient length related crash (#8258)
+
+- fix(solana): hide tg subscription (#8247)
+
+- fix(tokens): empty state instead of loader when no favorite tokens (#8189)
+
+- fix(i18n): fix translation grammar (Russian) (#8237)
+
+- fix(solana): set appData to order (#8178)
+
+- fix(bridge): use latest 2.1.0 cowshed (#8300)
+
+- fix(twap): stop regenerating cached order parts (#8238)
+
+- fix: hide hiring bubble if no jobs (#8255)
+
+- fix(trade): freeze the high-fee warning percentage while confirming (#8146)
+
+- fix: show ENS recipient tooltip only for ENS names (#8181)
+
+- fix(safe): fix nested Safe via WC behaviour (#8271)
+
+- fix(solana): proxy-of crash with sol account (#8282)
+
+- fix(order-progress): preserve solver ranking when deduplicating competition entries (#7901)
+
+- fix(referral): rename rewards code to referral code (#8230)
+
+- fix(twap): match signing button loading text font to confirm button (#8222)
+
+- fix: cancellation modal spamming (#8289)
+
+- fix(twap): don't show stale per-part amounts on quote error (#8233)
+
+- fix(solana): add solana native token icon (#8262)
+
+- fix(price-impact): restore text on Confirm Price Impact modal (#8204)
+
+- fix(tokens): remove RWA token lists for US users (#8299)
+
+- fix(solana): handle unfillable order issue for sponsored txs (#8275)
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.14.0
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/analytics@3.14.0
+  - @cowprotocol/balances-and-allowances@3.16.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/ens@3.9.0
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/multicall@3.9.0
+  - @cowprotocol/permit-utils@3.9.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/wallet@3.16.0
+  - @cowprotocol/widget-lib@4.9.0
+  - @cowprotocol/snackbars@2.3.7
+  - @cowprotocol/iframe-transport@2.3.9
+  - @cowprotocol/hook-dapp-lib@2.3.1
+
 ## [3.29.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.1...cowswap-v3.29.2) (2026-09-30)
 
 ### Patch Changes
