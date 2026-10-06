@@ -87,7 +87,7 @@
       "type": "stat",
       "id": 2,
       "title": "Billed calls",
-      "description": "Requests sent to the CoinGecko API (Pro, Demo or keyless) in the time range. Every call costs one credit. GeckoTerminal calls are free and excluded.",
+      "description": "Requests sent to the CoinGecko Pro or Demo API in the time range, one credit each. Keyless and GeckoTerminal calls cost no credits and are excluded.",
       "datasource": {
         "type": "victoriametrics-logs-datasource",
         "uid": "${datasource}"
@@ -105,7 +105,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo, public) | stats count() as calls",
+          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo) | stats count() as calls",
           "queryType": "stats",
           "refId": "A"
         }
@@ -164,7 +164,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo, public) | stats count() as calls | math round(calls * 2592000 / $__range_s) as projected | fields projected",
+          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo) | stats count() as calls | math round(calls * 2592000 / $__range_s) as projected | fields projected",
           "queryType": "stats",
           "refId": "A"
         }
@@ -224,7 +224,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo, public) | stats count() as calls | math calls * 60 / $__range_s as per_minute | fields per_minute",
+          "expr": "{namespace=\"vercel\"} parsed.service:=rwa-frontend parsed.env:~\"^${env:regex}$\" _msg:=\"upstream request\" parsed.upstream:=coingecko parsed.api:~\"^${api:regex}$\" parsed.api:in(pro, demo) | stats count() as calls | math calls * 60 / $__range_s as per_minute | fields per_minute",
           "queryType": "stats",
           "refId": "A"
         }
@@ -515,7 +515,7 @@
       "type": "timeseries",
       "id": 9,
       "title": "Calls by API",
-      "description": "pro / demo / public are billed CoinGecko calls, geckoterminal is the free GeckoTerminal API.",
+      "description": "pro and demo calls cost credits; public (keyless CoinGecko) and geckoterminal are free.",
       "datasource": {
         "type": "victoriametrics-logs-datasource",
         "uid": "${datasource}"

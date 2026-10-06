@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { subscribe } from 'node:diagnostics_channel'
+import { subscribe as subscribeChannel } from 'node:diagnostics_channel'
 
 import { type CoingeckoApi, getCoingeckoApi, toCoingeckoEndpoint } from './coingeckoEndpoint'
 
@@ -88,4 +88,14 @@ function getLogFields(
 
 function getRequestApi(request: UndiciRequest): CoingeckoApi | null {
   return getCoingeckoApi(new URL(request.origin).host, Boolean(process.env.COINGECKO_API_KEY))
+}
+
+function subscribe(name: string, onMessage: (message: unknown) => void): void {
+  subscribeChannel(name, (message) => {
+    try {
+      onMessage(message)
+    } catch {
+      // Node rethrows a subscriber error as an uncaughtException, and subscribers run on every outbound fetch
+    }
+  })
 }
