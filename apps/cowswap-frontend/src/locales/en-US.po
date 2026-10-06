@@ -241,8 +241,8 @@ msgid "(Partially fillable)"
 msgstr "(Partially fillable)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Try before you buy - see the potential fill price before you hit trade"
-msgstr "Try before you buy - see the potential fill price before you hit trade"
+#~ msgid "Try before you buy - see the potential fill price before you hit trade"
+#~ msgstr "Try before you buy - see the potential fill price before you hit trade"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -396,8 +396,8 @@ msgid "Select token"
 msgstr "Select token"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Trade your way - personalize the interface and customize your limit orders"
-msgstr "Trade your way - personalize the interface and customize your limit orders"
+#~ msgid "Trade your way - personalize the interface and customize your limit orders"
+#~ msgstr "Trade your way - personalize the interface and customize your limit orders"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -444,8 +444,8 @@ msgstr "token"
 #~ msgstr "Please, top up {symbol} balance or cancel the order."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Easily set and manage your orders in USD"
-msgstr "Easily set and manage your orders in USD"
+#~ msgid "Easily set and manage your orders in USD"
+#~ msgstr "Easily set and manage your orders in USD"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Click \"Wrap {nativeSymbol}\" to try again."
@@ -1073,8 +1073,8 @@ msgid "White"
 msgstr "White"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Maybe next time"
-msgstr "Maybe next time"
+#~ msgid "Maybe next time"
+#~ msgstr "Maybe next time"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Can't find the pool you're looking for?"
@@ -1828,8 +1828,8 @@ msgid "Account"
 msgstr "Account"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Limit orders are now easier to use. <0/> Give them a try"
-msgstr "Limit orders are now easier to use. <0/> Give them a try"
+#~ msgid "Limit orders are now easier to use. <0/> Give them a try"
+#~ msgstr "Limit orders are now easier to use. <0/> Give them a try"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Create an issue on GitHub"
@@ -2421,8 +2421,8 @@ msgid "Make the modification when placing order"
 msgstr "Make the modification when placing order"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
-msgstr "Limit orders, but <0>s-moooo-ther</0> than ever"
+#~ msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
+#~ msgstr "Limit orders, but <0>s-moooo-ther</0> than ever"
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 msgid "vCOW contract not present"
@@ -4720,8 +4720,8 @@ msgid "Simulation:"
 msgstr "Simulation:"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Locked limits - lock or unlock prices for finer control, the order does the rest"
-msgstr "Locked limits - lock or unlock prices for finer control, the order does the rest"
+#~ msgid "Locked limits - lock or unlock prices for finer control, the order does the rest"
+#~ msgstr "Locked limits - lock or unlock prices for finer control, the order does the rest"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 #~ msgid "{minutes, plural, one {minute} few {minutes} many {minutes} other {minutes}}"
@@ -5876,8 +5876,8 @@ msgid "Maximum sent"
 msgstr "Maximum sent"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "More intuitive UI and improved design"
-msgstr "More intuitive UI and improved design"
+#~ msgid "More intuitive UI and improved design"
+#~ msgstr "More intuitive UI and improved design"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "External"
@@ -8754,8 +8754,8 @@ msgid "You sell"
 msgstr "You sell"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Longer limit orders - place orders for up to a year."
-msgstr "Longer limit orders - place orders for up to a year."
+#~ msgid "Longer limit orders - place orders for up to a year."
+#~ msgstr "Longer limit orders - place orders for up to a year."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "User rejected signing the cancellation"
@@ -8802,8 +8802,8 @@ msgid "Delegate Now"
 msgstr "Delegate Now"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
-msgid "Try new limit orders now"
-msgstr "Try new limit orders now"
+#~ msgid "Try new limit orders now"
+#~ msgstr "Try new limit orders now"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate code created."
