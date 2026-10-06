@@ -1,6 +1,5 @@
 export * from './api'
 export * from './hooks/usePriceChartFeatureFlags'
-export * from './lib/priceChart.types'
 export * from './pure/ChartToggleButton'
 export * from './containers/PriceChart'
 export * from './pure/PriceChartSettings'

@@ -5,27 +5,20 @@ import { Loader } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import type { PriceChartHistoryStatus } from '../../lib/priceChart.types'
-
-type PriceChartStatusKind = Extract<PriceChartHistoryStatus, 'loading' | 'empty' | 'error'>
-
 interface PriceChartStatusProps {
   assetSymbol?: string
-  kind: PriceChartStatusKind
+  isPending: boolean
+  isError: boolean
 }
 
-export function PriceChartStatus({ assetSymbol = 'TOKEN', kind }: PriceChartStatusProps): ReactNode {
-  if (kind === 'loading') {
+export function PriceChartStatus({ assetSymbol = 'TOKEN', isPending, isError }: PriceChartStatusProps): ReactNode {
+  if (isPending) {
     return <Loader aria-label={t`Loading price history for ${assetSymbol}`} role="status" size="32px" />
   }
 
-  if (kind === 'empty') {
-    return <Trans>Failed to load price history for {assetSymbol}</Trans>
-  }
-
-  if (kind === 'error') {
+  if (isError) {
     return <Trans>Service unavailable</Trans>
   }
 
-  return null
+  return <Trans>Failed to load price history for {assetSymbol}</Trans>
 }

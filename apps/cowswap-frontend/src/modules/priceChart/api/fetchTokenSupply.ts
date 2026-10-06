@@ -3,14 +3,14 @@ import { fetchWithTimeout } from '@cowprotocol/common-utils'
 
 import { PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
 
-import type { PriceChartAssetDescriptor } from '../lib/priceChart.types'
+import type { ChartAsset } from '../lib/chart.types'
 
 interface TokenSupplyResponse {
   circulatingSupply: number | null
   totalSupply: number | null
 }
 
-export async function fetchTokenSupply(asset: PriceChartAssetDescriptor): Promise<TokenSupplyResponse> {
+export async function fetchTokenSupply(asset: ChartAsset): Promise<TokenSupplyResponse> {
   const response = await fetchWithTimeout(`${BFF_BASE_URL}/${asset.chainId}/tokens/${asset.address}/supply`, {
     headers: { Accept: 'application/json' },
     timeout: PRICE_CHART_TIMEOUT,

@@ -4,6 +4,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fetchPriceChartData } from './fetchPriceChartData'
 
+import type { CandleInterval } from '../lib/chart.types'
+
 jest.mock('@cowprotocol/common-utils', () => ({
   createCowLogger: () => ({
     debug: jest.fn(),
@@ -48,8 +50,7 @@ describe('fetchPriceChartData', () => {
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,
         to: 1710007200,
-        resolution: '60',
-        countback: 300,
+        interval: '1h',
       }),
     ).resolves.toEqual(bars)
 
@@ -61,7 +62,6 @@ describe('fetchPriceChartData', () => {
       from: '1710000000',
       to: '1710007200',
       interval: '1h',
-      countback: '300',
     })
     expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
       expect.any(String),
@@ -72,7 +72,7 @@ describe('fetchPriceChartData', () => {
     )
   })
 
-  it('maps weekly TradingView resolution to the public interval', async () => {
+  it('requests weekly bars with the BFF interval', async () => {
     mockedFetchWithTimeout.mockResolvedValue(createResponse({ providerId: 2, bars: [] }))
 
     await fetchPriceChartData({
@@ -80,23 +80,23 @@ describe('fetchPriceChartData', () => {
       chainId: SupportedChainId.MAINNET,
       from: 1710000000,
       to: 1710007200,
-      resolution: '7D',
+      interval: '7d',
     })
 
     const requestUrl = new URL(String(mockedFetchWithTimeout.mock.calls[0]?.[0]))
     expect(requestUrl.searchParams.get('interval')).toBe('7d')
   })
 
-  it('rejects unsupported resolutions before requesting the BFF', async () => {
+  it('rejects unsupported intervals before requesting the BFF', async () => {
     await expect(
       fetchPriceChartData({
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,
         to: 1710007200,
-        resolution: '30',
+        interval: '30m' as CandleInterval,
       }),
-    ).rejects.toThrow('Unsupported price chart resolution: 30')
+    ).rejects.toThrow('Unsupported price chart interval: 30m')
 
     expect(mockedFetchWithTimeout).not.toHaveBeenCalled()
   })
@@ -110,7 +110,7 @@ describe('fetchPriceChartData', () => {
         chainId: SupportedChainId.MAINNET,
         from: 1710000000,
         to: 1710007200,
-        resolution: '60',
+        interval: '1h',
       }),
     ).rejects.toThrow('Price chart request failed with status 502')
   })

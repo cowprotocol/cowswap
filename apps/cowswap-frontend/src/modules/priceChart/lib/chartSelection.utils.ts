@@ -1,29 +1,29 @@
-import type { PriceChartSelection } from './priceChart.types'
+import type { ChartPair } from './chart.types'
 
 const PRICE_CHART_SELECTION_STORAGE_KEY = 'priceChartSelection:v0'
 const LEGACY_PRICE_CHART_FORMAT_STORAGE_KEY = 'priceChartFormat:v0'
 
-export function loadSavedPriceChartSelection(): PriceChartSelection | undefined {
+export function loadSavedChartPair(): ChartPair | undefined {
   if (typeof window === 'undefined') return undefined
 
-  const savedSelection = readSavedPriceChartSelection()
+  const savedPair = readSavedChartPair()
 
-  if (savedSelection) return savedSelection
+  if (savedPair) return savedPair
 
   return migrateSavedPriceChartFormat()
 }
 
-export function savePriceChartSelection(selection: PriceChartSelection): void {
+export function saveChartPair(pair: ChartPair): void {
   if (typeof window === 'undefined') return
 
-  window.localStorage.setItem(PRICE_CHART_SELECTION_STORAGE_KEY, JSON.stringify(selection))
+  window.localStorage.setItem(PRICE_CHART_SELECTION_STORAGE_KEY, JSON.stringify(pair))
 }
 
-function isPriceChartSelection(value: unknown): value is PriceChartSelection {
-  return value === 'sell' || value === 'buy'
+function isChartPair(value: unknown): value is ChartPair {
+  return value === 'sell-usd' || value === 'buy-usd'
 }
 
-function migrateSavedPriceChartFormat(): PriceChartSelection | undefined {
+function migrateSavedPriceChartFormat(): ChartPair | undefined {
   const rawValue = window.localStorage.getItem(LEGACY_PRICE_CHART_FORMAT_STORAGE_KEY)
 
   if (!rawValue) return undefined
@@ -32,32 +32,35 @@ function migrateSavedPriceChartFormat(): PriceChartSelection | undefined {
 
   try {
     const value: unknown = JSON.parse(rawValue)
-    const selection = value === 1 ? 'sell' : value === 2 ? 'buy' : undefined
+    const pair = value === 1 ? 'sell-usd' : value === 2 ? 'buy-usd' : undefined
 
-    if (selection) {
-      savePriceChartSelection(selection)
+    if (pair) {
+      saveChartPair(pair)
     }
 
-    return selection
+    return pair
   } catch {
     return undefined
   }
 }
 
-function readSavedPriceChartSelection(): PriceChartSelection | undefined {
+function readSavedChartPair(): ChartPair | undefined {
   const rawValue = window.localStorage.getItem(PRICE_CHART_SELECTION_STORAGE_KEY)
 
   if (!rawValue) return undefined
 
   try {
     const value: unknown = JSON.parse(rawValue)
+    const pair = value === 'sell' ? 'sell-usd' : value === 'buy' ? 'buy-usd' : value
 
-    if (!isPriceChartSelection(value)) {
+    if (!isChartPair(pair)) {
       window.localStorage.removeItem(PRICE_CHART_SELECTION_STORAGE_KEY)
       return undefined
     }
 
-    return value
+    if (pair !== value) saveChartPair(pair)
+
+    return pair
   } catch {
     window.localStorage.removeItem(PRICE_CHART_SELECTION_STORAGE_KEY)
     return undefined

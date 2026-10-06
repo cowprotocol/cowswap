@@ -2,9 +2,9 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
-import type { PriceChartSupplyBasis } from '../lib/priceChart.types'
+import type { SupplyVariant } from '../lib/chart.types'
 
-export const priceChartSupplyBasisAtom = atomWithStorage<PriceChartSupplyBasis>(
+export const priceChartSupplyVariantAtom = atomWithStorage<SupplyVariant>(
   'price-chart-supply-basis:v0',
   'circulating',
   getJotaiIsolatedStorage(),

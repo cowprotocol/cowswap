@@ -10,17 +10,17 @@ import { SettingsButton, SettingsIcon } from 'modules/trade'
 
 import * as styledEl from './styled'
 
-import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
+import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
 
-import type { PriceChartSizeControl } from '../../lib/priceChart.types'
+import type { ExpansionControl } from '../../lib/chart.types'
 
 interface ChartSettingsDropdownProps {
-  sizeControl?: PriceChartSizeControl
+  sizeControl?: ExpansionControl
 }
 
 export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProps): ReactNode {
   const { t } = useLingui()
-  const [supplyBasis, setSupplyBasis] = useAtom(priceChartSupplyBasisAtom)
+  const [supplyVariant, setSupplyVariant] = useAtom(priceChartSupplyVariantAtom)
 
   return (
     <Menu>
@@ -52,8 +52,8 @@ export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProp
               <SettingsBox
                 title={t`Total supply for Market Cap`}
                 tooltip={t`Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens.`}
-                checked={supplyBasis === 'total'}
-                toggle={() => setSupplyBasis((value) => (value === 'total' ? 'circulating' : 'total'))}
+                checked={supplyVariant === 'total'}
+                toggle={() => setSupplyVariant((value) => (value === 'total' ? 'circulating' : 'total'))}
               />
             </SettingsBoxGroup>
           </SettingsDropdownSection>

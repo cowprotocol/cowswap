@@ -1,49 +1,41 @@
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
-import type {
-  PriceChartBar,
-  PriceChartMetric,
-  PriceChartResolution,
-  PriceChartSupplyBasis,
-  PriceChartAssetDescriptor,
-} from './priceChart.types'
+import type { Candle, ChartMetric, CandleInterval, SupplyVariant, ChartAsset } from './chart.types'
 
-export async function loadMarketCapSupply(
-  asset: PriceChartAssetDescriptor,
-  supplyBasis: PriceChartSupplyBasis = 'circulating',
-): Promise<number> {
-  const supply = (await fetchTokenSupply(asset))[`${supplyBasis}Supply`]
+export async function loadMarketCapSupply(asset: ChartAsset, supplyVariant: SupplyVariant): Promise<number> {
+  const supplies = await fetchTokenSupply(asset)
+  const supply = supplies[`${supplyVariant}Supply`]
 
+  // TODO would be nice to use valibot or zod
   if (typeof supply !== 'number' || !Number.isFinite(supply) || supply <= 0) {
-    throw new Error(`${supplyBasis === 'total' ? 'Total' : 'Circulating'} supply unavailable`)
+    throw new Error(`Token supplies unavailable`)
   }
 
   return supply
 }
 
 export async function loadPriceChartHistory(
-  asset: PriceChartAssetDescriptor,
+  asset: ChartAsset,
   from: number,
   to: number,
-  resolution: PriceChartResolution,
-  metric: PriceChartMetric,
-  supplyBasis: PriceChartSupplyBasis = 'circulating',
-  countback?: number,
-): Promise<PriceChartBar[]> {
+  interval: CandleInterval,
+  metric: ChartMetric,
+  supplyVariant: SupplyVariant,
+): Promise<Candle[]> {
   const { address, chainId } = asset
-  const bars = await fetchPriceChartData({ address, chainId, countback, from, resolution, to })
+  const bars = await fetchPriceChartData({ address, chainId, from, interval, to })
 
-  return metric === 'price' ? bars : toMarketCapBars(asset, bars, supplyBasis)
+  return metric === 'price' ? bars : toMarketCapBars(asset, bars, supplyVariant)
 }
 
 export async function toMarketCapBars(
-  asset: PriceChartAssetDescriptor,
-  bars: PriceChartBar[],
-  supplyBasis: PriceChartSupplyBasis = 'circulating',
-): Promise<PriceChartBar[]> {
+  asset: ChartAsset,
+  bars: Candle[],
+  supplyVariant: SupplyVariant,
+): Promise<Candle[]> {
   if (!bars.length) return bars
 
-  const supply = await loadMarketCapSupply(asset, supplyBasis)
+  const supply = await loadMarketCapSupply(asset, supplyVariant)
 
   return bars.map((bar) => ({
     ...bar,

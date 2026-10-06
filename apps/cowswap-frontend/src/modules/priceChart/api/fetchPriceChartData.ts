@@ -1,34 +1,45 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { fetchWithTimeout } from '@cowprotocol/common-utils'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { logPriceChart } from './logPriceChart'
 
-import { PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
-import { PriceChartBar, PriceChartInterval, PriceChartQueryParams, PriceChartResolution } from '../lib/priceChart.types'
+import { CANDLE_INTERVALS, PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
+
+import type { Candle, CandleInterval } from '../lib/chart.types'
+
+export interface PriceHistoryQuery {
+  address: string
+  chainId: SupportedChainId
+  from: number
+  to: number
+  interval: CandleInterval
+}
 
 interface PriceChartResponse {
   providerId: number
-  bars: PriceChartBar[]
+  bars: Candle[]
 }
 
-const INTERVAL_BY_RESOLUTION: Partial<Record<PriceChartResolution, PriceChartInterval>> = {
-  '1': '1m',
-  '5': '5m',
-  '15': '15m',
-  '60': '1h',
-  '240': '4h',
-  '1D': '1d',
-  '7D': '7d',
-}
+export async function fetchPriceChartData(params: PriceHistoryQuery): Promise<Candle[]> {
+  const { interval } = params
 
-export async function fetchPriceChartData(params: PriceChartQueryParams): Promise<PriceChartBar[]> {
-  const url = buildPriceChartUrl(params)
+  if (!CANDLE_INTERVALS.includes(interval)) {
+    throw new Error(`Unsupported price chart interval: ${params.interval}`)
+  }
+
+  const query = new URLSearchParams({
+    from: String(params.from),
+    to: String(params.to),
+    interval,
+  })
+
+  const url = `${BFF_BASE_URL}/${params.chainId}/tokens/${params.address}/priceHistory?${query}`
   const symbol = `${params.address}:${params.chainId}`
 
   logPriceChart.debug('Fetching bars', {
-    countback: params.countback,
     from: params.from,
-    resolution: params.resolution,
+    interval: params.interval,
     symbol,
     to: params.to,
   })
@@ -60,24 +71,4 @@ export async function fetchPriceChartData(params: PriceChartQueryParams): Promis
 
     throw error
   }
-}
-
-function buildPriceChartUrl(params: PriceChartQueryParams): string {
-  const interval = INTERVAL_BY_RESOLUTION[params.resolution]
-
-  if (!interval) {
-    throw new Error(`Unsupported price chart resolution: ${params.resolution}`)
-  }
-
-  const query = new URLSearchParams({
-    from: String(params.from),
-    to: String(params.to),
-    interval,
-  })
-
-  if (params.countback !== undefined) {
-    query.set('countback', String(params.countback))
-  }
-
-  return `${BFF_BASE_URL}/${params.chainId}/tokens/${params.address}/priceHistory?${query}`
 }

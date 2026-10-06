@@ -1,6 +1,6 @@
 import { formatLocaleNumber } from '@cowprotocol/common-utils'
 
-import type { PriceChartBar, PriceChartSummary } from './priceChart.types'
+import type { Candle } from './chart.types'
 
 export function formatPriceChartAxisValue(value: number, locale: string, minMove: number): string {
   return formatPriceChartValue(Math.abs(value) < minMove / 2 ? 0 : value, locale)
@@ -24,7 +24,7 @@ export function formatPriceChartValue(value: number, locale: string): string {
   })
 }
 
-export function getPriceChartSummary(bars: PriceChartBar[]): PriceChartSummary | undefined {
+export function getPriceChartSummary(bars: Candle[]): { change: number; price: number } | undefined {
   const firstPrice = bars[0]?.open
   const latestPrice = bars[bars.length - 1]?.close
 

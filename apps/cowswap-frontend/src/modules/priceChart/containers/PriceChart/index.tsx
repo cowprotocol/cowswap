@@ -1,41 +1,47 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import type { Currency } from '@cowprotocol/currency'
+
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
-import { createChartAssets } from '../../lib/chartAssets.utils'
-import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/chartSelection.utils'
+import { createChartAssets, getChartAssetKey } from '../../lib/chartAssets.utils'
+import { loadSavedChartPair, saveChartPair } from '../../lib/chartSelection.utils'
 import { SimplePriceChart } from '../../simple/SimplePriceChart'
-import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
+import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
 
-import type { PriceChartMetric, PriceChartContainerProps, PriceChartSelection } from '../../lib/priceChart.types'
+import type { ChartMetric, ChartAsset, ChartPair, ExpansionControl } from '../../lib/chart.types'
 
-export function PriceChart(props: PriceChartContainerProps): ReactNode {
-  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
-  if (!isPriceChartEnabled) return null
-  return <EnabledPriceChart {...props} />
+export interface PriceChartProps {
+  inputCurrency: Currency | null
+  outputCurrency: Currency | null
+  sizeControl?: ExpansionControl
 }
 
-function EnabledPriceChart({ inputCurrency, outputCurrency, sizeControl }: PriceChartContainerProps): ReactNode {
-  const supplyBasis = useAtomValue(priceChartSupplyBasisAtom)
-  const [metric, setMetric] = useState<PriceChartMetric>('price')
+export function PriceChart({ inputCurrency, outputCurrency, sizeControl }: PriceChartProps): ReactNode {
+  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const supplyVariant = useAtomValue(priceChartSupplyVariantAtom)
+  const [metric, setMetric] = useState<ChartMetric>('price')
   const assets = useMemo(() => createChartAssets(inputCurrency, outputCurrency), [inputCurrency, outputCurrency])
-  const [selectedSelection, setSelectedSelection] = useState(() => loadSavedPriceChartSelection())
-  const activeAsset = useMemo(
-    () => assets.find((asset) => asset.selection === selectedSelection) || assets[0],
-    [selectedSelection, assets],
+  const [selectedPair, setSelectedPair] = useState<ChartPair>(() => loadSavedChartPair() ?? 'sell-usd')
+  const activeAsset = selectedPair === 'buy-usd' ? assets[1] || assets[0] : assets[0]
+  const handleSelectAsset = useCallback(
+    (asset: ChartAsset) => {
+      const pair = assets[0] && getChartAssetKey(asset) === getChartAssetKey(assets[0]) ? 'sell-usd' : 'buy-usd'
+      setSelectedPair(pair)
+      saveChartPair(pair)
+    },
+    [assets],
   )
-  const handleSelectSelection = useCallback((selection: PriceChartSelection) => {
-    setSelectedSelection(selection)
-    savePriceChartSelection(selection)
-  }, [])
   const chartProps = {
     activeAsset,
     metric,
     onSelectMetric: setMetric,
-    onSelectSelection: handleSelectSelection,
+    onSelectAsset: handleSelectAsset,
     sizeControl,
     assets,
-    supplyBasis,
+    supplyVariant,
   }
+  if (!isPriceChartEnabled) return null
+
   return <SimplePriceChart {...chartProps} />
 }

@@ -4,25 +4,21 @@ import { useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
+import { getChartAssetKey } from '../../lib/chartAssets.utils'
 import { formatPriceChartValue } from '../../lib/priceSummary.utils'
 import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
 
-import type {
-  PriceChartMetric,
-  PriceChartSelection,
-  PriceChartSizeControl,
-  PriceChartAsset,
-} from '../../lib/priceChart.types'
+import type { ChartMetric, ExpansionControl, ChartAsset } from '../../lib/chart.types'
 
 interface PriceChartHeaderProps {
-  activeAsset: PriceChartAsset | undefined
+  activeAsset: ChartAsset | undefined
   change?: number
-  metric: PriceChartMetric
-  onSelectMetric: (metric: PriceChartMetric) => void
-  onSelectSelection: (selection: PriceChartSelection) => void
+  metric: ChartMetric
+  onSelectMetric: (metric: ChartMetric) => void
+  onSelectAsset: (asset: ChartAsset) => void
   price?: number
-  sizeControl?: PriceChartSizeControl
-  assets: PriceChartAsset[]
+  sizeControl?: ExpansionControl
+  assets: ChartAsset[]
 }
 
 export function PriceChartHeader({
@@ -30,7 +26,7 @@ export function PriceChartHeader({
   change,
   metric,
   onSelectMetric,
-  onSelectSelection,
+  onSelectAsset,
   price,
   sizeControl,
   assets,
@@ -74,10 +70,10 @@ export function PriceChartHeader({
         <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
           {assets.map((asset) => (
             <styledEl.SegmentedControlButton
-              $isActive={asset.selection === activeAsset?.selection}
-              aria-pressed={asset.selection === activeAsset?.selection}
-              key={asset.selection}
-              onClick={() => onSelectSelection(asset.selection)}
+              $isActive={Boolean(activeAsset && getChartAssetKey(asset) === getChartAssetKey(activeAsset))}
+              aria-pressed={Boolean(activeAsset && getChartAssetKey(asset) === getChartAssetKey(activeAsset))}
+              key={getChartAssetKey(asset)}
+              onClick={() => onSelectAsset(asset)}
               title={`${asset.symbol}/USD`}
               type="button"
             >

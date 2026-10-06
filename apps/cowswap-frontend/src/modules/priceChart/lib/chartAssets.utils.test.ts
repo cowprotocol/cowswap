@@ -13,10 +13,9 @@ describe('chartAssets', () => {
     expect(assets[0]).toEqual({
       address: getAddressKey(WRAPPED_NATIVE_CURRENCIES[CHAIN].address),
       chainId: CHAIN,
-      selection: 'sell',
       symbol: 'ETH',
     })
-    expect(assets.map((asset) => asset.selection)).toEqual(['sell', 'buy'])
+    expect(assets).toHaveLength(2)
   })
 
   it('keeps different token addresses with the same display symbol', () => {

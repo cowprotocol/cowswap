@@ -24,7 +24,7 @@ describe('PriceChartHeader', () => {
           change={0.0086}
           metric="price"
           onSelectMetric={jest.fn()}
-          onSelectSelection={jest.fn()}
+          onSelectAsset={jest.fn()}
           price={336.5}
           assets={[]}
         />
@@ -37,9 +37,9 @@ describe('PriceChartHeader', () => {
     expect(screen.queryByRole('button', { name: 'Maximize price chart' })).toBeNull()
   })
 
-  it('selects an asset by its semantic selection', () => {
+  it('selects a token asset', () => {
     const assets = createChartAssets(NATIVE_CURRENCIES[SupportedChainId.MAINNET], USDC_MAINNET)
-    const onSelectSelection = jest.fn()
+    const onSelectAsset = jest.fn()
 
     render(
       <I18nProvider i18n={i18n}>
@@ -47,7 +47,7 @@ describe('PriceChartHeader', () => {
           activeAsset={assets[0]}
           metric="price"
           onSelectMetric={jest.fn()}
-          onSelectSelection={onSelectSelection}
+          onSelectAsset={onSelectAsset}
           assets={assets}
         />
       </I18nProvider>,
@@ -56,7 +56,7 @@ describe('PriceChartHeader', () => {
     expect(screen.queryByText('Price chart')).toBeNull()
     fireEvent.click(screen.getByRole('button', { name: 'USDC' }))
 
-    expect(onSelectSelection).toHaveBeenCalledWith('buy')
+    expect(onSelectAsset).toHaveBeenCalledWith(assets[1])
   })
 
   it('switches between price and market cap', () => {
@@ -68,7 +68,7 @@ describe('PriceChartHeader', () => {
           activeAsset={undefined}
           metric="price"
           onSelectMetric={onSelectMetric}
-          onSelectSelection={jest.fn()}
+          onSelectAsset={jest.fn()}
           assets={[]}
         />
       </I18nProvider>,
@@ -87,7 +87,7 @@ describe('PriceChartHeader', () => {
           change={0.02}
           metric="marketCap"
           onSelectMetric={jest.fn()}
-          onSelectSelection={jest.fn()}
+          onSelectAsset={jest.fn()}
           price={1_230_000_000}
           assets={[]}
         />

@@ -7,7 +7,7 @@ import { I18nProvider } from '@lingui/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
+import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
 
 import { ChartSettingsDropdown } from '.'
 
@@ -32,7 +32,7 @@ beforeAll(() => {
 it('updates the shared supply preference and restores focus after closing the menu', async () => {
   const user = userEvent.setup()
   const store = createStore()
-  store.set(priceChartSupplyBasisAtom, 'circulating')
+  store.set(priceChartSupplyVariantAtom, 'circulating')
   render(
     <I18nProvider i18n={i18n}>
       <Provider store={store}>
@@ -46,7 +46,7 @@ it('updates the shared supply preference and restores focus after closing the me
   expect((option as HTMLInputElement).checked).toBe(false)
   expect((screen.getByRole('checkbox', { name: 'Maximize price chart' }) as HTMLInputElement).disabled).toBe(true)
   await user.click(screen.getByText('Total supply for Market Cap'))
-  expect(store.get(priceChartSupplyBasisAtom)).toBe('total')
+  expect(store.get(priceChartSupplyVariantAtom)).toBe('total')
   expect((option as HTMLInputElement).checked).toBe(true)
   await user.keyboard('{Escape}')
   expect(screen.queryByRole('checkbox')).toBeNull()
