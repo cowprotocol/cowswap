@@ -1,6 +1,6 @@
 import { hasPriceChartVolume, mapPriceChartBarsToVolumeData } from './priceChartVolume.utils'
 
-import type { PriceChartBar } from './priceChart.types'
+import type { PriceChartBar } from '../lib/priceChart.types'
 
 const BAR: PriceChartBar = { close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }
 

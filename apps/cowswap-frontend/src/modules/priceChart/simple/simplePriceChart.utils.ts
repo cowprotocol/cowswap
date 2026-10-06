@@ -1,4 +1,4 @@
-import type { PriceChartBar, PriceChartResolution, SimplePriceChartPeriod } from './priceChart.types'
+import type { PriceChartBar, PriceChartResolution, SimplePriceChartPeriod } from '../lib/priceChart.types'
 import type { PriceFormatBuiltIn } from 'lightweight-charts'
 
 const DAY_SECONDS = 24 * 60 * 60

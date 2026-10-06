@@ -3,7 +3,7 @@ import { fetchWithTimeout } from '@cowprotocol/common-utils'
 
 import { PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
 
-import type { PriceChartAssetDescriptor } from '../lib/tradingView.types'
+import type { PriceChartAssetDescriptor } from '../lib/priceChart.types'
 
 interface TokenSupplyResponse {
   circulatingSupply: number | null

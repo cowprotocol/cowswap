@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 
-import { ChartToggleButton } from './ChartToggleButton.container'
-
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
+
+import { ChartToggleButton } from '.'
 
 jest.mock('../../hooks/usePriceChartFeatureFlags', () => ({
   usePriceChartFeatureFlags: jest.fn(),
@@ -13,7 +13,6 @@ const usePriceChartFeatureFlagsMock = usePriceChartFeatureFlags as jest.MockedFu
 describe('ChartToggleButton', () => {
   it('is hidden when price charts are disabled', () => {
     usePriceChartFeatureFlagsMock.mockReturnValue({
-      isAdvancedPriceChartEnabled: false,
       isPriceChartEnabled: false,
     })
 
@@ -24,7 +23,6 @@ describe('ChartToggleButton', () => {
 
   it('is shown when price charts are enabled', () => {
     usePriceChartFeatureFlagsMock.mockReturnValue({
-      isAdvancedPriceChartEnabled: false,
       isPriceChartEnabled: true,
     })
 

@@ -6,11 +6,11 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 
-import { PriceChartHeader } from './PriceChartHeader.pure'
+import { createChartAssets } from '../../lib/chartAssets.utils'
 
-import { createSwapChartSymbols } from '../../lib/symbolCatalog'
+import { PriceChartHeader } from '.'
 
-jest.mock('../ChartSettingsDropdown/ChartSettingsDropdown.container', () => ({ ChartSettingsDropdown: () => null }))
+jest.mock('../ChartSettingsDropdown', () => ({ ChartSettingsDropdown: () => null }))
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -20,13 +20,13 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeSymbol={undefined}
+          activeAsset={undefined}
           change={0.0086}
           metric="price"
           onSelectMetric={jest.fn()}
           onSelectSelection={jest.fn()}
           price={336.5}
-          symbols={[]}
+          assets={[]}
         />
       </I18nProvider>,
     )
@@ -38,17 +38,17 @@ describe('PriceChartHeader', () => {
   })
 
   it('selects an asset by its semantic selection', () => {
-    const symbols = createSwapChartSymbols(NATIVE_CURRENCIES[SupportedChainId.MAINNET], USDC_MAINNET)
+    const assets = createChartAssets(NATIVE_CURRENCIES[SupportedChainId.MAINNET], USDC_MAINNET)
     const onSelectSelection = jest.fn()
 
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeSymbol={symbols[0]}
+          activeAsset={assets[0]}
           metric="price"
           onSelectMetric={jest.fn()}
           onSelectSelection={onSelectSelection}
-          symbols={symbols}
+          assets={assets}
         />
       </I18nProvider>,
     )
@@ -65,11 +65,11 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeSymbol={undefined}
+          activeAsset={undefined}
           metric="price"
           onSelectMetric={onSelectMetric}
           onSelectSelection={jest.fn()}
-          symbols={[]}
+          assets={[]}
         />
       </I18nProvider>,
     )
@@ -83,13 +83,13 @@ describe('PriceChartHeader', () => {
     render(
       <I18nProvider i18n={i18n}>
         <PriceChartHeader
-          activeSymbol={undefined}
+          activeAsset={undefined}
           change={0.02}
           metric="marketCap"
           onSelectMetric={jest.fn()}
           onSelectSelection={jest.fn()}
           price={1_230_000_000}
-          symbols={[]}
+          assets={[]}
         />
       </I18nProvider>,
     )

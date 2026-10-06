@@ -6,7 +6,7 @@ import { NewTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { TrendingUp } from 'react-feather'
 
-import { ToggleButton } from './ChartToggleButton.styled'
+import { ToggleButton } from './styled'
 
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
 import { priceChartVisibleAtom } from '../../state/priceChartVisibleAtom'

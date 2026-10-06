@@ -7,9 +7,9 @@ import { I18nProvider } from '@lingui/react'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { ChartSettingsDropdown } from './ChartSettingsDropdown.container'
-
 import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
+
+import { ChartSettingsDropdown } from '.'
 
 jest.mock('react-inlinesvg', () => () => null)
 

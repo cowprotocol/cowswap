@@ -3,7 +3,7 @@ import { I18nProvider } from '@lingui/react'
 
 import { render, screen } from '@testing-library/react'
 
-import { SimplePriceChartTooltip } from './SimplePriceChart.pure'
+import { SimplePriceChartTooltip } from './SimplePriceChart'
 
 i18n.load('en-US', {})
 i18n.activate('en-US')

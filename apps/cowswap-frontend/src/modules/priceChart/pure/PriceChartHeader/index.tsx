@@ -2,38 +2,38 @@ import { ReactNode } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
 
-import * as styledEl from './PriceChart.styled'
+import * as styledEl from './styled'
 
 import { formatPriceChartValue } from '../../lib/priceSummary.utils'
-import { ChartSettingsDropdown } from '../ChartSettingsDropdown/ChartSettingsDropdown.container'
+import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
 
-import type { PriceChartMetric } from '../../lib/priceChart.types'
 import type {
+  PriceChartMetric,
   PriceChartSelection,
   PriceChartSizeControl,
-  PriceChartSymbolDescriptor,
-} from '../../lib/tradingView.types'
+  PriceChartAsset,
+} from '../../lib/priceChart.types'
 
 interface PriceChartHeaderProps {
-  activeSymbol: PriceChartSymbolDescriptor | undefined
+  activeAsset: PriceChartAsset | undefined
   change?: number
   metric: PriceChartMetric
   onSelectMetric: (metric: PriceChartMetric) => void
   onSelectSelection: (selection: PriceChartSelection) => void
   price?: number
   sizeControl?: PriceChartSizeControl
-  symbols: PriceChartSymbolDescriptor[]
+  assets: PriceChartAsset[]
 }
 
 export function PriceChartHeader({
-  activeSymbol,
+  activeAsset,
   change,
   metric,
   onSelectMetric,
   onSelectSelection,
   price,
   sizeControl,
-  symbols,
+  assets,
 }: PriceChartHeaderProps): ReactNode {
   const { i18n, t } = useLingui()
   const formattedValue = price === undefined ? undefined : formatPriceChartValue(price, i18n.locale)
@@ -72,16 +72,16 @@ export function PriceChartHeader({
       </styledEl.Heading>
       <styledEl.HeaderControls>
         <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
-          {symbols.map((symbol) => (
+          {assets.map((asset) => (
             <styledEl.SegmentedControlButton
-              $isActive={symbol.selection === activeSymbol?.selection}
-              aria-pressed={symbol.selection === activeSymbol?.selection}
-              key={symbol.ticker}
-              onClick={() => onSelectSelection(symbol.selection)}
-              title={`${symbol.baseAsset.symbol}/USD`}
+              $isActive={asset.selection === activeAsset?.selection}
+              aria-pressed={asset.selection === activeAsset?.selection}
+              key={asset.selection}
+              onClick={() => onSelectSelection(asset.selection)}
+              title={`${asset.symbol}/USD`}
               type="button"
             >
-              {symbol.baseAsset.symbol}
+              {asset.symbol}
             </styledEl.SegmentedControlButton>
           ))}
         </styledEl.SegmentedControl>

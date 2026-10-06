@@ -17,32 +17,30 @@ import { LuCandlestickChart, LuTrendingUp } from 'react-icons/lu'
 
 import { useTheme } from 'common/hooks/useTheme'
 
-import * as styledEl from './PriceChart.styled'
-import { PriceChartHeader } from './PriceChartHeader.pure'
-import { PriceChartStatus } from './PriceChartStatus.pure'
-import * as simpleStyledEl from './SimplePriceChart.styled'
-
-import { logPriceChart } from '../../api'
-import { loadPriceChartHistory, toMarketCapBars } from '../../lib/loadPriceChartHistory.service'
-import { mapPriceChartBarsToVolumeData } from '../../lib/priceChartVolume.utils'
-import { formatPriceChartAxisValue, formatPriceChartValue, getPriceChartSummary } from '../../lib/priceSummary.utils'
+import { mapPriceChartBarsToVolumeData } from './priceChartVolume.utils'
+import * as styledEl from './SimplePriceChart.styled'
 import {
   getSimplePriceChartPeriodConfig,
   getSimplePriceChartPriceFormat,
   SIMPLE_PRICE_CHART_PERIODS,
-} from '../../lib/simplePriceChart.utils'
+} from './simplePriceChart.utils'
+
+import { logPriceChart } from '../api'
+import { getChartAssetKey } from '../lib/chartAssets.utils'
+import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
+import { formatPriceChartAxisValue, formatPriceChartValue, getPriceChartSummary } from '../lib/priceSummary.utils'
+import { PriceChartHeader } from '../pure/PriceChartHeader'
+import { PriceChartStatus } from '../pure/PriceChartStatus'
 
 import type {
   PriceChartBar,
   PriceChartMetric,
   PriceChartSupplyBasis,
   SimplePriceChartPeriod,
-} from '../../lib/priceChart.types'
-import type {
   PriceChartHistoryStatus,
   PriceChartPureProps,
-  PriceChartSymbolDescriptor,
-} from '../../lib/tradingView.types'
+  PriceChartAsset,
+} from '../lib/priceChart.types'
 
 const DEFAULT_PERIOD: SimplePriceChartPeriod = '1D'
 const TOOLTIP_HEIGHT = 88
@@ -92,13 +90,13 @@ interface SimplePriceHistory {
 // Adapted from Uniswap's GPL-3.0-or-later PriceChartModel and ChartModelCore.
 // Source: https://github.com/Uniswap/interface/tree/main/apps/web/src/components/Charts
 
-export function SimplePriceChartPure({
-  activeSymbol,
+export function SimplePriceChart({
+  activeAsset,
   metric,
   onSelectMetric,
   onSelectSelection,
   sizeControl,
-  symbols,
+  assets,
   supplyBasis = 'circulating',
 }: PriceChartPureProps): ReactNode {
   const { darkMode } = useTheme()
@@ -111,7 +109,7 @@ export function SimplePriceChartPure({
   const [period, setPeriod] = useState<SimplePriceChartPeriod>(DEFAULT_PERIOD)
   const [chartType, setChartType] = useState<SimplePriceChartType>('line')
   const [tooltip, setTooltip] = useState<SimplePriceChartTooltipData>()
-  const { data, historyStatus } = usePriceChartHistory(activeSymbol, period, metric, supplyBasis)
+  const { data, historyStatus } = usePriceChartHistory(activeAsset, period, metric, supplyBasis)
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
 
   useEffect(() => {
@@ -162,26 +160,26 @@ export function SimplePriceChartPure({
     chartRef.current?.timeScale().fitContent()
   }, [chartType, darkMode, data, i18n.locale])
 
-  if (!symbols.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
+  if (!assets.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
 
   return (
     <styledEl.PanelWrapper>
       <PriceChartHeader
-        activeSymbol={activeSymbol}
+        activeAsset={activeAsset}
         change={priceSummary?.change}
         metric={metric}
         onSelectMetric={onSelectMetric}
         onSelectSelection={onSelectSelection}
         price={priceSummary?.price}
         sizeControl={sizeControl}
-        symbols={symbols}
+        assets={assets}
       />
       <styledEl.ChartFrame>
-        <simpleStyledEl.ChartCanvas ref={chartContainerRef} />
+        <styledEl.ChartCanvas ref={chartContainerRef} />
         {tooltip && !historyStatus ? <SimplePriceChartTooltip data={tooltip} metric={metric} /> : null}
         {historyStatus ? (
           <styledEl.OverlayState>
-            <PriceChartStatus assetSymbol={activeSymbol?.baseAsset.symbol} kind={historyStatus} />
+            <PriceChartStatus assetSymbol={activeAsset?.symbol} kind={historyStatus} />
           </styledEl.OverlayState>
         ) : null}
       </styledEl.ChartFrame>
@@ -199,21 +197,21 @@ export function SimplePriceChartTooltip({ data, metric }: SimplePriceChartToolti
   const { i18n, t } = useLingui()
 
   return (
-    <simpleStyledEl.Tooltip $placement={data.placement} $width={TOOLTIP_WIDTH} $x={data.x} $y={data.y} role="tooltip">
-      <simpleStyledEl.TooltipRow>
-        <simpleStyledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</simpleStyledEl.TooltipLabel>
-        <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.price, i18n.locale)}</simpleStyledEl.TooltipValue>
-      </simpleStyledEl.TooltipRow>
+    <styledEl.Tooltip $placement={data.placement} $width={TOOLTIP_WIDTH} $x={data.x} $y={data.y} role="tooltip">
+      <styledEl.TooltipRow>
+        <styledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</styledEl.TooltipLabel>
+        <styledEl.TooltipValue>{formatPriceChartValue(data.price, i18n.locale)}</styledEl.TooltipValue>
+      </styledEl.TooltipRow>
       {data.volume === undefined ? null : (
-        <simpleStyledEl.TooltipRow>
-          <simpleStyledEl.TooltipLabel>{t`Volume`}</simpleStyledEl.TooltipLabel>
-          <simpleStyledEl.TooltipValue>{formatPriceChartValue(data.volume, i18n.locale)}</simpleStyledEl.TooltipValue>
-        </simpleStyledEl.TooltipRow>
+        <styledEl.TooltipRow>
+          <styledEl.TooltipLabel>{t`Volume`}</styledEl.TooltipLabel>
+          <styledEl.TooltipValue>{formatPriceChartValue(data.volume, i18n.locale)}</styledEl.TooltipValue>
+        </styledEl.TooltipRow>
       )}
-      <simpleStyledEl.TooltipTime>
+      <styledEl.TooltipTime>
         {new Intl.DateTimeFormat(i18n.locale, { dateStyle: 'medium', timeStyle: 'short' }).format(data.time * 1000)}
-      </simpleStyledEl.TooltipTime>
-    </simpleStyledEl.Tooltip>
+      </styledEl.TooltipTime>
+    </styledEl.Tooltip>
   )
 }
 
@@ -221,8 +219,8 @@ function ChartTypeControl({ chartType, onChange }: ChartTypeControlProps): React
   const { t } = useLingui()
 
   return (
-    <simpleStyledEl.ChartTypeControls aria-label={t`Price chart type`} role="group">
-      <simpleStyledEl.ChartTypeButton
+    <styledEl.ChartTypeControls aria-label={t`Price chart type`} role="group">
+      <styledEl.ChartTypeButton
         $isActive={chartType === 'line'}
         aria-label={t`Area chart`}
         aria-pressed={chartType === 'line'}
@@ -230,8 +228,8 @@ function ChartTypeControl({ chartType, onChange }: ChartTypeControlProps): React
         type="button"
       >
         <LuTrendingUp aria-hidden="true" />
-      </simpleStyledEl.ChartTypeButton>
-      <simpleStyledEl.ChartTypeButton
+      </styledEl.ChartTypeButton>
+      <styledEl.ChartTypeButton
         $isActive={chartType === 'candles'}
         aria-label={t`Candlestick chart`}
         aria-pressed={chartType === 'candles'}
@@ -239,8 +237,8 @@ function ChartTypeControl({ chartType, onChange }: ChartTypeControlProps): React
         type="button"
       >
         <LuCandlestickChart aria-hidden="true" />
-      </simpleStyledEl.ChartTypeButton>
-    </simpleStyledEl.ChartTypeControls>
+      </styledEl.ChartTypeButton>
+    </styledEl.ChartTypeControls>
   )
 }
 
@@ -314,9 +312,9 @@ function SimplePriceChartControls({
   period,
 }: SimplePriceChartControlsProps): ReactNode {
   return (
-    <simpleStyledEl.FooterControls>
+    <styledEl.FooterControls>
       <ChartTypeControl chartType={chartType} onChange={onChartTypeChange} />
-      <simpleStyledEl.Controls aria-label="Price chart period" role="group">
+      <styledEl.Controls aria-label="Price chart period" role="group">
         {SIMPLE_PRICE_CHART_PERIODS.map((item) => (
           <styledEl.SegmentedControlButton
             $isActive={item === period}
@@ -328,13 +326,13 @@ function SimplePriceChartControls({
             {item}
           </styledEl.SegmentedControlButton>
         ))}
-      </simpleStyledEl.Controls>
-    </simpleStyledEl.FooterControls>
+      </styledEl.Controls>
+    </styledEl.FooterControls>
   )
 }
 
 function usePriceChartHistory(
-  symbol: PriceChartSymbolDescriptor | undefined,
+  asset: PriceChartAsset | undefined,
   period: SimplePriceChartPeriod,
   metric: PriceChartMetric,
   supplyBasis: PriceChartSupplyBasis,
@@ -345,7 +343,7 @@ function usePriceChartHistory(
   const hasRequestedHistoryRef = useRef(false)
 
   useEffect(() => {
-    if (!symbol) {
+    if (!asset) {
       historyCacheRef.current = undefined
       hasRequestedHistoryRef.current = false
       setData([])
@@ -355,14 +353,14 @@ function usePriceChartHistory(
 
     let isCancelled = false
     const { from, resolution, to } = getSimplePriceChartPeriodConfig(period, Date.now() / 1000)
-    const historyKey = `${symbol.ticker}:${period}`
+    const historyKey = `${getChartAssetKey(asset)}:${period}`
     const history: CachedSimplePriceHistory =
       historyCacheRef.current?.key === historyKey
         ? historyCacheRef.current
         : {
             key: historyKey,
             marketCap: {},
-            price: loadPriceChartHistory(symbol, from, to, resolution, 'price', supplyBasis),
+            price: loadPriceChartHistory(asset, from, to, resolution, 'price', supplyBasis),
           }
     historyCacheRef.current = history
 
@@ -374,7 +372,7 @@ function usePriceChartHistory(
     const request =
       metric === 'price'
         ? history.price
-        : (history.marketCap[supplyBasis] ??= history.price.then((bars) => toMarketCapBars(symbol, bars, supplyBasis)))
+        : (history.marketCap[supplyBasis] ??= history.price.then((bars) => toMarketCapBars(asset, bars, supplyBasis)))
 
     void request
       .then((bars) => {
@@ -387,7 +385,7 @@ function usePriceChartHistory(
         if (isCancelled) return
 
         const error = normalizeError(err)
-        logPriceChart.warn('Failed to load simple chart history', error, { period, ticker: symbol.ticker })
+        logPriceChart.warn('Failed to load simple chart history', error, { period, asset: getChartAssetKey(asset) })
         setData([])
         setHistoryStatus('error')
       })
@@ -395,7 +393,7 @@ function usePriceChartHistory(
     return () => {
       isCancelled = true
     }
-  }, [metric, period, supplyBasis, symbol])
+  }, [metric, period, supplyBasis, asset])
 
   return { data, historyStatus }
 }

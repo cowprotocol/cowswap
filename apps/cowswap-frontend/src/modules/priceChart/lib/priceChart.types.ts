@@ -1,4 +1,15 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Currency } from '@cowprotocol/currency'
+
+export interface PriceChartAsset extends PriceChartAssetDescriptor {
+  selection: PriceChartSelection
+}
+
+export interface PriceChartAssetDescriptor {
+  address: string
+  chainId: SupportedChainId
+  symbol: string
+}
 
 export interface PriceChartBar {
   timestamp: number
@@ -9,11 +20,27 @@ export interface PriceChartBar {
   volume?: number
 }
 
+export interface PriceChartContainerProps {
+  inputCurrency: Currency | null
+  outputCurrency: Currency | null
+  sizeControl?: PriceChartSizeControl
+}
+
+export type PriceChartHistoryStatus = 'loading' | 'empty' | 'error' | null
+
 export type PriceChartInterval = '1m' | '5m' | '15m' | '1h' | '4h' | '1d' | '7d'
 
 export type PriceChartMetric = 'marketCap' | 'price'
 
-export type PriceChartMode = 'advanced' | 'simple'
+export interface PriceChartPureProps {
+  activeAsset: PriceChartAsset | undefined
+  assets: PriceChartAsset[]
+  metric: PriceChartMetric
+  onSelectMetric: (metric: PriceChartMetric) => void
+  onSelectSelection: (selection: PriceChartSelection) => void
+  sizeControl?: PriceChartSizeControl
+  supplyBasis?: PriceChartSupplyBasis
+}
 
 export interface PriceChartQueryParams {
   address: string
@@ -38,6 +65,12 @@ export type PriceChartResolution =
   | '720'
   | '1D'
   | '7D'
+
+export type PriceChartSelection = 'sell' | 'buy'
+export interface PriceChartSizeControl {
+  isExpanded: boolean
+  onToggle: () => void
+}
 
 export interface PriceChartSummary {
   change: number

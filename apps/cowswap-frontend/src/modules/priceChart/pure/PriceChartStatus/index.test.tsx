@@ -3,7 +3,7 @@ import { I18nProvider } from '@lingui/react'
 
 import { render, screen } from '@testing-library/react'
 
-import { PriceChartStatus } from './PriceChartStatus.pure'
+import { PriceChartStatus } from '.'
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -24,7 +24,7 @@ describe('PriceChartStatus', () => {
     expect(screen.queryByText('Loading price history for WETH')).toBeNull()
   })
 
-  it('shows the base symbol when the complete history is empty', () => {
+  it('shows the base asset when the complete history is empty', () => {
     renderStatus('empty')
 
     expect(screen.getByText('Failed to load price history for WETH')).toBeTruthy()

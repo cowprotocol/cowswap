@@ -8,11 +8,11 @@ import { Menu, MenuPopover } from '@reach/menu-button'
 
 import { SettingsButton, SettingsIcon } from 'modules/trade'
 
-import * as styledEl from './ChartSettingsDropdown.styled'
+import * as styledEl from './styled'
 
 import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
 
-import type { PriceChartSizeControl } from '../../lib/tradingView.types'
+import type { PriceChartSizeControl } from '../../lib/priceChart.types'
 
 interface ChartSettingsDropdownProps {
   sizeControl?: PriceChartSizeControl

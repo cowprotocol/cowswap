@@ -1,6 +1,5 @@
-import type { PriceChartSelection } from './tradingView.types'
+import type { PriceChartSelection } from './priceChart.types'
 
-const PRICE_CHART_STATE_STORAGE_KEY = 'priceChartState:v0'
 const PRICE_CHART_SELECTION_STORAGE_KEY = 'priceChartSelection:v0'
 const LEGACY_PRICE_CHART_FORMAT_STORAGE_KEY = 'priceChartFormat:v0'
 
@@ -14,38 +13,10 @@ export function loadSavedPriceChartSelection(): PriceChartSelection | undefined 
   return migrateSavedPriceChartFormat()
 }
 
-export function loadSavedPriceChartState(): object | undefined {
-  if (typeof window === 'undefined') return undefined
-
-  const rawValue = window.localStorage.getItem(PRICE_CHART_STATE_STORAGE_KEY)
-
-  if (!rawValue) return undefined
-
-  try {
-    const parsedValue = JSON.parse(rawValue)
-
-    if (!parsedValue || typeof parsedValue !== 'object') {
-      window.localStorage.removeItem(PRICE_CHART_STATE_STORAGE_KEY)
-      return undefined
-    }
-
-    return parsedValue
-  } catch {
-    window.localStorage.removeItem(PRICE_CHART_STATE_STORAGE_KEY)
-    return undefined
-  }
-}
-
 export function savePriceChartSelection(selection: PriceChartSelection): void {
   if (typeof window === 'undefined') return
 
   window.localStorage.setItem(PRICE_CHART_SELECTION_STORAGE_KEY, JSON.stringify(selection))
-}
-
-export function savePriceChartState(state: object): void {
-  if (typeof window === 'undefined') return
-
-  window.localStorage.setItem(PRICE_CHART_STATE_STORAGE_KEY, JSON.stringify(state))
 }
 
 function isPriceChartSelection(value: unknown): value is PriceChartSelection {

@@ -1,7 +1,12 @@
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
-import type { PriceChartBar, PriceChartMetric, PriceChartResolution, PriceChartSupplyBasis } from './priceChart.types'
-import type { PriceChartAssetDescriptor, PriceChartSymbolDescriptor } from './tradingView.types'
+import type {
+  PriceChartBar,
+  PriceChartMetric,
+  PriceChartResolution,
+  PriceChartSupplyBasis,
+  PriceChartAssetDescriptor,
+} from './priceChart.types'
 
 export async function loadMarketCapSupply(
   asset: PriceChartAssetDescriptor,
@@ -17,7 +22,7 @@ export async function loadMarketCapSupply(
 }
 
 export async function loadPriceChartHistory(
-  symbol: PriceChartSymbolDescriptor,
+  asset: PriceChartAssetDescriptor,
   from: number,
   to: number,
   resolution: PriceChartResolution,
@@ -25,20 +30,20 @@ export async function loadPriceChartHistory(
   supplyBasis: PriceChartSupplyBasis = 'circulating',
   countback?: number,
 ): Promise<PriceChartBar[]> {
-  const { address, chainId } = symbol.baseAsset
+  const { address, chainId } = asset
   const bars = await fetchPriceChartData({ address, chainId, countback, from, resolution, to })
 
-  return metric === 'price' ? bars : toMarketCapBars(symbol, bars, supplyBasis)
+  return metric === 'price' ? bars : toMarketCapBars(asset, bars, supplyBasis)
 }
 
 export async function toMarketCapBars(
-  symbol: PriceChartSymbolDescriptor,
+  asset: PriceChartAssetDescriptor,
   bars: PriceChartBar[],
   supplyBasis: PriceChartSupplyBasis = 'circulating',
 ): Promise<PriceChartBar[]> {
   if (!bars.length) return bars
 
-  const supply = await loadMarketCapSupply(symbol.baseAsset, supplyBasis)
+  const supply = await loadMarketCapSupply(asset, supplyBasis)
 
   return bars.map((bar) => ({
     ...bar,

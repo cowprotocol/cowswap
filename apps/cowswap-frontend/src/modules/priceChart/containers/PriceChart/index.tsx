@@ -1,15 +1,13 @@
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { SimplePriceChartPure } from './SimplePriceChart.pure'
-
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
-import { createSwapChartSymbols } from '../../lib/symbolCatalog'
-import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/tradingViewPersistence.utils'
+import { createChartAssets } from '../../lib/chartAssets.utils'
+import { loadSavedPriceChartSelection, savePriceChartSelection } from '../../lib/chartSelection.utils'
+import { SimplePriceChart } from '../../simple/SimplePriceChart'
 import { priceChartSupplyBasisAtom } from '../../state/priceChartSupplyBasisAtom'
 
-import type { PriceChartMetric } from '../../lib/priceChart.types'
-import type { PriceChartContainerProps, PriceChartSelection } from '../../lib/tradingView.types'
+import type { PriceChartMetric, PriceChartContainerProps, PriceChartSelection } from '../../lib/priceChart.types'
 
 export function PriceChart(props: PriceChartContainerProps): ReactNode {
   const { isPriceChartEnabled } = usePriceChartFeatureFlags()
@@ -20,24 +18,24 @@ export function PriceChart(props: PriceChartContainerProps): ReactNode {
 function EnabledPriceChart({ inputCurrency, outputCurrency, sizeControl }: PriceChartContainerProps): ReactNode {
   const supplyBasis = useAtomValue(priceChartSupplyBasisAtom)
   const [metric, setMetric] = useState<PriceChartMetric>('price')
-  const symbols = useMemo(() => createSwapChartSymbols(inputCurrency, outputCurrency), [inputCurrency, outputCurrency])
+  const assets = useMemo(() => createChartAssets(inputCurrency, outputCurrency), [inputCurrency, outputCurrency])
   const [selectedSelection, setSelectedSelection] = useState(() => loadSavedPriceChartSelection())
-  const activeSymbol = useMemo(
-    () => symbols.find((symbol) => symbol.selection === selectedSelection) || symbols[0],
-    [selectedSelection, symbols],
+  const activeAsset = useMemo(
+    () => assets.find((asset) => asset.selection === selectedSelection) || assets[0],
+    [selectedSelection, assets],
   )
   const handleSelectSelection = useCallback((selection: PriceChartSelection) => {
     setSelectedSelection(selection)
     savePriceChartSelection(selection)
   }, [])
   const chartProps = {
-    activeSymbol,
+    activeAsset,
     metric,
     onSelectMetric: setMetric,
     onSelectSelection: handleSelectSelection,
     sizeControl,
-    symbols,
+    assets,
     supplyBasis,
   }
-  return <SimplePriceChartPure {...chartProps} />
+  return <SimplePriceChart {...chartProps} />
 }

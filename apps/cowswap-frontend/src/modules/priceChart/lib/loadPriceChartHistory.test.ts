@@ -1,23 +1,21 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { loadMarketCapSupply, loadPriceChartHistory } from './loadPriceChartHistory.service'
+import { loadMarketCapSupply, loadPriceChartHistory } from './loadPriceChartHistory'
 
 import { fetchPriceChartData, fetchTokenSupply } from '../api'
 
-import type { PriceChartSymbolDescriptor } from './tradingView.types'
+import type { PriceChartAssetDescriptor } from './priceChart.types'
 
 jest.mock('../api', () => ({
   fetchPriceChartData: jest.fn(),
   fetchTokenSupply: jest.fn(),
 }))
 
-const SYMBOL = {
-  baseAsset: {
-    address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-    chainId: SupportedChainId.MAINNET,
-    symbol: 'USDC',
-  },
-} as PriceChartSymbolDescriptor
+const ASSET = {
+  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+  chainId: SupportedChainId.MAINNET,
+  symbol: 'USDC',
+} satisfies PriceChartAssetDescriptor
 
 describe('loadPriceChartHistory', () => {
   it('preserves USD volume when prices are converted to market cap', async () => {
@@ -26,7 +24,7 @@ describe('loadPriceChartHistory', () => {
       .mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000, volume: 123.45 }])
     jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply: 10, totalSupply: null })
 
-    await expect(loadPriceChartHistory(SYMBOL, 1, 2, '60', 'marketCap')).resolves.toEqual([
+    await expect(loadPriceChartHistory(ASSET, 1, 2, '60', 'marketCap')).resolves.toEqual([
       { close: 20, high: 30, low: 10, open: 15, timestamp: 1710000000, volume: 123.45 },
     ])
   })
@@ -36,9 +34,7 @@ describe('loadPriceChartHistory', () => {
     async (circulatingSupply) => {
       jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply, totalSupply: 100 })
 
-      await expect(loadMarketCapSupply(SYMBOL.baseAsset, 'circulating')).rejects.toThrow(
-        'Circulating supply unavailable',
-      )
+      await expect(loadMarketCapSupply(ASSET, 'circulating')).rejects.toThrow('Circulating supply unavailable')
     },
   )
 
@@ -46,7 +42,7 @@ describe('loadPriceChartHistory', () => {
     jest.mocked(fetchPriceChartData).mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1 }])
     jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply: 10, totalSupply: 20 })
 
-    await expect(loadPriceChartHistory(SYMBOL, 1, 2, '60', 'marketCap', 'total')).resolves.toEqual([
+    await expect(loadPriceChartHistory(ASSET, 1, 2, '60', 'marketCap', 'total')).resolves.toEqual([
       { close: 40, high: 60, low: 20, open: 30, timestamp: 1 },
     ])
   })

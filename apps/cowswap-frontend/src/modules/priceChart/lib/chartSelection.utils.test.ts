@@ -1,39 +1,11 @@
-import {
-  loadSavedPriceChartSelection,
-  loadSavedPriceChartState,
-  savePriceChartSelection,
-  savePriceChartState,
-} from './tradingViewPersistence.utils'
+import { loadSavedPriceChartSelection, savePriceChartSelection } from './chartSelection.utils'
 
-const STATE_STORAGE_KEY = 'priceChartState:v0'
 const SELECTION_STORAGE_KEY = 'priceChartSelection:v0'
 const LEGACY_FORMAT_STORAGE_KEY = 'priceChartFormat:v0'
 
-describe('tradingViewPersistence.utils', () => {
+describe('chartSelection.utils', () => {
   beforeEach(() => {
     window.localStorage.clear()
-  })
-
-  it('saves and loads chart state from local storage', () => {
-    const state = { charts: [{ panes: [] }], version: 1 }
-
-    savePriceChartState(state)
-
-    expect(loadSavedPriceChartState()).toEqual(state)
-  })
-
-  it('drops malformed local storage state', () => {
-    window.localStorage.setItem(STATE_STORAGE_KEY, '{broken json')
-
-    expect(loadSavedPriceChartState()).toBeUndefined()
-    expect(window.localStorage.getItem(STATE_STORAGE_KEY)).toBeNull()
-  })
-
-  it('drops non-object local storage state', () => {
-    window.localStorage.setItem(STATE_STORAGE_KEY, JSON.stringify('bad'))
-
-    expect(loadSavedPriceChartState()).toBeUndefined()
-    expect(window.localStorage.getItem(STATE_STORAGE_KEY)).toBeNull()
   })
 
   it('saves and loads the chart selection from local storage', () => {

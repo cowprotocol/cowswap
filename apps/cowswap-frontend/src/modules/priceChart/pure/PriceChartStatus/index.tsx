@@ -5,7 +5,7 @@ import { Loader } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import type { PriceChartHistoryStatus } from '../../lib/tradingView.types'
+import type { PriceChartHistoryStatus } from '../../lib/priceChart.types'
 
 type PriceChartStatusKind = Extract<PriceChartHistoryStatus, 'loading' | 'empty' | 'error'>
 
