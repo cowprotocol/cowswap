@@ -6,6 +6,7 @@ import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
+import { buildSolanaCancelOrderParams } from 'tradingSdk/solana/buildSolanaCancelOrderParams'
 import { SOLANA_TRADING_ENV, solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -15,8 +16,6 @@ import { useAllOrdersMap, useSetOrderCancellationHash } from 'legacy/state/order
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction' // TODO: Don't use 'modules' import
 
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
-
-import { buildSolanaCancelOrderParams } from './buildSolanaCancelOrderParams'
 
 // Solana has no dedicated batch-cancel instruction: cancelling several orders together means bundling
 // one CancelOrder instruction per order into a single transaction, signed once.

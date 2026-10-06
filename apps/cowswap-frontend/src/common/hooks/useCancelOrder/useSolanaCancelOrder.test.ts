@@ -3,6 +3,7 @@ import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey, Connection } from '@solana/web3.js'
 import { act, renderHook } from '@testing-library/react'
+import { buildSolanaCancelOrderParams } from 'tradingSdk/solana/buildSolanaCancelOrderParams'
 import { solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -12,7 +13,6 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction'
 
-import { buildSolanaCancelOrderParams } from './buildSolanaCancelOrderParams'
 import { useSolanaCancelOrder } from './useSolanaCancelOrder'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
@@ -36,7 +36,7 @@ jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: je
 jest.mock('legacy/state/orders/hooks')
 jest.mock('legacy/state/enhancedTransactions/hooks')
 jest.mock('modules/trade/services/solanaSend/sendSolanaTransaction')
-jest.mock('./buildSolanaCancelOrderParams')
+jest.mock('tradingSdk/solana/buildSolanaCancelOrderParams')
 
 const mockUseSolanaWalletProvider = useSolanaWalletProvider as jest.MockedFunction<typeof useSolanaWalletProvider>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>

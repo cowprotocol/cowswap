@@ -5,6 +5,7 @@ import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
+import { buildSolanaCancelOrderParams } from 'tradingSdk/solana/buildSolanaCancelOrderParams'
 import { SOLANA_TRADING_ENV, solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -13,8 +14,6 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction' // TODO: Don't use 'modules' import. Move it to common
-
-import { buildSolanaCancelOrderParams } from './buildSolanaCancelOrderParams'
 
 export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
   const { account, chainId } = useWalletInfo()
