@@ -1,0 +1,1 @@
+export const PRICE_CHART_TIMEOUT = 30_000

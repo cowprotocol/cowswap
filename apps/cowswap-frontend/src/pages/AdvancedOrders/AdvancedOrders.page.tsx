@@ -9,6 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TabOrderTypes } from 'entities/routes/routes.atom'
 import { useParams } from 'react-router'
+import styled from 'styled-components/macro'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
@@ -17,11 +18,13 @@ import {
   advancedOrdersDerivedStateAtom,
   AdvancedOrdersWidget,
   SetupAdvancedOrderAmountsFromUrlUpdater,
+  useAdvancedOrdersDerivedState,
   useAdvancedOrdersDerivedStateToFill,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
+import { PriceChart, priceChartVisibleAtom, usePriceChartFeatureFlags } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
 import {
@@ -43,6 +46,13 @@ import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+const SecondaryColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-area: secondary;
+`
+
 export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
@@ -61,6 +71,11 @@ export function AdvancedOrdersPage(): ReactNode {
   const { isOpen: isOrdersTableDrawerOpen } = useOrdersTableDrawerState()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+
+  const isChartVisible = useAtomValue(priceChartVisibleAtom)
+  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const shouldShowChart = isUnlocked && isPriceChartEnabled && isChartVisible
+  const hasSecondaryContent = isUnlocked && (shouldShowChart || (!hideOrdersTable && !isUpToLarge))
 
   const handleOrdersTableDrawerOpenChange = useCallback(
     (open: boolean) => {
@@ -91,7 +106,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable || isUpToLarge}
+        hideOrdersTable={!hasSecondaryContent}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -111,30 +126,46 @@ export function AdvancedOrdersPage(): ReactNode {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {!hideOrdersTable && isUnlocked && (
-          <DialogOrInline
-            isDialog={isUpToLarge}
-            isOpen={isOrdersTableDrawerOpen}
-            onOpenChange={handleOrdersTableDrawerOpenChange}
-          >
-            <Modal.Root className="trade-orders-table">
-              {isUpToLarge ? (
-                <ModalHeader
-                  sticky
-                  title={t`TWAP orders`}
-                  titleAs={Dialog.Title}
-                  onClose={() => setOrdersTableDrawerOpen(false)}
-                />
-              ) : null}
-              <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
-                <Suspense fallback={<Loading />}>
-                  <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
-                </Suspense>
-              </styledEl.SecondaryWrapper>
-            </Modal.Root>
-          </DialogOrInline>
-        )}
+        {isUnlocked ? (
+          <SecondaryColumn>
+            {shouldShowChart ? <AdvancedOrdersChart /> : null}
+            {!hideOrdersTable && isUnlocked && (
+              <DialogOrInline
+                isDialog={isUpToLarge}
+                isOpen={isOrdersTableDrawerOpen}
+                onOpenChange={handleOrdersTableDrawerOpenChange}
+              >
+                <Modal.Root className="trade-orders-table">
+                  {isUpToLarge ? (
+                    <ModalHeader
+                      sticky
+                      title={t`TWAP orders`}
+                      titleAs={Dialog.Title}
+                      onClose={() => setOrdersTableDrawerOpen(false)}
+                    />
+                  ) : null}
+                  <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+                    <Suspense fallback={<Loading />}>
+                      <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                    </Suspense>
+                  </styledEl.SecondaryWrapper>
+                </Modal.Root>
+              </DialogOrInline>
+            )}
+          </SecondaryColumn>
+        ) : null}
       </styledEl.PageWrapper>
     </HydrateAtom>
+  )
+}
+
+function AdvancedOrdersChart(): ReactNode {
+  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+  if (!inputCurrency || !outputCurrency) return null
+
+  return (
+    <styledEl.ChartWrapper $isExpanded>
+      <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+    </styledEl.ChartWrapper>
   )
 }
