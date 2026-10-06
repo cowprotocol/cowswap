@@ -179,6 +179,24 @@ describe('classifyOrder', () => {
       const order: typeof BASE_ORDER = { ...BASE_ORDER, validTo: (Date.now() - ms`50 min`) / 1000 }
       expect(classifyOrder(order)).toBe('expired')
     })
+
+    it('is expired when the backend expired it before validTo', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        status: OrderStatus.EXPIRED,
+        validTo: (Date.now() + ms`10 min`) / 1000,
+      }
+      expect(classifyOrder(order)).toBe('expired')
+    })
+
+    it('is not expired when the backend expired it but validTo passed within the buffer', () => {
+      const order: typeof BASE_ORDER = {
+        ...BASE_ORDER,
+        status: OrderStatus.EXPIRED,
+        validTo: (Date.now() - ms`10s`) / 1000,
+      }
+      expect(classifyOrder(order)).toBe('pending')
+    })
   })
   describe('cancelled', () => {
     it('is cancelled when invalidated for more than X time', () => {
