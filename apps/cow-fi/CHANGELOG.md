@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.15.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.15.1...cow-fi-v2.15.2) (2026-10-06)
+
+### Patch Changes
+
+- fix: hide hiring bubble if no jobs (#8255)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/analytics@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/wallet@3.16.0
+  - @cowprotocol/widget-react@3.2.10
+
 ## [2.15.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.15.0...cow-fi-v2.15.1) (2026-09-29)
 
 ### Patch Changes

@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.14.1...widget-configurator-v3.15.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/analytics@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/events@4.15.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/widget-lib@4.9.0
+  - @cowprotocol/widget-react@3.2.10
+
 ## [3.14.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.14.0...widget-configurator-v3.14.1) (2026-09-29)
 
 ### Patch Changes

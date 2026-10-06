@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.15.1...balances-and-allowances-v3.16.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat(solana): support order cancellation (#8232)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.14.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/wallet@3.16.0
+
 ## [3.15.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.15.0...balances-and-allowances-v3.15.1) (2026-09-29)
 
 ### Patch Changes
