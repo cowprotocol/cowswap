@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 
 import { useChainId, useConnection, useWalletClient } from 'wagmi'
@@ -9,8 +10,8 @@ import {
   COW_WIDGET_CONNECTOR_ID,
   getIsInjectedMobileBrowser,
   getIsSafeAppIframe,
+  isSmartContractWalletAtom,
   useIsEagerConnectInProgress,
-  useIsSmartContractWallet,
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
@@ -211,7 +212,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const walletConnection = useConnection()
   const wagmiChainId = useChainId()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const settlementContract = useGP2SettlementContractData()
   const walletClientQuery = useWalletClient()
   const walletClient = walletClientQuery.data

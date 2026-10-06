@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { useEffect } from 'react'
 
 import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSafeApp } from '@cowprotocol/wallet'
+import { isSafeAppAtom } from '@cowprotocol/wallet'
 
 import { useHasBridgeProviders } from 'entities/bridgeProvider'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -15,7 +16,7 @@ export function BridgingEnabledUpdater(): null {
   const tradeTypeInfo = useTradeTypeInfo()
   const setIsBridgingEnabled = useSetIsBridgingEnabled()
   const { isBridgingInSafeWidgetEnabled } = useFeatureFlags()
-  const isSafeApp = useIsSafeApp()
+  const isSafeApp = useAtomValue(isSafeAppAtom) === true
   const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
   // Bridging is intentionally disabled on the Hooks tab: Hooks orders are partially-fillable,

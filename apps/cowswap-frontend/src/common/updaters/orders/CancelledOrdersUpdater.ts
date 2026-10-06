@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
@@ -44,7 +45,7 @@ const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, OrderTransitionData[]>
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
 export function CancelledOrdersUpdater(): null {
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const { chainId, account } = useWalletInfo()
 
   const cancelled = useCancelledOrders({ chainId })

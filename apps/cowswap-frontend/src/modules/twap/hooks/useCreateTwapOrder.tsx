@@ -15,7 +15,7 @@ import {
   isEoaAtom,
   isSafeAppAtom,
   isSafeViaWcAtom,
-  useIsSafeWallet,
+  isSafeWalletAtom,
   useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
@@ -109,7 +109,7 @@ export function useCreateTwapOrder() {
   const setPlacedOrderHighlight = useSetAtom(placedOrderHighlightAtom)
   const revealOrderInOrdersTable = useRevealOrderInOrdersTable()
   const setOptimisticAllowance = useSetOptimisticAllowance()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const isSafeApp = useAtomValue(isSafeAppAtom)
   const isSafeViaWc = useAtomValue(isSafeViaWcAtom)
   const isTxBundlingSupported = useIsTxBundlingSupported()

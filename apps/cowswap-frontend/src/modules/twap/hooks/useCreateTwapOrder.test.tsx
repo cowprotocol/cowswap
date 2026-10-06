@@ -10,7 +10,7 @@ import {
   isEoaAtom,
   isSafeAppAtom,
   isSafeViaWcAtom,
-  useIsSafeWallet,
+  isSafeWalletAtom,
   useIsTxBundlingSupported,
   useSendBatchTransactions,
   useWalletDetails,
@@ -71,8 +71,8 @@ jest.mock('@cowprotocol/wallet', () => ({
   isEoaAtom: jest.requireActual('jotai').atom(true),
   isSafeAppAtom: jest.requireActual('jotai').atom(false),
   isSafeViaWcAtom: jest.requireActual('jotai').atom(false),
+  isSafeWalletAtom: jest.requireActual('jotai').atom(false),
   useIsTxBundlingSupported: jest.fn(),
-  useIsSafeWallet: jest.fn(),
   useSendBatchTransactions: jest.fn(),
   useWalletDetails: jest.fn(),
   useWalletInfo: jest.fn(),
@@ -153,7 +153,6 @@ const mockedUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.Mocked
 >
 const mockedUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockedUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
-const mockedUseIsSafeWallet = useIsSafeWallet as jest.MockedFunction<typeof useIsSafeWallet>
 const mockedUseSendBatchTransactions = useSendBatchTransactions as jest.MockedFunction<typeof useSendBatchTransactions>
 const mockedUseWalletDetails = useWalletDetails as jest.MockedFunction<typeof useWalletDetails>
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -202,6 +201,7 @@ const mockedEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<t
 const writableIsEoaAtom = isEoaAtom as PrimitiveAtom<boolean>
 const writableIsSafeAppAtom = isSafeAppAtom as PrimitiveAtom<boolean | null>
 const writableIsSafeViaWcAtom = isSafeViaWcAtom as PrimitiveAtom<boolean | null>
+const writableIsSafeWalletAtom = isSafeWalletAtom as PrimitiveAtom<boolean>
 
 // eslint-disable-next-line max-lines-per-function
 describe('useCreateTwapOrder', () => {
@@ -222,7 +222,7 @@ describe('useCreateTwapOrder', () => {
     mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: true } as ReturnType<typeof useFeatureFlags>)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1, account: '0xaccount' } as ReturnType<typeof useWalletInfo>)
     mockedUseWalletDetails.mockReturnValue({ allowsOffchainSigning: false } as ReturnType<typeof useWalletDetails>)
-    mockedUseIsSafeWallet.mockReturnValue(false)
+    getDefaultStore().set(writableIsSafeWalletAtom, false)
     mockedUseSendBatchTransactions.mockReturnValue(jest.fn())
     mockedUseAdvancedOrdersDerivedState.mockReturnValue({
       inputCurrencyAmount: { currency: { symbol: 'SELL' } },
@@ -290,7 +290,7 @@ describe('useCreateTwapOrder', () => {
   })
 
   it('tracks isEoaTwap false on Safe WalletConnect TWAP placement events', async () => {
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeViaWcAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
@@ -311,7 +311,7 @@ describe('useCreateTwapOrder', () => {
   })
 
   it('uses the amount from useGetAmountToSignApprove for the Safe approval tx, not an unlimited amount', async () => {
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
@@ -329,7 +329,7 @@ describe('useCreateTwapOrder', () => {
   })
 
   it('places a Safe TWAP when useWalletClient has not hydrated yet', async () => {
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
@@ -555,7 +555,7 @@ describe('useCreateTwapOrder', () => {
   it('shows the submitted screen and reveals the order in the signing tab for a Safe TWAP', async () => {
     const onSuccess = jest.fn()
     const revealOrderInOrdersTable = jest.fn().mockResolvedValue(false)
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeAppAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
@@ -579,7 +579,7 @@ describe('useCreateTwapOrder', () => {
     const onError = jest.fn()
     const updateEoaTwapFlow = jest.fn()
     let rejectFirstSafeRequest: () => void = () => undefined
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeViaWcAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)
@@ -615,7 +615,7 @@ describe('useCreateTwapOrder', () => {
     const onSuccess = jest.fn()
     const updateAdvancedOrdersState = jest.fn()
     let signFirstSafeRequest: () => void = () => undefined
-    mockedUseIsSafeWallet.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeWalletAtom, true)
     getDefaultStore().set(writableIsEoaAtom, false)
     getDefaultStore().set(writableIsSafeViaWcAtom, true)
     mockedUseExtensibleFallbackContext.mockReturnValue({} as ReturnType<typeof useExtensibleFallbackContext>)

@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useIsSafeViaWc, useIsSafeWallet } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -29,8 +30,8 @@ export function ActionButtons({
 }: ActionButtonsProps): ReactNode {
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
 

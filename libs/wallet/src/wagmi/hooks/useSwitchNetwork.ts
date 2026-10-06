@@ -1,18 +1,18 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useConnection } from 'wagmi'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useNetworkSwitchUnsupported } from '../../api/hooks/useNetworkSwitchUnsupported'
 import { walletInfoAtom } from '../../api/state'
 import { SUPPORTED_REOWN_NETWORKS } from '../../reown/networks'
 import { reownAppKit } from '../config'
+import { isNetworkSwitchUnsupportedAtom } from '../state/walletMetadata.atoms'
 
 export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
   const { isConnected } = useConnection()
-  const networkSwitchUnsupported = useNetworkSwitchUnsupported()
+  const networkSwitchUnsupported = useAtomValue(isNetworkSwitchUnsupportedAtom)
   const setWalletInfo = useSetAtom(walletInfoAtom)
 
   return useCallback(

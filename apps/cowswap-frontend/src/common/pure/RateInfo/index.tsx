@@ -1,7 +1,7 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
-import { getAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 
@@ -202,11 +202,9 @@ export function RateInfo({
   useEffect(() => {
     if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
-    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
+    if (!quoteCurrency || !inputCurrency) return
 
-    if (!quoteCurrencyAddress || !inputCurrencyAddress) return
-
-    setCurrentIsInverted(quoteCurrencyAddress !== inputCurrencyAddress)
+    setCurrentIsInverted(!areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency)))
 
     if (setSmartQuoteSelectionOnce) {
       setIsSmartQuoteSelectionSet(true)

@@ -2,7 +2,13 @@ import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom } from './walletMetadata.atoms'
+import {
+  isEoaAtom,
+  isNetworkSwitchUnsupportedAtom,
+  isSafeAppAtom,
+  isSafeViaWcAtom,
+  safeAppsSdkAtom,
+} from './walletMetadata.atoms'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType, WalletInfo } from '../../api/types'
@@ -75,6 +81,62 @@ describe('walletMetadata atoms', () => {
     )
 
     expect(store.get(isSafeAppAtom)).toBe(false)
+  })
+
+  it('exposes Safe Apps SDK only while connected as a Safe app', () => {
+    const store = createStore()
+
+    expect(store.get(safeAppsSdkAtom)).toBeNull()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.GNOSIS_SAFE,
+      }),
+    )
+
+    expect(store.get(safeAppsSdkAtom)).not.toBeNull()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(safeAppsSdkAtom)).toBeNull()
+  })
+
+  it('treats Safe app and Safe via WalletConnect as unable to switch networks, except Rabby', () => {
+    const store = createStore()
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.GNOSIS_SAFE,
+      }),
+    )
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(true)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        id: 'io.rabby',
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 1,
+      chainId: SupportedChainId.MAINNET,
+    })
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
   })
 
   it('detects Safe via WalletConnect from wallet details', () => {

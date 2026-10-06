@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { TradeSpenderOverrideUpdater } from '@cowprotocol/balances-and-allowances'
 import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
@@ -24,8 +24,8 @@ import { useTwapSlippage } from '../hooks/useTwapSlippage'
 
 export function TwapUpdaters(): ReactNode {
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const composableCowContract = useComposableCowContractData()
   const twapOrderSlippage = useTwapSlippage()
   const { enablePartialApprovalBySettings } = useAtomValue(advancedOrdersSettingsAtom)

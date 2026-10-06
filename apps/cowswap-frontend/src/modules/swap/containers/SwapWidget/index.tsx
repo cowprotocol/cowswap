@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { StatefulValue } from '@cowprotocol/types'
-import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useIsEagerConnectInProgress, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -108,7 +109,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   } = useSwapDerivedState()
   const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
 

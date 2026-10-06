@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { useWalletClient } from 'wagmi'
 
 import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
-import { useNetworkSwitchUnsupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { isNetworkSwitchUnsupportedAtom, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Plural, Trans } from '@lingui/react/macro'
@@ -40,7 +41,7 @@ export function AffiliatePartnerOnboard(): ReactNode {
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()
 
-  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
+  const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
   const onPayoutsChain = isSupportedPayoutsNetwork(chainId)
   const shouldSwitchToPayoutsChain = !!account && !onPayoutsChain
   const isSignerAvailable = Boolean(walletClient)

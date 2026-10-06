@@ -1,8 +1,8 @@
-import { useAtom, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 
 import { Address } from 'viem'
-import { useEnsName } from 'wagmi'
+import { Connector, useEnsName } from 'wagmi'
 
 import { getCurrentChainIdFromUrl, getRawCurrentChainIdFromUrl, logSafeApi } from '@cowprotocol/common-utils'
 import { getSafeInfo, normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
@@ -14,9 +14,9 @@ import type { SafeInfoExtended } from '@safe-global/safe-apps-sdk'
 import ms from 'ms.macro'
 
 import { useAccountState } from './hooks/useAccountState'
-import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
-import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
-import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
+import { useWalletMetaData } from './hooks/useWalletMetadata'
+import { accountTypeAtom, isSmartContractWalletAtom, safeAppsSdkAtom } from './state/walletMetadata.atoms'
+import { isSafeConnector } from './utils/isSafeConnector.utils'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
@@ -99,11 +99,11 @@ function checkIsSupportedWallet(walletName?: string): boolean {
   return !(walletName && UNSUPPORTED_WC_WALLETS.has(walletName))
 }
 
-function useWalletDetails(account?: Address): WalletDetails {
+function useWalletDetails(account?: Address, connector?: Connector): WalletDetails {
   const { data: ensName } = useEnsName({ address: account, chainId: SupportedChainId.MAINNET })
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom) ?? undefined
   const { walletName, icon } = useWalletMetaData()
-  const isSafeApp = useIsSafeApp()
+  const isSafeApp = isSafeConnector(connector)
   const isMetaMask = useIsMetamaskBrowserExtensionWallet()
 
   return useMemo(() => {
@@ -130,7 +130,7 @@ let longSafeInfoInterval: ReturnType<typeof setInterval> | null = null
 export function WalletUpdater(): null {
   const { chainId, active, account, connector } = useWalletInfo()
 
-  const walletDetails = useWalletDetails(account)
+  const walletDetails = useWalletDetails(account, connector)
   const gnosisSafeInfo = useSafeInfo()
 
   const setWalletInfo = useSetAtom(walletInfoAtom)
@@ -194,7 +194,7 @@ function parseSafeInfoFromSdk(
 }
 
 function useIsPossibleSafe(): boolean {
-  const accountType = useAccountType()
+  const accountType = useAtomValue(accountTypeAtom)
 
   // Imported Safes may use an injected connector (for example, Ambire or Rabby),
   // so connector metadata alone cannot identify them.
@@ -202,7 +202,7 @@ function useIsPossibleSafe(): boolean {
 }
 
 function useSafeInfo(): GnosisSafeInfo | undefined {
-  const safeAppsSdk = useSafeAppsSdk()
+  const safeAppsSdk = useAtomValue(safeAppsSdkAtom)
   const { account, chainId } = useWalletInfo()
   const isPossibleSafe = useIsPossibleSafe()
 

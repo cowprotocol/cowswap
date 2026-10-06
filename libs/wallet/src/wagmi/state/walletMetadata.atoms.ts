@@ -4,9 +4,11 @@ import { loadable } from 'jotai/utils'
 import { getPublicClient, logWallet, normalizeError } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
 import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
+import { RABBY_RDNS } from '../../constants'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
 
@@ -20,6 +22,12 @@ export const isSafeAppAtom = atom((get): boolean | null => {
   if (!connector) return null
 
   return isSafeConnector(connector)
+})
+
+const safeAppsSdk = new SafeAppsSDK()
+
+export const safeAppsSdkAtom = atom((get): SafeAppsSDK | null => {
+  return get(isSafeAppAtom) === true ? safeAppsSdk : null
 })
 
 export const isSafeViaWcAtom = atom((get) => {
@@ -46,6 +54,14 @@ export const isSafeViaWcAtom = atom((get) => {
   const peerName = walletName?.toLowerCase() || ''
 
   return peerName.includes('safe')
+})
+
+export const isNetworkSwitchUnsupportedAtom = atom((get): boolean => {
+  const { connector } = get(walletInfoAtom)
+
+  if (connector?.id === RABBY_RDNS) return false
+
+  return get(isSafeViaWcAtom) === true || get(isSafeAppAtom) === true
 })
 
 /**

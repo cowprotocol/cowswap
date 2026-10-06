@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
@@ -67,7 +68,7 @@ export function TradeConfirmModal({
   onViewOrders,
 }: TradeConfirmModalProps): ReactNode {
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
   const signingStep = useSigningStep()
