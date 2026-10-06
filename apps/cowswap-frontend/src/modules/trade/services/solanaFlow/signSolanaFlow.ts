@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import { Connection, PublicKey } from '@solana/web3.js'
 
 import { SolanaFlowStep } from './types'
@@ -11,6 +12,8 @@ export interface SignedSolanaFlow {
   /** The owner-signed transaction as base64, ready for the order book's sponsored endpoint. */
   transaction: string
   lastValidBlockHeight: number
+  /** Epoch ms when the wallet returned the signature, before any post-sign RPC round-trips. */
+  signedAtMs: number
 }
 
 export interface SignSolanaFlowContext {
@@ -18,17 +21,19 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
+  onDeadline?: (lastValidBlockHeight: number) => void
+}
+
+export function getSigningWindowClosedError(): Error {
+  return new Error(t`The signing window closed before the transaction was signed. Please try again.`)
 }
 
 /**
- * Sponsored counterpart to `sendSolanaFlow`: assembles the same steps into one transaction and has the
+ * Sponsored counterpart to `sendSolanaFlow`: assembles the steps into one transaction and has the
  * wallet sign it, but never broadcasts — the order book does that after countersigning as fee payer.
- *
- * Nothing is recorded in the transaction list here. There is no signature to watch until the order book
- * submits, so the order is tracked by its uid instead.
  */
 export async function signSolanaFlow(
-  { connection, provider, feePayer }: SignSolanaFlowContext,
+  { connection, provider, feePayer, onDeadline }: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
 ): Promise<SignedSolanaFlow> {
   if (steps.length === 0) {
@@ -41,5 +46,24 @@ export async function signSolanaFlow(
     feePayer,
   })
 
-  return { transaction: await signSolanaTransaction(provider, transaction), lastValidBlockHeight }
+  onDeadline?.(lastValidBlockHeight)
+
+  const signed = await signSolanaTransaction(provider, transaction)
+  const signedAtMs = Date.now()
+
+  if (await isBlockhashDead(connection, lastValidBlockHeight)) {
+    throw getSigningWindowClosedError()
+  }
+
+  return { transaction: signed, lastValidBlockHeight, signedAtMs }
+}
+
+// An unreadable height must not discard an already-given signature: the order book re-checks
+// blockhash liveness itself, so only a height actually read past the limit refuses the hand-over.
+async function isBlockhashDead(connection: Connection, lastValidBlockHeight: number): Promise<boolean> {
+  try {
+    return (await connection.getBlockHeight()) > lastValidBlockHeight
+  } catch {
+    return false
+  }
 }
