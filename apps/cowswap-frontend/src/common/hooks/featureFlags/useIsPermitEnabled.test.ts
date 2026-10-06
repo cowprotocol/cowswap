@@ -40,6 +40,14 @@ describe('useIsPermitEnabled', () => {
     expect(result.current).toBe(false)
   })
 
+  it('returns false while wallet type is still unknown', () => {
+    getDefaultStore().set(writableIsSmartContractWalletAtom, null)
+
+    const { result } = renderHook(() => useIsPermitEnabled())
+
+    expect(result.current).toBe(false)
+  })
+
   it('returns false when disableEIP2612Permits is true, even for EOA wallets', () => {
     getDefaultStore().set(writableIsSmartContractWalletAtom, false)
     mockUseInjectedWidgetParams.mockReturnValue({ disableEIP2612Permits: true })

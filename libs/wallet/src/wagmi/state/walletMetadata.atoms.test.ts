@@ -3,15 +3,27 @@ import { createStore } from 'jotai'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
+  accountTypeAsyncAtom,
+  accountTypeLoadableAtom,
   isEoaAtom,
   isNetworkSwitchUnsupportedAtom,
   isSafeAppAtom,
   isSafeViaWcAtom,
+  isSmartContractWalletAtom,
   safeAppsSdkAtom,
 } from './walletMetadata.atoms'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType, WalletInfo } from '../../api/types'
+
+const mockGetCode = jest.fn()
+
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  getPublicClient: () => ({
+    getCode: (...args: unknown[]) => mockGetCode(...args),
+  }),
+}))
 
 function createMockConnector(overrides: Record<string, unknown>): NonNullable<WalletInfo['connector']> {
   return {
@@ -32,6 +44,11 @@ function setWalletInfoConnector(
 }
 
 describe('walletMetadata atoms', () => {
+  beforeEach(() => {
+    mockGetCode.mockReset()
+    mockGetCode.mockImplementation(() => new Promise(() => undefined))
+  })
+
   it('detects Safe app by connector.type', () => {
     const store = createStore()
 
@@ -336,5 +353,46 @@ describe('walletMetadata atoms', () => {
     })
 
     expect(store.get(isEoaAtom)).toBe(false)
+  })
+
+  it('treats a Safe as a smart-contract wallet even while account type is unknown', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      chainId: SupportedChainId.MAINNET,
+      nonce: 0,
+    })
+
+    expect(store.get(isSmartContractWalletAtom)).toBe(true)
+  })
+
+  it('treats a failed account-type lookup as not a smart-contract wallet', async () => {
+    mockGetCode.mockRejectedValue(new Error('rpc down'))
+
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+
+    await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(true)
   })
 })

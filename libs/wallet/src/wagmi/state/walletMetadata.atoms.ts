@@ -133,10 +133,21 @@ export const accountTypeAtom = atom((get): AccountType | null => {
   return loadable.data ?? null
 })
 
+/**
+ * True for Safe wallets and bytecode contracts.
+ * Returns null while the code lookup is in flight, and false if that lookup fails.
+ */
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
-  const accountType = get(accountTypeAtom)
+  if (get(isSafeWalletAtom)) return true
+
+  const accountTypeState = get(accountTypeLoadableAtom)
+
+  if (accountTypeState.state === 'hasError') return false
+  if (accountTypeState.state === 'loading') return null
+
+  const accountType = accountTypeState.data ?? null
 
   if (accountType === null) return null
 
-  return get(isSafeWalletAtom) || accountType === AccountType.SMART_CONTRACT
+  return accountType === AccountType.SMART_CONTRACT
 })
