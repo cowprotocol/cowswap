@@ -113,7 +113,7 @@ export function AdvancedOrdersPage(): ReactNode {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {isUnlocked ? (
+        {isUnlocked && (
           <styledEl.SecondaryColumn>
             <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
             {!hideOrdersTable && isUnlocked && (
@@ -140,7 +140,7 @@ export function AdvancedOrdersPage(): ReactNode {
               </DialogOrInline>
             )}
           </styledEl.SecondaryColumn>
-        ) : null}
+        )}
       </styledEl.PageWrapper>
     </HydrateAtom>
   )

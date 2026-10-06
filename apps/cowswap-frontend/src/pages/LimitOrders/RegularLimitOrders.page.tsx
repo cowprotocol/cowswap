@@ -49,7 +49,7 @@ export function RegularLimitOrdersPage(): ReactNode {
         <LimitOrdersWidget />
       </styledEl.PrimaryWrapper>
 
-      {isUnlocked ? (
+      {isUnlocked && (
         <styledEl.SecondaryColumn>
           <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
           {!hideOrdersTable && isUnlocked && (
@@ -77,7 +77,7 @@ export function RegularLimitOrdersPage(): ReactNode {
             </DialogOrInline>
           )}
         </styledEl.SecondaryColumn>
-      ) : null}
+      )}
     </styledEl.PageWrapper>
   )
 }

@@ -53,7 +53,7 @@ function SwapPageContent(): ReactNode {
         <SwapWidget />
       </PrimaryWrapper>
 
-      {isUnlocked ? <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} expandable /> : null}
+      {isUnlocked && <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} expandable />}
     </PageWrapper>
   )
 }
