@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-09-30 20:26\n"
+"PO-Revision-Date: 2026-10-05 07:40\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3895,7 +3895,7 @@ msgstr "Saldo {inputSymbolLabel} insuficiente"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing to {maxParts} or fewer parts, or switch to a {swapOrderLink}."
-msgstr ""
+msgstr "Puedes quedarte por debajo del umbral de coste del {FEE_SIZE_THRESHOLD}% reduciendo a {maxParts} o menos partes, o cambiar a un {swapOrderLink}."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationPrimaryButton.tsx
 #~ msgid "Enter a referral code with 5 to 20 characters"
@@ -4432,7 +4432,7 @@ msgstr "Las órdenes de hasta {MAX_SOLANA_BATCH_CANCEL_ORDERS} pueden cancelarse
 #. placeholder {0}: reason ? `: "${reason}"` : ''
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
-msgstr ""
+msgstr "Error desconocido{0}. Intenta aumentar la tolerancia de su slippage. Nota: las comisiones en la transferencia y los tokens de rebase son incompatibles con Uniswap V3."
 
 #: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
@@ -4929,6 +4929,10 @@ msgstr "vale"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/DefaultAccountContent/DefaultAccountContent.pure.tsx
 msgid "View account"
 msgstr "Ver cuenta"
+
+#: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
+msgid "TWAP is not available on Solana yet"
+msgstr "TWAP no está disponible en Solana aún"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping {sentAmount} to {receivedAmount}"
@@ -5769,7 +5773,7 @@ msgstr "Entre monedas"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Each part trades at this price or better. If that price can't be met, the part is skipped."
-msgstr ""
+msgstr "Cada parte se intercambia a este precio o mejor. Si ese precio no se puede cumplir, la parte se omite."
 
 #. Explains how much a referrer earns for referred trading volume within 90 days.
 #. js-lingui-explicit-id
@@ -8108,7 +8112,7 @@ msgstr "Modo claro"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The output token cannot be transferred. There may be an issue with the output token."
-msgstr ""
+msgstr "El token de salida no puede ser transferido. Puede haber un problema con el token de salida."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 #~ msgid "Swap and bridge, TWAP for EOA orders aren't supported yet."
@@ -8458,7 +8462,7 @@ msgstr "Aprobar gasto <0/> <1/> en CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "Trade notifications are not yet available on Solana."
-msgstr ""
+msgstr "Las notificaciones de trading aún no están disponibles en Solana."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx

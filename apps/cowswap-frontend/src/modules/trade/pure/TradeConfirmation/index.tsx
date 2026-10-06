@@ -40,7 +40,7 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
-  const { pendingTrade, forcePriceConfirmation, isConfirming } = useTradeConfirmState()
+  const { pendingTrade, forcePriceConfirmation, isConfirming, sessionId } = useTradeConfirmState()
   const tradeConfirmActions = useTradeConfirmActions()
   const { t } = useLingui()
   const signingStep = useSigningStep()
@@ -70,18 +70,18 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   }, [isConfirming])
 
   const handleConfirm = useCallback(async (): Promise<void | boolean> => {
-    tradeConfirmActions.setConfirming(true)
+    tradeConfirmActions.setConfirming(true, sessionId)
     try {
       const isConfirmed = await onConfirm()
       if (!isConfirmed) {
-        tradeConfirmActions.setConfirming(false)
+        tradeConfirmActions.setConfirming(false, sessionId)
       }
       return isConfirmed
     } catch (error) {
-      tradeConfirmActions.setConfirming(false)
+      tradeConfirmActions.setConfirming(false, sessionId)
       throw error
     }
-  }, [onConfirm, tradeConfirmActions])
+  }, [onConfirm, sessionId, tradeConfirmActions])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
     props.inputCurrencyInfo.amount?.toExact(),

@@ -2,6 +2,7 @@ import { useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { normalizeError } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -65,11 +66,10 @@ export function useHandleOrderPlacement(
   const tradeFn = useLimitOrdersTradeCallback(priceImpact, settingsState, tradeConfirmActions)
 
   const callback = useCallback(() => {
+    const sessionId = store.get(tradeConfirmStateAtom).sessionId
     return tradeFn()
       .then(async (orderHash) => {
-        if (!orderHash) {
-          return
-        }
+        if (!orderHash || sessionId !== store.get(tradeConfirmStateAtom).sessionId) return
 
         // solanaFlow already called tradeConfirmActions.onSuccess with the real order id itself.
         if (typeof orderHash === 'string') {
@@ -99,8 +99,9 @@ export function useHandleOrderPlacement(
           alternativeModalAnalytics(isAlternativeOrderEdit)
         }
       })
-      .catch((error) => {
-        if (error instanceof PriceImpactDeclineError) return
+      .catch((err: unknown) => {
+        const error = normalizeError(err)
+        if (sessionId !== store.get(tradeConfirmStateAtom).sessionId || error instanceof PriceImpactDeclineError) return
         if (error instanceof WidgetHookDeclineError) {
           tradeConfirmActions.onDismiss()
           return

@@ -1,4 +1,5 @@
 import { Address } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress } from '@cowprotocol/sdk-common'
 
 import useSWR, { SWRResponse } from 'swr'
 
@@ -21,7 +22,7 @@ export function useAffiliateTraderPastOrders(
   const { account, enabled } = params
 
   return useSWR<PastTradesCheckResult>(
-    enabled && !!account ? ['affiliate-orderbook-trades-check', account] : null,
+    enabled && !!account && !isSolanaAddress(account) ? ['affiliate-orderbook-trades-check', account] : null,
     async () => (!account ? EMPTY_RESULT : checkIfTraderHasPastTrades(account)),
     {
       revalidateOnFocus: false,

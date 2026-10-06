@@ -1,9 +1,15 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderBookApiError, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from './getSwapErrorMessage'
 
 const insufficientFundsError = { message: 'insufficient funds for gas * price + value: address 0x123 have 1 want 2' }
+
+const BLOCKHASH_EXPIRED_MESSAGE = 'Transaction blockhash expired. Sign a new one.'
+
+function createOrderBookApiError(errorType: string): OrderBookApiError {
+  return new OrderBookApiError({ statusText: 'Bad Request' } as Response, { errorType, description: 'API error' })
+}
 
 describe('getSwapErrorMessage', () => {
   it('uses the ETH symbol for an insufficient-funds error on mainnet', () => {
@@ -51,5 +57,23 @@ describe('getSwapErrorMessage', () => {
     expect(getSwapErrorMessage(genericError as unknown as Error, SupportedChainId.MAINNET)).toBe(
       'Something else went wrong',
     )
+  })
+
+  it('returns the blockhash-expired message for a BlockhashExpired order book error', () => {
+    const error = createOrderBookApiError('BlockhashExpired')
+
+    expect(getSwapErrorMessage(error, SupportedChainId.MAINNET)).toBe(BLOCKHASH_EXPIRED_MESSAGE)
+  })
+
+  it('does not treat other order book error types as blockhash expired', () => {
+    const error = createOrderBookApiError('InsufficientFee')
+
+    expect(getSwapErrorMessage(error, SupportedChainId.MAINNET)).not.toBe(BLOCKHASH_EXPIRED_MESSAGE)
+  })
+
+  it('does not treat a non-OrderBookApiError with a BlockhashExpired body as blockhash expired', () => {
+    const lookalikeError = { message: 'Bad Request', body: { errorType: 'BlockhashExpired' } }
+
+    expect(getSwapErrorMessage(lookalikeError as unknown as Error, SupportedChainId.MAINNET)).toBe('Bad Request')
   })
 })

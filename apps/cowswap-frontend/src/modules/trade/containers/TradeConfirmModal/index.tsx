@@ -3,6 +3,7 @@ import { ReactNode, useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
@@ -16,6 +17,7 @@ import {
 } from 'entities/trade'
 import styled from 'styled-components/macro'
 
+import { isMaxAmountToApprove } from 'modules/erc20Approve'
 import {
   useHasNotificationSubscription,
   useOpenNotificationSidebar,
@@ -61,6 +63,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
   transactionHash: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
+  permitAmount: CurrencyAmount<Currency> | null
   isSafeWallet: boolean
   submittedContent?: ReactNode
   showGetNotifiedMessage: boolean
@@ -78,7 +81,7 @@ export function TradeConfirmModal({
 }: TradeConfirmModalProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
-  const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
+  const { permitSignatureState, permitAmount, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const tradeConfirmActions = useTradeConfirmActions()
   const { onDismiss } = tradeConfirmActions
   const signingStep = useSigningStep()
@@ -118,6 +121,7 @@ export function TradeConfirmModal({
         onDismiss={onDismiss}
         // Disable default permit flow when signingStep is set
         permitSignatureState={signingStep ? undefined : permitSignatureState}
+        permitAmount={permitAmount}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
         showGetNotifiedMessage={Boolean(
@@ -150,6 +154,7 @@ function InnerComponent({
   solanaSigningDeadline,
   onSolanaSigningExpiredDismiss,
   permitSignatureState,
+  permitAmount,
   transactionHash,
   submittedContent,
   showGetNotifiedMessage,
@@ -167,6 +172,7 @@ function InnerComponent({
       <PermitModal
         inputAmount={pendingTrade.inputAmount}
         outputAmount={pendingTrade.outputAmount}
+        amountToApprove={permitAmount && !isMaxAmountToApprove(permitAmount) ? permitAmount : undefined}
         step={step}
         onDismiss={onDismiss}
         orderType={orderType}
