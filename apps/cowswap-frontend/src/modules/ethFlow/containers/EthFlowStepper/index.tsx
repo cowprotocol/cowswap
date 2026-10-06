@@ -1,13 +1,12 @@
 import { ReactNode } from 'react'
 
-import { formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
+import { formatSymbol, getIsNativeToken, isOrderExpired } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { isOrderExpired } from 'legacy/state/orders/utils'
 
 import { SmartOrderStatus } from 'modules/ethFlow/pure/EthFlowStepper/constants'
 
