@@ -1,12 +1,11 @@
 import { useCallback } from 'react'
 
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { isSolanaAddress } from '@cowprotocol/cow-sdk'
-import { SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
 import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
+import { SOLANA_TRADING_ENV, solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
@@ -16,8 +15,6 @@ import { useRequestOrderCancellation, useSetOrderCancellationHash } from 'legacy
 import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSolanaTransaction' // TODO: Don't use 'modules' import. Move it to common
 
 import { buildSolanaCancelOrderParams } from './buildSolanaCancelOrderParams'
-
-const SOLANA_CANCEL_ENV = isBarnBackendEnv ? 'staging' : 'prod'
 
 export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
   const { account, chainId } = useWalletInfo()
@@ -38,11 +35,9 @@ export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
         connection,
         owner,
         [{ id: order.id, order }],
-        SOLANA_CANCEL_ENV,
+        SOLANA_TRADING_ENV,
       )
-
-      const sdk = new SolanaTradingSdk({ env: SOLANA_CANCEL_ENV })
-      const instruction = sdk.cancelOrder(cancelParams)
+      const instruction = solanaTradingSdk.cancelOrder(cancelParams)
 
       const { hash } = await sendSolanaTransaction(connection, provider, owner, [instruction])
 

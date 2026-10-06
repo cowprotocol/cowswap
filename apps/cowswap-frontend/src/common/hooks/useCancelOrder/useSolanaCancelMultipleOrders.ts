@@ -1,13 +1,12 @@
 import { useCallback } from 'react'
 
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { isSolanaAddress } from '@cowprotocol/cow-sdk'
-import { SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
 import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
+import { SOLANA_TRADING_ENV, solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { useAllOrdersMap, useSetOrderCancellationHash } from 'legacy/state/orders/hooks'
@@ -18,8 +17,6 @@ import { sendSolanaTransaction } from 'modules/trade/services/solanaSend/sendSol
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 import { buildSolanaCancelOrderParams } from './buildSolanaCancelOrderParams'
-
-const SOLANA_CANCEL_ENV = isBarnBackendEnv ? 'staging' : 'prod'
 
 // Solana has no dedicated batch-cancel instruction: cancelling several orders together means bundling
 // one CancelOrder instruction per order into a single transaction, signed once.
@@ -48,11 +45,9 @@ export function useSolanaCancelMultipleOrders(): (orders: CancellableOrder[]) =>
         connection,
         owner,
         ordersToCancel.map(({ id }) => ({ id, order: allOrders[id]?.order })),
-        SOLANA_CANCEL_ENV,
+        SOLANA_TRADING_ENV,
       )
-
-      const sdk = new SolanaTradingSdk({ env: SOLANA_CANCEL_ENV })
-      const instructions = sdk.cancelOrders(cancelParams)
+      const instructions = solanaTradingSdk.cancelOrders(cancelParams)
 
       const { hash } = await sendSolanaTransaction(connection, provider, owner, instructions)
 
