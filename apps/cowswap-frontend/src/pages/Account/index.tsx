@@ -1,5 +1,7 @@
 import { lazy, ReactNode } from 'react'
 
+import { I18n } from '@lingui/core'
+
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { t } from '@lingui/core/macro'
@@ -39,9 +41,9 @@ function AccountTitle({ id, name, pathname }: AccountTitleProps): ReactNode {
   return <Title id={id}>{name}</Title>
 }
 
-function getPropsFromRoute(route: string): string[] {
+function getPropsFromRoute(route: string, i18n: I18n): string[] {
   if (isAccountProxyRoute(route)) {
-    return ['account-proxy', t`Account Proxy`]
+    return ['account-proxy', i18n._(PAGE_TITLES.ACCOUNT_PROXY)]
   }
 
   switch (route) {
@@ -99,7 +101,7 @@ export const AccountOverview = (): ReactNode => {
 export default function Account(): ReactNode {
   const { i18n } = useLingui()
   const { pathname } = useLocation()
-  const [id, name] = getPropsFromRoute(pathname)
+  const [id, name] = getPropsFromRoute(pathname, i18n)
 
   return (
     <Wrapper>

@@ -18,7 +18,7 @@ jest.mock('modules/affiliate', () => ({
 
 jest.mock('modules/application', () => ({
   Content: ({ children }: { children: ReactNode }) => <main>{children}</main>,
-  PageTitle: () => null,
+  PageTitle: ({ title }: { title?: string }) => <div data-testid="page-title">{title}</div>,
   Title: ({ children, id }: { children: ReactNode; id?: string }) => <h1 id={id}>{children}</h1>,
 }))
 
@@ -39,6 +39,10 @@ function renderComponent(pathname: string): RenderResult {
               <Route path="affiliate" element={<div>Affiliate page</div>} />
               <Route path="my-rewards" element={<div>My Rewards page</div>} />
               <Route path="tokens" element={<div>Tokens page</div>} />
+            </Route>
+            <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<Account />}>
+              <Route index element={<div>Account proxies page</div>} />
+              <Route path="help" element={<div>Account proxy help page</div>} />
             </Route>
           </Routes>
         </StyledComponentsThemeProvider>
@@ -68,5 +72,18 @@ describe('Account', () => {
     renderComponent(RoutesEnum.ACCOUNT_TOKENS)
 
     expect(screen.queryByRole('button', { name: 'Give feedback' })).toBeNull()
+  })
+
+  it.each(['/1/account-proxy', '/1/account-proxy/help'])('sets the Account Proxy page title on %s', (pathname) => {
+    renderComponent(pathname)
+
+    expect(screen.getByTestId('page-title').textContent).toBe('Account Proxy')
+    expect(screen.getByRole('heading', { name: 'Account Proxy' })).not.toBeNull()
+  })
+
+  it('does not set the Account Proxy page title on other account pages', () => {
+    renderComponent(RoutesEnum.ACCOUNT_TOKENS)
+
+    expect(screen.queryByTestId('page-title')).toBeNull()
   })
 })
