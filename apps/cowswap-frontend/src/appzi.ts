@@ -59,6 +59,7 @@ type AppziCustomSettings = {
   created?: true
   cancelled?: true
   openedLimitPage?: true
+  openedTwapPage?: true
   // extra contextual data for statistics/debugging
   explorerUrl?: string
   env?: string
@@ -132,7 +133,7 @@ const LIMIT_SURVEY_DATA = isProdLike ? LIMIT_SURVEY_DATA_PROD : LIMIT_SURVEY_DAT
 type SurveyType = 'nps' | 'limit'
 
 export function getSurveyType(orderType: UiOrderType | undefined): SurveyType {
-  return orderType === UiOrderType.LIMIT ? 'limit' : 'nps'
+  return orderType === UiOrderType.LIMIT || orderType === UiOrderType.TWAP ? 'limit' : 'nps'
 }
 
 /**

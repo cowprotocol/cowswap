@@ -73,6 +73,31 @@ describe('appziMiddleware', () => {
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
     })
 
+    it('does not trigger a parent survey for a fulfilled TWAP part', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+      expect(nextMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('still triggers for a swap after a TWAP part in the same fulfillment batch', () => {
+      when(actionMock.payload).thenReturn({ chainId: 1, orders: [{ uid: 'twap-part' }, { uid: 'swap' }] })
+      getUiOrderTypeMock.mockReturnValueOnce(UiOrderType.TWAP).mockReturnValue(UiOrderType.SWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          traded: true,
+          orderType: UiOrderType.SWAP,
+          explorerUrl: expect.stringContaining('swap'),
+        }),
+        undefined,
+      )
+    })
+
     it('should not open appzi if limit order is pending too long', () => {
       isOrderInPendingTooLongMock.mockReturnValue(true)
       getUiOrderTypeMock.mockReturnValue(UiOrderType.LIMIT)
@@ -116,6 +141,31 @@ describe('appziMiddleware', () => {
       appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
 
       expect(openNpsAppziSometimesMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not trigger a parent survey for an expired TWAP part', () => {
+      getUiOrderTypeMock.mockReturnValue(UiOrderType.TWAP)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).not.toHaveBeenCalled()
+      expect(nextMock).toHaveBeenCalledTimes(1)
+    })
+
+    it('still triggers for a limit order after a TWAP part in the same expiry batch', () => {
+      when(actionMock.payload).thenReturn({ chainId: 1, ids: ['twap-part', 'limit'] })
+      getUiOrderTypeMock.mockReturnValueOnce(UiOrderType.TWAP).mockReturnValue(UiOrderType.LIMIT)
+
+      appziMiddleware(instance(mockStore))(nextMock)(instance(actionMock))
+
+      expect(openNpsAppziSometimesMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          expired: true,
+          orderType: UiOrderType.LIMIT,
+          explorerUrl: expect.stringContaining('limit'),
+        }),
+        undefined,
+      )
     })
 
     it('should open appzi if limit order', () => {

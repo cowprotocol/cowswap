@@ -21,23 +21,12 @@ const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   if (isBatchFulfillOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when there's a successful trade
-    const { chainId } = action.payload
-    const firstOrder = action.payload.orders[0]
-
-    // Do not trigger Appzi for bridge orders
-    // They are handled in PendingBridgeOrdersUpdater
-    if (!getIsBridgeOrder(firstOrder)) {
-      _triggerAppzi(store, chainId, firstOrder.uid, { traded: true })
-    }
+    triggerFulfilledOrderSurvey(store, action.payload)
   } else if (isBatchExpireOrderAction(action)) {
-    // Shows NPS feedback (or attempts to) when the order expired
-    const {
-      chainId,
-      ids: [id],
-    } = action.payload
+    const { chainId, ids } = action.payload
+    const id = ids.find((id) => getUiOrderTypeFromStore(store, chainId, id) !== UiOrderType.TWAP)
 
-    _triggerAppzi(store, chainId, id, { expired: true })
+    if (id) _triggerAppzi(store, chainId, id, { expired: true })
   } else if (isBatchPresignOrderAction(action)) {
     // For SC wallet orders, shows NPS feedback (or attempts to) only when the order was pre-signed
     const {
@@ -95,15 +84,12 @@ function _triggerAppzi(
 
   const uiOrderType = order && getUiOrderType(order)
 
-  // TODO: should we show NPS for TWAP orders as well?
-  // Open Appzi NPS for limit orders only if they were filled before `PENDING_TOO_LONG_TIME` since creating
   const isLimitOrderRecentlyTraded =
     uiOrderType === UiOrderType.LIMIT && npsParams?.traded && isOrderInPendingTooLong(openSince)
 
-  // Do not show NPS if the order is hidden
   const isHidden = order?.isHidden
 
-  if (isHidden || isLimitOrderRecentlyTraded) {
+  if (isHidden || isLimitOrderRecentlyTraded || uiOrderType === UiOrderType.TWAP) {
     return
   }
 
@@ -127,11 +113,23 @@ function getPendingOrderIds(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: 
   return Object.keys(store.getState().orders[chainId]?.pending || {})
 }
 
-// TODO: Add proper return type annotation
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
-function getUiOrderTypeFromStore(store: MiddlewareAPI<Dispatch<AnyAction>>, chainId: any, id: any) {
+function getUiOrderTypeFromStore(
+  store: MiddlewareAPI<Dispatch<AnyAction>>,
+  chainId: ChainId,
+  id: string,
+): UiOrderType | undefined {
   const orders = store.getState().orders[chainId]
   const order = getOrderByIdFromState(orders, id)?.order
   return order && getUiOrderType(order)
+}
+
+function triggerFulfilledOrderSurvey(
+  store: MiddlewareAPI<Dispatch<AnyAction>>,
+  { chainId, orders }: OrderActions.FulfillOrdersBatchParams,
+): void {
+  const firstOrder = orders.find((order) => getUiOrderTypeFromStore(store, chainId, order.uid) !== UiOrderType.TWAP)
+
+  if (firstOrder && !getIsBridgeOrder(firstOrder)) {
+    _triggerAppzi(store, chainId, firstOrder.uid, { traded: true })
+  }
 }

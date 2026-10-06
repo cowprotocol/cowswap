@@ -6,8 +6,7 @@ import { percentToBps, COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD } from '@cowproto
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useComposableCowContractData } from 'modules/advancedOrders/hooks/useComposableCowContract'
-import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
+import { advancedOrdersSettingsAtom, useComposableCowContractData } from 'modules/advancedOrders'
 import { AppDataUpdater } from 'modules/appData'
 import { Erc20ApproveWidget } from 'modules/erc20Approve'
 
@@ -17,6 +16,7 @@ import { FullAmountQuoteUpdater } from './FullAmountQuoteUpdater'
 import { PartOrdersUpdater } from './PartOrdersUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
+import { TriggerAppziTwapSurveyUpdater } from './TriggerAppziTwapSurveyUpdater'
 import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 import { COMPOSABLE_COW_POLLER_ADDRESS } from '../composable-cow-poller/composable-cow-poller.constants'
@@ -44,6 +44,7 @@ export function TwapUpdaters(): ReactNode {
 
   return (
     <>
+      <TriggerAppziTwapSurveyUpdater />
       <TradeSpenderOverrideUpdater spenderAddress={spenderAddress} />
       <CreatedInOrderBookOrdersUpdater />
       <QuoteParamsUpdater />
