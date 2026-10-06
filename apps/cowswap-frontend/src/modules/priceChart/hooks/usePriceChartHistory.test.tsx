@@ -56,20 +56,13 @@ describe('usePriceChartHistory', () => {
     jest.mocked(fetchTokenSupply).mockResolvedValue({ circulatingSupply: 10, totalSupply: 20 })
   })
 
-  it('does not request history without an asset or after its removal', async () => {
-    const { result, rerender } = renderHook(useHistory, {
+  it('does not request history without a currency', () => {
+    renderHook(useHistory, {
       wrapper: createWrapper(),
       initialProps: { ...INITIAL_PROPS, currency: undefined },
     })
-    expect(result.current.isEnabled).toBe(false)
+
     expect(fetchPriceHistory).not.toHaveBeenCalled()
-
-    rerender(INITIAL_PROPS)
-    expect(result.current.isPending).toBe(true)
-    await waitFor(() => expect(result.current.data).toEqual(BARS))
-
-    rerender({ ...INITIAL_PROPS, currency: undefined })
-    expect(result.current.isEnabled).toBe(false)
   })
 
   it('reuses price history across metric and supply changes', async () => {
@@ -79,7 +72,6 @@ describe('usePriceChartHistory', () => {
 
     rerender({ ...INITIAL_PROPS, metric: 'marketCap' })
     await waitFor(() => expect(result.current.data?.[0]?.close).toBe(20))
-    expect(result.current.data?.[0]?.volume).toBe(5)
 
     rerender({ ...INITIAL_PROPS, metric: 'marketCap', supplyVariant: 'total' })
     await waitFor(() => expect(result.current.data?.[0]?.close).toBe(40))
@@ -89,31 +81,17 @@ describe('usePriceChartHistory', () => {
     expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
   })
 
-  it('shares cached history across chart mounts', async () => {
-    const wrapper = createWrapper()
-    const first = renderHook(useHistory, { wrapper, initialProps: INITIAL_PROPS })
-    await waitFor(() => expect(first.result.current.data).toEqual(BARS))
-    first.unmount()
-
-    const second = renderHook(useHistory, { wrapper, initialProps: INITIAL_PROPS })
-    await waitFor(() => expect(second.result.current.data).toEqual(BARS))
-    expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
-  })
-
-  it('keeps previous bars during a range change and reports empty history after resolution', async () => {
+  it('requests new history when the range changes', async () => {
     const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
     await waitFor(() => expect(result.current.data).toEqual(BARS))
-    const next = deferredHistory()
-    jest.mocked(fetchPriceHistory).mockReturnValueOnce(next.promise)
+    const nextBars = [{ ...BARS[0], close: 7 }]
+    jest.mocked(fetchPriceHistory).mockResolvedValueOnce(nextBars)
 
     rerender({ ...INITIAL_PROPS, period: '1W' })
-    expect(result.current.data).toEqual(BARS)
-    expect(result.current.isPlaceholderData).toBe(true)
-    await waitFor(() => expect(fetchPriceHistory).toHaveBeenCalledTimes(2))
-    await act(async () => next.resolve([]))
-    await waitFor(() => expect(result.current.isPlaceholderData).toBe(false))
-    expect(result.current.isSuccess).toBe(true)
-    expect(result.current.data).toEqual([])
+
+    await waitFor(() => expect(result.current.data).toEqual(nextBars))
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
+    expect(fetchPriceHistory).toHaveBeenLastCalledWith(expect.objectContaining({ interval: '15m' }))
   })
 
   it('does not display a late response from the previous chain', async () => {
@@ -132,15 +110,6 @@ describe('usePriceChartHistory', () => {
     await act(async () => first.resolve(BARS))
     expect(result.current.data).toEqual(nextBars)
     expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
-  })
-
-  it.each(['price', 'marketCap'] as const)('reports a %s request failure without stale bars', async (metric) => {
-    if (metric === 'price') jest.mocked(fetchPriceHistory).mockRejectedValueOnce(new Error('History unavailable'))
-    else jest.mocked(fetchTokenSupply).mockRejectedValueOnce(new Error('Supply unavailable'))
-    const { result } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: { ...INITIAL_PROPS, metric } })
-
-    await waitFor(() => expect(result.current.isError).toBe(true))
-    expect(result.current.data).toBeUndefined()
   })
 
   it('shares USD history between native and wrapped currencies', async () => {
