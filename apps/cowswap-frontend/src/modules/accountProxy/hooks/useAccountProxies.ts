@@ -12,6 +12,7 @@ import {
   SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES,
 } from '../accountProxy.constants'
 import { getCowShedHooks } from '../utils/getCowShedHooks'
+import { isEvmProxyOwner } from '../utils/isEvmProxyOwner'
 
 import type { AccountProxyInfo } from '../accountProxy.types'
 
@@ -25,7 +26,7 @@ export function useAccountProxies(): AccountProxyInfo[] | null {
   )
 
   return useMemo(() => {
-    if (!account || !isEvmChain(chainId)) return null
+    if (!isEvmProxyOwner(account, chainId)) return null
 
     return ACCOUNT_PROXY_CONFIGS.reduce<AccountProxyInfo[]>((proxies, config) => {
       if (config.id === ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.id && (!isTwapEoaEnabled || isSafeWallet)) {

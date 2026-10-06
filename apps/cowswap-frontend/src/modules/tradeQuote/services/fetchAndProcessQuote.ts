@@ -140,7 +140,9 @@ async function fetchSwapQuote(
   const isFinalQuote = getIsFinalQuote(fetchParams)
 
   if (isSolanaEnabled && isSolanaChain(quoteParams.sellTokenChainId)) {
-    const solanaRequest = isFinalQuote ? getOptimalSolanaQuote(quoteParams) : getFastSolanaQuote(quoteParams)
+    const solanaRequest = isFinalQuote
+      ? getOptimalSolanaQuote(quoteParams, advancedSettings)
+      : getFastSolanaQuote(quoteParams, advancedSettings)
 
     try {
       const { cancelled, data } = await solanaRequest

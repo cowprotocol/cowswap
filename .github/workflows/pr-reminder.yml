@@ -1,0 +1,87 @@
+name: PR reminder
+
+on:
+  schedule:
+    # Weekdays at 07:00 UTC
+    - cron: '0 7 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
+
+jobs:
+  remind:
+    name: Post open PR digest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build digest
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          MENTION: '<!subteam^S0450KV6LDR|@web-squad>'
+        run: |
+          gh pr list --state open --limit 100 \
+            --json number,title,url,author,isDraft,reviewDecision,reviewRequests,createdAt,updatedAt \
+            > "$RUNNER_TEMP/prs.json"
+
+          # reviewDecision comes from the base branch protection rule, so PRs
+          # stacked on another feature branch report no decision and always land under
+          # "Awaiting review". Add latestReviews handling if stacked PRs become common.
+          jq -r --arg mention "$MENTION" --argjson now "$(date +%s)" '
+            def esc: gsub("&"; "&amp;") | gsub("<"; "&lt;") | gsub(">"; "&gt;");
+
+            def line:
+              "• <\(.url)|#\(.number)> \(.title | sub("\\s+$"; "") | esc) — @\(.author.login // "unknown" | esc)"
+              + " · \(.days)d"
+              + (if .idle >= 14 then " · ⚠️ idle \(.idle)d" else "" end)
+              + (if (.reviewRequests | length) > 0
+                 then "\n    reviewers: "
+                      + ([.reviewRequests[] | "@" + ((.login // .slug) | esc)] | join(", "))
+                 else "" end);
+
+            def section($title; $rows):
+              if ($rows | length) == 0 then empty
+              else "*\($title) (\($rows | length))*\n" + ([$rows[] | line] | join("\n"))
+              end;
+
+            (map(select(.isDraft)) | length) as $drafts
+            | [.[] | select(.isDraft | not)]
+            | sort_by(.createdAt)
+            | map(. + {days: (($now - (.createdAt | fromdateiso8601)) / 86400 | floor),
+                       idle: (($now - (.updatedAt | fromdateiso8601)) / 86400 | floor)})
+            | . as $prs
+            | "\($mention) Open PRs: `\($prs | length)` · Draft PRs: `\($drafts)`" as $header
+            | if ($prs | length) == 0 then
+                $header + "\n\n✅ Nothing to review."
+              else
+                $header + "\n\n"
+                + ([section("⏳ Awaiting review";
+                            [$prs[] | select(.reviewDecision != "CHANGES_REQUESTED"
+                                             and .reviewDecision != "APPROVED")]),
+                    section("❌ Changes requested";
+                            [$prs[] | select(.reviewDecision == "CHANGES_REQUESTED")]),
+                    section("✅ Approved";
+                            [$prs[] | select(.reviewDecision == "APPROVED")])]
+                   | join("\n\n"))
+              end
+          ' "$RUNNER_TEMP/prs.json" > "$RUNNER_TEMP/digest.txt"
+
+          cat "$RUNNER_TEMP/digest.txt"
+
+      - name: Post to Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -sS -f -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n --rawfile text "$RUNNER_TEMP/digest.txt" '{text: $text}')" \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: Notify Slack on failure
+        if: failure()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sS -X POST -H 'Content-type: application/json' \
+            --data "$(jq -n --arg url "$RUN_URL" '{text: "❌ PR reminder failed. <\($url)|Open workflow run>."}')" \
+            "$SLACK_WEBHOOK_URL"

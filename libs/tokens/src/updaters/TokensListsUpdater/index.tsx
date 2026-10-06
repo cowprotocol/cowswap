@@ -2,12 +2,11 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { ReactNode, useEffect } from 'react'
 
-import { atomWithPartialUpdate, isInjectedWidget } from '@cowprotocol/common-utils'
+import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { getJotaiMergerStorage } from '@cowprotocol/core'
 import { ChainInfo, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
-import * as Sentry from '@sentry/browser'
 import useSWR, { SWRConfiguration } from 'swr'
 
 import { getFulfilledResults, getIsTimeToUpdate, TOKENS_LISTS_UPDATER_INTERVAL } from './helpers'
@@ -37,30 +36,20 @@ const swrOptions: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
-const NETWORKS_WITHOUT_RESTRICTIONS: SupportedChainId[] = [SupportedChainId.SEPOLIA]
-
 interface TokensListsUpdaterProps {
   chainId: SupportedChainId
-  isGeoBlockEnabled: boolean
   enableLpTokensByDefault: boolean
   isYieldEnabled: boolean
+  excludeRwaLists: boolean
   bridgeNetworkInfo: ChainInfo[] | undefined
 }
-
-/**
- * Geoblock query related errors to be ignored
- *
- * Those can happen when the domain we use to detect user's location is inaccessible, usually due to adblockers
- * Errors not meeting these filters will still be logged as usual
- */
-const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 // TODO: Break down this large function into smaller functions
 export function TokensListsUpdater({
   chainId: currentChainId,
-  isGeoBlockEnabled,
   enableLpTokensByDefault,
   isYieldEnabled,
+  excludeRwaLists,
   bridgeNetworkInfo,
 }: TokensListsUpdaterProps): ReactNode {
   const { chainId } = useAtomValue(environmentAtom)
@@ -73,8 +62,14 @@ export function TokensListsUpdater({
   const upsertLists = useSetAtom(upsertListsAtom)
 
   useEffect(() => {
-    setEnvironment({ chainId: currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo })
-  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, bridgeNetworkInfo])
+    setEnvironment({
+      chainId: currentChainId,
+      enableLpTokensByDefault,
+      isYieldEnabled,
+      excludeRwaLists,
+      bridgeNetworkInfo,
+    })
+  }, [setEnvironment, currentChainId, enableLpTokensByDefault, isYieldEnabled, excludeRwaLists, bridgeNetworkInfo])
 
   useEffect(() => {
     updateLastUpdateTime({ [chainId]: 0 })
@@ -101,41 +96,6 @@ export function TokensListsUpdater({
 
     upsertLists(chainId, listsStates)
   }, [listsStates, isLoading, chainId, upsertLists, setTokenListsUpdating, updateLastUpdateTime])
-
-  // Check if a user is from US and use Uniswap list, because of the SEC regulations
-  useEffect(() => {
-    if (!isGeoBlockEnabled || isInjectedWidget()) return
-
-    if (NETWORKS_WITHOUT_RESTRICTIONS.includes(chainId)) {
-      setEnvironment({ useCuratedListOnly: false })
-      return
-    }
-
-    fetch('https://api.country.is')
-      .then((res) => res.json())
-      .then(({ country }) => {
-        const isUsUser = country === 'US'
-
-        if (isUsUser) {
-          setEnvironment({ useCuratedListOnly: true })
-          updateLastUpdateTime({ [chainId]: 0 })
-        }
-      })
-      .catch((error) => {
-        if (GEOBLOCK_ERRORS_TO_IGNORE.test(error?.toString())) return
-
-        const sentryError = Object.assign(error, {
-          name: 'GeoBlockingError',
-        })
-
-        Sentry.captureException(sentryError, {
-          tags: {
-            errorType: 'GeoBlockingError',
-          },
-        })
-      })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, isGeoBlockEnabled])
 
   return <UserAddedTokensUpdater />
 }

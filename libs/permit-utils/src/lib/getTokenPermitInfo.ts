@@ -2,7 +2,7 @@ import type { Address, Hex } from 'viem'
 import { Config } from 'wagmi'
 import { estimateGas } from 'wagmi/actions'
 
-import { getTokenId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, getTokenId } from '@cowprotocol/cow-sdk'
 
 import { getPermitUtilsInstance } from './getPermitUtilsInstance'
 
@@ -50,9 +50,13 @@ type EstimateParams = BaseParams & {
   config: Config
 }
 
+/**
+ * Non-error results are cached per token, chain, and spender for the session.
+ * `amount` and `minGasLimit` apply only when the capability check is not already cached.
+ */
 export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { tokenAddress, chainId } = params
-  const key = getTokenId({ address: tokenAddress, chainId })
+  const { tokenAddress, chainId, spender } = params
+  const key = `${getTokenId({ address: tokenAddress, chainId })}-${getAddressKey(spender)}`
 
   const cached = REQUESTS_CACHE[key]
 
@@ -61,6 +65,17 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
   }
 
   const request = actuallyCheckTokenIsPermittable(params)
+    .then((result) => {
+      if ('error' in result) {
+        delete REQUESTS_CACHE[key]
+      }
+
+      return result
+    })
+    .catch((error) => {
+      delete REQUESTS_CACHE[key]
+      throw error
+    })
 
   REQUESTS_CACHE[key] = request
 

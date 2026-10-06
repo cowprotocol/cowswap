@@ -13,3 +13,4 @@ export {
   buildOrdersWidgetHookPayload,
   buildTradeWidgetHookPayload,
 } from './services/widgetHooksPayload'
+export type { BuildTradeWidgetHookPayloadParams } from './services/widgetHooksPayload'

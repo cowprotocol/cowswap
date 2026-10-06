@@ -49,7 +49,7 @@ export async function safeBundleApprovalFlow({
     context,
     callbacks,
     orderParams,
-    swapFlowAnalyticsContext,
+    tradeFlowAnalyticsContext,
     tradeConfirmActions,
     typedHooks,
     tradeQuote,
@@ -70,7 +70,7 @@ export async function safeBundleApprovalFlow({
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   analytics.approveAndPresign({
-    ...swapFlowAnalyticsContext,
+    ...tradeFlowAnalyticsContext,
     quoteId: orderParams.quoteId,
     allowsOffchainSigning: orderParams.allowsOffchainSigning,
   })
@@ -203,7 +203,7 @@ export async function safeBundleApprovalFlow({
       },
       callbacks.dispatch,
     )
-    analytics.sign(swapFlowAnalyticsContext)
+    analytics.sign(tradeFlowAnalyticsContext)
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: show UI of the successfully sent transaction')
     tradeConfirmActions.onSuccess(orderId)
@@ -216,7 +216,7 @@ export async function safeBundleApprovalFlow({
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
     captureError(error, ERROR_TYPES.ON_APPROVE, { swapErrorMessage })
-    analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     tradeConfirmActions.onError(swapErrorMessage)
   }

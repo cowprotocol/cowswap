@@ -160,6 +160,12 @@ function cancelOrderInState(
   orderObject: OrderObject,
   isSafeWallet: boolean,
 ) {
+  // Invalidation can succeed after a fill; it cannot undo execution.
+  if (orderObject.order.status === OrderStatus.FULFILLED) {
+    orderObject.order.isCancelling = false
+    return
+  }
+
   const id = orderObject.id
 
   deleteOrderById(state, chainId, id)
@@ -434,6 +440,7 @@ export default createReducer(initialState, (builder) =>
 
       if (orderObject) {
         orderObject.order.cancellationHash = hash
+        orderObject.order.cancellationHashTime = new Date().toISOString()
       }
     })
     .addCase(requestOrderCancellation, (state, action) => {
@@ -553,10 +560,10 @@ function reClassifyOrder(
   newOrder: SerializedOrder,
   existingOrder: OrderObject | undefined,
 ): { status: OrderStatus; isCancelling: boolean | undefined } {
-  // Onchain cancellations are considered final
-  // Still, the order classification at apps/cowswap-frontend/src/legacy/state/orders/utils.ts can't tell
-  // what type of cancellation it was as it doesn't have the local store context
-  // Here we do, so we can tell whether it should be fully cancelled or still pending
+  // Preserve cancellation against stale pending responses, but accept a confirmed fill.
+  if (newOrder.status === OrderStatus.FULFILLED) {
+    return { status: newOrder.status, isCancelling: false }
+  }
   if (existingOrder?.order.status === OrderStatus.CANCELLED) {
     return { status: existingOrder.order.status, isCancelling: false }
   }

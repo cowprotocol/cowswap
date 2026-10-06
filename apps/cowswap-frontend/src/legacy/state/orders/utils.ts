@@ -106,7 +106,7 @@ export function getOrderMarketPrice(
  */
 export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated' | 'status'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
-  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
+  return isOrderInvalidated(order) && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
 
 /**
@@ -138,6 +138,15 @@ export function isOrderFulfilled(
   } else {
     return buyAmount === executedBuyAmount
   }
+}
+
+/**
+ * The Solana order-book API doesn't return `invalidated` at all (unlike EVM), so it can't be used to
+ * detect a Solana cancellation. Fall back to the raw `status` field, which the Solana API does set to
+ * `'cancelled'`, in that case.
+ */
+export function isOrderInvalidated(order: Pick<EnrichedOrder, 'invalidated' | 'status'>): boolean {
+  return order.invalidated ?? order.status === 'cancelled'
 }
 
 /**
@@ -482,6 +491,13 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
   inputToken: Token,
   outputToken: Token,
 ): Price<Token, Token> | undefined {
+  // With no fee, extrapolating degenerates to a 0/0 price (multiplying by FEE_AMOUNT_MULTIPLIER keeps it
+  // zero) instead of "no fee to extrapolate from" — fall through to the regular formula, which already
+  // returns the correct price when the fee is zero (e.g. Solana orders, which never carry a fee).
+  if (!feeAmount.greaterThan(ZERO_FRACTION)) {
+    return undefined
+  }
+
   // Use FEE_AMOUNT_MULTIPLIER times fee amount as the new sell amount
   const newSellAmount = feeAmount.multiply(JSBI.BigInt(FEE_AMOUNT_MULTIPLIER))
   // Only use this method if the new sell amount is smaller than the remaining sell amount

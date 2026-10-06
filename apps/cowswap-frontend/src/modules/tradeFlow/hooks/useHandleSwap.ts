@@ -1,7 +1,9 @@
+import { useStore } from 'jotai'
 import { useCallback, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { OnTradeParamsPayload } from '@cowprotocol/events'
@@ -12,8 +14,10 @@ import { Field } from 'legacy/state/types'
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
 import { buildTradeWidgetHookPayload, callWidgetHook } from 'modules/injectedWidget'
 import {
+  TradeConfirmActions,
   TradeWidgetActions,
   logTradeFlow,
+  tradeConfirmStateAtom,
   useDerivedTradeState,
   useTradeFlowAnalytics,
   useTradePriceImpact,
@@ -48,6 +52,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
+  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
@@ -59,50 +64,48 @@ export function useHandleSwap(
             : tradeFlowContext,
         ) && !!tradeFlowContext
 
-  const flowInProgressRef = useRef(false)
+  const store = useStore()
+  const activeSessionRef = useRef<number | null>(null)
 
   const callback = useCallback(async () => {
-    if (tradeFlowType === FlowType.SOLANA_SWAP) {
-      if (!solanaFlowContext) return
-    } else if (!tradeFlowContext) {
-      return
-    }
-    if (flowInProgressRef.current) return
-    flowInProgressRef.current = true
-
-    const hookPayload = buildHookPayload(
-      tradeFlowType,
-      solanaFlowContext,
-      tradeFlowContext,
-      derivedTradeState?.slippage,
-    )
-
-    const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
-
-    if (!isWidgetHookPassed) {
-      flowInProgressRef.current = false
-      return
-    }
+    if (!(tradeFlowType === FlowType.SOLANA_SWAP ? solanaFlowContext : tradeFlowContext)) return
+    const sessionId = store.get(tradeConfirmStateAtom).sessionId
+    if (activeSessionRef.current === sessionId) return
+    activeSessionRef.current = sessionId
+    const isCurrent = (): boolean => store.get(tradeConfirmStateAtom).sessionId === sessionId
 
     try {
-      const result = await runFlowByType(tradeFlowType, tradeFlowContext, {
+      const hookPayload = buildHookPayload(
+        tradeFlowType,
+        solanaFlowContext,
+        tradeFlowContext,
+        derivedTradeState?.slippage,
+      )
+
+      const isWidgetHookPassed = await callWidgetHook(WidgetHookEvents.ON_BEFORE_TRADE, hookPayload)
+
+      if (!isWidgetHookPassed || !isCurrent()) return
+
+      const result = await runFlowByType(tradeFlowType, withCurrentConfirmActions(tradeFlowContext, isCurrent), {
         ethFlowContext,
         safeBundleFlowContext,
-        solanaFlowContext,
+        solanaFlowContext: withCurrentConfirmActions(solanaFlowContext, isCurrent),
         priceImpactParams,
         confirmPriceImpactWithoutFee,
         analytics,
         config,
+        isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
       })
 
-      if (result === true) {
+      if (result === true && isCurrent()) {
         onChangeRecipient(null)
         onUserInput(Field.INPUT, '')
       }
     } finally {
-      flowInProgressRef.current = false
+      if (activeSessionRef.current === sessionId) activeSessionRef.current = null
     }
   }, [
+    store,
     config,
     tradeFlowContext,
     solanaFlowContext,
@@ -110,6 +113,7 @@ export function useHandleSwap(
     priceImpactParams,
     confirmPriceImpactWithoutFee,
     analytics,
+    isSolanaSponsoredOrdersEnabled,
     ethFlowContext,
     safeBundleFlowContext,
     onChangeRecipient,
@@ -128,10 +132,10 @@ function buildHookPayload(
 ): OnTradeParamsPayload {
   if (tradeFlowType === FlowType.SOLANA_SWAP && solanaFlowContext) {
     return buildTradeWidgetHookPayload({
-      orderType: solanaFlowContext.swapFlowAnalyticsContext.orderType,
+      orderType: solanaFlowContext.tradeFlowAnalyticsContext.orderType,
       inputAmount: solanaFlowContext.context.inputAmount,
       outputAmount: solanaFlowContext.context.outputAmount,
-      recipient: solanaFlowContext.swapFlowAnalyticsContext.recipient,
+      recipient: solanaFlowContext.tradeFlowAnalyticsContext.recipient,
       orderKind: solanaFlowContext.context.orderKind,
       chainId: solanaFlowContext.context.chainId,
       validTo: solanaFlowContext.context.validTo,
@@ -139,15 +143,16 @@ function buildHookPayload(
     })
   }
 
-  // tradeFlowContext is guaranteed non-null here by the caller's earlier guard.
+  if (!tradeFlowContext) throw new Error('Trade flow context is not ready')
+
   return buildTradeWidgetHookPayload({
-    orderType: tradeFlowContext!.swapFlowAnalyticsContext.orderType,
-    inputAmount: tradeFlowContext!.context.inputAmount,
-    outputAmount: tradeFlowContext!.context.outputAmount,
-    recipient: tradeFlowContext!.swapFlowAnalyticsContext.recipient,
-    orderKind: tradeFlowContext!.orderParams.kind,
-    chainId: tradeFlowContext!.orderParams.chainId,
-    validTo: tradeFlowContext!.orderParams.validTo,
+    orderType: tradeFlowContext.tradeFlowAnalyticsContext.orderType,
+    inputAmount: tradeFlowContext.context.inputAmount,
+    outputAmount: tradeFlowContext.context.outputAmount,
+    recipient: tradeFlowContext.tradeFlowAnalyticsContext.recipient,
+    orderKind: tradeFlowContext.orderParams.kind,
+    chainId: tradeFlowContext.orderParams.chainId,
+    validTo: tradeFlowContext.orderParams.validTo,
     slippageBps: slippage ? percentToBps(slippage) : undefined,
   })
 }
@@ -163,12 +168,13 @@ async function runFlowByType(
     confirmPriceImpactWithoutFee: ConfirmPriceImpactFn
     analytics: ReturnType<typeof useTradeFlowAnalytics>
     config: ReturnType<typeof useConfig>
+    isSolanaSponsoredOrdersEnabled: boolean
   },
 ): Promise<boolean> {
   if (tradeFlowType === FlowType.SOLANA_SWAP) {
     if (!deps.solanaFlowContext) throw new Error('Solana flow context is not ready')
     logTradeFlow('SOLANA FLOW', 'Start solana flow')
-    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics)
+    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics, deps.isSolanaSponsoredOrdersEnabled)
     return result === true
   }
   if (!tradeFlowContext) throw new Error('Trade flow context is not ready')
@@ -231,4 +237,25 @@ function useTradeFlow(params: TradeFlowParams): {
   const solanaFlowContext = useSolanaTradeFlowContext(params)
 
   return { tradeFlowType, tradeFlowContext, safeBundleFlowContext, solanaFlowContext }
+}
+
+// A superseded flow can still settle (its wallet request finally answers) while a newer trade owns the confirm modal.
+function withCurrentConfirmActions<T extends { tradeConfirmActions: TradeConfirmActions }>(
+  context: T | null,
+  isCurrent: () => boolean,
+): T | null {
+  if (!context) return null
+
+  const actions = context.tradeConfirmActions
+
+  return {
+    ...context,
+    tradeConfirmActions: {
+      ...actions,
+      onSign: (pendingTrade) => isCurrent() && actions.onSign(pendingTrade),
+      onError: (error) => isCurrent() && actions.onError(error),
+      onSuccess: (orderId) => isCurrent() && actions.onSuccess(orderId),
+      requestPermitSignature: (pendingTrade) => isCurrent() && actions.requestPermitSignature(pendingTrade),
+    },
+  }
 }

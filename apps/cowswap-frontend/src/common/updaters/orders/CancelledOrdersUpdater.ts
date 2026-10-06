@@ -8,6 +8,7 @@ import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
+import { Order } from 'legacy/state/orders/actions'
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -68,21 +69,7 @@ export function CancelledOrdersUpdater(): null {
       try {
         isUpdating.current = true
 
-        // Filter orders:
-        // - Owned by the current connected account
-        // - Created in the last 5 min, no further
-        // - Not an order already cancelled on-chain
-        const pending = cancelledRef.current.filter(
-          ({ owner, creationTime: creationTimeString, status, cancellationHash }) => {
-            const creationTime = new Date(creationTimeString).getTime()
-
-            return (
-              areAddressesEqual(owner, account) &&
-              now - creationTime < CANCELLED_ORDERS_PENDING_TIME &&
-              !(cancellationHash && status === 'cancelled')
-            )
-          },
-        )
+        const pending = cancelledRef.current.filter((order) => shouldRecheckCancelledOrder(order, account, now))
 
         if (pending.length === 0) {
           return
@@ -144,4 +131,26 @@ export function CancelledOrdersUpdater(): null {
   }, [account, chainId, isSafeWallet, updateOrders])
 
   return null
+}
+
+/**
+ * Whether a recently-cancelled order should be re-verified against the order-book, to catch a
+ * cancellation that raced a solver fill.
+ *
+ * A successful EVM on-chain cancellation is settlement-contract-guaranteed final, ~so it can't race a
+ * fill and is skipped here~. It's still checked because the cancellation can happen in a later block than the fill.
+ *
+ * The recheck window is measured from `cancellationHashTime` for a hard-cancelled order, not
+ * `creationTime`: an order can be created long before it's cancelled, and it's the cancellation - not
+ * the creation - that can race a fill.
+ */
+export function shouldRecheckCancelledOrder(
+  order: Pick<Order, 'owner' | 'creationTime' | 'status' | 'cancellationHash' | 'cancellationHashTime'>,
+  account: string,
+  now: number,
+): boolean {
+  const { owner, creationTime, cancellationHash, cancellationHashTime } = order
+  const anchorTime = new Date(cancellationHash && cancellationHashTime ? cancellationHashTime : creationTime).getTime()
+
+  return areAddressesEqual(owner, account) && now - anchorTime < CANCELLED_ORDERS_PENDING_TIME
 }

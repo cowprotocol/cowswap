@@ -418,7 +418,16 @@ describe('fetchAndProcessQuote', () => {
         true,
       )
 
-      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams)
+      expect(mockGetSolanaQuote).toHaveBeenCalledWith(solanaQuoteParams, {
+        allowIntermediateEqSellToken: true,
+        quoteRequest: {
+          priceQuality: PriceQuality.FAST,
+        },
+        appData: mockAppData,
+        quoteSigner: undefined,
+        getSlippageSuggestion: undefined,
+        getCorrelatedTokens: undefined,
+      })
       expect(mockBridgingSdk.getQuote).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(
         mockQuoteAndPost,
@@ -475,8 +484,16 @@ describe('fetchAndProcessQuote', () => {
       )
 
       expect(mockGetSolanaQuote).toHaveBeenCalledTimes(2)
-      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(1, solanaQuoteParams)
-      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(2, solanaQuoteParams)
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(
+        1,
+        solanaQuoteParams,
+        expect.objectContaining({ quoteRequest: { priceQuality: PriceQuality.FAST } }),
+      )
+      expect(mockGetSolanaQuote).toHaveBeenNthCalledWith(
+        2,
+        solanaQuoteParams,
+        expect.objectContaining({ quoteRequest: { priceQuality: PriceQuality.OPTIMAL } }),
+      )
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledTimes(2)
     })
   })

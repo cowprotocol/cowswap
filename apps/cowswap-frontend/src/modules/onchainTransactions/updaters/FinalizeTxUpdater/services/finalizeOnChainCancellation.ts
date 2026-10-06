@@ -57,7 +57,11 @@ export function finalizeOnChainCancellation(
     // If cancellation failed:
     // 1. Update order state and remove the isCancelling flag and cancellationHash
     partialOrderUpdate(
-      { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
+      {
+        chainId,
+        order: { id: orderId, isCancelling: false, cancellationHash: undefined, cancellationHashTime: undefined },
+        isSafeWallet,
+      },
       dispatch,
     )
     // 2. Show failure tx pop-up
