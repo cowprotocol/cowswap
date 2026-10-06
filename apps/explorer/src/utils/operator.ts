@@ -1,4 +1,4 @@
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isOrderExpired, isSellOrder } from '@cowprotocol/common-utils'
 import { FeePolicy, getAddressKey, Trade as TradeMetaData } from '@cowprotocol/cow-sdk'
 
 import { calculatePrice, invertPrice, TokenErc20 } from '@gnosis.pm/dex-js'
@@ -113,10 +113,6 @@ function isOrderCancelled(order: Pick<RawOrder, 'creationDate' | 'invalidated'>)
 
 function isOrderCancelling(order: RawOrder): boolean {
   return order.status === RAW_ORDER_STATUS.CANCELLED && order.invalidated
-}
-
-function isOrderExpired(order: RawOrder): boolean {
-  return Math.floor(Date.now() / 1000) > order.validTo
 }
 
 function isOrderFilled(order: RawOrder): boolean {

@@ -199,13 +199,13 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                 )}
                 <DetailRow
                   label="Amount"
-                  tooltipText="Price protection sets the minimum buy amount required for each part to execute. These totals assume all scheduled parts execute. Price protection does not guarantee execution."
+                  tooltipText="The worst acceptable price sets the minimum buy amount required for each part to execute. These totals assume all scheduled parts execute. This floor does not guarantee execution."
                 >
                   {renderAmounts(intendedSellAmount, intendedBuyAmount)}
                 </DetailRow>
                 <DetailRow
                   label="Amount per part"
-                  tooltipText="The planned sell amount and minimum buy amount for each part. Price protection requires each part to receive at least this buy amount."
+                  tooltipText="The planned sell amount and minimum buy amount for each part. Each part must receive at least this buy amount."
                 >
                   {renderAmounts(schedule.partSellAmount, schedule.minPartLimit)}
                 </DetailRow>

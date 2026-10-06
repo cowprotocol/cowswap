@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-05 10:45\n"
+"PO-Revision-Date: 2026-10-06 11:08\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -594,6 +594,10 @@ msgstr "Отклоните запрос в кошельке, чтобы отме
 #: apps/cowswap-frontend/src/modules/affiliate/pure/MetricsCard.tsx
 #~ msgid "Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.`"
 #~ msgstr "Rewards data updates every 6 hours at 00:00, 06:00, 12:00, 18:00 (UTC) and take about one hour to appear here.`"
+
+#: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
+msgid "Transaction blockhash expired. Sign a new one."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/PayoutConfirmation.tsx
 msgid "I have access to this address on Ethereum."
@@ -1923,6 +1927,7 @@ msgstr "Влияние на цену из-за текущих уровней л�
 msgid "You got an extra"
 msgstr "Вы получили дополнительно"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Worst acceptable price"
@@ -3197,8 +3202,8 @@ msgid "Choose a wallet to connect to CoW Swap"
 msgstr "Выберите кошелек для подключения к CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
-msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
-msgstr "Так как TWAP-ордера состоят из нескольких частей, цены могут колебаться. Для защиты CoW Swap не будет исполнять ваш TWAP, если цена упадет ниже этого процента."
+#~ msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
+#~ msgstr "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #~ msgid "are"
@@ -4202,8 +4207,8 @@ msgid "Gas limit"
 msgstr "Лимит газа"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
-msgid "Price protection"
-msgstr "Ценовая защита"
+#~ msgid "Price protection"
+#~ msgstr "Price protection"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve {wrappedSymbol} failed!"
@@ -5644,8 +5649,8 @@ msgid "Set your own price"
 msgstr "Установите свою цену"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
-msgid "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
-msgstr "Этот процент применяется только к падениям цены; если цена будет выгоднее этого значения, CoW Swap всё равно исполнит ваш ордер."
+#~ msgid "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
+#~ msgstr "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 msgid "Your wallet is already linked to a referral code."
@@ -5763,6 +5768,10 @@ msgstr "Должно быть до {maxDateStr} {timeZone}"
 msgid "This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade."
 msgstr "Этот токен отсутствует в активных списках. Убедитесь, что это именно тот токен, которым вы хотите торговать."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
+msgid "If CoW Swap cannot get this price or better (taking into account fees), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "To override this, enter your desired slippage amount{amountRange}, but this may result in slower execution."
 msgstr "Чтобы изменить это, введите желаемый лимит проскальзывания{amountRange}, но это может привести к замедлению исполнения."
@@ -5771,6 +5780,7 @@ msgstr "Чтобы изменить это, введите желаемый ли
 msgid "Between currencies"
 msgstr "Между валютами"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Each part trades at this price or better. If that price can't be met, the part is skipped."
 msgstr "Каждая часть исполняется по этой цене или лучше. Если достичь этой цены не удается, часть пропускается."
@@ -8242,8 +8252,8 @@ msgstr "Первая часть вашего TWAP-ордера активиру�
 #~ msgstr "All orders"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
-msgid "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
-msgstr "Если CoW Swap не сможет обеспечить эту цену или лучше (с учетом комиссий и защиты цены), TWAP не будет исполнен. CoW Swap <0>всегда</0> стремится улучшить цену, если это возможно."
+#~ msgid "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
+#~ msgstr "If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP will not execute. CoW Swap will <0>always</0> improve on this price if possible."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/HowItWorks.tsx
 #~ msgid "How it works."

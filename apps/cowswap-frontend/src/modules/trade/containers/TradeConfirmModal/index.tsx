@@ -1,15 +1,23 @@
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useSigningStep } from 'entities/trade'
+import {
+  useSigningStep,
+  useSolanaSigningDeadline,
+  SolanaSigningDeadlineState,
+  solanaSigningDeadlineAtom,
+  solanaSigningAbandonedAtom,
+} from 'entities/trade'
 import styled from 'styled-components/macro'
 
+import { isMaxAmountToApprove } from 'modules/erc20Approve'
 import {
   useHasNotificationSubscription,
   useOpenNotificationSidebar,
@@ -24,6 +32,7 @@ import { TradeAmounts } from 'common/types'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+import { SolanaSigningCountdown } from '../../pure/SolanaSigningCountdown'
 
 const Container = styled.div`
   background: var(${UI.COLOR_PAPER});
@@ -49,9 +58,12 @@ interface InnerComponentProps extends React.PropsWithChildren {
   orderType: UiOrderType
   error: string | null
   pendingTrade: TradeAmounts | null
+  solanaSigningDeadline: SolanaSigningDeadlineState | null
+  onSolanaSigningExpiredDismiss: Command
   transactionHash: string | null
   onDismiss: Command
   permitSignatureState: string | undefined
+  permitAmount: CurrencyAmount<Currency> | null
   isSafeWallet: boolean
   submittedContent?: ReactNode
   showGetNotifiedMessage: boolean
@@ -69,9 +81,21 @@ export function TradeConfirmModal({
 }: TradeConfirmModalProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useAtomValue(isSafeWalletAtom)
-  const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
-  const { onDismiss } = useTradeConfirmActions()
+  const { permitSignatureState, permitAmount, pendingTrade, transactionHash, error } = useTradeConfirmState()
+  const tradeConfirmActions = useTradeConfirmActions()
+  const { onDismiss } = tradeConfirmActions
   const signingStep = useSigningStep()
+  const solanaSigningDeadline = useSolanaSigningDeadline()
+  const setSolanaSigningDeadline = useSetAtom(solanaSigningDeadlineAtom)
+  const setSolanaSigningAbandoned = useSetAtom(solanaSigningAbandonedAtom)
+
+  // The wallet prompt can't be cancelled programmatically: the abandoned flag silences its eventual
+  // rejection, and price confirmation is forced because the quote kept refreshing meanwhile.
+  const onSolanaSigningExpiredDismiss = useCallback(() => {
+    setSolanaSigningAbandoned(true)
+    setSolanaSigningDeadline(null)
+    tradeConfirmActions.onOpen(true)
+  }, [setSolanaSigningAbandoned, setSolanaSigningDeadline, tradeConfirmActions])
   const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading: isNotificationSubscriptionLoading } = useHasNotificationSubscription()
   const openNotificationSidebar = useOpenNotificationSidebar()
@@ -91,10 +115,13 @@ export function TradeConfirmModal({
         error={error}
         orderType={orderType}
         pendingTrade={pendingTrade}
+        solanaSigningDeadline={solanaSigningDeadline}
+        onSolanaSigningExpiredDismiss={onSolanaSigningExpiredDismiss}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
         // Disable default permit flow when signingStep is set
         permitSignatureState={signingStep ? undefined : permitSignatureState}
+        permitAmount={permitAmount}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
         showGetNotifiedMessage={Boolean(
@@ -124,7 +151,10 @@ function InnerComponent({
   onDismiss,
   orderType,
   pendingTrade,
+  solanaSigningDeadline,
+  onSolanaSigningExpiredDismiss,
   permitSignatureState,
+  permitAmount,
   transactionHash,
   submittedContent,
   showGetNotifiedMessage,
@@ -142,9 +172,23 @@ function InnerComponent({
       <PermitModal
         inputAmount={pendingTrade.inputAmount}
         outputAmount={pendingTrade.outputAmount}
+        amountToApprove={permitAmount && !isMaxAmountToApprove(permitAmount) ? permitAmount : undefined}
         step={step}
         onDismiss={onDismiss}
         orderType={orderType}
+      />
+    )
+  }
+
+  if (pendingTrade && solanaSigningDeadline && isSolanaChain(chainId)) {
+    return (
+      <SolanaSigningCountdown
+        expiresAt={solanaSigningDeadline.expiresAt}
+        durationMs={solanaSigningDeadline.durationMs}
+        inputAmount={pendingTrade.inputAmount}
+        outputAmount={pendingTrade.outputAmount}
+        onDismiss={onDismiss}
+        onExpiredDismiss={onSolanaSigningExpiredDismiss}
       />
     )
   }
