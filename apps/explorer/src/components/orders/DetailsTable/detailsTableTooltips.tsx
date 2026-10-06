@@ -59,16 +59,11 @@ export const DetailsTableTooltips = {
       </ul>
     </div>
   ),
-  amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
+  amount: 'The total sell and buy amount for this order.',
   priceLimit:
-    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deducted from the sell amount.',
-  priceExecution:
-    'The actual price at which this order has been matched and executed, after deducting fees from the amount sold.',
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
+  priceExecution: 'The actual price at which this order has been matched and executed.',
   surplus:
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
-  filled:
-    'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
-  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
-  feesBreakdown:
-    'The costs and fees charged for this order, totaled per token, with a breakdown into the on-chain network costs and each fee applied. Might take a few minutes to show the final value.',
+  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
 }
