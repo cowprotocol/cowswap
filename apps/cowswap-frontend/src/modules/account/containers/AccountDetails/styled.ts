@@ -467,7 +467,7 @@ export const LowerSectionSimple = styled(LowerSection)`
         }
 
         > ${StatusLabelWrapper} {
-          margin: 0 0 0 auto;
+          margin: 0;
         }
       }
     }
