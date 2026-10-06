@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import { NewTooltip } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media, NewTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { TrendingUp } from 'react-feather'
@@ -9,12 +10,15 @@ import { TrendingUp } from 'react-feather'
 import { ToggleButton } from './styled'
 
 import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
+import { priceChartModalOpenAtom } from '../../state/priceChartModalOpenAtom'
 import { priceChartVisibleAtom } from '../../state/priceChartVisibleAtom'
 
 export function ChartToggleButton(): ReactNode {
   const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
-  const label = isVisible ? t`Hide price chart` : t`Show price chart`
+  const label = !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
 
   if (!isPriceChartEnabled) return null
 
@@ -23,8 +27,10 @@ export function ChartToggleButton(): ReactNode {
       <ToggleButton
         type="button"
         aria-label={label}
-        aria-pressed={isVisible}
-        onClick={() => setIsVisible((value) => !value)}
+        aria-pressed={isUpToLarge ? undefined : isVisible}
+        aria-haspopup={isUpToLarge ? 'dialog' : undefined}
+        aria-expanded={isUpToLarge ? isModalOpen : undefined}
+        onClick={() => (isUpToLarge ? setIsModalOpen(true) : setIsVisible((value) => !value))}
       >
         <TrendingUp aria-hidden="true" />
       </ToggleButton>

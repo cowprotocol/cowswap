@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 import { NewTooltip, SettingsBox, SettingsBoxGroup, SettingsDropdownSection } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
-import { Menu, MenuPopover } from '@reach/menu-button'
+import { Menu } from '@reach/menu-button'
 
 import { SettingsButton, SettingsIcon } from 'modules/trade'
 
@@ -29,7 +29,7 @@ export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProp
           <SettingsIcon />
         </SettingsButton>
       </NewTooltip>
-      <MenuPopover
+      <styledEl.SettingsPopover
         position={(buttonRect, menuRect) =>
           buttonRect && menuRect
             ? {
@@ -58,7 +58,7 @@ export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProp
             </SettingsBoxGroup>
           </SettingsDropdownSection>
         </styledEl.SettingsList>
-      </MenuPopover>
+      </styledEl.SettingsPopover>
     </Menu>
   )
 }

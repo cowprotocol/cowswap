@@ -8,7 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-import { formatPriceChartValue } from '../../lib/priceSummary.utils'
+import { formatPercentageChange, formatPriceChartValue } from '../../lib/priceChart.utils'
 import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
 
 import type { ChartMetric, ExpansionControl } from '../../lib/chart.types'
@@ -70,31 +70,24 @@ export function PriceChartHeader({
         </styledEl.PriceSummary>
       </styledEl.Heading>
       <styledEl.HeaderControls>
-        <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
-          {currencies.map((currency) => (
-            <styledEl.SegmentedControlButton
-              $isActive={Boolean(activeCurrency?.equals(currency))}
-              aria-pressed={Boolean(activeCurrency?.equals(currency))}
-              key={`${currency.chainId}:${getAddressKey(getCurrencyAddress(currency))}`}
-              onClick={() => onSelectCurrency(currency)}
-              title={`${currency.symbol || 'TOKEN'}/USD`}
-              type="button"
-            >
-              {currency.symbol || 'TOKEN'}
-            </styledEl.SegmentedControlButton>
-          ))}
-        </styledEl.SegmentedControl>
+        {currencies.length > 1 ? (
+          <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
+            {currencies.map((currency) => (
+              <styledEl.SegmentedControlButton
+                $isActive={Boolean(activeCurrency?.equals(currency))}
+                aria-pressed={Boolean(activeCurrency?.equals(currency))}
+                key={`${currency.chainId}:${getAddressKey(getCurrencyAddress(currency))}`}
+                onClick={() => onSelectCurrency(currency)}
+                title={`${currency.symbol || 'TOKEN'}/USD`}
+                type="button"
+              >
+                {currency.symbol || 'TOKEN'}
+              </styledEl.SegmentedControlButton>
+            ))}
+          </styledEl.SegmentedControl>
+        ) : null}
         <ChartSettingsDropdown sizeControl={sizeControl} />
       </styledEl.HeaderControls>
     </styledEl.Header>
   )
-}
-
-function formatPercentageChange(change: number, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-    signDisplay: 'always',
-    style: 'percent',
-  }).format(change)
 }

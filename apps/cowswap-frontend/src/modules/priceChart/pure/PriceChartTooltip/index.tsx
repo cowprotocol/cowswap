@@ -4,7 +4,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-import { formatPriceChartValue } from '../../lib/priceSummary.utils'
+import { formatPriceChartValue } from '../../lib/priceChart.utils'
 
 import type { ChartMetric } from '../../lib/chart.types'
 

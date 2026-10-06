@@ -1,7 +1,11 @@
-import { UI } from '@cowprotocol/ui'
+import { OVERLAY_Z_INDEX, UI } from '@cowprotocol/ui'
 
-import { MenuItems } from '@reach/menu-button'
+import { MenuItems, MenuPopover } from '@reach/menu-button'
 import styled from 'styled-components/macro'
+
+export const SettingsPopover = styled(MenuPopover)`
+  z-index: ${OVERLAY_Z_INDEX.overlay + 1};
+`
 
 export const SettingsList = styled(MenuItems)`
   position: relative;

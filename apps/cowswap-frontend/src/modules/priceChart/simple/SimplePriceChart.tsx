@@ -6,13 +6,13 @@ import { ChartCanvas } from './ChartCanvas'
 import * as styledEl from './SimplePriceChart.styled'
 
 import { usePriceChartHistory } from '../hooks/usePriceChartHistory'
-import { getPriceChartSummary } from '../lib/priceSummary.utils'
+import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { PriceChartControls } from '../pure/PriceChartControls'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
 
-import type { ChartType, TimeRange } from './simplePriceChart.utils'
 import type { Candle, ChartMetric, SupplyVariant, ExpansionControl } from '../lib/chart.types'
+import type { ChartType, TimeRange } from '../lib/priceChart.utils'
 
 export interface SimplePriceChartProps {
   activeCurrency: Currency | undefined
@@ -45,7 +45,7 @@ export function SimplePriceChart({
   const showStatus = isPending || isError || data.length === 0
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
 
-  if (!currencies.length) return <styledEl.EmptyState>Select both tokens to load the price chart.</styledEl.EmptyState>
+  if (!currencies.length) return <styledEl.EmptyState>Select a token to load the price chart.</styledEl.EmptyState>
 
   return (
     <styledEl.PanelWrapper>

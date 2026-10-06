@@ -2,9 +2,8 @@ import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { logPriceChart } from './logPriceChart'
-
 import { CANDLE_INTERVALS, PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
+import { logPriceChart } from '../lib/priceChart.utils'
 
 import type { Candle, CandleInterval } from '../lib/chart.types'
 

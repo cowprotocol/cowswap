@@ -16,14 +16,16 @@ import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './styled'
 
-import { formatPriceChartAxisValue } from '../../lib/priceSummary.utils'
+import {
+  formatPriceChartAxisValue,
+  mapPriceChartBarsToVolumeData,
+  getCandlePriceFormat,
+} from '../../lib/priceChart.utils'
 import { PriceChartTooltip } from '../../pure/PriceChartTooltip'
-import { mapPriceChartBarsToVolumeData } from '../priceChartVolume.utils'
-import { getCandlePriceFormat } from '../simplePriceChart.utils'
 
 import type { Candle, ChartMetric } from '../../lib/chart.types'
+import type { ChartType } from '../../lib/priceChart.utils'
 import type { ChartTooltipData } from '../../pure/PriceChartTooltip'
-import type { ChartType } from '../simplePriceChart.utils'
 
 export interface ChartCanvasProps {
   data: Candle[]

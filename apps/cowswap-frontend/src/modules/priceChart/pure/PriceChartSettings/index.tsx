@@ -1,7 +1,8 @@
 import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import { SettingsBox } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media, SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -10,9 +11,10 @@ import { priceChartVisibleAtom } from '../../state/priceChartVisibleAtom'
 
 export function PriceChartSettings(): ReactNode {
   const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
 
-  if (!isPriceChartEnabled) return null
+  if (!isPriceChartEnabled || isUpToLarge) return null
 
   return (
     <SettingsBox

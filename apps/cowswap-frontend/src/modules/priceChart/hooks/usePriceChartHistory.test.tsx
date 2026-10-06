@@ -13,7 +13,7 @@ import { usePriceChartHistory } from './usePriceChartHistory'
 import { fetchPriceHistory, fetchTokenSupply } from '../api'
 
 import type { Candle, ChartMetric, SupplyVariant } from '../lib/chart.types'
-import type { TimeRange } from '../simple/simplePriceChart.utils'
+import type { TimeRange } from '../lib/priceChart.utils'
 
 jest.mock('../api', () => ({ fetchPriceHistory: jest.fn(), fetchTokenSupply: jest.fn() }))
 

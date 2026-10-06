@@ -5,10 +5,10 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
 import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
-import { getTimeRangeConfig } from '../simple/simplePriceChart.utils'
+import { getTimeRangeConfig } from '../lib/priceChart.utils'
 
 import type { Candle, ChartMetric, SupplyVariant } from '../lib/chart.types'
-import type { TimeRange } from '../simple/simplePriceChart.utils'
+import type { TimeRange } from '../lib/priceChart.utils'
 
 export function usePriceChartHistory(
   currency: Currency | undefined,
