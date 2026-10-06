@@ -7,6 +7,7 @@ import type { NextRequest } from 'next/server'
 
 import { getAssetByTicker, getAssetQuotes, RWA_QUOTE_SIDES } from '@/entities/asset/index.server'
 import { errorResponse, jsonResponse, parseEnumParam } from '@/shared/lib/http'
+import { logger } from '@/shared/lib/logger/index.server'
 
 const QUOTES_MAX_AGE_SECONDS = 60
 
@@ -39,7 +40,7 @@ export async function getQuotesHandler(
     return jsonResponse(await getAssetQuotes(asset, chainId, side), QUOTES_MAX_AGE_SECONDS, 0)
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load quotes', error)
+    logger.error({ err: error, ticker: asset.ticker, chainId, side }, 'Failed to load quotes')
 
     return errorResponse(502, 'Quotes are temporarily unavailable')
   }

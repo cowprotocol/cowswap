@@ -41,6 +41,8 @@ import type {
   RwaTokenNetworkStats,
 } from '../model/types'
 
+import { logger } from '@/shared/lib/logger/index.server'
+
 const marketDataProvider: MarketDataProvider = coingeckoProvider
 
 const MARKET_OVERVIEW_LIST_LIMIT = 3
@@ -185,7 +187,7 @@ async function loadNetworkStats(
     return await marketDataProvider.getNetworkStats(chainId, tokens, tokenMarkets)
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load network stats', error)
+    logger.error({ err: error, chainId }, 'Failed to load network stats')
 
     return null
   }
@@ -197,7 +199,7 @@ async function loadRwaMarkets(): Promise<RwaMarketsLoadResult> {
     return { byId: await marketDataProvider.getRwaMarkets(getAssets().length), degraded: false }
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load RWA markets', error)
+    logger.error({ err: error }, 'Failed to load RWA markets')
 
     return { byId: new Map(), degraded: true }
   }
@@ -217,7 +219,7 @@ async function loadSeries(
     return series?.length ? series : null
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error(`[rwa] Failed to load the ${ticker} series`, error)
+    logger.error({ err: error, ticker }, 'Failed to load series')
 
     return null
   }
@@ -229,7 +231,7 @@ async function loadTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaT
     return await marketDataProvider.getTokenMarkets(tokens)
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load token markets', error)
+    logger.error({ err: error }, 'Failed to load token markets')
 
     return null
   }

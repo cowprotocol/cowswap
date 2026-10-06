@@ -3,6 +3,7 @@ import 'server-only'
 import { parseUnits, zeroAddress } from 'viem'
 
 import { USDC } from '@cowprotocol/common-const/tokens'
+import { normalizeError } from '@cowprotocol/common-utils/errors'
 import {
   OrderBookApiError,
   type OrderQuoteRequest,
@@ -17,6 +18,7 @@ import { unstable_cache } from 'next/cache'
 import type { RwaQuoteSide, RwaTokenQuote } from '../model/types'
 
 import { getServerOrderBookApi } from '@/shared/api/index.server'
+import { logger } from '@/shared/lib/logger/index.server'
 
 export const QUOTE_AMOUNT_USD = 1000
 
@@ -87,7 +89,7 @@ async function fetchTokenQuote(
 
     if (errorType) return { quote: { address, amount: null, verified: false, error: errorType }, isTransient: false }
 
-    console.error(`[rwa] Failed to quote ${address} on chain ${chainId}`, err)
+    logger.error({ err: normalizeError(err), address, chainId, side }, 'Failed to quote token')
 
     return { quote: { address, amount: null, verified: false, error: UNAVAILABLE_ERROR }, isTransient: true }
   }

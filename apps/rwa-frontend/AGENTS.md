@@ -23,6 +23,7 @@ This file: rwa-frontend app-specific commands only.
 
 - `COINGECKO_API_KEY`: CoinGecko key (server-only). Without it the keyless public API is used, which is heavily rate limited.
 - `COINGECKO_API_PLAN`: `pro` for `pro-api.coingecko.com`; any other value uses the Demo API.
+- `LOG_LEVEL`: minimum pino log level on the server (default `info`).
 - `COW_API_KEY`: CoW Partner API key (server-only), used by `/api/v1/quotes`. Without it the public order book API is used.
 - `NEXT_PUBLIC_WC_PROJECT_ID`: Reown project id (defaults to the cowswap-frontend one).
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
@@ -36,6 +37,7 @@ This file: rwa-frontend app-specific commands only.
 - Price, 24h change, day range, market cap and volume of an asset come from CoinGecko `/rwas/markets` (the tokenized market over every chain and issuer), keyed by `coingeckoId`. Per-token data (`/coins/markets`) and onchain stats are loaded only for the asset page. The table and top-movers 1D sparklines are the last 24h of the `/rwas/markets` 7d sparkline, so they cost no extra request. The first token with a `coingeckoId` is the reference for the asset page price chart.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
+- Server code logs through `logger` from `@/shared/lib/logger/index.server`, not `console`. Wrap new `/api/v1` handlers with `withRequestLogging` in `_app/api-routes/index.ts`. Log fields and the CoinGecko usage Grafana dashboard: [`docs/monitoring.md`](./docs/monitoring.md).
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
 - `/api/v1/token-list` is the token list of `data/RWAs.json`. Balances come from the balances watcher for the tokens in that list: the asset page streams them (`useAccountBalances`), the portfolio loads one snapshot per chain, cached for a minute, with a manual refresh (`useAccountBalanceSnapshots`).
 - Every balances watcher SSE stream holds one of the browser's 6 HTTP/1.1 connections to its host. Every watcher request goes through the pool in `widgets/account/model/watcherConnections.ts`: snapshot loads with `withWatcherConnection`, live streams with `holdWatcherConnection`. An asset on more than 6 networks streams 5 and loads the rest once (`splitWatchedChains`).

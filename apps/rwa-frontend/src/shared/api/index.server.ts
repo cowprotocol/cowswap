@@ -13,3 +13,4 @@ export {
   fetchRwaMarkets,
 } from './coingecko/coingeckoClient'
 export { getServerOrderBookApi } from './order-book/serverOrderBookApi'
+export { logCoingeckoRequests } from './coingecko/coingeckoRequestLogging'

@@ -5,6 +5,7 @@ import type { NextRequest } from 'next/server'
 import { getAssetChart, getAssetByTicker } from '@/entities/asset/index.server'
 import { RWA_CHART_RANGES, type RwaChart } from '@/entities/asset/index.server'
 import { errorResponse, jsonResponse, parseEnumParam } from '@/shared/lib/http'
+import { logger } from '@/shared/lib/logger/index.server'
 
 /**
  * Query: `range` (1D | 1W | 1M | 1Y | ALL, default 1D)
@@ -26,7 +27,7 @@ export async function getChartHandler(
     return jsonResponse(chart, range === '1D' ? 300 : 3600)
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load chart', error)
+    logger.error({ err: error, ticker: asset.ticker, range }, 'Failed to load chart')
 
     return errorResponse(502, 'Chart data is temporarily unavailable')
   }
