@@ -1,6 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
@@ -203,6 +203,7 @@ export function RateInfo({
     if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
     if (!quoteCurrency || !inputCurrency) return
+    if (getIsNativeToken(quoteCurrency) || getIsNativeToken(inputCurrency)) return
 
     setCurrentIsInverted(!areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency)))
 
