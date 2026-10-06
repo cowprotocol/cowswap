@@ -12,6 +12,8 @@ export interface SignedSolanaFlow {
   /** The owner-signed transaction as base64, ready for the order book's sponsored endpoint. */
   transaction: string
   lastValidBlockHeight: number
+  /** Epoch ms when the wallet returned the signature, before any post-sign RPC round-trips. */
+  signedAtMs: number
 }
 
 export interface SignSolanaFlowContext {
@@ -47,10 +49,21 @@ export async function signSolanaFlow(
   onDeadline?.(lastValidBlockHeight)
 
   const signed = await signSolanaTransaction(provider, transaction)
+  const signedAtMs = Date.now()
 
-  if ((await connection.getBlockHeight()) > lastValidBlockHeight) {
+  if (await isBlockhashDead(connection, lastValidBlockHeight)) {
     throw getSigningWindowClosedError()
   }
 
-  return { transaction: signed, lastValidBlockHeight }
+  return { transaction: signed, lastValidBlockHeight, signedAtMs }
+}
+
+// An unreadable height must not discard an already-given signature: the order book re-checks
+// blockhash liveness itself, so only a height actually read past the limit refuses the hand-over.
+async function isBlockhashDead(connection: Connection, lastValidBlockHeight: number): Promise<boolean> {
+  try {
+    return (await connection.getBlockHeight()) > lastValidBlockHeight
+  } catch {
+    return false
+  }
 }

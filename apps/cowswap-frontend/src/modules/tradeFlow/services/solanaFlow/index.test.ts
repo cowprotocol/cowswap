@@ -243,7 +243,11 @@ const neverSettles = (): Promise<never> => new Promise<never>(() => undefined)
 beforeEach(() => {
   jest.clearAllMocks()
   mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
-  mockSignSolanaFlow.mockResolvedValue({ transaction: 'signed-tx', lastValidBlockHeight: 1_234 })
+  mockSignSolanaFlow.mockResolvedValue({
+    transaction: 'signed-tx',
+    lastValidBlockHeight: 1_234,
+    signedAtMs: Date.now(),
+  })
   // The estimate never resolves by default, matching tests that need no countdown; cases that need a
   // deadline resolve it explicitly.
   mockEstimateSolanaSigningDeadline.mockImplementation(() => neverSettles())
@@ -798,6 +802,26 @@ describe('solanaFlow · sponsored', () => {
     expect(stale.context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 
+  // The post-sign RPC round-trip must count against nobody: a signature given inside the window is
+  // valid even when the height read resolves after the window closed.
+  it('posts a signature given in time even when the post-sign check outlives the window', async () => {
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() + 50, durationMs: 30_000 })
+    mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
+      signContext.onDeadline?.(1_234)
+      await tick()
+      const signedAtMs = Date.now()
+      // The height read drags past the deadline while the signature is already in hand.
+      await sleep(80)
+
+      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234, signedAtMs }
+    })
+
+    const result = await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(result).toBe(true)
+    expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
+  })
+
   // The real blockhash usually outlives the shown window (the estimate is capped), so the chain-level
   // check alone happily passes a signature the screen already told the user to abandon.
   it('never posts a signature the wallet approved after the shown window closed', async () => {
@@ -808,7 +832,7 @@ describe('solanaFlow · sponsored', () => {
       signContext.onDeadline?.(1_234)
       await sleep(80)
 
-      return { transaction: 'signed-too-late', lastValidBlockHeight: 1_234 }
+      return { transaction: 'signed-too-late', lastValidBlockHeight: 1_234, signedAtMs: Date.now() }
     })
     const context = buildContext()
 
@@ -831,7 +855,8 @@ describe('solanaFlow · sponsored', () => {
       signContext.onDeadline?.(1_234)
 
       return new Promise((resolve) => {
-        approveStaleSign = () => resolve({ transaction: 'stale-signed', lastValidBlockHeight: 1_234 })
+        approveStaleSign = () =>
+          resolve({ transaction: 'stale-signed', lastValidBlockHeight: 1_234, signedAtMs: Date.now() })
       })
     })
     const staleContext = buildContext()
@@ -864,7 +889,7 @@ describe('solanaFlow · sponsored', () => {
       await tick()
       expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(deadline)
 
-      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234 }
+      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234, signedAtMs: Date.now() }
     })
     let deadlineAtPostTime: unknown = 'never-posted'
     mockPostSolanaSponsoredOrder.mockImplementation(async () => {

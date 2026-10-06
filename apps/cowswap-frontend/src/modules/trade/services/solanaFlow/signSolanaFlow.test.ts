@@ -107,4 +107,16 @@ describe('signSolanaFlow', () => {
       signSolanaFlow(createContext(LAST_VALID_BLOCK_HEIGHT + 1), [step('Swap SOL for USDC')]),
     ).rejects.toThrow('The signing window closed before the transaction was signed')
   })
+
+  // The user has already signed by the time the height is read; an RPC blip there must not discard
+  // the signature — the order book re-checks blockhash liveness itself.
+  it('still hands over the signed transaction when the height read fails', async () => {
+    const context = createContext()
+    ;(context.connection.getBlockHeight as jest.Mock).mockRejectedValue(new Error('rpc down'))
+
+    const { transaction, signedAtMs } = await signSolanaFlow(context, [step('Swap SOL for USDC')])
+
+    expect(transaction).toBeTruthy()
+    expect(signedAtMs).toBeLessThanOrEqual(Date.now())
+  })
 })

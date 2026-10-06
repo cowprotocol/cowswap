@@ -331,7 +331,7 @@ async function postSponsoredBundle(
   let ownDeadline: SolanaSigningDeadlineState | null = null
   let isSettled = false
 
-  const hasShownWindowClosed = (): boolean => !!ownDeadline && Date.now() >= ownDeadline.expiresAt
+  const hasShownWindowClosed = (atMs = Date.now()): boolean => !!ownDeadline && atMs >= ownDeadline.expiresAt
 
   const settleSigning = (): void => {
     if (isSettled) return
@@ -349,7 +349,7 @@ async function postSponsoredBundle(
   }
 
   try {
-    const { transaction } = await signSolanaFlow(
+    const { transaction, signedAtMs } = await signSolanaFlow(
       {
         ...context,
         onDeadline: () => {
@@ -368,7 +368,8 @@ async function postSponsoredBundle(
 
     // The real blockhash outlives the capped window, so the chain-level check alone would pass a
     // signature the screen already told the user to abandon (or one from a retried-past attempt).
-    if (!isCurrentAttempt() || hasShownWindowClosed()) {
+    // Judged at the moment of signing: the post-sign RPC round-trip must not count against the user.
+    if (!isCurrentAttempt() || hasShownWindowClosed(signedAtMs)) {
       throw getSigningWindowClosedError()
     }
 
