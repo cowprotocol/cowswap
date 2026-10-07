@@ -1,9 +1,4 @@
-import {
-  formatPriceChartAxisValue,
-  formatPriceChartValue,
-  getCandlePriceFormat,
-  getPriceChartSummary,
-} from './priceChart.utils'
+import { formatPriceChartValue, getCandlePriceFormat, getPriceChartSummary } from './priceChart.utils'
 
 describe('price chart formatting', () => {
   it('keeps significant digits for small prices', () => {
@@ -18,11 +13,6 @@ describe('price chart formatting', () => {
 
   it('formats any large value consistently', () => {
     expect(formatPriceChartValue(109_430_000, 'en-US')).toBe('$109.43M')
-  })
-
-  it('snaps floating-point zero residue to zero at the chart tick size', () => {
-    expect(formatPriceChartAxisValue(2.776e-17, 'en-US', 0.0001)).toBe('$0.00')
-    expect(formatPriceChartAxisValue(0.00006, 'en-US', 0.0001)).toBe('$0.00006')
   })
 })
 

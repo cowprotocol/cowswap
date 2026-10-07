@@ -1,7 +1,8 @@
+import { FIAT_PRECISION, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { createCowLogger, formatLocaleNumber } from '@cowprotocol/common-utils'
 
 import type { Candle, CandleInterval, TimeRange } from './priceChart.types'
-import type { HistogramData, PriceFormatBuiltIn, UTCTimestamp } from 'lightweight-charts'
+import type { PriceFormatBuiltIn } from 'lightweight-charts'
 
 export const logPriceChart = createCowLogger('PriceChart')
 
@@ -14,16 +15,16 @@ interface TimeRangeConfig {
 }
 
 export function formatPercentageChange(change: number, locale: string): string {
-  return new Intl.NumberFormat(locale, {
-    maximumFractionDigits: 2,
-    minimumFractionDigits: 2,
-    signDisplay: 'always',
-    style: 'percent',
-  }).format(change)
-}
-
-export function formatPriceChartAxisValue(value: number, locale: string, minMove: number): string {
-  return formatPriceChartValue(Math.abs(value) < minMove / 2 ? 0 : value, locale)
+  return formatLocaleNumber({
+    number: change,
+    locale,
+    options: {
+      maximumFractionDigits: PERCENTAGE_PRECISION,
+      minimumFractionDigits: PERCENTAGE_PRECISION,
+      signDisplay: 'always',
+      style: 'percent',
+    },
+  })
 }
 
 export function formatPriceChartValue(value: number, locale: string): string {
@@ -32,7 +33,7 @@ export function formatPriceChartValue(value: number, locale: string): string {
   const usesSignificantDigits = absoluteValue > 0 && absoluteValue < 1
 
   return formatLocaleNumber({
-    fixedDecimals: usesSignificantDigits ? undefined : 2,
+    fixedDecimals: usesSignificantDigits ? undefined : FIAT_PRECISION,
     locale,
     number: value,
     options: {
@@ -46,7 +47,7 @@ export function formatPriceChartValue(value: number, locale: string): string {
 
 export function getCandlePriceFormat(bars: Candle[]): PriceFormatBuiltIn {
   const smallestPrice = bars.reduce((smallest, bar) => (bar.low > 0 ? Math.min(smallest, bar.low) : smallest), Infinity)
-  const precision = smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : 2
+  const precision = smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : FIAT_PRECISION
 
   return { minMove: 1 / 10 ** precision, precision, type: 'price' }
 }
@@ -82,10 +83,4 @@ export function getTimeRangeConfig(period: TimeRange, nowSeconds: number): TimeR
     case 'All':
       return { from: 0, interval: '7d', to }
   }
-}
-
-export function mapPriceChartBarsToVolumeData(bars: Candle[]): HistogramData<UTCTimestamp>[] {
-  return bars.flatMap((bar) =>
-    bar.volume === undefined ? [] : [{ time: bar.timestamp as UTCTimestamp, value: bar.volume }],
-  )
 }

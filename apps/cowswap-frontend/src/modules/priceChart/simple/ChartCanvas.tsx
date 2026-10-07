@@ -17,17 +17,13 @@ import {
 
 import { useTheme } from 'common/hooks/useTheme'
 
-import * as styledEl from './styled'
+import * as styledEl from './ChartCanvas.styled'
 
-import {
-  formatPriceChartAxisValue,
-  mapPriceChartBarsToVolumeData,
-  getCandlePriceFormat,
-} from '../../lib/priceChart.utils'
-import { PriceChartTooltip } from '../../pure/PriceChartTooltip'
+import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
+import { PriceChartTooltip } from '../pure/PriceChartTooltip'
 
-import type { Candle, ChartMetric, ChartType } from '../../lib/priceChart.types'
-import type { ChartTooltipData } from '../../pure/PriceChartTooltip'
+import type { Candle, ChartMetric, ChartType } from '../lib/priceChart.types'
+import type { ChartTooltipData } from '../pure/PriceChartTooltip'
 
 export interface ChartCanvasProps {
   data: Candle[]
@@ -138,7 +134,8 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
     chart.applyOptions({
       localization: {
         locale: i18n.locale,
-        priceFormatter: (value: number) => formatPriceChartAxisValue(value, i18n.locale, priceFormat.minMove),
+        priceFormatter: (value: number) =>
+          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, i18n.locale),
       },
     })
     priceSeries.applyOptions({ priceFormat })
@@ -149,7 +146,11 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
           : { time: bar.timestamp as UTCTimestamp, open: bar.open, high: bar.high, low: bar.low, close: bar.close },
       ),
     )
-    volumeSeries.setData(mapPriceChartBarsToVolumeData(data))
+    volumeSeries.setData(
+      data.flatMap((bar) =>
+        bar.volume === undefined ? [] : [{ time: bar.timestamp as UTCTimestamp, value: bar.volume }],
+      ),
+    )
     chart.timeScale().fitContent()
     setTooltip(undefined)
   }, [chartType, data, i18n.locale])
