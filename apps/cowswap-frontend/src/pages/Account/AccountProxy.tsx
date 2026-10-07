@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 import { AccountProxyWidgetPage } from 'modules/accountProxy'
 import { PageTitle } from 'modules/application'
 
-export default function AccountProxy(): ReactNode {
+export function AccountProxy(): ReactNode {
   const { i18n } = useLingui()
 
   return (
