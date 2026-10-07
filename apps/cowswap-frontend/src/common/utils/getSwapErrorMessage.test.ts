@@ -76,4 +76,26 @@ describe('getSwapErrorMessage', () => {
 
     expect(getSwapErrorMessage(lookalikeError as unknown as Error, SupportedChainId.MAINNET)).toBe('Bad Request')
   })
+
+  it('shows the backend description for an order book error type with no copy of its own', () => {
+    const error = new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+      errorType: 'InvalidTransaction',
+      description: 'a preparation step names a token program that does not own its mint',
+    })
+
+    expect(getSwapErrorMessage(error, SupportedChainId.MAINNET)).toBe(
+      'A preparation step names a token program that does not own its mint',
+    )
+  })
+
+  // Browsers report an empty statusText over HTTP/2, which leaves the raw error stringifying
+  // to a bare "Error" — the description is the only thing left to show.
+  it('shows the backend description even when the response carries no status text', () => {
+    const error = new OrderBookApiError({ statusText: '' } as Response, {
+      errorType: 'InvalidTransaction',
+      description: 'a preparation step names a token program that does not own its mint',
+    })
+
+    expect(getSwapErrorMessage(error, SupportedChainId.MAINNET)).not.toBe('Error')
+  })
 })
