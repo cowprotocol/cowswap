@@ -131,7 +131,7 @@ function triggerFulfilledOrderSurvey(
     (order) => !getIsBridgeOrder(order) && getUiOrderTypeFromStore(store, chainId, order.uid) !== UiOrderType.TWAP,
   )
 
-  if (firstOrder && !getIsBridgeOrder(firstOrder)) {
+  if (firstOrder) {
     _triggerAppzi(store, chainId, firstOrder.uid, { traded: true })
   }
 }
