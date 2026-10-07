@@ -7,7 +7,7 @@ import { Media, NewTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { TrendingUp } from 'react-feather'
 
-import { ToggleButton } from './PriceChartToggleButton.styled'
+import { TradeIconButton } from 'modules/trade'
 
 import { usePriceChartFeatureFlags } from '../hooks/usePriceChartFeatureFlags'
 import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
@@ -24,7 +24,7 @@ export function PriceChartToggleButton(): ReactNode {
 
   return (
     <NewTooltip content={label} placement="top">
-      <ToggleButton
+      <TradeIconButton
         type="button"
         aria-label={label}
         aria-pressed={isUpToLarge ? undefined : isVisible}
@@ -33,7 +33,7 @@ export function PriceChartToggleButton(): ReactNode {
         onClick={() => (isUpToLarge ? setIsModalOpen(true) : setIsVisible((value) => !value))}
       >
         <TrendingUp aria-hidden="true" />
-      </ToggleButton>
+      </TradeIconButton>
     </NewTooltip>
   )
 }
