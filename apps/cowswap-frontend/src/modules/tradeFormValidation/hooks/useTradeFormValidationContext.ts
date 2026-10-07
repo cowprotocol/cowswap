@@ -41,6 +41,7 @@ import { TradeType } from 'common/modules/tradeNavigation'
 import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
+import { useSolanaNativeShortfall } from './useSolanaNativeShortfall'
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
@@ -109,6 +110,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   })
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
+  const solanaNativeShortfall = useSolanaNativeShortfall()
+
   return useMemo(() => {
     if (!derivedTradeState) return null
 
@@ -146,6 +149,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
       swapMaximumSellAmount,
+      solanaNativeShortfall,
     }
   }, [
     hasFirstLoad,
@@ -182,6 +186,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     canQuote,
     captchaInteractionRequired,
     swapMaximumSellAmount,
+    solanaNativeShortfall,
   ])
 }
 

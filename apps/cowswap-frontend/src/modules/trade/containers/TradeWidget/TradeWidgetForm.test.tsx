@@ -71,6 +71,7 @@ jest.mock('modules/trade', () => ({
 }))
 jest.mock('modules/tradeFormValidation', () => ({
   useGetTradeFormValidation: () => null,
+  useSolanaTradeOverhead: () => null,
   TradeFormValidation: {},
 }))
 

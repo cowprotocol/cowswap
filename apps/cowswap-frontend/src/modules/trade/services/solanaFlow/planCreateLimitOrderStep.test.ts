@@ -135,6 +135,14 @@ describe('planCreateLimitOrderStep', () => {
     expect(step.createsOrder).toBe(true)
   })
 
+  // A limit order creates the same order PDA as a swap; without this declaration the pre-flight
+  // SOL check prices one rent too few and the wallet rejects the transaction at signing time.
+  it('declares the order PDA it creates, so the pre-flight balance check prices its rent', async () => {
+    const { step } = await planCreateLimitOrderStep(buildParams())
+
+    expect(step.fundedAccounts).toEqual([{ size: 264 }])
+  })
+
   it('propagates an SDK failure instead of sending a partial bundle', async () => {
     mockBuildSolanaLimitOrderOrder.mockRejectedValue(new Error('bad amount'))
 
