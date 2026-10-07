@@ -3640,6 +3640,7 @@ msgstr "Wrap operation failed."
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 #: libs/common-const/src/common.ts
+#: libs/common-const/src/common.ts
 msgid "Account Proxy"
 msgstr "Account Proxy"
 

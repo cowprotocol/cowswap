@@ -49,6 +49,7 @@ export const PAGE_TITLES = {
   HOOKS: msg`Hooks`,
   AFFILIATE: msg`Rewards hub - Affiliate`,
   MY_REWARDS: msg`Rewards hub - My Rewards`,
+  ACCOUNT_PROXY: msg`Account Proxy`,
 }
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
