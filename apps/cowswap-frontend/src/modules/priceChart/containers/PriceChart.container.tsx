@@ -9,7 +9,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ChartWrapper } from 'modules/trade'
 
-import { SimplePriceChart } from './SimplePriceChart'
+import { SimplePriceChart } from './SimplePriceChart.container'
 
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
