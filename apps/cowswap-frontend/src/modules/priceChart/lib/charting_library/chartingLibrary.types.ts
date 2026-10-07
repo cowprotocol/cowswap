@@ -1,5 +1,3 @@
-export type ResolutionString = string
-
 export interface Bar {
   close: number
   high: number
@@ -7,6 +5,59 @@ export interface Bar {
   open: number
   time: number
   volume?: number
+}
+
+export interface ChartingLibraryWidgetConstructor {
+  new (options: ChartingLibraryWidgetOptions): IChartingLibraryWidget
+}
+
+export type ChartPropertiesOverrides = Record<string, string | number | boolean>
+
+export interface CustomFormatters {
+  priceFormatterFactory?: () => {
+    format(value: number): string
+  }
+}
+
+export interface DatafeedConfiguration {
+  exchanges: {
+    desc: string
+    name: string
+    value: string
+  }[]
+  supported_resolutions: ResolutionString[]
+  supports_time: boolean
+}
+export interface IBasicDataFeed {
+  getBars(
+    symbolInfo: LibrarySymbolInfo,
+    resolution: ResolutionString,
+    periodParams: PeriodParams,
+    onResult: HistoryCallback,
+    onError: ErrorCallback,
+  ): void
+  onReady(callback: OnReadyCallback): void
+  resolveSymbol(symbolName: string, onResolve: (symbol: LibrarySymbolInfo) => void, onError: ErrorCallback): void
+  searchSymbols(userInput: string, exchange: string, symbolType: string, onResult: SearchSymbolsCallback): void
+  subscribeBars(
+    symbolInfo: LibrarySymbolInfo,
+    resolution: ResolutionString,
+    onRealtimeCallback: (bar: Bar) => void,
+    subscriberUid: string,
+    onResetCacheNeededCallback: () => void,
+  ): void
+  unsubscribeBars(subscriberUid: string): void
+}
+
+export interface IChartingLibraryWidget {
+  activeChart(): ChartApi
+  applyOverrides(overrides: Partial<ChartPropertiesOverrides>): void
+  changeTheme(theme: 'dark' | 'light'): Promise<void>
+  onChartReady(callback: () => void): void
+  remove(): void
+  save(callback: (state: object) => void): void
+  subscribe(event: 'onAutoSaveNeeded', callback: () => void): void
+  unsubscribe(event: 'onAutoSaveNeeded', callback: () => void): void
 }
 
 export interface LibrarySymbolInfo {
@@ -30,6 +81,9 @@ export interface LibrarySymbolInfo {
   volume_precision: number
 }
 
+export type OnReadyCallback = (configuration: DatafeedConfiguration) => void
+export type ResolutionString = string
+
 export interface SearchSymbolResultItem {
   description: string
   exchange: string
@@ -39,61 +93,13 @@ export interface SearchSymbolResultItem {
 }
 
 export type SearchSymbolsCallback = (items: SearchSymbolResultItem[]) => void
-export type OnReadyCallback = (configuration: DatafeedConfiguration) => void
 
-export interface DatafeedConfiguration {
-  exchanges: {
-    desc: string
-    name: string
-    value: string
-  }[]
-  supported_resolutions: ResolutionString[]
-  supports_time: boolean
-}
-
-interface PeriodParams {
-  countBack: number
-  firstDataRequest: boolean
-  from: number
-  to: number
-}
-
-type HistoryCallback = (bars: Bar[], metadata: { nextTime?: number; noData: boolean }) => void
-type ErrorCallback = (reason: string) => void
-
-export interface IBasicDataFeed {
-  getBars(
-    symbolInfo: LibrarySymbolInfo,
-    resolution: ResolutionString,
-    periodParams: PeriodParams,
-    onResult: HistoryCallback,
-    onError: ErrorCallback,
-  ): void
-  onReady(callback: OnReadyCallback): void
-  resolveSymbol(symbolName: string, onResolve: (symbol: LibrarySymbolInfo) => void, onError: ErrorCallback): void
-  searchSymbols(userInput: string, exchange: string, symbolType: string, onResult: SearchSymbolsCallback): void
-  subscribeBars(
-    symbolInfo: LibrarySymbolInfo,
-    resolution: ResolutionString,
-    onRealtimeCallback: (bar: Bar) => void,
-    subscriberUid: string,
-    onResetCacheNeededCallback: () => void,
-  ): void
-  unsubscribeBars(subscriberUid: string): void
-}
-
-export type ChartPropertiesOverrides = Record<string, string | number | boolean>
-
-export interface CustomFormatters {
-  priceFormatterFactory?: () => {
-    format(value: number): string
-  }
-}
-
-interface TimeFrame {
-  description: string
-  resolution: ResolutionString
-  text: string
+interface ChartApi {
+  createStudy(name: string, forceOverlay: boolean, lock: boolean): Promise<string>
+  getAllStudies(): { id: string; name: string }[]
+  removeEntity(id: string, options?: { disableUndo?: boolean }): void
+  setSymbol(symbol: string, callback: () => void): void
+  symbol(): string
 }
 
 interface ChartingLibraryWidgetOptions {
@@ -124,25 +130,20 @@ interface ChartingLibraryWidgetOptions {
   timezone?: string
 }
 
-interface ChartApi {
-  createStudy(name: string, forceOverlay: boolean, lock: boolean): Promise<string>
-  getAllStudies(): { id: string; name: string }[]
-  removeEntity(id: string, options?: { disableUndo?: boolean }): void
-  setSymbol(symbol: string, callback: () => void): void
-  symbol(): string
+type ErrorCallback = (reason: string) => void
+
+type HistoryCallback = (bars: Bar[], metadata: { nextTime?: number; noData: boolean }) => void
+
+interface PeriodParams {
+  countBack: number
+  firstDataRequest: boolean
+  from: number
+  to: number
 }
 
-export interface IChartingLibraryWidget {
-  activeChart(): ChartApi
-  applyOverrides(overrides: Partial<ChartPropertiesOverrides>): void
-  changeTheme(theme: 'dark' | 'light'): Promise<void>
-  onChartReady(callback: () => void): void
-  remove(): void
-  save(callback: (state: object) => void): void
-  subscribe(event: 'onAutoSaveNeeded', callback: () => void): void
-  unsubscribe(event: 'onAutoSaveNeeded', callback: () => void): void
-}
-
-export interface ChartingLibraryWidgetConstructor {
-  new (options: ChartingLibraryWidgetOptions): IChartingLibraryWidget
+interface TimeFrame {
+  title?: string
+  description: string
+  resolution: ResolutionString
+  text: string
 }
