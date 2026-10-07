@@ -1850,8 +1850,8 @@ msgid "Back to review"
 msgstr "Back to review"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
-msgid "Use the advanced TradingView chart."
-msgstr "Use the advanced TradingView chart."
+msgid "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
+msgstr "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
@@ -6089,8 +6089,8 @@ msgid "Action"
 msgstr "Action"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
-msgid "Advanced price chart"
-msgstr "Advanced price chart"
+msgid "Advanced chart"
+msgstr "Advanced chart"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
