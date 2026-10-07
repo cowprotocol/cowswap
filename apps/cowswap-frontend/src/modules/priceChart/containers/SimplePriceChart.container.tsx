@@ -7,14 +7,13 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useTheme } from 'common/hooks/useTheme'
 
-import * as styledEl from './SimplePriceChart.styled'
-
 import { usePriceChartHistory } from '../hooks/usePriceChartHistory'
 import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { PriceChartControls } from '../pure/PriceChartControls'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
 import { SimpleChartCanvas } from '../pure/SimpleChartCanvas'
+import * as styledEl from '../pure/SimplePriceChart.styled'
 import { priceChartPeriodAtom } from '../state/priceChartPeriodAtom'
 import { priceChartTypeAtom } from '../state/priceChartTypeAtom'
 
