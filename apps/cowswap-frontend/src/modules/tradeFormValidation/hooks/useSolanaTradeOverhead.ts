@@ -15,7 +15,7 @@ import {
   useDerivedTradeState,
   useIsWrapOrUnwrap,
 } from 'modules/trade'
-import type { SolanaFundedAccount } from 'modules/trade'
+import type { SolanaFundedAccount, SolanaTradeOverhead } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
@@ -26,11 +26,12 @@ interface OverheadRequest {
 }
 
 /**
- * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve.
- * On a sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
+ * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve
+ * (`required` gates the trade, `maxReserve` adds priority-fee headroom for the MAX button). On a
+ * sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
  * still debits the owner). `null` while unknown or when nothing debits the wallet at all.
  */
-export function useSolanaTradeOverhead(): bigint | null {
+export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const { chainId, account } = useWalletInfo()
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()

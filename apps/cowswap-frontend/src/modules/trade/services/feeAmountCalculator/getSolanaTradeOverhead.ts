@@ -1,4 +1,12 @@
-import { getAccountLenForMint, unpackMint } from '@solana/spl-token'
+import {
+  ACCOUNT_SIZE,
+  ExtensionType,
+  getAccountLen,
+  getAccountTypeOfMintType,
+  getExtensionTypes,
+  TOKEN_2022_PROGRAM_ID,
+  unpackMint,
+} from '@solana/spl-token'
 import { AccountInfo, Connection } from '@solana/web3.js'
 
 import { SolanaFundedAccount } from '../solanaFlow/types'
@@ -10,8 +18,17 @@ const SIGNATURE_FEE_LAMPORTS = 5000n
 // Wallets inject their own ComputeBudget instructions into a transaction that carries none (QA saw a
 // ~200k-CU budget added on a wrap), so the real fee is the base plus a priority fee unknowable at
 // form time. Without headroom, a MAX'd transaction leaves the fee payer below rent exemption by
-// exactly that injected fee. 0.001 SOL covers wallets' auto-fee ceilings.
+// exactly that injected fee. 0.001 SOL covers wallets' auto-fee ceilings. Only `maxReserve` carries
+// it: the shortfall gate must not refuse a payable transaction over an estimate — if an injected fee
+// does push a marginal transaction over, the wallet fails it and `handleSolanaSendError` explains.
 const PRIORITY_FEES_RESERVE_LAMPORTS = 1_000_000n
+
+export interface SolanaTradeOverhead {
+  /** Lamports the transaction is known to need on top of the sell amount — gates the trade button. */
+  required: bigint
+  /** `required` plus headroom for wallet-injected priority fees — what the MAX button reserves. */
+  maxReserve: bigint
+}
 
 export interface SolanaTradeOverheadOptions {
   /** False on a sponsored trade. */
@@ -27,7 +44,7 @@ export async function getSolanaTradeOverhead(
   connection: Connection,
   fundedAccounts: SolanaFundedAccount[],
   { ownerPaysFees = true }: SolanaTradeOverheadOptions = {},
-): Promise<bigint> {
+): Promise<SolanaTradeOverhead> {
   const addresses = fundedAccounts.flatMap(({ address }) => (address ? [address] : []))
   const mints = fundedAccounts.flatMap(({ size }) => (typeof size === 'number' ? [] : [size.mint]))
 
@@ -47,15 +64,29 @@ export async function getSolanaTradeOverhead(
   const sizes = [0, ...unfunded.map(({ size }) => resolveSize(size, mintInfos))]
   const rents = await Promise.all(sizes.map((size) => connection.getMinimumBalanceForRentExemption(size)))
 
-  const fees = ownerPaysFees ? SIGNATURE_FEE_LAMPORTS + PRIORITY_FEES_RESERVE_LAMPORTS : 0n
+  const fees = ownerPaysFees ? SIGNATURE_FEE_LAMPORTS : 0n
+  const required = rents.reduce<bigint>((total, rent) => total + BigInt(rent), fees)
 
-  return rents.reduce<bigint>((total, rent) => total + BigInt(rent), fees)
+  return {
+    required,
+    maxReserve: ownerPaysFees ? required + PRIORITY_FEES_RESERVE_LAMPORTS : required,
+  }
 }
 
 function resolveSize(size: SolanaFundedAccount['size'], mintInfos: Map<string, AccountInfo<Buffer> | null>): number {
   if (typeof size === 'number') return size
 
   const { mint, tokenProgramId } = size
+  const mintState = unpackMint(mint, mintInfos.get(mint.toBase58()) ?? null, tokenProgramId)
 
-  return getAccountLenForMint(unpackMint(mint, mintInfos.get(mint.toBase58()) ?? null, tokenProgramId))
+  if (!tokenProgramId.equals(TOKEN_2022_PROGRAM_ID)) return ACCOUNT_SIZE
+
+  // Not `getAccountLenForMint`: it mis-sizes two cases — it omits the `ImmutableOwner` extension the
+  // associated-token-account program stamps on every Token-2022 account it creates, and it prices
+  // mint-only extensions (mapped to `Uninitialized`) as 4-byte TLV entries the account never carries.
+  const accountExtensions = getExtensionTypes(mintState.tlvData)
+    .map(getAccountTypeOfMintType)
+    .filter((extension) => extension !== ExtensionType.Uninitialized)
+
+  return getAccountLen([...accountExtensions, ExtensionType.ImmutableOwner])
 }

@@ -158,7 +158,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const maxBalance = maxAmountSpend(
     inputCurrencyInfo.balance || undefined,
     isSafeWallet,
-    solanaTradeOverhead ?? undefined,
+    solanaTradeOverhead?.maxReserve,
   )
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 

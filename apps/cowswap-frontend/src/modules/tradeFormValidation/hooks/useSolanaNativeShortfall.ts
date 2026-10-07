@@ -43,7 +43,7 @@ export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
     if (balance === undefined) return null
 
     const sellLamports = isNativeSell && sellAmount ? BigInt(sellAmount.quotient.toString()) : 0n
-    const shortfall = overhead + sellLamports - balance
+    const shortfall = overhead.required + sellLamports - balance
 
     return shortfall > 0n ? CurrencyAmount.fromRawAmount(nativeCurrency, shortfall.toString()) : null
   }, [overhead, chainId, balances, isNativeSell, sellAmount])

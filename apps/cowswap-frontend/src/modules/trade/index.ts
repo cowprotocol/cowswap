@@ -108,5 +108,6 @@ export { planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep
 export { planCreateOrderStep } from './services/solanaFlow/planCreateOrderStep'
 export { planCreateLimitOrderStep } from './services/solanaFlow/planCreateLimitOrderStep'
 export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
+export type { SolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
 export { planSolanaTradeFundedAccounts } from './services/feeAmountCalculator/planSolanaTradeFundedAccounts'
 export type { SolanaFlowStep, SolanaFundedAccount } from './services/solanaFlow/types'
