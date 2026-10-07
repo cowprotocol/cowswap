@@ -5,7 +5,7 @@ import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
 import { AdvancedOrdersSettingsDropdown } from 'modules/advancedOrders/pure/Settings/AdvancedOrdersSettings'
-import { ChartToggleButton } from 'modules/priceChart'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -49,7 +49,7 @@ export function AdvancedOrdersSettings() {
 
   return (
     <ButtonsContainer>
-      <ChartToggleButton />
+      <PriceChartToggleButton />
       <MenuWrapper>
         <Menu>
           <SettingsButton disabled={isSettingsDisabled}>

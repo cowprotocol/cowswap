@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { SegmentedControl, SegmentedControlButton } from '../PriceChartHeader/styled'
+import { SegmentedControl, SegmentedControlButton } from './PriceChartHeader.styled'
 
 export { SegmentedControlButton }
 

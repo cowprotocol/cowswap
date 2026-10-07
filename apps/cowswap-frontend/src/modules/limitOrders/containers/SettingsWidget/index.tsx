@@ -3,7 +3,7 @@ import { ReactNode, useCallback } from 'react'
 
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
-import { ChartToggleButton } from 'modules/priceChart'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -39,7 +39,7 @@ export function SettingsWidget(): ReactNode {
 
   return (
     <ButtonsContainer>
-      <ChartToggleButton />
+      <PriceChartToggleButton />
       <Menu>
         <SettingsButton disabled={isSettingsDisabled} onClick={() => analytics.openSettings()}>
           <SettingsIcon />

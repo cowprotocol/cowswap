@@ -3,11 +3,11 @@ import type { ReactNode } from 'react'
 import { useLingui } from '@lingui/react/macro'
 import { LuCandlestickChart, LuTrendingUp } from 'react-icons/lu'
 
-import * as styledEl from './styled'
+import * as styledEl from './PriceChartControls.styled'
 
-import { TIME_RANGES } from '../../lib/priceChart.constants'
+import { TIME_RANGES } from '../lib/priceChart.constants'
 
-import type { ChartType, TimeRange } from '../../lib/priceChart.types'
+import type { ChartType, TimeRange } from '../lib/priceChart.types'
 
 export interface PriceChartControlsProps {
   chartType: ChartType

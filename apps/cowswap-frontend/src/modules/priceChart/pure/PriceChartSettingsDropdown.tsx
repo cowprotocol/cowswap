@@ -8,17 +8,17 @@ import { Menu } from '@reach/menu-button'
 
 import { SettingsButton, SettingsIcon } from 'modules/trade'
 
-import * as styledEl from './styled'
+import * as styledEl from './PriceChartSettingsDropdown.styled'
 
-import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
+import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
-import type { ExpansionControl } from '../../lib/priceChart.types'
+import type { ExpansionControl } from '../lib/priceChart.types'
 
-interface ChartSettingsDropdownProps {
+interface PriceChartSettingsDropdownProps {
   sizeControl?: ExpansionControl
 }
 
-export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProps): ReactNode {
+export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDropdownProps): ReactNode {
   const { t } = useLingui()
   const [supplyVariant, setSupplyVariant] = useAtom(priceChartSupplyVariantAtom)
 

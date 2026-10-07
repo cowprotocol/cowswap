@@ -6,12 +6,12 @@ import type { Currency } from '@cowprotocol/currency'
 
 import { useLingui } from '@lingui/react/macro'
 
-import * as styledEl from './styled'
+import * as styledEl from './PriceChartHeader.styled'
+import { PriceChartSettingsDropdown } from './PriceChartSettingsDropdown'
 
-import { formatPercentageChange, formatPriceChartValue } from '../../lib/priceChart.utils'
-import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
+import { formatPercentageChange, formatPriceChartValue } from '../lib/priceChart.utils'
 
-import type { ChartMetric, ExpansionControl } from '../../lib/priceChart.types'
+import type { ChartMetric, ExpansionControl } from '../lib/priceChart.types'
 
 interface PriceChartHeaderProps {
   activeCurrency: Currency | undefined
@@ -88,7 +88,7 @@ export function PriceChartHeader({
             ))}
           </styledEl.SegmentedControl>
         ) : null}
-        <ChartSettingsDropdown sizeControl={sizeControl} />
+        <PriceChartSettingsDropdown sizeControl={sizeControl} />
       </styledEl.HeaderControls>
     </styledEl.Header>
   )

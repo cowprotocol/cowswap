@@ -4,11 +4,11 @@ import { formatDateTime } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
-import * as styledEl from './styled'
+import * as styledEl from './PriceChartTooltip.styled'
 
-import { formatPriceChartValue } from '../../lib/priceChart.utils'
+import { formatPriceChartValue } from '../lib/priceChart.utils'
 
-import type { ChartMetric } from '../../lib/priceChart.types'
+import type { ChartMetric } from '../lib/priceChart.types'
 
 const TOOLTIP_HEIGHT = 88
 const TOOLTIP_HEIGHT_WITH_VOLUME = 115

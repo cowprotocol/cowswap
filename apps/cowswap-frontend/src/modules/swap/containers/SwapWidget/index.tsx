@@ -13,7 +13,7 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-import { ChartToggleButton } from 'modules/priceChart'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -186,7 +186,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <ButtonsContainer>
-        <ChartToggleButton />
+        <PriceChartToggleButton />
         <SettingsTab
           recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
           hooksEnabledState={hooksEnabledState}

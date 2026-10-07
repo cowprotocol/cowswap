@@ -7,13 +7,13 @@ import { Media, NewTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { TrendingUp } from 'react-feather'
 
-import { ToggleButton } from './styled'
+import { ToggleButton } from './PriceChartToggleButton.styled'
 
-import { usePriceChartFeatureFlags } from '../../hooks/usePriceChartFeatureFlags'
-import { priceChartModalOpenAtom } from '../../state/priceChartModalOpenAtom'
-import { priceChartVisibleAtom } from '../../state/priceChartVisibleAtom'
+import { usePriceChartFeatureFlags } from '../hooks/usePriceChartFeatureFlags'
+import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
+import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
-export function ChartToggleButton(): ReactNode {
+export function PriceChartToggleButton(): ReactNode {
   const { isPriceChartEnabled } = usePriceChartFeatureFlags()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
