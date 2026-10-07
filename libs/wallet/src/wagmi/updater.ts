@@ -116,8 +116,8 @@ function useWalletDetails(account?: Address, connector?: Connector): WalletDetai
 
       // EOAs can always sign off-chain. MetaMask smart accounts also support EIP-1271 off-chain
       // signing. All other smart contract wallets (Coinbase Smart Wallet, ERC-4337, Safe, etc.)
-      // must use on-chain pre-signing.
-      allowsOffchainSigning: !isSmartContractWallet || isMetaMask,
+      // must use on-chain pre-signing. Unknown wallet type must not assume EOA.
+      allowsOffchainSigning: isSmartContractWallet === false || (isSmartContractWallet === true && isMetaMask),
       isSafeApp,
     }
   }, [isSmartContractWallet, isSafeApp, isMetaMask, walletName, icon, ensName])

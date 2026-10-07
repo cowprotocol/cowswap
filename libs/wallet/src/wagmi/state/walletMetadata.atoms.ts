@@ -1,5 +1,5 @@
 import { atom } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { atomWithRefresh, loadable } from 'jotai/utils'
 
 import { getPublicClient, logWallet, normalizeError } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
@@ -84,9 +84,6 @@ export const isEoaAtom = atom((get): boolean | null => {
   if (isSafeViaWc === null) return null
   if (get(isSafeWalletAtom) || isSafeViaWc) return false
 
-  // If the RPC check fails, fall back to the Safe detection above.
-  if (get(accountTypeLoadableAtom).state === 'hasError') return true
-
   const accountType = get(accountTypeAtom)
   if (accountType === null) return null
 
@@ -95,7 +92,8 @@ export const isEoaAtom = atom((get): boolean | null => {
   return true
 })
 
-export const accountTypeAsyncAtom = atom(async (get) => {
+/** Async account-type lookup. Call `set(accountTypeAsyncAtom)` to retry after a failed getCode. */
+export const accountTypeAsyncAtom = atomWithRefresh(async (get) => {
   const { chainId, account, connector } = get(walletInfoAtom)
 
   if (!chainId || !account || !connector) return null
@@ -135,17 +133,12 @@ export const accountTypeAtom = atom((get): AccountType | null => {
 
 /**
  * True for Safe wallets and bytecode contracts.
- * Returns null while the code lookup is in flight, and false if that lookup fails.
+ * Returns null while the code lookup is in flight or if that lookup fails.
  */
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
   if (get(isSafeWalletAtom)) return true
 
-  const accountTypeState = get(accountTypeLoadableAtom)
-
-  if (accountTypeState.state === 'hasError') return false
-  if (accountTypeState.state === 'loading') return null
-
-  const accountType = accountTypeState.data ?? null
+  const accountType = get(accountTypeAtom)
 
   if (accountType === null) return null
 

@@ -1,6 +1,9 @@
 import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountType } from '@cowprotocol/types'
+
+import { waitFor } from '@testing-library/react'
 
 import {
   accountTypeAsyncAtom,
@@ -375,8 +378,8 @@ describe('walletMetadata atoms', () => {
     expect(store.get(isSmartContractWalletAtom)).toBe(true)
   })
 
-  it('treats a failed account-type lookup as not a smart-contract wallet', async () => {
-    mockGetCode.mockRejectedValue(new Error('rpc down'))
+  it('keeps wallet type unknown when account-type lookup fails, and allows retry', async () => {
+    mockGetCode.mockRejectedValueOnce(new Error('rpc down')).mockResolvedValueOnce('0x')
 
     const store = createStore()
 
@@ -392,6 +395,15 @@ describe('walletMetadata atoms', () => {
     await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
 
     expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
+    expect(store.get(isSmartContractWalletAtom)).toBe(null)
+    expect(store.get(isEoaAtom)).toBe(null)
+
+    store.set(accountTypeAsyncAtom)
+
+    await waitFor(() => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+    })
+    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
     expect(store.get(isEoaAtom)).toBe(true)
   })
