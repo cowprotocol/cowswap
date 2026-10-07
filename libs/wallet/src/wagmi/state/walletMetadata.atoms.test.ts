@@ -153,6 +153,7 @@ describe('walletMetadata atoms', () => {
       allowsOffchainSigning: false,
       isSafeApp: false,
       walletName: 'Safe',
+      wcPeerName: 'Safe',
       ensName: undefined,
       icon: undefined,
     })
@@ -406,5 +407,37 @@ describe('walletMetadata atoms', () => {
     expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
     expect(store.get(isEoaAtom)).toBe(true)
+  })
+})
+
+describe('isNetworkSwitchUnsupportedAtom peer name', () => {
+  it('keeps network switching when WalletConnect peer metadata is missing and the display name fell back to Safe', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.WALLET_CONNECT_V2,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 0,
+      chainId: SupportedChainId.MAINNET,
+    })
+    store.set(walletDetailsAtom, {
+      isSmartContractWallet: true,
+      isSupportedWallet: true,
+      allowsOffchainSigning: false,
+      isSafeApp: false,
+      walletName: 'Safe',
+      ensName: undefined,
+      icon: undefined,
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(true)
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
   })
 })

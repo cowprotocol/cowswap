@@ -20,7 +20,7 @@ import { isSafeConnector } from './utils/isSafeConnector.utils'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
@@ -142,14 +142,17 @@ export function WalletUpdater(): null {
   }, [chainId, active, account, connector, setWalletInfo])
 
   useEffect(() => {
+    const rawWalletName = walletDetails.walletName
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
-    const walletName = walletDetails.walletName ?? getWalletTypeLabel(walletType)
+    const walletName = rawWalletName ?? getWalletTypeLabel(walletType)
+    const wcPeerName = connector?.type === ConnectionType.WALLET_CONNECT_V2 ? rawWalletName : undefined
 
     setWalletDetails({
       ...walletDetails,
       walletName,
+      wcPeerName,
     })
-  }, [walletDetails, setWalletDetails, gnosisSafeInfo])
+  }, [connector, walletDetails, setWalletDetails, gnosisSafeInfo])
 
   useEffect(() => {
     setGnosisSafeInfo(gnosisSafeInfo)
