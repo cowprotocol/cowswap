@@ -121,7 +121,10 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         <ConfirmAmounts
           variant={hasSigningPlan ? 'slim' : 'default'}
           inputCurrencyInfo={props.inputCurrencyInfo}
-          outputCurrencyInfo={props.outputCurrencyInfo}
+          outputCurrencyInfo={{
+            ...props.outputCurrencyInfo,
+            secondaryAmount: _props.outputCurrencyInfo.secondaryAmount,
+          }}
           priceImpact={props.priceImpact}
         />
 

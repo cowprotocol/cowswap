@@ -14,6 +14,7 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
 
 interface UseTwapConfirmCurrencyPreviewReturn {
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -44,13 +45,16 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const isSafeViaWc = useIsSafeViaWc()
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
-  const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
+  const { amountAfterFees, amountAfterSlippage } = receiveAmountInfo
+    ? getOrderTypeReceiveAmounts(receiveAmountInfo)
+    : { amountAfterFees: null, amountAfterSlippage: null }
   const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
 
   const inputSymbolLabel = inputCurrencyAmount?.currency?.symbol || t`token`
   const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
   const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const showExpectedToReceive = isEoaTwap && (isConfirming || !!pendingTrade || !!eoaTwapSigningStep)
+  const isEoaTwapSuccess = eoaTwapSigningStep?.step === EoaTwapSigningSteps.Success
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -59,20 +63,30 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
     label: t`Sell amount`,
   } satisfies CurrencyPreviewInfo
 
-  const outputCurrencyInfo = showExpectedToReceive
-    ? {
-        amount: amountAfterFees,
-        fiatAmount: amountAfterFeesUsd,
-        balance: outputCurrencyBalance,
-        label: t`Expected to receive`,
-        prefix: '≈',
-      }
-    : {
-        amount: outputCurrencyAmount,
-        fiatAmount: outputCurrencyFiatAmount,
-        balance: outputCurrencyBalance,
-        label: t`Receive (before fees)`,
-      }
+  const outputCurrencyInfo = (
+    showExpectedToReceive
+      ? {
+          amount: amountAfterFees,
+          fiatAmount: amountAfterFeesUsd,
+          balance: outputCurrencyBalance,
+          label: t`Expected to receive`,
+          prefix: '≈',
+          secondaryAmount:
+            isEoaTwapSuccess && amountAfterSlippage
+              ? {
+                  amount: amountAfterSlippage,
+                  prefix: `${t`Min.`} `,
+                  tooltip: t`Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens.`,
+                }
+              : undefined,
+        }
+      : {
+          amount: outputCurrencyAmount,
+          fiatAmount: outputCurrencyFiatAmount,
+          balance: outputCurrencyBalance,
+          label: t`Receive (before fees)`,
+        }
+  ) satisfies CurrencyPreviewInfo
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 
