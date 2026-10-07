@@ -5,9 +5,9 @@ import { LuCandlestickChart, LuTrendingUp } from 'react-icons/lu'
 
 import * as styledEl from './styled'
 
-import { TIME_RANGES } from '../../lib/priceChart.utils'
+import { TIME_RANGES } from '../../lib/priceChart.constants'
 
-import type { ChartType, TimeRange } from '../../lib/priceChart.utils'
+import type { ChartType, TimeRange } from '../../lib/priceChart.types'
 
 export interface PriceChartControlsProps {
   chartType: ChartType

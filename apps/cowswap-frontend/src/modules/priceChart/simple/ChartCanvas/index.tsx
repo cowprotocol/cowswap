@@ -26,8 +26,7 @@ import {
 } from '../../lib/priceChart.utils'
 import { PriceChartTooltip } from '../../pure/PriceChartTooltip'
 
-import type { Candle, ChartMetric } from '../../lib/chart.types'
-import type { ChartType } from '../../lib/priceChart.utils'
+import type { Candle, ChartMetric, ChartType } from '../../lib/priceChart.types'
 import type { ChartTooltipData } from '../../pure/PriceChartTooltip'
 
 export interface ChartCanvasProps {

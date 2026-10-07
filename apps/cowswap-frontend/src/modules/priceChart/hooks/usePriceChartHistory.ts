@@ -7,8 +7,7 @@ import type { Currency } from '@cowprotocol/currency'
 import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
 import { getTimeRangeConfig } from '../lib/priceChart.utils'
 
-import type { Candle, ChartMetric, SupplyVariant } from '../lib/priceChart.types'
-import type { TimeRange } from '../lib/priceChart.utils'
+import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
 export function usePriceChartHistory(
   currency: Currency | undefined,
@@ -38,6 +37,7 @@ export function usePriceChartHistory(
               const { from, interval, to } = getTimeRangeConfig(period, Date.now() / 1000)
               return loadPriceChartHistory(currency, from, to, interval, 'price', supplyVariant)
             },
+            staleTime: 0,
             retry: false,
           })
 
@@ -45,6 +45,7 @@ export function usePriceChartHistory(
         }
       : skipToken,
     placeholderData: keepPreviousData,
+    refetchInterval: 30_000,
     retry: false,
   })
 }

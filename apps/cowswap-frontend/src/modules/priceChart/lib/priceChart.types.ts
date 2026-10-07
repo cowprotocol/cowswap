@@ -1,4 +1,4 @@
-import type { CANDLE_INTERVALS } from './priceChart.constants'
+import type { CANDLE_INTERVALS, TIME_RANGES } from './priceChart.constants'
 
 export interface Candle {
   timestamp: number
@@ -15,9 +15,13 @@ export type ChartMetric = 'marketCap' | 'price'
 
 export type ChartPair = 'sell-usd' | 'buy-usd'
 
+export type ChartType = 'candles' | 'line'
+
 export interface ExpansionControl {
   isExpanded: boolean
   onToggle: () => void
 }
 
 export type SupplyVariant = 'circulating' | 'total'
+
+export type TimeRange = (typeof TIME_RANGES)[number]

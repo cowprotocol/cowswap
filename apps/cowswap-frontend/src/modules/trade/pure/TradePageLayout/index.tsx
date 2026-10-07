@@ -58,8 +58,11 @@ export const PageWrapper = styled.div<{
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
     grid-area: secondary;
     flex: 1;
-    height: 100%;
-    max-height: 100%;
+
+    &:not(.price-chart) {
+      height: 100%;
+      max-height: 100%;
+    }
   }
 `
 
@@ -121,4 +124,5 @@ export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
   max-width: ${({ $isExpanded, $inDrawer }) => ($isExpanded || $inDrawer ? 'none' : '780px')};
   height: 450px;
   min-height: 450px;
+  max-height: 450px;
 `

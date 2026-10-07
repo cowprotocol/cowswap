@@ -1,6 +1,6 @@
 import { createCowLogger, formatLocaleNumber } from '@cowprotocol/common-utils'
 
-import type { Candle, CandleInterval } from './priceChart.types'
+import type { Candle, CandleInterval, TimeRange } from './priceChart.types'
 import type { HistogramData, PriceFormatBuiltIn, UTCTimestamp } from 'lightweight-charts'
 
 export const logPriceChart = createCowLogger('PriceChart')
@@ -12,12 +12,6 @@ interface TimeRangeConfig {
   interval: CandleInterval
   to: number
 }
-
-export const TIME_RANGES = ['1H', '1D', '1W', '1M', '1Y', 'All'] as const
-
-export type ChartType = 'candles' | 'line'
-
-export type TimeRange = (typeof TIME_RANGES)[number]
 
 export function formatPercentageChange(change: number, locale: string): string {
   return new Intl.NumberFormat(locale, {

@@ -12,8 +12,7 @@ import { usePriceChartHistory } from './usePriceChartHistory'
 
 import { fetchPriceHistory, fetchTokenSupply } from '../api'
 
-import type { Candle, ChartMetric, SupplyVariant } from '../lib/priceChart.types'
-import type { TimeRange } from '../lib/priceChart.utils'
+import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
 jest.mock('../api', () => ({ fetchPriceHistory: jest.fn(), fetchTokenSupply: jest.fn() }))
 
@@ -65,7 +64,7 @@ describe('usePriceChartHistory', () => {
     expect(fetchPriceHistory).not.toHaveBeenCalled()
   })
 
-  it('reuses price history across metric and supply changes', async () => {
+  it('fetches fresh prices for new metric and supply queries', async () => {
     const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
     await waitFor(() => expect(result.current.data).toEqual(BARS))
     expect(fetchTokenSupply).not.toHaveBeenCalled()
@@ -78,7 +77,27 @@ describe('usePriceChartHistory', () => {
 
     rerender({ ...INITIAL_PROPS, supplyVariant: 'total' })
     await waitFor(() => expect(result.current.data).toEqual(BARS))
-    expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
+    expect(fetchPriceHistory).toHaveBeenCalledTimes(3)
+  })
+
+  it('fetches fresh history every 30 seconds despite the default cache freshness', async () => {
+    jest.useFakeTimers()
+    const { result, unmount } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
+    try {
+      await waitFor(() => expect(result.current.data).toEqual(BARS))
+      const nextBars = [{ ...BARS[0], close: 7 }]
+      jest.mocked(fetchPriceHistory).mockResolvedValueOnce(nextBars)
+
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(30_000)
+      })
+
+      await waitFor(() => expect(result.current.data).toEqual(nextBars))
+      expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
+    } finally {
+      unmount()
+      jest.useRealTimers()
+    }
   })
 
   it('requests new history when the range changes', async () => {
