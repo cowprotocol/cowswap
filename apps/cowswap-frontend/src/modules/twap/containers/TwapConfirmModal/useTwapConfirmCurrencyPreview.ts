@@ -14,7 +14,6 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
-import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
 
 interface UseTwapConfirmCurrencyPreviewReturn {
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -55,7 +54,6 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const isConfirmDisabled = !!localFormValidation || isInsufficientBalance
   const isEoaTwap = isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const showExpectedToReceive = isEoaTwap && (isConfirming || !!pendingTrade || !!eoaTwapSigningStep)
-  const isEoaTwapSuccess = eoaTwapSigningStep?.step === EoaTwapSigningSteps.Success
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -72,14 +70,13 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
           balance: outputCurrencyBalance,
           label: t`Expected to receive`,
           prefix: '≈',
-          secondaryAmount:
-            isEoaTwapSuccess && amountAfterSlippage
-              ? {
-                  amount: amountAfterSlippage,
-                  prefix: `${t`Min.`} `,
-                  tooltip: t`Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens.`,
-                }
-              : undefined,
+          secondaryAmount: amountAfterSlippage
+            ? {
+                amount: amountAfterSlippage,
+                prefix: `${t`Min.`} `,
+                tooltip: t`Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens.`,
+              }
+            : undefined,
         }
       : {
           amount: outputCurrencyAmount,
