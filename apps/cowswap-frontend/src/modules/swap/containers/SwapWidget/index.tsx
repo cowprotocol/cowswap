@@ -194,7 +194,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
       />
     ),
     bottomContent: useCallback(
-      (tradeWarnings: ReactNode | null) => {
+      (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {
         return (
           <>
             {bottomContent}
@@ -204,6 +204,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
+            {captcha}
             <TradeButtons
               isTradeContextReady={doTrade.contextIsReady}
               openNativeWrapModal={openNativeWrapModal}
