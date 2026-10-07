@@ -8184,6 +8184,7 @@ msgstr "Select"
 #~ msgstr "Order created"
 
 #: apps/cowswap-frontend/src/modules/priceChart/containers/PriceChart.container.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/containers/PriceChart.container.tsx
 msgid "Price chart"
 msgstr "Price chart"
 

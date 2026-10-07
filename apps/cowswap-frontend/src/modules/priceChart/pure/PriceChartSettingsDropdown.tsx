@@ -6,9 +6,7 @@ import { NewTooltip, SettingsBox, SettingsBoxGroup, SettingsDropdownSection } fr
 import { useLingui } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 
-import { SettingsButton, SettingsIcon } from 'modules/trade'
-
-import * as styledEl from './PriceChartSettingsDropdown.styled'
+import { SettingsButton, SettingsIcon, SettingsMenu, SettingsMenuFlyout } from 'modules/trade'
 
 import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
@@ -24,22 +22,13 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
 
   return (
     <Menu>
-      <NewTooltip content={t`Chart settings`} placement="top">
-        <SettingsButton aria-label={t`Chart settings`}>
-          <SettingsIcon />
-        </SettingsButton>
-      </NewTooltip>
-      <styledEl.SettingsPopover
-        position={(buttonRect, menuRect) =>
-          buttonRect && menuRect
-            ? {
-                left: Math.max(16, buttonRect.right - menuRect.width) + window.scrollX,
-                top: buttonRect.bottom + window.scrollY,
-              }
-            : {}
-        }
-      >
-        <styledEl.SettingsList>
+      <SettingsMenu>
+        <NewTooltip content={t`Chart settings`} placement="top">
+          <SettingsButton aria-label={t`Chart settings`}>
+            <SettingsIcon />
+          </SettingsButton>
+        </NewTooltip>
+        <SettingsMenuFlyout portal={false}>
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
               <SettingsBox
@@ -57,8 +46,8 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
               />
             </SettingsBoxGroup>
           </SettingsDropdownSection>
-        </styledEl.SettingsList>
-      </styledEl.SettingsPopover>
+        </SettingsMenuFlyout>
+      </SettingsMenu>
     </Menu>
   )
 }

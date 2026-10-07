@@ -119,6 +119,7 @@ export const SecondaryWrapper = styled.div.attrs({
 `
 
 export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
+  overflow: visible;
   width: 100%;
   padding: 10px 14px;
   max-width: ${({ $isExpanded, $inDrawer }) => ($isExpanded || $inDrawer ? 'none' : '780px')};

@@ -11,7 +11,7 @@ import { Menu } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 
 import { PriceChartSettings } from 'modules/priceChart'
-import { SettingsIcon } from 'modules/trade/pure/Settings'
+import { SettingsButton, SettingsIcon, SettingsMenu, SettingsMenuFlyout } from 'modules/trade'
 import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container'
 import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container'
 
@@ -19,7 +19,6 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import * as styledEl from './SettingsDropdown.styled'
 import { SettingsTabController } from './SettingsTabController.container'
 
 interface SettingsTabProps {
@@ -84,11 +83,11 @@ export function SettingsDropdown({
   return (
     <Menu>
       <SettingsTabController buttonRef={menuButtonRef}>
-        <styledEl.StyledMenu className={className}>
-          <styledEl.StyledMenuButton ref={menuButtonRef} id="open-settings-dialog-button" disabled={isSettingsDisabled}>
+        <SettingsMenu className={className}>
+          <SettingsButton ref={menuButtonRef} id="open-settings-dialog-button" disabled={isSettingsDisabled}>
             <SettingsIcon />
-          </styledEl.StyledMenuButton>
-          <styledEl.MenuFlyout portal={false}>
+          </SettingsButton>
+          <SettingsMenuFlyout portal={false}>
             <SettingsDropdownSection title={t`Swap Settings`}>
               <TransactionSlippageInput />
               <DeadlineTransactionSettings deadlineState={deadlineState} />
@@ -148,8 +147,8 @@ export function SettingsDropdown({
                 <PriceChartSettings />
               </SettingsBoxGroup>
             </SettingsDropdownSection>
-          </styledEl.MenuFlyout>
-        </styledEl.StyledMenu>
+          </SettingsMenuFlyout>
+        </SettingsMenu>
       </SettingsTabController>
     </Menu>
   )
