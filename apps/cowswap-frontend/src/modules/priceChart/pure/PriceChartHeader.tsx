@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
+import { CloseIconButton } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -19,9 +20,11 @@ interface PriceChartHeaderProps {
   metric: ChartMetric
   onSelectMetric: (metric: ChartMetric) => void
   onSelectCurrency: (currency: Currency) => void
+  onClose?: () => void
   price?: number
   sizeControl?: ExpansionControl
   currencies: Currency[]
+  controls?: ReactNode
 }
 
 export function PriceChartHeader({
@@ -30,9 +33,11 @@ export function PriceChartHeader({
   metric,
   onSelectMetric,
   onSelectCurrency,
+  onClose,
   price,
   sizeControl,
   currencies,
+  controls,
 }: PriceChartHeaderProps): ReactNode {
   const { i18n, t } = useLingui()
   const formattedValue = price === undefined ? undefined : formatPriceChartValue(price, i18n.locale)
@@ -71,7 +76,7 @@ export function PriceChartHeader({
           ) : null}
         </styledEl.PriceSummary>
       </styledEl.Heading>
-      <styledEl.HeaderControls>
+      <styledEl.Toolbar>
         {currencies.length > 1 ? (
           <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
             {currencies.map((currency) => (
@@ -88,7 +93,11 @@ export function PriceChartHeader({
             ))}
           </styledEl.SegmentedControl>
         ) : null}
+        {controls}
+      </styledEl.Toolbar>
+      <styledEl.HeaderControls>
         <PriceChartSettingsDropdown sizeControl={sizeControl} />
+        {onClose && <CloseIconButton onClick={onClose} />}
       </styledEl.HeaderControls>
     </styledEl.Header>
   )

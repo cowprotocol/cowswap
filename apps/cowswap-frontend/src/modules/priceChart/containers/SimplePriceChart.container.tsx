@@ -1,6 +1,7 @@
 import { useAtom } from 'jotai'
 import { ReactNode, useMemo } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency } from '@cowprotocol/currency'
 
 import { useLingui } from '@lingui/react/macro'
@@ -25,6 +26,7 @@ export interface SimplePriceChartProps {
   metric: ChartMetric
   onSelectMetric: (metric: ChartMetric) => void
   onSelectCurrency: (currency: Currency) => void
+  onClose?: () => void
   sizeControl?: ExpansionControl
   supplyVariant: SupplyVariant
 }
@@ -36,11 +38,13 @@ export function SimplePriceChart({
   metric,
   onSelectMetric,
   onSelectCurrency,
+  onClose,
   sizeControl,
   currencies,
   supplyVariant,
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
+  const isMobile = useMediaQuery('(max-width: 600px)')
   const { primary, text, success, danger } = useTheme()
   const [period, setPeriod] = useAtom(priceChartPeriodAtom)
   const [chartType, setChartType] = useAtom(priceChartTypeAtom)
@@ -54,6 +58,16 @@ export function SimplePriceChart({
 
   if (!currencies.length) return <styledEl.EmptyState>Select a token to load the price chart.</styledEl.EmptyState>
 
+  const controls = (
+    <PriceChartControls
+      compact={isMobile}
+      chartType={chartType}
+      onChartTypeChange={setChartType}
+      onPeriodChange={setPeriod}
+      period={period}
+    />
+  )
+
   return (
     <styledEl.PanelWrapper>
       <PriceChartHeader
@@ -62,9 +76,11 @@ export function SimplePriceChart({
         metric={metric}
         onSelectMetric={onSelectMetric}
         onSelectCurrency={onSelectCurrency}
+        onClose={onClose}
         price={priceSummary?.price}
         sizeControl={sizeControl}
         currencies={currencies}
+        controls={isMobile ? controls : undefined}
       />
       <styledEl.ChartFrame>
         <SimpleChartCanvas
@@ -81,12 +97,7 @@ export function SimplePriceChart({
           </styledEl.OverlayState>
         ) : null}
       </styledEl.ChartFrame>
-      <PriceChartControls
-        chartType={chartType}
-        onChartTypeChange={setChartType}
-        onPeriodChange={setPeriod}
-        period={period}
-      />
+      {!isMobile && controls}
     </styledEl.PanelWrapper>
   )
 }

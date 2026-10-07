@@ -126,4 +126,19 @@ export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
   height: 450px;
   min-height: 450px;
   max-height: 450px;
+
+  ${({ $inDrawer }) =>
+    $inDrawer &&
+    css`
+      min-height: 0;
+      max-height: none;
+      height: calc(100dvh - 32px);
+      ${Media.upToSmall()} {
+        height: calc(100dvh - 16px);
+      }
+
+      ${Media.upToExtraSmall()} {
+        height: 100dvh;
+      }
+    `}
 `

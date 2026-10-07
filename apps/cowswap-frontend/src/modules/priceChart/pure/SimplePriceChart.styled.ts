@@ -9,6 +9,10 @@ export const PanelWrapper = styled.div`
   height: 100%;
   width: 100%;
   min-width: 0;
+
+  @media (max-width: 600px) {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
 `
 
 export const ChartFrame = styled.div`

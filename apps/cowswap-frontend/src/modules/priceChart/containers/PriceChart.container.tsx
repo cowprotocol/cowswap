@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency } from '@cowprotocol/currency'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -53,6 +53,7 @@ export function PriceChart({ inputCurrency, outputCurrency, expandable = false }
     metric,
     onSelectMetric: setMetric,
     onSelectCurrency: handleSelectCurrency,
+    onClose: isUpToLarge ? () => setIsModalOpen(false) : undefined,
     sizeControl:
       expandable && !isUpToLarge ? { isExpanded, onToggle: () => setIsExpanded((value) => !value) } : undefined,
     currencies,
@@ -70,15 +71,13 @@ export function PriceChart({ inputCurrency, outputCurrency, expandable = false }
   )
 
   return (
-    <DialogOrInline isDialog={isUpToLarge} isOpen={isModalOpen} onOpenChange={setIsModalOpen}>
-      {isUpToLarge ? (
-        <Modal.Root>
-          <ModalHeader sticky title={t`Price chart`} titleAs={Dialog.Title} onClose={() => setIsModalOpen(false)} />
-          {chart}
-        </Modal.Root>
-      ) : (
-        chart
-      )}
+    <DialogOrInline
+      isDialog={isUpToLarge}
+      isOpen={isModalOpen}
+      onOpenChange={setIsModalOpen}
+      a11yTitle={t`Price chart`}
+    >
+      {isUpToLarge ? <Modal.Root>{chart}</Modal.Root> : chart}
     </DialogOrInline>
   )
 }

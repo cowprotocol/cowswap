@@ -1,6 +1,9 @@
 import type { ReactNode } from 'react'
 
+import { ContextMenu, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
+
 import { useLingui } from '@lingui/react/macro'
+import { ChevronDown } from 'react-feather'
 import { LuCandlestickChart, LuTrendingUp } from 'react-icons/lu'
 
 import * as styledEl from './PriceChartControls.styled'
@@ -10,6 +13,7 @@ import { TIME_RANGES } from '../lib/priceChart.constants'
 import type { ChartType, TimeRange } from '../lib/priceChart.types'
 
 export interface PriceChartControlsProps {
+  compact?: boolean
   chartType: ChartType
   onChartTypeChange: (chartType: ChartType) => void
   onPeriodChange: (period: TimeRange) => void
@@ -22,6 +26,7 @@ interface ChartTypeControlProps {
 }
 
 export function PriceChartControls({
+  compact = false,
   chartType,
   onChartTypeChange,
   onPeriodChange,
@@ -30,19 +35,37 @@ export function PriceChartControls({
   return (
     <styledEl.FooterControls>
       <ChartTypeControl chartType={chartType} onChange={onChartTypeChange} />
-      <styledEl.Controls aria-label="Price chart period" role="group">
-        {TIME_RANGES.map((item) => (
-          <styledEl.SegmentedControlButton
-            $isActive={item === period}
-            aria-pressed={item === period}
-            key={item}
-            onClick={() => onPeriodChange(item)}
-            type="button"
-          >
-            {item}
-          </styledEl.SegmentedControlButton>
-        ))}
-      </styledEl.Controls>
+      {compact ? (
+        <styledEl.PeriodMenu>
+          <ContextMenu>
+            <styledEl.PeriodMenuButton aria-label={`Price chart period: ${period}`}>
+              {period}
+              <ChevronDown size={16} aria-hidden="true" />
+            </styledEl.PeriodMenuButton>
+            <ContextMenuList>
+              {TIME_RANGES.map((item) => (
+                <ContextMenuItem key={item} onSelect={() => onPeriodChange(item)}>
+                  {item}
+                </ContextMenuItem>
+              ))}
+            </ContextMenuList>
+          </ContextMenu>
+        </styledEl.PeriodMenu>
+      ) : (
+        <styledEl.Controls aria-label="Price chart period" role="group">
+          {TIME_RANGES.map((item) => (
+            <styledEl.SegmentedControlButton
+              $isActive={item === period}
+              aria-pressed={item === period}
+              key={item}
+              onClick={() => onPeriodChange(item)}
+              type="button"
+            >
+              {item}
+            </styledEl.SegmentedControlButton>
+          ))}
+        </styledEl.Controls>
+      )}
     </styledEl.FooterControls>
   )
 }
