@@ -127,7 +127,9 @@ function triggerFulfilledOrderSurvey(
   store: MiddlewareAPI<Dispatch<AnyAction>>,
   { chainId, orders }: OrderActions.FulfillOrdersBatchParams,
 ): void {
-  const firstOrder = orders.find((order) => getUiOrderTypeFromStore(store, chainId, order.uid) !== UiOrderType.TWAP)
+  const firstOrder = orders.find(
+    (order) => !getIsBridgeOrder(order) && getUiOrderTypeFromStore(store, chainId, order.uid) !== UiOrderType.TWAP,
+  )
 
   if (firstOrder && !getIsBridgeOrder(firstOrder)) {
     _triggerAppzi(store, chainId, firstOrder.uid, { traded: true })

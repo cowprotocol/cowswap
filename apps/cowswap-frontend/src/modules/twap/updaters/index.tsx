@@ -13,11 +13,9 @@ import { Erc20ApproveWidget } from 'modules/erc20Approve'
 import { CreatedInOrderBookOrdersUpdater } from './CreatedInOrderBookOrdersUpdater'
 import { FallbackHandlerVerificationUpdater } from './FallbackHandlerVerificationUpdater'
 import { FullAmountQuoteUpdater } from './FullAmountQuoteUpdater'
-import { PartOrdersUpdater } from './PartOrdersUpdater'
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { QuoteParamsUpdater } from './QuoteParamsUpdater'
 import { TriggerAppziTwapSurveyUpdater } from './TriggerAppziTwapSurveyUpdater'
-import { TwapOrdersUpdater } from './TwapOrdersUpdater'
 
 import { COMPOSABLE_COW_POLLER_ADDRESS } from '../composable-cow-poller/composable-cow-poller.constants'
 import { useTwapSlippage } from '../hooks/useTwapSlippage'
@@ -31,8 +29,7 @@ export function TwapUpdaters(): ReactNode {
   const { enablePartialApprovalBySettings } = useAtomValue(advancedOrdersSettingsAtom)
 
   const isSafe = isSafeWallet || isSafeViaWc
-  const shouldLoadTwapOrders = !!(isSafe && account && composableCowContract.address)
-  const composableCowChainId = composableCowContract.chainId
+  const hasSafeContext = !!(isSafe && account && composableCowContract.address)
   // Safe funds settle through the Vault Relayer; EOA funds are pulled just in time by the poller.
   const spenderAddress = chainId
     ? isSafe
@@ -46,21 +43,15 @@ export function TwapUpdaters(): ReactNode {
     <>
       <TriggerAppziTwapSurveyUpdater />
       <TradeSpenderOverrideUpdater spenderAddress={spenderAddress} />
-      <CreatedInOrderBookOrdersUpdater />
+      {!isSafe && <CreatedInOrderBookOrdersUpdater />}
       <QuoteParamsUpdater />
       <AppDataUpdater orderClass="twap" slippageBips={percentToBps(twapOrderSlippage)} />
       <QuoteObserverUpdater />
       <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
-      {shouldLoadTwapOrders && (
+      {hasSafeContext && (
         <>
           <FullAmountQuoteUpdater />
           <FallbackHandlerVerificationUpdater />
-          <PartOrdersUpdater />
-          <TwapOrdersUpdater
-            composableCowContract={composableCowContract}
-            safeAddress={account}
-            chainId={composableCowChainId}
-          />
         </>
       )}
     </>
