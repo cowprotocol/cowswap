@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { areAddressesEqual, Nullish } from '@cowprotocol/cow-sdk'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
@@ -32,9 +32,8 @@ import {
   useNonEvmReceiverConfirmed,
   useTradePriceImpact,
 } from 'modules/trade'
-import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TradeType } from 'common/modules/tradeNavigation'
@@ -45,6 +44,7 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
+import { isUnsupportedTokenInQuote } from '../utils/isUnsupportedTokenInQuote.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -192,25 +192,4 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
-}
-
-function isUnsupportedTokenInQuote(
-  state: TradeQuoteState,
-  inputCurrency: Nullish<Currency>,
-  outputCurrency: Nullish<Currency>,
-): boolean {
-  if (!(state.error instanceof QuoteApiError) || state.error.type !== QuoteApiErrorCodes.UnsupportedToken) {
-    return false
-  }
-
-  const { errorQuoteParams } = state
-
-  if (!errorQuoteParams || !inputCurrency || !outputCurrency) return true
-
-  return (
-    errorQuoteParams.sellTokenChainId === inputCurrency.chainId &&
-    errorQuoteParams.buyTokenChainId === outputCurrency.chainId &&
-    areAddressesEqual(errorQuoteParams.sellTokenAddress, getCurrencyAddress(inputCurrency)) &&
-    areAddressesEqual(errorQuoteParams.buyTokenAddress, getCurrencyAddress(outputCurrency))
-  )
 }
