@@ -5,7 +5,7 @@ import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
-import { getOrderTypeReceiveAmounts, useTradeConfirmState } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useFreezeWhileConfirming, useTradeConfirmState } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -37,7 +37,8 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
     outputCurrencyFiatAmount,
     outputCurrencyBalance,
   } = useAdvancedOrdersDerivedState()
-  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const liveReceiveAmountInfo = useScaledReceiveAmountInfo()
+  const receiveAmountInfo = useFreezeWhileConfirming(liveReceiveAmountInfo)
   const localFormValidation = useTwapFormState()
   const { isConfirming, pendingTrade } = useTradeConfirmState()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
