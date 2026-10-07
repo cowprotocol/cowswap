@@ -40,7 +40,12 @@ function AccountTitle({ id, name, pathname }: AccountTitleProps): ReactNode {
 }
 
 function getPropsFromRoute(route: string): string[] {
-  if (isAccountProxyRoute(route)) {
+  if (
+    matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
+    matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
+  ) {
     return ['account-proxy', t`Account Proxy`]
   }
 
@@ -58,15 +63,6 @@ function getPropsFromRoute(route: string): string[] {
     default:
       return []
   }
-}
-
-function isAccountProxyRoute(route: string): boolean {
-  return (
-    !!matchPath(RoutesEnum.ACCOUNT_PROXIES, route) ||
-    !!matchPath(RoutesEnum.ACCOUNT_PROXY, route) ||
-    !!matchPath(RoutesEnum.ACCOUNT_PROXY_RECOVER, route) ||
-    !!matchPath(RoutesEnum.ACCOUNT_PROXY_HELP, route)
-  )
 }
 
 function TitleWithFeedback({ id, name }: TitleWithFeedbackProps): ReactNode {
@@ -97,13 +93,11 @@ export const AccountOverview = (): ReactNode => {
 }
 
 export default function Account(): ReactNode {
-  const { i18n } = useLingui()
   const { pathname } = useLocation()
   const [id, name] = getPropsFromRoute(pathname)
 
   return (
     <Wrapper>
-      {isAccountProxyRoute(pathname) && <PageTitle title={i18n._(PAGE_TITLES.ACCOUNT_PROXY)} />}
       <AccountMenu />
       <AccountPageWrapper>
         <Content>

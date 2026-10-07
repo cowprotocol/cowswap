@@ -16,7 +16,6 @@ import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import {
-  AccountProxyWidgetPage,
   AccountProxyHelpPage,
   AccountProxyPage,
   AccountProxyRecoverPage,
@@ -25,6 +24,7 @@ import {
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
+import AccountProxy from 'pages/Account/AccountProxy'
 import { AdvancedOrdersPage } from 'pages/AdvancedOrders/AdvancedOrders.page'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
@@ -93,7 +93,7 @@ export function RoutesApp(): ReactNode {
       </Route>
 
       <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<Account />}>
-        <Route element={<AccountProxyWidgetPage />}>
+        <Route element={<AccountProxy />}>
           <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
           <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
           <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
