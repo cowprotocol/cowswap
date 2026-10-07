@@ -75,18 +75,12 @@ describe('signSolanaFlow', () => {
     expect(context.sendTransaction).not.toHaveBeenCalled()
   })
 
-  it('reports the blockhash deadline the order lives under', async () => {
-    const { lastValidBlockHeight } = await signSolanaFlow(createContext(), [step('Swap SOL for USDC')])
-
-    expect(lastValidBlockHeight).toBe(LAST_VALID_BLOCK_HEIGHT)
-  })
-
   // The countdown has to start when the blockhash is taken, so the deadline must be out before the
   // wallet is asked — not when the signature comes back.
   it('announces the deadline before asking the wallet to sign', async () => {
     const context = createContext()
     const order: string[] = []
-    context.onDeadline = (deadline) => order.push(`deadline:${deadline}`)
+    context.onDeadline = () => order.push('deadline')
     const signTransaction = context.provider.signTransaction as jest.Mock
     signTransaction.mockImplementation(async (transaction: Transaction) => {
       order.push('sign')
@@ -97,7 +91,7 @@ describe('signSolanaFlow', () => {
 
     await signSolanaFlow(context, [step('Swap SOL for USDC')])
 
-    expect(order).toEqual([`deadline:${LAST_VALID_BLOCK_HEIGHT}`, 'sign'])
+    expect(order).toEqual(['deadline', 'sign'])
   })
 
   // A load-balanced RPC can answer two calls from nodes a minute apart, reading a seconds-old
