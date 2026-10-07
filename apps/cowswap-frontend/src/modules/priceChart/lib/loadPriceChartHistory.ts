@@ -2,7 +2,8 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { getAddressKey, isSupportedChain } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
-import { fetchPriceHistory, fetchTokenSupply } from '../api'
+import { fetchPriceHistory } from '../api/fetchPriceHistory'
+import { fetchTokenSupply } from '../api/fetchTokenSupply'
 
 import type { Candle, ChartMetric, CandleInterval, SupplyVariant } from './priceChart.types'
 

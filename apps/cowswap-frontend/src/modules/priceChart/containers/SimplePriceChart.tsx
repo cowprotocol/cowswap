@@ -3,7 +3,10 @@ import { ReactNode, useMemo } from 'react'
 
 import type { Currency } from '@cowprotocol/currency'
 
-import { ChartCanvas } from './ChartCanvas'
+import { useLingui } from '@lingui/react/macro'
+
+import { useTheme } from 'common/hooks/useTheme'
+
 import * as styledEl from './SimplePriceChart.styled'
 
 import { usePriceChartHistory } from '../hooks/usePriceChartHistory'
@@ -11,6 +14,7 @@ import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { PriceChartControls } from '../pure/PriceChartControls'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
+import { SimpleChartCanvas } from '../pure/SimpleChartCanvas'
 import { priceChartPeriodAtom } from '../state/priceChartPeriodAtom'
 import { priceChartTypeAtom } from '../state/priceChartTypeAtom'
 
@@ -37,6 +41,8 @@ export function SimplePriceChart({
   currencies,
   supplyVariant,
 }: SimplePriceChartProps): ReactNode {
+  const { i18n } = useLingui()
+  const { primary, text, success, danger } = useTheme()
   const [period, setPeriod] = useAtom(priceChartPeriodAtom)
   const [chartType, setChartType] = useAtom(priceChartTypeAtom)
   const {
@@ -62,7 +68,14 @@ export function SimplePriceChart({
         currencies={currencies}
       />
       <styledEl.ChartFrame>
-        <ChartCanvas data={data} chartType={chartType} metric={metric} showTooltip={!showStatus} />
+        <SimpleChartCanvas
+          data={data}
+          chartType={chartType}
+          metric={metric}
+          showTooltip={!showStatus}
+          locale={i18n.locale}
+          colors={{ primary, text, success, danger }}
+        />
         {showStatus ? (
           <styledEl.OverlayState>
             <PriceChartStatus assetSymbol={activeCurrency?.symbol} isPending={isPending} isError={isError} />

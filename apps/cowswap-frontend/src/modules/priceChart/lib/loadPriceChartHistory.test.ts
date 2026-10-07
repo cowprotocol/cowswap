@@ -2,12 +2,11 @@ import { USDC_MAINNET } from '@cowprotocol/common-const'
 
 import { loadMarketCapSupply, loadPriceChartHistory } from './loadPriceChartHistory'
 
-import { fetchPriceHistory, fetchTokenSupply } from '../api'
+import { fetchPriceHistory } from '../api/fetchPriceHistory'
+import { fetchTokenSupply } from '../api/fetchTokenSupply'
 
-jest.mock('../api', () => ({
-  fetchPriceHistory: jest.fn(),
-  fetchTokenSupply: jest.fn(),
-}))
+jest.mock('../api/fetchPriceHistory', () => ({ fetchPriceHistory: jest.fn() }))
+jest.mock('../api/fetchTokenSupply', () => ({ fetchTokenSupply: jest.fn() }))
 
 const CURRENCY = USDC_MAINNET
 

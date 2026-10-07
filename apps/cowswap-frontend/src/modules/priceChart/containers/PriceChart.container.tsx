@@ -9,13 +9,14 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ChartWrapper } from 'modules/trade'
 
-import { usePriceChartVisibility } from '../../hooks/usePriceChartVisibility'
-import { SimplePriceChart } from '../../simple/SimplePriceChart'
-import { priceChartExpandedAtom } from '../../state/priceChartExpandedAtom'
-import { priceChartMetricAtom } from '../../state/priceChartMetricAtom'
-import { priceChartModalOpenAtom } from '../../state/priceChartModalOpenAtom'
-import { priceChartPairAtom } from '../../state/priceChartPairAtom'
-import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
+import { SimplePriceChart } from './SimplePriceChart'
+
+import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
+import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
+import { priceChartMetricAtom } from '../state/priceChartMetricAtom'
+import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
+import { priceChartPairAtom } from '../state/priceChartPairAtom'
+import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
 export interface PriceChartProps {
   inputCurrency: Currency | null

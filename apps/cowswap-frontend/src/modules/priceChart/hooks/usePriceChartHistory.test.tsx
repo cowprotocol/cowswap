@@ -10,11 +10,13 @@ import { act, renderHook, waitFor } from '@testing-library/react'
 
 import { usePriceChartHistory } from './usePriceChartHistory'
 
-import { fetchPriceHistory, fetchTokenSupply } from '../api'
+import { fetchPriceHistory } from '../api/fetchPriceHistory'
+import { fetchTokenSupply } from '../api/fetchTokenSupply'
 
 import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
-jest.mock('../api', () => ({ fetchPriceHistory: jest.fn(), fetchTokenSupply: jest.fn() }))
+jest.mock('../api/fetchPriceHistory', () => ({ fetchPriceHistory: jest.fn() }))
+jest.mock('../api/fetchTokenSupply', () => ({ fetchTokenSupply: jest.fn() }))
 
 const CURRENCY = USDC_MAINNET
 const BARS: Candle[] = [{ timestamp: 1, open: 1, high: 3, low: 1, close: 2, volume: 5 }]

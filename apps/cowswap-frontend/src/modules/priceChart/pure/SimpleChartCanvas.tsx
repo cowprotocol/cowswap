@@ -1,6 +1,5 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 
-import { useLingui } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import {
   AreaSeries,
@@ -15,21 +14,26 @@ import {
   type UTCTimestamp,
 } from 'lightweight-charts'
 
-import { useTheme } from 'common/hooks/useTheme'
-
-import * as styledEl from './ChartCanvas.styled'
+import { PriceChartTooltip } from './PriceChartTooltip'
+import * as styledEl from './SimpleChartCanvas.styled'
 
 import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
-import { PriceChartTooltip } from '../pure/PriceChartTooltip'
 
+import type { ChartTooltipData } from './PriceChartTooltip'
 import type { Candle, ChartMetric, ChartType } from '../lib/priceChart.types'
-import type { ChartTooltipData } from '../pure/PriceChartTooltip'
 
-export interface ChartCanvasProps {
+export interface SimpleChartCanvasProps {
   data: Candle[]
   chartType: ChartType
   metric: ChartMetric
   showTooltip: boolean
+  locale: string
+  colors: {
+    primary: string
+    text: string
+    success: string
+    danger: string
+  }
 }
 
 interface SimpleChartInstance {
@@ -38,14 +42,16 @@ interface SimpleChartInstance {
   volumeSeries: ISeriesApi<'Histogram'>
 }
 
-// Adapted from Uniswap's GPL-3.0-or-later PriceChartModel and ChartModelCore.
-// Source: https://github.com/Uniswap/interface/tree/main/apps/web/src/components/Charts
-
 // eslint-disable-next-line max-lines-per-function
-export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanvasProps): ReactNode {
+export function SimpleChartCanvas({
+  data,
+  chartType,
+  metric,
+  showTooltip,
+  locale,
+  colors: { primary, text, success, danger },
+}: SimpleChartCanvasProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
-  const { primary, text, success, danger } = useTheme()
-  const { i18n } = useLingui()
   const chartRef = useRef<SimpleChartInstance | null>(null)
   const [tooltip, setTooltip] = useState<ChartTooltipData>()
 
@@ -133,9 +139,9 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
     const priceFormat = getCandlePriceFormat(data)
     chart.applyOptions({
       localization: {
-        locale: i18n.locale,
+        locale,
         priceFormatter: (value: number) =>
-          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, i18n.locale),
+          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale),
       },
     })
     priceSeries.applyOptions({ priceFormat })
@@ -153,12 +159,12 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
     )
     chart.timeScale().fitContent()
     setTooltip(undefined)
-  }, [chartType, data, i18n.locale])
+  }, [chartType, data, locale])
 
   return (
     <>
       <styledEl.Canvas ref={containerRef} />
-      {tooltip && showTooltip ? <PriceChartTooltip data={tooltip} metric={metric} /> : null}
+      {tooltip && showTooltip ? <PriceChartTooltip data={tooltip} metric={metric} locale={locale} /> : null}
     </>
   )
 }

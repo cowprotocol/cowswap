@@ -116,21 +116,21 @@ export function AdvancedOrdersPage(): ReactNode {
         {isUnlocked && (
           <styledEl.SecondaryColumn>
             <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
-            {!hideOrdersTable && isUnlocked && (
+            {!hideOrdersTable && (
               <DialogOrInline
                 isDialog={isUpToLarge}
                 isOpen={isOrdersTableDrawerOpen}
                 onOpenChange={handleOrdersTableDrawerOpenChange}
               >
                 <Modal.Root className="trade-orders-table">
-                  {isUpToLarge ? (
+                  {isUpToLarge && (
                     <ModalHeader
                       sticky
                       title={t`TWAP orders`}
                       titleAs={Dialog.Title}
                       onClose={() => setOrdersTableDrawerOpen(false)}
                     />
-                  ) : null}
+                  )}
                   <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
                     <Suspense fallback={<Loading />}>
                       <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />

@@ -52,21 +52,21 @@ export function RegularLimitOrdersPage(): ReactNode {
       {isUnlocked && (
         <styledEl.SecondaryColumn>
           <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
-          {!hideOrdersTable && isUnlocked && (
+          {!hideOrdersTable && (
             <DialogOrInline
               isDialog={isUpToLarge}
               isOpen={isOrdersTableDrawerOpen}
               onOpenChange={handleOrdersTableDrawerOpenChange}
             >
               <Modal.Root className="trade-orders-table">
-                {isUpToLarge ? (
+                {isUpToLarge && (
                   <ModalHeader
                     sticky
                     title={t`Limit orders`}
                     titleAs={Dialog.Title}
                     onClose={() => setOrdersTableDrawerOpen(false)}
                   />
-                ) : null}
+                )}
                 <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
                   {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
                   <Suspense fallback={<Loading />}>

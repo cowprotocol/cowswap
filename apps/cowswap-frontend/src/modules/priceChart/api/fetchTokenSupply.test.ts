@@ -5,8 +5,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { fetchTokenSupply } from './fetchTokenSupply'
 
 jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
   fetchWithTimeout: jest.fn(),
-  getWrappedToken: jest.requireActual('@cowprotocol/common-utils').getWrappedToken,
 }))
 
 const mockedFetchWithTimeout = jest.mocked(fetchWithTimeout)
