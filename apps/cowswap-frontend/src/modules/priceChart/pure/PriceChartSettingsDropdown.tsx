@@ -34,7 +34,7 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
               <SettingsBox
                 title={t`Maximum width`}
                 tooltip={t`Expand the price chart to use more space.`}
-                checked={sizeControl?.isExpanded ?? false}
+                checked={sizeControl?.isExpanded ?? true}
                 toggle={() => sizeControl?.onToggle()}
                 disabled={!sizeControl}
               />
