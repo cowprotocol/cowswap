@@ -366,9 +366,10 @@ async function postSponsoredBundle(
       steps,
     )
 
-    // The real blockhash outlives the capped window, so the chain-level check alone would pass a
-    // signature the screen already told the user to abandon (or one from a retried-past attempt).
-    // Judged at the moment of signing: the post-sign RPC round-trip must not count against the user.
+    // Judged by the countdown's own clock, never by a block-height read-back: the load-balanced RPC
+    // can answer ~a minute apart between two calls and so declare a seconds-old blockhash dead
+    // (false "window closed" with the timer still running). The order book re-checks blockhash
+    // liveness itself, so an optimistic hand-over costs one round-trip at worst.
     if (!isCurrentAttempt() || hasShownWindowClosed(signedAtMs)) {
       throw getSigningWindowClosedError()
     }
