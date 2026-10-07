@@ -2,8 +2,8 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { Nullish } from '@cowprotocol/cow-sdk'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
+import { areAddressesEqual, Nullish } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useIsXstockToken, useTryFindToken } from '@cowprotocol/tokens'
@@ -68,7 +68,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { state: approvalState } = useApproveState(amountToApprove)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
-    useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
+    useIsTradeUnsupported(inputCurrency, outputCurrency) ||
+    isUnsupportedTokenInQuote(tradeQuote, inputCurrency, outputCurrency)
   const isInputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(inputCurrency))
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
@@ -193,6 +194,23 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   return currency
 }
 
-function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
+function isUnsupportedTokenInQuote(
+  state: TradeQuoteState,
+  inputCurrency: Nullish<Currency>,
+  outputCurrency: Nullish<Currency>,
+): boolean {
+  if (!(state.error instanceof QuoteApiError) || state.error.type !== QuoteApiErrorCodes.UnsupportedToken) {
+    return false
+  }
+
+  const { errorQuoteParams } = state
+
+  if (!errorQuoteParams || !inputCurrency || !outputCurrency) return true
+
+  return (
+    errorQuoteParams.sellTokenChainId === inputCurrency.chainId &&
+    errorQuoteParams.buyTokenChainId === outputCurrency.chainId &&
+    areAddressesEqual(errorQuoteParams.sellTokenAddress, getCurrencyAddress(inputCurrency)) &&
+    areAddressesEqual(errorQuoteParams.buyTokenAddress, getCurrencyAddress(outputCurrency))
+  )
 }
