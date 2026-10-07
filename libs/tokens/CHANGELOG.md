@@ -1,5 +1,40 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.13.1...tokens-v3.14.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat(token-lists): remove curated token lists (#8261)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(tokens): empty state instead of loader when no favorite tokens (#8189)
+
+- fix: prevent symbol names in the url to crash the page (#8245)
+
+- fix(solana): add solana native token icon (#8262)
+
+- fix(tokens): remove RWA token lists for US users (#8299)
+
+- fix: add USDS as favorite to ethereum (#8214)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/types@4.12.0
+
 ## [3.13.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.13.0...tokens-v3.13.1) (2026-09-29)
 
 ### Patch Changes

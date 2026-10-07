@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useStore } from 'jotai'
 import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
@@ -25,11 +25,11 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
 import { WithModalProvider } from 'utils/withModalProvider'
 
-import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+import { useHandleOrderPlacement, UseHandleOrderPlacementResult } from './useHandleOrderPlacement'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { WithMockedWeb3 } from '../../../test-utils'
-import { TradeConfirmActions } from '../../trade'
+import { tradeConfirmStateAtom, TradeConfirmActions } from '../../trade'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 
@@ -418,5 +418,39 @@ describe('useHandleOrderPlacement', () => {
       // Assert - override should remain true after failure
       expect(atomResult.current[0]).toBe(true)
     })
+  })
+  it('ignores an older attempt that settles after a newer order was placed from a remounted widget', async () => {
+    let rejectFirstWalletRequest: () => void = () => undefined
+    mockTradeFlow.mockImplementationOnce(
+      () => new Promise((_resolve, reject) => (rejectFirstWalletRequest = () => reject(new Error('User rejected')))),
+    )
+    mockTradeFlow.mockImplementationOnce(() => new Promise(() => undefined))
+    const onError = jest.spyOn(tradeConfirmActions, 'onError')
+
+    const renderPlacement = (): ReturnType<typeof renderHook<UseHandleOrderPlacementResult, unknown>> =>
+      renderHook(() => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions), {
+        wrapper,
+      })
+    const first = renderPlacement()
+    let firstAttempt: Promise<void> = Promise.resolve()
+
+    await act(async () => {
+      firstAttempt = first.result.current.callback()
+    })
+    first.unmount()
+    const { result: confirmState } = renderHook(() => useStore(), { wrapper })
+    const previousState = confirmState.current.get(tradeConfirmStateAtom)
+    confirmState.current.set(tradeConfirmStateAtom, { ...previousState, sessionId: previousState.sessionId + 1 })
+    const second = renderPlacement()
+    await act(async () => {
+      void second.result.current.callback()
+    })
+    await act(async () => {
+      rejectFirstWalletRequest()
+      await firstAttempt
+    })
+
+    expect(onError).not.toHaveBeenCalled()
+    onError.mockRestore()
   })
 })

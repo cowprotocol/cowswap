@@ -1,7 +1,13 @@
+import { getIsToken2022 } from '@cowprotocol/common-const'
+import { jotaiStore } from '@cowprotocol/core'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk } from '@cowprotocol/sdk-trading-solana'
+import { tokensByAddressAtom } from '@cowprotocol/tokens'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
 
 import { SolanaQuoteAndPost } from '../types'
@@ -34,6 +40,8 @@ export async function getSolanaQuote(
     partiallyFillable,
   } = quoteParams
 
+  const tokenProgramId = await getTokenProgramIdResolver()
+
   const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
     {
       ownerAddress: owner ?? account,
@@ -46,6 +54,11 @@ export async function getSolanaQuote(
       kind,
       partiallyFillable,
       validForSeconds: quoteParams.validFor,
+      // Both token accounts in the intent are derived from these, and the SDK defaults to the classic
+      // SPL Token program: left unset, a Token-2022 order names accounts the mint's own program does not
+      // own, and the order book rejects the whole transaction with `InvalidTransaction`.
+      sellTokenProgramId: tokenProgramId(sellTokenAddress),
+      buyTokenProgramId: tokenProgramId(buyTokenAddress),
       // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
       // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
       slippageBps: quoteParams.swapSlippageBps,
@@ -64,4 +77,15 @@ export async function getSolanaQuote(
     postSwapOrderFromQuote: () =>
       Promise.reject(new Error('Solana orders are created by solanaFlow via sendSolanaFlow, not from the quote')),
   }
+}
+
+/**
+ * Reads the token program from the list's Token-2022 flag, the same source `planDelegateStep` approves
+ * against — resolving it from the mint instead would cost an RPC round-trip on every quote poll. A mint
+ * missing from the list falls back to the classic program, as it does everywhere else.
+ */
+async function getTokenProgramIdResolver(): Promise<(address: string) => PublicKey> {
+  const { tokens } = await jotaiStore.get(tokensByAddressAtom)
+
+  return (address) => (getIsToken2022(tokens[getAddressKey(address)]) ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID)
 }

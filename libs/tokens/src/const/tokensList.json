@@ -16,10 +16,12 @@
     },
     {
       "priority": 4,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/f5a82fca4b2a81aa8fc1ce65b8982f36d6cd40f4/tokenlist.json"
     },
     {
       "priority": 5,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
@@ -75,6 +77,7 @@
     },
     {
       "priority": 6,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],
@@ -166,10 +169,12 @@
     },
     {
       "priority": 4,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/f5a82fca4b2a81aa8fc1ce65b8982f36d6cd40f4/tokenlist.json"
     },
     {
       "priority": 5,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     },
     {
@@ -214,6 +219,7 @@
     },
     {
       "priority": 3,
+      "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
     }
   ],

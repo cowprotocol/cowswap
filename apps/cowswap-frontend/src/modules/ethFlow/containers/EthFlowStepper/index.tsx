@@ -1,13 +1,12 @@
 import { ReactNode } from 'react'
 
-import { formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
+import { formatSymbol, getIsNativeToken, isOrderExpired } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { isOrderExpired } from 'legacy/state/orders/utils'
 
 import { SmartOrderStatus } from 'modules/ethFlow/pure/EthFlowStepper/constants'
 
@@ -111,7 +110,7 @@ function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTr
 }
 
 function isEthFlowOrderExpired(order: Order | undefined): boolean {
-  return order?.status === 'expired' || isOrderExpired({ validTo: order?.validTo as number })
+  return !!order && (order.status === OrderStatus.EXPIRED || isOrderExpired(order))
 }
 
 function mapOrderToEthFlowStepperState(

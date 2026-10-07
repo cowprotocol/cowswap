@@ -1,9 +1,8 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { StatefulValue } from '@cowprotocol/types'
-import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -31,8 +30,6 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
-import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -108,19 +105,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   } = useSwapDerivedState()
   const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const { account } = useWalletInfo()
-  const isEagerConnectInProgress = useIsEagerConnectInProgress()
-
-  const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
   const isEoaEthFlow = useIsEoaEthFlow()
-
-  useEffect(() => {
-    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
-    setIsHydrated(true)
-  }, [])
 
   useEffect(() => {
     if (isEoaEthFlow && !isSellOrder(orderKind)) {
@@ -192,22 +179,9 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
-  const isConnected = Boolean(account)
-  const isNetworkUnsupported = useIsProviderNetworkUnsupported()
-  const isNetworkDeprecated = useIsProviderNetworkDeprecated()
-
-  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
-  const shouldShowLockScreen =
-    isHydrated &&
-    !isUnlocked &&
-    !isNetworkUnsupported &&
-    !isNetworkDeprecated &&
-    !isInjectedWidget() &&
-    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
-
   const slots: TradeWidgetSlots = {
     topContent,
-    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
+    lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
