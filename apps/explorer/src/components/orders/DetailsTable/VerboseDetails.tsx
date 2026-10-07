@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 
 import { AppDataItem } from './items/AppDataItem'
-import { CostAndFeesItem } from './items/CostAndFeesItem'
 import { ExecutionPriceItem } from './items/ExecutionPriceItem'
 import { FilledItem } from './items/FilledItem'
 import { HooksItem } from './items/HooksItem'
@@ -79,8 +78,6 @@ export function VerboseDetails({
       <FilledItem order={order} showFillsButton={showFillsButton} viewFills={viewFills} />
 
       <OrderSurplusItem order={order} />
-
-      <CostAndFeesItem order={order} />
 
       {showSolverDetails && (
         <SolvedByItem

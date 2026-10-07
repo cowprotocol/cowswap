@@ -19,7 +19,6 @@ import {
   QuoteObserverUpdater,
   SetupLimitOrderAmountsFromUrlUpdater,
   TriggerAppziLimitOrdersSurveyUpdater,
-  PromoBannerUpdater,
   limitOrdersDerivedStateAtom,
   useLimitOrdersDerivedStateToFill,
 } from 'modules/limitOrders'
@@ -49,7 +48,6 @@ export function LimitOrdersPage(): ReactNode {
       <QuoteObserverUpdater />
       <ExecutionPriceUpdater />
       <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
-      <PromoBannerUpdater />
       {isAlternative ? (
         <>
           <AlternativeLimitOrderUpdater />
