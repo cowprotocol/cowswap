@@ -1,6 +1,9 @@
+import type { QueryClient } from '@tanstack/react-query'
+
 import { normalizeError } from '@cowprotocol/common-utils'
 
-import { loadPriceChartHistory } from './loadPriceChartHistory'
+import { toMarketCapBars } from './loadPriceChartHistory'
+import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
 import { findChartSymbol } from './symbolCatalog'
 import {
   PRO_CHART_DISABLE_BACKFILL_REQUESTS,
@@ -22,6 +25,7 @@ import type {
 type ErrorCallback = GetBarsParameters[4]
 
 interface GetBarsHandlerParams {
+  queryClient: QueryClient
   isDisposed: () => boolean
   latestRequestIdsByTicker: Map<string, number>
   metric: ChartMetric
@@ -36,6 +40,7 @@ type GetBarsParameters = Parameters<IBasicDataFeed['getBars']>
 type HistoryCallback = GetBarsParameters[3]
 
 interface HistoryLoaderParams {
+  queryClient: QueryClient
   isLatestRequest: () => boolean
   onError: ErrorCallback
   onHistoryLoaded: (bars: Candle[]) => void
@@ -51,6 +56,7 @@ interface HistoryLoaderParams {
 type PeriodParams = GetBarsParameters[2]
 
 export function createPriceChartDatafeed({
+  queryClient,
   metric,
   onHistoryLoaded,
   onStatusChange,
@@ -87,6 +93,7 @@ export function createPriceChartDatafeed({
 
   return {
     datafeed: createBasicDatafeed({
+      queryClient,
       isDisposed: () => disposed,
       latestRequestIdsByTicker,
       metric,
@@ -174,6 +181,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
     }
 
     void loadHistory({
+      queryClient: params.queryClient,
       isLatestRequest: () => !params.isDisposed() && params.latestRequestIdsByTicker.get(symbol.ticker) === requestId,
       onError,
       onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId),
@@ -189,6 +197,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
 }
 
 async function fetchHistory(
+  queryClient: QueryClient,
   symbol: PriceChartSymbolDescriptor,
   periodParams: PeriodParams,
   resolution: CandleInterval,
@@ -199,12 +208,16 @@ async function fetchHistory(
   const to = Math.min(periodParams.to, Math.floor(Date.now() / 1000))
   if (periodParams.from >= to) return []
 
-  return loadPriceChartHistory(symbol.currency, periodParams.from, to, resolution, metric, supplyVariant)
+  const bars = await queryClient.fetchQuery(
+    priceHistoryQueryOptions(symbol.currency, periodParams.from, to, resolution),
+  )
+  return metric === 'price' ? bars : toMarketCapBars(symbol.currency, bars, supplyVariant)
 }
 
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
   try {
     const bars = await fetchHistory(
+      params.queryClient,
       params.symbol,
       params.periodParams,
       params.resolution,

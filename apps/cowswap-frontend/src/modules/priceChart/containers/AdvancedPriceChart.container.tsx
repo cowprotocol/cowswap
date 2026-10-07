@@ -1,6 +1,8 @@
 /* eslint-disable max-lines-per-function */
 import { ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 
+import { useQueryClient } from '@tanstack/react-query'
+
 import { normalizeError } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
@@ -44,6 +46,7 @@ export function AdvancedPriceChart({
   supplyVariant,
 }: SimplePriceChartProps): ReactNode {
   const symbols = useMemo(() => createChartSymbols(currencies), [currencies])
+  const queryClient = useQueryClient()
   const activeSymbol = symbols.find((symbol) => activeCurrency?.equals(symbol.currency))
   const { i18n } = useLingui()
   const chartId = useId().replace(/:/g, '')
@@ -56,6 +59,7 @@ export function AdvancedPriceChart({
     () =>
       createPriceChartDatafeed({
         metric,
+        queryClient,
         onHistoryLoaded: (bars) => {
           setPriceSummary(getPriceChartSummary(bars))
           setHasVolume(hasPriceChartVolume(bars))
@@ -64,7 +68,7 @@ export function AdvancedPriceChart({
         symbols,
         supplyVariant,
       }),
-    [metric, supplyVariant, symbols],
+    [queryClient, metric, supplyVariant, symbols],
   )
 
   useEffect(() => {
