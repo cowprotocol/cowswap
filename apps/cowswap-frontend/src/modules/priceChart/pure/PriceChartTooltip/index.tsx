@@ -6,7 +6,7 @@ import * as styledEl from './styled'
 
 import { formatPriceChartValue } from '../../lib/priceChart.utils'
 
-import type { ChartMetric } from '../../lib/chart.types'
+import type { ChartMetric } from '../../lib/priceChart.types'
 
 const TOOLTIP_HEIGHT = 88
 const TOOLTIP_HEIGHT_WITH_VOLUME = 115

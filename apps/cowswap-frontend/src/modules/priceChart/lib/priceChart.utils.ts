@@ -1,6 +1,6 @@
 import { createCowLogger, formatLocaleNumber } from '@cowprotocol/common-utils'
 
-import type { Candle, CandleInterval } from './chart.types'
+import type { Candle, CandleInterval } from './priceChart.types'
 import type { HistogramData, PriceFormatBuiltIn, UTCTimestamp } from 'lightweight-charts'
 
 export const logPriceChart = createCowLogger('PriceChart')

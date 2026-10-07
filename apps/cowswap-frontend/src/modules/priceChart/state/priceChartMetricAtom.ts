@@ -2,11 +2,11 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 
-import type { ChartPair } from '../lib/priceChart.types'
+import type { ChartMetric } from '../lib/priceChart.types'
 
-export const priceChartPairAtom = atomWithStorage<ChartPair>(
-  'priceChartSelection:v0',
-  'sell-usd',
+export const priceChartMetricAtom = atomWithStorage<ChartMetric>(
+  'priceChartMetric:v0',
+  'price',
   getJotaiIsolatedStorage(),
   { getOnInit: true },
 )

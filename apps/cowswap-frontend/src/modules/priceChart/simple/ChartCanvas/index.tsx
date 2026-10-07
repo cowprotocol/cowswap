@@ -67,7 +67,7 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
       },
       grid: { horzLines: { visible: false }, vertLines: { visible: false } },
       handleScroll: { horzTouchDrag: true, mouseWheel: false, pressedMouseMove: true, vertTouchDrag: false },
-      handleScale: { axisPressedMouseMove: true, mouseWheel: false, pinch: true },
+      handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
       layout: { background: { color: 'transparent' } },
       rightPriceScale: { borderVisible: false, scaleMargins: { bottom: 0.15, top: 0.2 } },
       timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true, timeVisible: true },

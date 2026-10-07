@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency } from '@cowprotocol/currency'
@@ -12,11 +12,10 @@ import { ChartWrapper } from 'modules/trade'
 import { usePriceChartVisibility } from '../../hooks/usePriceChartVisibility'
 import { SimplePriceChart } from '../../simple/SimplePriceChart'
 import { priceChartExpandedAtom } from '../../state/priceChartExpandedAtom'
+import { priceChartMetricAtom } from '../../state/priceChartMetricAtom'
 import { priceChartModalOpenAtom } from '../../state/priceChartModalOpenAtom'
 import { priceChartPairAtom } from '../../state/priceChartPairAtom'
 import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
-
-import type { ChartMetric } from '../../lib/chart.types'
 
 export interface PriceChartProps {
   inputCurrency: Currency | null
@@ -31,7 +30,7 @@ export function PriceChart({ inputCurrency, outputCurrency, expandable = false }
   const isVisible = usePriceChartVisibility(inputCurrency, outputCurrency)
   const [isExpanded, setIsExpanded] = useAtom(priceChartExpandedAtom)
   const supplyVariant = useAtomValue(priceChartSupplyVariantAtom)
-  const [metric, setMetric] = useState<ChartMetric>('price')
+  const [metric, setMetric] = useAtom(priceChartMetricAtom)
   const currencies = useMemo(
     () => [inputCurrency, outputCurrency].filter((currency): currency is Currency => currency !== null),
     [inputCurrency, outputCurrency],

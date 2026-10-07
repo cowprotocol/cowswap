@@ -5,7 +5,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CANDLE_INTERVALS, PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
 import { logPriceChart } from '../lib/priceChart.utils'
 
-import type { Candle, CandleInterval } from '../lib/chart.types'
+import type { Candle, CandleInterval } from '../lib/priceChart.types'
 
 export interface PriceHistoryQuery {
   address: string

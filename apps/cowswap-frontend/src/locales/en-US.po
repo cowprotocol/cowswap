@@ -724,6 +724,10 @@ msgstr "Sell amount per part (1/{partsCount})"
 #~ msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 #~ msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+msgid "Maximum width"
+msgstr "Maximum width"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "generate"
 #~ msgstr "generate"
@@ -1791,6 +1795,10 @@ msgstr "Eligible volume"
 msgid "Insufficient <0><1/></0> balance detected."
 msgstr "Insufficient <0><1/></0> balance detected."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+msgid "Market Cap is an approximation based on the latest reported supply. Total Supply can include locked, burned, or otherwise non-circulating tokens. When disabled, Circulating Supply will be used."
+msgstr "Market Cap is an approximation based on the latest reported supply. Total Supply can include locked, burned, or otherwise non-circulating tokens. When disabled, Circulating Supply will be used."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
 msgstr "5 Minutes"
@@ -1953,8 +1961,8 @@ msgid "You got an extra"
 msgstr "You got an extra"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
-msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
-msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+#~ msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+#~ msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
@@ -3472,6 +3480,10 @@ msgstr "This is an {cancellationType} cancellation"
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 msgstr "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+msgid "Total Supply for Market Cap"
+msgstr "Total Supply for Market Cap"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
 #~ msgstr "open"
@@ -4149,6 +4161,10 @@ msgstr "You could gain an extra <0><1/></0> compared to using a {swapOrderLink}"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Native currency (e.g ETH)"
 msgstr "Native currency (e.g ETH)"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+#~ msgid "Show opening, closing, high, and low prices for each interval."
+#~ msgstr "Show opening, closing, high, and low prices for each interval."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #~ msgid "Sell amount per part (1/{numOfParts})"
@@ -4909,8 +4925,8 @@ msgstr "This could have happened due to the lack of internet or the release of a
 #~ msgstr "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
-msgid "Total supply for Market Cap"
-msgstr "Total supply for Market Cap"
+#~ msgid "Total supply for Market Cap"
+#~ msgstr "Total supply for Market Cap"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "No open orders"
@@ -7253,8 +7269,8 @@ msgstr "You don't have enough {nativeCurrencySymbol} to cover the network fee. R
 #~ msgstr "at least "
 
 #: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
-msgid "Maximize price chart"
-msgstr "Maximize price chart"
+#~ msgid "Maximize price chart"
+#~ msgstr "Maximize price chart"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "Recover funds from {accountProxyLabelString}"

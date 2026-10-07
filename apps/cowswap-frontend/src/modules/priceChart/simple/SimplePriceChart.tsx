@@ -1,4 +1,5 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { useAtom } from 'jotai'
+import { ReactNode, useMemo } from 'react'
 
 import type { Currency } from '@cowprotocol/currency'
 
@@ -10,9 +11,10 @@ import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { PriceChartControls } from '../pure/PriceChartControls'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
+import { priceChartPeriodAtom } from '../state/priceChartPeriodAtom'
+import { priceChartTypeAtom } from '../state/priceChartTypeAtom'
 
-import type { Candle, ChartMetric, SupplyVariant, ExpansionControl } from '../lib/chart.types'
-import type { ChartType, TimeRange } from '../lib/priceChart.utils'
+import type { Candle, ChartMetric, SupplyVariant, ExpansionControl } from '../lib/priceChart.types'
 
 export interface SimplePriceChartProps {
   activeCurrency: Currency | undefined
@@ -35,8 +37,8 @@ export function SimplePriceChart({
   currencies,
   supplyVariant,
 }: SimplePriceChartProps): ReactNode {
-  const [period, setPeriod] = useState<TimeRange>('1D')
-  const [chartType, setChartType] = useState<ChartType>('line')
+  const [period, setPeriod] = useAtom(priceChartPeriodAtom)
+  const [chartType, setChartType] = useAtom(priceChartTypeAtom)
   const {
     data = EMPTY_CANDLES,
     isPending,

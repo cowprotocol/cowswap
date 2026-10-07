@@ -12,7 +12,7 @@ import * as styledEl from './styled'
 
 import { priceChartSupplyVariantAtom } from '../../state/priceChartSupplyVariantAtom'
 
-import type { ExpansionControl } from '../../lib/chart.types'
+import type { ExpansionControl } from '../../lib/priceChart.types'
 
 interface ChartSettingsDropdownProps {
   sizeControl?: ExpansionControl
@@ -43,15 +43,15 @@ export function ChartSettingsDropdown({ sizeControl }: ChartSettingsDropdownProp
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
               <SettingsBox
-                title={t`Maximize price chart`}
+                title={t`Maximum width`}
                 tooltip={t`Expand the price chart to use more space.`}
                 checked={sizeControl?.isExpanded ?? false}
                 toggle={() => sizeControl?.onToggle()}
                 disabled={!sizeControl}
               />
               <SettingsBox
-                title={t`Total supply for Market Cap`}
-                tooltip={t`Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens.`}
+                title={t`Total Supply for Market Cap`}
+                tooltip={t`Market Cap is an approximation based on the latest reported supply. Total Supply can include locked, burned, or otherwise non-circulating tokens. When disabled, Circulating Supply will be used.`}
                 checked={supplyVariant === 'total'}
                 toggle={() => setSupplyVariant((value) => (value === 'total' ? 'circulating' : 'total'))}
               />

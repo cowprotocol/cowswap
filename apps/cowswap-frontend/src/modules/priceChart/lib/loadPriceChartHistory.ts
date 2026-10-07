@@ -4,7 +4,7 @@ import type { Currency } from '@cowprotocol/currency'
 
 import { fetchPriceHistory, fetchTokenSupply } from '../api'
 
-import type { Candle, ChartMetric, CandleInterval, SupplyVariant } from './chart.types'
+import type { Candle, ChartMetric, CandleInterval, SupplyVariant } from './priceChart.types'
 
 export async function loadMarketCapSupply(currency: Currency, supplyVariant: SupplyVariant): Promise<number> {
   const supplies = await fetchTokenSupply(currency)

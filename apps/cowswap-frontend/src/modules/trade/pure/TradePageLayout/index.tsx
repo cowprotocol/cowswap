@@ -58,7 +58,6 @@ export const PageWrapper = styled.div<{
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
     grid-area: secondary;
     flex: 1;
-    min-height: 200px;
     height: 100%;
     max-height: 100%;
   }
@@ -120,6 +119,6 @@ export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
   width: 100%;
   padding: 10px 14px;
   max-width: ${({ $isExpanded, $inDrawer }) => ($isExpanded || $inDrawer ? 'none' : '780px')};
-  height: ${({ $isExpanded }) => ($isExpanded ? '540px' : '450px')};
-  min-height: ${({ $isExpanded }) => ($isExpanded ? '540px' : '450px')};
+  height: 450px;
+  min-height: 450px;
 `

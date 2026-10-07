@@ -11,7 +11,7 @@ import * as styledEl from './styled'
 import { formatPercentageChange, formatPriceChartValue } from '../../lib/priceChart.utils'
 import { ChartSettingsDropdown } from '../ChartSettingsDropdown'
 
-import type { ChartMetric, ExpansionControl } from '../../lib/chart.types'
+import type { ChartMetric, ExpansionControl } from '../../lib/priceChart.types'
 
 interface PriceChartHeaderProps {
   activeCurrency: Currency | undefined
@@ -62,9 +62,11 @@ export function PriceChartHeader({
           {formattedValue !== undefined && change !== undefined ? (
             <>
               <styledEl.CurrentPrice>{formattedValue}</styledEl.CurrentPrice>
-              <styledEl.PriceChange $isPositive={change >= 0}>
-                {formatPercentageChange(change, i18n.locale)}
-              </styledEl.PriceChange>
+              {Math.abs(change) >= 0.00005 && (
+                <styledEl.PriceChange $isPositive={change >= 0}>
+                  {formatPercentageChange(change, i18n.locale)}
+                </styledEl.PriceChange>
+              )}
             </>
           ) : null}
         </styledEl.PriceSummary>

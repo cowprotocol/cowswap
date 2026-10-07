@@ -7,7 +7,7 @@ import type { Currency } from '@cowprotocol/currency'
 import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
 import { getTimeRangeConfig } from '../lib/priceChart.utils'
 
-import type { Candle, ChartMetric, SupplyVariant } from '../lib/chart.types'
+import type { Candle, ChartMetric, SupplyVariant } from '../lib/priceChart.types'
 import type { TimeRange } from '../lib/priceChart.utils'
 
 export function usePriceChartHistory(

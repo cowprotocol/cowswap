@@ -4,7 +4,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { fetchPriceHistory, type PriceHistoryQuery } from './fetchPriceHistory'
 
-import type { CandleInterval } from '../lib/chart.types'
+import type { CandleInterval } from '../lib/priceChart.types'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   createCowLogger: () => ({ debug: jest.fn(), error: jest.fn(), info: jest.fn(), warn: jest.fn() }),
