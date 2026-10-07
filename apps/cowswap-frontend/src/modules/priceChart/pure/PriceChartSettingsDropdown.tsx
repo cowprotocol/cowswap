@@ -36,8 +36,8 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
               <SettingsBox
-                title={t`Advanced price chart`}
-                tooltip={t`Use the advanced TradingView chart.`}
+                title={t`Advanced chart`}
+                tooltip={t`Turn this on for technical indicators, drawing tools, and more ways to explore price movements.`}
                 checked={chartMode === 'advanced'}
                 toggle={() => setChartMode((value) => (value === 'advanced' ? 'simple' : 'advanced'))}
               />

@@ -7,18 +7,14 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useTheme } from 'common/hooks/useTheme'
 
-import * as styledEl from '../pure/SimplePriceChart.styled'
-import { PanelWrapper, ChartContainer } from '../pure/AdvancedPriceChart.styled'
-import { PriceChartHeader } from '../pure/PriceChartHeader'
-import { PriceChartStatus } from '../pure/PriceChartStatus'
-
 import {
   type ChartPropertiesOverrides,
   type IChartingLibraryWidget,
   loadChartingLibraryWidget,
 } from '../lib/loadChartingLibrary'
-import { hasPriceChartVolume, syncTradingViewVolumeStudy } from '../lib/priceChartVolume.utils'
 import { formatPriceChartValue, getPriceChartSummary, logPriceChart } from '../lib/priceChart.utils'
+import { hasPriceChartVolume, syncTradingViewVolumeStudy } from '../lib/priceChartVolume.utils'
+import { createChartSymbols } from '../lib/symbolCatalog'
 import {
   PRO_CHART_CONTAINER_ID,
   PRO_CHART_CSS_PATH,
@@ -29,10 +25,13 @@ import {
 } from '../lib/tradingView.constants'
 import { createPriceChartDatafeed } from '../lib/tradingViewDatafeed.service'
 import { loadSavedPriceChartState, savePriceChartState } from '../lib/tradingViewPersistence.utils'
+import { PanelWrapper, ChartContainer } from '../pure/AdvancedPriceChart.styled'
+import { PriceChartHeader } from '../pure/PriceChartHeader'
+import { PriceChartStatus } from '../pure/PriceChartStatus'
+import * as styledEl from '../pure/SimplePriceChart.styled'
 
 import type { SimplePriceChartProps } from './SimplePriceChart.container'
 import type { PriceChartHistoryStatus, PriceChartSymbolDescriptor } from '../lib/tradingView.types'
-import { createChartSymbols } from '../lib/symbolCatalog'
 
 export function AdvancedPriceChart({
   activeCurrency,
@@ -208,7 +207,13 @@ function useTradingViewWidget(
           'show_symbol_logo_in_legend',
           'symbol_search_hot_key',
         ],
-        enabled_features: ['hide_resolution_in_legend', 'iframe_loading_compatibility_mode', 'timeframes_toolbar'],
+        enabled_features: [
+          'hide_resolution_in_legend',
+          'iframe_loading_compatibility_mode',
+          'timeframes_toolbar',
+          'header_in_fullscreen_mode',
+          'side_toolbar_in_fullscreen_mode',
+        ],
         favorites: {
           chartTypes: ['Candles', 'LineWithMarkers', 'Baseline'],
           intervals: PRO_CHART_FAVORITE_INTERVALS,
