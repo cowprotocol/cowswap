@@ -59,6 +59,8 @@ export interface ParsedOrderExecutionData {
   executedFee: string | null
   executedFeeToken: string | null
   totalFee: string | null
+  /** Native token wei. */
+  gasCost: string | null
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
@@ -75,6 +77,8 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const executedFee = order.apiAdditionalInfo?.executedFee || null
   const executedFeeToken = order.apiAdditionalInfo?.executedFeeToken || null
   const totalFee = order.apiAdditionalInfo?.totalFee || null
+  // TODO: read it directly once the SDK's EnrichedOrder declares `gasCost`.
+  const gasCost = (order.apiAdditionalInfo as { gasCost?: string | null } | undefined)?.gasCost || null
   const creationTime = new Date(order.creationTime)
   const fulfillmentTime = order.fulfillmentTime
   const fullyFilled = isOrderFilled(order)
@@ -106,6 +110,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     executedFeeAmount,
     executedFee,
     totalFee,
+    gasCost,
     executedPrice,
     fullyFilled,
     partiallyFilled,

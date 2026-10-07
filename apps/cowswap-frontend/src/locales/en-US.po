@@ -731,6 +731,10 @@ msgstr "Sell amount per part (1/{partsCount})"
 msgid "sold"
 msgstr "sold"
 
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/pure/CostsAndFeesBreakdown/CostsAndFeesBreakdown.pure.tsx
+msgid "Paid <0/> in network costs. Shown in {symbol} at the current price."
+msgstr "Paid <0/> in network costs. Shown in {symbol} at the current price."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
 msgstr "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
@@ -1689,6 +1693,10 @@ msgstr "Minimize price impact with TWAP"
 msgid "{months, plural, one {# month} few {# months} many {# months} other {# months}}"
 msgstr "{months, plural, one {# month} few {# months} many {# months} other {# months}}"
 
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
+msgid "Partner {partnerNumber} surplus fee"
+msgstr "Partner {partnerNumber} surplus fee"
+
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/AdvancedOrdersSettings.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
@@ -1744,6 +1752,10 @@ msgstr "Unsupported wallet"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Expanded results from inactive Token Lists"
 msgstr "Expanded results from inactive Token Lists"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/CostsAndFeesField.tsx
+msgid "Costs and fees"
+msgstr "Costs and fees"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "No hooks match your search."
@@ -3937,6 +3949,10 @@ msgstr "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing t
 msgid "Account overview"
 msgstr "Account overview"
 
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
+msgid "Partner {partnerNumber} volume fee"
+msgstr "Partner {partnerNumber} volume fee"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 #~ msgid "Network"
 #~ msgstr "Network"
@@ -4132,6 +4148,7 @@ msgid "Review your swap to get a fresh signing request."
 msgstr "Review your swap to get a fresh signing request."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "Protocol fee"
 msgstr "Protocol fee"
@@ -5905,6 +5922,7 @@ msgid "The winner of the competition is now executing your order on-chain."
 msgstr "The winner of the competition is now executing your order on-chain."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
 msgid "Network costs"
 msgstr "Network costs"
 
@@ -6472,6 +6490,10 @@ msgstr "Clear search input"
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 msgid "You cannot apply your own referral code."
 msgstr "You cannot apply your own referral code."
+
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/pure/CostsAndFeesBreakdown/CostsAndFeesBreakdown.pure.tsx
+msgid "Show more"
+msgstr "Show more"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "The fill price of this order is close or at the market price (<0>fills at <1/></0>, {priceDiff}% from market) and is expected to {filledValue} fill soon."
@@ -7263,6 +7285,10 @@ msgstr "Click \"Approve {wrappedSymbol}\" to try again."
 msgid "Add Pre-Hook Action"
 msgstr "Add Pre-Hook Action"
 
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
+msgid "DAO price improvement share"
+msgstr "DAO price improvement share"
+
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "Page {page} of {maxPage}"
 msgstr "Page {page} of {maxPage}"
@@ -7791,7 +7817,7 @@ msgstr "Pool"
 msgid "Learn more about <0>{orderType} orders ↗</0>"
 msgstr "Learn more about <0>{orderType} orders ↗</0>"
 
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/CostsAndFeesField.tsx
 msgid "Network fees and costs"
 msgstr "Network fees and costs"
 
@@ -7835,6 +7861,10 @@ msgstr "Only A-Z, 0-9, dashes, and underscores are allowed."
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+msgid "The costs and fees charged for this order, totaled per token, with a breakdown into the network costs and each fee applied. It may take a few minutes after execution to show the final value."
+msgstr "The costs and fees charged for this order, totaled per token, with a breakdown into the network costs and each fee applied. It may take a few minutes after execution to show the final value."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"
@@ -8158,6 +8188,10 @@ msgstr "Linked since"
 msgid "Light mode"
 msgstr "Light mode"
 
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
+msgid "Partner {partnerNumber} fee"
+msgstr "Partner {partnerNumber} fee"
+
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The output token cannot be transferred. There may be an issue with the output token."
 msgstr "The output token cannot be transferred. There may be an issue with the output token."
@@ -8261,6 +8295,10 @@ msgstr "This code is taken. Generate another one."
 #: apps/cowswap-frontend/src/modules/wallet/containers/WalletStatusButton/WalletStatusButton.container.tsx
 msgid "Wallet"
 msgstr "Wallet"
+
+#: apps/cowswap-frontend/src/modules/orderCostsAndFees/utils/costLineItems.utils.ts
+msgid "Partner {partnerNumber} price improvement share"
+msgstr "Partner {partnerNumber} price improvement share"
 
 #: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
@@ -9096,6 +9134,7 @@ msgid "Base Account"
 msgstr "Base Account"
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/CostsAndFeesField.tsx
 msgid "Loading"
 msgstr "Loading"
 

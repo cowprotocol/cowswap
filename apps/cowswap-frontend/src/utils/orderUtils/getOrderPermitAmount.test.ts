@@ -54,6 +54,7 @@ describe('getOrderPermitAmount', () => {
       executedFee: null,
       executedFeeToken: null,
       totalFee: null,
+      gasCost: null,
       executedPrice: null,
       activityId: undefined,
       activityTitle: 'Order ID',

@@ -83,6 +83,7 @@ function buildParsedOrder({
       executedFee: '0',
       executedFeeToken: '0x0',
       totalFee: '0',
+      gasCost: null,
       filledPercentDisplay: '100',
       executedPrice: null,
       activityId: 'activity',
