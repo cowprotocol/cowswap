@@ -97,6 +97,10 @@ export function SimpleChartCanvas({
         event.point && typeof event.time === 'number' && price !== undefined
           ? {
               price,
+              ohlc:
+                priceData && 'open' in priceData
+                  ? { open: priceData.open, high: priceData.high, low: priceData.low, close: priceData.close }
+                  : undefined,
               time: event.time,
               volume,
               x: event.point.x,

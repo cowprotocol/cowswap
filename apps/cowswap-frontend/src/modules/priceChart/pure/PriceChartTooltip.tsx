@@ -8,15 +8,16 @@ import * as styledEl from './PriceChartTooltip.styled'
 
 import { formatPriceChartValue } from '../lib/priceChart.utils'
 
-import type { ChartMetric } from '../lib/priceChart.types'
+import type { Candle, ChartMetric } from '../lib/priceChart.types'
 
 const TOOLTIP_HEIGHT = 88
-const TOOLTIP_HEIGHT_WITH_VOLUME = 115
+const TOOLTIP_ROW_HEIGHT = 27
 const TOOLTIP_OFFSET = 12
 const TOOLTIP_WIDTH = 280
 
 export interface ChartTooltipData {
   price: number
+  ohlc?: Pick<Candle, 'open' | 'high' | 'low' | 'close'>
   time: number
   volume?: number
   x: number
@@ -34,16 +35,26 @@ export interface PriceChartTooltipProps {
 export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipProps): ReactNode {
   const { t } = useLingui()
   const placeOnLeft = data.x + TOOLTIP_OFFSET + TOOLTIP_WIDTH > data.chartWidth
-  const halfHeight = (data.volume === undefined ? TOOLTIP_HEIGHT : TOOLTIP_HEIGHT_WITH_VOLUME) / 2
+  const rows = data.ohlc
+    ? [
+        { label: t`Open`, value: data.ohlc.open },
+        { label: t`High`, value: data.ohlc.high },
+        { label: t`Low`, value: data.ohlc.low },
+        { label: t`Close`, value: data.ohlc.close },
+      ]
+    : [{ label: metric === 'marketCap' ? t`Market Cap` : t`Price`, value: data.price }]
+  const halfHeight = (TOOLTIP_HEIGHT + (rows.length - 1 + Number(data.volume !== undefined)) * TOOLTIP_ROW_HEIGHT) / 2
   const x = data.x + (placeOnLeft ? -TOOLTIP_OFFSET : TOOLTIP_OFFSET)
   const y = Math.max(halfHeight, Math.min(data.y, data.chartHeight - halfHeight))
 
   return (
     <styledEl.Tooltip $placement={placeOnLeft ? 'left' : 'right'} $width={TOOLTIP_WIDTH} $x={x} $y={y} role="tooltip">
-      <styledEl.TooltipRow>
-        <styledEl.TooltipLabel>{metric === 'marketCap' ? t`Market Cap` : t`Price`}</styledEl.TooltipLabel>
-        <styledEl.TooltipValue>{formatPriceChartValue(data.price, locale)}</styledEl.TooltipValue>
-      </styledEl.TooltipRow>
+      {rows.map(({ label, value }) => (
+        <styledEl.TooltipRow key={label}>
+          <styledEl.TooltipLabel>{label}</styledEl.TooltipLabel>
+          <styledEl.TooltipValue>{formatPriceChartValue(value, locale)}</styledEl.TooltipValue>
+        </styledEl.TooltipRow>
+      ))}
       {data.volume === undefined ? null : (
         <styledEl.TooltipRow>
           <styledEl.TooltipLabel>{t`Volume`}</styledEl.TooltipLabel>
