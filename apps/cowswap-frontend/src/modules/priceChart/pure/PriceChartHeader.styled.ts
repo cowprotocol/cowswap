@@ -3,6 +3,7 @@ import { UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const Header = styled.div`
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
@@ -10,6 +11,16 @@ export const Header = styled.div`
 
   @media (max-width: 600px) {
     grid-template-columns: minmax(0, 1fr) auto;
+
+    .chart-settings {
+      position: static;
+    }
+
+    .chart-settings [data-reach-menu-list] {
+      min-width: 0;
+      width: 100%;
+      max-width: 20.125rem;
+    }
   }
 `
 

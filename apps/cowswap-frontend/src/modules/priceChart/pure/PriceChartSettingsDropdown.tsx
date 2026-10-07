@@ -22,7 +22,7 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
 
   return (
     <Menu>
-      <SettingsMenu>
+      <SettingsMenu className="chart-settings">
         <NewTooltip content={t`Chart settings`} placement="top">
           <SettingsButton aria-label={t`Chart settings`}>
             <SettingsIcon />
