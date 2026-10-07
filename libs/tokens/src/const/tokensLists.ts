@@ -7,7 +7,9 @@ import { ListSourceConfig, ListsSourcesByNetwork } from '../types'
 
 export const LP_TOKEN_LISTS = lpTokensList as Array<ListSourceConfig>
 
-export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks((chainId) => tokensList[chainId])
+export const DEFAULT_TOKENS_LISTS: ListsSourcesByNetwork = mapSupportedNetworks(
+  (chainId) => tokensList[chainId] as Array<ListSourceConfig>,
+)
 
 export const ONDO_TOKENS_LIST_SOURCE = tokensList[SupportedChainId.MAINNET][3].source
 

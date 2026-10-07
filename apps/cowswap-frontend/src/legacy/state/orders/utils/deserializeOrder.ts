@@ -1,10 +1,10 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { isOrderExpired } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { SerializedToken } from '../../user/types'
 import { Order, OrderStatus, SerializedOrder } from '../actions'
 import { OrderObject, V2OrderObject } from '../reducer'
-import { isOrderExpired } from '../utils'
 
 type PersistedOrder = SerializedOrder & { bridgeOutputAmount?: unknown }
 
