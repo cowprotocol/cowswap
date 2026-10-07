@@ -3,8 +3,11 @@ import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { useLingui } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import {
+  AreaSeries,
+  CandlestickSeries,
   createChart,
   CrosshairMode,
+  HistogramSeries,
   type IChartApi,
   type ISeriesApi,
   type MouseEventParams,
@@ -71,9 +74,9 @@ export function ChartCanvas({ data, chartType, metric, showTooltip }: ChartCanva
     })
     const priceSeries =
       chartType === 'line'
-        ? chart.addAreaSeries({ crosshairMarkerRadius: 4, lineWidth: 2, priceLineVisible: false })
-        : chart.addCandlestickSeries({ borderVisible: false, priceLineVisible: false })
-    const volumeSeries = chart.addHistogramSeries({
+        ? chart.addSeries(AreaSeries, { crosshairMarkerRadius: 4, lineWidth: 2, priceLineVisible: false })
+        : chart.addSeries(CandlestickSeries, { borderVisible: false, priceLineVisible: false })
+    const volumeSeries = chart.addSeries(HistogramSeries, {
       lastValueVisible: false,
       priceFormat: { type: 'volume' },
       priceLineVisible: false,
