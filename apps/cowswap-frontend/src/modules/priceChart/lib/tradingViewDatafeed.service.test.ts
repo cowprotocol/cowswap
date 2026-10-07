@@ -1,6 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 
+import { createChartSymbols } from './symbolCatalog'
 import { createPriceChartDatafeed } from './tradingViewDatafeed.service'
 
 import { fetchPriceHistory } from '../api/fetchPriceHistory'
@@ -9,7 +10,6 @@ import { fetchTokenSupply } from '../api/fetchTokenSupply'
 import type { ResolutionString } from './loadChartingLibrary'
 import type { Candle } from './priceChart.types'
 import type { PriceChartSymbolDescriptor } from './tradingView.types'
-import { createChartSymbols } from './symbolCatalog'
 
 jest.mock('../api/fetchPriceHistory', () => ({ fetchPriceHistory: jest.fn() }))
 jest.mock('../api/fetchTokenSupply', () => ({ fetchTokenSupply: jest.fn() }))
@@ -160,6 +160,43 @@ describe('createPriceChartDatafeed', () => {
       },
     ])
     expect(mockedFetchTokenSupply).not.toHaveBeenCalled()
+  })
+
+  it('caps TradingView history ranges at now and skips wholly future ranges', async () => {
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const now = 1710007200
+    const clock = jest.spyOn(Date, 'now').mockReturnValue(now * 1000)
+    mockedFetchPriceHistory.mockResolvedValue([])
+
+    try {
+      const { datafeed } = createPriceChartDatafeed({
+        metric: 'price',
+        onStatusChange: jest.fn(),
+        symbols: [symbol],
+      })
+      datafeed.getBars(symbol.librarySymbolInfo, '1D', { ...PERIOD_PARAMS, to: now + 86400 }, jest.fn(), jest.fn())
+      await flushTasks()
+
+      expect(mockedFetchPriceHistory).toHaveBeenCalledWith(
+        expect.objectContaining({ from: PERIOD_PARAMS.from, interval: '1d', to: now }),
+      )
+
+      mockedFetchPriceHistory.mockClear()
+      const onResult = jest.fn()
+      datafeed.getBars(
+        symbol.librarySymbolInfo,
+        '1D',
+        { ...PERIOD_PARAMS, from: now + 86400, to: now + 172800 },
+        onResult,
+        jest.fn(),
+      )
+      await flushTasks()
+
+      expect(mockedFetchPriceHistory).not.toHaveBeenCalled()
+      expect(onResult).toHaveBeenCalledWith([], { noData: true })
+    } finally {
+      clock.mockRestore()
+    }
   })
 
   it('scales USD history by circulating supply for market cap', async () => {

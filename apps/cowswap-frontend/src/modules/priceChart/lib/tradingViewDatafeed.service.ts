@@ -195,7 +195,11 @@ async function fetchHistory(
   metric: ChartMetric,
   supplyVariant: SupplyVariant,
 ): Promise<Candle[]> {
-  return loadPriceChartHistory(symbol.currency, periodParams.from, periodParams.to, resolution, metric, supplyVariant)
+  // TradingView can end daily/weekly ranges in the future, which the history provider rejects.
+  const to = Math.min(periodParams.to, Math.floor(Date.now() / 1000))
+  if (periodParams.from >= to) return []
+
+  return loadPriceChartHistory(symbol.currency, periodParams.from, to, resolution, metric, supplyVariant)
 }
 
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
