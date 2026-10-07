@@ -4997,7 +4997,7 @@ msgstr "A maximum of <0>{time}</0> between parts is required. Increase the numbe
 msgid "This fee helps pay for maintenance & improvements to the trade experience"
 msgstr "This fee helps pay for maintenance & improvements to the trade experience"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
 msgid "Min."
 msgstr "Min."
 
@@ -7215,7 +7215,7 @@ msgstr "The address that will receive the tokens on the destination chain."
 msgid "Creation"
 msgstr "Creation"
 
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
 msgid "Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens."
 msgstr "Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens."
 
