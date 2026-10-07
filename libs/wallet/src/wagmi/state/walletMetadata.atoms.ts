@@ -1,7 +1,14 @@
 import { atom } from 'jotai'
 import { atomWithRefresh, loadable } from 'jotai/utils'
 
-import { getPublicClient, logWallet, normalizeError } from '@cowprotocol/common-utils'
+import {
+  getPublicClient,
+  logWallet,
+  normalizeError,
+  retry,
+  RetryableError,
+  RetryOptions,
+} from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 import SafeAppsSDK from '@safe-global/safe-apps-sdk'
@@ -11,6 +18,8 @@ import { ConnectionType } from '../../api/types'
 import { RABBY_RDNS } from '../../constants'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
+
+const ACCOUNT_TYPE_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 250, maxWait: 1000 }
 
 export const isSafeWalletAtom = atom((get): boolean => {
   return !!get(gnosisSafeInfoAtom)
@@ -91,7 +100,7 @@ export const isEoaAtom = atom((get): boolean | null => {
   return true
 })
 
-/** Async account-type lookup. Call `set(accountTypeAsyncAtom)` to retry after a failed getCode. */
+/** Async account-type lookup. Call `set(accountTypeAsyncAtom)` to retry after retries are exhausted. */
 export const accountTypeAsyncAtom = atomWithRefresh(async (get) => {
   const { chainId, account, connector } = get(walletInfoAtom)
 
@@ -101,21 +110,27 @@ export const accountTypeAsyncAtom = atomWithRefresh(async (get) => {
   const publicClient = getPublicClient(chainId)
 
   try {
-    const code = await publicClient.getCode({ address: account })
+    return await retry(async () => {
+      try {
+        const code = await publicClient.getCode({ address: account })
 
-    if (!code || code === '0x') {
-      return AccountType.EOA
-    }
+        if (!code || code === '0x') {
+          return AccountType.EOA
+        }
 
-    if (isEip7702EOA(code, account)) {
-      return AccountType.EIP7702EOA
-    }
+        if (isEip7702EOA(code, account)) {
+          return AccountType.EIP7702EOA
+        }
 
-    return AccountType.SMART_CONTRACT
+        return AccountType.SMART_CONTRACT
+      } catch (err: unknown) {
+        const error = normalizeError(err)
+        logWallet.warn(`checkIsSmartContractWallet: failed to check address ${account}`, error.message)
+        throw new RetryableError(error.message)
+      }
+    }, ACCOUNT_TYPE_RETRY_OPTIONS).promise
   } catch (err: unknown) {
-    const error = normalizeError(err)
-    logWallet.warn(`checkIsSmartContractWallet: failed to check address ${account}`, error.message)
-    throw error
+    throw normalizeError(err)
   }
 })
 
@@ -132,14 +147,21 @@ export const accountTypeAtom = atom((get): AccountType | null => {
 
 /**
  * True for Safe wallets and bytecode contracts.
- * Returns null while the code lookup is in flight or if that lookup fails.
+ * Returns false while the code lookup is in flight, so that "unknown" is not
+ * treated as a smart-contract wallet. Returns null if that lookup fails. Consumers
+ * must not assume EOA until a retry succeeds.
  */
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
   if (get(isSafeWalletAtom)) return true
 
-  const accountType = get(accountTypeAtom)
+  const loadable = get(accountTypeLoadableAtom)
 
-  if (accountType === null) return null
+  if (loadable.state === 'loading') return false
+  if (loadable.state === 'hasError') return null
+
+  const accountType = loadable.data
+
+  if (accountType == null) return null
 
   return accountType === AccountType.SMART_CONTRACT
 })

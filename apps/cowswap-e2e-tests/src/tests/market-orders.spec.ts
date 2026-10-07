@@ -219,6 +219,9 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Same currency-resolution race as [CS-68]/[CS-104]: picking USDC before the default pair
+      // has latched in `useNavigateOnCurrencySelection`'s refs can leave sell stuck on WETH.
+      await swapPage.waitForBothCurrenciesResolved()
       await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')

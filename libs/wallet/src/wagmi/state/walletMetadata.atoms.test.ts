@@ -358,6 +358,13 @@ describe('walletMetadata atoms', () => {
 
     expect(store.get(isEoaAtom)).toBe(false)
   })
+})
+
+describe('isSmartContractWalletAtom', () => {
+  beforeEach(() => {
+    mockGetCode.mockReset()
+    mockGetCode.mockImplementation(() => new Promise(() => undefined))
+  })
 
   it('treats a Safe as a smart-contract wallet even while account type is unknown', () => {
     const store = createStore()
@@ -379,7 +386,22 @@ describe('walletMetadata atoms', () => {
     expect(store.get(isSmartContractWalletAtom)).toBe(true)
   })
 
-  it('keeps wallet type unknown when account-type lookup fails, and allows retry', async () => {
+  it('does not treat an in-flight account-type lookup as a smart-contract wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(null)
+  })
+
+  it('retries transient getCode failures within one lookup', async () => {
     mockGetCode.mockRejectedValueOnce(new Error('rpc down')).mockResolvedValueOnce('0x')
 
     const store = createStore()
@@ -392,13 +414,41 @@ describe('walletMetadata atoms', () => {
     )
 
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+
+    await waitFor(() => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+    })
+    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(true)
+    expect(mockGetCode).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps wallet type unknown after retries are exhausted, and allows a manual refresh', async () => {
+    mockGetCode.mockRejectedValue(new Error('rpc down'))
+
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
     await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
 
     expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
     expect(store.get(isSmartContractWalletAtom)).toBe(null)
     expect(store.get(isEoaAtom)).toBe(null)
+    expect(mockGetCode).toHaveBeenCalledTimes(4)
 
+    mockGetCode.mockReset()
+    mockGetCode.mockResolvedValue('0x')
     store.set(accountTypeAsyncAtom)
 
     await waitFor(() => {
