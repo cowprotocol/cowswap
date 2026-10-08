@@ -16,7 +16,7 @@ export function SolanaAlphaTradeLimitMessage(): ReactNode {
 
   return (
     <InlineBanner bannerType={StatusColorVariant.Danger} hideIcon>
-      <Trans>Maximum ${maxTradeSize} per swap. Reduce the sell amount.</Trans>
+      <Trans>Maximum ${maxTradeSize} per order. Reduce the sell amount.</Trans>
     </InlineBanner>
   )
 }

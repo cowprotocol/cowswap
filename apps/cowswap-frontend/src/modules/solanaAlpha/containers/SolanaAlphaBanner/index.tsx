@@ -10,6 +10,7 @@ import styled from 'styled-components/macro'
 
 import { BANNER_IDS } from 'common/constants/banners'
 
+import { useSolanaAlphaAcknowledgement } from '../../hooks/useSolanaAlphaAcknowledgement'
 import { useSolanaAlphaRiskModal } from '../../hooks/useSolanaAlphaRiskModal'
 
 const ViewRisksButton = styled(LinkStyledButton)`
@@ -20,8 +21,9 @@ const ViewRisksButton = styled(LinkStyledButton)`
 export function SolanaAlphaBanner(): ReactNode {
   const { chainId } = useWalletInfo()
   const { openModal } = useSolanaAlphaRiskModal()
+  const { isAcknowledgementRequired } = useSolanaAlphaAcknowledgement()
 
-  if (!isSolanaChain(chainId)) return null
+  if (!isSolanaChain(chainId) || isAcknowledgementRequired) return null
 
   const maxTradeSize = SOLANA_ALPHA_MAX_TRADE_SIZE_USD.toLocaleString('en-US')
 
@@ -38,7 +40,7 @@ export function SolanaAlphaBanner(): ReactNode {
       </p>
       <p>
         <Trans>
-          Maximum trade size: <b>${maxTradeSize}</b> per swap.
+          Maximum trade size: <b>${maxTradeSize}</b> per order.
         </Trans>{' '}
         <ViewRisksButton onClick={openModal}>
           <Trans>View risks</Trans>

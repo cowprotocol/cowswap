@@ -58,7 +58,7 @@ export function SolanaAlphaRiskModal(props: SolanaAlphaRiskModalProps): ReactNod
             </Trans>
           </p>
           <p>
-            <Trans>Maximum trade size: ${maxTradeSize} per swap.</Trans>
+            <Trans>Maximum trade size: ${maxTradeSize} per order.</Trans>
           </p>
         </InlineBanner>
         <styledEl.ButtonContainer>
