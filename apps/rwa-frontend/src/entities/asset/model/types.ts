@@ -10,7 +10,32 @@ export interface RwaAsset {
   tokens: RwaToken[]
 }
 
-export type RwaAssetType = 'stock' | 'index'
+export const RWA_ASSET_TYPES = ['stock', 'index'] as const
+
+export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
+
+export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
+
+export interface RwaAssetListItem extends RwaAssetWithMarket {
+  /** `RwaTokenMarketData.logoUrl` of the reference token */
+  logoUrl: string | null
+  /** USD, all networks */
+  onchainCap: number | null
+  /** USD, all networks */
+  dexVolume24h: number | null
+  /** 1D price of the reference token */
+  series: RwaChartPoint[] | null
+}
+
+export interface RwaAssetsFilter {
+  type?: RwaAssetType
+  /** Matches assets with a token of this issuer, on `chainId` when both are set */
+  issuer?: string
+  chainId?: number
+  /** Matches ticker, title or token symbol */
+  query?: string
+  tickers?: string[]
+}
 
 export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
@@ -124,16 +149,31 @@ export interface RwaTradingTime {
   end: string
 }
 
-export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'change24h', 'price', 'ticker'] as const
+export const RWA_SORT_FIELDS = [
+  'priority',
+  'marketCap',
+  'onchainCap',
+  'dexVolume24h',
+  'change24h',
+  'price',
+  'ticker',
+  'title',
+] as const
 
 export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}
 
 export interface RwaAssetsPage extends DegradableResponse {
-  items: RwaAssetWithMarket[]
+  items: RwaAssetListItem[]
   page: number
   pageSize: number
   total: number
   totalPages: number
+  /** Matches of each type with every filter but `type` applied */
+  typeCounts: Record<RwaAssetType, number>
+  /** Issuers in the registry, for the filter */
+  issuers: string[]
+  /** Networks in the registry, for the filter */
+  chainIds: number[]
 }
 
 export interface RwaAssetsSearchResult extends DegradableResponse {

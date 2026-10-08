@@ -8,7 +8,7 @@
     "@cowprotocol/cow-fi": 5,
     "@cowprotocol/cowswap": 11,
     "@cowprotocol/explorer": 11.7,
-    "@cowprotocol/rwa-frontend": 4.6,
+    "@cowprotocol/rwa-frontend": 4.7,
     "@cowprotocol/sdk-tools": 9.9,
     "@cowprotocol/storybook": 3.6,
     "@cowprotocol/widget-configurator": 11.1,

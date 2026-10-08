@@ -6,7 +6,8 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
 import { getTokenQuotes, QUOTE_AMOUNT_USD } from './quotes'
 
-import { paginate, searchAssets, sortAssets } from '../model/assetsQuery'
+import { getReferenceLogoUrl } from '../lib/referenceLogoUrl'
+import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
   aggregateNetworkStats,
   buildOnchainCapSeries,
@@ -20,8 +21,10 @@ import { getAssetByTicker, getAssets } from '../model/registry'
 
 import type {
   RwaAsset,
+  RwaAssetListItem,
   RwaAssetQuotes,
   RwaAssetResponse,
+  RwaAssetsFilter,
   RwaAssetsPage,
   RwaAssetsSearchResult,
   RwaAssetWithMarket,
@@ -43,7 +46,7 @@ const marketDataProvider: MarketDataProvider = coingeckoProvider
 
 const MARKET_OVERVIEW_LIST_LIMIT = 3
 
-export interface ListAssetsParams {
+export interface ListAssetsParams extends RwaAssetsFilter {
   page: number
   pageSize: number
   sort: RwaSortField
@@ -58,6 +61,12 @@ interface AssetsWithMarket {
 interface MarketDataLoadResult {
   byTicker: Map<string, RwaMarketData>
   degraded: boolean
+}
+
+interface NetworkStatsLoadResult {
+  stats: ChainNetworkStats[]
+  /** `false` when a network failed, so sums over the networks would be too low */
+  complete: boolean
 }
 
 export async function findAssets(query: string, limit: number): Promise<RwaAssetsSearchResult> {
@@ -109,27 +118,13 @@ export async function getAssetQuotes(
 export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const assets = getAssets()
   const { byTicker: marketByTicker, degraded: marketDegraded } = await loadMarketData()
-  const tokenMarkets: Record<string, RwaTokenMarketData> = Object.fromEntries(
-    [...marketByTicker.values()].flatMap((market) => Object.entries(market.tokens)),
-  )
-  const tokensByChain = groupByChain(assets.flatMap((asset) => asset.tokens))
-  const statsResults = await Promise.all(
-    [...tokensByChain].map(async ([chainId, tokens]): Promise<ChainNetworkStats | null> => {
-      const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
-
-      return stats ? { chainId, tokens: stats } : null
-    }),
-  )
-  const stats = statsResults.filter((result): result is ChainNetworkStats => result !== null)
-  const statsComplete = stats.length === statsResults.length
+  const { stats, complete: statsComplete } = await loadRegistryNetworkStats(marketByTicker)
   const aggregate = aggregateNetworkStats(assets, stats, marketByTicker)
   const items = assets.map((asset) =>
     toOverviewItem(asset, marketByTicker.get(asset.ticker), aggregate.byTicker.get(asset.ticker)),
   )
   const { gainers, losers } = splitMovers(items, MARKET_OVERVIEW_LIST_LIMIT)
   const mostTraded = statsComplete ? rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT) : []
-  const loadPriceChart = (asset: RwaAsset): Promise<RwaChartPoint[]> => marketDataProvider.getChart(asset, '1D')
-
   const [mostTradedWithSeries, gainersWithSeries, losersWithSeries, onchainCapSeries] = await Promise.all([
     withSeries(mostTraded, (asset) => marketDataProvider.getHourlyDexVolume(asset.tokens)),
     withSeries(gainers, loadPriceChart),
@@ -152,12 +147,43 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
   }
 }
 
-export async function listAssets({ page, pageSize, sort, order }: ListAssetsParams): Promise<RwaAssetsPage> {
-  const { items: assets, degraded } = await withMarketData(getAssets())
-  const sorted = sortAssets(assets, sort, order)
-  const { items, totalPages } = paginate(sorted, page, pageSize)
+export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
+  const registry = getAssets()
+  const { byTicker: marketByTicker, degraded: marketDegraded } = await loadMarketData()
+  const { stats, complete: statsComplete } = await loadRegistryNetworkStats(marketByTicker)
+  const totalsByTicker = statsComplete ? aggregateNetworkStats(registry, stats, marketByTicker).byTicker : null
+  const matches = filterAssets(registry, filter).map((asset): RwaAssetListItem => {
+    const market = marketByTicker.get(asset.ticker) ?? null
+    const totals = totalsByTicker?.get(asset.ticker)
 
-  return { items, page, pageSize, total: sorted.length, totalPages, degraded }
+    return {
+      ...asset,
+      market,
+      logoUrl: getReferenceLogoUrl(asset, market),
+      onchainCap: totals?.onchainCap ?? null,
+      dexVolume24h: totals?.dexVolume24h ?? null,
+      series: null,
+    }
+  })
+  const sorted = sortAssets(matches, sort, order)
+  const { items, totalPages } = paginate(sorted, page, pageSize)
+  const itemsWithSeries = await Promise.all(
+    items.map(async (item) => ({ ...item, series: await loadSeries(item.ticker, loadPriceChart) })),
+  )
+
+  return {
+    items: itemsWithSeries,
+    page,
+    pageSize,
+    total: sorted.length,
+    totalPages,
+    typeCounts: countByType(registry, filter),
+    issuers: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.issuer)))].sort(),
+    chainIds: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.chainId)))].sort(
+      (a, b) => a - b,
+    ),
+    degraded: marketDegraded || !statsComplete,
+  }
 }
 
 function groupByChain(tokens: RwaToken[]): Map<number, RwaToken[]> {
@@ -208,6 +234,28 @@ async function loadOnchainCapSeries(supplyByCoin: Map<string, number>): Promise<
   }
 }
 
+function loadPriceChart(asset: RwaAsset): Promise<RwaChartPoint[]> {
+  return marketDataProvider.getChart(asset, '1D')
+}
+
+// Always requested for the whole registry, so every route hits the same cached upstream requests
+async function loadRegistryNetworkStats(marketByTicker: Map<string, RwaMarketData>): Promise<NetworkStatsLoadResult> {
+  const tokenMarkets: Record<string, RwaTokenMarketData> = Object.fromEntries(
+    [...marketByTicker.values()].flatMap((market) => Object.entries(market.tokens)),
+  )
+  const tokensByChain = groupByChain(getAssets().flatMap((asset) => asset.tokens))
+  const results = await Promise.all(
+    [...tokensByChain].map(async ([chainId, tokens]): Promise<ChainNetworkStats | null> => {
+      const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
+
+      return stats ? { chainId, tokens: stats } : null
+    }),
+  )
+  const stats = results.filter((result): result is ChainNetworkStats => result !== null)
+
+  return { stats, complete: stats.length === results.length }
+}
+
 async function loadSeries(
   ticker: string,
   load: (asset: RwaAsset) => Promise<RwaChartPoint[] | null>,
@@ -222,7 +270,7 @@ async function loadSeries(
     return series?.length ? series : null
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error(`[rwa] Failed to load the ${ticker} overview series`, error)
+    console.error(`[rwa] Failed to load the ${ticker} series`, error)
 
     return null
   }
