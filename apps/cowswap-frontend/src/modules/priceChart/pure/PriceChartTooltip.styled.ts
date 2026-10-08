@@ -2,11 +2,12 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Tooltip = styled.div<{ $placement: 'left' | 'right'; $width: number; $x: number; $y: number }>`
+export const Tooltip = styled.div<{ $width: number; $x: number; $y: number }>`
   position: absolute;
   left: ${({ $x }) => `${$x}px`};
   top: ${({ $y }) => `${$y}px`};
-  transform: ${({ $placement }) => ($placement === 'left' ? 'translate(-100%, -50%)' : 'translateY(-50%)')};
+  transform: translateY(-50%);
+  box-sizing: border-box;
   z-index: 2;
   display: flex;
   flex-direction: column;

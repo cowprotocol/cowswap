@@ -75,7 +75,7 @@ export function SimpleChartCanvas({
     })
     const priceSeries =
       chartType === 'line'
-        ? chart.addSeries(AreaSeries, { crosshairMarkerRadius: 4, lineWidth: 2, priceLineVisible: false })
+        ? chart.addSeries(AreaSeries, { crosshairMarkerRadius: 4, lineWidth: 1, priceLineVisible: false })
         : chart.addSeries(CandlestickSeries, { borderVisible: false, priceLineVisible: false })
     const volumeSeries = chart.addSeries(HistogramSeries, {
       lastValueVisible: false,
@@ -113,10 +113,12 @@ export function SimpleChartCanvas({
     }
 
     chart.subscribeCrosshairMove(handleCrosshairMove)
+    chart.subscribeClick(handleCrosshairMove)
 
     return () => {
       setTooltip(undefined)
       chart.unsubscribeCrosshairMove(handleCrosshairMove)
+      chart.unsubscribeClick(handleCrosshairMove)
       chart.remove()
       chartRef.current = null
     }

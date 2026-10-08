@@ -34,7 +34,8 @@ export interface PriceChartTooltipProps {
 
 export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipProps): ReactNode {
   const { t } = useLingui()
-  const placeOnLeft = data.x + TOOLTIP_OFFSET + TOOLTIP_WIDTH > data.chartWidth
+  const width = Math.min(TOOLTIP_WIDTH, data.chartWidth)
+  const placeOnLeft = data.x + TOOLTIP_OFFSET + width > data.chartWidth
   const rows = data.ohlc
     ? [
         { label: t`Open`, value: data.ohlc.open },
@@ -44,11 +45,14 @@ export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipPro
       ]
     : [{ label: metric === 'marketCap' ? t`Market Cap` : t`Price`, value: data.price }]
   const halfHeight = (TOOLTIP_HEIGHT + (rows.length - 1 + Number(data.volume !== undefined)) * TOOLTIP_ROW_HEIGHT) / 2
-  const x = data.x + (placeOnLeft ? -TOOLTIP_OFFSET : TOOLTIP_OFFSET)
+  const x = Math.max(
+    0,
+    Math.min(data.x + (placeOnLeft ? -TOOLTIP_OFFSET - width : TOOLTIP_OFFSET), data.chartWidth - width),
+  )
   const y = Math.max(halfHeight, Math.min(data.y, data.chartHeight - halfHeight))
 
   return (
-    <styledEl.Tooltip $placement={placeOnLeft ? 'left' : 'right'} $width={TOOLTIP_WIDTH} $x={x} $y={y} role="tooltip">
+    <styledEl.Tooltip $width={width} $x={x} $y={y} role="tooltip">
       {rows.map(({ label, value }) => (
         <styledEl.TooltipRow key={label}>
           <styledEl.TooltipLabel>{label}</styledEl.TooltipLabel>
