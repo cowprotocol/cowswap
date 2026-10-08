@@ -98,8 +98,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   // Same precedence as the xstock limit: the trade-size cap message must win over
-  // quote-loading and wallet-connection states
-  if (!inputAmountIsNotSet && getIsSolanaTradeAboveLimit(context)) {
+  // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
+  // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
+  if (!isWrapUnwrap && !inputAmountIsNotSet && getIsSolanaTradeAboveLimit(context)) {
     return [TradeFormValidation.SolanaAlphaMaxTradeSize]
   }
 

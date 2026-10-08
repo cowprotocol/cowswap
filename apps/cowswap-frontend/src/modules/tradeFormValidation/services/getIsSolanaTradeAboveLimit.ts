@@ -11,7 +11,10 @@ export function getIsSolanaTradeAboveLimit(tradeFormValidationContext: TradeForm
   if (!inputCurrency || !isSolanaChain(inputCurrency.chainId)) return false
 
   const fiatAmount = isSellOrder(orderKind) ? inputCurrencyFiatAmount : outputCurrencyFiatAmount
-  const usdAmount = fiatAmount ? Number(fiatAmount.toExact()) : null
 
-  return usdAmount !== null && usdAmount > SOLANA_ALPHA_MAX_TRADE_SIZE_USD
+  // Fail closed: an amount that cannot be priced in USD cannot be checked against the cap,
+  // so it must not trade. Wrap/unwrap always has null fiat amounts and is exempted by the caller.
+  if (!fiatAmount) return true
+
+  return Number(fiatAmount.toExact()) > SOLANA_ALPHA_MAX_TRADE_SIZE_USD
 }

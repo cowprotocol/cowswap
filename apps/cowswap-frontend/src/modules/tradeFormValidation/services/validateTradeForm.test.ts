@@ -342,6 +342,35 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
   })
 
+  test('blocks the trade when the USD value of the amount is unknown', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('does not apply the cap to wrap/unwrap, where fiat amounts are always null', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
   test('prioritizes the trade limit over wallet connection', () => {
     const context = {
       ...baseContext,
