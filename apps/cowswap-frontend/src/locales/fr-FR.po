@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-07 20:57\n"
+"PO-Revision-Date: 2026-10-08 09:05\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -4997,6 +4997,10 @@ msgstr "Un intervalle maximal de <0>{time}</0> entre les parties est requis. Aug
 msgid "This fee helps pay for maintenance & improvements to the trade experience"
 msgstr "Ces frais contribuent à la maintenance et à l’amélioration de l’expérience de trading"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
+msgid "Min."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 #~ msgid "Timed out waiting for the approval transaction. Please try again."
 #~ msgstr "Timed out waiting for the approval transaction. Please try again."
@@ -7210,6 +7214,10 @@ msgstr "L’adresse qui recevra les tokens sur la chaîne de destination."
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Creation"
 msgstr "Création"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
+msgid "Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "AFTER"
