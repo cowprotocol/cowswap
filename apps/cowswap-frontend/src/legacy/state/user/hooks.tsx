@@ -2,9 +2,10 @@ import { useCallback } from 'react'
 
 import { NATIVE_CURRENCIES, SupportedLocale, TokenWithLogo } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { shallowEqual } from 'react-redux'
 
@@ -38,7 +39,10 @@ export function useDarkModeManager(): [boolean, Command] {
 }
 
 export function useHooksEnabled(): boolean {
-  return useAppSelector((state) => state.user.hooksEnabled)
+  const { chainId } = useWalletInfo()
+  const hooksEnabled = useAppSelector((state) => state.user.hooksEnabled)
+
+  return hooksEnabled && !isSolanaChain(chainId)
 }
 
 export function useHooksEnabledManager(): [boolean, Command] {
