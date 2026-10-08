@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { SolanaAlphaBanner } from 'modules/solanaAlpha'
 import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
@@ -22,6 +23,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
 
   return (
     <>
+      <SolanaAlphaBanner />
       {shouldZeroApprove && !hasInsufficientBalance && (
         <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />
       )}

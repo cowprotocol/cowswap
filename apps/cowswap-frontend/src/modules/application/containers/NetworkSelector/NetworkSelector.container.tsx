@@ -2,7 +2,8 @@ import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { Media } from '@cowprotocol/ui'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { Badge, BadgeTypes, Media } from '@cowprotocol/ui'
 import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -81,6 +82,11 @@ export function NetworkSelector(): ReactNode {
           <>
             <styledEl.SelectorLogo src={logoUrl} />
             <styledEl.SelectorLabel>{info?.label}</styledEl.SelectorLabel>
+            {isSolanaChain(chainId) && (
+              <Badge type={BadgeTypes.ALERT2}>
+                <Trans>ALPHA</Trans>
+              </Badge>
+            )}
             <styledEl.StyledChevronDown $isOpen={isOpen} />
           </>
         ) : (

@@ -16,6 +16,11 @@ import {
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
+  SolanaAlphaRiskModalContainer,
+  useSolanaAlphaAcknowledgement,
+  useSolanaAlphaRiskModal,
+} from 'modules/solanaAlpha'
+import {
   ImportTokenModal,
   useCloseTokenSelectWidget,
   useSelectTokenWidgetState,
@@ -66,6 +71,8 @@ export function TradeWidgetModals({
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const { isModalOpen: isRwaConsentModalOpen, closeModal: closeRwaConsentModal } = useRwaConsentModalState()
+  const { isAcknowledgementRequired: isSolanaAlphaAcknowledgementRequired } = useSolanaAlphaAcknowledgement()
+  const { isOpen: isSolanaAlphaRiskModalOpen, closeModal: closeSolanaAlphaRiskModal } = useSolanaAlphaRiskModal()
   const {
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
@@ -81,6 +88,7 @@ export function TradeWidgetModals({
       closeTradeConfirm()
       closeZeroApprovalModal()
       closeRwaConsentModal()
+      closeSolanaAlphaRiskModal()
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (shouldCloseTokenSelectWidget) closeTokenSelectWidget()
       setWrapNativeScreenState({ isOpen: false })
@@ -92,6 +100,7 @@ export function TradeWidgetModals({
       closeTradeConfirm,
       closeZeroApprovalModal,
       closeRwaConsentModal,
+      closeSolanaAlphaRiskModal,
       closeAutoImportModal,
       closeTokenSelectWidget,
       setWrapNativeScreenState,
@@ -147,6 +156,10 @@ export function TradeWidgetModals({
 
   if (genericModal) {
     return genericModal
+  }
+
+  if (isSolanaAlphaAcknowledgementRequired || isSolanaAlphaRiskModalOpen) {
+    return <SolanaAlphaRiskModalContainer />
   }
 
   if (isRwaConsentModalOpen) {

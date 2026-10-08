@@ -55,6 +55,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.XstockMinimumTradeSize]: {
     text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
   },
+  [TradeFormValidation.SolanaAlphaMaxTradeSize]: {
+    text: <Trans>Trade limit exceeded</Trans>,
+  },
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
