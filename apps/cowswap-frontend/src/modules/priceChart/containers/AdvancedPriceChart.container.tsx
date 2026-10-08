@@ -33,7 +33,7 @@ import { PriceChartStatus } from '../pure/PriceChartStatus'
 import * as styledEl from '../pure/SimplePriceChart.styled'
 
 import type { SimplePriceChartProps } from './SimplePriceChart.container'
-import type { PriceChartHistoryStatus, PriceChartSymbolDescriptor } from '../lib/tradingView.types'
+import type { PriceChartSymbolDescriptor } from '../lib/tradingView.types'
 
 export function AdvancedPriceChart({
   activeCurrency,
@@ -47,28 +47,30 @@ export function AdvancedPriceChart({
 }: SimplePriceChartProps): ReactNode {
   const symbols = useMemo(() => createChartSymbols(currencies), [currencies])
   const queryClient = useQueryClient()
-  const activeSymbol = symbols.find((symbol) => activeCurrency?.equals(symbol.currency))
+  const activeSymbol = symbols.find(
+    (symbol) =>
+      activeCurrency?.equals(symbol.currency) &&
+      symbol.metric === metric &&
+      (metric === 'price' || symbol.supplyVariant === supplyVariant),
+  )
   const { i18n } = useLingui()
   const chartId = useId().replace(/:/g, '')
   const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
-  const [historyStatus, setHistoryStatus] = useState<PriceChartHistoryStatus>(null)
+  const [widgetError, setWidgetError] = useState(false)
   const [priceSummary, setPriceSummary] = useState<ReturnType<typeof getPriceChartSummary>>()
   const [hasVolume, setHasVolume] = useState<boolean>()
   const activeTicker = activeSymbol?.ticker || ''
   const datafeedController = useMemo(
     () =>
       createPriceChartDatafeed({
-        metric,
         queryClient,
         onHistoryLoaded: (bars) => {
           setPriceSummary(getPriceChartSummary(bars))
           setHasVolume(hasPriceChartVolume(bars))
         },
-        onStatusChange: setHistoryStatus,
         symbols,
-        supplyVariant,
       }),
-    [queryClient, metric, supplyVariant, symbols],
+    [queryClient, symbols],
   )
 
   useEffect(() => {
@@ -78,10 +80,9 @@ export function AdvancedPriceChart({
   }, [datafeedController])
 
   useEffect(() => {
-    setHistoryStatus(null)
     setPriceSummary(undefined)
     setHasVolume(undefined)
-  }, [activeTicker, metric])
+  }, [activeTicker])
 
   useTradingViewWidget(
     activeTicker,
@@ -89,9 +90,8 @@ export function AdvancedPriceChart({
     datafeedController.datafeed,
     hasVolume,
     symbols,
-    metric,
     i18n.locale,
-    setHistoryStatus,
+    setWidgetError,
   )
 
   if (!symbols.length) {
@@ -113,13 +113,9 @@ export function AdvancedPriceChart({
       />
       <styledEl.ChartFrame>
         <ChartContainer id={containerId} />
-        {historyStatus ? (
+        {widgetError ? (
           <styledEl.OverlayState>
-            <PriceChartStatus
-              assetSymbol={activeCurrency?.symbol}
-              isPending={historyStatus === 'loading'}
-              isError={historyStatus === 'error'}
-            />
+            <PriceChartStatus assetSymbol={activeCurrency?.symbol} isPending={false} isError />
           </styledEl.OverlayState>
         ) : null}
       </styledEl.ChartFrame>
@@ -151,6 +147,7 @@ function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPro
     'scalesProperties.textColor': textColor,
     'scalesProperties.lineColor': gridColor,
     'symbolWatermarkProperties.color': primaryColor,
+    'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
   }
 }
 
@@ -160,9 +157,8 @@ function useTradingViewWidget(
   datafeed: ReturnType<typeof createPriceChartDatafeed>['datafeed'],
   hasVolume: boolean | undefined,
   symbols: PriceChartSymbolDescriptor[],
-  metric: SimplePriceChartProps['metric'],
   locale: string,
-  setHistoryStatus: (status: PriceChartHistoryStatus) => void,
+  setWidgetError: (error: boolean) => void,
 ): void {
   const theme = useTheme()
   const themeRef = useRef(theme)
@@ -255,6 +251,7 @@ function useTradingViewWidget(
           return
         }
 
+        widget.applyOverrides(getThemeOverrides(themeRef.current))
         widget.activeChart().setSymbol(nextTicker, () => {
           if (widget && hasVolumeRef.current !== undefined) {
             syncTradingViewVolumeStudy(widget, hasVolumeRef.current)
@@ -268,7 +265,7 @@ function useTradingViewWidget(
     void setup().catch((err: unknown) => {
       const error = normalizeError(err)
       logPriceChart.warn('Failed to load Advanced chart', error)
-      if (!isCancelled) setHistoryStatus('error')
+      if (!isCancelled) setWidgetError(true)
     })
 
     return () => {
@@ -292,7 +289,7 @@ function useTradingViewWidget(
         widgetRef.current = null
       }
     }
-  }, [containerId, datafeed, locale, metric, symbols, setHistoryStatus])
+  }, [containerId, datafeed, locale, symbols, setWidgetError])
 
   useEffect(() => {
     const widget = widgetRef.current

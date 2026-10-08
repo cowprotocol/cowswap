@@ -66,20 +66,25 @@ describe('usePriceChartHistory', () => {
     expect(fetchPriceHistory).not.toHaveBeenCalled()
   })
 
-  it('fetches fresh prices for new metric and supply queries', async () => {
-    const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
-    await waitFor(() => expect(result.current.data).toEqual(BARS))
-    expect(fetchTokenSupply).not.toHaveBeenCalled()
+  it('reuses fresh prices for new metric and supply queries', async () => {
+    const clock = jest.spyOn(Date, 'now').mockReturnValue(Date.now())
+    try {
+      const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
+      await waitFor(() => expect(result.current.data).toEqual(BARS))
+      expect(fetchTokenSupply).not.toHaveBeenCalled()
 
-    rerender({ ...INITIAL_PROPS, metric: 'marketCap' })
-    await waitFor(() => expect(result.current.data?.[0]?.close).toBe(20))
+      rerender({ ...INITIAL_PROPS, metric: 'marketCap' })
+      await waitFor(() => expect(result.current.data?.[0]?.close).toBe(20))
 
-    rerender({ ...INITIAL_PROPS, metric: 'marketCap', supplyVariant: 'total' })
-    await waitFor(() => expect(result.current.data?.[0]?.close).toBe(40))
+      rerender({ ...INITIAL_PROPS, metric: 'marketCap', supplyVariant: 'total' })
+      await waitFor(() => expect(result.current.data?.[0]?.close).toBe(40))
 
-    rerender({ ...INITIAL_PROPS, supplyVariant: 'total' })
-    await waitFor(() => expect(result.current.data).toEqual(BARS))
-    expect(fetchPriceHistory).toHaveBeenCalledTimes(3)
+      rerender({ ...INITIAL_PROPS, supplyVariant: 'total' })
+      await waitFor(() => expect(result.current.data).toEqual(BARS))
+      expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
+    } finally {
+      clock.mockRestore()
+    }
   })
 
   it('fetches fresh history every 30 seconds despite the default cache freshness', async () => {
