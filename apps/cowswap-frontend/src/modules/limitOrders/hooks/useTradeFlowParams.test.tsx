@@ -236,7 +236,27 @@ describe('useTradeFlowParams', () => {
         await result.current.beforePermit()
       })
 
-      expect(tradeConfirmActions.requestPermitSignature).toHaveBeenCalledWith({ inputAmount, outputAmount })
+      expect(tradeConfirmActions.requestPermitSignature).toHaveBeenCalledWith({ inputAmount, outputAmount }, undefined)
+    })
+
+    it('requests a permit signature with the partial permit amount', async () => {
+      const tradeContext = { ...buildTradeContext(), permitAmountToSign: BigInt('500000000000000000') }
+      mockUseTradeFlowContext.mockReturnValue(tradeContext)
+      const tradeConfirmActions = buildTradeConfirmActions()
+
+      const { result } = renderHook(
+        () => useTradeFlowParams(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions),
+        { wrapper },
+      )
+
+      await act(async () => {
+        await result.current.beforePermit()
+      })
+
+      expect(tradeConfirmActions.requestPermitSignature).toHaveBeenCalledWith(
+        { inputAmount, outputAmount },
+        CurrencyAmount.fromRawAmount(sellToken, '500000000000000000'),
+      )
     })
   })
 

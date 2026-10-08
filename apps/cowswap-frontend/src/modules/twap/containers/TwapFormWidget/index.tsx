@@ -52,11 +52,12 @@ export type { LabelTooltip, LabelTooltipItems } from './tooltips'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
+  captcha: ReactNode | null
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
+export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
@@ -241,6 +242,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
       {isPrimaryValidationPassed && !localFormValidation && (
         <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
       )}
+      {captcha}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

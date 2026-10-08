@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
-import { areAddressesEqual, isSolanaChain, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
@@ -69,9 +69,7 @@ export function CancelledOrdersUpdater(): null {
       try {
         isUpdating.current = true
 
-        const pending = cancelledRef.current.filter((order) =>
-          shouldRecheckCancelledOrder(order, account, chainId, now),
-        )
+        const pending = cancelledRef.current.filter((order) => shouldRecheckCancelledOrder(order, account, now))
 
         if (pending.length === 0) {
           return
@@ -139,9 +137,8 @@ export function CancelledOrdersUpdater(): null {
  * Whether a recently-cancelled order should be re-verified against the order-book, to catch a
  * cancellation that raced a solver fill.
  *
- * A successful EVM on-chain cancellation is settlement-contract-guaranteed final, so it can't race a
- * fill and is skipped here. Solana's on-chain cancellation instruction has no such guarantee against a
- * solver's fill landing around the same time, so hard-cancelled Solana orders still need rechecking.
+ * A successful EVM on-chain cancellation is settlement-contract-guaranteed final, ~so it can't race a
+ * fill and is skipped here~. It's still checked because the cancellation can happen in a later block than the fill.
  *
  * The recheck window is measured from `cancellationHashTime` for a hard-cancelled order, not
  * `creationTime`: an order can be created long before it's cancelled, and it's the cancellation - not
@@ -150,15 +147,10 @@ export function CancelledOrdersUpdater(): null {
 export function shouldRecheckCancelledOrder(
   order: Pick<Order, 'owner' | 'creationTime' | 'status' | 'cancellationHash' | 'cancellationHashTime'>,
   account: string,
-  chainId: ChainId,
   now: number,
 ): boolean {
-  const { owner, creationTime, status, cancellationHash, cancellationHashTime } = order
+  const { owner, creationTime, cancellationHash, cancellationHashTime } = order
   const anchorTime = new Date(cancellationHash && cancellationHashTime ? cancellationHashTime : creationTime).getTime()
 
-  return (
-    areAddressesEqual(owner, account) &&
-    now - anchorTime < CANCELLED_ORDERS_PENDING_TIME &&
-    !(cancellationHash && status === 'cancelled' && !isSolanaChain(chainId))
-  )
+  return areAddressesEqual(owner, account) && now - anchorTime < CANCELLED_ORDERS_PENDING_TIME
 }

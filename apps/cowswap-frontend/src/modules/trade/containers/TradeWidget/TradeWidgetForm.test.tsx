@@ -23,7 +23,6 @@ import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
 import { useIsNonEvmBridging } from '../../hooks/useIsNonEvmBridging'
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
-import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { useShouldHideQuoteAmounts } from '../../hooks/useShouldHideQuoteAmounts'
 import { useSolanaWrapReceiveAmount } from '../../hooks/useSolanaWrapReceiveAmount'
 import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
@@ -31,7 +30,6 @@ import { useIsAlternativeOrderModalVisible } from '../../state/alternativeOrder'
 // ─── External package mocks ────────────────────────────────────────────────
 
 jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: () => ({}),
   useTheme: () => ({ darkMode: false }),
   useMediaQuery: () => false,
   useThrottledCallback: (fn: unknown) => fn,
@@ -73,6 +71,7 @@ jest.mock('modules/trade', () => ({
 }))
 jest.mock('modules/tradeFormValidation', () => ({
   useGetTradeFormValidation: () => null,
+  useSolanaTradeOverhead: () => null,
   TradeFormValidation: {},
 }))
 
@@ -86,7 +85,6 @@ jest.mock('../../hooks/useResetReceiverConfirmationOnWalletChange', () => ({
 jest.mock('../../hooks/useIsEoaEthFlow', () => ({ useIsEoaEthFlow: jest.fn() }))
 jest.mock('../../hooks/useIsQuoteUpdatePossible', () => ({ useIsQuoteUpdatePossible: jest.fn() }))
 jest.mock('../../hooks/useIsWrapOrUnwrap', () => ({ useIsWrapOrUnwrap: jest.fn() }))
-jest.mock('../../hooks/useLimitOrdersPromoBanner', () => ({ useLimitOrdersPromoBanner: jest.fn() }))
 jest.mock('../../hooks/useShouldHideQuoteAmounts', () => ({ useShouldHideQuoteAmounts: jest.fn() }))
 jest.mock('../../hooks/useSolanaWrapReceiveAmount', () => ({ useSolanaWrapReceiveAmount: jest.fn() }))
 jest.mock('../../hooks/setupTradeState/useTradeStateFromUrl', () => ({ useTradeStateFromUrl: jest.fn() }))
@@ -124,10 +122,6 @@ jest.mock('common/pure/CurrencyArrowSeparator', () => ({
 
 jest.mock('common/pure/PoweredFooter', () => ({ PoweredFooter: () => null }))
 
-jest.mock('../../containers/LimitOrdersPromoBannerWrapper', () => ({
-  LimitOrdersPromoBannerWrapper: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
-
 jest.mock('../../containers/QuotePolingProgress', () => ({ QuotePolingProgress: () => null }))
 jest.mock('../../containers/TradeWarnings', () => ({ TradeWarnings: () => null }))
 jest.mock('../../containers/TradeWidgetLinks', () => ({ TradeWidgetLinks: () => null }))
@@ -163,9 +157,6 @@ const mockedUseIsCurrentTradeBridging = useIsCurrentTradeBridging as jest.Mocked
 >
 const mockedUseIsNonEvmBridging = useIsNonEvmBridging as jest.MockedFunction<typeof useIsNonEvmBridging>
 const mockedUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
-const mockedUseLimitOrdersPromoBanner = useLimitOrdersPromoBanner as jest.MockedFunction<
-  typeof useLimitOrdersPromoBanner
->
 const mockedUseSolanaWrapReceiveAmount = useSolanaWrapReceiveAmount as jest.MockedFunction<
   typeof useSolanaWrapReceiveAmount
 >
@@ -233,7 +224,6 @@ function setupDefaults({
   mockedUseTradeStateFromUrl.mockReturnValue(
     recipientInUrl ? ({ recipient: recipientInUrl } as never) : (null as never),
   )
-  mockedUseLimitOrdersPromoBanner.mockReturnValue({ shouldBeVisible: false } as never)
   ;(useIsAlternativeOrderModalVisible as jest.Mock).mockReturnValue(false)
   ;(useTradeTypeInfoFromUrl as jest.Mock).mockReturnValue(null)
   ;(useIsEoaEthFlow as jest.Mock).mockReturnValue(false)
@@ -327,19 +317,29 @@ describe('TradeWidgetForm — captcha', () => {
     jest.clearAllMocks()
   })
 
-  it('mounts captcha when bottom content omits trade warnings', () => {
+  it('passes captcha into bottom content next to the action area', () => {
     setupDefaults()
 
     renderWithI18n(
       <TradeWidgetForm
         {...buildProps({
-          slots: { settingsWidget: null, bottomContent: () => <div data-testid="bottom-content" /> },
+          slots: {
+            settingsWidget: null,
+            bottomContent: (_warnings, captcha) => (
+              <>
+                <div data-testid="bottom-content" />
+                {captcha}
+                <div data-testid="action-button" />
+              </>
+            ),
+          },
         })}
       />,
     )
 
     expect(screen.getByTestId('bottom-content')).toBeTruthy()
     expect(screen.getByTestId('captcha-widget')).toBeTruthy()
+    expect(screen.getByTestId('action-button')).toBeTruthy()
   })
 
   it('does not mount captcha for wrap or unwrap', () => {

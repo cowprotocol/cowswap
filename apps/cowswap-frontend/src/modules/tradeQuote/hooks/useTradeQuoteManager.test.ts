@@ -96,4 +96,14 @@ describe('useTradeQuoteManager - stale error clearing', () => {
     act(() => manager.setLoading(true, makeParams({ amount: 2_000_000n })))
     expect(getError()).toBeNull()
   })
+
+  it('stores the quote params the error was returned for', () => {
+    const manager = renderManager()
+    const baseParams = makeParams()
+
+    act(() => manager.setLoading(true, baseParams))
+    act(() => manager.onError(liquidityError, SupportedChainId.MAINNET, baseParams, fetchParams))
+
+    expect(Object.values(store.get(tradeQuotesAtom))[0]?.errorQuoteParams).toBe(baseParams)
+  })
 })

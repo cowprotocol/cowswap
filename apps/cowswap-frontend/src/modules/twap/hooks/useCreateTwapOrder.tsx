@@ -74,11 +74,7 @@ import {
   buildTwapOrderParamsStruct,
   createTwapOrderSalt,
 } from '../utils/buildTwapOrderParamsStruct'
-import {
-  EoaTwapPlacementCancelledError,
-  isEoaTwapPlacementCancelled,
-  startEoaTwapPlacement,
-} from '../utils/eoaTwapPlacementCancel'
+import { EoaTwapPlacementCancelledError, startEoaTwapPlacement } from '../utils/eoaTwapPlacementCancel'
 import { getConditionalOrderId } from '../utils/getConditionalOrderId'
 import { getErrorMessage } from '../utils/parseTwapError'
 import { twapOrderToStruct } from '../utils/twapOrderToStruct'
@@ -230,7 +226,7 @@ export function useCreateTwapOrder() {
         isEoaTwap,
       }
 
-      startEoaTwapPlacement()
+      const placementSignal = startEoaTwapPlacement()
 
       try {
         const isWidgetHookPassed = await callWidgetHook(
@@ -302,7 +298,7 @@ export function useCreateTwapOrder() {
           env: 'prod', // Since WatchTower creates orders only in PROD env, we should have `prod` here
         })
 
-        if (isEoaTwapPlacementCancelled()) {
+        if (placementSignal.aborted) {
           return
         }
 
@@ -458,10 +454,13 @@ export function useCreateTwapOrder() {
 
         sendOrderAnalytics(`${orderType}|${twapFlowAnalyticsContext.marketLabel}`, isEoaTwap)
 
-        updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
-
         tradeFlowAnalytics.sign(twapFlowAnalyticsContext)
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet, isEoaTwap)
+
+        // The order is real, but a newer placement now owns the form and the confirm modal.
+        if (placementSignal.aborted) return true
+
+        updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         const ordersTableTab = isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING
         const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderId) : twapOrderId
@@ -486,7 +485,8 @@ export function useCreateTwapOrder() {
         // success card stays open. TradeConfirmation treats a falsy return as an aborted confirm.
         return true
       } catch (err: unknown) {
-        if (err instanceof EoaTwapPlacementCancelledError) {
+        // A Safe request can settle long after a newer placement took over the confirm modal.
+        if (err instanceof EoaTwapPlacementCancelledError || placementSignal.aborted) {
           return
         }
 

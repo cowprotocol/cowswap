@@ -1,5 +1,34 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.15.0...ui-v3.16.0) (2026-10-06)
+
+### Minor Changes
+
+- feat: highlight new order row and smart filter clearing (#8205)
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(cow.fi): point revenue to token terminal link (#8291)
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/analytics@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/types@4.12.0
+
 ## [3.15.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.14.0...ui-v3.15.0) (2026-09-29)
 
 ### Minor Changes

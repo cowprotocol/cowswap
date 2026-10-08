@@ -3,13 +3,14 @@ import { atom } from 'jotai'
 import { deepEqual } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { eoaTwapOrdersAtom, twapOrdersAtom, TwapOrdersList } from 'entities/twap'
+import { eoaTwapOrdersAtom, twapOrdersAtom, twapOrdersListAtom, TwapOrdersList } from 'entities/twap'
 
 import { cowSwapStore } from 'legacy/state'
 import { deleteOrders } from 'legacy/state/orders/actions'
 
 import { TWAP_FINAL_STATUSES } from '../const'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
+import { triggerTwapAppziSurvey } from '../utils/triggerTwapAppziSurvey.utils'
 import { updateTwapOrdersList } from '../utils/updateTwapOrdersList'
 
 export const updateTwapOrdersListAtom = atom(null, (get, set, nextState: TwapOrdersList) => {
@@ -25,6 +26,13 @@ export const addTwapOrderToListAtom = atom(null, (get, set, order: TwapOrderItem
   const currentState = get(twapOrdersAtom)
 
   set(twapOrdersAtom, { ...currentState, [order.id]: order })
+
+  if (!currentState[order.id] && order.status === TwapOrderStatus.Pending) {
+    const orders = get(twapOrdersListAtom)
+    const createdOrder = orders.find(({ id, hash }) => id === order.id || hash === order.id)
+
+    if (createdOrder) triggerTwapAppziSurvey(createdOrder, { created: true }, orders)
+  }
 })
 
 export const deleteTwapOrdersFromListAtom = atom(null, (get, set, ids: string[]) => {

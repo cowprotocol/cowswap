@@ -18,6 +18,8 @@ import { Stepper, StepProps } from '../Stepper'
 export type PermitModalProps = NewModalProps & {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
+  /** Partial permit amount; omit for an unlimited permit */
+  amountToApprove?: CurrencyAmount<Currency>
   step: 'approve' | 'submit'
   orderType: UiOrderType
   icon?: React.ReactNode
@@ -31,7 +33,7 @@ export type PermitModalProps = NewModalProps & {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PermitModal(props: PermitModalProps) {
-  const { inputAmount, outputAmount, step, icon: inputIcon, orderType, ...rest } = props
+  const { inputAmount, outputAmount, amountToApprove, step, icon: inputIcon, orderType, ...rest } = props
   const orderTypeLabel = getPermitOrderTypeLabel(orderType)
 
   const steps: StepProps[] = useMemo(
@@ -55,19 +57,24 @@ export function PermitModal(props: PermitModalProps) {
     [inputAmount?.currency, inputIcon, step],
   )
 
-  const title = useMemo(
-    () =>
-      step === 'approve' ? (
-        <>
-          <Trans>
-            Approve spending <TokenSymbol token={inputAmount?.currency} /> <br /> on CoW Swap
-          </Trans>
-        </>
-      ) : (
-        t`Confirm ${orderTypeLabel}`
-      ),
-    [inputAmount?.currency, orderTypeLabel, step],
-  )
+  const title = useMemo(() => {
+    if (step !== 'approve') return t`Confirm ${orderTypeLabel}`
+
+    if (amountToApprove) {
+      return (
+        <Trans>
+          Approve spending <TokenAmount amount={amountToApprove} tokenSymbol={amountToApprove.currency} /> <br /> on CoW
+          Swap
+        </Trans>
+      )
+    }
+
+    return (
+      <Trans>
+        Approve spending <TokenSymbol token={inputAmount?.currency} /> <br /> on CoW Swap
+      </Trans>
+    )
+  }, [amountToApprove, inputAmount?.currency, orderTypeLabel, step])
 
   const body = useMemo(
     () =>

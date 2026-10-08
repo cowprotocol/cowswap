@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
 
 import { ORDERS_PAGE_SIZE } from 'explorer/const'
 import styled from 'styled-components/macro'
@@ -36,8 +36,8 @@ interface OrdersTableWidgetProps {
 export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidgetProps): ReactNode {
   const [selectedTab, setSelectedTab] = useState(1)
   const { isTwapEoaEnabled } = useFeatureFlags()
-  // TWAP is a ComposableCoW feature, so the tab has nothing to fetch on Solana.
-  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaChain(networkId)
+  // TWAP is a ComposableCoW feature: nothing to fetch on Solana, nor for a Solana address viewed on an EVM chain.
+  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaChain(networkId) && !isSolanaAddress(ownerAddress)
   const {
     state: tableState,
     setPageSize,
