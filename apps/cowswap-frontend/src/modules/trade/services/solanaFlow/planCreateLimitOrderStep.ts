@@ -6,7 +6,7 @@ import { buildSolanaLimitOrderOrder, SolanaLimitOrderParams } from '@cowprotocol
 
 import { t } from '@lingui/core/macro'
 
-import { PlannedCreateOrderStep } from './planCreateOrderStep'
+import { getCreateOrderFundedAccounts, PlannedCreateOrderStep } from './planCreateOrderStep'
 
 export interface PlanCreateLimitOrderStepParams extends Omit<SolanaLimitOrderParams, 'appData'> {
   sellSymbol: string
@@ -38,6 +38,7 @@ export async function planCreateLimitOrderStep({
       instructions: [instruction],
       summary: t`Swap ${sellSymbol} for ${buySymbol}`,
       createsOrder: true,
+      fundedAccounts: getCreateOrderFundedAccounts(),
     },
     orderId,
     signingScheme,
