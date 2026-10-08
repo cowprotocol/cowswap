@@ -24,8 +24,10 @@ export interface SignSolanaFlowContext {
   onDeadline?: () => void
 }
 
+export class SigningWindowClosedError extends Error {}
+
 export function getSigningWindowClosedError(): Error {
-  return new Error(t`The signing window closed before the transaction was signed. Please try again.`)
+  return new SigningWindowClosedError(t`The signing window closed before the transaction was signed. Please try again.`)
 }
 
 /**

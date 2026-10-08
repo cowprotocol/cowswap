@@ -1,8 +1,11 @@
+import { useAtom } from 'jotai'
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { solanaSigningWindowExpiredAtom } from 'entities/trade'
 
 import { Field } from 'legacy/state/types'
 
@@ -32,6 +35,7 @@ import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
+import { SolanaSigningWindowExpired } from '../../pure/SolanaSigningWindowExpired'
 import { WrapNativeModal } from '../WrapNativeModal'
 
 interface TradeWidgetModalsProps {
@@ -52,6 +56,7 @@ export function TradeWidgetModals({
   const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
+  const [solanaSigningWindowExpired, setSolanaSigningWindowExpired] = useAtom(solanaSigningWindowExpiredAtom)
   const { field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen, errorMessage: wrapNativeError }, setWrapNativeScreenState] =
     useWrapNativeScreenState()
@@ -71,7 +76,7 @@ export function TradeWidgetModals({
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
 
-  const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
+  const { onDismiss: closeTradeConfirm, onOpen: openTradeConfirm } = useTradeConfirmActions()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const resetApproveModalState = useResetApproveProgressModalState()
   const updateApproveAmountState = useSetUserApproveAmountModalState()
@@ -87,6 +92,7 @@ export function TradeWidgetModals({
       resetApproveModalState()
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
+      setSolanaSigningWindowExpired(null)
     },
     [
       closeTradeConfirm,
@@ -98,8 +104,16 @@ export function TradeWidgetModals({
       resetApproveModalState,
       updateApproveAmountState,
       setTokenListAddingError,
+      setSolanaSigningWindowExpired,
     ],
   )
+
+  // Same exit as cancelling the prompt after the window closed: nothing was placed, so the way on
+  // is another attempt. Price confirmation is forced because the quote kept refreshing meanwhile.
+  const onSigningWindowExpiredDismiss = useCallback(() => {
+    setSolanaSigningWindowExpired(null)
+    openTradeConfirm(true)
+  }, [setSolanaSigningWindowExpired, openTradeConfirm])
 
   const isOutputTokenSelector = field === Field.OUTPUT
   const previousIsOutputTokenSelector = usePrevious(isOutputTokenSelector)
@@ -115,8 +129,9 @@ export function TradeWidgetModals({
   useEffect(() => {
     return () => {
       closeTradeConfirm()
+      setSolanaSigningWindowExpired(null)
     }
-  }, [closeTradeConfirm])
+  }, [closeTradeConfirm, setSolanaSigningWindowExpired])
 
   /**
    * Close all modals besides auto-import on account change
@@ -170,6 +185,16 @@ export function TradeWidgetModals({
       <SolanaFlowScreen error={wrapNativeError} onDismiss={() => setWrapNativeScreenState({ isOpen: false })}>
         <WrapNativeModal />
       </SolanaFlowScreen>
+    )
+  }
+
+  if (confirmError && solanaSigningWindowExpired) {
+    return (
+      <SolanaSigningWindowExpired
+        inputAmount={solanaSigningWindowExpired.inputAmount}
+        outputAmount={solanaSigningWindowExpired.outputAmount}
+        onDismiss={onSigningWindowExpiredDismiss}
+      />
     )
   }
 

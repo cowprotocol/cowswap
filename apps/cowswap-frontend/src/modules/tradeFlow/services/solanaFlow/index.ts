@@ -8,7 +8,12 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
-import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
+import {
+  solanaSigningAbandonedAtom,
+  solanaSigningDeadlineAtom,
+  SolanaSigningDeadlineState,
+  solanaSigningWindowExpiredAtom,
+} from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -22,6 +27,7 @@ import {
   planDelegateStep,
   planWrapStep,
   sendSolanaFlow,
+  SigningWindowClosedError,
   signSolanaFlow,
   type SignSolanaFlowContext,
   SolanaFlowStep,
@@ -69,6 +75,7 @@ export async function solanaFlow(
   // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
   jotaiStore.set(solanaSigningDeadlineAtom, null)
   jotaiStore.set(solanaSigningAbandonedAtom, false)
+  jotaiStore.set(solanaSigningWindowExpiredAtom, null)
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
 
@@ -216,6 +223,10 @@ export async function solanaFlow(
       }
 
       return
+    }
+
+    if (error instanceof SigningWindowClosedError) {
+      jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)
     }
 
     tradeConfirmActions.onError(swapErrorMessage)
