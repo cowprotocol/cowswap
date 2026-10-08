@@ -31,7 +31,7 @@ export function FeeItem({ title, isSell, feeAmount: feeAmount, loading, testId }
           <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
         </span>
       ) : loading ? (
-        <ThreeDots />
+        <ThreeDots centered />
       ) : (
         <styledEl.GreenText>
           <strong>

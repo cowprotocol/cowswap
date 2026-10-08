@@ -67,7 +67,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     >
       {hasPendingTrade || isConfirmClicked ? (
         <LongLoadText fontSize={15} fontWeight={500}>
-          <span>{pendingText}</span>
+          {pendingText}
           <ThreeDots />
         </LongLoadText>
       ) : (

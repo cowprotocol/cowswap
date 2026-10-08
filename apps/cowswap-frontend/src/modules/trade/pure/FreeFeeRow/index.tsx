@@ -31,7 +31,7 @@ export function FreeFeeRow({ withTimelineDot = true, loading, isLast = false, te
       testId={testId}
     >
       {loading ? (
-        <ThreeDots />
+        <ThreeDots centered />
       ) : (
         <GreenText>
           <Trans>FREE</Trans>

@@ -44,7 +44,7 @@ export function ReviewOrderModalAmountRow({
   testId = TEST_IDS.confirmOrderAmount,
 }: ReviewOrderAmountRowProps): ReactElement {
   const Amount = loading ? (
-    <ThreeDots />
+    <ThreeDots centered />
   ) : (
     <Content highlighted={highlighted}>
       {children}

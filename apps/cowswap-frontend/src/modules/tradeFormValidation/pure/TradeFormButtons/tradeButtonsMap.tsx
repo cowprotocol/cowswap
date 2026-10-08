@@ -142,12 +142,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WalletCapabilitiesLoading]: {
     text: (
       <>
-        <ThreeDots />
+        <ThreeDots centered />
       </>
     ),
   },
   [TradeFormValidation.CaptchaPending]: {
-    text: <ThreeDots />,
+    text: <ThreeDots centered />,
     id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {

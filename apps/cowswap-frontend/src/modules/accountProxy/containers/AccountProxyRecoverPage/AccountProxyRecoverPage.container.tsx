@@ -108,11 +108,11 @@ export function AccountProxyRecoverPage(): ReactNode {
       >
         {txInProgress && <Loader />}
         {txSigningStep && !txInProgress && (
-          <>
+          <span>
             {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
             {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
             <ThreeDots />
-          </>
+          </span>
         )}
         {!txSigningStep && !txInProgress && t`Recover funds`}
       </styledEl.ButtonPrimaryStyled>
