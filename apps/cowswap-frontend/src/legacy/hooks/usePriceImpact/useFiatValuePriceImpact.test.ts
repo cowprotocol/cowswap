@@ -4,7 +4,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { act, renderHook } from '@testing-library/react'
 
 import { useDerivedTradeState } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { isQuoteForCurrencies, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useFiatValuePriceImpact } from './useFiatValuePriceImpact'
@@ -20,6 +20,7 @@ jest.mock('modules/trade', () => ({
 
 jest.mock('modules/tradeQuote', () => ({
   useTradeQuote: jest.fn(),
+  isQuoteForCurrencies: jest.fn(),
 }))
 
 jest.mock('modules/usdAmount', () => ({
@@ -38,6 +39,7 @@ jest.mock('./logger', () => ({
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockedUseTradeUsdAmounts = useTradeUsdAmounts as jest.MockedFunction<typeof useTradeUsdAmounts>
 const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
+const mockedIsQuoteForCurrencies = isQuoteForCurrencies as jest.MockedFunction<typeof isQuoteForCurrencies>
 
 function createToken(symbol: string, address: string): Token {
   return new Token(ChainId.SEPOLIA, address, 18, symbol, symbol)
@@ -76,6 +78,7 @@ describe('useFiatValuePriceImpact', () => {
     mockedUseTradeQuote.mockReturnValue(
       tradeQuoteState({ isLoading: false, hasParamsChanged: false, fetchStartTimestamp: 1 }),
     )
+    mockedIsQuoteForCurrencies.mockReturnValue(true)
   })
 
   afterEach(() => {
@@ -281,6 +284,27 @@ describe('useFiatValuePriceImpact', () => {
       rerender()
 
       expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+    })
+
+    it('reports loading after a token switch until a quote for the new pair exists', () => {
+      const { result, rerender } = settle()
+
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: updatedOutputToken,
+        outputCurrency: outputToken,
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(updatedOutputToken, 1),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputToken, 1),
+      } as ReturnType<typeof useDerivedTradeState>)
+      mockedIsQuoteForCurrencies.mockReturnValue(false)
+      rerender()
+
+      expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+
+      mockedIsQuoteForCurrencies.mockReturnValue(true)
+      rerender()
+
+      expect(result.current?.isLoading).toBe(false)
+      expect(result.current?.priceImpact?.toFixed(0)).toBe('10')
     })
 
     it('reports loading when the token pair changes', () => {

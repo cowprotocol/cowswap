@@ -3,12 +3,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
-import { Fraction, Percent, Token } from '@cowprotocol/currency'
+import { Currency, CurrencyAmount, Fraction, Percent, Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
+import { Nullish } from 'types'
 
 import { useDerivedTradeState } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { isQuoteForCurrencies, TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -49,7 +50,8 @@ export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
     outputAmount: { value: fiatValueOutput, isLoading: outputIsLoading },
   } = useTradeUsdAmounts(inputCurrencyAmount, outputCurrencyAmount, inputToken, outputToken)
 
-  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged, fetchParams } = useTradeQuote()
+  const tradeQuote = useTradeQuote()
+  const { isLoading: isQuoteLoading, hasParamsChanged: quoteParamsChanged, fetchParams } = tradeQuote
 
   // Bumps on every genuine quote request (see `doQuotePolling`). Used to re-arm the timeout below.
   const quoteFetchStartTimestamp = fetchParams?.fetchStartTimestamp
@@ -57,7 +59,8 @@ export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
   // Trade-quote signals indicate the current output amount is stale (token just changed
   // or a fresh quote is in flight). Compute price impact only once the quote catches up,
   // otherwise we'd display a huge nonsense % derived from mismatched in/out amounts.
-  const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
+  const isQuoteBehind = isQuoteBehindTrade(tradeQuote, inputCurrencyAmount, outputCurrencyAmount)
+  const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged || isQuoteBehind
   const hasLoadingTimedOut = useHasLoadingTimedOut(isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp)
 
   const current = useSafeMemo((): FiatValuePriceImpact | null => {
@@ -94,6 +97,18 @@ function computeFiatValuePriceImpact(
   const pct = ONE_HUNDRED_PERCENT.subtract(fiatValueOutput.divide(fiatValueInput))
 
   return new Percent(pct.numerator, pct.denominator)
+}
+
+// The quote request starts only after a debounce, so right after a token switch nothing is loading yet
+// while the form still holds the previous pair's amount: the quote's own pair covers that gap.
+function isQuoteBehindTrade(
+  tradeQuote: TradeQuoteState,
+  inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
+): boolean {
+  if (!inputCurrencyAmount || !outputCurrencyAmount || tradeQuote.error) return false
+
+  return !isQuoteForCurrencies(tradeQuote, inputCurrencyAmount.currency, outputCurrencyAmount.currency)
 }
 
 function isSettledForPair(
