@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-08 09:05\n"
+"PO-Revision-Date: 2026-10-08 11:52\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -4887,6 +4887,10 @@ msgid "Maximum tokens you'll sell."
 msgstr "Máximo de tokens que você venderá."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
+msgid "There may be a network issue that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid " or <0/>"
 msgstr " ou <0/>"
@@ -5701,6 +5705,10 @@ msgstr "12 Horas"
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/traderReferralCodeModal.helpers.tsx
 #~ msgid "This wallet isn’t eligible for that code."
 #~ msgstr "This wallet isn’t eligible for that code."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
+msgid "Your order expired. This could be due to volatile prices or problems with the network."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/yieldTradeButtonsMap.tsx
 msgid "Use the Swap tab for trades that don't involve an LP token."
