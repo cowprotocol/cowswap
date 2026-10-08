@@ -7,7 +7,7 @@ import { Media, NewTooltip } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { TrendingUp } from 'react-feather'
 
-import { TradeIconButton } from 'modules/trade'
+import { TradeIconButton, useDerivedTradeState } from 'modules/trade'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -17,20 +17,26 @@ import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 export function PriceChartToggleButton(): ReactNode {
   const { isPriceChartEnabled } = useFeatureFlags()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
-  const label = !isProviderNetworkUnsupported && !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
+  const disabledReason = isProviderNetworkUnsupported
+    ? t`Price chart is unavailable on this network.`
+    : !inputCurrency && !outputCurrency
+      ? t`Select a token to view its price chart.`
+      : undefined
+  const label = !disabledReason && !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
 
   if (!isPriceChartEnabled) return null
 
   return (
-    <NewTooltip content={label} placement="top">
+    <NewTooltip content={disabledReason ?? label} placement="top">
       <TradeIconButton
         type="button"
-        disabled={isProviderNetworkUnsupported}
+        disabled={!!disabledReason}
         aria-label={label}
-        aria-pressed={isUpToLarge ? undefined : !isProviderNetworkUnsupported && isVisible}
+        aria-pressed={isUpToLarge ? undefined : !disabledReason && isVisible}
         aria-haspopup={isUpToLarge ? 'dialog' : undefined}
         aria-expanded={isUpToLarge ? isModalOpen : undefined}
         onClick={() => (isUpToLarge ? setIsModalOpen(true) : setIsVisible((value) => !value))}
