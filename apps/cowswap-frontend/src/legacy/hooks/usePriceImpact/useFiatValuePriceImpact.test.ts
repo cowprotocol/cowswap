@@ -253,4 +253,54 @@ describe('useFiatValuePriceImpact', () => {
 
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
+  describe('when the quote refreshes after a settled price impact', () => {
+    const usdToken = new Token(ChainId.SEPOLIA, '0x0000000000000000000000000000000000000004', 0, 'USD', 'USD')
+
+    function settle(): ReturnType<typeof renderHook<ReturnType<typeof useFiatValuePriceImpact>, unknown>> {
+      mockedUseTradeUsdAmounts.mockReturnValue({
+        inputAmount: { value: CurrencyAmount.fromRawAmount(usdToken, 100), isLoading: false },
+        outputAmount: { value: CurrencyAmount.fromRawAmount(usdToken, 90), isLoading: false },
+      } as ReturnType<typeof useTradeUsdAmounts>)
+
+      const hook = renderHook(() => useFiatValuePriceImpact())
+
+      expect(hook.result.current?.isLoading).toBe(false)
+      expect(hook.result.current?.priceImpact?.toFixed(0)).toBe('10')
+
+      return hook
+    }
+
+    it('keeps the settled value for the same pair while the new quote loads', () => {
+      const { result, rerender } = settle()
+
+      mockedUseTradeUsdAmounts.mockReturnValue({
+        inputAmount: { value: CurrencyAmount.fromRawAmount(usdToken, 200), isLoading: false },
+        outputAmount: { value: CurrencyAmount.fromRawAmount(usdToken, 90), isLoading: false },
+      } as ReturnType<typeof useTradeUsdAmounts>)
+      mockedUseTradeQuote.mockReturnValue(
+        tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
+      )
+      rerender()
+
+      expect(result.current?.isLoading).toBe(false)
+      expect(result.current?.priceImpact?.toFixed(0)).toBe('10')
+    })
+
+    it('reports loading when the token pair changes', () => {
+      const { result, rerender } = settle()
+
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: inputToken,
+        outputCurrency: updatedOutputToken,
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(updatedOutputToken, 1),
+      } as ReturnType<typeof useDerivedTradeState>)
+      mockedUseTradeQuote.mockReturnValue(
+        tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
+      )
+      rerender()
+
+      expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
+    })
+  })
 })

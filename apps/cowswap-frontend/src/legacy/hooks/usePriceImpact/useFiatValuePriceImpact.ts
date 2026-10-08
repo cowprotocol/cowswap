@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
-import { Fraction, Percent } from '@cowprotocol/currency'
+import { Fraction, Percent, Token } from '@cowprotocol/currency'
 
 import ms from 'ms.macro'
 
@@ -18,7 +18,18 @@ import { logPriceImpact } from './logger'
 const TRADE_SET_UP_DEBOUNCE_TIME = ms`100ms`
 const PRICE_IMPACT_LOADING_TIMEOUT = ms`15s`
 
-export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; isLoading: boolean } | null {
+interface FiatValuePriceImpact {
+  priceImpact: Percent | undefined
+  isLoading: boolean
+}
+
+interface SettledPriceImpact {
+  inputToken: Token
+  outputToken: Token
+  priceImpact: Percent
+}
+
+export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
   const state = useDerivedTradeState()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
@@ -62,7 +73,7 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
     return () => clearTimeout(timeoutId)
   }, [isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp])
 
-  return useSafeMemo(() => {
+  const current = useSafeMemo((): FiatValuePriceImpact | null => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
     if (!isTradeSetUp) return null
 
@@ -81,6 +92,8 @@ export function useFiatValuePriceImpact(): { priceImpact: Percent | undefined; i
 
     return { priceImpact, isLoading: false }
   }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
+
+  return useSettledDuringRequote(current, inputToken, outputToken)
 }
 
 function computeFiatValuePriceImpact(
@@ -94,4 +107,36 @@ function computeFiatValuePriceImpact(
   const pct = ONE_HUNDRED_PERCENT.subtract(fiatValueOutput.divide(fiatValueInput))
 
   return new Percent(pct.numerator, pct.denominator)
+}
+
+// A requote after an amount change keeps the pair's last settled value instead of flipping to loading,
+// otherwise consumers keyed on `isLoading || !priceImpact` (NoImpactWarning) flicker on every keystroke.
+function useSettledDuringRequote(
+  current: FiatValuePriceImpact | null,
+  inputToken: Token | undefined,
+  outputToken: Token | undefined,
+): FiatValuePriceImpact | null {
+  const [lastSettled, setLastSettled] = useState<SettledPriceImpact | null>(null)
+
+  useEffect(() => {
+    if (!current || current.isLoading || !current.priceImpact || !inputToken || !outputToken) return
+
+    setLastSettled({ inputToken, outputToken, priceImpact: current.priceImpact })
+  }, [current, inputToken, outputToken])
+
+  const isSamePairAsSettled =
+    !!lastSettled &&
+    !!inputToken &&
+    !!outputToken &&
+    lastSettled.inputToken.equals(inputToken) &&
+    lastSettled.outputToken.equals(outputToken)
+  const settledPriceImpact = isSamePairAsSettled ? lastSettled.priceImpact : undefined
+
+  return useSafeMemo(() => {
+    if (current?.isLoading && settledPriceImpact) {
+      return { priceImpact: settledPriceImpact, isLoading: false }
+    }
+
+    return current
+  }, [current, settledPriceImpact])
 }
