@@ -149,7 +149,6 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         customDeadline={customDeadline}
         onDismiss={() => setIsCustomModalOpen(false)}
         isOpen={isCustomModalOpen}
-        tooltip={tooltip}
         parts={parts}
         partDuration={partDuration}
       />

@@ -2,23 +2,24 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
-import { ConfirmBottomDrawerOrDialog, renderTooltip } from '@cowprotocol/ui'
+import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
-import { LabelTooltipFn, TotalDurationTooltipParams } from 'modules/twap'
 import { customDeadlineToSeconds } from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import * as styledEl from './styled'
 
+import { PaddedDeadlineDisplay } from '../PaddedDeadlineDisplay/PaddedDeadlineDisplay.pure'
+
 type CustomDeadline = { hours: number; minutes: number }
 
 interface CustomDeadlineSelectorProps {
   isOpen: boolean
-  tooltip: LabelTooltipFn<TotalDurationTooltipParams>
   parts: number
   partDuration: number
   onDismiss: Command
@@ -28,7 +29,6 @@ interface CustomDeadlineSelectorProps {
 
 export function CustomDeadlineSelector({
   isOpen,
-  tooltip,
   parts,
   partDuration,
   onDismiss,
@@ -57,16 +57,30 @@ export function CustomDeadlineSelector({
 
   const description = useMemo(() => {
     const hasCustomInput = hoursValue > 0 || minutesValue > 0
+    const totalDuration = hasCustomInput
+      ? customDeadlineToSeconds({ hours: hoursValue, minutes: minutesValue })
+      : parts * partDuration
+    const resolvedPartDuration = hasCustomInput && parts > 0 ? Math.ceil(totalDuration / parts) : partDuration
 
-    if (!hasCustomInput) {
-      return renderTooltip(tooltip, { parts, partDuration })
-    }
-
-    const totalDuration = customDeadlineToSeconds({ hours: hoursValue, minutes: minutesValue })
-    const editedPartDuration = parts > 0 ? Math.ceil(totalDuration / parts) : 0
-
-    return renderTooltip(tooltip, { parts, partDuration: editedPartDuration, totalDuration })
-  }, [hoursValue, minutesValue, partDuration, parts, tooltip])
+    return (
+      <>
+        <p>
+          <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
+        </p>
+        <p>
+          <Trans>
+            For instance, your order consists of{' '}
+            <b>
+              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+            </b>{' '}
+            placed every <PaddedDeadlineDisplay seconds={resolvedPartDuration} />, the total time to complete the order
+            is <PaddedDeadlineDisplay seconds={totalDuration} />. Each limit order remains open for{' '}
+            <PaddedDeadlineDisplay seconds={resolvedPartDuration} /> until the next part becomes active.
+          </Trans>
+        </p>
+      </>
+    )
+  }, [hoursValue, minutesValue, partDuration, parts])
 
   const handleApply = useCallback(() => {
     analytics.sendEvent({
