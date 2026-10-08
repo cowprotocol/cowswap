@@ -96,6 +96,7 @@ export type SearchSymbolsCallback = (items: SearchSymbolResultItem[]) => void
 
 interface ChartApi {
   createStudy(name: string, forceOverlay: boolean, lock: boolean): Promise<string>
+  getStudyById(id: string): { mergeUp(): void }
   getAllStudies(): { id: string; name: string }[]
   removeEntity(id: string, options?: { disableUndo?: boolean }): void
   setSymbol(symbol: string, callback: () => void): void

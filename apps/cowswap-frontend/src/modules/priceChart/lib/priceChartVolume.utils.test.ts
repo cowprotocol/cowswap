@@ -1,4 +1,4 @@
-import { hasPriceChartVolume, mapCandlesToVolumeData, syncTradingViewVolumeStudy } from './priceChartVolume.utils'
+import { hasPriceChartVolume, syncTradingViewVolumeStudy } from './priceChartVolume.utils'
 
 import type { IChartingLibraryWidget } from './loadChartingLibrary'
 import type { Candle } from './priceChart.types'
@@ -17,19 +17,22 @@ describe('price chart volume', () => {
 
     syncTradingViewVolumeStudy({ activeChart: () => chart } as unknown as IChartingLibraryWidget, true)
 
-    expect(createStudy).toHaveBeenCalledWith('Volume', false, false)
+    expect(createStudy).toHaveBeenCalledWith('Volume', true, false)
     expect(chart.removeEntity).not.toHaveBeenCalled()
   })
 
-  it('keeps an existing Advanced volume study when volume is available', () => {
+  it('merges a saved Advanced volume pane when volume is available', () => {
+    const mergeUp = jest.fn()
     const chart = {
       createStudy: jest.fn(),
+      getStudyById: jest.fn().mockReturnValue({ mergeUp }),
       getAllStudies: jest.fn().mockReturnValue([{ id: 'volume-id', name: 'Volume' }]),
       removeEntity: jest.fn(),
     }
 
     syncTradingViewVolumeStudy({ activeChart: () => chart } as unknown as IChartingLibraryWidget, true)
 
+    expect(mergeUp).toHaveBeenCalledTimes(1)
     expect(chart.createStudy).not.toHaveBeenCalled()
     expect(chart.removeEntity).not.toHaveBeenCalled()
   })

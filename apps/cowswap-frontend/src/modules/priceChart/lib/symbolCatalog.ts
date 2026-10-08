@@ -10,36 +10,47 @@ import {
 
 import type { PriceChartSymbolDescriptor } from './tradingView.types'
 
-export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDescriptor[] {
-  return currencies.map((currency) => {
-    const ticker = `${currency.chainId}:${getAddressKey(getCurrencyAddress(currency))}:USD`
-    const description = `${currency.symbol || 'TOKEN'}/USD`
+const SERIES_VARIANTS = [
+  { metric: 'price', supplyVariant: 'circulating' },
+  { metric: 'marketCap', supplyVariant: 'circulating' },
+  { metric: 'marketCap', supplyVariant: 'total' },
+] as const
 
-    return {
-      currency,
-      ticker,
-      librarySymbolInfo: {
-        data_status: 'endofday',
-        description,
-        exchange: PRO_CHART_EXCHANGE_NAME,
-        format: 'price',
-        has_daily: true,
-        has_intraday: true,
-        has_weekly_and_monthly: true,
-        listed_exchange: PRO_CHART_EXCHANGE_NAME,
-        minmov: 1,
-        name: ticker,
-        pricescale: 1_000_000_000_000,
-        session: '24x7',
-        supported_resolutions: PRO_CHART_SUPPORTED_RESOLUTIONS,
+export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDescriptor[] {
+  return currencies.flatMap((currency) =>
+    SERIES_VARIANTS.map(({ metric, supplyVariant }) => {
+      const ticker = `${currency.chainId}_${getAddressKey(getCurrencyAddress(currency))}_USD_${metric}_${supplyVariant}`
+      const description =
+        metric === 'price' ? `${currency.symbol || 'TOKEN'}/USD` : `${currency.symbol || 'TOKEN'} Market Cap`
+
+      return {
+        currency,
+        metric,
+        supplyVariant,
         ticker,
-        timezone: 'Etc/UTC',
-        type: PRO_CHART_SYMBOL_TYPE,
-        visible_plots_set: 'ohlcv',
-        volume_precision: 2,
-      },
-    }
-  })
+        librarySymbolInfo: {
+          data_status: 'endofday',
+          description,
+          exchange: PRO_CHART_EXCHANGE_NAME,
+          format: 'price',
+          has_daily: true,
+          has_intraday: true,
+          has_weekly_and_monthly: true,
+          listed_exchange: PRO_CHART_EXCHANGE_NAME,
+          minmov: 1,
+          name: ticker,
+          pricescale: metric === 'price' ? 1_000_000_000_000 : 1,
+          session: '24x7',
+          supported_resolutions: PRO_CHART_SUPPORTED_RESOLUTIONS,
+          ticker,
+          timezone: 'Etc/UTC',
+          type: PRO_CHART_SYMBOL_TYPE,
+          visible_plots_set: 'ohlcv',
+          volume_precision: 2,
+        },
+      }
+    }),
+  )
 }
 
 export function findChartSymbol(
