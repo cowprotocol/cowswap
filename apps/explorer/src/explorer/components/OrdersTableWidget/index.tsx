@@ -54,18 +54,8 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
     [selectedTab, updateQueryString],
   )
   const { isTwapEoaEnabled } = useFeatureFlags()
-  // TWAP is a ComposableCoW feature, so the tab has nothing to fetch on Solana.
-  const isSolanaOwner = (!!networkId && isSolanaChain(networkId)) || isSolanaAddress(ownerAddress)
-  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaOwner
-
-  useEffect(() => {
-    if (!isSolanaOwner || selectedTab !== TWAP_TAB_ID) return
-
-    const search = new URLSearchParams(query)
-    search.set(TAB_QUERY_PARAM_KEY, ORDERS_TAB_QUERY_VALUE)
-    navigate({ search: search.toString() }, { replace: true })
-  }, [isSolanaOwner, navigate, query, selectedTab])
-
+  // TWAP is a ComposableCoW feature: nothing to fetch on Solana, nor for a Solana address viewed on an EVM chain.
+  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaChain(networkId) && !isSolanaAddress(ownerAddress)
   const {
     state: tableState,
     setPageSize,
