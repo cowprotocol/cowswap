@@ -8,11 +8,20 @@ export function errorResponse(status: number, error: string): NextResponse<RwaAp
   return NextResponse.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } })
 }
 
-/** Degraded bodies (see `DegradableResponse`) are never cached, so an upstream outage doesn't outlive itself */
-export function jsonResponse<T>(body: T, maxAgeSeconds: number): NextResponse<T> {
+/**
+ * Degraded bodies (see `DegradableResponse`) are never cached, so an upstream outage doesn't outlive itself.
+ * `staleWhileRevalidateSeconds` defaults to 5 × `maxAgeSeconds`, `0` disables it.
+ */
+export function jsonResponse<T>(
+  body: T,
+  maxAgeSeconds: number,
+  staleWhileRevalidateSeconds = maxAgeSeconds * 5,
+): NextResponse<T> {
+  const staleWhileRevalidate =
+    staleWhileRevalidateSeconds > 0 ? `, stale-while-revalidate=${staleWhileRevalidateSeconds}` : ''
   const cacheControl = isDegradedResponse(body)
     ? 'no-store'
-    : `public, s-maxage=${maxAgeSeconds}, stale-while-revalidate=${maxAgeSeconds * 5}`
+    : `public, s-maxage=${maxAgeSeconds}${staleWhileRevalidate}`
 
   return NextResponse.json(body, { headers: { 'Cache-Control': cacheControl } })
 }

@@ -22,6 +22,7 @@ This file: rwa-frontend app-specific commands only.
 
 - `COINGECKO_API_KEY`: CoinGecko key (server-only). Without it the keyless public API is used, which is heavily rate limited.
 - `COINGECKO_API_PLAN`: `pro` for `pro-api.coingecko.com`; any other value uses the Demo API.
+- `COW_API_KEY`: CoW Partner API key (server-only), used by `/api/v1/quotes`. Without it the public order book API is used.
 - `NEXT_PUBLIC_WC_PROJECT_ID`: Reown project id (defaults to the cowswap-frontend one).
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
 - `NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL`: balances watcher API (defaults to `https://balances-watcher.cow.fi`).

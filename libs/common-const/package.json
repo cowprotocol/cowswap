@@ -10,6 +10,12 @@
       "import": "./src/index.ts",
       "require": "./src/index.ts",
       "default": "./src/index.ts"
+    },
+    "./tokens": {
+      "types": "./src/tokens.ts",
+      "import": "./src/tokens.ts",
+      "require": "./src/tokens.ts",
+      "default": "./src/tokens.ts"
     }
   },
   "publishConfig": {
@@ -20,6 +26,11 @@
         "types": "./index.d.ts",
         "import": "./index.mjs",
         "require": "./index.js"
+      },
+      "./tokens": {
+        "types": "./tokens.d.ts",
+        "import": "./tokens.mjs",
+        "require": "./tokens.js"
       }
     }
   },

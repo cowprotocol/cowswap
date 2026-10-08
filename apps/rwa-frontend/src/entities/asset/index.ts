@@ -2,7 +2,9 @@ export { type AssetsPageQuery } from './api/assetsApi'
 export {
   assetChartQueryOptions,
   assetQueryAtomFamily,
+  assetNetworkStatsQueryOptions,
   assetQueryOptions,
+  assetQuotesQueryOptions,
   assetsPageQueryOptions,
   assetsSearchQueryOptions,
   tokenListQueryAtom,
@@ -10,8 +12,10 @@ export {
 } from './api/assetsQueries'
 export {
   RWA_CHART_RANGES,
+  RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAsset,
+  type RwaAssetQuotes,
   type RwaAssetResponse,
   type RwaAssetsPage,
   type RwaAssetsSearchResult,
@@ -21,13 +25,17 @@ export {
   type RwaChartPoint,
   type RwaChartRange,
   type RwaMarketData,
+  type RwaNetworkStats,
+  type RwaQuoteSide,
   type RwaRegistry,
   type RwaSortField,
   type RwaSortOrder,
   type RwaToken,
   type RwaTokenList,
   type RwaTokenListToken,
+  type RwaTokenQuote,
   type RwaTokenMarketData,
+  type RwaTokenNetworkStats,
   type RwaTradingTime,
 } from './model/types'
 export { AssetStats } from './ui/AssetStats'

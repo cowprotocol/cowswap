@@ -54,23 +54,6 @@
   gap: 10px;
 }
 
-.logo,
-.logoPlaceholder {
-  flex-shrink: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-}
-
-.logoPlaceholder {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
-  font-weight: 600;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
