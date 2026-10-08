@@ -59,8 +59,9 @@ export async function getSolanaQuote(
       // own, and the order book rejects the whole transaction with `InvalidTransaction`.
       sellTokenProgramId: tokenProgramId(sellTokenAddress),
       buyTokenProgramId: tokenProgramId(buyTokenAddress),
-      // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
-      // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
+      // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance can't come
+      // from the quote provider. `useQuoteParams` passes the user-set or default value, and omits it only when
+      // smart slippage equals the quote's own suggestion, which the SDK then signs.
       slippageBps: quoteParams.swapSlippageBps,
       priceQuality: advancedSettings.quoteRequest?.priceQuality,
     },
