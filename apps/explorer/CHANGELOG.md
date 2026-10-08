@@ -1,5 +1,39 @@
 # Changelog
 
+## [4.14.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.13.1...explorer-v4.14.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(explorer): resolve receiver address by ATA (#8284)
+
+- feat(solana): support limit orders (#8208)
+
+- feat(explorer): solana orders history (#8163)
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(explorer): show surplus for filled TWAP part orders (#8274)
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/analytics@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/hook-dapp-lib@2.3.1
+
 ## [4.13.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.13.0...explorer-v4.13.1) (2026-09-29)
 
 ### Patch Changes

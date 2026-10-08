@@ -20,6 +20,7 @@ import { useEoaTwapPlan } from './useEoaTwapPlan'
 import { useTwapConfirmCurrencyPreview } from './useTwapConfirmCurrencyPreview'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
+import { useEoaTwapDismissOnFinalStatus } from '../../hooks/useEoaTwapDismissOnFinalStatus'
 import { useEoaTwapLeaveConfirmation } from '../../hooks/useEoaTwapLeaveConfirmation'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
 import { useTwapOrder } from '../../hooks/useTwapOrder'
@@ -69,6 +70,8 @@ export function TwapConfirmModal(): ReactNode {
   const dismissSuccessState = useViewPlacedOrder(onDismiss)
   const onViewOrders = useViewPlacedOrder()
 
+  useEoaTwapDismissOnFinalStatus(onDismiss)
+
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
     symbol: inputSymbolLabel,
     onDismiss,
@@ -105,7 +108,7 @@ export function TwapConfirmModal(): ReactNode {
       />
     ) : null
 
-  const twapFormWarningsElement = isEoaTwapSuccess ? null : (
+  const twapFormWarningsElement = hasSigningPlan ? null : (
     <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
   )
 

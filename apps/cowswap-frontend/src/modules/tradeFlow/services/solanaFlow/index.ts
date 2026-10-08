@@ -1,4 +1,5 @@
 import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
+import { jotaiStore } from '@cowprotocol/core'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
@@ -7,11 +8,14 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
+import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
+  estimateSolanaSigningDeadline,
+  getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
   planCreateOrderStep,
@@ -21,14 +25,19 @@ import {
   signSolanaFlow,
   type SignSolanaFlowContext,
   SolanaFlowStep,
+  tradeConfirmStateAtom,
 } from 'modules/trade'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
-import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
+import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
+
+// An unanswered wallet prompt keeps its flow pending forever, so a retry runs alongside it: only the
+// newest run may touch the confirm-screen state, and every stale one goes silent.
+let latestAttemptId = 0
 
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
@@ -55,6 +64,11 @@ export async function solanaFlow(
   const tradeAmounts = { inputAmount, outputAmount }
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
+  const attemptId = ++latestAttemptId
+  // A previous attempt can hang forever on an unanswered wallet prompt, which leaves its (expired)
+  // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
+  jotaiStore.set(solanaSigningDeadlineAtom, null)
+  jotaiStore.set(solanaSigningAbandonedAtom, false)
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
 
@@ -123,7 +137,12 @@ export async function solanaFlow(
     // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
     // track: the order book submits it once it has countersigned as fee payer.
     const txHash = sponsor
-      ? await postSponsoredBundle({ connection, provider, feePayer }, steps, tradeQuote.quoteResults)
+      ? await postSponsoredBundle(
+          { connection, provider, feePayer },
+          steps,
+          tradeQuote.quoteResults,
+          () => attemptId === latestAttemptId,
+        )
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
     addPendingOrderStep(
@@ -179,6 +198,25 @@ export async function solanaFlow(
 
     captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
+
+    // The user retried while this attempt's prompt was still open: its screen belongs to the newer
+    // run now, and a stale failure must not repaint it.
+    if (attemptId !== latestAttemptId) {
+      return
+    }
+
+    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
+    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
+
+    // Rejecting a prompt whose window already closed is the expected retry path, not an error: back
+    // to the review screen (with forced price confirmation), or silence if the modal was left.
+    if (isRejection && isSigningWindowClosed) {
+      if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
+        tradeConfirmActions.onOpen(true)
+      }
+
+      return
+    }
 
     tradeConfirmActions.onError(swapErrorMessage)
   }
@@ -279,22 +317,75 @@ function emitSolanaPostedOrderEvent(params: {
 }
 
 /**
- * Signs the bundle without broadcasting and hands it to the order book, which pays for it. Returns
- * nothing to track on chain: the signature only exists once the order book submits, so the order is
- * followed by its uid from here on.
+ * Signs the bundle without broadcasting and hands it to the order book, which pays for it and
+ * submits — so nothing to track on chain here, the order is followed by its uid.
  */
 async function postSponsoredBundle(
   context: SignSolanaFlowContext,
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
+  isCurrentAttempt: () => boolean,
 ): Promise<undefined> {
-  const { transaction } = await signSolanaFlow(context, steps)
+  // By the time a hung attempt settles, the shared atoms may belong to a newer attempt — every
+  // write below is gated on the atom still holding this attempt's own value.
+  let ownDeadline: SolanaSigningDeadlineState | null = null
+  let isSettled = false
 
-  await postSolanaSponsoredOrder(
-    // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
-    { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
-    { orderBookApi },
-  )
+  const hasShownWindowClosed = (atMs = Date.now()): boolean => !!ownDeadline && atMs >= ownDeadline.expiresAt
+
+  const settleSigning = (): void => {
+    if (isSettled) return
+    isSettled = true
+
+    if (!ownDeadline || jotaiStore.get(solanaSigningDeadlineAtom) !== ownDeadline) return
+
+    // The wallet answered after the window closed: lets the error handling route the rejection
+    // back to the review screen instead of the error modal.
+    if (hasShownWindowClosed()) {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+    }
+
+    jotaiStore.set(solanaSigningDeadlineAtom, null)
+  }
+
+  try {
+    const { transaction, signedAtMs } = await signSolanaFlow(
+      {
+        ...context,
+        onDeadline: () => {
+          void estimateSolanaSigningDeadline(context.connection).then((deadline) => {
+            // Painted only while this attempt still owns the screen and the window is still alive —
+            // a stale or pathologically late estimate would otherwise open the countdown onto 00:00.
+            if (isSettled || !isCurrentAttempt() || deadline.expiresAt <= Date.now()) return
+
+            ownDeadline = deadline
+            jotaiStore.set(solanaSigningDeadlineAtom, deadline)
+          })
+        },
+      },
+      steps,
+    )
+
+    // Judged by the countdown's own clock, never by a block-height read-back: the load-balanced RPC
+    // can answer ~a minute apart between two calls and so declare a seconds-old blockhash dead
+    // (false "window closed" with the timer still running). The order book re-checks blockhash
+    // liveness itself, so an optimistic hand-over costs one round-trip at worst.
+    if (!isCurrentAttempt() || hasShownWindowClosed(signedAtMs)) {
+      throw getSigningWindowClosedError()
+    }
+
+    // Settled at the signature, not after the POST: the countdown must not keep ticking (and claim
+    // the window closed) while the signed bundle is being handed to the order book.
+    settleSigning()
+
+    await postSolanaSponsoredOrder(
+      // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.
+      { partiallySignedTx: transaction, quoteId: quoteResults.quoteResponse.id ?? undefined },
+      { orderBookApi },
+    )
+  } finally {
+    settleSigning()
+  }
 
   return undefined
 }

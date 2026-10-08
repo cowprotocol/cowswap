@@ -1,5 +1,24 @@
 # Changelog
 
+## [4.12.0](https://github.com/cowprotocol/cowswap/compare/types-v4.11.0...types-v4.12.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.7.0
+
 ## [4.11.0](https://github.com/cowprotocol/cowswap/compare/types-v4.10.0...types-v4.11.0) (2026-09-23)
 
 ### Minor Changes

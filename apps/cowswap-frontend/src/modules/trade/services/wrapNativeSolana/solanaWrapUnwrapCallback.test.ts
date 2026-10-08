@@ -296,7 +296,11 @@ describe('solanaWrapUnwrapCallback', () => {
 
       expect(result).toBeNull()
       expect(harness.context.provider.sendTransaction).toHaveBeenCalledTimes(1)
-      expect(harness.openErrorModal).toHaveBeenCalledWith('insufficient funds for rent')
+      // A funding failure is one of the signatures `handleSolanaSendError` rewrites, so what reaches the
+      // modal is the actionable message rather than the raw one — see `handleSolanaSendError.test.ts`.
+      expect(harness.openErrorModal).toHaveBeenCalledWith(
+        "You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet.",
+      )
     })
   })
 
