@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-09-28
+last_reviewed: 2026-09-29
 ---
 
 # rwa-frontend AGENTS.md
@@ -24,6 +24,8 @@ This file: rwa-frontend app-specific commands only.
 - `COINGECKO_API_PLAN`: `pro` for `pro-api.coingecko.com`; any other value uses the Demo API.
 - `NEXT_PUBLIC_WC_PROJECT_ID`: Reown project id (defaults to the cowswap-frontend one).
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
+- `NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL`: balances watcher API (defaults to `https://balances-watcher.cow.fi`).
+- `NEXT_PUBLIC_RWA_TOKEN_LIST_URL`: hosted copy of `/api/v1/token-list` for the balances watcher, which only accepts lists from `files.cow.fi` and `raw.githubusercontent.com`. Without it the list's tokens are sent as `customTokens`.
 
 ## App rules
 
@@ -32,6 +34,8 @@ This file: rwa-frontend app-specific commands only.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
+- `/api/v1/token-list` is the token list of `data/RWAs.json`. Balances are streamed from the balances watcher for the tokens in that list.
+- Account activity must come through `ActivityProvider` (`_pages/asset/api/activity`). It is backed by the CoW order book trades for now; swap the implementation there, not in the UI.
 - Data fetching uses Jotai: `atomWithQuery` from `jotai-tanstack-query`, with `atomFamily` from `jotai-family` for per-ticker queries. SWR is banned by ESLint. Query options live in `entities/asset/api/assetsQueries.ts`, and every query key starts with `RWA_QUERY_KEY_ROOT`.
 - There is one `QueryClient` per app instance (`_app/layout/Providers.tsx`), shared by Jotai (`queryClientAtom`) and wagmi.
 - `_app/offline/persistQueryCache.ts` persists app queries to IndexedDB and restores each query when it enters the cache. Don't add a second client-side cache for API data.
