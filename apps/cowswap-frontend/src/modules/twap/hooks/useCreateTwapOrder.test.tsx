@@ -119,9 +119,26 @@ jest.mock('../services/twap/safe/placeSafeTwapOrder', () => ({ placeSafeTwapOrde
 jest.mock('../composable-cow-poller/injectPollFundsPreHookIntoAppData', () => ({
   injectPollFundsPreHookIntoAppData: jest.fn(async (appData) => appData),
 }))
-jest.mock('../composable-cow-poller/composable-cow-poller.utils', () => ({
-  getComposableCowPollerScheduleId: jest.fn(() => '0xschedule'),
-}))
+jest.mock('@cowprotocol/sdk-composable', () => {
+  const actual = jest.requireActual('@cowprotocol/sdk-composable')
+
+  return {
+    ...actual,
+    ComposableCowPoller: jest.fn().mockImplementation(() => ({
+      getScheduleId: jest.fn(() => '0x' + '11'.repeat(32)),
+    })),
+  }
+})
+jest.mock('@cowprotocol/sdk-cow-shed', () => {
+  const actual = jest.requireActual('@cowprotocol/sdk-cow-shed')
+
+  return {
+    ...actual,
+    CowShedSdk: jest.fn().mockImplementation(() => ({
+      getCowShedAccount: jest.fn(() => '0xproxy'),
+    })),
+  }
+})
 jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   COMPOSABLE_COW_POLLER_ADDRESS: {
     1: '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3',
@@ -130,11 +147,9 @@ jest.mock('../composable-cow-poller/composable-cow-poller.constants', () => ({
   },
 }))
 jest.mock('modules/accountProxy', () => ({
-  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: {},
-  getCowShedHooks: jest.fn(() => ({
-    proxyOf: jest.fn(() => '0xproxy'),
-    getFactoryAddress: jest.fn(() => '0xfactory'),
-  })),
+  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: {
+    factoryOptions: { factoryAddress: '0xfactory' },
+  },
   hasBytecode: jest.fn().mockResolvedValue(true),
   assertFactoryDeployed: jest.fn().mockResolvedValue(undefined),
 }))

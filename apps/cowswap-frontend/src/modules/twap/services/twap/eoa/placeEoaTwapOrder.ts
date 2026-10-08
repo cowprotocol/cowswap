@@ -11,11 +11,12 @@ import {
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
-import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
+import { COW_SHED_2_1_0_VERSION, CowShedSdk, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
 
-import { getCowShedHooks, ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
+import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
@@ -28,7 +29,6 @@ import {
   COMPOSABLE_COW_POLLER_ADDRESS,
   COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
 } from '../../../composable-cow-poller/composable-cow-poller.constants'
-import { encodeRegisterFromShedCalldata } from '../../../composable-cow-poller/composable-cow-poller.utils'
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
@@ -206,7 +206,9 @@ export function getEoaTwapOrderShedCalls({
     // Register the JIT poller schedule so each TWAP part can pull funds from the EOA:
     const registerTx: ICoWShedCall = {
       target: pollerRegistration.pollerAddress,
-      callData: encodeRegisterFromShedCalldata(pollerRegistration.schedule),
+      callData: new ComposableCowPoller(pollerRegistration.pollerAddress).encodeRegisterFromShed(
+        pollerRegistration.schedule,
+      ),
       value: 0n,
       isDelegateCall: false,
       allowFailure: false,
@@ -287,13 +289,14 @@ export async function placeEoaTwapOrder({
     throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
   }
 
-  // TODO: This could be simplified by using `CowShedSdk` instead of `CowShedHooks`, but right now it does not support passing a custom version, and it defaults
-  // to 1.0.1, so signature verification will fail.
-  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
-  const factoryAddress = ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions.factoryAddress as `0x${string}`
+  const cowShedSdk = new CowShedSdk(
+    undefined,
+    ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions,
+    COW_SHED_2_1_0_VERSION,
+  )
 
   // `proxyAddress` (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
-  const proxyAddress = cowShedHooks.proxyOf(account) as AccountAddress
+  const proxyAddress = cowShedSdk.getCowShedAccount(chainId, account) as AccountAddress
 
   eoaTwapDebugLog('CowShed account:', proxyAddress)
 
@@ -338,7 +341,7 @@ export async function placeEoaTwapOrder({
 
   const setupTx = buildEoaTwapTrustedExecuteTx({
     proxyAddress: proxyAddress as `0x${string}`,
-    factoryAddress,
+    chainId,
     calls,
     isProxyDeployed,
   })
@@ -348,11 +351,12 @@ export async function placeEoaTwapOrder({
   onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
   const setupTxHash = await walletClient.sendTransaction({
-    to: setupTx.to,
-    data: setupTx.data,
+    to: setupTx.to as Hex,
+    data: setupTx.data as Hex,
     account,
     chain: walletClient.chain,
     gas: DEFAULT_GAS_LIMIT,
+    value: setupTx.value,
   })
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
