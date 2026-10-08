@@ -11,11 +11,6 @@ export interface ChainStatusBadgeProps {
   style?: CSSProperties
 }
 
-/**
- * Marks a chain whose deployment is not yet audited. The only place that decides which chains those
- * are, so every selector loses the label in one edit once Solana leaves alpha — and none of them can
- * be forgotten in the meantime. Renders nothing for an audited chain.
- */
 export function ChainStatusBadge({ chainId, type = BadgeTypes.ALERT2, style }: ChainStatusBadgeProps): ReactNode {
   if (!isSolanaChain(chainId)) return null
 
