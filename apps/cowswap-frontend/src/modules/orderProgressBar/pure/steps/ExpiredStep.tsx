@@ -48,7 +48,7 @@ export function ExpiredStep({ chainId, children, navigateToNewOrder }: ExpiredSt
           </h3>
           <p>
             {isSolanaChain(chainId) ? (
-              <Trans>Your order expired. This could be due to volatile prices, or problems with the network.</Trans>
+              <Trans>Your order expired. This could be due to volatile prices or problems with the network.</Trans>
             ) : (
               <Trans>
                 Your order expired. This could be due to gas spikes, volatile prices, or problems with the network.
