@@ -449,7 +449,6 @@ async function getProxyAllowances({
   const needsZeroApproval = needsApproval
     ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
-        // TODO: Verify this works properly
         owner: proxyAddress as `0x${string}`,
         spender: spender,
         amountToApprove: sellAmount,
