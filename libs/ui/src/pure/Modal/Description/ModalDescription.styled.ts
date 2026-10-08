@@ -8,9 +8,8 @@ import { SimpleStyledText } from '../../SimpleStyledText/SimpleStyledText.styled
 const DESCRIPTION_HORIZONTAL_PADDING_PX = 16
 
 export const Description = styled(SimpleStyledText)`
-  ${font('FONT_SMALL_PLUS', 'regular')}
+  ${font('FONT_NORMAL', 'regular')}
   margin: 0 0 16px;
   padding: 0 ${DESCRIPTION_HORIZONTAL_PADDING_PX}px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  line-height: 1.4;
+  color: var(${UI.COLOR_TEXT});
 `
