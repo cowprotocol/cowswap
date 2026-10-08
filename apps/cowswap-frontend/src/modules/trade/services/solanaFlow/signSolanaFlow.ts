@@ -11,8 +11,7 @@ import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/re
 export interface SignedSolanaFlow {
   /** The owner-signed transaction as base64, ready for the order book's sponsored endpoint. */
   transaction: string
-  lastValidBlockHeight: number
-  /** Epoch ms when the wallet returned the signature, before any post-sign RPC round-trips. */
+  /** Epoch ms when the wallet returned the signature. */
   signedAtMs: number
 }
 
@@ -21,7 +20,8 @@ export interface SignSolanaFlowContext {
   provider: SolanaProvider
   /** The sponsor, not the owner: it pays, and the order book fills its signature slot. */
   feePayer: PublicKey
-  onDeadline?: (lastValidBlockHeight: number) => void
+  /** Fired when the blockhash is taken, just before the wallet prompt: the signing window opens here. */
+  onDeadline?: () => void
 }
 
 export function getSigningWindowClosedError(): Error {
@@ -40,30 +40,16 @@ export async function signSolanaFlow(
     throw new Error('signSolanaFlow: no steps to sign')
   }
 
-  const { transaction, lastValidBlockHeight } = await buildSolanaTransaction({
+  const { transaction } = await buildSolanaTransaction({
     connection,
     instructions: steps.flatMap((step) => step.instructions),
     feePayer,
   })
 
-  onDeadline?.(lastValidBlockHeight)
+  onDeadline?.()
 
   const signed = await signSolanaTransaction(provider, transaction)
   const signedAtMs = Date.now()
 
-  if (await isBlockhashDead(connection, lastValidBlockHeight)) {
-    throw getSigningWindowClosedError()
-  }
-
-  return { transaction: signed, lastValidBlockHeight, signedAtMs }
-}
-
-// An unreadable height must not discard an already-given signature: the order book re-checks
-// blockhash liveness itself, so only a height actually read past the limit refuses the hand-over.
-async function isBlockhashDead(connection: Connection, lastValidBlockHeight: number): Promise<boolean> {
-  try {
-    return (await connection.getBlockHeight()) > lastValidBlockHeight
-  } catch {
-    return false
-  }
+  return { transaction: signed, signedAtMs }
 }
