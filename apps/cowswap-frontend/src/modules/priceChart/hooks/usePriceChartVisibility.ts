@@ -4,12 +4,20 @@ import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency } from '@cowprotocol/currency'
 import { Media } from '@cowprotocol/ui'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
 import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
 export function usePriceChartVisibility(inputCurrency: Currency | null, outputCurrency: Currency | null): boolean {
   const { isPriceChartEnabled } = useFeatureFlags()
+  const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const isVisible = useAtomValue(priceChartVisibleAtom)
 
-  return Boolean(isPriceChartEnabled && (isUpToLarge || isVisible) && (inputCurrency || outputCurrency))
+  return Boolean(
+    isPriceChartEnabled &&
+      !isProviderNetworkUnsupported &&
+      (isUpToLarge || isVisible) &&
+      (inputCurrency || outputCurrency),
+  )
 }
