@@ -1,10 +1,12 @@
 import { ReactElement } from 'react'
 
-import { CenteredDots, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
+
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
@@ -29,7 +31,7 @@ export function FreeFeeRow({ withTimelineDot = true, loading, isLast = false, te
       testId={testId}
     >
       {loading ? (
-        <CenteredDots />
+        <ThreeDots />
       ) : (
         <GreenText>
           <Trans>FREE</Trans>

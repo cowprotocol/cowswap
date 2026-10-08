@@ -2,11 +2,13 @@ import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { CenteredDots, TokenAmount } from '@cowprotocol/ui'
+import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
+
+import { ThreeDots } from '../ThreeDots/ThreeDots.pure'
 
 interface FeeItemProps {
   title: string
@@ -29,7 +31,7 @@ export function FeeItem({ title, isSell, feeAmount: feeAmount, loading, testId }
           <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
         </span>
       ) : loading ? (
-        <CenteredDots />
+        <ThreeDots />
       ) : (
         <styledEl.GreenText>
           <strong>

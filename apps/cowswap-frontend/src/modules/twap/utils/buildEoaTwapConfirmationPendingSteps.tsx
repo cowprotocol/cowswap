@@ -5,7 +5,7 @@ import type { Hex } from 'viem'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { BadgeType, LongLoadText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -471,7 +471,7 @@ function getConfirmWithWalletButton(): EoaTwapCurrentStepButtonProps {
     children: (
       <LongLoadText fontSize={15} fontWeight={500}>
         {t`Confirm with your wallet`}
-        <CenteredDots smaller />
+        <ThreeDots />
       </LongLoadText>
     ),
     disabled: true,
