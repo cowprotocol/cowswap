@@ -88,6 +88,50 @@ describe('buildEoaTwapConfirmationPendingSteps()', () => {
     expect(steps[1]?.description).toBeTruthy()
   })
 
+  it('labels zero-approve distinctly from approve for USDT-style tokens', () => {
+    const plan = [
+      EoaTwapSigningSteps.ZeroApprovePoller,
+      EoaTwapSigningSteps.ApprovePoller,
+      EoaTwapSigningSteps.TwapSign,
+      EoaTwapSigningSteps.SubmitTwap,
+    ]
+
+    const steps = getPendingSteps(
+      buildEoaTwapConfirmationPendingSteps({
+        signingStep: {
+          step: EoaTwapSigningSteps.ZeroApprovePoller,
+          plan,
+          phase: EoaTwapSigningPhase.Sign,
+          lockDismiss: false,
+        },
+        token: USDC_MAINNET,
+      }),
+    )
+
+    expect(steps.map(({ id, label, status }) => ({ id, label, status }))).toEqual([
+      {
+        id: EoaTwapSigningSteps.ZeroApprovePoller,
+        label: 'Reset approval',
+        status: 'active',
+      },
+      {
+        id: EoaTwapSigningSteps.ApprovePoller,
+        label: 'Approve USDC',
+        status: 'upcoming',
+      },
+      {
+        id: EoaTwapSigningSteps.TwapSign,
+        label: 'Sign TWAP',
+        status: 'upcoming',
+      },
+      {
+        id: EoaTwapSigningSteps.SubmitTwap,
+        label: 'Activating TWAP',
+        status: 'upcoming',
+      },
+    ])
+  })
+
   it('marks Sign phase as active with Approve {symbol}', () => {
     const plan = [EoaTwapSigningSteps.ApprovePoller, EoaTwapSigningSteps.TwapSign]
 
@@ -420,6 +464,8 @@ describe('getEoaTwapStepLabel()', () => {
   })
 
   it('returns stable labels per step', () => {
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ZeroApprovePoller, 'USDT')).toBe('Reset approval')
+    expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ZeroApprovePoller)).toBe('Reset approval')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller, 'COW')).toBe('Approve COW')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.ApprovePoller)).toBe('Approve token')
     expect(getEoaTwapStepLabel(EoaTwapSigningSteps.PermitPoller, 'COW')).toBe('Permit COW')

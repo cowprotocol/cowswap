@@ -349,6 +349,7 @@ export function getEoaTwapStepDescription(
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Reset approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
