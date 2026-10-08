@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-07 20:57\n"
+"PO-Revision-Date: 2026-10-08 09:05\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -4997,6 +4997,10 @@ msgstr "Максимальный интервал между частями — 
 msgid "This fee helps pay for maintenance & improvements to the trade experience"
 msgstr "Эта комиссия помогает оплачивать поддержку и улучшение торгового функционала"
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
+msgid "Min."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/ensureEoaTwapSpenderAllowance.ts
 #~ msgid "Timed out waiting for the approval transaction. Please try again."
 #~ msgstr "Timed out waiting for the approval transaction. Please try again."
@@ -7210,6 +7214,10 @@ msgstr "Адрес, который получит токены в целевой
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Creation"
 msgstr "Создание"
+
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
+msgid "Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "AFTER"
