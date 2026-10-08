@@ -15,4 +15,10 @@ export const ONDO_TOKENS_LIST_SOURCE = tokensList[SupportedChainId.MAINNET][3].s
 
 export const XSTOCKS_TOKENS_LIST_SOURCE = tokensList[SupportedChainId.MAINNET][4].source
 
-export const RWA_TOKENS_LIST_SOURCES = [ONDO_TOKENS_LIST_SOURCE, XSTOCKS_TOKENS_LIST_SOURCE] as const
+export const SOLANA_RWA_TOKENS_LIST_SOURCE = tokensList[SupportedChainId.SOLANA][2].source
+
+export const RWA_TOKENS_LIST_SOURCES = [
+  ONDO_TOKENS_LIST_SOURCE,
+  XSTOCKS_TOKENS_LIST_SOURCE,
+  SOLANA_RWA_TOKENS_LIST_SOURCE,
+] as const
