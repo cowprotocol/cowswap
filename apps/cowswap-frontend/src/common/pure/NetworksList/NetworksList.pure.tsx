@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { isSolanaChain, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -11,6 +11,7 @@ import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
+import { ChainStatusBadge } from '../ChainStatusBadge/ChainStatusBadge.pure'
 
 const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([])
 
@@ -38,7 +39,6 @@ export function NetworksList({
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
         const isNewNetwork = NEW_NETWORK_IDS.has(targetChainId)
-        const isAlphaNetwork = isSolanaChain(targetChainId)
         const isDeprecatedNetwork = deprecatedChains.has(targetChainId)
 
         const rowContent = (
@@ -66,10 +66,8 @@ export function NetworksList({
               </Badge>
             )}
 
-            {isAlphaNetwork && !isDeprecatedNetwork && (
-              <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                <Trans>ALPHA</Trans>
-              </Badge>
+            {!isDeprecatedNetwork && (
+              <ChainStatusBadge chainId={targetChainId} style={isActive ? { marginRight: '10px' } : undefined} />
             )}
 
             {isActive && <styledEl.FlyoutRowActiveIndicator $active />}

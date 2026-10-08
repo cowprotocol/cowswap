@@ -8841,8 +8841,7 @@ msgstr "User rejected signing the cancellation"
 msgid "Total referrals"
 msgstr "Total referrals"
 
-#: apps/cowswap-frontend/src/common/pure/NetworksList/NetworksList.pure.tsx
-#: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
+#: apps/cowswap-frontend/src/common/pure/ChainStatusBadge/ChainStatusBadge.pure.tsx
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 msgid "ALPHA"
 msgstr "ALPHA"
