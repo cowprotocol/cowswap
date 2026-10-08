@@ -1,9 +1,10 @@
-import { useCallback, type ReactNode } from 'react'
+import { useCallback, useEffect, type ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
 
 import { ORDERS_PAGE_SIZE, TAB_QUERY_PARAM_KEY, TWAP_TAB_QUERY_VALUE } from 'explorer/const'
+import { useNavigate } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, type BlockchainNetwork } from './context/OrdersTableContext'
@@ -40,6 +41,7 @@ interface OrdersTableWidgetProps {
 
 export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidgetProps): ReactNode {
   const query = useQuery()
+  const navigate = useNavigate()
   const updateQueryString = useUpdateQueryString()
   const selectedTab =
     query.get(TAB_QUERY_PARAM_KEY)?.toLowerCase() === TWAP_TAB_QUERY_VALUE ? TWAP_TAB_ID : ORDERS_TAB_ID
@@ -53,7 +55,17 @@ export function OrdersTableWidget({ ownerAddress, networkId }: OrdersTableWidget
   )
   const { isTwapEoaEnabled } = useFeatureFlags()
   // TWAP is a ComposableCoW feature, so the tab has nothing to fetch on Solana.
-  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaChain(networkId)
+  const isSolanaOwner = (!!networkId && isSolanaChain(networkId)) || isSolanaAddress(ownerAddress)
+  const showTwapTab = isTwapEoaEnabled && !!networkId && !isSolanaOwner
+
+  useEffect(() => {
+    if (!isSolanaOwner || selectedTab !== TWAP_TAB_ID) return
+
+    const search = new URLSearchParams(query)
+    search.set(TAB_QUERY_PARAM_KEY, ORDERS_TAB_QUERY_VALUE)
+    navigate({ search: search.toString() }, { replace: true })
+  }, [isSolanaOwner, navigate, query, selectedTab])
+
   const {
     state: tableState,
     setPageSize,
