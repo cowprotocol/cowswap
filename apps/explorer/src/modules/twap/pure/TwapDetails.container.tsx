@@ -19,6 +19,7 @@ import { Notification } from 'components/Notification'
 import { AmountRow } from 'components/orders/AmountsDisplay/AmountRow'
 import { Wrapper as AmountsWrapper } from 'components/orders/AmountsDisplay/styled'
 import { DetailsTableTooltips } from 'components/orders/DetailsTable/detailsTableTooltips'
+import { AppDataItem } from 'components/orders/DetailsTable/items/AppDataItem'
 import { FromItem } from 'components/orders/DetailsTable/items/FromItem'
 import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/SubmissionTimeItem'
 import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
@@ -36,7 +37,6 @@ import { Navigate, useLocation, useParams } from 'react-router'
 import { useNetworkId } from 'state/network'
 import { abbreviateString, FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
-import { TwapAppData } from './TwapAppData.container'
 import * as styledEl from './TwapDetails.styled'
 
 import { getTwapProgress } from '../getTwapProgress'
@@ -228,7 +228,7 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                     }}
                   />
                 </DetailRow>
-                <TwapAppData appData={schedule.appData} chainId={chainId} />
+                <AppDataItem appData={schedule.appData} />
               </>
             }
           />
