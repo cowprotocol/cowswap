@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, NewTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -9,12 +9,11 @@ import { TrendingUp } from 'react-feather'
 
 import { TradeIconButton } from 'modules/trade'
 
-import { usePriceChartFeatureFlags } from '../hooks/usePriceChartFeatureFlags'
 import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
 import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
 export function PriceChartToggleButton(): ReactNode {
-  const { isPriceChartEnabled } = usePriceChartFeatureFlags()
+  const { isPriceChartEnabled } = useFeatureFlags()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
