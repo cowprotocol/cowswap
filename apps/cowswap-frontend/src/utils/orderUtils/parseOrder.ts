@@ -126,7 +126,10 @@ export const parseOrder = (order: Order): ParsedOrder => {
     kind: order.kind,
     sellAmount: order.sellAmount,
     buyAmount: order.buyAmount,
-    feeAmount: order.feeAmount,
+    // Solana charges no fee, so its order-book omits `feeAmount` entirely. `transformOrder` in
+    // sdk-order-book now fills it in, but `addOrUpdateOrders` merges onto an order already in the
+    // store without overwriting the field — one persisted before that fix keeps `undefined`.
+    feeAmount: order.feeAmount ?? '0',
     class: order.class,
     status: order.status,
     partiallyFillable: order.partiallyFillable,
