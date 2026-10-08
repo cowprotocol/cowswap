@@ -6,6 +6,7 @@ import { Percent } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
+import { useFreezeWhileConfirming } from 'modules/trade'
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { TradeFormValidation } from 'modules/tradeFormValidation/types'
@@ -56,8 +57,12 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
-  const swapAmountDifference = useSwapAmountDifference()
-  const { suggestion, feeFiatAmount } = useTwapSwapSuggestion()
+  const liveSwapAmountDifference = useSwapAmountDifference()
+  const liveSwapSuggestion = useTwapSwapSuggestion()
+  const {
+    swapAmountDifference,
+    swapSuggestion: { suggestion, feeFiatAmount },
+  } = useFreezeWhileConfirming({ swapAmountDifference: liveSwapAmountDifference, swapSuggestion: liveSwapSuggestion })
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
