@@ -1,8 +1,10 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useTryFindToken } from '@cowprotocol/tokens'
 import { StatefulValue } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -69,6 +71,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
+  const { chainId } = useWalletInfo()
   const hooksEnabledState = useHooksEnabledManager()
   const isNonEvmBridging = useIsNonEvmBridging()
   const { isLoading: isRateLoading, bridgeQuote, error: quoteError } = useTradeQuote()
@@ -191,6 +194,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         partialApprovalLocked={isInfiniteApproveDisabledInWidget}
         isRecipientToggleDisabled={isNonEvmBridging}
         isRecipientToggleHidden={disableCustomRecipient}
+        isHooksToggleDisabled={isSolanaChain(chainId)}
       />
     ),
     bottomContent: useCallback(
