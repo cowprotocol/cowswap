@@ -15,7 +15,6 @@ export type ModalFooterButtonVariant = 'default' | 'error'
 
 export type ModalFooterWithTwoButtonsProps = {
   inline?: boolean
-  topBorder?: boolean
 } & (
   | { primaryButton: ModalFooterButtonConfig; secondaryButton?: ModalFooterButtonConfig }
   | { primaryButton?: ModalFooterButtonConfig; secondaryButton: ModalFooterButtonConfig }
@@ -23,7 +22,6 @@ export type ModalFooterWithTwoButtonsProps = {
 
 export function ModalFooterWithTwoButtons({
   inline,
-  topBorder,
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
@@ -51,7 +49,7 @@ export function ModalFooterWithTwoButtons({
   ) : null
 
   return (
-    <ModalFooter inline={inline} topBorder={topBorder}>
+    <ModalFooter inline={inline}>
       {secondary && primary ? (
         <styledEl.TwoButtonGrid>
           {secondary}

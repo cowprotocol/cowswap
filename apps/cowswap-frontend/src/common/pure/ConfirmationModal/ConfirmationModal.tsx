@@ -104,7 +104,6 @@ export function ConfirmationModal({
       onConfirm={onEnable}
       confirmDisabled={confirmDisabled}
       confirmVariant="error"
-      footerTopBorder
     />
   )
 }

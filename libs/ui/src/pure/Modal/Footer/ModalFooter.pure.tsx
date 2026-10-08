@@ -7,13 +7,11 @@ export interface ModalFooterProps {
   className?: string
   /** Omit padding when nested inside `Modal.Content`. */
   inline?: boolean
-  /** Adds a top border and padding. */
-  topBorder?: boolean
 }
 
-export function ModalFooter({ children, className, inline, topBorder }: ModalFooterProps): ReactNode {
+export function ModalFooter({ children, className, inline }: ModalFooterProps): ReactNode {
   return (
-    <styledEl.Footer className={className} $inline={inline} $topBorder={topBorder}>
+    <styledEl.Footer className={className} $inline={inline}>
       {children}
     </styledEl.Footer>
   )

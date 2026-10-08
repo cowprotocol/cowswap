@@ -127,7 +127,6 @@ export function CustomDeadlineSelector({
       confirmLabel={t`Apply`}
       onConfirm={handleApply}
       confirmDisabled={isDisabled}
-      footerTopBorder
     />
   )
 }

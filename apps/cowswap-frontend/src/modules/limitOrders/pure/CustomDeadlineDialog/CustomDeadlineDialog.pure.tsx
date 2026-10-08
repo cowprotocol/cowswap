@@ -136,7 +136,6 @@ export function CustomDeadlineDialog({
       confirmLabel={t`Apply`}
       onConfirm={handleApply}
       confirmDisabled={!!error}
-      footerTopBorder
     />
   )
 }

@@ -22,8 +22,6 @@ export interface ConfirmBottomDrawerOrDialogProps {
   onConfirm(): void
   confirmDisabled?: boolean
   confirmVariant?: ModalFooterButtonVariant
-  /** Adds a top border matching the scrolled modal header and 10px top padding. */
-  footerTopBorder?: boolean
   /** Called when the overlay is dismissed (e.g. swipe down, click outside). Defaults to `onCancel`. */
   onDismiss?(): void
 }
@@ -39,7 +37,6 @@ export function ConfirmBottomDrawerOrDialog({
   onConfirm,
   confirmDisabled = false,
   confirmVariant = 'default',
-  footerTopBorder = false,
   onDismiss = onCancel,
 }: ConfirmBottomDrawerOrDialogProps): ReactNode {
   const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
@@ -63,7 +60,6 @@ export function ConfirmBottomDrawerOrDialog({
         <Modal.Content>{content}</Modal.Content>
 
         <Modal.FooterWithTwoButtons
-          topBorder={footerTopBorder}
           secondaryButton={{ label: cancelLabel, onClick: onCancel }}
           primaryButton={{
             disabled: confirmDisabled,
