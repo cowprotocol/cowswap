@@ -49,7 +49,6 @@ import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
-import { SolanaAlphaTradeLimitMessage } from '../SolanaAlphaTradeLimitMessage'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapDebugPanel } from '../SwapDebugPanel'
 import { SwapRateDetails } from '../SwapRateDetails'
@@ -182,7 +181,6 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const slots: TradeWidgetSlots = {
     topContent,
-    middleContent: <SolanaAlphaTradeLimitMessage />,
     lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
