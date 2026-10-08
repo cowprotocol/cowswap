@@ -49,6 +49,7 @@ jest.mock('modules/trade/services/solanaSend/estimateSolanaSigningDeadline', () 
 jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
   postSolanaSponsoredOrder: jest.fn(),
+  SolanaTradingSdk: jest.fn(),
 }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
