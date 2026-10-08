@@ -9,6 +9,7 @@ import {
   getAssetsUrl,
   getAssetUrl,
   getChartUrl,
+  getMarketOverviewUrl,
   getNetworkStatsUrl,
   getQuotesUrl,
   getTokenListUrl,
@@ -21,6 +22,7 @@ import type {
   RwaAssetsSearchResult,
   RwaChart,
   RwaChartRange,
+  RwaMarketOverview,
   RwaNetworkStats,
   RwaQuoteSide,
   RwaTokenList,
@@ -89,6 +91,16 @@ export function assetsSearchQueryOptions(query: string): RwaQueryOptions<RwaAsse
     queryFn: () => rwaFetcher<RwaAssetsSearchResult>(getAssetsSearchUrl(query)),
     placeholderData: keepPreviousData,
     enabled: query.length > 0,
+  }
+}
+
+/** `/api/v1/market-overview` caches the overview for the same interval */
+export function marketOverviewQueryOptions(): RwaQueryOptions<RwaMarketOverview> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'market-overview'],
+    queryFn: () => rwaFetcher<RwaMarketOverview>(getMarketOverviewUrl()),
+    placeholderData: keepPreviousData,
+    refetchInterval: MARKET_REFRESH_INTERVAL_MS,
   }
 }
 

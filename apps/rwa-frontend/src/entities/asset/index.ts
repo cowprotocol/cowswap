@@ -7,6 +7,7 @@ export {
   assetQuotesQueryOptions,
   assetsPageQueryOptions,
   assetsSearchQueryOptions,
+  marketOverviewQueryOptions,
   tokenListQueryAtom,
   tokenListQueryOptions,
 } from './api/assetsQueries'
@@ -25,6 +26,9 @@ export {
   type RwaChartPoint,
   type RwaChartRange,
   type RwaMarketData,
+  type RwaMarketOverview,
+  type RwaMarketOverviewItem,
+  type RwaMarketOverviewTotals,
   type RwaNetworkStats,
   type RwaQuoteSide,
   type RwaRegistry,

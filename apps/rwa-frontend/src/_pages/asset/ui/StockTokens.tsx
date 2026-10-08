@@ -5,7 +5,6 @@ import { type ReactNode, useMemo, useState } from 'react'
 
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
-import { TokenLogo } from './TokenLogo'
 
 import { getTokenKey } from '../lib/tokenKey'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
@@ -16,6 +15,7 @@ import { assetQueryAtomFamily, type RwaAsset, type RwaToken, type RwaTokenMarket
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatCompactUsd, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
+import { TokenLogo } from '@/shared/ui/token-logo'
 
 const ALL = ''
 
