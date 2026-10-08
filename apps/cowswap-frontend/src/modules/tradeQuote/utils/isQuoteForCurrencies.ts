@@ -11,7 +11,7 @@ export function isQuoteForCurrencies(
 ): boolean {
   const quote = tradeQuote.quote?.quoteResults.quoteResponse.quote
 
-  if (!quote) return false
+  if (!quote || !isQuoteForChains(tradeQuote, inputCurrency, outputCurrency)) return false
 
   // A bridge quote's own buy token is the intermediate one on the source chain
   const buyToken = tradeQuote.bridgeQuote ? tradeQuote.bridgeQuote.tradeParameters.buyTokenAddress : quote.buyToken
@@ -25,4 +25,15 @@ function isAddressOfCurrency(address: string, currency: Currency): boolean {
     areAddressesEqual(address, getCurrencyAddress(currency)) ||
     areAddressesEqual(address, getWrappedToken(currency).address)
   )
+}
+
+// Addresses repeat across chains (e.g. the native placeholder), so the chains have to match too
+function isQuoteForChains(tradeQuote: TradeQuoteState, inputCurrency: Currency, outputCurrency: Currency): boolean {
+  const { bridgeQuote } = tradeQuote
+
+  if (!bridgeQuote) return inputCurrency.chainId === outputCurrency.chainId
+
+  const { sellTokenChainId, buyTokenChainId } = bridgeQuote.tradeParameters
+
+  return sellTokenChainId === inputCurrency.chainId && buyTokenChainId === outputCurrency.chainId
 }
