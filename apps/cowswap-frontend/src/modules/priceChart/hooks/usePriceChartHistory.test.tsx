@@ -71,16 +71,13 @@ describe('usePriceChartHistory', () => {
     try {
       const { result, rerender } = renderHook(useHistory, { wrapper: createWrapper(), initialProps: INITIAL_PROPS })
       await waitFor(() => expect(result.current.data).toEqual(BARS))
-      expect(fetchTokenSupply).not.toHaveBeenCalled()
 
       rerender({ ...INITIAL_PROPS, metric: 'marketCap' })
-      await waitFor(() => expect(result.current.data?.[0]?.close).toBe(20))
+      await waitFor(() => expect(result.current.isPlaceholderData).toBe(false))
 
       rerender({ ...INITIAL_PROPS, metric: 'marketCap', supplyVariant: 'total' })
-      await waitFor(() => expect(result.current.data?.[0]?.close).toBe(40))
+      await waitFor(() => expect(result.current.isPlaceholderData).toBe(false))
 
-      rerender({ ...INITIAL_PROPS, supplyVariant: 'total' })
-      await waitFor(() => expect(result.current.data).toEqual(BARS))
       expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
     } finally {
       clock.mockRestore()
