@@ -3,7 +3,7 @@ import { useCallback, type ReactNode } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain, type AddressKey } from '@cowprotocol/cow-sdk'
 
-import { ORDERS_PAGE_SIZE, TAB_QUERY_PARAM_KEY } from 'explorer/const'
+import { ORDERS_PAGE_SIZE, TAB_QUERY_PARAM_KEY, TWAP_TAB_QUERY_VALUE } from 'explorer/const'
 import styled from 'styled-components/macro'
 
 import { OrdersTableContext, type BlockchainNetwork } from './context/OrdersTableContext'
@@ -24,7 +24,6 @@ import type { TabItemInterface } from '../../../components/common/Tabs/Tabs'
 const ORDERS_TAB_ID = 1
 const TWAP_TAB_ID = 2
 const ORDERS_TAB_QUERY_VALUE = 'orders'
-const TWAP_TAB_QUERY_VALUE = 'twap'
 
 const StyledTabLoader = styled.span`
   padding-left: 4px;
