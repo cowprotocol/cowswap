@@ -7,11 +7,8 @@ import type { Candle, ChartMetric, SupplyVariant } from './priceChart.types'
 
 export interface CreatePriceChartDatafeedParams {
   queryClient: QueryClient
-  metric: ChartMetric
   onHistoryLoaded?: (bars: Candle[]) => void
-  onStatusChange: (status: PriceChartHistoryStatus) => void
   symbols: PriceChartSymbolDescriptor[]
-  supplyVariant?: SupplyVariant
 }
 
 export interface PriceChartDatafeedController {
@@ -19,9 +16,9 @@ export interface PriceChartDatafeedController {
   dispose: () => void
 }
 
-export type PriceChartHistoryStatus = 'loading' | 'empty' | 'error' | null
-
 export interface PriceChartSymbolDescriptor {
+  metric: ChartMetric
+  supplyVariant: SupplyVariant
   currency: Currency
   librarySymbolInfo: LibrarySymbolInfo
   ticker: string

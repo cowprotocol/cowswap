@@ -15,10 +15,18 @@ export function priceHistoryQueryOptions(
   interval: CandleInterval,
 ): ReturnType<typeof queryOptions<Candle[]>> {
   const token = getWrappedToken(currency)
-  return queryOptions({
+  return queryOptions<Candle[]>({
     queryKey: ['priceChart', 'prices', token.chainId, getAddressKey(token.address), interval, from, to],
-    queryFn: () => loadPriceChartHistory(currency, from, to, interval, 'price', 'circulating'),
-    staleTime: 0,
+    queryFn: () =>
+      loadPriceChartHistory(
+        currency,
+        from,
+        Math.min(to, Math.floor(Date.now() / 1000)),
+        interval,
+        'price',
+        'circulating',
+      ),
+    staleTime: 30_000,
     retry: false,
   })
 }

@@ -10,7 +10,7 @@ import { fetchPriceHistory } from '../api/fetchPriceHistory'
 import { fetchTokenSupply } from '../api/fetchTokenSupply'
 
 import type { ResolutionString } from './loadChartingLibrary'
-import type { Candle } from './priceChart.types'
+import type { Candle, ChartMetric, SupplyVariant } from './priceChart.types'
 import type { PriceChartSymbolDescriptor } from './tradingView.types'
 
 jest.mock('../api/fetchPriceHistory', () => ({ fetchPriceHistory: jest.fn() }))
@@ -44,8 +44,16 @@ function createDeferred<T>(): { promise: Promise<T>; reject: (error?: unknown) =
   }
 }
 
-function createSymbolDescriptor(currency: Token): PriceChartSymbolDescriptor {
-  return createChartSymbols([currency])[0]
+function createSymbolDescriptor(
+  currency: Token,
+  metric: ChartMetric = 'price',
+  supplyVariant: SupplyVariant = 'circulating',
+): PriceChartSymbolDescriptor {
+  const symbol = createChartSymbols([currency]).find(
+    (symbol) => symbol.metric === metric && symbol.supplyVariant === supplyVariant,
+  )
+  if (!symbol) throw new Error('Missing chart symbol')
+  return symbol
 }
 
 function flushTasks(): Promise<void> {
@@ -75,8 +83,6 @@ describe('createPriceChartDatafeed', () => {
     const onReady = jest.fn()
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
-      onStatusChange: jest.fn(),
       symbols: [],
     })
 
@@ -91,9 +97,9 @@ describe('createPriceChartDatafeed', () => {
     ['price', 1_000_000_000_000],
     ['marketCap', 1],
   ] as const)('resolves %s history with its required precision', async (metric, pricescale) => {
-    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }), metric)
     const onResolve = jest.fn()
-    const { datafeed } = createPriceChartDatafeed({ queryClient, metric, onStatusChange: jest.fn(), symbols: [symbol] })
+    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols: [symbol] })
 
     datafeed.resolveSymbol(symbol.ticker, onResolve, jest.fn())
     await flushTasks()
@@ -110,7 +116,6 @@ describe('createPriceChartDatafeed', () => {
       }),
     )
     const onHistoryLoaded = jest.fn()
-    const onStatusChange = jest.fn()
     const onResult = jest.fn()
     const onError = jest.fn()
 
@@ -126,9 +131,7 @@ describe('createPriceChartDatafeed', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
       onHistoryLoaded,
-      onStatusChange,
       symbols: [symbol],
     })
 
@@ -155,8 +158,6 @@ describe('createPriceChartDatafeed', () => {
       { noData: false },
     )
     expect(onError).not.toHaveBeenCalled()
-    expect(onStatusChange).toHaveBeenNthCalledWith(1, 'loading')
-    expect(onStatusChange).toHaveBeenLastCalledWith(null)
     expect(onHistoryLoaded).toHaveBeenCalledWith([
       {
         close: 2,
@@ -178,8 +179,6 @@ describe('createPriceChartDatafeed', () => {
     try {
       const { datafeed } = createPriceChartDatafeed({
         queryClient,
-        metric: 'price',
-        onStatusChange: jest.fn(),
         symbols: [symbol],
       })
       datafeed.getBars(symbol.librarySymbolInfo, '1D', { ...PERIOD_PARAMS, to: now + 86400 }, jest.fn(), jest.fn())
@@ -211,7 +210,7 @@ describe('createPriceChartDatafeed', () => {
     const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
     const request = createDeferred<Candle[]>()
     mockedFetchPriceHistory.mockReturnValue(request.promise)
-    const params = { queryClient, metric: 'price' as const, onStatusChange: jest.fn(), symbols: [symbol] }
+    const params = { queryClient, symbols: [symbol] }
     const first = createPriceChartDatafeed(params).datafeed
     const second = createPriceChartDatafeed(params).datafeed
     const firstResult = jest.fn()
@@ -228,7 +227,7 @@ describe('createPriceChartDatafeed', () => {
   })
 
   it('scales USD history by circulating supply for market cap', async () => {
-    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }), 'marketCap')
     const onResult = jest.fn()
 
     mockedFetchPriceHistory.mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }])
@@ -236,8 +235,6 @@ describe('createPriceChartDatafeed', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'marketCap',
-      onStatusChange: jest.fn(),
       symbols: [symbol],
     })
 
@@ -251,7 +248,7 @@ describe('createPriceChartDatafeed', () => {
   })
 
   it('scales USD history by total supply when selected', async () => {
-    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }))
+    const symbol = createSymbolDescriptor(createAsset({ symbol: 'COW' }), 'marketCap', 'total')
     const onResult = jest.fn()
 
     mockedFetchPriceHistory.mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }])
@@ -259,9 +256,6 @@ describe('createPriceChartDatafeed', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'marketCap',
-      onStatusChange: jest.fn(),
-      supplyVariant: 'total',
       symbols: [symbol],
     })
 
@@ -273,37 +267,33 @@ describe('createPriceChartDatafeed', () => {
     })
   })
 
-  it('shows loading only for the first request for a symbol', async () => {
-    const symbol = createSymbolDescriptor(
-      createAsset({
-        address: '0x0000000000000000000000000000000000000001',
-        chainId: SupportedChainId.MAINNET,
-        symbol: 'USDC',
-      }),
-    )
-    const onStatusChange = jest.fn()
+  it('switches metric and supply in one datafeed while reusing USD history', async () => {
+    const symbols = createChartSymbols([createAsset({ symbol: 'COW' })])
+    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols })
+    mockedFetchPriceHistory.mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }])
+    mockedFetchTokenSupply.mockResolvedValue({ circulatingSupply: 100, totalSupply: 120 })
 
-    mockedFetchPriceHistory.mockResolvedValue([
-      {
-        close: 2,
-        high: 3,
-        low: 1,
-        open: 1.5,
-        timestamp: 1710000000,
-      },
-    ])
+    for (const symbol of symbols) {
+      const onResolve = jest.fn()
+      datafeed.resolveSymbol(symbol.ticker, onResolve, jest.fn())
+      await flushTasks()
+      expect(onResolve).toHaveBeenCalledWith(
+        expect.objectContaining({
+          pricescale: symbol.metric === 'price' ? 1_000_000_000_000 : 1,
+        }),
+      )
 
-    const { datafeed } = createPriceChartDatafeed({ queryClient, metric: 'price', onStatusChange, symbols: [symbol] })
-
-    datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, jest.fn(), jest.fn())
-    await flushTasks()
-    datafeed.getBars(symbol.librarySymbolInfo, '1D' as ResolutionString, PERIOD_PARAMS, jest.fn(), jest.fn())
-    await flushTasks()
-
-    expect(onStatusChange.mock.calls.filter(([status]) => status === 'loading')).toEqual([['loading']])
+      const onResult = jest.fn()
+      datafeed.getBars(symbol.librarySymbolInfo, '60', PERIOD_PARAMS, onResult, jest.fn())
+      await flushTasks()
+      const multiplier = symbol.metric === 'price' ? 1 : symbol.supplyVariant === 'total' ? 120 : 100
+      expect(onResult).toHaveBeenCalledWith([expect.objectContaining({ close: 2 * multiplier })], { noData: false })
+    }
+    expect(new Set(symbols.map(({ ticker }) => ticker)).size).toBe(3)
+    expect(mockedFetchPriceHistory).toHaveBeenCalledTimes(1)
   })
 
-  it('shows an empty-state overlay when USD history is unavailable', async () => {
+  it('reports no data to TradingView when USD history is unavailable', async () => {
     const symbol = createSymbolDescriptor(
       createAsset({
         address: '0x0000000000000000000000000000000000000001',
@@ -311,11 +301,10 @@ describe('createPriceChartDatafeed', () => {
         symbol: 'COW',
       }),
     )
-    const onStatusChange = jest.fn()
     const onResult = jest.fn()
     const onError = jest.fn()
     mockedFetchPriceHistory.mockResolvedValue([])
-    const { datafeed } = createPriceChartDatafeed({ queryClient, metric: 'price', onStatusChange, symbols: [symbol] })
+    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols: [symbol] })
 
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
     await flushTasks()
@@ -329,7 +318,6 @@ describe('createPriceChartDatafeed', () => {
     })
     expect(onResult).toHaveBeenCalledWith([], { noData: true })
     expect(onError).not.toHaveBeenCalled()
-    expect(onStatusChange).toHaveBeenLastCalledWith('empty')
   })
 
   it('skips price chart calls for backfill requests when backfill is disabled', async () => {
@@ -340,17 +328,15 @@ describe('createPriceChartDatafeed', () => {
         symbol: 'COW',
       }),
     )
-    const onStatusChange = jest.fn()
     const onResult = jest.fn()
 
-    const { datafeed } = createPriceChartDatafeed({ queryClient, metric: 'price', onStatusChange, symbols: [symbol] })
+    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols: [symbol] })
 
     datafeed.getBars(symbol.librarySymbolInfo, '1D' as ResolutionString, BACKFILL_PERIOD_PARAMS, onResult, jest.fn())
     await flushTasks()
 
     expect(mockedFetchPriceHistory).not.toHaveBeenCalled()
     expect(onResult).toHaveBeenCalledWith([], { noData: true })
-    expect(onStatusChange).not.toHaveBeenCalled()
   })
 })
 
@@ -361,7 +347,7 @@ describe('createPriceChartDatafeed request lifecycle', () => {
     mockedFetchTokenSupply.mockReset()
   })
 
-  it('reports errors when all price chart requests fail', async () => {
+  it('reports a native error and recovers when the interval changes', async () => {
     const symbol = createSymbolDescriptor(
       createAsset({
         address: '0x0000000000000000000000000000000000000001',
@@ -369,20 +355,26 @@ describe('createPriceChartDatafeed request lifecycle', () => {
         symbol: 'COW',
       }),
     )
-    const onStatusChange = jest.fn()
     const onResult = jest.fn()
     const onError = jest.fn()
 
     mockedFetchPriceHistory.mockRejectedValue(new Error('No access'))
 
-    const { datafeed } = createPriceChartDatafeed({ queryClient, metric: 'price', onStatusChange, symbols: [symbol] })
+    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols: [symbol] })
 
     datafeed.getBars(symbol.librarySymbolInfo, '60' as ResolutionString, PERIOD_PARAMS, onResult, onError)
     await flushTasks()
 
     expect(onResult).not.toHaveBeenCalled()
     expect(onError).toHaveBeenCalledWith('No access')
-    expect(onStatusChange).toHaveBeenLastCalledWith('error')
+
+    mockedFetchPriceHistory.mockResolvedValue([{ close: 2, high: 3, low: 1, open: 1.5, timestamp: 1710000000 }])
+    onError.mockClear()
+    datafeed.getBars(symbol.librarySymbolInfo, '15' as ResolutionString, PERIOD_PARAMS, onResult, onError)
+    await flushTasks()
+
+    expect(onResult).toHaveBeenCalledWith([expect.objectContaining({ close: 2 })], { noData: false })
+    expect(onError).not.toHaveBeenCalled()
   })
 
   it('does not expose symbol search results', () => {
@@ -397,8 +389,6 @@ describe('createPriceChartDatafeed request lifecycle', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
-      onStatusChange: jest.fn(),
       symbols: [symbol],
     })
 
@@ -425,9 +415,7 @@ describe('createPriceChartDatafeed request lifecycle', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
       onHistoryLoaded,
-      onStatusChange: jest.fn(),
       symbols: [symbol],
     })
 
@@ -509,9 +497,7 @@ describe('createPriceChartDatafeed request lifecycle', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
       onHistoryLoaded,
-      onStatusChange: jest.fn(),
       symbols: [symbol],
     })
 
@@ -543,9 +529,7 @@ describe('createPriceChartDatafeed request lifecycle', () => {
 
     const { datafeed } = createPriceChartDatafeed({
       queryClient,
-      metric: 'price',
       onHistoryLoaded,
-      onStatusChange: jest.fn(),
       symbols: [cow, usdc],
     })
 

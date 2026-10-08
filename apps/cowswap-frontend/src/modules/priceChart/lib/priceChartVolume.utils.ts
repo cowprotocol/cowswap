@@ -13,9 +13,10 @@ export function syncTradingViewVolumeStudy(widget: IChartingLibraryWidget, hasVo
 
   if (hasVolume) {
     if (!volumeStudies.length) {
-      void chart.createStudy(VOLUME_STUDY_NAME, false, false)
+      void chart.createStudy(VOLUME_STUDY_NAME, true, false)
     }
 
+    volumeStudies.forEach((study) => chart.getStudyById(study.id).mergeUp())
     return
   }
 

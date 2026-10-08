@@ -14,11 +14,10 @@ import {
 import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './tradingViewAdapter.utils'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './loadChartingLibrary'
-import type { Candle, ChartMetric, CandleInterval, SupplyVariant } from './priceChart.types'
+import type { Candle, CandleInterval } from './priceChart.types'
 import type {
   CreatePriceChartDatafeedParams,
   PriceChartDatafeedController,
-  PriceChartHistoryStatus,
   PriceChartSymbolDescriptor,
 } from './tradingView.types'
 
@@ -26,14 +25,10 @@ type ErrorCallback = GetBarsParameters[4]
 
 interface GetBarsHandlerParams {
   queryClient: QueryClient
-  isDisposed: () => boolean
   latestRequestIdsByTicker: Map<string, number>
-  metric: ChartMetric
   setHistory: (bars: Candle[], ticker: string, requestId: number) => void
   setActiveTicker: (ticker: string) => void
-  setStatus: (status: PriceChartHistoryStatus, ticker: string) => void
   symbols: PriceChartSymbolDescriptor[]
-  supplyVariant: SupplyVariant
 }
 
 type GetBarsParameters = Parameters<IBasicDataFeed['getBars']>
@@ -41,38 +36,25 @@ type HistoryCallback = GetBarsParameters[3]
 
 interface HistoryLoaderParams {
   queryClient: QueryClient
-  isLatestRequest: () => boolean
   onError: ErrorCallback
   onHistoryLoaded: (bars: Candle[]) => void
   onResult: HistoryCallback
-  metric: ChartMetric
   periodParams: PeriodParams
   resolution: CandleInterval
-  setStatus: (status: PriceChartHistoryStatus) => void
   symbol: PriceChartSymbolDescriptor
-  supplyVariant: SupplyVariant
 }
 
 type PeriodParams = GetBarsParameters[2]
 
 export function createPriceChartDatafeed({
   queryClient,
-  metric,
   onHistoryLoaded,
-  onStatusChange,
   symbols,
-  supplyVariant = 'circulating',
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
   let activeTicker: string | undefined
   const historiesByTicker = new Map<string, { bars: Candle[]; requestId: number }>()
   const latestRequestIdsByTicker = new Map<string, number>()
-
-  const setStatus = (status: PriceChartHistoryStatus, ticker: string): void => {
-    if (disposed || ticker !== activeTicker) return
-
-    onStatusChange(status)
-  }
 
   const setHistory = (bars: Candle[], ticker: string, requestId: number): void => {
     if (disposed || requestId <= (historiesByTicker.get(ticker)?.requestId ?? 0)) return
@@ -94,14 +76,10 @@ export function createPriceChartDatafeed({
   return {
     datafeed: createBasicDatafeed({
       queryClient,
-      isDisposed: () => disposed,
       latestRequestIdsByTicker,
-      metric,
       setHistory,
       setActiveTicker,
-      setStatus,
       symbols,
-      supplyVariant,
     }),
     dispose: () => {
       disposed = true
@@ -139,10 +117,7 @@ function createBasicDatafeed(params: GetBarsHandlerParams): IBasicDataFeed {
         }
 
         params.setActiveTicker(symbol.ticker)
-        onResolve({
-          ...symbol.librarySymbolInfo,
-          pricescale: params.metric === 'marketCap' ? 1 : 1_000_000_000_000,
-        })
+        onResolve(symbol.librarySymbolInfo)
       }, 0)
     },
     searchSymbols: (_userInput, _exchange, _symbolType, onResult) => onResult([]),
@@ -176,22 +151,14 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
     const requestId = (params.latestRequestIdsByTicker.get(symbol.ticker) || 0) + 1
     params.latestRequestIdsByTicker.set(symbol.ticker, requestId)
 
-    if (requestId === 1) {
-      setFirstRequestStatus(periodParams, (status) => params.setStatus(status, symbol.ticker), 'loading')
-    }
-
     void loadHistory({
       queryClient: params.queryClient,
-      isLatestRequest: () => !params.isDisposed() && params.latestRequestIdsByTicker.get(symbol.ticker) === requestId,
       onError,
       onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId),
       onResult,
-      metric: params.metric,
       periodParams,
       resolution: resolvedResolution,
-      setStatus: (status) => params.setStatus(status, symbol.ticker),
       symbol,
-      supplyVariant: params.supplyVariant,
     })
   }
 }
@@ -201,65 +168,28 @@ async function fetchHistory(
   symbol: PriceChartSymbolDescriptor,
   periodParams: PeriodParams,
   resolution: CandleInterval,
-  metric: ChartMetric,
-  supplyVariant: SupplyVariant,
 ): Promise<Candle[]> {
   // TradingView can end daily/weekly ranges in the future, which the history provider rejects.
   const to = Math.min(periodParams.to, Math.floor(Date.now() / 1000))
   if (periodParams.from >= to) return []
 
   const bars = await queryClient.fetchQuery(
-    priceHistoryQueryOptions(symbol.currency, periodParams.from, to, resolution),
+    priceHistoryQueryOptions(symbol.currency, periodParams.from, periodParams.to, resolution),
   )
-  return metric === 'price' ? bars : toMarketCapBars(symbol.currency, bars, supplyVariant)
+  return symbol.metric === 'price' ? bars : toMarketCapBars(symbol.currency, bars, symbol.supplyVariant)
 }
 
 async function loadHistory(params: HistoryLoaderParams): Promise<void> {
   try {
-    const bars = await fetchHistory(
-      params.queryClient,
-      params.symbol,
-      params.periodParams,
-      params.resolution,
-      params.metric,
-      params.supplyVariant,
-    )
+    const bars = await fetchHistory(params.queryClient, params.symbol, params.periodParams, params.resolution)
 
     if (bars.length) params.onHistoryLoaded(bars)
 
-    if (!params.isLatestRequest()) {
-      params.onResult(mapCandlesToTradingViewBars(bars), { noData: !bars.length })
-      return
-    }
-
-    if (!bars.length) {
-      reportEmptyHistory(params)
-      return
-    }
-
-    reportReadyHistory(params, bars)
+    params.onResult(mapCandlesToTradingViewBars(bars), { noData: !bars.length })
   } catch (error) {
-    reportHistoryError(params, error)
+    const normalizedError = normalizeError(error)
+    params.onError(normalizedError.message || 'Unknown chart error')
   }
-}
-
-function reportEmptyHistory(params: HistoryLoaderParams): void {
-  params.onResult([], { noData: true })
-  setFirstRequestStatus(params.periodParams, params.setStatus, 'empty')
-}
-
-function reportHistoryError(params: HistoryLoaderParams, error: unknown): void {
-  const lastError = normalizeError(error)
-  params.onError(lastError.message || 'Unknown chart error')
-
-  if (params.isLatestRequest()) {
-    setFirstRequestStatus(params.periodParams, params.setStatus, 'error')
-  }
-}
-
-function reportReadyHistory(params: HistoryLoaderParams, bars: Candle[]): void {
-  params.onResult(mapCandlesToTradingViewBars(bars), { noData: false })
-  params.setStatus(null)
 }
 
 function resolveSymbolFromInfo(
@@ -267,14 +197,4 @@ function resolveSymbolFromInfo(
   symbolInfo: Pick<LibrarySymbolInfo, 'name' | 'ticker'>,
 ): PriceChartSymbolDescriptor | undefined {
   return (symbolInfo.ticker && findChartSymbol(symbols, symbolInfo.ticker)) || findChartSymbol(symbols, symbolInfo.name)
-}
-
-function setFirstRequestStatus(
-  periodParams: PeriodParams,
-  setStatus: (status: PriceChartHistoryStatus) => void,
-  status: PriceChartHistoryStatus,
-): void {
-  if (periodParams.firstDataRequest) {
-    setStatus(status)
-  }
 }
