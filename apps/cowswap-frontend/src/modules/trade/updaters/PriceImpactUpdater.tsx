@@ -21,6 +21,13 @@ export function PriceImpactUpdater(): null {
   // Trailing-edge only: states that revert within the window (loading blinks) never reach the atom
   useSafeEffect(() => {
     if (!priceImpactState) {
+      pendingRef.current = null
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = null
+      }
+
       return
     }
 

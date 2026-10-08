@@ -23,10 +23,16 @@ interface FiatValuePriceImpact {
   isLoading: boolean
 }
 
+interface LoadingTimeout {
+  inputToken: Token
+  outputToken: Token
+  quoteFetchStartTimestamp: number | undefined
+}
+
 interface SettledPriceImpact {
   inputToken: Token
   outputToken: Token
-  priceImpact: Percent
+  priceImpact: Percent | undefined
 }
 
 export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
@@ -52,26 +58,7 @@ export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
   // or a fresh quote is in flight). Compute price impact only once the quote catches up,
   // otherwise we'd display a huge nonsense % derived from mismatched in/out amounts.
   const isLoading = inputIsLoading || outputIsLoading || isQuoteLoading || quoteParamsChanged
-  const [hasLoadingTimedOut, setHasLoadingTimedOut] = useState(false)
-
-  // Restart the safety-valve timeout on a token-pair change OR whenever a new quote request begins
-  // (`quoteFetchStartTimestamp`, which bumps per fetch). Keying it off the `quoteParamsChanged`
-  // boolean instead left `hasLoadingTimedOut` stuck true once it had timed out: a second changed-
-  // params quote for the same pair keeps the flag `true`, so the effect never re-ran and the stale
-  // value rendered immediately. The per-fetch timestamp re-arms on every genuinely new quote, while
-  // plain loading flicker (no new fetch) still lets a stuck quote time out.
-  useEffect(() => {
-    logPriceImpact.debug(`Price impact timeout reset`)
-    setHasLoadingTimedOut(false)
-    if (!isTradeSetUp) return
-
-    const timeoutId = setTimeout(() => {
-      setHasLoadingTimedOut(true)
-      logPriceImpact.warn(`Price impact loading timed out after ${PRICE_IMPACT_LOADING_TIMEOUT / 1000}s`)
-    }, PRICE_IMPACT_LOADING_TIMEOUT)
-
-    return () => clearTimeout(timeoutId)
-  }, [isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp])
+  const hasLoadingTimedOut = useHasLoadingTimedOut(isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp)
 
   const current = useSafeMemo((): FiatValuePriceImpact | null => {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
@@ -109,8 +96,61 @@ function computeFiatValuePriceImpact(
   return new Percent(pct.numerator, pct.denominator)
 }
 
-// A requote after an amount change keeps the pair's last settled value instead of flipping to loading,
-// otherwise consumers keyed on `isLoading || !priceImpact` (NoImpactWarning) flicker on every keystroke.
+function isSettledForPair(
+  settled: SettledPriceImpact | null,
+  inputToken: Token | undefined,
+  outputToken: Token | undefined,
+): settled is SettledPriceImpact {
+  return (
+    !!settled &&
+    !!inputToken &&
+    !!outputToken &&
+    settled.inputToken.equals(inputToken) &&
+    settled.outputToken.equals(outputToken)
+  )
+}
+
+// Restart the safety-valve timeout on a token-pair change OR whenever a new quote request begins
+// (`quoteFetchStartTimestamp`, which bumps per fetch). Keying it off the `quoteParamsChanged`
+// boolean instead left the timeout stuck once it had fired: a second changed-params quote for the
+// same pair keeps the flag `true`, so the effect never re-ran and the stale value rendered immediately.
+// The per-fetch timestamp re-arms on every genuinely new quote, while plain loading flicker (no new
+// fetch) still lets a stuck quote time out.
+// The fired timeout is matched against the current pair/fetch during render: a flag reset in an effect
+// would still read `true` for one render after a pair change and leak a stale "settled" state into it.
+function useHasLoadingTimedOut(
+  isTradeSetUp: boolean,
+  inputToken: Token | undefined,
+  outputToken: Token | undefined,
+  quoteFetchStartTimestamp: number | undefined,
+): boolean {
+  const [timedOut, setTimedOut] = useState<LoadingTimeout | null>(null)
+
+  useEffect(() => {
+    logPriceImpact.debug(`Price impact timeout reset`)
+    setTimedOut(null)
+    if (!isTradeSetUp || !inputToken || !outputToken) return
+
+    const timeoutId = setTimeout(() => {
+      setTimedOut({ inputToken, outputToken, quoteFetchStartTimestamp })
+      logPriceImpact.warn(`Price impact loading timed out after ${PRICE_IMPACT_LOADING_TIMEOUT / 1000}s`)
+    }, PRICE_IMPACT_LOADING_TIMEOUT)
+
+    return () => clearTimeout(timeoutId)
+  }, [isTradeSetUp, inputToken, outputToken, quoteFetchStartTimestamp])
+
+  return (
+    !!timedOut &&
+    !!inputToken &&
+    !!outputToken &&
+    timedOut.inputToken.equals(inputToken) &&
+    timedOut.outputToken.equals(outputToken) &&
+    timedOut.quoteFetchStartTimestamp === quoteFetchStartTimestamp
+  )
+}
+
+// A requote keeps the pair's last settled state (known or unknown) instead of flipping to loading,
+// otherwise consumers keyed on `isLoading || !priceImpact` (NoImpactWarning) flicker on every requote.
 function useSettledDuringRequote(
   current: FiatValuePriceImpact | null,
   inputToken: Token | undefined,
@@ -119,24 +159,21 @@ function useSettledDuringRequote(
   const [lastSettled, setLastSettled] = useState<SettledPriceImpact | null>(null)
 
   useEffect(() => {
-    if (!current || current.isLoading || !current.priceImpact || !inputToken || !outputToken) return
+    if (inputToken && outputToken && current && !current.isLoading) {
+      setLastSettled({ inputToken, outputToken, priceImpact: current.priceImpact })
+      return
+    }
 
-    setLastSettled({ inputToken, outputToken, priceImpact: current.priceImpact })
+    setLastSettled((prev) => (isSettledForPair(prev, inputToken, outputToken) ? prev : null))
   }, [current, inputToken, outputToken])
 
-  const isSamePairAsSettled =
-    !!lastSettled &&
-    !!inputToken &&
-    !!outputToken &&
-    lastSettled.inputToken.equals(inputToken) &&
-    lastSettled.outputToken.equals(outputToken)
-  const settledPriceImpact = isSamePairAsSettled ? lastSettled.priceImpact : undefined
+  const settled = isSettledForPair(lastSettled, inputToken, outputToken) ? lastSettled : null
 
   return useSafeMemo(() => {
-    if (current?.isLoading && settledPriceImpact) {
-      return { priceImpact: settledPriceImpact, isLoading: false }
+    if (current?.isLoading && settled) {
+      return { priceImpact: settled.priceImpact, isLoading: false }
     }
 
     return current
-  }, [current, settledPriceImpact])
+  }, [current, settled])
 }

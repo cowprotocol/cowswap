@@ -183,7 +183,7 @@ describe('useFiatValuePriceImpact', () => {
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
 
-  it('restarts the loading timeout when a new quote begins after timing out', () => {
+  it('keeps a timed-out unknown impact while a same-pair quote loads', () => {
     mockedUseTradeUsdAmounts.mockReturnValue({
       inputAmount: { value: null, isLoading: true },
       outputAmount: { value: null, isLoading: true },
@@ -197,62 +197,34 @@ describe('useFiatValuePriceImpact', () => {
       jest.advanceTimersByTime(15_000)
     })
 
-    // Stale value stays suppressed only until the safety-valve timeout fires
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
 
-    // A fresh quote for the same token pair must re-arm the timeout and suppress the stale value again
     mockedUseTradeQuote.mockReturnValue(
       tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
     )
     rerender()
 
-    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
-
-    act(() => {
-      jest.advanceTimersByTime(15_000)
-    })
-
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
 
-  it('re-arms the timeout when a second same-pair quote starts while params are already changed', () => {
+  it('keeps an unknown impact while a same-pair quote loads', () => {
     mockedUseTradeUsdAmounts.mockReturnValue({
       inputAmount: { value: null, isLoading: false },
       outputAmount: { value: null, isLoading: false },
     })
 
-    // First changed-params quote for the pair is in flight
-    mockedUseTradeQuote.mockReturnValue(
-      tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 1 }),
-    )
-
     const { result, rerender } = renderHook(() => useFiatValuePriceImpact())
 
-    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
-
-    act(() => {
-      jest.advanceTimersByTime(15_000)
-    })
-
-    // Safety valve fired
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
 
-    // A SECOND changed-params quote for the same pair starts: `hasParamsChanged` stays true
-    // (true -> true), only the per-fetch timestamp advances. This must still re-arm the timeout
-    // and keep the stale value suppressed, which keying off the boolean alone failed to do.
     mockedUseTradeQuote.mockReturnValue(
       tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
     )
     rerender()
 
-    expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
-
-    act(() => {
-      jest.advanceTimersByTime(15_000)
-    })
-
     expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
+
   describe('when the quote refreshes after a settled price impact', () => {
     const usdToken = new Token(ChainId.SEPOLIA, '0x0000000000000000000000000000000000000004', 0, 'USD', 'USD')
 
@@ -284,6 +256,31 @@ describe('useFiatValuePriceImpact', () => {
 
       expect(result.current?.isLoading).toBe(false)
       expect(result.current?.priceImpact?.toFixed(0)).toBe('10')
+    })
+
+    it('does not reuse the settled value after switching away from the pair and back', () => {
+      const { result, rerender } = settle()
+
+      mockedUseTradeQuote.mockReturnValue(
+        tradeQuoteState({ isLoading: true, hasParamsChanged: true, fetchStartTimestamp: 2 }),
+      )
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: inputToken,
+        outputCurrency: updatedOutputToken,
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(updatedOutputToken, 1),
+      } as ReturnType<typeof useDerivedTradeState>)
+      rerender()
+
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: inputToken,
+        outputCurrency: outputToken,
+        inputCurrencyAmount: CurrencyAmount.fromRawAmount(inputToken, 1),
+        outputCurrencyAmount: CurrencyAmount.fromRawAmount(outputToken, 1),
+      } as ReturnType<typeof useDerivedTradeState>)
+      rerender()
+
+      expect(result.current).toEqual({ priceImpact: undefined, isLoading: true })
     })
 
     it('reports loading when the token pair changes', () => {

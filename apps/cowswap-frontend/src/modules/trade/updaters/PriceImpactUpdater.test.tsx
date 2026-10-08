@@ -72,8 +72,31 @@ describe('PriceImpactUpdater', () => {
   it('writes a loading state that lasts longer than the throttle window', () => {
     const store = createStore()
 
+    mockedUseFiatValuePriceImpact.mockReturnValue({ priceImpact: settledImpact, isLoading: false })
+    const { rerender } = render(<Harness store={store} />)
+
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
+
     mockedUseFiatValuePriceImpact.mockReturnValue({ priceImpact: undefined, isLoading: true })
-    render(<Harness store={store} />)
+    rerender(<Harness store={store} />)
+
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
+
+    expect(store.get(priceImpactAtom)).toEqual({ priceImpact: undefined, loading: true })
+  })
+
+  it('drops a pending write when the trade is no longer set up', () => {
+    const store = createStore()
+
+    mockedUseFiatValuePriceImpact.mockReturnValue({ priceImpact: settledImpact, isLoading: false })
+    const { rerender } = render(<Harness store={store} />)
+
+    mockedUseFiatValuePriceImpact.mockReturnValue(null)
+    rerender(<Harness store={store} />)
 
     act(() => {
       jest.advanceTimersByTime(200)
