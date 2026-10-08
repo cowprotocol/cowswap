@@ -325,17 +325,15 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 <WrapFlowActionButton sellToken={sellToken} />
               ) : null
             ) : (
-              <>
-                <CaptchaWidget />
-                {bottomContent?.(
-                  hideTradeWarnings ? null : (
-                    <TradeWarnings
-                      enableSmartSlippage={enableSmartSlippage}
-                      isTradePriceUpdating={isTradePriceUpdating}
-                    />
-                  ),
-                )}
-              </>
+              bottomContent?.(
+                hideTradeWarnings ? null : (
+                  <TradeWarnings
+                    enableSmartSlippage={enableSmartSlippage}
+                    isTradePriceUpdating={isTradePriceUpdating}
+                  />
+                ),
+                <CaptchaWidget />,
+              )
             )}
           </>
         )}
