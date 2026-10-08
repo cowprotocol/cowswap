@@ -281,9 +281,8 @@ export function useCreateTwapOrder() {
 
         const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
-        // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
-        // TODO: This should probably be removed for v2:
-        const twapOrderId = getConditionalOrderId(paramsStruct)
+        // ComposableCoW order hash (keccak256 of params). Matches indexed `order.hash` until eventId arrives; not a CoW orderbook UID.
+        const twapOrderHash = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
 
@@ -386,7 +385,7 @@ export function useCreateTwapOrder() {
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
             twapOrderCreationContext,
-            twapOrderId,
+            twapOrderHash,
             paramsStruct,
             config,
             walletClient,
@@ -434,7 +433,7 @@ export function useCreateTwapOrder() {
           safeAddress: safeAddressOrCowShedAddress,
           resolvedOwner: isEoaTwap ? account : safeAddressOrCowShedAddress,
           submissionDate: new Date().toISOString(),
-          id: twapOrderId,
+          id: twapOrderHash,
           executionInfo: { ...DEFAULT_TWAP_EXECUTION },
         }
 
@@ -444,7 +443,7 @@ export function useCreateTwapOrder() {
 
         emitPostedOrderEvent({
           chainId,
-          id: twapOrderId,
+          id: twapOrderHash,
           orderCreationHash,
           explorerUrl: isEoaTwap ? (eventId ? getExplorerTwapOrderLink(chainId, eventId) : null) : undefined,
           kind: OrderKind.SELL,
@@ -467,7 +466,7 @@ export function useCreateTwapOrder() {
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         const ordersTableTab = isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING
-        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderId) : twapOrderId
+        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderHash) : twapOrderHash
         setPlacedOrderHighlight({ orderId: orderIdToReveal, tabId: ordersTableTab })
 
         if (isEoaTwap) {

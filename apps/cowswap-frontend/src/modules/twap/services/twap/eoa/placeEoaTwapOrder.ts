@@ -97,7 +97,7 @@ export interface PlaceEoaTwapOrderParams {
   account: AccountAddress
   twapOrder: TWAPOrder
   twapOrderCreationContext: null | TwapOrderCreationContext
-  twapOrderId: string
+  twapOrderHash: string
   paramsStruct: ConditionalOrderParams
   config: Config
   walletClient: WalletClient
@@ -256,7 +256,7 @@ export async function placeEoaTwapOrder({
   account,
   twapOrder,
   twapOrderCreationContext,
-  twapOrderId,
+  twapOrderHash,
   paramsStruct,
   config,
   walletClient,
@@ -378,7 +378,7 @@ export async function placeEoaTwapOrder({
   const { receipt, eventId } = await slowPromiseHandler(
     waitForEoaTwapTxReceipt(config, setupTxHash, chainId)
       .then(async (receipt) => {
-        const eventId = await waitForTwapEventId(twapOrderId, account, chainId)
+        const eventId = await waitForTwapEventId(twapOrderHash, account, chainId)
 
         return { receipt, eventId }
       })
