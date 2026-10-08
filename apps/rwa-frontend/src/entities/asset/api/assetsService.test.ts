@@ -16,6 +16,8 @@ const NVDA_MARKET = {
   dayLow: 225,
   dayHigh: 232,
   marketCap: 80_000_000,
+  volume24h: 5_000_000,
+  tokens: {},
   updatedAt: '2026-09-28T13:00:00.000Z',
 }
 

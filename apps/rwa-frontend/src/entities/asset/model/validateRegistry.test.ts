@@ -20,6 +20,7 @@ const VALID_ASSET: RwaAsset = {
       symbol: 'NVDAon',
       name: 'NVIDIA (Ondo Tokenized)',
       decimals: 18,
+      issuer: 'Ondo',
     },
   ],
 }
@@ -49,7 +50,7 @@ describe('validateRegistry', () => {
           ticker: 'nvda',
           priority: 11,
           allowedTradingTime: { title: 'US', start: '9:30', end: '20:00 UTC' },
-          tokens: [{ ...VALID_ASSET.tokens[0], chainId: 999999, address: '0x123' }],
+          tokens: [{ ...VALID_ASSET.tokens[0], chainId: 999999, address: '0x123', issuer: '' }],
         },
       ]),
     )
@@ -60,6 +61,7 @@ describe('validateRegistry', () => {
       'assets[0].allowedTradingTime: start/end must be "HH:mm UTC"',
       'assets[0].tokens[0].chainId: unsupported chain 999999',
       'assets[0].tokens[0].address: invalid address 0x123',
+      'assets[0].tokens[0].issuer: required',
     ])
   })
 

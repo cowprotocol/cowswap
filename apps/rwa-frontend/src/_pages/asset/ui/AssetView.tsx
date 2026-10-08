@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { AccountTabs } from './AccountTabs'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
+import { StockTokens } from './StockTokens'
 import { TradeWidget } from './TradeWidget'
 
 import { assetQueryAtomFamily, AssetStats, type RwaAsset } from '@/entities/asset'
@@ -31,6 +32,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
         <AssetStats asset={asset} market={data?.market} />
         <AssetPriceChart ticker={asset.ticker} />
+        <StockTokens asset={asset} />
         <AccountTabs asset={asset} />
       </div>
       <aside className={styles.side}>

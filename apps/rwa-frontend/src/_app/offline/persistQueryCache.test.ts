@@ -4,6 +4,7 @@ import { persistQueryCache, removeExpiredEntries } from './persistQueryCache'
 import { RWA_QUERY_PERSISTENCE_RULES } from './QueryCachePersistence'
 
 const mockStore = new Map<string, unknown>()
+const mockDropInstance = jest.fn((_options: { name: string; storeName: string }) => Promise.resolve())
 
 jest.mock('localforage', () => ({
   createInstance: () => ({
@@ -20,6 +21,7 @@ jest.mock('localforage', () => ({
       ;[...mockStore.entries()].forEach(([key, value]) => callback(value, key))
       return Promise.resolve()
     }),
+    dropInstance: mockDropInstance,
   }),
 }))
 
@@ -48,6 +50,12 @@ describe('persistQueryCache', () => {
   afterEach(() => {
     unsubscribe()
     queryClient.clear()
+  })
+
+  it('drops the stores of previous versions', async () => {
+    await flushPromises()
+
+    expect(mockDropInstance).toHaveBeenCalledWith({ name: 'rwa', storeName: 'queryCache:v1' })
   })
 
   it('persists successful app queries', async () => {
