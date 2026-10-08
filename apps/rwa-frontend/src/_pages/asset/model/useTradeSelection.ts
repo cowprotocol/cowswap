@@ -9,13 +9,11 @@ import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelec
 import { getAutoToken, getBestQuotedToken, type QuotedToken, toQuotedTokens } from '../lib/quotedTokens'
 import { resolveTradeChainId, resolveTradeToken, type TradeToken } from '../lib/tradeToken'
 
-import type { TradeSide } from '../lib/tradeLeg'
-
-import { assetQueryAtomFamily, type RwaAsset, type RwaToken } from '@/entities/asset'
+import { assetQueryAtomFamily, type RwaAsset, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
 
 export interface TradeSelection extends TradeToken {
   chainId: number
-  side: TradeSide
+  side: RwaQuoteSide
   quotedTokens: QuotedToken[]
   bestToken: RwaToken | null
   isQuotesLoading: boolean

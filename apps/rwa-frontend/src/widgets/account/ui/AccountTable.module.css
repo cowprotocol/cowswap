@@ -32,8 +32,17 @@
   font-size: 13px;
 }
 
-.warning {
-  margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 13px;
+.buy {
+  color: var(--color-positive);
+  font-weight: 600;
+}
+
+.sell {
+  color: var(--color-negative);
+  font-weight: 600;
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: none;
 }

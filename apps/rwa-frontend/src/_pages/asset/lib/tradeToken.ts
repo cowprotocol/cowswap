@@ -1,8 +1,6 @@
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
-import { getTokenKey } from './tokenKey'
-
-import type { RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaToken } from '@/entities/asset'
 
 export interface TradeToken {
   assetToken: RwaToken

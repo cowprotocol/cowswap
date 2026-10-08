@@ -5,7 +5,7 @@ import type { ReactNode } from 'react'
 
 import styles from './AccountTable.module.css'
 
-import type { AssetBalances } from '../model/useAssetBalances'
+import type { AccountBalances } from '@/widgets/account'
 
 import { assetQueryAtomFamily, type RwaAsset } from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
@@ -14,7 +14,7 @@ import { StatusMessage } from '@/shared/ui/status-message'
 
 interface PositionsTabProps {
   asset: RwaAsset
-  balances: AssetBalances
+  balances: AccountBalances
 }
 
 export function PositionsTab({ asset, balances: { positions, error } }: PositionsTabProps): ReactNode {

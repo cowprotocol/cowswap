@@ -6,12 +6,16 @@ import { type ReactNode, useMemo, useState } from 'react'
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
 
-import { getTokenKey } from '../lib/tokenKey'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
 
-import type { TradeSide } from '../lib/tradeLeg'
-
-import { assetQueryAtomFamily, type RwaAsset, type RwaToken, type RwaTokenMarketData } from '@/entities/asset'
+import {
+  assetQueryAtomFamily,
+  getTokenKey,
+  type RwaAsset,
+  type RwaQuoteSide,
+  type RwaToken,
+  type RwaTokenMarketData,
+} from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatCompactUsd, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
@@ -22,7 +26,7 @@ const ALL = ''
 interface StockTokenRowProps {
   token: RwaToken
   market: RwaTokenMarketData | undefined
-  onTrade(side: TradeSide): void
+  onTrade(side: RwaQuoteSide): void
 }
 
 export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
