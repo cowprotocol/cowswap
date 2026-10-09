@@ -23,16 +23,10 @@ const INTERVAL_SECONDS: Record<CandleInterval, number> = {
   '7d': 604800,
 }
 
-export interface ChartRefreshState {
-  nextUpdateAt: number
-  isUpdating: boolean
-}
-
 interface PriceChartSubscriptionParams {
   queryClient: QueryClient
   symbols: PriceChartSymbolDescriptor[]
   getLastTimestamp: (ticker: string, interval: CandleInterval) => number | undefined
-  onRefreshState?: (state: ChartRefreshState, ticker: string) => void
   onUpdate: (bars: Candle[], ticker: string, interval: CandleInterval) => void
 }
 
@@ -41,9 +35,12 @@ export function createPriceChartSubscriptions({
   symbols,
   getLastTimestamp,
   onUpdate,
-  onRefreshState,
-}: PriceChartSubscriptionParams): Pick<IBasicDataFeed, 'subscribeBars' | 'unsubscribeBars'> & { dispose: () => void } {
+}: PriceChartSubscriptionParams): Pick<IBasicDataFeed, 'subscribeBars' | 'unsubscribeBars'> & {
+  dispose: () => void
+  setAutoRefreshEnabled: (enabled: boolean) => void
+} {
   let disposed = false
+  let autoRefreshEnabled = true
   const subscriptions = new Map<string, () => void>()
   const unsubscribeBars = (subscriberUID: string): void => {
     subscriptions.get(subscriberUID)?.()
@@ -60,15 +57,11 @@ export function createPriceChartSubscriptions({
 
       let active = true
       let fetching = false
-      let nextUpdateAt = Date.now() + PRICE_CHART_REFRESH_INTERVAL
-      onRefreshState?.({ nextUpdateAt, isUpdating: false }, symbol.ticker)
       let lastTimestamp = getLastTimestamp(symbol.ticker, interval)
       // eslint-disable-next-line complexity
       const poll = async (): Promise<void> => {
-        if (!active || fetching) return
+        if (!active || !autoRefreshEnabled || fetching) return
         fetching = true
-        nextUpdateAt = Date.now() + PRICE_CHART_REFRESH_INTERVAL
-        onRefreshState?.({ nextUpdateAt, isUpdating: true }, symbol.ticker)
         try {
           const to = Math.floor(Date.now() / PRICE_CHART_REFRESH_INTERVAL) * (PRICE_CHART_REFRESH_INTERVAL / 1000)
           const from = lastTimestamp ?? to - 2 * INTERVAL_SECONDS[interval]
@@ -76,7 +69,7 @@ export function createPriceChartSubscriptions({
           const prices = await queryClient.fetchQuery(priceHistoryQueryOptions(symbol.currency, from, to, interval))
           const bars =
             symbol.metric === 'price' ? prices : await toMarketCapBars(symbol.currency, prices, symbol.supplyVariant)
-          if (!active) return
+          if (!active || !autoRefreshEnabled) return
           const updates = bars.filter((bar) => lastTimestamp === undefined || bar.timestamp >= lastTimestamp)
           for (const bar of mapCandlesToTradingViewBars(updates)) {
             onRealtimeCallback(bar)
@@ -89,7 +82,6 @@ export function createPriceChartSubscriptions({
           if (active) logPriceChart.warn('Failed to refresh Advanced chart', normalizeError(err))
         } finally {
           fetching = false
-          if (active) onRefreshState?.({ nextUpdateAt, isUpdating: false }, symbol.ticker)
         }
       }
       const timer = setInterval(() => void poll(), PRICE_CHART_REFRESH_INTERVAL)
@@ -99,6 +91,9 @@ export function createPriceChartSubscriptions({
       })
     },
     unsubscribeBars,
+    setAutoRefreshEnabled: (enabled) => {
+      autoRefreshEnabled = enabled
+    },
     dispose: () => {
       disposed = true
       for (const unsubscribe of subscriptions.values()) unsubscribe()

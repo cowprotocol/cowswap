@@ -1,3 +1,4 @@
+import { Provider, createStore } from 'jotai'
 import type { ReactNode } from 'react'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -12,6 +13,7 @@ import { usePriceChartHistory } from './usePriceChartHistory'
 
 import { fetchPriceHistory } from '../api/fetchPriceHistory'
 import { fetchTokenSupply } from '../api/fetchTokenSupply'
+import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
@@ -27,12 +29,16 @@ const INITIAL_PROPS = {
   supplyVariant: 'circulating' as SupplyVariant,
 }
 
-function createWrapper(): ({ children }: { children: ReactNode }) => ReactNode {
+function createWrapper(store = createStore()): ({ children }: { children: ReactNode }) => ReactNode {
   const client = new QueryClient({
     defaultOptions: { queries: { staleTime: 300_000, gcTime: Infinity, retry: false } },
   })
   return function Wrapper({ children }: { children: ReactNode }): ReactNode {
-    return <QueryClientProvider client={client}>{children}</QueryClientProvider>
+    return (
+      <Provider store={store}>
+        <QueryClientProvider client={client}>{children}</QueryClientProvider>
+      </Provider>
+    )
   }
 }
 
@@ -97,6 +103,28 @@ describe('usePriceChartHistory', () => {
       })
 
       await waitFor(() => expect(result.current.data).toEqual(nextBars))
+      expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
+    } finally {
+      unmount()
+      jest.useRealTimers()
+    }
+  })
+
+  it('stops and resumes polling when Auto-refresh changes', async () => {
+    jest.useFakeTimers()
+    const store = createStore()
+    store.set(priceChartAutoRefreshAtom, false)
+    const { result, unmount } = renderHook(useHistory, { wrapper: createWrapper(store), initialProps: INITIAL_PROPS })
+    try {
+      await waitFor(() => expect(result.current.data).toEqual(BARS))
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(60_000)
+      })
+      expect(fetchPriceHistory).toHaveBeenCalledTimes(1)
+      act(() => store.set(priceChartAutoRefreshAtom, true))
+      await act(async () => {
+        await jest.advanceTimersByTimeAsync(30_000)
+      })
       expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
     } finally {
       unmount()
