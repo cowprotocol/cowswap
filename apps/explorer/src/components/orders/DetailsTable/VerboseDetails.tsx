@@ -99,7 +99,7 @@ export function VerboseDetails({
         {(content) => <HooksItem>{content}</HooksItem>}
       </OrderHooksDetails>
 
-      <AppDataItem appData={appData} fullAppData={fullAppData ?? undefined} />
+      <AppDataItem appData={appData} />
     </>
   )
 }

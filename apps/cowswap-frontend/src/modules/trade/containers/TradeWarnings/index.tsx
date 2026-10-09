@@ -1,8 +1,11 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
+import { TradeType } from 'common/modules/tradeNavigation'
+
+import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
 import { useShouldShowZeroApproveWarning } from '../../hooks/useShouldShowZeroApproveWarning'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
@@ -15,15 +18,24 @@ interface TradeWarningsProps {
 
 export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps): ReactNode {
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const inputAmountWithSlippage = receiveAmountInfo?.amountsToSign.sellAmount
-  const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
+  const { inputCurrencyAmount, tradeType } = useDerivedTradeState() || {}
+  const amountsToSignSellAmount = receiveAmountInfo?.amountsToSign.sellAmount
+  // TWAP quotes are per-part; the zero-approve warning must use the full form sell amount.
+  const amountForZeroApproveWarning = useMemo(() => {
+    if (tradeType === TradeType.ADVANCED_ORDERS) {
+      return inputCurrencyAmount ?? undefined
+    }
+
+    return amountsToSignSellAmount
+  }, [tradeType, inputCurrencyAmount, amountsToSignSellAmount])
+  const shouldZeroApprove = useShouldShowZeroApproveWarning(amountForZeroApproveWarning)
   const validations = useGetTradeFormValidations()
   const hasInsufficientBalance = !!validations?.includes(TradeFormValidation.BalanceInsufficient)
 
   return (
     <>
       {shouldZeroApprove && !hasInsufficientBalance && (
-        <ZeroApprovalWarning currency={inputAmountWithSlippage?.currency} />
+        <ZeroApprovalWarning currency={amountForZeroApproveWarning?.currency} />
       )}
       <NoImpactWarning />
       {enableSmartSlippage && <HighSuggestedSlippageWarning isTradePriceUpdating={isTradePriceUpdating} />}

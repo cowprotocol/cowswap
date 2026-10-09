@@ -59,25 +59,25 @@ export interface ParsedOrderExecutionData {
   surplusAmount: BigNumber
   surplusPercentage: BigNumber
   executedFeeAmount: string | undefined
-  executedFee: string | null
-  executedFeeToken: string | null
-  totalFee: string | null
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: MessageDescriptor | string
 }
 
-// eslint-disable-next-line complexity
+// Solana charges no fee, so its order-book omits `feeAmount` entirely. `transformOrder` in
+// sdk-order-book now fills it in, but `addOrUpdateOrders` merges onto an order already in the
+// store without overwriting the field — one persisted before that fix keeps `undefined`.
+function getFeeAmount(order: Order): string {
+  return order.feeAmount ?? '0'
+}
+
 export const parseOrder = (order: Order): ParsedOrder => {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)
   const { amount: surplusAmount, percentage: surplusPercentage } = getOrderSurplus(order)
   const { executedBuyAmount, executedSellAmount } = getOrderExecutedAmounts(order)
   const expirationTime = new Date(Number(order.validTo) * 1000)
   const executedFeeAmount = order.apiAdditionalInfo?.executedFeeAmount
-  const executedFee = order.apiAdditionalInfo?.executedFee || null
-  const executedFeeToken = order.apiAdditionalInfo?.executedFeeToken || null
-  const totalFee = order.apiAdditionalInfo?.totalFee || null
   const creationTime = new Date(order.creationTime)
   const fulfillmentTime = order.fulfillmentTime
   const fullyFilled = isOrderFilled(order)
@@ -98,7 +98,6 @@ export const parseOrder = (order: Order): ParsedOrder => {
   const activityTitle = showCreationTxLink ? msg`Creation transaction` : msg`Order ID`
 
   const executionData: ParsedOrderExecutionData = {
-    executedFeeToken,
     executedBuyAmount,
     executedSellAmount,
     filledAmount,
@@ -107,8 +106,6 @@ export const parseOrder = (order: Order): ParsedOrder => {
     surplusAmount,
     surplusPercentage,
     executedFeeAmount,
-    executedFee,
-    totalFee,
     executedPrice,
     fullyFilled,
     partiallyFilled,
@@ -129,10 +126,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     kind: order.kind,
     sellAmount: order.sellAmount,
     buyAmount: order.buyAmount,
-    // Solana charges no fee, so its order-book omits `feeAmount` entirely. `transformOrder` in
-    // sdk-order-book now fills it in, but `addOrUpdateOrders` merges onto an order already in the
-    // store without overwriting the field — one persisted before that fix keeps `undefined`.
-    feeAmount: order.feeAmount ?? '0',
+    feeAmount: getFeeAmount(order),
     class: order.class,
     status: order.status,
     partiallyFillable: order.partiallyFillable,

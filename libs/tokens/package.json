@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.19",
+    "@cowprotocol/cow-sdk": "9.2.20",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
@@ -33,7 +33,10 @@
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
     "@lingui/core": "5.5.1",
+    "@reown/appkit-adapter-solana": "1.8.19",
     "@sentry/browser": "7.80.0",
+    "@solana/spl-token": "0.4.14",
+    "@solana/web3.js": "1.98.4",
     "@cowprotocol/currency": "workspace:*",
     "@uniswap/token-lists": "1.0.0-beta.33",
     "ajv": "8.17.1",
