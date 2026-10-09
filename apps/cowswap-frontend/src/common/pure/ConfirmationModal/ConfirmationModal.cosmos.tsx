@@ -8,7 +8,7 @@ const Fixtures = {
       isOpen
       title={t`Turn on Expert mode?`}
       confirmWord={t`confirm`}
-      action={t`turn on expert mode`}
+      action={t`continue`}
       onDismiss={() => {}}
       onEnable={() => {}}
     />

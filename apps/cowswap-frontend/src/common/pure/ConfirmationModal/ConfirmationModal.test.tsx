@@ -26,8 +26,8 @@ jest.mock('@cowprotocol/ui', () => {
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
-const INSTRUCTION = /Please click confirm to continue with this swap/i
-const TYPE_INSTRUCTION = /Please type the word/i
+const INSTRUCTION = /Please click confirm to continue/i
+const TYPE_INSTRUCTION = /Please, type the word/i
 
 function renderComponent(props: Partial<React.ComponentProps<typeof ConfirmationModal>> = {}): RenderResult {
   return render(
@@ -37,7 +37,7 @@ function renderComponent(props: Partial<React.ComponentProps<typeof Confirmation
         title="Confirm"
         onDismiss={jest.fn()}
         onEnable={jest.fn()}
-        action="continue with this swap"
+        action="continue"
         confirmWord="confirm"
         {...props}
       />,
@@ -65,10 +65,10 @@ describe('ConfirmationModal', () => {
     it('should render description and click instruction as sibling paragraphs', () => {
       renderComponent({
         skipInput: true,
-        description: 'This swap has a price impact of at least 7%.',
+        description: 'This trade has a price impact of at least 7%.',
       })
 
-      expect(screen.queryByText('This swap has a price impact of at least 7%.')).not.toBeNull()
+      expect(screen.queryByText('This trade has a price impact of at least 7%.')).not.toBeNull()
       expect(screen.queryByText(INSTRUCTION)).not.toBeNull()
     })
 
@@ -113,18 +113,16 @@ describe('ConfirmationModal', () => {
       renderComponent()
 
       expect(screen.queryByText(TYPE_INSTRUCTION)).not.toBeNull()
-      expect(
-        screen.queryByRole('textbox', { name: /Please type the word.*"confirm".*to continue with this swap/i }),
-      ).not.toBeNull()
+      expect(screen.queryByRole('textbox', { name: /Please, type the word.*"confirm".*to continue:/i })).not.toBeNull()
       expect(screen.queryByText(INSTRUCTION)).toBeNull()
     })
 
     it('should render description and type instruction as sibling paragraphs', () => {
       renderComponent({
-        description: 'This swap has a price impact of at least 7%.',
+        description: 'This trade has a price impact of at least 7%.',
       })
 
-      expect(screen.queryByText('This swap has a price impact of at least 7%.')).not.toBeNull()
+      expect(screen.queryByText('This trade has a price impact of at least 7%.')).not.toBeNull()
       expect(screen.queryByText(TYPE_INSTRUCTION)).not.toBeNull()
       expect(screen.queryByRole('textbox')).not.toBeNull()
     })

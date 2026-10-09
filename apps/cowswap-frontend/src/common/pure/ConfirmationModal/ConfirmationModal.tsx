@@ -64,7 +64,7 @@ export function ConfirmationModal({
 
   const instruction = shouldShowInput ? (
     <Trans>
-      Please type the word <strong>"{confirmWord}"</strong> to {action}.
+      Please, type the word <strong>"{confirmWord}"</strong> to continue:
     </Trans>
   ) : showDefaultClickInstruction ? (
     <Trans>Please click confirm to {action}.</Trans>
