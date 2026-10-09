@@ -9,6 +9,8 @@ import { Menu } from '@reach/menu-button'
 
 import { SettingsButton, SettingsIcon, SettingsMenu, SettingsMenuFlyout } from 'modules/trade'
 
+import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
+import { priceChartModeAtom } from '../state/priceChartModeAtom'
 import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
 import type { ExpansionControl } from '../lib/priceChart.types'
@@ -19,6 +21,8 @@ interface PriceChartSettingsDropdownProps {
 
 export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDropdownProps): ReactNode {
   const { t } = useLingui()
+  const [autoRefresh, setAutoRefresh] = useAtom(priceChartAutoRefreshAtom)
+  const [chartMode, setChartMode] = useAtom(priceChartModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [supplyVariant, setSupplyVariant] = useAtom(priceChartSupplyVariantAtom)
 
@@ -33,6 +37,18 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
         <SettingsMenuFlyout portal={false}>
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
+              <SettingsBox
+                title={t`Advanced chart`}
+                tooltip={t`Turn this on for technical indicators, drawing tools, and more ways to explore price movements.`}
+                checked={chartMode === 'advanced'}
+                toggle={() => setChartMode((value) => (value === 'advanced' ? 'simple' : 'advanced'))}
+              />
+              <SettingsBox
+                title={t`Auto-refresh`}
+                tooltip={t`Refresh chart data every 30 seconds.`}
+                checked={autoRefresh}
+                toggle={() => setAutoRefresh((value) => !value)}
+              />
               {!isUpToLarge && (
                 <SettingsBox
                   title={t`Maximum width`}

@@ -1,4 +1,4 @@
-import type { CANDLE_INTERVALS, TIME_RANGES } from './priceChart.constants'
+import type { CANDLE_INTERVALS, TIME_RANGES } from '../config/priceChart.constants'
 
 export interface Candle {
   timestamp: number
@@ -12,6 +12,8 @@ export interface Candle {
 export type CandleInterval = (typeof CANDLE_INTERVALS)[number]
 
 export type ChartMetric = 'marketCap' | 'price'
+
+export type ChartMode = 'simple' | 'advanced'
 
 export type ChartPair = 'sell-usd' | 'buy-usd'
 
