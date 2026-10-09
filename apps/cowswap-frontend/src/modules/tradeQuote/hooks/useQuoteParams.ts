@@ -23,6 +23,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
+import { useSmartSlippageFromQuote } from './useSmartSlippageFromQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 import { getEoaTwapQuotePreHooks } from '../utils/getEoaTwapQuotePreHooks'
@@ -64,6 +65,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -75,8 +77,12 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   // Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
   // not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+  // The exception is an uncapped smart slippage: the SDK signs its own fresh suggestion when none is passed,
+  // while passing it would send the previous quote's suggestion and requote once the new one arrives.
   const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
-  const userSlippageBps = tradeSlippage.type === 'user' || isSolana ? tradeSlippage.value : undefined
+  const isSolanaSlippageFromQuote = tradeSlippage.type === 'smart' && tradeSlippage.value === smartSlippageFromQuote
+  const userSlippageBps =
+    tradeSlippage.type === 'user' || (isSolana && !isSolanaSlippageFromQuote) ? tradeSlippage.value : undefined
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
 
   const appDataDoc = useMemo(() => {

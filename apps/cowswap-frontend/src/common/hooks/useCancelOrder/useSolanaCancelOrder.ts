@@ -1,12 +1,13 @@
 import { useCallback } from 'react'
 
+import { backendEnv } from '@cowprotocol/common-utils'
 import { isSolanaAddress } from '@cowprotocol/cow-sdk'
 import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey } from '@solana/web3.js'
 import { buildSolanaCancelOrderParams } from 'tradingSdk/solana/buildSolanaCancelOrderParams'
-import { SOLANA_TRADING_ENV, solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
+import { solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
@@ -34,7 +35,7 @@ export function useSolanaCancelOrder(): (order: Order) => Promise<void> {
         connection,
         owner,
         [{ id: order.id, order }],
-        SOLANA_TRADING_ENV,
+        backendEnv,
       )
       const instruction = solanaTradingSdk.cancelOrder(cancelParams)
 

@@ -82,4 +82,18 @@ describe('getUiOrderType', () => {
 
     expect(result).toBe(UiOrderType.SWAP)
   })
+
+  // Solana's order-book returns no `class`. Without the fallback the order is left unclassified,
+  // which drops it out of every orders-table tab and renders as "Undefined sell order".
+  it('classifies a Solana order with no class as a market order', async () => {
+    const result = getUiOrderType(
+      buildParams({
+        class: undefined as unknown as UiOrderTypeParams['class'],
+        appData: '{}',
+        inputToken: { chainId: SupportedChainId.SOLANA } as UiOrderTypeParams['inputToken'],
+      }),
+    )
+
+    expect(result).toBe(UiOrderType.SWAP)
+  })
 })

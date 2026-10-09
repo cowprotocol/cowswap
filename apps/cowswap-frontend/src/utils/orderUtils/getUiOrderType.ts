@@ -23,10 +23,10 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
 
 export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'> & {
   // Optional and structurally narrow (chainId only): several existing callers pass order shapes
-  // (SerializedOrder pre-deserialization, ParsedOrder, lifecycle-event sources, ...) that either lack
-  // `appData` entirely or carry a `SerializedToken` instead of a full `Token` class instance for
-  // `inputToken`. Neither is available, the Solana check below is simply skipped — same as any other
-  // order for which it doesn't apply.
+  // (SerializedOrder pre-deserialization, lifecycle-event sources, ...) that either lack `appData`
+  // entirely or carry a `SerializedToken` instead of a full `Token` class instance for `inputToken`.
+  // Neither is available, the Solana check below is simply skipped — same as any other order for
+  // which it doesn't apply.
   appData?: Order['appData']
   inputToken?: Pick<Order['inputToken'], 'chainId'>
 }
@@ -62,7 +62,9 @@ export function getUiOrderType({
 
   // 4. As a last resort, map it to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
-  return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass]
+  // Solana's order-book has no `class` field at all, so an order of its that reached this point is a
+  // market order: the limit ones are already caught by their appData above.
+  return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass] ?? UiOrderType.SWAP
 }
 
 function isSolanaLimitOrderAppData(
