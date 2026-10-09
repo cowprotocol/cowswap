@@ -8,10 +8,10 @@ const DEFAULT_MAX_WIDTH = '1500px'
 const secondaryLayout = css<{ secondaryOnLeft?: boolean; stacked?: boolean }>`
   grid-template-columns: ${({ secondaryOnLeft, stacked }) =>
     stacked
-      ? '1fr'
+      ? 'minmax(0, 1fr)'
       : secondaryOnLeft
-        ? `1fr minmax(auto, ${WIDGET_MAX_WIDTH.swap})`
-        : `minmax(auto, ${WIDGET_MAX_WIDTH.swap}) 1fr`};
+        ? `minmax(0, 1fr) minmax(auto, ${WIDGET_MAX_WIDTH.swap})`
+        : `minmax(auto, ${WIDGET_MAX_WIDTH.swap}) minmax(0, 1fr)`};
   grid-template-rows: ${({ stacked }) => (stacked ? 'auto 1fr' : '1fr')};
   grid-template-areas: ${({ secondaryOnLeft, stacked }) =>
     stacked ? '"primary" "secondary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
@@ -83,6 +83,7 @@ export const SecondaryColumn = styled.div`
   flex-direction: column;
   gap: 20px;
   grid-area: secondary;
+  min-width: 0;
 
   &:empty {
     display: none;
