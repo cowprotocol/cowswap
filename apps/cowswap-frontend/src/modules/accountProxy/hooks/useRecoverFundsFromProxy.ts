@@ -64,7 +64,7 @@ export function useRecoverFundsFromProxy({
     setTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
 
     try {
-      return recoverFundsFromProxy({
+      return await recoverFundsFromProxy({
         config,
         cowShedHooks,
         walletClient,
