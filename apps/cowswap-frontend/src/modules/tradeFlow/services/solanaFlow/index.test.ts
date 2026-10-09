@@ -6,7 +6,12 @@ import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
-import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
+import {
+  solanaSigningAbandonedAtom,
+  solanaSigningDeadlineAtom,
+  SolanaSigningDeadlineState,
+  solanaSigningWindowExpiredAtom,
+} from 'entities/trade'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -38,11 +43,16 @@ jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
 // out of this suite.
 jest.mock('modules/trade/services/solanaFlow/sendSolanaFlow', () => ({ sendSolanaFlow: jest.fn() }))
-jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => ({
-  signSolanaFlow: jest.fn(),
-  getSigningWindowClosedError: () =>
-    new Error('The signing window closed before the transaction was signed. Please try again.'),
-}))
+jest.mock('modules/trade/services/solanaFlow/signSolanaFlow', () => {
+  class SigningWindowClosedError extends Error {}
+
+  return {
+    signSolanaFlow: jest.fn(),
+    SigningWindowClosedError,
+    getSigningWindowClosedError: () =>
+      new SigningWindowClosedError('The signing window closed before the transaction was signed. Please try again.'),
+  }
+})
 jest.mock('modules/trade/services/solanaSend/estimateSolanaSigningDeadline', () => ({
   estimateSolanaSigningDeadline: jest.fn(),
 }))
@@ -651,6 +661,9 @@ describe('solanaFlow', () => {
 
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+    // Keyed on the thrown error, not on the abandoned flag: an unrelated failure here keeps the
+    // generic error screen rather than claiming the window expired.
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
   })
 
   // A hung prompt from an earlier attempt can reject while a newer attempt is already running; the
@@ -846,6 +859,11 @@ describe('solanaFlow · sponsored', () => {
     expect(context.tradeConfirmActions.onError).toHaveBeenCalledWith(
       expect.stringContaining('The signing window closed'),
     )
+    // The error screen renders its own copy and the amounts the confirm state has already dropped.
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
   })
 
   // Approving a prompt the user already retried past must not place the abandoned order next to the
