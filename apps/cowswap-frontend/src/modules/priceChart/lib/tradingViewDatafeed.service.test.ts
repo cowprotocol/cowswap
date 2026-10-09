@@ -185,14 +185,16 @@ describe('TradingView datafeed', () => {
       new Token(CURRENCY.chainId, '0x0000000000000000000000000000000000000002', 18, 'OTHER'),
     ])
     const onHistoryLoaded = jest.fn()
-    const { datafeed } = createPriceChartDatafeed({ queryClient, symbols: [PRICE, other], onHistoryLoaded })
+    const { datafeed, setActiveTicker } = createPriceChartDatafeed({
+      queryClient,
+      symbols: [PRICE, other],
+      onHistoryLoaded,
+    })
 
     datafeed.getBars(PRICE.librarySymbolInfo, '60', PERIOD, jest.fn(), jest.fn())
     await flushTasks()
-    datafeed.resolveSymbol(other.ticker, jest.fn(), jest.fn())
-    await flushTasks()
-    datafeed.resolveSymbol(PRICE.ticker, jest.fn(), jest.fn())
-    await flushTasks()
+    setActiveTicker(other.ticker)
+    setActiveTicker(PRICE.ticker)
 
     expect(onHistoryLoaded).toHaveBeenCalledTimes(2)
     expect(onHistoryLoaded).toHaveBeenLastCalledWith([BAR])

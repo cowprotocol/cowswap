@@ -65,7 +65,7 @@ export function createPriceChartDatafeed({
   }
 
   const setActiveTicker = (ticker: string): void => {
-    if (disposed || ticker === activeTicker) return
+    if (disposed) return
 
     activeTicker = ticker
     const history = historiesByTicker.get(ticker)
@@ -81,6 +81,7 @@ export function createPriceChartDatafeed({
       setActiveTicker,
       symbols,
     }),
+    setActiveTicker,
     dispose: () => {
       disposed = true
       historiesByTicker.clear()

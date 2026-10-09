@@ -13,6 +13,7 @@ export interface CreatePriceChartDatafeedParams {
 
 export interface PriceChartDatafeedController {
   datafeed: IBasicDataFeed
+  setActiveTicker: (ticker: string) => void
   dispose: () => void
 }
 
