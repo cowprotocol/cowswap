@@ -1924,6 +1924,10 @@ msgstr "Read more about the tokenomics"
 msgid "s"
 msgstr "s"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Price chart period"
+msgstr "Price chart period"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Order Cancelled"
@@ -7527,6 +7531,10 @@ msgstr "Swap now"
 msgid "Send to {networkName} wallet"
 msgstr "Send to {networkName} wallet"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Price chart period: {period}"
+msgstr "Price chart period: {period}"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
@@ -7722,6 +7730,10 @@ msgstr "Low"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 #~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 #~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
+msgid "Price chart asset"
+msgstr "Price chart asset"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"

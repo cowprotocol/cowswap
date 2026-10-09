@@ -32,13 +32,15 @@ export function PriceChartControls({
   onPeriodChange,
   period,
 }: PriceChartControlsProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <styledEl.FooterControls>
       <ChartTypeControl chartType={chartType} onChange={onChartTypeChange} />
       {compact ? (
         <styledEl.PeriodMenu>
           <ContextMenu>
-            <styledEl.PeriodMenuButton aria-label={`Price chart period: ${period}`}>
+            <styledEl.PeriodMenuButton aria-label={t`Price chart period: ${period}`}>
               {period}
               <ChevronDown size={16} aria-hidden="true" />
             </styledEl.PeriodMenuButton>
@@ -52,7 +54,7 @@ export function PriceChartControls({
           </ContextMenu>
         </styledEl.PeriodMenu>
       ) : (
-        <styledEl.Controls aria-label="Price chart period" role="group">
+        <styledEl.Controls aria-label={t`Price chart period`} role="group">
           {TIME_RANGES.map((item) => (
             <styledEl.SegmentedControlButton
               $isActive={item === period}

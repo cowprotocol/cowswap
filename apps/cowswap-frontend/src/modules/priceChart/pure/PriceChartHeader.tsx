@@ -78,7 +78,7 @@ export function PriceChartHeader({
       </styledEl.Heading>
       <styledEl.Toolbar>
         {currencies.length > 1 ? (
-          <styledEl.SegmentedControl aria-label="Price chart asset" role="group">
+          <styledEl.SegmentedControl aria-label={t`Price chart asset`} role="group">
             {currencies.map((currency) => (
               <styledEl.SegmentedControlButton
                 $isActive={Boolean(activeCurrency?.equals(currency))}

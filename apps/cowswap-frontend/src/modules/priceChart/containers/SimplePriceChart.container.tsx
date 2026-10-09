@@ -56,8 +56,6 @@ export function SimplePriceChart({
   const showStatus = isPending || isError || data.length === 0
   const priceSummary = useMemo(() => getPriceChartSummary(data), [data])
 
-  if (!currencies.length) return <styledEl.EmptyState>Select a token to load the price chart.</styledEl.EmptyState>
-
   const controls = (
     <PriceChartControls
       compact={isMobile}

@@ -40,14 +40,3 @@ export const OverlayState = styled.div`
   line-height: 1.5;
   pointer-events: auto;
 `
-
-export const EmptyState = styled.div`
-  display: grid;
-  place-items: center;
-  min-height: 320px;
-  padding: 24px;
-  text-align: center;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-  font-size: 14px;
-  line-height: 1.5;
-`
