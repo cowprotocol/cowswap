@@ -1929,10 +1929,6 @@ msgstr "Want TWAP with this wallet? Let us know"
 msgid "Back to review"
 msgstr "Back to review"
 
-#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
-msgid "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
-msgstr "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/constants.ts
 msgid "No route found for this token"
 msgstr "No route found for this token"
@@ -4010,6 +4006,10 @@ msgstr "TWAP"
 msgid "Insufficient liquidity for this trade"
 msgstr "Insufficient liquidity for this trade"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
+msgstr "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
+
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Get a new link"
 msgstr "Get a new link"
@@ -5773,6 +5773,10 @@ msgstr "Still searching"
 msgid "check"
 msgstr "check"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Advanced chart"
+msgstr "Advanced chart"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "and saved {amount}"
 msgstr "and saved {amount}"
@@ -6334,10 +6338,6 @@ msgstr "CoWmunity fees discount"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Action"
 msgstr "Action"
-
-#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
-msgid "Advanced chart"
-msgstr "Advanced chart"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -6959,6 +6959,10 @@ msgstr "Invalid website URL in manifest. Only http(s) URLs are allowed, with htt
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Sell amount too small to bridge"
 msgstr "Sell amount too small to bridge"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
+msgid "Chart will be updated in {time}"
+msgstr "Chart will be updated in {time}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
@@ -7754,6 +7758,10 @@ msgstr "Selected network {activeChainLabel}"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "Import"
 msgstr "Import"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
+msgid "Chart is updating..."
+msgstr "Chart is updating..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Yes"
@@ -9101,6 +9109,10 @@ msgstr "Only trade alerts are sent. No marketing messages."
 msgid "Copy referral link"
 msgstr "Copy referral link"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
+msgid "Chart update time unavailable"
+msgstr "Chart update time unavailable"
+
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Enable Telegram alerts"
 msgstr "Enable Telegram alerts"
@@ -9892,6 +9904,10 @@ msgstr "Creation transaction"
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
 msgstr "Add token"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
+#~ msgid "Chart updated {time} ago"
+#~ msgstr "Chart updated {time} ago"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
