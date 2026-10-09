@@ -9,14 +9,14 @@ import { findChartSymbol } from './priceChartAdvancedSymbols.utils'
 import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
 
 import {
-  PRO_CHART_DISABLE_BACKFILL_REQUESTS,
-  PRO_CHART_EXCHANGE_NAME,
-  PRO_CHART_EXCHANGE_VALUE,
-  PRO_CHART_SUPPORTED_RESOLUTIONS,
+  ADVANCED_CHART_DISABLE_BACKFILL_REQUESTS,
+  ADVANCED_CHART_EXCHANGE_NAME,
+  ADVANCED_CHART_EXCHANGE_VALUE,
+  ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
 } from '../config/priceChartAdvanced.constants'
 
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './priceChartAdvancedLibrary.service'
+import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './priceChartAdvancedApi.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
 
 export interface CreatePriceChartDatafeedParams {
@@ -138,12 +138,12 @@ function createBasicDatafeed(params: GetBarsHandlerParams): IBasicDataFeed {
         onReadyCallback({
           exchanges: [
             {
-              desc: PRO_CHART_EXCHANGE_NAME,
-              name: PRO_CHART_EXCHANGE_NAME,
-              value: PRO_CHART_EXCHANGE_VALUE,
+              desc: ADVANCED_CHART_EXCHANGE_NAME,
+              name: ADVANCED_CHART_EXCHANGE_NAME,
+              value: ADVANCED_CHART_EXCHANGE_VALUE,
             },
           ],
-          supported_resolutions: PRO_CHART_SUPPORTED_RESOLUTIONS,
+          supported_resolutions: ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
           supports_time: false,
         })
       }, 0)
@@ -183,7 +183,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
       return
     }
 
-    if (PRO_CHART_DISABLE_BACKFILL_REQUESTS && !periodParams.firstDataRequest) {
+    if (ADVANCED_CHART_DISABLE_BACKFILL_REQUESTS && !periodParams.firstDataRequest) {
       onResult([], { noData: true })
       return
     }

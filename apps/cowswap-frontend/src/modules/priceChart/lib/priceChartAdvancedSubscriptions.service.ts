@@ -11,7 +11,7 @@ import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
 import { PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
 
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { IBasicDataFeed } from './priceChartAdvancedLibrary.service'
+import type { IBasicDataFeed } from './priceChartAdvancedApi.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
 
 const INTERVAL_SECONDS: Record<CandleInterval, number> = {

@@ -8,22 +8,22 @@ import { useTheme } from 'common/hooks/useTheme'
 import * as styledEl from './AdvancedChartCanvas.styled'
 
 import {
-  PRO_CHART_CONTAINER_ID,
-  PRO_CHART_CSS_PATH,
-  PRO_CHART_DEFAULT_INTERVAL,
-  PRO_CHART_FAVORITE_INTERVALS,
-  PRO_CHART_LIBRARY_PATH,
-  PRO_CHART_TIME_FRAMES,
+  ADVANCED_CHART_CONTAINER_ID,
+  ADVANCED_CHART_CSS_PATH,
+  ADVANCED_CHART_DEFAULT_INTERVAL,
+  ADVANCED_CHART_FAVORITE_INTERVALS,
+  ADVANCED_CHART_LIBRARY_PATH,
+  ADVANCED_CHART_TIME_FRAMES,
 } from '../config/priceChartAdvanced.constants'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
-import { loadChartingLibraryWidget } from '../lib/priceChartAdvancedLibrary.service'
+import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 
 import type {
   ChartPropertiesOverrides,
   IBasicDataFeed,
   IChartingLibraryWidget,
-} from '../lib/priceChartAdvancedLibrary.types'
+} from '../lib/priceChartAdvancedApi.types'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 
 export interface AdvancedChartCanvasProps {
@@ -44,7 +44,7 @@ export function AdvancedChartCanvas({
   onError,
 }: AdvancedChartCanvasProps): ReactNode {
   const chartId = useId().replace(/:/g, '')
-  const containerId = `${PRO_CHART_CONTAINER_ID}-${chartId}`
+  const containerId = `${ADVANCED_CHART_CONTAINER_ID}-${chartId}`
   const theme = useTheme()
   const themeRef = useRef(theme)
   const hasVolumeRef = useRef(hasVolume)
@@ -70,14 +70,14 @@ export function AdvancedChartCanvas({
       })
     }
     const setup = async (): Promise<void> => {
-      const TradingViewWidget = await loadChartingLibraryWidget()
+      const TradingViewWidget = await loadAdvancedChartWidget()
 
       if (isCancelled) return
 
       widget = new TradingViewWidget({
         autosize: true,
         container: containerId,
-        custom_css_url: PRO_CHART_CSS_PATH,
+        custom_css_url: ADVANCED_CHART_CSS_PATH,
         custom_formatters: {
           priceFormatterFactory: () => ({
             format: (value: number) => formatPriceChartValue(value, locale),
@@ -101,11 +101,11 @@ export function AdvancedChartCanvas({
         ],
         favorites: {
           chartTypes: ['Candles', 'LineWithMarkers', 'Baseline'],
-          intervals: PRO_CHART_FAVORITE_INTERVALS,
+          intervals: ADVANCED_CHART_FAVORITE_INTERVALS,
         },
         auto_save_delay: 5,
-        interval: PRO_CHART_DEFAULT_INTERVAL,
-        library_path: PRO_CHART_LIBRARY_PATH,
+        interval: ADVANCED_CHART_DEFAULT_INTERVAL,
+        library_path: ADVANCED_CHART_LIBRARY_PATH,
         loading_screen: {
           backgroundColor,
           foregroundColor: currentTheme.primary,
@@ -115,7 +115,7 @@ export function AdvancedChartCanvas({
         saved_data: savedChartState,
         symbol: initialTickerRef.current || symbols[0].ticker,
         theme: currentTheme.darkMode ? 'dark' : 'light',
-        time_frames: PRO_CHART_TIME_FRAMES,
+        time_frames: ADVANCED_CHART_TIME_FRAMES,
         timezone: 'Etc/UTC',
       })
 
@@ -136,7 +136,10 @@ export function AdvancedChartCanvas({
           return
         }
 
-        widget.applyOverrides(getThemeOverrides(themeRef.current))
+        // Saved layouts can restore a different theme than the constructor option.
+        void widget.changeTheme(themeRef.current.darkMode ? 'dark' : 'light').then(() => {
+          if (!isCancelled) widget?.applyOverrides(getThemeOverrides(themeRef.current))
+        })
         widget.activeChart().setSymbol(nextTicker, () => {
           if (widget && hasVolumeRef.current !== undefined) {
             syncTradingViewVolumeStudy(widget, hasVolumeRef.current)
