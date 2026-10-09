@@ -82,7 +82,8 @@ export function AdvancedPriceChart({
   useEffect(() => {
     setPriceSummary(undefined)
     setHasVolume(undefined)
-  }, [activeTicker])
+    datafeedController.setActiveTicker(activeTicker)
+  }, [activeTicker, datafeedController])
 
   useTradingViewWidget(
     activeTicker,
@@ -93,10 +94,6 @@ export function AdvancedPriceChart({
     i18n.locale,
     setWidgetError,
   )
-
-  if (!symbols.length) {
-    return <styledEl.EmptyState>Select a token to load the price chart.</styledEl.EmptyState>
-  }
 
   return (
     <PanelWrapper>
