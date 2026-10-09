@@ -28,7 +28,7 @@
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.2.18",
+    "@cowprotocol/cow-sdk": "9.2.20",
     "@cowprotocol/hook-dapp-lib": "workspace:*",
     "@cowprotocol/sdk-bridging": "4.4.16",
     "@cowprotocol/sdk-composable": "1.8.5",
