@@ -29,7 +29,7 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
-import { APP_TITLE, ORDERS_PAGE_SIZE } from 'explorer/const'
+import { APP_TITLE, ORDERS_PAGE_SIZE, TAB_QUERY_PARAM_KEY, TWAP_TAB_QUERY_VALUE } from 'explorer/const'
 import { FlexContainerVar, StyledSearch, Wrapper } from 'explorer/pages/styled'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { Helmet } from 'react-helmet'
@@ -250,6 +250,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
       <FromItem
         chainId={chainId}
         owner={order.resolvedOwner}
+        orderHistoryLink={`/address/${order.resolvedOwner}?${TAB_QUERY_PARAM_KEY}=${TWAP_TAB_QUERY_VALUE}`}
         isSigning={false}
         isBridgingOrder={false}
         onCopy={() => undefined}

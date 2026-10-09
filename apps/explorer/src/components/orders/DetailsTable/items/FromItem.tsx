@@ -17,6 +17,7 @@ interface FromItemProps {
   isSigning: boolean
   isBridgingOrder: boolean
   owner: string
+  orderHistoryLink?: string
   tooltipText?: string
   onCopy(label: string): void
 }
@@ -27,6 +28,7 @@ export function FromItem({
   isBridgingOrder,
   onCopy,
   owner,
+  orderHistoryLink,
   tooltipText,
 }: FromItemProps): ReactNode {
   return (
@@ -43,7 +45,7 @@ export function FromItem({
         contentsToDisplay={<AddressLink address={owner} chainId={chainId} showIcon showNetworkName={isBridgingOrder} />}
       />
       <Wrapper>
-        <LinkButton to={`/address/${owner}`}>
+        <LinkButton to={orderHistoryLink ?? `/address/${owner}`}>
           <FontAwesomeIcon icon={faHistory} />
           Order history
         </LinkButton>
