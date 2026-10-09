@@ -6,7 +6,7 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import { usePathname } from 'next/navigation'
 import ReactMarkdown from 'react-markdown'
-import styled, { createGlobalStyle } from 'styled-components/macro'
+import styled from 'styled-components/macro'
 
 import { Article, Resource, SharedRichTextComponent } from '../services/cms'
 
@@ -38,12 +38,6 @@ import { formatDate } from '@/util/formatDate'
 import { remarkAllowedHtmlImages, sanitizeCmsMarkdown } from '@/util/markdownHtmlImages'
 
 const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_URL || ''
-
-const PageBackground = createGlobalStyle`
-  body {
-    background: var(${UI.COLOR_NEUTRAL_98});
-  }
-`
 
 const Wrapper = styled.div`
   display: flex;
@@ -95,7 +89,6 @@ export function ResourcePageComponent({
 
   return (
     <Wrapper>
-      <PageBackground />
       <CategoryLinks allCategories={allCategories} />
       <SearchBar />
       <ContainerCard gap={62} gapMobile={42} margin="0 auto" centerContent>
