@@ -109,6 +109,7 @@ export function createPriceChartDatafeed({
       subscribeBars: subscriptions.subscribeBars,
       unsubscribeBars: subscriptions.unsubscribeBars,
     },
+    setAutoRefreshEnabled: subscriptions.setAutoRefreshEnabled,
     setActiveTicker,
     dispose: () => {
       disposed = true
