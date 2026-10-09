@@ -2,17 +2,31 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   getSolanaQuote: jest.fn(),
 }))
 
-import { OrderKind, PriceQuality, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
+// Holds whatever the active token list would: mutated per test, never reassigned, since jotai caches the
+// derived atom's promise against this exact object.
+const mockTokensByAddress: Record<string, { tags: string[] }> = {}
+
+jest.mock('@cowprotocol/tokens', () => ({
+  tokensByAddressAtom: jest.requireActual('jotai').atom(() => Promise.resolve({ tokens: mockTokensByAddress })),
+}))
+
+import { TOKEN_2022_TAG } from '@cowprotocol/common-const'
+import { getAddressKey, OrderKind, PriceQuality, QuoteResults, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { SwapAdvancedSettings } from '@cowprotocol/sdk-trading'
 import { getSolanaQuote as getSolanaQuoteFromSdk, SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 
+import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
 
 import { getSolanaQuote } from './getSolanaQuote.service'
 
 const mockGetSolanaQuoteFromSdk = getSolanaQuoteFromSdk as jest.MockedFunction<typeof getSolanaQuoteFromSdk>
+
+function tagAsToken2022(address: string): void {
+  mockTokensByAddress[getAddressKey(address)] = { tags: [TOKEN_2022_TAG] }
+}
 
 const owner = new PublicKey(new Uint8Array(32).fill(9))
 const sellMint = new PublicKey(new Uint8Array(32).fill(1))
@@ -53,6 +67,7 @@ describe('getSolanaQuote', () => {
   beforeEach(() => {
     mockGetSolanaQuoteFromSdk.mockReset()
     mockGetSolanaQuoteFromSdk.mockResolvedValue(sdkResult)
+    Object.keys(mockTokensByAddress).forEach((key) => delete mockTokensByAddress[key])
   })
 
   it('maps quoteParams onto SolanaQuoteParameters', async () => {
@@ -70,9 +85,41 @@ describe('getSolanaQuote', () => {
         kind: quoteParams.kind,
         partiallyFillable: quoteParams.partiallyFillable,
         validForSeconds: quoteParams.validFor,
+        sellTokenProgramId: TOKEN_PROGRAM_ID,
+        buyTokenProgramId: TOKEN_PROGRAM_ID,
         slippageBps: 50,
         priceQuality: PriceQuality.FAST,
       },
+      expect.anything(),
+    )
+  })
+
+  // Left unset, the SDK derives both token accounts under the classic program, and the order book
+  // rejects the transaction: "a preparation step names a token program that does not own its mint".
+  it('names the Token-2022 program for a mint the list flags as Token-2022', async () => {
+    tagAsToken2022(quoteParams.buyTokenAddress)
+
+    await getSolanaQuote(quoteParams, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sellTokenProgramId: TOKEN_PROGRAM_ID,
+        buyTokenProgramId: TOKEN_2022_PROGRAM_ID,
+      }),
+      expect.anything(),
+    )
+  })
+
+  it('resolves each side independently', async () => {
+    tagAsToken2022(quoteParams.sellTokenAddress)
+
+    await getSolanaQuote(quoteParams, advancedSettings)
+
+    expect(mockGetSolanaQuoteFromSdk).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sellTokenProgramId: TOKEN_2022_PROGRAM_ID,
+        buyTokenProgramId: TOKEN_PROGRAM_ID,
+      }),
       expect.anything(),
     )
   })

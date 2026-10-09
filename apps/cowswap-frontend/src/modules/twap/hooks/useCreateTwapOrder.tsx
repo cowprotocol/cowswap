@@ -323,7 +323,13 @@ export function useCreateTwapOrder() {
           const sellAmountAtoms = BigInt(updatedTwapOrder.sellAmount.quotient.toString())
           // 0n means vault-relayer allowance already covers the trade (see amountToApprove above), but we don't care about vault-relayer allowance here,
           // we want to approve the poller instead, so qw approve the TWAP sell instead of 0 or unlimited.
-          const pollerAmountToApprove = amountToApprove > 0n ? amountToApprove : sellAmountAtoms
+          // Dai-like permit is boolean unlimited-only (`allowed: true`).
+          const pollerAmountToApprove =
+            pollerPermitInfo?.type === 'dai-like'
+              ? maxUint256
+              : amountToApprove > 0n
+                ? amountToApprove
+                : sellAmountAtoms
 
           const pollerApprovalNeeds = await getEoaTwapApprovalNeeds({
             config,

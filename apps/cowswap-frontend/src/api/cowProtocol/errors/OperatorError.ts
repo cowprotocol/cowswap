@@ -103,7 +103,8 @@ export class OperatorError extends Error {
     this.type = apiError.errorType
     this.description = apiError.description
     const message = ApiErrorCodeDetails[apiError.errorType]
-    // In case we don't have a custom message, use the one provided by the backend in the description
-    this.message = message === this.type.toString() ? this.description : message
+    // In case we don't have a custom message, use the one provided by the backend in the description.
+    // An error code the backend added since this enum was written has none at all.
+    this.message = message && message !== this.type.toString() ? message : this.description
   }
 }

@@ -106,6 +106,8 @@ export function BaseDetailsTable({
             isBridgingOrder={isBridging}
             bridgeProviderType={bridgeProviderType}
             onCopy={onCopy}
+            orderOwner={owner}
+            buyTokenAddress={buyToken.address}
           />
           {(!partiallyFillable || txHash) && areTradesLoading ? (
             <Spinner />

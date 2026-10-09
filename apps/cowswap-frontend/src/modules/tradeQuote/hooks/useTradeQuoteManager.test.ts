@@ -96,4 +96,60 @@ describe('useTradeQuoteManager - stale error clearing', () => {
     act(() => manager.setLoading(true, makeParams({ amount: 2_000_000n })))
     expect(getError()).toBeNull()
   })
+
+  it('stores the quote params the error was returned for', () => {
+    const manager = renderManager()
+    const baseParams = makeParams()
+
+    act(() => manager.setLoading(true, baseParams))
+    act(() => manager.onError(liquidityError, SupportedChainId.MAINNET, baseParams, fetchParams))
+
+    expect(Object.values(store.get(tradeQuotesAtom))[0]?.errorQuoteParams).toBe(baseParams)
+  })
+})
+
+describe('useTradeQuoteManager - retained quote', () => {
+  const quote = { quoteResults: {} } as unknown as NonNullable<TradeQuoteState['quote']>
+
+  function getQuote(): TradeQuoteState['quote'] | undefined {
+    return Object.values(store.get(tradeQuotesAtom))[0]?.quote
+  }
+
+  it('keeps the previous quote while a same-chain requote loads', () => {
+    const manager = renderManager()
+    const baseParams = makeParams()
+
+    act(() => manager.setLoading(true, baseParams))
+    act(() => manager.onResponse(quote, null, fetchParams, baseParams))
+    act(() => manager.setLoading(true, makeParams({ amount: 2_000_000n })))
+
+    expect(getQuote()).toBe(quote)
+  })
+
+  it('drops the previous quote when the sell chain changes', () => {
+    const manager = renderManager()
+    const baseParams = makeParams()
+
+    act(() => manager.setLoading(true, baseParams))
+    act(() => manager.onResponse(quote, null, fetchParams, baseParams))
+    act(() =>
+      manager.setLoading(
+        true,
+        makeParams({ sellTokenChainId: SupportedChainId.ARBITRUM_ONE, buyTokenChainId: SupportedChainId.ARBITRUM_ONE }),
+      ),
+    )
+
+    expect(getQuote()).toBeNull()
+  })
+
+  it('drops the previous quote when the buy chain changes', () => {
+    const manager = renderManager()
+    const baseParams = makeParams()
+
+    act(() => manager.setLoading(true, baseParams))
+    act(() => manager.onResponse(quote, null, fetchParams, baseParams))
+    act(() => manager.setLoading(true, makeParams({ buyTokenChainId: SupportedChainId.BASE })))
+
+    expect(getQuote()).toBeNull()
+  })
 })

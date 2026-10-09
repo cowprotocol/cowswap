@@ -62,7 +62,7 @@ export type AdvancedOrdersWidgetProps = {
   mapCurrencyInfo?: (info: CurrencyInfo) => CurrencyInfo
   confirmContent: ReactElement
   topContent?: ReactNode
-  children(warnings: ReactNode): ReactNode
+  children(warnings: ReactNode, captcha: ReactNode | null): ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
@@ -126,8 +126,8 @@ export function AdvancedOrdersWidget({
   const slots: TradeWidgetSlots = {
     settingsWidget: <AdvancedOrdersSettings />,
     topContent,
-    bottomContent(warnings) {
-      return children(warnings)
+    bottomContent(warnings, captcha) {
+      return children(warnings, captcha)
     },
     updaters,
     lockScreen: isUnlocked ? undefined : (

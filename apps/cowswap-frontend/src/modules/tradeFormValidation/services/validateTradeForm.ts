@@ -41,6 +41,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isCaptchaPending,
     isCaptchaRequired,
     swapMaximumSellAmount,
+    solanaNativeShortfall,
   } = context
 
   const {
@@ -178,6 +179,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
     }
+  }
+
+  // Outside the `canPlaceOrderWithoutBalance` gate: a Solana limit order still pays the PDA rent and
+  // the fee at signing time. The hook is null on other chains and when the wallet isn't debited.
+  if (!!account && solanaNativeShortfall) {
+    validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
   }
 
   const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)

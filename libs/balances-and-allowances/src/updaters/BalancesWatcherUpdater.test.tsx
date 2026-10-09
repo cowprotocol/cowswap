@@ -8,6 +8,10 @@ import { BalancesWatcherUpdater } from './BalancesWatcherUpdater'
 
 import { UseBalancesWatcherSessionParams } from '../hooks/useBalancesWatcherSession'
 
+// The real module is ESM-only and Jest does not transform node_modules; it is reached via the @cowprotocol/tokens barrel
+jest.mock('@reown/appkit-adapter-solana/react', () => ({
+  useAppKitConnection: () => ({ connection: undefined }),
+}))
 jest.mock('../hooks/useBalancesWatcherSession', () => ({
   useBalancesWatcherSession: jest.fn(),
 }))

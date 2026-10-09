@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -166,7 +165,6 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const hideTradeRateDetails = useShouldHideTradeRateDetails()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -215,26 +213,25 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen:
-      !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
-        <UnlockWidgetScreen
-          id="limit-orders"
-          items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
-            content,
-          }))}
-          buttonLink={UNLOCK_SCREEN.buttonLink}
-          title={i18n._(UNLOCK_SCREEN.title)}
-          subtitle={i18n._(UNLOCK_SCREEN.subtitle)}
-          orderType={i18n._(UNLOCK_SCREEN.orderType)}
-          buttonText={i18n._(UNLOCK_SCREEN.buttonText)}
-          handleUnlock={handleUnlock}
-        />
-      ) : undefined,
+    lockScreen: !isUnlocked ? (
+      <UnlockWidgetScreen
+        id="limit-orders"
+        items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
+          content,
+        }))}
+        buttonLink={UNLOCK_SCREEN.buttonLink}
+        title={i18n._(UNLOCK_SCREEN.title)}
+        subtitle={i18n._(UNLOCK_SCREEN.subtitle)}
+        orderType={i18n._(UNLOCK_SCREEN.orderType)}
+        buttonText={i18n._(UNLOCK_SCREEN.buttonText)}
+        handleUnlock={handleUnlock}
+      />
+    ) : undefined,
     topContent: props.settingsState.limitPricePosition === 'top' ? rateInput : undefined,
     middleContent: props.settingsState.limitPricePosition === 'between' ? rateInput : undefined,
     // TODO: Extract nested component outside render function
     // eslint-disable-next-line react/no-unstable-nested-components
-    bottomContent(warnings) {
+    bottomContent(warnings, captcha) {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
@@ -249,6 +246,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+
+          {captcha}
 
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />

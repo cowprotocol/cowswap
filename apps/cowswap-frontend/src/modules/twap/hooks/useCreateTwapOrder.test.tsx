@@ -418,7 +418,7 @@ describe('useCreateTwapOrder', () => {
     expect(setOptimisticAllowance).not.toHaveBeenCalled()
   })
 
-  it('does not permit a Dai-like token when the form selected a finite poller approval', async () => {
+  it('forces unlimited poller allowance for Dai-like tokens even when the form selected a finite amount', async () => {
     mockedGetEoaTwapApprovalNeeds.mockResolvedValue({ needsApproval: true, needsZeroApproval: false })
     mockedUsePermitInfo.mockReturnValue({ type: 'dai-like', name: 'DAI' } as ReturnType<typeof usePermitInfo>)
     mockedUseGetAmountToSignApprove.mockReturnValue({
@@ -431,11 +431,14 @@ describe('useCreateTwapOrder', () => {
       await result.current(false)
     })
 
+    expect(mockedGetEoaTwapApprovalNeeds).toHaveBeenCalledWith(
+      expect.objectContaining({ amountToApprove: maxUint256, amountToCover: 1_000_000n }),
+    )
     expect(mockedEnsureEoaTwapSpenderAllowance).toHaveBeenCalledWith(
       expect.objectContaining({
-        amountToPermitOrApprove: 2_000_000n,
+        amountToPermitOrApprove: maxUint256,
         sellTokenAmount: 1_000_000n,
-        approvalNeeds: expect.objectContaining({ canUsePermit: false }),
+        approvalNeeds: expect.objectContaining({ canUsePermit: true }),
       }),
     )
   })

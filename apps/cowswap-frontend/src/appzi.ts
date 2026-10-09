@@ -59,6 +59,7 @@ type AppziCustomSettings = {
   created?: true
   cancelled?: true
   openedLimitPage?: true
+  openedTwapPage?: true
   // extra contextual data for statistics/debugging
   explorerUrl?: string
   env?: string
