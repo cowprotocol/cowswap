@@ -81,6 +81,7 @@ export function getTimeRangeConfig(period: TimeRange, nowSeconds: number): TimeR
     case '1Y':
       return { from: to - 365 * DAY_SECONDS, interval: '1d', to }
     case 'All':
-      return { from: 0, interval: '7d', to }
+      // Set minimum as Jan 1 2010 to avoid the 1500 record limit
+      return { from: Date.UTC(2010, 0, 1) / 1000, interval: '7d', to }
   }
 }
