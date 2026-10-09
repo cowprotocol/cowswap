@@ -49,26 +49,22 @@ describe('TradingView datafeed', () => {
     queryClient.clear()
   })
 
-  it('reports the active subscription deadline and loading state', async () => {
+  it('stops automatic requests when disabled and resumes without recreating the datafeed', async () => {
     jest.useFakeTimers({ now: PERIOD.to * 1000 })
-    const onRefreshState = jest.fn()
-    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS, onRefreshState })
-    controller.setActiveTicker(PRICE.ticker)
-    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '60', jest.fn(), 'price', jest.fn())
-    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: false })
+    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS })
+    const onRealtime = jest.fn()
+    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '60', onRealtime, 'price', jest.fn())
+    controller.setAutoRefreshEnabled(false)
+    await jest.advanceTimersByTimeAsync(60_000)
+    expect(mockedFetchPriceHistory).not.toHaveBeenCalled()
 
-    const pending = deferredHistory()
-    mockedFetchPriceHistory.mockReturnValueOnce(pending.promise)
-    await jest.advanceTimersByTimeAsync(30_000)
-    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: true })
-    pending.resolve([BAR])
+    controller.datafeed.getBars(PRICE.librarySymbolInfo, '60', PERIOD, jest.fn(), jest.fn())
     await jest.advanceTimersByTimeAsync(0)
-    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: false })
-
-    controller.setActiveTicker(CIRCULATING_CAP.ticker)
-    onRefreshState.mockClear()
+    expect(mockedFetchPriceHistory).toHaveBeenCalledTimes(1)
+    controller.setAutoRefreshEnabled(true)
     await jest.advanceTimersByTimeAsync(30_000)
-    expect(onRefreshState).not.toHaveBeenCalled()
+    expect(mockedFetchPriceHistory).toHaveBeenCalledTimes(2)
+    expect(onRealtime).toHaveBeenCalledTimes(1)
     controller.dispose()
   })
 

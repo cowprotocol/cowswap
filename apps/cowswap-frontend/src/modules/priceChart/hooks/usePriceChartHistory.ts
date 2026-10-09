@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { keepPreviousData, skipToken, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 
 import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
@@ -5,8 +7,10 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
 import { toMarketCapBars } from '../lib/loadPriceChartHistory'
+import { PRICE_CHART_REFRESH_INTERVAL } from '../lib/priceChart.constants'
 import { getTimeRangeConfig } from '../lib/priceChart.utils'
 import { priceHistoryQueryOptions } from '../lib/priceHistoryQuery.utils'
+import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
@@ -16,6 +20,7 @@ export function usePriceChartHistory(
   metric: ChartMetric,
   supplyVariant: SupplyVariant,
 ): UseQueryResult<Candle[]> {
+  const autoRefresh = useAtomValue(priceChartAutoRefreshAtom)
   const queryClient = useQueryClient()
   const token = currency ? getWrappedToken(currency) : undefined
   const chainId = token?.chainId
@@ -39,7 +44,9 @@ export function usePriceChartHistory(
         }
       : skipToken,
     placeholderData: keepPreviousData,
-    refetchInterval: 30_000,
+    refetchInterval: autoRefresh ? PRICE_CHART_REFRESH_INTERVAL : false,
+    refetchOnWindowFocus: autoRefresh,
+    refetchOnReconnect: autoRefresh,
     retry: false,
   })
 }

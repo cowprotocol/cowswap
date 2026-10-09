@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 /* eslint-disable max-lines-per-function */
 import { ReactNode, useEffect, useId, useMemo, useRef, useState } from 'react'
 
@@ -31,6 +32,7 @@ import { PanelWrapper, ChartContainer } from '../pure/AdvancedPriceChart.styled'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
 import { PriceChartStatus } from '../pure/PriceChartStatus'
 import * as styledEl from '../pure/SimplePriceChart.styled'
+import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { SimplePriceChartProps } from './SimplePriceChart.container'
 import type { PriceChartSymbolDescriptor } from '../lib/tradingView.types'
@@ -45,6 +47,7 @@ export function AdvancedPriceChart({
   currencies,
   supplyVariant,
 }: SimplePriceChartProps): ReactNode {
+  const autoRefresh = useAtomValue(priceChartAutoRefreshAtom)
   const symbols = useMemo(() => createChartSymbols(currencies), [currencies])
   const queryClient = useQueryClient()
   const activeSymbol = symbols.find(
@@ -72,6 +75,10 @@ export function AdvancedPriceChart({
       }),
     [queryClient, symbols],
   )
+
+  useEffect(() => {
+    datafeedController.setAutoRefreshEnabled(autoRefresh)
+  }, [autoRefresh, datafeedController])
 
   useEffect(() => {
     return () => {

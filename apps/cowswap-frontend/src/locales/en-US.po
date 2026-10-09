@@ -6670,10 +6670,6 @@ msgstr "Invalid website URL in manifest. Only http(s) URLs are allowed, with htt
 msgid "Sell amount too small to bridge"
 msgstr "Sell amount too small to bridge"
 
-#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
-msgid "Chart will be updated in {time}"
-msgstr "Chart will be updated in {time}"
-
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
 msgstr "1 Year (max)"
@@ -7419,10 +7415,6 @@ msgstr "Selected network {activeChainLabel}"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "Import"
 msgstr "Import"
-
-#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
-msgid "Chart is updating..."
-msgstr "Chart is updating..."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Yes"
@@ -8679,6 +8671,10 @@ msgstr "Transaction failed"
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Approve spending <0/> <1/> on CoW Swap"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Refresh chart data every 30 seconds."
+msgstr "Refresh chart data every 30 seconds."
+
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
 msgid "Price chart type"
 msgstr "Price chart type"
@@ -8703,10 +8699,6 @@ msgstr "Only trade alerts are sent. No marketing messages."
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 msgid "Copy referral link"
 msgstr "Copy referral link"
-
-#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
-msgid "Chart update time unavailable"
-msgstr "Chart update time unavailable"
 
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Enable Telegram alerts"
@@ -9054,6 +9046,10 @@ msgstr "Simulate"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
 msgstr "Start time"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Auto-refresh"
+msgstr "Auto-refresh"
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
