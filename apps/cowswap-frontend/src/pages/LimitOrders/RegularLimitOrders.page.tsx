@@ -27,7 +27,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
   const { isOpen: isOrdersTableDrawerOpen } = useOrdersTableDrawerState()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const handleOrdersTableDrawerOpenChange = useCallback(
     (open: boolean) => {
@@ -41,7 +41,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       isUnlocked={isUnlocked}
       secondaryOnLeft={ordersTableOnLeft}
       maxWidth={LIMIT_ORDERS_MAX_WIDTH}
-      hideOrdersTable={hideOrdersTable || isUpToLarge}
+      hideOrdersTable={hideOrdersTable || isUpToMedium}
     >
       <styledEl.PrimaryWrapper>
         <LimitOrdersWidget />
@@ -49,12 +49,12 @@ export function RegularLimitOrdersPage(): ReactNode {
 
       {!hideOrdersTable && isUnlocked && (
         <DialogOrInline
-          isDialog={isUpToLarge}
+          isDialog={isUpToMedium}
           isOpen={isOrdersTableDrawerOpen}
           onOpenChange={handleOrdersTableDrawerOpenChange}
         >
           <Modal.Root className="trade-orders-table">
-            {isUpToLarge ? (
+            {isUpToMedium ? (
               <ModalHeader
                 sticky
                 title={t`Limit orders`}
@@ -62,7 +62,7 @@ export function RegularLimitOrdersPage(): ReactNode {
                 onClose={() => setOrdersTableDrawerOpen(false)}
               />
             ) : null}
-            <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+            <styledEl.SecondaryWrapper $inDrawer={isUpToMedium}>
               {pendingOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingOrders} />}
               <Suspense fallback={<Loading />}>
                 <OrdersTableWidget orderType={TabOrderTypes.LIMIT} />

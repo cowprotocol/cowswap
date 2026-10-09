@@ -48,7 +48,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
   const inputRef = useRef<HTMLInputElement>(null)
   const searchContainerRef = useRef<HTMLDivElement>(null)
   const resultsRef = useRef<HTMLDivElement>(null)
-  const isMediumUp = useMediaQuery(Media.MediumAndUp(false))
+  const isMediumUp = useMediaQuery(Media.SmallAndUp(false))
   const router = useRouter()
 
   // Use custom debounce hook

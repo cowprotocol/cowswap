@@ -34,13 +34,15 @@ export const Media = {
   upToExtraSmall: (useMediaPrefix = true) =>
     getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToExtraSmall}px)`, useMediaPrefix),
   upToSmall: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToSmall}px)`, useMediaPrefix),
-  MediumAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px)`, useMediaPrefix),
+  SmallAndUp: (useMediaPrefix = true) => getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px)`, useMediaPrefix),
   isMediumOnly: (useMediaPrefix = true) =>
     getMediaQuery(
       `(min-width: ${MEDIA_WIDTHS.upToSmall + 1}px) and (max-width: ${MEDIA_WIDTHS.upToMedium}px)`,
       useMediaPrefix,
     ),
   upToMedium: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToMedium}px)`, useMediaPrefix),
+  MediumAndUp: (useMediaPrefix = true) =>
+    getMediaQuery(`(min-width: ${MEDIA_WIDTHS.upToMedium + 1}px)`, useMediaPrefix),
   isLargeOnly: (useMediaPrefix = true) =>
     getMediaQuery(
       `(min-width: ${MEDIA_WIDTHS.upToMedium + 1}px) and (max-width: ${MEDIA_WIDTHS.upToLarge}px)`,

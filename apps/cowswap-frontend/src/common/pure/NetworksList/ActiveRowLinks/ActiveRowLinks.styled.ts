@@ -44,7 +44,7 @@ export const ActiveRowLink = styled(ExternalLink)`
     border-radius: 8px;
   }
 
-  ${Media.MediumAndUp()} {
+  ${Media.SmallAndUp()} {
     min-height: ${ROW_HEIGHT_DESKTOP};
     height: ${ROW_HEIGHT_DESKTOP};
     padding: 0 0 0 8px;

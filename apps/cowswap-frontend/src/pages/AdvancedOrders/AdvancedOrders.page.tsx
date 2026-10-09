@@ -60,7 +60,7 @@ export function AdvancedOrdersPage(): ReactNode {
   const { hideOrdersTable } = useInjectedWidgetParams()
   const { isOpen: isOrdersTableDrawerOpen } = useOrdersTableDrawerState()
   const setOrdersTableDrawerOpen = useSetOrdersTableDrawerOpen()
-  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const handleOrdersTableDrawerOpenChange = useCallback(
     (open: boolean) => {
@@ -91,7 +91,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable || isUpToLarge}
+        hideOrdersTable={hideOrdersTable || isUpToMedium}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -113,12 +113,12 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && isUnlocked && (
           <DialogOrInline
-            isDialog={isUpToLarge}
+            isDialog={isUpToMedium}
             isOpen={isOrdersTableDrawerOpen}
             onOpenChange={handleOrdersTableDrawerOpenChange}
           >
             <Modal.Root className="trade-orders-table">
-              {isUpToLarge ? (
+              {isUpToMedium ? (
                 <ModalHeader
                   sticky
                   title={t`TWAP orders`}
@@ -126,7 +126,7 @@ export function AdvancedOrdersPage(): ReactNode {
                   onClose={() => setOrdersTableDrawerOpen(false)}
                 />
               ) : null}
-              <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+              <styledEl.SecondaryWrapper $inDrawer={isUpToMedium}>
                 <Suspense fallback={<Loading />}>
                   <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
                 </Suspense>
