@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { SOLANA_ALPHA_MAX_TRADE_SIZE_USD } from '@cowprotocol/common-const'
+import { SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY } from '@cowprotocol/common-const'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { DismissableInlineBanner, LinkStyledButton, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -25,8 +25,6 @@ export function SolanaAlphaBanner(): ReactNode {
 
   if (!isSolanaChain(chainId) || isAcknowledgementRequired) return null
 
-  const maxTradeSize = SOLANA_ALPHA_MAX_TRADE_SIZE_USD.toLocaleString('en-US')
-
   return (
     <DismissableInlineBanner bannerId={BANNER_IDS.SOLANA_ALPHA} bannerType={StatusColorVariant.Alert} iconSize={32}>
       <strong>
@@ -40,7 +38,7 @@ export function SolanaAlphaBanner(): ReactNode {
       </p>
       <p>
         <Trans>
-          Maximum trade size: <b>${maxTradeSize}</b> per order.
+          Maximum trade size: <b>${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY}</b> per order.
         </Trans>{' '}
         <ViewRisksButton onClick={openModal}>
           <Trans>View risks</Trans>

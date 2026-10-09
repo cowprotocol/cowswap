@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { getChainInfo, SOLANA_ALPHA_MAX_TRADE_SIZE_USD } from '@cowprotocol/common-const'
+import { getChainInfo, SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   Badge,
@@ -16,6 +16,8 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
+const SOLANA_INFO = getChainInfo(SupportedChainId.SOLANA)
+
 export interface SolanaAlphaRiskModalProps {
   isDarkMode: boolean
   requiresAcknowledgement: boolean
@@ -30,9 +32,6 @@ export interface SolanaAlphaRiskModalProps {
 export function SolanaAlphaRiskModal(props: SolanaAlphaRiskModalProps): ReactNode {
   const { isDarkMode, requiresAcknowledgement, onAcknowledge, onGoBack, onClose } = props
 
-  const solanaInfo = getChainInfo(SupportedChainId.SOLANA)
-  const maxTradeSize = SOLANA_ALPHA_MAX_TRADE_SIZE_USD.toLocaleString('en-US')
-
   return (
     <styledEl.Wrapper>
       <ModalHeader>
@@ -41,10 +40,10 @@ export function SolanaAlphaRiskModal(props: SolanaAlphaRiskModalProps): ReactNod
       <styledEl.Contents>
         <styledEl.NetworkBlock>
           <styledEl.NetworkLogo
-            src={isDarkMode ? solanaInfo.logo.dark : solanaInfo.logo.light}
-            alt={solanaInfo.label}
+            src={isDarkMode ? SOLANA_INFO.logo.dark : SOLANA_INFO.logo.light}
+            alt={SOLANA_INFO.label}
           />
-          <styledEl.NetworkLabel>{solanaInfo.label}</styledEl.NetworkLabel>
+          <styledEl.NetworkLabel>{SOLANA_INFO.label}</styledEl.NetworkLabel>
           <Badge type={BadgeTypes.ALERT2}>
             <Trans>ALPHA</Trans>
           </Badge>
@@ -52,13 +51,13 @@ export function SolanaAlphaRiskModal(props: SolanaAlphaRiskModalProps): ReactNod
         <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={24}>
           <p>
             <Trans>
-              This is an alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and
+              This is an Alpha version of CoW Swap on Solana. This deployment has not yet been independently audited and
               may contain bugs, vulnerabilities or unexpected behaviour that could result in failed transactions or
               partial or total loss of assets.
             </Trans>
           </p>
           <p>
-            <Trans>Maximum trade size: ${maxTradeSize} per order.</Trans>
+            <Trans>Maximum trade size: ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order.</Trans>
           </p>
         </InlineBanner>
         <styledEl.ButtonContainer>

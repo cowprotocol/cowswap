@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { getChainInfo, SOLANA_ALPHA_MAX_TRADE_SIZE_USD } from '@cowprotocol/common-const'
+import { getChainInfo, SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken, parseENSAddress } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
@@ -55,21 +55,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.XstockMinimumTradeSize]: {
     text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
   },
-  [TradeFormValidation.SolanaAlphaMaxTradeSize]: () => {
-    const maxTradeSize = SOLANA_ALPHA_MAX_TRADE_SIZE_USD.toLocaleString('en-US')
-
-    return (
-      <TradeFormBlankButton disabled>
-        <>
-          <Trans>Trade limit exceeded</Trans>
-          <HelpTooltip
-            placement="top"
-            text={t`While CoW Swap on Solana is in alpha and unaudited, trades are limited to $${maxTradeSize} per order. Reduce the amount to continue.`}
-          />
-        </>
-      </TradeFormBlankButton>
-    )
-  },
+  [TradeFormValidation.SolanaAlphaMaxTradeSize]: () => (
+    <TradeFormBlankButton disabled>
+      <>
+        <Trans>Trade limit exceeded</Trans>
+        <HelpTooltip
+          placement="top"
+          text={t`While CoW Swap on Solana is in Alpha and unaudited, trades are limited to $${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue.`}
+        />
+      </>
+    </TradeFormBlankButton>
+  ),
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
