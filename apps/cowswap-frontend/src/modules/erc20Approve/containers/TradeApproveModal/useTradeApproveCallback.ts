@@ -1,10 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { usePublicClient } from 'wagmi'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 
@@ -79,8 +80,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const publicClient = usePublicClient()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
-  const isSafeApp = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeApp = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const isSafeWallet = isSafeApp || isSafeViaWc
   const approveCallback = useApproveCallback(currency, spender)
   const approvalAnalytics = useApprovalAnalytics()

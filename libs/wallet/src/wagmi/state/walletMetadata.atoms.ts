@@ -1,14 +1,25 @@
 import { atom } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { atomWithRefresh, loadable } from 'jotai/utils'
 
-import { getPublicClient, logWallet, normalizeError } from '@cowprotocol/common-utils'
+import {
+  getPublicClient,
+  logWallet,
+  normalizeError,
+  retry,
+  RetryableError,
+  RetryOptions,
+} from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
+import SafeAppsSDK from '@safe-global/safe-apps-sdk'
 
 import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType } from '../../api/types'
+import { RABBY_RDNS } from '../../constants'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 import { isSafeConnector } from '../utils/isSafeConnector.utils'
+
+const ACCOUNT_TYPE_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 250, maxWait: 1000 }
 
 export const isSafeWalletAtom = atom((get): boolean => {
   return !!get(gnosisSafeInfoAtom)
@@ -20,6 +31,12 @@ export const isSafeAppAtom = atom((get): boolean | null => {
   if (!connector) return null
 
   return isSafeConnector(connector)
+})
+
+const safeAppsSdk = new SafeAppsSDK()
+
+export const safeAppsSdkAtom = atom((get): SafeAppsSDK | null => {
+  return get(isSafeAppAtom) === true ? safeAppsSdk : null
 })
 
 export const isSafeViaWcAtom = atom((get) => {
@@ -49,6 +66,23 @@ export const isSafeViaWcAtom = atom((get) => {
 })
 
 /**
+ * True when the connected wallet cannot change networks.
+ * Safe Apps and WalletConnect sessions whose peer name includes "safe" cannot switch.
+ * Rabby, injected imported Safes (for example Ambire), and other wallets can.
+ */
+export const isNetworkSwitchUnsupportedAtom = atom((get): boolean => {
+  const { connector } = get(walletInfoAtom)
+
+  if (connector?.id === RABBY_RDNS) return false
+  if (get(isSafeAppAtom) === true) return true
+  if (connector?.type !== ConnectionType.WALLET_CONNECT_V2) return false
+
+  const peerName = get(walletDetailsAtom).wcPeerName?.toLowerCase() || ''
+
+  return peerName.includes('safe')
+})
+
+/**
  * True when the wallet is not a Safe (including Safe via WalletConnect).
  * Returns null while the connector, account type, or Safe lookup is unresolved.
  */
@@ -58,9 +92,6 @@ export const isEoaAtom = atom((get): boolean | null => {
   if (isSafeViaWc === null) return null
   if (get(isSafeWalletAtom) || isSafeViaWc) return false
 
-  // If the RPC check fails, fall back to the Safe detection above.
-  if (get(accountTypeLoadableAtom).state === 'hasError') return true
-
   const accountType = get(accountTypeAtom)
   if (accountType === null) return null
 
@@ -69,7 +100,8 @@ export const isEoaAtom = atom((get): boolean | null => {
   return true
 })
 
-export const accountTypeAsyncAtom = atom(async (get) => {
+/** Async account-type lookup. Call `set(accountTypeAsyncAtom)` to retry after retries are exhausted. */
+export const accountTypeAsyncAtom = atomWithRefresh(async (get) => {
   const { chainId, account, connector } = get(walletInfoAtom)
 
   if (!chainId || !account || !connector) return null
@@ -78,21 +110,27 @@ export const accountTypeAsyncAtom = atom(async (get) => {
   const publicClient = getPublicClient(chainId)
 
   try {
-    const code = await publicClient.getCode({ address: account })
+    return await retry(async () => {
+      try {
+        const code = await publicClient.getCode({ address: account })
 
-    if (!code || code === '0x') {
-      return AccountType.EOA
-    }
+        if (!code || code === '0x') {
+          return AccountType.EOA
+        }
 
-    if (isEip7702EOA(code, account)) {
-      return AccountType.EIP7702EOA
-    }
+        if (isEip7702EOA(code, account)) {
+          return AccountType.EIP7702EOA
+        }
 
-    return AccountType.SMART_CONTRACT
+        return AccountType.SMART_CONTRACT
+      } catch (err: unknown) {
+        const error = normalizeError(err)
+        logWallet.warn(`checkIsSmartContractWallet: failed to check address ${account}`, error.message)
+        throw new RetryableError(error.message)
+      }
+    }, ACCOUNT_TYPE_RETRY_OPTIONS).promise
   } catch (err: unknown) {
-    const error = normalizeError(err)
-    logWallet.warn(`checkIsSmartContractWallet: failed to check address ${account}`, error.message)
-    throw error
+    throw normalizeError(err)
   }
 })
 
@@ -107,10 +145,23 @@ export const accountTypeAtom = atom((get): AccountType | null => {
   return loadable.data ?? null
 })
 
+/**
+ * True for Safe wallets and bytecode contracts.
+ * Returns false while the code lookup is in flight, so that "unknown" is not
+ * treated as a smart-contract wallet. Returns null if that lookup fails. Consumers
+ * must not assume EOA until a retry succeeds.
+ */
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
-  const accountType = get(accountTypeAtom)
+  if (get(isSafeWalletAtom)) return true
 
-  if (accountType === null) return null
+  const loadable = get(accountTypeLoadableAtom)
 
-  return get(isSafeWalletAtom) || accountType === AccountType.SMART_CONTRACT
+  if (loadable.state === 'loading') return false
+  if (loadable.state === 'hasError') return null
+
+  const accountType = loadable.data
+
+  if (accountType == null) return null
+
+  return accountType === AccountType.SMART_CONTRACT
 })

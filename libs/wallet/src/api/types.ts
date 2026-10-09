@@ -29,6 +29,8 @@ export interface WalletDetails {
 
   // Provider details
   walletName?: string
+  /** Raw WalletConnect session peer name. Missing metadata stays unset. */
+  wcPeerName?: string
   icon?: string
   isSupportedWallet: boolean
   isSafeApp: boolean

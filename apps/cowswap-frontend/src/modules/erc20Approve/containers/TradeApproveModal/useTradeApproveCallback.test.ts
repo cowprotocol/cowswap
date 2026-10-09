@@ -32,8 +32,8 @@ jest.mock('@cowprotocol/balances-and-allowances', () => ({
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
-  useIsSafeWallet: jest.fn().mockReturnValue(false),
-  useIsSafeViaWc: jest.fn().mockReturnValue(false),
+  isSafeWalletAtom: jest.requireActual('jotai').atom(false),
+  isSafeViaWcAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({

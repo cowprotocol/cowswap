@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import svgHookSrc from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -36,7 +37,7 @@ export function HooksStoreWidget(): ReactNode {
 
   const hooksDisabled = isChainIdUnsupported || isChainIdDeprecated
 
-  const walletType = useIsSmartContractWallet()
+  const walletType = useAtomValue(isSmartContractWalletAtom)
     ? HookDappWalletCompatibility.SMART_CONTRACT
     : HookDappWalletCompatibility.EOA
 

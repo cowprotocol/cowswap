@@ -1,6 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
-import { getAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
@@ -12,6 +12,8 @@ import { Nullish } from 'types'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+
+import { getSmartQuoteInverted } from './getSmartQuoteInverted'
 
 const DEFAULT_DECIMALS = 4
 
@@ -194,30 +196,38 @@ export function RateInfo({
     return getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
+  const inputAddress = inputCurrency ? getCurrencyAddress(inputCurrency) : undefined
+  const outputAddress = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
+  const quoteAddress = quoteCurrency ? getCurrencyAddress(quoteCurrency) : undefined
+  const isNativeInvolved =
+    (!!quoteCurrency && getIsNativeToken(quoteCurrency)) || (!!inputCurrency && getIsNativeToken(inputCurrency))
+
   useEffect(() => {
     setCurrentIsInverted(isInverted)
   }, [isInverted, setCurrentIsInverted])
 
-  // Set isInverted based on quoteCurrency
+  useEffect(() => {
+    setIsSmartQuoteSelectionSet(false)
+  }, [inputAddress, outputAddress])
+
   useEffect(() => {
     if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
-    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
+    const nextIsInverted = getSmartQuoteInverted(quoteAddress, inputAddress, isNativeInvolved)
+    if (nextIsInverted === null) return
 
-    if (!quoteCurrencyAddress || !inputCurrencyAddress) return
-
-    setCurrentIsInverted(quoteCurrencyAddress !== inputCurrencyAddress)
+    setCurrentIsInverted(nextIsInverted)
 
     if (setSmartQuoteSelectionOnce) {
       setIsSmartQuoteSelectionSet(true)
     }
   }, [
-    quoteCurrency,
-    inputCurrency,
-    outputCurrency,
+    quoteAddress,
+    inputAddress,
+    outputAddress,
+    isNativeInvolved,
     setCurrentIsInverted,
     isSmartQuoteSelectionSet,
-    setIsSmartQuoteSelectionSet,
     setSmartQuoteSelectionOnce,
     doNotUseSmartQuote,
   ])

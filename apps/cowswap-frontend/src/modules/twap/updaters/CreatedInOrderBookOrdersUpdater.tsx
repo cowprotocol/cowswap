@@ -1,8 +1,8 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddOrUpdateOrders } from 'legacy/state/orders/hooks'
 
@@ -17,7 +17,7 @@ import { updateTwapPartOrdersCacheAtom } from '../state/twapPartOrdersCacheAtom'
  */
 export function CreatedInOrderBookOrdersUpdater(): null {
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const updatePartOrders = useSetAtom(updatePartOrdersAtom)
   const updateTwapPartOrdersCache = useSetAtom(updateTwapPartOrdersCacheAtom)
   const addOrUpdateOrders = useAddOrUpdateOrders()

@@ -1,11 +1,32 @@
 import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AccountType } from '@cowprotocol/types'
 
-import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom } from './walletMetadata.atoms'
+import { waitFor } from '@testing-library/react'
+
+import {
+  accountTypeAsyncAtom,
+  accountTypeLoadableAtom,
+  isEoaAtom,
+  isNetworkSwitchUnsupportedAtom,
+  isSafeAppAtom,
+  isSafeViaWcAtom,
+  isSmartContractWalletAtom,
+  safeAppsSdkAtom,
+} from './walletMetadata.atoms'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType, WalletInfo } from '../../api/types'
+
+const mockGetCode = jest.fn()
+
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  getPublicClient: () => ({
+    getCode: (...args: unknown[]) => mockGetCode(...args),
+  }),
+}))
 
 function createMockConnector(overrides: Record<string, unknown>): NonNullable<WalletInfo['connector']> {
   return {
@@ -26,6 +47,11 @@ function setWalletInfoConnector(
 }
 
 describe('walletMetadata atoms', () => {
+  beforeEach(() => {
+    mockGetCode.mockReset()
+    mockGetCode.mockImplementation(() => new Promise(() => undefined))
+  })
+
   it('detects Safe app by connector.type', () => {
     const store = createStore()
 
@@ -75,6 +101,102 @@ describe('walletMetadata atoms', () => {
     )
 
     expect(store.get(isSafeAppAtom)).toBe(false)
+  })
+
+  it('exposes Safe Apps SDK only while connected as a Safe app', () => {
+    const store = createStore()
+
+    expect(store.get(safeAppsSdkAtom)).toBeNull()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.GNOSIS_SAFE,
+      }),
+    )
+
+    expect(store.get(safeAppsSdkAtom)).not.toBeNull()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(safeAppsSdkAtom)).toBeNull()
+  })
+
+  it('treats Safe app and Safe via WalletConnect as unable to switch networks, except Rabby', () => {
+    const store = createStore()
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.GNOSIS_SAFE,
+      }),
+    )
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(true)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.WALLET_CONNECT_V2,
+      }),
+    )
+    store.set(walletDetailsAtom, {
+      isSmartContractWallet: true,
+      isSupportedWallet: true,
+      allowsOffchainSigning: false,
+      isSafeApp: false,
+      walletName: 'Safe',
+      wcPeerName: 'Safe',
+      ensName: undefined,
+      icon: undefined,
+    })
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(true)
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        id: 'io.rabby',
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 1,
+      chainId: SupportedChainId.MAINNET,
+    })
+
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
+  })
+
+  it('keeps network switching available for a Safe imported into an injected non-Rabby wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 0,
+      chainId: SupportedChainId.MAINNET,
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(true)
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
   })
 
   it('detects Safe via WalletConnect from wallet details', () => {
@@ -235,5 +357,137 @@ describe('walletMetadata atoms', () => {
     })
 
     expect(store.get(isEoaAtom)).toBe(false)
+  })
+})
+
+describe('isSmartContractWalletAtom', () => {
+  beforeEach(() => {
+    mockGetCode.mockReset()
+    mockGetCode.mockImplementation(() => new Promise(() => undefined))
+  })
+
+  it('treats a Safe as a smart-contract wallet even while account type is unknown', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      chainId: SupportedChainId.MAINNET,
+      nonce: 0,
+    })
+
+    expect(store.get(isSmartContractWalletAtom)).toBe(true)
+  })
+
+  it('does not treat an in-flight account-type lookup as a smart-contract wallet', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(null)
+  })
+
+  it('retries transient getCode failures within one lookup', async () => {
+    mockGetCode.mockRejectedValueOnce(new Error('rpc down')).mockResolvedValueOnce('0x')
+
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+
+    await waitFor(() => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+    })
+    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(true)
+    expect(mockGetCode).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps wallet type unknown after retries are exhausted, and allows a manual refresh', async () => {
+    mockGetCode.mockRejectedValue(new Error('rpc down'))
+
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.INJECTED,
+      }),
+    )
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+
+    await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+
+    expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
+    expect(store.get(isSmartContractWalletAtom)).toBe(null)
+    expect(store.get(isEoaAtom)).toBe(null)
+    expect(mockGetCode).toHaveBeenCalledTimes(4)
+
+    mockGetCode.mockReset()
+    mockGetCode.mockResolvedValue('0x')
+    store.set(accountTypeAsyncAtom)
+
+    await waitFor(() => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+    })
+    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
+    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    expect(store.get(isEoaAtom)).toBe(true)
+  })
+})
+
+describe('isNetworkSwitchUnsupportedAtom peer name', () => {
+  it('keeps network switching when WalletConnect peer metadata is missing and the display name fell back to Safe', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.WALLET_CONNECT_V2,
+      }),
+    )
+    store.set(gnosisSafeInfoAtom, {
+      address: '0x1234567890123456789012345678901234567890',
+      threshold: 1,
+      owners: ['0x1234567890123456789012345678901234567890'],
+      nonce: 0,
+      chainId: SupportedChainId.MAINNET,
+    })
+    store.set(walletDetailsAtom, {
+      isSmartContractWallet: true,
+      isSupportedWallet: true,
+      allowsOffchainSigning: false,
+      isSafeApp: false,
+      walletName: 'Safe',
+      ensName: undefined,
+      icon: undefined,
+    })
+
+    expect(store.get(isSafeViaWcAtom)).toBe(true)
+    expect(store.get(isNetworkSwitchUnsupportedAtom)).toBe(false)
   })
 })
