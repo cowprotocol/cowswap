@@ -3,24 +3,34 @@ import type { QueryClient } from '@tanstack/react-query'
 import { normalizeError } from '@cowprotocol/common-utils'
 
 import { toMarketCapBars } from './loadPriceChartHistory'
+import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './priceChartAdvancedBars.utils'
+import { createPriceChartSubscriptions } from './priceChartAdvancedSubscriptions.service'
+import { findChartSymbol } from './priceChartAdvancedSymbols.utils'
 import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
-import { findChartSymbol } from './symbolCatalog'
+
 import {
   PRO_CHART_DISABLE_BACKFILL_REQUESTS,
   PRO_CHART_EXCHANGE_NAME,
   PRO_CHART_EXCHANGE_VALUE,
   PRO_CHART_SUPPORTED_RESOLUTIONS,
-} from './tradingView.constants'
-import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './tradingViewAdapter.utils'
-import { createPriceChartSubscriptions } from './tradingViewSubscriptions.service'
+} from '../config/priceChartAdvanced.constants'
 
-import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './loadChartingLibrary'
 import type { Candle, CandleInterval } from './priceChart.types'
-import type {
-  CreatePriceChartDatafeedParams,
-  PriceChartDatafeedController,
-  PriceChartSymbolDescriptor,
-} from './tradingView.types'
+import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './priceChartAdvancedLibrary.service'
+import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
+
+export interface CreatePriceChartDatafeedParams {
+  queryClient: QueryClient
+  onHistoryLoaded?: (bars: Candle[]) => void
+  symbols: ChartSymbol[]
+}
+
+export interface PriceChartDatafeedController {
+  datafeed: IBasicDataFeed
+  setAutoRefreshEnabled: (enabled: boolean) => void
+  setActiveTicker: (ticker: string) => void
+  dispose: () => void
+}
 
 type ErrorCallback = GetBarsParameters[4]
 
@@ -29,7 +39,7 @@ interface GetBarsHandlerParams {
   latestRequestIdsByTicker: Map<string, number>
   setHistory: (bars: Candle[], ticker: string, requestId: number, interval: CandleInterval) => void
   setActiveTicker: (ticker: string) => void
-  symbols: PriceChartSymbolDescriptor[]
+  symbols: ChartSymbol[]
 }
 
 type GetBarsParameters = Parameters<IBasicDataFeed['getBars']>
@@ -42,7 +52,7 @@ interface HistoryLoaderParams {
   onResult: HistoryCallback
   periodParams: PeriodParams
   resolution: CandleInterval
-  symbol: PriceChartSymbolDescriptor
+  symbol: ChartSymbol
 }
 
 type PeriodParams = GetBarsParameters[2]
@@ -196,7 +206,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
 
 async function fetchHistory(
   queryClient: QueryClient,
-  symbol: PriceChartSymbolDescriptor,
+  symbol: ChartSymbol,
   periodParams: PeriodParams,
   resolution: CandleInterval,
 ): Promise<Candle[]> {
@@ -224,8 +234,8 @@ async function loadHistory(params: HistoryLoaderParams): Promise<void> {
 }
 
 function resolveSymbolFromInfo(
-  symbols: PriceChartSymbolDescriptor[],
+  symbols: ChartSymbol[],
   symbolInfo: Pick<LibrarySymbolInfo, 'name' | 'ticker'>,
-): PriceChartSymbolDescriptor | undefined {
+): ChartSymbol | undefined {
   return (symbolInfo.ticker && findChartSymbol(symbols, symbolInfo.ticker)) || findChartSymbol(symbols, symbolInfo.name)
 }

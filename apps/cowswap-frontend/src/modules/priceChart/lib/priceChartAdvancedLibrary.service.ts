@@ -1,4 +1,4 @@
-import type { ChartingLibraryWidgetConstructor } from './charting_library/chartingLibrary.types'
+import type { ChartingLibraryWidgetConstructor } from './priceChartAdvancedLibrary.types'
 
 const TRADING_VIEW_SCRIPT_ID = 'cow-swap-trading-view-script'
 export const TRADING_VIEW_LIBRARY_PATH = 'https://files.cow.fi/charting-library/32.1.0/'
@@ -53,4 +53,4 @@ export type {
   ResolutionString,
   SearchSymbolResultItem,
   SearchSymbolsCallback,
-} from './charting_library/chartingLibrary.types'
+} from './priceChartAdvancedLibrary.types'
