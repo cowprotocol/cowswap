@@ -32,4 +32,4 @@ export const SOLANA_UNUSED_NONCE = 0
 // (one wallet signature). A legacy transaction caps out around 1232 bytes, so the selection is capped
 // well below the point where a realistic batch could overflow it, rather than splitting into multiple
 // sequential transactions.
-export const MAX_SOLANA_BATCH_CANCEL_ORDERS = 15
+export const MAX_SOLANA_BATCH_CANCEL_ORDERS = 10
