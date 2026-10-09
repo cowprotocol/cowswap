@@ -4,13 +4,13 @@ import type { Currency } from '@cowprotocol/currency'
 
 import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
 import {
-  PRO_CHART_EXCHANGE_NAME,
-  PRO_CHART_SUPPORTED_RESOLUTIONS,
-  PRO_CHART_SYMBOL_TYPE,
+  ADVANCED_CHART_EXCHANGE_NAME,
+  ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
+  ADVANCED_CHART_SYMBOL_TYPE,
 } from '../config/priceChartAdvanced.constants'
 
 import type { ChartMetric, SupplyVariant } from './priceChart.types'
-import type { LibrarySymbolInfo } from './priceChartAdvancedLibrary.types'
+import type { LibrarySymbolInfo } from './priceChartAdvancedApi.types'
 
 export interface ChartSymbol {
   metric: ChartMetric
@@ -41,20 +41,20 @@ export function createChartSymbols(currencies: Currency[]): ChartSymbol[] {
         librarySymbolInfo: {
           data_status: 'streaming',
           description,
-          exchange: PRO_CHART_EXCHANGE_NAME,
+          exchange: ADVANCED_CHART_EXCHANGE_NAME,
           format: 'price',
           has_daily: true,
           has_intraday: true,
           has_weekly_and_monthly: true,
-          listed_exchange: PRO_CHART_EXCHANGE_NAME,
+          listed_exchange: ADVANCED_CHART_EXCHANGE_NAME,
           minmov: 1,
           name: ticker,
           pricescale: metric === 'price' ? 1_000_000_000_000 : 1,
           session: '24x7',
-          supported_resolutions: PRO_CHART_SUPPORTED_RESOLUTIONS,
+          supported_resolutions: ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
           ticker,
           timezone: 'Etc/UTC',
-          type: PRO_CHART_SYMBOL_TYPE,
+          type: ADVANCED_CHART_SYMBOL_TYPE,
           visible_plots_set: 'ohlcv',
           volume_precision: 2,
         },
