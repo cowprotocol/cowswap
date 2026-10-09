@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -457,5 +457,75 @@ describe('validateTradeForm - price impact loading', () => {
     const result = validateTradeForm(context)
     expect(result).toContain(TradeFormValidation.QuoteLoading)
     expect(result).toContain(TradeFormValidation.ImpactLoading)
+  })
+})
+
+describe('validateTradeForm - Solana swap recipient', () => {
+  const SOLANA_RECIPIENT = '4wtw5VHUq8DriYRh92LGDDeN4AemUrGKYFSaZcDx8z7s'
+  const EVM_RECIPIENT = '0x1234567890123456789012345678901234567890'
+
+  const baseContext: Partial<TradeFormValidationContext> = {
+    derivedTradeState: {
+      orderKind: OrderKind.SELL,
+      inputCurrencyAmount: mockCurrencyAmount('100'),
+      outputCurrencyAmount: mockCurrencyAmount('100'),
+      inputCurrency: {
+        address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+        chainId: SupportedChainId.SOLANA,
+      } as unknown as Currency,
+      outputCurrency: {
+        address: 'So11111111111111111111111111111111111111112',
+        chainId: SupportedChainId.SOLANA,
+      } as unknown as Currency,
+      inputCurrencyBalance: mockCurrencyAmount('1000'),
+      outputCurrencyBalance: mockCurrencyAmount('1000'),
+      inputCurrencyFiatAmount: null,
+      outputCurrencyFiatAmount: null,
+      recipient: null,
+      isQuoteBasedOrder: true,
+      tradeType: TradeType.SWAP,
+      slippage: null,
+    },
+    tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+    isOnline: true,
+    isSupportedWallet: true,
+    account: 'BYXaGFW8VavtBLu56a53wuUZyRqp9b8ibRR2dojVTWv7',
+    isApproveRequired: ApproveRequiredReason.NotRequired,
+    isWrapUnwrap: false,
+    isSafeReadonlyUser: false,
+    isSwapUnsupported: false,
+    recipientEnsAddress: null,
+    isInsufficientBalanceOrderAllowed: false,
+    isProviderNetworkUnsupported: false,
+    isProviderNetworkDeprecated: false,
+    intermediateTokenToBeImported: false,
+    isAccountProxyLoading: false,
+    isProxySetupValid: true,
+    customTokenError: undefined,
+    isRestrictedForCountry: false,
+    isBalancesLoading: false,
+    isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
+    isNonEvmReceiverConfirmed: false,
+  }
+
+  function withRecipient(recipient: string): TradeFormValidationContext {
+    return {
+      ...baseContext,
+      derivedTradeState: { ...baseContext.derivedTradeState, recipient },
+    } as unknown as TradeFormValidationContext
+  }
+
+  test('accepts a Solana address as recipient', () => {
+    const result = validateTradeForm(withRecipient(SOLANA_RECIPIENT))
+    expect(result || []).not.toContain(TradeFormValidation.RecipientInvalid)
+  })
+
+  test('rejects an EVM address as recipient', () => {
+    const result = validateTradeForm(withRecipient(EVM_RECIPIENT))
+    expect(result).toContain(TradeFormValidation.RecipientInvalid)
   })
 })

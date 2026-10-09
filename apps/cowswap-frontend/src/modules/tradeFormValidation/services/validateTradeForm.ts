@@ -194,7 +194,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.RecipientNotSet)
     }
 
-    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : undefined)
+    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : inputCurrency?.chainId)
     const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
     /**
