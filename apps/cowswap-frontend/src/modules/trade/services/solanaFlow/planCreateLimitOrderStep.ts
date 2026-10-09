@@ -5,6 +5,7 @@ import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { buildSolanaLimitOrderOrder, SolanaLimitOrderParams } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
+import { SOLANA_TRADING_ENV } from 'tradingSdk/solanaTradingEnv'
 
 import { getCreateOrderFundedAccounts, PlannedCreateOrderStep } from './planCreateOrderStep'
 
@@ -31,6 +32,7 @@ export async function planCreateLimitOrderStep({
   const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaLimitOrderOrder({
     ...limitOrderParams,
     appData,
+    env: SOLANA_TRADING_ENV,
   })
 
   return {
