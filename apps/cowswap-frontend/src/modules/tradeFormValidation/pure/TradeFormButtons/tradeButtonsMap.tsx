@@ -3,13 +3,14 @@ import { ReactNode } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken, parseENSAddress } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
-import { CenteredDots, HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { TradeApproveButton } from 'modules/erc20Approve'
 
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
@@ -141,12 +142,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.WalletCapabilitiesLoading]: {
     text: (
       <>
-        <CenteredDots smaller />
+        <ThreeDots centered />
       </>
     ),
   },
   [TradeFormValidation.CaptchaPending]: {
-    text: <CenteredDots smaller />,
+    text: <ThreeDots centered />,
     id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {
@@ -160,7 +161,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: (
       <span>
         <Trans>Fetching price impact</Trans>
-        <CenteredDots smaller />
+        <ThreeDots />
       </span>
     ),
   },
@@ -168,7 +169,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: (
       <span>
         <Trans>Fetching balances</Trans>
-        <CenteredDots smaller />
+        <ThreeDots />
       </span>
     ),
   },

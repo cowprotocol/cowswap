@@ -5,7 +5,7 @@ import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -15,6 +15,7 @@ import { useParams } from 'react-router'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 import * as styledEl from './AccountProxyRecoverPage.styled'
 
@@ -107,11 +108,11 @@ export function AccountProxyRecoverPage(): ReactNode {
       >
         {txInProgress && <Loader />}
         {txSigningStep && !txInProgress && (
-          <>
+          <span>
             {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
             {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
-            <CenteredDots smaller />
-          </>
+            <ThreeDots />
+          </span>
         )}
         {!txSigningStep && !txInProgress && t`Recover funds`}
       </styledEl.ButtonPrimaryStyled>

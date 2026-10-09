@@ -3,11 +3,12 @@ import { ReactNode } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
+import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
 import { useLingui, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
 import { settingsTabStateAtom } from '../../../state/settingsTabState'
@@ -92,7 +93,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
     !suggestedEqualToUserSlippage && (
       <DefaultSlippage>
         {isSmartSlippageLoading ? (
-          <CenteredDots />
+          <ThreeDots centered />
         ) : (
           <>
             <LinkStyledButton onClick={setAutoSlippage}>
@@ -108,7 +109,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
 
   const displaySlippageWithLoader =
     isSmartSlippageLoading && isSmartSlippageApplied ? (
-      <CenteredDots />
+      <ThreeDots centered />
     ) : (
       <>
         {displaySlippage}
