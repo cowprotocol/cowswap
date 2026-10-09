@@ -68,6 +68,7 @@ export const WidgetOverlay = styled.div`
   inset: 0;
   z-index: 1000;
   background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
   display: flex;
   align-items: center;
   justify-content: center;

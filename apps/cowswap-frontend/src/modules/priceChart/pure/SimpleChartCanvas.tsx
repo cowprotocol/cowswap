@@ -7,6 +7,7 @@ import {
   createChart,
   CrosshairMode,
   HistogramSeries,
+  TickMarkType,
   type IChartApi,
   type ISeriesApi,
   type MouseEventParams,
@@ -143,7 +144,14 @@ export function SimpleChartCanvas({
 
     const { chart, priceSeries, volumeSeries } = instance
     const priceFormat = getCandlePriceFormat(data)
+    const dateFormatter = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' })
     chart.applyOptions({
+      timeScale: {
+        tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) =>
+          tickMarkType === TickMarkType.DayOfMonth && typeof time === 'number'
+            ? dateFormatter.format(new Date(time * 1000))
+            : null,
+      },
       localization: {
         locale,
         priceFormatter: (value: number) =>
