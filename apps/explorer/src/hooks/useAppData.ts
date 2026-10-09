@@ -17,27 +17,12 @@ interface AppDataDecodingResult {
   isLoading: boolean
   appDataDoc: AnyAppDataDocVersion | undefined
   hasError: boolean
-  ipfsUri: string | undefined
 }
 
 export const useAppData = (appData: string, fullAppData?: string): AppDataDecodingResult => {
   const chainId = useEvmNetworkId()
   // Old AppData use a different way to derive the CID (we know is old if fullAppData is not available)
   const isLegacyAppDataHex = fullAppData === undefined
-
-  const {
-    error: ipfsError,
-    isLoading: isIpfsLoading,
-    data: ipfsUri,
-  } = useSWR(
-    ['appDataHexToCid', appData, isLegacyAppDataHex],
-    async ([_, appData, isLegacyAppDataHex]) => {
-      const cid = await appDataHexToCid(appData.toString(), isLegacyAppDataHex)
-
-      return cid ? `${DEFAULT_IPFS_READ_URI}/${cid}` : undefined
-    },
-    SWR_OPTIONS,
-  )
 
   const {
     error: appDataError,
@@ -74,10 +59,9 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
   )
 
   return {
-    isLoading: isLoading || isIpfsLoading || isAppDataLoading,
-    hasError: !!(appDataError && (ipfsError || error)),
+    isLoading: isLoading || isAppDataLoading,
+    hasError: !!(appDataError && error),
     appDataDoc: appDataDocFromApi || appDataDoc,
-    ipfsUri,
   }
 }
 
@@ -87,11 +71,6 @@ export const fetchDocFromAppDataHex = (
 ): Promise<void | AnyAppDataDocVersion> => {
   const method = isLegacyAppDataHex ? 'fetchDocFromAppDataHexLegacy' : 'fetchDocFromAppDataHex'
   return metadataApiSDK[method](appDataHex, DEFAULT_IPFS_READ_URI)
-}
-
-export const appDataHexToCid = (appDataHash: string, isLegacyAppDataHex: boolean): Promise<string | void> => {
-  const method = isLegacyAppDataHex ? 'appDataHexToCidLegacy' : 'appDataHexToCid'
-  return metadataApiSDK[method](appDataHash)
 }
 
 async function getDecodedAppData(
