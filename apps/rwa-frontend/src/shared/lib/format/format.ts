@@ -13,6 +13,8 @@ const compactUsdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
   notation: 'compact',
+  // Node 22 ICU keeps the currency's 2-digit minimum under compact notation ("$526.00M")
+  minimumFractionDigits: 0,
   maximumFractionDigits: 2,
 })
 
