@@ -5,6 +5,7 @@ import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, NewTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { TrendingUp } from 'react-feather'
 
 import { TradeIconButton, useDerivedTradeState } from 'modules/trade'
@@ -16,6 +17,7 @@ import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
 export function PriceChartToggleButton(): ReactNode {
   const { isPriceChartEnabled } = useFeatureFlags()
+  const { disablePriceChart } = useInjectedWidgetParams()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
@@ -28,7 +30,7 @@ export function PriceChartToggleButton(): ReactNode {
       : undefined
   const label = !disabledReason && !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
 
-  if (!isPriceChartEnabled) return null
+  if (!isPriceChartEnabled || disablePriceChart) return null
 
   return (
     <NewTooltip content={disabledReason ?? label} placement="top">

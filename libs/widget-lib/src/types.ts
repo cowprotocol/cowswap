@@ -377,6 +377,12 @@ export interface CowSwapWidgetParams {
   disableCrossChainSwap?: boolean
 
   /**
+   * Hides the price chart and its controls.
+   * Defaults to false.
+   */
+  disablePriceChart?: boolean
+
+  /**
    * Disable setting custom recipient for all trading widgets (swap,limit,twap)
    * Important! Cross-chain swaps are based on custom recipient functionality!
    * If you want always having recipient === order owner, then set disableCrossChainSwap=true as well

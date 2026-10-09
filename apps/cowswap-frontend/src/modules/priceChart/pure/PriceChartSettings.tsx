@@ -5,6 +5,7 @@ import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -12,11 +13,12 @@ import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
 export function PriceChartSettings(): ReactNode {
   const { isPriceChartEnabled } = useFeatureFlags()
+  const { disablePriceChart } = useInjectedWidgetParams()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
 
-  if (!isPriceChartEnabled || isUpToLarge) return null
+  if (!isPriceChartEnabled || disablePriceChart || isUpToLarge) return null
 
   return (
     <SettingsBox
