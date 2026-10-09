@@ -15,11 +15,13 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
+  ButtonsContainer,
   useGetReceiveAmountInfo,
   useIsEoaEthFlow,
   useIsNonEvmBridging,
@@ -186,16 +188,19 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     topContent,
     lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
-      <SettingsTab
-        recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
-        hooksEnabledState={hooksEnabledState}
-        deadlineState={deadlineState}
-        enablePartialApprovalState={enablePartialApprovalState}
-        partialApprovalLocked={isInfiniteApproveDisabledInWidget}
-        isRecipientToggleDisabled={isNonEvmBridging}
-        isRecipientToggleHidden={disableCustomRecipient}
-        isHooksToggleDisabled={isSolanaChain(chainId)}
-      />
+      <ButtonsContainer>
+        <PriceChartToggleButton />
+        <SettingsTab
+          recipientToggleState={isNonEvmBridging ? DEFAULT_ENABLED_RECIPIENT : recipientToggleState}
+          hooksEnabledState={hooksEnabledState}
+          deadlineState={deadlineState}
+          enablePartialApprovalState={enablePartialApprovalState}
+          partialApprovalLocked={isInfiniteApproveDisabledInWidget}
+          isRecipientToggleDisabled={isNonEvmBridging}
+          isRecipientToggleHidden={disableCustomRecipient}
+          isHooksToggleDisabled={isSolanaChain(chainId)}
+        />
+      </ButtonsContainer>
     ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {

@@ -1,7 +1,7 @@
 import { UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export const SettingsContainer = styled.div`
   display: flex;
@@ -22,10 +22,14 @@ export const SettingsContainer = styled.div`
   max-width: calc(100% - var(--padding, 16px) * 2);
 `
 
-export const SettingsButton = styled(MenuButton)`
+const iconButtonStyles = css`
   --maxSize: 28px;
   --iconSize: 18px;
 
+  background: none;
+  border: none;
+  margin: 0;
+  cursor: pointer;
   padding: 4px;
   display: flex;
   align-items: center;
@@ -54,6 +58,14 @@ export const SettingsButton = styled(MenuButton)`
     color: inherit;
     object-fit: contain;
   }
+`
+
+export const TradeIconButton = styled.button`
+  ${iconButtonStyles}
+`
+
+export const SettingsButton = styled(MenuButton)`
+  ${iconButtonStyles}
 `
 
 export const MenuContent = styled(MenuList)`

@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
+  isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
