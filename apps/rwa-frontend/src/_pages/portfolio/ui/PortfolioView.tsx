@@ -14,7 +14,7 @@ import { RecentActivityCard } from './RecentActivityCard'
 import { NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
 import { usePortfolio } from '../model/usePortfolio'
 
-import type { RwaAsset } from '@/entities/asset'
+import type { RwaAssetSummary } from '@/entities/asset'
 
 import { formatDateTime } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
@@ -22,12 +22,12 @@ import { type AccountTab, AccountTabs, ActivityTable, ConnectPrompt, OpenOrdersT
 
 interface PortfolioContentProps {
   owner: string
-  assets: RwaAsset[]
+  assets: RwaAssetSummary[]
 }
 
 type PortfolioTab = 'holdings' | 'orders' | 'activity'
 
-export function PortfolioView({ assets }: { assets: RwaAsset[] }): ReactNode {
+export function PortfolioView({ assets }: { assets: RwaAssetSummary[] }): ReactNode {
   const { address } = useConnection()
 
   return (
@@ -62,6 +62,8 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
         error={balancesError}
         failedChainIds={portfolio.failedChainIds}
         arePricesLoading={portfolio.arePricesLoading}
+        balancesProgress={portfolio.balancesProgress}
+        onRefreshBalances={portfolio.refreshBalances}
       />
       <div className={styles.cards}>
         <AllocationCard portfolio={portfolio} />

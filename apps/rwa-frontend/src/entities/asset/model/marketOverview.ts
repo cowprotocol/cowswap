@@ -1,100 +1,61 @@
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
-
-import { getReferenceLogoUrl } from '../lib/referenceLogoUrl'
-import { sumNullable } from '../lib/sumNullable'
-
-import type {
-  RwaAsset,
-  RwaChartPoint,
-  RwaMarketData,
-  RwaMarketOverviewItem,
-  RwaToken,
-  RwaTokenNetworkStats,
-} from './types'
+import type { RwaAggregateMarket, RwaAsset, RwaChartPoint, RwaMarketData, RwaMarketOverviewItem } from './types'
 
 const HOUR_SECONDS = 3600
-
-export interface AssetStatsTotals {
-  /** USD */
-  onchainCap: number | null
-  /** USD */
-  dexVolume24h: number | null
-}
-
-export interface ChainNetworkStats {
-  chainId: number
-  tokens: RwaTokenNetworkStats[]
-}
-
-export interface NetworkStatsAggregate extends AssetStatsTotals {
-  byTicker: Map<string, AssetStatsTotals>
-  /** Token units over all networks, keyed by `RwaToken.coingeckoId` */
-  supplyByCoin: Map<string, number>
-}
+const DAILY_SERIES_HOURS = 24
 
 interface Movers {
   gainers: RwaMarketOverviewItem[]
   losers: RwaMarketOverviewItem[]
 }
 
-interface TokenStats {
-  token: RwaToken
-  stat: RwaTokenNetworkStats | undefined
+/** The last 24 hours of `sparkline7d`, ending at the hour of `updatedAt` */
+export function buildDailySeries({ sparkline7d, updatedAt }: RwaAggregateMarket): RwaChartPoint[] | null {
+  const updatedSeconds = updatedAt ? Date.parse(updatedAt) / 1000 : NaN
+
+  if (!Number.isFinite(updatedSeconds)) return null
+
+  const lastHour = floorToHour(updatedSeconds)
+  const points = sparkline7d
+    .slice(-(DAILY_SERIES_HOURS + 1))
+    .flatMap((value, index, window) =>
+      Number.isFinite(value) ? [{ time: lastHour - (window.length - 1 - index) * HOUR_SECONDS, value }] : [],
+    )
+
+  return points.length ? points : null
 }
 
-export function aggregateNetworkStats(
-  assets: RwaAsset[],
-  stats: ChainNetworkStats[],
-  marketByTicker: Map<string, RwaMarketData>,
-): NetworkStatsAggregate {
-  const byTicker = new Map<string, AssetStatsTotals>()
-  const supplyByCoin = new Map<string, number>()
+/**
+ * Σ (market cap / price) × sparkline price, per hour: supply is assumed constant.
+ * Every sparkline ends at the hour of the latest `updatedAt`, so assets updated around an hour boundary
+ * stay aligned; sparklines differ in length and an asset counts only in the hours it covers
+ */
+export function buildMarketCapSeries(markets: RwaAggregateMarket[]): RwaChartPoint[] | null {
+  const included = markets.flatMap(({ price, marketCap, sparkline7d, updatedAt }) => {
+    const updatedSeconds = updatedAt ? Date.parse(updatedAt) / 1000 : NaN
 
-  for (const asset of assets) {
-    const tokenStats = asset.tokens.map((token) => ({
-      token,
-      stat: stats
-        .find(({ chainId }) => chainId === token.chainId)
-        ?.tokens.find(({ address }) => areAddressesEqual(address, token.address)),
-    }))
+    if (!isPositive(price) || !isPositive(marketCap) || !sparkline7d.length || !Number.isFinite(updatedSeconds)) {
+      return []
+    }
 
-    byTicker.set(asset.ticker, {
-      onchainCap: sumNullable(tokenStats.map(({ stat }) => stat?.onchainCap ?? null)),
-      dexVolume24h: sumNullable(tokenStats.map(({ stat }) => stat?.dexVolume24h ?? null)),
-    })
-    addSupplies(supplyByCoin, tokenStats, marketByTicker.get(asset.ticker))
-  }
-
-  const totals = [...byTicker.values()]
-
-  return {
-    byTicker,
-    supplyByCoin,
-    onchainCap: sumNullable(totals.map(({ onchainCap }) => onchainCap)),
-    dexVolume24h: sumNullable(totals.map(({ dexVolume24h }) => dexVolume24h)),
-  }
-}
-
-/** Σ supply × price per hour. Coins without history are skipped, `null` when none has one */
-export function buildOnchainCapSeries(
-  supplyByCoin: Map<string, number>,
-  priceHistories: Map<string, RwaChartPoint[]>,
-): RwaChartPoint[] | null {
-  const coins = [...supplyByCoin].flatMap(([coinId, supply]) => {
-    const history = priceHistories.get(coinId)
-
-    return history?.length ? [{ supply, prices: toHourlyPoints(history) }] : []
+    return [{ supply: marketCap / price, sparkline7d, updatedSeconds }]
   })
 
-  if (!coins.length) return null
+  if (!included.length) return null
 
-  const grid = [...new Set(coins.flatMap(({ prices }) => prices.map(({ time }) => time)))].sort((a, b) => a - b)
-  const sampled = coins.map(({ supply, prices }) => ({ supply, values: sampleAt(prices, grid) }))
+  const lastHour = floorToHour(Math.max(...included.map(({ updatedSeconds }) => updatedSeconds)))
+  const values = new Map<number, number>()
 
-  return grid.map((time, index) => ({
-    time,
-    value: sampled.reduce((acc, { supply, values }) => acc + supply * (values[index] ?? 0), 0),
-  }))
+  for (const { supply, sparkline7d } of included) {
+    sparkline7d.forEach((point, index) => {
+      if (!Number.isFinite(point)) return
+
+      const hour = lastHour - (sparkline7d.length - 1 - index) * HOUR_SECONDS
+
+      values.set(hour, (values.get(hour) ?? 0) + supply * point)
+    })
+  }
+
+  return [...values].sort(([a], [b]) => a - b).map(([time, value]) => ({ time, value }))
 }
 
 /** `hours` buckets ending at the hour of `nowSeconds`; values in the same hour are summed */
@@ -118,7 +79,7 @@ export function fillHourlySeries(points: RwaChartPoint[], nowSeconds: number, ho
   })
 }
 
-export function latestUpdatedAt(markets: RwaMarketData[]): string | null {
+export function latestUpdatedAt(markets: Pick<RwaMarketData, 'updatedAt'>[]): string | null {
   return markets.reduce<string | null>(
     (latest, { updatedAt }) =>
       updatedAt && (!latest || Date.parse(updatedAt) > Date.parse(latest)) ? updatedAt : latest,
@@ -128,8 +89,8 @@ export function latestUpdatedAt(markets: RwaMarketData[]): string | null {
 
 export function rankMostTraded(items: RwaMarketOverviewItem[], limit: number): RwaMarketOverviewItem[] {
   return items
-    .filter(({ dexVolume24h }) => (dexVolume24h ?? 0) > 0)
-    .sort((a, b) => (b.dexVolume24h ?? 0) - (a.dexVolume24h ?? 0) || byTicker(a, b))
+    .filter(({ volume24h }) => (volume24h ?? 0) > 0)
+    .sort((a, b) => (b.volume24h ?? 0) - (a.volume24h ?? 0) || byTicker(a, b))
     .slice(0, limit)
 }
 
@@ -144,31 +105,14 @@ export function splitMovers(items: RwaMarketOverviewItem[], limit: number): Move
   return { gainers: gainers.slice(0, limit), losers: losers.slice(0, limit) }
 }
 
-export function toOverviewItem(
-  asset: RwaAsset,
-  market: RwaMarketData | undefined,
-  totals: AssetStatsTotals | undefined,
-): RwaMarketOverviewItem {
+export function toOverviewItem(asset: RwaAsset, market: RwaAggregateMarket): RwaMarketOverviewItem {
   return {
     ticker: asset.ticker,
     title: asset.title,
-    logoUrl: getReferenceLogoUrl(asset, market),
-    change24h: market?.change24h ?? null,
-    dexVolume24h: totals?.dexVolume24h ?? null,
+    logoUrl: asset.logoUrl ?? null,
+    change24h: market.change24h,
+    volume24h: market.volume24h,
     series: null,
-  }
-}
-
-function addSupplies(
-  supplyByCoin: Map<string, number>,
-  tokenStats: TokenStats[],
-  market: RwaMarketData | undefined,
-): void {
-  for (const { token, stat } of tokenStats) {
-    const coinId = token.coingeckoId
-    const supply = coinId ? getSupply(stat, market?.tokens[coinId]?.price) : null
-
-    if (coinId && supply !== null) supplyByCoin.set(coinId, (supplyByCoin.get(coinId) ?? 0) + supply)
   }
 }
 
@@ -180,29 +124,6 @@ function floorToHour(seconds: number): number {
   return Math.floor(seconds / HOUR_SECONDS) * HOUR_SECONDS
 }
 
-// `onchainCap` is supply × price, see `MarketDataProvider.getNetworkStats`
-function getSupply(stat: RwaTokenNetworkStats | undefined, price: number | null | undefined): number | null {
-  const onchainCap = stat?.onchainCap
-
-  return price && onchainCap !== null && onchainCap !== undefined ? onchainCap / price : null
-}
-
-/** Latest price at or before each grid time; grid times before the first price use the first price */
-function sampleAt(prices: RwaChartPoint[], grid: number[]): number[] {
-  let index = 0
-
-  return grid.map((time) => {
-    while ((prices[index + 1]?.time ?? Infinity) <= time) index++
-
-    return prices[index]?.value ?? 0
-  })
-}
-
-/** Last value of every hour, ascending. `history` must be ascending */
-function toHourlyPoints(history: RwaChartPoint[]): RwaChartPoint[] {
-  const byHour = new Map<number, number>()
-
-  for (const { time, value } of history) byHour.set(floorToHour(time), value)
-
-  return [...byHour].map(([time, value]) => ({ time, value }))
+function isPositive(value: number | null): value is number {
+  return value !== null && Number.isFinite(value) && value > 0
 }

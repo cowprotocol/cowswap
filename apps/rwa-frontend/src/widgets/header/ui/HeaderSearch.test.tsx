@@ -14,7 +14,7 @@ const mockPush = jest.fn()
 jest.mock('next/navigation', () => ({ useRouter: () => ({ push: mockPush }) }))
 
 function asset(ticker: string, title: string): RwaAssetWithMarket {
-  return { ticker, title, type: 'stock', priority: 0, tokens: [], market: null }
+  return { ticker, coingeckoId: ticker.toLowerCase(), title, type: 'stock', priority: 0, tokens: [], market: null }
 }
 
 const RESULT: RwaAssetsSearchResult = { items: [asset('NVDA', 'NVIDIA'), asset('NFLX', 'Netflix')], degraded: false }

@@ -15,14 +15,12 @@ function asset(
 ): RwaAssetListItem {
   return {
     ticker,
+    coingeckoId: ticker.toLowerCase(),
     title,
     type: 'stock',
     priority,
     tokens: symbols.map((symbol) => token(symbol)),
     market: marketData,
-    logoUrl: null,
-    onchainCap: null,
-    dexVolume24h: null,
     series: null,
     ...overrides,
   }
@@ -71,10 +69,14 @@ describe('sortAssets', () => {
     expect(tickers(sortAssets([META, AAPL, NVDA, MSFT], 'marketCap', 'asc'))).toEqual(['AAPL', 'NVDA', 'MSFT', 'META'])
   })
 
-  it('sorts by DEX volume with missing stats last', () => {
-    const withVolume = [{ ...AAPL, dexVolume24h: 5 }, { ...MSFT, dexVolume24h: 50 }, NVDA]
+  it('sorts by volume with missing market data last', () => {
+    const withVolume = [
+      asset('AAPL', 'Apple', 0, market({ volume24h: 5 })),
+      asset('MSFT', 'Microsoft', 0, market({ volume24h: 50 })),
+      asset('NVDA', 'NVIDIA', 0, null),
+    ]
 
-    expect(tickers(sortAssets(withVolume, 'dexVolume24h', 'desc'))).toEqual(['MSFT', 'AAPL', 'NVDA'])
+    expect(tickers(sortAssets(withVolume, 'volume24h', 'desc'))).toEqual(['MSFT', 'AAPL', 'NVDA'])
   })
 
   it('sorts by ticker alphabetically', () => {
@@ -90,7 +92,7 @@ describe('sortAssets', () => {
   it('defaults text fields to ascending and numbers to descending', () => {
     expect(getDefaultSortOrder('title')).toBe('asc')
     expect(getDefaultSortOrder('ticker')).toBe('asc')
-    expect(getDefaultSortOrder('dexVolume24h')).toBe('desc')
+    expect(getDefaultSortOrder('volume24h')).toBe('desc')
   })
 
   it('does not mutate the input', () => {

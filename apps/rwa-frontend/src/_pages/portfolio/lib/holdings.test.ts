@@ -1,6 +1,6 @@
 import { buildHoldings, getPortfolioTotals } from './holdings'
 
-import type { RwaAsset, RwaToken } from '@/entities/asset'
+import type { RwaAsset, RwaAssetSummary, RwaToken } from '@/entities/asset'
 
 const AAPLX: RwaToken = {
   chainId: 1,
@@ -14,12 +14,33 @@ const AAPLX_BNB: RwaToken = { ...AAPLX, chainId: 56 }
 const QQQX: RwaToken = { ...AAPLX, address: '0xa753a7395cae905cd615da0b82a53e0560f250af', symbol: 'QQQx' }
 const SPYX: RwaToken = { ...AAPLX, address: '0x90a2a4c76b5d8c0bc892a69ea28aa775a8f2dd48', symbol: 'SPYx' }
 
-const AAPL: RwaAsset = { ticker: 'AAPL', title: 'Apple', type: 'stock', priority: 10, tokens: [AAPLX, AAPLX_BNB] }
-const QQQ: RwaAsset = { ticker: 'QQQ', title: 'Invesco QQQ', type: 'index', priority: 5, tokens: [QQQX] }
-const SPY: RwaAsset = { ticker: 'SPY', title: 'SPDR S&P 500', type: 'index', priority: 5, tokens: [SPYX] }
+const AAPL: RwaAsset = {
+  ticker: 'AAPL',
+  coingeckoId: 'aapl',
+  title: 'Apple',
+  type: 'stock',
+  priority: 10,
+  tokens: [AAPLX, AAPLX_BNB],
+}
+const QQQ: RwaAsset = {
+  ticker: 'QQQ',
+  coingeckoId: 'qqq',
+  title: 'Invesco QQQ',
+  type: 'index',
+  priority: 5,
+  tokens: [QQQX],
+}
+const SPY: RwaAsset = {
+  ticker: 'SPY',
+  coingeckoId: 'spy',
+  title: 'SPDR S&P 500',
+  type: 'index',
+  priority: 5,
+  tokens: [SPYX],
+}
 
 const PRICES: Record<string, number> = { AAPL: 200, QQQ: 500 }
-const getPrice = (asset: RwaAsset): number | null => PRICES[asset.ticker] ?? null
+const getPrice = (asset: RwaAssetSummary): number | null => PRICES[asset.ticker] ?? null
 
 describe('buildHoldings', () => {
   it('sums the tokens of an asset across networks and values them at the asset price', () => {

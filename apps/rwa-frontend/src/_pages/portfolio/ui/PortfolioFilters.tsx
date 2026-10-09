@@ -3,7 +3,7 @@ import { type ReactNode, useMemo } from 'react'
 import styles from './Portfolio.module.css'
 
 import type { PortfolioFilter } from '../lib/portfolioFilter'
-import type { RwaAsset, RwaAssetType } from '@/entities/asset'
+import type { RwaAssetSummary, RwaAssetType } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
 
@@ -16,7 +16,7 @@ const ASSET_TYPES: { type: RwaAssetType | null; title: string }[] = [
 ]
 
 interface PortfolioFiltersProps {
-  assets: RwaAsset[]
+  assets: RwaAssetSummary[]
   filter: PortfolioFilter
   onChange(filter: PortfolioFilter): void
 }

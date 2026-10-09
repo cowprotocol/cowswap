@@ -1,10 +1,10 @@
 import type { Position } from '@/widgets/account'
 
-import { getTokenKey, type RwaAsset, type RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaAssetSummary, type RwaTokenSummary } from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
 export interface Holding {
-  asset: RwaAsset
+  asset: RwaAssetSummary
   /** USD per share, `null` while market data is loading or unknown */
   price: number | null
   tokens: TokenHolding[]
@@ -25,7 +25,7 @@ export interface PortfolioTotals {
 }
 
 export interface TokenHolding {
-  token: RwaToken
+  token: RwaTokenSummary
   /** Atoms, decimal string */
   balance: string
   /** One token is one share of the underlying asset */
@@ -36,9 +36,9 @@ export interface TokenHolding {
 
 /** Holdings ordered by value, the unpriced ones last */
 export function buildHoldings(
-  assets: RwaAsset[],
+  assets: RwaAssetSummary[],
   positions: Position[],
-  getPrice: (asset: RwaAsset) => number | null,
+  getPrice: (asset: RwaAssetSummary) => number | null,
 ): Holding[] {
   const positionsByKey = new Map(positions.map((position) => [getTokenKey(position.token), position]))
 

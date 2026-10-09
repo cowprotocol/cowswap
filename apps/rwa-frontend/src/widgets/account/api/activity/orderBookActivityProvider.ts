@@ -4,7 +4,7 @@ import { collectPages } from '../../lib/collectPages'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, toTradeLeg } from '../../lib/tradeLeg'
 
 import type { Activity, ActivityProvider, ActivityQuery } from './types'
-import type { RwaToken } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 import { orderBookApi } from '@/shared/api'
 import { getPublicClient } from '@/shared/lib/chain'
@@ -32,7 +32,7 @@ function byTimestampDesc(a: Activity, b: Activity): number {
 async function getChainActivity(
   chainId: SupportedChainId,
   owner: string,
-  tokens: RwaToken[],
+  tokens: RwaTokenSummary[],
   limit: number,
 ): Promise<Activity[]> {
   const assetTrades = await collectPages(

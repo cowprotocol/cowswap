@@ -4,6 +4,8 @@ Date: 2026-10-02
 App: `apps/rwa-frontend`
 Design: [Figma, node 3505:9018](https://www.figma.com/proto/Y8OXmctyXUjT5rHbE6orMb/CoW-Swap-%E2%80%94-Unified-Journey-Screens?node-id=3505-9018)
 
+Superseded in part by [the CoinGecko consumption design](./2026-10-02-rwa-registry-coingecko-consumption-design.md): totals, most traded and the 7D chart now come from CoinGecko /rwas/markets.
+
 ## Goal
 
 Add the top section of the home page: a new heading and three cards (Market overview, Most traded, Top movers) above

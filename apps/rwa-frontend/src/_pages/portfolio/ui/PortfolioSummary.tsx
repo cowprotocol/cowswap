@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react'
 
+import { BalancesStatus } from './BalancesStatus'
 import styles from './Portfolio.module.css'
 
 import { getPortfolioTotals, type Holding } from '../lib/holdings'
 import { getTotalExclusions } from '../lib/totalExclusions'
+
+import type { BalancesProgress } from '../model/usePortfolio'
 
 import { formatUsd, shortenAddress } from '@/shared/lib/format'
 
@@ -15,6 +18,8 @@ interface PortfolioSummaryProps {
   /** Chains whose balances are missing from `holdings` */
   failedChainIds: number[]
   arePricesLoading: boolean
+  balancesProgress: BalancesProgress
+  onRefreshBalances(): void
 }
 
 export function PortfolioSummary({
@@ -23,6 +28,8 @@ export function PortfolioSummary({
   error,
   failedChainIds,
   arePricesLoading,
+  balancesProgress,
+  onRefreshBalances,
 }: PortfolioSummaryProps): ReactNode {
   const totals = holdings && getPortfolioTotals(holdings)
   const exclusions = totals && getTotalExclusions(arePricesLoading ? null : totals.unpricedAssets, failedChainIds)
@@ -46,6 +53,7 @@ export function PortfolioSummary({
             ? `Failed to load balances: ${error.message}`
             : 'Loading balances…'}
       </p>
+      <BalancesStatus progress={balancesProgress} onRefresh={onRefreshBalances} />
       {exclusions && (
         <p className={styles.warning} role="status">
           {exclusions}

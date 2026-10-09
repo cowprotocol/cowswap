@@ -2,7 +2,11 @@ import type { DegradableResponse } from '@/shared/api'
 
 export interface RwaAsset {
   ticker: string
+  /** CoinGecko RWA id, e.g. `apple`: the key of the `/rwas/markets` data */
+  coingeckoId: string
   title: string
+  /** CoinGecko RWA image, `https` */
+  logoUrl?: string
   type: RwaAssetType
   /** 0..10, higher goes first in the default sorting */
   priority: number
@@ -16,14 +20,28 @@ export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
 export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
 
+/** CoinGecko tokenized market of an RWA over every chain and issuer. Server-only: never sent in a response */
+export interface RwaAggregateMarket {
+  /** USD */
+  price: number | null
+  /** Percent, e.g. `2.5` for +2.5% */
+  change24h: number | null
+  /** USD */
+  dayLow: number | null
+  /** USD */
+  dayHigh: number | null
+  /** USD */
+  marketCap: number | null
+  /** USD */
+  volume24h: number | null
+  /** ISO 8601 */
+  updatedAt: string | null
+  /** Hourly USD prices over the last 7 days, oldest first, ending at `updatedAt`. Empty when CoinGecko has none */
+  sparkline7d: number[]
+}
+
 export interface RwaAssetListItem extends RwaAssetWithMarket {
-  /** `RwaTokenMarketData.logoUrl` of the reference token */
-  logoUrl: string | null
-  /** USD, all networks */
-  onchainCap: number | null
-  /** USD, all networks */
-  dexVolume24h: number | null
-  /** 1D price of the reference token */
+  /** 1D price of the RWA market, from its 7d sparkline */
   series: RwaChartPoint[] | null
 }
 
@@ -37,32 +55,24 @@ export interface RwaAssetsFilter {
   tickers?: string[]
 }
 
+/** The registry fields a client page needs to match, show and filter tokens of every asset */
+export interface RwaAssetSummary extends Pick<RwaAsset, 'ticker' | 'title' | 'logoUrl' | 'type'> {
+  tokens: RwaTokenSummary[]
+}
+
 export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
 }
 
-export interface RwaMarketData {
-  /** USD */
-  price: number | null
-  /** Percent, e.g. `2.5` for +2.5% */
-  change24h: number | null
-  /** USD */
-  dayLow: number | null
-  /** USD */
-  dayHigh: number | null
-  /** USD, sum of all tokenized versions of the asset */
-  marketCap: number | null
-  /** USD, sum of all tokenized versions of the asset */
-  volume24h: number | null
-  /** Keyed by `RwaToken.coingeckoId` */
+/** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
+export interface RwaMarketData extends Omit<RwaAggregateMarket, 'sparkline7d'> {
+  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` only, `{}` elsewhere */
   tokens: Record<string, RwaTokenMarketData>
-  /** ISO 8601 */
-  updatedAt: string | null
 }
 
 export interface RwaMarketOverview extends DegradableResponse {
   totals: RwaMarketOverviewTotals
-  /** Max 3, by 24h DEX volume */
+  /** Max 3, by 24h volume */
   mostTraded: RwaMarketOverviewItem[]
   /** Max 3, `change24h > 0` */
   gainers: RwaMarketOverviewItem[]
@@ -77,23 +87,23 @@ export interface RwaMarketOverview extends DegradableResponse {
 export interface RwaMarketOverviewItem {
   ticker: string
   title: string
-  /** `RwaTokenMarketData.logoUrl` of the reference token */
+  /** `RwaAsset.logoUrl` */
   logoUrl: string | null
   /** Percent */
   change24h: number | null
-  /** USD, all networks */
-  dexVolume24h: number | null
+  /** USD, CoinGecko tokenized market */
+  volume24h: number | null
   /** Hourly DEX volume in `mostTraded`, 1D price in movers */
   series: RwaChartPoint[] | null
 }
 
 export interface RwaMarketOverviewTotals {
   /** USD */
-  onchainCap: number | null
+  marketCap: number | null
   /** USD */
-  dexVolume24h: number | null
-  /** 7 days */
-  onchainCapSeries: RwaChartPoint[] | null
+  volume24h: number | null
+  /** 7 days, hourly */
+  marketCapSeries: RwaChartPoint[] | null
 }
 
 /** Stats of every asset token on one network */
@@ -141,6 +151,8 @@ export interface RwaTokenNetworkStats {
   dexVolume24h: number | null
 }
 
+export type RwaTokenSummary = Pick<RwaToken, 'chainId' | 'address' | 'symbol' | 'decimals' | 'issuer'>
+
 export interface RwaTradingTime {
   title: string
   /** `HH:mm UTC` */
@@ -149,16 +161,7 @@ export interface RwaTradingTime {
   end: string
 }
 
-export const RWA_SORT_FIELDS = [
-  'priority',
-  'marketCap',
-  'onchainCap',
-  'dexVolume24h',
-  'change24h',
-  'price',
-  'ticker',
-  'title',
-] as const
+export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'volume24h', 'change24h', 'price', 'ticker', 'title'] as const
 
 export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}
 

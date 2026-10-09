@@ -12,7 +12,8 @@ import type { RwaMarketOverview, RwaTradingTime } from '@/entities/asset'
 
 import { formatCompactUsd } from '@/shared/lib/format'
 
-const DEX_VOLUME_HINT = 'DEX trades of every listed token on every network over the last 24 hours'
+const VOLUME_HINT =
+  'Trading volume of the listed assets across every chain and issuer over the last 24 hours, from CoinGecko'
 
 interface MarketTotalsCardProps {
   /** `undefined` while loading */
@@ -33,22 +34,22 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span className={styles.cardHint}>7D</span>
       </header>
       <div className={styles.totals}>
-        <Total label="Onchain market cap" value={overview && formatCompactUsd(overview.totals.onchainCap)} />
+        <Total label="Market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
         <Total
           label={
             <>
-              24h DEX volume{' '}
-              <span className={styles.info} role="img" aria-label={DEX_VOLUME_HINT} title={DEX_VOLUME_HINT}>
+              24h volume{' '}
+              <span className={styles.info} role="img" aria-label={VOLUME_HINT} title={VOLUME_HINT}>
                 ⓘ
               </span>
             </>
           }
-          value={overview && formatCompactUsd(overview.totals.dexVolume24h)}
+          value={overview && formatCompactUsd(overview.totals.volume24h)}
         />
       </div>
       <div className={styles.capChart}>
         {overview ? (
-          <Sparkline series={overview.totals.onchainCapSeries} tone="neutral" area />
+          <Sparkline series={overview.totals.marketCapSeries} tone="neutral" area />
         ) : (
           <span className={`${styles.skeleton} ${styles.skeletonChart}`} />
         )}

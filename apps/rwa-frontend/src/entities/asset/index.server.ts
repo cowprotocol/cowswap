@@ -8,7 +8,7 @@ export {
   type ListAssetsParams,
   listAssets,
 } from './api/assetsService'
-export { getAssetByTicker, getAssets, getRegistry } from './model/registry'
+export { getAssetByTicker, getAssets, getAssetSummaries, getRegistry } from './model/registry'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export { buildRwaTokenList } from './model/tokenList'
 export { validateRegistry } from './model/validateRegistry'
