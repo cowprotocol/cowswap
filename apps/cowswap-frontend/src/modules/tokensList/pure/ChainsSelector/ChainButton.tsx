@@ -6,6 +6,8 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
+
 import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
 
@@ -61,6 +63,7 @@ export function ChainButton({
         <styledEl.ChainText disabled$={isDisabled} loading$={isLoading}>
           {chain.label}
         </styledEl.ChainText>
+        <ChainStatusBadge chainId={chain.id} />
       </styledEl.ChainInfo>
       {isActive && !isLoading && (
         <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>

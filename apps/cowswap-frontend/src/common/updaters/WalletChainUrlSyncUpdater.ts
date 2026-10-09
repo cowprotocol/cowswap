@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import { useConnection } from 'wagmi'
 
 import { isSupportedChainId } from '@cowprotocol/common-utils'
-import { isEvmChain } from '@cowprotocol/cow-sdk'
+import { useSolanaWalletProvider } from '@cowprotocol/wallet'
 
 import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
 
@@ -14,17 +14,19 @@ import { useLegacySetChainIdToUrl } from 'common/hooks/useLegacySetChainIdToUrl'
  */
 export function WalletChainUrlSyncUpdater(): null {
   const { chainId, isConnected } = useConnection()
+  const solanaProvider = useSolanaWalletProvider()
   const setChainIdToUrl = useLegacySetChainIdToUrl()
   const prevChainIdRef = useRef(chainId)
+  const isConnectedToSolana = !!solanaProvider
 
   useEffect(() => {
     // Only sync supported chains from a connected wallet
     // Currently we only support network switching without reconnecting between EVM chains
-    if (isConnected && isSupportedChainId(chainId) && isEvmChain(chainId) && chainId !== prevChainIdRef.current) {
+    if (isConnected && isSupportedChainId(chainId) && !isConnectedToSolana && chainId !== prevChainIdRef.current) {
       setChainIdToUrl(chainId)
     }
     prevChainIdRef.current = chainId
-  }, [isConnected, chainId, setChainIdToUrl])
+  }, [isConnected, chainId, setChainIdToUrl, isConnectedToSolana])
 
   return null
 }

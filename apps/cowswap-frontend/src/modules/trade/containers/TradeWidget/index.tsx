@@ -1,6 +1,7 @@
 import { JSX, useEffect } from 'react'
 
 import { useTokenSelectorConsentFlow } from 'modules/rwa'
+import { SolanaAlphaRiskModalContainer } from 'modules/solanaAlpha'
 import { SelectTokenWidget, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
@@ -59,6 +60,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
         {modals}
       </styledEl.Container>
 
+      <SolanaAlphaRiskModalContainer />
       {selectTokenWidgetNode}
     </>
   )

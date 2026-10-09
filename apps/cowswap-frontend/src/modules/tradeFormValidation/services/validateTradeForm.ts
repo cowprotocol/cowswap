@@ -6,6 +6,7 @@ import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
+import { getIsSolanaTradeAboveLimit } from './getIsSolanaTradeAboveLimit'
 import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
@@ -94,6 +95,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
   if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
     return [TradeFormValidation.XstockMinimumTradeSize]
+  }
+
+  // Same precedence as the xstock limit: the trade-size cap message must win over
+  // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
+  // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
+  if (!isWrapUnwrap && !inputAmountIsNotSet && getIsSolanaTradeAboveLimit(context)) {
+    return [TradeFormValidation.SolanaAlphaMaxTradeSize]
   }
 
   if (!isWrapUnwrap && isCaptchaPending) {

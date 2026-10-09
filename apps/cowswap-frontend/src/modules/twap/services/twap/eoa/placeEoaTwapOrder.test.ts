@@ -1,7 +1,10 @@
-import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { createPublicClient, http } from 'viem'
+
+import { COW_TOKEN_TO_CHAIN, VIEM_CHAINS, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { AbstractProviderAdapter, EvmChains, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@cowprotocol/currency'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 import { COMPOSABLE_COW_ADDRESS, CURRENT_BLOCK_FACTORY_ADDRESS } from 'modules/advancedOrders'
 import { getAppData } from 'modules/appData'
@@ -78,6 +81,17 @@ const pollerRegistration = {
 }
 
 describe('getEoaTwapOrderShedCalls()', () => {
+  beforeAll(() => {
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({
+          chain: VIEM_CHAINS[EvmChains.MAINNET],
+          transport: http('http://127.0.0.1:8545'),
+        }),
+      }) as AbstractProviderAdapter,
+    )
+  })
+
   it('includes registerFromShed then approve then create when proxy needsApproval is true', () => {
     const calls = getEoaTwapOrderShedCalls({
       twapOrder,

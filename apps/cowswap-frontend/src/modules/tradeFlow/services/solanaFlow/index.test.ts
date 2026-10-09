@@ -805,13 +805,15 @@ describe('solanaFlow · sponsored', () => {
   // The post-sign RPC round-trip must count against nobody: a signature given inside the window is
   // valid even when the height read resolves after the window closed.
   it('posts a signature given in time even when the post-sign check outlives the window', async () => {
-    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() + 50, durationMs: 30_000 })
+    // Both margins are wall-clock: the window has to be wide enough that a loaded runner still records
+    // the signature inside it, and the read has to finish past it for the test to mean anything.
+    mockEstimateSolanaSigningDeadline.mockResolvedValueOnce({ expiresAt: Date.now() + 500, durationMs: 30_000 })
     mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
       signContext.onDeadline?.(1_234)
       await tick()
       const signedAtMs = Date.now()
       // The height read drags past the deadline while the signature is already in hand.
-      await sleep(80)
+      await sleep(700)
 
       return { transaction: 'signed-tx', signedAtMs }
     })
