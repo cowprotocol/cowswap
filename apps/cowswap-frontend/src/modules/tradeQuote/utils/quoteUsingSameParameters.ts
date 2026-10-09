@@ -6,6 +6,8 @@ import { Nullish } from 'types'
 
 import type { AppDataInfo, CowHook } from 'modules/appData'
 
+import { isSolanaQuoteAndPost } from '../types'
+
 import type { TradeQuoteState } from '../state/tradeQuoteAtom'
 
 /**
@@ -23,8 +25,7 @@ export function quoteUsingSameParameters(
   const currentParams = currentQuote.quote?.quoteResults.tradeParameters
   if (!currentParams || !nextParams) return false
 
-  // Do not compare slippage if the request contains smart slippage
-  const slippageCheck = hasSmartSlippage ? true : compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps)
+  const slippageCheck = isSameSlippage(currentQuote, nextParams, hasSmartSlippage)
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
@@ -60,7 +61,10 @@ export function quoteUsingSameParameters(
     return changes.length === 0
   }
 
-  const { isEqual: isAppDataEqual, diff: appDataDiff } = compareAppDataWithoutQuoteData(currentAppData, appData)
+  // A Solana quote has no appData (the request always sends an empty one), so it can never differ by appData
+  const { isEqual: isAppDataEqual, diff: appDataDiff } = isSolanaQuoteAndPost(currentQuote.quote)
+    ? { isEqual: true, diff: undefined }
+    : compareAppDataWithoutQuoteData(currentAppData, appData)
 
   const cases = [
     [isAppDataEqual, 'appData', appDataDiff],
@@ -118,6 +122,21 @@ function compareAppDataWithoutQuoteData(
  */
 function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
   return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
+}
+
+// Do not compare slippage if the request contains smart slippage.
+// A Solana quote signs the slippage it was fetched with (its own suggestion when none was passed),
+// so switching between an explicit and an omitted slippage must requote.
+function isSameSlippage(
+  currentQuote: TradeQuoteState,
+  nextParams: QuoteBridgeRequest,
+  hasSmartSlippage: boolean | undefined,
+): boolean {
+  const currentSlippageBps = currentQuote.quote?.quoteResults.tradeParameters.slippageBps
+
+  if (isSolanaQuoteAndPost(currentQuote.quote)) return currentSlippageBps === nextParams.swapSlippageBps
+
+  return !!hasSmartSlippage || compareSlippage(currentSlippageBps, nextParams.swapSlippageBps)
 }
 
 function removeBridgePostHook(
