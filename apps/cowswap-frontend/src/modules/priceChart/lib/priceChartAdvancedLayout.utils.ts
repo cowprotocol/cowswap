@@ -1,6 +1,6 @@
 const PRICE_CHART_STATE_STORAGE_KEY = 'priceChartState:v0'
 
-export function loadSavedPriceChartState(): object | undefined {
+export function loadChartLayout(): object | undefined {
   if (typeof window === 'undefined') return undefined
 
   const rawValue = window.localStorage.getItem(PRICE_CHART_STATE_STORAGE_KEY)
@@ -22,7 +22,7 @@ export function loadSavedPriceChartState(): object | undefined {
   }
 }
 
-export function savePriceChartState(state: object): void {
+export function saveChartLayout(state: object): void {
   if (typeof window === 'undefined') return
 
   window.localStorage.setItem(PRICE_CHART_STATE_STORAGE_KEY, JSON.stringify(state))

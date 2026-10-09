@@ -2,14 +2,23 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
-import { FALLBACK_TOKEN_SYMBOL } from './priceChart.constants'
+import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
 import {
   PRO_CHART_EXCHANGE_NAME,
   PRO_CHART_SUPPORTED_RESOLUTIONS,
   PRO_CHART_SYMBOL_TYPE,
-} from './tradingView.constants'
+} from '../config/priceChartAdvanced.constants'
 
-import type { PriceChartSymbolDescriptor } from './tradingView.types'
+import type { ChartMetric, SupplyVariant } from './priceChart.types'
+import type { LibrarySymbolInfo } from './priceChartAdvancedLibrary.types'
+
+export interface ChartSymbol {
+  metric: ChartMetric
+  supplyVariant: SupplyVariant
+  currency: Currency
+  librarySymbolInfo: LibrarySymbolInfo
+  ticker: string
+}
 
 const SERIES_VARIANTS = [
   { metric: 'price', supplyVariant: 'circulating' },
@@ -17,7 +26,7 @@ const SERIES_VARIANTS = [
   { metric: 'marketCap', supplyVariant: 'total' },
 ] as const
 
-export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDescriptor[] {
+export function createChartSymbols(currencies: Currency[]): ChartSymbol[] {
   return currencies.flatMap((currency) =>
     SERIES_VARIANTS.map(({ metric, supplyVariant }) => {
       const ticker = `${currency.chainId}_${getAddressKey(getCurrencyAddress(currency))}_USD_${metric}_${supplyVariant}`
@@ -54,9 +63,6 @@ export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDesc
   )
 }
 
-export function findChartSymbol(
-  symbols: PriceChartSymbolDescriptor[],
-  ticker: string,
-): PriceChartSymbolDescriptor | undefined {
+export function findChartSymbol(symbols: ChartSymbol[], ticker: string): ChartSymbol | undefined {
   return symbols.find((symbol) => symbol.ticker === ticker)
 }
