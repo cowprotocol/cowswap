@@ -145,6 +145,7 @@ function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPro
     'scalesProperties.lineColor': gridColor,
     'symbolWatermarkProperties.color': primaryColor,
     'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
+    'mainSeriesProperties.statusViewStyle.showExchange': false,
   }
 }
 

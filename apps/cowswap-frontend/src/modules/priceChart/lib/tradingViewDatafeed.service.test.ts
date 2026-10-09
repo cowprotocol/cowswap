@@ -43,7 +43,103 @@ describe('TradingView datafeed', () => {
     mockedFetchTokenSupply.mockReset().mockResolvedValue({ circulatingSupply: 10, totalSupply: 20 })
   })
 
-  afterEach(() => jest.restoreAllMocks())
+  afterEach(() => {
+    jest.restoreAllMocks()
+    jest.useRealTimers()
+    queryClient.clear()
+  })
+
+  it('reports the active subscription deadline and loading state', async () => {
+    jest.useFakeTimers({ now: PERIOD.to * 1000 })
+    const onRefreshState = jest.fn()
+    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS, onRefreshState })
+    controller.setActiveTicker(PRICE.ticker)
+    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '60', jest.fn(), 'price', jest.fn())
+    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: false })
+
+    const pending = deferredHistory()
+    mockedFetchPriceHistory.mockReturnValueOnce(pending.promise)
+    await jest.advanceTimersByTimeAsync(30_000)
+    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: true })
+    pending.resolve([BAR])
+    await jest.advanceTimersByTimeAsync(0)
+    expect(onRefreshState).toHaveBeenLastCalledWith({ nextUpdateAt: Date.now() + 30_000, isUpdating: false })
+
+    controller.setActiveTicker(CIRCULATING_CAP.ticker)
+    onRefreshState.mockClear()
+    await jest.advanceTimersByTimeAsync(30_000)
+    expect(onRefreshState).not.toHaveBeenCalled()
+    controller.dispose()
+  })
+
+  it('updates the current candle and appends new candles without replaying older bars', async () => {
+    jest.useFakeTimers({ now: PERIOD.to * 1000 })
+    const onHistoryLoaded = jest.fn()
+    const onRealtime = jest.fn()
+    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS, onHistoryLoaded })
+    controller.datafeed.getBars(PRICE.librarySymbolInfo, '60', PERIOD, jest.fn(), jest.fn())
+    await jest.advanceTimersByTimeAsync(0)
+    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '60', onRealtime, 'price', jest.fn())
+    const updated = { ...BAR, close: 3 }
+    const next = { ...BAR, close: 4, timestamp: BAR.timestamp + 3600 }
+    mockedFetchPriceHistory.mockResolvedValue([{ ...BAR, timestamp: BAR.timestamp - 3600 }, updated, next])
+
+    await jest.advanceTimersByTimeAsync(30_000)
+
+    expect(onRealtime.mock.calls.map(([bar]) => ({ time: bar.time, close: bar.close }))).toEqual([
+      { time: updated.timestamp * 1000, close: 3 },
+      { time: next.timestamp * 1000, close: 4 },
+    ])
+    expect(onHistoryLoaded).toHaveBeenLastCalledWith([updated, next])
+    controller.dispose()
+  })
+
+  it('shares live prices across metric subscriptions and applies each supply variant', async () => {
+    jest.useFakeTimers({ now: PERIOD.to * 1000 })
+    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS })
+    const onPrice = jest.fn()
+    const onCirculating = jest.fn()
+    const onTotal = jest.fn()
+    for (const [symbol, callback, uid] of [
+      [PRICE, onPrice, 'price'],
+      [CIRCULATING_CAP, onCirculating, 'cap'],
+      [TOTAL_CAP, onTotal, 'total'],
+    ] as const) {
+      controller.datafeed.subscribeBars(symbol.librarySymbolInfo, '60', callback, uid, jest.fn())
+    }
+
+    await jest.advanceTimersByTimeAsync(30_000)
+
+    expect(mockedFetchPriceHistory).toHaveBeenCalledTimes(1)
+    expect(onPrice).toHaveBeenCalledWith(expect.objectContaining({ close: 2 }))
+    expect(onCirculating).toHaveBeenCalledWith(expect.objectContaining({ close: 20 }))
+    expect(onTotal).toHaveBeenCalledWith(expect.objectContaining({ close: 40 }))
+    controller.dispose()
+  })
+
+  it('retries polling after errors and drops in-flight updates after unsubscribe or disposal', async () => {
+    jest.useFakeTimers({ now: PERIOD.to * 1000 })
+    const controller = createPriceChartDatafeed({ queryClient, symbols: SYMBOLS })
+    const onRealtime = jest.fn()
+    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '60', onRealtime, 'price', jest.fn())
+    mockedFetchPriceHistory.mockRejectedValueOnce(new Error('Offline'))
+    await jest.advanceTimersByTimeAsync(30_000)
+    expect(onRealtime).not.toHaveBeenCalled()
+    await jest.advanceTimersByTimeAsync(30_000)
+    expect(onRealtime).toHaveBeenCalledTimes(1)
+
+    const pending = deferredHistory()
+    mockedFetchPriceHistory.mockReturnValueOnce(pending.promise)
+    await jest.advanceTimersByTimeAsync(30_000)
+    controller.datafeed.unsubscribeBars('price')
+    pending.resolve([{ ...BAR, close: 3 }])
+    await jest.advanceTimersByTimeAsync(0)
+    expect(onRealtime).toHaveBeenCalledTimes(1)
+    controller.datafeed.subscribeBars(PRICE.librarySymbolInfo, '15', onRealtime, 'next', jest.fn())
+    controller.dispose()
+    await jest.advanceTimersByTimeAsync(60_000)
+    expect(mockedFetchPriceHistory).toHaveBeenCalledTimes(3)
+  })
 
   it('requests USD history and maps timestamps and optional volume for TradingView', async () => {
     const bars = [

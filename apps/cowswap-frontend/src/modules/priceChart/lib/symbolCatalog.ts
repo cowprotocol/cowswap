@@ -30,7 +30,7 @@ export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDesc
         supplyVariant,
         ticker,
         librarySymbolInfo: {
-          data_status: 'endofday',
+          data_status: 'streaming',
           description,
           exchange: PRO_CHART_EXCHANGE_NAME,
           format: 'price',

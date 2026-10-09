@@ -12,6 +12,7 @@ import {
   PRO_CHART_SUPPORTED_RESOLUTIONS,
 } from './tradingView.constants'
 import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './tradingViewAdapter.utils'
+import { createPriceChartSubscriptions } from './tradingViewSubscriptions.service'
 
 import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './loadChartingLibrary'
 import type { Candle, CandleInterval } from './priceChart.types'
@@ -26,7 +27,7 @@ type ErrorCallback = GetBarsParameters[4]
 interface GetBarsHandlerParams {
   queryClient: QueryClient
   latestRequestIdsByTicker: Map<string, number>
-  setHistory: (bars: Candle[], ticker: string, requestId: number) => void
+  setHistory: (bars: Candle[], ticker: string, requestId: number, interval: CandleInterval) => void
   setActiveTicker: (ticker: string) => void
   symbols: PriceChartSymbolDescriptor[]
 }
@@ -53,13 +54,13 @@ export function createPriceChartDatafeed({
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
   let activeTicker: string | undefined
-  const historiesByTicker = new Map<string, { bars: Candle[]; requestId: number }>()
+  const historiesByTicker = new Map<string, { bars: Candle[]; requestId: number; interval: CandleInterval }>()
   const latestRequestIdsByTicker = new Map<string, number>()
 
-  const setHistory = (bars: Candle[], ticker: string, requestId: number): void => {
+  const setHistory = (bars: Candle[], ticker: string, requestId: number, interval: CandleInterval): void => {
     if (disposed || requestId <= (historiesByTicker.get(ticker)?.requestId ?? 0)) return
 
-    historiesByTicker.set(ticker, { bars, requestId })
+    historiesByTicker.set(ticker, { bars, requestId, interval })
 
     if (ticker === activeTicker) onHistoryLoaded?.(bars)
   }
@@ -73,17 +74,45 @@ export function createPriceChartDatafeed({
     if (history) onHistoryLoaded?.(history.bars)
   }
 
+  const subscriptions = createPriceChartSubscriptions({
+    queryClient,
+    symbols,
+    getLastTimestamp: (ticker, interval) => {
+      const history = historiesByTicker.get(ticker)
+      return history?.interval === interval ? history.bars.at(-1)?.timestamp : undefined
+    },
+    onUpdate: (bars, ticker, interval) => {
+      const history = historiesByTicker.get(ticker)
+      if (disposed || (history && history.interval !== interval)) return
+      const merged = new Map((history?.bars ?? []).map((bar) => [bar.timestamp, bar]))
+      for (const bar of bars) merged.set(bar.timestamp, bar)
+      const requestId = (latestRequestIdsByTicker.get(ticker) || 0) + 1
+      latestRequestIdsByTicker.set(ticker, requestId)
+      setHistory(
+        [...merged.values()].sort((a, b) => a.timestamp - b.timestamp),
+        ticker,
+        requestId,
+        interval,
+      )
+    },
+  })
+
   return {
-    datafeed: createBasicDatafeed({
-      queryClient,
-      latestRequestIdsByTicker,
-      setHistory,
-      setActiveTicker,
-      symbols,
-    }),
+    datafeed: {
+      ...createBasicDatafeed({
+        queryClient,
+        latestRequestIdsByTicker,
+        setHistory,
+        setActiveTicker,
+        symbols,
+      }),
+      subscribeBars: subscriptions.subscribeBars,
+      unsubscribeBars: subscriptions.unsubscribeBars,
+    },
     setActiveTicker,
     dispose: () => {
       disposed = true
+      subscriptions.dispose()
       historiesByTicker.clear()
       latestRequestIdsByTicker.clear()
     },
@@ -155,7 +184,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
     void loadHistory({
       queryClient: params.queryClient,
       onError,
-      onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId),
+      onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId, resolvedResolution),
       onResult,
       periodParams,
       resolution: resolvedResolution,
