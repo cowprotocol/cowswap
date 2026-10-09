@@ -1,6 +1,6 @@
 import { keepPreviousData, skipToken, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
@@ -24,7 +24,7 @@ export function usePriceChartHistory(
       'priceChart',
       'history',
       chainId,
-      address,
+      metric === 'marketCap' && currency ? getAddressKey(getCurrencyAddress(currency)) : address,
       period,
       metric,
       metric === 'marketCap' ? supplyVariant : null,

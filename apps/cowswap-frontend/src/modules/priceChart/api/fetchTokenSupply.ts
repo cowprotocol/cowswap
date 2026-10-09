@@ -1,5 +1,5 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { fetchWithTimeout, getWrappedToken, normalizeError } from '@cowprotocol/common-utils'
+import { fetchWithTimeout, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { getAddressKey, isSupportedChain } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
@@ -15,7 +15,7 @@ export async function fetchTokenSupply(currency: Currency): Promise<TokenSupplyR
   const { chainId } = currency
   if (!isSupportedChain(chainId)) throw new Error(`Unsupported price chart chain: ${chainId}`)
 
-  const address = getAddressKey(getWrappedToken(currency).address)
+  const address = getAddressKey(getCurrencyAddress(currency))
   logPriceChart.debug('Fetching token supply', { address, chainId })
 
   try {

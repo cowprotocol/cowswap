@@ -133,6 +133,24 @@ describe('usePriceChartHistory', () => {
     expect(fetchPriceHistory).toHaveBeenCalledTimes(2)
   })
 
+  it('uses separate market-cap supplies for native and wrapped currencies', async () => {
+    const nativeCurrency = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+    const wrappedCurrency = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
+    jest.mocked(fetchTokenSupply).mockImplementation(async (currency) => ({
+      circulatingSupply: currency === nativeCurrency ? 100 : 10,
+      totalSupply: currency === nativeCurrency ? 100 : 10,
+    }))
+    const { result, rerender } = renderHook(useHistory, {
+      wrapper: createWrapper(),
+      initialProps: { ...INITIAL_PROPS, currency: nativeCurrency, metric: 'marketCap' },
+    })
+    await waitFor(() => expect(result.current.data?.[0]?.close).toBe(200))
+
+    rerender({ ...INITIAL_PROPS, currency: wrappedCurrency, metric: 'marketCap' })
+    await waitFor(() => expect(result.current.data?.[0]?.close).toBe(20))
+    expect(fetchTokenSupply).toHaveBeenCalledTimes(2)
+  })
+
   it('shares USD history between native and wrapped currencies', async () => {
     const nativeCurrency = NATIVE_CURRENCIES[SupportedChainId.MAINNET]
     const wrappedCurrency = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]

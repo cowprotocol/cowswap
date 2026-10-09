@@ -1,4 +1,4 @@
-import { BFF_BASE_URL, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { BFF_BASE_URL, NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -12,19 +12,23 @@ jest.mock('@cowprotocol/common-utils', () => ({
 const mockedFetchWithTimeout = jest.mocked(fetchWithTimeout)
 
 describe('fetchTokenSupply', () => {
-  it('fetches token supply through the BFF', async () => {
+  it.each([
+    [NATIVE_CURRENCIES[SupportedChainId.MAINNET], '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'],
+    [WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET], '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2'],
+    [NATIVE_CURRENCIES[SupportedChainId.SOLANA], '11111111111111111111111111111111'],
+  ])('fetches supply for %s without wrapping native currencies', async (currency, address) => {
     mockedFetchWithTimeout.mockResolvedValue({
       ok: true,
       json: async () => ({ circulatingSupply: 120, totalSupply: 150 }),
     } as Response)
 
-    await expect(fetchTokenSupply(NATIVE_CURRENCIES[SupportedChainId.MAINNET])).resolves.toEqual({
+    await expect(fetchTokenSupply(currency)).resolves.toEqual({
       circulatingSupply: 120,
       totalSupply: 150,
     })
 
     expect(mockedFetchWithTimeout).toHaveBeenCalledWith(
-      `${BFF_BASE_URL}/1/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2/supply`,
+      `${BFF_BASE_URL}/${currency.chainId}/tokens/${address}/supply`,
       expect.objectContaining({ headers: { Accept: 'application/json' } }),
     )
   })
