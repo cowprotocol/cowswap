@@ -10,6 +10,8 @@ import { createCowLogger, getExplorerTwapOrderLink, normalizeError } from '@cowp
 import { type AccountAddress, isEvmChain, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
+import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
+import { COW_SHED_2_1_0_VERSION, CowShedSdk } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 import {
   isEoaAtom,
@@ -27,12 +29,7 @@ import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOp
 import { OrderTabId } from 'entities/routes/routes.atom'
 import { Nullish } from 'types'
 
-import {
-  assertFactoryDeployed,
-  ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG,
-  getCowShedHooks,
-  hasBytecode,
-} from 'modules/accountProxy'
+import { assertFactoryDeployed, ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, hasBytecode } from 'modules/accountProxy'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { uploadAppDataDocOrderbookApi, useAppData } from 'modules/appData'
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
@@ -55,7 +52,6 @@ import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { COMPOSABLE_COW_POLLER_ADDRESS } from '../composable-cow-poller/composable-cow-poller.constants'
-import { getComposableCowPollerScheduleId } from '../composable-cow-poller/composable-cow-poller.utils'
 import { injectPollFundsPreHookIntoAppData } from '../composable-cow-poller/injectPollFundsPreHookIntoAppData'
 import { DEFAULT_TWAP_EXECUTION, TWAP_HANDLER_ADDRESS } from '../const'
 import {
@@ -255,18 +251,26 @@ export function useCreateTwapOrder() {
         if (eoaPoller) {
           salt = assertTwapOrderSalt(createTwapOrderSalt())
 
-          const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
-          await assertFactoryDeployed(config, cowShedHooks.getFactoryAddress(), `chain ${chainId}`)
-          const proxyAddress = cowShedHooks.proxyOf(account) as `0x${string}`
+          const cowShedSdk = new CowShedSdk(
+            undefined,
+            ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions,
+            COW_SHED_2_1_0_VERSION,
+          )
+          await assertFactoryDeployed(
+            config,
+            ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions.factoryAddress,
+            `chain ${chainId}`,
+          )
+          const proxyAddress = cowShedSdk.getCowShedAccount(chainId, account) as `0x${string}`
           isProxyDeployed = await hasBytecode(config, proxyAddress)
 
           // Schedule id is appData-independent; compute before injecting pollFunds into appData.
-          const scheduleId = getComposableCowPollerScheduleId({
-            funder: account as `0x${string}`,
-            handler: TWAP_HANDLER_ADDRESS[chainId] as `0x${string}`,
+          const scheduleId = new ComposableCowPoller(eoaPoller).getScheduleId({
+            funder: account,
+            handler: TWAP_HANDLER_ADDRESS[chainId],
             owner: proxyAddress,
             salt,
-          })
+          }) as Hex
 
           updatedAppData = await injectPollFundsPreHookIntoAppData(appDataInfo, {
             pollerAddress: eoaPoller,
@@ -277,9 +281,8 @@ export function useCreateTwapOrder() {
 
         const paramsStruct = buildTwapOrderParamsStruct(chainId, updatedTwapOrder, salt)
 
-        // TWAP order id (keccak256 of params). Not a CoW orderbook UID and not an onchain tx hash:
-        // TODO: This should probably be removed for v2:
-        const twapOrderId = getConditionalOrderId(paramsStruct)
+        // ComposableCoW order hash (keccak256 of params). Matches indexed `order.hash` until eventId arrives; not a CoW orderbook UID.
+        const twapOrderHash = getConditionalOrderId(paramsStruct)
 
         tradeConfirmActions.onSign(pendingTrade)
 
@@ -388,7 +391,7 @@ export function useCreateTwapOrder() {
             account: account as `0x${string}`,
             twapOrder: updatedTwapOrder,
             twapOrderCreationContext,
-            twapOrderId,
+            twapOrderHash,
             paramsStruct,
             config,
             walletClient,
@@ -436,7 +439,7 @@ export function useCreateTwapOrder() {
           safeAddress: safeAddressOrCowShedAddress,
           resolvedOwner: isEoaTwap ? account : safeAddressOrCowShedAddress,
           submissionDate: new Date().toISOString(),
-          id: twapOrderId,
+          id: twapOrderHash,
           executionInfo: { ...DEFAULT_TWAP_EXECUTION },
         }
 
@@ -446,7 +449,7 @@ export function useCreateTwapOrder() {
 
         emitPostedOrderEvent({
           chainId,
-          id: twapOrderId,
+          id: twapOrderHash,
           orderCreationHash,
           explorerUrl: isEoaTwap ? (eventId ? getExplorerTwapOrderLink(chainId, eventId) : null) : undefined,
           kind: OrderKind.SELL,
@@ -469,7 +472,7 @@ export function useCreateTwapOrder() {
         updateAdvancedOrdersState({ recipient: null, recipientAddress: null })
 
         const ordersTableTab = isEoaTwap ? OrderTabId.OPEN : OrderTabId.SIGNING
-        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderId) : twapOrderId
+        const orderIdToReveal = isEoaTwap ? (eventId ?? twapOrderHash) : twapOrderHash
         setPlacedOrderHighlight({ orderId: orderIdToReveal, tabId: ordersTableTab })
 
         if (isEoaTwap) {
