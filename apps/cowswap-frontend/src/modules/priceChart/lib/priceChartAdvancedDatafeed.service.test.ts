@@ -3,8 +3,8 @@ import { QueryClient } from '@tanstack/react-query'
 import { USDC_MAINNET } from '@cowprotocol/common-const'
 import { Token } from '@cowprotocol/currency'
 
-import { createChartSymbols } from './symbolCatalog'
-import { createPriceChartDatafeed } from './tradingViewDatafeed.service'
+import { createPriceChartDatafeed } from './priceChartAdvancedDatafeed.service'
+import { createChartSymbols } from './priceChartAdvancedSymbols.utils'
 
 import { fetchPriceHistory } from '../api/fetchPriceHistory'
 import { fetchTokenSupply } from '../api/fetchTokenSupply'

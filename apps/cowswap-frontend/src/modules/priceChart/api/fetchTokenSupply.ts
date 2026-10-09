@@ -3,7 +3,7 @@ import { fetchWithTimeout, getCurrencyAddress, normalizeError } from '@cowprotoc
 import { getAddressKey, isSupportedChain } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
-import { PRICE_CHART_TIMEOUT } from '../lib/priceChart.constants'
+import { PRICE_CHART_TIMEOUT } from '../config/priceChart.constants'
 import { logPriceChart } from '../lib/priceChart.utils'
 
 interface TokenSupplyResponse {

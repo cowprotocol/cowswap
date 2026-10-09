@@ -38,16 +38,16 @@ export function PriceChartSettingsDropdown({ sizeControl }: PriceChartSettingsDr
           <SettingsDropdownSection title={t`Chart Settings`}>
             <SettingsBoxGroup>
               <SettingsBox
-                title={t`Auto-refresh`}
-                tooltip={t`Refresh chart data every 30 seconds.`}
-                checked={autoRefresh}
-                toggle={() => setAutoRefresh((value) => !value)}
-              />
-              <SettingsBox
                 title={t`Advanced chart`}
                 tooltip={t`Turn this on for technical indicators, drawing tools, and more ways to explore price movements.`}
                 checked={chartMode === 'advanced'}
                 toggle={() => setChartMode((value) => (value === 'advanced' ? 'simple' : 'advanced'))}
+              />
+              <SettingsBox
+                title={t`Auto-refresh`}
+                tooltip={t`Refresh chart data every 30 seconds.`}
+                checked={autoRefresh}
+                toggle={() => setAutoRefresh((value) => !value)}
               />
               {!isUpToLarge && (
                 <SettingsBox

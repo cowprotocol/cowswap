@@ -10,7 +10,7 @@ import { useLingui } from '@lingui/react/macro'
 import * as styledEl from './PriceChartHeader.styled'
 import { PriceChartSettingsDropdown } from './PriceChartSettingsDropdown'
 
-import { FALLBACK_TOKEN_SYMBOL } from '../lib/priceChart.constants'
+import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
 import { formatPercentageChange, formatPriceChartValue } from '../lib/priceChart.utils'
 
 import type { ChartMetric, ExpansionControl } from '../lib/priceChart.types'

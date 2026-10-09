@@ -5,7 +5,7 @@ import { Loader } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { FALLBACK_TOKEN_SYMBOL } from '../lib/priceChart.constants'
+import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
 
 interface PriceChartStatusProps {
   assetSymbol?: string

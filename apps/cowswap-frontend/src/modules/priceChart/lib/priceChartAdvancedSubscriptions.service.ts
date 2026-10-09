@@ -3,15 +3,16 @@ import type { QueryClient } from '@tanstack/react-query'
 import { normalizeError } from '@cowprotocol/common-utils'
 
 import { toMarketCapBars } from './loadPriceChartHistory'
-import { PRICE_CHART_REFRESH_INTERVAL } from './priceChart.constants'
 import { logPriceChart } from './priceChart.utils'
+import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './priceChartAdvancedBars.utils'
+import { findChartSymbol } from './priceChartAdvancedSymbols.utils'
 import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
-import { findChartSymbol } from './symbolCatalog'
-import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './tradingViewAdapter.utils'
 
-import type { IBasicDataFeed } from './loadChartingLibrary'
+import { PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
+
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { PriceChartSymbolDescriptor } from './tradingView.types'
+import type { IBasicDataFeed } from './priceChartAdvancedLibrary.service'
+import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
 
 const INTERVAL_SECONDS: Record<CandleInterval, number> = {
   '1m': 60,
@@ -25,7 +26,7 @@ const INTERVAL_SECONDS: Record<CandleInterval, number> = {
 
 interface PriceChartSubscriptionParams {
   queryClient: QueryClient
-  symbols: PriceChartSymbolDescriptor[]
+  symbols: ChartSymbol[]
   getLastTimestamp: (ticker: string, interval: CandleInterval) => number | undefined
   onUpdate: (bars: Candle[], ticker: string, interval: CandleInterval) => void
 }

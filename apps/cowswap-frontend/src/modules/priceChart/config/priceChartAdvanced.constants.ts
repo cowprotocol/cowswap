@@ -1,4 +1,4 @@
-import { TRADING_VIEW_LIBRARY_PATH, type ResolutionString } from './loadChartingLibrary'
+import { TRADING_VIEW_LIBRARY_PATH, type ResolutionString } from '../lib/priceChartAdvancedLibrary.service'
 
 const resolutionString = (value: string): ResolutionString => value as ResolutionString
 
