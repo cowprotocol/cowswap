@@ -2,6 +2,7 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
+import { FALLBACK_TOKEN_SYMBOL } from './priceChart.constants'
 import {
   PRO_CHART_EXCHANGE_NAME,
   PRO_CHART_SUPPORTED_RESOLUTIONS,
@@ -20,8 +21,8 @@ export function createChartSymbols(currencies: Currency[]): PriceChartSymbolDesc
   return currencies.flatMap((currency) =>
     SERIES_VARIANTS.map(({ metric, supplyVariant }) => {
       const ticker = `${currency.chainId}_${getAddressKey(getCurrencyAddress(currency))}_USD_${metric}_${supplyVariant}`
-      const description =
-        metric === 'price' ? `${currency.symbol || 'TOKEN'}/USD` : `${currency.symbol || 'TOKEN'} Market Cap`
+      const symbol = currency.symbol || FALLBACK_TOKEN_SYMBOL
+      const description = metric === 'price' ? symbol : `${symbol} Market Cap`
 
       return {
         currency,
