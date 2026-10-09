@@ -9,7 +9,7 @@
     "@cowprotocol/cowswap": 11,
     "@cowprotocol/explorer": 11.7,
     "@cowprotocol/rwa-frontend": 0.5,
-    "@cowprotocol/sdk-tools": 10,
+    "@cowprotocol/sdk-tools": 9.9,
     "@cowprotocol/storybook": 3.6,
     "@cowprotocol/widget-configurator": 11.1,
   },
