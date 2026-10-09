@@ -1,4 +1,5 @@
 import { getIsToken2022 } from '@cowprotocol/common-const'
+import { backendEnv } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
@@ -9,7 +10,6 @@ import { tokensByAddressAtom } from '@cowprotocol/tokens'
 import { TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
-import { SOLANA_TRADING_ENV } from 'tradingSdk/solanaTradingEnv'
 
 import { SolanaQuoteAndPost } from '../types'
 
@@ -67,7 +67,7 @@ export async function getSolanaQuote(
     },
     // The app's own client, so quotes land on the environment the rest of the app talks to. Without it
     // the SDK builds a default one, which is prod — where Solana is not deployed.
-    { advancedSettings, orderBookApi, env: SOLANA_TRADING_ENV },
+    { advancedSettings, orderBookApi, env: backendEnv },
   )
 
   return {

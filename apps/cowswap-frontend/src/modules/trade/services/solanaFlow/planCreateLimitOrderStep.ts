@@ -1,11 +1,10 @@
 import { bytesToHex, hexToBytes } from 'viem'
 
 import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { backendEnv, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { buildSolanaLimitOrderOrder, SolanaLimitOrderParams } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
-import { SOLANA_TRADING_ENV } from 'tradingSdk/solanaTradingEnv'
 
 import { getCreateOrderFundedAccounts, PlannedCreateOrderStep } from './planCreateOrderStep'
 
@@ -32,7 +31,7 @@ export async function planCreateLimitOrderStep({
   const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaLimitOrderOrder({
     ...limitOrderParams,
     appData,
-    env: SOLANA_TRADING_ENV,
+    env: backendEnv,
   })
 
   return {
