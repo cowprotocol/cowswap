@@ -1,117 +1,147 @@
-import { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
+import { customDeadlineToSeconds } from 'modules/twap/utils/deadlinePartsDisplay'
 
-import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { CowModal as Modal } from 'common/pure/Modal'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import * as styledEl from './styled'
+
+import { PaddedDeadlineDisplay } from '../PaddedDeadlineDisplay/PaddedDeadlineDisplay.pure'
 
 type CustomDeadline = { hours: number; minutes: number }
 
 interface CustomDeadlineSelectorProps {
   isOpen: boolean
+  parts: number
+  partDuration: number
   onDismiss: Command
   customDeadline: CustomDeadline
   selectCustomDeadline(deadline: CustomDeadline): void
 }
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
-  const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
+
+// eslint-disable-next-line max-lines-per-function
+export function CustomDeadlineSelector({
+  isOpen,
+  parts,
+  partDuration,
+  onDismiss,
+  customDeadline,
+  selectCustomDeadline,
+}: CustomDeadlineSelectorProps): ReactNode {
   const { hours = 0, minutes = 0 } = customDeadline
   const analytics = useCowAnalytics()
 
   const [hoursValue, setHoursValue] = useState(hours)
   const [minutesValue, setMinutesValue] = useState(minutes)
 
-  useEffect(() => setHoursValue(hours), [hours, isOpen])
-  useEffect(() => setMinutesValue(minutes), [minutes, isOpen])
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    setHoursValue(hours)
+    setMinutesValue(minutes)
+  }, [isOpen, hours, minutes])
 
   const onHoursChange = useCallback((v: number | null) => setHoursValue(!v ? 0 : Math.round(v)), [])
   const onMinutesChange = useCallback((v: number | null) => setMinutesValue(!v ? 0 : Math.round(v)), [])
 
   const isDisabled = !hoursValue && !minutesValue
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const onApply = () => {
+  const description = useMemo(() => {
+    const hasCustomInput = hoursValue > 0 || minutesValue > 0
+    const totalDuration = hasCustomInput
+      ? customDeadlineToSeconds({ hours: hoursValue, minutes: minutesValue })
+      : parts * partDuration
+    const resolvedPartDuration = hasCustomInput && parts > 0 ? Math.ceil(totalDuration / parts) : partDuration
+
+    return (
+      <>
+        <p>
+          <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
+        </p>
+        <p>
+          <Trans>For instance:</Trans>
+        </p>
+        <styledEl.ExampleList>
+          <li>
+            <Trans>
+              Your order consists of{' '}
+              <b>
+                <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+              </b>
+              .
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              Total time to complete the order is <PaddedDeadlineDisplay seconds={totalDuration} />.
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              So a new part is placed every <PaddedDeadlineDisplay seconds={resolvedPartDuration} />, and remains open
+              until the next one becomes active.
+            </Trans>
+          </li>
+        </styledEl.ExampleList>
+      </>
+    )
+  }, [hoursValue, minutesValue, partDuration, parts])
+
+  const handleApply = useCallback(() => {
     analytics.sendEvent({
       category: CowSwapAnalyticsCategory.TWAP,
       action: 'Apply custom deadline',
       label: `${hoursValue}h ${minutesValue}m`,
     })
-    onDismiss()
     selectCustomDeadline({
       hours: hoursValue,
       minutes: minutesValue,
     })
-  }
-
-  const _onDismiss = useCallback(() => {
-    setHoursValue(hours || 0)
-    setMinutesValue(minutes || 0)
     onDismiss()
-  }, [hours, minutes, onDismiss])
+  }, [analytics, hoursValue, minutesValue, onDismiss, selectCustomDeadline])
+
+  const content = (
+    <styledEl.InputsGrid>
+      <TradeNumberInput
+        label={t`Hours`}
+        onUserInput={onHoursChange}
+        value={hoursValue}
+        showUpDownArrows
+        min={0}
+        max={null}
+      />
+      <TradeNumberInput
+        label={t`Minutes`}
+        onUserInput={onMinutesChange}
+        value={minutesValue}
+        showUpDownArrows
+        min={0}
+        max={null}
+      />
+    </styledEl.InputsGrid>
+  )
 
   return (
-    <Modal isOpen={isOpen} onDismiss={_onDismiss}>
-      <styledEl.ModalWrapper>
-        <styledEl.ModalHeader>
-          <h3>
-            <Trans>Define custom total time</Trans>
-          </h3>
-          <styledEl.CloseIcon
-            onClick={_onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.TWAP,
-              action: 'Close custom deadline selector',
-            })}
-          />
-        </styledEl.ModalHeader>
-
-        <styledEl.ModalContent>
-          <TradeNumberInput
-            label={t`Hours`}
-            onUserInput={onHoursChange}
-            value={hoursValue}
-            showUpDownArrows
-            min={0}
-            max={null}
-          />
-          <TradeNumberInput
-            label={t`Minutes`}
-            onUserInput={onMinutesChange}
-            value={minutesValue}
-            showUpDownArrows
-            min={0}
-            max={null}
-          />
-        </styledEl.ModalContent>
-
-        <styledEl.ModalFooter>
-          <styledEl.CancelButton
-            onClick={_onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.TWAP,
-              action: 'Cancel custom deadline selection',
-            })}
-          >
-            <Trans>Cancel</Trans>
-          </styledEl.CancelButton>
-          <ButtonPrimary disabled={isDisabled} onClick={onApply}>
-            <Trans>Apply</Trans>
-          </ButtonPrimary>
-        </styledEl.ModalFooter>
-      </styledEl.ModalWrapper>
-    </Modal>
+    <ConfirmBottomDrawerOrDialog
+      isOpen={isOpen}
+      title={t`TWAP total duration`}
+      description={description}
+      content={content}
+      cancelLabel={t`Cancel`}
+      onCancel={onDismiss}
+      confirmLabel={t`Apply`}
+      onConfirm={handleApply}
+      confirmDisabled={isDisabled}
+    />
   )
 }

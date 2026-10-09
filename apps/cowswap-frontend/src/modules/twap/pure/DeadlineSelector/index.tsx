@@ -8,8 +8,12 @@ import styled from 'styled-components/macro'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
-import { LabelTooltip } from 'modules/twap'
-import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+import { LabelTooltip, LabelTooltipFn, TotalDurationTooltipParams } from 'modules/twap'
+import {
+  customDeadlineToSeconds,
+  deadlinePartsDisplay,
+  secondsToCustomDeadline,
+} from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { TradeWidgetField } from '../../../trade/pure/TradeWidgetField'
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
@@ -20,7 +24,9 @@ interface DeadlineSelectorProps {
   deadline: TwapOrdersDeadline
   isDeadlineDisabled: boolean
   label: LabelTooltip['label']
-  tooltip: LabelTooltip['tooltip']
+  tooltip: LabelTooltipFn<TotalDurationTooltipParams>
+  parts: number
+  partDuration: number
 
   setDeadline(value: TwapOrdersDeadline): void
 }
@@ -85,6 +91,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     isDeadlineDisabled,
     label,
     tooltip,
+    parts,
+    partDuration,
     setDeadline,
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
@@ -122,18 +130,27 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     return items.find((item) => item.value === deadline)?.label || ''
   }, [items, deadline, customDeadline, isCustomDeadline])
 
+  const customDeadlineForModal = useMemo(() => {
+    if (isCustomDeadline) {
+      return customDeadline
+    }
+
+    return secondsToCustomDeadline(deadline / 1000)
+  }, [customDeadline, deadline, isCustomDeadline])
+
   const activeLabelExtracted = extractTextFromStringOrI18nDescriptor(activeLabel) || ''
+  const fieldTooltip = renderTooltip(tooltip, { parts, partDuration })
 
   return (
     <>
       {isDeadlineDisabled ? (
-        <StyledTradeField label={label} tooltip={renderTooltip(tooltip)}>
+        <StyledTradeField label={label} tooltip={fieldTooltip}>
           <div>{activeLabelExtracted}</div>
         </StyledTradeField>
       ) : (
         <StyledTradeSelect
           label={label}
-          tooltip={renderTooltip(tooltip)}
+          tooltip={fieldTooltip}
           items={itemsWithCustom}
           activeLabel={activeLabelExtracted}
           onSelect={onSelect}
@@ -141,9 +158,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       )}
       <CustomDeadlineSelector
         selectCustomDeadline={(value) => setDeadline({ isCustomDeadline: true, customDeadline: value, deadline: 0 })}
-        customDeadline={customDeadline}
+        customDeadline={customDeadlineForModal}
         onDismiss={() => setIsCustomModalOpen(false)}
         isOpen={isCustomModalOpen}
+        parts={parts}
+        partDuration={partDuration}
       />
     </>
   )

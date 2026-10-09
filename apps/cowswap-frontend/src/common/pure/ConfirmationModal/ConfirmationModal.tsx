@@ -1,36 +1,19 @@
-import { ReactNode } from 'react'
+import { ChangeEventHandler, KeyboardEventHandler, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
+import { ConfirmBottomDrawerOrDialog } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
 
-import { ContentWrapper, Modal } from 'common/pure/Modal'
+import * as styledEl from './ConfirmationModal.styled'
 
-import { ConfirmationModalHeader } from './ConfirmationModalHeader'
+const CONFIRM_MODAL_INPUT_ID = 'confirm-modal-input'
+const CONFIRM_MODAL_INSTRUCTION_ID = 'confirm-modal-instruction'
 
-import { ConfirmedButton } from '../ConfirmedButton'
-
-const ModalContentWrapper = styled(ContentWrapper)`
-  flex: 1;
-  padding: 1.5rem;
-  color: inherit;
-  border-radius: 1.5rem;
-`
-
-const Description = styled.p`
-  line-height: 1.4;
-  margin: 0 0 1.5rem;
-`
-
-const Warning = styled.strong`
-  color: inherit;
-`
 export interface ConfirmationModalProps {
   isOpen: boolean
   title: string
   description?: ReactNode
-  warning?: string
   callToAction?: string
   onDismiss: Command
   onEnable: Command
@@ -44,7 +27,6 @@ export function ConfirmationModal({
   isOpen,
   title,
   description,
-  warning,
   callToAction,
   onDismiss,
   onEnable,
@@ -53,29 +35,79 @@ export function ConfirmationModal({
   bottomContent,
   skipInput = false,
 }: ConfirmationModalProps): ReactNode {
-  const shouldShowDescription = !!description
-  const shouldShowWarning = !!warning
+  const [inputValue, setInputValue] = useState('')
+  const shouldShowInput = !skipInput
+  const confirmDisabled = shouldShowInput && !isValidConfirm(inputValue, confirmWord)
+  const showDefaultClickInstruction = !shouldShowInput && bottomContent === undefined
+
+  useEffect(() => {
+    if (!isOpen) {
+      setInputValue('')
+    }
+  }, [isOpen])
+
+  const onInputChange: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => setInputValue(event.target.value ?? ''),
+    [],
+  )
+
+  const onInputKeyDown: KeyboardEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      if (event.key !== 'Enter' || confirmDisabled) {
+        return
+      }
+
+      onEnable()
+    },
+    [confirmDisabled, onEnable],
+  )
+
+  const instruction = shouldShowInput ? (
+    <Trans>
+      Please, type the word <strong>"{confirmWord}"</strong> to continue:
+    </Trans>
+  ) : showDefaultClickInstruction ? (
+    <Trans>Please click confirm to {action}.</Trans>
+  ) : null
+
+  const descriptionContent =
+    description || instruction ? (
+      <>
+        {description ? typeof description === 'string' ? <p>{description}</p> : description : null}
+        {instruction ? <p id={shouldShowInput ? CONFIRM_MODAL_INSTRUCTION_ID : undefined}>{instruction}</p> : null}
+      </>
+    ) : undefined
+
+  const content = (
+    <>
+      {shouldShowInput ? (
+        <styledEl.Input
+          id={CONFIRM_MODAL_INPUT_ID}
+          aria-labelledby={CONFIRM_MODAL_INSTRUCTION_ID}
+          onChange={onInputChange}
+          onKeyDown={onInputKeyDown}
+        />
+      ) : null}
+      {!shouldShowInput && bottomContent !== undefined ? bottomContent : null}
+    </>
+  )
 
   return (
-    <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
-      <ModalContentWrapper>
-        <ConfirmationModalHeader onCloseClick={onDismiss}>{title}</ConfirmationModalHeader>
-        {shouldShowDescription && <Description>{description}</Description>}
-        {shouldShowWarning && (
-          <Description>
-            <Warning>{warning}</Warning>
-          </Description>
-        )}
-        <ConfirmedButton
-          skipInput={skipInput}
-          action={action}
-          confirmWord={confirmWord}
-          onConfirm={onEnable}
-          bottomContent={bottomContent}
-        >
-          {callToAction ? callToAction : <Trans>Confirm</Trans>}
-        </ConfirmedButton>
-      </ModalContentWrapper>
-    </Modal>
+    <ConfirmBottomDrawerOrDialog
+      isOpen={isOpen}
+      title={title}
+      description={descriptionContent}
+      content={content}
+      cancelLabel={<Trans>Cancel</Trans>}
+      onCancel={onDismiss}
+      confirmLabel={callToAction ? callToAction : <Trans>Confirm</Trans>}
+      onConfirm={onEnable}
+      confirmDisabled={confirmDisabled}
+      confirmVariant="error"
+    />
   )
+}
+
+function isValidConfirm(value: string, confirmWord: string): boolean {
+  return typeof value === 'string' && value.toLowerCase().trim() === confirmWord
 }
