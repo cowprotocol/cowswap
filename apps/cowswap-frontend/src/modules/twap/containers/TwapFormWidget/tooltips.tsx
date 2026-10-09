@@ -53,16 +53,30 @@ export function getTotalDurationTooltip({
         <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
       </p>
       <p>
-        <Trans>
-          For instance, your order consists of{' '}
-          <b>
-            <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
-          </b>{' '}
-          placed every <b>{partDurationDisplay}</b>, the total time to complete the order is{' '}
-          <b>{totalDurationDisplay}</b>. Each limit order remains open for <b>{partDurationDisplay}</b> until the next
-          part becomes active.
-        </Trans>
+        <Trans>For instance:</Trans>
       </p>
+      <ul>
+        <li>
+          <Trans>
+            Your order consists of{' '}
+            <b>
+              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+            </b>
+            .
+          </Trans>
+        </li>
+        <li>
+          <Trans>
+            Total time to complete the order is <b>{totalDurationDisplay}</b>.
+          </Trans>
+        </li>
+        <li>
+          <Trans>
+            So a new part is placed every <b>{partDurationDisplay}</b>, and remains open until the next one becomes
+            active.
+          </Trans>
+        </li>
+      </ul>
     </>
   )
 }

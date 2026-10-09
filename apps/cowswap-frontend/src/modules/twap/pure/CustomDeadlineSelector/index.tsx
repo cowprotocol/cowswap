@@ -27,6 +27,7 @@ interface CustomDeadlineSelectorProps {
   selectCustomDeadline(deadline: CustomDeadline): void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function CustomDeadlineSelector({
   isOpen,
   parts,
@@ -68,16 +69,30 @@ export function CustomDeadlineSelector({
           <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
         </p>
         <p>
-          <Trans>
-            For instance, your order consists of{' '}
-            <b>
-              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
-            </b>{' '}
-            placed every <PaddedDeadlineDisplay seconds={resolvedPartDuration} />, the total time to complete the order
-            is <PaddedDeadlineDisplay seconds={totalDuration} />. Each limit order remains open for{' '}
-            <PaddedDeadlineDisplay seconds={resolvedPartDuration} /> until the next part becomes active.
-          </Trans>
+          <Trans>For instance:</Trans>
         </p>
+        <styledEl.ExampleList>
+          <li>
+            <Trans>
+              Your order consists of{' '}
+              <b>
+                <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
+              </b>
+              .
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              Total time to complete the order is <PaddedDeadlineDisplay seconds={totalDuration} />.
+            </Trans>
+          </li>
+          <li>
+            <Trans>
+              So a new part is placed every <PaddedDeadlineDisplay seconds={resolvedPartDuration} />, and remains open
+              until the next one becomes active.
+            </Trans>
+          </li>
+        </styledEl.ExampleList>
       </>
     )
   }, [hoursValue, minutesValue, partDuration, parts])

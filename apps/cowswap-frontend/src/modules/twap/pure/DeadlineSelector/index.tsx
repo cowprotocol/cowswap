@@ -9,7 +9,11 @@ import styled from 'styled-components/macro'
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
 import { LabelTooltip, LabelTooltipFn, TotalDurationTooltipParams } from 'modules/twap'
-import { customDeadlineToSeconds, deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+import {
+  customDeadlineToSeconds,
+  deadlinePartsDisplay,
+  secondsToCustomDeadline,
+} from 'modules/twap/utils/deadlinePartsDisplay'
 
 import { TradeWidgetField } from '../../../trade/pure/TradeWidgetField'
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
@@ -126,6 +130,14 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     return items.find((item) => item.value === deadline)?.label || ''
   }, [items, deadline, customDeadline, isCustomDeadline])
 
+  const customDeadlineForModal = useMemo(() => {
+    if (isCustomDeadline) {
+      return customDeadline
+    }
+
+    return secondsToCustomDeadline(deadline / 1000)
+  }, [customDeadline, deadline, isCustomDeadline])
+
   const activeLabelExtracted = extractTextFromStringOrI18nDescriptor(activeLabel) || ''
   const fieldTooltip = renderTooltip(tooltip, { parts, partDuration })
 
@@ -146,7 +158,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
       )}
       <CustomDeadlineSelector
         selectCustomDeadline={(value) => setDeadline({ isCustomDeadline: true, customDeadline: value, deadline: 0 })}
-        customDeadline={customDeadline}
+        customDeadline={customDeadlineForModal}
         onDismiss={() => setIsCustomModalOpen(false)}
         isOpen={isCustomModalOpen}
         parts={parts}
