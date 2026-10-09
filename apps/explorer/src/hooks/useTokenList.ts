@@ -30,7 +30,7 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
 }
 
 /** The same list the swap app loads for Solana, see `libs/tokens/src/const/tokensList.json`. */
-const SOLANA_TOKEN_LIST_URL = `${COW_CDN}/token-lists/SolanaDefault.json`
+const SOLANA_TOKEN_LIST_URL = `${COW_CDN}/token-lists/CowSwap.1000000001.json`
 
 const EMPTY_TOKENS: TokenListByAddress = {}
 

@@ -227,7 +227,7 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://files.cow.fi/token-lists/SolanaDefault.json"
+      "source": "https://files.cow.fi/token-lists/CowSwap.1000000001.json"
     },
     {
       "priority": 2,
@@ -237,7 +237,7 @@
     {
       "priority": 3,
       "category": "RWA",
-      "source": "https://files.cow.fi/token-lists/SolanaRwa.json"
+      "source": "https://files.cow.fi/token-lists/Rwa.1000000001.json"
     }
   ]
 }
