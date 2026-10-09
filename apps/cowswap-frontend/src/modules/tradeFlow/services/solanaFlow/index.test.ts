@@ -49,6 +49,7 @@ jest.mock('modules/trade/services/solanaSend/estimateSolanaSigningDeadline', () 
 jest.mock('@cowprotocol/sdk-trading-solana', () => ({
   ...jest.requireActual('@cowprotocol/sdk-trading-solana'),
   postSolanaSponsoredOrder: jest.fn(),
+  SolanaTradingSdk: jest.fn(),
 }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
@@ -83,7 +84,7 @@ const SOLANA_CHAIN_ID = SupportedChainId.SOLANA
 const TX_HASH = 'tx-signature-abc'
 const SELL_AMOUNT = 1_000_000_000n
 
-const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary })
+const step = (summary: string): SolanaFlowStep => ({ instructions: [], summary, fundedAccounts: [] })
 const WRAP_STEP = step('Wrap 1 SOL')
 const DELEGATE_STEP = step('Approve WSOL')
 const BUY_ATA_STEP = step('Create USDC account')
@@ -245,7 +246,6 @@ beforeEach(() => {
   mockSendSolanaFlow.mockResolvedValue({ hash: TX_HASH })
   mockSignSolanaFlow.mockResolvedValue({
     transaction: 'signed-tx',
-    lastValidBlockHeight: 1_234,
     signedAtMs: Date.now(),
   })
   // The estimate never resolves by default, matching tests that need no countdown; cases that need a
@@ -470,7 +470,7 @@ describe('solanaFlow', () => {
   // the orders table has to know not to read the delegation from chain while the order waits — otherwise
   // every pending sponsored order is labelled unfillable.
   it('marks the local order as sponsored', async () => {
-    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
 
     await solanaFlow(buildContext(), buildAnalytics(), true)
 
@@ -483,7 +483,7 @@ describe('solanaFlow', () => {
   // The wrap lives in the same deferred bundle, so the orders table needs to know the sold WSOL does
   // not exist yet and the native balance is what backs the order.
   it('records whether a sponsored order is a native sell', async () => {
-    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', lastValidBlockHeight: 1 })
+    mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
 
     await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), true)
 
@@ -813,7 +813,7 @@ describe('solanaFlow · sponsored', () => {
       // The height read drags past the deadline while the signature is already in hand.
       await sleep(80)
 
-      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234, signedAtMs }
+      return { transaction: 'signed-tx', signedAtMs }
     })
 
     const result = await solanaFlow(buildContext(), buildAnalytics(), true)
@@ -832,7 +832,7 @@ describe('solanaFlow · sponsored', () => {
       signContext.onDeadline?.(1_234)
       await sleep(80)
 
-      return { transaction: 'signed-too-late', lastValidBlockHeight: 1_234, signedAtMs: Date.now() }
+      return { transaction: 'signed-too-late', signedAtMs: Date.now() }
     })
     const context = buildContext()
 
@@ -855,8 +855,7 @@ describe('solanaFlow · sponsored', () => {
       signContext.onDeadline?.(1_234)
 
       return new Promise((resolve) => {
-        approveStaleSign = () =>
-          resolve({ transaction: 'stale-signed', lastValidBlockHeight: 1_234, signedAtMs: Date.now() })
+        approveStaleSign = () => resolve({ transaction: 'stale-signed', signedAtMs: Date.now() })
       })
     })
     const staleContext = buildContext()
@@ -889,7 +888,7 @@ describe('solanaFlow · sponsored', () => {
       await tick()
       expect(jotaiStore.get(solanaSigningDeadlineAtom)).toBe(deadline)
 
-      return { transaction: 'signed-tx', lastValidBlockHeight: 1_234, signedAtMs: Date.now() }
+      return { transaction: 'signed-tx', signedAtMs: Date.now() }
     })
     let deadlineAtPostTime: unknown = 'never-posted'
     mockPostSolanaSponsoredOrder.mockImplementation(async () => {

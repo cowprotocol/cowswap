@@ -210,7 +210,7 @@ export function getEoaTwapCurrentStepButton(
         ? {
             children: (
               <LongLoadText fontSize={15} fontWeight={500}>
-                {t`Resetting approval`}
+                {t`Revoking approval`}
                 <ThreeDots />
               </LongLoadText>
             ),
@@ -218,7 +218,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Reset approval`,
+              children: t`Revoke approval`,
               disabled: false,
             }
           : getConfirmWithWalletButton()
@@ -349,6 +349,7 @@ export function getEoaTwapStepDescription(
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
@@ -370,7 +371,7 @@ export function getEoaTwapWalletActionSummaryLabel(
 ): null | string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
-      return t`Reset approval`
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:

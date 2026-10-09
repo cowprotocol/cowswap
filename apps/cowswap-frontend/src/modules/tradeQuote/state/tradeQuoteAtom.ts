@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { getAddressKey, QuoteAndPost } from '@cowprotocol/cow-sdk'
-import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
+import { BridgeProviderQuoteError, BridgeQuoteResults, QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import { isProviderNetworkDeprecatedAtom } from 'entities/common/isProviderNetworkDeprecated.atom'
 import { isProviderNetworkUnsupportedAtom } from 'entities/common/isProviderNetworkUnsupported.atom'
@@ -20,6 +20,7 @@ export interface TradeQuoteState {
   bridgeQuote: BridgeQuoteResults | null
   fetchParams: TradeQuoteFetchParams | null
   error: QuoteApiError | BridgeProviderQuoteError | null
+  errorQuoteParams?: QuoteBridgeRequest
   hasParamsChanged: boolean
   isLoading: boolean
   localQuoteTimestamp: number | null

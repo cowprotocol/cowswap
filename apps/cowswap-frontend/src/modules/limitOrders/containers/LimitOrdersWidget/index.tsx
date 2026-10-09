@@ -231,7 +231,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     middleContent: props.settingsState.limitPricePosition === 'between' ? rateInput : undefined,
     // TODO: Extract nested component outside render function
     // eslint-disable-next-line react/no-unstable-nested-components
-    bottomContent(warnings) {
+    bottomContent(warnings, captcha) {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
@@ -246,6 +246,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+
+          {captcha}
 
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />

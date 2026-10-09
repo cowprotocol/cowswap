@@ -36,7 +36,7 @@ import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 import { GeoDataUpdater, useShouldExcludeRwaTokenLists } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { useTradeTypeInfo } from 'modules/trade'
-import { eoaTwapOrdersEffectAtom } from 'modules/twap'
+import { eoaTwapOrdersEffectAtom, SafeTwapOrdersUpdater, twapAppziSurveyEffectAtom } from 'modules/twap'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
 
@@ -68,6 +68,7 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
+  useAtomValue(twapAppziSurveyEffectAtom)
 
   const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
@@ -93,6 +94,7 @@ export function Updaters(): ReactNode {
       <UserUpdater />
       <FinalizeTxUpdater />
       <PendingOrdersUpdater />
+      <SafeTwapOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
       <OrdersFromApiUpdater />

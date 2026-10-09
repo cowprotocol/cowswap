@@ -196,7 +196,7 @@ export function YieldWidget() {
       />
     ),
     bottomContent: useCallback(
-      (tradeWarnings: ReactNode | null) => {
+      (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {
         return (
           <>
             <TradeRateDetails
@@ -206,6 +206,7 @@ export function YieldWidget() {
             />
             <Warnings />
             {tradeWarnings}
+            {captcha}
             <TradeButtons isOutputLpToken={isOutputLpToken} isTradeContextReady={doTrade.contextIsReady} />
           </>
         )

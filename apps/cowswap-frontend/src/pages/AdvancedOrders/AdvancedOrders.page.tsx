@@ -104,10 +104,10 @@ export function AdvancedOrdersPage(): ReactNode {
             mapCurrencyInfo={mapTwapCurrencyInfo}
             topContent={<TwapSellAmountDescription />}
           >
-            {(tradeWarnings) => (
+            {(tradeWarnings, captcha) => (
               <>
                 {/*TODO: conditionally display a widget for current advanced order type*/}
-                <TwapFormWidget tradeWarnings={tradeWarnings} />
+                <TwapFormWidget tradeWarnings={tradeWarnings} captcha={captcha} />
               </>
             )}
           </AdvancedOrdersWidget>

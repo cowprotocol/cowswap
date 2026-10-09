@@ -14,14 +14,14 @@ const SPONSOR = new PublicKey('So11111111111111111111111111111111111111112')
 const BLOCKHASH = 'GHtXQBsoZHVnNFa9YevAzFr17DJjgHXk3ycTKD5xD3Zi'
 const LAST_VALID_BLOCK_HEIGHT = 1_234
 
-function createContext(currentBlockHeight = LAST_VALID_BLOCK_HEIGHT - 1): SignSolanaFlowContext & {
+function createContext(): SignSolanaFlowContext & {
   sendTransaction: jest.Mock
 } {
   const connection = {
     getLatestBlockhash: jest
       .fn()
       .mockResolvedValue({ blockhash: BLOCKHASH, lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT }),
-    getBlockHeight: jest.fn().mockResolvedValue(currentBlockHeight),
+    getBlockHeight: jest.fn().mockResolvedValue(LAST_VALID_BLOCK_HEIGHT - 1),
   } as unknown as Connection
 
   const sendTransaction = jest.fn()
@@ -75,18 +75,12 @@ describe('signSolanaFlow', () => {
     expect(context.sendTransaction).not.toHaveBeenCalled()
   })
 
-  it('reports the blockhash deadline the order lives under', async () => {
-    const { lastValidBlockHeight } = await signSolanaFlow(createContext(), [step('Swap SOL for USDC')])
-
-    expect(lastValidBlockHeight).toBe(LAST_VALID_BLOCK_HEIGHT)
-  })
-
   // The countdown has to start when the blockhash is taken, so the deadline must be out before the
   // wallet is asked — not when the signature comes back.
   it('announces the deadline before asking the wallet to sign', async () => {
     const context = createContext()
     const order: string[] = []
-    context.onDeadline = (deadline) => order.push(`deadline:${deadline}`)
+    context.onDeadline = () => order.push('deadline')
     const signTransaction = context.provider.signTransaction as jest.Mock
     signTransaction.mockImplementation(async (transaction: Transaction) => {
       order.push('sign')
@@ -97,26 +91,18 @@ describe('signSolanaFlow', () => {
 
     await signSolanaFlow(context, [step('Swap SOL for USDC')])
 
-    expect(order).toEqual([`deadline:${LAST_VALID_BLOCK_HEIGHT}`, 'sign'])
+    expect(order).toEqual(['deadline', 'sign'])
   })
 
-  // A dead blockhash wastes the signature: the order book takes it, no solver can submit it, and the
-  // order rests until validTo while the user believes it is live — so the hand-over must fail loudly.
-  it('refuses to hand over a transaction whose blockhash died while the user was approving', async () => {
-    await expect(
-      signSolanaFlow(createContext(LAST_VALID_BLOCK_HEIGHT + 1), [step('Swap SOL for USDC')]),
-    ).rejects.toThrow('The signing window closed before the transaction was signed')
-  })
-
-  // The user has already signed by the time the height is read; an RPC blip there must not discard
-  // the signature — the order book re-checks blockhash liveness itself.
-  it('still hands over the signed transaction when the height read fails', async () => {
+  // A load-balanced RPC can answer two calls from nodes a minute apart, reading a seconds-old
+  // blockhash as dead — a given signature must never be discarded over a height read-back.
+  it('hands over the signed transaction without reading the block height back', async () => {
     const context = createContext()
-    ;(context.connection.getBlockHeight as jest.Mock).mockRejectedValue(new Error('rpc down'))
 
     const { transaction, signedAtMs } = await signSolanaFlow(context, [step('Swap SOL for USDC')])
 
     expect(transaction).toBeTruthy()
     expect(signedAtMs).toBeLessThanOrEqual(Date.now())
+    expect(context.connection.getBlockHeight).not.toHaveBeenCalled()
   })
 })

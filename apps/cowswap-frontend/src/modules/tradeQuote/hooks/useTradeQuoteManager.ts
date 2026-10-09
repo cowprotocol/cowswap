@@ -76,6 +76,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
 
       update(sellTokenAddress, {
         error,
+        errorQuoteParams: quoteParams,
         fetchParams,
         isLoading: false,
         hasParamsChanged: false,

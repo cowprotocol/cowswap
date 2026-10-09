@@ -72,7 +72,7 @@ function ExecutingStepWrapper(props: OrderProgressBarProps): ReactNode {
 
 function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
   return (
-    <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
+    <ExpiredStep chainId={props.chainId} navigateToNewOrder={props.navigateToNewOrder}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </ExpiredStep>
   )
@@ -106,7 +106,7 @@ function InitialStepWrapper(props: OrderProgressBarProps): ReactNode {
 }
 
 function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
+  const { countdown, stepName, showCancellationModal, isBridgingTrade, chainId } = props
   const isUnfillable = stepName === OrderProgressBarStepName.UNFILLABLE
   const isDelayed = stepName === OrderProgressBarStepName.DELAYED
   const isSubmissionFailed = stepName === OrderProgressBarStepName.SUBMISSION_FAILED
@@ -114,7 +114,12 @@ function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
   const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
 
   return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
+    <SolvingStep
+      chainId={chainId}
+      stepName={stepName}
+      showCancellationModal={showCancellationModal}
+      isBridgingTrade={isBridgingTrade}
+    >
       <RenderProgressTopSection
         {...props}
         countdown={calculatedCountdownValue}

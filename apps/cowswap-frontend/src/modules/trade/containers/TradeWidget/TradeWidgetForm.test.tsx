@@ -71,6 +71,7 @@ jest.mock('modules/trade', () => ({
 }))
 jest.mock('modules/tradeFormValidation', () => ({
   useGetTradeFormValidation: () => null,
+  useSolanaTradeOverhead: () => null,
   TradeFormValidation: {},
 }))
 
@@ -316,19 +317,29 @@ describe('TradeWidgetForm — captcha', () => {
     jest.clearAllMocks()
   })
 
-  it('mounts captcha when bottom content omits trade warnings', () => {
+  it('passes captcha into bottom content next to the action area', () => {
     setupDefaults()
 
     renderWithI18n(
       <TradeWidgetForm
         {...buildProps({
-          slots: { settingsWidget: null, bottomContent: () => <div data-testid="bottom-content" /> },
+          slots: {
+            settingsWidget: null,
+            bottomContent: (_warnings, captcha) => (
+              <>
+                <div data-testid="bottom-content" />
+                {captcha}
+                <div data-testid="action-button" />
+              </>
+            ),
+          },
         })}
       />,
     )
 
     expect(screen.getByTestId('bottom-content')).toBeTruthy()
     expect(screen.getByTestId('captcha-widget')).toBeTruthy()
+    expect(screen.getByTestId('action-button')).toBeTruthy()
   })
 
   it('does not mount captcha for wrap or unwrap', () => {
