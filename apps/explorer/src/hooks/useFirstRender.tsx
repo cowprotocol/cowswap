@@ -1,12 +1,11 @@
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 export default function useFirstRender(): boolean {
-  const firstRender = React.useRef(true)
+  const [isFirstRender, setIsFirstRender] = useState(true)
 
-  React.useEffect(() => {
-    firstRender.current = false
+  useEffect(() => {
+    setIsFirstRender(false)
   }, [])
 
-  // eslint-disable-next-line react-hooks/refs
-  return firstRender.current
+  return isFirstRender
 }
