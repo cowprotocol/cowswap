@@ -37,7 +37,11 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
-import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
+import {
+  getSwapErrorMessage,
+  isBlockhashExpiredError,
+  USER_SWAP_REJECTED_ERROR,
+} from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -225,7 +229,10 @@ export async function solanaFlow(
       return
     }
 
-    if (error instanceof SigningWindowClosedError) {
+    // Two ways to learn the same thing — the blockhash died before the order was placed. The
+    // countdown catches it locally, and the order book catches the rest: the hand-over above is
+    // deliberately optimistic, so a signature given near the boundary is rejected there instead.
+    if (error instanceof SigningWindowClosedError || isBlockhashExpiredError(error)) {
       jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)
     }
 

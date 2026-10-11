@@ -1,6 +1,13 @@
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { jotaiStore } from '@cowprotocol/core'
-import { LATEST_APP_DATA_VERSION, OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  LATEST_APP_DATA_VERSION,
+  OrderBookApiError,
+  OrderClass,
+  OrderKind,
+  SigningScheme,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
 import { UiOrderType } from '@cowprotocol/types'
@@ -862,6 +869,43 @@ describe('solanaFlow · sponsored', () => {
       inputAmount: context.context.inputAmount,
       outputAmount: context.context.outputAmount,
     })
+  })
+
+  // The countdown hands over optimistically, so a signature given near the boundary is caught by the
+  // order book rather than locally. Same dead blockhash, so it has to reach the same screen.
+  it('routes the order book rejecting the blockhash to the expired screen too', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'BlockhashExpired',
+        description: 'blockhash expired',
+      }),
+    )
+    const context = buildContext()
+
+    const result = await solanaFlow(context, buildAnalytics(), true)
+
+    expect(result).toBeUndefined()
+    expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+  })
+
+  it('leaves an unrelated order book rejection on the generic error screen', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'InsufficientFee',
+        description: 'fee too low',
+      }),
+    )
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), true)
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
   })
 
   // Approving a prompt the user already retried past must not place the abandoned order next to the
