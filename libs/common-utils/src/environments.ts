@@ -1,3 +1,5 @@
+import type { CowEnv } from '@cowprotocol/cow-sdk'
+
 import { getConfiguredEnvironmentNameFromEnvVars } from './env'
 import { registerOnWindow } from './misc'
 
@@ -82,4 +84,8 @@ const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || forc
 
 registerOnWindow({ environment: environmentName, prodApi: !isBarnBackendEnv, nodeEnv: process.env.NODE_ENV })
 
-export { isLocal, isDev, isPr, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv }
+/** Deployment every backend call must name: the order book to talk to, and on Solana the settlement
+ * program orders are built for. */
+const backendEnv: CowEnv = isBarnBackendEnv ? 'staging' : 'prod'
+
+export { isLocal, isDev, isPr, isStaging, isProd, isEns, isProdLike, isBarnBackendEnv, backendEnv }

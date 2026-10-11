@@ -11,6 +11,7 @@ import {
   isInjectedWidget,
   shortenAddress,
 } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 import {
@@ -73,6 +74,10 @@ import { CreationDateText } from '../Transaction/styled'
 
 const CowShedInfoStyled = styled(CowShedInfo)`
   margin-top: 10px;
+`
+
+const EmptySurplusCard = styled.div`
+  height: 20px;
 `
 
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
@@ -196,8 +201,8 @@ export function AccountDetails({
         </UnsupportedWalletBox>
       ) : (
         <>
-          <SurplusCard />
-
+          {/*TODO: add it back once Solana support /total_surplus*/}
+          {isSolanaChain(chainId) ? <EmptySurplusCard></EmptySurplusCard> : <SurplusCard />}
           {activityTotalCount ? (
             <LowerSection id="account-activities-list">
               <ActivityHeader>
