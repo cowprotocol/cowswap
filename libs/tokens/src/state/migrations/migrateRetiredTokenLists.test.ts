@@ -86,6 +86,23 @@ describe('migrateRetiredTokenLists', () => {
     expect(readMigrated()[SupportedChainId.MAINNET]).toEqual({ [LIVE_SOURCE]: 'deleted' })
   })
 
+  // An older build, or a tab still running one, writes v7 again after the migration already ran.
+  // Migrating it a second time would put that stale state over everything changed since.
+  it('leaves v8 untouched when an older build has recreated v7', async () => {
+    const alreadyMigrated = { [SupportedChainId.SOLANA]: { [LIVE_SOURCE]: listState(LIVE_SOURCE) } }
+
+    mockStorage.set(NEW_KEY, JSON.stringify(alreadyMigrated))
+    mockStorage.set(
+      OLD_KEY,
+      JSON.stringify({ [SupportedChainId.SOLANA]: { [RETIRED_SOURCE]: listState(RETIRED_SOURCE) } }),
+    )
+
+    await migrateRetiredTokenLists()
+
+    expect(readMigrated()).toEqual(alreadyMigrated)
+    expect(mockStorage.has(OLD_KEY)).toBe(true)
+  })
+
   it('does nothing when there is no v7 state to migrate', async () => {
     await migrateRetiredTokenLists()
 

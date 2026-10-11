@@ -32,9 +32,17 @@ const RETIRED_SOURCE_KEYS = new Set(
  * Done as a key bump rather than an in-place rewrite because `listsStatesByChainAtom` loads with
  * `getOnInit` and is re-persisted wholesale on upsert, so a write behind jotai's back is clobbered by
  * the in-memory copy read before it. Nothing has read v8 yet, so there is nothing to clobber.
+ *
+ * No-ops once v8 exists, so it is safe to call on every load: an older build, or a tab still running
+ * one, writes v7 again, and migrating that a second time would put its stale state over everything the
+ * user has changed since. v7 is left in place for that older build to keep using.
  */
 export async function migrateRetiredTokenLists(): Promise<void> {
   try {
+    if (await localForageJotai.getItem(NEW_STORAGE_KEY)) {
+      return
+    }
+
     const storedRaw = await localForageJotai.getItem<string>(OLD_STORAGE_KEY)
 
     if (!storedRaw) {
