@@ -18,7 +18,7 @@ import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
 
 import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
-import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
+import { formatPriceChartValue, getPriceChartPriceFormat } from '../lib/priceChart.utils'
 import { createPriceChartTimeFormatters } from '../lib/priceChartTime.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
@@ -147,7 +147,7 @@ export function SimpleChartCanvas({
     if (!instance) return
 
     const { chart, priceSeries, volumeSeries } = instance
-    const priceFormat = getCandlePriceFormat(data)
+    const priceFormat = getPriceChartPriceFormat(data)
     const { tickMarkFormatter, timeFormatter } = createPriceChartTimeFormatters(locale)
     chart.applyOptions({
       timeScale: { tickMarkFormatter },
