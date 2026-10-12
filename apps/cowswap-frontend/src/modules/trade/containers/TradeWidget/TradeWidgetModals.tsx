@@ -18,6 +18,7 @@ import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
   ImportTokenModal,
   useCloseTokenSelectWidget,
+  useRestrictedTokensImportStatus,
   useSelectTokenWidgetState,
   useTokenListAddingError,
 } from 'modules/tokensList'
@@ -70,6 +71,7 @@ export function TradeWidgetModals({
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
+  const { isImportDisabled, blockReason } = useRestrictedTokensImportStatus(tokensToImport)
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
@@ -162,7 +164,14 @@ export function TradeWidgetModals({
   }
 
   if (isAutoImportModalOpen) {
-    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
+    return (
+      <ImportTokenModal
+        tokens={tokensToImport}
+        restriction={isImportDisabled && blockReason ? { isBlocked: true, message: blockReason } : null}
+        onDismiss={closeAutoImportModal}
+        onImport={importTokenCallback}
+      />
+    )
   }
 
   if (isWrapNativeOpen) {
