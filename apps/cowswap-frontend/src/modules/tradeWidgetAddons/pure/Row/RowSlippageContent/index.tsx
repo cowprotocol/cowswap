@@ -93,7 +93,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
     !suggestedEqualToUserSlippage && (
       <DefaultSlippage>
         {isSmartSlippageLoading ? (
-          <ThreeDots centered />
+          <ThreeDots centered aria-label={t`Loading suggested slippage`} />
         ) : (
           <>
             <LinkStyledButton onClick={setAutoSlippage}>
@@ -109,7 +109,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
 
   const displaySlippageWithLoader =
     isSmartSlippageLoading && isSmartSlippageApplied ? (
-      <ThreeDots centered />
+      <ThreeDots centered aria-label={t`Loading slippage tolerance`} />
     ) : (
       <>
         {displaySlippage}

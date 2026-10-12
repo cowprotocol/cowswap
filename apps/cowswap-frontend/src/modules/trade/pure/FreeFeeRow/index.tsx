@@ -31,7 +31,7 @@ export function FreeFeeRow({ withTimelineDot = true, loading, isLast = false, te
       testId={testId}
     >
       {loading ? (
-        <ThreeDots centered />
+        <ThreeDots centered aria-label={t`Loading fee`} />
       ) : (
         <GreenText>
           <Trans>FREE</Trans>

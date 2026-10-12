@@ -4,6 +4,7 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { Content, Label } from 'modules/trade/pure/ConfirmDetailsItem/styled'
@@ -44,7 +45,7 @@ export function ReviewOrderModalAmountRow({
   testId = TEST_IDS.confirmOrderAmount,
 }: ReviewOrderAmountRowProps): ReactElement {
   const Amount = loading ? (
-    <ThreeDots centered />
+    <ThreeDots centered aria-label={t`Loading amount`} />
   ) : (
     <Content highlighted={highlighted}>
       {children}
