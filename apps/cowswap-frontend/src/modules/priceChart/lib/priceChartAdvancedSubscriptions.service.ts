@@ -14,6 +14,13 @@ import type { Candle, CandleInterval } from './priceChart.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
 import type { IBasicDataFeed } from 'charting_library'
 
+interface PriceChartPollingParams extends Omit<PriceChartSubscriptionParams, 'symbols'> {
+  symbol: ChartSymbol
+  interval: CandleInterval
+  isAutoRefreshEnabled: () => boolean
+  onRealtimeCallback: Parameters<IBasicDataFeed['subscribeBars']>[2]
+}
+
 interface PriceChartSubscriptionParams {
   queryClient: QueryClient
   symbols: ChartSymbol[]
@@ -46,40 +53,18 @@ export function createPriceChartSubscriptions({
       const interval = mapResolutionToCandleInterval(resolution)
       if (!symbol || !interval) return
 
-      let active = true
-      let fetching = false
-      let lastTimestamp = getLastTimestamp(symbol.ticker, interval)
-      // eslint-disable-next-line complexity
-      const poll = async (): Promise<void> => {
-        if (!active || !autoRefreshEnabled || fetching) return
-        fetching = true
-        try {
-          const to = Math.floor(Date.now() / PRICE_CHART_REFRESH_INTERVAL) * (PRICE_CHART_REFRESH_INTERVAL / 1000)
-          const from = lastTimestamp ?? to - 2 * CANDLE_INTERVAL_SECONDS[interval]
-          if (from >= to) return
-          const prices = await queryClient.fetchQuery(priceHistoryQueryOptions(symbol.currency, from, to, interval))
-          const bars =
-            symbol.metric === 'price' ? prices : await toMarketCapBars(symbol.currency, prices, symbol.supplyVariant)
-          if (!active || !autoRefreshEnabled) return
-          const updates = bars.filter((bar) => lastTimestamp === undefined || bar.timestamp >= lastTimestamp)
-          for (const bar of mapCandlesToTradingViewBars(updates)) {
-            onRealtimeCallback(bar)
-          }
-          if (updates.length) {
-            lastTimestamp = updates[updates.length - 1].timestamp
-            onUpdate(updates, symbol.ticker, interval)
-          }
-        } catch (err: unknown) {
-          if (active) logPriceChart.warn('Failed to refresh Advanced chart', normalizeError(err))
-        } finally {
-          fetching = false
-        }
-      }
-      const timer = setInterval(() => void poll(), PRICE_CHART_REFRESH_INTERVAL)
-      subscriptions.set(subscriberUID, () => {
-        active = false
-        clearInterval(timer)
-      })
+      subscriptions.set(
+        subscriberUID,
+        createSubscription({
+          queryClient,
+          symbol,
+          interval,
+          getLastTimestamp,
+          onUpdate,
+          onRealtimeCallback,
+          isAutoRefreshEnabled: () => autoRefreshEnabled,
+        }),
+      )
     },
     unsubscribeBars,
     setAutoRefreshEnabled: (enabled) => {
@@ -91,4 +76,65 @@ export function createPriceChartSubscriptions({
       subscriptions.clear()
     },
   }
+}
+
+function createSubscription({
+  queryClient,
+  symbol,
+  interval,
+  getLastTimestamp,
+  onUpdate,
+  onRealtimeCallback,
+  isAutoRefreshEnabled,
+}: PriceChartPollingParams): () => void {
+  let active = true
+  let fetching = false
+  let lastTimestamp = getLastTimestamp(symbol.ticker, interval)
+
+  function publishUpdates(bars: Candle[]): void {
+    const updates = bars.filter((bar) => lastTimestamp === undefined || bar.timestamp >= lastTimestamp)
+    if (!updates.length) return
+
+    for (const bar of mapCandlesToTradingViewBars(updates)) {
+      onRealtimeCallback(bar)
+    }
+    lastTimestamp = updates[updates.length - 1].timestamp
+    onUpdate(updates, symbol.ticker, interval)
+  }
+
+  async function poll(): Promise<void> {
+    if (!active || !isAutoRefreshEnabled() || fetching) return
+    fetching = true
+    try {
+      const to = Math.floor(Date.now() / PRICE_CHART_REFRESH_INTERVAL) * (PRICE_CHART_REFRESH_INTERVAL / 1000)
+      const from = lastTimestamp ?? to - 2 * CANDLE_INTERVAL_SECONDS[interval]
+      if (from >= to) return
+
+      const bars = await fetchMetricCandles(queryClient, symbol, from, to, interval)
+      if (!active || !isAutoRefreshEnabled()) return
+      publishUpdates(bars)
+    } catch (err: unknown) {
+      const error = normalizeError(err)
+      if (active) logPriceChart.warn('Failed to refresh Advanced chart', error)
+    } finally {
+      fetching = false
+    }
+  }
+
+  const timer = setInterval(poll, PRICE_CHART_REFRESH_INTERVAL)
+  return () => {
+    active = false
+    clearInterval(timer)
+  }
+}
+
+async function fetchMetricCandles(
+  queryClient: QueryClient,
+  symbol: ChartSymbol,
+  from: number,
+  to: number,
+  interval: CandleInterval,
+): Promise<Candle[]> {
+  const prices = await queryClient.fetchQuery(priceHistoryQueryOptions(symbol.currency, from, to, interval))
+  return symbol.metric === 'price' ? prices : toMarketCapBars(symbol.currency, prices, symbol.supplyVariant)
 }
