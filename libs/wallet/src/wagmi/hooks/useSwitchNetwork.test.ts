@@ -23,7 +23,7 @@ jest.mock('wagmi', () => ({
 }))
 
 jest.mock('../config', () => ({
-  reownAppKit: { switchNetwork: jest.fn(), getActiveChainNamespace: jest.fn() },
+  reownAppKit: { switchNetwork: jest.fn(), getActiveChainNamespace: jest.fn(), getCaipNetwork: jest.fn() },
 }))
 
 jest.mock('../../api/hooks/useNetworkSwitchUnsupported', () => ({
@@ -33,6 +33,7 @@ jest.mock('../../api/hooks/useNetworkSwitchUnsupported', () => ({
 const useConnectionMock = useConnection as jest.Mock
 const switchNetworkMock = reownAppKit.switchNetwork as jest.Mock
 const getActiveChainNamespaceMock = reownAppKit.getActiveChainNamespace as jest.Mock
+const getCaipNetworkMock = reownAppKit.getCaipNetwork as jest.Mock
 
 describe('useSwitchNetwork', () => {
   beforeEach(() => {
@@ -81,5 +82,18 @@ describe('useSwitchNetwork', () => {
     await result.current(SupportedChainId.GNOSIS_CHAIN)
 
     expect(switchNetworkMock).toHaveBeenCalledTimes(1)
+  })
+
+  it('switches AppKit back to the previous network when the wallet rejects the EVM chain switch', async () => {
+    const rejection = new Error('User rejected the request')
+    getActiveChainNamespaceMock.mockReturnValue('solana')
+    getCaipNetworkMock.mockReturnValue(solana)
+    switchNetworkMock.mockResolvedValueOnce(undefined).mockRejectedValueOnce(rejection)
+    const { result } = renderHook(() => useSwitchNetwork())
+
+    await expect(result.current(SupportedChainId.GNOSIS_CHAIN)).rejects.toBe(rejection)
+
+    expect(switchNetworkMock).toHaveBeenCalledTimes(3)
+    expect(switchNetworkMock).toHaveBeenLastCalledWith(solana)
   })
 })
