@@ -1863,6 +1863,10 @@ msgstr "Try adjusting your search term or filters"
 msgid "Begin with TWAP Today!"
 msgstr "Begin with TWAP Today!"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/SimpleChartCanvas.tsx
+msgid "Click chart to set limit price"
+msgstr "Click chart to set limit price"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "Gas-free"
 msgstr "Gas-free"
@@ -4590,6 +4594,11 @@ msgstr "COW token not found for chain {SupportedChainIdMAINNET}"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/tokenListTagText.utils.ts
 msgid "Tokenized by {tokenizedByIssuer}"
 msgstr "Tokenized by {tokenizedByIssuer}"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
+msgid "Pick the limit price from the chart"
+msgstr "Pick the limit price from the chart"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
@@ -9709,6 +9718,7 @@ msgid "Alert channels"
 msgstr "Alert channels"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
+#: apps/cowswap-frontend/src/pages/LimitOrders/RegularLimitOrders.page.tsx
 msgid "Limit"
 msgstr "Limit"
 

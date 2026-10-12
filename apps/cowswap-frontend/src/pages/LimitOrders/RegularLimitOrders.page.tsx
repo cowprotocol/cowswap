@@ -1,7 +1,8 @@
-import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useCallback } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
+import type { Fraction } from '@cowprotocol/currency'
 import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -10,9 +11,16 @@ import { TabOrderTypes } from 'entities/routes/routes.atom'
 
 import { Loading } from 'legacy/components/FlashingLoading'
 
-import { useLimitOrdersDerivedState, limitOrdersSettingsAtom, LimitOrdersWidget } from 'modules/limitOrders'
+import {
+  useLimitOrdersDerivedState,
+  limitOrdersSettingsAtom,
+  LimitOrdersWidget,
+  limitRateAtom,
+  isChartPriceSelectionModeAtom,
+  useUpdateActiveRate,
+} from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
-import { PriceChart } from 'modules/priceChart'
+import { PriceChart, getLimitPriceFromRate } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
 import { useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
 
@@ -30,6 +38,31 @@ export function RegularLimitOrdersPage(): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
+  const { activeRate } = useAtomValue(limitRateAtom)
+  const isChartPriceSelectionMode = useAtomValue(isChartPriceSelectionModeAtom)
+  const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
+  const updateRate = useUpdateActiveRate()
+  const referenceLines = useMemo(
+    () => [
+      {
+        id: 'trade:limit',
+        label: t`Limit`,
+        price:
+          inputCurrency && outputCurrency && activeRate
+            ? getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)
+            : null,
+        variant: 'trade' as const,
+      },
+    ],
+    [inputCurrency, outputCurrency, activeRate, t],
+  )
+  const handleSelectLimitPrice = useCallback(
+    (activeRate: Fraction) => {
+      updateRate({ activeRate, isAlternativeOrderRate: false, isRateFromUrl: false, isTypedValue: false })
+      setIsChartPriceSelectionMode(false)
+    },
+    [setIsChartPriceSelectionMode, updateRate],
+  )
 
   const handleOrdersTableDrawerOpenChange = useCallback(
     (open: boolean) => {
@@ -51,7 +84,12 @@ export function RegularLimitOrdersPage(): ReactNode {
 
       {isUnlocked && (
         <styledEl.SecondaryColumn>
-          <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+          <PriceChart
+            inputCurrency={inputCurrency}
+            outputCurrency={outputCurrency}
+            onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
+            referenceLines={referenceLines}
+          />
           {!hideOrdersTable && (
             <DialogOrInline
               isDialog={isUpToLarge}

@@ -18,7 +18,13 @@ import * as styledEl from '../pure/SimplePriceChart.styled'
 import { priceChartPeriodAtom } from '../state/priceChartPeriodAtom'
 import { priceChartTypeAtom } from '../state/priceChartTypeAtom'
 
-import type { Candle, ChartMetric, SupplyVariant, ExpansionControl } from '../lib/priceChart.types'
+import type {
+  Candle,
+  ChartMetric,
+  SupplyVariant,
+  ExpansionControl,
+  PriceChartReferenceLine,
+} from '../lib/priceChart.types'
 
 export interface SimplePriceChartProps {
   activeCurrency: Currency | undefined
@@ -29,6 +35,8 @@ export interface SimplePriceChartProps {
   onClose?: () => void
   sizeControl?: ExpansionControl
   supplyVariant: SupplyVariant
+  onSelectPrice?: (price: number) => void
+  referenceLines: PriceChartReferenceLine<number>[]
 }
 
 const EMPTY_CANDLES: Candle[] = []
@@ -42,6 +50,8 @@ export function SimplePriceChart({
   sizeControl,
   currencies,
   supplyVariant,
+  onSelectPrice,
+  referenceLines,
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
   const isMobile = useMediaQuery('(max-width: 600px)')
@@ -83,6 +93,8 @@ export function SimplePriceChart({
       <styledEl.ChartFrame>
         <SimpleChartCanvas
           data={data}
+          onSelectPrice={showStatus ? undefined : onSelectPrice}
+          referenceLines={referenceLines}
           chartType={chartType}
           metric={metric}
           showTooltip={!showStatus}

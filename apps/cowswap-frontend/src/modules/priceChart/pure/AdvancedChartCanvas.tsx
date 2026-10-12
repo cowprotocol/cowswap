@@ -7,6 +7,7 @@ import { useTheme } from 'common/hooks/useTheme'
 import * as styledEl from './AdvancedChartCanvas.styled'
 
 import { ADVANCED_CHART_CONTAINER_ID, ADVANCED_CHART_OPTIONS } from '../config/priceChartAdvanced.constants'
+import { usePriceChartAdvancedLimitPrice } from '../hooks/usePriceChartAdvancedLimitPrice'
 import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSeries'
 import { usePriceChartAdvancedTheme } from '../hooks/usePriceChartAdvancedTheme'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
@@ -15,11 +16,14 @@ import { getCustomTimezone } from '../lib/priceChartAdvancedTimezone.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
+import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
+  onSelectPrice?: (price: number) => void
+  referenceLines: PriceChartReferenceLine<number>[]
   datafeed: IBasicDataFeed
   hasVolume: boolean | undefined
   symbols: ChartSymbol[]
@@ -29,6 +33,8 @@ export interface AdvancedChartCanvasProps {
 
 export function AdvancedChartCanvas({
   activeTicker,
+  onSelectPrice,
+  referenceLines,
   datafeed,
   hasVolume,
   symbols,
@@ -126,6 +132,8 @@ export function AdvancedChartCanvas({
 
   usePriceChartAdvancedTheme(readyWidget)
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
+
+  usePriceChartAdvancedLimitPrice(readyWidget, activeTicker, referenceLines, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />
 }
