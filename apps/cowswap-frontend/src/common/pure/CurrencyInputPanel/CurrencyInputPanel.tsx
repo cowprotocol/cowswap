@@ -239,7 +239,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
   const onCurrencySelectionRef = useLatestRef(onCurrencySelection)
 
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(currency, field, (currency) => onCurrencySelectionRef.current(field, currency))
+    openTokenSelectWidget(currency, field, (currency): void => onCurrencySelectionRef.current(field, currency))
   }, [openTokenSelectWidget, currency, onCurrencySelectionRef, field])
 
   return (
