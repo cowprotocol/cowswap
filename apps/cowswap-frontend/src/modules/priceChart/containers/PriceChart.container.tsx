@@ -66,7 +66,6 @@ export function PriceChart({
     outputCurrency,
     metric,
     supplyVariant,
-    selectedPair,
     referenceLines,
     onSelectLimitPrice,
   })

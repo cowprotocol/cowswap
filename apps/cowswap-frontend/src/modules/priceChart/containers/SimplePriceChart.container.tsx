@@ -21,8 +21,8 @@ import { priceChartTypeAtom } from '../state/priceChartTypeAtom'
 import type {
   Candle,
   ChartMetric,
-  SupplyVariant,
   ExpansionControl,
+  SupplyVariant,
   PriceChartReferenceLine,
 } from '../lib/priceChart.types'
 
@@ -55,7 +55,7 @@ export function SimplePriceChart({
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
   const isMobile = useMediaQuery('(max-width: 600px)')
-  const { primary, text } = useTheme()
+  const { primary, text, warning } = useTheme()
   const [period, setPeriod] = useAtom(priceChartPeriodAtom)
   const [chartType, setChartType] = useAtom(priceChartTypeAtom)
   const {
@@ -99,7 +99,7 @@ export function SimplePriceChart({
           metric={metric}
           showTooltip={!showStatus}
           locale={i18n.locale}
-          colors={{ primary, text }}
+          colors={{ primary, text, warning }}
         />
         {showStatus ? (
           <styledEl.OverlayState>

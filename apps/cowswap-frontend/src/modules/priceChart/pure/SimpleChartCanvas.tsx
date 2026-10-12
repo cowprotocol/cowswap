@@ -10,7 +10,6 @@ import {
   HistogramSeries,
   type IChartApi,
   type IPriceLine,
-  type AutoscaleInfo,
   type ISeriesApi,
   type MouseEventParams,
   type Time,
@@ -39,6 +38,7 @@ export interface SimpleChartCanvasProps {
   colors: {
     primary: string
     text: string
+    warning: string
   }
 }
 
@@ -57,7 +57,7 @@ export function SimpleChartCanvas({
   metric,
   showTooltip,
   locale,
-  colors: { primary, text },
+  colors: { primary, text, warning },
 }: SimpleChartCanvasProps): ReactNode {
   const { t } = useLingui()
   const priceLinesRef = useRef(new Map<string, IPriceLine>())
@@ -217,24 +217,13 @@ export function SimpleChartCanvas({
     })
     if (chartType === 'line') instance.priceSeries.applyOptions({ crosshairMarkerVisible: !selecting })
     if (selecting) setTooltip(undefined)
-    instance.priceSeries.applyOptions({
-      autoscaleInfoProvider: referenceLines.length
-        ? (original: () => AutoscaleInfo | null) => {
-            const info = original()
-            if (!info?.priceRange) return info
-            const prices = referenceLines.map((line) => line.price)
-            return {
-              ...info,
-              priceRange: {
-                maxValue: Math.max(info.priceRange.maxValue, ...prices),
-                minValue: Math.min(info.priceRange.minValue, ...prices),
-              },
-            }
-          }
-        : undefined,
-    })
-    syncSimplePriceLines(instance.priceSeries, priceLinesRef.current, referenceLines)
-  }, [chartType, onSelectPrice, referenceLines])
+  }, [chartType, onSelectPrice])
+
+  useEffect(() => {
+    const instance = chartRef.current
+    if (!instance) return
+    syncSimplePriceLines(instance.priceSeries, priceLinesRef.current, referenceLines, warning)
+  }, [chartType, referenceLines, warning])
 
   return (
     <>

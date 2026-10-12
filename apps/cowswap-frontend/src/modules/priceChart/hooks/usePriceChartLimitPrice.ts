@@ -1,17 +1,17 @@
 import { useCallback, useMemo } from 'react'
 
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 
 import { useUsdPrice } from 'modules/usdAmount'
 
 import { loadMarketCapSupply } from '../lib/loadPriceChartHistory'
-import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../lib/priceLimitLine.utils'
+import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../lib/priceChartLimitPrice.utils'
 
-import type { ChartMetric, ChartPair, PriceChartReferenceLine, SupplyVariant } from '../lib/priceChart.types'
+import type { ChartMetric, PriceChartReferenceLine, SupplyVariant } from '../lib/priceChart.types'
 
 const EMPTY_REFERENCE_LINES: PriceChartReferenceLine<Price<Currency, Currency> | null>[] = []
 
@@ -21,7 +21,6 @@ export interface PriceChartLimitPriceOptions {
   outputCurrency: Currency | null
   metric: ChartMetric
   supplyVariant: SupplyVariant
-  selectedPair: ChartPair
   referenceLines?: PriceChartReferenceLine<Price<Currency, Currency> | null>[]
   onSelectLimitPrice?: (rate: Fraction) => void
 }
@@ -33,7 +32,6 @@ export function usePriceChartLimitPrice({
   outputCurrency,
   metric,
   supplyVariant,
-  selectedPair,
   referenceLines = EMPTY_REFERENCE_LINES,
   onSelectLimitPrice,
 }: PriceChartLimitPriceOptions): {
@@ -49,10 +47,10 @@ export function usePriceChartLimitPrice({
       'priceChart',
       'limitPriceSupply',
       activeCurrency?.chainId,
-      activeCurrency ? getAddressKey(getWrappedToken(activeCurrency).address) : null,
+      activeCurrency ? getAddressKey(getCurrencyAddress(activeCurrency)) : null,
       supplyVariant,
     ],
-    queryFn: () => (activeCurrency ? loadMarketCapSupply(activeCurrency, supplyVariant) : Promise.resolve(null)),
+    queryFn: activeCurrency ? () => loadMarketCapSupply(activeCurrency, supplyVariant) : skipToken,
     enabled: metric === 'marketCap' && !!onSelectLimitPrice && !!activeCurrency,
     retry: false,
     staleTime: 30_000,
@@ -69,19 +67,10 @@ export function usePriceChartLimitPrice({
               inputUsdPrice,
               outputUsdPrice,
             )
-            return price === null ? [] : [{ ...line, price, label: line.labels?.[selectedPair] || line.label }]
+            return price === null ? [] : [{ ...line, price }]
           })
         : [],
-    [
-      activeCurrency,
-      inputCurrency,
-      outputCurrency,
-      inputUsdPrice,
-      outputUsdPrice,
-      metric,
-      referenceLines,
-      selectedPair,
-    ],
+    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, metric, referenceLines],
   )
   const handleSelectPrice = useCallback(
     (price: number) => {
@@ -101,9 +90,6 @@ export function usePriceChartLimitPrice({
 
   return {
     referenceLines: activeReferenceLines,
-    onSelectPrice:
-      onSelectLimitPrice && (metric === 'price' || (supply !== null && supply !== undefined && supply > 0))
-        ? handleSelectPrice
-        : undefined,
+    onSelectPrice: onSelectLimitPrice && (metric === 'price' || Number(supply) > 0) ? handleSelectPrice : undefined,
   }
 }
