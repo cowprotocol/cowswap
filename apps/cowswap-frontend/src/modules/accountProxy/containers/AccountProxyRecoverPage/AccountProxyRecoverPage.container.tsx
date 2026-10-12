@@ -5,7 +5,7 @@ import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
 import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonSize, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, FiatAmount, Loader, LongLoadText, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -108,11 +108,11 @@ export function AccountProxyRecoverPage(): ReactNode {
       >
         {txInProgress && <Loader />}
         {txSigningStep && !txInProgress && (
-          <span>
+          <LongLoadText fontWeight={500}>
             {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
             {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
             <ThreeDots />
-          </span>
+          </LongLoadText>
         )}
         {!txSigningStep && !txInProgress && t`Recover funds`}
       </styledEl.ButtonPrimaryStyled>
