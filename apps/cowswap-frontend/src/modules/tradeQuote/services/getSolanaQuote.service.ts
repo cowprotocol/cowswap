@@ -1,4 +1,5 @@
 import { getIsToken2022 } from '@cowprotocol/common-const'
+import { backendEnv } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
@@ -59,14 +60,15 @@ export async function getSolanaQuote(
       // own, and the order book rejects the whole transaction with `InvalidTransaction`.
       sellTokenProgramId: tokenProgramId(sellTokenAddress),
       buyTokenProgramId: tokenProgramId(buyTokenAddress),
-      // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance has to
-      // come from us. `useQuoteParams` always fills this in on Solana, user-set or the settings default.
+      // Jupiter reports 0 bps unless the order is requested for a specific taker, so the tolerance can't come
+      // from the quote provider. `useQuoteParams` passes the user-set or default value, and omits it only when
+      // smart slippage equals the quote's own suggestion, which the SDK then signs.
       slippageBps: quoteParams.swapSlippageBps,
       priceQuality: advancedSettings.quoteRequest?.priceQuality,
     },
     // The app's own client, so quotes land on the environment the rest of the app talks to. Without it
     // the SDK builds a default one, which is prod — where Solana is not deployed.
-    { advancedSettings, orderBookApi },
+    { advancedSettings, orderBookApi, env: backendEnv },
   )
 
   return {

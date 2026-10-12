@@ -57,7 +57,6 @@ export async function buildSolanaOrderIntent(order: SolanaIntentOrder): Promise<
     validTo: order.validTo,
     kind: order.kind,
     partiallyFillable: order.partiallyFillable,
-    createdOnChain: true,
     appData: hexToBytes(appData),
   }
 

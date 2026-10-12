@@ -136,6 +136,9 @@ export enum TradeFormValidation {
   RestrictedForCountry,
   XstockMinimumTradeSize,
 
+  // Solana Alpha (unaudited launch)
+  SolanaAlphaMaxTradeSize,
+
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,
   DisableTradeWithHighPriceImpact,

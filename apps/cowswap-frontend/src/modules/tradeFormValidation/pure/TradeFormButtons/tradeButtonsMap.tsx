@@ -1,18 +1,19 @@
 import { ReactNode } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo, SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken, parseENSAddress } from '@cowprotocol/common-utils'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
-import { CenteredDots, HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { TradeApproveButton } from 'modules/erc20Approve'
 
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
-import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
+import { CaptchaPendingLoading, ProxyAccountLoading, ProxyAccountUnknown, WalletCapabilitiesLoading } from './common'
 
 import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
@@ -55,6 +56,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.XstockMinimumTradeSize]: {
     text: <Trans>Minimum trade size for xStocks tokens is ${XSTOCK_MIN_TRADE_SIZE_USD}</Trans>,
   },
+  [TradeFormValidation.SolanaAlphaMaxTradeSize]: () => (
+    <TradeFormBlankButton disabled>
+      <>
+        <Trans>Trade limit exceeded</Trans>
+        <HelpTooltip
+          placement="top"
+          text={t`While CoW Swap on Solana is in Alpha and unaudited, trades are limited to $${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue.`}
+        />
+      </>
+    </TradeFormBlankButton>
+  ),
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
@@ -139,14 +151,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     ),
   },
   [TradeFormValidation.WalletCapabilitiesLoading]: {
-    text: (
-      <>
-        <CenteredDots smaller />
-      </>
-    ),
+    text: <WalletCapabilitiesLoading />,
   },
   [TradeFormValidation.CaptchaPending]: {
-    text: <CenteredDots smaller />,
+    text: <CaptchaPendingLoading />,
     id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {
@@ -160,7 +168,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: (
       <span>
         <Trans>Fetching price impact</Trans>
-        <CenteredDots smaller />
+        <ThreeDots />
       </span>
     ),
   },
@@ -168,7 +176,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: (
       <span>
         <Trans>Fetching balances</Trans>
-        <CenteredDots smaller />
+        <ThreeDots />
       </span>
     ),
   },

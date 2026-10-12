@@ -2,11 +2,19 @@ import type { ReactNode } from 'react'
 
 import { notFound, permanentRedirect } from 'next/navigation'
 
-import { getAllResourceSlugs, getResourceBySlug, SharedRichTextComponent } from '../../../../../services/cms'
+import {
+  Category,
+  getAllResourceSlugs,
+  getArticles,
+  getCategories,
+  getResourceBySlug,
+  SharedRichTextComponent,
+} from '../../../../../services/cms'
 
 import type { Metadata } from 'next'
 
 import { ResourcePageComponent } from '@/components/ResourcePageComponent'
+import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 import { resolveResourceRoute } from '@/const/resources'
 import { getPageMetadata } from '@/util/getPageMetadata'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
@@ -94,7 +102,16 @@ export default async function ResourcePage({ params }: Props): Promise<ReactNode
     permanentRedirect(resolution.href)
   }
 
-  return <ResourcePageComponent resource={resource} />
+  const { featuredArticles, allCategories } = await loadLearnChrome()
+
+  return (
+    <ResourcePageComponent
+      resource={resource}
+      featuredArticles={featuredArticles}
+      readMoreArticles={featuredArticles.slice(0, 3)}
+      allCategories={allCategories}
+    />
+  )
 }
 
 function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
@@ -104,4 +121,35 @@ function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
     'body' in block &&
     typeof (block as { body?: unknown }).body === 'string'
   )
+}
+
+async function loadLearnChrome(): Promise<{
+  featuredArticles: Awaited<ReturnType<typeof getArticles>>['data']
+  allCategories: { name: string; slug: string }[]
+}> {
+  try {
+    const [featuredArticlesResponse, categoriesResponse] = await Promise.all([
+      getArticles({
+        filters: {
+          featured: {
+            $eq: true,
+          },
+        },
+        pageSize: FEATURED_ARTICLES_PAGE_SIZE,
+      }),
+      getCategories(),
+    ])
+
+    return {
+      featuredArticles: featuredArticlesResponse.data,
+      allCategories:
+        categoriesResponse?.map((category: Category) => ({
+          name: category?.attributes?.name || '',
+          slug: category?.attributes?.slug || '',
+        })) || [],
+    }
+  } catch (error) {
+    console.error('Error loading learn chrome for resource page:', error)
+    return { featuredArticles: [], allCategories: [] }
+  }
 }

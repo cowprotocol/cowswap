@@ -6,14 +6,16 @@ import { useConfig } from 'wagmi'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 
+import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
 import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
 import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { fetchSolanaTokenFromBlockchain } from '../../utils/fetchSolanaTokenFromBlockchain'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
@@ -142,9 +144,20 @@ function useFetchTokenFromBlockchain(
 ): SWRResponse<TokenWithLogo | null> {
   const { chainId } = useAtomValue(environmentAtom)
   const config = useConfig()
+  const { connection } = useAppKitConnection()
 
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input], () => {
-    if (isTokenAlreadyFoundByAddress || !input || !isAddress(input)) {
+  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input, connection?.rpcEndpoint], () => {
+    if (isTokenAlreadyFoundByAddress || !input) {
+      return null
+    }
+
+    if (isSolanaChain(chainId)) {
+      if (!connection || !isSolanaAddress(input)) return null
+
+      return fetchSolanaTokenFromBlockchain(input, chainId, connection).then(TokenWithLogo.fromToken)
+    }
+
+    if (!isAddress(input)) {
       return null
     }
 

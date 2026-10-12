@@ -56,6 +56,8 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
         isLoading: true,
         hasParamsChanged,
         ...(tradeSubjectChanged ? { error: null } : null),
+        // Quotes are keyed by sell token address, which can repeat across chains: never keep another chain's quote
+        ...(didQuoteChainChange(prevQuoteParams, quoteParams) ? { quote: null } : null),
       })
     }
 
@@ -115,6 +117,15 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       onResponse,
     }
   }, [update, processUnsupportedTokenError, sellTokenAddress])
+}
+
+function didQuoteChainChange(prevQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {
+  if (!prevQuoteParams) return false
+
+  return (
+    prevQuoteParams.sellTokenChainId !== quoteParams.sellTokenChainId ||
+    prevQuoteParams.buyTokenChainId !== quoteParams.buyTokenChainId
+  )
 }
 
 // Whether the actual trade subject changed: the token pair, amount or order kind.
