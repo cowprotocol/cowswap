@@ -60,8 +60,8 @@ export function useOpenTokenSelectWidget(): (
             const chainSwitchState = await crossChainFamilySwitch(currency.chainId)
 
             const crossChainSwitched =
-              chainSwitchState !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN &&
-              chainSwitchState !== CrossChainFamilySwitchState.NOT_CONFIRMED
+              chainSwitchState === CrossChainFamilySwitchState.FINISHED ||
+              chainSwitchState === CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
 
             /**
              * In case of switching from EVM to non-EVM (and vice versa)

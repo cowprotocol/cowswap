@@ -89,4 +89,20 @@ describe('useOpenTokenSelectWidget', () => {
     expect(crossChainFamilySwitch).not.toHaveBeenCalled()
     expect(onSelectToken).toHaveBeenCalledWith(solanaToken)
   })
+
+  it('does not select a sell token from another chain family when the wallet failed to disconnect', async () => {
+    crossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.DISCONNECT_FAILED)
+
+    const onSelectToken = await selectSellToken(evmToken, solanaToken)
+
+    expect(onSelectToken).not.toHaveBeenCalled()
+  })
+
+  it('selects a sell token from another chain family once the wallet was disconnected', async () => {
+    crossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.FINISHED)
+
+    const onSelectToken = await selectSellToken(evmToken, solanaToken)
+
+    expect(onSelectToken).toHaveBeenCalledWith(solanaToken)
+  })
 })

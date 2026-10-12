@@ -36,7 +36,7 @@ describe('useOnSelectNetwork', () => {
     switchNetwork = jest.fn().mockResolvedValue(undefined)
     setChainIdToUrl = jest.fn()
     // By default the switch does not cross a chain family, so the regular path runs.
-    handleCrossChainFamilySwitch = jest.fn().mockResolvedValue(false)
+    handleCrossChainFamilySwitch = jest.fn().mockResolvedValue(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
 
     mockedUseSwitchNetwork.mockReturnValue(switchNetwork)
     mockedUseCrossChainFamilySwitch.mockReturnValue(handleCrossChainFamilySwitch)
@@ -46,7 +46,7 @@ describe('useOnSelectNetwork', () => {
   })
 
   it('performs a regular network switch when the change stays within the same chain family', async () => {
-    handleCrossChainFamilySwitch.mockResolvedValue(false)
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.NOT_CROSSING_CHAIN)
     const { result } = renderHook(() => useOnSelectNetwork())
 
     await act(async () => {
@@ -92,6 +92,30 @@ describe('useOnSelectNetwork', () => {
 
     expect(mockedHasWalletConnectAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
     expect(handleCrossChainFamilySwitch).not.toHaveBeenCalled()
+    expect(switchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+  })
+
+  it('does not switch the network when the cross-family flow failed to disconnect the wallet', async () => {
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.DISCONNECT_FAILED)
+    const { result } = renderHook(() => useOnSelectNetwork())
+
+    await act(async () => {
+      await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(switchNetwork).not.toHaveBeenCalled()
+    expect(setChainIdToUrl).not.toHaveBeenCalled()
+  })
+
+  it('switches the network when no wallet is connected', async () => {
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.WALLET_NOT_CONNECTED)
+    const { result } = renderHook(() => useOnSelectNetwork())
+
+    await act(async () => {
+      await result.current(SupportedChainId.SOLANA)
+    })
+
     expect(switchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
     expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
   })

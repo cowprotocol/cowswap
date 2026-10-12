@@ -31,8 +31,8 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
 
         if (
-          switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED ||
-          switchChainState === CrossChainFamilySwitchState.FINISHED
+          switchChainState !== CrossChainFamilySwitchState.NOT_CROSSING_CHAIN &&
+          switchChainState !== CrossChainFamilySwitchState.WALLET_NOT_CONNECTED
         ) {
           return
         }
