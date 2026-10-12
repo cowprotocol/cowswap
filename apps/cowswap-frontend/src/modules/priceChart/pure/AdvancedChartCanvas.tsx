@@ -12,11 +12,6 @@ import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 
-import type {
-  ChartPropertiesOverrides,
-  IBasicDataFeed,
-  IChartingLibraryWidget,
-} from '../lib/priceChartAdvancedApi.types'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 
 export interface AdvancedChartCanvasProps {
