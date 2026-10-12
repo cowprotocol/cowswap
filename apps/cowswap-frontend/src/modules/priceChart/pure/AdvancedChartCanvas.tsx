@@ -7,14 +7,7 @@ import { useTheme } from 'common/hooks/useTheme'
 
 import * as styledEl from './AdvancedChartCanvas.styled'
 
-import {
-  ADVANCED_CHART_CONTAINER_ID,
-  ADVANCED_CHART_CSS_PATH,
-  ADVANCED_CHART_DEFAULT_INTERVAL,
-  ADVANCED_CHART_FAVORITE_INTERVALS,
-  ADVANCED_CHART_LIBRARY_PATH,
-  ADVANCED_CHART_TIME_FRAMES,
-} from '../config/priceChartAdvanced.constants'
+import { ADVANCED_CHART_CONTAINER_ID, ADVANCED_CHART_OPTIONS } from '../config/priceChartAdvanced.constants'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
@@ -75,48 +68,23 @@ export function AdvancedChartCanvas({
       if (isCancelled) return
 
       widget = new TradingViewWidget({
-        autosize: true,
+        ...ADVANCED_CHART_OPTIONS,
         container: containerId,
-        custom_css_url: ADVANCED_CHART_CSS_PATH,
+        custom_css_url: new URL('/tv.css', window.location.href).href,
         custom_formatters: {
           priceFormatterFactory: () => ({
             format: (value: number) => formatPriceChartValue(value, locale),
           }),
         },
         datafeed,
-        disabled_features: [
-          'create_volume_indicator_by_default',
-          'display_market_status',
-          'header_compare',
-          'header_symbol_search',
-          'show_symbol_logo_in_legend',
-          'symbol_search_hot_key',
-        ],
-        enabled_features: [
-          'hide_resolution_in_legend',
-          'iframe_loading_compatibility_mode',
-          'timeframes_toolbar',
-          'header_in_fullscreen_mode',
-          'side_toolbar_in_fullscreen_mode',
-        ],
-        favorites: {
-          chartTypes: ['Candles', 'LineWithMarkers', 'Baseline'],
-          intervals: ADVANCED_CHART_FAVORITE_INTERVALS,
-        },
-        auto_save_delay: 5,
-        interval: ADVANCED_CHART_DEFAULT_INTERVAL,
-        library_path: ADVANCED_CHART_LIBRARY_PATH,
         loading_screen: {
           backgroundColor,
           foregroundColor: currentTheme.primary,
         },
-        locale: 'en',
         overrides: getThemeOverrides(currentTheme),
         saved_data: savedChartState,
         symbol: initialTickerRef.current || symbols[0].ticker,
         theme: currentTheme.darkMode ? 'dark' : 'light',
-        time_frames: ADVANCED_CHART_TIME_FRAMES,
-        timezone: 'Etc/UTC',
       })
 
       widget.subscribe('onAutoSaveNeeded', handleAutoSaveNeeded)
@@ -138,7 +106,7 @@ export function AdvancedChartCanvas({
 
         // Saved layouts can restore a different theme than the constructor option.
         void widget.changeTheme(themeRef.current.darkMode ? 'dark' : 'light').then(() => {
-          if (!isCancelled) widget?.applyOverrides(getThemeOverrides(themeRef.current))
+          if (!isCancelled && widget) widget.applyOverrides(getThemeOverrides(themeRef.current))
         })
         widget.activeChart().setSymbol(nextTicker, () => {
           if (widget && hasVolumeRef.current !== undefined) {
@@ -216,22 +184,10 @@ export function AdvancedChartCanvas({
 }
 
 function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPropertiesOverrides> {
-  const {
-    paper: backgroundColor,
-    primary: primaryColor,
-    text: textColor,
-    border: gridColor,
-    success: upColor,
-    danger: downColor,
-  } = theme
+  const { paper: backgroundColor, primary: primaryColor, text: textColor, border: gridColor } = theme
 
   return {
-    'mainSeriesProperties.candleStyle.borderDownColor': downColor,
-    'mainSeriesProperties.candleStyle.borderUpColor': upColor,
-    'mainSeriesProperties.candleStyle.downColor': downColor,
-    'mainSeriesProperties.candleStyle.upColor': upColor,
-    'mainSeriesProperties.candleStyle.wickDownColor': downColor,
-    'mainSeriesProperties.candleStyle.wickUpColor': upColor,
+    ...ADVANCED_CHART_OPTIONS.overrides,
     'paneProperties.background': backgroundColor,
     'paneProperties.backgroundType': 'solid',
     'paneProperties.vertGridProperties.color': gridColor,
@@ -239,8 +195,6 @@ function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPro
     'scalesProperties.textColor': textColor,
     'scalesProperties.lineColor': gridColor,
     'symbolWatermarkProperties.color': primaryColor,
-    'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
-    'mainSeriesProperties.statusViewStyle.showExchange': false,
   }
 }
 

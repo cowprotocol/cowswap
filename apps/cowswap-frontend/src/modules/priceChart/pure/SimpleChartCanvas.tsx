@@ -18,6 +18,7 @@ import {
 import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
 
+import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
 import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
@@ -32,8 +33,6 @@ export interface SimpleChartCanvasProps {
   colors: {
     primary: string
     text: string
-    success: string
-    danger: string
   }
 }
 
@@ -50,7 +49,7 @@ export function SimpleChartCanvas({
   metric,
   showTooltip,
   locale,
-  colors: { primary, text, success, danger },
+  colors: { primary, text },
 }: SimpleChartCanvasProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<SimpleChartInstance | null>(null)
@@ -133,10 +132,15 @@ export function SimpleChartCanvas({
     instance.priceSeries.applyOptions(
       chartType === 'line'
         ? { lineColor: primary, topColor: transparentize(primary, 0.75), bottomColor: transparentize(primary, 1) }
-        : { upColor: success, downColor: danger, wickUpColor: success, wickDownColor: danger },
+        : {
+            upColor: CANDLE_UP_COLOR,
+            downColor: CANDLE_DOWN_COLOR,
+            wickUpColor: CANDLE_UP_COLOR,
+            wickDownColor: CANDLE_DOWN_COLOR,
+          },
     )
     instance.volumeSeries.applyOptions({ color: transparentize(text, 0.75) })
-  }, [chartType, primary, text, success, danger])
+  }, [chartType, primary, text])
 
   useEffect(() => {
     const instance = chartRef.current
