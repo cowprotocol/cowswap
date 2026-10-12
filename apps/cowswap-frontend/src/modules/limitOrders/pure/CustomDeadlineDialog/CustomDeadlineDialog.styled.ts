@@ -17,6 +17,7 @@ export const InputLabel = styled.label`
 
 export const CustomInput = styled.input`
   --minHeight: ${INPUT_MIN_HEIGHT_PX}px;
+  position: relative;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -27,7 +28,7 @@ export const CustomInput = styled.input`
   min-height: var(--minHeight);
   border: 1px solid transparent;
   color: inherit;
-  padding: 10px 16px;
+  padding: 10px 40px 10px 16px;
   background: var(${UI.COLOR_PAPER_DARKER});
 
   ${Media.upToSmall()} {
@@ -35,6 +36,9 @@ export const CustomInput = styled.input`
   }
 
   &::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 12px;
+    cursor: pointer;
     filter: ${({ theme }) => (theme.darkMode ? 'invert(1)' : 'invert(0)')};
   }
 
