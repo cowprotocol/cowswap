@@ -22,6 +22,7 @@ import {
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
+import { PriceChart } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
 import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
 import {
@@ -74,6 +75,7 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+  const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
@@ -91,7 +93,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable || isUpToLarge}
+        hideOrdersTable={hideOrdersTable || isUpToLarge || !isUnlocked}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -111,28 +113,33 @@ export function AdvancedOrdersPage(): ReactNode {
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {!hideOrdersTable && isUnlocked && (
-          <DialogOrInline
-            isDialog={isUpToLarge}
-            isOpen={isOrdersTableDrawerOpen}
-            onOpenChange={handleOrdersTableDrawerOpenChange}
-          >
-            <Modal.Root className="trade-orders-table">
-              {isUpToLarge ? (
-                <ModalHeader
-                  sticky
-                  title={t`TWAP orders`}
-                  titleAs={Dialog.Title}
-                  onClose={() => setOrdersTableDrawerOpen(false)}
-                />
-              ) : null}
-              <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
-                <Suspense fallback={<Loading />}>
-                  <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
-                </Suspense>
-              </styledEl.SecondaryWrapper>
-            </Modal.Root>
-          </DialogOrInline>
+        {isUnlocked && (
+          <styledEl.SecondaryColumn>
+            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+            {!hideOrdersTable && (
+              <DialogOrInline
+                isDialog={isUpToLarge}
+                isOpen={isOrdersTableDrawerOpen}
+                onOpenChange={handleOrdersTableDrawerOpenChange}
+              >
+                <Modal.Root className="trade-orders-table">
+                  {isUpToLarge && (
+                    <ModalHeader
+                      sticky
+                      title={t`TWAP orders`}
+                      titleAs={Dialog.Title}
+                      onClose={() => setOrdersTableDrawerOpen(false)}
+                    />
+                  )}
+                  <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+                    <Suspense fallback={<Loading />}>
+                      <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                    </Suspense>
+                  </styledEl.SecondaryWrapper>
+                </Modal.Root>
+              </DialogOrInline>
+            )}
+          </styledEl.SecondaryColumn>
         )}
       </styledEl.PageWrapper>
     </HydrateAtom>

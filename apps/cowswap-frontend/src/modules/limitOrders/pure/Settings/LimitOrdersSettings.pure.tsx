@@ -13,6 +13,7 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { PriceChartSettings } from 'modules/priceChart'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
@@ -193,6 +194,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
               </styledEl.DropdownList>
             </styledEl.DropdownContainer>
           </styledEl.SettingsRow>
+          <PriceChartSettings />
         </SettingsDropdownSection>
       </SettingsContainer>
     </div>
