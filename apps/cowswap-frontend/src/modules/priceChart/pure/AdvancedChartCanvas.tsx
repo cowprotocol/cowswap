@@ -13,6 +13,7 @@ import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayou
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
+import type { ChartPropertiesOverrides, IBasicDataFeed, IChartingLibraryWidget, Overrides } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
@@ -47,9 +48,6 @@ export function AdvancedChartCanvas({
   useEffect(() => {
     if (!symbols.length) return
 
-    const currentTheme = themeRef.current
-    const backgroundColor = currentTheme.paper
-    const savedChartState = loadChartLayout()
     let widget: IChartingLibraryWidget | null = null
     let isCancelled = false
     const handleAutoSaveNeeded = (): void => {
@@ -62,6 +60,8 @@ export function AdvancedChartCanvas({
 
       if (isCancelled) return
 
+      const currentTheme = themeRef.current
+      const overrides = getThemeOverrides(currentTheme)
       widget = new TradingViewWidget({
         ...ADVANCED_CHART_OPTIONS,
         container: containerId,
@@ -73,11 +73,12 @@ export function AdvancedChartCanvas({
         },
         datafeed,
         loading_screen: {
-          backgroundColor,
+          backgroundColor: currentTheme.paper,
           foregroundColor: currentTheme.primary,
         },
-        overrides: getThemeOverrides(currentTheme),
-        saved_data: savedChartState,
+        overrides,
+        settings_overrides: overrides,
+        saved_data: loadChartLayout(overrides),
         symbol: initialTickerRef.current || symbols[0].ticker,
         theme: currentTheme.darkMode ? 'dark' : 'light',
       })
@@ -99,10 +100,13 @@ export function AdvancedChartCanvas({
           return
         }
 
-        // Saved layouts can restore a different theme than the constructor option.
-        void widget.changeTheme(themeRef.current.darkMode ? 'dark' : 'light').then(() => {
-          if (!isCancelled && widget) widget.applyOverrides(getThemeOverrides(themeRef.current))
-        })
+        if (currentTheme.darkMode !== themeRef.current.darkMode) {
+          widget.changeTheme(themeRef.current.darkMode ? 'dark' : 'light').then(() => {
+            if (!isCancelled && widget) widget.applyOverrides(getThemeOverrides(themeRef.current))
+          })
+        } else {
+          widget.applyOverrides(getThemeOverrides(themeRef.current))
+        }
         widget.activeChart().setSymbol(nextTicker, () => {
           if (widget && hasVolumeRef.current !== undefined) {
             syncTradingViewVolumeStudy(widget, hasVolumeRef.current)
@@ -113,7 +117,7 @@ export function AdvancedChartCanvas({
       widgetRef.current = widget
     }
 
-    void setup().catch((err: unknown) => {
+    setup().catch((err: unknown) => {
       const error = normalizeError(err)
       logPriceChart.warn('Failed to load Advanced chart', error)
       if (!isCancelled) onError(true)
@@ -160,7 +164,7 @@ export function AdvancedChartCanvas({
       return
     }
 
-    void widget.changeTheme(theme.darkMode ? 'dark' : 'light').then(() => {
+    widget.changeTheme(theme.darkMode ? 'dark' : 'light').then(() => {
       widget.applyOverrides(getThemeOverrides(theme))
     })
   }, [theme])
@@ -178,7 +182,7 @@ export function AdvancedChartCanvas({
   return <styledEl.ChartContainer id={containerId} />
 }
 
-function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPropertiesOverrides> {
+function getThemeOverrides(theme: ReturnType<typeof useTheme>): Partial<ChartPropertiesOverrides> & Overrides {
   const { paper: backgroundColor, primary: primaryColor, text: textColor, border: gridColor } = theme
 
   return {
@@ -201,7 +205,7 @@ function syncTradingViewVolumeStudy(widget: IChartingLibraryWidget, hasVolume: b
 
   if (hasVolume) {
     if (!volumeStudies.length) {
-      void chart.createStudy(VOLUME_STUDY_NAME, true, false)
+      chart.createStudy(VOLUME_STUDY_NAME, true, false)
     }
 
     volumeStudies.forEach((study) => chart.getStudyById(study.id).mergeUp())
