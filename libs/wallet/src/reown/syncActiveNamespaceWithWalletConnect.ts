@@ -11,20 +11,32 @@ export type WalletConnectNamespaceAppKit = Pick<AppKit, 'getUniversalProvider' |
 
 export function bindActiveNamespaceToWalletConnect(appKit: WalletConnectNamespaceAppKit): void {
   let isSyncing = false
+  let hasPendingSync = false
 
-  ChainController.subscribe(() => {
-    if (isSyncing) return
+  const sync = async (): Promise<void> => {
+    if (isSyncing) {
+      hasPendingSync = true
+      return
+    }
 
     isSyncing = true
 
-    syncActiveNamespaceWithWalletConnect(appKit)
-      .catch((err: unknown) => {
+    do {
+      hasPendingSync = false
+
+      try {
+        await syncActiveNamespaceWithWalletConnect(appKit)
+      } catch (err: unknown) {
         const error = normalizeError(err)
         logWallet.error(new Error('Failed to sync the active namespace with WalletConnect', { cause: error }))
-      })
-      .finally(() => {
-        isSyncing = false
-      })
+      }
+    } while (hasPendingSync)
+
+    isSyncing = false
+  }
+
+  ChainController.subscribe(() => {
+    void sync()
   })
 }
 

@@ -1,6 +1,7 @@
 import { ChainController, ConnectorController } from '@reown/appkit-controllers'
 
 import {
+  bindActiveNamespaceToWalletConnect,
   syncActiveNamespaceWithWalletConnect,
   WalletConnectNamespaceAppKit,
 } from './syncActiveNamespaceWithWalletConnect'
@@ -20,12 +21,14 @@ jest.mock('@reown/appkit-controllers', () => ({
       ]),
     },
     getAccountData: jest.fn(),
+    subscribe: jest.fn(),
   },
   ConnectorController: { getConnectorId: jest.fn() },
 }))
 
 const getAccountDataMock = ChainController.getAccountData as jest.Mock
 const getConnectorIdMock = ConnectorController.getConnectorId as jest.Mock
+const subscribeMock = ChainController.subscribe as jest.Mock
 
 const EVM_ADDRESS = '0x0000000000000000000000000000000000000001'
 const SOLANA_ADDRESS = 'So1anaAddress'
@@ -111,5 +114,44 @@ describe('syncActiveNamespaceWithWalletConnect', () => {
     await syncActiveNamespaceWithWalletConnect(appKit)
 
     expect(appKit.switchNetwork).not.toHaveBeenCalled()
+  })
+})
+
+describe('bindActiveNamespaceToWalletConnect', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('re-runs the sync for state changes that happened while a sync was in flight', async () => {
+    mockState('solana', { eip155: { connectorId: 'walletConnect', address: EVM_ADDRESS } })
+    let resolveFirstProvider: () => void = () => undefined
+    const appKit = createAppKit({ eip155: { accounts: [`eip155:1:${EVM_ADDRESS}`] } })
+    appKit.getUniversalProvider.mockImplementationOnce(
+      () => new Promise((resolve) => (resolveFirstProvider = () => resolve(undefined))),
+    )
+
+    bindActiveNamespaceToWalletConnect(appKit)
+    const [[onStateChange]] = subscribeMock.mock.calls
+
+    onStateChange()
+    onStateChange()
+    resolveFirstProvider()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(appKit.getUniversalProvider).toHaveBeenCalledTimes(2)
+    expect(appKit.switchNetwork).toHaveBeenCalledWith(MAINNET_NETWORK)
+  })
+
+  it('runs a single sync for a state change without concurrent updates', async () => {
+    mockState('solana', { eip155: { connectorId: 'walletConnect', address: EVM_ADDRESS } })
+    const appKit = createAppKit({ eip155: { accounts: [`eip155:1:${EVM_ADDRESS}`] } })
+
+    bindActiveNamespaceToWalletConnect(appKit)
+    const [[onStateChange]] = subscribeMock.mock.calls
+
+    onStateChange()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(appKit.getUniversalProvider).toHaveBeenCalledTimes(1)
   })
 })
