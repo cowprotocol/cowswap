@@ -3438,6 +3438,10 @@ msgstr "dialog content"
 #~ msgid "Cross chain swap"
 #~ msgstr "Cross chain swap"
 
+#: apps/cowswap-frontend/src/common/pure/TradeLoadingButton/index.tsx
+msgid "Loading quote"
+msgstr "Loading quote"
+
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "This is an {cancellationType} cancellation"
 msgstr "This is an {cancellationType} cancellation"
@@ -5699,6 +5703,10 @@ msgstr "Set your own price"
 #~ msgid "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
 #~ msgstr "This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute your order."
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
+msgid "Loading wallet capabilities"
+msgstr "Loading wallet capabilities"
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderModalCodeInfo.tsx
 msgid "Your wallet is already linked to a referral code."
 msgstr "Your wallet is already linked to a referral code."
@@ -6966,6 +6974,10 @@ msgstr "No surplus for the given time period"
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Notifications"
 msgstr "Notifications"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
+msgid "Loading captcha"
+msgstr "Loading captcha"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
 msgid "Trading mode"
