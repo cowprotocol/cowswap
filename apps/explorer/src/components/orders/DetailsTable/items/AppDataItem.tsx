@@ -1,18 +1,13 @@
 import { ReactNode } from 'react'
 
-import { AppDataRowContent } from '../../../AppDataRowContent/AppDataRowContent'
 import { DetailRow } from '../../../common/DetailRow'
+import { RowWithCopyButton } from '../../../common/RowWithCopyButton'
 import { DetailsTableTooltips } from '../detailsTableTooltips'
 
-interface AppDataItemProps {
-  appData: string
-  fullAppData?: string | null
-}
-
-export function AppDataItem({ appData, fullAppData }: AppDataItemProps): ReactNode {
+export function AppDataItem({ appData }: { appData: string }): ReactNode {
   return (
     <DetailRow label="AppData" tooltipText={DetailsTableTooltips.appData}>
-      <AppDataRowContent appData={appData} fullAppData={fullAppData ?? undefined} />
+      <RowWithCopyButton textToCopy={appData} contentsToDisplay={appData} />
     </DetailRow>
   )
 }
