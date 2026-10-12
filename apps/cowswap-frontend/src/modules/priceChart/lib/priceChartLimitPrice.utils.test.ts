@@ -1,7 +1,7 @@
 import { NATIVE_CURRENCIES, USDC_MAINNET } from '@cowprotocol/common-const'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Fraction } from '@cowprotocol/currency'
+import { Fraction, Price } from '@cowprotocol/currency'
 
 import {
   getActivePriceLimitLinePrice,
@@ -26,6 +26,13 @@ describe('priceChartLimitPrice.utils', () => {
     it('preserves the rate across currencies with different decimals', () => {
       expect(limitPrice?.toSignificant(10)).toBe('2000')
     })
+  })
+
+  it('accepts a Price stored as the active rate without applying decimal scaling twice', () => {
+    const rate = new Price(inputCurrency, outputCurrency, 10n ** 18n, 2000n * 10n ** 6n)
+    const price = getLimitPriceFromRate(inputCurrency, outputCurrency, rate)
+    expect(price.toSignificant(10)).toBe('2000')
+    expect(getActivePriceLimitLinePrice(inputCurrency, price, inputCurrency, outputCurrency, null, 1)).toBe(2000)
   })
 
   it('maps input USD chart selections to limit rates', () => {
