@@ -3,6 +3,7 @@ import { ReactNode, useEffect, useState } from 'react'
 import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
 import { LongLoadText } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { ThreeDots } from '../ThreeDots/ThreeDots.pure'
@@ -26,5 +27,5 @@ export function TradeLoadingButton(): ReactNode {
     )
   }
 
-  return <ThreeDots centered />
+  return <ThreeDots centered aria-label={t`Loading quote`} />
 }

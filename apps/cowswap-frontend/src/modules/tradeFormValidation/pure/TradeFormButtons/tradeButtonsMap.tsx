@@ -13,7 +13,7 @@ import { TradeApproveButton } from 'modules/erc20Approve'
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
-import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
+import { CaptchaPendingLoading, ProxyAccountLoading, ProxyAccountUnknown, WalletCapabilitiesLoading } from './common'
 
 import { XSTOCK_MIN_TRADE_SIZE_USD } from '../../consts'
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
@@ -140,14 +140,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     ),
   },
   [TradeFormValidation.WalletCapabilitiesLoading]: {
-    text: (
-      <>
-        <ThreeDots centered />
-      </>
-    ),
+    text: <WalletCapabilitiesLoading />,
   },
   [TradeFormValidation.CaptchaPending]: {
-    text: <ThreeDots centered />,
+    text: <CaptchaPendingLoading />,
     id: 'captcha-pending',
   },
   [TradeFormValidation.CaptchaRequired]: {
