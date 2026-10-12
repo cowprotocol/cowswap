@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
@@ -68,7 +69,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
   if (knownInputCurrencyId) lastKnownInputCurrencyIdRef.current = knownInputCurrencyId
   if (knownOutputCurrencyId) lastKnownOutputCurrencyIdRef.current = knownOutputCurrencyId
 
-  return useCallback(
+  const handleCurrencySelection = useCallback(
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
     (
@@ -162,6 +163,13 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       resolveCurrencyAddressOrSymbol,
       enableSellEqBuy,
     ],
+  )
+
+  const handleCurrencySelectionRef = useLatestRef(handleCurrencySelection)
+
+  return useCallback<CurrencySelectionCallback>(
+    (...args) => handleCurrencySelectionRef.current(...args),
+    [handleCurrencySelectionRef],
   )
 }
 
