@@ -94,6 +94,28 @@ describe('getOrdersTableList', () => {
     expect(result.unfillable).toHaveLength(1)
   })
 
+  it('marks an order as unfillable when the balance is insufficient and the allowance is unknown', () => {
+    const order = makePendingOrder({ isUnfillable: false })
+    groupOrdersTable.mockReturnValue([order])
+    getOrderParams.mockReturnValue({
+      hasEnoughBalance: false,
+      hasEnoughAllowance: undefined,
+    })
+    const setIsOrderUnfillable = jest.fn()
+
+    const result = getOrdersTableList(
+      [order as never],
+      TabOrderTypes.LIMIT,
+      1,
+      balancesAndAllowances,
+      permitState,
+      setIsOrderUnfillable,
+    )
+
+    expect(setIsOrderUnfillable).toHaveBeenCalledWith({ chainId: 1, id: order.id, isUnfillable: true })
+    expect(result.unfillable).toHaveLength(1)
+  })
+
   it('marks an EOA TWAP as unfillable when the next part is not funded', () => {
     const order = makePendingOrder({ composableCowInfo: { id: 'generator' }, isEoaTwapOrder: true })
     const twapOrders = { [order.id]: { order: { partSellAmount: '500' } } } as unknown as TwapOrdersList
