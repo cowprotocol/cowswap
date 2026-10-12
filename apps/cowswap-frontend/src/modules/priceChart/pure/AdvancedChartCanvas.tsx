@@ -7,7 +7,8 @@ import { useTheme } from 'common/hooks/useTheme'
 import * as styledEl from './AdvancedChartCanvas.styled'
 
 import { ADVANCED_CHART_CONTAINER_ID, ADVANCED_CHART_OPTIONS } from '../config/priceChartAdvanced.constants'
-import { usePriceChartAdvancedLimitPrice } from '../hooks/usePriceChartAdvancedLimitPrice'
+import { usePriceChartAdvancedPriceSelection } from '../hooks/usePriceChartAdvancedPriceSelection'
+import { usePriceChartAdvancedReferenceLines } from '../hooks/usePriceChartAdvancedReferenceLines'
 import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSeries'
 import { usePriceChartAdvancedTheme } from '../hooks/usePriceChartAdvancedTheme'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
@@ -133,7 +134,8 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedTheme(readyWidget)
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
 
-  usePriceChartAdvancedLimitPrice(readyWidget, activeTicker, referenceLines, onSelectPrice)
+  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme.warning)
+  usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />
 }

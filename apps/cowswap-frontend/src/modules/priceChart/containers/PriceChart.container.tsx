@@ -66,7 +66,6 @@ export const PriceChart = memo(function PriceChart({
     outputCurrency,
     metric,
     supplyVariant,
-    selectedPair,
     referenceLines,
     onSelectLimitPrice,
   })
