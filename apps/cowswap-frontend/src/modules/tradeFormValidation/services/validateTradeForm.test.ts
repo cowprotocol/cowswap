@@ -704,4 +704,12 @@ describe('validateTradeForm - Solana swap recipient', () => {
     const result = validateTradeForm(withRecipient(EVM_RECIPIENT))
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
   })
+
+  test('rejects an ENS name as recipient even when it resolves', () => {
+    const result = validateTradeForm({
+      ...withRecipient('vitalik.eth'),
+      recipientEnsAddress: EVM_RECIPIENT,
+    })
+    expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
 })

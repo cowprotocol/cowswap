@@ -205,10 +205,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : inputCurrency?.chainId)
     const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
-    /**
-     * For bridging, recipient can be only an address (ENS is not supported)
-     */
-    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+    // recipientEnsAddress can outlive a switch from an EVM chain to a non-ENS one (e.g. Solana)
+    const isEnsRecipientAllowed = !isBridging && strategy.supportsENS && !!recipientEnsAddress
+    const isRecipientValid = isRecipientAddress || isEnsRecipientAllowed
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
