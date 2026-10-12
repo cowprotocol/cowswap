@@ -1,4 +1,4 @@
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -207,6 +207,182 @@ describe('validateTradeForm - xStock logic', () => {
     } as unknown as TradeFormValidationContext
 
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.CaptchaRequired])
+  })
+})
+
+describe('validateTradeForm - Solana Alpha trade limit', () => {
+  const baseContext: Partial<TradeFormValidationContext> = {
+    derivedTradeState: {
+      orderKind: OrderKind.SELL,
+      inputCurrencyAmount: mockCurrencyAmount('100'),
+      outputCurrencyAmount: mockCurrencyAmount('100'),
+      inputCurrency: { address: '0x1', chainId: SupportedChainId.SOLANA } as unknown as Currency,
+      outputCurrency: { address: '0x2', chainId: SupportedChainId.SOLANA } as unknown as Currency,
+      inputCurrencyBalance: mockCurrencyAmount('100000'),
+      outputCurrencyBalance: mockCurrencyAmount('100000'),
+      inputCurrencyFiatAmount: null,
+      outputCurrencyFiatAmount: null,
+      recipient: null,
+      isQuoteBasedOrder: true,
+      tradeType: TradeType.SWAP,
+      slippage: null,
+    },
+    tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+    isOnline: true,
+    isSupportedWallet: true,
+    account: '0x123',
+    isApproveRequired: ApproveRequiredReason.NotRequired,
+    isWrapUnwrap: false,
+    isSafeReadonlyUser: false,
+    isSwapUnsupported: false,
+    recipientEnsAddress: null,
+    isInsufficientBalanceOrderAllowed: false,
+    isProviderNetworkUnsupported: false,
+    isProviderNetworkDeprecated: false,
+    intermediateTokenToBeImported: false,
+    isAccountProxyLoading: false,
+    isProxySetupValid: true,
+    customTokenError: undefined,
+    isRestrictedForCountry: false,
+    isBalancesLoading: false,
+    isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
+    isCaptchaPending: false,
+    isCaptchaRequired: false,
+  }
+
+  test('shows the trade limit for sell orders when the sell amount is above $10,000', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('does not show the trade limit when the sell amount is exactly $10,000', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('10000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('9990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('does not show the trade limit when the sell amount is below $10,000', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('100'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('99'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('does not apply the limit on EVM chains', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrency: { address: '0x1', chainId: SupportedChainId.MAINNET } as unknown as Currency,
+        outputCurrency: { address: '0x2', chainId: SupportedChainId.MAINNET } as unknown as Currency,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context)
+    expect(result || []).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('uses the buy-side USD amount for buy orders', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyFiatAmount: mockCurrencyAmount('100'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('prioritizes the trade limit over quote errors', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+      tradeQuote: {
+        isLoading: false,
+        error: new Error('Insufficient liquidity'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('blocks the trade when the USD value of the amount is unknown', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('does not apply the cap to wrap/unwrap, where fiat amounts are always null', () => {
+    const context = {
+      ...baseContext,
+      isWrapUnwrap: true,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+  })
+
+  test('prioritizes the trade limit over wallet connection', () => {
+    const context = {
+      ...baseContext,
+      account: undefined,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: mockCurrencyAmount('24990'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
   })
 })
 
