@@ -5,7 +5,7 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { alphaNetworksEnabledAtom } from 'modules/solanaAlpha'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 
 import { mapChainInfo } from '../utils/mapChainInfo'
 

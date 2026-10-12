@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
@@ -7,6 +8,7 @@ import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -45,8 +47,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isSolanaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
@@ -61,8 +64,16 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
         label: darkMode ? t`Light mode` : t`Dark mode`,
         onClick: toggleDarkMode,
       },
+      ...(isSolanaEnabled
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable alpha networks` : t`Enable alpha networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
     ],
-    [darkMode, toggleDarkMode, t],
+    [darkMode, toggleDarkMode, isSolanaEnabled, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
   )
 
   const languageNavItems = {

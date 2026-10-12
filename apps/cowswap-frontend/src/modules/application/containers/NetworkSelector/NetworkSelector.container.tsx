@@ -7,12 +7,11 @@ import { Media } from '@cowprotocol/ui'
 import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { alphaNetworksEnabledAtom } from 'modules/solanaAlpha'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'

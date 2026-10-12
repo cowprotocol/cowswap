@@ -5,11 +5,11 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { useSupportedChains } from './useSupportedChains'
 
-import { alphaNetworksEnabledAtom } from '../../solanaAlpha/state/alphaNetworksEnabledAtom'
 import { mapChainInfo } from '../utils/mapChainInfo'
 
 jest.mock('launchdarkly-react-client-sdk', () => ({
