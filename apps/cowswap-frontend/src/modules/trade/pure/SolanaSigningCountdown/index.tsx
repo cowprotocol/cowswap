@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { shortenAddress } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, Media, TokenAmount, UI } from '@cowprotocol/ui'
@@ -9,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { AddressLink } from 'common/pure/AddressLink'
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { CountdownDigits } from './CountdownDigits'
@@ -40,6 +40,7 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
   const remainingMs = useRemainingMs(expiresAt)
   const isExpired = remainingMs === 0
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
+  const recipientChainId = outputAmount?.currency.chainId
 
   return (
     <NewModal
@@ -81,10 +82,12 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
           <Trans>for at least</Trans>
           <TokenLogo token={outputAmount?.currency} size={20} />
           <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
-          {recipient && (
+          {recipient && recipientChainId && (
             <>
               <Trans>to</Trans>
-              <b title={recipient}>{shortenAddress(recipient)}</b>
+              <b title={recipient}>
+                <AddressLink address={recipient} chainId={recipientChainId} />
+              </b>
             </>
           )}
         </AmountsRow>
