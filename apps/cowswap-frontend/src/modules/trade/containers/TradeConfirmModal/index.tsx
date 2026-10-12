@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSolanaChain, isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
@@ -30,6 +30,7 @@ import { OrderSubmittedContent } from 'common/pure/OrderSubmittedContent'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { TradeAmounts } from 'common/types'
 
+import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { SolanaSigningCountdown } from '../../pure/SolanaSigningCountdown'
@@ -58,6 +59,7 @@ interface InnerComponentProps extends React.PropsWithChildren {
   orderType: UiOrderType
   error: string | null
   pendingTrade: TradeAmounts | null
+  customRecipient: string | null
   solanaSigningDeadline: SolanaSigningDeadlineState | null
   onSolanaSigningExpiredDismiss: Command
   transactionHash: string | null
@@ -82,6 +84,7 @@ export function TradeConfirmModal({
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, permitAmount, pendingTrade, transactionHash, error } = useTradeConfirmState()
+  const recipient = useDerivedTradeState()?.recipient
   const tradeConfirmActions = useTradeConfirmActions()
   const { onDismiss } = tradeConfirmActions
   const signingStep = useSigningStep()
@@ -107,6 +110,9 @@ export function TradeConfirmModal({
 
   if (!account) return null
 
+  const customRecipient =
+    recipient && isSupportedAddress(recipient) && !areAddressesEqual(recipient, account) ? recipient : null
+
   return (
     <Container>
       <InnerComponent
@@ -115,6 +121,7 @@ export function TradeConfirmModal({
         error={error}
         orderType={orderType}
         pendingTrade={pendingTrade}
+        customRecipient={customRecipient}
         solanaSigningDeadline={solanaSigningDeadline}
         onSolanaSigningExpiredDismiss={onSolanaSigningExpiredDismiss}
         transactionHash={transactionHash}
@@ -151,6 +158,7 @@ function InnerComponent({
   onDismiss,
   orderType,
   pendingTrade,
+  customRecipient,
   solanaSigningDeadline,
   onSolanaSigningExpiredDismiss,
   permitSignatureState,
@@ -187,6 +195,7 @@ function InnerComponent({
         durationMs={solanaSigningDeadline.durationMs}
         inputAmount={pendingTrade.inputAmount}
         outputAmount={pendingTrade.outputAmount}
+        recipient={customRecipient}
         onDismiss={onDismiss}
         onExpiredDismiss={onSolanaSigningExpiredDismiss}
       />

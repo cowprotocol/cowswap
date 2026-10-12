@@ -42,10 +42,11 @@ function mockBridgeQuote(providerType?: string): void {
   } as unknown as TradeQuoteState)
 }
 
-function mockState(recipient?: string, recipientAddress?: string, outputChainId?: number): void {
+function mockState(recipient?: string, recipientAddress?: string, outputChainId?: number, inputChainId?: number): void {
   mockedUseDerivedTradeState.mockReturnValue({
     recipient,
     recipientAddress,
+    inputCurrency: inputChainId !== undefined ? { chainId: inputChainId } : null,
     outputCurrency: outputChainId !== undefined ? { chainId: outputChainId } : null,
   } as unknown as TradeDerivedState)
 }
@@ -374,5 +375,47 @@ describe('useQuoteParamsRecipient', () => {
 
       expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: COW_QUOTE_SOL_BRIDGE_RECIPIENT })
     })
+  })
+
+  describe('Solana same-chain swap', () => {
+    const SOLANA_ACCOUNT = 'BYXaGFW8VavtBLu56a53wuUZyRqp9b8ibRR2dojVTWv7'
+
+    beforeEach(() => {
+      mockedUseWalletInfo.mockReturnValue({ account: SOLANA_ACCOUNT } as unknown as WalletInfo)
+      mockBridgeQuote(undefined)
+    })
+
+    it('should use the custom Solana recipient as receiver', () => {
+      mockState(SOLANA_ADDRESS, undefined, SupportedChainId.SOLANA, SupportedChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: SOLANA_ADDRESS, bridgeRecipient: SOLANA_ADDRESS })
+    })
+
+    it('should fall back to the account when no recipient is set', () => {
+      mockState(undefined, undefined, SupportedChainId.SOLANA, SupportedChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: SOLANA_ACCOUNT, bridgeRecipient: SOLANA_ACCOUNT })
+    })
+
+    it('should fall back to the account when the recipient is not a Solana address', () => {
+      mockState(VALID_ADDRESS, undefined, SupportedChainId.SOLANA, SupportedChainId.SOLANA)
+
+      const { result } = renderHook(() => useQuoteParamsRecipient())
+
+      expect(result.current).toEqual({ receiver: SOLANA_ACCOUNT, bridgeRecipient: SOLANA_ACCOUNT })
+    })
+  })
+
+  it('should keep the account as receiver when bridging from EVM to Solana', () => {
+    mockBridgeQuote(undefined)
+    mockState(SOLANA_ADDRESS, undefined, SupportedChainId.SOLANA, SupportedChainId.MAINNET)
+
+    const { result } = renderHook(() => useQuoteParamsRecipient())
+
+    expect(result.current).toEqual({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: SOLANA_ADDRESS })
   })
 })

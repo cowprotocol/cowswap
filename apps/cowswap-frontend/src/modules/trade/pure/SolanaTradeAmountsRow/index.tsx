@@ -8,12 +8,18 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { AddressLink } from 'common/pure/AddressLink'
+
 export interface SolanaTradeAmountsRowProps {
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
+  /** Named only when the funds go somewhere other than the signer's own account. */
+  recipient?: Nullish<string>
 }
 
-export function SolanaTradeAmountsRow({ inputAmount, outputAmount }: SolanaTradeAmountsRowProps): ReactNode {
+export function SolanaTradeAmountsRow({ inputAmount, outputAmount, recipient }: SolanaTradeAmountsRowProps): ReactNode {
+  const recipientChainId = outputAmount?.currency.chainId
+
   return (
     <Wrapper>
       <TokenLogo token={inputAmount?.currency} size={20} />
@@ -21,6 +27,14 @@ export function SolanaTradeAmountsRow({ inputAmount, outputAmount }: SolanaTrade
       <Trans>for at least</Trans>
       <TokenLogo token={outputAmount?.currency} size={20} />
       <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
+      {recipient && recipientChainId && (
+        <>
+          <Trans>to</Trans>
+          <b title={recipient}>
+            <AddressLink address={recipient} chainId={recipientChainId} />
+          </b>
+        </>
+      )}
     </Wrapper>
   )
 }
