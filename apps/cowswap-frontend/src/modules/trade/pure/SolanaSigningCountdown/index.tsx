@@ -8,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
+import { AddressLink } from 'common/pure/AddressLink'
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { CountdownDigits } from './CountdownDigits'
@@ -27,17 +28,19 @@ export type SolanaSigningCountdownProps = NewModalProps & {
   durationMs: number
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
+  recipient?: Nullish<string>
   /** Replaces `onDismiss` once the window has closed — the natural exit then is back to the review
    * screen for another attempt, not out of the modal. */
   onExpiredDismiss?: NewModalProps['onDismiss']
 }
 
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
-  const { expiresAt, durationMs, inputAmount, outputAmount, onExpiredDismiss, ...rest } = props
+  const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
   const remainingMs = useRemainingMs(expiresAt)
   const isExpired = remainingMs === 0
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
+  const recipientChainId = outputAmount?.currency.chainId
 
   return (
     <NewModal
@@ -79,6 +82,14 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
           <Trans>for at least</Trans>
           <TokenLogo token={outputAmount?.currency} size={20} />
           <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
+          {recipient && recipientChainId && (
+            <>
+              <Trans>to</Trans>
+              <b title={recipient}>
+                <AddressLink address={recipient} chainId={recipientChainId} />
+              </b>
+            </>
+          )}
         </AmountsRow>
       </HeroGroup>
 
