@@ -3,13 +3,22 @@ import { Connection } from '@solana/web3.js'
 /** `MAX_PROCESSING_AGE`: a blockhash stays usable for this many blocks after it was issued. */
 const BLOCKHASH_VALID_BLOCKS = 150
 
-// Used only when no performance samples are available; SIMD-0525 is moving real slot time towards 200ms.
-const FALLBACK_SLOT_TIME_MS = 400
+// Used only when no performance samples are available. SIMD-0525 has landed, so mainnet slots are
+// 200ms rather than the 400ms this used to assume.
+const FALLBACK_SLOT_TIME_MS = 200
 
 const PERFORMANCE_SAMPLES_COUNT = 4
 
+/**
+ * Held back from the blockhash's own lifetime for everything that still has to happen after the
+ * signature: the hand-over to the order book and its own submission. Measured against staging after
+ * the slot-time cut — a signature with 9s left on the countdown still executed, 8s and below always
+ * came back expired.
+ */
+const SUBMISSION_BUFFER_MS = 10_000
+
 // Keeps the optimistic estimate on the safe side of the real blockhash death.
-const MAX_WINDOW_MS = 30_000
+const MAX_WINDOW_MS = 20_000
 
 export interface SolanaSigningDeadline {
   /** Epoch ms after which the blockhash is expected to be dead. */
@@ -25,7 +34,8 @@ export interface SolanaSigningDeadline {
 export async function estimateSolanaSigningDeadline(connection: Connection): Promise<SolanaSigningDeadline> {
   const anchorMs = Date.now()
   const slotTimeMs = await measureSlotTime(connection)
-  const durationMs = Math.min(Math.round(BLOCKHASH_VALID_BLOCKS * slotTimeMs), MAX_WINDOW_MS)
+  const blockhashLifetimeMs = Math.round(BLOCKHASH_VALID_BLOCKS * slotTimeMs)
+  const durationMs = Math.max(0, Math.min(blockhashLifetimeMs - SUBMISSION_BUFFER_MS, MAX_WINDOW_MS))
 
   return { expiresAt: anchorMs + durationMs, durationMs }
 }

@@ -32,6 +32,10 @@ export function getSwapErrorMessage(error: Error, chainId: SupportedChainId): st
   return getApiErrorMessage(error) || getProviderErrorMessage(error) || String(error)
 }
 
+export function isBlockhashExpiredError(error: unknown): boolean {
+  return error instanceof OrderBookApiError && error.body.errorType === 'BlockhashExpired'
+}
+
 /**
  * The reason the order book gave, whether or not we have copy of our own for that error type.
  * Without the untyped fallback an error type we don't know shows as a bare "Error": browsers report
@@ -46,10 +50,6 @@ function getApiErrorMessage(error: unknown): string | undefined {
   }
 
   return undefined
-}
-
-function isBlockhashExpiredError(error: unknown): boolean {
-  return error instanceof OrderBookApiError && error.body.errorType === 'BlockhashExpired'
 }
 
 function isValidOperatorError(error: unknown): error is OperatorError {

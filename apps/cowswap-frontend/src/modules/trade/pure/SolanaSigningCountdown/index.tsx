@@ -1,19 +1,19 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, Media, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { AddressLink } from 'common/pure/AddressLink'
 import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { CountdownDigits } from './CountdownDigits'
 import { MilkGlass } from './MilkGlass'
 import { useRemainingMs } from './useRemainingMs'
+
+import { SolanaTradeAmountsRow } from '../SolanaTradeAmountsRow'
 
 // The expired hero's amber palette comes verbatim from the Figma frame (node 5565:11111); the
 // alert tokens in the UI kit are a different, darker set.
@@ -40,7 +40,6 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
   const remainingMs = useRemainingMs(expiresAt)
   const isExpired = remainingMs === 0
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
-  const recipientChainId = outputAmount?.currency.chainId
 
   return (
     <NewModal
@@ -76,21 +75,7 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
           </GlassBox>
         </Hero>
 
-        <AmountsRow>
-          <TokenLogo token={inputAmount?.currency} size={20} />
-          <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />
-          <Trans>for at least</Trans>
-          <TokenLogo token={outputAmount?.currency} size={20} />
-          <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
-          {recipient && recipientChainId && (
-            <>
-              <Trans>to</Trans>
-              <b title={recipient}>
-                <AddressLink address={recipient} chainId={recipientChainId} />
-              </b>
-            </>
-          )}
-        </AmountsRow>
+        <SolanaTradeAmountsRow inputAmount={inputAmount} outputAmount={outputAmount} recipient={recipient} />
       </HeroGroup>
 
       {isExpired && (
@@ -171,22 +156,6 @@ const ExpiredHint = styled.span`
   font-size: 14px;
   line-height: 20px;
   color: ${EXPIRED_TEXT_COLOR};
-`
-
-const AmountsRow = styled.p`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  width: 100%;
-  min-height: 40px;
-  margin: 0;
-  padding: 10px 16px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  font-size: 13px;
-  line-height: 18px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const BackToReviewButton = styled(ButtonPrimary)`
