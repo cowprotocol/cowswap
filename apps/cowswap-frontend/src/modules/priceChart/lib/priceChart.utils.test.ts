@@ -1,4 +1,4 @@
-import { formatPriceChartValue, getCandlePriceFormat, getPriceChartSummary } from './priceChart.utils'
+import { formatPriceChartValue, getPriceChartPriceFormat, getPriceChartSummary } from './priceChart.utils'
 
 describe('price chart formatting', () => {
   it('keeps significant digits for small prices', () => {
@@ -32,7 +32,7 @@ describe('getPriceChartSummary', () => {
   })
 })
 
-describe('getCandlePriceFormat', () => {
+describe('getPriceChartPriceFormat', () => {
   it.each([
     [0.109, 4, 0.0001],
     [0.00001456, 8, 0.00000001],
@@ -40,6 +40,6 @@ describe('getCandlePriceFormat', () => {
   ])('uses enough precision for %s', (price, precision, minMove) => {
     const bar = { close: price, high: price, low: price, open: price, timestamp: 1 }
 
-    expect(getCandlePriceFormat([bar])).toEqual({ minMove, precision, type: 'price' })
+    expect(getPriceChartPriceFormat([bar])).toEqual({ minMove, precision, type: 'price' })
   })
 })
