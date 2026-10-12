@@ -66,4 +66,15 @@ describe('useOnSelectNetwork', () => {
     expect(switchNetwork).not.toHaveBeenCalled()
     expect(setChainIdToUrl).not.toHaveBeenCalled()
   })
+
+  it('does not switch the network in the wallet after the cross-family flow disconnected it', async () => {
+    handleCrossChainFamilySwitch.mockResolvedValue(CrossChainFamilySwitchState.FINISHED)
+    const { result } = renderHook(() => useOnSelectNetwork())
+
+    await act(async () => {
+      await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(switchNetwork).not.toHaveBeenCalled()
+  })
 })

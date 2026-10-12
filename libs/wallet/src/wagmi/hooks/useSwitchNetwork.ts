@@ -7,7 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useNetworkSwitchUnsupported } from '../../api/hooks/useNetworkSwitchUnsupported'
 import { walletInfoAtom } from '../../api/state'
-import { SUPPORTED_REOWN_NETWORKS } from '../../reown/networks'
+import { getReownNetwork } from '../../reown/networks'
 import { reownAppKit } from '../config'
 
 export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void> {
@@ -20,7 +20,7 @@ export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void>
       if (networkSwitchUnsupported) return
 
       if (isConnected) {
-        const network = SUPPORTED_REOWN_NETWORKS.find(({ id }) => id === chainId)
+        const network = getReownNetwork(chainId)
 
         if (!network) {
           console.error('Unknown network to switch on', chainId)

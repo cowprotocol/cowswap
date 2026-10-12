@@ -28,7 +28,10 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
       // separately (confirm + disconnect + reconnect) instead of a regular network switch.
       const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
 
-      if (switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED) {
+      if (
+        switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED ||
+        switchChainState === CrossChainFamilySwitchState.FINISHED
+      ) {
         return
       }
 
