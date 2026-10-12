@@ -26,6 +26,8 @@ export function AdvancedPriceChart({
   sizeControl,
   currencies,
   supplyVariant,
+  onSelectPrice,
+  referenceLines,
 }: SimplePriceChartProps): ReactNode {
   const autoRefresh = useAtomValue(priceChartAutoRefreshAtom)
   const symbols = useMemo(() => createChartSymbols(currencies), [currencies])
@@ -86,6 +88,8 @@ export function AdvancedPriceChart({
       <styledEl.ChartFrame>
         <AdvancedChartCanvas
           activeTicker={activeTicker}
+          onSelectPrice={onSelectPrice}
+          referenceLines={referenceLines}
           datafeed={datafeedController.datafeed}
           hasVolume={hasVolume}
           symbols={symbols}

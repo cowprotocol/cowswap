@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import {
   AreaSeries,
@@ -8,6 +9,8 @@ import {
   CrosshairMode,
   HistogramSeries,
   type IChartApi,
+  type IPriceLine,
+  type AutoscaleInfo,
   type ISeriesApi,
   type MouseEventParams,
   type Time,
@@ -19,13 +22,16 @@ import * as styledEl from './SimpleChartCanvas.styled'
 
 import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
 import { formatPriceChartValue, getPriceChartPriceFormat } from '../lib/priceChart.utils'
+import { syncSimplePriceLines } from '../lib/priceChartSimpleReferenceLines.utils'
 import { createPriceChartTimeFormatters } from '../lib/priceChartTime.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
-import type { Candle, ChartMetric, ChartType } from '../lib/priceChart.types'
+import type { Candle, ChartMetric, ChartType, PriceChartReferenceLine } from '../lib/priceChart.types'
 
 export interface SimpleChartCanvasProps {
   data: Candle[]
+  onSelectPrice?: (price: number) => void
+  referenceLines: PriceChartReferenceLine<number>[]
   chartType: ChartType
   metric: ChartMetric
   showTooltip: boolean
@@ -45,12 +51,20 @@ interface SimpleChartInstance {
 // eslint-disable-next-line max-lines-per-function
 export function SimpleChartCanvas({
   data,
+  onSelectPrice,
+  referenceLines,
   chartType,
   metric,
   showTooltip,
   locale,
   colors: { primary, text },
 }: SimpleChartCanvasProps): ReactNode {
+  const { t } = useLingui()
+  const priceLinesRef = useRef(new Map<string, IPriceLine>())
+  const onSelectPriceRef = useRef(onSelectPrice)
+  useEffect(() => {
+    onSelectPriceRef.current = onSelectPrice
+  }, [onSelectPrice])
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<SimpleChartInstance | null>(null)
   const [tooltip, setTooltip] = useState<ChartTooltipData>()
@@ -86,7 +100,20 @@ export function SimpleChartCanvas({
     volumeSeries.priceScale().applyOptions({ scaleMargins: { bottom: 0, top: 0.8 } })
     chartRef.current = { chart, priceSeries, volumeSeries }
 
+    const handleClick = (event: MouseEventParams<Time>): void => {
+      if (!onSelectPriceRef.current) {
+        handleCrosshairMove(event)
+        return
+      }
+      if (!event.point) return
+      const price = priceSeries.coordinateToPrice(event.point.y)
+      if (price !== null && Number.isFinite(price) && price > 0) onSelectPriceRef.current(price)
+    }
     const handleCrosshairMove = (event: MouseEventParams<Time>): void => {
+      if (onSelectPriceRef.current) {
+        setTooltip(undefined)
+        return
+      }
       const priceData = event.seriesData.get(priceSeries)
       const price =
         priceData && ('value' in priceData ? priceData.value : 'close' in priceData ? priceData.close : undefined)
@@ -113,12 +140,14 @@ export function SimpleChartCanvas({
     }
 
     chart.subscribeCrosshairMove(handleCrosshairMove)
-    chart.subscribeClick(handleCrosshairMove)
+    chart.subscribeClick(handleClick)
 
+    const priceLines = priceLinesRef.current
     return () => {
+      priceLines.clear()
       setTooltip(undefined)
       chart.unsubscribeCrosshairMove(handleCrosshairMove)
-      chart.unsubscribeClick(handleCrosshairMove)
+      chart.unsubscribeClick(handleClick)
       chart.remove()
       chartRef.current = null
     }
@@ -175,10 +204,45 @@ export function SimpleChartCanvas({
     setTooltip(undefined)
   }, [chartType, data, locale])
 
+  useEffect(() => {
+    const instance = chartRef.current
+    if (!instance) return
+    const selecting = !!onSelectPrice
+    instance.chart.applyOptions({
+      crosshair: {
+        mode: selecting ? CrosshairMode.Normal : CrosshairMode.Magnet,
+        horzLine: { labelVisible: selecting },
+        vertLine: { labelVisible: false, visible: !selecting },
+      },
+    })
+    if (chartType === 'line') instance.priceSeries.applyOptions({ crosshairMarkerVisible: !selecting })
+    if (selecting) setTooltip(undefined)
+    instance.priceSeries.applyOptions({
+      autoscaleInfoProvider: referenceLines.length
+        ? (original: () => AutoscaleInfo | null) => {
+            const info = original()
+            if (!info?.priceRange) return info
+            const prices = referenceLines.map((line) => line.price)
+            return {
+              ...info,
+              priceRange: {
+                maxValue: Math.max(info.priceRange.maxValue, ...prices),
+                minValue: Math.min(info.priceRange.minValue, ...prices),
+              },
+            }
+          }
+        : undefined,
+    })
+    syncSimplePriceLines(instance.priceSeries, priceLinesRef.current, referenceLines)
+  }, [chartType, onSelectPrice, referenceLines])
+
   return (
     <>
-      <styledEl.Canvas ref={containerRef} />
-      {tooltip && showTooltip ? <PriceChartTooltip data={tooltip} metric={metric} locale={locale} /> : null}
+      <styledEl.Canvas ref={containerRef} $canSelectPrice={!!onSelectPrice} />
+      {onSelectPrice ? <styledEl.SelectionHint>{t`Click chart to set limit price`}</styledEl.SelectionHint> : null}
+      {tooltip && showTooltip && !onSelectPrice ? (
+        <PriceChartTooltip data={tooltip} metric={metric} locale={locale} />
+      ) : null}
     </>
   )
 }
