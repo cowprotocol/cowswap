@@ -24,6 +24,16 @@ export interface ExpansionControl {
   onToggle: () => void
 }
 
+export interface PriceChartReferenceLine<TPrice> {
+  id: string
+  label: string
+  labels?: Partial<Record<ChartPair, string>>
+  price: TPrice
+  variant: PriceChartReferenceLineVariant
+}
+
+export type PriceChartReferenceLineVariant = 'open-order' | 'trade' | 'unfillable-order'
+
 export type SupplyVariant = 'circulating' | 'total'
 
 export type TimeRange = (typeof TIME_RANGES)[number]

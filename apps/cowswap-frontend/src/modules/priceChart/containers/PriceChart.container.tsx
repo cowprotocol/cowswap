@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import { memo, ReactNode, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import type { Currency } from '@cowprotocol/currency'
+import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
@@ -12,6 +12,7 @@ import { ChartWrapper } from 'modules/trade'
 import { AdvancedPriceChart } from './AdvancedPriceChart.container'
 import { SimplePriceChart } from './SimplePriceChart.container'
 
+import { usePriceChartLimitPrice } from '../hooks/usePriceChartLimitPrice'
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
 import { priceChartMetricAtom } from '../state/priceChartMetricAtom'
@@ -20,16 +21,22 @@ import { priceChartModeAtom } from '../state/priceChartModeAtom'
 import { priceChartPairAtom } from '../state/priceChartPairAtom'
 import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
+import type { PriceChartReferenceLine } from '../lib/priceChart.types'
+
 export interface PriceChartProps {
   inputCurrency: Currency | null
   outputCurrency: Currency | null
   expandable?: boolean
+  onSelectLimitPrice?: (rate: Fraction) => void
+  referenceLines?: PriceChartReferenceLine<Price<Currency, Currency> | null>[]
 }
 
 export const PriceChart = memo(function PriceChart({
   inputCurrency,
   outputCurrency,
   expandable = false,
+  onSelectLimitPrice,
+  referenceLines,
 }: PriceChartProps): ReactNode {
   const { t } = useLingui()
   const chartMode = useAtomValue(priceChartModeAtom)
@@ -53,9 +60,20 @@ export const PriceChart = memo(function PriceChart({
     },
     [inputCurrency, setSelectedPair],
   )
+  const limitPriceProps = usePriceChartLimitPrice({
+    activeCurrency,
+    inputCurrency,
+    outputCurrency,
+    metric,
+    supplyVariant,
+    selectedPair,
+    referenceLines,
+    onSelectLimitPrice,
+  })
   if (!isVisible) return null
 
   const chartProps = {
+    ...limitPriceProps,
     activeCurrency,
     metric,
     onSelectMetric: setMetric,
