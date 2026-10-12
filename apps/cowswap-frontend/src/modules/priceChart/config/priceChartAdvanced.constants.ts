@@ -2,6 +2,7 @@ import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from './priceChart.constants'
 
 import { TRADING_VIEW_LIBRARY_PATH } from '../lib/priceChartAdvancedWidget.service'
 
+import type { CandleInterval } from '../lib/priceChart.types'
 import type { ChartingLibraryWidgetOptions, ResolutionString } from 'charting_library'
 
 const resolutionString = (value: string): ResolutionString => value as ResolutionString
@@ -11,24 +12,16 @@ export const ADVANCED_CHART_EXCHANGE_NAME = 'CoW Swap'
 export const ADVANCED_CHART_EXCHANGE_VALUE = 'cow-swap'
 export const ADVANCED_CHART_SYMBOL_TYPE = 'spot crypto'
 export const ADVANCED_CHART_DISABLE_BACKFILL_REQUESTS = true
-const ADVANCED_CHART_FAVORITE_INTERVALS = [
-  resolutionString('1'),
-  resolutionString('5'),
-  resolutionString('15'),
-  resolutionString('60'),
-  resolutionString('240'),
-  resolutionString('1D'),
-  resolutionString('1W'),
-]
-export const ADVANCED_CHART_SUPPORTED_RESOLUTIONS = [
-  resolutionString('1'),
-  resolutionString('5'),
-  resolutionString('15'),
-  resolutionString('60'),
-  resolutionString('240'),
-  resolutionString('1D'),
-  resolutionString('1W'),
-]
+export const ADVANCED_CHART_CANDLE_INTERVALS: Partial<Record<string, CandleInterval>> = {
+  '1': '1m',
+  '5': '5m',
+  '15': '15m',
+  '60': '1h',
+  '240': '4h',
+  '1D': '1d',
+  '1W': '7d',
+}
+export const ADVANCED_CHART_SUPPORTED_RESOLUTIONS = Object.keys(ADVANCED_CHART_CANDLE_INTERVALS).map(resolutionString)
 const ADVANCED_CHART_TIME_FRAMES = [
   { description: '1 hour in 1 minute intervals', resolution: resolutionString('1'), text: '1h' },
   { description: '1 day in 5 minute intervals', resolution: resolutionString('5'), text: '1d' },
@@ -58,7 +51,7 @@ export const ADVANCED_CHART_OPTIONS = {
   ],
   favorites: {
     chartTypes: ['Candles', 'LineWithMarkers', 'Baseline'],
-    intervals: ADVANCED_CHART_FAVORITE_INTERVALS,
+    intervals: ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
   },
   interval: resolutionString('1D'),
   library_path: TRADING_VIEW_LIBRARY_PATH,

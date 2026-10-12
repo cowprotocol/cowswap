@@ -43,11 +43,15 @@ function removeLayoutOverrides(properties: unknown, overrides: Partial<ChartProp
   }
 }
 
+/**
+ * TradingView restores saved appearance settings over constructor overrides.
+ * Remove fields controlled by our overrides so saved layouts cannot restore outdated theme or candle colors.
+ * Preserve drawings, indicators, and other user preferences.
+ */
 function removeSavedChartAppearance(
   layout: Record<string, unknown>,
   overrides: Partial<ChartPropertiesOverrides>,
 ): void {
-  // Saved chart colors take precedence over constructor overrides in TradingView.
   const charts = Array.isArray(layout.charts) ? layout.charts : [layout]
   for (const chart of charts) {
     if (!isRecord(chart)) continue

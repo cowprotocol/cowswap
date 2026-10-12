@@ -8,21 +8,11 @@ import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './pr
 import { findChartSymbol } from './priceChartAdvancedSymbols.utils'
 import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
 
-import { PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
+import { CANDLE_INTERVAL_SECONDS, PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
 
 import type { Candle, CandleInterval } from './priceChart.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
 import type { IBasicDataFeed } from 'charting_library'
-
-const INTERVAL_SECONDS: Record<CandleInterval, number> = {
-  '1m': 60,
-  '5m': 300,
-  '15m': 900,
-  '1h': 3600,
-  '4h': 14400,
-  '1d': 86400,
-  '7d': 604800,
-}
 
 interface PriceChartSubscriptionParams {
   queryClient: QueryClient
@@ -65,7 +55,7 @@ export function createPriceChartSubscriptions({
         fetching = true
         try {
           const to = Math.floor(Date.now() / PRICE_CHART_REFRESH_INTERVAL) * (PRICE_CHART_REFRESH_INTERVAL / 1000)
-          const from = lastTimestamp ?? to - 2 * INTERVAL_SECONDS[interval]
+          const from = lastTimestamp ?? to - 2 * CANDLE_INTERVAL_SECONDS[interval]
           if (from >= to) return
           const prices = await queryClient.fetchQuery(priceHistoryQueryOptions(symbol.currency, from, to, interval))
           const bars =
