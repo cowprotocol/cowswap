@@ -237,7 +237,7 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
   // `allowancesAtom` by `usePersistSplViaMulticall` instead, so read it directly rather than routing
   // through `tokenAllowancesFamily` (which only ever handles EVM chains).
   const allowancesState = isSolanaChain(chainId)
-    ? (get(allowancesAtom)[chainId] ?? null)
+    ? getSolanaAllowancesState(get(allowancesAtom)[chainId])
     : get(
         tokenAllowancesFamily({
           connector,
@@ -311,4 +311,14 @@ export function observeReduxOrders(get: Getter, set: Setter): void {
     balancesAndAllowances,
     hasHydratedOrders,
   })
+}
+
+function getSolanaAllowancesState(
+  solanaAllowances: Record<string, bigint | undefined> | undefined,
+): AllowancesState | null {
+  if (!solanaAllowances) return null
+
+  return Object.fromEntries(
+    Object.entries(solanaAllowances).map(([tokenAddress, delegatedAmount]) => [tokenAddress, delegatedAmount ?? 0n]),
+  )
 }

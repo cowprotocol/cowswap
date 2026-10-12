@@ -544,6 +544,7 @@ describe('observeReduxOrders', () => {
   it('reads Solana allowances directly from allowancesAtom, bypassing tokenAllowancesFamily', () => {
     const account = '11111111111111111111111111111111'
     const tokenAddress = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+    const undelegatedTokenAddress = 'So11111111111111111111111111111111111111112'
     const openOrder = { id: 'solana-order', status: OrderStatus.PENDING }
     const ordersList = {
       ...EMPTY_ORDERS_LIST,
@@ -575,7 +576,7 @@ describe('observeReduxOrders', () => {
         [reduxOrdersStateAtom, {}],
         [tradeSpenderAtom, undefined],
         [balancesAtom, balancesState],
-        [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n } }],
+        [allowancesAtom, { [SupportedChainId.SOLANA]: { [tokenAddress]: 42n, [undelegatedTokenAddress]: undefined } }],
         [optimisticAllowancesAtom, {}],
         [pendingOrdersPermitValidityStateAtom, {}],
         [twapOrdersAtom, {}],
@@ -602,7 +603,7 @@ describe('observeReduxOrders', () => {
       {
         isLoading: false,
         balances: { [tokenAddress]: 9n },
-        allowances: { [tokenAddress]: 42n },
+        allowances: { [tokenAddress]: 42n, [undelegatedTokenAddress]: 0n },
       },
       {},
       expect.any(Function),
