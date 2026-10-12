@@ -7,7 +7,6 @@ import {
   createChart,
   CrosshairMode,
   HistogramSeries,
-  TickMarkType,
   type IChartApi,
   type ISeriesApi,
   type MouseEventParams,
@@ -20,6 +19,7 @@ import * as styledEl from './SimpleChartCanvas.styled'
 
 import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
 import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
+import { createPriceChartTimeFormatters } from '../lib/priceChartTime.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
 import type { Candle, ChartMetric, ChartType } from '../lib/priceChart.types'
@@ -148,16 +148,12 @@ export function SimpleChartCanvas({
 
     const { chart, priceSeries, volumeSeries } = instance
     const priceFormat = getCandlePriceFormat(data)
-    const dateFormatter = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' })
+    const { tickMarkFormatter, timeFormatter } = createPriceChartTimeFormatters(locale)
     chart.applyOptions({
-      timeScale: {
-        tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) =>
-          tickMarkType === TickMarkType.DayOfMonth && typeof time === 'number'
-            ? dateFormatter.format(new Date(time * 1000))
-            : null,
-      },
+      timeScale: { tickMarkFormatter },
       localization: {
         locale,
+        timeFormatter,
         priceFormatter: (value: number) =>
           formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale),
       },
