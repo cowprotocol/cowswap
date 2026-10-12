@@ -4,6 +4,7 @@ import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
+import { hasWalletConnectAccountForChain } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
 
@@ -51,7 +52,7 @@ export function useOpenTokenSelectWidget(): (
         selectedTargetChainId: nextSelectedTargetChainId,
         tradeType,
         onSelectToken: async (currency) => {
-          if (selectedToken && !isOutputField) {
+          if (selectedToken && !isOutputField && !hasWalletConnectAccountForChain(currency.chainId)) {
             const isSelectedTokenEvm = isEvmChain(selectedToken.chainId)
             const isNewTokenEvm = isEvmChain(currency.chainId)
             const shouldConfirmNetworkSwitch =
