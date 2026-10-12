@@ -9,7 +9,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { fireEvent, render, screen } from '@testing-library/react'
-import { solanaSigningWindowExpiredAtom } from 'entities/trade'
+import { solanaOrderNotPlacedAtom, solanaSigningWindowExpiredAtom } from 'entities/trade'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
 import { getCowswapTheme } from 'theme'
 
@@ -30,6 +30,7 @@ const mockClosedModalState = { isModalOpen: false, closeModal: mockNoop }
 const mockTokenListAddingError = [null, mockNoop]
 const mockWrapNativeState = [{ isOpen: false, errorMessage: undefined }, mockNoop]
 const mockAutoImportState = { tokensToImport: [], modalState: mockClosedModalState }
+const mockTradeQuoteState: { quote: object | null; error: Error | null } = { quote: {}, error: null }
 
 jest.mock('@cowprotocol/tokens', () => ({ useAddUserToken: () => mockNoop, TokenLogo: () => null }))
 jest.mock('@cowprotocol/wallet', () => ({
@@ -55,6 +56,7 @@ jest.mock('modules/tokensList', () => ({
   useSelectTokenWidgetState: () => ({ field: undefined }),
   useTokenListAddingError: () => mockTokenListAddingError,
 }))
+jest.mock('modules/tradeQuote', () => ({ useTradeQuote: () => mockTradeQuoteState }))
 jest.mock('modules/zeroApproval', () => ({
   ZeroApprovalModal: () => null,
   useZeroApproveModalState: () => mockClosedModalState,
@@ -104,6 +106,9 @@ function renderModals(): void {
 beforeEach(() => {
   jotaiStore.set(setCloseTradeConfirmAtom)
   jotaiStore.set(solanaSigningWindowExpiredAtom, null)
+  jotaiStore.set(solanaOrderNotPlacedAtom, null)
+  mockTradeQuoteState.quote = {}
+  mockTradeQuoteState.error = null
 })
 
 describe('TradeWidgetModals · Solana signing window expired', () => {
@@ -142,6 +147,27 @@ describe('TradeWidgetModals · Solana signing window expired', () => {
     expect(screen.getByText('REVIEW SCREEN')).toBeTruthy()
   })
 
+  // Review has nothing to offer without a quote: its confirm button is disabled and says nothing
+  // about why, while the form reports the quote error itself.
+  it.each([
+    ['the quote request failed', { quote: {}, error: new Error('quote api is down') }],
+    ['no quote has been loaded', { quote: null, error: null }],
+  ])('returns to the swap form rather than review when %s', (_label, quoteState) => {
+    renderModals()
+    mockTradeQuoteState.quote = quoteState.quote
+    mockTradeQuoteState.error = quoteState.error
+    failTrade(WINDOW_CLOSED_MESSAGE, EXPIRED_TRADE)
+
+    fireEvent.click(screen.getByText('Back to swap'))
+
+    const state = jotaiStore.get(tradeConfirmStateAtom)
+
+    expect(state.isOpen).toBe(false)
+    expect(state.error).toBeNull()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
+    expect(screen.queryByText('REVIEW SCREEN')).toBeNull()
+  })
+
   it('leaves the generic error screen closing the flow instead of reopening review', () => {
     renderModals()
     failTrade('Something else went wrong', null)
@@ -149,5 +175,62 @@ describe('TradeWidgetModals · Solana signing window expired', () => {
     fireEvent.click(screen.getByText('Dismiss'))
 
     expect(jotaiStore.get(tradeConfirmStateAtom).isOpen).toBe(false)
+  })
+})
+
+describe('TradeWidgetModals · Solana order not placed', () => {
+  const WALLET_ERROR = 'An unknown error occurred while handling the keyring (v2) request'
+
+  function failBeforeHandOver(): void {
+    act(() => {
+      jotaiStore.set(setErrorTradeConfirmAtom, WALLET_ERROR)
+      jotaiStore.set(solanaOrderNotPlacedAtom, {
+        tradeAmounts: EXPIRED_TRADE,
+        errorMessage: WALLET_ERROR,
+        logs: null,
+      })
+    })
+  }
+
+  it('replaces the generic error screen and keeps the wallet wording out of the headline', () => {
+    renderModals()
+    failBeforeHandOver()
+
+    expect(screen.getByText('Order not placed')).toBeTruthy()
+    expect(screen.getByText('Transaction checks failed')).toBeTruthy()
+    expect(screen.queryByText('Dismiss')).toBeNull()
+    expect(screen.queryByText(WALLET_ERROR)).toBeNull()
+  })
+
+  // Both Solana failure screens share one exit, so this must behave like the expired one.
+  it('reopens the review screen with forced price confirmation on dismiss', () => {
+    renderModals()
+    failBeforeHandOver()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back to review' }))
+
+    const state = jotaiStore.get(tradeConfirmStateAtom)
+
+    expect(state.isOpen).toBe(true)
+    expect(state.forcePriceConfirmation).toBe(true)
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+    expect(screen.getByText('REVIEW SCREEN')).toBeTruthy()
+  })
+
+  // The expired screen is the more specific diagnosis, so it wins when both somehow apply.
+  it('yields to the expired screen when both are set', () => {
+    renderModals()
+    act(() => {
+      jotaiStore.set(setErrorTradeConfirmAtom, WINDOW_CLOSED_MESSAGE)
+      jotaiStore.set(solanaSigningWindowExpiredAtom, EXPIRED_TRADE)
+      jotaiStore.set(solanaOrderNotPlacedAtom, {
+        tradeAmounts: EXPIRED_TRADE,
+        errorMessage: WINDOW_CLOSED_MESSAGE,
+        logs: null,
+      })
+    })
+
+    expect(screen.getByText('Signing window expired')).toBeTruthy()
+    expect(screen.queryByText('Order not placed')).toBeNull()
   })
 })

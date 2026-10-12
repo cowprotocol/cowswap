@@ -55,7 +55,7 @@ describe('SolanaSigningWindowExpired', () => {
   it('leaves the flow through the primary action', () => {
     const { onDismiss } = renderScreen()
 
-    fireEvent.click(screen.getByText('Back to swap'))
+    fireEvent.click(screen.getByRole('button', { name: 'Back to swap' }))
 
     expect(onDismiss).toHaveBeenCalledTimes(1)
   })

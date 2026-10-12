@@ -14,6 +14,7 @@ import { UiOrderType } from '@cowprotocol/types'
 
 import { Connection, PublicKey } from '@solana/web3.js'
 import {
+  solanaOrderNotPlacedAtom,
   solanaSigningAbandonedAtom,
   solanaSigningDeadlineAtom,
   SolanaSigningDeadlineState,
@@ -36,6 +37,8 @@ import { SolanaFlowStep } from 'modules/trade/services/solanaFlow/types'
 import { estimateSolanaSigningDeadline } from 'modules/trade/services/solanaSend/estimateSolanaSigningDeadline'
 import * as addPendingOrderStepModule from 'modules/trade/utils/addPendingOrderStep'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
+
+import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -655,9 +658,9 @@ describe('solanaFlow', () => {
     expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
   })
 
-  // Only a rejection gets the soft return: any other failure after the window closed (e.g. the
-  // expired-blockhash throw) still needs its message shown.
-  it('still shows the error when a non-rejection failure arrives after the window closed', async () => {
+  // Only a rejection gets the soft return: any other failure after the window closed still needs a
+  // screen — the expired one, since the user already watched the countdown reach 00:00.
+  it('shows the expired screen when a non-rejection failure arrives after the window closed', async () => {
     mockSendSolanaFlow.mockImplementation(async () => {
       jotaiStore.set(solanaSigningAbandonedAtom, true)
       throw new Error('The signing window closed before the transaction was signed. Please try again.')
@@ -668,9 +671,10 @@ describe('solanaFlow', () => {
 
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(context.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
-    // Keyed on the thrown error, not on the abandoned flag: an unrelated failure here keeps the
-    // generic error screen rather than claiming the window expired.
-    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
   })
 
   // A hung prompt from an earlier attempt can reject while a newer attempt is already running; the
@@ -692,6 +696,56 @@ describe('solanaFlow', () => {
 
     expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(staleContext.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+})
+
+describe('solanaFlow · order not placed', () => {
+  const KEYRING_ERROR = 'An unknown error occurred while handling the keyring (v2) request'
+
+  // Nothing reached the network, so the screen may state that outright and keep the wallet's own
+  // unreadable wording under "technical details".
+  it('routes a failure before the hand-over to the order-not-placed screen', async () => {
+    const logs = ['Program log: CreateIdempotent', 'Program log: Error: Associated address does not match seed']
+    mockSendSolanaFlow.mockRejectedValue(Object.assign(new Error(KEYRING_ERROR), { logs }))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toEqual({
+      tradeAmounts: { inputAmount: context.context.inputAmount, outputAmount: context.context.outputAmount },
+      errorMessage: KEYRING_ERROR,
+      logs,
+    })
+  })
+
+  // Elena's repro: the wallet answers a prompt whose countdown already ran out and reports it as an
+  // unreadable internal failure. The expired window is the explanation, so it wins over this copy.
+  it('prefers the expired screen when the countdown had already run out', async () => {
+    mockSendSolanaFlow.mockImplementation(async () => {
+      jotaiStore.set(solanaSigningAbandonedAtom, true)
+      throw new Error(KEYRING_ERROR)
+    })
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toEqual({
+      inputAmount: context.context.inputAmount,
+      outputAmount: context.context.outputAmount,
+    })
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
+  })
+
+  // Cancelling is a decision, not a failure: "Transaction checks failed" would be a lie about it.
+  it('keeps a deliberate rejection on its own message instead of the order-not-placed screen', async () => {
+    mockSendSolanaFlow.mockRejectedValue(new Error('User rejected the request'))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalledWith(USER_SWAP_REJECTED_ERROR)
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
   })
 })
 
@@ -908,6 +962,21 @@ describe('solanaFlow · sponsored', () => {
 
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
+  })
+
+  // The hand-over is where certainty ends: the order book may well have taken the bundle, so this
+  // failure must not reach a screen that promises nothing was submitted.
+  it('leaves a failure after the hand-over off the order-not-placed screen', async () => {
+    mockPostSolanaSponsoredOrder.mockRejectedValueOnce(
+      new OrderBookApiError({ statusText: 'Bad Request' } as Response, {
+        errorType: 'InsufficientFee',
+        description: 'fee too low',
+      }),
+    )
+
+    await solanaFlow(buildContext(), buildAnalytics(), true)
+
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
   })
 
   // Approving a prompt the user already retried past must not place the abandoned order next to the

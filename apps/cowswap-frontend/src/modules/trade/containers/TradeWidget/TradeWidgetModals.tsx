@@ -5,7 +5,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { solanaSigningWindowExpiredAtom } from 'entities/trade'
+import { solanaOrderNotPlacedAtom, solanaSigningWindowExpiredAtom } from 'entities/trade'
 
 import { Field } from 'legacy/state/types'
 
@@ -24,6 +24,7 @@ import {
   useSelectTokenWidgetState,
   useTokenListAddingError,
 } from 'modules/tokensList'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
@@ -35,6 +36,7 @@ import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { useTradeState } from '../../hooks/useTradeState'
 import { useWrapNativeScreenState } from '../../hooks/useWrapNativeScreenState'
+import { SolanaOrderNotPlaced } from '../../pure/SolanaOrderNotPlaced'
 import { SolanaSigningWindowExpired } from '../../pure/SolanaSigningWindowExpired'
 import { WrapNativeModal } from '../WrapNativeModal'
 
@@ -56,7 +58,9 @@ export function TradeWidgetModals({
   const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
+  const { quote: tradeQuote, error: tradeQuoteError } = useTradeQuote()
   const [solanaSigningWindowExpired, setSolanaSigningWindowExpired] = useAtom(solanaSigningWindowExpiredAtom)
+  const [solanaOrderNotPlaced, setSolanaOrderNotPlaced] = useAtom(solanaOrderNotPlacedAtom)
   const { field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen, errorMessage: wrapNativeError }, setWrapNativeScreenState] =
     useWrapNativeScreenState()
@@ -93,6 +97,7 @@ export function TradeWidgetModals({
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
       setSolanaSigningWindowExpired(null)
+      setSolanaOrderNotPlaced(null)
     },
     [
       closeTradeConfirm,
@@ -105,15 +110,35 @@ export function TradeWidgetModals({
       updateApproveAmountState,
       setTokenListAddingError,
       setSolanaSigningWindowExpired,
+      setSolanaOrderNotPlaced,
     ],
   )
 
-  // Same exit as cancelling the prompt after the window closed: nothing was placed, so the way on
-  // is another attempt. Price confirmation is forced because the quote kept refreshing meanwhile.
-  const onSigningWindowExpiredDismiss = useCallback(() => {
+  // Both Solana failure screens exit the same way: nothing was placed, so the way on is another
+  // attempt from review. Price confirmation is forced because the quote kept refreshing meanwhile.
+  //
+  // Unless there is no quote left to confirm: the review screen then shows a disabled confirm
+  // button and nothing that says why, so the form — which does report the quote error — is the
+  // better place to land.
+  const onSolanaFailureDismiss = useCallback(() => {
     setSolanaSigningWindowExpired(null)
+    setSolanaOrderNotPlaced(null)
+
+    if (tradeQuoteError || !tradeQuote) {
+      closeTradeConfirm()
+
+      return
+    }
+
     openTradeConfirm(true)
-  }, [setSolanaSigningWindowExpired, openTradeConfirm])
+  }, [
+    setSolanaSigningWindowExpired,
+    setSolanaOrderNotPlaced,
+    openTradeConfirm,
+    closeTradeConfirm,
+    tradeQuote,
+    tradeQuoteError,
+  ])
 
   const isOutputTokenSelector = field === Field.OUTPUT
   const previousIsOutputTokenSelector = usePrevious(isOutputTokenSelector)
@@ -130,8 +155,9 @@ export function TradeWidgetModals({
     return () => {
       closeTradeConfirm()
       setSolanaSigningWindowExpired(null)
+      setSolanaOrderNotPlaced(null)
     }
-  }, [closeTradeConfirm, setSolanaSigningWindowExpired])
+  }, [closeTradeConfirm, setSolanaSigningWindowExpired, setSolanaOrderNotPlaced])
 
   /**
    * Close all modals besides auto-import on account change
@@ -193,7 +219,19 @@ export function TradeWidgetModals({
       <SolanaSigningWindowExpired
         inputAmount={solanaSigningWindowExpired.inputAmount}
         outputAmount={solanaSigningWindowExpired.outputAmount}
-        onDismiss={onSigningWindowExpiredDismiss}
+        onDismiss={onSolanaFailureDismiss}
+      />
+    )
+  }
+
+  if (confirmError && solanaOrderNotPlaced) {
+    return (
+      <SolanaOrderNotPlaced
+        errorMessage={solanaOrderNotPlaced.errorMessage}
+        logs={solanaOrderNotPlaced.logs}
+        inputAmount={solanaOrderNotPlaced.tradeAmounts.inputAmount}
+        outputAmount={solanaOrderNotPlaced.tradeAmounts.outputAmount}
+        onDismiss={onSolanaFailureDismiss}
       />
     )
   }

@@ -9,3 +9,5 @@ export {
   solanaSigningWindowExpiredAtom,
 } from './solanaSigningDeadlineAtom'
 export type { SolanaSigningDeadlineState } from './solanaSigningDeadlineAtom'
+export { solanaOrderNotPlacedAtom } from './solanaOrderNotPlacedAtom'
+export type { SolanaOrderNotPlacedState } from './solanaOrderNotPlacedAtom'
