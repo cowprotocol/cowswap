@@ -16,6 +16,7 @@
 }
 
 :root:not(.theme-dark) {
+  --tv-spinner-color: #004293;
   --tv-color-platform-background: #f2f2f2;
   --tv-color-pane-background: #fff;
   --tv-color-toolbar-button-text: #00234e;
@@ -25,6 +26,7 @@
 }
 
 :root.theme-dark {
+  --tv-spinner-color: #65d9ff;
   --tv-color-platform-background: #090a20;
   --tv-color-pane-background: #18193b;
   --tv-color-toolbar-button-text: #dee3e6;

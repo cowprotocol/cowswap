@@ -192,7 +192,7 @@ function createGetBarsHandler(params: GetBarsHandlerParams): IBasicDataFeed['get
     const requestId = (params.latestRequestIdsByTicker.get(symbol.ticker) || 0) + 1
     params.latestRequestIdsByTicker.set(symbol.ticker, requestId)
 
-    void loadHistory({
+    loadHistory({
       queryClient: params.queryClient,
       onError,
       onHistoryLoaded: (bars) => params.setHistory(bars, symbol.ticker, requestId, resolvedResolution),

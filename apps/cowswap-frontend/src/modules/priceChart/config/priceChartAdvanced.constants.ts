@@ -70,7 +70,7 @@ export const ADVANCED_CHART_OPTIONS = {
     'mainSeriesProperties.candleStyle.borderDownColor': CANDLE_DOWN_COLOR,
     'mainSeriesProperties.candleStyle.wickUpColor': CANDLE_UP_COLOR,
     'mainSeriesProperties.candleStyle.wickDownColor': CANDLE_DOWN_COLOR,
-    'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description',
+    'mainSeriesProperties.statusViewStyle.symbolTextSource': 'description' as const,
     'mainSeriesProperties.statusViewStyle.showExchange': false,
   },
   time_frames: ADVANCED_CHART_TIME_FRAMES,
