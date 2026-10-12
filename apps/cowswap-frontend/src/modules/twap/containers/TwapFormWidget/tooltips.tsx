@@ -1,10 +1,13 @@
 import svgProtectionSrc from '@cowprotocol/assets/cow-swap/protection.svg'
 
-import { Plural, Trans, useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+import {
+  TotalDurationTooltip,
+  TotalDurationTooltipProps,
+} from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 const IconImage = styled.div`
   display: flex;
@@ -20,65 +23,24 @@ const IconImage = styled.div`
   }
 `
 
-export interface LabelTooltip {
+export interface LabelTooltip<TParams = void> {
   label: React.ReactNode
-  tooltip?: React.ReactNode | LabelTooltipFn<Record<string, unknown>>
+  tooltip?: LabelTooltipContent<TParams>
 }
 
-export type LabelTooltipContent<TParams> = React.ReactNode | LabelTooltipFn<TParams>
+export type LabelTooltipContent<TParams = void> = React.ReactNode | LabelTooltipFn<TParams>
 
 export type LabelTooltipFn<TParams> = (params: TParams) => React.ReactNode
 
 export interface LabelTooltipItems {
-  [key: string]: LabelTooltip
-}
-
-export interface TotalDurationTooltipParams {
-  parts: number
-  partDuration: number
-  totalDuration?: number
-}
-
-export function getTotalDurationTooltip({
-  parts,
-  partDuration,
-  totalDuration,
-}: TotalDurationTooltipParams): React.ReactNode {
-  const partDurationDisplay = deadlinePartsDisplay(partDuration)
-  const totalDurationDisplay = deadlinePartsDisplay(totalDuration ?? parts * partDuration)
-
-  return (
-    <>
-      <p>
-        <Trans>The "Total duration" is the duration it takes to execute all parts of your TWAP order.</Trans>
-      </p>
-      <p>
-        <Trans>For instance:</Trans>
-      </p>
-      <ul>
-        <li>
-          <Trans>
-            Your order consists of{' '}
-            <b>
-              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
-            </b>
-            .
-          </Trans>
-        </li>
-        <li>
-          <Trans>
-            Total time to complete the order is <b>{totalDurationDisplay}</b>.
-          </Trans>
-        </li>
-        <li>
-          <Trans>
-            So a new part is placed every <b>{partDurationDisplay}</b>, and remains open until the next one becomes
-            active.
-          </Trans>
-        </li>
-      </ul>
-    </>
-  )
+  numberOfParts: LabelTooltip
+  totalDuration: LabelTooltip<TotalDurationTooltipProps>
+  partDuration: LabelTooltip
+  slippage: LabelTooltip
+  price: LabelTooltip
+  sellAmount: LabelTooltip
+  buyAmount: LabelTooltip
+  startTime: LabelTooltip
 }
 
 export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
@@ -99,7 +61,7 @@ export function useLabelsTooltips(): LabelTooltipItems {
     },
     totalDuration: {
       label: t`Total duration`,
-      tooltip: getTotalDurationTooltip as unknown as LabelTooltip['tooltip'],
+      tooltip: TotalDurationTooltip,
     },
     partDuration: {
       label: t`Part duration`,

@@ -8,7 +8,7 @@ import styled from 'styled-components/macro'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
-import { LabelTooltip, LabelTooltipFn, TotalDurationTooltipParams } from 'modules/twap'
+import { LabelTooltip, LabelTooltipFn, TotalDurationTooltipProps } from 'modules/twap'
 import {
   customDeadlineToSeconds,
   deadlinePartsDisplay,
@@ -24,7 +24,7 @@ interface DeadlineSelectorProps {
   deadline: TwapOrdersDeadline
   isDeadlineDisabled: boolean
   label: LabelTooltip['label']
-  tooltip: LabelTooltipFn<TotalDurationTooltipParams>
+  tooltip: LabelTooltipFn<TotalDurationTooltipProps>
   parts: number
   partDuration: number
 

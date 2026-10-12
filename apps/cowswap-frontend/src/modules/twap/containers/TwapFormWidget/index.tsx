@@ -29,7 +29,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
-import { getTotalDurationTooltip, useLabelsTooltips } from './tooltips'
+import { useLabelsTooltips } from './tooltips'
 
 import { DEFAULT_NUM_OF_PARTS, MAX_PART_TIME, MINIMUM_PART_TIME, ORDER_DEADLINES } from '../../const'
 import {
@@ -41,6 +41,7 @@ import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -48,14 +49,9 @@ import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-export type {
-  LabelTooltip,
-  LabelTooltipContent,
-  LabelTooltipFn,
-  LabelTooltipItems,
-  TotalDurationTooltipParams,
-} from './tooltips'
-export { getTotalDurationTooltip } from './tooltips'
+export type { LabelTooltip, LabelTooltipContent, LabelTooltipFn, LabelTooltipItems } from './tooltips'
+export type { TotalDurationTooltipProps } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
+export { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
@@ -229,7 +225,7 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
           label={tooltips.totalDuration.label}
-          tooltip={getTotalDurationTooltip}
+          tooltip={TotalDurationTooltip}
           parts={numberOfPartsValue}
           partDuration={timeInterval}
         />
