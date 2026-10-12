@@ -655,7 +655,7 @@ describe('validateTradeForm - Solana swap recipient', () => {
       } as unknown as Currency,
       inputCurrencyBalance: mockCurrencyAmount('1000'),
       outputCurrencyBalance: mockCurrencyAmount('1000'),
-      inputCurrencyFiatAmount: null,
+      inputCurrencyFiatAmount: mockCurrencyAmount('1'),
       outputCurrencyFiatAmount: null,
       recipient: null,
       isQuoteBasedOrder: true,

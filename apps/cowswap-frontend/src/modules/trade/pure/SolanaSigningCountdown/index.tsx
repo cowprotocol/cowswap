@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { shortenAddress } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, Media, TokenAmount, UI } from '@cowprotocol/ui'
@@ -27,13 +28,14 @@ export type SolanaSigningCountdownProps = NewModalProps & {
   durationMs: number
   inputAmount: Nullish<CurrencyAmount<Currency>>
   outputAmount: Nullish<CurrencyAmount<Currency>>
+  recipient?: Nullish<string>
   /** Replaces `onDismiss` once the window has closed — the natural exit then is back to the review
    * screen for another attempt, not out of the modal. */
   onExpiredDismiss?: NewModalProps['onDismiss']
 }
 
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
-  const { expiresAt, durationMs, inputAmount, outputAmount, onExpiredDismiss, ...rest } = props
+  const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
   const remainingMs = useRemainingMs(expiresAt)
   const isExpired = remainingMs === 0
@@ -79,6 +81,12 @@ export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): Reac
           <Trans>for at least</Trans>
           <TokenLogo token={outputAmount?.currency} size={20} />
           <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
+          {recipient && (
+            <>
+              <Trans>to</Trans>
+              <b title={recipient}>{shortenAddress(recipient)}</b>
+            </>
+          )}
         </AmountsRow>
       </HeroGroup>
 
