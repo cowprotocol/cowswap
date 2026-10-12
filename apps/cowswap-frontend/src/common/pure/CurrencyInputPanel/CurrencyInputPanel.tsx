@@ -2,6 +2,7 @@
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useLatestRef } from '@cowprotocol/common-hooks'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
@@ -235,9 +236,11 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     }
   }, [_priceImpactParams, bothCurrenciesSet])
 
+  const onCurrencySelectionRef = useLatestRef(onCurrencySelection)
+
   const onTokenSelectClick = useCallback(() => {
-    openTokenSelectWidget(currency, field, (currency) => onCurrencySelection(field, currency))
-  }, [openTokenSelectWidget, currency, onCurrencySelection, field])
+    openTokenSelectWidget(currency, field, (currency) => onCurrencySelectionRef.current(field, currency))
+  }, [openTokenSelectWidget, currency, onCurrencySelectionRef, field])
 
   return (
     <styledEl.OuterWrapper>

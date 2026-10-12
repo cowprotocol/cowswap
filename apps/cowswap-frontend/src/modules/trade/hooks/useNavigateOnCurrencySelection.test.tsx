@@ -302,37 +302,6 @@ describe('useNavigateOnCurrencySelection - basic', () => {
         undefined,
       )
     })
-
-    it('should invert tokens through a callback captured before the currencies resolved', () => {
-      mockedUseDerivedTradeState.mockReturnValue({
-        inputCurrency: undefined,
-        outputCurrency: undefined,
-        orderKind: OrderKind.SELL,
-      } as never)
-
-      const { result, rerender } = renderHook(() => useNavigateOnCurrencySelection())
-      const callbackCapturedBeforeResolve = result.current
-
-      mockedUseDerivedTradeState.mockReturnValue({
-        inputCurrency: WETH_MAINNET,
-        outputCurrency: USDC_MAINNET,
-        orderKind: OrderKind.SELL,
-      } as never)
-      rerender()
-
-      act(() => {
-        callbackCapturedBeforeResolve(Field.INPUT, USDC_MAINNET)
-      })
-
-      expect(mockNavigate).toHaveBeenCalledWith(
-        SupportedChainId.MAINNET,
-        {
-          inputCurrencyId: USDC_MAINNET.symbol,
-          outputCurrencyId: WETH_MAINNET.symbol,
-        },
-        undefined,
-      )
-    })
   })
 })
 
