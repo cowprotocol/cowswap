@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -10,6 +11,8 @@ import { Trans, useLingui } from '@lingui/react/macro'
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { alphaNetworksEnabledAtom } from 'modules/solanaAlpha'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
@@ -65,7 +68,7 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains()
+  const availableChains = useAvailableChains(useAtomValue(alphaNetworksEnabledAtom))
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)

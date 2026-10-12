@@ -1,6 +1,8 @@
+import { useAtom } from 'jotai'
 import { ReactNode, useCallback, useRef } from 'react'
 
 import svgExperimentSrc from '@cowprotocol/assets/cow-swap/experiment.svg'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsBox, SettingsBoxGroup, SettingsDropdownSection } from '@cowprotocol/ui'
@@ -10,6 +12,7 @@ import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 
+import { alphaNetworksEnabledAtom } from 'modules/solanaAlpha'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 import { DeadlineTransactionSettings } from 'modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container'
 import { TransactionSlippageInput } from 'modules/tradeWidgetAddons/containers/TransactionSlippageInput/TransactionSlippageInput.container'
@@ -81,6 +84,8 @@ export function SettingsDropdown({
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const isSettingsDisabled = isProviderNetworkUnsupported || isProviderNetworkDeprecated
+  const { isSolanaEnabled } = useFeatureFlags()
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
 
   return (
     <Menu>
@@ -152,6 +157,23 @@ export function SettingsDropdown({
                       action: 'Toggle Hooks Enabled',
                       label: hooksEnabled ? 'Enabled' : 'Disabled',
                     })}
+                  />
+                ) : null}
+
+                {!isInjectedWidget() && isSolanaEnabled ? (
+                  <SettingsBox
+                    id="toggle-alpha-networks-button"
+                    title={t`Enable Alpha Networks`}
+                    tooltip={
+                      <Trans>
+                        <b>
+                          <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
+                        </b>{' '}
+                        Show networks in early access, such as Solana.
+                      </Trans>
+                    }
+                    checked={areAlphaNetworksEnabled}
+                    toggle={() => setAlphaNetworksEnabled(!areAlphaNetworksEnabled)}
                   />
                 ) : null}
               </SettingsBoxGroup>
