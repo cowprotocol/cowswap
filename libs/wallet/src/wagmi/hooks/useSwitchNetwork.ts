@@ -7,6 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useNetworkSwitchUnsupported } from '../../api/hooks/useNetworkSwitchUnsupported'
 import { walletInfoAtom } from '../../api/state'
+import { getReownChainNamespace } from '../../reown/getReownChainNamespace'
 import { getReownNetwork } from '../../reown/networks'
 import { reownAppKit } from '../config'
 
@@ -26,7 +27,15 @@ export function useSwitchNetwork(): (chainId: SupportedChainId) => Promise<void>
           console.error('Unknown network to switch on', chainId)
           return
         }
+        const isSwitchingNamespace = reownAppKit.getActiveChainNamespace() !== getReownChainNamespace(chainId)
+
         await reownAppKit.switchNetwork(network, { throwOnFailure: true })
+
+        // AppKit only activates the target namespace on a cross-namespace switch and does not ask the wallet
+        // to change its chain, so a multi-namespace WalletConnect session would stay on its previous EVM chain
+        if (isSwitchingNamespace) {
+          await reownAppKit.switchNetwork(network, { throwOnFailure: true })
+        }
       } else {
         setWalletInfo((prev) => ({ ...prev, chainId }))
       }

@@ -1,5 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useSwitchNetwork } from '@cowprotocol/wallet'
+import { hasWalletConnectAccountForChain, useSwitchNetwork } from '@cowprotocol/wallet'
 
 import { act, renderHook } from '@testing-library/react'
 
@@ -21,6 +21,9 @@ const mockedUseCrossChainFamilySwitch = useCrossChainFamilySwitch as jest.Mocked
 >
 const mockedUseLegacySetChainIdToUrl = useLegacySetChainIdToUrl as jest.MockedFunction<typeof useLegacySetChainIdToUrl>
 const mockedUseCloseModal = useCloseModal as jest.MockedFunction<typeof useCloseModal>
+const mockedHasWalletConnectAccountForChain = hasWalletConnectAccountForChain as jest.MockedFunction<
+  typeof hasWalletConnectAccountForChain
+>
 
 describe('useOnSelectNetwork', () => {
   let switchNetwork: jest.Mock
@@ -39,6 +42,7 @@ describe('useOnSelectNetwork', () => {
     mockedUseCrossChainFamilySwitch.mockReturnValue(handleCrossChainFamilySwitch)
     mockedUseLegacySetChainIdToUrl.mockReturnValue(setChainIdToUrl)
     mockedUseCloseModal.mockReturnValue(jest.fn())
+    mockedHasWalletConnectAccountForChain.mockReturnValue(false)
   })
 
   it('performs a regular network switch when the change stays within the same chain family', async () => {
@@ -76,5 +80,19 @@ describe('useOnSelectNetwork', () => {
     })
 
     expect(switchNetwork).not.toHaveBeenCalled()
+  })
+
+  it('switches directly without disconnecting when the WalletConnect session already covers the target chain', async () => {
+    mockedHasWalletConnectAccountForChain.mockReturnValue(true)
+    const { result } = renderHook(() => useOnSelectNetwork())
+
+    await act(async () => {
+      await result.current(SupportedChainId.SOLANA)
+    })
+
+    expect(mockedHasWalletConnectAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(handleCrossChainFamilySwitch).not.toHaveBeenCalled()
+    expect(switchNetwork).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(setChainIdToUrl).toHaveBeenCalledWith(SupportedChainId.SOLANA)
   })
 })

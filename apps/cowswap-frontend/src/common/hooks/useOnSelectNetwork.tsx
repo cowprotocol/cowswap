@@ -5,7 +5,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
-import { useSwitchNetwork } from '@cowprotocol/wallet'
+import { hasWalletConnectAccountForChain, useSwitchNetwork } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -25,14 +25,17 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
   return useCallback(
     async (targetChain: SupportedChainId, skipClose?: boolean) => {
       // Switching between EVM and non-EVM networks requires a different wallet and is handled
-      // separately (confirm + disconnect + reconnect) instead of a regular network switch.
-      const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
+      // separately (confirm + disconnect + reconnect) instead of a regular network switch,
+      // unless the WalletConnect session already approved the target chain's namespace.
+      if (!hasWalletConnectAccountForChain(targetChain)) {
+        const switchChainState = await handleCrossChainFamilySwitch(targetChain, skipClose)
 
-      if (
-        switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED ||
-        switchChainState === CrossChainFamilySwitchState.FINISHED
-      ) {
-        return
+        if (
+          switchChainState === CrossChainFamilySwitchState.NOT_CONFIRMED ||
+          switchChainState === CrossChainFamilySwitchState.FINISHED
+        ) {
+          return
+        }
       }
 
       try {

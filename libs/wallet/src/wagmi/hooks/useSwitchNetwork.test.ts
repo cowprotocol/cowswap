@@ -23,7 +23,7 @@ jest.mock('wagmi', () => ({
 }))
 
 jest.mock('../config', () => ({
-  reownAppKit: { switchNetwork: jest.fn() },
+  reownAppKit: { switchNetwork: jest.fn(), getActiveChainNamespace: jest.fn() },
 }))
 
 jest.mock('../../api/hooks/useNetworkSwitchUnsupported', () => ({
@@ -32,11 +32,13 @@ jest.mock('../../api/hooks/useNetworkSwitchUnsupported', () => ({
 
 const useConnectionMock = useConnection as jest.Mock
 const switchNetworkMock = reownAppKit.switchNetwork as jest.Mock
+const getActiveChainNamespaceMock = reownAppKit.getActiveChainNamespace as jest.Mock
 
 describe('useSwitchNetwork', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     useConnectionMock.mockReturnValue({ isConnected: true })
+    getActiveChainNamespaceMock.mockReturnValue('eip155')
   })
 
   it('switches to Solana when wagmi is connected through a multi-namespace WalletConnect session', async () => {
@@ -55,5 +57,29 @@ describe('useSwitchNetwork', () => {
     expect(switchNetworkMock).toHaveBeenCalledWith(expect.objectContaining({ id: SupportedChainId.GNOSIS_CHAIN }), {
       throwOnFailure: true,
     })
+  })
+
+  it('asks the wallet to switch its EVM chain after activating the eip155 namespace from Solana', async () => {
+    getActiveChainNamespaceMock.mockReturnValue('solana')
+    const { result } = renderHook(() => useSwitchNetwork())
+
+    await result.current(SupportedChainId.GNOSIS_CHAIN)
+
+    expect(switchNetworkMock).toHaveBeenCalledTimes(2)
+    expect(switchNetworkMock).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ id: SupportedChainId.GNOSIS_CHAIN }),
+      {
+        throwOnFailure: true,
+      },
+    )
+  })
+
+  it('switches only once within the same namespace', async () => {
+    const { result } = renderHook(() => useSwitchNetwork())
+
+    await result.current(SupportedChainId.GNOSIS_CHAIN)
+
+    expect(switchNetworkMock).toHaveBeenCalledTimes(1)
   })
 })
