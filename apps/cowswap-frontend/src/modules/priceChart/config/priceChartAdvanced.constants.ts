@@ -67,5 +67,4 @@ export const ADVANCED_CHART_OPTIONS = {
     'mainSeriesProperties.statusViewStyle.showExchange': false,
   },
   time_frames: ADVANCED_CHART_TIME_FRAMES,
-  timezone: 'Etc/UTC',
 } satisfies Partial<ChartingLibraryWidgetOptions>

@@ -15,7 +15,7 @@ import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service
 import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
-import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
+import type { IBasicDataFeed, IChartingLibraryWidget, Timezone } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
@@ -64,7 +64,8 @@ export function AdvancedChartCanvas({
       if (cancelled) return
 
       const { theme: currentTheme, activeTicker: currentTicker } = latestRef.current
-      const overrides = getThemeOverrides(currentTheme)
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone as Timezone
+      const overrides = { ...getThemeOverrides(currentTheme), timezone }
       widget = new TradingViewWidget({
         ...ADVANCED_CHART_OPTIONS,
         container: containerId,
@@ -79,6 +80,7 @@ export function AdvancedChartCanvas({
         saved_data: loadChartLayout(overrides),
         symbol: currentTicker || symbols[0].ticker,
         theme: currentTheme.darkMode ? 'dark' : 'light',
+        timezone,
       })
       widget.subscribe('onAutoSaveNeeded', handleAutoSaveNeeded)
       await widget.chartReady()
@@ -88,6 +90,7 @@ export function AdvancedChartCanvas({
         widget = null
         return
       }
+      widget.activeChart().getTimezoneApi().setTimezone(timezone)
       ready = true
       setReadyWidget(widget)
     }
