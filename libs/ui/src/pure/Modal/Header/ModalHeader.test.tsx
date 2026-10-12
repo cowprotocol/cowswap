@@ -2,7 +2,7 @@ import { i18n } from '@lingui/core'
 
 import { act, render, screen } from '@testing-library/react'
 
-import { ModalHeader } from './index'
+import { ModalHeader } from './ModalHeader.pure'
 
 i18n.load('en-US', {})
 i18n.activate('en-US')

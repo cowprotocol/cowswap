@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ButtonPrimary, ModalHeader, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, UI, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import QRCode from 'react-qrcode-logo'
@@ -30,9 +30,9 @@ export function ConnectTelegramModal({
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss}>
       <ModalContent>
-        <ModalHeader onClose={onDismiss}>
+        <Modal.Header onClose={onDismiss}>
           <Trans>Connect Telegram</Trans>
-        </ModalHeader>
+        </Modal.Header>
         <ModalBody>
           {connectState === 'expired' ? (
             <>

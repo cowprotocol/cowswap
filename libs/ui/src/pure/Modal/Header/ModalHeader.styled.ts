@@ -1,11 +1,11 @@
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from '../../enum'
-import { slowTransition, transition } from '../../utils/animation'
-import { font } from '../../utils/font'
-import { BackIconButton } from '../IconButton/back/BackIconButton.pure'
-import { CloseIconButton } from '../IconButton/close/CloseIconButton.pure'
-import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal/Modal.constants'
+import { UI } from '../../../enum'
+import { slowTransition, transition } from '../../../utils/animation'
+import { font } from '../../../utils/font'
+import { BackIconButton } from '../../IconButton/back/BackIconButton.pure'
+import { CloseIconButton } from '../../IconButton/close/CloseIconButton.pure'
+import { MODAL_DEBUG, MODAL_ROOT_SCROLLED_CLASS } from '../Modal.constants'
 
 interface BottomEdgeProps {
   $bottomBorder?: boolean

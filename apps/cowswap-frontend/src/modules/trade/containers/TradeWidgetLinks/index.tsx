@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Badge, BadgeTypes, HoverTooltip, ModalHeader } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -138,9 +138,9 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       {isDropdownVisible && (
         <styledEl.SelectMenu>
-          <ModalHeader onBack={handleMenuItemClick}>
+          <Modal.Header onBack={handleMenuItemClick}>
             <Trans>Trading mode</Trans>
-          </ModalHeader>
+          </Modal.Header>
           <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}

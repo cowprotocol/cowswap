@@ -2,7 +2,7 @@ import { ElementType, ReactNode, useRef } from 'react'
 
 import clsx from 'clsx'
 
-import * as styledEl from './styled'
+import * as styledEl from './ModalHeader.styled'
 import { useScrollableBottomVisibility } from './useScrollableBottomVisibility'
 
 export interface ModalHeaderProps {
@@ -26,8 +26,6 @@ export interface ModalHeaderProps {
   onClose?(): void
   className?: string
 }
-
-// TODO: Move inside modal Modal directory
 
 export function ModalHeader({
   sticky,
