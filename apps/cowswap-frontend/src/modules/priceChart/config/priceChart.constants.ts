@@ -2,6 +2,9 @@ import ms from 'ms.macro'
 
 export const FALLBACK_TOKEN_SYMBOL = 'TOKEN'
 
+export const CANDLE_UP_COLOR = '#089981'
+export const CANDLE_DOWN_COLOR = '#F23645'
+
 export const PRICE_CHART_REFRESH_INTERVAL = ms`30s`
 
 export const PRICE_CHART_TIMEOUT = ms`30s`

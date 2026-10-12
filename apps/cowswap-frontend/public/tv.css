@@ -1,82 +1,39 @@
-/* Example https://github.com/tradingview/charting_library/blob/master/themed.css */
+:root {
+  --tv-color-toolbar-button-text-active: var(--tv-color-toolbar-button-text);
+  --tv-color-toolbar-button-text-hover: var(--tv-color-toolbar-button-text);
+  --tv-color-toolbar-button-text-active-hover: var(--tv-color-toolbar-button-text-active);
+  --tv-color-toolbar-button-background-hover: color-mix(in srgb, var(--tv-color-toolbar-button-text) 8%, var(--tv-color-pane-background));
+  --tv-color-toolbar-button-background-active-hover: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-button-background-expanded: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-toggle-button-background-active: var(--tv-color-toolbar-button-background-active);
+  --tv-color-toolbar-toggle-button-background-active-hover: var(--tv-color-toolbar-button-background-active);
+  --tv-color-item-active-text: var(--tv-color-toolbar-button-text-active);
+  --tv-color-toolbar-divider-background: color-mix(in srgb, var(--tv-color-toolbar-button-text) 12%, transparent);
+  --tv-color-popup-element-background-active: var(--tv-color-toolbar-button-background-active);
+  --tv-color-popup-element-background-hover: var(--tv-color-toolbar-button-background-hover);
+  --tv-color-popup-element-divider-background: var(--tv-color-toolbar-divider-background);
+  --tv-color-popup-element-text-active: var(--tv-color-toolbar-button-text-active);
+}
 
 :root:not(.theme-dark) {
-  --tv-color-platform-background: rgba(0, 0, 0, 0.12);
-  --tv-color-pane-background: rgba(253, 253, 253, 1);
-  --tv-color-toolbar-button-text-active: #1e88e5;
-  --tv-color-toolbar-button-text-active-hover: #42a5f5;
-  --tv-color-toolbar-divider-background: rgba(67, 70, 81, 0.5);
-  --tv-color-toolbar-button-background-hover: rgba(0, 0, 0, 0.05);
-  --tv-horizontal-scroll-fade-color: rgb(237, 238, 242);   /* TODO8: check */
-  /*
-  --tv-color-popup-background: rgb(192, 180, 149);
-  --tv-color-pane-background-secondary: rgb(192, 180, 149);
-  --tv-color-toolbar-button-background-secondary-hover: red;
-  --tv-color-toolbar-button-background-expanded: rgb(244, 143, 177);
-  --tv-color-toolbar-button-text: rgb(136, 24, 79);
-  --tv-color-toolbar-button-text-hover: rgb(74, 20, 140);
-  --tv-color-item-active-text: rgb(6, 6, 255);
-  --tv-color-toolbar-toggle-button-background-active: red;
-  --tv-color-toolbar-toggle-button-background-active-hover: magenta;
-  */
-  [class^="paneSeparator-"] {
-    background: rgba(253, 253, 253, 1) !important;  /* TODO8: check */
-  }
-  [class^="price-axis-currency-label-wrapper"] > div {
-    background: rgba(253, 253, 253, 1) !important;  /* TODO8: check */
-    /* border-color: rgba(67, 70, 81, 0.5); */
-    border: none;
-  }
-  [class^="fadeTop-"] {
-    background-image: linear-gradient(0deg,#fff0,rgb(237, 238, 242))  /* TODO8: check */
-  }
-  [class^="fadeBot-"] {
-    background-image: linear-gradient(180deg,#fff0,rgb(237, 238, 242))  /* TODO8: check */
-  }
+  --tv-color-platform-background: #f2f2f2;
+  --tv-color-pane-background: #fff;
+  --tv-color-toolbar-button-text: #00234e;
+  --tv-color-toolbar-button-background-active: #ebebeb;
+  --tv-color-popup-background: #fff;
+  --tv-color-popup-element-text: #00234e;
 }
 
-.theme-dark:root {
-  --tv-color-platform-background: rgba(255, 255, 255, 0.12);
-  --tv-color-pane-background: rgba(40, 40, 40, 1);
-  --tv-color-toolbar-button-text-active: #1e88e5;
-  --tv-color-toolbar-button-text-active-hover: #42a5f5;
-  --tv-color-toolbar-divider-background: rgba(67, 70, 81, 0.5);
-  --tv-color-toolbar-button-background-hover: rgba(255, 255, 255, 0.1);
-  --tv-horizontal-scroll-fade-color: rgb(41, 44, 52);
-  /*
-  --tv-color-popup-background: rgb(192, 180, 149);
-  --tv-color-pane-background-secondary: rgba(58, 61, 68, 0.5);
-  --tv-color-toolbar-button-background-hover: #3A3A3A;
-  --tv-color-toolbar-button-background-secondary-hover: #3A3A3A;
-  --tv-color-toolbar-button-background-expanded: #787878;
-  --tv-color-toolbar-tooltip-text: #787878;
-  --tv-color-toolbar-button-text: #787878;
-  --tv-color-toolbar-button-text-hover: #787878;
-  --tv-color-item-active-text: #787878;
-  --tv-color-toolbar-toggle-button-background-active: #2F2F48;
-  --tv-color-toolbar-toggle-button-background-active-hover: #787878;
-  */
-  [class^="paneSeparator-"] {
-    background: rgba(40, 40, 40, 1) !important;
-  }
-  [class^="fadeTop-"] {
-    background-image: linear-gradient(0deg,#fff0,rgb(30, 30, 30))
-  }
-  [class^="fadeBot-"] {
-    background-image: linear-gradient(180deg,#fff0,rgb(30, 30, 30))
-  }
-  [class^="dialog-"] {
-    background: rgba(40, 40, 40, 1) !important;
-  }
-}
-
-/* @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;300;400;500;600;700&display=swap'); */
-
-/* TODO8: check */
-/* * {
-  font-family: 'IBM Plex Mono', monospace !important;
-} */
-
-#header-toolbar-symbol-search {
-  width: 160px;
+:root.theme-dark {
+  --tv-color-platform-background: #090a20;
+  --tv-color-pane-background: #18193b;
+  --tv-color-toolbar-button-text: #dee3e6;
+  --tv-color-toolbar-button-background-active: color-mix(in srgb, #65d9ff 12%, var(--tv-color-pane-background));
+  --tv-color-popup-background: #090a20;
+  --tv-color-popup-element-text: #dee3e6;
+  /* TradingView 32 uses internal colors for scale highlights and tooltips. */
+  --color-price-axis-highlight: var(--tv-color-toolbar-button-background-active);
+  --color-price-axis-label-back: var(--tv-color-toolbar-button-background-active);
+  --color-common-tooltip-bg: var(--tv-color-toolbar-button-background-active);
+  --color-tooltip-bg: var(--tv-color-toolbar-button-background-active);
 }
