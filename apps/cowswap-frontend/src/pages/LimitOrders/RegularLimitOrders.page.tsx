@@ -51,7 +51,6 @@ export function RegularLimitOrdersPage(): ReactNode {
           inputCurrency && outputCurrency && activeRate
             ? getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)
             : null,
-        variant: 'trade' as const,
       },
     ],
     [inputCurrency, outputCurrency, activeRate, t],
