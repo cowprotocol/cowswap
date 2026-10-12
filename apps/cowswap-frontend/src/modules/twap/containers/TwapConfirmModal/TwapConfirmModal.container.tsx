@@ -27,7 +27,7 @@ import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { EoaTwapLeaveSetupModal } from '../../pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
-import { TwapFormWarnings } from '../TwapFormWarnings'
+import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
 
 export function TwapConfirmModal(): ReactNode {
   const { account } = useWalletInfo()

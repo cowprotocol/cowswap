@@ -1,13 +1,11 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useExtractText } from '@cowprotocol/common-utils'
-import { renderTooltip, UI } from '@cowprotocol/ui'
+import { renderTooltip } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
-import styled from 'styled-components/macro'
 
-import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
-import { Content } from 'modules/trade/pure/TradeWidgetField/styled'
+import { TradeSelectItem } from 'modules/trade/pure/TradeSelect'
 import { LabelTooltip, LabelTooltipFn, TotalDurationTooltipProps } from 'modules/twap'
 import {
   customDeadlineToSeconds,
@@ -15,9 +13,10 @@ import {
   secondsToCustomDeadline,
 } from 'modules/twap/utils/deadlinePartsDisplay'
 
-import { TradeWidgetField } from '../../../trade/pure/TradeWidgetField'
+import * as styledEl from './DeadlineSelector.styled'
+
 import { defaultCustomDeadline, TwapOrdersDeadline } from '../../state/twapOrdersSettingsAtom'
-import { CustomDeadlineSelector } from '../CustomDeadlineSelector'
+import { CustomDeadlineSelector } from '../CustomDeadlineSelector/CustomDeadlineSelector.pure'
 
 interface DeadlineSelectorProps {
   items: TradeSelectItem[]
@@ -31,60 +30,8 @@ interface DeadlineSelectorProps {
   setDeadline(value: TwapOrdersDeadline): void
 }
 
-const StyledTradeSelect = styled(TradeSelect)`
-  font-weight: 500;
-  color: inherit;
-
-  button[data-reach-menu-button] {
-    width: 100%;
-    height: auto;
-    justify-content: space-between;
-    font-size: 18px;
-
-    &:hover,
-    &:active,
-    &:focus {
-      background: none;
-      border-radius: 0;
-    }
-  }
-
-  > svg {
-    color: inherit;
-    stroke: currentColor;
-    opacity: 0.7;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  }
-
-  &:hover > svg {
-    opacity: 1;
-  }
-
-  ${Content} {
-    width: 100%;
-    color: inherit;
-  }
-
-  ${Content} > div {
-    width: 100%;
-  }
-`
-
-const StyledTradeField = styled(TradeWidgetField)`
-  ${Content} {
-    width: 100%;
-    color: inherit;
-  }
-
-  ${Content} > div {
-    width: 100%;
-  }
-`
-
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function DeadlineSelector(props: DeadlineSelectorProps) {
+export function DeadlineSelector(props: DeadlineSelectorProps): ReactNode {
   const {
     items,
     deadline: { deadline, customDeadline, isCustomDeadline },
@@ -144,11 +91,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   return (
     <>
       {isDeadlineDisabled ? (
-        <StyledTradeField label={label} tooltip={fieldTooltip}>
+        <styledEl.StyledTradeField label={label} tooltip={fieldTooltip}>
           <div>{activeLabelExtracted}</div>
-        </StyledTradeField>
+        </styledEl.StyledTradeField>
       ) : (
-        <StyledTradeSelect
+        <styledEl.StyledTradeSelect
           label={label}
           tooltip={fieldTooltip}
           items={itemsWithCustom}

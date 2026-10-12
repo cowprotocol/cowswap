@@ -11,7 +11,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { CustomDeadlineDescription } from './CustomDeadlineDescription.pure'
-import * as styledEl from './styled'
+import * as styledEl from './CustomDeadlineSelector.styled'
 
 type CustomDeadline = { hours: number; minutes: number }
 
