@@ -1,6 +1,6 @@
 import { FractionUtils, getWrappedToken, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
-import { Fraction, Price } from '@cowprotocol/currency'
-import type { Currency } from '@cowprotocol/currency'
+import { Price } from '@cowprotocol/currency'
+import type { Currency, Fraction } from '@cowprotocol/currency'
 
 // eslint-disable-next-line complexity
 export function getActivePriceLimitLinePrice(
@@ -34,8 +34,10 @@ export function getLimitPriceFromRate(
   outputCurrency: Currency,
   rate: Fraction,
 ): Price<Currency, Currency> {
-  const rawRate = rate.multiply(
-    new Fraction(10n ** BigInt(outputCurrency.decimals), 10n ** BigInt(inputCurrency.decimals)),
+  const rawRate = FractionUtils.adjustDecimalsAtoms(
+    FractionUtils.fractionLikeToFraction(rate),
+    inputCurrency.decimals,
+    outputCurrency.decimals,
   )
   return new Price(inputCurrency, outputCurrency, rawRate.denominator, rawRate.numerator)
 }
