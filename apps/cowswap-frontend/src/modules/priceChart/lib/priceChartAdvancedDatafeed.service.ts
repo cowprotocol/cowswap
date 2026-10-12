@@ -16,8 +16,8 @@ import {
 } from '../config/priceChartAdvanced.constants'
 
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from './priceChartAdvancedApi.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
+import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from 'charting_library'
 
 export interface CreatePriceChartDatafeedParams {
   queryClient: QueryClient

@@ -2,7 +2,7 @@ import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from './priceChart.constants'
 
 import { TRADING_VIEW_LIBRARY_PATH } from '../lib/priceChartAdvancedWidget.service'
 
-import type { ChartingLibraryWidgetConstructor, ResolutionString } from '../lib/priceChartAdvancedApi.types'
+import type { ChartingLibraryWidgetOptions, ResolutionString } from 'charting_library'
 
 const resolutionString = (value: string): ResolutionString => value as ResolutionString
 
@@ -75,4 +75,4 @@ export const ADVANCED_CHART_OPTIONS = {
   },
   time_frames: ADVANCED_CHART_TIME_FRAMES,
   timezone: 'Etc/UTC',
-} satisfies Partial<ConstructorParameters<ChartingLibraryWidgetConstructor>[0]>
+} satisfies Partial<ChartingLibraryWidgetOptions>

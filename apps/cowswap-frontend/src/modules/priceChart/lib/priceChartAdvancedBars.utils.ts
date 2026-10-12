@@ -1,5 +1,5 @@
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { Bar, ResolutionString } from './priceChartAdvancedApi.types'
+import type { Bar, ResolutionString } from 'charting_library'
 
 const RESOLUTION_TO_PRICE_CHART: Partial<Record<string, CandleInterval>> = {
   '1': '1m',

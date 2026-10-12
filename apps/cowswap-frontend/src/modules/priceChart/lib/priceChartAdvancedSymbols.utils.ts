@@ -10,7 +10,7 @@ import {
 } from '../config/priceChartAdvanced.constants'
 
 import type { ChartMetric, SupplyVariant } from './priceChart.types'
-import type { LibrarySymbolInfo } from './priceChartAdvancedApi.types'
+import type { LibrarySymbolInfo } from 'charting_library'
 
 export interface ChartSymbol {
   metric: ChartMetric

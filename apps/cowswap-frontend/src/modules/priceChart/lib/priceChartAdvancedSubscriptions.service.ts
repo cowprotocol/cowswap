@@ -11,8 +11,8 @@ import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
 import { PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
 
 import type { Candle, CandleInterval } from './priceChart.types'
-import type { IBasicDataFeed } from './priceChartAdvancedApi.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
+import type { IBasicDataFeed } from 'charting_library'
 
 const INTERVAL_SECONDS: Record<CandleInterval, number> = {
   '1m': 60,
