@@ -80,7 +80,6 @@ export function createSimpleChartInstance(container: HTMLElement, chartType: Cha
   return { chart, priceSeries, volumeSeries, markers }
 }
 
-// eslint-disable-next-line complexity
 export function getSimpleChartTooltipData(
   event: MouseEventParams<Time>,
   instance: SimpleChartInstance,
@@ -89,16 +88,16 @@ export function getSimpleChartTooltipData(
 ): ChartTooltipData | undefined {
   const { priceSeries, volumeSeries } = instance
   const priceData = event.seriesData.get(priceSeries)
-  const price =
-    priceData && ('value' in priceData ? priceData.value : 'close' in priceData ? priceData.close : undefined)
+  if (!event.point || typeof event.time !== 'number' || !priceData) return undefined
+  const price = 'value' in priceData ? priceData.value : 'close' in priceData ? priceData.close : undefined
   const volumeData = event.seriesData.get(volumeSeries)
   const volume = volumeData && 'value' in volumeData ? volumeData.value : undefined
 
-  if (!event.point || typeof event.time !== 'number' || price === undefined) return undefined
+  if (price === undefined) return undefined
   return {
     price,
     ohlc:
-      priceData && 'open' in priceData
+      'open' in priceData
         ? { open: priceData.open, high: priceData.high, low: priceData.low, close: priceData.close }
         : undefined,
     time: event.time,
@@ -143,4 +142,15 @@ export function setSimpleChartData(
     ),
   )
   chart.timeScale().fitContent()
+}
+
+export function setSimpleChartSelection(instance: SimpleChartInstance, chartType: ChartType, selecting: boolean): void {
+  instance.chart.applyOptions({
+    crosshair: {
+      mode: selecting ? CrosshairMode.Normal : CrosshairMode.Magnet,
+      horzLine: { labelVisible: selecting },
+      vertLine: { labelVisible: false, visible: !selecting },
+    },
+  })
+  if (chartType === 'line') instance.priceSeries.applyOptions({ crosshairMarkerVisible: !selecting })
 }

@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
-import { CrosshairMode, type IPriceLine, type MouseEventParams, type Time } from 'lightweight-charts'
+import { type IPriceLine, type MouseEventParams, type Time } from 'lightweight-charts'
 
 import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
@@ -12,6 +12,7 @@ import {
   createSimpleChartInstance,
   getSimpleChartTooltipData,
   setSimpleChartData,
+  setSimpleChartSelection,
 } from '../lib/priceChartSimpleCanvas.utils'
 import { getSimpleExecutionMarkers } from '../lib/priceChartSimpleExecutionMarkers.utils'
 import { syncSimplePriceLines } from '../lib/priceChartSimpleReferenceLines.utils'
@@ -44,7 +45,6 @@ export interface SimpleChartCanvasProps {
 
 const EMPTY_EXECUTION_MARKERS: PriceChartExecutionMarker[] = []
 
-// eslint-disable-next-line max-lines-per-function
 export function SimpleChartCanvas({
   data,
   executionMarkers = EMPTY_EXECUTION_MARKERS,
@@ -129,16 +129,8 @@ export function SimpleChartCanvas({
   useEffect(() => {
     const instance = chartRef.current
     if (!instance) return
-    const selecting = !!onSelectPrice
-    instance.chart.applyOptions({
-      crosshair: {
-        mode: selecting ? CrosshairMode.Normal : CrosshairMode.Magnet,
-        horzLine: { labelVisible: selecting },
-        vertLine: { labelVisible: false, visible: !selecting },
-      },
-    })
-    if (chartType === 'line') instance.priceSeries.applyOptions({ crosshairMarkerVisible: !selecting })
-    if (selecting) setTooltip(undefined)
+    setSimpleChartSelection(instance, chartType, !!onSelectPrice)
+    if (onSelectPrice) setTooltip(undefined)
   }, [chartType, onSelectPrice])
 
   useEffect(() => {
