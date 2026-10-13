@@ -1,6 +1,7 @@
 import { useCallback, useRef } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
+import { useLatestNonNullRef } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
@@ -68,6 +69,8 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
   if (knownInputCurrencyId) lastKnownInputCurrencyIdRef.current = knownInputCurrencyId
   if (knownOutputCurrencyId) lastKnownOutputCurrencyIdRef.current = knownOutputCurrencyId
 
+  const lastKnownInputCurrencyRef = useLatestNonNullRef(inputCurrency ?? null)
+
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
@@ -87,7 +90,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       const targetChainMismatch = targetChainId !== chainId
       const isInputField = field === Field.INPUT
 
-      const targetInputCurrency = isInputField ? currency : inputCurrency
+      const targetInputCurrency = isInputField ? currency : (inputCurrency ?? lastKnownInputCurrencyRef.current)
       const targetOutputCurrency = isInputField ? outputCurrency : currency
 
       const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
@@ -157,6 +160,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       chainId,
       orderKind,
       inputCurrency,
+      lastKnownInputCurrencyRef,
       outputCurrency,
       isOutputCurrencyBridgeSupported,
       resolveCurrencyAddressOrSymbol,
