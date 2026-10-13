@@ -2,8 +2,13 @@ import { useAtomValue, useSetAtom } from 'jotai'
 
 import { isPartialApproveSelectedByUserAtom } from './isPartialApproveSelectedByUserAtom'
 
+import { useIsInfiniteApproveDisabled } from '../hooks/useIsInfiniteApproveDisabled'
+
 export function useIsPartialApproveSelectedByUser(): boolean {
-  return useAtomValue(isPartialApproveSelectedByUserAtom)
+  const isSelectedByUser = useAtomValue(isPartialApproveSelectedByUserAtom)
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
+
+  return isSelectedByUser || isInfiniteApproveDisabled
 }
 
 export function useSetIsPartialApproveSelectedByUser(): (value: boolean) => void {
