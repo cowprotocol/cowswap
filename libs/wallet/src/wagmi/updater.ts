@@ -14,6 +14,7 @@ import type { SafeInfoExtended } from '@safe-global/safe-apps-sdk'
 import ms from 'ms.macro'
 
 import { useAccountState } from './hooks/useAccountState'
+import { useConnectionType } from './hooks/useConnectionType'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
 import { useSyncReownNetworkWhileDisconnected } from './hooks/useSyncReownNetworkWhileDisconnected'
@@ -21,7 +22,7 @@ import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
 import { gnosisSafeInfoAtom, isKnownNotSafeAtom, walletDetailsAtom, walletInfoAtom } from '../api/state'
-import { GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
+import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from '../api/types'
 import { getWalletType } from '../api/utils/getWalletType'
 import { getWalletTypeLabel } from '../api/utils/getWalletTypeLabel'
 
@@ -106,6 +107,7 @@ function useWalletDetails(account?: Address): WalletDetails {
   const { walletName, icon } = useWalletMetaData()
   const isSafeApp = useIsSafeApp()
   const isMetaMask = useIsMetamaskBrowserExtensionWallet()
+  const isBaseAccount = useConnectionType() === ConnectionType.BASE_ACCOUNT
 
   return useMemo(() => {
     return {
@@ -118,10 +120,12 @@ function useWalletDetails(account?: Address): WalletDetails {
       // EOAs can always sign off-chain. MetaMask smart accounts also support EIP-1271 off-chain
       // signing. All other smart contract wallets (Coinbase Smart Wallet, ERC-4337, Safe, etc.)
       // must use on-chain pre-signing.
-      allowsOffchainSigning: !isSmartContractWallet || isMetaMask,
+      // Base Account looks like an EOA while undeployed or EIP-7702-delegated, but its signatures come
+      // from the passkey owner (ERC-1271/ERC-6492), so the orderbook rejects them as EIP-712 signatures.
+      allowsOffchainSigning: !isBaseAccount && (!isSmartContractWallet || isMetaMask),
       isSafeApp,
     }
-  }, [isSmartContractWallet, isSafeApp, isMetaMask, walletName, icon, ensName])
+  }, [isSmartContractWallet, isSafeApp, isMetaMask, isBaseAccount, walletName, icon, ensName])
 }
 
 // used for on-chain calls
