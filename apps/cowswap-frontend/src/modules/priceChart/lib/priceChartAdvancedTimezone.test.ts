@@ -2,8 +2,8 @@ import { getCustomTimezone } from './priceChartAdvancedTimezone.utils'
 
 describe('getCustomTimezone', () => {
   it.each([
-    ['Europe/Minsk', -180, 'Etc/GMT-3:0'],
-    ['America/Panama', 300, 'Etc/GMT+5:0'],
+    ['Europe/Minsk', -180, 'Etc/GMT-3'],
+    ['America/Panama', 300, 'Etc/GMT+5'],
     ['Asia/Kolkata', -330, 'Etc/GMT-5:30'],
     ['Asia/Kathmandu', -345, 'Etc/GMT-5:45'],
     ['UTC', 0, 'Etc/GMT+0'],
