@@ -16,6 +16,7 @@ import {
   limitOrdersSettingsAtom,
   LimitOrdersWidget,
   limitRateAtom,
+  updateLimitRateAtom,
   isChartPriceSelectionModeAtom,
   useUpdateActiveRate,
 } from 'modules/limitOrders'
@@ -38,7 +39,8 @@ export function RegularLimitOrdersPage(): ReactNode {
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
-  const { activeRate } = useAtomValue(limitRateAtom)
+  const { activeRate, isInverted } = useAtomValue(limitRateAtom)
+  const updateLimitRate = useSetAtom(updateLimitRateAtom)
   const isChartPriceSelectionMode = useAtomValue(isChartPriceSelectionModeAtom)
   const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
   const updateRate = useUpdateActiveRate()
@@ -86,6 +88,10 @@ export function RegularLimitOrdersPage(): ReactNode {
           <PriceChart
             inputCurrency={inputCurrency}
             outputCurrency={outputCurrency}
+            selectedCurrency={isInverted ? outputCurrency : inputCurrency}
+            onSelectCurrency={(currency) =>
+              updateLimitRate({ isInverted: Boolean(outputCurrency?.equals(currency)), isTypedValue: false })
+            }
             onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
             referenceLines={referenceLines}
           />

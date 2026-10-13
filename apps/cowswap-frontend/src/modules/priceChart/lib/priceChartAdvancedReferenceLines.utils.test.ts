@@ -14,8 +14,13 @@ it('creates labelled lines and removes them even when cleanup precedes creation'
       disableSave: true,
       disableUndo: true,
       overrides: expect.objectContaining({
-        'linetoolhorzline.linecolor': '#ffaa00',
-        'linetoolhorzline.linestyle': 1,
+        linecolor: '#ffaa00',
+        linestyle: 1,
+        linewidth: 2,
+        textcolor: '#ffaa00',
+        horzLabelsAlign: 'right',
+        vertLabelsAlign: 'top',
+        showPrice: true,
       }),
     }),
   )
