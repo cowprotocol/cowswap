@@ -25,7 +25,6 @@ import {
   InlineBanner,
   Media,
   Modal,
-  ModalHeader,
   StatusColorVariant,
   UI,
 } from '@cowprotocol/ui'
@@ -354,7 +353,7 @@ function ReceiptModalContent({
 
 function ReceiptModalHeader({ alternativeOrderModalContext, onDismiss, titleAs }: ReceiptModalHeaderProps): ReactNode {
   return (
-    <ModalHeader
+    <Modal.Header
       sticky
       titleAs={titleAs}
       title={
