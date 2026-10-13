@@ -7,6 +7,7 @@ import { useTheme } from 'common/hooks/useTheme'
 import * as styledEl from './AdvancedChartCanvas.styled'
 
 import { ADVANCED_CHART_CONTAINER_ID, ADVANCED_CHART_OPTIONS } from '../config/priceChartAdvanced.constants'
+import { usePriceChartAdvancedExecutionMarkers } from '../hooks/usePriceChartAdvancedExecutionMarkers'
 import { usePriceChartAdvancedPriceSelection } from '../hooks/usePriceChartAdvancedPriceSelection'
 import { usePriceChartAdvancedReferenceLines } from '../hooks/usePriceChartAdvancedReferenceLines'
 import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSeries'
@@ -19,10 +20,12 @@ import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
+import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
 import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
+  executionMarkers: AttachedPriceChartExecutionMarker[]
   onSelectPrice?: (price: number) => void
   referenceLines: PriceChartReferenceLine<number>[]
   datafeed: IBasicDataFeed
@@ -34,6 +37,7 @@ export interface AdvancedChartCanvasProps {
 
 export function AdvancedChartCanvas({
   activeTicker,
+  executionMarkers,
   onSelectPrice,
   referenceLines,
   datafeed,
@@ -134,7 +138,8 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedTheme(readyWidget)
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
 
-  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme.warning)
+  usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers)
+  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme.warning, theme.text)
   usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />

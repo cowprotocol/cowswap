@@ -1182,6 +1182,10 @@ msgstr "Enable Hooks"
 msgid "Seamlessly swap your tokens into CoW AMM pools"
 msgstr "Seamlessly swap your tokens into CoW AMM pools"
 
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
+msgid "Protection"
+msgstr "Protection"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "Overview"
@@ -2005,6 +2009,10 @@ msgstr "You got an extra"
 #: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
 #~ msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 #~ msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
@@ -4524,6 +4532,10 @@ msgstr "Couldn't verify {accountProxyLabel}, please try later"
 msgid "Creation time"
 msgstr "Creation time"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Unfillable · {label}"
+msgstr "Unfillable · {label}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Try adjusting your search term"
 msgstr "Try adjusting your search term"
@@ -5214,6 +5226,11 @@ msgstr "This contract is deployed per account, with that account becoming the si
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Request cancellations"
 msgstr "Request cancellations"
+
+#. placeholder {0}: order.inputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Sell {formattedSellAmount} {0}"
+msgstr "Sell {formattedSellAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
@@ -6170,6 +6187,11 @@ msgstr "Action"
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
 msgstr "Swap with"
+
+#. placeholder {0}: order.outputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Buy {formattedBuyAmount} {0}"
+msgstr "Buy {formattedBuyAmount} {0}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Current network fees"
@@ -8275,6 +8297,7 @@ msgid "<0><1/> Experimental:</0> Add DeFi interactions before and after your tra
 msgstr "<0><1/> Experimental:</0> Add DeFi interactions before and after your trade."
 
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 msgid "Buy"
 msgstr "Buy"
 
@@ -8678,6 +8701,10 @@ msgstr "Cancel order"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Your order was created on this date & time. It will remain open until it expires or is filled."
 msgstr "Your order was created on this date & time. It will remain open until it expires or is filled."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping {inputSymbol}"
@@ -9187,6 +9214,7 @@ msgstr "Loading bridge data <0/>"
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 msgid "Sell"
 msgstr "Sell"
 

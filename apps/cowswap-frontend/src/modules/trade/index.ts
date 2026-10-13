@@ -14,6 +14,7 @@ export {
 export * from './utils/getCrossChainReceiveAmountInfo'
 export * from './utils/getTotalCosts'
 export * from './utils/getOrderTypeReceiveAmounts'
+export * from './utils/getLimitPriceFromReceiveAmount'
 export * from './utils/tradeFlowAnalytics'
 export * from './utils/logger'
 export { addPendingOrderStep } from './utils/addPendingOrderStep'

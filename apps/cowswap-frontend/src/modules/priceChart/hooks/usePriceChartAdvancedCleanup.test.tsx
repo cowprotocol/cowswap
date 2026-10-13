@@ -2,12 +2,16 @@ import { useEffect } from 'react'
 
 import { renderHook } from '@testing-library/react'
 
+import { usePriceChartAdvancedExecutionMarkers } from './usePriceChartAdvancedExecutionMarkers'
 import { usePriceChartAdvancedPriceSelection } from './usePriceChartAdvancedPriceSelection'
 import { usePriceChartAdvancedReferenceLines } from './usePriceChartAdvancedReferenceLines'
 
+import { createExecutionMarkers } from '../lib/priceChartAdvancedExecutionMarkers.utils'
 import { createHorizontalLines } from '../lib/priceChartAdvancedReferenceLines.utils'
 
 import type { IChartingLibraryWidget } from 'charting_library'
+
+jest.mock('../lib/priceChartAdvancedExecutionMarkers.utils', () => ({ createExecutionMarkers: jest.fn() }))
 
 jest.mock('../lib/priceChartAdvancedReferenceLines.utils', () => ({ createHorizontalLines: jest.fn() }))
 
@@ -36,6 +40,19 @@ function useWidgetRemoval(widget: IChartingLibraryWidget): void {
 }
 
 describe('Advanced chart cleanup', () => {
+  it('detaches execution marker listeners before removing the widget', () => {
+    const widget = createWidget()
+    const removeMarkers = jest.fn()
+    jest.mocked(createExecutionMarkers).mockReturnValue(removeMarkers)
+    const { unmount } = renderHook(() => {
+      useWidgetRemoval(widget)
+      usePriceChartAdvancedExecutionMarkers(widget, 'WETH', [])
+    })
+    expect(() => unmount()).not.toThrow()
+    expect(removeMarkers).toHaveBeenCalledTimes(1)
+    expect(widget.remove).toHaveBeenCalledTimes(1)
+  })
+
   it('detaches price selection listeners before removing the widget', () => {
     const widget = createWidget()
     const onSelectPrice = jest.fn()

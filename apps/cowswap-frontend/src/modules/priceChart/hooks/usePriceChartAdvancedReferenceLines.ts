@@ -10,6 +10,7 @@ export function usePriceChartAdvancedReferenceLines(
   activeTicker: string,
   referenceLines: PriceChartReferenceLine<number>[],
   color: string,
+  textColor: string = color,
 ): void {
   // Detach TradingView subscriptions before React removes the iframe.
   useLayoutEffect(() => {
@@ -19,7 +20,7 @@ export function usePriceChartAdvancedReferenceLines(
     let cancelled = false
     const syncLines = (): void => {
       if (!cancelled && !removeLines && chart.symbol() === activeTicker) {
-        removeLines = createHorizontalLines(widget, referenceLines, color)
+        removeLines = createHorizontalLines(widget, referenceLines, color, textColor)
       }
     }
     chart.onDataLoaded().subscribe(null, syncLines)
@@ -29,5 +30,5 @@ export function usePriceChartAdvancedReferenceLines(
       chart.onDataLoaded().unsubscribe(null, syncLines)
       removeLines?.()
     }
-  }, [widget, activeTicker, referenceLines, color])
+  }, [widget, activeTicker, referenceLines, color, textColor])
 }

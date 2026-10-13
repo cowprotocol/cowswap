@@ -11,6 +11,27 @@ i18n.activate('en-US')
 describe('PriceChartTooltip', () => {
   const data = { chartWidth: 600, chartHeight: 400, price: 2, time: 1710000000, x: 100, y: 100 }
 
+  it('shows executions for the hovered candle', () => {
+    const execution = {
+      id: 'execution:1',
+      timestamp: data.time,
+      side: 'buy' as const,
+      activeAmount: '2',
+      activeTokenSymbol: 'WETH',
+      counterAmount: '4,000',
+      counterTokenSymbol: 'USDC',
+      title: 'Bought 2 WETH for 4,000 USDC',
+    }
+    render(
+      <I18nProvider i18n={i18n}>
+        <PriceChartTooltip data={{ ...data, executions: [execution] }} metric="price" locale="en-US" />
+      </I18nProvider>,
+    )
+    expect(screen.getByText('Buy')).toBeTruthy()
+    expect(screen.getByText('2 WETH')).toBeTruthy()
+    expect(screen.getByTitle(execution.title)).toBeTruthy()
+  })
+
   it('shows volume when the hovered bar contains it', () => {
     render(
       <I18nProvider i18n={i18n}>

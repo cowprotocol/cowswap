@@ -19,6 +19,7 @@ import {
   updateLimitRateAtom,
   isChartPriceSelectionModeAtom,
   useUpdateActiveRate,
+  useOpenLimitOrderChartLines,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
 import { PriceChart, getLimitPriceFromRate } from 'modules/priceChart'
@@ -44,6 +45,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const isChartPriceSelectionMode = useAtomValue(isChartPriceSelectionModeAtom)
   const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
   const updateRate = useUpdateActiveRate()
+  const openOrderLines = useOpenLimitOrderChartLines({ inputCurrency, orders: pendingOrders, outputCurrency })
   const referenceLines = useMemo(
     () => [
       {
@@ -54,8 +56,9 @@ export function RegularLimitOrdersPage(): ReactNode {
             ? getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)
             : null,
       },
+      ...openOrderLines,
     ],
-    [inputCurrency, outputCurrency, activeRate, t],
+    [inputCurrency, outputCurrency, activeRate, openOrderLines, t],
   )
   const handleSelectLimitPrice = useCallback(
     (activeRate: Fraction) => {
