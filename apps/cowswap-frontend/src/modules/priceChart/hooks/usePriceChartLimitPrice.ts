@@ -9,7 +9,11 @@ import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 import { useUsdPrice } from 'modules/usdAmount'
 
 import { loadMarketCapSupply } from '../lib/loadPriceChartHistory'
-import { getActivePriceLimitLinePrice, getSelectedPriceLimitRate } from '../lib/priceChartLimitPrice.utils'
+import {
+  getActivePriceLimitLinePrice,
+  getSelectedPriceLimitRate,
+  getPriceChartUsdConversion,
+} from '../lib/priceChartLimitPrice.utils'
 
 import type { ChartMetric, PriceChartReferenceLine, SupplyVariant } from '../lib/priceChart.types'
 
@@ -25,7 +29,6 @@ export interface PriceChartLimitPriceOptions {
   onSelectLimitPrice?: (rate: Fraction) => void
 }
 
-// eslint-disable-next-line complexity
 export function usePriceChartLimitPrice({
   activeCurrency,
   inputCurrency,
@@ -38,10 +41,7 @@ export function usePriceChartLimitPrice({
   referenceLines: PriceChartReferenceLine<number>[]
   onSelectPrice: ((price: number) => void) | undefined
 } {
-  const inputPrice = useUsdPrice(inputCurrency ? getWrappedToken(inputCurrency) : null)
-  const outputPrice = useUsdPrice(outputCurrency ? getWrappedToken(outputCurrency) : null)
-  const inputUsdPrice = inputPrice?.price ? Number(inputPrice.price.toSignificant(18)) : null
-  const outputUsdPrice = outputPrice?.price ? Number(outputPrice.price.toSignificant(18)) : null
+  const conversion = useUsdConversion(activeCurrency, inputCurrency, outputCurrency)
   const { data: supply } = useQuery({
     queryKey: [
       'priceChart',
@@ -60,47 +60,46 @@ export function usePriceChartLimitPrice({
     () =>
       priceMultiplier
         ? referenceLines.flatMap((line) => {
-            const price = getActivePriceLimitLinePrice(
-              activeCurrency,
-              line.price,
-              inputCurrency,
-              outputCurrency,
-              inputUsdPrice,
-              outputUsdPrice,
-            )
+            const price = getActivePriceLimitLinePrice(line.price, conversion)
             return price === null
               ? []
               : [
                   {
                     ...line,
                     price: price * priceMultiplier,
-                    label:
-                      line.labels?.[activeCurrency && inputCurrency?.equals(activeCurrency) ? 'sell' : 'buy'] ??
-                      line.label,
+                    label: line.labels?.[conversion?.side ?? 'buy'] ?? line.label,
                   },
                 ]
           })
         : [],
-    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, priceMultiplier, referenceLines],
+    [conversion, priceMultiplier, referenceLines],
   )
   const handleSelectPrice = useCallback(
     (price: number) => {
-      const selectedPrice = metric === 'marketCap' && supply ? price / supply : price
-      const rate = getSelectedPriceLimitRate(
-        activeCurrency,
-        inputCurrency,
-        outputCurrency,
-        selectedPrice,
-        inputUsdPrice,
-        outputUsdPrice,
-      )
+      if (!priceMultiplier) return
+      const rate = getSelectedPriceLimitRate(price / priceMultiplier, conversion)
       if (rate) onSelectLimitPrice?.(rate)
     },
-    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, metric, onSelectLimitPrice, supply],
+    [conversion, onSelectLimitPrice, priceMultiplier],
   )
 
   return {
     referenceLines: activeReferenceLines,
-    onSelectPrice: onSelectLimitPrice && (metric === 'price' || Number(supply) > 0) ? handleSelectPrice : undefined,
+    onSelectPrice: onSelectLimitPrice && conversion && priceMultiplier ? handleSelectPrice : undefined,
   }
+}
+
+function useUsdConversion(
+  activeCurrency: Currency | undefined,
+  inputCurrency: Currency | null,
+  outputCurrency: Currency | null,
+): ReturnType<typeof getPriceChartUsdConversion> {
+  const inputPrice = useUsdPrice(inputCurrency ? getWrappedToken(inputCurrency) : null)
+  const outputPrice = useUsdPrice(outputCurrency ? getWrappedToken(outputCurrency) : null)
+  const inputUsdPrice = inputPrice?.price ? Number(inputPrice.price.toSignificant(18)) : null
+  const outputUsdPrice = outputPrice?.price ? Number(outputPrice.price.toSignificant(18)) : null
+  return useMemo(
+    () => getPriceChartUsdConversion(activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice),
+    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice],
+  )
 }

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
-import { formatTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -15,6 +14,7 @@ import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
+import { getPairInversion, currenciesMatch } from '../lib/priceChartCurrency.utils'
 
 import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 
@@ -54,15 +54,18 @@ export function useOpenLimitOrderChartLines({
         const buySymbol = order.outputToken.symbol || FALLBACK_TOKEN_SYMBOL
         const sellLabel = t`Sell ${formattedSellAmount} ${sellSymbol}`
         const buyLabel = t`Buy ${formattedBuyAmount} ${buySymbol}`
-        const isForwardOrder = isMatchingCurrency(order.inputToken, inputCurrency)
-        const labels = isForwardOrder ? { sell: sellLabel, buy: buyLabel } : { sell: buyLabel, buy: sellLabel }
+        const isInverted = !currenciesMatch(order.inputToken, inputCurrency)
         const prefixLabel = (label: string): string => (order.isUnfillable ? t`Unfillable · ${label}` : label)
+        const labels = {
+          sell: prefixLabel(isInverted ? buyLabel : sellLabel),
+          buy: prefixLabel(isInverted ? sellLabel : buyLabel),
+        }
 
         return [
           {
             id: `open-order:${order.id}`,
-            label: prefixLabel(labels.sell),
-            labels: { buy: prefixLabel(labels.buy), sell: prefixLabel(labels.sell) },
+            label: labels.sell,
+            labels,
             price,
             variant: order.isUnfillable ? 'unfillable-order' : 'open-order',
           },
@@ -75,23 +78,10 @@ function compareOrders(a: Order, b: Order): number {
   return new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime() || a.id.localeCompare(b.id)
 }
 
-function isMatchingCurrency(currency: Currency, expectedCurrency: Currency): boolean {
-  const wrappedCurrency = getWrappedToken(currency)
-  const wrappedExpectedCurrency = getWrappedToken(expectedCurrency)
-
-  return (
-    wrappedCurrency.chainId === wrappedExpectedCurrency.chainId &&
-    areAddressesEqual(wrappedCurrency.address, wrappedExpectedCurrency.address)
-  )
-}
-
 function isMatchingOpenLimitOrder(order: Order, inputCurrency: Currency, outputCurrency: Currency): boolean {
   if (order.status !== OrderStatus.PENDING || order.isHidden || getUiOrderType(order) !== UiOrderType.LIMIT) {
     return false
   }
 
-  return (
-    (isMatchingCurrency(order.inputToken, inputCurrency) && isMatchingCurrency(order.outputToken, outputCurrency)) ||
-    (isMatchingCurrency(order.inputToken, outputCurrency) && isMatchingCurrency(order.outputToken, inputCurrency))
-  )
+  return getPairInversion(order.inputToken, order.outputToken, inputCurrency, outputCurrency) !== null
 }
