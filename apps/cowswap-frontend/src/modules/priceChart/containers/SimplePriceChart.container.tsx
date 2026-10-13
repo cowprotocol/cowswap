@@ -6,8 +6,6 @@ import type { Currency } from '@cowprotocol/currency'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useTheme } from 'common/hooks/useTheme'
-
 import { usePriceChartHistory } from '../hooks/usePriceChartHistory'
 import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { PriceChartControls } from '../pure/PriceChartControls'
@@ -58,7 +56,6 @@ export function SimplePriceChart({
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
   const isMobile = useMediaQuery('(max-width: 600px)')
-  const { primary, text, warning } = useTheme()
   const [period, setPeriod] = useAtom(priceChartPeriodAtom)
   const [chartType, setChartType] = useAtom(priceChartTypeAtom)
   const {
@@ -103,7 +100,6 @@ export function SimplePriceChart({
           metric={metric}
           showTooltip={!showStatus}
           locale={i18n.locale}
-          colors={{ primary, text, warning }}
         />
         {showStatus ? (
           <styledEl.OverlayState>

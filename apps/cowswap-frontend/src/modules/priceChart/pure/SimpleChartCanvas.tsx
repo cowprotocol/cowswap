@@ -18,6 +18,8 @@ import {
   type UTCTimestamp,
 } from 'lightweight-charts'
 
+import { useTheme } from 'common/hooks/useTheme'
+
 import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
 
@@ -46,11 +48,6 @@ export interface SimpleChartCanvasProps {
   metric: ChartMetric
   showTooltip: boolean
   locale: string
-  colors: {
-    primary: string
-    text: string
-    warning: string
-  }
 }
 
 interface SimpleChartInstance {
@@ -72,8 +69,9 @@ export function SimpleChartCanvas({
   metric,
   showTooltip,
   locale,
-  colors: { primary, text, warning },
 }: SimpleChartCanvasProps): ReactNode {
+  const theme = useTheme()
+  const { primary, text } = theme
   const { t } = useLingui()
   const attachedMarkers = useMemo(() => attachExecutionMarkersToBars(executionMarkers, data), [executionMarkers, data])
   const attachedMarkersRef = useRef(attachedMarkers)
@@ -245,8 +243,8 @@ export function SimpleChartCanvas({
   useEffect(() => {
     const instance = chartRef.current
     if (!instance) return
-    syncSimplePriceLines(instance.priceSeries, priceLinesRef.current, referenceLines, warning, text)
-  }, [chartType, referenceLines, warning, text])
+    syncSimplePriceLines(instance.priceSeries, priceLinesRef.current, referenceLines, theme)
+  }, [chartType, referenceLines, theme])
 
   useEffect(() => {
     chartRef.current?.markers.setMarkers(getSimpleExecutionMarkers(attachedMarkers))

@@ -10,6 +10,7 @@ import { createExecutionMarkers } from '../lib/priceChartAdvancedExecutionMarker
 import { createHorizontalLines } from '../lib/priceChartAdvancedReferenceLines.utils'
 
 import type { IChartingLibraryWidget } from 'charting_library'
+import type { DefaultTheme } from 'styled-components'
 
 jest.mock('../lib/priceChartAdvancedExecutionMarkers.utils', () => ({ createExecutionMarkers: jest.fn() }))
 
@@ -72,7 +73,11 @@ describe('Advanced chart cleanup', () => {
     jest.mocked(createHorizontalLines).mockReturnValue(removeLines)
     const { unmount } = renderHook(() => {
       useWidgetRemoval(widget)
-      usePriceChartAdvancedReferenceLines(widget, 'WETH', [], '#fff')
+      usePriceChartAdvancedReferenceLines(widget, 'WETH', [], {
+        success: '#fff',
+        danger: '#f00',
+        warning: '#00f',
+      } as DefaultTheme)
     })
 
     expect(() => unmount()).not.toThrow()

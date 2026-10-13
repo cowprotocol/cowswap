@@ -40,7 +40,7 @@ export interface PriceChartReferenceLine<TPrice> {
   label: string
   price: TPrice
   labels?: Partial<Record<'sell' | 'buy', string>>
-  variant?: 'trade' | 'open-order' | 'unfillable-order'
+  variant: 'trade' | 'worst-acceptable-price' | 'open-order' | 'unfillable-order'
 }
 
 export type SupplyVariant = 'circulating' | 'total'
