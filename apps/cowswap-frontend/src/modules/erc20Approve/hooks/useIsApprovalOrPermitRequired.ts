@@ -62,7 +62,9 @@ export function useIsApprovalOrPermitRequired({
   // no standalone approve step. It still reports `BundleApproveRequired` rather than `Unsupported`,
   // because the user picks how much to delegate and `Unsupported` would hide that switcher too.
   const solanaReason =
-    inputCurrency && isSolanaChain(inputCurrency.chainId) ? getSolanaApproveRequirement(amountToApprove) : null
+    inputCurrency && isSolanaChain(inputCurrency.chainId)
+      ? getSolanaApproveRequirement(amountToApprove, inputCurrency, tradeType)
+      : null
 
   const reason =
     solanaReason ??
@@ -117,7 +119,18 @@ function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
   }
 }
 
-function getSolanaApproveRequirement(amountToApprove: CurrencyAmount<Currency> | null): ApproveRequiredReason {
+function getSolanaApproveRequirement(
+  amountToApprove: CurrencyAmount<Currency> | null,
+  inputCurrency: Currency,
+  tradeType: Nullish<TradeType>,
+): ApproveRequiredReason {
+  // Mirrors `isApproveSupportedByFlowOrWallet`: native sells are Swap-only. Reporting a delegation here
+  // would push an approve validation ahead of `SellNativeToken` in `validateTradeForm`, which reads
+  // `validations[0]`, and the native-sell block would never reach the form.
+  if (getIsNativeToken(inputCurrency) && tradeType !== TradeType.SWAP) {
+    return ApproveRequiredReason.Unsupported
+  }
+
   return isNonZeroApproveAmount(amountToApprove)
     ? ApproveRequiredReason.BundleApproveRequired
     : ApproveRequiredReason.NotRequired
