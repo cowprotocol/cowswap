@@ -27,13 +27,10 @@ jest.mock('../BottomDrawer/BottomDrawerOrDialog', () => ({
   ),
 }))
 
-jest.mock('../ModalHeader', () => ({
-  ModalHeader: ({ title }: { title: ReactNode }) => <h2>{title}</h2>,
-}))
-
 jest.mock('../Modal/Modal.pure', () => ({
   Modal: {
     Root: ({ children }: { children: ReactNode }) => <div>{children}</div>,
+    Header: ({ title }: { title: ReactNode }) => <h2>{title}</h2>,
     Description: ({ children }: { children: ReactNode }) => <p>{children}</p>,
     Content: ({ children }: { children: ReactNode }) => <div>{children}</div>,
     FooterWithTwoButtons: ({
