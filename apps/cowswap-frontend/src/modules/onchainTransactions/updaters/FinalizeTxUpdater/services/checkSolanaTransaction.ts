@@ -92,8 +92,13 @@ export function checkSolanaTransaction(
     }
 
     if (transaction.solanaOrderCreation) {
-      if (status === 'reverted') {
-        failCreatedOrder(transaction.solanaOrderCreation.orderId, transaction, params, slot)
+      const createdOrderId = getCreatedOrderId(transaction)
+
+      // No id means a transaction stored before this field carried one — see `getCreatedOrderId`.
+      // There is nothing to fail, and claiming a failure without failing anything would leave the
+      // order in `CREATING` under a notification saying it had not been placed.
+      if (status === 'reverted' && createdOrderId) {
+        failCreatedOrder(createdOrderId, transaction, params, slot)
       }
 
       return
@@ -268,6 +273,21 @@ async function finalizeSuccessfulCancellation(
 
   cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
   emitCancelledOrderEvent({ chainId, order, transactionHash: hash })
+}
+
+/**
+ * Transactions are persisted to local storage, and before the id was added this field was a plain
+ * `true`. One stored by an older build therefore still reads as truthy while carrying no id, so the
+ * shape is checked rather than trusted.
+ */
+function getCreatedOrderId(transaction: EnhancedTransactionDetails): string | undefined {
+  const value: unknown = transaction.solanaOrderCreation
+
+  if (typeof value !== 'object' || value === null) return undefined
+
+  const { orderId } = value as { orderId?: unknown }
+
+  return typeof orderId === 'string' ? orderId : undefined
 }
 
 function getLastValidBlockHeight(transaction: EnhancedTransactionDetails): number | undefined {

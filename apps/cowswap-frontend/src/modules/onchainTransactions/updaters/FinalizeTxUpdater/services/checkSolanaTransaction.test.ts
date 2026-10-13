@@ -95,6 +95,15 @@ function createParams({
   }
 }
 
+const ORDER_ID = '0x' + 'cd'.repeat(32)
+const REVERTED = {
+  slot: 42,
+  confirmations: 1,
+  err: { InstructionError: [0, 'Custom'] },
+  confirmationStatus: 'confirmed',
+} as SignatureStatus
+const FAILED_ORDER = invalidateOrdersBatch({ chainId: SupportedChainId.SOLANA, ids: [ORDER_ID], isSafeWallet: false })
+
 describe('checkSolanaTransaction', () => {
   it('finalizes as successful once the signature is confirmed', async () => {
     const { params, dispatch } = createParams({
@@ -415,8 +424,6 @@ describe('checkSolanaTransaction', () => {
   // never told about one whose transaction died. Nothing else links the two, so if this does not fail
   // the order it polls for an id that will never resolve and sits in CREATING indefinitely.
   describe('order creation', () => {
-    const ORDER_ID = '0x' + 'cd'.repeat(32)
-
     beforeEach(() => {
       jest.clearAllMocks()
     })
@@ -426,30 +433,18 @@ describe('checkSolanaTransaction', () => {
     }
 
     it('fails the order it created when the transaction reverts', async () => {
-      const { params, dispatch } = createParams({
-        status: {
-          slot: 42,
-          confirmations: 1,
-          err: { InstructionError: [0, 'Custom'] },
-          confirmationStatus: 'confirmed',
-        },
-      })
+      const { params, dispatch } = createParams({ status: REVERTED })
 
       checkSolanaTransaction(createOrderCreationTransaction(), params)
 
-      await waitFor(() =>
-        expect(dispatch).toHaveBeenCalledWith(
-          invalidateOrdersBatch({ chainId: SupportedChainId.SOLANA, ids: [ORDER_ID], isSafeWallet: false }),
-        ),
-      )
+      await waitFor(() => expect(dispatch).toHaveBeenCalledWith(FAILED_ORDER))
 
       expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
         expect.objectContaining({ summary: 'Failed to place order' }),
       )
     })
 
-    // A dropped transaction reads back the same as one that never landed, so it only resolves once the
-    // chain passes the blockhash's lastValidBlockHeight — the order has to be failed on that too.
+    // A dropped transaction only resolves once the chain passes the blockhash's lastValidBlockHeight.
     it('fails the order when the creation transaction is dropped', async () => {
       const { params, dispatch } = createParams({
         status: null,
@@ -462,11 +457,23 @@ describe('checkSolanaTransaction', () => {
         params,
       )
 
-      await waitFor(() =>
-        expect(dispatch).toHaveBeenCalledWith(
-          invalidateOrdersBatch({ chainId: SupportedChainId.SOLANA, ids: [ORDER_ID], isSafeWallet: false }),
-        ),
+      await waitFor(() => expect(dispatch).toHaveBeenCalledWith(FAILED_ORDER))
+    })
+
+    // Persisted before the id was carried, this field is a plain `true`: truthy but naming no order,
+    // so claiming a failure would say "Failed to place order" while leaving the order in Creating.
+    it('stays quiet for a transaction stored before the order id was carried', async () => {
+      const { params, dispatch } = createParams({ status: REVERTED })
+
+      checkSolanaTransaction(
+        { ...createTransaction(), solanaOrderCreation: true } as unknown as EnhancedTransactionDetails,
+        params,
       )
+
+      await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+      expect(dispatch).not.toHaveBeenCalledWith(expect.objectContaining({ type: invalidateOrdersBatch.type }))
+      expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
     })
 
     it('leaves the order alone when the creation transaction lands', async () => {
