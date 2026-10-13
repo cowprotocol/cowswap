@@ -1,9 +1,13 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { OPEN_WALLET_MODAL_EVENT, OpenWalletModalEventDetail, useWalletInfo } from '@cowprotocol/wallet'
+import {
+  getReownChainNamespace,
+  OPEN_WALLET_MODAL_EVENT,
+  OpenWalletModalEventDetail,
+  useWalletInfo,
+} from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
 import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
@@ -49,7 +53,7 @@ export function useToggleModal(modal: ApplicationModal): Command {
 export function useToggleWalletModal(): Command {
   const areAlphaNetworksEnabled = useAtomValue(alphaNetworksEnabledAtom)
   const { chainId } = useWalletInfo()
-  const namespace = areAlphaNetworksEnabled || isSolanaChain(chainId) ? undefined : 'eip155'
+  const namespace = areAlphaNetworksEnabled ? undefined : getReownChainNamespace(chainId)
 
   return useCallback(() => {
     document.dispatchEvent(

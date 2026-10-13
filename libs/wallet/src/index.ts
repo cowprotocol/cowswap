@@ -4,6 +4,7 @@ export * from './api/types'
 export * from './assets'
 export * from './constants'
 export { COW_WIDGET_CONNECTOR_ID } from './reown/consts'
+export { getReownChainNamespace } from './reown/getReownChainNamespace'
 export { hasWalletConnectAccountForChain } from './reown/hasWalletConnectAccountForChain'
 
 // Hooks
