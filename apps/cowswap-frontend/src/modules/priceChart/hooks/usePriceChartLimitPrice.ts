@@ -51,13 +51,14 @@ export function usePriceChartLimitPrice({
       supplyVariant,
     ],
     queryFn: activeCurrency ? () => loadMarketCapSupply(activeCurrency, supplyVariant) : skipToken,
-    enabled: metric === 'marketCap' && !!onSelectLimitPrice && !!activeCurrency,
+    enabled: metric === 'marketCap' && !!activeCurrency,
     retry: false,
     staleTime: 30_000,
   })
+  const priceMultiplier = metric === 'marketCap' ? supply : 1
   const activeReferenceLines = useMemo(
     () =>
-      metric === 'price'
+      priceMultiplier
         ? referenceLines.flatMap((line) => {
             const price = getActivePriceLimitLinePrice(
               activeCurrency,
@@ -72,7 +73,7 @@ export function usePriceChartLimitPrice({
               : [
                   {
                     ...line,
-                    price,
+                    price: price * priceMultiplier,
                     label:
                       line.labels?.[activeCurrency && inputCurrency?.equals(activeCurrency) ? 'sell' : 'buy'] ??
                       line.label,
@@ -80,7 +81,7 @@ export function usePriceChartLimitPrice({
                 ]
           })
         : [],
-    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, metric, referenceLines],
+    [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, priceMultiplier, referenceLines],
   )
   const handleSelectPrice = useCallback(
     (price: number) => {
