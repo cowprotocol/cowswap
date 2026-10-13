@@ -91,7 +91,7 @@ export const PriceChart = memo(function PriceChart({
 
   const chartProps = {
     ...limitPriceProps,
-    executionMarkers: metric === 'price' ? executionMarkers : [],
+    executionMarkers,
     activeCurrency,
     metric,
     onSelectMetric: setMetric,
@@ -102,6 +102,7 @@ export const PriceChart = memo(function PriceChart({
     currencies,
     supplyVariant,
   }
+
   const chart = (
     <ChartWrapper
       $isExpanded={!isUpToLarge && (!expandable || isExpanded)}
