@@ -8,7 +8,13 @@ import type { UiOrderType } from '@cowprotocol/types'
 
 import { PublicKey } from '@solana/web3.js'
 import { orderBookApi } from 'cowSdk'
-import { solanaSigningAbandonedAtom, solanaSigningDeadlineAtom, SolanaSigningDeadlineState } from 'entities/trade'
+import {
+  solanaOrderNotPlacedAtom,
+  solanaSigningAbandonedAtom,
+  solanaSigningDeadlineAtom,
+  SolanaSigningDeadlineState,
+  solanaSigningWindowExpiredAtom,
+} from 'entities/trade'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
@@ -22,6 +28,7 @@ import {
   planDelegateStep,
   planWrapStep,
   sendSolanaFlow,
+  SigningWindowClosedError,
   signSolanaFlow,
   type SignSolanaFlowContext,
   SolanaFlowStep,
@@ -31,7 +38,13 @@ import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
-import { getSwapErrorMessage, USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
+import {
+  getSwapErrorMessage,
+  isBlockhashExpiredError,
+  USER_SWAP_REJECTED_ERROR,
+} from 'common/utils/getSwapErrorMessage'
+
+import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -69,8 +82,14 @@ export async function solanaFlow(
   // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
   jotaiStore.set(solanaSigningDeadlineAtom, null)
   jotaiStore.set(solanaSigningAbandonedAtom, false)
+  jotaiStore.set(solanaSigningWindowExpiredAtom, null)
+  jotaiStore.set(solanaOrderNotPlacedAtom, null)
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
+
+  // Flipped the moment the transaction leaves for the network, so the error handling below can tell
+  // a failure that definitely placed nothing from one whose outcome is unknown.
+  let isSubmissionStarted = false
 
   try {
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
@@ -142,8 +161,14 @@ export async function solanaFlow(
           steps,
           tradeQuote.quoteResults,
           () => attemptId === latestAttemptId,
+          () => {
+            isSubmissionStarted = true
+          },
         )
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
+
+    // Self-paid sends broadcast inside the wallet call above, so reaching here means it went out.
+    isSubmissionStarted = true
 
     addPendingOrderStep(
       {
@@ -216,6 +241,30 @@ export async function solanaFlow(
       }
 
       return
+    }
+
+    // Three ways to learn the same thing — the blockhash died before the order was placed. The
+    // countdown catches it locally, and the order book catches the rest: the hand-over above is
+    // deliberately optimistic, so a signature given near the boundary is rejected there instead.
+    // The third is a wallet that answered a prompt whose countdown had already run out: whatever
+    // it called the failure, the user watched the window close, and that is the part they can act
+    // on. Only before the hand-over — afterwards the bundle may still have been taken.
+    const isWindowExpiryFailure =
+      error instanceof SigningWindowClosedError ||
+      isBlockhashExpiredError(error) ||
+      (isSigningWindowClosed && !isSubmissionStarted)
+
+    if (isWindowExpiryFailure) {
+      jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)
+    } else if (!isSubmissionStarted && !isRejection) {
+      // Nothing left the client, so the screen can say outright that no order was placed and keep
+      // the wallet's own wording — which is where the unreadable ones come from — out of the way
+      // under "technical details". A deliberate rejection is not a failure and keeps its own copy.
+      jotaiStore.set(solanaOrderNotPlacedAtom, {
+        tradeAmounts,
+        errorMessage: swapErrorMessage,
+        logs: getSolanaErrorLogs(error),
+      })
     }
 
     tradeConfirmActions.onError(swapErrorMessage)
@@ -325,6 +374,8 @@ async function postSponsoredBundle(
   steps: SolanaFlowStep[],
   quoteResults: SolanaTradeFlowContext['tradeQuote']['quoteResults'],
   isCurrentAttempt: () => boolean,
+  /** Fired just before the bundle is handed over, after which its outcome is no longer ours to know. */
+  onSubmissionStart: () => void,
 ): Promise<undefined> {
   // By the time a hung attempt settles, the shared atoms may belong to a newer attempt — every
   // write below is gated on the atom still holding this attempt's own value.
@@ -377,6 +428,8 @@ async function postSponsoredBundle(
     // Settled at the signature, not after the POST: the countdown must not keep ticking (and claim
     // the window closed) while the signed bundle is being handed to the order book.
     settleSigning()
+
+    onSubmissionStart()
 
     await postSolanaSponsoredOrder(
       // The endpoint answers `id: null` when it could not store the quote, which the type does not admit.

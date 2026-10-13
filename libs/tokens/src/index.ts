@@ -60,6 +60,8 @@ export { useDoesSymbolResolveToToken } from './hooks/tokens/useDoesSymbolResolve
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
+export { useFetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlockchain'
+export type { FetchTokenFromBlockchain } from './hooks/tokens/useFetchTokenFromBlockchain'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 export { useAreTokenListsLoading } from './hooks/tokens/useAreTokenListsLoading'
 export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'

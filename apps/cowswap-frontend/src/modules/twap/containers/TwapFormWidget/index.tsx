@@ -41,6 +41,7 @@ import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
@@ -48,7 +49,9 @@ import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
-export type { LabelTooltip, LabelTooltipItems } from './tooltips'
+export type { LabelTooltip, LabelTooltipContent, LabelTooltipFn, LabelTooltipItems } from './tooltips'
+export type { TotalDurationTooltipProps } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
+export { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
@@ -222,10 +225,9 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
           label={tooltips.totalDuration.label}
-          tooltip={renderTooltip(tooltips.totalDuration.tooltip, {
-            parts: numberOfPartsValue,
-            partDuration: timeInterval,
-          })}
+          tooltip={TotalDurationTooltip}
+          parts={numberOfPartsValue}
+          partDuration={timeInterval}
         />
 
         <TradeTextBox label={tooltips.partDuration.label} tooltip={tooltips.partDuration.tooltip}>

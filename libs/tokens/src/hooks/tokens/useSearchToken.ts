@@ -1,22 +1,19 @@
 import { useAtomValue } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
-import { useConfig } from 'wagmi'
-
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
+import { useFetchTokenFromBlockchain } from './useFetchTokenFromBlockchain'
+
 import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
 import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
-import { fetchSolanaTokenFromBlockchain } from '../../utils/fetchSolanaTokenFromBlockchain'
-import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
@@ -77,7 +74,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   )
 
   // Search in Blockchain
-  const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useFetchTokenFromBlockchain(
+  const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useSearchTokenInBlockchain(
     debouncedInputInExternals,
     isTokenAlreadyFoundByAddress,
   )
@@ -138,31 +135,26 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
-function useFetchTokenFromBlockchain(
+function useSearchTokenInBlockchain(
   input: string | undefined,
   isTokenAlreadyFoundByAddress: boolean,
 ): SWRResponse<TokenWithLogo | null> {
   const { chainId } = useAtomValue(environmentAtom)
-  const config = useConfig()
   const { connection } = useAppKitConnection()
+  const fetchTokenFromBlockchain = useFetchTokenFromBlockchain()
 
-  return useSWR<TokenWithLogo | null>(['fetchTokenFromBlockchain', chainId, input, connection?.rpcEndpoint], () => {
-    if (isTokenAlreadyFoundByAddress || !input) {
-      return null
-    }
+  return useSWR<TokenWithLogo | null>(
+    ['fetchTokenFromBlockchain', chainId, input, connection?.rpcEndpoint],
+    async () => {
+      if (isTokenAlreadyFoundByAddress || !input) {
+        return null
+      }
 
-    if (isSolanaChain(chainId)) {
-      if (!connection || !isSolanaAddress(input)) return null
+      const token = await fetchTokenFromBlockchain(input, chainId)
 
-      return fetchSolanaTokenFromBlockchain(input, chainId, connection).then(TokenWithLogo.fromToken)
-    }
-
-    if (!isAddress(input)) {
-      return null
-    }
-
-    return fetchTokenFromBlockchain(input, chainId, config).then(TokenWithLogo.fromToken)
-  })
+      return token ? TokenWithLogo.fromToken(token) : null
+    },
+  )
 }
 
 function useSearchTokensInApi(

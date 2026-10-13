@@ -160,6 +160,24 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
   })
 
+  it('ignores the selector chain when the wallet is connected to Solana', () => {
+    mockUseWalletInfo.mockReturnValue({
+      account: 'SoLanaPubKey11111111111111111111111111111',
+      chainId: SupportedChainId.SOLANA,
+    } as WalletInfo)
+    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.BASE, source: 'selector' })
+    mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: true, field: Field.OUTPUT }))
+
+    renderWithHealth(healthy())
+
+    expect(mockUseBalancesAccountForChain).toHaveBeenCalledWith(SupportedChainId.SOLANA)
+    expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
+    expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledWith(
+      expect.objectContaining({ chainId: SupportedChainId.SOLANA }),
+      undefined,
+    )
+  })
+
   describe('watcher fallback wiring', () => {
     beforeEach(() => {
       mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })

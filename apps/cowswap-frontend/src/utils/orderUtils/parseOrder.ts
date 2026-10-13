@@ -41,6 +41,9 @@ export interface ParsedOrder {
   expirationTime: Date
   fulfillmentTime: string | undefined
   composableCowInfo?: ComposableCowInfo
+  // `getUiOrderType` reads this to tell a Solana limit order from a market one, and reaches it
+  // through an optional field — drop it here and every Solana order silently becomes unclassified.
+  appData: Order['appData']
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
   executionData: ParsedOrderExecutionData
@@ -60,6 +63,13 @@ export interface ParsedOrderExecutionData {
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
   activityTitle: MessageDescriptor | string
+}
+
+// Solana charges no fee, so its order-book omits `feeAmount` entirely. `transformOrder` in
+// sdk-order-book now fills it in, but `addOrUpdateOrders` merges onto an order already in the
+// store without overwriting the field — one persisted before that fix keeps `undefined`.
+function getFeeAmount(order: Order): string {
+  return order.feeAmount ?? '0'
 }
 
 export const parseOrder = (order: Order): ParsedOrder => {
@@ -116,7 +126,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     kind: order.kind,
     sellAmount: order.sellAmount,
     buyAmount: order.buyAmount,
-    feeAmount: order.feeAmount,
+    feeAmount: getFeeAmount(order),
     class: order.class,
     status: order.status,
     partiallyFillable: order.partiallyFillable,
@@ -125,6 +135,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     creationTime,
     expirationTime,
     fulfillmentTime,
+    appData: order.appData,
     fullAppData: order.fullAppData,
     executionData,
     signingScheme: order.signingScheme,

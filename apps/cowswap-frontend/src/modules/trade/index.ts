@@ -101,7 +101,11 @@ export { estimateSolanaSigningDeadline } from './services/solanaSend/estimateSol
 export type { SolanaSigningDeadline } from './services/solanaSend/estimateSolanaSigningDeadline'
 export { SOLANA_MAX_APPROVE_AMOUNT } from './services/solanaApprove/const'
 export { sendSolanaFlow } from './services/solanaFlow/sendSolanaFlow'
-export { signSolanaFlow, getSigningWindowClosedError } from './services/solanaFlow/signSolanaFlow'
+export {
+  signSolanaFlow,
+  getSigningWindowClosedError,
+  SigningWindowClosedError,
+} from './services/solanaFlow/signSolanaFlow'
 export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
 export { planWrapStep } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'

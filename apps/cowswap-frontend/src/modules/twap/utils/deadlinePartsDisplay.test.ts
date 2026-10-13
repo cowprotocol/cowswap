@@ -1,4 +1,4 @@
-import { customDeadlineToSeconds, deadlinePartsDisplay } from './deadlinePartsDisplay'
+import { customDeadlineToSeconds, deadlinePartsDisplay, secondsToCustomDeadline } from './deadlinePartsDisplay'
 
 describe('deadlinePartsDisplay()', () => {
   it('uses singular labels for a single unit with longLabels', () => {
@@ -23,5 +23,13 @@ describe('customDeadlineToSeconds()', () => {
     expect(customDeadlineToSeconds({ hours: 1, minutes: 0 })).toBe(3600)
     expect(customDeadlineToSeconds({ hours: 0, minutes: 30 })).toBe(1800)
     expect(customDeadlineToSeconds({ hours: 1, minutes: 30 })).toBe(5400)
+  })
+})
+
+describe('secondsToCustomDeadline()', () => {
+  it('converts seconds to hours and minutes', () => {
+    expect(secondsToCustomDeadline(3600)).toEqual({ hours: 1, minutes: 0 })
+    expect(secondsToCustomDeadline(1800)).toEqual({ hours: 0, minutes: 30 })
+    expect(secondsToCustomDeadline(5400)).toEqual({ hours: 1, minutes: 30 })
   })
 })
