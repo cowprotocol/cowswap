@@ -18,6 +18,7 @@ import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { SimplePriceChartProps } from './SimplePriceChart.container'
 import type { Candle } from '../lib/priceChart.types'
+import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
 
 export function AdvancedPriceChart({
   activeCurrency,
@@ -51,35 +52,31 @@ export function AdvancedPriceChart({
   )
   const [hasVolume, setHasVolume] = useState<boolean>()
   const activeTicker = activeSymbol?.ticker || ''
-  const datafeedController = useMemo(
-    () =>
-      createPriceChartDatafeed({
-        queryClient,
-        onHistoryLoaded: (bars) => {
-          setHistoryBars(bars)
-          setPriceSummary(getPriceChartSummary(bars))
-          setHasVolume(bars.some((bar) => bar.volume !== undefined))
-        },
-        symbols,
-      }),
-    [queryClient, symbols],
-  )
+  const [datafeedController, setDatafeedController] = useState<PriceChartDatafeedController | null>(null)
 
   useEffect(() => {
-    datafeedController.setAutoRefreshEnabled(autoRefresh)
+    const controller = createPriceChartDatafeed({
+      queryClient,
+      onHistoryLoaded: (bars) => {
+        setHistoryBars(bars)
+        setPriceSummary(getPriceChartSummary(bars))
+        setHasVolume(bars.some((bar) => bar.volume !== undefined))
+      },
+      symbols,
+    })
+    setDatafeedController(controller)
+    return () => controller.dispose()
+  }, [queryClient, symbols])
+
+  useEffect(() => {
+    datafeedController?.setAutoRefreshEnabled(autoRefresh)
   }, [autoRefresh, datafeedController])
-
-  useEffect(() => {
-    return () => {
-      datafeedController.dispose()
-    }
-  }, [datafeedController])
 
   useEffect(() => {
     setHistoryBars([])
     setPriceSummary(undefined)
     setHasVolume(undefined)
-    datafeedController.setActiveTicker(activeTicker)
+    datafeedController?.setActiveTicker(activeTicker)
   }, [activeTicker, datafeedController])
 
   return (
@@ -96,17 +93,19 @@ export function AdvancedPriceChart({
         currencies={currencies}
       />
       <styledEl.ChartFrame>
-        <AdvancedChartCanvas
-          activeTicker={activeTicker}
-          executionMarkers={attachedExecutionMarkers}
-          onSelectPrice={onSelectPrice}
-          referenceLines={referenceLines}
-          datafeed={datafeedController.datafeed}
-          hasVolume={hasVolume}
-          symbols={symbols}
-          locale={i18n.locale}
-          onError={setWidgetError}
-        />
+        {datafeedController && (
+          <AdvancedChartCanvas
+            activeTicker={activeTicker}
+            executionMarkers={attachedExecutionMarkers}
+            onSelectPrice={onSelectPrice}
+            referenceLines={referenceLines}
+            datafeedController={datafeedController}
+            hasVolume={hasVolume}
+            symbols={symbols}
+            locale={i18n.locale}
+            onError={setWidgetError}
+          />
+        )}
         {widgetError ? (
           <styledEl.OverlayState>
             <PriceChartStatus assetSymbol={activeCurrency?.symbol} isPending={false} isError />

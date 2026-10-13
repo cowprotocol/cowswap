@@ -19,16 +19,17 @@ import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service
 import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { PriceChartReferenceLine } from '../lib/priceChart.types'
+import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
-import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
+import type { IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
   executionMarkers: AttachedPriceChartExecutionMarker[]
   onSelectPrice?: (price: number) => void
   referenceLines: PriceChartReferenceLine<number>[]
-  datafeed: IBasicDataFeed
+  datafeedController: PriceChartDatafeedController
   hasVolume: boolean | undefined
   symbols: ChartSymbol[]
   locale: string
@@ -40,7 +41,7 @@ export function AdvancedChartCanvas({
   executionMarkers,
   onSelectPrice,
   referenceLines,
-  datafeed,
+  datafeedController,
   hasVolume,
   symbols,
   locale,
@@ -51,6 +52,9 @@ export function AdvancedChartCanvas({
   const theme = useTheme()
   const latestRef = useRef({ theme, activeTicker })
   const [readyWidget, setReadyWidget] = useState<IChartingLibraryWidget | null>(null)
+
+  const { datafeed } = datafeedController
+  usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers, datafeedController)
 
   useEffect(() => {
     latestRef.current = { theme, activeTicker }
@@ -138,7 +142,6 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedTheme(readyWidget)
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
 
-  usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers)
   usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme)
   usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 

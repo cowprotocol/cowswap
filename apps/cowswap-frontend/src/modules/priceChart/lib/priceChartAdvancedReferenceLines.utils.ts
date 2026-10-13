@@ -27,7 +27,7 @@ export function createHorizontalLines(
           linestyle: BASE_LINE_STYLES.lineStyle,
           linewidth: BASE_LINE_STYLES.lineWidth,
           horzLabelsAlign: 'right',
-          vertLabelsAlign: 'top',
+          vertLabelsAlign: 'middle',
           showPrice: true,
           textcolor: lineColor,
         },
