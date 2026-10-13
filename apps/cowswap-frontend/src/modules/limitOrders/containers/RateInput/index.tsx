@@ -23,8 +23,8 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { priceChartSelectionModeAtom } from 'modules/limitOrders/state/priceChartSelectionModeAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -59,7 +59,7 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
-  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(priceChartSelectionModeAtom)
+  const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -287,12 +287,12 @@ export function RateInput() {
               <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
                 <styledEl.IconButton
                   aria-label={t`Pick the limit price from the chart`}
-                  aria-pressed={isChartPriceSelectionMode}
+                  aria-pressed={isLimitPickerMode}
                   onClick={() => {
-                    if (!isChartPriceSelectionMode) setIsUsdRateMode(true)
-                    setIsChartPriceSelectionMode((state) => !state)
+                    if (!isLimitPickerMode) setIsUsdRateMode(true)
+                    setLimitPickerMode((state) => !state)
                   }}
-                  $active={isChartPriceSelectionMode}
+                  $active={isLimitPickerMode}
                 >
                   <MousePointer size={14} />
                 </styledEl.IconButton>
