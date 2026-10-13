@@ -160,7 +160,7 @@ export const TopContainer = styled.div`
   min-height: 36px;
   padding: 10px;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     display: block;
     text-align: center;
 
@@ -181,7 +181,7 @@ export const TabsContainer = styled.div`
   justify-content: space-between;
   width: 100%;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     flex-direction: column;
     align-items: end;
     gap: 10px;
@@ -208,7 +208,7 @@ export const RightContainer = styled.div<{ $isHistoryTab: boolean }>`
   display: flex;
   flex-flow: row nowrap;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     width: 100%;
     gap: 10px;
     flex-flow: ${({ $isHistoryTab }) => ($isHistoryTab ? 'column wrap' : 'column-reverse wrap')};

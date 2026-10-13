@@ -56,7 +56,7 @@ jest.mock('@cowprotocol/wallet', () => ({
 
 jest.mock('@cowprotocol/ui', () => ({
   ButtonOutlined: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  Media: { upToSmall: () => '', upToLarge: () => '' },
+  Media: { upToSmall: () => '', upToMedium: () => '' },
 }))
 
 // ─── Module mocks ──────────────────────────────────────────────────────────

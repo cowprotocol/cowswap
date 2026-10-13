@@ -12,7 +12,7 @@ export const SearchInputContainer = styled.label`
   position: relative;
   margin: 0 0 0 8px;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     margin 0;
   }
 `
@@ -53,7 +53,7 @@ export const SearchInput = styled.input`
   min-height: 36px;
   min-width: 240px;
 
-  ${Media.upToMedium()} {
+  ${Media.upToLarge()} {
     padding: 8px 32px;
   }
 
