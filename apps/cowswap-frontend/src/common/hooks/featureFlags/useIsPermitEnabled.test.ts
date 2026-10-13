@@ -1,4 +1,4 @@
-import { ConnectionType, useConnectionType, useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -6,8 +6,6 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { useIsPermitEnabled } from './useIsPermitEnabled'
 
 jest.mock('@cowprotocol/wallet', () => ({
-  ...jest.requireActual('@cowprotocol/wallet'),
-  useConnectionType: jest.fn(),
   useIsSmartContractWallet: jest.fn(),
 }))
 
@@ -17,13 +15,11 @@ jest.mock('entities/injectedWidget', () => ({
 
 const mockUseIsSmartContractWallet = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
 const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
-const mockUseConnectionType = useConnectionType as jest.MockedFunction<typeof useConnectionType>
 
 describe('useIsPermitEnabled', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockUseInjectedWidgetParams.mockReturnValue({})
-    mockUseConnectionType.mockReturnValue(ConnectionType.INJECTED)
   })
 
   it('returns true for EOA wallets when the widget param is unset', () => {
@@ -58,14 +54,5 @@ describe('useIsPermitEnabled', () => {
     const { result } = renderHook(() => useIsPermitEnabled())
 
     expect(result.current).toBe(true)
-  })
-
-  it('returns false for Base Account even when it is detected as an EOA', () => {
-    mockUseIsSmartContractWallet.mockReturnValue(false)
-    mockUseConnectionType.mockReturnValue(ConnectionType.BASE_ACCOUNT)
-
-    const { result } = renderHook(() => useIsPermitEnabled())
-
-    expect(result.current).toBe(false)
   })
 })
