@@ -12,6 +12,7 @@ import useSWR from 'swr'
 import {
   getSolanaTradeOverhead,
   planSolanaTradeFundedAccounts,
+  resolveSolanaReceiver,
   useDerivedTradeState,
   useIsWrapOrUnwrap,
 } from 'modules/trade'
@@ -61,12 +62,21 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
     return {
       fundedAccounts: planSolanaTradeFundedAccounts({
         owner: new PublicKey(account),
+        // The buy account's rent is the recipient's, not the owner's: a recipient who never held the
+        // token needs one created, and pricing the owner's existing account instead reports no rent.
+        receiver: new PublicKey(
+          resolveSolanaReceiver({
+            recipient: derivedState?.recipient,
+            recipientAddress: derivedState?.recipientAddress,
+            account,
+          }),
+        ),
         quote: solanaQuote,
         isNativeSell,
       }),
       ownerPaysFees: true,
     }
-  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap])
+  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, derivedState])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the callers' comparisons. `rpcEndpoint` keys the

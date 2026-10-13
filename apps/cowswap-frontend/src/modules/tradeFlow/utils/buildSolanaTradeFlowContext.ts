@@ -1,4 +1,4 @@
-import { resolveSolanaReceiver } from './resolveSolanaReceiver'
+import { resolveSolanaReceiver } from 'modules/trade'
 
 import { SolanaContextKey } from '../types/SolanaContextKey'
 import { SolanaTradeFlowContext } from '../types/TradeFlowContext'

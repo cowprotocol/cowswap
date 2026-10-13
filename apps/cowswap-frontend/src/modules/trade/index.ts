@@ -115,4 +115,5 @@ export { planCreateLimitOrderStep } from './services/solanaFlow/planCreateLimitO
 export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
 export type { SolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
 export { planSolanaTradeFundedAccounts } from './services/feeAmountCalculator/planSolanaTradeFundedAccounts'
+export { resolveSolanaReceiver } from './utils/resolveSolanaReceiver'
 export type { SolanaFlowStep, SolanaFundedAccount } from './services/solanaFlow/types'

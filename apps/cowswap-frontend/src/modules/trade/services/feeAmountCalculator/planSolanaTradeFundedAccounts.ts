@@ -7,6 +7,8 @@ import { SolanaFundedAccount } from '../solanaFlow/types'
 
 export interface PlanSolanaTradeFundedAccountsParams {
   owner: PublicKey
+  /** Who the buy side is credited to — the owner unless the user set a recipient. */
+  receiver: PublicKey
   quote: BuyAtaQuote
   isNativeSell: boolean
 }
@@ -20,12 +22,13 @@ export interface PlanSolanaTradeFundedAccountsParams {
  */
 export function planSolanaTradeFundedAccounts({
   owner,
+  receiver,
   quote,
   isNativeSell,
 }: PlanSolanaTradeFundedAccountsParams): SolanaFundedAccount[] {
   return [
     ...(isNativeSell ? getWrapFundedAccounts(owner) : []),
-    ...getCreateBuyAtaFundedAccounts(quote),
+    ...getCreateBuyAtaFundedAccounts(quote, receiver),
     ...getCreateOrderFundedAccounts(),
   ]
 }

@@ -2,8 +2,9 @@ import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { resolveSolanaReceiver } from 'modules/trade'
+
 import { getIsSolanaTradeFlowContextReady } from './getIsSolanaTradeFlowContextReady'
-import { resolveSolanaReceiver } from './resolveSolanaReceiver'
 
 // The canonical Solana System Program address (32 zero bytes) — always a valid
 // Solana pubkey, used here purely as "some syntactically valid Solana address".

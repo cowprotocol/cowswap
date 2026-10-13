@@ -15,6 +15,7 @@ import { getWsolAssociatedTokenAccount } from '../wrapNativeSolana/const'
 import type { BuyAtaQuote } from '../solanaFlow/planCreateBuyAtaStep'
 
 const OWNER = new PublicKey('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
+const RECIPIENT = new PublicKey('4B89hPSCqEp5xkKyhjuMg48phEJqzUt4vkdmmLJv5s1D')
 const BUY_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v')
 
 function quoteFor(programId?: PublicKey): BuyAtaQuote {
@@ -27,6 +28,7 @@ describe('planSolanaTradeFundedAccounts', () => {
   it('declares the wrapped-SOL account, the buy-token account and the order PDA on a native sell', () => {
     const accounts = planSolanaTradeFundedAccounts({
       owner: OWNER,
+      receiver: OWNER,
       quote: quoteFor(TOKEN_PROGRAM_ID),
       isNativeSell: true,
     })
@@ -46,7 +48,12 @@ describe('planSolanaTradeFundedAccounts', () => {
       buyTokenProgramId: undefined,
     } as BuyAtaQuote
 
-    const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote: nativeQuote, isNativeSell: false })
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      receiver: OWNER,
+      quote: nativeQuote,
+      isNativeSell: false,
+    })
 
     expect(accounts).toHaveLength(1)
     expect(accounts[0].address).toBeUndefined()
@@ -55,6 +62,7 @@ describe('planSolanaTradeFundedAccounts', () => {
   it('drops the wrapped-SOL account when the sell token is not native', () => {
     const accounts = planSolanaTradeFundedAccounts({
       owner: OWNER,
+      receiver: OWNER,
       quote: quoteFor(TOKEN_PROGRAM_ID),
       isNativeSell: false,
     })
@@ -63,9 +71,30 @@ describe('planSolanaTradeFundedAccounts', () => {
     expect(accounts.some(({ address }) => address?.equals(getWsolAssociatedTokenAccount(OWNER)))).toBe(false)
   })
 
+  /**
+   * The quoted `buyTokenAccount` belongs to whoever the quote named as receiver, which is not the order's
+   * receiver once a recipient is set. Pricing the quoted account reports no rent for an account the
+   * bundle still has to create, and the bundle itself hands the ATA program an address it cannot derive
+   * from the owner it was given — the instruction is rejected and nothing reaches the chain.
+   */
+  it('prices the recipient account, not the one the quote named', () => {
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      receiver: RECIPIENT,
+      quote: quoteFor(TOKEN_PROGRAM_ID),
+      isNativeSell: false,
+    })
+
+    const expected = getAssociatedTokenAddressSync(BUY_MINT, RECIPIENT, true, TOKEN_PROGRAM_ID)
+
+    expect(accounts[0].address?.equals(expected)).toBe(true)
+    expect(accounts[0].address?.equals(quoteFor(TOKEN_PROGRAM_ID).intent.buyTokenAccount)).toBe(false)
+  })
+
   it('carries the buy mint and its token program so the account size can be resolved from the chain', () => {
     const accounts = planSolanaTradeFundedAccounts({
       owner: OWNER,
+      receiver: OWNER,
       quote: quoteFor(TOKEN_2022_PROGRAM_ID),
       isNativeSell: false,
     })
@@ -79,7 +108,12 @@ describe('planSolanaTradeFundedAccounts', () => {
   })
 
   it('falls back to the classic token program when the quote omits one', () => {
-    const accounts = planSolanaTradeFundedAccounts({ owner: OWNER, quote: quoteFor(), isNativeSell: false })
+    const accounts = planSolanaTradeFundedAccounts({
+      owner: OWNER,
+      receiver: OWNER,
+      quote: quoteFor(),
+      isNativeSell: false,
+    })
 
     const { size } = accounts[0]
 

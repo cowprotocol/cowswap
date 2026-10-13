@@ -65,6 +65,36 @@ describe('planCreateBuyAtaStep', () => {
     expect(owner.pubkey.equals(PAYER)).toBe(false)
   })
 
+  /**
+   * A limit order builds its own intent from the user's price and recipient without consulting the
+   * quote, so the quoted `buyTokenAccount` can belong to a different receiver entirely. The ATA program
+   * derives the address from the owner it is handed and rejects anything else, which fails the whole
+   * transaction — the order is left in the book with nothing on chain.
+   */
+  it('targets the receiver account even when the quote names another one', () => {
+    const quotedAccount = getAssociatedTokenAddressSync(BUY_MINT, PAYER, true, TOKEN_PROGRAM_ID)
+
+    const step = planCreateBuyAtaStep({
+      payer: PAYER,
+      receiver: RECEIVER,
+      quote: {
+        intent: { buyMint: BUY_MINT, buyTokenAccount: quotedAccount },
+        buyTokenProgramId: TOKEN_PROGRAM_ID,
+      } as PlanQuote,
+      buySymbol: 'WSOL',
+    })
+
+    if (!step) throw new Error('expected an ATA step')
+
+    const [, ata, owner] = step.instructions[0].keys
+    const expected = getAssociatedTokenAddressSync(BUY_MINT, RECEIVER, true, TOKEN_PROGRAM_ID)
+
+    expect(ata.pubkey.equals(expected)).toBe(true)
+    expect(ata.pubkey.equals(quotedAccount)).toBe(false)
+    expect(owner.pubkey.equals(RECEIVER)).toBe(true)
+    expect(step.fundedAccounts[0].address?.equals(expected)).toBe(true)
+  })
+
   it('is idempotent, so an already-created account is a no-op rather than a failed transaction', () => {
     const { step } = planFor(TOKEN_PROGRAM_ID)
 
