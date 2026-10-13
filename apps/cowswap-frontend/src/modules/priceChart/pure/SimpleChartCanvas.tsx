@@ -1,21 +1,32 @@
 import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useLingui } from '@lingui/react/macro'
-import { type IPriceLine, type MouseEventParams, type Time } from 'lightweight-charts'
+import { transparentize } from 'color2k'
+import {
+  AreaSeries,
+  CandlestickSeries,
+  createChart,
+  createSeriesMarkers,
+  type ISeriesMarkersPluginApi,
+  CrosshairMode,
+  HistogramSeries,
+  type IChartApi,
+  type IPriceLine,
+  type ISeriesApi,
+  type MouseEventParams,
+  type Time,
+  type UTCTimestamp,
+} from 'lightweight-charts'
 
 import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
 
+import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
+import { formatPriceChartValue, getPriceChartPriceFormat } from '../lib/priceChart.utils'
 import { attachExecutionMarkersToBars } from '../lib/priceChartExecutionMarker.utils'
-import {
-  applySimpleChartTheme,
-  createSimpleChartInstance,
-  getSimpleChartTooltipData,
-  setSimpleChartData,
-  setSimpleChartSelection,
-} from '../lib/priceChartSimpleCanvas.utils'
 import { getSimpleExecutionMarkers } from '../lib/priceChartSimpleExecutionMarkers.utils'
 import { syncSimplePriceLines } from '../lib/priceChartSimpleReferenceLines.utils'
+import { createPriceChartTimeFormatters } from '../lib/priceChartTime.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
 import type {
@@ -25,7 +36,6 @@ import type {
   PriceChartReferenceLine,
   PriceChartExecutionMarker,
 } from '../lib/priceChart.types'
-import type { SimpleChartInstance } from '../lib/priceChartSimpleCanvas.utils'
 
 export interface SimpleChartCanvasProps {
   data: Candle[]
@@ -43,8 +53,16 @@ export interface SimpleChartCanvasProps {
   }
 }
 
+interface SimpleChartInstance {
+  chart: IChartApi
+  priceSeries: ISeriesApi<'Area' | 'Candlestick'>
+  volumeSeries: ISeriesApi<'Histogram'>
+  markers: ISeriesMarkersPluginApi<Time>
+}
+
 const EMPTY_EXECUTION_MARKERS: PriceChartExecutionMarker[] = []
 
+// eslint-disable-next-line max-lines-per-function
 export function SimpleChartCanvas({
   data,
   executionMarkers = EMPTY_EXECUTION_MARKERS,
@@ -75,9 +93,33 @@ export function SimpleChartCanvas({
     const container = containerRef.current
     if (!container) return
 
-    const instance = createSimpleChartInstance(container, chartType)
-    const { chart, priceSeries, markers } = instance
-    chartRef.current = instance
+    const chart = createChart(container, {
+      autoSize: true,
+      crosshair: {
+        horzLine: { labelVisible: false },
+        mode: CrosshairMode.Magnet,
+        vertLine: { labelVisible: false },
+      },
+      grid: { horzLines: { visible: false }, vertLines: { visible: false } },
+      handleScroll: { horzTouchDrag: true, mouseWheel: false, pressedMouseMove: true, vertTouchDrag: false },
+      handleScale: { axisPressedMouseMove: true, mouseWheel: true, pinch: true },
+      layout: { background: { color: 'transparent' } },
+      rightPriceScale: { borderVisible: false, scaleMargins: { bottom: 0.15, top: 0.2 } },
+      timeScale: { borderVisible: false, fixLeftEdge: true, fixRightEdge: true, timeVisible: true },
+    })
+    const priceSeries =
+      chartType === 'line'
+        ? chart.addSeries(AreaSeries, { crosshairMarkerRadius: 4, lineWidth: 1, priceLineVisible: false })
+        : chart.addSeries(CandlestickSeries, { borderVisible: false, priceLineVisible: false })
+    const volumeSeries = chart.addSeries(HistogramSeries, {
+      lastValueVisible: false,
+      priceFormat: { type: 'volume' },
+      priceLineVisible: false,
+      priceScaleId: '',
+    })
+    volumeSeries.priceScale().applyOptions({ scaleMargins: { bottom: 0, top: 0.8 } })
+    const markers = createSeriesMarkers(priceSeries)
+    chartRef.current = { chart, priceSeries, volumeSeries, markers }
 
     const handleClick = (event: MouseEventParams<Time>): void => {
       if (!onSelectPriceRef.current) {
@@ -93,7 +135,30 @@ export function SimpleChartCanvas({
         setTooltip(undefined)
         return
       }
-      setTooltip(getSimpleChartTooltipData(event, instance, container, attachedMarkersRef.current))
+      const priceData = event.seriesData.get(priceSeries)
+      const price =
+        priceData && ('value' in priceData ? priceData.value : 'close' in priceData ? priceData.close : undefined)
+      const volumeData = event.seriesData.get(volumeSeries)
+      const volume = volumeData && 'value' in volumeData ? volumeData.value : undefined
+
+      setTooltip(
+        event.point && typeof event.time === 'number' && price !== undefined
+          ? {
+              price,
+              ohlc:
+                priceData && 'open' in priceData
+                  ? { open: priceData.open, high: priceData.high, low: priceData.low, close: priceData.close }
+                  : undefined,
+              time: event.time,
+              volume,
+              executions: attachedMarkersRef.current.filter((marker) => marker.barTimestamp === event.time),
+              x: event.point.x,
+              y: event.point.y,
+              chartWidth: container.clientWidth,
+              chartHeight: container.clientHeight,
+            }
+          : undefined,
+      )
     }
 
     chart.subscribeCrosshairMove(handleCrosshairMove)
@@ -115,22 +180,66 @@ export function SimpleChartCanvas({
     const instance = chartRef.current
     if (!instance) return
 
-    applySimpleChartTheme(instance, chartType, primary, text)
+    instance.chart.applyOptions({ layout: { textColor: text } })
+    instance.priceSeries.applyOptions(
+      chartType === 'line'
+        ? { lineColor: primary, topColor: transparentize(primary, 0.75), bottomColor: transparentize(primary, 1) }
+        : {
+            upColor: CANDLE_UP_COLOR,
+            downColor: CANDLE_DOWN_COLOR,
+            wickUpColor: CANDLE_UP_COLOR,
+            wickDownColor: CANDLE_DOWN_COLOR,
+          },
+    )
+    instance.volumeSeries.applyOptions({ color: transparentize(text, 0.75) })
   }, [chartType, primary, text])
 
   useEffect(() => {
     const instance = chartRef.current
     if (!instance) return
 
-    setSimpleChartData(instance, chartType, data, locale)
+    const { chart, priceSeries, volumeSeries } = instance
+    const priceFormat = getPriceChartPriceFormat(data)
+    const { tickMarkFormatter, timeFormatter } = createPriceChartTimeFormatters(locale)
+    chart.applyOptions({
+      timeScale: { tickMarkFormatter },
+      localization: {
+        locale,
+        timeFormatter,
+        priceFormatter: (value: number) =>
+          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale),
+      },
+    })
+    priceSeries.applyOptions({ priceFormat })
+    priceSeries.setData(
+      data.map((bar) =>
+        chartType === 'line'
+          ? { time: bar.timestamp as UTCTimestamp, value: bar.close }
+          : { time: bar.timestamp as UTCTimestamp, open: bar.open, high: bar.high, low: bar.low, close: bar.close },
+      ),
+    )
+    volumeSeries.setData(
+      data.flatMap((bar) =>
+        bar.volume === undefined ? [] : [{ time: bar.timestamp as UTCTimestamp, value: bar.volume }],
+      ),
+    )
+    chart.timeScale().fitContent()
     setTooltip(undefined)
   }, [chartType, data, locale])
 
   useEffect(() => {
     const instance = chartRef.current
     if (!instance) return
-    setSimpleChartSelection(instance, chartType, !!onSelectPrice)
-    if (onSelectPrice) setTooltip(undefined)
+    const selecting = !!onSelectPrice
+    instance.chart.applyOptions({
+      crosshair: {
+        mode: selecting ? CrosshairMode.Normal : CrosshairMode.Magnet,
+        horzLine: { labelVisible: selecting },
+        vertLine: { labelVisible: false, visible: !selecting },
+      },
+    })
+    if (chartType === 'line') instance.priceSeries.applyOptions({ crosshairMarkerVisible: !selecting })
+    if (selecting) setTooltip(undefined)
   }, [chartType, onSelectPrice])
 
   useEffect(() => {

@@ -51,6 +51,7 @@ import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+// eslint-disable-next-line max-lines-per-function
 export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
@@ -82,6 +83,16 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const protectionPrice = useMemo(
+    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
+    [receiveAmountInfo],
+  )
+  const referenceLines = useMemo(
+    () => [{ id: 'trade:protection', label: t`Protection`, price: protectionPrice }],
+    [protectionPrice, t],
+  )
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
@@ -121,7 +132,7 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {isUnlocked && (
           <styledEl.SecondaryColumn>
-            <AdvancedOrdersChart />
+            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} referenceLines={referenceLines} />
             {!hideOrdersTable && (
               <DialogOrInline
                 isDialog={isUpToLarge}
@@ -150,19 +161,4 @@ export function AdvancedOrdersPage(): ReactNode {
       </styledEl.PageWrapper>
     </HydrateAtom>
   )
-}
-
-function AdvancedOrdersChart(): ReactNode {
-  const { t } = useLingui()
-  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
-  const receiveAmountInfo = useScaledReceiveAmountInfo()
-  const protectionPrice = useMemo(
-    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
-    [receiveAmountInfo],
-  )
-  const referenceLines = useMemo(
-    () => [{ id: 'trade:protection', label: t`Protection`, price: protectionPrice }],
-    [protectionPrice, t],
-  )
-  return <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} referenceLines={referenceLines} />
 }
