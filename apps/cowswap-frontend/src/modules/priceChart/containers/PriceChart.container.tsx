@@ -4,8 +4,11 @@ import { memo, ReactNode, useCallback, useMemo } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency, Fraction, Price } from '@cowprotocol/currency'
 import { DialogOrInline, Media, Modal } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+
+import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { ChartWrapper } from 'modules/trade'
 
@@ -13,6 +16,7 @@ import { AdvancedPriceChart } from './AdvancedPriceChart.container'
 import { SimplePriceChart } from './SimplePriceChart.container'
 
 import { useExecutedOrderChartMarkers } from '../hooks/useExecutedOrderChartMarkers'
+import { useOpenLimitOrderChartLines } from '../hooks/useOpenLimitOrderChartLines'
 import { usePriceChartLimitPrice } from '../hooks/usePriceChartLimitPrice'
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
@@ -59,6 +63,13 @@ export const PriceChart = memo(function PriceChart({
   const pairCurrency = selectedPair === 'buy-usd' ? outputCurrency : inputCurrency
   const activeCurrency = selectedCurrency ?? pairCurrency ?? inputCurrency ?? outputCurrency ?? undefined
   const executionMarkers = useExecutedOrderChartMarkers({ activeCurrency, inputCurrency, outputCurrency })
+  const { account, chainId } = useWalletInfo()
+  const pendingOrders = useOnlyPendingOrders(chainId, account)
+  const openOrderLines = useOpenLimitOrderChartLines({ inputCurrency, orders: pendingOrders, outputCurrency })
+  const chartReferenceLines = useMemo(
+    () => [...(referenceLines ?? []), ...openOrderLines],
+    [referenceLines, openOrderLines],
+  )
   const handleSelectCurrency = useCallback(
     (currency: Currency) => {
       const pair = inputCurrency?.equals(currency) ? 'sell-usd' : 'buy-usd'
@@ -73,7 +84,7 @@ export const PriceChart = memo(function PriceChart({
     outputCurrency,
     metric,
     supplyVariant,
-    referenceLines,
+    referenceLines: chartReferenceLines,
     onSelectLimitPrice,
   })
   if (!isVisible) return null

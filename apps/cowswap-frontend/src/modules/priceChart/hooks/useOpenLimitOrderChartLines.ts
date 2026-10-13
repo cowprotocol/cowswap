@@ -11,10 +11,12 @@ import JSBI from 'jsbi'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { getRemainderAmountsWithoutSurplus } from 'legacy/state/orders/utils'
 
-import { FALLBACK_TOKEN_SYMBOL, type PriceChartReferenceLine } from 'modules/priceChart'
-
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
+
+import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
+
+import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 
 interface UseOpenLimitOrderChartLinesParams {
   inputCurrency: Currency | null
