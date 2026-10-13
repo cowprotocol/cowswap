@@ -845,6 +845,32 @@ describe('validateTradeForm - native sell in limit orders', () => {
     expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
   })
 
+  test('keeps SellNativeToken as the primary validation above the Solana Alpha trade cap', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
+      },
+    } as unknown as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
+  })
+
+  test('keeps the Solana Alpha trade cap for an SPL limit order', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isApproveRequired: ApproveRequiredReason.BundleApproveRequired,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
+        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
+      },
+    } as unknown as TradeFormValidationContext)
+
+    expect(result).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
   test('does not block an SPL limit order', () => {
     const result = validateTradeForm({
       ...baseContext,

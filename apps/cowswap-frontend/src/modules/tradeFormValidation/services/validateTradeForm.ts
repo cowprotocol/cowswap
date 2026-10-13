@@ -1,6 +1,7 @@
 import { getCurrencyAddress, getIsNativeToken, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
 
+import { getIsNativeSellUnsupported } from 'modules/trade'
 import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 
 import { TradeType } from 'common/modules/tradeNavigation'
@@ -98,10 +99,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
+  const isBlockedNativeSell = !isWrapUnwrap && getIsNativeSellUnsupported(inputCurrency, derivedTradeState.tradeType)
+
   // Same precedence as the xstock limit: the Solana Alpha messages must win over
   // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
   // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
-  if (!isWrapUnwrap && !inputAmountIsNotSet) {
+  if (!isWrapUnwrap && !inputAmountIsNotSet && !isBlockedNativeSell) {
     // Fail closed: a trade that cannot be priced in USD cannot be checked against the cap
     if (getIsSolanaSellUsdValueUnknown(context)) {
       return [
