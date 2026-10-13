@@ -6,6 +6,7 @@ import ms from 'ms.macro'
 
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { emitCancelledOrderEvent } from 'modules/orders'
@@ -70,7 +71,7 @@ export function checkSolanaTransaction(
         void finalizeSuccessfulCancellation(orderId, params, hash)
       } else {
         clearCancellingState(orderId, params)
-        emitCancellationFailedEvent(transaction, hash, slot, t`Failed to cancel order selling ${sellTokenSymbol}`)
+        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel order selling ${sellTokenSymbol}`)
       }
 
       return
@@ -84,27 +85,33 @@ export function checkSolanaTransaction(
       } else {
         orderIds.forEach((orderId) => clearCancellingState(orderId, params))
         const ordersCount = orderIds.length
-        emitCancellationFailedEvent(transaction, hash, slot, t`Failed to cancel ${ordersCount} orders`)
+        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel ${ordersCount} orders`)
       }
 
       return
     }
 
-    if (!transaction.solanaOrderCreation) {
-      emitOnchainTransactionEvent({
-        receipt: {
-          to: '',
-          from: transaction.from,
-          contractAddress: '',
-          transactionHash: hash as `0x${string}`,
-          blockNumber: slot,
-          status: status === 'success' ? 1 : 0,
-          replacementType: transaction.replacementType,
-        },
-        summary: transaction.summary || '',
-        isSafeTx: false,
-      })
+    if (transaction.solanaOrderCreation) {
+      if (status === 'reverted') {
+        failCreatedOrder(transaction.solanaOrderCreation.orderId, transaction, params, slot)
+      }
+
+      return
     }
+
+    emitOnchainTransactionEvent({
+      receipt: {
+        to: '',
+        from: transaction.from,
+        contractAddress: '',
+        transactionHash: hash as `0x${string}`,
+        blockNumber: slot,
+        status: status === 'success' ? 1 : 0,
+        replacementType: transaction.replacementType,
+      },
+      summary: transaction.summary || '',
+      isSafeTx: false,
+    })
   }
 
   checkStatus(solanaConnection, hash, transaction)
@@ -203,7 +210,7 @@ function clearCancellingState(orderId: string, params: CheckEthereumTransactions
   )
 }
 
-function emitCancellationFailedEvent(
+function emitTransactionFailedEvent(
   transaction: EnhancedTransactionDetails,
   hash: string,
   slot: number,
@@ -222,6 +229,26 @@ function emitCancellationFailedEvent(
     summary,
     isSafeTx: false,
   })
+}
+
+/**
+ * The order lives only in local state until the order book indexes its creation transaction, and the
+ * book is never told about one whose transaction died. Nothing else links the two, so without this the
+ * order polls for an id that will never resolve and sits in `CREATING` indefinitely — offered as
+ * cancellable the whole time, against an order that does not exist on chain.
+ */
+function failCreatedOrder(
+  orderId: string,
+  transaction: EnhancedTransactionDetails,
+  params: CheckEthereumTransactions,
+  slot: number,
+): void {
+  const { chainId, dispatch, isSafeWallet } = params
+
+  dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
+  // Not `transaction.summary`, which reads as the steps the transaction bundled: what the user needs
+  // to know is that the order did not get placed.
+  emitTransactionFailedEvent(transaction, transaction.hash, slot, t`Failed to place order`)
 }
 
 /**

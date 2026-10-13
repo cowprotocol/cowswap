@@ -9634,6 +9634,10 @@ msgstr "Filled"
 msgid "Invalid URL: Path contains consecutive forward slashes"
 msgstr "Invalid URL: Path contains consecutive forward slashes"
 
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+msgid "Failed to place order"
+msgstr "Failed to place order"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "Generate"
 #~ msgstr "Generate"
