@@ -30,7 +30,9 @@ import { OrdersTableContext } from '../../explorer/components/OrdersTableWidget/
 import { OrdersTableWithData } from '../../explorer/components/OrdersTableWidget/OrdersTableWithData'
 import { Network } from '../../types'
 
-function renderWithContext(isLoading: boolean): void {
+import type { Order } from '../../api/operator'
+
+function renderWithContext(isLoading: boolean, data?: Order[]): void {
   render(
     <OrdersTableContext.Provider
       value={{
@@ -38,7 +40,7 @@ function renderWithContext(isLoading: boolean): void {
           networkId: Network.MAINNET,
           ownerAddress: getAddressKey('0x0000000000000000000000000000000000000001'),
         },
-        data: [],
+        data,
         isLoading,
         tableState: { pageSize: 10, pageOffset: 0 },
         setPageSize: jest.fn(),
@@ -53,14 +55,21 @@ function renderWithContext(isLoading: boolean): void {
 
 describe('OrdersTableWithData', () => {
   it('shows already loaded orders when mounted without further context updates', () => {
-    renderWithContext(false)
+    renderWithContext(false, [])
 
     expect(screen.getByText('Orders table')).not.toBeNull()
     expect(screen.queryByText('Loading orders')).toBeNull()
   })
 
+  it('shows the loader on first render while orders have not been fetched yet', () => {
+    renderWithContext(false)
+
+    expect(screen.getByText('Loading orders')).not.toBeNull()
+    expect(screen.queryByText('Orders table')).toBeNull()
+  })
+
   it('shows the loader while orders are loading', () => {
-    renderWithContext(true)
+    renderWithContext(true, [])
 
     expect(screen.getByText('Loading orders')).not.toBeNull()
     expect(screen.queryByText('Orders table')).toBeNull()
