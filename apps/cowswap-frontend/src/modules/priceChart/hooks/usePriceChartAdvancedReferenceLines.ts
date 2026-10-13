@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 import { createHorizontalLines } from '../lib/priceChartAdvancedReferenceLines.utils'
 
@@ -11,7 +11,8 @@ export function usePriceChartAdvancedReferenceLines(
   referenceLines: PriceChartReferenceLine<number>[],
   color: string,
 ): void {
-  useEffect(() => {
+  // Detach TradingView subscriptions before React removes the iframe.
+  useLayoutEffect(() => {
     if (!widget) return
     const chart = widget.activeChart()
     let removeLines: (() => void) | undefined
