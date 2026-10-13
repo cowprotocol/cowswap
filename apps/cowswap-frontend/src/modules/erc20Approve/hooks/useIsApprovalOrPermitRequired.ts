@@ -7,7 +7,7 @@ import { isSupportedPermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
 import { usePermitInfo } from 'modules/permit'
-import { useDerivedTradeState } from 'modules/trade'
+import { getIsNativeSellUnsupported, useDerivedTradeState } from 'modules/trade'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
@@ -124,10 +124,9 @@ function getSolanaApproveRequirement(
   inputCurrency: Currency,
   tradeType: Nullish<TradeType>,
 ): ApproveRequiredReason {
-  // Mirrors `isApproveSupportedByFlowOrWallet`: native sells are Swap-only. Reporting a delegation here
-  // would push an approve validation ahead of `SellNativeToken` in `validateTradeForm`, which reads
-  // `validations[0]`, and the native-sell block would never reach the form.
-  if (getIsNativeToken(inputCurrency) && tradeType !== TradeType.SWAP) {
+  // Mirrors `isApproveSupportedByFlowOrWallet` for Solana. Reporting a delegation here would outrank
+  // the `SellNativeToken` block in `validateTradeForm` and let the order through.
+  if (getIsNativeSellUnsupported(inputCurrency, tradeType)) {
     return ApproveRequiredReason.Unsupported
   }
 

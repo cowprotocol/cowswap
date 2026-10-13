@@ -36,6 +36,8 @@ jest.mock('modules/permit', () => ({
 
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
+  getIsNativeSellUnsupported: jest.requireActual('modules/trade/utils/getIsNativeSellUnsupported')
+    .getIsNativeSellUnsupported,
   TradeType: {
     SWAP: 'SWAP',
     LIMIT_ORDER: 'LIMIT_ORDER',
