@@ -26,6 +26,8 @@ import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 export interface PriceChartProps {
   inputCurrency: Currency | null
   outputCurrency: Currency | null
+  selectedCurrency?: Currency | null
+  onSelectCurrency?: (currency: Currency) => void
   expandable?: boolean
   onSelectLimitPrice?: (rate: Fraction) => void
   referenceLines?: PriceChartReferenceLine<Price<Currency, Currency> | null>[]
@@ -35,6 +37,8 @@ export const PriceChart = memo(function PriceChart({
   inputCurrency,
   outputCurrency,
   expandable = false,
+  selectedCurrency,
+  onSelectCurrency,
   onSelectLimitPrice,
   referenceLines,
 }: PriceChartProps): ReactNode {
@@ -51,14 +55,15 @@ export const PriceChart = memo(function PriceChart({
     [inputCurrency, outputCurrency],
   )
   const [selectedPair, setSelectedPair] = useAtom(priceChartPairAtom)
-  const activeCurrency =
-    (selectedPair === 'buy-usd' ? (outputCurrency ?? inputCurrency) : (inputCurrency ?? outputCurrency)) ?? undefined
+  const pairCurrency = selectedPair === 'buy-usd' ? outputCurrency : inputCurrency
+  const activeCurrency = selectedCurrency ?? pairCurrency ?? inputCurrency ?? outputCurrency ?? undefined
   const handleSelectCurrency = useCallback(
     (currency: Currency) => {
       const pair = inputCurrency?.equals(currency) ? 'sell-usd' : 'buy-usd'
       setSelectedPair(pair)
+      onSelectCurrency?.(currency)
     },
-    [inputCurrency, setSelectedPair],
+    [inputCurrency, setSelectedPair, onSelectCurrency],
   )
   const limitPriceProps = usePriceChartLimitPrice({
     activeCurrency,

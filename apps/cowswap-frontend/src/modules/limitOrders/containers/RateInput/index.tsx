@@ -288,7 +288,10 @@ export function RateInput() {
                 <styledEl.IconButton
                   aria-label={t`Pick the limit price from the chart`}
                   aria-pressed={isChartPriceSelectionMode}
-                  onClick={() => setIsChartPriceSelectionMode((state) => !state)}
+                  onClick={() => {
+                    if (!isChartPriceSelectionMode) setIsUsdRateMode(true)
+                    setIsChartPriceSelectionMode((state) => !state)
+                  }}
                   $active={isChartPriceSelectionMode}
                 >
                   <MousePointer size={14} />
