@@ -1,9 +1,14 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import type { ChainNamespace } from '@reown/appkit-common'
 
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
+
+export interface OpenWalletModalEventDetail {
+  namespace?: ChainNamespace
+}
 
 export const WC_DISABLED_TEXT =
   'Wallet-connect based wallet is already in use. Please disconnect it to connect to this wallet.'
