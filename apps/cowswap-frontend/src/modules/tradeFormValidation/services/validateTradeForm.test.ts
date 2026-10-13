@@ -382,6 +382,27 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
   })
 
+  test('shows quote errors for buy orders whose sell amount has not been quoted yet', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyAmount: null,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('100'),
+      },
+      tradeQuote: {
+        isLoading: false,
+        error: new Error('Insufficient liquidity'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.QuoteErrors)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
+  })
+
   test('does not block EVM trades with an unknown USD value', () => {
     const context = {
       ...baseContext,
