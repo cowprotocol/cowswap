@@ -1,8 +1,10 @@
 import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
-import { migrateTokenListsFromGithubCdn } from './state/migrations/migrateTokenListsFromGithubCdn'
+
+// Imported for its side effect: the lists-state migrations start on module load and
+// `listsStatesByChainAtom` awaits them
+import './state/migrations/tokenListsMigrations'
 
 migrateNetworkMismatchUserAddedTokens()
-migrateTokenListsFromGithubCdn()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
