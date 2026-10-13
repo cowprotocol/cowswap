@@ -480,6 +480,30 @@ describe('useNavigateOnCurrencySelection - cross-chain', () => {
       )
     })
 
+    it('should keep the bridge target when the sell currency reads empty while browsing another chain', () => {
+      const { result, rerender } = renderHook(() => useNavigateOnCurrencySelection())
+
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: undefined,
+        outputCurrency: undefined,
+        orderKind: OrderKind.SELL,
+      } as never)
+      rerender()
+
+      act(() => {
+        result.current(Field.OUTPUT, USDC_GNOSIS)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.MAINNET,
+        {
+          inputCurrencyId: WETH_MAINNET.symbol,
+          outputCurrencyId: USDC_GNOSIS.address,
+        },
+        { targetChainId: SupportedChainId.GNOSIS_CHAIN },
+      )
+    })
+
     it('should preserve targetChainId when selecting input currency', () => {
       mockedUseDerivedTradeState.mockReturnValue({
         inputCurrency: WETH_MAINNET,
