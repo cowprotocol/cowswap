@@ -11,11 +11,12 @@ import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSerie
 import { usePriceChartAdvancedTheme } from '../hooks/usePriceChartAdvancedTheme'
 import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
+import { getCustomTimezone } from '../lib/priceChartAdvancedTimezone.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
 import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
-import type { IBasicDataFeed, IChartingLibraryWidget, Timezone } from 'charting_library'
+import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
@@ -64,11 +65,14 @@ export function AdvancedChartCanvas({
       if (cancelled) return
 
       const { theme: currentTheme, activeTicker: currentTicker } = latestRef.current
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone as Timezone
-      const overrides = { ...getThemeOverrides(currentTheme), timezone }
+      const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const customTimezone = getCustomTimezone(userTimezone, new Date().getTimezoneOffset())
+      const timezone = 'Etc/UTC'
+      const overrides = { ...getThemeOverrides(currentTheme), timezone } as const
       widget = new TradingViewWidget({
         ...ADVANCED_CHART_OPTIONS,
         container: containerId,
+        custom_timezones: [customTimezone],
         custom_css_url: new URL('/tv.css', window.location.href).href,
         custom_formatters: {
           priceFormatterFactory: () => ({ format: (value: number) => formatPriceChartValue(value, locale) }),
@@ -90,7 +94,9 @@ export function AdvancedChartCanvas({
         widget = null
         return
       }
-      widget.activeChart().getTimezoneApi().setTimezone(timezone)
+      const timezoneApi = widget.activeChart().getTimezoneApi()
+      const supportedTimezone = timezoneApi.availableTimezones().find(({ id }) => id === userTimezone)
+      timezoneApi.setTimezone(supportedTimezone?.id ?? customTimezone.id)
       ready = true
       setReadyWidget(widget)
     }
