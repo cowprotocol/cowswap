@@ -7,6 +7,7 @@ import { useTheme } from 'common/hooks/useTheme'
 import * as styledEl from './AdvancedChartCanvas.styled'
 
 import { ADVANCED_CHART_CONTAINER_ID, ADVANCED_CHART_OPTIONS } from '../config/priceChartAdvanced.constants'
+import { usePriceChartAdvancedExecutionMarkers } from '../hooks/usePriceChartAdvancedExecutionMarkers'
 import { usePriceChartAdvancedPriceSelection } from '../hooks/usePriceChartAdvancedPriceSelection'
 import { usePriceChartAdvancedReferenceLines } from '../hooks/usePriceChartAdvancedReferenceLines'
 import { usePriceChartAdvancedSeries } from '../hooks/usePriceChartAdvancedSeries'
@@ -18,14 +19,17 @@ import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service
 import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { PriceChartReferenceLine } from '../lib/priceChart.types'
+import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
-import type { IBasicDataFeed, IChartingLibraryWidget } from 'charting_library'
+import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
+import type { IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
+  executionMarkers: AttachedPriceChartExecutionMarker[]
   onSelectPrice?: (price: number) => void
   referenceLines: PriceChartReferenceLine<number>[]
-  datafeed: IBasicDataFeed
+  datafeedController: PriceChartDatafeedController
   hasVolume: boolean | undefined
   symbols: ChartSymbol[]
   locale: string
@@ -34,9 +38,10 @@ export interface AdvancedChartCanvasProps {
 
 export function AdvancedChartCanvas({
   activeTicker,
+  executionMarkers,
   onSelectPrice,
   referenceLines,
-  datafeed,
+  datafeedController,
   hasVolume,
   symbols,
   locale,
@@ -47,6 +52,9 @@ export function AdvancedChartCanvas({
   const theme = useTheme()
   const latestRef = useRef({ theme, activeTicker })
   const [readyWidget, setReadyWidget] = useState<IChartingLibraryWidget | null>(null)
+
+  const { datafeed } = datafeedController
+  usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers, datafeedController)
 
   useEffect(() => {
     latestRef.current = { theme, activeTicker }
@@ -134,7 +142,7 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedTheme(readyWidget)
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
 
-  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme.warning)
+  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme)
   usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />

@@ -1563,6 +1563,10 @@ msgstr "You must give the CoW Protocol smart contracts permission to use your <0
 msgid "How it works"
 msgstr "How it works"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "Bought"
+msgstr "Bought"
+
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "any token into CoW AMM pools to start benefiting from attractive APRs."
 msgstr "any token into CoW AMM pools to start benefiting from attractive APRs."
@@ -2006,9 +2010,14 @@ msgstr "You got an extra"
 #~ msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 #~ msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Bought {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
+#: apps/cowswap-frontend/src/pages/AdvancedOrders/AdvancedOrders.page.tsx
 msgid "Worst acceptable price"
 msgstr "Worst acceptable price"
 
@@ -4524,6 +4533,10 @@ msgstr "Couldn't verify {accountProxyLabel}, please try later"
 msgid "Creation time"
 msgstr "Creation time"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Unfillable · {label}"
+msgstr "Unfillable · {label}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "Try adjusting your search term"
 msgstr "Try adjusting your search term"
@@ -5214,6 +5227,11 @@ msgstr "This contract is deployed per account, with that account becoming the si
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Request cancellations"
 msgstr "Request cancellations"
+
+#. placeholder {0}: order.inputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Sell {formattedSellAmount} {0}"
+msgstr "Sell {formattedSellAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
@@ -6170,6 +6188,11 @@ msgstr "Action"
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
 msgstr "Swap with"
+
+#. placeholder {0}: order.outputToken.symbol || 'TOKEN'
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+msgid "Buy {formattedBuyAmount} {0}"
+msgstr "Buy {formattedBuyAmount} {0}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Current network fees"
@@ -8435,6 +8458,10 @@ msgstr "The competition has started"
 msgid "This trade fee was too low to qualify for affiliate rewards."
 msgstr "This trade fee was too low to qualify for affiliate rewards."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "Sold"
+msgstr "Sold"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "You will receive this price or better for your tokens."
 msgstr "You will receive this price or better for your tokens."
@@ -8678,6 +8705,10 @@ msgstr "Cancel order"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Your order was created on this date & time. It will remain open until it expires or is filled."
 msgstr "Your order was created on this date & time. It will remain open until it expires or is filled."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useExecutedOrderChartMarkers.ts
+msgid "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
+msgstr "Sold {activeAmount} {activeTokenSymbol} for {counterAmount} {counterTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping {inputSymbol}"

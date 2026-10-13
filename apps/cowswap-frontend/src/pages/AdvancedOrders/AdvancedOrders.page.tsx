@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useCallback } from 'react'
+import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -24,7 +24,12 @@ import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import { PriceChart } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
-import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
+import {
+  TradeRouteRedirect,
+  getLimitPriceFromReceiveAmount,
+  useOrdersTableDrawerState,
+  useSetOrdersTableDrawerOpen,
+} from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -33,6 +38,7 @@ import {
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
+  useScaledReceiveAmountInfo,
   useTwapFormState,
   useTwapSlippage,
   TwapFormState,
@@ -44,6 +50,7 @@ import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+// eslint-disable-next-line max-lines-per-function
 export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
@@ -76,6 +83,22 @@ export function AdvancedOrdersPage(): ReactNode {
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
   const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const worstAcceptablePrice = useMemo(
+    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
+    [receiveAmountInfo],
+  )
+  const referenceLines = useMemo(
+    () => [
+      {
+        id: 'trade:worst-acceptable-price',
+        label: t`Worst acceptable price`,
+        price: worstAcceptablePrice,
+        variant: 'worst-acceptable-price' as const,
+      },
+    ],
+    [worstAcceptablePrice, t],
+  )
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
@@ -115,7 +138,7 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {isUnlocked && (
           <styledEl.SecondaryColumn>
-            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} referenceLines={referenceLines} />
             {!hideOrdersTable && (
               <DialogOrInline
                 isDialog={isUpToLarge}

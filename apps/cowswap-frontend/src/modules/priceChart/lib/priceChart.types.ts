@@ -24,10 +24,23 @@ export interface ExpansionControl {
   onToggle: () => void
 }
 
+export interface PriceChartExecutionMarker {
+  activeAmount: string
+  activeTokenSymbol: string
+  counterAmount: string
+  counterTokenSymbol: string
+  id: string
+  side: 'buy' | 'sell'
+  timestamp: number
+  title: string
+}
+
 export interface PriceChartReferenceLine<TPrice> {
   id: string
   label: string
   price: TPrice
+  labels?: Partial<Record<'sell' | 'buy', string>>
+  variant: 'trade' | 'worst-acceptable-price' | 'open-order' | 'unfillable-order'
 }
 
 export type SupplyVariant = 'circulating' | 'total'

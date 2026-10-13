@@ -1,13 +1,16 @@
-import { REFERENCE_LINE_STYLE } from '../config/priceChart.constants'
+import { getReferenceLineColor } from './priceChartReferenceLine.utils'
+
+import { BASE_LINE_STYLES } from '../config/priceChart.constants'
 
 import type { PriceChartReferenceLine } from './priceChart.types'
 import type { AutoscaleInfoProvider, IPriceLine, ISeriesApi } from 'lightweight-charts'
+import type { DefaultTheme } from 'styled-components'
 
 export function syncSimplePriceLines(
   series: ISeriesApi<'Area' | 'Candlestick'>,
   priceLines: Map<string, IPriceLine>,
   referenceLines: PriceChartReferenceLine<number>[],
-  color: string,
+  theme: DefaultTheme,
 ): void {
   const autoscaleInfoProvider: AutoscaleInfoProvider | undefined = referenceLines.length
     ? (original) => {
@@ -37,9 +40,8 @@ export function syncSimplePriceLines(
   referenceLines.forEach((referenceLine) => {
     const options = {
       axisLabelVisible: true,
-      color,
-      lineStyle: REFERENCE_LINE_STYLE.lineStyle,
-      lineWidth: REFERENCE_LINE_STYLE.lineWidth,
+      color: getReferenceLineColor(referenceLine.variant, theme),
+      ...BASE_LINE_STYLES,
       price: referenceLine.price,
       title: referenceLine.label,
     }
