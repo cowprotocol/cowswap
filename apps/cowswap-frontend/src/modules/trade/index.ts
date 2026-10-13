@@ -101,11 +101,18 @@ export { estimateSolanaSigningDeadline } from './services/solanaSend/estimateSol
 export type { SolanaSigningDeadline } from './services/solanaSend/estimateSolanaSigningDeadline'
 export { SOLANA_MAX_APPROVE_AMOUNT } from './services/solanaApprove/const'
 export { sendSolanaFlow } from './services/solanaFlow/sendSolanaFlow'
-export { signSolanaFlow, getSigningWindowClosedError } from './services/solanaFlow/signSolanaFlow'
+export {
+  signSolanaFlow,
+  getSigningWindowClosedError,
+  SigningWindowClosedError,
+} from './services/solanaFlow/signSolanaFlow'
 export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
 export { planWrapStep } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'
 export { planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
 export { planCreateOrderStep } from './services/solanaFlow/planCreateOrderStep'
 export { planCreateLimitOrderStep } from './services/solanaFlow/planCreateLimitOrderStep'
-export type { SolanaFlowStep } from './services/solanaFlow/types'
+export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
+export type { SolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
+export { planSolanaTradeFundedAccounts } from './services/feeAmountCalculator/planSolanaTradeFundedAccounts'
+export type { SolanaFlowStep, SolanaFundedAccount } from './services/solanaFlow/types'

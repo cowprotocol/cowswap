@@ -5,7 +5,7 @@ import type { Hex } from 'viem'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { BadgeType, LongLoadText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -209,8 +209,8 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
-                {t`Resetting approval`}
+              <LongLoadText>
+                {t`Revoking approval`}
                 <ThreeDots />
               </LongLoadText>
             ),
@@ -218,7 +218,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Reset approval`,
+              children: t`Revoke approval`,
               disabled: false,
             }
           : getConfirmWithWalletButton()
@@ -227,7 +227,7 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
+              <LongLoadText>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
               </LongLoadText>
@@ -245,7 +245,7 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
+              <LongLoadText>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
               </LongLoadText>
@@ -263,7 +263,7 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
+              <LongLoadText>
                 {t`Activating TWAP`}
                 <ThreeDots />
               </LongLoadText>
@@ -349,6 +349,7 @@ export function getEoaTwapStepDescription(
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
@@ -370,7 +371,7 @@ export function getEoaTwapWalletActionSummaryLabel(
 ): null | string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
-      return t`Reset approval`
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
@@ -468,9 +469,9 @@ function buildEoaTwapWalletActionSummaryLine({
 function getConfirmWithWalletButton(): EoaTwapCurrentStepButtonProps {
   return {
     children: (
-      <LongLoadText fontSize={15} fontWeight={500}>
+      <LongLoadText>
         {t`Confirm with your wallet`}
-        <CenteredDots smaller />
+        <ThreeDots />
       </LongLoadText>
     ),
     disabled: true,

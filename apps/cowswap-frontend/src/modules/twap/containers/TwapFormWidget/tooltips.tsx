@@ -1,10 +1,13 @@
 import svgProtectionSrc from '@cowprotocol/assets/cow-swap/protection.svg'
 
-import { Plural, Trans, useLingui } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-import { deadlinePartsDisplay } from 'modules/twap/utils/deadlinePartsDisplay'
+import {
+  TotalDurationTooltip,
+  TotalDurationTooltipProps,
+} from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 const IconImage = styled.div`
   display: flex;
@@ -20,15 +23,24 @@ const IconImage = styled.div`
   }
 `
 
-export interface LabelTooltip {
+export interface LabelTooltip<TParams = void> {
   label: React.ReactNode
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  tooltip?: React.ReactNode | ((params: any) => React.ReactNode)
+  tooltip?: LabelTooltipContent<TParams>
 }
 
+export type LabelTooltipContent<TParams = void> = React.ReactNode | LabelTooltipFn<TParams>
+
+export type LabelTooltipFn<TParams> = (params: TParams) => React.ReactNode
+
 export interface LabelTooltipItems {
-  [key: string]: LabelTooltip
+  numberOfParts: LabelTooltip
+  totalDuration: LabelTooltip<TotalDurationTooltipProps>
+  partDuration: LabelTooltip
+  slippage: LabelTooltip
+  price: LabelTooltip
+  sellAmount: LabelTooltip
+  buyAmount: LabelTooltip
+  startTime: LabelTooltip
 }
 
 export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
@@ -49,24 +61,7 @@ export function useLabelsTooltips(): LabelTooltipItems {
     },
     totalDuration: {
       label: t`Total duration`,
-      tooltip: ({ parts, partDuration }: { parts: number; partDuration: number }) => {
-        const partDurationDisplay = deadlinePartsDisplay(partDuration)
-        const totalDurationDisplay = deadlinePartsDisplay(parts * partDuration)
-        return (
-          <Trans>
-            The "Total duration" is the duration it takes to execute all parts of your TWAP order.
-            <br />
-            <br />
-            For instance, your order consists of{' '}
-            <b>
-              <Plural value={parts} one="# part" few="# parts" many="# parts" other="# parts" />
-            </b>{' '}
-            placed every <b>{partDurationDisplay}</b>, the total time to complete the order is{' '}
-            <b>{totalDurationDisplay}</b>. Each limit order remains open for <b>{partDurationDisplay}</b> until the next
-            part becomes active.
-          </Trans>
-        )
-      },
+      tooltip: TotalDurationTooltip,
     },
     partDuration: {
       label: t`Part duration`,

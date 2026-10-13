@@ -29,6 +29,8 @@ export const OVERLAY_Z_INDEX = {
   overlay: 1060,
 } as const
 
+export const INPUT_MIN_HEIGHT_PX = 45
+
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
   upToExtraSmall: (useMediaPrefix = true) =>

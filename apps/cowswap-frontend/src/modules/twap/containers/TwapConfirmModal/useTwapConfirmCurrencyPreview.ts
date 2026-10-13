@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useHasEnoughBalanceForAmount } from 'modules/combinedBalances'
-import { getOrderTypeReceiveAmounts, useTradeConfirmState } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useFreezeWhileConfirming, useTradeConfirmState } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -38,7 +38,8 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
     outputCurrencyFiatAmount,
     outputCurrencyBalance,
   } = useAdvancedOrdersDerivedState()
-  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const liveReceiveAmountInfo = useScaledReceiveAmountInfo()
+  const receiveAmountInfo = useFreezeWhileConfirming(liveReceiveAmountInfo)
   const localFormValidation = useTwapFormState()
   const { isConfirming, pendingTrade } = useTradeConfirmState()
   const eoaTwapSigningStep = useEoaTwapSigningStep()
@@ -46,7 +47,9 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
   const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isInsufficientBalance = !useHasEnoughBalanceForAmount(inputCurrencyAmount)
-  const amountAfterFees = receiveAmountInfo ? getOrderTypeReceiveAmounts(receiveAmountInfo).amountAfterFees : null
+  const { amountAfterFees, amountAfterSlippage } = receiveAmountInfo
+    ? getOrderTypeReceiveAmounts(receiveAmountInfo)
+    : { amountAfterFees: null, amountAfterSlippage: null }
   const amountAfterFeesUsd = useUsdAmount(amountAfterFees).value
 
   const inputSymbolLabel = inputCurrencyAmount?.currency?.symbol || t`token`
@@ -61,20 +64,29 @@ export function useTwapConfirmCurrencyPreview(): UseTwapConfirmCurrencyPreviewRe
     label: t`Sell amount`,
   } satisfies CurrencyPreviewInfo
 
-  const outputCurrencyInfo = showExpectedToReceive
-    ? {
-        amount: amountAfterFees,
-        fiatAmount: amountAfterFeesUsd,
-        balance: outputCurrencyBalance,
-        label: t`Expected to receive`,
-        prefix: '≈',
-      }
-    : {
-        amount: outputCurrencyAmount,
-        fiatAmount: outputCurrencyFiatAmount,
-        balance: outputCurrencyBalance,
-        label: t`Receive (before fees)`,
-      }
+  const outputCurrencyInfo = (
+    showExpectedToReceive
+      ? {
+          amount: amountAfterFees,
+          fiatAmount: amountAfterFeesUsd,
+          balance: outputCurrencyBalance,
+          label: t`Expected to receive`,
+          prefix: '≈',
+          secondaryAmount: amountAfterSlippage
+            ? {
+                amount: amountAfterSlippage,
+                prefix: `${t`Min.`} `,
+                tooltip: t`Minimum total if all parts fill. Parts that can't meet your price limit are skipped, so you may receive less overall and keep the unsold tokens.`,
+              }
+            : undefined,
+        }
+      : {
+          amount: outputCurrencyAmount,
+          fiatAmount: outputCurrencyFiatAmount,
+          balance: outputCurrencyBalance,
+          label: t`Receive (before fees)`,
+        }
+  ) satisfies CurrencyPreviewInfo
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
 

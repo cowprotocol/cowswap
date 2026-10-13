@@ -47,11 +47,11 @@ function dummyInstruction(): TransactionInstruction {
 }
 
 function orderStep(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
-  return { instructions, summary, createsOrder: true }
+  return { instructions, summary, fundedAccounts: [], createsOrder: true }
 }
 
 function step(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
-  return { instructions, summary }
+  return { instructions, summary, fundedAccounts: [] }
 }
 
 describe('sendSolanaFlow', () => {

@@ -17,6 +17,7 @@ import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
+import { bindActiveNamespaceToWalletConnect } from '../reown/syncActiveNamespaceWithWalletConnect'
 import { connectWalletById } from '../utils/connectWalletById'
 import { getIsSafeAppIframe } from '../utils/getIsSafeAppIframe'
 import { wagmiStorage } from '../wagmiStorage'
@@ -188,6 +189,10 @@ if (isSafeApp) {
 }
 
 bindActiveProvider(wagmiAdapter)
+
+if (IS_SOLANA_ENABLED) {
+  bindActiveNamespaceToWalletConnect(reownAppKit)
+}
 
 const { wagmiConfig } = wagmiAdapter
 

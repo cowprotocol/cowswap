@@ -19,7 +19,7 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { CaptchaWidget } from 'modules/captcha'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { TradeFormValidation, useGetTradeFormValidation, useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 import { WalletStatusButton } from 'modules/wallet'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
@@ -151,7 +151,12 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const bothCurrenciesSet = !!sellToken && !!buyToken
 
   const withRecipient = useIsWithRecipient(showRecipient)
-  const maxBalance = maxAmountSpend(inputCurrencyInfo.balance || undefined, isSafeWallet)
+  const solanaTradeOverhead = useSolanaTradeOverhead()
+  const maxBalance = maxAmountSpend(
+    inputCurrencyInfo.balance || undefined,
+    isSafeWallet,
+    solanaTradeOverhead?.maxReserve,
+  )
   const showSetMax = maxBalance?.greaterThan(0) && !inputCurrencyInfo.amount?.equalTo(maxBalance)
 
   const disablePriceImpact =
@@ -321,17 +326,15 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 <WrapFlowActionButton sellToken={sellToken} />
               ) : null
             ) : (
-              <>
-                <CaptchaWidget />
-                {bottomContent?.(
-                  hideTradeWarnings ? null : (
-                    <TradeWarnings
-                      enableSmartSlippage={enableSmartSlippage}
-                      isTradePriceUpdating={isTradePriceUpdating}
-                    />
-                  ),
-                )}
-              </>
+              bottomContent?.(
+                hideTradeWarnings ? null : (
+                  <TradeWarnings
+                    enableSmartSlippage={enableSmartSlippage}
+                    isTradePriceUpdating={isTradePriceUpdating}
+                  />
+                ),
+                <CaptchaWidget />,
+              )
             )}
           </>
         )}

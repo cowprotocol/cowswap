@@ -163,7 +163,8 @@ export const ThemeColorVars = css`
 
     // Base
     ${UI.COLOR_CONTAINER_BG_02}: var(${UI.COLOR_PAPER});
-    ${UI.MODAL_BACKDROP}: var(${UI.COLOR_TEXT});
+    ${UI.MODAL_BACKDROP}: ${({ theme }) => (theme.darkMode ? theme.neutral0 : theme.text)};
+    ${UI.MODAL_BACKDROP_OPACITY}: ${({ theme }) => (theme.darkMode ? '42.5%' : '40%')};
     ${UI.BORDER_RADIUS_NORMAL}: 24px;
     ${UI.BORDER_RADIUS_LARGE}: 32px;
     ${UI.PADDING_NORMAL}: 24px;

@@ -1,5 +1,5 @@
 import { IS_SOLANA_ENABLED, VIEM_CHAINS } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, isEvmChain } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAIN_IDS, isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { solana } from '@reown/appkit/networks'
 import { type Chain } from 'viem/chains'
@@ -23,4 +23,10 @@ export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId
 
 if (IS_SOLANA_ENABLED) {
   SUPPORTED_REOWN_NETWORKS.push(solana)
+}
+
+export function getReownNetwork(chainId: SupportedChainId): AppKitNetwork | undefined {
+  const reownNetworkId = isSolanaChain(chainId) ? solana.id : chainId
+
+  return SUPPORTED_REOWN_NETWORKS.find(({ id }) => id === reownNetworkId)
 }

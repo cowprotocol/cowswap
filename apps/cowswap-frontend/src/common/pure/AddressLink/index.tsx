@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { isSupportedAddress } from '@cowprotocol/cow-sdk'
 
 import styled from 'styled-components/macro'
@@ -28,7 +28,7 @@ export function AddressLink({ address, chainId, className, content }: AddressLin
       target="_blank"
       rel="noreferrer"
     >
-      {content ? (isAddress(content) ? shortenAddress(content) : content) : shortenAddress(address)} ↗
+      {content ? (isSupportedAddress(content) ? shortenAddress(content) : content) : shortenAddress(address)} ↗
     </Link>
   ) : (
     address

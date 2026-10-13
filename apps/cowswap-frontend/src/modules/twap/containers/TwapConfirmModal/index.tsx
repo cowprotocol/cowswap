@@ -108,7 +108,7 @@ export function TwapConfirmModal(): ReactNode {
       />
     ) : null
 
-  const twapFormWarningsElement = isEoaTwapSuccess ? null : (
+  const twapFormWarningsElement = hasSigningPlan ? null : (
     <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
   )
 

@@ -34,7 +34,6 @@ import { msg, t } from '@lingui/core/macro'
 import { useLingui, Plural, Trans } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
-import { getOrderVolumeFee } from 'legacy/state/orders/utils'
 
 import { TwapOrderItem } from 'modules/twap'
 
@@ -50,7 +49,6 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { CurrencyField } from './fields/CurrencyField'
 import { DateField } from './fields/DateField'
-import { FeeField } from './fields/FeeField'
 import { FieldLabel } from './fields/FieldLabel'
 import { FilledField } from './fields/FilledField'
 import { IdField } from './fields/IdField'
@@ -102,11 +100,9 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
   FILLED_TWAP: msg`How much of the order has been filled.`,
   SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
-  NETWORK_COSTS: msg`CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price.`,
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
   RECEIVER: msg`The account address which will/did receive the bought amount.`,
   EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
-  TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
 }
 
 const TOOLTIPS_JSX: Record<string, ReactElement> = {
@@ -215,7 +211,6 @@ function ReceiptModalContent({
   const outputLabel = isSell ? t`You receive at least` : t`You receive exactly`
   const safeTxParams = twapOrder?.safeTxParams
 
-  const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n ?? 0
 
   return (
@@ -300,13 +295,6 @@ function ReceiptModalContent({
           </styledEl.Field>
         )}
 
-        {volumeFeeBps && (
-          <styledEl.Field>
-            <FieldLabel label={t`Total fee`} tooltip={i18n._(TOOLTIPS_MSG.TOTAL_FEE)} />
-            <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
-          </styledEl.Field>
-        )}
-
         <styledEl.Field>
           <FieldLabel label={t`Filled`} tooltip={twapOrder ? i18n._(TOOLTIPS_MSG.FILLED_TWAP) : TOOLTIPS_JSX.FILLED} />
           <FilledField order={order} />
@@ -316,17 +304,6 @@ function ReceiptModalContent({
           <FieldLabel label={t`Order surplus`} tooltip={i18n._(TOOLTIPS_MSG.SURPLUS)} />
           <SurplusField order={order} />
         </styledEl.Field>
-
-        {/*TODO: Currently, we don't have this information for parent TWAP orders*/}
-        {/*The condition should be removed once we have the data*/}
-        {(!twapOrder || isTwapPartOrder) && (
-          <>
-            <styledEl.Field>
-              <FieldLabel label={t`Network fees and costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
-              <FeeField order={order} />
-            </styledEl.Field>
-          </>
-        )}
 
         <styledEl.Field>
           <FieldLabel label={t`Created`} tooltip={i18n._(TOOLTIPS_MSG.CREATED)} />
