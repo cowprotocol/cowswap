@@ -5,6 +5,7 @@ import ms from 'ms.macro'
 const HTTP_TOO_MANY_REQUESTS = 429
 // Balances and slot reads poll continuously, so a sustained outage would otherwise emit one Sentry event per request.
 const REPORT_THROTTLE_MS = ms`60s`
+const PRIMARY_TIMEOUT_MS = ms`5s`
 
 const logger = createCowLogger('SolanaRpc')
 
@@ -13,16 +14,25 @@ export interface SolanaRpcFetchParams {
   fallbackUrl: string
   fetchFn?: FetchFn
   now?: () => number
+  /** Time to wait for the primary's response headers before replaying against the fallback, in ms. */
+  timeoutMs?: number
 }
 
 type FetchFn = typeof globalThis.fetch
 
-/** Replays a request against `fallbackUrl` when `primaryUrl` responds with a non-2xx status or fails. */
+interface PrimaryAbort {
+  signal: AbortSignal
+  isTimedOut(): boolean
+  clear(): void
+}
+
+/** Replays a request against `fallbackUrl` when `primaryUrl` responds with a non-2xx status, fails, or times out. */
 export function createSolanaRpcFetch({
   primaryUrl,
   fallbackUrl,
   fetchFn = (...args) => globalThis.fetch(...args),
   now = Date.now,
+  timeoutMs = PRIMARY_TIMEOUT_MS,
 }: SolanaRpcFetchParams): FetchFn {
   let lastReportedAt: number | undefined
 
@@ -55,8 +65,11 @@ export function createSolanaRpcFetch({
       return fetchFn(input, init)
     }
 
+    const callerSignal = init?.signal
+    const primaryAbort = createPrimaryAbort(callerSignal, isSendTransaction(init) ? undefined : timeoutMs)
+
     try {
-      const response = await fetchFn(input, init)
+      const response = await fetchFn(input, { ...init, signal: primaryAbort.signal })
 
       if (!shouldFallback(response)) return response
 
@@ -64,9 +77,12 @@ export function createSolanaRpcFetch({
     } catch (err: unknown) {
       const error = normalizeError(err)
 
-      if (init?.signal?.aborted) throw error
+      if (callerSignal?.aborted) throw error
 
-      report(error, undefined)
+      const reason = primaryAbort.isTimedOut() ? new Error(`Solana RPC did not respond within ${timeoutMs}ms`) : error
+      report(reason, undefined)
+    } finally {
+      primaryAbort.clear()
     }
 
     return fetchFn(fallbackUrl, init)
@@ -79,6 +95,37 @@ export function getReownRpcUrl(caipNetworkId: string, projectId: string): string
   url.searchParams.set('projectId', projectId)
 
   return url.toString()
+}
+
+function createPrimaryAbort(callerSignal: AbortSignal | null | undefined, timeoutMs: number | undefined): PrimaryAbort {
+  const controller = new AbortController()
+  const abortFromCaller = (): void => controller.abort(callerSignal?.reason)
+
+  if (callerSignal?.aborted) {
+    abortFromCaller()
+  } else {
+    callerSignal?.addEventListener('abort', abortFromCaller, { once: true })
+  }
+
+  let isTimedOut = false
+  const timeoutId =
+    timeoutMs === undefined
+      ? undefined
+      : setTimeout(() => {
+          isTimedOut = true
+          controller.abort()
+        }, timeoutMs)
+
+  return {
+    signal: controller.signal,
+    isTimedOut: () => isTimedOut,
+    clear: () => clearTimeout(timeoutId),
+  }
+}
+
+// A slow send must not be cut short: replaying it is harmless (same signature), but waiting is the expected behavior.
+function isSendTransaction(init: RequestInit | undefined): boolean {
+  return typeof init?.body === 'string' && init.body.includes('"method":"sendTransaction"')
 }
 
 // JSON-RPC errors arrive as HTTP 200, so any other status means the provider refused the request

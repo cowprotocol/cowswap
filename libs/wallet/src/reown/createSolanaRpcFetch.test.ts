@@ -13,6 +13,12 @@ const PRIMARY_URL = 'https://solana.example.com/key'
 const FALLBACK_URL = 'https://rpc.walletconnect.org/v1/?chainId=solana%3Amainnet&projectId=abc'
 const INIT: RequestInit = { method: 'POST', body: '{"jsonrpc":"2.0","id":1,"method":"getSlot"}' }
 
+function hangingUntilAborted(init: RequestInit | undefined): Promise<Response> {
+  return new Promise((_, reject) => {
+    init?.signal?.addEventListener('abort', () => reject(new DOMException('aborted', 'AbortError')))
+  })
+}
+
 function response(status: number): Response {
   return new Response('{}', { status })
 }
@@ -30,7 +36,7 @@ describe('createSolanaRpcFetch', () => {
 
     expect(result.status).toBe(200)
     expect(fetchFn).toHaveBeenCalledTimes(1)
-    expect(fetchFn).toHaveBeenCalledWith(PRIMARY_URL, INIT)
+    expect(fetchFn).toHaveBeenCalledWith(PRIMARY_URL, expect.objectContaining({ body: INIT.body }))
     expect(captureErrorMock).not.toHaveBeenCalled()
   })
 
@@ -75,6 +81,93 @@ describe('createSolanaRpcFetch', () => {
 
     await expect(rpcFetch(PRIMARY_URL, { ...INIT, signal: controller.signal })).rejects.toThrow('aborted')
     expect(fetchFn).toHaveBeenCalledTimes(1)
+  })
+
+  describe('primary timeout', () => {
+    beforeEach(() => {
+      jest.useFakeTimers()
+    })
+
+    afterEach(() => {
+      jest.useRealTimers()
+    })
+
+    it('replays the request on the fallback when the primary does not respond in time', async () => {
+      const fetchFn = jest.fn((url: RequestInfo | URL, init?: RequestInit) =>
+        url === PRIMARY_URL ? hangingUntilAborted(init) : Promise.resolve(response(200)),
+      )
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        timeoutMs: 1000,
+      })
+
+      const resultPromise = rpcFetch(PRIMARY_URL, INIT)
+      await jest.advanceTimersByTimeAsync(1000)
+      const result = await resultPromise
+
+      expect(result.status).toBe(200)
+      expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, INIT)
+      expect(captureErrorMock.mock.calls[0][0].message).toBe('Solana RPC did not respond within 1000ms')
+    })
+
+    it('does not time out sendTransaction', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      let resolvePrimary: (value: Response) => void = () => undefined
+      const fetchFn = jest.fn(
+        () =>
+          new Promise<Response>((resolve) => {
+            resolvePrimary = resolve
+          }),
+      )
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        timeoutMs: 1000,
+      })
+
+      const resultPromise = rpcFetch(PRIMARY_URL, sendInit)
+      await jest.advanceTimersByTimeAsync(5000)
+      resolvePrimary(response(200))
+
+      expect((await resultPromise).status).toBe(200)
+      expect(fetchFn).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not fall back after a primary response that arrived in time', async () => {
+      const fetchFn = jest.fn().mockResolvedValue(response(200))
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        timeoutMs: 1000,
+      })
+
+      await rpcFetch(PRIMARY_URL, INIT)
+      await jest.advanceTimersByTimeAsync(5000)
+
+      expect(fetchFn).toHaveBeenCalledTimes(1)
+      expect(captureErrorMock).not.toHaveBeenCalled()
+    })
+
+    it('rethrows without falling back when the caller aborts while waiting', async () => {
+      const controller = new AbortController()
+      const fetchFn = jest.fn((_: RequestInfo | URL, init?: RequestInit) => hangingUntilAborted(init))
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        timeoutMs: 1000,
+      })
+
+      const resultPromise = rpcFetch(PRIMARY_URL, { ...INIT, signal: controller.signal })
+      controller.abort()
+
+      await expect(resultPromise).rejects.toThrow('aborted')
+      expect(fetchFn).toHaveBeenCalledTimes(1)
+    })
   })
 
   it('reports rate limiting to Sentry at most once per throttle window', async () => {
