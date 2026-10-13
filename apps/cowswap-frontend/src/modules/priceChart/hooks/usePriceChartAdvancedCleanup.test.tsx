@@ -1,18 +1,19 @@
 import { useEffect } from 'react'
 
+import type { QueryClient } from '@tanstack/react-query'
+
 import { renderHook } from '@testing-library/react'
 
 import { usePriceChartAdvancedExecutionMarkers } from './usePriceChartAdvancedExecutionMarkers'
 import { usePriceChartAdvancedPriceSelection } from './usePriceChartAdvancedPriceSelection'
 import { usePriceChartAdvancedReferenceLines } from './usePriceChartAdvancedReferenceLines'
 
-import { createExecutionMarkers } from '../lib/priceChartAdvancedExecutionMarkers.utils'
+import { createPriceChartDatafeed } from '../lib/priceChartAdvancedDatafeed.service'
 import { createHorizontalLines } from '../lib/priceChartAdvancedReferenceLines.utils'
 
-import type { IChartingLibraryWidget } from 'charting_library'
+import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
+import type { IChartingLibraryWidget, LibrarySymbolInfo, ResolutionString } from 'charting_library'
 import type { DefaultTheme } from 'styled-components'
-
-jest.mock('../lib/priceChartAdvancedExecutionMarkers.utils', () => ({ createExecutionMarkers: jest.fn() }))
 
 jest.mock('../lib/priceChartAdvancedReferenceLines.utils', () => ({ createHorizontalLines: jest.fn() }))
 
@@ -25,6 +26,7 @@ function createWidget(): IChartingLibraryWidget {
   return {
     activeChart: () => ({
       symbol: () => 'WETH',
+      refreshMarks: jest.fn(),
       crossHairMoved: () => subscription,
       onDataLoaded: () => subscription,
     }),
@@ -41,17 +43,36 @@ function useWidgetRemoval(widget: IChartingLibraryWidget): void {
 }
 
 describe('Advanced chart cleanup', () => {
-  it('detaches execution marker listeners before removing the widget', () => {
+  it('updates hover marks without recreating the datafeed or leaking another symbol’s executions', () => {
+    jest.useFakeTimers()
     const widget = createWidget()
-    const removeMarkers = jest.fn()
-    jest.mocked(createExecutionMarkers).mockReturnValue(removeMarkers)
-    const { unmount } = renderHook(() => {
-      useWidgetRemoval(widget)
-      usePriceChartAdvancedExecutionMarkers(widget, 'WETH', [])
-    })
+    const controller = createPriceChartDatafeed({ queryClient: {} as QueryClient, symbols: [] })
+    const feed = controller.datafeed
+    const marker = {
+      id: 'order',
+      side: 'buy',
+      barTimestamp: 10,
+      title: 'Bought 1 WETH',
+    } as AttachedPriceChartExecutionMarker
+    const { rerender, unmount } = renderHook(
+      ({ ticker, markers }) => usePriceChartAdvancedExecutionMarkers(widget, ticker, markers, controller),
+      { initialProps: { ticker: 'WETH', markers: [marker] } },
+    )
+    const callback = jest.fn()
+    const symbol = { ticker: 'WETH' } as LibrarySymbolInfo
+    feed.getMarks?.(symbol, 0, 20, callback, '1' as ResolutionString)
+    jest.runOnlyPendingTimers()
+    expect(callback).toHaveBeenLastCalledWith([
+      expect.objectContaining({ label: '↑', text: 'Bought 1 WETH', time: 10 }),
+    ])
+    rerender({ ticker: 'USDC', markers: [] })
+    expect(controller.datafeed).toBe(feed)
+    feed.getMarks?.(symbol, 0, 20, callback, '1' as ResolutionString)
+    jest.runOnlyPendingTimers()
+    expect(callback).toHaveBeenLastCalledWith([])
     expect(() => unmount()).not.toThrow()
-    expect(removeMarkers).toHaveBeenCalledTimes(1)
-    expect(widget.remove).toHaveBeenCalledTimes(1)
+    controller.dispose()
+    jest.useRealTimers()
   })
 
   it('detaches price selection listeners before removing the widget', () => {

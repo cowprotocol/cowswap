@@ -71,7 +71,7 @@ export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipPro
       )}
       {data.executions?.map((execution) => (
         <styledEl.ExecutionRow key={execution.id} $side={execution.side} title={execution.title}>
-          <span>{execution.side === 'buy' ? t`Buy` : t`Sell`}</span>
+          <span>{execution.side === 'buy' ? t`Bought` : t`Sold`}</span>
           <styledEl.TooltipValue>
             {execution.activeAmount} {execution.activeTokenSymbol}
           </styledEl.TooltipValue>
