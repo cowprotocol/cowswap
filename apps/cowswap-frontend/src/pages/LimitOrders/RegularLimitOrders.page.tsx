@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -17,7 +17,7 @@ import {
   LimitOrdersWidget,
   limitRateAtom,
   updateLimitRateAtom,
-  isChartPriceSelectionModeAtom,
+  priceChartSelectionModeAtom,
   useUpdateActiveRate,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
@@ -41,8 +41,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
   const { activeRate, isInverted } = useAtomValue(limitRateAtom)
   const updateLimitRate = useSetAtom(updateLimitRateAtom)
-  const isChartPriceSelectionMode = useAtomValue(isChartPriceSelectionModeAtom)
-  const setIsChartPriceSelectionMode = useSetAtom(isChartPriceSelectionModeAtom)
+  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(priceChartSelectionModeAtom)
   const updateRate = useUpdateActiveRate()
   const referenceLines = useMemo(
     () => [
