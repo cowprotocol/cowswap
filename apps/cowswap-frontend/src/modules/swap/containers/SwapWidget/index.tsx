@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useTryFindToken } from '@cowprotocol/tokens'
@@ -50,6 +51,7 @@ import {
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
+import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapDebugPanel } from '../SwapDebugPanel'
@@ -181,6 +183,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
+  const { isWaitForCowsEnabled } = useFeatureFlags()
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -206,6 +209,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
               <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             )}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+            {isWaitForCowsEnabled && <WaitAndSaveRow />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             {captcha}
@@ -231,6 +235,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
+        isWaitForCowsEnabled,
         hideQuoteAmount,
         isFeeExceedsError,
         hasInputAmount,
