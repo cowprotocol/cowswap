@@ -104,7 +104,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   if (!isWrapUnwrap && !inputAmountIsNotSet) {
     // Fail closed: a trade that cannot be priced in USD cannot be checked against the cap
     if (getIsSolanaSellUsdValueUnknown(context)) {
-      return [TradeFormValidation.SolanaAlphaUnknownUsdValue]
+      return [
+        tradePriceImpact.loading ? TradeFormValidation.ImpactLoading : TradeFormValidation.SolanaAlphaUnknownUsdValue,
+      ]
     }
 
     if (getIsSolanaTradeAboveLimit(context)) {

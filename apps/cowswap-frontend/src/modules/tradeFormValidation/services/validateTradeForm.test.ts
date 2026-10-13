@@ -382,6 +382,20 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
   })
 
+  test('shows impact loading instead of the unknown USD value while price impact is loading', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+      tradePriceImpact: { loading: true, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.ImpactLoading])
+  })
+
   test('shows quote errors for buy orders whose sell amount has not been quoted yet', () => {
     const context = {
       ...baseContext,
