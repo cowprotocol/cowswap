@@ -1,6 +1,6 @@
 export * from './containers/TwapFormWidget'
 export { TwapSellAmountDescription } from './pure/TwapSellAmountDescription/TwapSellAmountDescription.pure'
-export * from './containers/TwapConfirmModal'
+export * from './containers/TwapConfirmModal/TwapConfirmModal.container'
 export * from './hooks/useEoaTwapPartOrders'
 export * from './state/emulatedTwapOrdersAtom'
 export * from './state/eoaTwapOrdersEffectAtom'
