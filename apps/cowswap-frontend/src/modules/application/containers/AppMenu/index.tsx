@@ -61,13 +61,13 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const settingsNavItems = useMemo(
     () => [
       {
-        label: darkMode ? t`Light mode` : t`Dark mode`,
+        label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
       ...(isSolanaEnabled
         ? [
             {
-              label: areAlphaNetworksEnabled ? t`Disable alpha networks` : t`Enable alpha networks`,
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
               onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
             },
           ]
