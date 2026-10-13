@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 import type { IChartingLibraryWidget } from 'charting_library'
 
@@ -7,7 +7,8 @@ export function usePriceChartAdvancedPriceSelection(
   activeTicker: string,
   onSelectPrice: ((price: number) => void) | undefined,
 ): void {
-  useEffect(() => {
+  // Detach TradingView subscriptions before React removes the iframe.
+  useLayoutEffect(() => {
     if (!widget || !onSelectPrice) return
     const chart = widget.activeChart()
     let price: number | undefined
