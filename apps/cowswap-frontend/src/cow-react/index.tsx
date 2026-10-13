@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { type ReactNode, StrictMode } from 'react'
+import { Fragment, type ReactNode, StrictMode } from 'react'
 import './sentry'
 
 import { Messages } from '@lingui/core'
@@ -44,6 +44,7 @@ import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsup
 
 const cowAnalytics = isInjectedWidget() || window.__COWSWAP_E2E__ ? createNoopCowAnalytics() : initGtm()
 const helmetContext = {}
+const StrictModeWrapper = import.meta.env.VITE_REACT_STRICT_MODE === 'false' ? Fragment : StrictMode
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -77,7 +78,7 @@ interface MainProps {
 
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
-    <StrictMode>
+    <StrictModeWrapper>
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
@@ -112,7 +113,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>
-    </StrictMode>
+    </StrictModeWrapper>
   )
 }
 
