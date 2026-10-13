@@ -1,0 +1,30 @@
+diff --git a/dist/esm/baseAccount.js b/dist/esm/baseAccount.js
+index 7285a9d..7bd17ce 100644
+--- a/dist/esm/baseAccount.js
++++ b/dist/esm/baseAccount.js
+@@ -50,7 +50,9 @@ export function baseAccount(parameters = {}) {
+                             address: getAddress(account.address),
+                             capabilities: account.capabilities ?? {},
+                         })),
+-                        currentChainId: Number(response.chainIds[0]),
++                        // @base-org/account ignores the chain requested in wallet_connect and keeps its own (appChainIds[0] after a
++                        // disconnect), which can differ from response.chainIds[0]; read the real chain so switchChain below runs
++                        currentChainId: await this.getChainId(),
+                     };
+                 })();
+                 if (!accountsChanged) {
+diff --git a/src/baseAccount.ts b/src/baseAccount.ts
+index 9de7106..d5ea270 100644
+--- a/src/baseAccount.ts
++++ b/src/baseAccount.ts
+@@ -130,7 +130,9 @@ export function baseAccount(parameters: BaseAccountParameters = {}) {
+               address: getAddress(account.address),
+               capabilities: account.capabilities ?? {},
+             })),
+-            currentChainId: Number(response.chainIds[0]),
++            // @base-org/account ignores the chain requested in wallet_connect and keeps its own (appChainIds[0] after a
++            // disconnect), which can differ from response.chainIds[0]; read the real chain so switchChain below runs
++            currentChainId: await this.getChainId(),
+           }
+         })()
+ 
