@@ -19,12 +19,12 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
 import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
-import { isChartPriceSelectionModeAtom } from 'modules/limitOrders/state/isChartPriceSelectionModeAtom'
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { priceChartSelectionModeAtom } from 'modules/limitOrders/state/priceChartSelectionModeAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -59,7 +59,7 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
-  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(isChartPriceSelectionModeAtom)
+  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(priceChartSelectionModeAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
