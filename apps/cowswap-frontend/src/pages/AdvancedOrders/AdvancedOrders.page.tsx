@@ -18,7 +18,6 @@ import {
   AdvancedOrdersWidget,
   SetupAdvancedOrderAmountsFromUrlUpdater,
   useAdvancedOrdersDerivedStateToFill,
-  useAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
@@ -83,15 +82,22 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
-  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+  const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
   const receiveAmountInfo = useScaledReceiveAmountInfo()
-  const protectionPrice = useMemo(
+  const worstAcceptablePrice = useMemo(
     () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
     [receiveAmountInfo],
   )
   const referenceLines = useMemo(
-    () => [{ id: 'trade:protection', label: t`Protection`, price: protectionPrice }],
-    [protectionPrice, t],
+    () => [
+      {
+        id: 'trade:worst-acceptable-price',
+        label: t`Worst acceptable price`,
+        price: worstAcceptablePrice,
+        variant: 'worst-acceptable-price' as const,
+      },
+    ],
+    [worstAcceptablePrice, t],
   )
 
   if (!params.chainId) {

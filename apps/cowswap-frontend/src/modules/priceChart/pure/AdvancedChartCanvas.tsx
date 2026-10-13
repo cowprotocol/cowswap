@@ -139,7 +139,7 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedSeries(readyWidget, activeTicker, hasVolume)
 
   usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers)
-  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme.warning, theme.text)
+  usePriceChartAdvancedReferenceLines(readyWidget, activeTicker, referenceLines, theme)
   usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />

@@ -1,18 +1,14 @@
-import { transparentize } from 'color2k'
-
-import { REFERENCE_LINE_STYLE } from '../config/priceChart.constants'
-
 import type { PriceChartReferenceLine } from './priceChart.types'
+import type { DefaultTheme } from 'styled-components'
 
-export function getReferenceLineStyle(
+export function getReferenceLineColor(
   variant: PriceChartReferenceLine<number>['variant'],
-  tradeColor: string,
-  textColor: string,
-): { color: string; lineStyle: typeof REFERENCE_LINE_STYLE.lineStyle; lineWidth: 1 | 2 } {
-  if (!variant || variant === 'trade') return { color: tradeColor, ...REFERENCE_LINE_STYLE }
+  theme: DefaultTheme,
+): string {
   return {
-    color: transparentize(textColor, variant === 'unfillable-order' ? 0.5 : 0.3),
-    lineStyle: REFERENCE_LINE_STYLE.lineStyle,
-    lineWidth: 1 as const,
-  }
+    trade: theme.success,
+    'worst-acceptable-price': theme.warning,
+    'open-order': '#8A8A8A',
+    'unfillable-order': theme.danger,
+  }[variant]
 }

@@ -23,4 +23,4 @@ export const CANDLE_INTERVALS = Object.keys(CANDLE_INTERVAL_SECONDS) as Array<ke
 
 export const TIME_RANGES = ['1H', '1D', '1W', '1M', '1Y', 'All'] as const
 
-export const REFERENCE_LINE_STYLE = { lineStyle: 1, lineWidth: 2 } as const
+export const BASE_LINE_STYLES = { lineStyle: 1, lineWidth: 1 } as const

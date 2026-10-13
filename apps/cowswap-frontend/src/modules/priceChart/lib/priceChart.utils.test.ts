@@ -3,6 +3,7 @@ import { formatPriceChartValue, getPriceChartPriceFormat, getPriceChartSummary }
 describe('price chart formatting', () => {
   it('keeps significant digits for small prices', () => {
     expect(formatPriceChartValue(0.10943, 'en-US')).toBe('$0.1094')
+    expect(formatPriceChartValue(-0.10943, 'en-US')).toBe('-$0.1094')
     expect(formatPriceChartValue(0.000001234, 'en-US')).toBe('$0.000001234')
   })
 

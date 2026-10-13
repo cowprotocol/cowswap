@@ -51,6 +51,7 @@ export function RegularLimitOrdersPage(): ReactNode {
       {
         id: 'trade:limit',
         label: t`Limit`,
+        variant: 'trade' as const,
         price:
           inputCurrency && outputCurrency && activeRate
             ? getLimitPriceFromRate(inputCurrency, outputCurrency, activeRate)

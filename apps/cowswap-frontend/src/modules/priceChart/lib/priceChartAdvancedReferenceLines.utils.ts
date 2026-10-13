@@ -1,17 +1,19 @@
-import { getReferenceLineStyle } from './priceChartReferenceLine.utils'
+import { getReferenceLineColor } from './priceChartReferenceLine.utils'
+
+import { BASE_LINE_STYLES } from '../config/priceChart.constants'
 
 import type { PriceChartReferenceLine } from './priceChart.types'
 import type { IChartingLibraryWidget } from 'charting_library'
+import type { DefaultTheme } from 'styled-components'
 
 export function createHorizontalLines(
   widget: IChartingLibraryWidget,
   referenceLines: PriceChartReferenceLine<number>[],
-  color: string,
-  textColor: string = color,
+  theme: DefaultTheme,
 ): () => void {
   const chart = widget.activeChart()
   const entities = referenceLines.map((line) => {
-    const style = getReferenceLineStyle(line.variant, color, textColor)
+    const lineColor = getReferenceLineColor(line.variant, theme)
     return chart.createShape(
       { price: line.price, time: Math.floor(Date.now() / 1000) },
       {
@@ -21,13 +23,13 @@ export function createHorizontalLines(
         lock: true,
         text: line.label,
         overrides: {
-          linecolor: style.color,
-          linestyle: style.lineStyle,
-          linewidth: style.lineWidth,
+          linecolor: lineColor,
+          linestyle: BASE_LINE_STYLES.lineStyle,
+          linewidth: BASE_LINE_STYLES.lineWidth,
           horzLabelsAlign: 'right',
           vertLabelsAlign: 'top',
           showPrice: true,
-          textcolor: style.color,
+          textcolor: lineColor,
         },
         shape: 'horizontal_line',
         showInObjectsTree: false,
