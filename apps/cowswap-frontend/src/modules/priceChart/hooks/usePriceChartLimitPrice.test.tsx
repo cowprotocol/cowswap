@@ -9,17 +9,13 @@ import { usePriceChartLimitPrice } from './usePriceChartLimitPrice'
 import type { ChartMetric } from '../lib/priceChart.types'
 
 jest.mock('@tanstack/react-query', () => ({ useQuery: jest.fn() }))
-jest.mock('modules/usdAmount', () => ({ useUsdPrice: () => null }))
-jest.mock('../lib/priceChartLimitPrice.utils', () => ({
-  getActivePriceLimitLinePrice: () => 2,
-  getSelectedPriceLimitRate: jest.fn(),
-}))
+jest.mock('modules/usdAmount', () => ({ useUsdPrice: () => ({ price: { toSignificant: () => '1' } }) }))
 
 it('scales reference lines by supply without requiring price selection and waits for supply', () => {
   const inputCurrency = new Token(1, '0x0000000000000000000000000000000000000001', 18)
   const outputCurrency = new Token(1, '0x0000000000000000000000000000000000000002', 18)
   const referenceLines = [
-    { id: 'limit', label: 'Limit', variant: 'trade' as const, price: new Price(inputCurrency, outputCurrency, 1, 1) },
+    { id: 'limit', label: 'Limit', variant: 'trade' as const, price: new Price(inputCurrency, outputCurrency, 1, 2) },
   ]
   jest.mocked(useQuery).mockReturnValue({ data: 100 } as ReturnType<typeof useQuery>)
   const { result, rerender } = renderHook(

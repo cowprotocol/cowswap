@@ -1,31 +1,34 @@
-import { FractionUtils, getWrappedToken, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import { FractionUtils, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { Price } from '@cowprotocol/currency'
 import type { Currency, Fraction } from '@cowprotocol/currency'
 
-// eslint-disable-next-line complexity
-export function getActivePriceLimitLinePrice(
-  currency: Currency | undefined,
-  limitPrice: Price<Currency, Currency> | null | undefined,
-  inputCurrency: Currency | null,
-  outputCurrency: Currency | null,
-  inputUsdPrice: number | null,
-  outputUsdPrice: number | null,
-): number | null {
-  if (!limitPrice || !inputCurrency || !outputCurrency) return null
-  const conversion = getUsdConversion(currency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice)
-  if (!conversion) return null
+import { getPairInversion, currenciesMatch } from './priceChartCurrency.utils'
 
-  const price = matchesPair(limitPrice, inputCurrency, outputCurrency)
-    ? limitPrice
-    : matchesPair(limitPrice, outputCurrency, inputCurrency)
-      ? limitPrice.invert()
-      : null
-  if (!price) return null
+interface PriceChartUsdConversion {
+  inputCurrency: Currency
+  outputCurrency: Currency
+  side: 'sell' | 'buy'
+  counterUsdPrice: number
+}
+
+export function getActivePriceLimitLinePrice(
+  limitPrice: Price<Currency, Currency> | null | undefined,
+  conversion: PriceChartUsdConversion | null,
+): number | null {
+  if (!limitPrice || !conversion) return null
+  const isInverted = getPairInversion(
+    limitPrice.baseCurrency,
+    limitPrice.quoteCurrency,
+    conversion.inputCurrency,
+    conversion.outputCurrency,
+  )
+  if (isInverted === null) return null
+  const price = isInverted ? limitPrice.invert() : limitPrice
 
   const baseAmount = tryParseCurrencyAmount('1', price.baseCurrency)
   const rate = Number(baseAmount ? price.quote(baseAmount).toExact() : price.toSignificant(18))
   if (!isPositiveFiniteNumber(rate)) return null
-  const value = conversion.inverted ? conversion.counterUsdPrice / rate : rate * conversion.counterUsdPrice
+  const value = conversion.side === 'buy' ? conversion.counterUsdPrice / rate : rate * conversion.counterUsdPrice
   return isPositiveFiniteNumber(value) ? value : null
 }
 
@@ -42,49 +45,34 @@ export function getLimitPriceFromRate(
   return new Price(inputCurrency, outputCurrency, rawRate.denominator, rawRate.numerator)
 }
 
-export function getSelectedPriceLimitRate(
-  currency: Currency | undefined,
-  inputCurrency: Currency | null,
-  outputCurrency: Currency | null,
-  selectedPrice: number,
-  inputUsdPrice: number | null,
-  outputUsdPrice: number | null,
-): Fraction | null {
-  if (!isPositiveFiniteNumber(selectedPrice)) return null
-  const conversion = getUsdConversion(currency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice)
-  if (!conversion) return null
-
-  const rate = conversion.inverted
-    ? conversion.counterUsdPrice / selectedPrice
-    : selectedPrice / conversion.counterUsdPrice
-  return isPositiveFiniteNumber(rate) ? FractionUtils.fromNumber(rate) : null
-}
-
-function getUsdConversion(
+export function getPriceChartUsdConversion(
   currency: Currency | undefined,
   inputCurrency: Currency | null,
   outputCurrency: Currency | null,
   inputUsdPrice: number | null,
   outputUsdPrice: number | null,
-): { inverted: boolean; counterUsdPrice: number } | null {
+): PriceChartUsdConversion | null {
   if (!currency || !inputCurrency || !outputCurrency) return null
-  if (matchesCurrency(currency, inputCurrency) && isPositiveFiniteNumber(outputUsdPrice)) {
-    return { inverted: false, counterUsdPrice: outputUsdPrice }
+  if (currenciesMatch(currency, inputCurrency) && isPositiveFiniteNumber(outputUsdPrice)) {
+    return { inputCurrency, outputCurrency, side: 'sell', counterUsdPrice: outputUsdPrice }
   }
-  if (matchesCurrency(currency, outputCurrency) && isPositiveFiniteNumber(inputUsdPrice)) {
-    return { inverted: true, counterUsdPrice: inputUsdPrice }
+  if (currenciesMatch(currency, outputCurrency) && isPositiveFiniteNumber(inputUsdPrice)) {
+    return { inputCurrency, outputCurrency, side: 'buy', counterUsdPrice: inputUsdPrice }
   }
   return null
 }
 
+export function getSelectedPriceLimitRate(
+  selectedPrice: number,
+  conversion: PriceChartUsdConversion | null,
+): Fraction | null {
+  if (!conversion || !isPositiveFiniteNumber(selectedPrice)) return null
+
+  const rate =
+    conversion.side === 'buy' ? conversion.counterUsdPrice / selectedPrice : selectedPrice / conversion.counterUsdPrice
+  return isPositiveFiniteNumber(rate) ? FractionUtils.fromNumber(rate) : null
+}
+
 function isPositiveFiniteNumber(value: number | null | undefined): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0
-}
-
-function matchesCurrency(currency: Currency, other: Currency): boolean {
-  return getWrappedToken(currency).equals(getWrappedToken(other))
-}
-
-function matchesPair(price: Price<Currency, Currency>, base: Currency, quote: Currency): boolean {
-  return matchesCurrency(price.baseCurrency, base) && matchesCurrency(price.quoteCurrency, quote)
 }

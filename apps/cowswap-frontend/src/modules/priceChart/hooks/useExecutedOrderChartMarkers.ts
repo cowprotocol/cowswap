@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { formatLocaleNumber, getWrappedToken } from '@cowprotocol/common-utils'
+import { formatLocaleNumber } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -17,6 +17,7 @@ import { getOrderExecutedAmounts } from 'utils/orderUtils/getOrderExecutedAmount
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
+import { getPairInversion, currenciesMatch } from '../lib/priceChartCurrency.utils'
 
 import type { PriceChartExecutionMarker } from '../lib/priceChart.types'
 
@@ -96,33 +97,19 @@ function getExecutionMarkerData(order: Order, activeCurrency: Currency, locale: 
 
   if (!amounts) return null
 
-  const isSell = isMatchingCurrency(order.inputToken, activeCurrency)
+  const isSell = currenciesMatch(order.inputToken, activeCurrency)
   const activeAmount = isSell ? amounts.sell : amounts.buy
   const counterAmount = isSell ? amounts.buy : amounts.sell
 
   return {
     activeAmount: formatLocaleNumber({ number: activeAmount, locale, sigFigs: 4 }),
-    activeTokenSymbol: getSymbol(activeAmount),
+    activeTokenSymbol: activeAmount.currency.symbol || FALLBACK_TOKEN_SYMBOL,
     counterAmount: formatLocaleNumber({ number: counterAmount, locale, sigFigs: 4 }),
-    counterTokenSymbol: getSymbol(counterAmount),
+    counterTokenSymbol: counterAmount.currency.symbol || FALLBACK_TOKEN_SYMBOL,
     id: `execution:${order.id}`,
     side: isSell ? 'sell' : 'buy',
     timestamp,
   }
-}
-
-function getSymbol(amount: CurrencyAmount<Currency>): string {
-  return amount.currency.symbol || FALLBACK_TOKEN_SYMBOL
-}
-
-function isMatchingCurrency(currency: Currency, expectedCurrency: Currency): boolean {
-  const wrappedCurrency = getWrappedToken(currency)
-  const wrappedExpectedCurrency = getWrappedToken(expectedCurrency)
-
-  return (
-    wrappedCurrency.chainId === wrappedExpectedCurrency.chainId &&
-    areAddressesEqual(wrappedCurrency.address, wrappedExpectedCurrency.address)
-  )
 }
 
 function isMatchingFulfilledOrder(
@@ -139,8 +126,5 @@ function isMatchingFulfilledOrder(
   )
     return false
 
-  return (
-    (isMatchingCurrency(order.inputToken, inputCurrency) && isMatchingCurrency(order.outputToken, outputCurrency)) ||
-    (isMatchingCurrency(order.inputToken, outputCurrency) && isMatchingCurrency(order.outputToken, inputCurrency))
-  )
+  return getPairInversion(order.inputToken, order.outputToken, inputCurrency, outputCurrency) !== null
 }
