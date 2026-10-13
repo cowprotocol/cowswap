@@ -17,7 +17,7 @@ import {
   LimitOrdersWidget,
   limitRateAtom,
   updateLimitRateAtom,
-  priceChartSelectionModeAtom,
+  limitPickerModeAtom,
   useUpdateActiveRate,
 } from 'modules/limitOrders'
 import { LimitOrdersPermitUpdater, ordersTableStateAtom, OrdersTableWidget, useOrdersTable } from 'modules/ordersTable'
@@ -41,7 +41,7 @@ export function RegularLimitOrdersPage(): ReactNode {
   const { inputCurrency, outputCurrency, isUnlocked } = useLimitOrdersDerivedState()
   const { activeRate, isInverted } = useAtomValue(limitRateAtom)
   const updateLimitRate = useSetAtom(updateLimitRateAtom)
-  const [isChartPriceSelectionMode, setIsChartPriceSelectionMode] = useAtom(priceChartSelectionModeAtom)
+  const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
   const updateRate = useUpdateActiveRate()
   const referenceLines = useMemo(
     () => [
@@ -60,9 +60,9 @@ export function RegularLimitOrdersPage(): ReactNode {
   const handleSelectLimitPrice = useCallback(
     (activeRate: Fraction) => {
       updateRate({ activeRate, isAlternativeOrderRate: false, isRateFromUrl: false, isTypedValue: false })
-      setIsChartPriceSelectionMode(false)
+      setLimitPickerMode(false)
     },
-    [setIsChartPriceSelectionMode, updateRate],
+    [setLimitPickerMode, updateRate],
   )
 
   const handleOrdersTableDrawerOpenChange = useCallback(
@@ -92,7 +92,7 @@ export function RegularLimitOrdersPage(): ReactNode {
             onSelectCurrency={(currency) =>
               updateLimitRate({ isInverted: Boolean(outputCurrency?.equals(currency)), isTypedValue: false })
             }
-            onSelectLimitPrice={isChartPriceSelectionMode ? handleSelectLimitPrice : undefined}
+            onSelectLimitPrice={isLimitPickerMode ? handleSelectLimitPrice : undefined}
             referenceLines={referenceLines}
           />
           {!hideOrdersTable && (
