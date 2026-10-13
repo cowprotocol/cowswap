@@ -13,7 +13,7 @@ export function getIsSolanaTradeAboveLimit(tradeFormValidationContext: TradeForm
   const fiatAmount =
     (isSellOrder(orderKind) ? inputCurrencyFiatAmount : outputCurrencyFiatAmount) ?? inputCurrencyFiatAmount
 
-  // An unknown sell-side USD value is blocked by getIsSolanaSellUsdValueUnknown before this check runs
+  // Either getIsSolanaSellUsdValueUnknown already blocked the trade, or a buy order has no quoted sell amount yet
   if (!fiatAmount) return false
 
   return Number(fiatAmount.toExact()) > SOLANA_ALPHA_MAX_TRADE_SIZE_USD
