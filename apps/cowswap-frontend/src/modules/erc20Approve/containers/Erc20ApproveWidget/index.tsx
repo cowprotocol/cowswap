@@ -8,6 +8,7 @@ import { useDerivedTradeState } from 'modules/trade'
 import { useIsInfiniteApproveDisabled } from '../../hooks/useIsInfiniteApproveDisabled'
 import { useSetUserApproveAmountModalState } from '../../state'
 import { isPartialApproveEnabledAtom } from '../../state/isPartialApproveEnabledAtom'
+import { isPartialApproveSelectedByUserAtom } from '../../state/isPartialApproveSelectedByUserAtom'
 
 interface Erc20ApproveProps {
   isPartialApprovalEnabled: boolean
@@ -15,6 +16,7 @@ interface Erc20ApproveProps {
 
 export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApproveProps): null {
   const setIsPartialApproveEnabled = useSetAtom(isPartialApproveEnabledAtom)
+  const setIsPartialApproveSelectedByUser = useSetAtom(isPartialApproveSelectedByUserAtom)
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useDerivedTradeState() || {}
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
@@ -36,6 +38,13 @@ export function Erc20ApproveWidget({ isPartialApprovalEnabled }: Erc20ApprovePro
   useEffect(() => {
     setIsPartialApproveEnabled(isPartialApprovalEnabled || isInfiniteApproveDisabled)
   }, [setIsPartialApproveEnabled, isPartialApprovalEnabled, isInfiniteApproveDisabled])
+
+  // Same for the per-trade user selection: locked on while infinite approve is unavailable.
+  useEffect(() => {
+    if (isInfiniteApproveDisabled) {
+      setIsPartialApproveSelectedByUser(true)
+    }
+  }, [isInfiniteApproveDisabled, setIsPartialApproveSelectedByUser])
 
   return null
 }
