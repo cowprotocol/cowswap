@@ -11,7 +11,7 @@ import JSBI from 'jsbi'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { getRemainderAmountsWithoutSurplus } from 'legacy/state/orders/utils'
 
-import type { PriceChartReferenceLine } from 'modules/priceChart'
+import { FALLBACK_TOKEN_SYMBOL, type PriceChartReferenceLine } from 'modules/priceChart'
 
 import { calculatePrice } from 'utils/orderUtils/calculatePrice'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -48,8 +48,10 @@ export function useOpenLimitOrderChartLines({
         const { buyAmount, sellAmount } = getRemainderAmountsWithoutSurplus(order)
         const formattedSellAmount = formatTokenAmount(CurrencyAmount.fromRawAmount(order.inputToken, sellAmount))
         const formattedBuyAmount = formatTokenAmount(CurrencyAmount.fromRawAmount(order.outputToken, buyAmount))
-        const sellLabel = t`Sell ${formattedSellAmount} ${order.inputToken.symbol || 'TOKEN'}`
-        const buyLabel = t`Buy ${formattedBuyAmount} ${order.outputToken.symbol || 'TOKEN'}`
+        const sellSymbol = order.inputToken.symbol || FALLBACK_TOKEN_SYMBOL
+        const buySymbol = order.outputToken.symbol || FALLBACK_TOKEN_SYMBOL
+        const sellLabel = t`Sell ${formattedSellAmount} ${sellSymbol}`
+        const buyLabel = t`Buy ${formattedBuyAmount} ${buySymbol}`
         const isForwardOrder = isMatchingCurrency(order.inputToken, inputCurrency)
         const labels = isForwardOrder ? { sell: sellLabel, buy: buyLabel } : { sell: buyLabel, buy: sellLabel }
         const prefixLabel = (label: string): string => (order.isUnfillable ? t`Unfillable · ${label}` : label)
