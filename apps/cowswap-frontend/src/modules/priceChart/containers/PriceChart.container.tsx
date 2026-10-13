@@ -12,6 +12,7 @@ import { ChartWrapper } from 'modules/trade'
 import { AdvancedPriceChart } from './AdvancedPriceChart.container'
 import { SimplePriceChart } from './SimplePriceChart.container'
 
+import { useExecutedOrderChartMarkers } from '../hooks/useExecutedOrderChartMarkers'
 import { usePriceChartLimitPrice } from '../hooks/usePriceChartLimitPrice'
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
@@ -57,6 +58,7 @@ export const PriceChart = memo(function PriceChart({
   const [selectedPair, setSelectedPair] = useAtom(priceChartPairAtom)
   const pairCurrency = selectedPair === 'buy-usd' ? outputCurrency : inputCurrency
   const activeCurrency = selectedCurrency ?? pairCurrency ?? inputCurrency ?? outputCurrency ?? undefined
+  const executionMarkers = useExecutedOrderChartMarkers({ activeCurrency, inputCurrency, outputCurrency })
   const handleSelectCurrency = useCallback(
     (currency: Currency) => {
       const pair = inputCurrency?.equals(currency) ? 'sell-usd' : 'buy-usd'
@@ -78,6 +80,7 @@ export const PriceChart = memo(function PriceChart({
 
   const chartProps = {
     ...limitPriceProps,
+    executionMarkers: metric === 'price' ? executionMarkers : [],
     activeCurrency,
     metric,
     onSelectMetric: setMetric,

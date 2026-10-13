@@ -24,6 +24,7 @@ import type {
   ExpansionControl,
   SupplyVariant,
   PriceChartReferenceLine,
+  PriceChartExecutionMarker,
 } from '../lib/priceChart.types'
 
 export interface SimplePriceChartProps {
@@ -37,6 +38,7 @@ export interface SimplePriceChartProps {
   supplyVariant: SupplyVariant
   onSelectPrice?: (price: number) => void
   referenceLines: PriceChartReferenceLine<number>[]
+  executionMarkers: PriceChartExecutionMarker[]
 }
 
 const EMPTY_CANDLES: Candle[] = []
@@ -52,6 +54,7 @@ export function SimplePriceChart({
   supplyVariant,
   onSelectPrice,
   referenceLines,
+  executionMarkers,
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
   const isMobile = useMediaQuery('(max-width: 600px)')
@@ -93,6 +96,7 @@ export function SimplePriceChart({
       <styledEl.ChartFrame>
         <SimpleChartCanvas
           data={data}
+          executionMarkers={executionMarkers}
           onSelectPrice={showStatus ? undefined : onSelectPrice}
           referenceLines={referenceLines}
           chartType={chartType}

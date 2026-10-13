@@ -44,3 +44,7 @@ export const TooltipTime = styled.time`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   white-space: nowrap;
 `
+
+export const ExecutionRow = styled(TooltipRow)<{ $side: 'buy' | 'sell' }>`
+  color: var(${({ $side }) => ($side === 'buy' ? UI.COLOR_SUCCESS : UI.COLOR_DANGER)});
+`

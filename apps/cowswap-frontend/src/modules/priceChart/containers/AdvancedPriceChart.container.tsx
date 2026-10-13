@@ -8,6 +8,7 @@ import { useLingui } from '@lingui/react/macro'
 import { getPriceChartSummary } from '../lib/priceChart.utils'
 import { createPriceChartDatafeed } from '../lib/priceChartAdvancedDatafeed.service'
 import { createChartSymbols } from '../lib/priceChartAdvancedSymbols.utils'
+import { attachExecutionMarkersToBars } from '../lib/priceChartExecutionMarker.utils'
 import { AdvancedChartCanvas } from '../pure/AdvancedChartCanvas'
 import { PanelWrapper } from '../pure/AdvancedChartCanvas.styled'
 import { PriceChartHeader } from '../pure/PriceChartHeader'
@@ -16,6 +17,7 @@ import * as styledEl from '../pure/SimplePriceChart.styled'
 import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { SimplePriceChartProps } from './SimplePriceChart.container'
+import type { Candle } from '../lib/priceChart.types'
 
 export function AdvancedPriceChart({
   activeCurrency,
@@ -28,6 +30,7 @@ export function AdvancedPriceChart({
   supplyVariant,
   onSelectPrice,
   referenceLines,
+  executionMarkers,
 }: SimplePriceChartProps): ReactNode {
   const autoRefresh = useAtomValue(priceChartAutoRefreshAtom)
   const symbols = useMemo(() => createChartSymbols(currencies), [currencies])
@@ -41,6 +44,11 @@ export function AdvancedPriceChart({
   const { i18n } = useLingui()
   const [widgetError, setWidgetError] = useState(false)
   const [priceSummary, setPriceSummary] = useState<ReturnType<typeof getPriceChartSummary>>()
+  const [historyBars, setHistoryBars] = useState<Candle[]>([])
+  const attachedExecutionMarkers = useMemo(
+    () => attachExecutionMarkersToBars(executionMarkers, historyBars),
+    [executionMarkers, historyBars],
+  )
   const [hasVolume, setHasVolume] = useState<boolean>()
   const activeTicker = activeSymbol?.ticker || ''
   const datafeedController = useMemo(
@@ -48,6 +56,7 @@ export function AdvancedPriceChart({
       createPriceChartDatafeed({
         queryClient,
         onHistoryLoaded: (bars) => {
+          setHistoryBars(bars)
           setPriceSummary(getPriceChartSummary(bars))
           setHasVolume(bars.some((bar) => bar.volume !== undefined))
         },
@@ -67,6 +76,7 @@ export function AdvancedPriceChart({
   }, [datafeedController])
 
   useEffect(() => {
+    setHistoryBars([])
     setPriceSummary(undefined)
     setHasVolume(undefined)
     datafeedController.setActiveTicker(activeTicker)
@@ -88,6 +98,7 @@ export function AdvancedPriceChart({
       <styledEl.ChartFrame>
         <AdvancedChartCanvas
           activeTicker={activeTicker}
+          executionMarkers={attachedExecutionMarkers}
           onSelectPrice={onSelectPrice}
           referenceLines={referenceLines}
           datafeed={datafeedController.datafeed}

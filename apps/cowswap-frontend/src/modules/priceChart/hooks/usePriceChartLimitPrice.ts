@@ -67,7 +67,17 @@ export function usePriceChartLimitPrice({
               inputUsdPrice,
               outputUsdPrice,
             )
-            return price === null ? [] : [{ ...line, price }]
+            return price === null
+              ? []
+              : [
+                  {
+                    ...line,
+                    price,
+                    label:
+                      line.labels?.[activeCurrency && inputCurrency?.equals(activeCurrency) ? 'sell' : 'buy'] ??
+                      line.label,
+                  },
+                ]
           })
         : [],
     [activeCurrency, inputCurrency, outputCurrency, inputUsdPrice, outputUsdPrice, metric, referenceLines],

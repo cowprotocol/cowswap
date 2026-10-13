@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useCallback } from 'react'
+import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
@@ -18,13 +18,19 @@ import {
   AdvancedOrdersWidget,
   SetupAdvancedOrderAmountsFromUrlUpdater,
   useAdvancedOrdersDerivedStateToFill,
+  useAdvancedOrdersDerivedState,
 } from 'modules/advancedOrders'
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
 import { PriceChart } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
-import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
+import {
+  TradeRouteRedirect,
+  getLimitPriceFromReceiveAmount,
+  useOrdersTableDrawerState,
+  useSetOrdersTableDrawerOpen,
+} from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -33,6 +39,7 @@ import {
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
+  useScaledReceiveAmountInfo,
   useTwapFormState,
   useTwapSlippage,
   TwapFormState,
@@ -75,7 +82,6 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
-  const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
@@ -115,7 +121,7 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {isUnlocked && (
           <styledEl.SecondaryColumn>
-            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} />
+            <AdvancedOrdersChart />
             {!hideOrdersTable && (
               <DialogOrInline
                 isDialog={isUpToLarge}
@@ -144,4 +150,19 @@ export function AdvancedOrdersPage(): ReactNode {
       </styledEl.PageWrapper>
     </HydrateAtom>
   )
+}
+
+function AdvancedOrdersChart(): ReactNode {
+  const { t } = useLingui()
+  const { inputCurrency, outputCurrency } = useAdvancedOrdersDerivedState()
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const protectionPrice = useMemo(
+    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
+    [receiveAmountInfo],
+  )
+  const referenceLines = useMemo(
+    () => [{ id: 'trade:protection', label: t`Protection`, price: protectionPrice }],
+    [protectionPrice, t],
+  )
+  return <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} referenceLines={referenceLines} />
 }
