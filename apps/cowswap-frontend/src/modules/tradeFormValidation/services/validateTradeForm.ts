@@ -71,6 +71,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const isFastQuote = getIsFastQuote(fetchParams)
 
   const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
+  const isWalletNotConnected = !isSwapUnsupported && !account
 
   const validations: TradeFormValidation[] = []
 
@@ -98,9 +99,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     return [TradeFormValidation.XstockMinimumTradeSize]
   }
 
-  // Same precedence as the xstock limit: the Solana Alpha messages must win over
-  // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
-  // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
+  // The Solana Alpha messages must win over quote-loading states (the max trade size yields to
+  // wallet connection). Wrap/unwrap is exempt: it never touches the settlement program and its
+  // fiat amounts are deliberately null (useTradeUsdAmounts).
   if (!isWrapUnwrap && !inputAmountIsNotSet) {
     // Fail closed: a trade that cannot be priced in USD cannot be checked against the cap
     if (getIsSolanaSellUsdValueUnknown(context)) {
@@ -109,7 +110,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       ]
     }
 
-    if (getIsSolanaTradeAboveLimit(context)) {
+    if (!isWalletNotConnected && getIsSolanaTradeAboveLimit(context)) {
       return [TradeFormValidation.SolanaAlphaMaxTradeSize]
     }
   }
@@ -147,7 +148,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!isSwapUnsupported && !account) {
+  if (isWalletNotConnected) {
     validations.push(
       isRestoringConnection ? TradeFormValidation.RestoringWallet : TradeFormValidation.WalletNotConnected,
     )
