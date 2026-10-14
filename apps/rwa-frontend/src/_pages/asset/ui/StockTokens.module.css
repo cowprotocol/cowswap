@@ -1,0 +1,91 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.totals {
+  display: flex;
+  gap: 24px;
+  margin: 0;
+}
+
+.totals dt {
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.totals dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.token {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo,
+.logoPlaceholder {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.logoPlaceholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actions button {
+  padding: 6px 12px;
+  font-weight: 600;
+}
+
+.buy {
+  color: var(--color-positive);
+}
+
+.sell {
+  color: var(--color-negative);
+}

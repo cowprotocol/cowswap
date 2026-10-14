@@ -1,6 +1,6 @@
 import 'server-only'
 
-import type { RwaAsset, RwaChartPoint, RwaChartRange, RwaMarketData } from '../model/types'
+import type { RwaAsset, RwaChartPoint, RwaChartRange, RwaMarketData, RwaTokenMarketData } from '../model/types'
 
 import {
   type CoingeckoChartDays,
@@ -104,10 +104,15 @@ function toMarketData(ids: string[], marketsById: Map<string, CoingeckoMarket>):
   const [primaryId] = ids
   const primary = primaryId ? marketsById.get(primaryId) : undefined
 
-  return { ...toPriceData(primary), marketCap: sumNullable(markets.map((market) => market.market_cap)) }
+  return {
+    ...toPriceData(primary),
+    marketCap: sumNullable(markets.map((market) => market.market_cap)),
+    volume24h: sumNullable(markets.map((market) => market.total_volume)),
+    tokens: Object.fromEntries(markets.map((market) => [market.id, toTokenMarketData(market)])),
+  }
 }
 
-function toPriceData(market: CoingeckoMarket | undefined): Omit<RwaMarketData, 'marketCap'> {
+function toPriceData(market: CoingeckoMarket | undefined): Omit<RwaMarketData, 'marketCap' | 'volume24h' | 'tokens'> {
   if (!market) return { price: null, change24h: null, dayLow: null, dayHigh: null, updatedAt: null }
 
   return {
@@ -116,5 +121,14 @@ function toPriceData(market: CoingeckoMarket | undefined): Omit<RwaMarketData, '
     dayLow: market.low_24h,
     dayHigh: market.high_24h,
     updatedAt: market.last_updated,
+  }
+}
+
+function toTokenMarketData(market: CoingeckoMarket): RwaTokenMarketData {
+  return {
+    price: market.current_price,
+    marketCap: market.market_cap,
+    volume24h: market.total_volume,
+    logoUrl: market.image,
   }
 }

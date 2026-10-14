@@ -19,6 +19,7 @@
           "symbol": "AAPLx",
           "name": "Apple xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "apple-xstock"
         },
         {
@@ -27,6 +28,7 @@
           "symbol": "AAPLx",
           "name": "Apple xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "apple-xstock"
         },
         {
@@ -35,6 +37,7 @@
           "symbol": "AAPLx",
           "name": "Apple xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "apple-xstock"
         },
         {
@@ -43,6 +46,7 @@
           "symbol": "AAPLon",
           "name": "Apple (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "apple-ondo-tokenized-stock"
         },
         {
@@ -51,6 +55,7 @@
           "symbol": "AAPLon",
           "name": "Apple (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "apple-ondo-tokenized-stock"
         }
       ]
@@ -72,6 +77,7 @@
           "symbol": "MSFTx",
           "name": "Microsoft xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "microsoft-xstock"
         },
         {
@@ -80,6 +86,7 @@
           "symbol": "MSFTx",
           "name": "Microsoft xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "microsoft-xstock"
         },
         {
@@ -88,6 +95,7 @@
           "symbol": "MSFTx",
           "name": "Microsoft xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "microsoft-xstock"
         },
         {
@@ -96,6 +104,7 @@
           "symbol": "MSFTon",
           "name": "Microsoft (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "microsoft-ondo-tokenized-stock"
         },
         {
@@ -104,6 +113,7 @@
           "symbol": "MSFTon",
           "name": "Microsoft (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "microsoft-ondo-tokenized-stock"
         }
       ]
@@ -125,6 +135,7 @@
           "symbol": "NVDAon",
           "name": "NVIDIA (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "nvidia-ondo-tokenized-stock"
         },
         {
@@ -133,6 +144,7 @@
           "symbol": "NVDAon",
           "name": "NVIDIA (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "nvidia-ondo-tokenized-stock"
         },
         {
@@ -141,6 +153,7 @@
           "symbol": "NVDAx",
           "name": "NVIDIA xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "nvidia-xstock"
         },
         {
@@ -149,6 +162,7 @@
           "symbol": "NVDAx",
           "name": "NVIDIA xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "nvidia-xstock"
         },
         {
@@ -157,6 +171,7 @@
           "symbol": "NVDAx",
           "name": "NVIDIA xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "nvidia-xstock"
         }
       ]
@@ -178,6 +193,7 @@
           "symbol": "TSLAx",
           "name": "Tesla xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "tesla-xstock"
         },
         {
@@ -186,6 +202,7 @@
           "symbol": "TSLAx",
           "name": "Tesla xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "tesla-xstock"
         },
         {
@@ -194,6 +211,7 @@
           "symbol": "TSLAx",
           "name": "Tesla xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "tesla-xstock"
         },
         {
@@ -202,6 +220,7 @@
           "symbol": "TSLAon",
           "name": "Tesla (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "tesla-ondo-tokenized-stock"
         },
         {
@@ -210,6 +229,7 @@
           "symbol": "TSLAon",
           "name": "Tesla (Ondo Tokenized)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "tesla-ondo-tokenized-stock"
         }
       ]
@@ -231,6 +251,7 @@
           "symbol": "GOOGLx",
           "name": "Alphabet xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "alphabet-xstock"
         },
         {
@@ -239,6 +260,7 @@
           "symbol": "GOOGLx",
           "name": "Alphabet xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "alphabet-xstock"
         },
         {
@@ -247,6 +269,7 @@
           "symbol": "GOOGLx",
           "name": "Alphabet xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "alphabet-xstock"
         }
       ]
@@ -268,6 +291,7 @@
           "symbol": "AMZNx",
           "name": "Amazon xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "amazon-xstock"
         },
         {
@@ -276,6 +300,7 @@
           "symbol": "AMZNx",
           "name": "Amazon xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "amazon-xstock"
         },
         {
@@ -284,6 +309,7 @@
           "symbol": "AMZNx",
           "name": "Amazon xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "amazon-xstock"
         }
       ]
@@ -305,6 +331,7 @@
           "symbol": "METAx",
           "name": "Meta xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "meta-xstock"
         },
         {
@@ -313,6 +340,7 @@
           "symbol": "METAx",
           "name": "Meta xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "meta-xstock"
         },
         {
@@ -321,6 +349,7 @@
           "symbol": "METAx",
           "name": "Meta xStock",
           "decimals": 18,
+          "issuer": "xStocks",
           "coingeckoId": "meta-xstock"
         }
       ]
@@ -342,6 +371,7 @@
           "symbol": "SPYon",
           "name": "SPDR S&P 500 ETF (Ondo Tokenized ETF)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf"
         },
         {
@@ -350,6 +380,7 @@
           "symbol": "SPYon",
           "name": "SPDR S&P 500 ETF (Ondo Tokenized ETF)",
           "decimals": 18,
+          "issuer": "Ondo",
           "coingeckoId": "spdr-s-p-500-etf-ondo-tokenized-etf"
         }
       ]

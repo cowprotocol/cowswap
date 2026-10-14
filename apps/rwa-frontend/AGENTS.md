@@ -39,6 +39,7 @@ This file: rwa-frontend app-specific commands only.
 - Data fetching uses Jotai: `atomWithQuery` from `jotai-tanstack-query`, with `atomFamily` from `jotai-family` for per-ticker queries. SWR is banned by ESLint. Query options live in `entities/asset/api/assetsQueries.ts`, and every query key starts with `RWA_QUERY_KEY_ROOT`.
 - There is one `QueryClient` per app instance (`_app/layout/Providers.tsx`), shared by Jotai (`queryClientAtom`) and wagmi.
 - `_app/offline/persistQueryCache.ts` persists app queries to IndexedDB and restores each query when it enters the cache. Don't add a second client-side cache for API data.
+- When an API response changes shape, bump `STORE_NAME` in `persistQueryCache.ts` and add the old name to `PREVIOUS_STORE_NAMES`. Otherwise data saved in the old shape is restored as the new type.
 - A response built without upstream data sets `degraded: true` (`DegradableResponse` in `@/shared/api`). `jsonResponse` sends it with `no-store`, and the IndexedDB query persistence never saves it, so an outage can't overwrite the last good data.
 - Asset pages are prerendered for upper-case tickers only (`dynamicParams = false`). `proxy.ts` redirects other casings.
 - The service worker (`public/sw.js`) is registered as `/sw.js?v=<NEXT_PUBLIC_APP_VERSION>`, so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.

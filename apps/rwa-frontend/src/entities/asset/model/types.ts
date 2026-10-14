@@ -27,6 +27,10 @@ export interface RwaMarketData {
   dayHigh: number | null
   /** USD, sum of all tokenized versions of the asset */
   marketCap: number | null
+  /** USD, sum of all tokenized versions of the asset */
+  volume24h: number | null
+  /** Keyed by `RwaToken.coingeckoId` */
+  tokens: Record<string, RwaTokenMarketData>
   /** ISO 8601 */
   updatedAt: string | null
 }
@@ -44,8 +48,21 @@ export interface RwaToken {
   symbol: string
   name: string
   decimals: number
+  /** Company that tokenizes the asset, e.g. `xStocks` */
+  issuer: string
   /** CoinGecko coin id of this token, used to fetch market data */
   coingeckoId?: string
+}
+
+/** Market data of one CoinGecko coin, which is shared by the token deployments on all networks */
+export interface RwaTokenMarketData {
+  /** USD */
+  price: number | null
+  /** USD */
+  marketCap: number | null
+  /** USD */
+  volume24h: number | null
+  logoUrl: string | null
 }
 
 export interface RwaTradingTime {
@@ -102,6 +119,6 @@ export interface RwaTokenList {
   tokens: RwaTokenListToken[]
 }
 
-export interface RwaTokenListToken extends Omit<RwaToken, 'coingeckoId'> {
+export interface RwaTokenListToken extends Omit<RwaToken, 'coingeckoId' | 'issuer'> {
   extensions: { ticker: string }
 }
