@@ -1803,8 +1803,8 @@ msgstr "Select an {accountProxyLabelString} to check for available refunds {chai
 msgid "Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info!"
 msgstr "Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info!"
 
-#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
-#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/PrimaryActionButton.pure.tsx
+#: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/PrimaryActionButton.pure.tsx
 msgid "Unsupported wallet"
 msgstr "Unsupported wallet"
 
