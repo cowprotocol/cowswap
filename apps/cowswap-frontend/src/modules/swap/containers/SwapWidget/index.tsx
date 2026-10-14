@@ -51,12 +51,12 @@ import {
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
-import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapDebugPanel } from '../SwapDebugPanel'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
+import { WaitAndSaveRowContainer } from '../WaitAndSaveRow/WaitAndSaveRow.container'
 import { Warnings } from '../Warnings'
 
 export interface SwapWidgetProps {
@@ -209,7 +209,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
               <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             )}
             {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-            {isWaitForCowsEnabled && <WaitAndSaveRow />}
+            {isWaitForCowsEnabled && <WaitAndSaveRowContainer />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             {captcha}
