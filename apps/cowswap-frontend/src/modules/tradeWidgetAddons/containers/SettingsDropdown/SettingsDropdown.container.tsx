@@ -30,6 +30,7 @@ interface SettingsTabProps {
   partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
   isRecipientToggleHidden?: boolean
+  isHooksToggleDisabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -42,6 +43,7 @@ export function SettingsDropdown({
   partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
   isRecipientToggleHidden = false,
+  isHooksToggleDisabled = false,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -127,15 +129,24 @@ export function SettingsDropdown({
                     id="toggle-hooks-mode-button"
                     title={t`Enable Hooks`}
                     tooltip={
-                      <Trans>
-                        <b>
-                          <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
-                        </b>{' '}
-                        Add DeFi interactions before and after your trade.
-                      </Trans>
+                      <>
+                        <Trans>
+                          <b>
+                            <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
+                          </b>{' '}
+                          Add DeFi interactions before and after your trade.
+                        </Trans>
+                        {isHooksToggleDisabled && (
+                          <>
+                            <br />
+                            <Trans>Hooks are not available on Solana yet.</Trans>
+                          </>
+                        )}
+                      </>
                     }
                     checked={hooksEnabled}
                     toggle={toggleHooksEnabled}
+                    disabled={isHooksToggleDisabled}
                     data-click-event={toCowSwapGtmEvent({
                       category: CowSwapAnalyticsCategory.HOOKS,
                       action: 'Toggle Hooks Enabled',

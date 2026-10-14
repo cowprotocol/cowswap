@@ -3,7 +3,7 @@ import { useCallback, useMemo } from 'react'
 import { Config, useConfig } from 'wagmi'
 
 import { getAddress } from '@cowprotocol/common-utils'
-import { Percent } from '@cowprotocol/currency'
+import { CurrencyAmount, Percent } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -56,6 +56,7 @@ export function useTradeFlowParams(
     const {
       postOrderParams: { inputAmount },
       getCachedPermit,
+      permitAmountToSign,
     } = tradeContext
     const inputCurrency = inputAmount.currency
 
@@ -63,7 +64,12 @@ export function useTradeFlowParams(
 
     if (cachedPermit) return
 
-    tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext))
+    const permitAmount =
+      permitAmountToSign !== undefined
+        ? CurrencyAmount.fromRawAmount(inputCurrency, permitAmountToSign.toString())
+        : undefined
+
+    tradeConfirmActions.requestPermitSignature(buildTradeAmounts(tradeContext), permitAmount)
   }, [tradeConfirmActions, tradeContext])
 
   return useMemo(() => {

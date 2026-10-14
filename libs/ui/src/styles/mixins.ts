@@ -12,10 +12,10 @@ export const textFadeIn = css`
 /**
  * Shared dim + blur for overlay backdrops (Dialog, BottomDrawer).
  * Dim with a translucent fill — element `opacity` would hide `backdrop-filter`.
- * Override `--backdrop-opacity` (defaults to `--overlay-backdrop-opacity`) to fade the dim.
+ * Override `--backdrop-opacity` (defaults to theme `--cow-modal-backdrop-opacity`) to fade the dim.
  */
 export const OVERLAY_BACKDROP_EFFECT = css`
-  --overlay-backdrop-opacity: 40%;
+  --overlay-backdrop-opacity: var(${UI.MODAL_BACKDROP_OPACITY});
   --backdrop-opacity: var(--overlay-backdrop-opacity);
 
   background-color: color-mix(in srgb, var(${UI.MODAL_BACKDROP}) var(--backdrop-opacity), transparent);

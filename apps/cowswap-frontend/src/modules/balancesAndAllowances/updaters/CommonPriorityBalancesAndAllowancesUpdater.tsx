@@ -8,7 +8,7 @@ import {
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
 } from '@cowprotocol/balances-and-allowances'
-import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
@@ -22,12 +22,16 @@ import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensFor
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
-  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
+  const { account, chainId: walletChainId } = useWalletInfo()
+  const selectorSourceChain = useSourceChainId()
+  // Cross-chain swaps are not available from Solana, so other chains' balances are never needed there
+  const { chainId: sourceChainId, source: sourceChainSource } = isSolanaChain(walletChainId)
+    ? { chainId: walletChainId, source: 'wallet' as const }
+    : selectorSourceChain
   // Bridge buy-tokens are only meaningful for the output/buy selector. The input/sell selector on a non-wallet chain
   // also yields source='selector' but must keep the normal token-list + user-custom-tokens session.
   const { field } = useSelectTokenWidgetState()
   const isBridgeMode = sourceChainSource === 'selector' && field === Field.OUTPUT
-  const { account } = useWalletInfo()
   const balancesAccount = useBalancesAccountForChain(sourceChainId)
 
   const priorityTokenAddresses = usePriorityTokenAddresses()
