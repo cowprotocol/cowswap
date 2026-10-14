@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { isSolanaChain } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
@@ -41,6 +41,8 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const derivedState = useDerivedTradeState()
   const inputCurrency = derivedState?.inputCurrency
   const tradeType = derivedState?.tradeType
+  const recipient = derivedState?.recipient
+  const recipientAddress = derivedState?.recipientAddress
 
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
@@ -59,24 +61,22 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
       return isNativeSell ? { fundedAccounts: [], ownerPaysFees: false } : null
     }
 
+    // The buy account's rent is the recipient's, not the owner's: a recipient who never held the
+    // token needs one created, and pricing the owner's existing account instead reports no rent.
+    const receiver = resolveSolanaReceiver({ recipient, recipientAddress, account })
+
+    if (!isSolanaAddress(receiver)) return null
+
     return {
       fundedAccounts: planSolanaTradeFundedAccounts({
         owner: new PublicKey(account),
-        // The buy account's rent is the recipient's, not the owner's: a recipient who never held the
-        // token needs one created, and pricing the owner's existing account instead reports no rent.
-        receiver: new PublicKey(
-          resolveSolanaReceiver({
-            recipient: derivedState?.recipient,
-            recipientAddress: derivedState?.recipientAddress,
-            account,
-          }),
-        ),
+        receiver: new PublicKey(receiver),
         quote: solanaQuote,
         isNativeSell,
       }),
       ownerPaysFees: true,
     }
-  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, derivedState])
+  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, recipient, recipientAddress])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the callers' comparisons. `rpcEndpoint` keys the
