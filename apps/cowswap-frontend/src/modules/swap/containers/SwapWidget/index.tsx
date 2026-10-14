@@ -12,9 +12,8 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
-import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
+import { TradeApproveWithAffectedOrderList, useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -179,7 +178,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const slots: TradeWidgetSlots = {
@@ -191,7 +190,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
         enablePartialApprovalState={enablePartialApprovalState}
-        partialApprovalLocked={isInfiniteApproveDisabledInWidget}
+        partialApprovalLocked={isInfiniteApproveDisabled}
         isRecipientToggleDisabled={isNonEvmBridging}
         isRecipientToggleHidden={disableCustomRecipient}
         isHooksToggleDisabled={isSolanaChain(chainId)}

@@ -12,7 +12,7 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
 import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
@@ -33,7 +33,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
   const { disableCustomRecipient } = useInjectedWidgetParams()
-  const isPartialApprovalLockedByWidget = useIsInfiniteApproveDisabledInWidget()
+  const isPartialApprovalLocked = useIsInfiniteApproveDisabled()
   const {
     showRecipient,
     partialFillsEnabled,
@@ -149,9 +149,9 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             <SettingsBox
               title={t`Enable Partial Approvals`}
               tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-              checked={isPartialApprovalLockedByWidget ? true : enablePartialApprovalBySettings}
+              checked={isPartialApprovalLocked ? true : enablePartialApprovalBySettings}
               toggle={handlePartialApprovalToggle}
-              disabled={isPartialApprovalLockedByWidget}
+              disabled={isPartialApprovalLocked}
             />
           </SettingsBoxGroup>
         </SettingsDropdownSection>

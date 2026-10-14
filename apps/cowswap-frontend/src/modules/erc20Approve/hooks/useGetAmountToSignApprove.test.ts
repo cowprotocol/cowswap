@@ -4,7 +4,6 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { renderHook } from '@testing-library/react'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { usePermitInfo } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade'
 
@@ -13,6 +12,7 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
+import { useIsInfiniteApproveDisabled } from './useIsInfiniteApproveDisabled'
 
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
@@ -34,8 +34,8 @@ jest.mock('../state', () => ({
   useIsPartialApproveSelectedByUser: jest.fn(),
 }))
 
-jest.mock('modules/injectedWidget', () => ({
-  useIsInfiniteApproveDisabledInWidget: jest.fn(),
+jest.mock('./useIsInfiniteApproveDisabled', () => ({
+  useIsInfiniteApproveDisabled: jest.fn(),
 }))
 
 jest.mock('modules/permit', () => ({
@@ -53,8 +53,8 @@ jest.mock('modules/trade', () => ({
 }))
 
 const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
-const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget as jest.MockedFunction<
-  typeof useIsInfiniteApproveDisabledInWidget
+const mockUseIsInfiniteApproveDisabled = useIsInfiniteApproveDisabled as jest.MockedFunction<
+  typeof useIsInfiniteApproveDisabled
 >
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
 const mockUseGetPartialAmountToSignApprove = useGetPartialAmountToSignApprove as jest.MockedFunction<

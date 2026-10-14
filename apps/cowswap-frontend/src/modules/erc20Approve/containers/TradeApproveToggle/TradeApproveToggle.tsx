@@ -2,8 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-
+import { useIsInfiniteApproveDisabled } from '../../hooks/useIsInfiniteApproveDisabled'
 import { Toggle } from '../../pure/Toggle'
 import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser } from '../../state'
 
@@ -15,9 +14,9 @@ type TradeApproveToggleProps = {
 export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeApproveToggleProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
-  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
 
-  if (isInfiniteApproveDisabledInWidget) return null
+  if (isInfiniteApproveDisabled) return null
 
   return (
     <Toggle
