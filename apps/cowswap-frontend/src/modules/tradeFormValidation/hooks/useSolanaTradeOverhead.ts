@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -13,12 +12,11 @@ import {
   getSolanaTradeOverhead,
   planSolanaTradeFundedAccounts,
   useDerivedTradeState,
+  useIsSolanaSponsoredTrade,
   useIsWrapOrUnwrap,
 } from 'modules/trade'
 import type { SolanaFundedAccount, SolanaTradeOverhead } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
-
-import { TradeType } from 'common/modules/tradeNavigation'
 
 interface OverheadRequest {
   fundedAccounts: SolanaFundedAccount[]
@@ -35,16 +33,14 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const { chainId, account } = useWalletInfo()
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()
-  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const derivedState = useDerivedTradeState()
   const inputCurrency = derivedState?.inputCurrency
-  const tradeType = derivedState?.tradeType
 
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
 
-  const isSponsored = getIsSponsoredTrade(Boolean(isSolanaSponsoredOrdersEnabled), tradeType, solanaQuote)
+  const isSponsored = useIsSolanaSponsoredTrade()
 
   const request = useMemo<OverheadRequest | null>(() => {
     if (!isSolanaChain(chainId) || !account) return null
@@ -88,17 +84,6 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   )
 
   return overhead ?? null
-}
-
-// Mirrors `solanaFlow`'s sponsor pick: a sponsored order is rented and fee-paid by the quote's funder,
-// so the owner pays nothing beyond the sell amount — only the wallet's own rent-exempt reserve still
-// applies, and only when the sell debits it (a native sell). Limit orders never go through this path.
-function getIsSponsoredTrade(
-  isSolanaSponsoredOrdersEnabled: boolean,
-  tradeType: TradeType | null | undefined,
-  solanaQuote: { funder?: PublicKey } | null,
-): boolean {
-  return Boolean(isSolanaSponsoredOrdersEnabled && tradeType !== TradeType.LIMIT_ORDER && solanaQuote?.funder)
 }
 
 function toFundedAccountsKey(fundedAccounts: SolanaFundedAccount[]): string {
