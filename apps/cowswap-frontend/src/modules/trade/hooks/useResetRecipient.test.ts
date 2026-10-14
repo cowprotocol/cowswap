@@ -153,4 +153,38 @@ describe('useResetRecipient', () => {
 
     expect(onChangeRecipient).toHaveBeenCalledWith(null)
   })
+
+  it('clears a recipient re-applied from the URL after a token change when custom recipients are disabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    setup({ isCustomRecipientDisabled: true })
+
+    const { rerender } = renderHook(() => useResetRecipient(onChangeRecipient))
+
+    onChangeRecipient.mockClear()
+    mockUseDerivedTradeState.mockReturnValue({
+      recipient: RECIPIENT,
+      inputCurrency: { chainId: 1 },
+      outputCurrency: { chainId: 1 },
+    } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  it('does not clear a recipient edit when custom recipients are enabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    const { rerender } = renderHook(() => useResetRecipient(onChangeRecipient))
+
+    onChangeRecipient.mockClear()
+    mockUseDerivedTradeState.mockReturnValue({
+      recipient: RECIPIENT,
+      inputCurrency: { chainId: 1 },
+      outputCurrency: { chainId: 1 },
+    } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(onChangeRecipient).not.toHaveBeenCalled()
+  })
 })
