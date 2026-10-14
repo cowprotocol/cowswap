@@ -21,11 +21,17 @@ export function useSelectTradeToken(): (token: RwaToken, side: TradeSide) => voi
 
   return useCallback(
     (token: RwaToken, side: TradeSide) => {
-      setSide(side)
-      setTokenKey(getTokenKey(token))
+      const select = (): void => {
+        setSide(side)
+        setTokenKey(getTokenKey(token))
+      }
 
-      // The widget follows the wallet chain, so the token is only picked up once the wallet is on its chain
-      if (isConnected && walletChainId !== token.chainId) switchChain({ chainId: token.chainId })
+      // The widget follows the wallet chain: selecting before the switch would trade another token of the wallet chain
+      if (isConnected && walletChainId !== token.chainId) {
+        switchChain({ chainId: token.chainId }, { onSuccess: select })
+      } else {
+        select()
+      }
 
       document.getElementById(TRADE_WIDGET_ID)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
     },
