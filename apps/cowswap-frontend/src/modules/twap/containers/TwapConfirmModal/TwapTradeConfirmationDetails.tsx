@@ -29,28 +29,15 @@ const getConfirmModalConfig = (): {
   minReceivedTooltip: string
 } => ({
   priceLabel: t`Quoted price`,
-  slippageLabel: t`Price protection`,
+  slippageLabel: t`Worst acceptable price`,
   slippageTooltip: (
-    <>
-      <p>
-        <Trans>
-          Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
-          bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
-        </Trans>
-      </p>
-      <p>
-        <Trans>
-          This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
-          your order.
-        </Trans>
-      </p>
-    </>
+    <Trans>Each part trades at this price or better. If that price can't be met, the part is skipped.</Trans>
   ),
   limitPriceLabel: t`Limit price (incl. fees)`,
   limitPriceTooltip: (
     <Trans>
-      If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
-      will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+      If CoW Swap cannot get this price or better (taking into account fees), your TWAP will not execute. CoW Swap will{' '}
+      <strong>always</strong> improve on this price if possible.
     </Trans>
   ),
   minReceivedLabel: t`Minimum receive`,
@@ -102,6 +89,7 @@ export function TwapTradeConfirmationDetails({
         rateInfoParams={rateInfoParams}
         receiveAmountInfo={receiveAmountInfo}
         slippage={slippage}
+        showSlippagePrice
         recipient={recipient}
         recipientAddress={recipientAddress}
         account={account}

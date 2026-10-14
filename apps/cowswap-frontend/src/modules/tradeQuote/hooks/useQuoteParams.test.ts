@@ -18,6 +18,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 
 import { useQuoteParams } from './useQuoteParams'
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
+import { useSmartSlippageFromQuote } from './useSmartSlippageFromQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT } from '../utils/getBridgeQuoteSigner'
 
@@ -57,6 +58,7 @@ jest.mock('common/hooks/useIsProviderNetworkUnsupported', () => ({
   useIsProviderNetworkUnsupported: jest.fn(),
 }))
 jest.mock('./useQuoteParamsRecipient', () => ({ useQuoteParamsRecipient: jest.fn() }))
+jest.mock('./useSmartSlippageFromQuote', () => ({ useSmartSlippageFromQuote: jest.fn() }))
 jest.mock('../utils/getBridgeQuoteSigner', () => {
   const { isSolanaChain } = jest.requireActual('@cowprotocol/cow-sdk')
   return {
@@ -91,6 +93,9 @@ const mockedUseIsProviderNetworkDeprecated = useIsProviderNetworkDeprecated as j
   typeof useIsProviderNetworkDeprecated
 >
 const mockedUseQuoteParamsRecipient = useQuoteParamsRecipient as jest.MockedFunction<typeof useQuoteParamsRecipient>
+const mockedUseSmartSlippageFromQuote = useSmartSlippageFromQuote as jest.MockedFunction<
+  typeof useSmartSlippageFromQuote
+>
 
 const ACCOUNT_ADDRESS = '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd'
 const SELL_TOKEN = '0x1111111111111111111111111111111111111111'
@@ -139,6 +144,7 @@ function setupDefaults(): void {
   mockedUseIsProviderNetworkUnsupported.mockReturnValue(false)
   mockedUseIsProviderNetworkDeprecated.mockReturnValue(false)
   mockedUseQuoteParamsRecipient.mockReturnValue({ receiver: ACCOUNT_ADDRESS, bridgeRecipient: undefined })
+  mockedUseSmartSlippageFromQuote.mockReturnValue(null)
 }
 
 describe('useQuoteParams', () => {
@@ -351,6 +357,34 @@ describe('useQuoteParams', () => {
 
       expect(result.current!.quoteParams!.sellTokenChainId).toBe(SupportedChainId.SOLANA)
       expect(result.current!.quoteParams!.swapSlippageBps).toBe(value)
+    })
+
+    it('should not include swapSlippageBps for a Solana sell token when smart slippage is the quote suggestion', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: 'smart', value: 120 })
+      mockedUseSmartSlippageFromQuote.mockReturnValue(120)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.swapSlippageBps).toBeUndefined()
+    })
+
+    it('should include swapSlippageBps for a Solana sell token when smart slippage is capped', () => {
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: { ...mockInputCurrency, chainId: SupportedChainId.SOLANA },
+        outputCurrency: mockOutputCurrency,
+        orderKind: OrderKind.SELL,
+      } as unknown as TradeDerivedState)
+      mockedUseTradeSlippage.mockReturnValue({ type: 'smart', value: 200 })
+      mockedUseSmartSlippageFromQuote.mockReturnValue(900)
+
+      const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+      expect(result.current!.quoteParams!.swapSlippageBps).toBe(200)
     })
 
     it('should not include swapSlippageBps when slippage type is default', () => {

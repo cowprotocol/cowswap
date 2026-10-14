@@ -425,6 +425,7 @@ export const ViewMoreButton = styled.button`
 
 export const ReceivedAmount = styled.span`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
   width: 100%;
@@ -433,6 +434,11 @@ export const ReceivedAmount = styled.span`
   font-weight: normal;
   margin: 0 auto 10px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+
+  > b,
+  > a {
+    white-space: nowrap;
+  }
 
   > b {
     color: var(${UI.COLOR_TEXT_PAPER});

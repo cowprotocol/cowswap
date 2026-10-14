@@ -1,6 +1,9 @@
 import { encodeFunctionData, type Hex } from 'viem'
 
-import type { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import type { EvmCall, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_SHED_2_1_0_VERSION, CowShedSdk, type ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+
+import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
 
 const COW_SHED_CALL_COMPONENTS = [
   { internalType: 'address', name: 'target', type: 'address' },
@@ -29,14 +32,9 @@ const TRUSTED_EXECUTE_HOOKS_ABI = [
 
 export interface BuildEoaTwapTrustedExecuteTxParams {
   proxyAddress: `0x${string}`
-  factoryAddress: `0x${string}`
+  chainId: SupportedChainId
   calls: ICoWShedCall[]
   isProxyDeployed: boolean
-}
-
-export interface EoaTwapTrustedExecuteTx {
-  to: `0x${string}`
-  data: Hex
 }
 
 type TrustedExecuteHooksCall = {
@@ -54,32 +52,23 @@ type TrustedExecuteHooksCall = {
  */
 export function buildEoaTwapTrustedExecuteTx({
   proxyAddress,
-  factoryAddress,
+  chainId,
   calls,
   isProxyDeployed,
-}: BuildEoaTwapTrustedExecuteTxParams): EoaTwapTrustedExecuteTx {
+}: BuildEoaTwapTrustedExecuteTxParams): EvmCall {
   if (isProxyDeployed) {
     return {
       to: proxyAddress,
       data: encodeTrustedExecuteHooksCalldata(calls),
+      value: 0n,
     }
   }
 
-  return {
-    to: factoryAddress,
-    data: encodeFunctionData({
-      abi: [
-        {
-          ...TRUSTED_EXECUTE_HOOKS_ABI[0],
-          name: 'executeOwnHooks',
-          outputs: [{ name: 'proxy', type: 'address' }],
-          stateMutability: 'payable',
-        },
-      ] as const,
-      functionName: 'executeOwnHooks',
-      args: [calls as TrustedExecuteHooksCall[]],
-    }),
-  }
+  return new CowShedSdk(
+    undefined,
+    ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions,
+    COW_SHED_2_1_0_VERSION,
+  ).encodeExecuteOwnHooks({ calls, chainId })
 }
 
 export function encodeTrustedExecuteHooksCalldata(calls: ICoWShedCall[]): Hex {

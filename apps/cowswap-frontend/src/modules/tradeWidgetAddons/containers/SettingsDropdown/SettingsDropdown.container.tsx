@@ -30,6 +30,9 @@ interface SettingsTabProps {
   partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
   isRecipientToggleHidden?: boolean
+  /** Appended to the Custom Recipient tooltip to say why the toggle is greyed out. */
+  recipientToggleDisabledNote?: ReactNode
+  isHooksToggleDisabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -42,6 +45,8 @@ export function SettingsDropdown({
   partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
   isRecipientToggleHidden = false,
+  recipientToggleDisabledNote,
+  isHooksToggleDisabled = false,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -99,7 +104,19 @@ export function SettingsDropdown({
                   <SettingsBox
                     id="toggle-recipient-mode-button"
                     title={t`Custom Recipient`}
-                    tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                    tooltip={
+                      <>
+                        <Trans>
+                          Allows you to choose a destination address for the swap other than the connected one.
+                        </Trans>
+                        {recipientToggleDisabledNote && (
+                          <>
+                            <br />
+                            {recipientToggleDisabledNote}
+                          </>
+                        )}
+                      </>
+                    }
                     checked={recipientToggleVisible}
                     toggle={toggleRecipientVisibility}
                     disabled={isRecipientToggleDisabled}
@@ -127,15 +144,24 @@ export function SettingsDropdown({
                     id="toggle-hooks-mode-button"
                     title={t`Enable Hooks`}
                     tooltip={
-                      <Trans>
-                        <b>
-                          <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
-                        </b>{' '}
-                        Add DeFi interactions before and after your trade.
-                      </Trans>
+                      <>
+                        <Trans>
+                          <b>
+                            <SVG src={svgExperimentSrc} width={12} height={12} /> Experimental:
+                          </b>{' '}
+                          Add DeFi interactions before and after your trade.
+                        </Trans>
+                        {isHooksToggleDisabled && (
+                          <>
+                            <br />
+                            <Trans>Hooks are not available on Solana yet.</Trans>
+                          </>
+                        )}
+                      </>
                     }
                     checked={hooksEnabled}
                     toggle={toggleHooksEnabled}
+                    disabled={isHooksToggleDisabled}
                     data-click-event={toCowSwapGtmEvent({
                       category: CowSwapAnalyticsCategory.HOOKS,
                       action: 'Toggle Hooks Enabled',

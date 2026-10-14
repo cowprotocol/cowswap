@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
-import { Modal, ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
@@ -110,7 +110,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   return (
     <Modal.Root>
-      <ModalHeader
+      <Modal.Header
         title={title}
         onBack={hasSigningPlan ? undefined : onDismiss}
         onClose={hasSigningPlan && !lockDismiss ? onDismiss : undefined}

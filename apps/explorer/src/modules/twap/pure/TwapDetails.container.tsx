@@ -19,6 +19,7 @@ import { Notification } from 'components/Notification'
 import { AmountRow } from 'components/orders/AmountsDisplay/AmountRow'
 import { Wrapper as AmountsWrapper } from 'components/orders/AmountsDisplay/styled'
 import { DetailsTableTooltips } from 'components/orders/DetailsTable/detailsTableTooltips'
+import { AppDataItem } from 'components/orders/DetailsTable/items/AppDataItem'
 import { FromItem } from 'components/orders/DetailsTable/items/FromItem'
 import { SubmissionTimeItem } from 'components/orders/DetailsTable/items/SubmissionTimeItem'
 import { ToItem } from 'components/orders/DetailsTable/items/ToItem'
@@ -28,7 +29,7 @@ import { StatusLabel } from 'components/orders/StatusLabel'
 import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/OrdersTableWidget/useTable'
-import { APP_TITLE, ORDERS_PAGE_SIZE } from 'explorer/const'
+import { APP_TITLE, ORDERS_PAGE_SIZE, TAB_QUERY_PARAM_KEY, TWAP_TAB_QUERY_VALUE } from 'explorer/const'
 import { FlexContainerVar, StyledSearch, Wrapper } from 'explorer/pages/styled'
 import { useMultipleErc20 } from 'hooks/useErc20'
 import { Helmet } from 'react-helmet'
@@ -36,7 +37,6 @@ import { Navigate, useLocation, useParams } from 'react-router'
 import { useNetworkId } from 'state/network'
 import { abbreviateString, FormatAmountPrecision, formattedAmount, safeTokenName } from 'utils'
 
-import { TwapAppData } from './TwapAppData.container'
 import * as styledEl from './TwapDetails.styled'
 
 import { getTwapProgress } from '../getTwapProgress'
@@ -199,13 +199,13 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                 )}
                 <DetailRow
                   label="Amount"
-                  tooltipText="Price protection sets the minimum buy amount required for each part to execute. These totals assume all scheduled parts execute. Price protection does not guarantee execution."
+                  tooltipText="The worst acceptable price sets the minimum buy amount required for each part to execute. These totals assume all scheduled parts execute. This floor does not guarantee execution."
                 >
                   {renderAmounts(intendedSellAmount, intendedBuyAmount)}
                 </DetailRow>
                 <DetailRow
                   label="Amount per part"
-                  tooltipText="The planned sell amount and minimum buy amount for each part. Price protection requires each part to receive at least this buy amount."
+                  tooltipText="The planned sell amount and minimum buy amount for each part. Each part must receive at least this buy amount."
                 >
                   {renderAmounts(schedule.partSellAmount, schedule.minPartLimit)}
                 </DetailRow>
@@ -228,15 +228,7 @@ function TwapDetails({ order, chainId }: { order: TwapOrder; chainId: SupportedC
                     }}
                   />
                 </DetailRow>
-                <DetailRow
-                  label="Costs & Fees"
-                  tooltipText="The total execution fees reported for the part orders, in the sell token. This value increases as more parts execute."
-                >
-                  {executedAmounts.executedFee === 0n
-                    ? '-'
-                    : formatTokenAmount(executedAmounts.executedFee, sellToken, chainId)}
-                </DetailRow>
-                <TwapAppData appData={schedule.appData} chainId={chainId} />
+                <AppDataItem appData={schedule.appData} />
               </>
             }
           />
@@ -258,6 +250,7 @@ function TwapIdentityRows({ order, chainId }: { order: TwapOrder; chainId: Suppo
       <FromItem
         chainId={chainId}
         owner={order.resolvedOwner}
+        orderHistoryLink={`/address/${order.resolvedOwner}?${TAB_QUERY_PARAM_KEY}=${TWAP_TAB_QUERY_VALUE}`}
         isSigning={false}
         isBridgingOrder={false}
         onCopy={() => undefined}

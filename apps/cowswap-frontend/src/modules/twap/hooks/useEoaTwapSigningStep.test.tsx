@@ -122,6 +122,7 @@ describe('resetEoaTwapSuccessScreenIfMatches', () => {
       transactionHash: null,
       error: null,
       permitSignatureState: undefined,
+      permitAmount: null,
       forcePriceConfirmation: false,
       isConfirming: true,
     })
