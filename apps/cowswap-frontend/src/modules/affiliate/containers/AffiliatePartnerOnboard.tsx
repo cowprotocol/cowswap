@@ -5,7 +5,6 @@ import { useWalletClient } from 'wagmi'
 import svgEarnAsAffiliateSrc from '@cowprotocol/assets/images/earn-as-affiliate.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 import { useNetworkSwitchUnsupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { Plural, Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -15,6 +14,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 import { AFFILIATE_PAYOUTS_CHAIN_ID, AFFILIATE_TERMS_URL, PROGRAM_DEFAULTS } from '../config/affiliateProgram.const'
+import { useAffiliateChainId } from '../hooks/useAffiliateChainId'
 import {
   formatUsdCompact,
   getDefaultTriggerVolume,
@@ -35,7 +35,7 @@ import {
 export function AffiliatePartnerOnboard(): ReactNode {
   const { data: walletClient } = useWalletClient()
   const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const chainId = useAffiliateChainId()
   const { walletName } = useWalletDetails()
   const onSelectNetwork = useOnSelectNetwork()
   const toggleWalletModal = useToggleWalletModal()

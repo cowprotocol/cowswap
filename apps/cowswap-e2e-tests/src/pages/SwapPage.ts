@@ -223,6 +223,11 @@ export class SwapPage implements TradePage {
     await this.primaryActionButton.click()
   }
 
+  async dismissOrderProgressModal(): Promise<void> {
+    await this.page.keyboard.press('Escape')
+    await expect(this.orderProgressBarModal).toBeHidden()
+  }
+
   /** Opens the settings dropdown, sets a custom slippage percentage, and closes it again. */
   async setSlippage(percent: string): Promise<void> {
     await this.settingsDialogButton.click()

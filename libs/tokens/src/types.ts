@@ -27,6 +27,7 @@ export type ListsEnabledState = { [listId: string]: boolean | undefined }
 
 export type ListSourceConfig = {
   widgetAppCode?: string
+  category?: 'RWA'
   priority?: number
   enabledByDefault?: boolean
   lpTokenProvider?: LpTokenProvider

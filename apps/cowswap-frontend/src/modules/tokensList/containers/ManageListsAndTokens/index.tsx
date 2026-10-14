@@ -1,9 +1,11 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, isValidTokenListSource } from '@cowprotocol/common-utils'
-import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
-import { ModalHeader } from '@cowprotocol/ui'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
+import { environmentAtom, ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
+import { Modal } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -26,6 +28,7 @@ const listsInputPlaceholder = msg`https:// or ipfs:// or ENS name`
 export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNode {
   const { i18n } = useLingui()
   const { lists, customTokens, onBack, onDismiss } = props
+  const { chainId } = useAtomValue(environmentAtom)
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
   const [inputValue, setInputValue] = useState<string>('')
@@ -38,8 +41,8 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   const isTokenAddressValid = useMemo(() => {
     if (!tokenInput) return true
 
-    return !!isAddress(tokenInput)
-  }, [tokenInput])
+    return isSolanaChain(chainId) ? isSolanaAddress(tokenInput) : !!isAddress(tokenInput)
+  }, [tokenInput, chainId])
 
   const isListUrlValid = useMemo(() => {
     if (!listInput) return false
@@ -61,9 +64,9 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   }
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onDismiss}>
+      <Modal.Header onBack={onBack} onClose={onDismiss}>
         <Trans>Manage</Trans>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.TabsContainer>
         <styledEl.Tab active$={isListsTab} onClick={setListsTab}>
           <Trans>Lists</Trans>

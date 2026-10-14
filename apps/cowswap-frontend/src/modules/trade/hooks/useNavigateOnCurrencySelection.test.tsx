@@ -25,6 +25,7 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 
 jest.mock('entities/bridgeProvider', () => ({
+  ...jest.requireActual('entities/bridgeProvider'),
   useBridgeSupportedNetworks: jest.fn(),
 }))
 
@@ -33,6 +34,7 @@ jest.mock('./useDerivedTradeState', () => ({
 }))
 
 jest.mock('common/modules/tradeNavigation', () => ({
+  ...jest.requireActual('common/modules/tradeNavigation'),
   useTradeNavigate: jest.fn(),
 }))
 
@@ -59,6 +61,9 @@ const WETH_MAINNET = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET]
 const USDC_MAINNET = USDC[SupportedChainId.MAINNET]
 const WETH_GNOSIS = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN]
 const USDC_GNOSIS = USDC[SupportedChainId.GNOSIS_CHAIN]
+const SOL = NATIVE_CURRENCIES[SupportedChainId.SOLANA]
+const WSOL = WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SOLANA]
+const USDC_SOLANA = USDC[SupportedChainId.SOLANA]
 
 // Assigned by setupDefaultMocks; defaults to "the symbol resolves back to this token", which is the
 // case for any token already on an active list. Override per test to exercise the fallback.
@@ -480,6 +485,30 @@ describe('useNavigateOnCurrencySelection - cross-chain', () => {
       )
     })
 
+    it('should keep the bridge target when the sell currency reads empty while browsing another chain', () => {
+      const { result, rerender } = renderHook(() => useNavigateOnCurrencySelection())
+
+      mockedUseDerivedTradeState.mockReturnValue({
+        inputCurrency: undefined,
+        outputCurrency: undefined,
+        orderKind: OrderKind.SELL,
+      } as never)
+      rerender()
+
+      act(() => {
+        result.current(Field.OUTPUT, USDC_GNOSIS)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.MAINNET,
+        {
+          inputCurrencyId: WETH_MAINNET.symbol,
+          outputCurrencyId: USDC_GNOSIS.address,
+        },
+        { targetChainId: SupportedChainId.GNOSIS_CHAIN },
+      )
+    })
+
     it('should preserve targetChainId when selecting input currency', () => {
       mockedUseDerivedTradeState.mockReturnValue({
         inputCurrency: WETH_MAINNET,
@@ -515,6 +544,61 @@ describe('useNavigateOnCurrencySelection - cross-chain', () => {
         },
         { targetChainId: USDC_GNOSIS.chainId },
       )
+    })
+  })
+
+  describe('Sell token from a chain without bridge source support', () => {
+    it('should reset buy token to the chain default instead of bridging when selecting a Solana sell token', () => {
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+
+      act(() => {
+        result.current(Field.INPUT, SOL)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.SOLANA,
+        {
+          inputCurrencyId: (SOL as TokenWithLogo).address,
+          outputCurrencyId: USDC_SOLANA.address,
+        },
+        undefined,
+      )
+    })
+
+    it('should use the wrapped native token as buy when the sell token is the default buy token', () => {
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+
+      act(() => {
+        result.current(Field.INPUT, USDC_SOLANA)
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.SOLANA,
+        {
+          inputCurrencyId: USDC_SOLANA.address,
+          outputCurrencyId: WSOL.address,
+        },
+        undefined,
+      )
+    })
+
+    it('should drop the target chain passed by the caller when selecting a Solana sell token', () => {
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+      const stateUpdateCallback = jest.fn()
+
+      act(() => {
+        result.current(Field.INPUT, SOL, stateUpdateCallback, { targetChainId: SupportedChainId.GNOSIS_CHAIN })
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.SOLANA,
+        {
+          inputCurrencyId: (SOL as TokenWithLogo).address,
+          outputCurrencyId: USDC_SOLANA.address,
+        },
+        {},
+      )
+      expect(stateUpdateCallback).toHaveBeenCalledWith(expect.objectContaining({ targetChainId: null }))
     })
   })
 

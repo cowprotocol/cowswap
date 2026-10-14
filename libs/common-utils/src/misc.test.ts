@@ -142,6 +142,24 @@ describe('isInsufficientFundsProviderError', () => {
     expect(isInsufficientFundsProviderError(viemStyleError)).toBe(true)
   })
 
+  it('detects Solana simulation failures: fee-payer rent, zero-lamport payer, and transfer shortfall', () => {
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Transaction results in an account (0) with insufficient funds for rent.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({ message: 'Transfer: insufficient lamports 293000, need 745539000' }),
+    ).toBe(true)
+  })
+
   it('returns false for unrelated errors, including CoW API "not enough funds" wording', () => {
     expect(isInsufficientFundsProviderError({ message: "The account doesn't have enough funds." })).toBe(false)
     expect(isInsufficientFundsProviderError({ code: 4001, message: 'User rejected the request' })).toBe(false)

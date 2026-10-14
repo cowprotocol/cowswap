@@ -88,7 +88,7 @@ declare global {
  *      - chain_id: {{ClickEvent.chainId}}
  *      - isEoaTwap: {{ClickEvent.isEoaTwap}}
  *
- * For `order_submitted` (dataLayer, used by GA4 / Addressable `twap_submitted` tags),
+ * For `order_submitted` / `swap_cancelled` (dataLayer, used by GA4 / Addressable TWAP tags),
  * map the `isEoaTwap` data layer variable onto the event so EOA TWAP can be split from Safe TWAP.
  *
  * === USAGE IN CODE ===

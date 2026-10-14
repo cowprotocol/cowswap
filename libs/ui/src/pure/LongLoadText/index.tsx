@@ -12,8 +12,8 @@ const fadeIn = `
 `
 
 export const LongLoadText = styled.span<{ fontSize?: number; fontWeight?: number }>`
-  font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : 'inherit')};
-  font-weight: ${({ fontWeight }) => (fontWeight ? `${fontWeight}` : 'inherit')};
+  font-size: ${({ fontSize = 14 }) => `${fontSize}px`};
+  font-weight: ${({ fontWeight = 500 }) => fontWeight};
   animation: fadeIn 0.42s ease-in;
 
   ${fadeIn}

@@ -1,15 +1,34 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { waitFor } from '@testing-library/react'
+import { orderBookApi } from 'cowSdk'
 
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
+import { updateOrder } from 'legacy/state/orders/actions'
+
+import { emitOnchainTransactionEvent } from 'modules/onchainTransactions/utils/emitOnchainTransactionEvent'
+import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { checkSolanaTransaction, HISTORICAL_LOOKUP_GRACE_PERIOD_MS } from './checkSolanaTransaction'
 
 import { CheckEthereumTransactions } from '../types'
 
 import type { Connection, SignatureStatus } from '@solana/web3.js'
+
+jest.mock('cowSdk', () => ({
+  orderBookApi: {
+    getOrderMultiEnv: jest.fn(),
+  },
+}))
+
+jest.mock('modules/orders', () => ({
+  emitCancelledOrderEvent: jest.fn(),
+}))
+
+jest.mock('modules/onchainTransactions/utils/emitOnchainTransactionEvent', () => ({
+  emitOnchainTransactionEvent: jest.fn(),
+}))
 
 const SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
 const ACCOUNT = '9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM'
@@ -39,8 +58,14 @@ function createParams({
   blockHeight?: number
   /** What a `searchTransactionHistory` lookup finds, which reaches beyond the recent status cache. */
   historicalStatus?: SignatureStatus | null
-}): { params: CheckEthereumTransactions; dispatch: jest.Mock; getSignatureStatuses: jest.Mock } {
+}): {
+  params: CheckEthereumTransactions
+  dispatch: jest.Mock
+  getSignatureStatuses: jest.Mock
+  cancelOrdersBatch: jest.Mock
+} {
   const dispatch = jest.fn()
+  const cancelOrdersBatch = jest.fn()
 
   const getSignatureStatuses = jest.fn(
     async (_signatures: string[], config?: { searchTransactionHistory?: boolean }) => ({
@@ -57,12 +82,15 @@ function createParams({
   return {
     dispatch,
     getSignatureStatuses,
+    cancelOrdersBatch,
     params: {
       chainId: SupportedChainId.SOLANA,
       account: ACCOUNT,
       dispatch,
       solanaConnection,
       lastBlockNumber: 42,
+      isSafeWallet: false,
+      cancelOrdersBatch,
     } as unknown as CheckEthereumTransactions,
   }
 }
@@ -208,5 +236,178 @@ describe('checkSolanaTransaction', () => {
     await new Promise((resolve) => setTimeout(resolve, 10))
 
     expect(dispatch).not.toHaveBeenCalled()
+  })
+
+  describe('when the transaction cancels an order', () => {
+    const ORDER_ID = '0xorder'
+    const cancelTransaction = {
+      ...createTransaction(),
+      onChainCancellation: { orderId: ORDER_ID, sellTokenSymbol: 'COW' },
+    } as EnhancedTransactionDetails
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    const UNFILLED_ORDER = {
+      uid: ORDER_ID,
+      kind: 'sell',
+      sellAmount: '100',
+      buyAmount: '200',
+      executedSellAmount: '0',
+      executedBuyAmount: '0',
+      executedSellAmountBeforeFees: '0',
+    }
+
+    it('marks the order as cancelled once the cancellation lands on chain', async () => {
+      const { params, dispatch, cancelOrdersBatch } = createParams({
+        status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      })
+      ;(orderBookApi.getOrderMultiEnv as jest.Mock).mockResolvedValue(UNFILLED_ORDER)
+
+      checkSolanaTransaction(cancelTransaction, params)
+
+      await waitFor(() => expect(cancelOrdersBatch).toHaveBeenCalled())
+
+      expect(cancelOrdersBatch).toHaveBeenCalledWith({
+        chainId: SupportedChainId.SOLANA,
+        ids: [ORDER_ID],
+        isSafeWallet: false,
+      })
+      expect(dispatch).not.toHaveBeenCalledWith(updateOrder(expect.anything()))
+
+      await waitFor(() => expect(emitCancelledOrderEvent).toHaveBeenCalled())
+      expect(emitCancelledOrderEvent).toHaveBeenCalledWith({
+        chainId: SupportedChainId.SOLANA,
+        order: UNFILLED_ORDER,
+        transactionHash: SIGNATURE,
+      })
+
+      // Like EVM's on-chain cancellation, a successful cancellation gets no activity-list entry or
+      // completion snackbar of its own.
+      expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
+    })
+
+    // The exact race a user hit: cancelling an order right as a solver's fill lands. Without this
+    // check, the order would flash "Cancelled" in the UI before the normal fulfilled-order detection
+    // corrected it a moment later.
+    it('does not mark the order as cancelled when the order-book already shows it fulfilled', async () => {
+      const { params, cancelOrdersBatch } = createParams({
+        status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      })
+      ;(orderBookApi.getOrderMultiEnv as jest.Mock).mockResolvedValue({
+        ...UNFILLED_ORDER,
+        executedSellAmount: '100',
+        executedSellAmountBeforeFees: '100',
+      })
+
+      checkSolanaTransaction(cancelTransaction, params)
+
+      await waitFor(() => expect(orderBookApi.getOrderMultiEnv).toHaveBeenCalled())
+      await new Promise((resolve) => setTimeout(resolve, 10))
+
+      expect(cancelOrdersBatch).not.toHaveBeenCalled()
+      expect(emitCancelledOrderEvent).not.toHaveBeenCalled()
+    })
+
+    it('clears the cancelling flag and emits a failure snackbar when the cancellation fails on chain', async () => {
+      const { params, dispatch, cancelOrdersBatch } = createParams({
+        status: {
+          slot: 42,
+          confirmations: 1,
+          err: { InstructionError: [0, 'Custom'] },
+          confirmationStatus: 'confirmed',
+        },
+      })
+
+      checkSolanaTransaction(cancelTransaction, params)
+
+      await waitFor(() =>
+        expect(dispatch).toHaveBeenCalledWith(
+          updateOrder({
+            chainId: SupportedChainId.SOLANA,
+            order: { id: ORDER_ID, isCancelling: false, cancellationHash: undefined },
+            isSafeWallet: false,
+          }),
+        ),
+      )
+
+      expect(cancelOrdersBatch).not.toHaveBeenCalled()
+      // Unlike the silent success path, a failed cancellation does get a snackbar - same as EVM.
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: 'Failed to cancel order selling COW' }),
+      )
+    })
+  })
+
+  describe('when the transaction cancels several orders in one batch', () => {
+    const ORDER_IDS = ['0xorder1', '0xorder2']
+    const batchCancelTransaction = {
+      ...createTransaction(),
+      solanaCancelOrderIds: ORDER_IDS,
+    } as EnhancedTransactionDetails
+
+    beforeEach(() => {
+      jest.clearAllMocks()
+    })
+
+    it('marks every order in the batch as cancelled once the cancellation lands on chain', async () => {
+      const { params, cancelOrdersBatch } = createParams({
+        status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      })
+      ;(orderBookApi.getOrderMultiEnv as jest.Mock).mockImplementation(async (orderId: string) => ({
+        uid: orderId,
+        kind: 'sell',
+        sellAmount: '100',
+        buyAmount: '200',
+        executedSellAmount: '0',
+        executedBuyAmount: '0',
+        executedSellAmountBeforeFees: '0',
+      }))
+
+      checkSolanaTransaction(batchCancelTransaction, params)
+
+      await waitFor(() => expect(cancelOrdersBatch).toHaveBeenCalledTimes(ORDER_IDS.length))
+
+      ORDER_IDS.forEach((orderId) => {
+        expect(cancelOrdersBatch).toHaveBeenCalledWith({
+          chainId: SupportedChainId.SOLANA,
+          ids: [orderId],
+          isSafeWallet: false,
+        })
+      })
+      expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
+    })
+
+    it('clears every order in the batch and emits a single failure snackbar when the cancellation fails on chain', async () => {
+      const { params, dispatch, cancelOrdersBatch } = createParams({
+        status: {
+          slot: 42,
+          confirmations: 1,
+          err: { InstructionError: [0, 'Custom'] },
+          confirmationStatus: 'confirmed',
+        },
+      })
+
+      checkSolanaTransaction(batchCancelTransaction, params)
+
+      await waitFor(() =>
+        ORDER_IDS.forEach((orderId) => {
+          expect(dispatch).toHaveBeenCalledWith(
+            updateOrder({
+              chainId: SupportedChainId.SOLANA,
+              order: { id: orderId, isCancelling: false, cancellationHash: undefined },
+              isSafeWallet: false,
+            }),
+          )
+        }),
+      )
+
+      expect(cancelOrdersBatch).not.toHaveBeenCalled()
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledTimes(1)
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: `Failed to cancel ${ORDER_IDS.length} orders` }),
+      )
+    })
   })
 })

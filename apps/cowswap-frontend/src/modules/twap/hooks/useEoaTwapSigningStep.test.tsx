@@ -116,11 +116,13 @@ describe('resetEoaTwapSuccessScreenIfMatches', () => {
   beforeEach(() => {
     jotaiStore.set(eoaTwapSigningStepAtom, null)
     jotaiStore.set(tradeConfirmStateAtom, {
+      sessionId: 0,
       isOpen: true,
       pendingTrade: null,
       transactionHash: null,
       error: null,
       permitSignatureState: undefined,
+      permitAmount: null,
       forcePriceConfirmation: false,
       isConfirming: true,
     })

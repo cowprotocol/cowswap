@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTelegramConnect } from './useTelegramConnect'
@@ -17,8 +18,8 @@ export interface UseHasNotificationSubscriptionReturn {
  * Currently only checks Telegram, but structured to support additional channels in the future.
  */
 export function useHasNotificationSubscription(): UseHasNotificationSubscriptionReturn {
-  const { account } = useWalletInfo()
-  const { isLoading, isSubscribed } = useTelegramConnect(account)
+  const { chainId, account } = useWalletInfo()
+  const { isLoading, isSubscribed } = useTelegramConnect(isSolanaChain(chainId) ? undefined : account)
 
   return useMemo(() => {
     const channels = {
