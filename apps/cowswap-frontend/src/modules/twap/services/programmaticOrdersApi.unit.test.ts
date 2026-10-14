@@ -5,18 +5,22 @@ import { programmaticOrdersApi } from './programmaticOrdersApi'
 
 jest.mock('@cowprotocol/sdk-composable', () => {
   const mockGetTwapPartOrders = jest.fn()
+  const mockGetDeployedCowSheds = jest.fn()
 
   return {
     ...jest.requireActual('@cowprotocol/sdk-composable'),
     ProgrammaticOrderApi: jest.fn().mockImplementation(() => ({
       getTwapPartOrders: mockGetTwapPartOrders,
+      getDeployedCowSheds: mockGetDeployedCowSheds,
     })),
     mockGetTwapPartOrders,
+    mockGetDeployedCowSheds,
   }
 })
 
-const { mockGetTwapPartOrders } = jest.requireMock('@cowprotocol/sdk-composable') as {
+const { mockGetTwapPartOrders, mockGetDeployedCowSheds } = jest.requireMock('@cowprotocol/sdk-composable') as {
   mockGetTwapPartOrders: jest.Mock
+  mockGetDeployedCowSheds: jest.Mock
 }
 
 const chainId = SupportedChainId.GNOSIS_CHAIN
@@ -55,5 +59,29 @@ describe('fetchCurrentEoaTwapPartOrder', () => {
     })
 
     await expect(programmaticOrdersApi.fetchCurrentEoaTwapPartOrder(eventId, chainId)).resolves.toBeUndefined()
+  })
+})
+
+describe('fetchDeployedCowShedAddresses', () => {
+  const owner = '0x1111111111111111111111111111111111111111'
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
+  it('returns shed addresses from the first page for the owner on the chain', async () => {
+    const firstShed = '0x2222222222222222222222222222222222222222'
+    const secondShed = '0x3333333333333333333333333333333333333333'
+
+    mockGetDeployedCowSheds.mockResolvedValue({
+      items: [{ address: firstShed }, { address: secondShed }],
+      totalCount: 2,
+    })
+
+    await expect(programmaticOrdersApi.fetchDeployedCowShedAddresses(owner, chainId)).resolves.toEqual([
+      firstShed,
+      secondShed,
+    ])
+    expect(mockGetDeployedCowSheds).toHaveBeenCalledWith({ owner, chainId }, { limit: 10, offset: 0 })
   })
 })

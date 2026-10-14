@@ -66,15 +66,16 @@ export function useCrossChainFamilySwitch(): (
         confirmWord: t`confirm`,
         title: t`Switching network type`,
         description: (
-          <span>
-            <Trans>
-              You're switching from {sourceChainLabel} to {targetChainLabel}.
-            </Trans>
-            <br />
-            <Trans>This requires connecting a different wallet.</Trans>
-            <br />
-            <Trans>Your current wallet will be disconnected.</Trans>
-          </span>
+          <>
+            <p>
+              <Trans>
+                You're switching from {sourceChainLabel} to {targetChainLabel}.
+              </Trans>
+            </p>
+            <p>
+              <Trans>This requires connecting a different wallet, so your current wallet will be disconnected.</Trans>
+            </p>
+          </>
         ),
         action: t`switch network type`,
         callToAction: t`Connect wallet`,

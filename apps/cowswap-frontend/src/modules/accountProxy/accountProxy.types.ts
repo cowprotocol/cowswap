@@ -7,6 +7,7 @@ import { CoWShedVersion, CowShedHooks, ICoWShedOptions } from '@cowprotocol/sdk-
 export interface AccountProxyConfig {
   id: string
   version?: CoWShedVersion
+  alwaysShow?: boolean
   label?: MessageDescriptor
   factoryOptions?: ICoWShedOptions
 }

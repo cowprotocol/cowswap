@@ -44,3 +44,17 @@ it('preserves execution amounts and filled status for completed parts', () => {
   expect(row.executedSellAmount.toFixed()).toBe(part.sellAmount.toString())
   expect(row.filledPercentage.toFixed()).toBe('100')
 })
+
+it('derives surplus for executed parts from the buy amount received above the limit', () => {
+  const row = toTwapPartTableRow(
+    {
+      ...part,
+      status: 'fulfilled',
+      executedSellAmount: part.sellAmount,
+      executedBuyAmount: part.buyAmount + 25000000000000000000n,
+    },
+    schedule,
+  )
+  expect(row.surplusAmount?.toFixed()).toBe('25000000000000000000')
+  expect(row.surplusPercentage?.toFixed(4)).toBe('0.2000')
+})

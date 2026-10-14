@@ -8,37 +8,56 @@ export interface ModalFooterButtonConfig {
   label: ReactNode
   onClick(): void
   type?: 'button' | 'submit'
+  variant?: ModalFooterButtonVariant
 }
 
-export interface ModalFooterWithTwoButtonsProps {
+export type ModalFooterButtonVariant = 'default' | 'error'
+
+export type ModalFooterWithTwoButtonsProps = {
   inline?: boolean
-  primaryButton: ModalFooterButtonConfig
-  secondaryButton: ModalFooterButtonConfig
-}
+} & (
+  | { primaryButton: ModalFooterButtonConfig; secondaryButton?: ModalFooterButtonConfig }
+  | { primaryButton?: ModalFooterButtonConfig; secondaryButton: ModalFooterButtonConfig }
+)
 
 export function ModalFooterWithTwoButtons({
   inline,
   primaryButton,
   secondaryButton,
 }: ModalFooterWithTwoButtonsProps): ReactNode {
+  const secondary = secondaryButton ? (
+    <styledEl.SecondaryButton
+      disabled={secondaryButton.disabled}
+      type={secondaryButton.type ?? 'button'}
+      onClick={secondaryButton.onClick}
+    >
+      {secondaryButton.label}
+    </styledEl.SecondaryButton>
+  ) : null
+
+  const PrimaryButtonComponent =
+    primaryButton?.variant === 'error' ? styledEl.PrimaryErrorButton : styledEl.PrimaryButton
+
+  const primary = primaryButton ? (
+    <PrimaryButtonComponent
+      disabled={primaryButton.disabled}
+      type={primaryButton.type ?? 'button'}
+      onClick={primaryButton.onClick}
+    >
+      {primaryButton.label}
+    </PrimaryButtonComponent>
+  ) : null
+
   return (
     <ModalFooter inline={inline}>
-      <styledEl.TwoButtonGrid>
-        <styledEl.SecondaryButton
-          disabled={secondaryButton.disabled}
-          type={secondaryButton.type ?? 'button'}
-          onClick={secondaryButton.onClick}
-        >
-          {secondaryButton.label}
-        </styledEl.SecondaryButton>
-        <styledEl.PrimaryButton
-          disabled={primaryButton.disabled}
-          type={primaryButton.type ?? 'button'}
-          onClick={primaryButton.onClick}
-        >
-          {primaryButton.label}
-        </styledEl.PrimaryButton>
-      </styledEl.TwoButtonGrid>
+      {secondary && primary ? (
+        <styledEl.TwoButtonGrid>
+          {secondary}
+          {primary}
+        </styledEl.TwoButtonGrid>
+      ) : (
+        (secondary ?? primary)
+      )}
     </ModalFooter>
   )
 }

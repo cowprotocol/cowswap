@@ -25,9 +25,14 @@ jest.mock('../environmentAtom', () => {
 })
 
 import { removeListAtom, upsertListsAtom } from './tokenListsActionsAtom'
-import { listsStatesByChainAtom, listsStatesMapAtom, virtualListsStateAtom } from './tokenListsStateAtom'
+import {
+  allListsSourcesAtom,
+  listsStatesByChainAtom,
+  listsStatesMapAtom,
+  virtualListsStateAtom,
+} from './tokenListsStateAtom'
 
-import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS, ONDO_TOKENS_LIST_SOURCE, XSTOCKS_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
 import { ListState, TokenListsByChainState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
@@ -121,7 +126,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithDeleted)
@@ -145,7 +149,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithoutDeleted)
@@ -170,7 +173,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateAllDeleted)
@@ -197,7 +199,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, {
@@ -226,7 +227,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, {
@@ -242,7 +242,7 @@ describe('listsStatesByChainAtom - token lists state', () => {
       expect(Object.keys(listsStatesMap)).toEqual([older])
     })
 
-    it('keeps virtual widget lists when curated-only mode is enabled', async () => {
+    it('keeps virtual widget lists when selected lists exclude them', async () => {
       const store = createStore()
 
       const stateWithoutWidgetLists: TokenListsByChainState = {
@@ -256,7 +256,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
         chainId: MOCK_CHAIN_ID,
         widgetAppCode: 'widget-test',
         selectedLists: ['widgetcustomtokens'],
-        useCuratedListOnly: true,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, stateWithoutWidgetLists)
@@ -268,6 +267,74 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       expect(listsStatesMap[MOCK_VIRTUAL_LIST_STATE.source]).toEqual(MOCK_VIRTUAL_LIST_STATE)
       expect(listsStatesMap[MOCK_LIST_STATE.source]).toBeUndefined()
+    })
+
+    describe('RWA lists', () => {
+      const ondoListState: ListState = { ...MOCK_LIST_STATE, source: ONDO_TOKENS_LIST_SOURCE }
+      const repinnedXstocksSource = XSTOCKS_TOKENS_LIST_SOURCE.replace(/\/[0-9a-f]{40}\//, `/${'b'.repeat(40)}/`)
+      const xstocksListState: ListState = { ...MOCK_LIST_STATE_2, source: repinnedXstocksSource }
+
+      const stateWithRwaLists: TokenListsByChainState = {
+        ...DEFAULT_LISTS_STATE,
+        [MOCK_CHAIN_ID]: {
+          [MOCK_LIST_STATE.source]: MOCK_LIST_STATE,
+          [ondoListState.source]: ondoListState,
+          [xstocksListState.source]: xstocksListState,
+        },
+      }
+
+      it('hides stored RWA lists, including re-pinned ones, when RWA lists are excluded', async () => {
+        const store = createStore()
+
+        store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: true })
+        store.set(listsStatesByChainAtom, stateWithRwaLists)
+
+        const listsStatesMap = await store.get(listsStatesMapAtom)
+
+        expect(Object.keys(listsStatesMap)).toEqual([MOCK_LIST_STATE.source])
+      })
+
+      it('keeps stored RWA lists when RWA lists are not excluded', async () => {
+        const store = createStore()
+
+        store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: false })
+        store.set(listsStatesByChainAtom, stateWithRwaLists)
+
+        const listsStatesMap = await store.get(listsStatesMapAtom)
+
+        expect(Object.keys(listsStatesMap).sort()).toEqual(
+          [MOCK_LIST_STATE.source, ondoListState.source, xstocksListState.source].sort(),
+        )
+      })
+    })
+  })
+
+  describe('allListsSourcesAtom', () => {
+    it('drops default RWA lists when RWA lists are excluded', () => {
+      const store = createStore()
+
+      store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: true })
+
+      const sources = store.get(allListsSourcesAtom).map((list) => list.source)
+
+      expect(sources).not.toContain(ONDO_TOKENS_LIST_SOURCE)
+      expect(sources).not.toContain(XSTOCKS_TOKENS_LIST_SOURCE)
+      expect(sources).toEqual(
+        (DEFAULT_TOKENS_LISTS[MOCK_CHAIN_ID] || [])
+          .filter((list) => list.category !== 'RWA')
+          .map((list) => list.source),
+      )
+    })
+
+    it('includes default RWA lists when RWA lists are not excluded', () => {
+      const store = createStore()
+
+      store.set(environmentAtom, { chainId: MOCK_CHAIN_ID, excludeRwaLists: false })
+
+      const sources = store.get(allListsSourcesAtom).map((list) => list.source)
+
+      expect(sources).toContain(ONDO_TOKENS_LIST_SOURCE)
+      expect(sources).toContain(XSTOCKS_TOKENS_LIST_SOURCE)
     })
   })
 
@@ -284,7 +351,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, initialState)
@@ -378,7 +444,6 @@ describe('listsStatesByChainAtom - token lists state', () => {
 
       store.set(environmentAtom, {
         chainId: MOCK_CHAIN_ID,
-        useCuratedListOnly: false,
         isYieldEnabled: false,
       })
       store.set(listsStatesByChainAtom, initialState)

@@ -1,5 +1,11 @@
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
-import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
+import {
+  bpsToPercent,
+  buildPriceFromCurrencyAmounts,
+  getWrappedToken,
+  isOrderExpired,
+  isSellOrder,
+} from '@cowprotocol/common-utils'
 import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder, getPartnerFeeBps, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@cowprotocol/currency'
@@ -106,17 +112,7 @@ export function getOrderMarketPrice(
  */
 export function isOrderCancelled(order: Pick<EnrichedOrder, 'creationDate' | 'invalidated' | 'status'>): boolean {
   const creationTime = new Date(order.creationDate).getTime()
-  return order.invalidated && Date.now() - creationTime > PENDING_ORDERS_BUFFER
-}
-
-/**
- * An order is considered expired if it has been at least `PENDING_ORDERS_BUFFER` after `validTo`.
- * The buffer is used to take into account race conditions where a solver might
- * execute a transaction after the backend changed the order status.
- */
-export function isOrderExpired(order: Pick<EnrichedOrder, 'validTo'>, threshold = PENDING_ORDERS_BUFFER): boolean {
-  const validToTime = order.validTo * 1000 // validTo is in seconds
-  return Date.now() - validToTime > threshold
+  return isOrderInvalidated(order) && Date.now() - creationTime > PENDING_ORDERS_BUFFER
 }
 
 /**
@@ -138,6 +134,15 @@ export function isOrderFulfilled(
   } else {
     return buyAmount === executedBuyAmount
   }
+}
+
+/**
+ * The Solana order-book API doesn't return `invalidated` at all (unlike EVM), so it can't be used to
+ * detect a Solana cancellation. Fall back to the raw `status` field, which the Solana API does set to
+ * `'cancelled'`, in that case.
+ */
+export function isOrderInvalidated(order: Pick<EnrichedOrder, 'invalidated' | 'status'>): boolean {
+  return order.invalidated ?? order.status === 'cancelled'
 }
 
 /**
