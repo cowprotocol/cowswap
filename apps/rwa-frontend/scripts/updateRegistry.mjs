@@ -68,7 +68,8 @@ async function main() {
     ),
   ]
   const tokenMarketCaps = await fetchCoinMarketCaps(coinIds)
-  const existingAssets = new Map(registry.assets.map((asset) => [asset.ticker, asset]))
+  const existingById = new Map(registry.assets.map((asset) => [asset.coingeckoId, asset]))
+  const existingByTicker = new Map(registry.assets.map((asset) => [asset.ticker, asset]))
 
   const assets = []
 
@@ -85,7 +86,9 @@ async function main() {
       continue
     }
 
-    const existing = existingAssets.get(ticker)
+    const sameTicker = existingByTicker.get(ticker)
+    // A ticker can move to another RWA, so it only identifies assets added before `coingeckoId`
+    const existing = existingById.get(rwa.id) ?? (sameTicker?.coingeckoId ? undefined : sameTicker)
     const tokens = await buildTokens(rwa, existing, { platformChainIds, decimalsByPlatform, tokenMarketCaps })
 
     if (!tokens.length) continue

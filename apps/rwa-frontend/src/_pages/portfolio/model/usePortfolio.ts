@@ -77,7 +77,7 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
   const activity = useAtomValue(activityQueryAtomFamily(params))
 
   const marketsByTicker = useMemo(
-    () => new Map<string, RwaAssetWithMarket>(markets?.items.map((item) => [item.ticker, item])),
+    () => new Map<string, RwaAssetWithMarket>(markets?.map((item) => [item.ticker, item])),
     [markets],
   )
 
@@ -110,7 +110,7 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
       recentActivity: activity.data,
       getAsset,
       getLogoUrl: (asset) => asset.logoUrl ?? null,
-      pricesUpdatedAt: markets?.items.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
+      pricesUpdatedAt: markets?.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
       arePricesLoading: heldTickersKey !== '' && !markets && !marketsError,
     }
   }, [

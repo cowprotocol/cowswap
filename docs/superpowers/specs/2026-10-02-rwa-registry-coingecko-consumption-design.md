@@ -24,7 +24,7 @@ calls). This happens because sorting and the market overview need values for eve
 | Table columns | "24h DEX volume" becomes "24h volume", "Onchain market cap" becomes "Market cap". The same `/rwas/markets` values sort and display the rows |
 | Page size | `ASSETS_PAGE_SIZE` = 10 |
 | Per-token data | `/coins/markets` only for the assets of one asset page or network-stats request |
-| Charts | Fetched only for the rows and overview items shown |
+| Charts | 1D row and mover series come from `sparkline_in_7d`; only the 3 most traded load DEX volume |
 | Overview 7D chart | Σ over registry assets of (`market_cap / current_price`) × each `sparkline_in_7d.price` point, so supply is assumed constant |
 | Asset page network stats | Stay onchain ("Onchain cap", "24h DEX vol"), priced with `/coins/markets` for that asset's tokens only |
 
@@ -32,13 +32,16 @@ calls). This happens because sorting and the market overview need values for eve
 
 ### Provider
 
-`MarketDataProvider` gets `getRwaMarkets(): Promise<Map<string, RwaMarketData>>`, keyed by the CoinGecko RWA id. It
-fetches `/rwas/markets?per_page=250&page=N&sparkline=true` until a page has fewer than 250 items, with a 60s
-revalidation. Every route makes the same request, so they share one cached upstream response.
+`MarketDataProvider` gets `getRwaMarkets(expectedCount): Promise<Map<string, RwaAggregateMarket>>`, keyed by the
+CoinGecko RWA id. `RwaAggregateMarket` is server-only and never sent in a response.
 
-`coingeckoClient.ts` gets `fetchRwaMarkets(revalidateSeconds)` for the raw response. Each item maps to:
+`coingeckoClient.ts` gets `fetchRwaMarkets(expectedCount)`. It requests the pages of
+`/rwas/markets?per_page=250&page=N&sparkline=true` that `expectedCount` (the registry size) fills concurrently, then
+the next ones until a page has fewer than 250 items. It is uncached: the data cache would keep each page from a
+different moment. Instead, the provider caches the whole mapped snapshot with `unstable_cache` and a 60s revalidation,
+so every route shares one snapshot. Each item maps to:
 
-| `RwaMarketData` field | `/rwas/markets` field |
+| `RwaAggregateMarket` field | `/rwas/markets` field |
 | --- | --- |
 | `price` | `tokenized_market_data.current_price` |
 | `change24h` | `tokenized_market_data.price_change_percentage_24h` |
@@ -46,13 +49,13 @@ revalidation. Every route makes the same request, so they share one cached upstr
 | `marketCap` | `market_cap` |
 | `volume24h` | `total_volume` |
 | `updatedAt` | `last_updated` |
-| `logoUrl` (new) | `image` |
-| `sparkline7d` (new, server-only) | `sparkline_in_7d.price` |
+| `sparkline7d` | `sparkline_in_7d.price` |
 
-`RwaMarketData.tokens` (per-token price, cap, volume, logo) is filled only where per-token data is loaded: on
-`/asset/{ticker}`. Elsewhere it is `{}`.
+Routes turn it into `RwaMarketData` without `sparkline7d`. `RwaMarketData.tokens` (per-token price, cap, volume,
+logo) is filled only where per-token data is loaded: on `/asset/{ticker}`. Elsewhere it is `{}`.
 
-`sparkline7d` is used only by the overview aggregation and is not sent in API responses.
+`sparkline7d` feeds the overview aggregation and the 1D series: `buildDailySeries` takes its last 24 hours, ending at
+the hour of `updatedAt`.
 
 Removed from the provider: `getPriceHistory`, and `getMarketData` for the whole registry. `getMarketData(assets)` stays
 for one asset's tokens.
@@ -61,11 +64,11 @@ for one asset's tokens.
 
 | Route | Registry use | CoinGecko calls |
 | --- | --- | --- |
-| `/assets` | Filter the static registry, sort by `getRwaMarkets()` values, paginate | `getRwaMarkets()`, plus a 1D chart for each row on the page |
+| `/assets` | Filter the static registry, sort by `getRwaMarkets()` values, paginate | `getRwaMarkets()`; row series come from its sparklines |
 | `/assets-search` | `searchAssets` on the registry, then the `getRwaMarkets()` values | `getRwaMarkets()` |
 | `/asset/{ticker}` | One asset | `getRwaMarkets()`, plus `/coins/markets` for its tokens |
 | `/network-stats/{ticker}` | One asset, one chain | `/coins/markets` for the asset's tokens, plus GeckoTerminal for its tokens on that chain |
-| `/market-overview` | All registry assets | `getRwaMarkets()`, plus charts for the 3 most traded and 6 movers |
+| `/market-overview` | All registry assets | `getRwaMarkets()`, plus hourly DEX volume for the 3 most traded |
 | `/quotes`, `/chart`, `/token-list` | Unchanged | Unchanged |
 
 Assets whose `coingeckoId` is missing from `/rwas/markets` get `market: null`.
@@ -75,9 +78,10 @@ Assets whose `coingeckoId` is missing from `/rwas/markets` get `market: null`.
 `listAssets` does this:
 
 1. `filterAssets(registry, filter)`.
-2. Attaches `market` and `logoUrl` from `getRwaMarkets()` to each match.
+2. Attaches `market` from `getRwaMarkets()` to each match. `logoUrl` comes from the registry, where
+   `scripts/updateRegistry.mjs` writes the `/rwas/markets` `image`.
 3. `sortAssets`, then `paginate`.
-4. Loads the 1D chart (`getChart(asset, '1D')`) for the page items only.
+4. Sets `series` of the page items to `buildDailySeries` of their `getRwaMarkets()` value.
 
 `RwaAssetListItem` keeps `market`, `logoUrl` and `series`, and loses `onchainCap` and `dexVolume24h`.
 
@@ -95,7 +99,7 @@ doc comment is updated to match.
 | `totals.volume24h` | Σ `market.volume24h` over registry assets |
 | `totals.marketCapSeries` | The 7D formula above. Sparklines are hourly but differ in length: most have 169 points, newer assets fewer, ~80 none. So points are aligned from the end, with the last point at `updatedAt` and point `i` from the end at `updatedAt − i h`, rounded to the hour. An asset counts only in the hours its sparkline covers. The series spans the longest sparkline. Assets with no price or an empty sparkline are skipped |
 | `mostTraded` | Top 3 by `volume24h`, excluding `0`/`null`. The series is the hourly DEX volume (Pro OHLCV) of those 3 assets only |
-| `gainers` / `losers` | Unchanged rules on `change24h`. The series is the 1D chart of those items only |
+| `gainers` / `losers` | Unchanged rules on `change24h`. The series is `buildDailySeries` of those items only |
 | `updatedAt` | Latest `updatedAt` |
 
 `RwaMarketOverviewTotals` becomes `{ marketCap, volume24h, marketCapSeries }`, and `RwaMarketOverviewItem.dexVolume24h`
@@ -146,7 +150,7 @@ in the holdings table therefore show the asset logo instead of the per-issuer to
 - `listAssets`:
   - sorts by `volume24h`, `marketCap`, `price` and `change24h` from `getRwaMarkets()` values;
   - never calls `getMarketData` or `getNetworkStats`;
-  - calls `getChart` once per page item.
+  - builds the page items' series from sparklines, without calling `getChart`.
 - `getMarketOverview`: totals, `marketCapSeries` from sparklines of different lengths (end-aligned, skipping assets
   without a price or sparkline), most traded,
   movers, and the degraded path when `getRwaMarkets()` fails.

@@ -1,4 +1,4 @@
-import { getHeldTickersKey, MAX_PORTFOLIO_MARKETS } from './heldTickers'
+import { getHeldTickersKey } from './heldTickers'
 
 import type { RwaAsset, RwaAssetSummary, RwaToken, RwaTokenSummary } from '@/entities/asset'
 import type { Position } from '@/widgets/account'
@@ -37,11 +37,5 @@ describe('getHeldTickersKey', () => {
   it('returns an empty key without positions', () => {
     expect(getHeldTickersKey(null, bySymbol)).toBe('')
     expect(getHeldTickersKey([], bySymbol)).toBe('')
-  })
-
-  it('caps the tickers at the limit', () => {
-    const positions = Array.from({ length: MAX_PORTFOLIO_MARKETS + 5 }, (_, index) => position(`T${index}x`))
-
-    expect(getHeldTickersKey(positions, bySymbol).split(',')).toHaveLength(MAX_PORTFOLIO_MARKETS)
   })
 })

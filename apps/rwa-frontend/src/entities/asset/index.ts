@@ -5,6 +5,7 @@ export {
   assetNetworkStatsQueryOptions,
   assetQueryOptions,
   assetQuotesQueryOptions,
+  assetsByTickersQueryOptions,
   assetsPageQueryOptions,
   assetsSearchQueryOptions,
   marketOverviewQueryOptions,

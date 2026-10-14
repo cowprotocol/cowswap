@@ -17,6 +17,7 @@ import {
 
 import type {
   RwaAssetQuotes,
+  RwaAssetListItem,
   RwaAssetResponse,
   RwaAssetsPage,
   RwaAssetsSearchResult,
@@ -33,6 +34,8 @@ import { RWA_QUERY_KEY_ROOT, rwaFetcher } from '@/shared/api'
 type RwaQueryOptions<T> = AtomWithQueryOptions<T, Error>
 
 const MARKET_REFRESH_INTERVAL_MS = 60_000
+/** `/api/v1/assets` accepts up to 100 `tickers` and returns up to 100 items */
+const MAX_ASSETS_PAGE_TICKERS = 100
 /** Same as the `/api/v1/token-list` cache max-age */
 const TOKEN_LIST_STALE_TIME_MS = 60 * 60 * 1000
 
@@ -77,6 +80,15 @@ export function assetQuotesQueryOptions(
   }
 }
 
+export function assetsByTickersQueryOptions(tickers: string[]): RwaQueryOptions<RwaAssetListItem[]> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'assets-by-tickers', tickers],
+    queryFn: () => fetchAssetsByTickers(tickers),
+    placeholderData: keepPreviousData,
+    enabled: tickers.length > 0,
+  }
+}
+
 export function assetsPageQueryOptions(query: AssetsPageQuery): RwaQueryOptions<RwaAssetsPage> {
   return {
     queryKey: [RWA_QUERY_KEY_ROOT, 'assets', query],
@@ -92,6 +104,25 @@ export function assetsSearchQueryOptions(query: string, limit?: number): RwaQuer
     placeholderData: keepPreviousData,
     enabled: query.length > 0,
   }
+}
+
+/** Requests `tickers` in batches that fit a single `/api/v1/assets` page */
+export async function fetchAssetsByTickers(tickers: string[]): Promise<RwaAssetListItem[]> {
+  const batches: string[][] = []
+
+  for (let index = 0; index < tickers.length; index += MAX_ASSETS_PAGE_TICKERS) {
+    batches.push(tickers.slice(index, index + MAX_ASSETS_PAGE_TICKERS))
+  }
+
+  const pages = await Promise.all(
+    batches.map((batch) =>
+      rwaFetcher<RwaAssetsPage>(
+        getAssetsUrl({ page: 1, pageSize: MAX_ASSETS_PAGE_TICKERS, sort: 'ticker', order: 'asc', tickers: batch }),
+      ),
+    ),
+  )
+
+  return pages.flatMap((page) => page.items)
 }
 
 /** `/api/v1/market-overview` caches the overview for the same interval */
