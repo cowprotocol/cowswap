@@ -20,6 +20,11 @@ export interface CoingeckoMarketChart {
   prices: [number, number][]
 }
 
+/** `[timestamp s, open, high, low, close, volume]`, USD */
+export type CoingeckoOhlcvCandle = [number, number, number, number, number, number]
+
+export type CoingeckoOhlcvTimeframe = 'day' | 'hour' | 'minute'
+
 /** A token on one network, from the onchain (GeckoTerminal) API */
 export interface CoingeckoOnchainToken {
   attributes: {
@@ -34,6 +39,10 @@ export interface CoingeckoOnchainToken {
 interface CoingeckoConfig {
   baseUrl: string
   headers: Record<string, string>
+}
+
+interface OnchainOhlcvResponse {
+  data?: { attributes: { ohlcv_list: CoingeckoOhlcvCandle[] } }
 }
 
 interface OnchainTokensResponse {
@@ -82,6 +91,31 @@ export async function fetchMarketChart(
   )
 }
 
+/**
+ * Candles of the token's most liquid pool, Pro plan only.
+ * `null` without the Pro plan or when the onchain API doesn't index the network, empty for a token without pools.
+ */
+export async function fetchOnchainTokenOhlcv(
+  chainId: number,
+  address: string,
+  timeframe: CoingeckoOhlcvTimeframe,
+  limit: number,
+  revalidateSeconds: number,
+): Promise<CoingeckoOhlcvCandle[] | null> {
+  const network = ONCHAIN_NETWORKS[chainId]
+
+  if (!network || !isProPlan()) return null
+
+  const { baseUrl, headers } = getOnchainConfig()
+  const response = await fetchJsonOrNotFound<OnchainOhlcvResponse>(
+    `${baseUrl}/networks/${network}/tokens/${address}/ohlcv/${timeframe}?aggregate=1&limit=${limit}&currency=usd`,
+    headers,
+    revalidateSeconds,
+  )
+
+  return response?.data?.attributes.ohlcv_list ?? []
+}
+
 /** `null` when the onchain API doesn't index the network */
 export async function fetchOnchainTokens(
   chainId: number,
@@ -127,16 +161,18 @@ async function coingeckoFetch<T>(path: string, revalidate: number): Promise<T> {
 }
 
 async function fetchJson<T>(url: string, headers: Record<string, string>, revalidate: number): Promise<T> {
-  const response = await fetch(url, {
-    headers: { accept: 'application/json', ...headers },
-    next: { revalidate },
-  })
+  return readJson<T>(url, await request(url, headers, revalidate))
+}
 
-  if (!response.ok) {
-    throw new Error(`CoinGecko ${new URL(url).pathname} responded with ${response.status}`)
-  }
+/** `null` when the upstream answers 404 */
+async function fetchJsonOrNotFound<T>(
+  url: string,
+  headers: Record<string, string>,
+  revalidate: number,
+): Promise<T | null> {
+  const response = await request(url, headers, revalidate)
 
-  return response.json() as Promise<T>
+  return response.status === 404 ? null : readJson<T>(url, response)
 }
 
 function getConfig(): CoingeckoConfig {
@@ -144,7 +180,7 @@ function getConfig(): CoingeckoConfig {
 
   if (!apiKey) return { baseUrl: 'https://api.coingecko.com/api/v3', headers: {} }
 
-  if (process.env.COINGECKO_API_PLAN === 'pro') {
+  if (isProPlan()) {
     return { baseUrl: 'https://pro-api.coingecko.com/api/v3', headers: { 'x-cg-pro-api-key': apiKey } }
   }
 
@@ -158,4 +194,20 @@ function getOnchainConfig(): CoingeckoConfig {
   return process.env.COINGECKO_API_KEY
     ? { ...config, baseUrl: `${config.baseUrl}/onchain` }
     : { baseUrl: GECKOTERMINAL_BASE_URL, headers: {} }
+}
+
+function isProPlan(): boolean {
+  return Boolean(process.env.COINGECKO_API_KEY) && process.env.COINGECKO_API_PLAN === 'pro'
+}
+
+function readJson<T>(url: string, response: Response): Promise<T> {
+  if (!response.ok) {
+    throw new Error(`CoinGecko ${new URL(url).pathname} responded with ${response.status}`)
+  }
+
+  return response.json() as Promise<T>
+}
+
+function request(url: string, headers: Record<string, string>, revalidate: number): Promise<Response> {
+  return fetch(url, { headers: { accept: 'application/json', ...headers }, next: { revalidate } })
 }
