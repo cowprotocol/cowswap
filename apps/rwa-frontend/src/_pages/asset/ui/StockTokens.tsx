@@ -5,7 +5,6 @@ import { type ReactNode, useMemo, useState } from 'react'
 
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
-import { TokenLogo } from './TokenLogo'
 
 import { getTokenKey } from '../lib/tokenKey'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
