@@ -1,5 +1,23 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/core-v3.11.0...core-v3.12.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/core-v3.10.0...core-v3.11.0) (2026-10-06)
 
 ### Minor Changes
