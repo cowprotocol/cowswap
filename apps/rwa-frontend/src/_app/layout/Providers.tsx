@@ -9,7 +9,7 @@ import { QueryCachePersistence, ServiceWorkerRegistration } from '../offline'
 import { createQueryClient } from '../query'
 import { WalletProvider } from '../wallet'
 
-import { watchSystemTheme } from '@/shared/lib/theme'
+import { watchThemeChanges } from '@/shared/lib/theme'
 
 interface AppState {
   queryClient: ReturnType<typeof createQueryClient>
@@ -19,7 +19,7 @@ interface AppState {
 export function Providers({ children }: { children: ReactNode }): ReactNode {
   const [{ queryClient, store }] = useState(createAppState)
 
-  useEffect(() => watchSystemTheme(), [])
+  useEffect(() => watchThemeChanges(), [])
 
   return (
     <JotaiProvider store={store}>

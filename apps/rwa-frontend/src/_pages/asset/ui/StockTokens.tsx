@@ -92,7 +92,6 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                 <th>Stock token / issuer</th>
                 <th className={tableStyles.numeric}>Token price / share</th>
                 <th className={tableStyles.numeric}>24h volume</th>
-                <th className={tableStyles.numeric}>Market cap</th>
                 <th>
                   <span className={styles.visuallyHidden}>Trade</span>
                 </th>
@@ -115,9 +114,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
       ) : (
         <StatusMessage>No {asset.ticker} tokens match the filters</StatusMessage>
       )}
-      <p className={tableStyles.warning}>
-        Price, volume and market cap of a token are aggregated across all its networks
-      </p>
+      <p className={tableStyles.warning}>Price and volume of a token are aggregated across all its networks</p>
     </section>
   )
 }
@@ -154,7 +151,6 @@ function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: Stock
         ) : null}
       </td>
       <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
-      <td className={tableStyles.numeric}>{formatCompactUsd(market?.marketCap)}</td>
       <td>
         <div className={styles.actions}>
           <button

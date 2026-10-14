@@ -53,12 +53,19 @@ export function resolveTheme(preference: ThemePreference, prefersDark: boolean):
   return preference
 }
 
-/** Follows the system color scheme while the preference is `auto` */
-export function watchSystemTheme(): () => void {
+/** Re-applies the theme when the system scheme changes or another tab saves a preference */
+export function watchThemeChanges(): () => void {
   const mediaQuery = window.matchMedia(DARK_SCHEME_QUERY)
   const onChange = (): void => applyTheme(readThemePreference())
+  const onStorage = (event: StorageEvent): void => {
+    if (event.key === THEME_STORAGE_KEY) onChange()
+  }
 
   mediaQuery.addEventListener('change', onChange)
+  window.addEventListener('storage', onStorage)
 
-  return () => mediaQuery.removeEventListener('change', onChange)
+  return () => {
+    mediaQuery.removeEventListener('change', onChange)
+    window.removeEventListener('storage', onStorage)
+  }
 }

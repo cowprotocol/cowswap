@@ -6,6 +6,7 @@ import {
   setThemePreferenceAtom,
   THEME_INIT_SCRIPT,
   themePreferenceAtom,
+  watchThemeChanges,
 } from './theme'
 
 function mockSystemScheme(prefersDark: boolean): void {
@@ -52,6 +53,22 @@ describe('theme', () => {
     expect(document.documentElement.dataset.theme).toBe('light')
 
     store.set(setThemePreferenceAtom, 'auto')
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+  })
+
+  it('applies a preference saved in another tab', () => {
+    mockSystemScheme(false)
+    const unwatch = watchThemeChanges()
+
+    localStorage.setItem('rwaTheme:v1', '"dark"')
+    window.dispatchEvent(new StorageEvent('storage', { key: 'rwaTheme:v1', newValue: '"dark"' }))
+
+    expect(document.documentElement.dataset.theme).toBe('dark')
+
+    unwatch()
+    localStorage.setItem('rwaTheme:v1', '"light"')
+    window.dispatchEvent(new StorageEvent('storage', { key: 'rwaTheme:v1', newValue: '"light"' }))
 
     expect(document.documentElement.dataset.theme).toBe('dark')
   })

@@ -14,7 +14,7 @@ export const wagmiAdapter = new WagmiAdapter({
 
 export const wagmiConfig = wagmiAdapter.wagmiConfig
 
-createAppKit({
+export const appKit = createAppKit({
   adapters: [wagmiAdapter],
   networks: SUPPORTED_NETWORKS,
   defaultNetwork: DEFAULT_NETWORK,

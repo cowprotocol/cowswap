@@ -5,6 +5,6 @@ export {
   type Theme,
   type ThemePreference,
   themePreferenceAtom,
-  watchSystemTheme,
+  watchThemeChanges,
 } from './theme'
 export { useIsDarkTheme } from './useIsDarkTheme'
