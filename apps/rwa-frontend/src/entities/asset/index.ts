@@ -12,12 +12,16 @@ export {
   tokenListQueryOptions,
 } from './api/assetsQueries'
 export {
+  RWA_ASSET_TYPE_LABELS,
+  RWA_ASSET_TYPES,
   RWA_CHART_RANGES,
   RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAsset,
   type RwaAssetQuotes,
+  type RwaAssetListItem,
   type RwaAssetResponse,
+  type RwaAssetsFilter,
   type RwaAssetsPage,
   type RwaAssetsSearchResult,
   type RwaAssetType,
@@ -43,6 +47,7 @@ export {
   type RwaTradingTime,
 } from './model/types'
 export { AssetStats } from './ui/AssetStats'
-export { AssetsTable } from './ui/AssetsTable'
 export { PriceChart } from './ui/PriceChart'
+export { getDefaultSortOrder } from './model/assetsQuery'
+export { getReferenceLogoUrl } from './lib/referenceLogoUrl'
 export { getTokenKey } from './lib/tokenKey'

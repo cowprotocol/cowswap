@@ -9,6 +9,7 @@
   --color-negative: #d23b3b;
   --color-warning-bg: #fff4d6;
   --color-warning-text: #6b4b00;
+  --color-star: #e8a317;
   --radius: 8px;
   --content-width: 1200px;
 
@@ -27,6 +28,7 @@
     --color-negative: #ff6b6b;
     --color-warning-bg: #3b2e05;
     --color-warning-text: #ffd978;
+    --color-star: #ffc24b;
   }
 }
 

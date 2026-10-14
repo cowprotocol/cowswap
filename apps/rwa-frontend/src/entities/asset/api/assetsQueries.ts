@@ -85,10 +85,10 @@ export function assetsPageQueryOptions(query: AssetsPageQuery): RwaQueryOptions<
   }
 }
 
-export function assetsSearchQueryOptions(query: string): RwaQueryOptions<RwaAssetsSearchResult> {
+export function assetsSearchQueryOptions(query: string, limit?: number): RwaQueryOptions<RwaAssetsSearchResult> {
   return {
-    queryKey: [RWA_QUERY_KEY_ROOT, 'assets-search', query],
-    queryFn: () => rwaFetcher<RwaAssetsSearchResult>(getAssetsSearchUrl(query)),
+    queryKey: [RWA_QUERY_KEY_ROOT, 'assets-search', query, limit],
+    queryFn: () => rwaFetcher<RwaAssetsSearchResult>(getAssetsSearchUrl(query, limit)),
     placeholderData: keepPreviousData,
     enabled: query.length > 0,
   }
