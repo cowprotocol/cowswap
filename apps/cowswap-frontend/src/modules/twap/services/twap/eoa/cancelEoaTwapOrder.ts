@@ -12,7 +12,7 @@ import { encodeTrustedExecuteHooksCalldata } from './buildEoaTwapTrustedExecuteT
 
 import { cancelTwapOrderTxs, CancelTwapOrderContext } from '../../cancelTwapOrderTxs'
 
-export const EOA_TWAP_CANCELLATION_GAS_LIMIT = 600_000n
+export const EOA_TWAP_CANCELLATION_GAS_LIMIT = 1_200_000n
 
 export interface CancelEoaTwapOrderParams
   extends Pick<
