@@ -15,6 +15,8 @@ import {
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 
+import { isCustomDeadlineExpired } from '../../utils/calculateLimitOrdersDeadline'
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DeadlineInput() {
@@ -44,6 +46,13 @@ export function DeadlineInput() {
       updateSettingsState({ customDeadlineTimestamp: null, deadlineMilliseconds })
     }
   }, [widgetDeadlineMinutes, updateSettingsState])
+
+  // A persisted custom deadline that is already in the past is no longer applicable, reset it
+  useEffect(() => {
+    if (customDeadlineTimestamp && isCustomDeadlineExpired(customDeadlineTimestamp)) {
+      updateSettingsState({ customDeadlineTimestamp: null })
+    }
+  }, [customDeadlineTimestamp, updateSettingsState])
 
   const isDeadlineDisabled = !!widgetDeadlineMinutes
 
