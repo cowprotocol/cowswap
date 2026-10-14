@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 @media (max-width: 900px) {
@@ -14,61 +14,77 @@
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 16px;
-  border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) * 2);
+  gap: 10px;
+  min-height: 264px;
+  padding: 20px 22px;
+  border-radius: var(--radius-card);
   background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
 }
 
 .cardHeader {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 8px;
+  min-height: 32px;
 }
 
 .cardTitle {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
 }
 
 .cardSubtitle,
 .cardHint,
 .totalLabel,
-.axis,
 .cardFooter,
 .assetTicker,
 .empty {
   margin: 0;
   color: var(--color-text-secondary);
-  font-size: 13px;
+  font-size: 12px;
+  line-height: 16px;
 }
 
 .totals {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 40px;
 }
 
 .total {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+}
+
+.totalLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .totalValue {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
+  line-height: 34px;
+  letter-spacing: -0.42px;
+  font-variant-numeric: tabular-nums;
 }
 
 .info {
+  display: inline-flex;
   cursor: help;
 }
 
 .capChart {
-  height: 56px;
-  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  height: 62px;
+  background:
+    linear-gradient(var(--color-border), var(--color-border)) 0 10px / 100% 1px no-repeat,
+    linear-gradient(var(--color-border), var(--color-border)) 0 36px / 100% 1px no-repeat;
 }
 
 .capChart .sparkline {
@@ -76,25 +92,37 @@
   height: 100%;
 }
 
-.axis,
-.cardFooter {
+.axis {
   display: flex;
   justify-content: space-between;
   gap: 8px;
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: auto;
 }
 
 .statusOpen,
 .statusClosed {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 7px;
   color: var(--color-text);
+  font-weight: 500;
 }
 
 .statusOpen::before,
 .statusClosed::before {
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   content: '';
 }
@@ -104,7 +132,7 @@
 }
 
 .statusClosed::before {
-  background: var(--color-text-secondary);
+  background: var(--color-text-muted);
 }
 
 .rows {
@@ -112,15 +140,15 @@
   flex-direction: column;
   gap: 4px;
   margin: 0;
-  padding: 0;
+  padding: 4px 0 0;
   list-style: none;
 }
 
 .row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 4px 0;
+  gap: 12px;
+  min-height: 48px;
   color: inherit;
   text-decoration: none;
 }
@@ -138,19 +166,27 @@
 
 .assetTitle {
   overflow: hidden;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .rowValue {
+  min-width: 64px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
 .rowSparkline {
   display: inline-flex;
   flex-shrink: 0;
-  width: 56px;
-  height: 24px;
+  width: 64px;
+  height: 22px;
 }
 
 .rowSparkline .sparkline {
@@ -169,11 +205,6 @@
   stroke-width: 1.5;
 }
 
-.sparklineArea {
-  fill: currentColor;
-  opacity: 0.15;
-}
-
 .neutral {
   color: var(--color-accent);
 }
@@ -188,21 +219,27 @@
 
 .segmented {
   display: flex;
-  padding: 2px;
-  border-radius: var(--radius);
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
   background: var(--color-surface);
 }
 
 .segmented button {
-  padding: 2px 8px;
+  height: 30px;
+  padding: 0 9px;
   border: none;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-text-secondary);
   font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
 }
 
 .segmented .segmentActive {
   background: var(--color-bg);
+  box-shadow: var(--shadow-pill);
   color: var(--color-text);
 }
 
@@ -215,7 +252,7 @@
 
 .skeletonValue {
   width: 96px;
-  height: 30px;
+  height: 34px;
 }
 
 .skeletonChart {
@@ -224,14 +261,14 @@
 }
 
 .skeletonLogo {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
 }
 
 .skeletonText {
   flex: 1;
-  height: 28px;
+  height: 32px;
 }
 
 @keyframes pulse {

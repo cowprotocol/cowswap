@@ -2,12 +2,12 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   width: 340px;
   height: 44px;
-  padding: 0 12px;
+  padding: 0 8px 0 16px;
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   background: var(--color-bg);
 }
 
@@ -17,6 +17,10 @@
 
 .icon {
   flex-shrink: 0;
+  color: var(--color-text-secondary);
+}
+
+.input::placeholder {
   color: var(--color-text-secondary);
 }
 
@@ -38,13 +42,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  background: var(--color-surface);
-  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+  color: var(--color-text);
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .popup {
@@ -55,9 +61,9 @@
   left: 0;
   padding: 4px;
   border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) * 1.5);
+  border-radius: var(--radius-control);
   background: var(--color-bg);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 12%);
+  box-shadow: var(--shadow-widget);
 }
 
 .listbox {

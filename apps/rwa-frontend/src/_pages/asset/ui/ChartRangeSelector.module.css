@@ -1,19 +1,30 @@
 .ranges {
   display: flex;
-  gap: 4px;
+  align-self: flex-start;
+  gap: 1px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
 }
 
 .ranges button {
-  padding: 4px 10px;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
+  height: 30px;
+  padding: 0 9px;
+  border: none;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-text-secondary);
-  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.ranges button:hover {
+  color: var(--color-text);
 }
 
 .ranges .activeRange {
-  border-color: var(--color-border);
-  background: var(--color-surface);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-pill);
   color: var(--color-text);
 }

@@ -6,11 +6,10 @@ import styles from './MarketOverview.module.css'
 import { Sparkline } from './Sparkline'
 
 import { formatRefTime } from '../lib/formatRefTime'
-import { isUsMarketOpen } from '../lib/usMarketStatus'
 
-import type { RwaMarketOverview, RwaTradingTime } from '@/entities/asset'
-
+import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
 import { formatCompactUsd } from '@/shared/lib/format'
+import { InfoIcon } from '@/shared/ui/icons'
 
 const VOLUME_HINT =
   'Trading volume of the listed assets across every chain and issuer over the last 24 hours, from CoinGecko'
@@ -38,9 +37,9 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <Total
           label={
             <>
-              24h volume{' '}
+              24h volume
               <span className={styles.info} role="img" aria-label={VOLUME_HINT} title={VOLUME_HINT}>
-                ⓘ
+                <InfoIcon />
               </span>
             </>
           }

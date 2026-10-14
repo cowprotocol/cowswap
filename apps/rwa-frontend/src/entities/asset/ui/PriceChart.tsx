@@ -8,7 +8,9 @@ import styles from './PriceChart.module.css'
 
 import type { RwaChartPoint } from '../model/types'
 
-const CHART_HEIGHT = 320
+import { useIsDarkTheme } from '@/shared/lib/theme'
+
+const CHART_HEIGHT = 300
 
 interface PriceChartProps {
   points: RwaChartPoint[]
@@ -19,36 +21,29 @@ export function PriceChart({ points, showTime }: PriceChartProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const isDark = useIsDarkTheme()
 
   useEffect(() => {
     const container = containerRef.current
 
     if (!container) return
 
-    const accent = readCssVar(container, '--color-accent')
     const chart = createChart(container, {
       autoSize: true,
       height: CHART_HEIGHT,
       layout: {
         background: { color: 'transparent' },
-        textColor: readCssVar(container, '--color-text-secondary'),
+        fontFamily: readCssVar(container, '--font-family'),
+        fontSize: 11,
         attributionLogo: false,
       },
-      grid: {
-        vertLines: { visible: false },
-        horzLines: { color: readCssVar(container, '--color-border') },
-      },
+      grid: { vertLines: { visible: false } },
       rightPriceScale: { borderVisible: false },
       timeScale: { borderVisible: false },
     })
 
     chartRef.current = chart
-    seriesRef.current = chart.addSeries(AreaSeries, {
-      lineColor: accent,
-      topColor: `${accent}55`,
-      bottomColor: `${accent}00`,
-      lineWidth: 2,
-    })
+    seriesRef.current = chart.addSeries(AreaSeries, { lineWidth: 2 })
 
     return () => {
       chart.remove()
@@ -56,6 +51,20 @@ export function PriceChart({ points, showTime }: PriceChartProps): ReactNode {
       seriesRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    const container = containerRef.current
+
+    if (!container) return
+
+    const accent = readCssVar(container, '--color-accent')
+
+    chartRef.current?.applyOptions({
+      layout: { textColor: readCssVar(container, '--color-text-secondary') },
+      grid: { horzLines: { color: readCssVar(container, '--color-border') } },
+    })
+    seriesRef.current?.applyOptions({ lineColor: accent, topColor: `${accent}55`, bottomColor: `${accent}00` })
+  }, [isDark])
 
   useEffect(() => {
     chartRef.current?.timeScale().applyOptions({ timeVisible: showTime })

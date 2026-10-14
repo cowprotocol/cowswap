@@ -21,8 +21,10 @@ const ASSETS_TABLE_ID = 'assets-table'
 export function AssetsExplorer(): ReactNode {
   return (
     <section className={styles.explorer} aria-label="Assets">
-      <AssetsTypeTabs tableId={ASSETS_TABLE_ID} />
-      <AssetsFilters />
+      <div className={styles.toolbar}>
+        <AssetsTypeTabs tableId={ASSETS_TABLE_ID} />
+        <AssetsFilters />
+      </div>
       <AssetsList />
     </section>
   )

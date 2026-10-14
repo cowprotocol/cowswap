@@ -4,7 +4,7 @@ import Image from 'next/image'
 
 import styles from './HomeHero.module.css'
 
-const ISSUER_LOGO_SIZE = 20
+const ISSUER_LOGO_SIZE = 22
 
 interface IssuerProps {
   name: string

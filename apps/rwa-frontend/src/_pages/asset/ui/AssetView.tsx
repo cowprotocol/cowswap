@@ -8,11 +8,12 @@ import Link from 'next/link'
 import { AssetAccount } from './AssetAccount'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
-import { StockTokens } from './StockTokens'
 import { TradeWidget } from './TradeWidget'
 
 import { assetQueryAtomFamily, AssetStats, type RwaAsset } from '@/entities/asset'
+import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
+import { TokenLogo } from '@/shared/ui/token-logo'
 
 export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
   const { data, error } = useAtomValue(assetQueryAtomFamily(asset.ticker))
@@ -21,23 +22,54 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
     <div className={styles.layout}>
       <div className={styles.main}>
         <Link className={styles.back} href="/">
-          ← All assets
+          <ArrowLeftIcon />
+          Explore
         </Link>
-        <header className={styles.header}>
-          <h1>{asset.title}</h1>
-          <span className={styles.badge}>{asset.ticker}</span>
-          <span className={styles.badge}>{asset.type}</span>
-        </header>
+        <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
         {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
         <AssetStats asset={asset} market={data?.market} />
         <AssetPriceChart ticker={asset.ticker} />
-        <StockTokens asset={asset} />
         <AssetAccount asset={asset} />
       </div>
       <aside className={styles.side}>
         <TradeWidget asset={asset} />
       </aside>
     </div>
+  )
+}
+
+function ArrowLeftIcon(): ReactNode {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path
+        d="M12.667 8H3.333M8 12.667 3.333 8 8 3.333"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
+  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
+  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
+
+  return (
+    <header className={styles.identity}>
+      <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} size="hero" />
+      <div className={styles.name}>
+        <h1>{asset.title}</h1>
+        <div className={styles.meta}>
+          <span>{asset.ticker}</span>
+          <span className={styles.issuers} title={issuers.join(', ')}>
+            {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
+          </span>
+          <NetworkLogos chainIds={chainIds} />
+        </div>
+      </div>
+    </header>
   )
 }

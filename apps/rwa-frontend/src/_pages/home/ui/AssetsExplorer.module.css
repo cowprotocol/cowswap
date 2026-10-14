@@ -1,86 +1,92 @@
 .explorer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 0 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 20px;
+  padding: 0 8px 8px;
+  border-radius: var(--radius-card);
   background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
 }
 
-.explorer > :not(.tabs, .filters) {
-  margin: 0 8px;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px 12px;
 }
 
 .tabs {
   display: flex;
-  gap: 8px;
-  padding: 8px 24px 0;
+  gap: 2px;
+  margin-right: auto;
   overflow-x: auto;
 }
 
 .tab {
-  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   height: 40px;
-  padding: 4px 8px;
+  padding: 0 16px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-pill);
   background: none;
   color: var(--color-text-secondary);
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
+  line-height: 20px;
   white-space: nowrap;
 }
 
-.tab[aria-selected='true'] {
+.tab:hover {
   color: var(--color-text);
 }
 
-.tab[aria-selected='true']::after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 2px;
-  background: var(--color-accent);
-  content: '';
+.tab[aria-selected='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
 }
 
 .tabCount {
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: var(--color-surface);
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: var(--color-border);
   color: var(--color-text-secondary);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.tab[aria-selected='true'] .tabCount {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
 }
 
 .filters {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
-  padding: 8px 24px;
+  gap: 8px;
 }
 
 .filterInput {
   display: flex;
-  flex: 1 1 240px;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: 260px;
   height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  padding: 0 14px;
+  border-radius: 20px;
+  background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: text;
 }
 
 .filterInput:focus-within {
-  border-color: var(--color-accent);
+  outline: 1px solid var(--color-accent);
 }
 
 .filterInput input {
@@ -93,31 +99,31 @@
   outline: none;
 }
 
+.filterInput input::placeholder {
+  color: var(--color-text-secondary);
+}
+
 .filterControls {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-.filterSelect,
-.watchlistButton {
-  height: 36px;
-  border-color: var(--color-border);
-  background: var(--color-bg);
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.filterSelect {
-  padding: 0 12px;
-}
-
 .watchlistButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-left: 8px;
-  border-radius: 12px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  background: var(--color-bg);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.watchlistButton:hover {
+  background: var(--color-surface);
 }
 
 .watchlistButton[aria-pressed='true'] {
@@ -135,13 +141,8 @@
 }
 
 @media (max-width: 600px) {
-  .tabs,
-  .filters {
-    padding-right: 16px;
-    padding-left: 16px;
-  }
-
-  .watchlistButton {
-    margin-left: 0;
+  .filterInput {
+    flex: 1 1 100%;
+    width: auto;
   }
 }

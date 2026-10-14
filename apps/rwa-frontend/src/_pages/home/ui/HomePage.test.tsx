@@ -120,13 +120,6 @@ function renderHomePage(): RenderResult {
 }
 
 describe('HomePage', () => {
-  beforeAll(() => {
-    // jsdom has no matchMedia, `TokenLogo` reads the color scheme through it
-    Object.defineProperty(window, 'matchMedia', {
-      value: () => ({ matches: false, addEventListener: () => undefined, removeEventListener: () => undefined }),
-    })
-  })
-
   afterEach(() => {
     localStorage.clear()
   })
@@ -269,7 +262,7 @@ describe('HomePage', () => {
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
     expect(await screen.findAllByText('—')).toHaveLength(2)
-    expect(totals.querySelector('svg')).toBeNull()
+    expect(totals.querySelector('polyline')).toBeNull()
   })
 
   it('tells degraded data apart from an empty market', async () => {

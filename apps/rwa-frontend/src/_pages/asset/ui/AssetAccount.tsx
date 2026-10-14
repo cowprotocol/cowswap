@@ -5,7 +5,9 @@ import { type ReactNode, useState } from 'react'
 
 import { useConnection } from 'wagmi'
 
+import { AssetAbout } from './AssetAbout'
 import { PositionsTab } from './PositionsTab'
+import { StockTokens } from './StockTokens'
 
 import type { RwaAsset } from '@/entities/asset'
 
@@ -21,15 +23,9 @@ import {
   useAccountBalances,
 } from '@/widgets/account'
 
-type AssetAccountTab = 'positions' | 'orders' | 'activity'
+type AssetAccountTab = 'overview' | 'positions' | 'orders' | 'activity'
 
-const TABS: AccountTab<AssetAccountTab>[] = [
-  { id: 'positions', title: 'Your positions' },
-  { id: 'orders', title: 'Open orders' },
-  { id: 'activity', title: 'Activity' },
-]
-
-const CONNECT_HINTS: Record<AssetAccountTab, string> = {
+const CONNECT_HINTS: Record<Exclude<AssetAccountTab, 'overview'>, string> = {
   positions: 'see your positions',
   orders: 'see your open orders',
   activity: 'see your activity',
@@ -37,13 +33,24 @@ const CONNECT_HINTS: Record<AssetAccountTab, string> = {
 
 export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
   const { address } = useConnection()
-  const [activeTab, setActiveTab] = useState<AssetAccountTab>('positions')
+  const [activeTab, setActiveTab] = useState<AssetAccountTab>('overview')
   // Kept here rather than in the tab so switching tabs doesn't reopen the balance streams
   const balances = useAccountBalances(address, asset.tokens)
+  const tabs: AccountTab<AssetAccountTab>[] = [
+    { id: 'overview', title: 'Overview' },
+    { id: 'positions', title: 'Your positions', count: address ? balances.positions?.length : undefined },
+    { id: 'orders', title: 'Open orders' },
+    { id: 'activity', title: 'Activity' },
+  ]
 
   return (
-    <AccountTabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab}>
-      {!address ? (
+    <AccountTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab}>
+      {activeTab === 'overview' ? (
+        <>
+          <StockTokens asset={asset} />
+          <AssetAbout asset={asset} />
+        </>
+      ) : !address ? (
         <ConnectPrompt>Connect your wallet to {CONNECT_HINTS[activeTab]}</ConnectPrompt>
       ) : activeTab === 'positions' ? (
         <PositionsTab asset={asset} balances={balances} />

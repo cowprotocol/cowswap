@@ -17,13 +17,11 @@ export function MostTradedCard({ items, degraded }: MostTradedCardProps): ReactN
   return (
     <section className={styles.card} aria-labelledby="most-traded-title">
       <header className={styles.cardHeader}>
-        <div>
-          <h2 id="most-traded-title" className={styles.cardTitle}>
-            Most traded
-          </h2>
-          <p className={styles.cardSubtitle}>24h volume · All networks</p>
-        </div>
+        <h2 id="most-traded-title" className={styles.cardTitle}>
+          Most traded
+        </h2>
       </header>
+      <p className={styles.cardSubtitle}>24h volume · All networks</p>
       <OverviewAssetRows
         items={items}
         degraded={degraded}

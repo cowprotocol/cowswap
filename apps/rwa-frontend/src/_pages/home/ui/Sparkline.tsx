@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import styles from './MarketOverview.module.css'
 
@@ -20,6 +20,7 @@ interface SparklineProps {
 }
 
 export function Sparkline({ series, tone, area = false, className }: SparklineProps): ReactNode {
+  const gradientId = useId()
   const points = series ? toSparklinePoints(series, VIEWBOX_WIDTH, VIEWBOX_HEIGHT) : null
 
   if (!points) return null
@@ -32,10 +33,18 @@ export function Sparkline({ series, tone, area = false, className }: SparklinePr
       aria-hidden="true"
     >
       {area && (
-        <polygon
-          className={styles.sparklineArea}
-          points={`0,${VIEWBOX_HEIGHT} ${points} ${VIEWBOX_WIDTH},${VIEWBOX_HEIGHT}`}
-        />
+        <>
+          <defs>
+            <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="currentColor" stopOpacity="0.2" />
+              <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <polygon
+            fill={`url(#${gradientId})`}
+            points={`0,${VIEWBOX_HEIGHT} ${points} ${VIEWBOX_WIDTH},${VIEWBOX_HEIGHT}`}
+          />
+        </>
       )}
       <polyline className={styles.sparklineLine} points={points} vectorEffect="non-scaling-stroke" />
     </svg>

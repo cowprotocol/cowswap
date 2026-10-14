@@ -1,4 +1,4 @@
-import type { RwaTradingTime } from '@/entities/asset'
+import type { RwaTradingTime } from '../model/types'
 
 const MINUTES_PER_HOUR = 60
 const SUNDAY = 0

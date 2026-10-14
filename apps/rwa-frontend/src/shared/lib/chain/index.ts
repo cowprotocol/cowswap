@@ -2,6 +2,7 @@ export {
   getChainLabel,
   getChainLogoUrl,
   getEvmChainInfo,
+  getExplorerAddressUrl,
   getExplorerTxUrl,
   getPublicClient,
   toViemChain,

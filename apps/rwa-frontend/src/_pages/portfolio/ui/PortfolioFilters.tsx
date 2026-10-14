@@ -6,6 +6,7 @@ import type { PortfolioFilter } from '../lib/portfolioFilter'
 import type { RwaAssetSummary, RwaAssetType } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
+import { SelectPill } from '@/shared/ui/select-pill'
 
 const ALL = ''
 
@@ -41,7 +42,8 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
           </button>
         ))}
       </div>
-      <select
+      <SelectPill
+        variant="small"
         aria-label="Issuer"
         value={filter.issuer ?? ALL}
         onChange={(event) => onChange({ ...filter, issuer: event.target.value || null })}
@@ -52,8 +54,9 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
             {issuer}
           </option>
         ))}
-      </select>
-      <select
+      </SelectPill>
+      <SelectPill
+        variant="small"
         aria-label="Network"
         value={filter.chainId === null ? ALL : String(filter.chainId)}
         onChange={(event) => onChange({ ...filter, chainId: event.target.value ? Number(event.target.value) : null })}
@@ -64,7 +67,7 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
             {getChainLabel(chainId)}
           </option>
         ))}
-      </select>
+      </SelectPill>
     </div>
   )
 }

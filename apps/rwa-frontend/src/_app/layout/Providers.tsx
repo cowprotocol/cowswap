@@ -1,13 +1,15 @@
 'use client'
 
 import { createStore, Provider as JotaiProvider } from 'jotai'
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { QueryCachePersistence, ServiceWorkerRegistration } from '../offline'
 import { createQueryClient } from '../query'
 import { WalletProvider } from '../wallet'
+
+import { watchSystemTheme } from '@/shared/lib/theme'
 
 interface AppState {
   queryClient: ReturnType<typeof createQueryClient>
@@ -16,6 +18,8 @@ interface AppState {
 
 export function Providers({ children }: { children: ReactNode }): ReactNode {
   const [{ queryClient, store }] = useState(createAppState)
+
+  useEffect(() => watchSystemTheme(), [])
 
   return (
     <JotaiProvider store={store}>

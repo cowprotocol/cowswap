@@ -2,7 +2,7 @@
 module.exports = {
   AreaSeries: {},
   createChart: () => ({
-    addSeries: () => ({ setData: () => undefined }),
+    addSeries: () => ({ applyOptions: () => undefined, setData: () => undefined }),
     applyOptions: () => undefined,
     remove: () => undefined,
     timeScale: () => ({ applyOptions: () => undefined, fitContent: () => undefined }),

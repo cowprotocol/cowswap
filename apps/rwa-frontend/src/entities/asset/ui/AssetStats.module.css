@@ -1,38 +1,77 @@
 .stats {
   display: flex;
-  flex-direction: column;
-  gap: 16px;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
 }
 
 .priceRow {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 12px;
+  align-items: flex-end;
+  gap: 10px;
 }
 
 .price {
-  font-size: 32px;
-  font-weight: 700;
-  font-variant-numeric: tabular-nums;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  margin: 0;
-}
-
-.grid dt {
-  color: var(--color-text-secondary);
-  font-size: 13px;
-}
-
-.grid dd {
-  margin: 4px 0 0;
+  font-size: 40px;
   font-weight: 600;
+  line-height: 46px;
+  letter-spacing: -0.8px;
   font-variant-numeric: tabular-nums;
+}
+
+.change {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding-bottom: 7px;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.period {
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 8px;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.statusOpen,
+.statusClosed {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-weight: 500;
+}
+
+.statusOpen::before,
+.statusClosed::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  content: '';
+}
+
+.statusOpen::before {
+  background: var(--color-positive);
+}
+
+.statusClosed::before {
+  background: var(--color-text-muted);
+}
+
+.hours {
+  color: var(--color-text-secondary);
 }
 
 .positive {

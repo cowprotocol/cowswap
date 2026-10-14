@@ -18,7 +18,7 @@ import { useTradeSelection } from '../model/useTradeSelection'
 import type { RwaAsset, RwaToken } from '@/entities/asset'
 
 import { ConnectButton } from '@/features/connect-wallet'
-import { usePrefersDarkScheme } from '@/shared/lib/theme'
+import { useIsDarkTheme } from '@/shared/lib/theme'
 import { useWalletProvider } from '@/shared/lib/wallet'
 
 const CowSwapWidget = dynamic(() => import('@cowprotocol/widget-react').then((module) => module.CowSwapWidget), {
@@ -34,7 +34,7 @@ const ASSET_TOKEN_AMOUNT = '1'
 export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const provider = useWalletProvider()
   const { isConnected } = useConnection()
-  const prefersDark = usePrefersDarkScheme()
+  const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
   const assetToken = selection?.assetToken
   const side = selection?.side
@@ -46,8 +46,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
 
     return {
       appCode: APP_CODE,
-      width: '100%',
-      height: '640px',
+      rootStyle: { width: '100%', height: 'var(--dynamicHeight, 640px)' },
       chainId: assetToken.chainId,
       tradeType: TradeType.SWAP,
       enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
@@ -56,9 +55,9 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
       customTokens: asset.tokens.map(toTokenInfo),
       standaloneMode: false,
-      theme: prefersDark ? 'dark' : 'light',
+      theme: isDark ? 'dark' : 'light',
     }
-  }, [asset.tokens, assetToken, side, prefersDark])
+  }, [asset.tokens, assetToken, side, isDark])
 
   if (!params || !selection) return <p>Trading is not available for {asset.ticker}</p>
 
