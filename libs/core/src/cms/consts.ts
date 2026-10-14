@@ -1,3 +1,5 @@
+import { SOLANA_RWA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
+
 import ms from 'ms.macro'
 
 import type { RestrictedTokenList } from './types'
@@ -73,6 +75,12 @@ export const XStocks_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
   name: 'xStocks Token List',
   tokenListUrl:
     'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json',
+  restrictedCountries: [...RESTRICTED_COUNTRIES],
+} as const
+
+export const SOLANA_RWA_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'Solana RWA',
+  tokenListUrl: SOLANA_RWA_TOKEN_LIST_URL,
   restrictedCountries: [...RESTRICTED_COUNTRIES],
 } as const
 

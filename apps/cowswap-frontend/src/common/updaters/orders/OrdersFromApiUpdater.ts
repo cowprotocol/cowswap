@@ -13,7 +13,7 @@ import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useAddOrUpdateOrders, useAllOrdersMap, useClearOrdersStorage } from 'legacy/state/orders/hooks'
 import { PartialOrdersMap } from 'legacy/state/orders/reducer'
-import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
+import { classifyOrder, isOrderInvalidated, OrderTransitionStatus } from 'legacy/state/orders/utils'
 import { deserializeOrder } from 'legacy/state/orders/utils/deserializeOrder'
 
 import { getTokensListFromOrders, useTokensForOrdersList } from 'modules/orders'
@@ -230,7 +230,7 @@ function _transformOrderBookOrderToStoreOrder(
     receiver: receiver || '',
     fullAppData: order.fullAppData,
     apiAdditionalInfo: order,
-    isCancelling: apiStatus === 'pending' && order.invalidated, // already cancelled in the API, not yet in the UI
+    isCancelling: apiStatus === 'pending' && isOrderInvalidated(order), // already cancelled in the API, not yet in the UI
     // EthFlow related
     owner: onchainOrderData?.sender || owner,
     validTo: ethflowData?.userValidTo || order.validTo,

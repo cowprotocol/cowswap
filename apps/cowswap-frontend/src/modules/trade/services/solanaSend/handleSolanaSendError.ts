@@ -1,4 +1,8 @@
-import { getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import {
+  getProviderErrorMessage,
+  isInsufficientFundsProviderError,
+  isRejectRequestProviderError,
+} from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
@@ -24,10 +28,18 @@ export function handleSolanaSendError(
   }
 
   if (useModals) {
-    openErrorModal?.(getProviderErrorMessage(error) || t`Transaction failed`)
+    openErrorModal?.(getSolanaSendErrorMessage(error))
 
     return null
   }
 
   throw typeof error === 'string' ? new Error(error) : error
+}
+
+function getSolanaSendErrorMessage(error: unknown): string {
+  if (isInsufficientFundsProviderError(error)) {
+    return t`You don't have enough SOL to cover the network fee and account rent. Reduce the amount or add more SOL to your wallet.`
+  }
+
+  return getProviderErrorMessage(error) || t`Transaction failed`
 }

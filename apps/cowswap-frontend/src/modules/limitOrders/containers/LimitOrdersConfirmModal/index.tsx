@@ -20,6 +20,7 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import { useViewPlacedOrder } from 'modules/ordersTable'
 import {
   TradeConfirmation,
   TradeConfirmModal,
@@ -78,6 +79,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const rateInfoParams = useRateInfoParams(inputAmount, outputAmount)
 
   const tradeConfirmActions = useTradeConfirmActions()
+  const onViewOrders = useViewPlacedOrder()
 
   // Freeze everything derived from limit-order state once the user clicks confirm, so the review
   // screen can never display different values than what was actually placed.
@@ -110,7 +112,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   )
 
   return (
-    <TradeConfirmModal orderType={UiOrderType.LIMIT} showGetNotifiedMessage>
+    <TradeConfirmModal orderType={UiOrderType.LIMIT} showGetNotifiedMessage onViewOrders={onViewOrders}>
       <TradeConfirmation
         {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}

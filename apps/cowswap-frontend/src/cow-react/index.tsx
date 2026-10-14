@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { type ReactNode, StrictMode } from 'react'
+import { type ReactNode } from 'react'
 import './sentry'
 
 import { Messages } from '@lingui/core'
@@ -77,7 +77,7 @@ interface MainProps {
 
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
-    <StrictMode>
+    <>
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
@@ -112,7 +112,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>
-    </StrictMode>
+    </>
   )
 }
 

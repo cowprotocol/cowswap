@@ -3,7 +3,7 @@ import { CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 
 import { act, renderHook } from '@testing-library/react'
 
-import { useTradeConfirmActions } from 'modules/trade'
+import { useTradeConfirmActions, useTradeConfirmState } from 'modules/trade'
 import { useTradeQuoteFeeFiatAmount } from 'modules/tradeQuote'
 
 import { SwapAmountDifference, useSwapAmountDifference } from './useSwapAmountDifference'
@@ -49,10 +49,15 @@ function renderWarningProps(): ReturnType<
     void
   >
 > {
-  return renderHook(() => ({
-    values: useSwapPriceDifferenceWarningProps(),
-    setConfirming: useTradeConfirmActions().setConfirming,
-  }))
+  return renderHook(() => {
+    const { sessionId } = useTradeConfirmState()
+    const { setConfirming } = useTradeConfirmActions()
+
+    return {
+      values: useSwapPriceDifferenceWarningProps(),
+      setConfirming: (isConfirming: boolean) => setConfirming(isConfirming, sessionId),
+    }
+  })
 }
 
 describe('useSwapPriceDifferenceWarningProps', () => {

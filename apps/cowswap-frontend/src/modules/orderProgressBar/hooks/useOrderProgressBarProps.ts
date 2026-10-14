@@ -245,7 +245,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     bridgingStatus,
     isBridgingTrade,
   )
-  useCancellingOrderUpdater(orderId, isCancelling)
+  useCancellingOrderUpdater(orderId, getIsCancellationRequested(order, isCancelling))
   useCountdownStartUpdater(
     orderId,
     countdown,
@@ -279,6 +279,12 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
 }
 
 const DEFAULT_STATE = {}
+
+// A slow cancellation tx approval (e.g. Solana wallet) lets the order fill before `requestOrderCancellation`
+// lands, and the activity never reports `isCancelling` for a non-pending order. The store flag still records it.
+export function getIsCancellationRequested(order: Order | undefined, isCancelling: boolean): boolean {
+  return isCancelling || !!order?.isCancelling
+}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic

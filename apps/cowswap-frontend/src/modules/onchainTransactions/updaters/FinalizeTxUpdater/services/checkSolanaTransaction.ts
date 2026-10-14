@@ -1,9 +1,14 @@
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
+import { orderBookApi } from 'cowSdk'
 import ms from 'ms.macro'
 
 import { checkedTransaction, finalizeTransaction } from 'legacy/state/enhancedTransactions/actions'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
+import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
+
+import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
@@ -54,6 +59,36 @@ export function checkSolanaTransaction(
     }
 
     dispatch(finalizeTransaction({ chainId, hash, receipt }))
+
+    // Like EVM's on-chain cancellation, a cancellation tx has no activity-list entry or completion
+    // snackbar of its own on success - the order it cancels (or fails to) carries that instead. Only a
+    // failed cancellation gets a snackbar, same as EVM.
+    if (transaction.onChainCancellation) {
+      const { orderId, sellTokenSymbol } = transaction.onChainCancellation
+
+      if (status === 'success') {
+        void finalizeSuccessfulCancellation(orderId, params, hash)
+      } else {
+        clearCancellingState(orderId, params)
+        emitCancellationFailedEvent(transaction, hash, slot, t`Failed to cancel order selling ${sellTokenSymbol}`)
+      }
+
+      return
+    }
+
+    if (transaction.solanaCancelOrderIds) {
+      const orderIds = transaction.solanaCancelOrderIds
+
+      if (status === 'success') {
+        orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, hash))
+      } else {
+        orderIds.forEach((orderId) => clearCancellingState(orderId, params))
+        const ordersCount = orderIds.length
+        emitCancellationFailedEvent(transaction, hash, slot, t`Failed to cancel ${ordersCount} orders`)
+      }
+
+      return
+    }
 
     if (!transaction.solanaOrderCreation) {
       emitOnchainTransactionEvent({
@@ -153,6 +188,59 @@ async function checkStatus(
   // Confirm against transaction history before declaring failure. That lookup is expensive for the node,
   // which is why it is reached only here, once the recent cache is no longer an option.
   return checkHistoricalStatus(connection, signature, transaction, context.slot)
+}
+
+function clearCancellingState(orderId: string, params: CheckEthereumTransactions): void {
+  const { chainId, isSafeWallet, dispatch } = params
+
+  partialOrderUpdate(
+    {
+      chainId,
+      order: { id: orderId, isCancelling: false, cancellationHash: undefined, cancellationHashTime: undefined },
+      isSafeWallet,
+    },
+    dispatch,
+  )
+}
+
+function emitCancellationFailedEvent(
+  transaction: EnhancedTransactionDetails,
+  hash: string,
+  slot: number,
+  summary: string,
+): void {
+  emitOnchainTransactionEvent({
+    receipt: {
+      to: '',
+      from: transaction.from,
+      contractAddress: '',
+      transactionHash: hash as `0x${string}`,
+      blockNumber: slot,
+      status: 0,
+      replacementType: transaction.replacementType,
+    },
+    summary,
+    isSafeTx: false,
+  })
+}
+
+/**
+ * A solver's fill can land around the same time as the cancellation. Check the order-book before
+ * marking the order cancelled so one that's actually fulfilled never flashes "Cancelled" - leave it
+ * alone and let the normal fulfilled-order detection pick it up instead.
+ */
+async function finalizeSuccessfulCancellation(
+  orderId: string,
+  params: CheckEthereumTransactions,
+  hash: string,
+): Promise<void> {
+  const { chainId, isSafeWallet, cancelOrdersBatch } = params
+  const order = await orderBookApi.getOrderMultiEnv(orderId, { chainId })
+
+  if (!order || isOrderFulfilled(order)) return
+
+  cancelOrdersBatch({ chainId, ids: [orderId], isSafeWallet })
+  emitCancelledOrderEvent({ chainId, order, transactionHash: hash })
 }
 
 function getLastValidBlockHeight(transaction: EnhancedTransactionDetails): number | undefined {

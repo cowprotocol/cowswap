@@ -1,10 +1,13 @@
 import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { Order } from 'legacy/state/orders/actions'
+
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
 import {
   getEnsLookupAddress,
   buildSolverCompetition,
+  getIsCancellationRequested,
   getProgressBarStepName,
   shouldUpdateStepImmediately,
 } from './useOrderProgressBarProps'
@@ -115,6 +118,23 @@ describe('getEnsLookupAddress', () => {
 
   it('returns undefined when there is no receiver', () => {
     expect(getEnsLookupAddress(SupportedChainId.MAINNET, undefined)).toBeUndefined()
+  })
+})
+
+describe('getIsCancellationRequested', () => {
+  it('is true when the activity reports the order as cancelling', () => {
+    expect(getIsCancellationRequested(undefined, true)).toBe(true)
+  })
+
+  it('is true when cancellation was requested after the order got filled', () => {
+    const filledOrder = { isCancelling: true } as Order
+
+    expect(getIsCancellationRequested(filledOrder, false)).toBe(true)
+  })
+
+  it('is false when no cancellation was requested', () => {
+    expect(getIsCancellationRequested({ isCancelling: false } as Order, false)).toBe(false)
+    expect(getIsCancellationRequested(undefined, false)).toBe(false)
   })
 })
 

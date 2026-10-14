@@ -199,7 +199,7 @@ export function ActivityDetails(props: {
     const effectiveOutputToken = intermediateToken ?? outputToken
     const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
     const outputAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, buyAmount.toString())
-    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
+    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, (feeAmountRaw ?? 0).toString())
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 

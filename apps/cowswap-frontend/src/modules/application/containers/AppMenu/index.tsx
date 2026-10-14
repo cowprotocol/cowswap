@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
@@ -7,6 +8,7 @@ import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -15,10 +17,12 @@ import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hook
 import { useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
+import { Routes } from 'common/constants/routes'
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 import { HideMobile, isMobileQuery } from './styled'
 
@@ -43,8 +47,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isSolanaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
@@ -56,11 +61,19 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const settingsNavItems = useMemo(
     () => [
       {
-        label: darkMode ? t`Light mode` : t`Dark mode`,
+        label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
+      ...(isSolanaEnabled
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
     ],
-    [darkMode, toggleDarkMode, t],
+    [darkMode, toggleDarkMode, isSolanaEnabled, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
   )
 
   const languageNavItems = {
@@ -71,11 +84,16 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
     })),
   }
 
+  const tradeMenuItems = useMemo(
+    () => menuItems.filter((item) => item.route !== Routes.ADVANCED_ORDERS || isTwapSupportedChain(chainId)),
+    [menuItems, chainId],
+  )
+
   const navItems = useMemo(() => {
     return [
       {
         label: t`Trade`,
-        children: menuItems.map((item) => {
+        children: tradeMenuItems.map((item) => {
           const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
@@ -93,7 +111,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       },
       ...NAV_ITEMS(chainId, !!isSolversEnabled),
     ]
-  }, [t, menuItems, chainId, getTradeUrlParams, isSolversEnabled])
+  }, [t, tradeMenuItems, chainId, getTradeUrlParams, isSolversEnabled])
 
   if (isInjectedWidgetMode) return null
 

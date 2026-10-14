@@ -67,3 +67,12 @@ export function deadlinePartsDisplay(timeInterval: number, longLabels = false): 
     .map(([, label]) => label)
     .join(' ')
 }
+
+export function secondsToCustomDeadline(seconds: number): TwapOrdersDeadline['customDeadline'] {
+  const totalMinutes = Math.floor(seconds / 60)
+
+  return {
+    hours: Math.floor(totalMinutes / 60),
+    minutes: totalMinutes % 60,
+  }
+}

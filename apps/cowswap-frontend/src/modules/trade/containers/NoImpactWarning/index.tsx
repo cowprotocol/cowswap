@@ -43,17 +43,21 @@ export function NoImpactWarning(props: NoImpactWarningProps): ReactNode {
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeQuote = useTradeQuote()
 
-  const showPriceImpactWarning =
+  const isTradeActive =
     !!account &&
     !tradeQuote.error &&
-    (primaryFormValidation === null || ACTIVE_VALIDATION_CASES.includes(primaryFormValidation)) &&
-    (priceImpactParams.loading || !priceImpactParams.priceImpact)
+    (primaryFormValidation === null || ACTIVE_VALIDATION_CASES.includes(primaryFormValidation))
+  const isPriceImpactUnknown = !priceImpactParams.loading && !priceImpactParams.priceImpact
+
+  // Loading blocks the trade like an unknown impact does, but stays hidden so a requote doesn't blink the warning
+  const requiresAcceptance = isTradeActive && (priceImpactParams.loading || !priceImpactParams.priceImpact)
+  const showPriceImpactWarning = isTradeActive && isPriceImpactUnknown
 
   const acceptCallback = (accepted: boolean): void => setIsAccepted(accepted)
 
   useEffect(() => {
-    setIsAccepted(!showPriceImpactWarning)
-  }, [showPriceImpactWarning, setIsAccepted])
+    setIsAccepted(!requiresAcceptance)
+  }, [requiresAcceptance, setIsAccepted])
 
   if (!showPriceImpactWarning) return null
 
