@@ -22,6 +22,12 @@
       "import": "./src/safeLink.ts",
       "require": "./src/safeLink.ts",
       "default": "./src/safeLink.ts"
+    },
+    "./errors": {
+      "types": "./src/errors.ts",
+      "import": "./src/errors.ts",
+      "require": "./src/errors.ts",
+      "default": "./src/errors.ts"
     }
   },
   "publishConfig": {
@@ -42,12 +48,17 @@
         "types": "./safeLink.d.ts",
         "import": "./safeLink.mjs",
         "require": "./safeLink.js"
+      },
+      "./errors": {
+        "types": "./errors.d.ts",
+        "import": "./errors.mjs",
+        "require": "./errors.js"
       }
     }
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.2.20",
+    "@cowprotocol/cow-sdk": "9.2.21",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",

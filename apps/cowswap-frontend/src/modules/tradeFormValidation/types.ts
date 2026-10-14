@@ -138,6 +138,7 @@ export enum TradeFormValidation {
 
   // Solana Alpha (unaudited launch)
   SolanaAlphaMaxTradeSize,
+  SolanaAlphaUnknownUsdValue,
 
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,

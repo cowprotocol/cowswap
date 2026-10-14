@@ -7,7 +7,6 @@ import { BottomDrawer } from '../BottomDrawer/BottomDrawer.pure'
 import { BottomDrawerOrDialog } from '../BottomDrawer/BottomDrawerOrDialog'
 import { Dialog } from '../Dialog/Dialog.pure'
 import { Modal } from '../Modal/Modal.pure'
-import { ModalHeader } from '../ModalHeader'
 
 import type { ModalFooterButtonVariant } from '../Modal/Footer/ModalFooterWithTwoButtons.pure'
 
@@ -53,7 +52,11 @@ export function ConfirmBottomDrawerOrDialog({
   return (
     <BottomDrawerOrDialog isDrawer={isUpToExtraSmall} isOpen={isOpen} onOpenChange={handleOpenChange} variant="narrow">
       <Modal.Root>
-        <ModalHeader title={title} titleAs={isUpToExtraSmall ? BottomDrawer.Title : Dialog.Title} onClose={onDismiss} />
+        <Modal.Header
+          title={title}
+          titleAs={isUpToExtraSmall ? BottomDrawer.Title : Dialog.Title}
+          onClose={onDismiss}
+        />
 
         {description ? <Modal.Description>{description}</Modal.Description> : null}
 

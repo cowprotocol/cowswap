@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
@@ -6,6 +7,7 @@ import { Media } from '@cowprotocol/ui'
 import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -65,7 +67,9 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains()
+  const availableChains = useAvailableChains({
+    excludeSolana: !useAtomValue(alphaNetworksEnabledAtom),
+  })
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)

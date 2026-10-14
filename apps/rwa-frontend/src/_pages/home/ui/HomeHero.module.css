@@ -1,0 +1,33 @@
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.heading {
+  margin: 0;
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.issuer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-text);
+  vertical-align: bottom;
+}
+
+@media (prefers-color-scheme: dark) {
+  .monochromeLogo {
+    filter: invert(1);
+  }
+}

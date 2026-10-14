@@ -18,6 +18,7 @@ export interface ChainButtonProps {
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
   isLoading: boolean
+  showStatusBadge: boolean
   clickEvent?: string
 }
 
@@ -28,6 +29,7 @@ export function ChainButton({
   onSelectChain,
   isDisabled,
   isLoading,
+  showStatusBadge,
   clickEvent,
 }: ChainButtonProps): ReactNode {
   const { t } = useLingui()
@@ -63,7 +65,7 @@ export function ChainButton({
         <styledEl.ChainText disabled$={isDisabled} loading$={isLoading}>
           {chain.label}
         </styledEl.ChainText>
-        <ChainStatusBadge chainId={chain.id} />
+        {showStatusBadge && <ChainStatusBadge chainId={chain.id} />}
       </styledEl.ChainInfo>
       {isActive && !isLoading && (
         <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>
