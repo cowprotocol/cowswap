@@ -76,6 +76,8 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     shouldPreserveRecipientFromUrl,
   ])
 
+  useResetRecipientWhenDisabled(isCustomRecipientDisabled, recipient, onChangeRecipient)
+
   /**
    * Remove recipient override when its source hook was deleted
    */
@@ -126,4 +128,19 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
 function hasRecipientSearchParam(search: string): boolean {
   const searchParams = new URLSearchParams(search)
   return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
+}
+
+/**
+ * Token navigation keeps `?recipient=` in the URL and re-applies it to trade state
+ */
+function useResetRecipientWhenDisabled(
+  isCustomRecipientDisabled: boolean,
+  recipient: string | null | undefined,
+  onChangeRecipient: (recipient: string | null) => void,
+): void {
+  useEffect(() => {
+    if (isCustomRecipientDisabled && recipient) {
+      onChangeRecipient(null)
+    }
+  }, [isCustomRecipientDisabled, recipient, onChangeRecipient])
 }
