@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
@@ -18,6 +19,7 @@ export interface CurrencyPreviewInfo {
   balance: Nullish<CurrencyAmount<Currency>>
   label?: Nullish<string>
   prefix?: ReactNode
+  secondaryAmount?: CurrencyPreviewSecondaryAmount
 }
 
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
@@ -26,6 +28,12 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
   priceImpactParams?: PriceImpact
+}
+
+export interface CurrencyPreviewSecondaryAmount {
+  amount: CurrencyAmount<Currency>
+  prefix?: ReactNode
+  tooltip?: ReactNode
 }
 
 interface BuiltItProps {
@@ -40,9 +48,10 @@ export function CurrencyAmountPreview({
   priceImpactParams,
   isBridging,
 }: CurrencyPreviewProps): ReactNode {
-  const { fiatAmount, amount, prefix } = currencyInfo
+  const { fiatAmount, amount, prefix, secondaryAmount } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
+  const secondaryCurrency = secondaryAmount?.amount.currency
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
@@ -56,7 +65,22 @@ export function CurrencyAmountPreview({
           tokenSymbol={currency}
           prefix={prefix}
         />
-        <styledEl.FiatAmountSlot fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
+        {secondaryAmount ? (
+          <styledEl.SecondaryAmount>
+            <styledEl.SecondaryAmountValue
+              amount={secondaryAmount.amount}
+              tokenSymbol={secondaryCurrency}
+              prefix={secondaryAmount.prefix}
+            />
+            {secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null}
+          </styledEl.SecondaryAmount>
+        ) : (
+          <styledEl.FiatAmountSlot
+            fiatValue={fiatAmount}
+            priceImpactParams={priceImpactParams}
+            isBridging={isBridging}
+          />
+        )}
       </styledEl.Amounts>
     </styledEl.Container>
   )

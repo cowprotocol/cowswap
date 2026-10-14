@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { CowModal } from 'common/pure/Modal'
@@ -80,7 +80,7 @@ export function AffiliateTraderModal(): ReactNode {
       {isModalOpen && showAffiliateBanner && <UnsupportedNetwork />}
       <CowModal isOpen={isModalOpen} onDismiss={toggleAffiliateModal} padding="0" maxHeight={90}>
         <ModalContainer>
-          <ModalHeader onBack={toggleAffiliateModal} />
+          <Modal.Header onBack={toggleAffiliateModal} />
           {walletStatus === TraderWalletStatus.UNSUPPORTED ? (
             <AffiliateTraderModalUnsupported />
           ) : walletStatus === TraderWalletStatus.LINKED ? (

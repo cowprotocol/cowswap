@@ -48,8 +48,8 @@ const defaultWcPeerOutput = { walletName: undefined, icon: undefined }
 /**
  * Detects whether the currently connected wallet is a Safe App
  * It'll be false if connected to Safe wallet via WalletConnect
+ * @deprecated TODO: Use isSafeAppAtom instead
  */
-// TODO: Replace with isSafeAppAtom
 export function useIsSafeApp(): boolean {
   const connectionType = useConnectionType()
 
@@ -63,8 +63,8 @@ export function useIsSafeApp(): boolean {
  * For WalletConnect connections, gnosisSafeInfo is not available because
  * the Safe Apps SDK only works inside the Safe iframe. Instead, we detect
  * Safe wallets by checking the WalletConnect peer metadata name.
+ * @deprecated TODO: Use isSafeViaWcAtom instead
  */
-// TODO: Replace with isSafeViaWcAtom
 export function useIsSafeViaWc(): boolean {
   const isSafeApp = useIsSafeApp()
   const { connector } = useConnection()
@@ -86,8 +86,8 @@ export function useIsSafeViaWc(): boolean {
  * regardless of the connection method (WalletConnect or inside Safe as an App).
  * Warning: this can be false when Safe API is down or rate-limited and does not mean the wallet is not a Safe.
  * TODO: Rename to useHasGnosisSafeInfo.
+ * @deprecated TODO: Use isSafeWalletAtom instead
  */
-// TODO: Replace with isSafeWalletAtom
 export function useIsSafeWallet(): boolean {
   return !!useGnosisSafeInfo()
 }

@@ -46,6 +46,11 @@ export interface EnhancedTransactionDetails {
   swapLockedGNOvCow?: boolean
   ethFlow?: { orderId: string; subType: 'creation' | 'cancellation' | 'refund' }
   onChainCancellation?: { orderId: string; sellTokenSymbol: string }
+  // Solana has no dedicated batch-cancel instruction, so cancelling several orders bundles one
+  // `CancelOrder` instruction per order into a single transaction — `onChainCancellation` only fits a
+  // single order, so this carries the rest. Hidden from the activity list and its own snackbar the same
+  // way `onChainCancellation` is — see `isNotOnChainCancellationTx`.
+  solanaCancelOrderIds?: string[]
   // The Solana order-creation tx: like `ethFlow`, its own on-chain activity should be hidden from the
   // activity list (the order it created is shown instead) — see `isNotSolanaOrderCreationTx`.
   solanaOrderCreation?: boolean
@@ -116,6 +121,7 @@ export default createReducer(initialState, (builder) =>
             swapLockedGNOvCow,
             ethFlow,
             onChainCancellation,
+            solanaCancelOrderIds,
             solanaOrderCreation,
           },
         },
@@ -147,6 +153,7 @@ export default createReducer(initialState, (builder) =>
           swapLockedGNOvCow,
           ethFlow,
           onChainCancellation,
+          solanaCancelOrderIds,
           solanaOrderCreation,
         }
         transactions[chainId] = txs

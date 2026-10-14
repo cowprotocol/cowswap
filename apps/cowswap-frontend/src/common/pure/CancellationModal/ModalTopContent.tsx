@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useState } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, UI, LinkStyledButton } from '@cowprotocol/ui'
 
@@ -96,6 +97,9 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
 
   const isOnChainType = type === 'onChain'
   const typeLabel = isOnChainType ? t`on-chain` : t`off-chain`
+  // Solana fees are negligible and aren't estimated (see `estimateOnChainTxCost`), so there's no
+  // meaningful cost to show - showing "Unknown" would just look broken.
+  const showTxCost = isOnChainType && !isSolanaChain(nativeCurrency.chainId)
 
   const txCostAmount = txCost ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
@@ -134,7 +138,7 @@ export function ModalTopContent(props: ModalTopContentProps): ReactNode {
               Keep in mind a solver might already have included the order in a solution even if this cancellation is
               successful.
             </Trans>
-            {isOnChainType && (
+            {showTxCost && (
               <StyledNotificationBanner>
                 <Trans>Tx cost:</Trans>{' '}
                 {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}

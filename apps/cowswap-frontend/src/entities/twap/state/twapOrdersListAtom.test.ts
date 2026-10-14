@@ -48,6 +48,18 @@ function makeOrder(
 }
 
 describe('twapOrdersListAtom', () => {
+  it('keeps the Safe parent when an indexed Safe record has its hash', () => {
+    const store = createStore()
+    const safe = makeOrder('safe-hash', EOA)
+    const indexedSafe = makeOrder('indexed-safe-event', EOA, SupportedChainId.GNOSIS_CHAIN, EOA, safe.id)
+
+    store.set(walletInfoAtom, { account: EOA, chainId: SupportedChainId.GNOSIS_CHAIN })
+    store.set(twapOrdersAtom, { [safe.id]: safe })
+    store.set(eoaTwapOrdersAtom, { [indexedSafe.id]: indexedSafe })
+
+    expect(store.get(twapOrdersListAtom)).toEqual([safe])
+  })
+
   it('selects Safe and EOA orders by resolved owner and chain', () => {
     const store = createStore()
     const safe = makeOrder('safe', EOA)

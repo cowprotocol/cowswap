@@ -426,10 +426,16 @@ export const LowerSectionSimple = styled(LowerSection)`
     ${TransactionWrapper} {
       padding: 15px;
 
-      // target the activity comp
+      > div > ${ActivityDetailsText} {
+        width: 100%;
+        margin: 0;
+      }
+
       > div > ${ActivityDetailsText} > ${Summary} {
-        grid-template-columns: auto auto;
+        grid-template-columns: 1fr auto;
         grid-template-rows: max-content;
+        align-items: center;
+        gap: 16px;
 
         > span {
           display: none;
@@ -459,10 +465,10 @@ export const LowerSectionSimple = styled(LowerSection)`
             display: none;
           }
         }
-      }
 
-      > ${StatusLabelWrapper} {
-        margin: auto;
+        > ${StatusLabelWrapper} {
+          margin: 0;
+        }
       }
     }
   }
