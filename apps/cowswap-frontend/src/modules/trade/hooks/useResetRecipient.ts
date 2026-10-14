@@ -132,9 +132,6 @@ function hasRecipientSearchParam(search: string): boolean {
   return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
 }
 
-/**
- * Token navigation keeps `?recipient=` in the URL and re-applies it to trade state
- */
 function useResetRecipientWhenDisabled(
   isCustomRecipientDisabled: boolean,
   recipient: string | null | undefined,
