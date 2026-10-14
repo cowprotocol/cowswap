@@ -1,3 +1,4 @@
+import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
@@ -789,5 +790,97 @@ describe('validateTradeForm - Solana swap recipient', () => {
       recipientEnsAddress: EVM_RECIPIENT,
     })
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
+})
+
+describe('validateTradeForm - native sell in limit orders', () => {
+  const SOLANA_USDC = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+
+  const baseContext: Partial<TradeFormValidationContext> = {
+    derivedTradeState: {
+      orderKind: OrderKind.SELL,
+      inputCurrencyAmount: mockCurrencyAmount('100'),
+      outputCurrencyAmount: mockCurrencyAmount('100'),
+      inputCurrency: NATIVE_CURRENCIES[SupportedChainId.SOLANA] as unknown as Currency,
+      outputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
+      inputCurrencyBalance: mockCurrencyAmount('1000'),
+      outputCurrencyBalance: mockCurrencyAmount('1000'),
+      inputCurrencyFiatAmount: mockCurrencyAmount('1'),
+      outputCurrencyFiatAmount: null,
+      recipient: null,
+      isQuoteBasedOrder: true,
+      tradeType: TradeType.LIMIT_ORDER,
+      slippage: null,
+    },
+    tradeQuote: { isLoading: false, quote: {} } as unknown as TradeQuoteState,
+    isOnline: true,
+    isSupportedWallet: true,
+    account: 'BYXaGFW8VavtBLu56a53wuUZyRqp9b8ibRR2dojVTWv7',
+    isApproveRequired: ApproveRequiredReason.Unsupported,
+    isWrapUnwrap: false,
+    isSafeReadonlyUser: false,
+    isSwapUnsupported: false,
+    recipientEnsAddress: null,
+    isInsufficientBalanceOrderAllowed: true,
+    isProviderNetworkUnsupported: false,
+    isProviderNetworkDeprecated: false,
+    intermediateTokenToBeImported: false,
+    isAccountProxyLoading: false,
+    isProxySetupValid: true,
+    customTokenError: undefined,
+    isRestrictedForCountry: false,
+    isBalancesLoading: false,
+    isBundlingSupported: true,
+    isInputCurrencyXstock: false,
+    isOutputCurrencyXstock: false,
+    injectedWidgetParams: {},
+    tradePriceImpact: { loading: false, priceImpact: undefined },
+    isNonEvmReceiverConfirmed: false,
+    solanaNativeShortfall: null,
+  }
+
+  test('blocks a native SOL limit order with SellNativeToken as the primary validation', () => {
+    const result = validateTradeForm(baseContext as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
+  })
+
+  test('keeps SellNativeToken as the primary validation above the Solana Alpha trade cap', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
+      },
+    } as unknown as TradeFormValidationContext)
+
+    expect(result?.[0]).toBe(TradeFormValidation.SellNativeToken)
+  })
+
+  test('keeps the Solana Alpha trade cap for an SPL limit order', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isApproveRequired: ApproveRequiredReason.BundleApproveRequired,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
+        inputCurrencyFiatAmount: mockCurrencyAmount('20000'),
+      },
+    } as unknown as TradeFormValidationContext)
+
+    expect(result).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('does not block an SPL limit order', () => {
+    const result = validateTradeForm({
+      ...baseContext,
+      isApproveRequired: ApproveRequiredReason.BundleApproveRequired,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrency: { address: SOLANA_USDC, chainId: SupportedChainId.SOLANA } as unknown as Currency,
+      },
+    } as unknown as TradeFormValidationContext)
+
+    expect(result || []).not.toContain(TradeFormValidation.SellNativeToken)
   })
 })
