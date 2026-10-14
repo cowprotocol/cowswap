@@ -1,4 +1,6 @@
-import { Connection, PublicKey, Transaction, TransactionInstruction } from '@solana/web3.js'
+import { Connection, PublicKey, TransactionInstruction } from '@solana/web3.js'
+
+import { buildSolanaTransaction } from './buildSolanaTransaction'
 
 import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/react'
 
@@ -10,10 +12,9 @@ const MAX_SEND_ATTEMPTS = 3
  * Packs `instructions` into a complete transaction and sends it via the Solana wallet provider, retrying
  * on an expired blockhash. Shared by the Solana wrap/unwrap and approve flows.
  *
- * A blockhash is fetched right before each attempt rather than once up front: the provider's signing UI
- * runs between our fetch and the user's approval, and a slow approval can carry the transaction past the
- * blockhash's ~60-90s validity window. The wallet provider populates neither the blockhash nor the fee
- * payer, so the transaction is completed here. Anything other than that expiry failure is rethrown as-is.
+ * Each attempt rebuilds the transaction so it picks up a fresh blockhash: the provider's signing UI runs
+ * between our fetch and the user's approval, and a slow approval can carry the transaction past the
+ * blockhash's validity window. Anything other than that expiry failure is rethrown as-is.
  */
 export async function sendSolanaTransaction(
   connection: Connection,
@@ -22,8 +23,11 @@ export async function sendSolanaTransaction(
   instructions: TransactionInstruction[],
   attemptsLeft = MAX_SEND_ATTEMPTS,
 ): Promise<{ hash: string; lastValidBlockHeight: number }> {
-  const { blockhash, lastValidBlockHeight } = await connection.getLatestBlockhash()
-  const transaction = new Transaction({ feePayer: owner, blockhash, lastValidBlockHeight }).add(...instructions)
+  const { transaction, lastValidBlockHeight } = await buildSolanaTransaction({
+    connection,
+    instructions,
+    feePayer: owner,
+  })
 
   try {
     const hash = await provider.sendTransaction(transaction, connection)

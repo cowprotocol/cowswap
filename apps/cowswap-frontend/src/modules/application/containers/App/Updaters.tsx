@@ -8,10 +8,10 @@ import {
   TokensListsUpdater,
   UnsupportedTokensUpdater,
 } from '@cowprotocol/tokens'
-import { useWalletInfo, WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
+import { WalletUpdater, WidgetSafeApp, WidgetStandaloneModeUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
-import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 import { BlockNumberUpdater } from 'entities/blockchain'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -33,10 +33,10 @@ import {
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
-import { GeoDataUpdater } from 'modules/rwa'
+import { GeoDataUpdater, useShouldExcludeRwaTokenLists } from 'modules/rwa'
 import { BlockedListSourcesUpdater, RecentTokensStorageUpdater, useSourceChainId } from 'modules/tokensList'
 import { useTradeTypeInfo } from 'modules/trade'
-import { eoaTwapOrdersEffectAtom } from 'modules/twap'
+import { eoaTwapOrdersEffectAtom, SafeTwapOrdersUpdater, twapAppziSurveyEffectAtom } from 'modules/twap'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield'
 
@@ -68,16 +68,16 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   useAtomValue(eoaTwapOrdersEffectAtom)
+  useAtomValue(twapAppziSurveyEffectAtom)
 
-  const { account } = useWalletInfo()
-  const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
+  const { isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
-  const balancesContext = useBalancesContext()
   const { standaloneMode } = useInjectedWidgetParams()
-  const balancesAccount = balancesContext.account || account
+  const balancesAccount = useBalancesAccountForChain(sourceChainId)
+  const excludeRwaTokenLists = useShouldExcludeRwaTokenLists()
 
   return (
     <>
@@ -94,6 +94,7 @@ export function Updaters(): ReactNode {
       <UserUpdater />
       <FinalizeTxUpdater />
       <PendingOrdersUpdater />
+      <SafeTwapOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
       <OrdersFromApiUpdater />
@@ -121,9 +122,9 @@ export function Updaters(): ReactNode {
 
       <TokensListsUpdater
         chainId={sourceChainId}
-        isGeoBlockEnabled={isGeoBlockEnabled}
         enableLpTokensByDefault={isYieldWidget}
         isYieldEnabled={isYieldEnabled}
+        excludeRwaLists={excludeRwaTokenLists}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />

@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { Network } from 'types'
 
@@ -27,7 +29,7 @@ export function useMultipleErc20s(params: UseMultipleErc20Params): Record<string
     }
 
     return addresses.reduce((acc, address) => {
-      const erc20 = erc20s[address.toLowerCase()]
+      const erc20 = erc20s[getAddressKey(address)]
 
       if (erc20) {
         acc[address] = erc20

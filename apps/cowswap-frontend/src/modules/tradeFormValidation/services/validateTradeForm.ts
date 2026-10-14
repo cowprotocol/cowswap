@@ -6,6 +6,8 @@ import { getIsFastQuote, isQuoteExpired } from 'modules/tradeQuote'
 import { TradeType } from 'common/modules/tradeNavigation'
 import { getAddressValidationStrategy } from 'common/utils/addressValidation'
 
+import { getIsSolanaSellUsdValueUnknown } from './getIsSolanaSellUsdValueUnknown'
+import { getIsSolanaTradeAboveLimit } from './getIsSolanaTradeAboveLimit'
 import { getIsXstockTradeBelowLimit } from './getIsXstockTradeBelowLimit'
 
 import { ApproveRequiredReason } from '../../erc20Approve'
@@ -40,6 +42,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isRestoringConnection,
     isCaptchaPending,
     isCaptchaRequired,
+    swapMaximumSellAmount,
+    solanaNativeShortfall,
   } = context
 
   const {
@@ -92,6 +96,22 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // even if there are other issues with the trade (e.g. quote loading or wallet not connected)
   if (!inputAmountIsNotSet && isXstockTradeBelowLimit) {
     return [TradeFormValidation.XstockMinimumTradeSize]
+  }
+
+  // Same precedence as the xstock limit: the Solana Alpha messages must win over
+  // quote-loading and wallet-connection states. Wrap/unwrap is exempt: it never touches
+  // the settlement program and its fiat amounts are deliberately null (useTradeUsdAmounts).
+  if (!isWrapUnwrap && !inputAmountIsNotSet) {
+    // Fail closed: a trade that cannot be priced in USD cannot be checked against the cap
+    if (getIsSolanaSellUsdValueUnknown(context)) {
+      return [
+        tradePriceImpact.loading ? TradeFormValidation.ImpactLoading : TradeFormValidation.SolanaAlphaUnknownUsdValue,
+      ]
+    }
+
+    if (getIsSolanaTradeAboveLimit(context)) {
+      return [TradeFormValidation.SolanaAlphaMaxTradeSize]
+    }
   }
 
   if (!isWrapUnwrap && isCaptchaPending) {
@@ -170,9 +190,19 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.BalancesNotLoaded)
     }
 
-    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+    // For Swap, the balance must cover the slippage-inclusive maximum sell amount, not just the raw input
+    // amount, otherwise the order could be unfillable if the price moves against the user up to slippage.
+    const balanceCheckAmount = swapMaximumSellAmount ?? inputCurrencyAmount
+
+    if (inputCurrencyBalance && balanceCheckAmount && inputCurrencyBalance.lessThan(balanceCheckAmount)) {
       validations.push(TradeFormValidation.BalanceInsufficient)
     }
+  }
+
+  // Outside the `canPlaceOrderWithoutBalance` gate: a Solana limit order still pays the PDA rent and
+  // the fee at signing time. The hook is null on other chains and when the wallet isn't debited.
+  if (!!account && solanaNativeShortfall) {
+    validations.push(TradeFormValidation.SolanaInsufficientNativeBalance)
   }
 
   const isNonEvmBridging = isBridging && outputCurrency && !isEvmChain(outputCurrency.chainId)
@@ -182,13 +212,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.RecipientNotSet)
     }
 
-    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : undefined)
+    const strategy = getAddressValidationStrategy(isNonEvmBridging ? outputCurrency.chainId : inputCurrency?.chainId)
     const isRecipientAddress = Boolean(recipient && strategy.isValidAddress(recipient))
 
-    /**
-     * For bridging, recipient can be only an address (ENS is not supported)
-     */
-    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+    // recipientEnsAddress can outlive a switch from an EVM chain to a non-ENS one (e.g. Solana)
+    const isEnsRecipientAllowed = !isBridging && strategy.supportsENS && !!recipientEnsAddress
+    const isRecipientValid = isRecipientAddress || isEnsRecipientAllowed
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)

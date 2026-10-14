@@ -25,7 +25,15 @@ const PROVIDER_REJECT_REQUEST_ERROR_MESSAGES = [
 // `gas * gas price + value`. Viem wraps these into an `InsufficientFundsError` (matched by name
 // below) with its own reworded shortMessage, so the raw substrings only apply to unwrapped
 // provider errors (e.g. a wallet returning the node message directly).
-const INSUFFICIENT_FUNDS_ERROR_MESSAGES = ['insufficient funds', 'exceeds transaction sender account balance']
+// The last two are Solana simulation failures: a zero-lamport fee payer ("no record of a prior
+// credit") and a transfer the balance can't cover ("Transfer: insufficient lamports X, need Y");
+// "insufficient funds" also covers Solana's "account (N) with insufficient funds for rent".
+const INSUFFICIENT_FUNDS_ERROR_MESSAGES = [
+  'insufficient funds',
+  'exceeds transaction sender account balance',
+  'insufficient lamports',
+  'attempt to debit an account but found no record of a prior credit',
+]
 
 // Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
 // or pathologically deep chain.
@@ -55,7 +63,7 @@ export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
   const debounced = (...args: any) => {
     clearTimeout(timeout)
-    timeout = setTimeout(() => func(args), wait)
+    timeout = setTimeout(() => func(...args), wait)
   }
 
   return debounced

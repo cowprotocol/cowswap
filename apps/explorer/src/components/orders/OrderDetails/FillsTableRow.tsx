@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 
 import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, isSellOrder } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { faArrowAltCircleUp as faIcon } from '@fortawesome/free-regular-svg-icons'
 import { faGroupArrowsRotate } from '@fortawesome/free-solid-svg-icons'
@@ -99,9 +100,20 @@ export function FillsTableRow({ trade, isPriceInverted, showSolverDetails }: Fil
           <RowWithCopyButton
             textToCopy={txHash}
             contentsToDisplay={
-              <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
-                {abbreviateString(txHash, 6, 4)}
-              </LinkWithPrefixNetwork>
+              // TODO: point back at the batch page once the Solana order book serves transaction-orders
+              isSolanaChain(network) ? (
+                <a
+                  href={getExplorerLink(network, txHash, ExplorerDataType.TRANSACTION)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {abbreviateString(txHash, 6, 4)}↗
+                </a>
+              ) : (
+                <LinkWithPrefixNetwork to={`/tx/${txHash}`} rel="noopener noreferrer" target="_self">
+                  {abbreviateString(txHash, 6, 4)}
+                </LinkWithPrefixNetwork>
+              )
             }
           />
           {shouldShowTenderlyLink && (

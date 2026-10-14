@@ -1,9 +1,12 @@
+import { ReactNode } from 'react'
+
 import { MessageDescriptor } from '@lingui/core'
 
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { msg } from '@lingui/core/macro'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -14,30 +17,39 @@ export type Props = {
   order: ParsedOrder
 }
 
-const orderUITypeLabels: Record<UiOrderType, MessageDescriptor> = {
-  [UiOrderType.SWAP]: msg`Market`,
-  [UiOrderType.LIMIT]: msg`Limit`,
-  [UiOrderType.TWAP]: msg`TWAP`,
-  [UiOrderType.HOOKS]: msg`Hooks`,
-  [UiOrderType.YIELD]: msg`Yield`,
+const ORDER_TYPE_LABELS: Record<UiOrderType, Record<OrderKind, MessageDescriptor>> = {
+  [UiOrderType.SWAP]: {
+    [OrderKind.BUY]: msg`Market buy order`,
+    [OrderKind.SELL]: msg`Market sell order`,
+  },
+  [UiOrderType.LIMIT]: {
+    [OrderKind.BUY]: msg`Limit buy order`,
+    [OrderKind.SELL]: msg`Limit sell order`,
+  },
+  [UiOrderType.TWAP]: {
+    [OrderKind.BUY]: msg`TWAP buy order`,
+    [OrderKind.SELL]: msg`TWAP sell order`,
+  },
+  [UiOrderType.HOOKS]: {
+    [OrderKind.BUY]: msg`Hooks buy order`,
+    [OrderKind.SELL]: msg`Hooks sell order`,
+  },
+  [UiOrderType.YIELD]: {
+    [OrderKind.BUY]: msg`Yield buy order`,
+    [OrderKind.SELL]: msg`Yield sell order`,
+  },
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderTypeField({ order }: Props) {
+export function OrderTypeField({ order }: Props): ReactNode {
   const uiOrderType = getUiOrderType(order)
   const { i18n, t } = useLingui()
-  const orderKind = order.kind === 'buy' ? t`buy` : order.kind === 'sell' ? t`sell` : order.kind
-  const orderType = i18n._(orderUITypeLabels[uiOrderType])
+  const descriptor = ORDER_TYPE_LABELS[uiOrderType]?.[order.kind]
+  const orderType = descriptor ? i18n._(descriptor) : `${uiOrderType} ${order.kind} order`
 
   return (
     <styledEl.Value>
       <styledEl.OrderTypeValue>
-        {/* TODO: this may need a rework for better localization */}
-        <Trans>
-          {orderType} {orderKind} order
-        </Trans>{' '}
-        {order.partiallyFillable ? t`(Partially fillable)` : t`(Fill or Kill)`}
+        {orderType} {order.partiallyFillable ? t`(Partially fillable)` : t`(Fill or Kill)`}
       </styledEl.OrderTypeValue>
     </styledEl.Value>
   )

@@ -1,4 +1,4 @@
-import { areAddressesEqual, getAddressKey } from '@cowprotocol/cow-sdk'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { TokensByAddress } from '@cowprotocol/tokens'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -7,9 +7,12 @@ import { TwapOrderItem, TwapOrderStatus } from 'modules/twap'
 
 import { emulateTwapAsOrder } from './emulateTwapAsOrder'
 
+import { isEoaTwapOrderItem } from '../utils/isEoaTwapOrderItem'
+
 const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
   [TwapOrderStatus.Cancelled]: OrderStatus.CANCELLED,
   [TwapOrderStatus.Expired]: OrderStatus.EXPIRED,
+  [TwapOrderStatus.PartiallyFilled]: OrderStatus.FULFILLED,
   [TwapOrderStatus.Pending]: OrderStatus.PENDING,
   [TwapOrderStatus.WaitSigning]: OrderStatus.PRESIGNATURE_PENDING,
   [TwapOrderStatus.Fulfilled]: OrderStatus.FULFILLED,
@@ -19,8 +22,6 @@ const statusesMap: Record<TwapOrderStatus, OrderStatus> = {
 export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: TokensByAddress): Order | null {
   const enrichedOrder = emulateTwapAsOrder(order)
   const status = statusesMap[order.status]
-  // Persisted v1 Safe orders predate resolvedOwner.
-  const resolvedOwner = order.resolvedOwner ?? order.safeAddress
   const inputToken = tokensByAddress[getAddressKey(enrichedOrder.sellToken)]
   const outputToken = tokensByAddress[getAddressKey(enrichedOrder.buyToken)]
 
@@ -40,6 +41,6 @@ export function mapTwapOrderToStoreOrder(order: TwapOrderItem, tokensByAddress: 
     status,
     apiAdditionalInfo: enrichedOrder,
     isCancelling: order.status === TwapOrderStatus.Cancelling,
-    isEoaTwapOrder: !areAddressesEqual(order.safeAddress, resolvedOwner),
+    isEoaTwapOrder: isEoaTwapOrderItem(order),
   }
 }

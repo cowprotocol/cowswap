@@ -1,3 +1,5 @@
+import { SOLANA_RWA_TOKEN_LIST_URL } from '@cowprotocol/common-const'
+
 import ms from 'ms.macro'
 
 import type { RestrictedTokenList } from './types'
@@ -5,7 +7,7 @@ import type { RestrictedTokenList } from './types'
 export const DEFAULT_CMS_REQUEST_TTL = ms`1h`
 
 export const ONDO_TOKEN_LIST_URL =
-  'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/4ae87da178469e53f44b1b8cae1820c02c999907/tokenlist.json'
+  'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/f5a82fca4b2a81aa8fc1ce65b8982f36d6cd40f4/tokenlist.json'
 
 export const RESERVE_PROTOCOL_BNB_TOKEN_LIST_URL =
   'https://raw.githubusercontent.com/reserve-protocol/dtf-interface/1dbc095c95210f3342278acb8b865763a4d7d443/packages/dtf-catalog/tokenlists/index-dtf/restricted/bnb.tokenlist.json'
@@ -73,6 +75,12 @@ export const XStocks_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
   name: 'xStocks Token List',
   tokenListUrl:
     'https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json',
+  restrictedCountries: [...RESTRICTED_COUNTRIES],
+} as const
+
+export const SOLANA_RWA_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'Solana RWA',
+  tokenListUrl: SOLANA_RWA_TOKEN_LIST_URL,
   restrictedCountries: [...RESTRICTED_COUNTRIES],
 } as const
 

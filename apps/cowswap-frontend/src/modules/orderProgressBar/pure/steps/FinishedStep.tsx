@@ -13,6 +13,7 @@ import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
+import { plural } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -30,7 +31,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import * as styledEl from './styled'
 
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
-import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
@@ -183,7 +184,13 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
+                    {t`View ${plural(solversLength - 3, {
+                      one: '# more',
+                      few: '# more',
+                      many: '# more',
+                      other: '# more',
+                    })}`}{' '}
+                    <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -206,9 +213,7 @@ export function FinishedStep({
           })}
         >
           <SVG src={iconSocialXSrc} />
-          <span>
-            <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
-          </span>
+          <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
         </styledEl.ShareButton>
       )}
     </styledEl.FinishedStepContainer>
@@ -226,12 +231,23 @@ function ExtraAmount({
   isCustomRecipient?: boolean
   isSell?: boolean
 }): ReactNode {
+  const amount = (
+    <i>
+      +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
+    </i>
+  )
+
   return (
     <styledEl.ExtraAmount>
-      {getSurplusText(isSell, isCustomRecipient)}
-      <i>
-        +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-      </i>{' '}
+      {isSell ? (
+        isCustomRecipient ? (
+          <Trans>including an extra {amount}</Trans>
+        ) : (
+          <Trans>and got an extra {amount}</Trans>
+        )
+      ) : (
+        <Trans>and saved {amount}</Trans>
+      )}{' '}
       {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
     </styledEl.ExtraAmount>
   )

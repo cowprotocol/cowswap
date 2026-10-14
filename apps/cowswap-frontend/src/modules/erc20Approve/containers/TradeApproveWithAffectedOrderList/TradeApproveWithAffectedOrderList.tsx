@@ -2,6 +2,10 @@ import { ReactNode } from 'react'
 
 import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
+import { usePermitInfo } from 'modules/permit'
+
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import {
   ApproveRequiredReason,
   useGetAmountToSignApprove,
@@ -14,12 +18,14 @@ import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
+import type { AffectedOrdersApprovalTarget } from '../../types/affectedOrdersApprovalTarget.types'
+
 export interface TradeApproveWithAffectedOrderListProps {
-  forceShowAffectedOrders?: boolean
+  approvalTarget?: AffectedOrdersApprovalTarget
 }
 
 export function TradeApproveWithAffectedOrderList({
-  forceShowAffectedOrders = false,
+  approvalTarget,
 }: TradeApproveWithAffectedOrderListProps): ReactNode {
   const isBundlingSupported = useIsTxBundlingSupported()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -34,6 +40,9 @@ export function TradeApproveWithAffectedOrderList({
 
   const partialAmountToApprove = useGetPartialAmountToSignApprove()
   const finalAmountToApprove = useGetAmountToSignApprove()
+  // ADVANCED_ORDERS has permits disabled (EOA TWAP uses poller, Safe uses vault-relayer). SWAP only to read token type.
+  const permitInfo = usePermitInfo(partialAmountToApprove?.currency, TradeType.SWAP)
+  const isDaiLikePermit = permitInfo?.type === 'dai-like'
 
   const isApproveOrPartialPermitRequired =
     isApproveRequired === ApproveRequiredReason.Required ||
@@ -41,8 +50,11 @@ export function TradeApproveWithAffectedOrderList({
     isApproveRequired === ApproveRequiredReason.BundleApproveRequired
 
   const showAffectedOrders =
-    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired || forceShowAffectedOrders) &&
+    (isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired ||
+      (approvalTarget === 'poller' && isApproveOrPartialPermitRequired)) &&
     !isMaxAmountToApprove(finalAmountToApprove)
+
+  const showApproveToggle = !isDaiLikePermit && (isApproveOrPartialPermitRequired || showAffectedOrders)
 
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
@@ -50,15 +62,18 @@ export function TradeApproveWithAffectedOrderList({
 
   return (
     <>
-      {isApproveOrPartialPermitRequired && (
-        <>
-          <TradeApproveToggle
-            updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
-            amountToApprove={partialAmountToApprove}
-          />
-        </>
+      {showApproveToggle && (
+        <TradeApproveToggle
+          updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
+          amountToApprove={partialAmountToApprove}
+        />
       )}
-      {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}
+      {showAffectedOrders && currencyToApprove && (
+        <ActiveOrdersWithAffectedPermit
+          currency={currencyToApprove}
+          approvalTarget={approvalTarget ?? 'vault-relayer'}
+        />
+      )}
     </>
   )
 }

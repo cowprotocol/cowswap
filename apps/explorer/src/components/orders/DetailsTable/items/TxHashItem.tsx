@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { faGroupArrowsRotate, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -26,6 +26,8 @@ export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemPro
   if (!txHash) return null
 
   const shouldDisplayBatchGraph = TENDERLY_AVAILABLE[chainId]
+  // TODO: enable once the Solana order book serves transaction-orders, which the batch page needs
+  const hasBatchPage = !isSolanaChain(chainId)
   const tenderlyUrl = getTenderlyTxUrl(txHash)
 
   return (
@@ -40,10 +42,12 @@ export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemPro
         }
       />
       <Wrapper>
-        <LinkButton to={`/tx/${txHash}`}>
-          <FontAwesomeIcon icon={faGroupArrowsRotate} />
-          Batch
-        </LinkButton>
+        {hasBatchPage && (
+          <LinkButton to={`/tx/${txHash}`}>
+            <FontAwesomeIcon icon={faGroupArrowsRotate} />
+            Batch
+          </LinkButton>
+        )}
 
         {shouldDisplayBatchGraph && (
           <>

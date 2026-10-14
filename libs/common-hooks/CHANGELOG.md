@@ -1,5 +1,55 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.13.0...common-hooks-v3.14.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/types@4.12.0
+
+## [3.13.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.12.0...common-hooks-v3.13.0) (2026-09-23)
+
+### Minor Changes
+
+- feat(sol): support sol orders in explorer (#8149)
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/types@4.11.0
+
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.1...common-hooks-v3.12.0) (2026-09-15)
+
+### Minor Changes
+
+- feat(solana): bind feature flag from LD (#8117)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+
 ## [3.11.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.11.0...common-hooks-v3.11.1) (2026-09-11)
 
 ### Patch Changes

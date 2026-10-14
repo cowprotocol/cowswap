@@ -7,9 +7,10 @@ import { ProgressBar } from 'components/common/ProgressBar'
 
 import { Order } from 'api/operator'
 
+import { FilledProgressSummary } from './FilledProgressSummary'
 import { OrderAssetsInfo } from './OrderAssetsInfo'
 import { PriceWithTitle } from './PriceWithTitle'
-import { FilledContainer, StyledSurplusComponent, TableHeading, TableHeadingContent, Wrapper } from './styled'
+import { FilledContainer, StyledSurplusComponent, TableHeading, TableHeadingContent } from './styled'
 import { useFilledProgressContext } from './useFilledProgressContext'
 
 export type Props = {
@@ -41,10 +42,7 @@ export function FilledProgress(props: Props): ReactNode {
   }
 
   return !props.fullView ? (
-    <Wrapper>
-      <ProgressBar percentage={formattedPercentage} />
-      {orderAssetsInfo}
-    </Wrapper>
+    <FilledProgressSummary percentage={formattedPercentage} lineBreak={props.lineBreak} context={context} />
   ) : (
     <TableHeading>
       <TableHeadingContent>

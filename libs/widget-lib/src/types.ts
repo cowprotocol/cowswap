@@ -229,7 +229,6 @@ export type CowSwapWidgetPaletteParams = { [K in CowSwapWidgetPaletteColors]: st
 export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
-   * Please fill the for to let us know a little about you: https://cowprotocol.typeform.com/to/rONXaxHV
    */
   appCode: string
 
@@ -368,8 +367,6 @@ export interface CowSwapWidgetParams {
 
   /**
    * The partner fee
-   *
-   * Please contact https://cowprotocol.typeform.com/to/rONXaxHV
    */
   partnerFee?: PartnerFee
 

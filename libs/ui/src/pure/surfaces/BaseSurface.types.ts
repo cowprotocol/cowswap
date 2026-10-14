@@ -9,5 +9,7 @@ export interface BaseSurfaceProps {
   a11yTitle?: string
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  /** Fires after open/close animations finish (Base UI `onOpenChangeComplete`). */
+  onOpenChangeComplete?: (open: boolean) => void
   children: ReactNode
 }

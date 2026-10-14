@@ -126,7 +126,6 @@ jobs:
         env:
           CID: ${{ steps.deploy-ipfs.outputs.cid }}
           IPFS_4EVERLAND_ACCESS_TOKEN: ${{ secrets.IPFS_4EVERLAND_ACCESS_TOKEN }}
-          IPFS_NINJA_API_KEY: ${{ secrets.IPFS_NINJA_API_KEY }}
 
       - name: Complete GitHub deployment
         id: complete-deployment

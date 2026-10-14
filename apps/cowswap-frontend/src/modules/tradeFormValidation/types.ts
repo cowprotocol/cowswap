@@ -12,6 +12,7 @@ export interface TradeFormButtonContext {
   defaultText: string
   amountToApprove: CurrencyAmount<Currency> | null
   derivedState: TradeDerivedState
+  recipientEnsAddress: string | null
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
@@ -22,6 +23,7 @@ export interface TradeFormButtonContext {
   confirmClickEvent?: string
   approveClickEvent?: string
   widgetPriceImpactThreshold: number | undefined
+  solanaNativeShortfall: CurrencyAmount<Currency> | null
 
   confirmTrade(): void
 
@@ -61,6 +63,18 @@ export interface TradeFormValidationCommonContext {
   isRestoringConnection: boolean
   isCaptchaPending: boolean
   isCaptchaRequired: boolean
+  /**
+   * For Swap only: the maximum sell amount the order can pull from the wallet, including slippage.
+   * Used instead of the raw input amount when checking balance sufficiency, since a swap order
+   * (unlike limit/TWAP orders) must never be placed if the wallet can't cover slippage in the worst case.
+   * Null for non-swap trade types, where the raw input amount is used instead.
+   */
+  swapMaximumSellAmount: CurrencyAmount<Currency> | null
+  /**
+   * Solana only: native SOL the wallet is missing to cover account rent and the fee the trade
+   * transaction pays on top of the sell amount. Null when it can afford them or on other chains.
+   */
+  solanaNativeShortfall: CurrencyAmount<Currency> | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -101,6 +115,7 @@ export enum TradeFormValidation {
   BalancesLoading,
   BalancesNotLoaded,
   BalanceInsufficient,
+  SolanaInsufficientNativeBalance,
 
   // Approve
   ApproveAndSwapInBundle,
@@ -120,6 +135,10 @@ export enum TradeFormValidation {
   // RWA/Geo restrictions
   RestrictedForCountry,
   XstockMinimumTradeSize,
+
+  // Solana Alpha (unaudited launch)
+  SolanaAlphaMaxTradeSize,
+  SolanaAlphaUnknownUsdValue,
 
   // Widget controlled
   DisableTradeWithUnknownPriceImpact,

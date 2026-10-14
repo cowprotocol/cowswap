@@ -2,6 +2,8 @@ import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { orderBookSDK } from 'cowSdk'
 
+import { orderNormalizer } from 'api/solanaOrderbook'
+
 import { backoffOpts } from './operator.constants'
 import { GetAccountOrdersParams, RawOrder } from './types'
 
@@ -15,7 +17,7 @@ import { GetAccountOrdersParams, RawOrder } from './types'
  */
 export async function getAccountOrders(params: GetAccountOrdersParams): Promise<GetAccountOrdersResponse> {
   const { networkId, owner, offset = 0, limit = 20 } = params
-  const state = getState({ networkId, owner, limit })
+  const state = getState({ networkId, owner, limit }, canResetCache(params))
   const limitPlusOne = limit + 1
 
   const currentPage = Math.round(offset / limit)
@@ -28,9 +30,13 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
     }
   }
 
+  const normalize = orderNormalizer(networkId)
+  const normalizeOrders = (orders: RawOrder[]): RawOrder[] => orders.map(normalize)
+
   const ordersPromise = state.prodHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, backoffOpts })
+        .then(normalizeOrders)
         .catch((error) => {
           console.error('[getAccountOrders] Error getting PROD orders for account', owner, networkId, error)
           return []
@@ -40,6 +46,7 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   const ordersPromiseBarn = state.barnHasNext
     ? orderBookSDK
         .getOrders({ owner, offset, limit: limitPlusOne }, { chainId: networkId, env: 'staging', backoffOpts })
+        .then(normalizeOrders)
         .catch((error) => {
           console.error('[getAccountOrders] Error getting BARN orders for account', owner, networkId, error)
           return []
@@ -76,6 +83,14 @@ export async function getAccountOrders(params: GetAccountOrdersParams): Promise<
   return { orders: [...currentPageOrders], hasNextPage: state.unmerged.length > 0 }
 }
 
+/**
+ * Pages are merged sequentially starting from the first one (leftovers are carried over in `unmerged`),
+ * so only the first page can drop the cache without skewing the pages that follow it
+ */
+function canResetCache({ skipCache, offset = 0 }: GetAccountOrdersParams): boolean {
+  return Boolean(skipCache) && offset === 0
+}
+
 const userOrdersCache = new Map<string, CacheState>()
 
 export type GetAccountOrdersResponse = {
@@ -107,11 +122,11 @@ const emptyState = (): CacheState => ({
   barnHasNext: true,
 })
 
-const getState = (cacheKey: CacheKey): CacheState => {
+const getState = (cacheKey: CacheKey, reset = false): CacheState => {
   const key = JSON.stringify(cacheKey)
   const cachedState = userOrdersCache.get(key)
 
-  if (!cachedState) {
+  if (!cachedState || reset) {
     userOrdersCache.set(key, emptyState())
     console.debug('User Orders: Cache reset', { key })
   }

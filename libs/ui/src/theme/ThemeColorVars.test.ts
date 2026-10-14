@@ -1,7 +1,7 @@
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { CHAIN_ACCENT_CONFIG, getChainAccentColors } from './ThemeColorVars'
+import { CHAIN_ACCENT_CONFIG, getChainAccentColors } from './chainAccentConfig'
 
 import { Color } from '../colors'
 

@@ -25,19 +25,27 @@ import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
-import { useDerivedTradeState, useIsWrapOrUnwrap, useNonEvmReceiverConfirmed, useTradePriceImpact } from 'modules/trade'
-import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
+import {
+  useDerivedTradeState,
+  useGetReceiveAmountInfo,
+  useIsWrapOrUnwrap,
+  useNonEvmReceiverConfirmed,
+  useTradePriceImpact,
+} from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TradeType } from 'common/modules/tradeNavigation'
 import { featureFlagsStatusAtom } from 'common/state/featureFlagsState'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
+import { useSolanaNativeShortfall } from './useSolanaNativeShortfall'
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
+import { getSwapMaximumSellAmount } from '../utils/getSwapMaximumSellAmount.utils'
+import { isUnsupportedTokenInQuote } from '../utils/isUnsupportedTokenInQuote.utils'
 
 // eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -61,7 +69,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const { state: approvalState } = useApproveState(amountToApprove)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
-    useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
+    useIsTradeUnsupported(inputCurrency, outputCurrency) ||
+    isUnsupportedTokenInQuote(tradeQuote, inputCurrency, outputCurrency)
   const isInputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(inputCurrency))
   const isOutputCurrencyXstock = useIsXstockToken(getNonNativeCurrency(outputCurrency))
 
@@ -89,6 +98,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapMaximumSellAmount = tradeType === TradeType.SWAP ? getSwapMaximumSellAmount(receiveAmountInfo) : null
+
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
@@ -98,6 +110,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     outputCurrency,
   })
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
+
+  const solanaNativeShortfall = useSolanaNativeShortfall()
 
   return useMemo(() => {
     if (!derivedTradeState) return null
@@ -135,6 +149,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
         featureFlagsStatus === 'loading' ||
         (featureFlagsStatus === 'ready' && !canQuote && !captchaInteractionRequired),
       isCaptchaRequired: featureFlagsStatus === 'ready' && !canQuote && captchaInteractionRequired,
+      swapMaximumSellAmount,
+      solanaNativeShortfall,
     }
   }, [
     hasFirstLoad,
@@ -170,6 +186,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     featureFlagsStatus,
     canQuote,
     captchaInteractionRequired,
+    swapMaximumSellAmount,
+    solanaNativeShortfall,
   ])
 }
 
@@ -179,8 +197,4 @@ function getNonNativeCurrency(currency: Nullish<Currency>): Token | null {
   }
 
   return currency
-}
-
-function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
-  return state.error instanceof QuoteApiError && state.error?.type === QuoteApiErrorCodes.UnsupportedToken
 }

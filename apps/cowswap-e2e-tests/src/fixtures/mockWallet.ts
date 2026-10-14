@@ -50,7 +50,7 @@ function createMockWalletApi(engine: WalletEngine, page: Page, context: BrowserC
         chainIdHex: toHex(chainId),
       })
       await page.goto(`/#/${chainId}/swap/${sell}/${buy}`, { waitUntil: 'domcontentloaded' })
-      await page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })
+      await page.locator('#web3-status-connected').waitFor()
     },
     async switchChain(chainId) {
       engine.setChainId(chainId)
@@ -74,7 +74,7 @@ function createMockWalletApi(engine: WalletEngine, page: Page, context: BrowserC
         .getByText(/e2e wallet/i)
         .first()
         .click()
-      await page.locator('#web3-status-connected').waitFor({ timeout: 15_000 })
+      await page.locator('#web3-status-connected').waitFor()
     },
     stubRpc(method, handler) {
       engine.stubRpc(method, handler)

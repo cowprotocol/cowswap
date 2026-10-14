@@ -13,7 +13,14 @@ export type { BaseSurfaceProps as BaseOpenableContainerProps } from '../surfaces
 
 export type BottomDrawerProps = BaseSurfaceProps
 
-function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, className }: BottomDrawerProps): ReactNode {
+function BottomDrawerComponent({
+  isOpen,
+  onOpenChange,
+  onOpenChangeComplete,
+  children,
+  a11yTitle,
+  className,
+}: BottomDrawerProps): ReactNode {
   const handleOpenChange = useCallback(
     (nextOpen: boolean) => {
       onOpenChange(nextOpen)
@@ -24,7 +31,12 @@ function BottomDrawerComponent({ isOpen, onOpenChange, children, a11yTitle, clas
   useBodyScrollbarLocker(isOpen)
 
   return (
-    <BaseDrawer.Root open={isOpen} onOpenChange={handleOpenChange} swipeDirection="down">
+    <BaseDrawer.Root
+      open={isOpen}
+      onOpenChange={handleOpenChange}
+      onOpenChangeComplete={onOpenChangeComplete}
+      swipeDirection="down"
+    >
       <BaseDrawer.VirtualKeyboardProvider>
         <BaseDrawer.Portal>
           <OverlayLayer data-bottom-drawer-layer="">

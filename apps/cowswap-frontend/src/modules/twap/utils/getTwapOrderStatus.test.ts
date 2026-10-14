@@ -153,4 +153,25 @@ describe('getTwapOrderStatus()', () => {
       expect(status).toBe(TwapOrderStatus.Expired)
     })
   })
+
+  it('returns PartiallyFilled when a completed order has execution', () => {
+    const execution: TwapOrdersExecution = {
+      confirmedPartsCount: orderStruct.n,
+      info: {
+        executedSellAmount: '2',
+        executedBuyAmount: '1',
+        executedFeeAmount: '0',
+      },
+    }
+
+    const status = getTwapOrderStatus({
+      execution,
+      executionDate: new Date(),
+      isCancelled: false,
+      isWaitingForSignature: false,
+      order: orderStruct,
+    })
+
+    expect(status).toBe(TwapOrderStatus.PartiallyFilled)
+  })
 })

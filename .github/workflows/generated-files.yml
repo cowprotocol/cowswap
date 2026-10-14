@@ -13,8 +13,8 @@ permissions:
 
 env:
   NODE_VERSION: lts/jod
-  # needed by tools/scripts/install-sdk-preview.js when package.json pins a `pr-NNN`
-  # SDK preview build — install:ci writes an .npmrc that auths to GitHub Packages.
+  # Needed while root package.json overrides pin @cowprotocol SDK previews to GitHub Packages;
+  # .npmrc reads this token to auth against npm.pkg.github.com.
   PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
 
 jobs:

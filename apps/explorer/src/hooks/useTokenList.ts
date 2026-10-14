@@ -1,6 +1,11 @@
 import { useMemo } from 'react'
 
-import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import {
+  COW_CDN,
+  SOLANA_RWA_TOKEN_LIST_URL,
+  SOLANA_TOKEN_LIST_URL,
+  SWR_NO_REFRESH_OPTIONS,
+} from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import useSWR, { SWRResponse } from 'swr'
@@ -47,16 +52,40 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   const { data: coingeckoList, isLoading: isCoingeckoLoading } = useTokenListByUrl(
     coingeckoUrlKey ? `https://tokens.coingecko.com/${coingeckoUrlKey}/all.json` : '',
   )
+  // The only source of SPL metadata: a mint is not a contract to read `symbol`/`decimals` off, and
+  // without decimals an order's amounts cannot be rendered at all.
+  const isSolana = chainId === SupportedChainId.SOLANA
+  const { data: solanaList, isLoading: isSolanaListLoading } = useTokenListByUrl(isSolana ? SOLANA_TOKEN_LIST_URL : '')
+  // Read even though the swap app hides it in restricted locations: an order that already exists has to
+  // render, and without this list there is no symbol or decimals to render it with
 
-  const isLoading = chainId
-    ? isCowListLoading || isHoneyswapListLoading || isCoingeckoUniswapLoading || isCoingeckoLoading
-    : false
+  const { data: solanaRwaList, isLoading: isSolanaRwaListLoading } = useTokenListByUrl(
+    isSolana ? SOLANA_RWA_TOKEN_LIST_URL : '',
+  )
+
+  const isLoading =
+    Boolean(chainId) &&
+    [
+      isCowListLoading,
+      isHoneyswapListLoading,
+      isCoingeckoUniswapLoading,
+      isCoingeckoLoading,
+      isSolanaListLoading,
+      isSolanaRwaListLoading,
+    ].some(Boolean)
 
   return useMemo(() => {
     if (!chainId) return { data: EMPTY_TOKENS, isLoading: false }
 
     // Merge lists in priority order, defaulting undefined entries to INITIAL_TOKEN_LIST_PER_NETWORK
-    const mergedByChain = [coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList].reduce<TokenListPerNetwork>(
+    const mergedByChain = [
+      coingeckoUniswapList,
+      honeyswapList,
+      cowSwapList,
+      coingeckoList,
+      solanaList,
+      solanaRwaList,
+    ].reduce<TokenListPerNetwork>(
       (acc, src) => ({ ...acc, ...(src ?? INITIAL_TOKEN_LIST_PER_NETWORK) }),
       INITIAL_TOKEN_LIST_PER_NETWORK,
     )
@@ -75,7 +104,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
     }
 
     return { data, isLoading }
-  }, [chainId, coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList, isLoading])
+  }, [chainId, coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList, solanaList, solanaRwaList, isLoading])
 }
 
 function useTokenListByUrl(tokenListUrl: string): SWRResponse<TokenListPerNetwork> {

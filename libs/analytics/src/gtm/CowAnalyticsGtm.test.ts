@@ -114,6 +114,35 @@ describe('CowAnalyticsGtm wallet lifecycle events', () => {
     })
   })
 
+  it('keeps false isEoaTwap flags on trade events', () => {
+    analytics.sendEvent({
+      category: 'TWAP',
+      action: 'Place Order',
+      label: 'TWAP|COW,WETH',
+      isEoaTwap: false,
+    })
+
+    expect(getLastEvent('Place Order')).toMatchObject({
+      event: 'Place Order',
+      category: 'TWAP',
+      action: 'Place Order',
+      isEoaTwap: false,
+    })
+  })
+
+  it('preserves isEoaTwap on order_submitted string event payloads', () => {
+    analytics.sendEvent('order_submitted', {
+      orderType: 'TWAP',
+      isEoaTwap: false,
+    })
+
+    expect(getLastEvent('order_submitted')).toMatchObject({
+      event: 'order_submitted',
+      orderType: 'TWAP',
+      isEoaTwap: false,
+    })
+  })
+
   it.each([
     ['swap_executed', 'SWAP'],
     ['swap_cancelled', 'LIMIT'],

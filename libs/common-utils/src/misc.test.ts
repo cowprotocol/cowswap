@@ -1,10 +1,57 @@
 import {
+  debounce,
   getProviderErrorMessage,
   isInsufficientFundsProviderError,
   isRejectRequestProviderError,
   TimeoutError,
   withTimeout,
 } from './misc'
+
+describe('debounce', () => {
+  beforeEach(() => {
+    jest.useFakeTimers()
+  })
+
+  afterEach(() => {
+    jest.useRealTimers()
+  })
+
+  it('forwards the original arguments to the wrapped function', () => {
+    const func = jest.fn()
+    const debounced = debounce(func, 100)
+
+    debounced('/swap?chain=mainnet', ['param'], 'CoW Swap')
+    jest.advanceTimersByTime(100)
+
+    // Regression: the wrapped function used to receive a single array argument
+    // (['/swap?chain=mainnet', ['param'], 'CoW Swap']) instead of the original arguments
+    expect(func).toHaveBeenCalledTimes(1)
+    expect(func).toHaveBeenCalledWith('/swap?chain=mainnet', ['param'], 'CoW Swap')
+  })
+
+  it('invokes the wrapped function only once with the latest arguments', () => {
+    const func = jest.fn()
+    const debounced = debounce(func, 100)
+
+    debounced('first')
+    jest.advanceTimersByTime(50)
+    debounced('second')
+    jest.advanceTimersByTime(100)
+
+    expect(func).toHaveBeenCalledTimes(1)
+    expect(func).toHaveBeenCalledWith('second')
+  })
+
+  it('does not invoke the wrapped function before the wait time elapses', () => {
+    const func = jest.fn()
+    const debounced = debounce(func, 100)
+
+    debounced()
+    jest.advanceTimersByTime(99)
+
+    expect(func).not.toHaveBeenCalled()
+  })
+})
 
 describe('withTimeout', () => {
   it('resolves when the promise settles before the timeout', async () => {
@@ -93,6 +140,24 @@ describe('isInsufficientFundsProviderError', () => {
       },
     }
     expect(isInsufficientFundsProviderError(viemStyleError)).toBe(true)
+  })
+
+  it('detects Solana simulation failures: fee-payer rent, zero-lamport payer, and transfer shortfall', () => {
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Transaction results in an account (0) with insufficient funds for rent.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({
+        message:
+          'Simulation failed. Message: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.',
+      }),
+    ).toBe(true)
+    expect(
+      isInsufficientFundsProviderError({ message: 'Transfer: insufficient lamports 293000, need 745539000' }),
+    ).toBe(true)
   })
 
   it('returns false for unrelated errors, including CoW API "not enough funds" wording', () => {

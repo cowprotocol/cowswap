@@ -5,7 +5,12 @@ import { AccountProxyLink } from '../shared/AccountProxyLink'
 export const DetailsTableTooltips = {
   orderID: 'A unique identifier ID for this order.',
   from: 'The account address which signed the order.',
+  twapAccountProxy: 'The CoW Shed smart contract that owns the part orders on behalf of the account in From.',
   to: 'The account address which will/did receive the bought amount.',
+  toSolana: 'The token account which will/did receive the bought amount. This is not a wallet address.',
+  toSolanaOwner: 'The wallet which owns the token account the bought amount will/did be paid into.',
+  solanaTokenAccount:
+    'The token account the bought amount will/did be paid into. It is owned by the wallet shown in To.',
   toBridgeProxy: (
     <span>
       The <AccountProxyLink>{ACCOUNT_PROXY_LABEL_EXPLORER}</AccountProxyLink> address which will/did receive bought
@@ -16,7 +21,7 @@ export const DetailsTableTooltips = {
     'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on a block explorer.',
   appData:
-    'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',
+    'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern.',
   status: 'The order status is either Signing, Open, Filled, Partially filled, Expired or Cancelled.',
   solvedBy: 'The solver that won and executed the settlement for this order.',
   wrappers: 'Wrappers are smart contracts that execute as part of this order, as specified in the appData.',
@@ -54,16 +59,11 @@ export const DetailsTableTooltips = {
       </ul>
     </div>
   ),
-  amount: 'The total sell and buy amount for this order. Sell amount includes the fee.',
+  amount: 'The total sell and buy amount for this order.',
   priceLimit:
-    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage. The fee is already deducted from the sell amount.',
-  priceExecution:
-    'The actual price at which this order has been matched and executed, after deducting fees from the amount sold.',
+    'The limit price is the price at which this order shall be (partially) filled, in combination with the specified slippage.',
+  priceExecution: 'The actual price at which this order has been matched and executed.',
   surplus:
     'The (averaged) surplus for this order. This is the positive difference between the initial limit price and the actual (average) execution price.',
-  filled:
-    'Indicates what percentage amount this order has been filled and the amount sold/bought. Amount sold includes the fee.',
-  fees: 'The amount of fees paid for this order. This will show a progressive number for orders with partial fills. Might take a few minutes to show the final value.',
-  feesBreakdown:
-    'The costs and fees charged for this order, totaled per token, with a breakdown into the on-chain network costs and each fee applied. Might take a few minutes to show the final value.',
+  filled: 'Indicates what percentage amount this order has been filled and the amount sold/bought.',
 }

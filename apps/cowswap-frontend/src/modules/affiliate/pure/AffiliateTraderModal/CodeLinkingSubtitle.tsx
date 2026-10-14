@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 
 import { Subtitle } from './styles'
 
@@ -34,8 +34,9 @@ export function CodeLinkingSubtitle(props: CodeLinkingSubtitleProps): ReactNode 
         <Trans>Connect your wallet to activate it and start earning rewards when you trade.</Trans>
       )}{' '}
       <Trans>
-        Earn <strong>{rewardAmount}</strong> per <strong>{triggerVolume}</strong> of eligible volume over {timeCapDays}{' '}
-        days. Rewards are paid out weekly to your Ethereum wallet.
+        Earn <strong>{rewardAmount}</strong> per <strong>{triggerVolume}</strong> of eligible volume over{' '}
+        <Plural value={timeCapDays} one="# day" few="# days" many="# days" other="# days" />. Rewards are paid out
+        weekly to your Ethereum wallet.
       </Trans>{' '}
       <HowItWorks />
     </Subtitle>

@@ -52,3 +52,13 @@ export function getExplorerOrderLink(chainId: ChainId, orderId: UID): string {
 
   return baseUrl + `/orders/${orderId}`
 }
+
+export function getExplorerTwapOrderLink(chainId: ChainId, eventId: string): string | undefined {
+  if (!isTwapEventId(eventId)) return undefined
+
+  return `${getExplorerBaseUrl(chainId)}/twap/${eventId}`
+}
+
+export function isTwapEventId(value: string): boolean {
+  return /^\d{60,78}$/.test(value)
+}

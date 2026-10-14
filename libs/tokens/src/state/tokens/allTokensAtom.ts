@@ -161,10 +161,11 @@ export const inactiveTokensAtom = atom(async (get) => {
 export const tokensByAddressAtom = atom(async (get) => {
   const activeTokens = await get(allActiveTokensAtom)
 
+  // Also looked up with raw URL input ("#/1/swap/constructor/…"): a plain {} would return inherited values
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
     acc[getAddressKey(token.address)] = token
     return acc
-  }, {})
+  }, Object.create(null))
 
   return {
     tokens,
@@ -174,6 +175,7 @@ export const tokensByAddressAtom = atom(async (get) => {
 
 export const tokensBySymbolAtom = atom(async (get) => {
   const { tokens, chainId } = await get(allActiveTokensAtom)
+  // Symbols come from on-chain symbol(): a plain {} would resolve "__proto__" / "constructor" to inherited values
   const tokensBySymbol = tokens.reduce<TokensBySymbol>((acc, token) => {
     if (!token.symbol) return acc
 
@@ -184,7 +186,7 @@ export const tokensBySymbolAtom = atom(async (get) => {
     acc[symbol].push(token)
 
     return acc
-  }, {})
+  }, Object.create(null))
 
   return { tokens: tokensBySymbol, chainId } as TokensBySymbolState
 })

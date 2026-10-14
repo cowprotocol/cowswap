@@ -7,13 +7,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
-export function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
-  if (isSell) {
-    return isCustomRecipient ? t`including an extra ` : t`and got an extra `
-  }
-  return t`and saved `
-}
-
 export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
   const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
   const surplusToken = surplusData?.surplusAmount?.currency.symbol || t`Unknown token`
@@ -31,10 +24,11 @@ export function getTwitterShareUrlForBenefit(benefit: string): string {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+    isSellOrder(orderKind)
+      ? t`Hey, I just got an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`
+      : t`Hey, I just saved an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
 

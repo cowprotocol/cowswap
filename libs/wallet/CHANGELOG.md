@@ -1,5 +1,80 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.15.0...wallet-v3.16.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.16.0
+  - @cowprotocol/common-const@3.14.0
+  - @cowprotocol/common-hooks@3.14.0
+  - @cowprotocol/common-utils@3.18.0
+  - @cowprotocol/core@3.11.0
+  - @cowprotocol/currency@1.7.0
+  - @cowprotocol/ens@3.9.0
+  - @cowprotocol/types@4.12.0
+  - @cowprotocol/iframe-transport@2.3.9
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.14.0...wallet-v3.15.0) (2026-09-29)
+
+### Minor Changes
+
+- feat: update TWAP for EOA quoting to include poll funds gas cost (#8216)
+
+### Patch Changes
+
+- fix: disallow twap for safe imported in rabby (#8250)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.15.0
+
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.2...wallet-v3.14.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- fix(solana): adjust balancesloading state in token selector (#8167)
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.17.0
+  - @cowprotocol/ui@3.14.0
+  - @cowprotocol/common-const@3.13.0
+  - @cowprotocol/common-hooks@3.13.0
+  - @cowprotocol/core@3.10.0
+  - @cowprotocol/currency@1.6.0
+  - @cowprotocol/ens@3.8.0
+  - @cowprotocol/types@4.11.0
+  - @cowprotocol/iframe-transport@2.3.8
+
+## [3.13.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.1...wallet-v3.13.2) (2026-09-15)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-utils@3.16.0
+  - @cowprotocol/common-const@3.12.0
+  - @cowprotocol/common-hooks@3.12.0
+  - @cowprotocol/core@3.9.2
+  - @cowprotocol/ens@3.7.2
+  - @cowprotocol/ui@3.13.2
+
 ## [3.13.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.13.0...wallet-v3.13.1) (2026-09-11)
 
 ### Patch Changes

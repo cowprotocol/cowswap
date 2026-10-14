@@ -1,6 +1,6 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT } from './common/codeExample.constants'
+import { PROVIDER_PARAM_COMMENT } from './common/codeExample.constants'
 import { formatParameters } from './common/formatParameters.utils'
 
 import { ColorPalette } from '../../../configurator.types'
@@ -10,7 +10,6 @@ export function jsExample(params: CowSwapWidgetParams, defaultPalette: ColorPale
 
 const container = document.getElementById('<YOUR_CONTAINER>')
 
-// ${COMMENTS_BEFORE_PARAMS}
 const params = ${formatParameters(params, 0, false, defaultPalette)}
 
 ${PROVIDER_PARAM_COMMENT}

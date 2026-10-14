@@ -1,191 +1,207 @@
 #!/usr/bin/env node
 
 /**
- * Updates @cowprotocol/cow-sdk and @cowprotocol/sdk-* packages in all apps and libs
- * to pre-release versions published from a cow-sdk PR.
+ * Points the whole monorepo at the @cowprotocol/cow-sdk and @cowprotocol/sdk-* builds
+ * published from a cow-sdk PR, then updates pnpm-lock.yaml.
+ *
+ * Preview builds live on GitHub Packages, every other @cowprotocol package lives on npmjs,
+ * and pnpm's registry config is scope-wide — so redirecting the scope breaks the npmjs ones.
+ * Instead each preview is pinned by its full GitHub tarball URL in the root `pnpm.overrides`,
+ * exactly like the npmjs tarball URLs already used for @cowprotocol/cms. No registry
+ * redirect, no pnpmfile, and workspace package.json files stay untouched.
  *
  * Usage:
- *   node tools/scripts/update-sdk-preview.js <PR_URL>
+ *   PACKAGE_READ_AUTH_TOKEN=<github token> node tools/scripts/update-sdk-preview.js <PR_URL>
  *
- * Example:
- *   node tools/scripts/update-sdk-preview.js https://github.com/cowprotocol/cow-sdk/pull/787
+ * To drop the preview: delete the @cowprotocol entries from `pnpm.overrides` and reinstall.
  */
 
+const { execSync } = require('child_process')
 const fs = require('fs')
-const https = require('https')
 const path = require('path')
 
 const ROOT_DIR = path.resolve(__dirname, '../..')
-const APPS_DIR = path.join(ROOT_DIR, 'apps')
-const LIBS_DIR = path.join(ROOT_DIR, 'libs')
-
+const ROOT_PACKAGE_JSON_PATH = path.join(ROOT_DIR, 'package.json')
+const GITHUB_PACKAGES_REGISTRY = 'https://npm.pkg.github.com'
 const PR_URL_REGEX = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\/pull\/(\d+)$/
+// Matches `@cowprotocol/<pkg>@<version>` in the publish bot's comment.
+const PACKAGE_REGEX = /(@cowprotocol\/[\w-]+)@(\d[\w.\-]+)/g
 
-async function fetchAllComments(owner, repo, number) {
-  const comments = []
-  let page = 1
+function collectWorkspacePins() {
+  const pins = {}
 
-  while (true) {
-    const url = `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}`
-    const batch = await fetchJson(url)
-    if (!Array.isArray(batch) || batch.length === 0) break
-    comments.push(...batch)
-    page++
-  }
+  for (const dir of ['apps', 'libs']) {
+    const base = path.join(ROOT_DIR, dir)
+    if (!fs.existsSync(base)) continue
 
-  return comments
-}
+    for (const entry of fs.readdirSync(base)) {
+      const file = path.join(base, entry, 'package.json')
+      if (!fs.existsSync(file)) continue
 
-function fetchJson(url) {
-  return new Promise((resolve, reject) => {
-    https
-      .get(url, { headers: { 'User-Agent': 'cowswap-sdk-updater' } }, (res) => {
-        if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-          return fetchJson(res.headers.location).then(resolve, reject)
+      const pkg = JSON.parse(fs.readFileSync(file, 'utf-8'))
+      for (const section of ['dependencies', 'devDependencies']) {
+        for (const [name, version] of Object.entries(pkg[section] ?? {})) {
+          if (!name.startsWith('@cowprotocol/') || !/^\d/.test(version)) continue
+          if (!pins[name] || compareVersions(version, pins[name]) > 0) pins[name] = version
         }
-        if (res.statusCode !== 200) {
-          return reject(new Error(`HTTP ${res.statusCode} from ${url}`))
-        }
-        let data = ''
-        res.on('data', (chunk) => (data += chunk))
-        res.on('end', () => {
-          try {
-            resolve(JSON.parse(data))
-          } catch (e) {
-            reject(e)
-          }
-        })
-      })
-      .on('error', reject)
-  })
-}
-
-function getPackageJsonPaths() {
-  const paths = []
-
-  for (const baseDir of [APPS_DIR, LIBS_DIR]) {
-    if (!fs.existsSync(baseDir)) continue
-
-    const entries = fs.readdirSync(baseDir, { withFileTypes: true })
-    for (const entry of entries) {
-      if (!entry.isDirectory()) continue
-      const pkgPath = path.join(baseDir, entry.name, 'package.json')
-      if (fs.existsSync(pkgPath)) {
-        paths.push(pkgPath)
       }
     }
   }
 
-  return paths
+  return pins
 }
 
-// Main
-async function main() {
-  const prUrl = process.argv[2]
-  if (!prUrl) {
-    console.error('Usage: node tools/scripts/update-sdk-preview.js <PR_URL>')
-    console.error('Example: node tools/scripts/update-sdk-preview.js https://github.com/cowprotocol/cow-sdk/pull/787')
-    process.exit(1)
+function compareVersions(a, b) {
+  const left = a.split('.').map(Number)
+  const right = b.split('.').map(Number)
+
+  for (let i = 0; i < 3; i++) {
+    if ((left[i] ?? 0) !== (right[i] ?? 0)) return (left[i] ?? 0) < (right[i] ?? 0) ? -1 : 1
   }
 
-  const { owner, repo, number } = parsePrUrl(prUrl)
-  console.log(`Fetching comments from ${owner}/${repo}#${number}...`)
-
-  const comments = await fetchAllComments(owner, repo, number)
-  const versions = parseVersionsFromComments(comments)
-
-  console.log('\nPackage versions found:')
-  for (const [name, version] of Object.entries(versions)) {
-    console.log(`  ${name}@${version}`)
-  }
-
-  console.log('\nUpdating package.json files...\n')
-
-  const packageJsonPaths = getPackageJsonPaths()
-  let updatedCount = 0
-
-  for (const pkgPath of packageJsonPaths) {
-    const relativePath = path.relative(ROOT_DIR, pkgPath)
-    const wasUpdated = updatePackageJson(pkgPath, versions)
-    if (wasUpdated) {
-      console.log(`  -> ${relativePath}\n`)
-      updatedCount++
-    }
-  }
-
-  if (updatedCount === 0) {
-    console.log('No packages were updated.')
-  } else {
-    console.log(`\nUpdated ${updatedCount} package.json file(s).`)
-    console.log('⚠️ Run `pnpm install --no-frozen-lockfile` to apply the changes!')
-  }
+  return 0
 }
 
-function parsePrUrl(url) {
-  const match = url.match(PR_URL_REGEX)
-  if (!match) {
-    console.error(`Invalid PR URL: ${url}`)
-    console.error('Expected format: https://github.com/<owner>/<repo>/pull/<number>')
-    process.exit(1)
+/** Reads the newest "📦 GitHub Packages Published" comment on the PR. */
+async function fetchPublishedVersions(owner, repo, number, token) {
+  const comments = []
+
+  for (let page = 1; ; page++) {
+    const url = `https://api.github.com/repos/${owner}/${repo}/issues/${number}/comments?per_page=100&page=${page}`
+    const response = await fetch(url, {
+      // cow-sdk is public, so this works unauthenticated too — but anonymous GitHub API calls are
+      // capped at 60/hour per IP, and the token is already required below.
+      headers: { 'User-Agent': 'cowswap-sdk-updater', Authorization: `Bearer ${token}` },
+    })
+    if (!response.ok) throw new Error(`HTTP ${response.status} from ${url}`)
+
+    const batch = await response.json()
+    if (batch.length === 0) break
+    comments.push(...batch)
   }
-  return { owner: match[1], repo: match[2], number: match[3] }
-}
 
-function parseVersionsFromComments(comments) {
-  // Matches package@version where version starts with a digit (semver pre-release)
-  const packageRegex = /(@cowprotocol\/[\w-]+)@(\d[\w.\-]+)/g
-
-  // Search from the last comment backwards — the most recent publish is what we want
-  for (let i = comments.length - 1; i >= 0; i--) {
-    const body = comments[i].body || ''
+  for (const { body = '' } of comments.reverse()) {
     if (!body.includes('GitHub Packages Published')) continue
 
-    const versions = {}
-    let match
-    while ((match = packageRegex.exec(body)) !== null) {
-      versions[match[1]] = match[2]
-    }
-
+    const versions = Object.fromEntries([...body.matchAll(PACKAGE_REGEX)].map(([, name, version]) => [name, version]))
     if (Object.keys(versions).length > 0) return versions
   }
 
-  console.error('Could not find a comment with title "📦 GitHub Packages Published" containing package versions.')
-  process.exit(1)
+  throw new Error('No "📦 GitHub Packages Published" comment with package versions found on that PR.')
 }
 
-function shouldUpdate(depName) {
-  return depName === '@cowprotocol/cow-sdk' || depName.startsWith('@cowprotocol/sdk-')
+/** GitHub Packages tarball URLs carry an opaque content hash, so they have to be looked up. */
+async function fetchTarballUrl(name, version, token) {
+  const response = await fetch(`${GITHUB_PACKAGES_REGISTRY}/${name}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  if (!response.ok) throw new Error(`HTTP ${response.status} reading ${name} from GitHub Packages`)
+
+  const tarball = (await response.json()).versions?.[version]?.dist?.tarball
+  if (!tarball) throw new Error(`${name}@${version} is not published to GitHub Packages`)
+
+  return tarball
 }
 
-function updatePackageJson(pkgPath, versions) {
-  const content = fs.readFileSync(pkgPath, 'utf-8')
-  const pkg = JSON.parse(content)
-  let updated = false
+function install() {
+  console.log('Running pnpm install --no-frozen-lockfile...')
+  execSync('pnpm install --no-frozen-lockfile', {
+    cwd: ROOT_DIR,
+    stdio: 'inherit',
+    env: {
+      ...process.env,
+      // Preview tarballs are reached by URL, which `block-exotic-subdeps=true` rejects while
+      // resolving. Only relaxed here; CI's frozen install skips resolution and keeps the guard.
+      npm_config_block_exotic_subdeps: 'false',
+    },
+  })
+  console.log('\nDone. Commit package.json and pnpm-lock.yaml together.')
+}
 
-  for (const section of ['dependencies', 'devDependencies']) {
-    const deps = pkg[section]
-    if (!deps) continue
-
-    for (const depName of Object.keys(deps)) {
-      if (shouldUpdate(depName) && versions[depName]) {
-        const oldVersion = deps[depName]
-        deps[depName] = versions[depName]
-        if (oldVersion !== versions[depName]) {
-          console.log(`  ${depName}: ${oldVersion} -> ${versions[depName]}`)
-          updated = true
-        }
-      }
-    }
+async function main() {
+  const prUrl = process.argv[2]
+  if (!prUrl) {
+    console.error('Usage: PACKAGE_READ_AUTH_TOKEN=... node tools/scripts/update-sdk-preview.js <PR_URL>')
+    process.exit(1)
   }
 
-  if (updated) {
-    fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n')
+  const match = prUrl.match(PR_URL_REGEX)
+  if (!match) {
+    console.error(`Invalid PR URL: ${prUrl} (expected https://github.com/<owner>/<repo>/pull/<number>)`)
+    process.exit(1)
   }
 
-  return updated
+  const token = process.env.PACKAGE_READ_AUTH_TOKEN
+  if (!token) {
+    console.error('PACKAGE_READ_AUTH_TOKEN env var is required to read GitHub Packages metadata.')
+    process.exit(1)
+  }
+
+  const [, owner, repo, number] = match
+  console.log(`Fetching published versions from ${owner}/${repo}#${number}...`)
+  const versions = await fetchPublishedVersions(owner, repo, number, token)
+
+  const overrides = {}
+  for (const [name, version] of Object.entries(versions)) {
+    overrides[name] = await fetchTarballUrl(name, version, token)
+    console.log(`  ${name}@${version}`)
+  }
+
+  warnAboutDowngrades(overrides)
+  writeOverrides(overrides)
+  console.log(`\nPinned ${Object.keys(overrides).length} package(s) in root package.json overrides.\n`)
+
+  install()
 }
 
-main().catch((err) => {
-  console.error(err)
-  process.exit(1)
-})
+/**
+ * A preview is published from an SDK branch that may sit behind main, so an override can silently
+ * roll a package back — which breaks the build only later, at typecheck, far from the cause.
+ * Warn rather than skip: the package under test is usually behind the workspace pin too.
+ */
+function warnAboutDowngrades(overrides) {
+  const pinned = collectWorkspacePins()
+  const behind = []
+
+  for (const [name, url] of Object.entries(overrides)) {
+    // The capture only matches when a prerelease suffix follows, so every previewBase here comes
+    // from a `-pr-NNN-<sha>` build — which sorts BEFORE the plain release of the same version.
+    const previewBase = url.match(/\/(\d+\.\d+\.\d+)-/)?.[1]
+    const pin = pinned[name]
+    if (!previewBase || !pin) continue
+
+    const comparison = compareVersions(previewBase, pin)
+    if (comparison > 0) continue
+
+    behind.push(
+      comparison < 0
+        ? `  ${name}: workspace pins ${pin}, preview is ${previewBase}`
+        : `  ${name}: workspace pins released ${pin}, preview is only a ${previewBase} prerelease`,
+    )
+  }
+
+  if (behind.length === 0) return
+
+  console.warn(`\n⚠️  ${behind.length} package(s) roll BACKWARDS vs what this repo pins:`)
+  console.warn(behind.join('\n'))
+  console.warn('If the preview branch predates a package the app now depends on, the install will')
+  console.warn('succeed and the build will fail on missing exports. Rebase the SDK PR, or drop the')
+  console.warn('affected entries from pnpm.overrides.\n')
+}
+
+function writeOverrides(overrides) {
+  const packageJson = JSON.parse(fs.readFileSync(ROOT_PACKAGE_JSON_PATH, 'utf-8'))
+  const kept = Object.entries(packageJson.pnpm.overrides).filter(([name]) => !name.startsWith('@cowprotocol/'))
+
+  packageJson.pnpm.overrides = Object.fromEntries([...kept, ...Object.entries(overrides)])
+  fs.writeFileSync(ROOT_PACKAGE_JSON_PATH, JSON.stringify(packageJson, null, 2) + '\n')
+}
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err.message || err)
+    process.exit(1)
+  })
+}
+
+module.exports = { collectWorkspacePins, compareVersions }

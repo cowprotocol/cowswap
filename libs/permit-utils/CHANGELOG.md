@@ -1,5 +1,43 @@
 # Changelog
 
+## [3.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.8.0...permit-utils-v3.9.0) (2026-10-06)
+
+### Minor Changes
+
+- feat(solana): add sponsored orders (#8200)
+
+- feat(solana): migration to v0.4 (#8188)
+
+- feat(solana): use cow quote API and suggested slippage (#8195)
+
+- feat: bump sdk + rename transaction -> partiallySignedTx (#8267)
+
+### Patch Changes
+
+- fix(solana): add solana native token icon (#8262)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.1
+
+## [3.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.1...permit-utils-v3.8.0) (2026-09-23)
+
+### Minor Changes
+
+- feat: show twaps in explorer (#8129)
+
+- feat(solana): apply user slippage from settings (#8164)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.0
+
+## [3.7.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.7.0...permit-utils-v3.7.1) (2026-09-15)
+
+### Patch Changes
+
+- fix(cowswap): fall back when permit execution reverts (#8033)
+
 ## [3.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.6.0...permit-utils-v3.7.0) (2026-09-09)
 
 ### Minor Changes

@@ -6,4 +6,4 @@ import type { TwapOrderItem } from 'modules/twap'
 
 export type TwapOrdersList = { [key: string]: TwapOrderItem }
 
-export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v1', {}, getJotaiIsolatedStorage())
+export const twapOrdersAtom = atomWithStorage<TwapOrdersList>('twap-orders-list:v2', {}, getJotaiIsolatedStorage())

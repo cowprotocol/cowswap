@@ -2,14 +2,14 @@ import { defineConfig, devices } from '@playwright/test'
 
 import path from 'node:path'
 
+const timeoutMultiplier = parseInt(process.env.TIMEOUT_MULTIPLIER ?? '1')
+
 export default defineConfig({
   testDir: './src/tests',
-  // The Synpress MetaMask connect flow (extension boot + network switch + dapp approval)
-  // takes ~20-25s on its own, so the 30s Playwright default leaves no room for the test body.
-  timeout: 90_000,
+  timeout: 120_000 * timeoutMultiplier,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
-  expect: { timeout: 10_000 },
+  expect: { timeout: 30_000 * timeoutMultiplier },
   retries: process.env.CI ? 1 : 0,
   workers: process.env.CI ? 1 : 6,
   reporter: process.env.CI ? [['html', { open: 'never' }], ['github']] : [['list'], ['html', { open: 'never' }]],
@@ -24,8 +24,8 @@ export default defineConfig({
     // already failed once, freeing up headroom for the timing-sensitive waits below.
     trace: 'on-first-retry',
     video: 'on-first-retry',
-    actionTimeout: 20_000,
-    navigationTimeout: 30_000,
+    actionTimeout: 120_000 * timeoutMultiplier,
+    navigationTimeout: 30_000 * timeoutMultiplier,
   },
   projects: [
     {

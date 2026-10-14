@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
 import { Fraction } from '@cowprotocol/currency'
@@ -48,6 +50,7 @@ export interface TokenAmountProps {
   opacitySymbol?: boolean
   clickable?: boolean
   noTitle?: boolean
+  prefix?: ReactNode
   /** Test hook — most callers don't need one, only those an e2e test targets directly. */
   testId?: string
 }
@@ -68,6 +71,7 @@ export function TokenAmount({
   opacitySymbol,
   clickable,
   noTitle,
+  prefix,
   testId,
 }: TokenAmountProps) {
   const title = !noTitle ? getTokenAmountTitle({ amount, tokenSymbol }) : undefined
@@ -85,6 +89,7 @@ export function TokenAmount({
   const roundedAmount = round ? FractionUtils.round(amount) : amount
   return (
     <Wrapper title={title} className={className} clickable={clickable} data-testid={testId}>
+      {prefix}
       {formatTokenAmount(roundedAmount) || defaultValue}
       <SymbolElement opacitySymbol={opacitySymbol}>{tokenSymbolElement}</SymbolElement>
     </Wrapper>

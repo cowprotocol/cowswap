@@ -14,6 +14,7 @@ export type OnPostedOrderPayload = {
   outputAmount: CurrencyAmount<Currency>
   orderDetails: GenericOnPostedOrderPayload
   isEthFlow?: boolean
+  explorerUrl?: string | null
 }
 
 export type OrderStatusEventListener = CowEventListener<OrderStatusEventPayloadMap, OrderStatusEvents>

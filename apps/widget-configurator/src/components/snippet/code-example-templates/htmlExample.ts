@@ -1,6 +1,6 @@
 import { CowSwapWidgetParams } from '@cowprotocol/widget-lib'
 
-import { COMMENTS_BEFORE_PARAMS, PROVIDER_PARAM_COMMENT_LINES } from './common/codeExample.constants'
+import { PROVIDER_PARAM_COMMENT_LINES } from './common/codeExample.constants'
 import { escapeJsonForInlineScript } from './common/escapeJsonForInlineScript.utils'
 import { formatParameters } from './common/formatParameters.utils'
 
@@ -39,7 +39,6 @@ export function vanillaNoDepsExample(params: CowSwapWidgetParams, defaultPalette
 >
   <div id="app"></div>
   <script>
-    // ${COMMENTS_BEFORE_PARAMS}
     const params = ${escapeJsonForInlineScript(formatParameters(params, 4, false, defaultPalette))}
 
     ${PROVIDER_PARAM_COMMENT_LINES.map((line) => `// ${line}`).join('\n    ')}

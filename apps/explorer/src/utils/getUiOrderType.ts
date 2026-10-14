@@ -1,4 +1,6 @@
+import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
 import { cowAppDataLatestScheme, OrderClass } from '@cowprotocol/cow-sdk'
+import { isEoaTwapPollFundsHook } from '@cowprotocol/hook-dapp-lib'
 
 import { Order } from 'api/operator'
 import { decodeFullAppData } from 'utils/decodeFullAppData'
@@ -26,10 +28,17 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIQUIDITY,
 }
 
-export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrderType {
-  const appData = decodeFullAppData(fullAppData)
+export function getUiOrderType({ fullAppData, class: orderClass, solana, appData }: Order): UiOrderType {
+  // TODO: wire up real appData
+  if (solana && (appData === SOLANA_LIMIT_ORDER_STAGING_APP_DATA || appData === SOLANA_LIMIT_ORDER_PROD_APP_DATA))
+    return UiOrderType.LIMIT
 
-  const appDataOrderClass = appData?.metadata?.orderClass as cowAppDataLatestScheme.OrderClass | undefined | string
+  const decodedAppData = decodeFullAppData(fullAppData)
+
+  const appDataOrderClass = decodedAppData?.metadata?.orderClass as
+    | cowAppDataLatestScheme.OrderClass
+    | undefined
+    | string
   const orderClassAsString =
     typeof appDataOrderClass === 'string'
       ? appDataOrderClass.toUpperCase()
@@ -45,4 +54,11 @@ export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrd
   // 3. Fallback to API classification.
   // Least precise as it doesn't distinguish twap type and uses backend logic which doesn't match frontend's classification
   return API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP[orderClass]
+}
+
+export function isEoaTwapPartOrder({ fullAppData }: Pick<Order, 'fullAppData'>): boolean {
+  const metadata = decodeFullAppData(fullAppData)?.metadata as cowAppDataLatestScheme.Metadata | undefined
+  const preHooks = metadata?.hooks?.pre
+
+  return preHooks?.some(isEoaTwapPollFundsHook) ?? false
 }

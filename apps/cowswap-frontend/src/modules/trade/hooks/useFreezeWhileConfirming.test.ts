@@ -16,6 +16,7 @@ function mockIsConfirming(isConfirming: boolean): void {
     transactionHash: null,
     error: null,
     permitSignatureState: undefined,
+    permitAmount: null,
     forcePriceConfirmation: false,
     isConfirming,
   } as ReturnType<typeof useTradeConfirmState>)

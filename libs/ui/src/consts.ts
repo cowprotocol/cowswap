@@ -29,6 +29,8 @@ export const OVERLAY_Z_INDEX = {
   overlay: 1060,
 } as const
 
+export const INPUT_MIN_HEIGHT_PX = 45
+
 export const Media = {
   upToTiny: (useMediaPrefix = true) => getMediaQuery(`(max-width: ${MEDIA_WIDTHS.upToTiny}px)`, useMediaPrefix),
   upToExtraSmall: (useMediaPrefix = true) =>
@@ -72,11 +74,13 @@ export const Font = {
  * Theme CSS vars and the `font()` mixin are derived from this map.
  */
 export const FONT_SIZING = {
+  FONT_SMALL: [12, 16],
   FONT_SMALL_PLUS: [13, 18],
   FONT_NORMAL: [14, 20],
   FONT_NORMAL_PLUS: [15, 20],
   FONT_MEDIUM: [16, 22],
   FONT_LARGE: [18, 24],
+  FONT_LARGER: [20, 28],
 } as const satisfies Record<string, readonly [fontSize: number, lineHeight: number]>
 
 export type FontSizingName = keyof typeof FONT_SIZING

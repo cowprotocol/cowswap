@@ -1,6 +1,6 @@
 import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
-import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
+import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './cowContracts'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
 import { TokenWithLogo } from './types'
@@ -39,6 +39,15 @@ export const DAI = new TokenWithLogo(
   18,
   'DAI',
   'Dai Stablecoin',
+)
+
+export const USDS_MAINNET = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xdc035d45d973e3ec169d2276ddab16f1e407384f', SupportedChainId.MAINNET),
+  SupportedChainId.MAINNET,
+  '0xdC035D45d973E3EC169d2276DDab16f1e407384F',
+  18,
+  'USDS',
+  'USDS Stablecoin',
 )
 
 export const GNO_MAINNET = new TokenWithLogo(

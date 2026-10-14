@@ -44,6 +44,7 @@ import {
   USDC_INK,
   NATIVE_CURRENCIES,
   USDC_SOLANA,
+  USDS_MAINNET,
 } from '@cowprotocol/common-const'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -71,6 +72,7 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     COW_TOKEN_MAINNET,
     USDC_MAINNET,
     USDT,
+    USDS_MAINNET,
     WBTC,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.MAINNET],
   ]),

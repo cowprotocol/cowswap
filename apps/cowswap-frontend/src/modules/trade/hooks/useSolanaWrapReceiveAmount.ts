@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaAddress, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -63,7 +63,7 @@ function usePreviewReceiveAmount(
   const canPreview = !!direction && !!account && !!connection && !!lamports && lamports > 0n
 
   useEffect(() => {
-    if (!canPreview || !direction || !account || !connection || !lamports) {
+    if (!canPreview || !direction || !account || !connection || !lamports || !isSolanaAddress(account)) {
       setReceiveAmount(undefined)
       return
     }

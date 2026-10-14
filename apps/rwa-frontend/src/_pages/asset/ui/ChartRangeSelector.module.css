@@ -1,0 +1,19 @@
+.ranges {
+  display: flex;
+  gap: 4px;
+}
+
+.ranges button {
+  padding: 4px 10px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.ranges .activeRange {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+}

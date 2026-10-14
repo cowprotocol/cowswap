@@ -2,24 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { normalizeError } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 
 import { useNetworkId } from 'state/network'
 import useSWR from 'swr'
 import { Network, UiError } from 'types'
-import { getProtocolFees, transformTrade } from 'utils'
+import { transformTrade } from 'utils'
 
-import { getTrades, Order, ProtocolFee, RawTrade, Trade } from 'api/operator'
+import { getTrades, Order, RawTrade, Trade } from 'api/operator'
 
 import { web3 } from '../explorer/api'
 
 type Result = {
   /** The requested page of fills. */
   trades: Trade[]
-  /**
-   * Fee breakdown over every fill, so it does not change as the user pages. `undefined` means
-   * unknown (loading or failed); `[]` means the order was charged no fee.
-   */
-  protocolFees?: ProtocolFee[]
   error?: UiError
   isLoading: boolean
   hasNextPage: boolean
@@ -43,11 +39,9 @@ const MAX_TRADES_PAGES = 100
 
 const TRADES_ERROR = 'Failed to fetch trades'
 
-/**
- * An order's fills: the requested page, enriched with timestamps, plus the fee breakdown over all
- * of them. One fetch serves both, so the order details page reads the trades once.
- */
+/** An order's fills: the requested page, enriched with timestamps. */
 export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
+  const networkId = useNetworkId()
   const { rawTrades, error, isLoading } = useAllOrderTrades(order)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
 
@@ -57,6 +51,9 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   // Fetch blocks timestamps for the visible page only
   useEffect(() => {
     if (!pageTrades.length) return
+    // `blockNumber` carries a slot there, which the EVM RPC behind `web3.eth.getBlock` cannot
+    // resolve. Fills keep a null `executionTime` until a Solana RPC does it.
+    if (networkId && isSolanaChain(networkId)) return
 
     let cancelled = false
 
@@ -72,7 +69,7 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     return (): void => {
       cancelled = true
     }
-  }, [pageTrades])
+  }, [pageTrades, networkId])
 
   // Transform trades adding tokens and timestamps
   const trades = useMemo(() => {
@@ -95,15 +92,13 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
     })
   }, [order, pageTrades, tradesTimestamps])
 
-  const protocolFees = useMemo(() => rawTrades && getProtocolFees(rawTrades), [rawTrades])
-
   const hasNextPage = (rawTrades?.length ?? 0) > offset + limit
   // SWR reports nothing pending without a key, but the caller is still waiting on the order itself.
   const areTradesLoading = isLoading || (!rawTrades && !error)
 
   return useMemo(
-    () => ({ trades, protocolFees, error, isLoading: areTradesLoading, hasNextPage }),
-    [trades, protocolFees, error, areTradesLoading, hasNextPage],
+    () => ({ trades, error, isLoading: areTradesLoading, hasNextPage }),
+    [trades, error, areTradesLoading, hasNextPage],
   )
 }
 
@@ -131,7 +126,7 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
   }, {} as TradesTimestamps)
 }
 
-/** Fetches every trade of an order, skipping duplicates so they cannot inflate the fee totals. */
+/** Fetches every trade of an order, skipping duplicates so they cannot inflate the fills list. */
 async function getAllOrderTrades(networkId: Network, orderId: string): Promise<RawTrade[]> {
   const allTrades: RawTrade[] = []
   const seen = new Set<string>()
@@ -157,7 +152,7 @@ async function getAllOrderTrades(networkId: Network, orderId: string): Promise<R
   throw new Error(`Reached ${MAX_TRADES_PAGES} pages of trades for order ${orderId}; the API is not paging correctly`)
 }
 
-/** Every fill of an order, as one SWR entry that {@link useOrderTrades} pages and aggregates. */
+/** Every fill of an order, as one SWR entry that {@link useOrderTrades} pages. */
 function useAllOrderTrades(order: Order | null): AllTradesResult {
   // Here we assume that we are already in the right network
   // contrary to useOrder hook, where it searches all networks for a given orderId

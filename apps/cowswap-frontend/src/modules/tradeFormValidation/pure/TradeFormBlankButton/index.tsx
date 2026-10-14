@@ -1,12 +1,14 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { CenteredDots, LongLoadText, UI, Media } from '@cowprotocol/ui'
+import { LongLoadText, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
+
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
@@ -21,6 +23,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   color: var(${UI.COLOR_BUTTON_TEXT});
   font-size: ${({ hasLongText$ }) => (hasLongText$ ? '16px' : '18px')};
   font-weight: 600;
+
   border-radius: 16px;
   min-height: 58px;
   text-align: center;
@@ -44,7 +47,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 `
 
 export interface TradeFormPrimaryButtonProps {
-  children: ReactElement | string
+  children: ReactNode
   disabled?: boolean
   loading?: boolean
   id?: string
@@ -77,10 +80,12 @@ export function TradeFormBlankButton({
   useEffect(() => {
     if (!ref?.current) return
 
-    const text = ref.current.innerText
+    const isLongText = ref.current.innerText.length > LONG_TEXT_LENGTH
 
-    setHasLongText(text.length > LONG_TEXT_LENGTH)
-  }, [children])
+    // `children` changes on every parent render; an unconditional setState here schedules a re-render per render,
+    // which under fast typing chains into React's "Maximum update depth exceeded"
+    if (isLongText !== hasLongText) setHasLongText(isLongText)
+  }, [children, hasLongText])
 
   // Combine local onClick logic with incoming onClick
   // TODO: Add proper return type annotation
@@ -117,12 +122,10 @@ export function TradeFormBlankButton({
       data-click-event={clickEvent}
     >
       {showLoader ? (
-        <>
-          <LongLoadText>
-            <Trans>Confirm with your wallet</Trans>
-          </LongLoadText>{' '}
-          <CenteredDots smaller />
-        </>
+        <LongLoadText>
+          <Trans>Confirm with your wallet</Trans>
+          <ThreeDots />
+        </LongLoadText>
       ) : (
         <>{children}</>
       )}

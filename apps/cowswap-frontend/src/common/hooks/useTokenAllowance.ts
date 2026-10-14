@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getUpdaterInterval, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { Token } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -35,6 +36,7 @@ export function useTokenAllowance(
   const tradeSpender = useTradeSpenderAddress()
   const [optimisticAllowances, setOptimisticAllowances] = useAtom(optimisticAllowancesAtom)
   const solanaAllowance = useSolanaDelegationAllowance(tokenAddress)
+  const prevChainId = usePrevious(chainId)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
@@ -61,8 +63,10 @@ export function useTokenAllowance(
 
   // Reset state on network changes
   useEffect(() => {
-    setOptimisticAllowances({})
-  }, [chainId, setOptimisticAllowances])
+    if (prevChainId !== chainId) {
+      setOptimisticAllowances({})
+    }
+  }, [chainId, prevChainId, setOptimisticAllowances])
 
   // Clean up expired optimistic allowances
   useEffect(() => {

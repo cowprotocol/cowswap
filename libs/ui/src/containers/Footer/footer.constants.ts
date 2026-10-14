@@ -109,6 +109,12 @@ const FOOTER_NAV_GROUP_HELP = {
       utmContent: 'footer-help-knowledge-base',
     },
     {
+      label: 'Resources',
+      href: 'https://cow.fi/resources',
+      external: true,
+      utmContent: 'footer-help-resources',
+    },
+    {
       label: 'Report Scams',
       href: 'https://cow.fi/report-scam',
       external: true,
@@ -139,7 +145,7 @@ export function getAboutFooterNavChildren(): NavItemChildrenProps[] {
       utmContent: 'footer-about-governance',
     },
     {
-      href: 'https://dune.com/cowprotocol/cow-revenue',
+      href: 'https://tokenterminal.com/explorer/projects/cow-protocol/metrics/revenue',
       label: 'Revenue',
       external: true,
       utmContent: 'footer-about-revenue',

@@ -1,7 +1,7 @@
 import type { Config } from 'wagmi'
 
 import type { TokenWithLogo } from '@cowprotocol/common-const'
-import { OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import type { SolanaQuote } from '@cowprotocol/sdk-trading-solana'
 import type { Command } from '@cowprotocol/types'
@@ -14,7 +14,7 @@ import type { AppDispatch } from 'legacy/state'
 import type { TransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import type { PostOrderParams } from 'legacy/utils/trade'
 
-import type { TypedAppDataHooks } from 'modules/appData'
+import type { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit } from 'modules/permit'
 import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -64,6 +64,11 @@ export interface SolanaTradeFlowContext {
     orderKind: OrderKind
     validTo: number
     receiver: string
+    // Protocol-level order classification, mirroring the EVM flow's `postOrderParams.class`.
+    orderClass: OrderClass
+    // Baked into the on-chain order intent at quote time (unlike EVM, where it's set later at
+    // order-post time) — must already be correct in the quote request that produced `solanaQuote`.
+    partiallyFillable: boolean
   }
   callbacks: {
     closeModals: Command
@@ -71,7 +76,10 @@ export interface SolanaTradeFlowContext {
     addTransaction: TransactionAdder
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
+  // The app's current appData; passed as `advancedSettings.appData` so the order carries it even if it
+  // has changed since the quote (e.g. hooks added after quoting), mirroring the EVM flow's `orderParams.appData`.
+  appData: AppDataInfo
 }
 
 export interface TradeFlowContext {
@@ -94,7 +102,7 @@ export interface TradeFlowContext {
     setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
-  swapFlowAnalyticsContext: TradeFlowAnalyticsContext
+  tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
   orderParams: PostOrderParams
   config: Config
   permitInfo: IsTokenPermittableResult

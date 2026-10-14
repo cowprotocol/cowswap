@@ -1,5 +1,6 @@
-import React from 'react'
+import type { ReactNode } from 'react'
 
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
 
 import { Helmet } from 'react-helmet'
@@ -13,12 +14,12 @@ import { LoadingWrapper } from '../../components/common/LoadingWrapper'
 import RedirectToSearch from '../../components/RedirectToSearch'
 import { useResolveEns } from '../../hooks/useResolveEns'
 import { useNetworkId } from '../../state/network'
-import OrdersTableWidget from '../components/OrdersTableWidget'
+import { OrdersTableWidget } from '../components/OrdersTableWidget'
 import { APP_TITLE } from '../const'
 
 const Wrapper = styled(WrapperMod)``
 
-const UserDetails: React.FC = () => {
+const UserDetails = (): ReactNode => {
   const { address } = useParams<{ address: string }>()
   const networkId = useNetworkId() ?? undefined
   const addressAccount = useResolveEns(address)
@@ -51,7 +52,11 @@ const UserDetails: React.FC = () => {
               }
             />
           </FlexContainerVar>
-          <OrdersTableWidget ownerAddress={addressAccount.address} networkId={networkId} />
+          <OrdersTableWidget
+            key={`${networkId ?? 'none'}:${addressAccount.address}`}
+            ownerAddress={getAddressKey(addressAccount.address)}
+            networkId={networkId}
+          />
         </>
       ) : (
         <LoadingWrapper message="Loading orders" />
