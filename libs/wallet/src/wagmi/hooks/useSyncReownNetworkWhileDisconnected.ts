@@ -1,15 +1,14 @@
 import { useEffect } from 'react'
 
-import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { SUPPORTED_CHAIN_ID_TO_CAIP } from '../../constants'
+import { IS_SOLANA_WALLET_ENABLED, SUPPORTED_CHAIN_ID_TO_CAIP } from '../../constants'
 import { getReownNetwork } from '../../reown/networks'
 import { reownAppKit } from '../config'
 
 export function useSyncReownNetworkWhileDisconnected(chainId: SupportedChainId, isConnected: boolean): void {
   useEffect(() => {
-    if (!IS_SOLANA_ENABLED || isConnected) return
+    if (!IS_SOLANA_WALLET_ENABLED || isConnected) return
     if (reownAppKit.getCaipNetwork()?.caipNetworkId === SUPPORTED_CHAIN_ID_TO_CAIP[chainId]) return
 
     const network = getReownNetwork(chainId)

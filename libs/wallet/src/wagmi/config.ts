@@ -1,7 +1,7 @@
 import { http } from 'viem'
 import { type Transport } from 'wagmi'
 
-import { IS_SOLANA_ENABLED, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
 import { EvmChains, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -15,6 +15,7 @@ import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 
 import { bindActiveProvider } from '../bindActiveProvider'
+import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 import { interceptEIP6963Providers } from '../providerIsolation'
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
 import { createSolanaRpcFetch, getReownRpcUrl } from '../reown/createSolanaRpcFetch'
@@ -114,7 +115,7 @@ const hasRecentConnector =
   )
 
 const reownAppKit = createAppKit({
-  adapters: IS_SOLANA_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
+  adapters: IS_SOLANA_WALLET_ENABLED ? [wagmiAdapter, solanaAdapter] : [wagmiAdapter],
   allowUnsupportedChain: true,
   customRpcUrls,
   defaultNetwork: getReownDefaultNetwork(),
@@ -203,7 +204,7 @@ if (isSafeApp) {
 
 bindActiveProvider(wagmiAdapter)
 
-if (IS_SOLANA_ENABLED) {
+if (IS_SOLANA_WALLET_ENABLED) {
   bindActiveNamespaceToWalletConnect(reownAppKit)
 }
 
