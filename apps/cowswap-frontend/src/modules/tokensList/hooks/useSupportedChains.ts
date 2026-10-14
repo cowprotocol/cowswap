@@ -14,7 +14,7 @@ import { mapChainInfo } from '../utils/mapChainInfo'
  * Filters by feature flags and the alpha networks setting via useAvailableChains.
  */
 export function useSupportedChains(): ChainInfo[] {
-  const availableChains = useAvailableChains(useAtomValue(alphaNetworksEnabledAtom))
+  const availableChains = useAvailableChains({ excludeSolana: !useAtomValue(alphaNetworksEnabledAtom) })
 
   return useMemo(() => {
     return availableChains.reduce((acc, id) => {
