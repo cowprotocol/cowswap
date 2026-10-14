@@ -4,12 +4,12 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { isEvmChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
 
@@ -20,7 +20,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const tradeState = useDerivedTradeState()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const postHooksRecipientOverride = usePostHooksRecipientOverride()
-  const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isCustomRecipientDisabled = useIsCustomRecipientDisabled()
   const isHooksTradeType = useIsHooksTradeType()
   const isNativeIn = useIsNativeIn()
   const hasTradeState = !!tradeStateFromUrl
@@ -30,7 +30,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   const prevPostHooksRecipientOverride = usePrevious(postHooksRecipientOverride)
   const recipient = tradeState?.recipient
   const hasRecipientInUrl = useMemo(() => hasRecipientSearchParam(location.search), [location.search])
-  const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !disableCustomRecipient
+  const shouldPreserveRecipientFromUrl = hasRecipientInUrl && !isCustomRecipientDisabled
   const outputCurrency = tradeState?.outputCurrency
   const inputCurrency = tradeState?.inputCurrency
   const isBridging = !!(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
@@ -51,11 +51,11 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
   }, [hasTradeState])
 
   /**
-   * Reset recipient whenever chainId or disableCustomRecipient changes,
+   * Reset recipient whenever chainId or custom-recipient availability changes,
    * but preserve any recipient set via URL.
    */
   useEffect(() => {
-    if (disableCustomRecipient) {
+    if (isCustomRecipientDisabled) {
       onChangeRecipient(null)
       return
     }
@@ -69,7 +69,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     }
   }, [
     chainId,
-    disableCustomRecipient,
+    isCustomRecipientDisabled,
     onChangeRecipient,
     postHooksRecipientOverride,
     isNonEvmBridging,
