@@ -3,8 +3,9 @@ import { type Transport } from 'wagmi'
 
 import { IS_SOLANA_ENABLED, RPC_URLS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { isInjectedWidget, isMobile } from '@cowprotocol/common-utils'
-import { EvmChains } from '@cowprotocol/cow-sdk'
+import { EvmChains, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { solana } from '@reown/appkit/networks'
 import { createAppKit } from '@reown/appkit/react'
 import { SolanaAdapter } from '@reown/appkit-adapter-solana'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -16,6 +17,7 @@ import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 import { bindActiveProvider } from '../bindActiveProvider'
 import { interceptEIP6963Providers } from '../providerIsolation'
 import { SAFE_CONNECTOR_ID } from '../reown/consts'
+import { createSolanaRpcFetch, getReownRpcUrl } from '../reown/createSolanaRpcFetch'
 import { SUPPORTED_REOWN_NETWORKS } from '../reown/networks'
 import { bindActiveNamespaceToWalletConnect } from '../reown/syncActiveNamespaceWithWalletConnect'
 import { connectWalletById } from '../utils/connectWalletById'
@@ -54,6 +56,9 @@ for (const chain of SUPPORTED_REOWN_NETWORKS) {
 
 const projectId = 'ac287751638b5d374a03c39e37f70376'
 
+const solanaRpcUrl = RPC_URLS[SupportedChainId.SOLANA]
+customRpcUrls[solana.caipNetworkId] = [{ url: solanaRpcUrl }]
+
 const metadata = {
   name: 'CoW Swap | The smartest way to trade cryptocurrencies',
   description:
@@ -62,7 +67,15 @@ const metadata = {
   icons: ['https://swap.cow.fi/apple-touch-icon.png'],
 }
 
-const solanaAdapter = new SolanaAdapter()
+const solanaAdapter = new SolanaAdapter({
+  connectionSettings: {
+    commitment: 'confirmed',
+    fetch: createSolanaRpcFetch({
+      primaryUrl: solanaRpcUrl,
+      fallbackUrl: getReownRpcUrl(solana.caipNetworkId, projectId),
+    }),
+  },
+})
 
 const wagmiAdapter = new WagmiAdapter({
   batch: window.__COWSWAP_E2E__
