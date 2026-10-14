@@ -17,6 +17,7 @@ ${ThemeColorVars}
     ${UI.FONT_FAMILY_PRIMARY}: ${Font.familyStudioFeixen};
   }
 
+
 ${baseGlobalStyles}
 
   @font-face {

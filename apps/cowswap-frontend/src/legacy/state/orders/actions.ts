@@ -58,10 +58,13 @@ export interface BaseOrder extends OrderCreation {
 
   // EthFlow / Solana
   orderCreationHash?: string // EthFlow: order creation tx hash. Solana: order creation transaction signature
+  isSponsored?: boolean
+  isNativeSell?: boolean
   isRefunded?: boolean
   refundHash?: string
 
   cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
+  cancellationHashTime?: string // When `cancellationHash` was set. Encoded as ISO 8601 UTC
 
   // Additional information from the order available in the API
   apiAdditionalInfo?: Omit<EnrichedOrder, 'settlementContract'>

@@ -1,7 +1,6 @@
 import { ReactNode, useMemo, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
-import { PercentDisplay } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
@@ -11,6 +10,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
+import { SlippageConfirmRow } from './SlippageConfirmRow'
 import * as styledEl from './styled'
 
 import { RecipientRow } from '../../pure/RecipientRow'
@@ -46,6 +46,7 @@ type Props = {
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
+  showSlippagePrice?: boolean
 }
 
 export function TradeBasicConfirmDetails(props: Props): ReactNode {
@@ -57,9 +58,11 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
     hideLimitPrice,
     hideUsdValues,
     withTimelineDot = true,
+    showSlippagePrice = false,
     children,
   } = props
   const isInvertedState = useState(false)
+  const [isInverted, setIsInverted] = isInvertedState
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
@@ -98,12 +101,15 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         label={expectReceiveLabel}
       />
       <DividerHorizontal />
-      {/* Slippage */}
-      {
-        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip={slippageTooltip} label={slippageLabel}>
-          <PercentDisplay percent={slippage.toFixed(2)} />
-        </ReviewOrderModalAmountRow>
-      }
+      <SlippageConfirmRow
+        slippage={slippage}
+        price={showSlippagePrice ? limitPrice : null}
+        isInverted={isInverted}
+        onToggleInverted={() => setIsInverted((curr) => !curr)}
+        withTimelineDot={withTimelineDot}
+        tooltip={slippageTooltip}
+        label={slippageLabel}
+      />
       {/* Min received */}
       <ReviewOrderModalAmountRow
         highlighted={true}

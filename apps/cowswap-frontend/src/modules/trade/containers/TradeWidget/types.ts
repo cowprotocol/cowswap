@@ -52,7 +52,7 @@ export interface TradeWidgetSlots {
   lockScreen?: ReactNode
   topContent?: ReactNode
   middleContent?: ReactNode
-  bottomContent?(warnings: ReactNode | null): ReactNode
+  bottomContent?(warnings: ReactNode | null, captcha: ReactNode | null): ReactNode
   outerContent?: ReactNode
   updaters?: ReactNode
   selectTokenWidget?: ReactNode
