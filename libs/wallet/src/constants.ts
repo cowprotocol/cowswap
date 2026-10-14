@@ -3,6 +3,11 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import type { ChainNamespace } from '@reown/appkit-common'
+
+export interface OpenWalletModalEventDetail {
+  namespace?: ChainNamespace
+}
 
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
