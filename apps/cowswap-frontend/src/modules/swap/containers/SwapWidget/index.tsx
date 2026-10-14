@@ -7,7 +7,6 @@ import { StatefulValue } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -20,6 +19,7 @@ import {
   TradeWidget,
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
+  useIsCustomRecipientDisabled,
   useIsEoaEthFlow,
   useIsNonEvmBridging,
   useTradePriceImpact,
@@ -80,7 +80,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions(hooksEnabledState[0])
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isCustomRecipientDisabled = useIsCustomRecipientDisabled()
   const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
@@ -192,7 +192,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         enablePartialApprovalState={enablePartialApprovalState}
         partialApprovalLocked={isInfiniteApproveDisabled}
         isRecipientToggleDisabled={isNonEvmBridging}
-        isRecipientToggleHidden={disableCustomRecipient}
+        isRecipientToggleHidden={isCustomRecipientDisabled}
         isHooksToggleDisabled={isSolanaChain(chainId)}
       />
     ),

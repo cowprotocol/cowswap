@@ -1,12 +1,12 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 import { useLocation } from 'react-router'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
 import { useResetRecipient } from './useResetRecipient'
@@ -25,8 +25,8 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('entities/injectedWidget', () => ({
-  useInjectedWidgetParams: jest.fn(),
+jest.mock('./useIsCustomRecipientDisabled', () => ({
+  useIsCustomRecipientDisabled: jest.fn(),
 }))
 
 jest.mock('entities/orderHooks/usePostHooksRecipientOverride', () => ({
@@ -62,7 +62,9 @@ jest.mock('../state/alternativeOrder', () => ({
 const RECIPIENT = '0x000000000000000000000000000000000000dEaD'
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
+const mockUseIsCustomRecipientDisabled = useIsCustomRecipientDisabled as jest.MockedFunction<
+  typeof useIsCustomRecipientDisabled
+>
 const mockUsePostHooksRecipientOverride = usePostHooksRecipientOverride as jest.MockedFunction<
   typeof usePostHooksRecipientOverride
 >
@@ -75,14 +77,16 @@ const mockUseIsAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible 
   typeof useIsAlternativeOrderModalVisible
 >
 
-function setup({ chainId = 1 as number | undefined, recipientInUrl = null as string | null } = {}): void {
+function setup({
+  chainId = 1 as number | undefined,
+  recipientInUrl = null as string | null,
+  isCustomRecipientDisabled = false,
+} = {}): void {
   mockUseWalletInfo.mockImplementation(() => ({ chainId }) as ReturnType<typeof useWalletInfo>)
   mockUseLocation.mockReturnValue({
     search: recipientInUrl ? `?recipient=${recipientInUrl}` : '',
   } as ReturnType<typeof useLocation>)
-  mockUseInjectedWidgetParams.mockReturnValue({ disableCustomRecipient: false } as ReturnType<
-    typeof useInjectedWidgetParams
-  >)
+  mockUseIsCustomRecipientDisabled.mockReturnValue(isCustomRecipientDisabled)
   mockUsePostHooksRecipientOverride.mockReturnValue(null)
   mockUseTradeStateFromUrl.mockReturnValue(
     recipientInUrl
@@ -134,6 +138,16 @@ describe('useResetRecipient', () => {
 
   it('still clears recipient state when no URL recipient is present', () => {
     const onChangeRecipient = jest.fn()
+
+    renderHook(() => useResetRecipient(onChangeRecipient))
+
+    expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  it('clears a URL recipient when custom recipients are disabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    setup({ recipientInUrl: RECIPIENT, isCustomRecipientDisabled: true })
 
     renderHook(() => useResetRecipient(onChangeRecipient))
 

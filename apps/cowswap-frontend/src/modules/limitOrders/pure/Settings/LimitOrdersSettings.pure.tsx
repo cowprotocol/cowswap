@@ -10,10 +10,9 @@ import {
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
-import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
+import { getOrdersTableSettings, SettingsContainer, useIsCustomRecipientDisabled } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
 
@@ -32,7 +31,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
-  const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isCustomRecipientDisabled = useIsCustomRecipientDisabled()
   const isPartialApprovalLocked = useIsInfiniteApproveDisabled()
   const {
     showRecipient,
@@ -105,7 +104,7 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
       <SettingsContainer>
         <SettingsDropdownSection title={t`Limit Settings`}>
           <SettingsBoxGroup>
-            {!disableCustomRecipient && (
+            {!isCustomRecipientDisabled && (
               <SettingsBox
                 title={t`Custom Recipient`}
                 tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
