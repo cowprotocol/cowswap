@@ -13,8 +13,8 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { useAreWarningsAccepted } from '../../hooks/useAreWarningsAccepted'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
-import { PrimaryActionButton } from '../../pure/PrimaryActionButton'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
+import { PrimaryActionButton } from '../../pure/PrimaryActionButton/PrimaryActionButton.pure'
 
 interface ActionButtonsProps {
   localFormValidation: TwapFormState | null

@@ -342,7 +342,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
   })
 
-  test('blocks the trade when the USD value of the amount is unknown', () => {
+  test('blocks the trade when the USD value of the sell amount is unknown', () => {
     const context = {
       ...baseContext,
       derivedTradeState: {
@@ -352,7 +352,84 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaUnknownUsdValue])
+  })
+
+  test('blocks the trade when only the sell amount USD value is unknown', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('100'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaUnknownUsdValue])
+  })
+
+  test('falls back to the sell-side USD amount for buy orders when the buy-side one is unknown', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyFiatAmount: mockCurrencyAmount('25000'),
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
     expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+  })
+
+  test('shows impact loading instead of the unknown USD value while price impact is loading', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+      tradePriceImpact: { loading: true, priceImpact: undefined },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context)).toEqual([TradeFormValidation.ImpactLoading])
+  })
+
+  test('shows quote errors for buy orders whose sell amount has not been quoted yet', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        orderKind: OrderKind.BUY,
+        inputCurrencyAmount: null,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: mockCurrencyAmount('100'),
+      },
+      tradeQuote: {
+        isLoading: false,
+        error: new Error('Insufficient liquidity'),
+      },
+    } as unknown as TradeFormValidationContext
+
+    const result = validateTradeForm(context) || []
+    expect(result).toContain(TradeFormValidation.QuoteErrors)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
+  })
+
+  test('does not block EVM trades with an unknown USD value', () => {
+    const context = {
+      ...baseContext,
+      derivedTradeState: {
+        ...baseContext.derivedTradeState,
+        inputCurrency: { address: '0x1', chainId: SupportedChainId.MAINNET } as unknown as Currency,
+        outputCurrency: { address: '0x2', chainId: SupportedChainId.MAINNET } as unknown as Currency,
+        inputCurrencyFiatAmount: null,
+        outputCurrencyFiatAmount: null,
+      },
+    } as unknown as TradeFormValidationContext
+
+    expect(validateTradeForm(context) || []).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
   test('does not apply the cap to wrap/unwrap, where fiat amounts are always null', () => {
@@ -369,9 +446,10 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     const result = validateTradeForm(context) || []
     expect(result).toContain(TradeFormValidation.WrapUnwrapFlow)
     expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
-  test('prioritizes the trade limit over wallet connection', () => {
+  test('prioritizes wallet connection over the trade limit', () => {
     const context = {
       ...baseContext,
       account: undefined,
@@ -382,7 +460,9 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+    const result = validateTradeForm(context) || []
+    expect(result[0]).toBe(TradeFormValidation.WalletNotConnected)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
   })
 })
 

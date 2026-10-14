@@ -13,6 +13,7 @@ export { AffiliateTraderOnboard } from './containers/AffiliateTraderOnboard'
 export { AffiliateTraderRewardsRow } from './containers/AffiliateTraderRewardsRow'
 export { AffiliateTraderStats } from './containers/AffiliateTraderStats'
 
+export { useAffiliateChainId } from './hooks/useAffiliateChainId'
 export { useAffiliatePartnerInfo } from './hooks/useAffiliatePartnerInfo'
 export { useIsRefCodeExpired } from './hooks/useIsRefCodeExpired'
 export { useShouldShowAffiliateTraderHeaderButton } from './hooks/useShouldShowAffiliateTraderHeaderButton'

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
-import { ExternalLink, ModalHeader, TokenSymbol } from '@cowprotocol/ui'
+import { ExternalLink, TokenSymbol, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -39,9 +39,9 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
 
   return (
     <Wrapper>
-      <ModalHeader onBack={onBack} onClose={onDismiss}>
+      <Modal.Header onBack={onBack} onClose={onDismiss}>
         Pool description
-      </ModalHeader>
+      </Modal.Header>
       {token && (
         <TokenWrapper>
           <TokenInfoWrapper>

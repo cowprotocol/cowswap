@@ -1,0 +1,13 @@
+.chartCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.status {
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+}

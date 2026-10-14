@@ -67,6 +67,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     </TradeFormBlankButton>
   ),
+  [TradeFormValidation.SolanaAlphaUnknownUsdValue]: () => (
+    <TradeFormBlankButton disabled>
+      <>
+        <Trans>Price impact unknown</Trans>
+        <HelpTooltip
+          placement="top"
+          text={t`While CoW Swap on Solana is in Alpha and unaudited, trades without a USD estimate are disabled as a precautionary measure.`}
+        />
+      </>
+    </TradeFormBlankButton>
+  ),
   [TradeFormValidation.BrowserOffline]: {
     text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
