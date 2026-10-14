@@ -1,4 +1,4 @@
-import type { RwaAsset, RwaAssetType, RwaToken } from '@/entities/asset'
+import type { RwaAssetSummary, RwaAssetType, RwaTokenSummary } from '@/entities/asset'
 
 export interface PortfolioFilter {
   /** `null` for all asset types */
@@ -11,7 +11,11 @@ export interface PortfolioFilter {
 
 export const NO_PORTFOLIO_FILTER: PortfolioFilter = { assetType: null, issuer: null, chainId: null }
 
-export function matchesPortfolioFilter(filter: PortfolioFilter, asset: RwaAsset, token: RwaToken): boolean {
+export function matchesPortfolioFilter(
+  filter: PortfolioFilter,
+  asset: RwaAssetSummary,
+  token: RwaTokenSummary,
+): boolean {
   return (
     (filter.assetType === null || asset.type === filter.assetType) &&
     (filter.issuer === null || token.issuer === filter.issuer) &&

@@ -14,7 +14,7 @@ const NVDA: RwaMarketOverviewItem = {
   title: 'NVIDIA',
   logoUrl: null,
   change24h: 0.8,
-  dexVolume24h: 12_400_000,
+  volume24h: 12_400_000,
   series: [
     { time: 0, value: 1 },
     { time: 1, value: 2 },
@@ -23,9 +23,9 @@ const NVDA: RwaMarketOverviewItem = {
 
 const OVERVIEW: RwaMarketOverview = {
   totals: {
-    onchainCap: 526_000_000,
-    dexVolume24h: 29_000_000,
-    onchainCapSeries: [
+    marketCap: 526_000_000,
+    volume24h: 29_000_000,
+    marketCapSeries: [
       { time: 0, value: 1 },
       { time: 1, value: 2 },
     ],
@@ -40,6 +40,7 @@ const OVERVIEW: RwaMarketOverview = {
 
 const NVDA_LIST_ITEM: RwaAssetListItem = {
   ticker: 'NVDA',
+  coingeckoId: 'nvda',
   title: 'NVIDIA',
   type: 'stock',
   priority: 10,
@@ -61,17 +62,23 @@ const NVDA_LIST_ITEM: RwaAssetListItem = {
       issuer: 'Ondo',
     },
   ],
-  market: null,
-  logoUrl: null,
-  onchainCap: 180_000_000,
-  dexVolume24h: 12_400_000,
+  market: {
+    price: 180,
+    change24h: 0.8,
+    dayLow: 175,
+    dayHigh: 182,
+    marketCap: 180_000_000,
+    volume24h: 12_400_000,
+    updatedAt: '2026-10-01T14:00:00.000Z',
+    tokens: {},
+  },
   series: null,
 }
 
 const ASSETS_PAGE: RwaAssetsPage = {
   items: [NVDA_LIST_ITEM],
   page: 1,
-  pageSize: 20,
+  pageSize: 10,
   total: 1,
   totalPages: 1,
   typeCounts: { stock: 3, index: 2 },
@@ -162,15 +169,50 @@ describe('HomePage', () => {
     expect(lastUrl).toContain('order=asc')
   })
 
-  it('sorts by DEX volume by default and ignores the v1 stored sort', async () => {
-    localStorage.setItem('rwaAssetsSort:v1', JSON.stringify({ sort: 'marketCap', order: 'desc' }))
+  it('sorts by 24h volume by default and ignores the v2 stored sort', async () => {
+    localStorage.setItem('rwaAssetsSort:v2', JSON.stringify({ sort: 'marketCap', order: 'desc' }))
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    const header = await screen.findByRole('columnheader', { name: '24h DEX volume' })
+    const header = await screen.findByRole('columnheader', { name: '24h volume' })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('sort=dexVolume24h')
+    expect(screen.getByRole('columnheader', { name: 'Market cap' })).toBeTruthy()
+    expect(
+      (global.fetch as jest.Mock).mock.calls
+        .map(([url]) => String(url))
+        .some((url) => url.includes('/assets?') && url.includes('sort=volume24h')),
+    ).toBe(true)
+    expect(
+      (global.fetch as jest.Mock).mock.calls
+        .map(([url]) => String(url))
+        .every((url) => !url.includes('/assets?') || !url.includes('sort=marketCap')),
+    ).toBe(true)
+  })
+
+  it('requests 10 assets per page', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    await screen.findByRole('tab', { name: 'All assets 5' })
+
+    expect(
+      (global.fetch as jest.Mock).mock.calls
+        .map(([url]) => String(url))
+        .some((url) => url.includes('/assets?') && url.includes('pageSize=10')),
+    ).toBe(true)
+  })
+
+  it('labels the totals and most traded with the tokenized market figures', async () => {
+    mockApi(OVERVIEW)
+    renderHomePage()
+
+    const totals = await screen.findByRole('region', { name: 'Market overview' })
+
+    expect(totals.textContent).toContain('Market cap')
+    expect(totals.textContent).toContain('24h volume')
+    expect(totals.textContent).not.toContain('Onchain')
+    expect(screen.getByText('24h volume · All networks')).toBeTruthy()
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {
@@ -221,7 +263,7 @@ describe('HomePage', () => {
   })
 
   it('shows dashes for null totals', async () => {
-    mockApi({ ...OVERVIEW, totals: { onchainCap: null, dexVolume24h: null, onchainCapSeries: null }, degraded: true })
+    mockApi({ ...OVERVIEW, totals: { marketCap: null, volume24h: null, marketCapSeries: null }, degraded: true })
     renderHomePage()
 
     const totals = await screen.findByRole('region', { name: 'Market overview' })
@@ -236,7 +278,7 @@ describe('HomePage', () => {
 
     expect(await screen.findAllByText('Data temporarily unavailable')).toHaveLength(2)
     expect(await screen.findAllByText('Market data is temporarily unavailable')).toHaveLength(1)
-    expect(screen.queryByText('No DEX trades in the last 24 hours')).toBeNull()
+    expect(screen.queryByText('No trades in the last 24 hours')).toBeNull()
     expect(screen.queryByText('No gainers in the last 24 hours')).toBeNull()
   })
 

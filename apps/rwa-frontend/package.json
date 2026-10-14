@@ -4,7 +4,9 @@
   "private": true,
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
-  "scripts": {},
+  "scripts": {
+    "update-registry": "node --env-file-if-exists=.env scripts/updateRegistry.mjs"
+  },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",

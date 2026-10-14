@@ -2,14 +2,15 @@ import 'server-only'
 
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 
-import { sumNullable } from '../lib/sumNullable'
+import { unstable_cache } from 'next/cache'
+
 import { fillHourlySeries } from '../model/marketOverview'
 
 import type {
+  RwaAggregateMarket,
   RwaAsset,
   RwaChartPoint,
   RwaChartRange,
-  RwaMarketData,
   RwaToken,
   RwaTokenMarketData,
   RwaTokenNetworkStats,
@@ -19,15 +20,15 @@ import {
   type CoingeckoChartDays,
   type CoingeckoMarket,
   type CoingeckoOhlcvCandle,
+  type CoingeckoRwaMarket,
   fetchCoinsMarkets,
   fetchMarketChart,
   fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
+  fetchRwaMarkets,
 } from '@/shared/api/index.server'
 
 export interface MarketDataProvider {
-  /** Missing tickers in the result mean the provider has no data for them */
-  getMarketData(assets: RwaAsset[]): Promise<Map<string, RwaMarketData>>
   getChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]>
   /** `tokens` are on `chainId`, `tokenMarkets` (keyed by `coingeckoId`) gives their prices */
   getNetworkStats(
@@ -37,15 +38,29 @@ export interface MarketDataProvider {
   ): Promise<RwaTokenNetworkStats[]>
   /** USD per hour over the last 24h summed over `tokens`, `null` when the provider has no candles for any of them */
   getHourlyDexVolume(tokens: RwaToken[]): Promise<RwaChartPoint[] | null>
-  /** Keyed by coin id */
-  getPriceHistory(coingeckoIds: string[], days: '7'): Promise<Map<string, RwaChartPoint[]>>
+  /** Keyed by RWA id (`RwaAsset.coingeckoId`). `expectedCount` sizes the concurrent page requests */
+  getRwaMarkets(expectedCount: number): Promise<Map<string, RwaAggregateMarket>>
+  /** Keyed by `RwaToken.coingeckoId`. Coins without data are missing */
+  getTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaTokenMarketData>>
 }
 
 const MARKETS_REVALIDATE_SECONDS = 60
 const ONCHAIN_REVALIDATE_SECONDS = 60
 const OHLCV_REVALIDATE_SECONDS = 300
-const PRICE_HISTORY_REVALIDATE_SECONDS = 3600
 const DEX_VOLUME_HOURS = 24
+const RWA_MARKETS_REVALIDATE_SECONDS = 60
+/** Bump when `RwaAggregateMarket` changes shape: the data cache outlives deployments */
+const RWA_MARKETS_CACHE_KEY = ['coingecko-rwa-markets', 'v2']
+
+const EMPTY_TOKENIZED_MARKET_DATA: NonNullable<CoingeckoRwaMarket['tokenized_market_data']> = {
+  current_price: null,
+  market_cap: null,
+  total_volume: null,
+  high_24h: null,
+  low_24h: null,
+  price_change_percentage_24h: null,
+  last_updated: null,
+}
 
 const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
   '1D': '1',
@@ -64,25 +79,6 @@ const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
 }
 
 export const coingeckoProvider: MarketDataProvider = {
-  async getMarketData(assets) {
-    const idsByTicker = new Map(assets.map((asset) => [asset.ticker, getCoingeckoIds(asset)]))
-    const allIds = [...new Set([...idsByTicker.values()].flat())]
-
-    if (!allIds.length) return new Map()
-
-    const markets = await fetchCoinsMarkets(allIds, MARKETS_REVALIDATE_SECONDS)
-    const marketsById = new Map(markets.map((market) => [market.id, market]))
-    const result = new Map<string, RwaMarketData>()
-
-    idsByTicker.forEach((ids, ticker) => {
-      const marketData = toMarketData(ids, marketsById)
-
-      if (marketData) result.set(ticker, marketData)
-    })
-
-    return result
-  },
-
   async getChart(asset, range) {
     const [primaryId] = getCoingeckoIds(asset)
 
@@ -131,18 +127,30 @@ export const coingeckoProvider: MarketDataProvider = {
     return fillHourlySeries(volumes, Math.floor(Date.now() / 1000), DEX_VOLUME_HOURS)
   },
 
-  async getPriceHistory(coingeckoIds, days) {
-    const histories = await Promise.all(
-      coingeckoIds.map(async (id) => {
-        const chart = await fetchMarketChart(id, days, PRICE_HISTORY_REVALIDATE_SECONDS)
+  async getRwaMarkets(expectedCount) {
+    return new Map(await loadRwaMarketsSnapshot(expectedCount))
+  },
 
-        return [id, toChartPoints(chart.prices)] as const
-      }),
-    )
+  async getTokenMarkets(tokens) {
+    const ids = [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
 
-    return new Map(histories)
+    if (!ids.length) return {}
+
+    const markets = await fetchCoinsMarkets(ids, MARKETS_REVALIDATE_SECONDS)
+
+    return Object.fromEntries(markets.map((market) => [market.id, toTokenMarketData(market)]))
   },
 }
+
+const loadRwaMarketsSnapshot = unstable_cache(
+  async (expectedCount: number): Promise<[string, RwaAggregateMarket][]> => {
+    const markets = await fetchRwaMarkets(expectedCount)
+
+    return markets.map((market) => [market.id, toAggregateMarket(market)])
+  },
+  RWA_MARKETS_CACHE_KEY,
+  { revalidate: RWA_MARKETS_REVALIDATE_SECONDS },
+)
 
 export function toChartPoints(prices: [number, number][]): RwaChartPoint[] {
   const points: RwaChartPoint[] = []
@@ -169,39 +177,29 @@ function getCoingeckoIds(asset: RwaAsset): string[] {
   return [...new Set(ids)]
 }
 
+function orNull<T>(value: T | null | undefined): T | null {
+  return value ?? null
+}
+
+function toAggregateMarket({ tokenized_market_data }: CoingeckoRwaMarket): RwaAggregateMarket {
+  const data = tokenized_market_data ?? EMPTY_TOKENIZED_MARKET_DATA
+
+  return {
+    price: orNull(data.current_price),
+    change24h: orNull(data.price_change_percentage_24h),
+    dayLow: orNull(data.low_24h),
+    dayHigh: orNull(data.high_24h),
+    marketCap: orNull(data.market_cap),
+    volume24h: orNull(data.total_volume),
+    updatedAt: orNull(data.last_updated),
+    sparkline7d: data.sparkline_in_7d?.price ?? [],
+  }
+}
+
 function toFiniteNumber(value: string | null | undefined): number | null {
   const number = Number(value ?? undefined)
 
   return Number.isFinite(number) ? number : null
-}
-
-function toMarketData(ids: string[], marketsById: Map<string, CoingeckoMarket>): RwaMarketData | null {
-  const markets = ids.flatMap((id) => marketsById.get(id) ?? [])
-
-  if (!markets.length) return null
-
-  // The first token with a coingeckoId in RWAs.json is the reference one for price and chart, even when it has no data
-  const [primaryId] = ids
-  const primary = primaryId ? marketsById.get(primaryId) : undefined
-
-  return {
-    ...toPriceData(primary),
-    marketCap: sumNullable(markets.map((market) => market.market_cap)),
-    volume24h: sumNullable(markets.map((market) => market.total_volume)),
-    tokens: Object.fromEntries(markets.map((market) => [market.id, toTokenMarketData(market)])),
-  }
-}
-
-function toPriceData(market: CoingeckoMarket | undefined): Omit<RwaMarketData, 'marketCap' | 'volume24h' | 'tokens'> {
-  if (!market) return { price: null, change24h: null, dayLow: null, dayHigh: null, updatedAt: null }
-
-  return {
-    price: market.current_price,
-    change24h: market.price_change_percentage_24h,
-    dayLow: market.low_24h,
-    dayHigh: market.high_24h,
-    updatedAt: market.last_updated,
-  }
 }
 
 function toTokenMarketData(market: CoingeckoMarket): RwaTokenMarketData {

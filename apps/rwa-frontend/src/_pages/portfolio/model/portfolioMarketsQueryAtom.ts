@@ -1,10 +1,9 @@
+import { atomFamily } from 'jotai-family'
 import { atomWithQuery } from 'jotai-tanstack-query'
 
-import { assetsPageQueryOptions } from '@/entities/asset'
+import { assetsByTickersQueryOptions } from '@/entities/asset'
 
-/** The `/api/v1/assets` maximum, which fits the whole registry */
-const MARKETS_PAGE_SIZE = 100
-
-export const portfolioMarketsQueryAtom = atomWithQuery(() =>
-  assetsPageQueryOptions({ page: 1, pageSize: MARKETS_PAGE_SIZE, sort: 'priority', order: 'desc' }),
+/** `tickersKey` comes from `getHeldTickersKey`. An empty key requests nothing */
+export const portfolioMarketsQueryAtomFamily = atomFamily((tickersKey: string) =>
+  atomWithQuery(() => assetsByTickersQueryOptions(tickersKey ? tickersKey.split(',') : [])),
 )

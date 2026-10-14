@@ -1,5 +1,5 @@
 import type { TradeLeg } from '../../lib/tradeLeg'
-import type { RwaToken } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 export interface Activity extends TradeLeg {
   id: string
@@ -21,6 +21,6 @@ export interface ActivityProvider {
 export interface ActivityQuery {
   owner: string
   /** Only the activity involving these tokens is returned */
-  tokens: RwaToken[]
+  tokens: RwaTokenSummary[]
   limit: number
 }

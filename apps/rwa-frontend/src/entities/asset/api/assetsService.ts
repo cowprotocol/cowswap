@@ -6,12 +6,11 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
 import { getTokenQuotes, QUOTE_AMOUNT_USD } from './quotes'
 
-import { getReferenceLogoUrl } from '../lib/referenceLogoUrl'
+import { sumNullable } from '../lib/sumNullable'
 import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
-  aggregateNetworkStats,
-  buildOnchainCapSeries,
-  type ChainNetworkStats,
+  buildDailySeries,
+  buildMarketCapSeries,
   latestUpdatedAt,
   rankMostTraded,
   splitMovers,
@@ -20,6 +19,7 @@ import {
 import { getAssetByTicker, getAssets } from '../model/registry'
 
 import type {
+  RwaAggregateMarket,
   RwaAsset,
   RwaAssetListItem,
   RwaAssetQuotes,
@@ -27,7 +27,6 @@ import type {
   RwaAssetsFilter,
   RwaAssetsPage,
   RwaAssetsSearchResult,
-  RwaAssetWithMarket,
   RwaChartPoint,
   RwaChartRange,
   RwaMarketData,
@@ -53,24 +52,24 @@ export interface ListAssetsParams extends RwaAssetsFilter {
   order: RwaSortOrder
 }
 
-interface AssetsWithMarket {
-  items: RwaAssetWithMarket[]
-  degraded: boolean
+interface ListedMarket {
+  asset: RwaAsset
+  market: RwaAggregateMarket
 }
 
-interface MarketDataLoadResult {
-  byTicker: Map<string, RwaMarketData>
+interface RwaMarketsLoadResult {
+  /** Keyed by `RwaAsset.coingeckoId` */
+  byId: Map<string, RwaAggregateMarket>
   degraded: boolean
-}
-
-interface NetworkStatsLoadResult {
-  stats: ChainNetworkStats[]
-  /** `false` when a network failed, so sums over the networks would be too low */
-  complete: boolean
 }
 
 export async function findAssets(query: string, limit: number): Promise<RwaAssetsSearchResult> {
-  return withMarketData(searchAssets(getAssets(), query).slice(0, limit))
+  const { byId, degraded } = await loadRwaMarkets()
+  const items = searchAssets(getAssets(), query)
+    .slice(0, limit)
+    .map((asset) => ({ ...asset, market: toMarketData(byId.get(asset.coingeckoId)) }))
+
+  return { items, degraded }
 }
 
 export async function getAsset(ticker: string): Promise<RwaAssetResponse | null> {
@@ -78,12 +77,13 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
   if (!asset) return null
 
-  const {
-    items: [withMarket],
-    degraded,
-  } = await withMarketData([asset])
+  const [{ byId, degraded }, tokenMarkets] = await Promise.all([loadRwaMarkets(), loadTokenMarkets(asset.tokens)])
 
-  return { ...withMarket, degraded }
+  return {
+    ...asset,
+    market: toMarketData(byId.get(asset.coingeckoId), tokenMarkets ?? {}),
+    degraded: degraded || tokenMarkets === null,
+  }
 }
 
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]> {
@@ -93,10 +93,10 @@ export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Prom
 /** `chainId` must have tokens of the asset */
 export async function getAssetNetworkStats(asset: RwaAsset, chainId: number): Promise<RwaNetworkStats> {
   const tokens = asset.tokens.filter((token) => token.chainId === chainId)
-  const { byTicker, degraded } = await loadMarketData()
-  const stats = await loadNetworkStats(chainId, tokens, byTicker.get(asset.ticker)?.tokens ?? {})
+  const tokenMarkets = await loadTokenMarkets(asset.tokens)
+  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets ?? {})
 
-  if (stats) return { ticker: asset.ticker, chainId, tokens: stats, degraded }
+  if (stats) return { ticker: asset.ticker, chainId, tokens: stats, degraded: tokenMarkets === null }
 
   const empty = tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null }))
 
@@ -117,62 +117,48 @@ export async function getAssetQuotes(
 
 export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const assets = getAssets()
-  const { byTicker: marketByTicker, degraded: marketDegraded } = await loadMarketData()
-  const { stats, complete: statsComplete } = await loadRegistryNetworkStats(marketByTicker)
-  const aggregate = aggregateNetworkStats(assets, stats, marketByTicker)
-  const items = assets.map((asset) =>
-    toOverviewItem(asset, marketByTicker.get(asset.ticker), aggregate.byTicker.get(asset.ticker)),
-  )
+  const { byId, degraded } = await loadRwaMarkets()
+  const listed = assets.flatMap((asset): ListedMarket[] => {
+    const market = byId.get(asset.coingeckoId)
+
+    return market ? [{ asset, market }] : []
+  })
+  const markets = listed.map(({ market }) => market)
+  const items = listed.map(({ asset, market }) => toOverviewItem(asset, market))
+  const marketsByTicker = new Map(listed.map(({ asset, market }) => [asset.ticker, market]))
+  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): RwaMarketOverviewItem[] =>
+    moverItems.map((item) => ({ ...item, series: getDailySeries(marketsByTicker.get(item.ticker)) }))
   const { gainers, losers } = splitMovers(items, MARKET_OVERVIEW_LIST_LIMIT)
-  const mostTraded = statsComplete ? rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT) : []
-  const [mostTradedWithSeries, gainersWithSeries, losersWithSeries, onchainCapSeries] = await Promise.all([
-    withSeries(mostTraded, (asset) => marketDataProvider.getHourlyDexVolume(asset.tokens)),
-    withSeries(gainers, loadPriceChart),
-    withSeries(losers, loadPriceChart),
-    statsComplete ? loadOnchainCapSeries(aggregate.supplyByCoin) : null,
-  ])
+  const mostTraded = await withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
+    marketDataProvider.getHourlyDexVolume(asset.tokens),
+  )
 
   return {
     totals: {
-      onchainCap: statsComplete ? aggregate.onchainCap : null,
-      dexVolume24h: statsComplete ? aggregate.dexVolume24h : null,
-      onchainCapSeries,
+      marketCap: sumNullable(markets.map(({ marketCap }) => marketCap)),
+      volume24h: sumNullable(markets.map(({ volume24h }) => volume24h)),
+      marketCapSeries: buildMarketCapSeries(markets),
     },
-    mostTraded: mostTradedWithSeries,
-    gainers: gainersWithSeries,
-    losers: losersWithSeries,
-    updatedAt: latestUpdatedAt([...marketByTicker.values()]),
+    mostTraded,
+    gainers: withDailySeries(gainers),
+    losers: withDailySeries(losers),
+    updatedAt: latestUpdatedAt(markets),
     tradingTime: assets.find((asset) => asset.allowedTradingTime)?.allowedTradingTime ?? null,
-    degraded: marketDegraded || !statsComplete,
+    degraded,
   }
 }
 
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
   const registry = getAssets()
-  const { byTicker: marketByTicker, degraded: marketDegraded } = await loadMarketData()
-  const { stats, complete: statsComplete } = await loadRegistryNetworkStats(marketByTicker)
-  const totalsByTicker = statsComplete ? aggregateNetworkStats(registry, stats, marketByTicker).byTicker : null
+  const { byId, degraded } = await loadRwaMarkets()
   const matches = filterAssets(registry, filter).map((asset): RwaAssetListItem => {
-    const market = marketByTicker.get(asset.ticker) ?? null
-    const totals = totalsByTicker?.get(asset.ticker)
-
-    return {
-      ...asset,
-      market,
-      logoUrl: getReferenceLogoUrl(asset, market),
-      onchainCap: totals?.onchainCap ?? null,
-      dexVolume24h: totals?.dexVolume24h ?? null,
-      series: null,
-    }
+    return { ...asset, market: toMarketData(byId.get(asset.coingeckoId)), series: null }
   })
   const sorted = sortAssets(matches, sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
-  const itemsWithSeries = await Promise.all(
-    items.map(async (item) => ({ ...item, series: await loadSeries(item.ticker, loadPriceChart) })),
-  )
 
   return {
-    items: itemsWithSeries,
+    items: items.map((item) => ({ ...item, series: getDailySeries(byId.get(item.coingeckoId)) })),
     page,
     pageSize,
     total: sorted.length,
@@ -182,28 +168,12 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
     chainIds: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.chainId)))].sort(
       (a, b) => a - b,
     ),
-    degraded: marketDegraded || !statsComplete,
+    degraded,
   }
 }
 
-function groupByChain(tokens: RwaToken[]): Map<number, RwaToken[]> {
-  const byChain = new Map<number, RwaToken[]>()
-
-  for (const token of tokens) byChain.set(token.chainId, [...(byChain.get(token.chainId) ?? []), token])
-
-  return byChain
-}
-
-// Always requested for the whole registry, so every route hits the same cached upstream request
-async function loadMarketData(): Promise<MarketDataLoadResult> {
-  try {
-    return { byTicker: await marketDataProvider.getMarketData(getAssets()), degraded: false }
-  } catch (err: unknown) {
-    const error = normalizeError(err)
-    console.error('[rwa] Failed to load market data', error)
-
-    return { byTicker: new Map(), degraded: true }
-  }
+function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[] | null {
+  return market ? buildDailySeries(market) : null
 }
 
 async function loadNetworkStats(
@@ -221,39 +191,16 @@ async function loadNetworkStats(
   }
 }
 
-async function loadOnchainCapSeries(supplyByCoin: Map<string, number>): Promise<RwaChartPoint[] | null> {
+// Always requested in full, so every route hits the same cached upstream requests
+async function loadRwaMarkets(): Promise<RwaMarketsLoadResult> {
   try {
-    const histories = await marketDataProvider.getPriceHistory([...supplyByCoin.keys()], '7')
-
-    return buildOnchainCapSeries(supplyByCoin, histories)
+    return { byId: await marketDataProvider.getRwaMarkets(getAssets().length), degraded: false }
   } catch (err: unknown) {
     const error = normalizeError(err)
-    console.error('[rwa] Failed to load the onchain cap history', error)
+    console.error('[rwa] Failed to load RWA markets', error)
 
-    return null
+    return { byId: new Map(), degraded: true }
   }
-}
-
-function loadPriceChart(asset: RwaAsset): Promise<RwaChartPoint[]> {
-  return marketDataProvider.getChart(asset, '1D')
-}
-
-// Always requested for the whole registry, so every route hits the same cached upstream requests
-async function loadRegistryNetworkStats(marketByTicker: Map<string, RwaMarketData>): Promise<NetworkStatsLoadResult> {
-  const tokenMarkets: Record<string, RwaTokenMarketData> = Object.fromEntries(
-    [...marketByTicker.values()].flatMap((market) => Object.entries(market.tokens)),
-  )
-  const tokensByChain = groupByChain(getAssets().flatMap((asset) => asset.tokens))
-  const results = await Promise.all(
-    [...tokensByChain].map(async ([chainId, tokens]): Promise<ChainNetworkStats | null> => {
-      const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
-
-      return stats ? { chainId, tokens: stats } : null
-    }),
-  )
-  const stats = results.filter((result): result is ChainNetworkStats => result !== null)
-
-  return { stats, complete: stats.length === results.length }
 }
 
 async function loadSeries(
@@ -276,10 +223,34 @@ async function loadSeries(
   }
 }
 
-async function withMarketData(assets: RwaAsset[]): Promise<AssetsWithMarket> {
-  const { byTicker, degraded } = await loadMarketData()
+/** `null` when the provider failed */
+async function loadTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaTokenMarketData> | null> {
+  try {
+    return await marketDataProvider.getTokenMarkets(tokens)
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.error('[rwa] Failed to load token markets', error)
 
-  return { items: assets.map((asset) => ({ ...asset, market: byTicker.get(asset.ticker) ?? null })), degraded }
+    return null
+  }
+}
+
+function toMarketData(
+  market: RwaAggregateMarket | undefined,
+  tokens: Record<string, RwaTokenMarketData> = {},
+): RwaMarketData | null {
+  if (!market) return null
+
+  return {
+    price: market.price,
+    change24h: market.change24h,
+    dayLow: market.dayLow,
+    dayHigh: market.dayHigh,
+    marketCap: market.marketCap,
+    volume24h: market.volume24h,
+    updatedAt: market.updatedAt,
+    tokens,
+  }
 }
 
 async function withSeries(

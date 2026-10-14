@@ -1,7 +1,7 @@
 import { normalizeError } from '@cowprotocol/common-utils/errors'
 import { areAddressesEqual, getAddressKey, isSupportedChain, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import type { RwaToken } from '@/entities/asset'
+import type { RwaTokenSummary } from '@/entities/asset'
 
 import { readTokensMetadata, type TokenMetadata, type TokensMetadataMap } from '@/shared/api'
 
@@ -16,7 +16,7 @@ export interface SwapAmounts {
 export interface TradeLeg {
   chainId: number
   side: TradeSide
-  assetToken: RwaToken
+  assetToken: RwaTokenSummary
   /** Atoms of `assetToken`, decimal string */
   assetAmount: string
   counterTokenAddress: string
@@ -28,11 +28,15 @@ export interface TradeLeg {
 
 export type TradeSide = 'buy' | 'sell'
 
-export function findAssetToken(tokens: RwaToken[], chainId: number, address: string): RwaToken | undefined {
+export function findAssetToken(
+  tokens: RwaTokenSummary[],
+  chainId: number,
+  address: string,
+): RwaTokenSummary | undefined {
   return tokens.find((token) => token.chainId === chainId && areAddressesEqual(token.address, address))
 }
 
-export function getSupportedChainIds(tokens: RwaToken[]): SupportedChainId[] {
+export function getSupportedChainIds(tokens: RwaTokenSummary[]): SupportedChainId[] {
   return [...new Set(tokens.map((token) => token.chainId))].filter(isSupportedChain)
 }
 
@@ -63,7 +67,7 @@ export async function settleChains<T>(
 }
 
 /** Returns `null` when neither side of the swap is one of `tokens`, see `resolveCounterTokens` for `counterToken` */
-export function toTradeLeg(chainId: number, tokens: RwaToken[], swap: SwapAmounts): TradeLeg | null {
+export function toTradeLeg(chainId: number, tokens: RwaTokenSummary[], swap: SwapAmounts): TradeLeg | null {
   const boughtAssetToken = findAssetToken(tokens, chainId, swap.buyToken)
 
   if (boughtAssetToken) {
