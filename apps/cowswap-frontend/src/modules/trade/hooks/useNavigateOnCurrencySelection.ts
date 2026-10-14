@@ -142,7 +142,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
         }
       }
 
-      if (!isOutputCurrencyBridgeSupported) delete searchParams?.targetChainId
+      if (!isOutputCurrencyBridgeSupported || isUnsupportedBridgeSource) delete searchParams?.targetChainId
       if (shouldResetBuyOrder) searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
 
       const currencyIds =

@@ -557,6 +557,25 @@ describe('useNavigateOnCurrencySelection - cross-chain', () => {
         undefined,
       )
     })
+
+    it('should drop the target chain passed by the caller when selecting a Solana sell token', () => {
+      const { result } = renderHook(() => useNavigateOnCurrencySelection())
+      const stateUpdateCallback = jest.fn()
+
+      act(() => {
+        result.current(Field.INPUT, SOL, stateUpdateCallback, { targetChainId: SupportedChainId.GNOSIS_CHAIN })
+      })
+
+      expect(mockNavigate).toHaveBeenCalledWith(
+        SupportedChainId.SOLANA,
+        {
+          inputCurrencyId: (SOL as TokenWithLogo).address,
+          outputCurrencyId: USDC_SOLANA.address,
+        },
+        {},
+      )
+      expect(stateUpdateCallback).toHaveBeenCalledWith(expect.objectContaining({ targetChainId: null }))
+    })
   })
 
   describe('Buy order reset in bridging mode', () => {
