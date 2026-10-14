@@ -7191,6 +7191,11 @@ msgstr "Out of range"
 msgid "{sellTokenPart} for at least {buyTokenPart} to {recipientPart}"
 msgstr "{sellTokenPart} for at least {buyTokenPart} to {recipientPart}"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
+msgid "Custom recipients are not available on Solana yet."
+msgstr "Custom recipients are not available on Solana yet."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "No surplus for the given time period"
 msgstr "No surplus for the given time period"
