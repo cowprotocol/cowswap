@@ -20,7 +20,10 @@ export function isEoaTwapPlacementCancelled(): boolean {
   return placementController?.signal.aborted ?? false
 }
 
-export function startEoaTwapPlacement(): void {
+/** @returns this placement's signal, aborted once it is cancelled or a newer placement starts. */
+export function startEoaTwapPlacement(): AbortSignal {
   placementController?.abort()
   placementController = new AbortController()
+
+  return placementController.signal
 }

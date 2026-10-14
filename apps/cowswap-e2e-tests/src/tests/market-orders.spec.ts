@@ -681,14 +681,14 @@ test.describe('Market Orders', () => {
       mockFixedRateQuote({ cowApi: mocks.cowApi })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      await swapPage.waitForBothCurrenciesResolved()
 
-      // Typed before switching the sell token to ETH — dodges the auto-fill race documented at
-      // [CS-68].
       await swapPage.enterSellAmount('0.5')
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
       await swapPage.tokens.openOutput()
       await swapPage.tokens.searchAndPick('USDC')
+      await swapPage.enterSellAmount('0.5')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1 ETH')
       await expect(swapPage.inputAmount).toHaveValue('0.5')
@@ -732,15 +732,13 @@ test.describe('Market Orders', () => {
       await swapPage.page.keyboard.press('Escape')
       await expect(swapPage.sellBalance).toHaveAttribute('title', '0.5 ETH')
 
-      // Filled: settle the order — mirrors [CS-68]'s `fulfill()`-equivalent inline logic. Unlike
-      // [CS-68] (which keeps the progress view open throughout), it was already dismissed above to
-      // read the sell balance — the ETH-flow progress view doesn't reopen itself the way the regular
-      // (off-chain-signed) flow's surplus-modal queue does at [CS-60], so status/balance here are
-      // read via the activities list and swap form directly instead of waiting on it to reappear.
       const orderParams = ethFlow.getOrderParams()
       if (!orderParams) throw new Error('mockEthFlowTransaction: fulfill attempted before an order was sent')
       seedTrader(mocks, wallet, CHAIN_ID, { balances: { [USDC]: orderParams.buyAmount } })
       ethFlow.confirmFilled()
+
+      await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
+      await swapPage.dismissOrderProgressModal()
 
       await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`)
 

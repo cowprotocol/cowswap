@@ -1,4 +1,4 @@
-import { useAtom } from 'jotai'
+import { useAtom, useStore } from 'jotai'
 import { PropsWithChildren } from 'react'
 
 import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
@@ -7,6 +7,7 @@ import { CurrencyAmount } from '@cowprotocol/currency'
 import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
+import { OrderTabId } from 'entities/routes/routes.atom'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -16,7 +17,7 @@ import { useTradeFlowContext } from 'modules/limitOrders/hooks/useTradeFlowConte
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab, useRevealOrderInOrdersTable } from 'modules/ordersTable'
 import { solanaFlow } from 'modules/tradeFlow'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -24,17 +25,22 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
 import { WithModalProvider } from 'utils/withModalProvider'
 
-import { useHandleOrderPlacement } from './useHandleOrderPlacement'
+import { useHandleOrderPlacement, UseHandleOrderPlacementResult } from './useHandleOrderPlacement'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
 
 import { WithMockedWeb3 } from '../../../test-utils'
-import { TradeConfirmActions } from '../../trade'
+import { tradeConfirmStateAtom, TradeConfirmActions } from '../../trade'
 import { defaultLimitOrdersSettings } from '../state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 
 jest.mock('modules/limitOrders/services/tradeFlow')
 jest.mock('modules/limitOrders/services/safeBundleFlow')
-jest.mock('modules/ordersTable')
+jest.mock('modules/ordersTable', () => ({
+  useNavigateToOrdersTableTab: jest.fn(),
+  useRevealOrderInOrdersTable: jest.fn(),
+  placedOrderHighlightAtom: jest.requireActual('modules/ordersTable/state/placedOrderHighlightAtom')
+    .placedOrderHighlightAtom,
+}))
 
 jest.mock('modules/limitOrders/hooks/useSafeBundleFlowContext')
 jest.mock('modules/limitOrders/hooks/useTradeFlowContext')
@@ -82,6 +88,9 @@ const mockSolanaFlow = solanaFlow as jest.MockedFunction<typeof solanaFlow>
 const mockUseNavigateToOpenOrdersTable = useNavigateToOrdersTableTab as jest.MockedFunction<
   typeof useNavigateToOrdersTableTab
 >
+const mockUseRevealOrderInOrdersTable = useRevealOrderInOrdersTable as jest.MockedFunction<
+  typeof useRevealOrderInOrdersTable
+>
 
 const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
 const mockUseTradeFlowContext = useTradeFlowContext as jest.MockedFunction<typeof useTradeFlowContext>
@@ -90,6 +99,9 @@ const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useN
 const mockIsBundlingSupported = useIsTxBundlingSupported as jest.MockedFunction<typeof useIsTxBundlingSupported>
 const mockUseIsSafeApprovalBundle = useIsSafeApprovalBundle as jest.MockedFunction<typeof useIsSafeApprovalBundle>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+
+const revealOrderInOrdersTable = jest.fn().mockResolvedValue(true)
+const navigateToOrdersTableTab = jest.fn()
 
 // Reused across the Solana-branch tests below - same address the `useTransactionAdder.solana.test.tsx`
 // and `useSendOnChainCancellation.test.tsx` Solana wallet mocks use.
@@ -159,7 +171,10 @@ describe('useHandleOrderPlacement', () => {
     mockUseSolanaTradeFlowContext.mockImplementation(() => null)
     mockUseNeedsApproval.mockImplementation(() => false)
     mockIsBundlingSupported.mockImplementation(() => true)
-    mockUseNavigateToOpenOrdersTable.mockImplementation(() => () => {})
+    revealOrderInOrdersTable.mockClear()
+    navigateToOrdersTableTab.mockClear()
+    mockUseNavigateToOpenOrdersTable.mockImplementation(() => navigateToOrdersTableTab)
+    mockUseRevealOrderInOrdersTable.mockImplementation(() => revealOrderInOrdersTable)
     mockUseIsSafeApprovalBundle.mockImplementation(() => false)
     // Default to an EVM chain (matches the real useWalletInfo atom's default) - the isSolana dispatch
     // gate is `isSolanaChain(chainId)`, so the Solana-branch tests below must override this to a Solana
@@ -198,6 +213,8 @@ describe('useHandleOrderPlacement', () => {
       wrapper,
     })
     expect(limitOrdersStateResultAfter.current.recipient).toBe(null)
+    expect(revealOrderInOrdersTable).toHaveBeenCalledWith('0xOrderHash', OrderTabId.OPEN)
+    expect(navigateToOrdersTableTab).not.toHaveBeenCalled()
   })
 
   it('reports isTradeContextReady from the EVM context when not on Solana', () => {
@@ -261,6 +278,8 @@ describe('useHandleOrderPlacement', () => {
     })
 
     expect(onSuccessSpy).not.toHaveBeenCalled()
+    expect(revealOrderInOrdersTable).not.toHaveBeenCalled()
+    expect(navigateToOrdersTableTab).toHaveBeenCalledWith(OrderTabId.OPEN)
   })
 
   it('uses the regular permit flow instead of an approval bundle', async () => {
@@ -399,5 +418,39 @@ describe('useHandleOrderPlacement', () => {
       // Assert - override should remain true after failure
       expect(atomResult.current[0]).toBe(true)
     })
+  })
+  it('ignores an older attempt that settles after a newer order was placed from a remounted widget', async () => {
+    let rejectFirstWalletRequest: () => void = () => undefined
+    mockTradeFlow.mockImplementationOnce(
+      () => new Promise((_resolve, reject) => (rejectFirstWalletRequest = () => reject(new Error('User rejected')))),
+    )
+    mockTradeFlow.mockImplementationOnce(() => new Promise(() => undefined))
+    const onError = jest.spyOn(tradeConfirmActions, 'onError')
+
+    const renderPlacement = (): ReturnType<typeof renderHook<UseHandleOrderPlacementResult, unknown>> =>
+      renderHook(() => useHandleOrderPlacement(priceImpactMock, defaultLimitOrdersSettings, tradeConfirmActions), {
+        wrapper,
+      })
+    const first = renderPlacement()
+    let firstAttempt: Promise<void> = Promise.resolve()
+
+    await act(async () => {
+      firstAttempt = first.result.current.callback()
+    })
+    first.unmount()
+    const { result: confirmState } = renderHook(() => useStore(), { wrapper })
+    const previousState = confirmState.current.get(tradeConfirmStateAtom)
+    confirmState.current.set(tradeConfirmStateAtom, { ...previousState, sessionId: previousState.sessionId + 1 })
+    const second = renderPlacement()
+    await act(async () => {
+      void second.result.current.callback()
+    })
+    await act(async () => {
+      rejectFirstWalletRequest()
+      await firstAttempt
+    })
+
+    expect(onError).not.toHaveBeenCalled()
+    onError.mockRestore()
   })
 })

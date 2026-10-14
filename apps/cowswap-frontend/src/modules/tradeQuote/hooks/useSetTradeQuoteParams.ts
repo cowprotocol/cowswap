@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { startTransition, useEffect } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
@@ -19,10 +19,13 @@ export function useSetTradeQuoteParams({ amount, partiallyFillable, fastQuote }:
   const updateState = useSetAtom(tradeQuoteInputAtom)
 
   useEffect(() => {
-    updateState({
-      amount: amount || null,
-      fastQuote,
-      partiallyFillable,
+    // Same as TradeFormValidationUpdater: a plain update on every amount keystroke crashes when a key is held
+    startTransition(() => {
+      updateState({
+        amount: amount || null,
+        fastQuote,
+        partiallyFillable,
+      })
     })
   }, [updateState, amount, partiallyFillable, fastQuote])
 }

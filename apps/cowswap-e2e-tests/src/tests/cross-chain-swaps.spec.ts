@@ -207,12 +207,6 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
@@ -277,12 +271,6 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,

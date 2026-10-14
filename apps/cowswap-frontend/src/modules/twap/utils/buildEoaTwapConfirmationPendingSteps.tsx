@@ -5,7 +5,7 @@ import type { Hex } from 'viem'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { BadgeType } from '@cowprotocol/ui'
+import { BadgeType, LongLoadText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
@@ -43,7 +43,6 @@ export interface EoaTwapCurrentStepBadgeProps {
 export interface EoaTwapCurrentStepButtonProps {
   children: ReactNode
   disabled: boolean
-  loading?: boolean
 }
 
 export interface EoaTwapStepDescriptionOptions {
@@ -210,32 +209,28 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <span>
-                {t`Resetting approval`}
+              <LongLoadText>
+                {t`Revoking approval`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
         : hasError
           ? {
-              children: t`Reset approval`,
+              children: t`Revoke approval`,
               disabled: false,
             }
-          : {
-              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
-              disabled: true,
-              loading: true,
-            }
+          : getConfirmWithWalletButton()
 
     case EoaTwapSigningSteps.ApprovePoller:
       return isLoading
         ? {
             children: (
-              <span>
+              <LongLoadText>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
@@ -244,20 +239,16 @@ export function getEoaTwapCurrentStepButton(
               children: t`Approve ${symbol}`,
               disabled: false,
             }
-          : {
-              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
-              disabled: true,
-              loading: true,
-            }
+          : getConfirmWithWalletButton()
 
     case EoaTwapSigningSteps.PermitPoller:
       return isLoading
         ? {
             children: (
-              <span>
+              <LongLoadText>
                 {t`Approving ${symbol}`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
@@ -266,20 +257,16 @@ export function getEoaTwapCurrentStepButton(
               children: t`Approve ${symbol}`,
               disabled: false,
             }
-          : {
-              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
-              disabled: true,
-              loading: true,
-            }
+          : getConfirmWithWalletButton()
 
     case EoaTwapSigningSteps.TwapSign:
       return isLoading
         ? {
             children: (
-              <span>
+              <LongLoadText>
                 {t`Activating TWAP`}
                 <ThreeDots />
-              </span>
+              </LongLoadText>
             ),
             disabled: true,
           }
@@ -288,11 +275,7 @@ export function getEoaTwapCurrentStepButton(
               children: t`Try again`,
               disabled: false,
             }
-          : {
-              children: null, // loading=true renders the "Confirm with your wallet" text + animated "..."
-              disabled: true,
-              loading: true,
-            }
+          : getConfirmWithWalletButton()
 
     default:
       // No more button past `TwapSign`, as we are just waiting for the tx confirmation.
@@ -366,6 +349,7 @@ export function getEoaTwapStepDescription(
 export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
@@ -387,7 +371,7 @@ export function getEoaTwapWalletActionSummaryLabel(
 ): null | string {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
-      return t`Reset approval`
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
       return symbol ? t`Approve ${symbol}` : t`Approve token`
     case EoaTwapSigningSteps.PermitPoller:
@@ -480,6 +464,18 @@ function buildEoaTwapWalletActionSummaryLine({
       )}
     </p>
   )
+}
+
+function getConfirmWithWalletButton(): EoaTwapCurrentStepButtonProps {
+  return {
+    children: (
+      <LongLoadText>
+        {t`Confirm with your wallet`}
+        <ThreeDots />
+      </LongLoadText>
+    ),
+    disabled: true,
+  }
 }
 
 function getEoaTwapActivationStepStatus(signingStep: EoaTwapSigningStepState): OrderStepStatus {

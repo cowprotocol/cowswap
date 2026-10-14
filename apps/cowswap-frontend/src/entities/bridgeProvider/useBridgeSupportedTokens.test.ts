@@ -1,5 +1,5 @@
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ALL_CHAINS_MAP, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import { renderHook, waitFor } from '@testing-library/react'
@@ -118,6 +118,47 @@ describe('useBridgeSupportedTokens', () => {
       expect(result.current.data?.isRouteAvailable).toBe(false)
       expect(result.current.data?.tokens).toHaveLength(0)
     })
+  })
+
+  it('leaves a non-native token without a logo instead of falling back to the chain logo', async () => {
+    mockGetBuyTokens.mockResolvedValue({
+      tokens: [
+        {
+          chainId: SupportedChainId.SOLANA,
+          address: 'EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm',
+          decimals: 6,
+          name: 'dogwifhat',
+          symbol: '$WIF',
+        },
+      ],
+      isRouteAvailable: true,
+    })
+
+    const { result } = renderHook(() =>
+      useBridgeSupportedTokens({ sellChainId: SupportedChainId.MAINNET, buyChainId: SupportedChainId.SOLANA }),
+    )
+
+    await waitFor(() => expect(result.current.data?.tokens).toHaveLength(1))
+
+    expect(result.current.data?.tokens[0].logoURI).toBeUndefined()
+  })
+
+  it('falls back to the native currency logo for the native token', async () => {
+    const solanaNative = ALL_CHAINS_MAP[SupportedChainId.SOLANA].nativeCurrency
+
+    mockGetBuyTokens.mockResolvedValue({
+      tokens: [{ chainId: SupportedChainId.SOLANA, decimals: 9, name: 'Solana', symbol: 'SOL' }],
+      isRouteAvailable: true,
+    })
+
+    const { result } = renderHook(() =>
+      useBridgeSupportedTokens({ sellChainId: SupportedChainId.MAINNET, buyChainId: SupportedChainId.SOLANA }),
+    )
+
+    await waitFor(() => expect(result.current.data?.tokens).toHaveLength(1))
+
+    expect(result.current.data?.tokens[0].address).toBe(solanaNative.address)
+    expect(result.current.data?.tokens[0].logoURI).toBe(solanaNative.logoUrl)
   })
 
   it('returns null data without fetching when params are undefined', () => {
