@@ -313,7 +313,7 @@ describe('deserializeOrder', () => {
     expect(beforeExpiry?.status).toBe(OrderStatus.PENDING)
   })
 
-  it('returns undefined for orders without serialized tokens', () => {
+  it('returns undefined when the order object is undefined', () => {
     expect(deserializeOrder(undefined)).toBeUndefined()
   })
 })
