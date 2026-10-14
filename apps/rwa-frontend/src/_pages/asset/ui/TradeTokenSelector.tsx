@@ -8,21 +8,25 @@ import Image from 'next/image'
 import styles from './TradeTokenSelector.module.css'
 
 import { isRankedQuote } from '../lib/quotedTokens'
-import { getTokenKey } from '../lib/tokenKey'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
 
 import type { QuotedToken } from '../lib/quotedTokens'
-import type { TradeSide } from '../lib/tradeLeg'
 import type { TradeSelection } from '../model/useTradeSelection'
 
-import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData } from '@/entities/asset'
+import {
+  assetQueryAtomFamily,
+  getTokenKey,
+  type RwaAsset,
+  type RwaMarketData,
+  type RwaQuoteSide,
+} from '@/entities/asset'
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { usePrefersDarkScheme } from '@/shared/lib/theme'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
-const TRADE_SIDES: { side: TradeSide; title: string }[] = [
+const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
   { side: 'buy', title: 'Buy' },
   { side: 'sell', title: 'Sell' },
 ]
