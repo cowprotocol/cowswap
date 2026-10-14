@@ -18,8 +18,13 @@ interface WalletProviderProps {
 export function WalletProvider({ queryClient, children }: WalletProviderProps): ReactNode {
   const isDark = useIsDarkTheme()
 
-  // Without an explicit mode the modal follows the system scheme, not the app theme
-  useEffect(() => appKit.setThemeMode(isDark ? 'dark' : 'light'), [isDark])
+  useEffect(() => {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim()
+
+    // Without an explicit mode the modal follows the system scheme, not the app theme
+    appKit.setThemeMode(isDark ? 'dark' : 'light')
+    appKit.setThemeVariables({ '--apkt-accent': accent })
+  }, [isDark])
 
   return (
     <WagmiProvider config={wagmiConfig}>
