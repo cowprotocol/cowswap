@@ -10,9 +10,10 @@ import {
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
-import { getOrdersTableSettings, SettingsContainer, useIsCustomRecipientDisabled } from 'modules/trade'
+import { getOrdersTableSettings, SettingsContainer, useIsCustomRecipientLockedOnSolana } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
 
@@ -31,7 +32,8 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
-  const isCustomRecipientDisabled = useIsCustomRecipientDisabled()
+  const { disableCustomRecipient } = useInjectedWidgetParams()
+  const isRecipientLockedOnSolana = useIsCustomRecipientLockedOnSolana()
   const isPartialApprovalLocked = useIsInfiniteApproveDisabled()
   const {
     showRecipient,
@@ -104,12 +106,23 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
       <SettingsContainer>
         <SettingsDropdownSection title={t`Limit Settings`}>
           <SettingsBoxGroup>
-            {!isCustomRecipientDisabled && (
+            {!disableCustomRecipient && (
               <SettingsBox
                 title={t`Custom Recipient`}
-                tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-                checked={showRecipient}
+                tooltip={
+                  <>
+                    <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
+                    {isRecipientLockedOnSolana && (
+                      <>
+                        <br />
+                        <Trans>Custom recipients are not available on Solana yet.</Trans>
+                      </>
+                    )}
+                  </>
+                }
+                checked={isRecipientLockedOnSolana ? false : showRecipient}
                 toggle={handleRecipientToggle}
+                disabled={isRecipientLockedOnSolana}
               />
             )}
 
