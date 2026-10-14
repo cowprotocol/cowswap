@@ -1,7 +1,7 @@
 import { ReactNode, useState } from 'react'
 
 import { getTokenListViewLink, ListState, TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
+import { ButtonPrimary, Modal } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -31,9 +31,9 @@ export function ImportListModal(props: ImportListModalProps): ReactNode {
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onDismiss}>
+      <Modal.Header onBack={onBack} onClose={onDismiss}>
         <Trans>Import List</Trans>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.ListInfo>
         <TokenLogo logoURI={list.list.logoURI} size={36} />
         <div>

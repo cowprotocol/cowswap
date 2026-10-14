@@ -22,7 +22,7 @@ interface PastAndPresentValue {
 
 type SummaryQuery = {
   settlements: Array<{ firstTradeTimestamp: string; txHash: string }>
-  hourlyTotals: Array<{ orders: string; feesUsd: string }>
+  hourlyTotals: Array<{ orders: string }>
   totals: Array<{ tokens: string; volumeUsd: string }>
 }
 
@@ -30,13 +30,7 @@ interface TotalSummary {
   batchInfo?: BatchInfo
   dailyTransactions?: PastAndPresentValue
   totalTokens?: number
-  dailyFees?: PastAndPresentValue
   volumeUsd?: number
-}
-
-type TransactionsAndFees = {
-  transactions: number
-  fees: number
 }
 
 function buildSummary(data: SummaryQuery): TotalSummary {
@@ -45,17 +39,9 @@ function buildSummary(data: SummaryQuery): TotalSummary {
     batchId: data.settlements[0].txHash,
   }
 
-  const now = getTransactionsAndFees(data.hourlyTotals.slice(0, 24))
-  const before = getTransactionsAndFees(data.hourlyTotals.slice(24, 48))
-
   const dailyTransactions: PastAndPresentValue = {
-    before: before.transactions,
-    now: now.transactions,
-  }
-
-  const dailyFees: PastAndPresentValue = {
-    before: before.fees,
-    now: now.fees,
+    before: sumOrders(data.hourlyTotals.slice(24, 48)),
+    now: sumOrders(data.hourlyTotals.slice(0, 24)),
   }
 
   const totalTokens = Number(data.totals[0].tokens)
@@ -64,21 +50,13 @@ function buildSummary(data: SummaryQuery): TotalSummary {
   return {
     batchInfo,
     dailyTransactions,
-    dailyFees,
     totalTokens,
     volumeUsd,
   }
 }
 
-function getTransactionsAndFees(data: Array<{ orders: string; feesUsd: string }>): TransactionsAndFees {
-  return data.reduce(
-    (acc, curr) => {
-      acc.transactions += Number(curr.orders)
-      acc.fees += Number(curr.feesUsd)
-      return acc
-    },
-    { fees: 0, transactions: 0 },
-  )
+function sumOrders(data: Array<{ orders: string }>): number {
+  return data.reduce((acc, curr) => acc + Number(curr.orders), 0)
 }
 
 const FETCH_INTERVAL = 1000 * 10 // 10 seconds
@@ -112,7 +90,6 @@ const summaryQuery = gql`
   query Summary {
     hourlyTotals(orderBy: timestamp, orderDirection: desc, first: 48) {
       orders
-      feesUsd
     }
     settlements(orderBy: firstTradeTimestamp, orderDirection: desc, first: 1) {
       txHash

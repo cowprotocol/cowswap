@@ -2,6 +2,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import type { TwapOrder, TwapPartOrder, TwapPartOrderStatus } from '@cowprotocol/sdk-composable'
 
 import BigNumber from 'bignumber.js'
+import { getFillOrKillSellSurplus } from 'utils'
 
 import { OrderStatus } from 'api/operator'
 
@@ -30,6 +31,12 @@ export function toTwapPartTableRow(
 ): OrderTableRowData {
   const executionWindow = schedule.durationOfPart || schedule.timeBetweenParts
   const scheduledStart = part.validTo === null ? part.createdAt : part.validTo - executionWindow + 1
+  const surplus = part.executedBuyAmount
+    ? getFillOrKillSellSurplus({
+        buyAmount: part.buyAmount.toString(),
+        executedBuyAmount: part.executedBuyAmount.toString(),
+      })
+    : undefined
 
   return {
     uid: part.orderUid,
@@ -46,5 +53,6 @@ export function toTwapPartTableRow(
     filledPercentage: new BigNumber(part.status === 'fulfilled' ? 100 : 0),
     status: STATUSES[part.status],
     statusLabel: LABELS[part.status],
+    ...(surplus && { surplusAmount: surplus.amount, surplusPercentage: surplus.percentage }),
   }
 }

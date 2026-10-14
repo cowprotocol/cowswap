@@ -3,6 +3,7 @@ import { useLayoutEffect } from 'react'
 
 import { syncBootFeatureFlags } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { useLDClient, useLDClientError } from 'launchdarkly-react-client-sdk'
 
@@ -22,7 +23,8 @@ export function FeatureFlagsUpdater(): null {
     if (client) {
       setFeatureFlags(flags)
       setFeatureFlagsStatus(clientError ? 'unavailable' : 'ready')
-      syncBootFeatureFlags(flags)
+      // Widget flags have Solana forced off, persisting them would leak into the app on the same origin
+      if (!isInjectedWidget()) syncBootFeatureFlags(flags)
       return
     }
 

@@ -3,7 +3,7 @@ import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -28,6 +28,7 @@ import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
   TwapFormWidget,
+  TwapSellAmountDescription,
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
@@ -38,6 +39,7 @@ import {
 
 import { Routes } from 'common/constants/routes'
 import { HydrateAtom } from 'common/state/HydrateAtom'
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
@@ -67,12 +69,18 @@ export function AdvancedOrdersPage(): ReactNode {
     [setOrdersTableDrawerOpen],
   )
 
-  const disablePriceImpact = twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL
+  const disablePriceImpact =
+    twapFormValidation === TwapFormState.SELL_AMOUNT_TOO_SMALL ||
+    twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
+  }
+
+  if (!isTwapSupportedChain(Number(params.chainId))) {
+    return <TradeRouteRedirect route={Routes.SWAP} />
   }
 
   return (
@@ -92,11 +100,12 @@ export function AdvancedOrdersPage(): ReactNode {
             confirmContent={<TwapConfirmModal />}
             params={advancedWidgetParams}
             mapCurrencyInfo={mapTwapCurrencyInfo}
+            topContent={<TwapSellAmountDescription />}
           >
-            {(tradeWarnings) => (
+            {(tradeWarnings, captcha) => (
               <>
                 {/*TODO: conditionally display a widget for current advanced order type*/}
-                <TwapFormWidget tradeWarnings={tradeWarnings} />
+                <TwapFormWidget tradeWarnings={tradeWarnings} captcha={captcha} />
               </>
             )}
           </AdvancedOrdersWidget>
@@ -110,7 +119,7 @@ export function AdvancedOrdersPage(): ReactNode {
           >
             <Modal.Root className="trade-orders-table">
               {isUpToLarge ? (
-                <ModalHeader
+                <Modal.Header
                   sticky
                   title={t`TWAP orders`}
                   titleAs={Dialog.Title}

@@ -21,6 +21,7 @@ import {
   useShouldHideTradeRateDetails,
 } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
+import { TwapWorstAcceptedPriceInput } from 'modules/twap/pure/TwapWorstAcceptedPriceInput/TwapWorstAcceptedPriceInput.pure'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
@@ -30,14 +31,7 @@ import { RateInfo } from 'common/pure/RateInfo'
 import * as styledEl from './styled'
 import { useLabelsTooltips } from './tooltips'
 
-import {
-  DEFAULT_NUM_OF_PARTS,
-  DEFAULT_TWAP_SLIPPAGE,
-  MAX_PART_TIME,
-  MAX_TWAP_SLIPPAGE,
-  MINIMUM_PART_TIME,
-  ORDER_DEADLINES,
-} from '../../const'
+import { DEFAULT_NUM_OF_PARTS, MAX_PART_TIME, MINIMUM_PART_TIME, ORDER_DEADLINES } from '../../const'
 import {
   useFallbackHandlerVerification,
   useIsFallbackHandlerCompatible,
@@ -46,23 +40,27 @@ import {
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { DeadlineSelector } from '../../pure/DeadlineSelector/DeadlineSelector.pure'
+import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
-import { TwapFormWarnings } from '../TwapFormWarnings'
+import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
 
-export type { LabelTooltip, LabelTooltipItems } from './tooltips'
+export type { LabelTooltip, LabelTooltipContent, LabelTooltipFn, LabelTooltipItems } from './tooltips'
+export type { TotalDurationTooltipProps } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
+export { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
+  captcha: ReactNode | null
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
-export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
+export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const isSafeViaWc = useIsSafeViaWc()
@@ -72,7 +70,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
 
   const { numberOfPartsValue, deadline, customDeadline, isCustomDeadline } = useAtomValue(twapOrdersSettingsAtom)
 
-  const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
   const { updateState } = useTradeState()
   const isFallbackHandlerRequired = useIsFallbackHandlerRequired()
   const isFallbackHandlerCompatible = useIsFallbackHandlerCompatible()
@@ -196,34 +194,19 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
           </styledEl.FooterBox>
         </>
       )}
-      <TradeNumberInput
-        value={+twapOrderSlippage.toFixed(2)}
-        onUserInput={onSlippageInput}
-        decimalsPlaces={2}
-        placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
-        min={0}
-        max={MAX_TWAP_SLIPPAGE}
-        label={tooltips.slippage.label}
-        tooltip={renderTooltip(tooltips.slippage.tooltip)}
-        showUpDownArrows={true}
-        upDownArrowsLeftAlign={true}
-        prefixComponent={
-          <em>
-            {executionPrice && !hideQuoteAmount ? (
-              <styledEl.ExecutionPriceStyled
-                executionPrice={executionPrice}
-                isInverted={isInverted}
-                hideFiat
-                hideSeparator
-              />
-            ) : (
-              '0'
-            )}
-          </em>
-        }
-        suffix="%"
-        step={0.1}
+
+      <TwapWorstAcceptedPriceInput
+        slippageLabel={tooltips.slippage.label}
+        slippageTooltip={renderTooltip(tooltips.slippage.tooltip)}
+        twapOrderSlippage={twapOrderSlippage}
+        onSlippageInput={onSlippageInput}
+        executionPrice={executionPrice}
+        inputCurrency={inputCurrency}
+        outputCurrency={outputCurrency}
+        hideQuoteAmount={hideQuoteAmount}
+        isInverted={isInverted}
       />
+
       <styledEl.Row>
         <TradeNumberInput
           value={numberOfPartsValue}
@@ -242,10 +225,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
           label={tooltips.totalDuration.label}
-          tooltip={renderTooltip(tooltips.totalDuration.tooltip, {
-            parts: numberOfPartsValue,
-            partDuration: timeInterval,
-          })}
+          tooltip={TotalDurationTooltip}
+          parts={numberOfPartsValue}
+          partDuration={timeInterval}
         />
 
         <TradeTextBox label={tooltips.partDuration.label} tooltip={tooltips.partDuration.tooltip}>
@@ -262,6 +244,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget): ReactNode {
       {isPrimaryValidationPassed && !localFormValidation && (
         <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
       )}
+      {captcha}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}
         localFormValidation={localFormValidation}

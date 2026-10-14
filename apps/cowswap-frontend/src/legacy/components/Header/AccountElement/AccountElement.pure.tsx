@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useRef } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -13,6 +12,7 @@ import {
   useNotificationAlertDismissal,
   useNotificationSidebarState,
   useOpenNotificationSidebar,
+  useTelegramNotificationsAvailability,
   useUnreadSidebarNotificationsCount,
 } from 'modules/notifications'
 import { WalletStatusButton } from 'modules/wallet'
@@ -33,7 +33,7 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
   const shouldShowAffiliateTraderHeaderButton = useShouldShowAffiliateTraderHeaderButton()
   const unreadNotificationsCount = useUnreadSidebarNotificationsCount()
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
-  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { isAvailable: areTelegramNotificationsAvailable } = useTelegramNotificationsAvailability()
   const { hasSubscription, isLoading } = useHasNotificationSubscription()
 
   const { isOpen: isSidebarOpen, initialSettingsOpen: shouldOpenSettings } = useNotificationSidebarState()
@@ -43,10 +43,10 @@ export function AccountElement({ className }: AccountElementProps): ReactNode {
   const notificationBellRef = useRef<HTMLButtonElement>(null)
 
   const shouldShowPopover =
-    areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
+    areTelegramNotificationsAvailable && !!account && !isDismissed && !hasSubscription && !isLoading
 
   const handleEnableAlerts = (): void => {
-    openNotificationSidebar(areTelegramNotificationsEnabled)
+    openNotificationSidebar(areTelegramNotificationsAvailable)
     dismiss()
   }
 

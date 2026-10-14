@@ -147,6 +147,73 @@ describe('orders reducer', () => {
       expect(finalState[CHAIN_ID]?.fulfilled[order.id]?.order.isCancelling).toBe(false)
     })
 
+    it('does not let a later successful cancellation overwrite fulfillment', () => {
+      const { state, order } = setupCancellingOrder()
+      let next = reducer(
+        state,
+        fulfillOrdersBatch({
+          chainId: CHAIN_ID,
+          orders: [{ uid: order.id } as unknown as EnrichedOrder],
+          isSafeWallet: true,
+        }),
+      )
+      const fulfillmentTime = next[CHAIN_ID]?.fulfilled[order.id]?.order.fulfillmentTime
+      next = reducer(next, cancelOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: true }))
+      expect(next[CHAIN_ID]?.cancelled[order.id]).toBeUndefined()
+      expect(next[CHAIN_ID]?.fulfilled[order.id]?.order).toMatchObject({
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        fulfillmentTime,
+      })
+    })
+
+    it('repairs persisted cancellation from API fulfillment', () => {
+      const { state, order } = setupCancellingOrder()
+      let next = reducer(state, cancelOrdersBatch({ chainId: CHAIN_ID, ids: [order.id], isSafeWallet: true }))
+      const apiAdditionalInfo = { uid: order.id, status: 'fulfilled', invalidated: true } as unknown as EnrichedOrder
+      const apiOrder: SerializedOrder = {
+        ...(order as unknown as SerializedOrder),
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        apiAdditionalInfo,
+      }
+      next = reducer(next, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [apiOrder], isSafeWallet: true }))
+      const fulfilled = next[CHAIN_ID]?.fulfilled[order.id]?.order
+      expect(next[CHAIN_ID]?.cancelled[order.id]).toBeUndefined()
+      expect(fulfilled).toMatchObject({ status: OrderStatus.FULFILLED, isCancelling: false, apiAdditionalInfo })
+      next = reducer(next, addOrUpdateOrders({ chainId: CHAIN_ID, orders: [apiOrder], isSafeWallet: true }))
+      expect(next[CHAIN_ID]?.fulfilled[order.id]?.order).toMatchObject({
+        status: OrderStatus.FULFILLED,
+        isCancelling: false,
+        apiAdditionalInfo,
+      })
+    })
+
+    it.each([OrderStatus.PENDING, OrderStatus.CANCELLED])(
+      'accepts a later API %s status after fulfillment',
+      (status) => {
+        const { state, order } = setupCancellingOrder()
+        let next = reducer(
+          state,
+          fulfillOrdersBatch({
+            chainId: CHAIN_ID,
+            orders: [{ uid: order.id } as unknown as EnrichedOrder],
+            isSafeWallet: true,
+          }),
+        )
+        next = reducer(
+          next,
+          addOrUpdateOrders({
+            chainId: CHAIN_ID,
+            orders: [{ ...(order as unknown as SerializedOrder), status, isCancelling: false }],
+            isSafeWallet: true,
+          }),
+        )
+        expect(next[CHAIN_ID]?.fulfilled[order.id]).toBeUndefined()
+        expect(next[CHAIN_ID]?.[status][order.id]?.order).toMatchObject({ status, isCancelling: false })
+      },
+    )
+
     it('addOrUpdateOrders for a brand new order uses API isCancelling as is', () => {
       let state = reducer(undefined, { type: '@@INIT' })
       const order = generateOrder({ owner: '0x...', sellToken, buyToken })

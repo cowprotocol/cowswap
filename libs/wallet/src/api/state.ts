@@ -23,6 +23,7 @@ export const walletDetailsAtom = atom<WalletDetails>({
 })
 
 export const gnosisSafeInfoAtom = atom<GnosisSafeInfo | undefined>(undefined)
+export const isKnownNotSafeAtom = atom(false)
 
 export const walletDisplayedAddress = atom((get) => {
   const { account } = get(walletInfoAtom)
