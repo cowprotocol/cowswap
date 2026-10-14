@@ -1,27 +1,51 @@
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
 import { getTokenKey } from './tokenKey'
 
 import type { RwaToken } from '@/entities/asset'
 
 export interface TradeToken {
   assetToken: RwaToken
-  /** Asset tokens on the network of `assetToken` */
-  chainTokens: RwaToken[]
+  /** `false` when the user picked `assetToken` */
+  isAutoSelected: boolean
 }
 
 /**
- * The wallet network wins over the selected token's one, because the widget follows the wallet.
- * `walletChainId` is `undefined` when no wallet is connected.
+ * The wallet network wins, because the widget follows the wallet. Then the network of the selected token, then the
+ * network picked in the selector. `walletChainId` is `undefined` when no wallet is connected.
  */
-export function resolveTradeToken(
+export function resolveTradeChainId(
   tokens: RwaToken[],
   selectedTokenKey: string | null,
+  preferredChainId: number | null,
   walletChainId: number | undefined,
-): TradeToken | null {
-  const selectedToken = tokens.find((token) => getTokenKey(token) === selectedTokenKey)
-  const isWalletChainTraded = tokens.some((token) => token.chainId === walletChainId)
-  const chainId = isWalletChainTraded ? walletChainId : (selectedToken?.chainId ?? tokens[0]?.chainId)
-  const chainTokens = tokens.filter((token) => token.chainId === chainId)
-  const assetToken = selectedToken?.chainId === chainId ? selectedToken : chainTokens[0]
+): number | undefined {
+  const hasTokensOn = (chainId: number | null | undefined): boolean => tokens.some((token) => token.chainId === chainId)
 
-  return assetToken ? { assetToken, chainTokens } : null
+  if (hasTokensOn(walletChainId)) return walletChainId
+
+  const selectedToken = tokens.find((token) => getTokenKey(token) === selectedTokenKey)
+
+  if (selectedToken) return selectedToken.chainId
+  if (preferredChainId !== null && hasTokensOn(preferredChainId)) return preferredChainId
+
+  return tokens[0]?.chainId
+}
+
+/** `chainTokens` are the asset tokens on the traded network */
+export function resolveTradeToken(
+  chainTokens: RwaToken[],
+  selectedTokenKey: string | null,
+  bestTokenAddress: string | null,
+): TradeToken | null {
+  const selectedToken = chainTokens.find((token) => getTokenKey(token) === selectedTokenKey)
+
+  if (selectedToken) return { assetToken: selectedToken, isAutoSelected: false }
+
+  const bestToken = bestTokenAddress
+    ? chainTokens.find((token) => areAddressesEqual(token.address, bestTokenAddress))
+    : undefined
+  const assetToken = bestToken ?? chainTokens[0]
+
+  return assetToken ? { assetToken, isAutoSelected: true } : null
 }

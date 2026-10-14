@@ -10,6 +10,12 @@ describe('jsonResponse', () => {
     expect(response.headers.get('Cache-Control')).toBe('public, s-maxage=60, stale-while-revalidate=300')
   })
 
+  it('omits stale-while-revalidate when it is 0', () => {
+    const response = jsonResponse({ quotes: [], degraded: false }, 60, 0)
+
+    expect(response.headers.get('Cache-Control')).toBe('public, s-maxage=60')
+  })
+
   it('disables caching for a degraded response', () => {
     const response = jsonResponse({ items: [], degraded: true }, 60)
 

@@ -35,6 +35,13 @@ export interface RwaMarketData {
   updatedAt: string | null
 }
 
+/** Stats of every asset token on one network */
+export interface RwaNetworkStats extends DegradableResponse {
+  ticker: string
+  chainId: number
+  tokens: RwaTokenNetworkStats[]
+}
+
 export interface RwaRegistry {
   version: string
   /** ISO 8601 */
@@ -63,6 +70,14 @@ export interface RwaTokenMarketData {
   /** USD */
   volume24h: number | null
   logoUrl: string | null
+}
+
+export interface RwaTokenNetworkStats {
+  address: string
+  /** USD, supply on the network times the token price */
+  onchainCap: number | null
+  /** USD, DEX trades on the network */
+  dexVolume24h: number | null
 }
 
 export interface RwaTradingTime {
@@ -95,6 +110,18 @@ export type RwaSortOrder = 'asc' | 'desc'
 
 export const RWA_CHART_RANGES = ['1D', '1W', '1M', '1Y', 'ALL'] as const
 
+export const RWA_QUOTE_SIDES = ['buy', 'sell'] as const
+
+/** Quotes of every asset token on one network against a fixed USDC amount */
+export interface RwaAssetQuotes extends DegradableResponse {
+  ticker: string
+  chainId: number
+  side: RwaQuoteSide
+  /** USD, spent on `buy` and received on `sell` */
+  amountUsd: number
+  quotes: RwaTokenQuote[]
+}
+
 export interface RwaChart {
   ticker: string
   range: RwaChartRange
@@ -110,6 +137,8 @@ export interface RwaChartPoint {
 
 export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
 
+export type RwaQuoteSide = (typeof RWA_QUOTE_SIDES)[number]
+
 /** [Token list](https://tokenlists.org) of every token in the registry */
 export interface RwaTokenList {
   name: string
@@ -121,4 +150,14 @@ export interface RwaTokenList {
 
 export interface RwaTokenListToken extends Omit<RwaToken, 'coingeckoId' | 'issuer'> {
   extensions: { ticker: string }
+}
+
+export interface RwaTokenQuote {
+  address: string
+  /** Atoms of the asset token, received on `buy` and spent on `sell`. `null` when there is no quote */
+  amount: string | null
+  /** `true` when the order book simulated the trade. Unverified amounts can be far off */
+  verified: boolean
+  /** Order book `errorType` (e.g. `NoLiquidity`), or `Unavailable` when the order book could not be reached */
+  error: string | null
 }

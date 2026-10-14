@@ -4,14 +4,6 @@
   gap: 12px;
 }
 
-.tokenSelect {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  color: var(--color-text-secondary);
-  font-size: 13px;
-}
-
 .connectPrompt {
   display: flex;
   align-items: center;
