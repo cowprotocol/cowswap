@@ -1,0 +1,20 @@
+.header {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 12px 16px;
+}
+
+.logo {
+  color: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  text-decoration: none;
+}

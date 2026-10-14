@@ -1,0 +1,25 @@
+.widget {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tokenSelect {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.connectPrompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
