@@ -16,7 +16,7 @@
 
 .side {
   position: sticky;
-  top: 16px;
+  top: var(--sticky-top, 16px);
   margin-top: 50px;
 }
 

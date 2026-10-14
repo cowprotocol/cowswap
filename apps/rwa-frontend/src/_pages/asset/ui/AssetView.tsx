@@ -1,7 +1,7 @@
 'use client'
 
 import { useAtomValue } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useRef } from 'react'
 
 import Link from 'next/link'
 
@@ -10,13 +10,20 @@ import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { TradeWidget } from './TradeWidget'
 
+import { useFitStickyTop } from '../model/useFitStickyTop'
+
 import { assetQueryAtomFamily, AssetStats, type RwaAsset } from '@/entities/asset'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
+const SIDE_STICKY_GAP = 16
+
 export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
   const { data, error } = useAtomValue(assetQueryAtomFamily(asset.ticker))
+  const sideRef = useRef<HTMLElement>(null)
+
+  useFitStickyTop(sideRef, SIDE_STICKY_GAP)
 
   return (
     <div className={styles.layout}>
@@ -32,7 +39,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <AssetPriceChart ticker={asset.ticker} />
         <AssetAccount asset={asset} />
       </div>
-      <aside className={styles.side}>
+      <aside ref={sideRef} className={styles.side}>
         <TradeWidget asset={asset} />
       </aside>
     </div>
