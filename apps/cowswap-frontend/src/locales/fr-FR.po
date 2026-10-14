@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-14 12:41\n"
+"PO-Revision-Date: 2026-10-14 14:06\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3167,6 +3167,10 @@ msgstr "Afficher la progression"
 #: apps/cowswap-frontend/src/modules/application/containers/AppContainer/CowSpeechBubble/CowSpeechBubbleHiringBanner.tsx
 msgid "Mooo, we're hiring!"
 msgstr "Mooo, nous recrutons !"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
+msgid "Minimum bridge amount is {minimumBridgeAmount} (temporary)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
 msgid "Next payout"
