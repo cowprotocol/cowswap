@@ -15,18 +15,12 @@ export interface EthFlowOrderTracker {
 }
 
 export interface OrdersMock {
-  /** Forces the next `postOrder` response to `orderId`, runs `trigger`, and waits for that request to land. */
+  /** Forces the next `postOrder` response to `orderId`, runs `trigger`, then waits for that request to land. */
   expectOrderToBePosted(opts: {
     orderId: OrderUid
     owner: string
     trigger: () => Promise<void>
-    /**
-     * Overrides the 10s default. Originally a test-only escape hatch to shorten it for the
-     * negative-case unit test (`index.test.ts`); also legitimate to lengthen it for a `trigger`
-     * that itself needs more than 10s under CI load (e.g. a cross-chain confirm's two separate
-     * enable-wait + click pairs) — the race is against `trigger()`'s own completion, not just the
-     * network round-trip.
-     */
+    /** Milliseconds to wait for `postOrder` after `trigger` resolves. Defaults to 10_000. */
     timeoutMs?: number
   }): Promise<void>
   /** Debits sell / credits buy on `balances`, and flips the order to `fulfilled` (`order`, `orderStatus`). */
@@ -117,8 +111,9 @@ export function installOrdersMock(cowApi: CowProtocolApiMock): OrdersMock {
         return orderId
       })
 
+      await trigger()
       await withTimeout(
-        Promise.all([posted, trigger()]),
+        posted,
         timeoutMs,
         `expectOrderToBePosted: no postOrder request observed for ${orderId} within ${timeoutMs}ms`,
       )
