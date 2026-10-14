@@ -7,6 +7,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 import { useLocation } from 'react-router'
 
+import { useNavigate } from 'common/hooks/useNavigate'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
@@ -76,7 +78,7 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
     shouldPreserveRecipientFromUrl,
   ])
 
-  useResetRecipientWhenDisabled(isCustomRecipientDisabled, recipient, onChangeRecipient)
+  useResetRecipientWhenDisabled(isCustomRecipientDisabled, recipient, hasRecipientInUrl, onChangeRecipient)
 
   /**
    * Remove recipient override when its source hook was deleted
@@ -130,17 +132,28 @@ function hasRecipientSearchParam(search: string): boolean {
   return !!(searchParams.get('recipient') || searchParams.get('recipientAddress'))
 }
 
-/**
- * Token navigation keeps `?recipient=` in the URL and re-applies it to trade state
- */
 function useResetRecipientWhenDisabled(
   isCustomRecipientDisabled: boolean,
   recipient: string | null | undefined,
+  hasRecipientInUrl: boolean,
   onChangeRecipient: (recipient: string | null) => void,
 ): void {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   useEffect(() => {
     if (isCustomRecipientDisabled && recipient) {
       onChangeRecipient(null)
     }
   }, [isCustomRecipientDisabled, recipient, onChangeRecipient])
+
+  useEffect(() => {
+    if (!isCustomRecipientDisabled || !hasRecipientInUrl) return
+
+    const searchParams = new URLSearchParams(location.search)
+    searchParams.delete('recipient')
+    searchParams.delete('recipientAddress')
+
+    navigate({ pathname: location.pathname, search: searchParams.toString() }, { replace: true })
+  }, [isCustomRecipientDisabled, hasRecipientInUrl, location.pathname, location.search, navigate])
 }

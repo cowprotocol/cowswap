@@ -4,6 +4,8 @@ import { renderHook } from '@testing-library/react'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 import { useLocation } from 'react-router'
 
+import { useNavigate } from 'common/hooks/useNavigate'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
@@ -37,6 +39,10 @@ jest.mock('react-router', () => ({
   useLocation: jest.fn(),
 }))
 
+jest.mock('common/hooks/useNavigate', () => ({
+  useNavigate: jest.fn(),
+}))
+
 jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({
   useTradeStateFromUrl: jest.fn(),
 }))
@@ -68,6 +74,8 @@ const mockUseIsCustomRecipientDisabled = useIsCustomRecipientDisabled as jest.Mo
 const mockUsePostHooksRecipientOverride = usePostHooksRecipientOverride as jest.MockedFunction<
   typeof usePostHooksRecipientOverride
 >
+const mockUseNavigate = useNavigate as jest.MockedFunction<typeof useNavigate>
+const mockNavigate = jest.fn()
 const mockUseLocation = useLocation as jest.MockedFunction<typeof useLocation>
 const mockUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
@@ -83,8 +91,10 @@ function setup({
   isCustomRecipientDisabled = false,
 } = {}): void {
   mockUseWalletInfo.mockImplementation(() => ({ chainId }) as ReturnType<typeof useWalletInfo>)
+  mockUseNavigate.mockReturnValue(mockNavigate)
   mockUseLocation.mockReturnValue({
-    search: recipientInUrl ? `?recipient=${recipientInUrl}` : '',
+    pathname: '/1/swap/ETH/COW',
+    search: recipientInUrl ? `?recipient=${recipientInUrl}&sellAmount=1` : '',
   } as ReturnType<typeof useLocation>)
   mockUseIsCustomRecipientDisabled.mockReturnValue(isCustomRecipientDisabled)
   mockUsePostHooksRecipientOverride.mockReturnValue(null)
@@ -186,5 +196,24 @@ describe('useResetRecipient', () => {
     rerender()
 
     expect(onChangeRecipient).not.toHaveBeenCalled()
+  })
+
+  it('removes the recipient from the URL when custom recipients are disabled', () => {
+    setup({ recipientInUrl: RECIPIENT, isCustomRecipientDisabled: true })
+
+    renderHook(() => useResetRecipient(jest.fn()))
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      { pathname: '/1/swap/ETH/COW', search: 'sellAmount=1' },
+      { replace: true },
+    )
+  })
+
+  it('keeps the recipient in the URL when custom recipients are enabled', () => {
+    setup({ recipientInUrl: RECIPIENT })
+
+    renderHook(() => useResetRecipient(jest.fn()))
+
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 })
