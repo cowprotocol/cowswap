@@ -2816,6 +2816,10 @@ msgstr "Show progress"
 msgid "Mooo, we're hiring!"
 msgstr "Mooo, we're hiring!"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/QuoteErrorsButton.pure.tsx
+msgid "Minimum bridge amount is {minimumBridgeAmount} (temporary)"
+msgstr "Minimum bridge amount is {minimumBridgeAmount} (temporary)"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/NextPayoutCard.tsx
 msgid "Next payout"
 msgstr "Next payout"
@@ -5998,8 +6002,8 @@ msgid "Invalid website URL in manifest. Only http(s) URLs are allowed, with http
 msgstr "Invalid website URL in manifest. Only http(s) URLs are allowed, with http limited to local development."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
-#~ msgid "Sell amount too small to bridge"
-#~ msgstr "Sell amount too small to bridge"
+msgid "Sell amount too small to bridge"
+msgstr "Sell amount too small to bridge"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
