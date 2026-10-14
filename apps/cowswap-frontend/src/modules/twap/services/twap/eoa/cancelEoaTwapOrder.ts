@@ -1,8 +1,12 @@
-import type { Hex, WalletClient } from 'viem'
+import type { Hex, SendTransactionParameters, WalletClient } from 'viem'
 
-import { isRejectRequestProviderError, logTwap, normalizeError } from '@cowprotocol/common-utils'
+import { calculateGasMargin, isRejectRequestProviderError, logTwap, normalizeError } from '@cowprotocol/common-utils'
+
+import { estimateGas } from 'viem/actions'
 
 import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 import { encodeTrustedExecuteHooksCalldata } from './buildEoaTwapTrustedExecuteTx'
 
@@ -49,13 +53,17 @@ export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Pro
       isDelegateCall: false,
       allowFailure: false,
     }))
-    const txHash = await walletClient.sendTransaction({
+    const transaction = {
       to: cowShedHooks.proxyOf(walletClient.account.address) as Hex,
       data: encodeTrustedExecuteHooksCalldata(calls),
       account: walletClient.account,
       chain: walletClient.chain,
-      gas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
-    })
+    } satisfies SendTransactionParameters
+    const gas = await estimateGasWithFallback(
+      () => estimateGas(walletClient, transaction).then(calculateGasMargin),
+      EOA_TWAP_CANCELLATION_GAS_LIMIT,
+    )
+    const txHash = await walletClient.sendTransaction({ ...transaction, gas })
 
     logTwap.info('Submitted EOA TWAP cancellation', { ...logContext, txHash })
 

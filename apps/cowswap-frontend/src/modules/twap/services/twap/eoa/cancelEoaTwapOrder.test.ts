@@ -3,9 +3,13 @@ import { decodeFunctionData, parseAbi, type Hex, type WalletClient } from 'viem'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 
+import { estimateGas } from 'viem/actions'
+
 import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
 
 import { EOA_TWAP_CANCELLATION_GAS_LIMIT, cancelEoaTwapOrder, CancelEoaTwapOrderParams } from './cancelEoaTwapOrder'
+
+jest.mock('viem/actions', () => ({ estimateGas: jest.fn() }))
 
 jest.mock('modules/accountProxy', () => ({
   ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: { id: 'twap-account-proxy' },
@@ -44,6 +48,7 @@ const context = {
 describe('cancelEoaTwapOrder', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(estimateGas).mockResolvedValue(500_000n)
     ;(getCowShedHooks as jest.Mock).mockReturnValue({
       proxyOf,
     })
@@ -89,8 +94,17 @@ describe('cancelEoaTwapOrder', () => {
       data: expect.any(String),
       account: context.walletClient.account,
       chain: context.walletClient.chain,
-      gas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
+      gas: 600_000n,
     })
+  })
+
+  it('uses the fallback when estimation fails', async () => {
+    jest.mocked(estimateGas).mockRejectedValueOnce(new Error('RPC unavailable'))
+
+    await expect(cancelEoaTwapOrder(context)).resolves.toBe(txHash)
+
+    expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: EOA_TWAP_CANCELLATION_GAS_LIMIT }))
+    expect(EOA_TWAP_CANCELLATION_GAS_LIMIT).toBe(600_000n)
   })
 
   it('propagates rejection when the user rejects the transaction', async () => {
