@@ -28,3 +28,7 @@ export function getAssetUrl(ticker: string): string {
 export function getChartUrl(ticker: string, range: RwaChartRange): string {
   return `${RWA_API_PREFIX}chart/${encodeURIComponent(ticker)}?range=${range}`
 }
+
+export function getTokenListUrl(): string {
+  return `${RWA_API_PREFIX}token-list`
+}

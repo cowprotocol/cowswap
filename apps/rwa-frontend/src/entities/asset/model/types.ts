@@ -92,3 +92,16 @@ export interface RwaChartPoint {
 }
 
 export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
+
+/** [Token list](https://tokenlists.org) of every token in the registry */
+export interface RwaTokenList {
+  name: string
+  /** ISO 8601 */
+  timestamp: string
+  version: { major: number; minor: number; patch: number }
+  tokens: RwaTokenListToken[]
+}
+
+export interface RwaTokenListToken extends Omit<RwaToken, 'coingeckoId'> {
+  extensions: { ticker: string }
+}

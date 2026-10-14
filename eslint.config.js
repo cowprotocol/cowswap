@@ -402,6 +402,7 @@ module.exports = [
       '@next/next/no-html-link-for-pages': ['error', 'apps/cow-fi/pages'],
     },
   },
+  // rwa-frontend Next.js config
   {
     files: ['apps/rwa-frontend/**/*.{ts,tsx,js,jsx}'],
     plugins: {

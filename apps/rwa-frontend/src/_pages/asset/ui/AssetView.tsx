@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 
 import Link from 'next/link'
 
+import { AccountTabs } from './AccountTabs'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { TradeWidget } from './TradeWidget'
@@ -30,6 +31,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
         <AssetStats asset={asset} market={data?.market} />
         <AssetPriceChart ticker={asset.ticker} />
+        <AccountTabs asset={asset} />
       </div>
       <aside className={styles.side}>
         <TradeWidget asset={asset} />

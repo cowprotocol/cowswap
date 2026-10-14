@@ -2,6 +2,7 @@ export default {
   displayName: 'rwa-frontend',
   preset: '../../jest.preset.js',
   testEnvironment: 'jsdom',
+  setupFiles: ['<rootDir>/jest/textEncoderPolyfill.js'],
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
     '^.+\\.[tj]sx?$': ['babel-jest', { presets: [['@nx/react/babel', { runtime: 'automatic' }]] }],
