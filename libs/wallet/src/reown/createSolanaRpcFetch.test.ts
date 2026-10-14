@@ -47,7 +47,7 @@ describe('createSolanaRpcFetch', () => {
     const result = await rpcFetch(PRIMARY_URL, INIT)
 
     expect(result.status).toBe(200)
-    expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, INIT)
+    expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, expect.objectContaining({ body: INIT.body }))
   })
 
   it('reports a non-rate-limit refusal as a generic RPC error', async () => {
@@ -70,7 +70,7 @@ describe('createSolanaRpcFetch', () => {
     const result = await rpcFetch(PRIMARY_URL, INIT)
 
     expect(result.status).toBe(200)
-    expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, INIT)
+    expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, expect.objectContaining({ body: INIT.body }))
   })
 
   it('rethrows without falling back when the request was aborted', async () => {
@@ -108,8 +108,27 @@ describe('createSolanaRpcFetch', () => {
       const result = await resultPromise
 
       expect(result.status).toBe(200)
-      expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, INIT)
+      expect(fetchFn).toHaveBeenLastCalledWith(FALLBACK_URL, expect.objectContaining({ body: INIT.body }))
       expect(captureErrorMock.mock.calls[0][0].message).toBe('Solana RPC did not respond within 1000ms')
+    })
+
+    it('fails the request when the fallback does not respond in time', async () => {
+      const fetchFn = jest.fn((url: RequestInfo | URL, init?: RequestInit) =>
+        url === PRIMARY_URL ? Promise.resolve(response(503)) : hangingUntilAborted(init),
+      )
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        fallbackTimeoutMs: 3000,
+      })
+
+      const resultPromise = rpcFetch(PRIMARY_URL, INIT)
+      const assertion = expect(resultPromise).rejects.toThrow('Solana RPC fallback did not respond within 3000ms')
+      await jest.advanceTimersByTimeAsync(3000)
+      await assertion
+
+      expect(fetchFn).toHaveBeenCalledTimes(2)
     })
 
     it('does not time out sendTransaction', async () => {
@@ -134,6 +153,31 @@ describe('createSolanaRpcFetch', () => {
 
       expect((await resultPromise).status).toBe(200)
       expect(fetchFn).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not time out sendTransaction on the fallback', async () => {
+      const sendInit: RequestInit = { method: 'POST', body: '{"method":"sendTransaction","params":["tx"]}' }
+      let resolveFallback: (value: Response) => void = () => undefined
+      const fetchFn = jest.fn((url: RequestInfo | URL) =>
+        url === PRIMARY_URL
+          ? Promise.resolve(response(503))
+          : new Promise<Response>((resolve) => {
+              resolveFallback = resolve
+            }),
+      )
+      const rpcFetch = createSolanaRpcFetch({
+        primaryUrl: PRIMARY_URL,
+        fallbackUrl: FALLBACK_URL,
+        fetchFn,
+        fallbackTimeoutMs: 1000,
+      })
+
+      const resultPromise = rpcFetch(PRIMARY_URL, sendInit)
+      await jest.advanceTimersByTimeAsync(5000)
+      resolveFallback(response(200))
+
+      expect((await resultPromise).status).toBe(200)
+      expect(fetchFn).toHaveBeenCalledTimes(2)
     })
 
     it('does not fall back after a primary response that arrived in time', async () => {
