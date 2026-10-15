@@ -22,8 +22,27 @@ const tokenAmountFormatter = new Intl.NumberFormat('en-US', { maximumFractionDig
 
 const dateTimeFormatter = new Intl.DateTimeFormat('en-US', { dateStyle: 'medium', timeStyle: 'short' })
 
+// `en-GB` writes September as "Sept" in recent ICU, so the "14 Sep 2026" order is built from `en-US` parts
+const dateFormatter = new Intl.DateTimeFormat('en-US', {
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+  timeZone: 'UTC',
+})
+
 export function formatCompactUsd(value: number | null | undefined): string {
   return value === null || value === undefined ? EMPTY_VALUE : compactUsdFormatter.format(value)
+}
+
+/** `14 Sep 2026`, UTC */
+export function formatDate(isoDate: string | null | undefined): string {
+  const time = isoDate ? Date.parse(isoDate) : NaN
+
+  if (Number.isNaN(time)) return EMPTY_VALUE
+
+  const parts = Object.fromEntries(dateFormatter.formatToParts(time).map(({ type, value }) => [type, value]))
+
+  return `${parts.day} ${parts.month} ${parts.year}`
 }
 
 /** `timestamp` is in Unix seconds */

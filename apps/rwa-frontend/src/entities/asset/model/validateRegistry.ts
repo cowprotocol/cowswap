@@ -67,6 +67,10 @@ function validateRequiredStrings(asset: RwaAsset, path: string): string[] {
   if (!asset.title) errors.push(`${path}.title: required`)
   if (!asset.coingeckoId) errors.push(`${path}.coingeckoId: required`)
   if (asset.logoUrl !== undefined && !isHttpsUrl(asset.logoUrl)) errors.push(`${path}.logoUrl: must be an https URL`)
+  if (asset.newsFeed) {
+    if (!asset.newsFeed.source) errors.push(`${path}.newsFeed.source: required`)
+    if (!isHttpsUrl(asset.newsFeed.url)) errors.push(`${path}.newsFeed.url: must be an https URL`)
+  }
 
   return errors
 }

@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-09-29
+last_reviewed: 2026-10-15
 ---
 
 # rwa-frontend AGENTS.md
@@ -32,6 +32,7 @@ This file: rwa-frontend app-specific commands only.
 ## App rules
 
 - `data/RWAs.json` is the asset registry, rebuilt with `update-registry`. It holds Ondo and xStocks tokens only: the script skips other issuers and the assets left without tokens, and `validateRegistry` rejects them. Change the allowlist in both `scripts/updateRegistry.mjs` and `validateRegistry.ts`. Every asset has a unique `coingeckoId` (the CoinGecko RWA id). `validateRegistry.test.ts` validates it, so run the tests after editing it.
+- `RwaAsset.newsFeed` is hand-edited and kept by `update-registry`. Use only an RSS or Atom feed on the issuer's own domain (newsroom or IR), never an aggregator. Before adding one, check that it returns XML to a non-browser User-Agent: many IR sites (Q4-hosted ones, for example) are behind Cloudflare or Akamai bot protection. When the feed fails, the asset page hides Related news.
 - The asset logo (`RwaAsset.logoUrl`) is static registry data written by `update-registry`; token logos come from `/coins/markets` on the asset page.
 - Price, 24h change, day range, market cap and volume of an asset come from CoinGecko `/rwas/markets` (the tokenized market over every chain and issuer), keyed by `coingeckoId`. Per-token data (`/coins/markets`) and onchain stats are loaded only for the asset page. The table and top-movers 1D sparklines are the last 24h of the `/rwas/markets` 7d sparkline, so they cost no extra request. The first token with a `coingeckoId` is the reference for the asset page price chart.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.

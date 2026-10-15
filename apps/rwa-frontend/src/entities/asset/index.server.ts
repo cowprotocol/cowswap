@@ -1,3 +1,4 @@
+export { getAssetNews, NEWS_FEED_REVALIDATE_SECONDS } from './api/assetNews'
 export {
   findAssets,
   getAsset,

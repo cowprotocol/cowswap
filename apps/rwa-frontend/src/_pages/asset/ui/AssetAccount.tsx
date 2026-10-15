@@ -6,6 +6,8 @@ import { type ReactNode, useState } from 'react'
 import { useConnection } from 'wagmi'
 
 import { AssetAbout } from './AssetAbout'
+import styles from './AssetAccount.module.css'
+import { AssetNews } from './AssetNews'
 import { PositionsTab } from './PositionsTab'
 import { StockTokens } from './StockTokens'
 
@@ -48,7 +50,10 @@ export function AssetAccount({ asset }: { asset: RwaAsset }): ReactNode {
       {activeTab === 'overview' ? (
         <>
           <StockTokens asset={asset} />
-          <AssetAbout asset={asset} />
+          <div className={styles.overview}>
+            <AssetAbout asset={asset} />
+            <AssetNews asset={asset} />
+          </div>
         </>
       ) : !address ? (
         <ConnectPrompt>Connect your wallet to {CONNECT_HINTS[activeTab]}</ConnectPrompt>
