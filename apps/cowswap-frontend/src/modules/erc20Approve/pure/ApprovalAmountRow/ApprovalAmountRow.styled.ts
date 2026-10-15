@@ -1,17 +1,14 @@
-import { Media, UI, font } from '@cowprotocol/ui'
+import { UI, font } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import { tradeRowsWideStyles } from 'modules/trade'
 
 export const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
-  padding: 6px;
   gap: 8px;
-
-  ${Media.upToSmall()} {
-    padding: 2px;
-  }
 `
 
 export const Header = styled.button`
@@ -31,8 +28,8 @@ export const Header = styled.button`
 `
 
 export const Label = styled.span`
-  font-weight: var(${UI.FONT_WEIGHT_NORMAL});
   color: var(${UI.COLOR_TEXT});
+  ${font('FONT_SMALL_PLUS', 'medium')}
 `
 
 export const Value = styled.span`
@@ -40,11 +37,13 @@ export const Value = styled.span`
   align-items: center;
   justify-content: flex-end;
   gap: 5px;
-  color: var(${UI.COLOR_TEXT});
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+  ${font('FONT_SMALL_PLUS', 'medium')}
 `
 
-export const Details = styled.div<{ $isVisible: boolean }>`
-  display: ${({ $isVisible }) => ($isVisible ? 'flex' : 'none')};
-  width: 100%;
+export const Details = styled.div<{ $wide?: boolean }>`
+  display: flex;
   flex-flow: column wrap;
+  width: 100%;
+  ${({ $wide }) => $wide && tradeRowsWideStyles}
 `

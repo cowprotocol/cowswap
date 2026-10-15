@@ -67,7 +67,9 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains(useAtomValue(alphaNetworksEnabledAtom))
+  const availableChains = useAvailableChains({
+    excludeSolana: !useAtomValue(alphaNetworksEnabledAtom),
+  })
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)

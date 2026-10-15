@@ -143,7 +143,8 @@ export function Sidebar({
 
   const { chainId: walletChainId, isConnected } = useConnection()
 
-  const effectiveChainId = !isConnected || !walletChainId ? configuratorFormValues.chainId : walletChainId
+  const isWalletChainEffective = configuratorFormValues.widgetMode === 'dapp' && isConnected && !!walletChainId
+  const effectiveChainId = isWalletChainEffective ? walletChainId : configuratorFormValues.chainId
 
   // Building the resolved state (including parsing JSON fields) is only done when we
   // actually propagate it, and throttled so rapid edits don't recompute on every keystroke.

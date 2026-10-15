@@ -1,17 +1,23 @@
 import { useCallback, useRef } from 'react'
 
 import { LpToken } from '@cowprotocol/common-const'
+import { useLatestNonNullRef } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { useAreThereTokensWithSameSymbol, useDoesSymbolResolveToToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { isBridgeSourceChainSupported, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
-import { useTradeNavigate, TradeSearchParams } from 'common/modules/tradeNavigation'
+import {
+  getDefaultCurrencies,
+  getDefaultTradeCurrenciesIds,
+  useTradeNavigate,
+  TradeSearchParams,
+} from 'common/modules/tradeNavigation'
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -68,6 +74,8 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
   if (knownInputCurrencyId) lastKnownInputCurrencyIdRef.current = knownInputCurrencyId
   if (knownOutputCurrencyId) lastKnownOutputCurrencyIdRef.current = knownOutputCurrencyId
 
+  const lastKnownInputCurrencyRef = useLatestNonNullRef(inputCurrency ?? null)
+
   return useCallback(
     // TODO: Reduce function complexity by extracting logic
     // eslint-disable-next-line complexity
@@ -87,21 +95,27 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       const targetChainMismatch = targetChainId !== chainId
       const isInputField = field === Field.INPUT
 
-      const targetInputCurrency = isInputField ? currency : inputCurrency
+      const targetInputCurrency = isInputField ? currency : (inputCurrency ?? lastKnownInputCurrencyRef.current)
       const targetOutputCurrency = isInputField ? outputCurrency : currency
 
-      const isBridgeTrade = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
+      const areBridgeCurrencies = getAreBridgeCurrencies(targetInputCurrency, targetOutputCurrency)
+      // A sell token from a chain that can't bridge (e.g. Solana) can't keep a buy token from another chain
+      const isUnsupportedBridgeSource =
+        isInputField && areBridgeCurrencies && !isBridgeSourceChainSupported(targetChainId, bridgeSupportedNetworks)
+      const isBridgeTrade = areBridgeCurrencies && !isUnsupportedBridgeSource
 
       // The preserved (non-bridge-aware) side just reads the sticky ref — it's already updated on
       // every render with this exact `(currency && resolve(currency)) ?? tradeRawState?....id`
       // fallback chain, so it's always at least as fresh as recomputing it here.
       const inputCurrencyId = lastKnownInputCurrencyIdRef.current
-      const outputCurrencyId = outputCurrency
-        ? // For cross-chain order always use address for outputCurrencyId
-          isBridgeTrade || targetChainMismatch
-          ? getCurrencyAddress(outputCurrency)
-          : resolveCurrencyAddressOrSymbol(outputCurrency)
-        : lastKnownOutputCurrencyIdRef.current
+      const outputCurrencyId = isUnsupportedBridgeSource
+        ? getDefaultBuyCurrencyId(targetChainId, currency)
+        : outputCurrency
+          ? // For cross-chain order always use address for outputCurrencyId
+            isBridgeTrade || targetChainMismatch
+            ? getCurrencyAddress(outputCurrency)
+            : resolveCurrencyAddressOrSymbol(outputCurrency)
+          : lastKnownOutputCurrencyIdRef.current
 
       // When switching SELL chain, persist token address for non-native tokens.
       // Symbols from imported/non-canonical lists may not resolve reliably from URL (e.g. A3A).
@@ -131,7 +145,7 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
         }
       }
 
-      if (!isOutputCurrencyBridgeSupported) delete searchParams?.targetChainId
+      if (!isOutputCurrencyBridgeSupported || isUnsupportedBridgeSource) delete searchParams?.targetChainId
       if (shouldResetBuyOrder) searchParams = { ...searchParams, kind: OrderKind.SELL, amount: '1' }
 
       const currencyIds =
@@ -157,12 +171,21 @@ export function useNavigateOnCurrencySelection(enableSellEqBuy = false): Currenc
       chainId,
       orderKind,
       inputCurrency,
+      lastKnownInputCurrencyRef,
       outputCurrency,
       isOutputCurrencyBridgeSupported,
+      bridgeSupportedNetworks,
       resolveCurrencyAddressOrSymbol,
       enableSellEqBuy,
     ],
   )
+}
+
+function getDefaultBuyCurrencyId(chainId: SupportedChainId, sellCurrency: Currency | null): string | null {
+  const { inputCurrencyId, outputCurrencyId } = getDefaultTradeCurrenciesIds(chainId)
+  const { outputCurrency } = getDefaultCurrencies(chainId)
+
+  return sellCurrency && outputCurrency?.equals(sellCurrency) ? inputCurrencyId : outputCurrencyId
 }
 
 function useResolveCurrencyAddressOrSymbol(): (currency: Currency | null) => string | null {

@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
@@ -14,6 +14,8 @@ export interface ApprovalAmountRowProps {
   onToggle: () => void
   isPartialApproveSelected: boolean
   amountToApprove: CurrencyAmount<Currency>
+  /** Break expanded controls out of TradeRows horizontal padding (trade forms only). */
+  wideDetails?: boolean
   children: ReactNode
 }
 
@@ -22,21 +24,12 @@ export function ApprovalAmountRow({
   onToggle,
   isPartialApproveSelected,
   amountToApprove,
+  wideDetails = false,
   children,
 }: ApprovalAmountRowProps): ReactNode {
-  const handleKeyDown = useCallback(
-    (e: { key: string; preventDefault: () => void }): void => {
-      if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        e.preventDefault()
-        onToggle()
-      }
-    },
-    [onToggle],
-  )
-
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header type="button" onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={isOpen}>
+    <styledEl.Wrapper data-approval-amount-row>
+      <styledEl.Header type="button" onClick={onToggle} aria-expanded={isOpen}>
         <styledEl.Label>
           <Trans>Approval amount</Trans>
         </styledEl.Label>
@@ -51,7 +44,7 @@ export function ApprovalAmountRow({
           <ToggleArrow isOpen={isOpen} />
         </styledEl.Value>
       </styledEl.Header>
-      <styledEl.Details $isVisible={isOpen}>{children}</styledEl.Details>
+      {isOpen && <styledEl.Details $wide={wideDetails}>{children}</styledEl.Details>}
     </styledEl.Wrapper>
   )
 }

@@ -1,5 +1,5 @@
 import { createStore, Provider } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, StrictMode } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
 
@@ -87,6 +87,36 @@ describe('PriceImpactUpdater', () => {
     })
 
     expect(store.get(priceImpactAtom)).toEqual({ priceImpact: undefined, loading: true })
+  })
+
+  it('keeps writing after effects are re-run under StrictMode', () => {
+    const store = createStore()
+
+    mockedUseFiatValuePriceImpact.mockReturnValue({ priceImpact: settledImpact, isLoading: false })
+    const { rerender } = render(
+      <StrictMode>
+        <Harness store={store} />
+      </StrictMode>,
+    )
+
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
+
+    expect(store.get(priceImpactAtom)).toEqual({ priceImpact: settledImpact, loading: false })
+
+    mockedUseFiatValuePriceImpact.mockReturnValue({ priceImpact: nextImpact, isLoading: false })
+    rerender(
+      <StrictMode>
+        <Harness store={store} />
+      </StrictMode>,
+    )
+
+    act(() => {
+      jest.advanceTimersByTime(200)
+    })
+
+    expect(store.get(priceImpactAtom)).toEqual({ priceImpact: nextImpact, loading: false })
   })
 
   it('drops a pending write when the trade is no longer set up', () => {

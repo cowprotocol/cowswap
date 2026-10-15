@@ -2,8 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-
+import { useIsInfiniteApproveDisabled } from '../../hooks/useIsInfiniteApproveDisabled'
 import { ApprovalAmountRow } from '../../pure/ApprovalAmountRow/ApprovalAmountRow.pure'
 import { Toggle } from '../../pure/Toggle'
 import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser } from '../../state'
@@ -11,19 +10,25 @@ import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser
 type TradeApproveToggleProps = {
   amountToApprove: CurrencyAmount<Currency>
   updateModalState: () => void
+  /** Break expanded controls out of TradeRows horizontal padding (trade forms only). */
+  wideDetails?: boolean
 }
 
-export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeApproveToggleProps): ReactNode {
+export function TradeApproveToggle({
+  amountToApprove,
+  updateModalState,
+  wideDetails = false,
+}: TradeApproveToggleProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
-  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev)
   }, [])
 
-  if (isInfiniteApproveDisabledInWidget) return null
+  if (isInfiniteApproveDisabled) return null
 
   return (
     <ApprovalAmountRow
@@ -31,6 +36,7 @@ export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeA
       onToggle={toggleOpen}
       isPartialApproveSelected={isPartialApproveSelectedByUser}
       amountToApprove={amountToApprove}
+      wideDetails={wideDetails}
     >
       <Toggle
         isPartialApproveSelected={isPartialApproveSelectedByUser}

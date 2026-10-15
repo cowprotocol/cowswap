@@ -2,7 +2,7 @@ import { createStore } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom } from './walletMetadata.atoms'
+import { isEoaAtom, isSafeAppAtom, isSafeViaWcAtom, isSmartContractWalletAtom } from './walletMetadata.atoms'
 
 import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api/state'
 import { ConnectionType, WalletInfo } from '../../api/types'
@@ -235,5 +235,18 @@ describe('walletMetadata atoms', () => {
     })
 
     expect(store.get(isEoaAtom)).toBe(false)
+  })
+
+  it('treats Base Account as a smart contract wallet without waiting for the account type', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.BASE_ACCOUNT,
+      }),
+    )
+
+    expect(store.get(isSmartContractWalletAtom)).toBe(true)
   })
 })

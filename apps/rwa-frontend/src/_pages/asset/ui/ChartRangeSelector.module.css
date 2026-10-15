@@ -1,0 +1,30 @@
+.ranges {
+  display: flex;
+  align-self: flex-start;
+  gap: 1px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+}
+
+.ranges button {
+  height: 30px;
+  padding: 0 9px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.ranges button:hover {
+  color: var(--color-text);
+}
+
+.ranges .activeRange {
+  background: var(--color-bg);
+  box-shadow: var(--shadow-pill);
+  color: var(--color-text);
+}

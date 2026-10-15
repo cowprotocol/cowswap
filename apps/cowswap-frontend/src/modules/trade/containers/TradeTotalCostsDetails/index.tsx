@@ -9,6 +9,8 @@ import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
 
+import { useIsFreeOrderPlacement } from '../../hooks/useIsFreeOrderPlacement'
+
 export interface TradeRatesProps {
   rateInfoParams: RateInfoParams
   totalCosts: CurrencyAmount<Currency> | null
@@ -21,6 +23,7 @@ export interface TradeRatesProps {
 export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
   const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper } = props
   const totalCostsUsd = useUsdAmount(totalCosts).value
+  const isFreePlacement = useIsFreeOrderPlacement()
 
   if (!totalCosts) {
     return null
@@ -34,6 +37,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
       feeWrapper={feeWrapper}
+      isFreePlacement={isFreePlacement}
     >
       <styledEl.Box noMargin>{children}</styledEl.Box>
     </TradeDetailsAccordion>
