@@ -3919,6 +3919,10 @@ msgstr "Pending..."
 #~ msgid "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots."
 #~ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalAmountRow/ApprovalAmountRow.pure.tsx
+msgid "Unlimited"
+msgstr "Unlimited"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
@@ -4411,6 +4415,10 @@ msgstr "Add a custom hook"
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
 #~ msgid "Connected"
 #~ msgstr "Connected"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#~ msgid "Joins batch in 6m 42s"
+#~ msgstr "Joins batch in 6m 42s"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
@@ -6371,6 +6379,12 @@ msgstr "Selected token: {0}"
 #~ msgid "Wallet signer unavailable."
 #~ msgstr "Wallet signer unavailable."
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Wait & save"
+msgstr "Wait & save"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the entire program."
 msgstr "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for the entire program."
@@ -6436,6 +6450,10 @@ msgstr "Contract not present or not connected to any supported chain"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 msgid "That's all your open orders."
 msgstr "That's all your open orders."
+
+#: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
+msgid "Click for details"
+msgstr "Click for details"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.cosmos.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
@@ -6864,6 +6882,10 @@ msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually 
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Transaction rejected"
 #~ msgstr "Transaction rejected"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "· Joins batch in 6m 42s"
+msgstr "· Joins batch in 6m 42s"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
@@ -7331,6 +7353,7 @@ msgid "New"
 msgstr "New"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalAmountRow/ApprovalAmountRow.pure.tsx
 msgid "Approval amount"
 msgstr "Approval amount"
 
@@ -7555,6 +7578,10 @@ msgstr "was sent to"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 msgid "Deposit"
 msgstr "Deposit"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Save $2.50"
+msgstr "Save $2.50"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
@@ -8597,6 +8624,10 @@ msgstr "View on explorer"
 msgid "Default approve"
 msgstr "Default approve"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
+msgstr "Join the next batch to save on volume fees and potentially get a better price. Prices may change, and the countdown isn’t a guaranteed fill time. Price-improvement fees still apply."
+
 #: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
 msgid "Order cannot be filled due to insufficient balance on the current account."
 msgstr "Order cannot be filled due to insufficient balance on the current account."
@@ -8635,6 +8666,10 @@ msgstr "Market orders are always <0>Fill or kill</0>, while limit orders are by 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP sell order"
 msgstr "TWAP sell order"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#~ msgid "Join the next batch auction to save on network fees."
+#~ msgstr "Join the next batch auction to save on network fees."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."

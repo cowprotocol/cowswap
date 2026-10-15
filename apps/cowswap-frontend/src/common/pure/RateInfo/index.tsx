@@ -40,6 +40,8 @@ export interface RateInfoProps {
   fontBold?: boolean
   fontSize?: number
   labelBold?: boolean
+  /** Use secondary text color for the rate value (e.g. Limit form detail rows). */
+  mutedValue?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean; fontSize?: number }>`
@@ -115,13 +117,14 @@ const InvertIcon = styled.div`
   }
 `
 
-export const RateWrapper = styled.button<{ rightAlign?: boolean; fontBold?: boolean }>`
+export const RateWrapper = styled.button<{ rightAlign?: boolean; fontBold?: boolean; mutedValue?: boolean }>`
   display: inline;
   font-size: inherit;
   font-family: var(${UI.FONT_FAMILY_PRIMARY});
   letter-spacing: -0.1px;
   text-align: ${({ rightAlign }) => (rightAlign ? 'right' : 'left')};
   font-weight: ${({ fontBold }) => (fontBold ? 500 : 'inherit')};
+  ${({ mutedValue }) => mutedValue && `color: var(${UI.COLOR_TEXT_SECONDARY});`}
   width: 100%;
 `
 
@@ -160,6 +163,7 @@ export function RateInfo({
   fontBold = false,
   fontSize,
   labelBold = false,
+  mutedValue = false,
 }: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
@@ -235,7 +239,7 @@ export function RateInfo({
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign} fontBold={fontBold}>
+        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign} fontBold={fontBold} mutedValue={mutedValue}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
