@@ -73,7 +73,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
           <ConnectButton />
         </div>
       )}
-      <div className={styles.frame}>
+      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
         <CowSwapWidget params={params} provider={provider} onReady={onWidgetSettled} onLoadingError={onWidgetSettled} />
         {isWidgetLoading && <TradeWidgetSkeleton overlay />}
       </div>

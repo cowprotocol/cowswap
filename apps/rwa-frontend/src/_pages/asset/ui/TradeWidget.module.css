@@ -26,6 +26,11 @@
   position: relative;
 }
 
+/* The iframe is appended in an effect after the first paint; hold the skeleton height until then */
+.frame[data-loading] {
+  min-height: 640px;
+}
+
 .skeleton {
   display: flex;
   flex-direction: column;
