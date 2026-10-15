@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { usePermitInfo } from 'modules/permit'
 import { useDerivedTradeState } from 'modules/trade'
 
@@ -10,6 +9,7 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
+import { useIsInfiniteApproveDisabled } from './useIsInfiniteApproveDisabled'
 import { useIsPartialApprovalModeSelected } from './useIsPartialApprovalModeSelected'
 
 import { MAX_APPROVE_AMOUNT } from '../constants'
@@ -36,7 +36,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
-  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const { tradeType } = useDerivedTradeState() || {}
 
   // ADVANCED_ORDERS has permits disabled (EOA TWAP uses poller, Safe uses vault-relayer). SWAP only to read token type.

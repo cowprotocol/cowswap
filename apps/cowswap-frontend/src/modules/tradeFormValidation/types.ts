@@ -124,7 +124,8 @@ export enum TradeFormValidation {
   // Intermediate token
   ImportingIntermediateToken,
 
-  // Native - this should be the last validation, as it overrides all other validations
+  // Native. Pushed last by `validateTradeForm`, and `useGetTradeFormValidation` reads `validations[0]`,
+  // so this is the last-resort reason: anything pushed earlier wins over it.
   SellNativeToken,
 
   // Bridging

@@ -7,7 +7,12 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
-import { useDerivedTradeState, useGetReceiveAmountInfo, useIsWrapOrUnwrap } from 'modules/trade'
+import {
+  getIsNativeSellUnsupported,
+  useDerivedTradeState,
+  useGetReceiveAmountInfo,
+  useIsWrapOrUnwrap,
+} from 'modules/trade'
 
 import { useSolanaTradeOverhead } from './useSolanaTradeOverhead'
 
@@ -33,9 +38,12 @@ export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
   const sellAmount = isWrapUnwrap ? derivedState?.inputCurrencyAmount : quoteSellAmount
 
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
+  // A native sell outside Swap is blocked outright, so there is no transaction to be short for, and
+  // reporting a shortfall would outrank that block. A wrap still spends rent and fees, so it stays measured.
+  const isBlockedNativeSell = !isWrapUnwrap && getIsNativeSellUnsupported(inputCurrency, derivedState?.tradeType)
 
   return useMemo(() => {
-    if (!overhead || !isSolanaChain(chainId)) return null
+    if (!overhead || !isSolanaChain(chainId) || isBlockedNativeSell) return null
 
     const nativeCurrency = NATIVE_CURRENCIES[chainId]
     const balance = balances[getAddressKey(getCurrencyAddress(nativeCurrency))]
@@ -46,5 +54,5 @@ export function useSolanaNativeShortfall(): CurrencyAmount<Currency> | null {
     const shortfall = overhead.required + sellLamports - balance
 
     return shortfall > 0n ? CurrencyAmount.fromRawAmount(nativeCurrency, shortfall.toString()) : null
-  }, [overhead, chainId, balances, isNativeSell, sellAmount])
+  }, [overhead, chainId, balances, isNativeSell, sellAmount, isBlockedNativeSell])
 }

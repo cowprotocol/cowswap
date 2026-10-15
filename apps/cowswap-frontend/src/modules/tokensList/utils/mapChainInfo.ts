@@ -1,5 +1,5 @@
 import { BaseChainInfo, RPC_URLS } from '@cowprotocol/common-const'
-import { ChainInfo, isEvmChain, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
+import { ALL_CHAINS_MAP, ChainInfo, isEvmChain, SupportedChainId, TargetChainId } from '@cowprotocol/cow-sdk'
 
 export function mapChainInfo(chainId: TargetChainId, info: BaseChainInfo): ChainInfo {
   const shared = {
@@ -29,6 +29,7 @@ export function mapChainInfo(chainId: TargetChainId, info: BaseChainInfo): Chain
       dark: info.logo.dark,
     },
     color: info.color,
+    caip2Namespace: ALL_CHAINS_MAP[chainId].caip2Namespace,
   }
 
   if (isEvmChain(chainId)) {

@@ -1,5 +1,146 @@
 # Changelog
 
+## [3.31.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.0...cowswap-v3.31.1) (2026-10-15)
+
+### Patch Changes
+
+- fix(solana): hide the FREE fee label for non-sponsored orders (#8395)
+
+## [3.31.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.30.0...cowswap-v3.31.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): disable trading with unknown sell USD value (#8368)
+
+- feat(solana): display settlement program version (#8350)
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat: disable unlimited approval for solana (#8379)
+
+- feat: disable sol limit orders (#8377)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(twap): Migrate TWAP calls to latest SDK versions (#8342)
+
+- feat(twap): trigger NPS surveys for TWAP orders (#8314)
+
+- feat(solana): add setting to toggle alpha chains (#8364)
+
+- feat: add trade limits and alpha label (#8331)
+
+- feat: use the new dialog/drawer for custom deadline and duration (#8165)
+
+- feat: rename some genericly-named files (#8362)
+
+- feat(cowswap): remove LIMIT and TWAP fees (#8319)
+
+- feat: always use max permit for DAI-like in TWAP for EOA, not approvals (#8337)
+
+- feat: add a slot in the widget for the captcha (#8324)
+
+- feat: rename ModalHeader to Modal.Header (#8361)
+
+- feat(twap): show min receive on EOA TWAP confirmation (#8320)
+
+- feat: replace CenterDots with ThreeDots component (#8343)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: remove mentions of price protection and update copy accordingly (#8302)
+
+- feat(solana): support WalletConnect connections (#8359)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat: redesign expired blockhash screen + error from wallet screen (#8341)
+
+- feat: add tx deadline screen & handle deadline exceeded case (#8246)
+
+- feat: solana settlement 0.5 (#8345)
+
+- feat(solana): hide solana wallet connection when alpha networks is off (#8367)
+
+### Patch Changes
+
+- fix(limit-orders): page crash (#8333)
+
+- fix(permit): show partial approval amount in permit modal (#8280)
+
+- fix(solana): remove recipient from URL when custom recipient is disabled (#8387)
+
+- fix(trade): remove price impact flickering (#8327)
+
+- fix(solana): do not flip back to evm (#8344)
+
+- fix(solana): attach order intent when cancelling a not-yet-created order (#8301)
+
+- fix(trade-quote): don't block quoting on a stale unsupported-token error (#8322)
+
+- fix(solana): do not load cross-chain balances (#8349)
+
+- fix: disable solana custom recipient (#8382)
+
+- fix(solana): use timer for signing deadline instead of rpc calls (#8323)
+
+- fix(solana): hide total surplus (#8348)
+
+- fix: align cow-sdk versions (#8353)
+
+- fix(solana): allow importing SPL and Token2022 tokens by address (#8338)
+
+- fix(solana): support expired order (#8298)
+
+- fix(orders-table): show Unfillable tab for Solana orders (#8363)
+
+- fix(eth-flow): align transaction cards and status in wrap/approve modal (#8312)
+
+- fix(affiliate): hide referral code on Solana and show unsupported state on rewards pages (#8365)
+
+- fix(solana): hide hooks tab while on Solana (#8334)
+
+- fix(solana): send funds to custom recipient (#8351)
+
+- fix(twap): close EOA TWAP success modal when the order is finalized (#8276)
+
+- fix: fix token reset label (#8330)
+
+- fix(orders-table): show Unfillable tab in TWAPs for EOA table (#8277)
+
+- fix(solana): do not mention gas spikes (#8325)
+
+- fix(solana): import custom tokens from orders (#8356)
+
+- fix(account-proxy): keep recover funds signing steps in sync with the wallet (#8346)
+
+- fix: create fee calculator for sol instructions to predict lack of so… (#8224)
+
+- fix(account-proxy): set page title on account proxy pages (#8310)
+
+- fix(solana): ignore recipient from URL when disabled (#8384)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/core@3.12.0
+  - @cowprotocol/tokens@3.15.0
+  - @cowprotocol/analytics@3.15.0
+  - @cowprotocol/balances-and-allowances@3.17.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/ens@3.10.0
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/multicall@3.10.0
+  - @cowprotocol/permit-utils@3.10.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/ui@3.17.0
+  - @cowprotocol/wallet@3.17.0
+  - @cowprotocol/widget-lib@4.10.0
+  - @cowprotocol/snackbars@2.3.8
+  - @cowprotocol/iframe-transport@2.3.10
+  - @cowprotocol/hook-dapp-lib@2.3.2
+
 ## [3.30.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.29.2...cowswap-v3.30.0) (2026-10-06)
 
 ### Minor Changes

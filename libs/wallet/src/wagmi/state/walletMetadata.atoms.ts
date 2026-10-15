@@ -146,13 +146,17 @@ export const accountTypeAtom = atom((get): AccountType | null => {
 })
 
 /**
- * True for Safe wallets and bytecode contracts.
+ * True for Safe wallets, Base Account, and bytecode contracts.
  * Returns false while the code lookup is in flight, so that "unknown" is not
  * treated as a smart-contract wallet. Returns null if that lookup fails. Consumers
  * must not assume EOA until a retry succeeds.
+ *
+ * Base Account has no code while undeployed and only an EIP-7702 delegation where it
+ * was used, but it always signs with its passkey owner (ERC-1271/ERC-6492), never ECDSA.
  */
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
   if (get(isSafeWalletAtom)) return true
+  if (get(walletInfoAtom).connector?.type === ConnectionType.BASE_ACCOUNT) return true
 
   const loadable = get(accountTypeLoadableAtom)
 

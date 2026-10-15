@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.15.0...widget-configurator-v3.16.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat: use the new dialog/drawer for custom deadline and duration (#8165)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/analytics@3.15.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/ui@3.17.0
+  - @cowprotocol/widget-lib@4.10.0
+  - @cowprotocol/widget-react@3.2.11
+
 ## [3.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.14.1...widget-configurator-v3.15.0) (2026-10-06)
 
 ### Minor Changes

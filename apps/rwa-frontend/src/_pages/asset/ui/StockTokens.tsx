@@ -1,0 +1,176 @@
+'use client'
+
+import { useAtomValue } from 'jotai'
+import { type ReactNode, useMemo, useState } from 'react'
+
+import tableStyles from './AccountTable.module.css'
+import styles from './StockTokens.module.css'
+
+import { useSelectTradeToken } from '../model/useSelectTradeToken'
+import { useTradeSelection } from '../model/useTradeSelection'
+
+import {
+  assetQueryAtomFamily,
+  getTokenKey,
+  type RwaAsset,
+  type RwaQuoteSide,
+  type RwaToken,
+  type RwaTokenMarketData,
+} from '@/entities/asset'
+import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
+import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
+import { SelectPill } from '@/shared/ui/select-pill'
+import { StatusMessage } from '@/shared/ui/status-message'
+import { TokenLogo } from '@/shared/ui/token-logo'
+
+const ALL = ''
+
+interface StockTokenRowProps {
+  token: RwaToken
+  market: RwaTokenMarketData | undefined
+  stockPrice: number | null | undefined
+  isSelected: boolean
+  onTrade(side: RwaQuoteSide): void
+}
+
+export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
+  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
+  const selectedToken = useTradeSelection(asset)?.assetToken
+  const selectTradeToken = useSelectTradeToken()
+  const [issuer, setIssuer] = useState(ALL)
+  const [network, setNetwork] = useState(ALL)
+
+  const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
+  const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
+  const tokens = asset.tokens.filter(
+    (token) => (issuer === ALL || token.issuer === issuer) && (network === ALL || String(token.chainId) === network),
+  )
+
+  return (
+    <section className={styles.section} aria-labelledby="stock-tokens-title">
+      <div className={styles.header}>
+        <div className={styles.title}>
+          <h2 id="stock-tokens-title">Stock tokens</h2>
+          <span>
+            {asset.tokens.length} {asset.tokens.length === 1 ? 'listing' : 'listings'}
+          </span>
+        </div>
+        <div className={styles.filters}>
+          <SelectPill
+            variant="small"
+            aria-label="Issuer"
+            value={issuer}
+            onChange={(event) => setIssuer(event.target.value)}
+          >
+            <option value={ALL}>All issuers</option>
+            {issuers.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </SelectPill>
+          <SelectPill
+            variant="small"
+            aria-label="Network"
+            value={network}
+            onChange={(event) => setNetwork(event.target.value)}
+          >
+            <option value={ALL}>All networks</option>
+            {chainIds.map((chainId) => (
+              <option key={chainId} value={String(chainId)}>
+                {getChainLabel(chainId)}
+              </option>
+            ))}
+          </SelectPill>
+        </div>
+      </div>
+      {tokens.length ? (
+        <div className={tableStyles.scroll}>
+          <table className={tableStyles.table}>
+            <thead>
+              <tr>
+                <th>Stock token / issuer</th>
+                <th className={tableStyles.numeric}>Token price / share</th>
+                <th className={tableStyles.numeric}>24h volume</th>
+                <th>
+                  <span className={styles.visuallyHidden}>Trade</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {tokens.map((token) => (
+                <StockTokenRow
+                  key={getTokenKey(token)}
+                  token={token}
+                  market={token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined}
+                  stockPrice={market?.price}
+                  isSelected={token === selectedToken}
+                  onTrade={(side) => selectTradeToken(token, side)}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <StatusMessage>No {asset.ticker} tokens match the filters</StatusMessage>
+      )}
+      <p className={tableStyles.warning}>Price and volume of a token are aggregated across all its networks</p>
+    </section>
+  )
+}
+
+function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: StockTokenRowProps): ReactNode {
+  const network = getChainLabel(token.chainId)
+  const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
+  const price = market?.price
+
+  return (
+    <tr className={isSelected ? styles.selected : undefined} aria-current={isSelected || undefined}>
+      <td>
+        <div className={styles.token}>
+          <TokenLogo symbol={token.symbol} logoUrl={market?.logoUrl} chainId={token.chainId} />
+          <div className={styles.tokenText}>
+            <span>
+              <span className={styles.symbol}>{token.symbol}</span>
+              <span className={styles.issuer}> · {token.issuer}</span>
+            </span>
+            {explorerUrl ? (
+              <a className={styles.address} href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                {shortenAddress(token.address)} ↗
+              </a>
+            ) : (
+              <span className={styles.address}>{shortenAddress(token.address)}</span>
+            )}
+          </div>
+        </div>
+      </td>
+      <td className={tableStyles.numeric}>
+        {typeof price === 'number' ? `≈ ${formatUsd(price)}` : formatUsd(price)}
+        {typeof price === 'number' && stockPrice ? (
+          <span className={tableStyles.secondary}>{formatPercent((price / stockPrice - 1) * 100)} vs stock</span>
+        ) : null}
+      </td>
+      <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
+      <td>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.buy}
+            aria-label={`Buy ${token.symbol} on ${network}`}
+            onClick={() => onTrade('buy')}
+          >
+            Buy
+          </button>
+          <button
+            type="button"
+            className={styles.sell}
+            aria-label={`Sell ${token.symbol} on ${network}`}
+            onClick={() => onTrade('sell')}
+          >
+            Sell
+          </button>
+        </div>
+      </td>
+    </tr>
+  )
+}

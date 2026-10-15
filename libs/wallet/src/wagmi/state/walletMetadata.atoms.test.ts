@@ -358,6 +358,19 @@ describe('walletMetadata atoms', () => {
 
     expect(store.get(isEoaAtom)).toBe(false)
   })
+
+  it('treats Base Account as a smart contract wallet without waiting for the account type', () => {
+    const store = createStore()
+
+    setWalletInfoConnector(
+      store,
+      createMockConnector({
+        type: ConnectionType.BASE_ACCOUNT,
+      }),
+    )
+
+    expect(store.get(isSmartContractWalletAtom)).toBe(true)
+  })
 })
 
 describe('isSmartContractWalletAtom', () => {

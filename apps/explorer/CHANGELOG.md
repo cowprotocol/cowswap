@@ -1,5 +1,47 @@
 # Changelog
 
+## [4.15.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.14.0...explorer-v4.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat(appData): remove appData display from Explorer (#8339)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(explorer): open TWAP tab on address page via ?tab=twap (#8329)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: remove mentions of price protection and update copy accordingly (#8302)
+
+- feat(explorer): remove fees (#8292)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- fix(explorer): load orders after switching back from the TWAP tab (#8352)
+
+- fix: align cow-sdk versions (#8353)
+
+- fix(explorer): derive address for pending solana orders (#8295)
+
+- fix(solana): do not show TWAP tab on Explorer for Solana addresses (#8328)
+
+- fix(solana): support expired order (#8298)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/core@3.12.0
+  - @cowprotocol/analytics@3.15.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/ui@3.17.0
+  - @cowprotocol/hook-dapp-lib@2.3.2
+
 ## [4.14.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.13.1...explorer-v4.14.0) (2026-10-06)
 
 ### Minor Changes
