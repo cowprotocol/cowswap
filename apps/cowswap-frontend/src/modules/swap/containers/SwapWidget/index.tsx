@@ -19,6 +19,7 @@ import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
+  TradeRows,
   TradeWidget,
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
@@ -205,10 +206,14 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         return (
           <>
             {bottomContent}
-            {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
-              <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-            )}
-            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+
+            <TradeRows>
+              {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
+                <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+              )}
+              {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+            </TradeRows>
+
             {isWaitForCowsEnabled && <WaitAndSaveRow />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}

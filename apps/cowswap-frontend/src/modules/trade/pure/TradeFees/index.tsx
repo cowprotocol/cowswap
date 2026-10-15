@@ -21,6 +21,8 @@ interface TradeFeesProps {
   withTimelineDot?: boolean
   loading?: boolean
   isLast?: boolean
+  /** Limit form detail-row typography (medium label, secondary value). */
+  detailRowStyle?: boolean
   testId?: string
 }
 
@@ -35,6 +37,7 @@ export function TradeFees({
   withTimelineDot = true,
   loading,
   isLast = false,
+  detailRowStyle = false,
   testId,
 }: TradeFeesProps): ReactElement | null {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
@@ -50,6 +53,7 @@ export function TradeFees({
       volumeFeeTooltip={volumeFeeTooltip}
       isLast={isLast}
       loading={loading}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     />
   )
@@ -62,6 +66,7 @@ export function TradeFees({
       protocolFeeBps={protocolFeeBps}
       isLast={isLast && !hasPartnerFee}
       loading={loading}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     />
   )
@@ -75,6 +80,7 @@ export function TradeFees({
           protocolFeeAmount={protocolFeeAmount}
           protocolFeeBps={protocolFeeBps}
           loading={loading}
+          detailRowStyle={detailRowStyle}
           testId={testId}
         />
         {partnerFeeRow}
@@ -86,5 +92,13 @@ export function TradeFees({
 
   if (hasPartnerFee) return partnerFeeRow
 
-  return <FreeFeeRow withTimelineDot={withTimelineDot} loading={loading} isLast={isLast} testId={testId} />
+  return (
+    <FreeFeeRow
+      withTimelineDot={withTimelineDot}
+      loading={loading}
+      isLast={isLast}
+      detailRowStyle={detailRowStyle}
+      testId={testId}
+    />
+  )
 }

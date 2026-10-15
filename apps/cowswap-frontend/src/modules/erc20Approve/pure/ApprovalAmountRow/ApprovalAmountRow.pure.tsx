@@ -14,6 +14,8 @@ export interface ApprovalAmountRowProps {
   onToggle: () => void
   isPartialApproveSelected: boolean
   amountToApprove: CurrencyAmount<Currency>
+  /** Break expanded controls out of TradeRows horizontal padding (trade forms only). */
+  wideDetails?: boolean
   children: ReactNode
 }
 
@@ -22,6 +24,7 @@ export function ApprovalAmountRow({
   onToggle,
   isPartialApproveSelected,
   amountToApprove,
+  wideDetails = false,
   children,
 }: ApprovalAmountRowProps): ReactNode {
   const handleKeyDown = useCallback(
@@ -35,7 +38,7 @@ export function ApprovalAmountRow({
   )
 
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper data-approval-amount-row>
       <styledEl.Header type="button" onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={isOpen}>
         <styledEl.Label>
           <Trans>Approval amount</Trans>
@@ -51,7 +54,7 @@ export function ApprovalAmountRow({
           <ToggleArrow isOpen={isOpen} />
         </styledEl.Value>
       </styledEl.Header>
-      <styledEl.Details $isVisible={isOpen}>{children}</styledEl.Details>
+      {isOpen && <styledEl.Details $wide={wideDetails}>{children}</styledEl.Details>}
     </styledEl.Wrapper>
   )
 }

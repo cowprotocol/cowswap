@@ -11,9 +11,15 @@ import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser
 type TradeApproveToggleProps = {
   amountToApprove: CurrencyAmount<Currency>
   updateModalState: () => void
+  /** Break expanded controls out of TradeRows horizontal padding (trade forms only). */
+  wideDetails?: boolean
 }
 
-export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeApproveToggleProps): ReactNode {
+export function TradeApproveToggle({
+  amountToApprove,
+  updateModalState,
+  wideDetails = false,
+}: TradeApproveToggleProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
   const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
@@ -31,6 +37,7 @@ export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeA
       onToggle={toggleOpen}
       isPartialApproveSelected={isPartialApproveSelectedByUser}
       amountToApprove={amountToApprove}
+      wideDetails={wideDetails}
     >
       <Toggle
         isPartialApproveSelected={isPartialApproveSelectedByUser}

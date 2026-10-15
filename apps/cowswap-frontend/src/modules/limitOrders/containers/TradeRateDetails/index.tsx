@@ -52,6 +52,7 @@ export function TradeRateDetails({
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
       loading={loading}
+      detailRowStyle
     />
   )
 
@@ -74,6 +75,8 @@ export function TradeRateDetails({
           rightAlign
           fontSize={13}
           fontBold
+          labelBold
+          mutedValue
         />
         <Box noMargin>
           {tradeFees}
