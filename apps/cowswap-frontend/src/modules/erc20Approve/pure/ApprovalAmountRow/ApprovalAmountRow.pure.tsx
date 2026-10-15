@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
@@ -27,19 +27,9 @@ export function ApprovalAmountRow({
   wideDetails = false,
   children,
 }: ApprovalAmountRowProps): ReactNode {
-  const handleKeyDown = useCallback(
-    (e: { key: string; preventDefault: () => void }): void => {
-      if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        e.preventDefault()
-        onToggle()
-      }
-    },
-    [onToggle],
-  )
-
   return (
     <styledEl.Wrapper data-approval-amount-row>
-      <styledEl.Header type="button" onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={isOpen}>
+      <styledEl.Header type="button" onClick={onToggle} aria-expanded={isOpen}>
         <styledEl.Label>
           <Trans>Approval amount</Trans>
         </styledEl.Label>
