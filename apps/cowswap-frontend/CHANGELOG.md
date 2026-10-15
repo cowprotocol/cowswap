@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.31.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.0...cowswap-v3.31.1) (2026-10-15)
+
+### Patch Changes
+
+- fix(solana): hide the FREE fee label for non-sponsored orders (#8395)
+
 ## [3.31.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.30.0...cowswap-v3.31.0) (2026-10-14)
 
 ### Minor Changes
