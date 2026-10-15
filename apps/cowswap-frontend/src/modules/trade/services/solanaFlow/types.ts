@@ -8,10 +8,12 @@ export interface SolanaFlowStep {
   // Required rather than optional so a step creating an account cannot silently skip the pre-flight
   // balance check: `getSolanaTradeOverhead` prices whatever the steps declare and nothing else.
   fundedAccounts: SolanaFundedAccount[]
-  // Set by the step contributing the `CreateOrder` instruction. `sendSolanaFlow` forwards it as the
-  // transaction's `solanaOrderCreation` tag, so the tag follows what was actually bundled rather than
-  // an assumption about the caller — steps here are assembled conditionally and can be skipped.
-  createsOrder?: boolean
+  // Set by the step contributing the `CreateOrder` instruction, to the id of the order it creates.
+  // `sendSolanaFlow` forwards it as the transaction's `solanaOrderCreation` tag, so the tag follows what
+  // was actually bundled rather than an assumption about the caller — steps here are assembled
+  // conditionally and can be skipped. Carrying the id rather than a flag is what lets a creation that
+  // never lands fail its order; nothing else links the transaction to it.
+  createdOrderId?: string
 }
 
 // An account a step creates, whose rent-exempt deposit the fee payer funds.

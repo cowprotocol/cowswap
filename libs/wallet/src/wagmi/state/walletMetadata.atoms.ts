@@ -108,6 +108,8 @@ export const accountTypeAtom = atom((get): AccountType | null => {
 })
 
 export const isSmartContractWalletAtom = atom((get): boolean | null => {
+  if (get(walletInfoAtom).connector?.type === ConnectionType.BASE_ACCOUNT) return true
+
   const accountType = get(accountTypeAtom)
 
   if (accountType === null) return null

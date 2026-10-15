@@ -13,6 +13,7 @@ const OWNER = new PublicKey('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
 const SIGNATURE = '5x8VXqZ8pQ2mJ7Yb1kL3nR4tW6uH9dF2sG5cA7eB1vN3mK4pQ8rT2yU6iO9aS1dF'
 const BLOCKHASH = 'GHtXQBsoZHVnNFa9YevAzFr17DJjgHXk3ycTKD5xD3Zi'
 const LAST_VALID_BLOCK_HEIGHT = 1_234
+const ORDER_ID = '0x' + 'ab'.repeat(32)
 
 interface Harness {
   context: SolanaFlowContext
@@ -47,7 +48,7 @@ function dummyInstruction(): TransactionInstruction {
 }
 
 function orderStep(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
-  return { instructions, summary, fundedAccounts: [], createsOrder: true }
+  return { instructions, summary, fundedAccounts: [], createdOrderId: ORDER_ID }
 }
 
 function step(instructions: TransactionInstruction[], summary: string): SolanaFlowStep {
@@ -81,7 +82,7 @@ describe('sendSolanaFlow', () => {
     expect(addTransaction).toHaveBeenCalledWith({
       hash: SIGNATURE,
       summary: 'Wrap 1 SOL, Approve WSOL',
-      solanaOrderCreation: false,
+      solanaOrderCreation: undefined,
       data: { lastValidBlockHeight: LAST_VALID_BLOCK_HEIGHT },
     })
   })
@@ -97,7 +98,9 @@ describe('sendSolanaFlow', () => {
       orderStep([dummyInstruction()], 'Swap SOL for USDC'),
     ])
 
-    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: true }))
+    // The id, not just a flag: it is the only link back to the order, which has to be failed if this
+    // transaction never lands.
+    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: { orderId: ORDER_ID } }))
   })
 
   it('leaves a wrap- or delegate-only transaction untagged, so it stays visible in activity', async () => {
@@ -105,7 +108,7 @@ describe('sendSolanaFlow', () => {
 
     await sendSolanaFlow(context, [step([dummyInstruction()], 'Wrap 1 SOL')])
 
-    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: false }))
+    expect(addTransaction).toHaveBeenCalledWith(expect.objectContaining({ solanaOrderCreation: undefined }))
   })
 
   it('returns the transaction hash', async () => {
