@@ -11,6 +11,7 @@ import {
   getChartUrl,
   getMarketOverviewUrl,
   getNetworkStatsUrl,
+  getNewsUrl,
   getQuotesUrl,
   getTokenListUrl,
 } from './assetsApi'
@@ -18,6 +19,7 @@ import {
 import type {
   RwaAssetQuotes,
   RwaAssetListItem,
+  RwaAssetNews,
   RwaAssetResponse,
   RwaAssetsPage,
   RwaAssetsSearchResult,
@@ -38,6 +40,8 @@ const MARKET_REFRESH_INTERVAL_MS = 60_000
 const MAX_ASSETS_PAGE_TICKERS = 100
 /** Same as the `/api/v1/token-list` cache max-age */
 const TOKEN_LIST_STALE_TIME_MS = 60 * 60 * 1000
+/** Same as the `/api/v1/news` cache max-age */
+const NEWS_STALE_TIME_MS = 15 * 60 * 1000
 
 export function assetChartQueryOptions(ticker: string, range: RwaChartRange): RwaQueryOptions<RwaChart> {
   return {
@@ -55,6 +59,15 @@ export function assetNetworkStatsQueryOptions(ticker: string, chainId: number): 
     queryFn: () => rwaFetcher<RwaNetworkStats>(getNetworkStatsUrl(ticker, chainId)),
     placeholderData: keepPreviousData,
     refetchInterval: MARKET_REFRESH_INTERVAL_MS,
+  }
+}
+
+export function assetNewsQueryOptions(ticker: string): RwaQueryOptions<RwaAssetNews> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'news', ticker],
+    queryFn: () => rwaFetcher<RwaAssetNews>(getNewsUrl(ticker)),
+    staleTime: NEWS_STALE_TIME_MS,
+    refetchOnWindowFocus: false,
   }
 }
 
@@ -142,6 +155,10 @@ export function tokenListQueryOptions(): RwaQueryOptions<RwaTokenList> {
     staleTime: TOKEN_LIST_STALE_TIME_MS,
   }
 }
+
+export const assetNewsQueryAtomFamily = atomFamily((ticker: string) =>
+  atomWithQuery(() => assetNewsQueryOptions(ticker)),
+)
 
 export const assetQueryAtomFamily = atomFamily((ticker: string) => atomWithQuery(() => assetQueryOptions(ticker)))
 

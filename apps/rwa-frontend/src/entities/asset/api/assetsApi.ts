@@ -53,6 +53,10 @@ export function getNetworkStatsUrl(ticker: string, chainId: number): string {
   return `${RWA_API_PREFIX}network-stats/${encodeURIComponent(ticker)}?chainId=${chainId}`
 }
 
+export function getNewsUrl(ticker: string): string {
+  return `${RWA_API_PREFIX}news/${encodeURIComponent(ticker)}`
+}
+
 export function getQuotesUrl(ticker: string, chainId: number, side: RwaQuoteSide): string {
   const params = new URLSearchParams({ chainId: String(chainId), side })
 

@@ -1,6 +1,6 @@
 {
-  "version": "0.1.5",
-  "lastModificationTime": "2026-10-14T11:20:29.056Z",
+  "version": "0.1.6",
+  "lastModificationTime": "2026-10-15T06:56:59.000Z",
   "assets": [
     {
       "ticker": "CRCL",
@@ -245,6 +245,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "NVIDIA Newsroom",
+        "url": "https://nvidianews.nvidia.com/releases.xml"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -410,6 +414,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "Tesla Investor Relations",
+        "url": "https://ir.tesla.com/rss.xml"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -478,6 +486,10 @@
         "title": "US market open",
         "start": "13:30 UTC",
         "end": "20:00 UTC"
+      },
+      "newsFeed": {
+        "source": "Google Blog",
+        "url": "https://blog.google/rss/"
       },
       "tokens": [
         {
@@ -719,6 +731,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "Intel Newsroom",
+        "url": "https://www.intc.com/news-events/press-releases/rss"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -820,6 +836,10 @@
         "title": "US market open",
         "start": "13:30 UTC",
         "end": "20:00 UTC"
+      },
+      "newsFeed": {
+        "source": "OpenAI News",
+        "url": "https://openai.com/news/rss.xml"
       },
       "tokens": [
         {
@@ -947,6 +967,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "Apple Newsroom",
+        "url": "https://www.apple.com/newsroom/rss-feed.rss"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -1016,6 +1040,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "Marvell Newsroom",
+        "url": "https://investor.marvell.com/news-events/press-releases/rss"
+      },
       "tokens": [
         {
           "chainId": 1,
@@ -1084,6 +1112,10 @@
         "title": "US market open",
         "start": "13:30 UTC",
         "end": "20:00 UTC"
+      },
+      "newsFeed": {
+        "source": "Meta Newsroom",
+        "url": "https://about.fb.com/news/feed/"
       },
       "tokens": [
         {
@@ -1340,6 +1372,10 @@
         "start": "13:30 UTC",
         "end": "20:00 UTC"
       },
+      "newsFeed": {
+        "source": "About Amazon",
+        "url": "https://www.aboutamazon.com/rss/feed.rss"
+      },
       "tokens": [
         {
           "chainId": 42161,
@@ -1399,6 +1435,10 @@
         "title": "US market open",
         "start": "13:30 UTC",
         "end": "20:00 UTC"
+      },
+      "newsFeed": {
+        "source": "Microsoft Source",
+        "url": "https://news.microsoft.com/source/topics/company-news/feed/"
       },
       "tokens": [
         {

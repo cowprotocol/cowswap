@@ -11,6 +11,8 @@ export interface RwaAsset {
   /** 0..10, higher goes first in the default sorting */
   priority: number
   allowedTradingTime?: RwaTradingTime
+  /** Official issuer press releases, hand-edited */
+  newsFeed?: RwaNewsFeed
   tokens: RwaToken[]
 }
 
@@ -43,6 +45,12 @@ export interface RwaAggregateMarket {
 export interface RwaAssetListItem extends RwaAssetWithMarket {
   /** 1D price of the RWA market, from its 7d sparkline */
   series: RwaChartPoint[] | null
+}
+
+/** Newest first. `source` is `null` for an asset without `newsFeed` */
+export interface RwaAssetNews extends DegradableResponse {
+  source: string | null
+  items: RwaNewsItem[]
 }
 
 export interface RwaAssetsFilter {
@@ -111,6 +119,21 @@ export interface RwaNetworkStats extends DegradableResponse {
   ticker: string
   chainId: number
   tokens: RwaTokenNetworkStats[]
+}
+
+export interface RwaNewsFeed {
+  /** Shown beside every item, e.g. `NVIDIA Newsroom` */
+  source: string
+  /** RSS 2.0 or Atom, `https` */
+  url: string
+}
+
+export interface RwaNewsItem {
+  title: string
+  /** `https` */
+  url: string
+  /** ISO 8601 */
+  publishedAt: string | null
 }
 
 export interface RwaRegistry {

@@ -51,6 +51,15 @@ describe('validateRegistry', () => {
     ).toEqual(['assets[0].logoUrl: must be an https URL', 'assets[1].logoUrl: must be an https URL'])
   })
 
+  it('accepts an https news feed and rejects an incomplete one', () => {
+    const newsFeed = { source: 'NVIDIA Newsroom', url: 'https://nvidianews.nvidia.com/releases.xml' }
+
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, newsFeed }]))).toEqual([])
+    expect(
+      validateRegistry(registryWith([{ ...VALID_ASSET, newsFeed: { source: '', url: 'http://example.com/rss' } }])),
+    ).toEqual(['assets[0].newsFeed.source: required', 'assets[0].newsFeed.url: must be an https URL'])
+  })
+
   it('rejects duplicate tickers', () => {
     expect(validateRegistry(registryWith([VALID_ASSET, { ...VALID_ASSET, coingeckoId: 'nvidia-2' }]))).toEqual([
       'assets[1].ticker: duplicate "NVDA"',

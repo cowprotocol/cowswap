@@ -1,6 +1,8 @@
 export { type AssetsPageQuery } from './api/assetsApi'
 export {
   assetChartQueryOptions,
+  assetNewsQueryAtomFamily,
+  assetNewsQueryOptions,
   assetQueryAtomFamily,
   assetNetworkStatsQueryOptions,
   assetQueryOptions,
@@ -21,6 +23,7 @@ export {
   type RwaAsset,
   type RwaAssetQuotes,
   type RwaAssetListItem,
+  type RwaAssetNews,
   type RwaAssetResponse,
   type RwaAssetSummary,
   type RwaAssetsFilter,
@@ -35,6 +38,8 @@ export {
   type RwaMarketOverview,
   type RwaMarketOverviewItem,
   type RwaMarketOverviewTotals,
+  type RwaNewsFeed,
+  type RwaNewsItem,
   type RwaNetworkStats,
   type RwaQuoteSide,
   type RwaRegistry,

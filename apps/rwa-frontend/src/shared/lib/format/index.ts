@@ -1,5 +1,6 @@
 export {
   formatCompactUsd,
+  formatDate,
   formatDateTime,
   formatPercent,
   formatRange,
