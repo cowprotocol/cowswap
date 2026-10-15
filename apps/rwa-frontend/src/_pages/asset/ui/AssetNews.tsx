@@ -17,7 +17,9 @@ export function AssetNews({ asset }: { asset: RwaAsset }): ReactNode {
 }
 
 function AssetNewsSection({ asset, feed }: { asset: RwaAsset; feed: RwaNewsFeed }): ReactNode {
-  const { data, isPending } = useAtomValue(assetNewsQueryAtomFamily(asset.ticker))
+  const { data, error, isPending } = useAtomValue(assetNewsQueryAtomFamily(asset.ticker))
+
+  if (error || data?.degraded) return null
 
   return (
     <section className={styles.news} aria-labelledby="asset-news-title">
