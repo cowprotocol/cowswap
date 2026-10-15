@@ -1,11 +1,15 @@
 .chartCard {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
+  padding: 20px 24px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
 }
 
 .status {
-  height: 320px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;

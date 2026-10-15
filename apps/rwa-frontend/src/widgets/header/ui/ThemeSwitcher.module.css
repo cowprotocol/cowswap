@@ -1,0 +1,31 @@
+.switcher {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+}
+
+.switcher button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-muted);
+}
+
+.switcher button:hover {
+  color: var(--color-text);
+}
+
+.switcher button[aria-pressed='true'] {
+  background: var(--color-bg);
+  box-shadow: var(--shadow-pill);
+  color: var(--color-text);
+}

@@ -1,7 +1,7 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import { type ReactNode, useState } from 'react'
+import type { ReactNode } from 'react'
 
 import Image from 'next/image'
 
@@ -23,7 +23,8 @@ import {
 } from '@/entities/asset'
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { usePrefersDarkScheme } from '@/shared/lib/theme'
+import { useIsDarkTheme } from '@/shared/lib/theme'
+import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
 const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
@@ -44,7 +45,6 @@ interface TradeTokenOptionProps {
   isSelectedByUser: boolean
   isBest: boolean
   isLoading: boolean
-  isStatsShown: boolean
   /** Set when other tokens have verified quotes */
   isUnverifiedShown: boolean
   onSelect(): void
@@ -59,7 +59,6 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const setSide = useSetAtom(tradeSideAtom)
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
-  const [isStatsShown, setIsStatsShown] = useState(true)
   const { side, quotedTokens, bestToken, assetToken, isAutoSelected } = selection
   const sideTitle = side === 'buy' ? 'Buy' : 'Sell'
   const rankedCount = quotedTokens.filter(isRankedQuote).length
@@ -75,38 +74,29 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          className={styles.auto}
-          disabled={isAutoSelected}
-          title="Trade the token with the best quote"
-          onClick={() => setTokenKey(null)}
-        >
-          Use Auto
-        </button>
+        {!isAutoSelected && (
+          <button
+            type="button"
+            className={styles.auto}
+            title="Trade the token with the best quote"
+            onClick={() => setTokenKey(null)}
+          >
+            Use Auto
+          </button>
+        )}
         <NetworkSelect asset={asset} chainId={selection.chainId} />
       </div>
       <div className={styles.tableHeader}>
-        <span>
-          Stock token{' '}
-          <button
-            type="button"
-            className={styles.statsToggle}
-            aria-expanded={isStatsShown}
-            onClick={() => setIsStatsShown((shown) => !shown)}
-          >
-            Stats {isStatsShown ? '▴' : '▾'}
-          </button>
-        </span>
+        <span>Stock token</span>
         <span className={styles.quoteTitle}>
-          {sideTitle} quote / share · incl. fees
+          {sideTitle} quote / share
           <span
             className={styles.info}
             role="img"
             aria-label="Quote details"
             title={`Price per share for a $1,000 ${side} order, including network costs and fees`}
           >
-            i
+            <InfoIcon />
           </span>
         </span>
       </div>
@@ -123,7 +113,6 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
               isSelectedByUser={quoted.token === assetToken && !isAutoSelected}
               isBest={rankedCount > 1 && quoted.token === bestToken}
               isLoading={selection.isQuotesLoading}
-              isStatsShown={isStatsShown}
               isUnverifiedShown={hasVerifiedQuote && !quoted.quote?.verified}
               onSelect={() => setTokenKey(getTokenKey(quoted.token))}
             />
@@ -135,10 +124,10 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
 }
 
 function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number }): ReactNode {
-  const prefersDark = usePrefersDarkScheme()
+  const isDark = useIsDarkTheme()
   const selectNetwork = useSelectTradeNetwork()
   const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-  const logoUrl = getChainLogoUrl(chainId, prefersDark)
+  const logoUrl = getChainLogoUrl(chainId, isDark)
 
   return (
     <label className={styles.network}>
@@ -151,6 +140,7 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
           </option>
         ))}
       </select>
+      <ChevronDownIcon className={styles.chevron} />
     </label>
   )
 }
@@ -162,7 +152,6 @@ function TradeTokenOption({
   isSelectedByUser,
   isBest,
   isLoading,
-  isStatsShown,
   isUnverifiedShown,
   onSelect,
 }: TradeTokenOptionProps): ReactNode {
@@ -177,51 +166,48 @@ function TradeTokenOption({
       className={isSelected ? `${styles.option} ${styles.selected}` : styles.option}
       onClick={onSelect}
     >
-      <span className={styles.optionMain}>
-        <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} size="large" />
-        <span className={styles.optionTitle}>
+      <TokenLogo symbol={token.symbol} logoUrl={logoUrl} chainId={token.chainId} />
+      <span className={styles.optionTitle}>
+        <span className={styles.optionName}>
           <span>
-            <strong>{token.symbol}</strong> · {token.issuer}
+            {token.symbol} · {token.issuer}
           </span>
           {isBest && <span className={styles.bestBadge}>Best quote</span>}
           {isSelectedByUser && !isBest && <span className={styles.secondary}>Selected by you</span>}
         </span>
-        <span className={styles.quote}>
-          {isPriceOutlier ? (
-            <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
-              Insufficient liquidity
-            </span>
-          ) : pricePerShare !== null ? (
-            <>
-              <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
-              {isUnverifiedShown && (
-                <span className={styles.secondary} title="The order book could not simulate this trade">
-                  Unverified quote
-                </span>
-              )}
-              {stockPrice && (
-                <span className={styles.premium}>
-                  {formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock price
-                </span>
-              )}
-            </>
-          ) : (
-            <span className={styles.secondary}>
-              {isLoading ? 'Loading quote…' : (QUOTE_ERRORS[quote?.error ?? ''] ?? 'No quote')}
-            </span>
-          )}
-        </span>
-      </span>
-      {isStatsShown && (
         <span className={styles.stats}>
           <span>
             Onchain cap <strong>{formatCompactUsd(stats?.onchainCap)}</strong>
           </span>
+          <span aria-hidden="true">·</span>
           <span>
-            24h DEX vol <strong>{formatCompactUsd(stats?.dexVolume24h)}</strong>
+            24h vol <strong>{formatCompactUsd(stats?.dexVolume24h)}</strong>
           </span>
         </span>
-      )}
+      </span>
+      <span className={styles.quote}>
+        {isPriceOutlier ? (
+          <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
+            Insufficient liquidity
+          </span>
+        ) : pricePerShare !== null ? (
+          <>
+            <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
+            {isUnverifiedShown && (
+              <span className={styles.secondary} title="The order book could not simulate this trade">
+                Unverified quote
+              </span>
+            )}
+            {stockPrice && (
+              <span className={styles.secondary}>{formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock</span>
+            )}
+          </>
+        ) : (
+          <span className={styles.secondary}>
+            {isLoading ? 'Loading quote…' : (QUOTE_ERRORS[quote?.error ?? ''] ?? 'No quote')}
+          </span>
+        )}
+      </span>
     </button>
   )
 }

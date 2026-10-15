@@ -15,6 +15,8 @@ import {
 import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
 import { getChainLabel } from '@/shared/lib/chain'
+import { SearchIcon } from '@/shared/ui/icons'
+import { SelectPill } from '@/shared/ui/select-pill'
 
 export function AssetsFilters(): ReactNode {
   const query = useAtomValue(assetsFilterQueryAtom)
@@ -28,10 +30,7 @@ export function AssetsFilters(): ReactNode {
   return (
     <div className={styles.filters}>
       <label className={styles.filterInput}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
-          <path d="m11 11 3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
+        <SearchIcon />
         <input
           type="search"
           placeholder="Filter assets…"
@@ -44,8 +43,7 @@ export function AssetsFilters(): ReactNode {
         {data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`}
       </span>
       <div className={styles.filterControls}>
-        <select
-          className={styles.filterSelect}
+        <SelectPill
           aria-label="Issuer"
           value={issuer ?? ''}
           onChange={(event) => updateFilters({ issuer: event.target.value || null })}
@@ -56,9 +54,8 @@ export function AssetsFilters(): ReactNode {
               {item}
             </option>
           ))}
-        </select>
-        <select
-          className={styles.filterSelect}
+        </SelectPill>
+        <SelectPill
           aria-label="Network"
           value={chainId ?? ''}
           onChange={(event) => updateFilters({ chainId: event.target.value ? Number(event.target.value) : null })}
@@ -69,7 +66,7 @@ export function AssetsFilters(): ReactNode {
               {getChainLabel(item)}
             </option>
           ))}
-        </select>
+        </SelectPill>
         <button
           type="button"
           className={styles.watchlistButton}

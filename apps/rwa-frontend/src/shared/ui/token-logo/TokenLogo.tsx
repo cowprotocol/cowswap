@@ -5,24 +5,23 @@ import Image from 'next/image'
 import styles from './TokenLogo.module.css'
 
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
-import { usePrefersDarkScheme } from '@/shared/lib/theme'
+import { useIsDarkTheme } from '@/shared/lib/theme'
 
-const LOGO_SIZE = 28
-const LARGE_LOGO_SIZE = 40
-const CHAIN_BADGE_SIZE = 18
+const LOGO_SIZES = { regular: 32, large: 40, hero: 56 } as const
+const CHAIN_BADGE_SIZE = 16
 
 interface TokenLogoProps {
   symbol: string
   logoUrl: string | null | undefined
   /** Shows a network badge */
   chainId?: number
-  size?: 'regular' | 'large'
+  size?: keyof typeof LOGO_SIZES
 }
 
 export function TokenLogo({ symbol, logoUrl, chainId, size = 'regular' }: TokenLogoProps): ReactNode {
-  const prefersDark = usePrefersDarkScheme()
-  const chainLogoUrl = chainId === undefined ? null : getChainLogoUrl(chainId, prefersDark)
-  const pixels = size === 'large' ? LARGE_LOGO_SIZE : LOGO_SIZE
+  const isDark = useIsDarkTheme()
+  const chainLogoUrl = chainId === undefined ? null : getChainLogoUrl(chainId, isDark)
+  const pixels = LOGO_SIZES[size]
 
   return (
     <span className={styles.wrapper} style={{ width: pixels, height: pixels }}>

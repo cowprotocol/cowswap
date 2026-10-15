@@ -2,9 +2,11 @@ import type { ReactNode } from 'react'
 
 import styles from './AssetStats.module.css'
 
-import type { RwaAsset, RwaMarketData } from '../model/types'
+import { isUsMarketOpen } from '../lib/usMarketStatus'
 
-import { formatCompactUsd, formatPercent, formatRange, formatUsd } from '@/shared/lib/format'
+import type { RwaAsset, RwaMarketData, RwaTradingTime } from '../model/types'
+
+import { formatPercent, formatUsd } from '@/shared/lib/format'
 
 interface AssetStatsProps {
   asset: RwaAsset
@@ -12,7 +14,6 @@ interface AssetStatsProps {
 }
 
 export function AssetStats({ asset, market }: AssetStatsProps): ReactNode {
-  const { allowedTradingTime } = asset
   const change = market?.change24h
   const changeClassName = change ? (change > 0 ? styles.positive : styles.negative) : ''
 
@@ -20,26 +21,26 @@ export function AssetStats({ asset, market }: AssetStatsProps): ReactNode {
     <div className={styles.stats}>
       <div className={styles.priceRow}>
         <span className={styles.price}>{formatUsd(market?.price)}</span>
-        <span className={changeClassName}>{formatPercent(change)} (24h)</span>
+        <span className={styles.change}>
+          <span className={changeClassName}>{formatPercent(change)}</span>
+          <span className={styles.period}>24H</span>
+        </span>
       </div>
-      <dl className={styles.grid}>
-        <div>
-          <dt>Day range</dt>
-          <dd>{formatRange(market?.dayLow, market?.dayHigh)}</dd>
-        </div>
-        <div>
-          <dt>Tokenized market cap</dt>
-          <dd>{formatCompactUsd(market?.marketCap)}</dd>
-        </div>
-        {allowedTradingTime && (
-          <div>
-            <dt>{allowedTradingTime.title}</dt>
-            <dd>
-              {allowedTradingTime.start} – {allowedTradingTime.end}
-            </dd>
-          </div>
-        )}
-      </dl>
+      {/* Rendered once market data loads, so a prerendered page doesn't hydrate with the build time status */}
+      {market && asset.allowedTradingTime && <MarketStatus tradingTime={asset.allowedTradingTime} />}
     </div>
+  )
+}
+
+function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNode {
+  const open = isUsMarketOpen(tradingTime, new Date())
+
+  return (
+    <span className={styles.status}>
+      <span className={open ? styles.statusOpen : styles.statusClosed}>US market {open ? 'open' : 'closed'}</span>
+      <span className={styles.hours}>
+        · {tradingTime.start} – {tradingTime.end}
+      </span>
+    </span>
   )
 }

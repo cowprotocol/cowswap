@@ -26,6 +26,12 @@ export function getEvmChainInfo(chainId: number): EvmChainInfo | undefined {
   return chain && isEvmChainInfo(chain) ? chain : undefined
 }
 
+export function getExplorerAddressUrl(chainId: number, address: string): string | null {
+  const chain = getChainInfo(chainId)
+
+  return chain ? `${chain.blockExplorer.url}/address/${address}` : null
+}
+
 export function getExplorerTxUrl(chainId: number, txHash: string): string | null {
   const chain = getChainInfo(chainId)
 

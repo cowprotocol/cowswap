@@ -31,12 +31,9 @@ export function TopMoversCard({ gainers, losers, degraded }: TopMoversCardProps)
   return (
     <section className={styles.card} aria-labelledby="top-movers-title">
       <header className={styles.cardHeader}>
-        <div>
-          <h2 id="top-movers-title" className={styles.cardTitle}>
-            Top movers
-          </h2>
-          <p className={styles.cardSubtitle}>Underlying price change · 24h</p>
-        </div>
+        <h2 id="top-movers-title" className={styles.cardTitle}>
+          Top movers
+        </h2>
         <div className={styles.segmented} role="group" aria-label="Top movers list">
           {TABS.map(({ value, label }) => (
             <button
@@ -51,6 +48,7 @@ export function TopMoversCard({ gainers, losers, degraded }: TopMoversCardProps)
           ))}
         </div>
       </header>
+      <p className={styles.cardSubtitle}>Underlying price change · 24h</p>
       <OverviewAssetRows
         items={isGainers ? gainers : losers}
         degraded={degraded}

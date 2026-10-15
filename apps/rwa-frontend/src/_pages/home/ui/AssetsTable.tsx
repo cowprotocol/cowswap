@@ -3,7 +3,6 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 
-import Image from 'next/image'
 import Link from 'next/link'
 
 import styles from './AssetsTable.module.css'
@@ -15,12 +14,9 @@ import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
 import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
-import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { usePrefersDarkScheme } from '@/shared/lib/theme'
+import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
-
-const NETWORK_LOGO_SIZE = 16
 
 interface AssetsTableProps {
   id: string
@@ -80,7 +76,7 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
               <span>{asset.ticker}</span>
               <span className={styles.assetType}>{RWA_ASSET_TYPE_LABELS[asset.type]}</span>
               <IssuersCount asset={asset} />
-              <NetworkLogos asset={asset} />
+              <NetworkLogos chainIds={[...new Set(asset.tokens.map((token) => token.chainId))]} />
             </div>
           </div>
         </div>
@@ -116,32 +112,6 @@ function IssuersCount({ asset }: { asset: RwaAssetListItem }): ReactNode {
   return (
     <span className={styles.issuers} title={issuers.join(', ')}>
       {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-    </span>
-  )
-}
-
-function NetworkLogos({ asset }: { asset: RwaAssetListItem }): ReactNode {
-  const prefersDark = usePrefersDarkScheme()
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-
-  return (
-    <span className={styles.networks}>
-      {chainIds.map((chainId) => {
-        const logoUrl = getChainLogoUrl(chainId, prefersDark)
-        const label = getChainLabel(chainId)
-
-        return logoUrl ? (
-          <Image
-            key={chainId}
-            src={logoUrl}
-            alt={label}
-            title={label}
-            width={NETWORK_LOGO_SIZE}
-            height={NETWORK_LOGO_SIZE}
-            unoptimized
-          />
-        ) : null
-      })}
     </span>
   )
 }

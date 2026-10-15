@@ -15,6 +15,7 @@ import {
 } from '../model/headerSearchAtoms'
 
 import { RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
+import { SearchIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
 interface SearchSuggestionsProps {
@@ -74,7 +75,7 @@ export function HeaderSearch(): ReactNode {
 
   return (
     <div ref={containerRef} className={styles.search}>
-      <SearchIcon />
+      <SearchIcon className={styles.icon} />
       <input
         ref={inputRef}
         className={styles.input}
@@ -124,15 +125,6 @@ function isEditableTarget(target: EventTarget | null): boolean {
 
 function optionId(listboxId: string, ticker: string): string {
   return `${listboxId}-${ticker}`
-}
-
-function SearchIcon(): ReactNode {
-  return (
-    <svg className={styles.icon} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-      <circle cx="7" cy="7" r="5.25" stroke="currentColor" strokeWidth="1.5" />
-      <path d="m11 11 3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
 }
 
 function SearchSuggestions({ listboxId, items, activeTicker, onSelect, onHover }: SearchSuggestionsProps): ReactNode {

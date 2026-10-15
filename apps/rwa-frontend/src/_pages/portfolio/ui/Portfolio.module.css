@@ -1,13 +1,15 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  padding-top: 28px;
 }
 
 .title {
   margin: 0;
-  font-size: 36px;
-  line-height: 44px;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 43px;
 }
 
 .secondary {
@@ -60,9 +62,10 @@
 
 .total {
   margin: 4px 0;
-  font-size: 44px;
-  font-weight: 700;
-  line-height: 54px;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 46px;
+  letter-spacing: -0.8px;
   font-variant-numeric: tabular-nums;
 }
 
@@ -79,16 +82,17 @@
 .cards {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  gap: 16px;
 }
 
 .card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) * 2);
+  gap: 10px;
+  padding: 20px 22px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
 }
 
 .cardHeader {
@@ -100,7 +104,9 @@
 
 .cardTitle {
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
 }
 
 .linkButton {
@@ -208,17 +214,22 @@
 
 .pills {
   display: flex;
-  gap: 4px;
+  gap: 2px;
 }
 
 .pills button {
-  border-color: transparent;
+  height: 32px;
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--radius-pill);
   background: none;
+  color: var(--color-text-secondary);
+  font-weight: 500;
 }
 
 .pills .activePill {
   background: var(--color-surface);
-  font-weight: 600;
+  color: var(--color-text);
 }
 
 .scroll {
@@ -238,10 +249,25 @@
   white-space: nowrap;
 }
 
+.table th:first-child,
+.table td:first-child {
+  padding-left: 24px;
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: 24px;
+}
+
 .table th {
+  height: 38px;
+  padding-top: 0;
+  padding-bottom: 0;
+  background: var(--color-canvas);
   color: var(--color-text-secondary);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
+  line-height: 16px;
 }
 
 .numeric {
@@ -288,7 +314,7 @@
 }
 
 .tokenRow td:first-child {
-  padding-left: 40px;
+  padding-left: 56px;
 }
 
 .tokenRow {
