@@ -79,6 +79,8 @@ const RWA_MARKETS_PAGE_SIZE = 250
 const GECKOTERMINAL_BASE_URL = 'https://api.geckoterminal.com/api/v2'
 /** Bump when a cached upstream payload changes shape: the data cache outlives deployments */
 const RESPONSE_CACHE_KEY = ['coingecko-response', 'v1']
+/** Fails a hanging request, so `withRetryBackoff` starts counting instead of waiting for the platform timeout */
+const REQUEST_TIMEOUT_MS = 10_000
 
 /** GeckoTerminal network ids */
 const ONCHAIN_NETWORKS: Partial<Record<number, string>> = {
@@ -210,47 +212,42 @@ function chunk<T>(items: T[], size: number): T[][] {
   return chunks
 }
 
-const cachedRequests = new Map<number, (url: string) => Promise<unknown>>()
+const cachedRequests = new Map<number, (url: string, allowNotFound: boolean) => Promise<unknown>>()
 
 /**
  * Data cache entry per URL. A failed refresh keeps serving the stale entry
  * and `withRetryBackoff` spaces out the next upstream attempts.
- * `null` when the upstream answers 404
+ * `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure
  */
-function fetchCachedJson(url: string, revalidate: number): Promise<unknown> {
+function fetchCachedJson(url: string, revalidate: number, allowNotFound: boolean): Promise<unknown> {
   let load = cachedRequests.get(revalidate)
 
   if (!load) {
     load = unstable_cache(
-      (cacheUrl: string) => withRetryBackoff(cacheUrl, () => requestJson(cacheUrl)),
+      (cacheUrl: string, cacheAllowNotFound: boolean) =>
+        withRetryBackoff(cacheUrl, () => requestJson(cacheUrl, cacheAllowNotFound)),
       RESPONSE_CACHE_KEY,
       { revalidate },
     )
     cachedRequests.set(revalidate, load)
   }
 
-  return load(url)
+  return load(url, allowNotFound)
 }
 
 async function fetchJson<T>(url: string, revalidate: number): Promise<T> {
-  const body = await fetchCachedJson(url, revalidate)
-
-  if (body === null) throw new UpstreamError(url, 404)
-
-  return body as T
+  return (await fetchCachedJson(url, revalidate, false)) as T
 }
 
+/** `null` when the upstream answers 404 */
 async function fetchJsonOrNotFound<T>(url: string, revalidate: number): Promise<T | null> {
-  return (await fetchCachedJson(url, revalidate)) as T | null
+  return (await fetchCachedJson(url, revalidate, true)) as T | null
 }
 
 async function fetchRwaMarketsPage(page: number): Promise<CoingeckoRwaMarket[]> {
   const url = `${getConfig().baseUrl}/rwas/markets?per_page=${RWA_MARKETS_PAGE_SIZE}&page=${page}&sparkline=true`
-  const body = await requestJson(url)
 
-  if (body === null) throw new UpstreamError(url, 404)
-
-  return body as CoingeckoRwaMarket[]
+  return (await requestJson(url, false)) as CoingeckoRwaMarket[]
 }
 
 /** Sorted batches of `batchItems` (plus `items` missing from it) that hold any of `items` */
@@ -290,19 +287,20 @@ function isUpstreamErrorBody(body: unknown): body is UpstreamErrorBody {
   return typeof status === 'object' && status !== null && 'error_code' in status
 }
 
-/** `null` when the upstream answers 404 */
-async function requestJson(url: string): Promise<unknown> {
+/** `null` when the upstream answers 404 and `allowNotFound` is set */
+async function requestJson(url: string, allowNotFound: boolean): Promise<unknown> {
   const response = await fetch(url, {
     headers: { accept: 'application/json', ...getConfig().headers },
     next: { revalidate: 0 },
+    signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
   })
 
-  if (response.status === 404) return null
+  if (allowNotFound && response.status === 404) return null
   if (!response.ok) throw new UpstreamError(url, response.status)
 
   const body: unknown = await response.json()
 
-  // GeckoTerminal and CoinGecko report rate limiting with HTTP 200 and an error `status`
+  // GeckoTerminal reports rate limiting with HTTP 200 and an error `status`
   if (isUpstreamErrorBody(body)) throw new UpstreamError(url, body.status.error_code)
 
   return body

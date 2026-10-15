@@ -67,6 +67,38 @@ describe('withRetryBackoff', () => {
     await expect(withRetryBackoff('reset', load)).resolves.toBe('ok again')
   })
 
+  it('shares one load between concurrent calls with the same key', async () => {
+    let resolveLoad: (value: string) => void = () => undefined
+    const load = jest.fn(() => new Promise<string>((resolve) => (resolveLoad = resolve)))
+
+    const first = withRetryBackoff('concurrent', load)
+    const second = withRetryBackoff('concurrent', load)
+    resolveLoad('ok')
+
+    await expect(Promise.all([first, second])).resolves.toEqual(['ok', 'ok'])
+    expect(load).toHaveBeenCalledTimes(1)
+
+    load.mockResolvedValueOnce('again')
+
+    await expect(withRetryBackoff('concurrent', load)).resolves.toBe('again')
+    expect(load).toHaveBeenCalledTimes(2)
+  })
+
+  it('counts a shared failure once', async () => {
+    let rejectLoad: (error: Error) => void = () => undefined
+    const load = jest.fn(() => new Promise<string>((_, reject) => (rejectLoad = reject)))
+
+    const calls = [withRetryBackoff('shared-failure', load), withRetryBackoff('shared-failure', load)]
+    rejectLoad(new Error('timeout'))
+
+    await expect(Promise.all(calls)).rejects.toThrow('timeout')
+
+    now += MINUTE_MS
+    load.mockResolvedValueOnce('ok')
+
+    await expect(withRetryBackoff('shared-failure', load)).resolves.toBe('ok')
+  })
+
   it('tracks every key separately', async () => {
     await expect(withRetryBackoff('failing', () => Promise.reject(new Error('500')))).rejects.toThrow('500')
 

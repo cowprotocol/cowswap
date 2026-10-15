@@ -43,7 +43,7 @@ UPD --> REG : writes
 
 ' ───────────────────────── Server ─────────────────────────
 package "Next.js server" as SERVER {
-  package "shared/api/coingecko/coingeckoClient.ts\n(unstable_cache per URL + withRetryBackoff 60s, 120s, 240s… ≤1h)" as CLIENT {
+  package "shared/api/coingecko/coingeckoClient.ts\n(unstable_cache per URL + withRetryBackoff 60s, 120s, 240s… ≤1h,\nshared in-flight call, 10 s timeout)" as CLIENT {
     [fetchRwaMarkets()] as F_RWA
     [fetchCoinsMarkets(ids)] as F_COINS
     [fetchMarketChart(id, days)] as F_CHART
@@ -75,7 +75,7 @@ package "Next.js server" as SERVER {
     [GET /api/v1/assets-search\ns-maxage 60] as R_SEARCH
     [GET /api/v1/market-overview\ns-maxage 60] as R_OVERVIEW
     [GET /api/v1/asset/{ticker}\ns-maxage 60] as R_ASSET
-    [GET /api/v1/chart/{ticker}?range\ns-maxage 900 (1D) / 3600] as R_CHART
+    [GET /api/v1/chart/{ticker}?range\ns-maxage = data cache rv] as R_CHART
     [GET /api/v1/network-stats/{ticker}?chainId\ns-maxage 60] as R_NET
     [GET /api/v1/quotes/{ticker}\ns-maxage 60, no SWR] as R_QUOTES
     [GET /api/v1/token-list\nforce-static, s-maxage 3600] as R_TL

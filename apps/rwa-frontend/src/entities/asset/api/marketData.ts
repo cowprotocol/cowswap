@@ -72,7 +72,8 @@ const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
   ALL: 'max',
 }
 
-const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
+/** Also the CDN max-age of `/api/v1/chart`, so the route never outlives the data cache */
+export const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
   '1D': 900,
   '1W': 1800,
   '1M': 3600,

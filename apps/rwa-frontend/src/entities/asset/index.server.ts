@@ -9,6 +9,7 @@ export {
   type ListAssetsParams,
   listAssets,
 } from './api/assetsService'
+export { CHART_REVALIDATE_SECONDS } from './api/marketData'
 export { getAssetByTicker, getAssets, getAssetSummaries, getRegistry } from './model/registry'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export { buildRwaTokenList } from './model/tokenList'
