@@ -1,0 +1,48 @@
+.connect,
+.account {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.connect {
+  padding: 0 18px;
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+.connect:hover {
+  opacity: 0.9;
+}
+
+.account {
+  gap: 10px;
+  padding: 0 14px 0 8px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.account:hover {
+  background: var(--color-surface);
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(127deg, #7a61ff 0%, #40c4ff 50%, #00d996 100%);
+}
+
+.chevron {
+  color: var(--color-text-muted);
+}

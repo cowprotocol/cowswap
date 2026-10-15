@@ -24,6 +24,8 @@ interface TradeFeesProps {
   /** Limit form detail-row typography (medium label, secondary value). */
   detailRowStyle?: boolean
   testId?: string
+  /** Defaults to true. When false, no fee row is rendered instead of the FREE one. */
+  isFreePlacement?: boolean
 }
 
 export function TradeFees({
@@ -39,6 +41,7 @@ export function TradeFees({
   isLast = false,
   detailRowStyle = false,
   testId,
+  isFreePlacement = true,
 }: TradeFeesProps): ReactElement | null {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
   const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
@@ -91,6 +94,8 @@ export function TradeFees({
   if (hasProtocolFee) return protocolFeeRow
 
   if (hasPartnerFee) return partnerFeeRow
+
+  if (!isFreePlacement) return null
 
   return (
     <FreeFeeRow

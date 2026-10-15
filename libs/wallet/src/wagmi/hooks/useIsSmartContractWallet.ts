@@ -5,9 +5,11 @@ import { AccountType } from '@cowprotocol/types'
 
 import useSWR from 'swr'
 
+import { useConnectionType } from './useConnectionType'
 import { useIsSafeWallet } from './useWalletMetadata'
 
 import { useWalletInfo } from '../../api/hooks'
+import { ConnectionType } from '../../api/types'
 import { isEip7702EOA } from '../utils/isEip7702EOA.utils'
 
 // TODO: Replace with accountTypeAtom
@@ -49,6 +51,11 @@ export function useAccountType(): AccountType | undefined {
 export function useIsSmartContractWallet(): boolean | undefined {
   const accountType = useAccountType()
   const isSafeWallet = useIsSafeWallet()
+  const connectionType = useConnectionType()
+
+  // Base Account has no code while undeployed and only an EIP-7702 delegation where it was used,
+  // but it always signs with its passkey owner (ERC-1271/ERC-6492), never with an ECDSA key
+  if (connectionType === ConnectionType.BASE_ACCOUNT) return true
 
   return isSafeWallet || accountType === AccountType.SMART_CONTRACT
 }

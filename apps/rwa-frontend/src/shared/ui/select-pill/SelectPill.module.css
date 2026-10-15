@@ -1,0 +1,38 @@
+.pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select {
+  height: 40px;
+  padding: 0 36px 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  appearance: none;
+}
+
+.small .select {
+  height: 32px;
+}
+
+.select:hover {
+  background: var(--color-surface);
+}
+
+.select:focus-visible {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.chevron {
+  position: absolute;
+  right: 14px;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}

@@ -38,7 +38,7 @@ export async function planCreateLimitOrderStep({
     step: {
       instructions: [instruction],
       summary: t`Swap ${sellSymbol} for ${buySymbol}`,
-      createsOrder: true,
+      createdOrderId: orderId,
       fundedAccounts: getCreateOrderFundedAccounts(),
     },
     orderId,

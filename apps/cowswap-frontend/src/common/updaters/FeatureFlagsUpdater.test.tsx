@@ -89,6 +89,25 @@ describe('FeatureFlagsUpdater', () => {
     expect(syncBootFeatureFlagsMock).toHaveBeenCalledWith(flags)
   })
 
+  it('does not sync boot-critical flags inside the widget', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isSolanaEnabled: false })
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+    window.location.hash = '#/1/widget/swap'
+
+    try {
+      render(
+        <Provider store={store}>
+          <FeatureFlagsUpdater />
+        </Provider>,
+      )
+    } finally {
+      window.location.hash = ''
+    }
+
+    expect(syncBootFeatureFlagsMock).not.toHaveBeenCalled()
+  })
+
   it('does not sync boot-critical flags while still waiting on LaunchDarkly', () => {
     const store = createStore()
 

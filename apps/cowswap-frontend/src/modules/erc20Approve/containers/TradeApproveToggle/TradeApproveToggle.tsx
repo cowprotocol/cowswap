@@ -2,8 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
-
+import { useIsInfiniteApproveDisabled } from '../../hooks/useIsInfiniteApproveDisabled'
 import { ApprovalAmountRow } from '../../pure/ApprovalAmountRow/ApprovalAmountRow.pure'
 import { Toggle } from '../../pure/Toggle'
 import { useIsPartialApproveSelectedByUser, useSetIsPartialApproveSelectedByUser } from '../../state'
@@ -22,14 +21,14 @@ export function TradeApproveToggle({
 }: TradeApproveToggleProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
-  const isInfiniteApproveDisabledInWidget = useIsInfiniteApproveDisabledInWidget()
+  const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleOpen = useCallback(() => {
     setIsOpen((prev) => !prev)
   }, [])
 
-  if (isInfiniteApproveDisabledInWidget) return null
+  if (isInfiniteApproveDisabled) return null
 
   return (
     <ApprovalAmountRow
