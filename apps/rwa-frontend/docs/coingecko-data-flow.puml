@@ -75,7 +75,7 @@ package "Next.js server" as SERVER {
     [GET /api/v1/assets-search\ns-maxage 60] as R_SEARCH
     [GET /api/v1/market-overview\ns-maxage 60] as R_OVERVIEW
     [GET /api/v1/asset/{ticker}\ns-maxage 60] as R_ASSET
-    [GET /api/v1/chart/{ticker}?range\ns-maxage 300 (1D) / 3600] as R_CHART
+    [GET /api/v1/chart/{ticker}?range\ns-maxage 900 (1D) / 3600] as R_CHART
     [GET /api/v1/network-stats/{ticker}?chainId\ns-maxage 60] as R_NET
     [GET /api/v1/quotes/{ticker}\ns-maxage 60, no SWR] as R_QUOTES
     [GET /api/v1/token-list\nforce-static, s-maxage 3600] as R_TL
@@ -87,7 +87,7 @@ package "Next.js server" as SERVER {
 ' client -> upstream
 F_RWA --> EP_RWA : uncached\n×4 pages (988 / 250)
 F_COINS --> EP_COINS : rv 60\nbatches holding the ids\n(601 registry ids → ≤3)
-F_CHART --> EP_CHART : rv 300 (1D) / 900 (1W)\n/ 3600 (1M, 1Y, ALL)
+F_CHART --> EP_CHART : rv 900 (1D) / 1800 (1W)\n/ 3600 (1M, 1Y, ALL)
 F_MULTI --> EP_MULTI : rv 300\nbatches holding the addrs\n(registry → ≤47 over all chains)
 F_OHLCV --> EP_OHLCV : rv 900\n×1 per token
 

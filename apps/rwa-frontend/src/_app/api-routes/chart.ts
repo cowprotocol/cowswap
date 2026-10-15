@@ -23,7 +23,7 @@ export async function getChartHandler(
   try {
     const chart: RwaChart = { ticker: asset.ticker, range, points: await getAssetChart(asset, range) }
 
-    return jsonResponse(chart, range === '1D' ? 300 : 3600)
+    return jsonResponse(chart, range === '1D' ? 900 : 3600)
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load chart', error)

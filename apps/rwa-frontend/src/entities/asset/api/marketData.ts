@@ -73,8 +73,8 @@ const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
 }
 
 const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
-  '1D': 300,
-  '1W': 900,
+  '1D': 900,
+  '1W': 1800,
   '1M': 3600,
   '1Y': 3600,
   ALL: 3600,
