@@ -40,6 +40,8 @@ export function PriceChart({ points, showTime }: PriceChartProps): ReactNode {
       grid: { vertLines: { visible: false } },
       rightPriceScale: { borderVisible: false },
       timeScale: { borderVisible: false },
+      handleScale: false,
+      handleScroll: { mouseWheel: false },
     })
 
     chartRef.current = chart

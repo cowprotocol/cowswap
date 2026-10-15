@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode, useMemo } from 'react'
+import { type ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useConnection } from 'wagmi'
 
@@ -23,7 +23,7 @@ import { useWalletProvider } from '@/shared/lib/wallet'
 
 const CowSwapWidget = dynamic(() => import('@cowprotocol/widget-react').then((module) => module.CowSwapWidget), {
   ssr: false,
-  loading: () => <p>Loading trading widget…</p>,
+  loading: () => <TradeWidgetSkeleton />,
 })
 
 const APP_CODE = 'CoW RWA'
@@ -38,6 +38,8 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const selection = useTradeSelection(asset)
   const assetToken = selection?.assetToken
   const side = selection?.side
+  const [isWidgetLoading, setIsWidgetLoading] = useState(true)
+  const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
 
   const params = useMemo((): CowSwapWidgetParams | null => {
     if (!assetToken || !isSupportedChain(assetToken.chainId)) return null
@@ -71,11 +73,32 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
           <ConnectButton />
         </div>
       )}
-      <CowSwapWidget params={params} provider={provider} />
+      <div className={styles.frame}>
+        <CowSwapWidget params={params} provider={provider} onReady={onWidgetSettled} onLoadingError={onWidgetSettled} />
+        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+      </div>
     </section>
   )
 }
 
 function toTokenInfo({ chainId, address, name, decimals, symbol }: RwaToken): TokenInfo {
   return { chainId, address, name, decimals, symbol }
+}
+
+function TradeWidgetSkeleton({ overlay = false }: { overlay?: boolean }): ReactNode {
+  return (
+    <div
+      className={overlay ? `${styles.skeleton} ${styles.skeletonOverlay}` : styles.skeleton}
+      role="status"
+      aria-label="Loading trading widget"
+    >
+      <div className={styles.skeletonTabs}>
+        <span className={`${styles.skeletonBlock} ${styles.skeletonTab}`} />
+        <span className={`${styles.skeletonBlock} ${styles.skeletonTab}`} />
+      </div>
+      <span className={`${styles.skeletonBlock} ${styles.skeletonField}`} />
+      <span className={`${styles.skeletonBlock} ${styles.skeletonField}`} />
+      <span className={`${styles.skeletonBlock} ${styles.skeletonButton}`} />
+    </div>
+  )
 }
