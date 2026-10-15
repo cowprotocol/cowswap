@@ -7,7 +7,17 @@ jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
 }))
 
+jest.mock('@/shared/api/coingecko/retryBackoff', () => ({
+  withRetryBackoff: <T>(_key: string, load: () => Promise<T>) => load(),
+}))
+
+jest.mock('../model/registry', () => ({
+  getAssets: () => mockRegistryAssets,
+}))
+
 import type { RwaAsset } from '../model/types'
+
+let mockRegistryAssets: RwaAsset[] = []
 
 const NVDA: RwaAsset = {
   ticker: 'NVDA',
@@ -53,6 +63,24 @@ const FULL_RWA_PAGE = Array.from({ length: 250 }, (_, index) => ({
 }))
 
 const NO_DATA: RwaAsset = { ...NVDA, ticker: 'NONE', tokens: [{ ...NVDA.tokens[0], coingeckoId: undefined }] }
+
+/** An asset with `count` tokens on mainnet, `filler-<n>` coins at `0x<n>` addresses */
+function fillerAsset(count: number): RwaAsset {
+  return {
+    ...NVDA,
+    ticker: 'FILLER',
+    coingeckoId: 'filler',
+    tokens: Array.from({ length: count }, (_, index) => ({
+      ...NVDA.tokens[0],
+      address: `0x${String(index).padStart(40, '0')}`,
+      coingeckoId: `filler-${String(index).padStart(3, '0')}`,
+    })),
+  }
+}
+
+beforeEach(() => {
+  mockRegistryAssets = [NVDA]
+})
 
 function mockFetch(body: unknown, ok = true): jest.Mock {
   const fetchMock = jest.fn().mockResolvedValue({ ok, status: ok ? 200 : 429, json: () => Promise.resolve(body) })
@@ -104,11 +132,38 @@ describe('coingeckoProvider.getNetworkStats', () => {
       TOKEN_MARKETS,
     )
 
-    expect(String(fetchMock.mock.calls[0][0])).toContain('/networks/eth/tokens/multi/')
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(String(fetchMock.mock.calls[0][0])).toContain(
+      `/networks/eth/tokens/multi/${ondo?.address},${xstock?.address}`,
+    )
     expect(stats).toEqual([
       { address: ondo?.address, onchainCap: 230_115, dexVolume24h: 814560.89 },
       { address: xstock?.address, onchainCap: null, dexVolume24h: 0 },
     ])
+  })
+
+  it('requests the registry batch holding the tokens, shared with the other assets of the batch', async () => {
+    const filler = fillerAsset(40)
+    mockRegistryAssets = [filler]
+    const fetchMock = mockFetch({ data: [] })
+    const token = filler.tokens[35]
+
+    await coingeckoProvider.getNetworkStats(1, token ? [token] : [], TOKEN_MARKETS)
+
+    const addresses = filler.tokens.slice(30).map(({ address }) => address)
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(String(fetchMock.mock.calls[0][0])).toContain(`/tokens/multi/${addresses.join(',')}`)
+  })
+
+  it('throws when the upstream reports an error with HTTP 200', async () => {
+    mockFetch({ status: { error_code: 429, error_message: 'Rate limited' } })
+
+    const [ondo] = NVDA.tokens
+
+    await expect(coingeckoProvider.getNetworkStats(1, ondo ? [ondo] : [], TOKEN_MARKETS)).rejects.toThrow(
+      'responded with 429',
+    )
   })
 
   it('returns empty stats on a network the onchain API does not index', async () => {
@@ -301,8 +356,23 @@ describe('coingeckoProvider.getRwaMarkets', () => {
 })
 
 describe('coingeckoProvider.getTokenMarkets', () => {
-  it('requests the unique coins of the tokens only and keys them by coin id', async () => {
+  it('requests the registry batch holding the coins and keys the requested ones by coin id', async () => {
+    mockRegistryAssets = [
+      NVDA,
+      { ...NVDA, ticker: 'AAPL', tokens: [{ ...NVDA.tokens[0], coingeckoId: 'apple-xstock' }] },
+    ]
     const fetchMock = mockFetch([
+      {
+        id: 'apple-xstock',
+        current_price: 250,
+        market_cap: 10,
+        total_volume: 1,
+        image: 'apple.png',
+        high_24h: 251,
+        low_24h: 249,
+        price_change_percentage_24h: 0.1,
+        last_updated: '2026-09-28T13:00:00.000Z',
+      },
       {
         id: 'nvidia-xstock',
         current_price: 231.8,
@@ -319,8 +389,19 @@ describe('coingeckoProvider.getTokenMarkets', () => {
     const markets = await coingeckoProvider.getTokenMarkets(NVDA.tokens)
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
-    expect(String(fetchMock.mock.calls[0][0])).toContain('ids=nvidia-ondo-tokenized-stock,nvidia-xstock')
+    expect(String(fetchMock.mock.calls[0][0])).toContain('ids=apple-xstock,nvidia-ondo-tokenized-stock,nvidia-xstock')
     expect(markets).toEqual({ 'nvidia-xstock': { price: 231.8, marketCap: 43, volume24h: 5, logoUrl: 'xstock.png' } })
+  })
+
+  it('requests only the registry batches holding the coins', async () => {
+    const filler = fillerAsset(300)
+    mockRegistryAssets = [filler]
+    const fetchMock = mockFetch([])
+
+    await coingeckoProvider.getTokenMarkets(filler.tokens.slice(260, 262))
+
+    expect(fetchMock).toHaveBeenCalledTimes(1)
+    expect(String(fetchMock.mock.calls[0][0])).toContain('ids=filler-250,')
   })
 
   it('makes no request when no token has a coingeckoId', async () => {

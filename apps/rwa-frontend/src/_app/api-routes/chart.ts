@@ -2,7 +2,7 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 
 import type { NextRequest } from 'next/server'
 
-import { getAssetChart, getAssetByTicker } from '@/entities/asset/index.server'
+import { CHART_REVALIDATE_SECONDS, getAssetChart, getAssetByTicker } from '@/entities/asset/index.server'
 import { RWA_CHART_RANGES, type RwaChart } from '@/entities/asset/index.server'
 import { errorResponse, jsonResponse, parseEnumParam } from '@/shared/lib/http'
 
@@ -23,7 +23,7 @@ export async function getChartHandler(
   try {
     const chart: RwaChart = { ticker: asset.ticker, range, points: await getAssetChart(asset, range) }
 
-    return jsonResponse(chart, range === '1D' ? 300 : 3600)
+    return jsonResponse(chart, CHART_REVALIDATE_SECONDS[range])
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load chart', error)

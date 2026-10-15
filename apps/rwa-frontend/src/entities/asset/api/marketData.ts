@@ -5,6 +5,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { unstable_cache } from 'next/cache'
 
 import { fillHourlySeries } from '../model/marketOverview'
+import { getAssets } from '../model/registry'
 
 import type {
   RwaAggregateMarket,
@@ -26,6 +27,7 @@ import {
   fetchOnchainTokenOhlcv,
   fetchOnchainTokens,
   fetchRwaMarkets,
+  withRetryBackoff,
 } from '@/shared/api/index.server'
 
 export interface MarketDataProvider {
@@ -45,10 +47,10 @@ export interface MarketDataProvider {
 }
 
 const MARKETS_REVALIDATE_SECONDS = 60
-const ONCHAIN_REVALIDATE_SECONDS = 60
-const OHLCV_REVALIDATE_SECONDS = 300
+const ONCHAIN_REVALIDATE_SECONDS = 300
+const OHLCV_REVALIDATE_SECONDS = 900
 const DEX_VOLUME_HOURS = 24
-const RWA_MARKETS_REVALIDATE_SECONDS = 60
+const RWA_MARKETS_REVALIDATE_SECONDS = 180
 /** Bump when `RwaAggregateMarket` changes shape: the data cache outlives deployments */
 const RWA_MARKETS_CACHE_KEY = ['coingecko-rwa-markets', 'v2']
 
@@ -70,9 +72,10 @@ const CHART_DAYS: Record<RwaChartRange, CoingeckoChartDays> = {
   ALL: 'max',
 }
 
-const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
-  '1D': 300,
-  '1W': 900,
+/** Also the CDN max-age of `/api/v1/chart`, so the route never outlives the data cache */
+export const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
+  '1D': 900,
+  '1W': 1800,
   '1M': 3600,
   '1Y': 3600,
   ALL: 3600,
@@ -80,7 +83,7 @@ const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
 
 export const coingeckoProvider: MarketDataProvider = {
   async getChart(asset, range) {
-    const [primaryId] = getCoingeckoIds(asset)
+    const [primaryId] = getTokenCoingeckoIds(asset.tokens)
 
     if (!primaryId) return []
 
@@ -94,6 +97,7 @@ export const coingeckoProvider: MarketDataProvider = {
       chainId,
       tokens.map((token) => token.address),
       ONCHAIN_REVALIDATE_SECONDS,
+      getRegistryAddresses(chainId),
     )
     const byAddress = new Map(
       (onchainTokens ?? []).map(({ attributes }) => [getAddressKey(attributes.address), attributes]),
@@ -132,22 +136,26 @@ export const coingeckoProvider: MarketDataProvider = {
   },
 
   async getTokenMarkets(tokens) {
-    const ids = [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
+    const ids = getTokenCoingeckoIds(tokens)
 
     if (!ids.length) return {}
 
-    const markets = await fetchCoinsMarkets(ids, MARKETS_REVALIDATE_SECONDS)
+    const requested = new Set(ids)
+    const markets = await fetchCoinsMarkets(ids, MARKETS_REVALIDATE_SECONDS, getRegistryCoingeckoIds())
 
-    return Object.fromEntries(markets.map((market) => [market.id, toTokenMarketData(market)]))
+    return Object.fromEntries(
+      markets.filter((market) => requested.has(market.id)).map((market) => [market.id, toTokenMarketData(market)]),
+    )
   },
 }
 
 const loadRwaMarketsSnapshot = unstable_cache(
-  async (expectedCount: number): Promise<[string, RwaAggregateMarket][]> => {
-    const markets = await fetchRwaMarkets(expectedCount)
+  (expectedCount: number): Promise<[string, RwaAggregateMarket][]> =>
+    withRetryBackoff('coingecko /rwas/markets', async () => {
+      const markets = await fetchRwaMarkets(expectedCount)
 
-    return markets.map((market) => [market.id, toAggregateMarket(market)])
-  },
+      return markets.map((market): [string, RwaAggregateMarket] => [market.id, toAggregateMarket(market)])
+    }),
   RWA_MARKETS_CACHE_KEY,
   { revalidate: RWA_MARKETS_REVALIDATE_SECONDS },
 )
@@ -171,10 +179,20 @@ export function toChartPoints(prices: [number, number][]): RwaChartPoint[] {
   return points
 }
 
-function getCoingeckoIds(asset: RwaAsset): string[] {
-  const ids = asset.tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : []))
+/** Every token address on `chainId`, the batches `getNetworkStats` requests are cut from */
+function getRegistryAddresses(chainId: number): string[] {
+  return getAssets().flatMap((asset) =>
+    asset.tokens.filter((token) => token.chainId === chainId).map((token) => token.address),
+  )
+}
 
-  return [...new Set(ids)]
+/** Every token coin, the batches `getTokenMarkets` requests are cut from */
+function getRegistryCoingeckoIds(): string[] {
+  return getTokenCoingeckoIds(getAssets().flatMap((asset) => asset.tokens))
+}
+
+function getTokenCoingeckoIds(tokens: RwaToken[]): string[] {
+  return [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
 }
 
 function orNull<T>(value: T | null | undefined): T | null {
