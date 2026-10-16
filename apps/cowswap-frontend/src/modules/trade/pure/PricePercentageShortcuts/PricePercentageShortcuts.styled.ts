@@ -54,6 +54,7 @@ export const CustomPercentage = styled.div<{ $selected: boolean; $invalid: boole
   align-items: center;
   justify-content: center;
   width: 84px;
+  flex-shrink: 0;
   padding: 3px 7px;
   border-color: ${({ $selected, $invalid }) =>
     $invalid ? `var(${UI.COLOR_DANGER})` : $selected ? `var(${UI.COLOR_PRIMARY})` : 'transparent'};
@@ -64,10 +65,10 @@ export const CustomPercentage = styled.div<{ $selected: boolean; $invalid: boole
   }
 `
 
-export const CustomInput = styled(Input)<{ $characters: number }>`
+export const CustomInput = styled(Input)`
   ${font('FONT_SMALL_PLUS', 'medium')}
-  width: ${({ $characters }) => ($characters ? `${$characters}ch` : '100%')};
-  flex: 0 1 auto;
+  width: 100%;
+  flex: 1 1 auto;
   min-width: 0;
   text-align: center;
   color: inherit;

@@ -66,9 +66,9 @@ export function PricePercentageShortcuts({
       })}
       <styledEl.CustomPercentage $selected={!isDisabled && customMatches} $invalid={!!customValue && !customRate}>
         <styledEl.CustomInput
-          $characters={customValue.length}
           value={customValue}
           onUserInput={(value) => {
+            if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return
             setCustomPercentage(value)
             onSelect(getPercentageRate(referenceRate, value, isInverted))
           }}
