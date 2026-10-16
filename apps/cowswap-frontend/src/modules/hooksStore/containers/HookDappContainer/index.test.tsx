@@ -1,10 +1,11 @@
+import { getDefaultStore, type PrimitiveAtom } from 'jotai'
 import type { ComponentProps } from 'react'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
 import { HookDappType } from '@cowprotocol/hook-dapp-lib'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { fireEvent, render, screen } from '@testing-library/react'
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
@@ -25,7 +26,7 @@ import { HookDappContainer } from '.'
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
-  useIsSmartContractWallet: jest.fn(),
+  isSmartContractWalletAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('entities/orderHooks/useOrderParams', () => ({
@@ -132,7 +133,7 @@ jest.mock('../IframeDappContainer', () => ({
 }))
 
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const useIsSmartContractWalletMock = useIsSmartContractWallet as jest.MockedFunction<typeof useIsSmartContractWallet>
+const writableIsSmartContractWalletAtom = isSmartContractWalletAtom as PrimitiveAtom<boolean | null>
 const useOrderParamsMock = useOrderParams as jest.MockedFunction<typeof useOrderParams>
 const useTradeStateMock = useTradeState as jest.MockedFunction<typeof useTradeState>
 const useTradeNavigateMock = useTradeNavigate as jest.MockedFunction<typeof useTradeNavigate>
@@ -175,7 +176,7 @@ describe('HookDappContainer', () => {
     jest.clearAllMocks()
 
     useWalletInfoMock.mockReturnValue({ chainId: 1, account: '0x0000000000000000000000000000000000000002' } as never)
-    useIsSmartContractWalletMock.mockReturnValue(false)
+    getDefaultStore().set(writableIsSmartContractWalletAtom, false)
     useOrderParamsMock.mockReturnValue(null)
     useTradeStateMock.mockReturnValue({ state: { inputCurrencyId: null, outputCurrencyId: null } } as never)
     useTradeNavigateMock.mockReturnValue(tradeNavigate)
