@@ -1,11 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useDispatch, useSelector } from 'react-redux'
-import useSWR from 'swr'
+import { shallowEqual, useDispatch, useSelector } from 'react-redux'
 
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 
@@ -172,31 +170,32 @@ export const useCombinedPendingOrders = ({
   chainId: SupportedChainId
   account: string | undefined
 }): Order[] => {
-  const state = useSelector<
+  const { pending, presignaturePending, creating } = useSelector<
     AppState,
-    | {
-        pending: PartialOrdersMap
-        presignaturePending: PartialOrdersMap
-        creating: PartialOrdersMap
-      }
-    | undefined
-  >((state) => state.orders?.[chainId])
+    {
+      pending: PartialOrdersMap | undefined
+      presignaturePending: PartialOrdersMap | undefined
+      creating: PartialOrdersMap | undefined
+    }
+  >((state) => {
+    const networkState = state.orders?.[chainId]
 
-  return useSWR(
-    [state, account],
-    ([state, account]) => {
-      if (!state || !account) return EMPTY_ORDERS_ARRAY
+    return {
+      pending: networkState?.pending,
+      presignaturePending: networkState?.presignaturePending,
+      creating: networkState?.creating,
+    }
+  }, shallowEqual)
 
-      const { pending, presignaturePending, creating } = state
+  return useMemo(() => {
+    if (!account || (!pending && !presignaturePending && !creating)) return EMPTY_ORDERS_ARRAY
 
-      const allPending = Object.values({ ...pending, ...presignaturePending, ...creating })
+    const allPending = Object.values({ ...pending, ...presignaturePending, ...creating })
 
-      return allPending.map(deserializeOrder).filter((order) => {
-        return areAddressesEqual(order?.owner, account)
-      }) as Order[]
-    },
-    { ...SWR_NO_REFRESH_OPTIONS, fallbackData: EMPTY_ORDERS_ARRAY },
-  ).data
+    return allPending.map(deserializeOrder).filter((order): order is Order => {
+      return !!order && areAddressesEqual(order.owner, account)
+    })
+  }, [pending, presignaturePending, creating, account])
 }
 
 /**
