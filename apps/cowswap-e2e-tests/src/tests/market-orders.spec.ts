@@ -290,6 +290,7 @@ test.describe('Market Orders', () => {
       // Select "Partial approval" so the wallet requests a finite amount tied to the trade instead
       // of the default infinite (MaxUint256) approval — only then is there a "maximum sent" figure
       // to compare against.
+      await swapPage.expandApprovalAmount()
       await swapPage.approveModeSelector.getByText('Partial approval').click()
       const approvalAmount = await readTitledAmount(swapPage.approveModeSelector)
 

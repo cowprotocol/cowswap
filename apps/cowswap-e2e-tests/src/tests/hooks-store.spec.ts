@@ -239,8 +239,8 @@ test.describe('Hooks store', () => {
     // this isn't a partially-broken post-reset state that merely looks quoted.
     // Same collapsed-viewport situation as [CS-129]: the selector renders below the fold at this
     // viewport, and a plain `expect().toBeVisible()` doesn't scroll like an interaction would.
-    await swapPage.approveModeSelector.scrollIntoViewIfNeeded()
-    await expect(swapPage.approveModeSelector).toBeVisible()
+    await swapPage.approvalAmountToggle.scrollIntoViewIfNeeded()
+    await swapPage.expandApprovalAmount()
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
