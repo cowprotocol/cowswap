@@ -17,7 +17,7 @@ const SETTINGS_FEEDBACK_VARIANT_ICONS = {
 
 export interface SettingsFeedbackProps {
   variant: SettingsFeedbackVariant
-  message: string
+  message: ReactNode
   tooltip?: ReactNode
 }
 
@@ -27,7 +27,7 @@ export function SettingsFeedback({ variant, message, tooltip }: SettingsFeedback
   return (
     <styledEl.FeedbackWrapper $variant={variant}>
       {tooltip ? <HelpTooltip Icon={icon} text={tooltip} noMargin /> : icon}
-      {message}
+      <styledEl.FeedbackMessage>{message}</styledEl.FeedbackMessage>
     </styledEl.FeedbackWrapper>
   )
 }

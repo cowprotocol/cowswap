@@ -76,11 +76,18 @@ export function getNativeSlippageTooltip(
   )
 }
 
-export function getNonNativeOrderDeadlineTooltip(): ReactNode {
+export function getNonNativeOrderDeadlineTooltip(isWaitForCowsEnabled?: boolean): ReactNode {
   return (
     <SimpleStyledText>
       <p>
-        <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
+        {isWaitForCowsEnabled ? (
+          <Trans>
+            With Wait for CoWs, your swap stays open for this duration after it joins the next batch. Total time until
+            expiry is the batch wait plus this expiration.
+          </Trans>
+        ) : (
+          <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
+        )}
       </p>
       <p>{i18n._(INPUT_OUTPUT_EXPLANATION)}</p>
     </SimpleStyledText>
