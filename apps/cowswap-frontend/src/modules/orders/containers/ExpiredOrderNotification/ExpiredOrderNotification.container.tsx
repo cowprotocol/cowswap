@@ -54,7 +54,7 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
                 setAlternativeOrder({ ...order, apiAdditionalInfo: expiredOrder })
                 tradeNavigate(
                   chainId,
-                  { inputCurrencyId: null, outputCurrencyId: null },
+                  { inputCurrencyId: order.inputToken.address, outputCurrencyId: order.outputToken.address },
                   undefined,
                   Routes.LIMIT_ORDERS,
                 )
