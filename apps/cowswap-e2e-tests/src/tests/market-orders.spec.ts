@@ -324,6 +324,7 @@ test.describe('Market Orders', () => {
 
     test('[CS-62] Buy order: ETH as sell token (ETH-flow buy not supported) @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
+      await swapPage.waitForBothCurrenciesResolved()
 
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
