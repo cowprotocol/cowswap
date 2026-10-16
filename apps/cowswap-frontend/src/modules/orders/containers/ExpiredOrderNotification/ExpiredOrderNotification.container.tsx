@@ -12,6 +12,8 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useSetAlternativeOrder } from 'modules/trade'
 
+import { Routes } from 'common/constants/routes'
+import { useTradeNavigate } from 'common/modules/tradeNavigation'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderNotification } from '../OrderNotification'
@@ -25,6 +27,7 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
   const orderUid = expiredOrder.uid
   const order = useOrder({ chainId, id: orderUid })
   const setAlternativeOrder = useSetAlternativeOrder()
+  const tradeNavigate = useTradeNavigate()
   const canRecreate = order?.status === OrderStatus.EXPIRED && getUiOrderType(order) === UiOrderType.LIMIT
 
   return (
@@ -36,7 +39,18 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
       bottomContent={
         canRecreate && (
           <p>
-            <LinkStyledButton onClick={() => setAlternativeOrder({ ...order, apiAdditionalInfo: expiredOrder })}>
+            <LinkStyledButton
+              style={{ textDecoration: 'underline' }}
+              onClick={() => {
+                setAlternativeOrder({ ...order, apiAdditionalInfo: expiredOrder })
+                tradeNavigate(
+                  chainId,
+                  { inputCurrencyId: null, outputCurrencyId: null },
+                  undefined,
+                  Routes.LIMIT_ORDERS,
+                )
+              }}
+            >
               <Trans>Recreate</Trans> <Trans>order</Trans>
             </LinkStyledButton>
           </p>
