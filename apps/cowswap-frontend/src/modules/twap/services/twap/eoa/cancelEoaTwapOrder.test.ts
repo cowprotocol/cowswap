@@ -54,8 +54,23 @@ describe('cancelEoaTwapOrder', () => {
     })
   })
 
+  it('prepares the displayed gas limit without submitting, then reuses it when sending', async () => {
+    jest.mocked(estimateGas).mockResolvedValueOnce(875_000n)
+
+    const cancellation = await cancelEoaTwapOrder(context)
+
+    expect(cancellation.estimatedGas).toBe(1_050_000n)
+    expect(sendTransaction).not.toHaveBeenCalled()
+
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
+
+    expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: cancellation.estimatedGas }))
+    expect(estimateGas).toHaveBeenCalledTimes(1)
+  })
+
   it('cancels the parent and active slice through the proxy in one transaction', async () => {
-    await expect(cancelEoaTwapOrder(context)).resolves.toBe(txHash)
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     expect(sendTransaction).toHaveBeenCalledTimes(1)
     const {
@@ -101,23 +116,26 @@ describe('cancelEoaTwapOrder', () => {
   it('uses the fallback when estimation fails', async () => {
     jest.mocked(estimateGas).mockRejectedValueOnce(new Error('RPC unavailable'))
 
-    await expect(cancelEoaTwapOrder(context)).resolves.toBe(txHash)
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: EOA_TWAP_CANCELLATION_GAS_LIMIT }))
-    expect(EOA_TWAP_CANCELLATION_GAS_LIMIT).toBe(600_000n)
+    expect(cancellation.estimatedGas).toBe(EOA_TWAP_CANCELLATION_GAS_LIMIT)
   })
 
   it('propagates rejection when the user rejects the transaction', async () => {
     const error = Object.assign(new Error('User rejected the request'), { code: 4001 })
     sendTransaction.mockRejectedValueOnce(error)
 
-    await expect(cancelEoaTwapOrder(context)).rejects.toBe(error)
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).rejects.toBe(error)
 
     expect(sendTransaction).toHaveBeenCalledTimes(1)
   })
 
   it('invalidates only the selected part through the Shed without removing the parent', async () => {
-    await expect(cancelEoaTwapOrder({ ...context, partOnly: true })).resolves.toBe(txHash)
+    const cancellation = await cancelEoaTwapOrder({ ...context, partOnly: true })
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     const {
       functionName,
