@@ -6,6 +6,7 @@ import { LinkStyledButton } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -17,6 +18,15 @@ import { useTradeNavigate } from 'common/modules/tradeNavigation'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderNotification } from '../OrderNotification'
+
+const RecreateOrderButton = styled(LinkStyledButton)`
+  font-weight: 500;
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+`
 
 interface ExpiredOrderNotificationProps {
   payload: OnExpiredOrderPayload
@@ -39,8 +49,7 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
       bottomContent={
         canRecreate && (
           <p>
-            <LinkStyledButton
-              style={{ textDecoration: 'underline' }}
+            <RecreateOrderButton
               onClick={() => {
                 setAlternativeOrder({ ...order, apiAdditionalInfo: expiredOrder })
                 tradeNavigate(
@@ -52,7 +61,7 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
               }}
             >
               <Trans>Recreate</Trans> <Trans>order</Trans>
-            </LinkStyledButton>
+            </RecreateOrderButton>
           </p>
         )
       }
