@@ -49,7 +49,7 @@ import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 import type { ComposableCowPollerSchedule } from '../../../composable-cow-poller/composable-cow-poller.types'
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
-const DEFAULT_GAS_LIMIT = 1_000_000n
+const DEFAULT_GAS_LIMIT = 2_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
 const SUBMIT_TWAP_SLOW_MS = 10_000
