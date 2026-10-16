@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+
 import { renderHook, waitFor } from '@testing-library/react'
 import BigNumber from 'bignumber.js'
 import { useNetworkId } from 'state/network'
@@ -7,6 +9,7 @@ import { SWRConfig } from 'swr'
 import { transformTrade } from 'utils'
 
 import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { getSlotTimestamp } from 'api/solanaOrderbook/solanaRpc'
 
 import { ALL_TRADES_PAGE_SIZE, useOrderTrades } from '../../hooks/useOperatorTrades'
 
@@ -22,6 +25,10 @@ jest.mock('utils', () => ({
   transformTrade: jest.fn(),
 }))
 
+jest.mock('api/solanaOrderbook/solanaRpc', () => ({
+  getSlotTimestamp: jest.fn(),
+}))
+
 jest.mock('../../explorer/api', () => ({
   web3: {
     eth: {
@@ -33,6 +40,7 @@ jest.mock('../../explorer/api', () => ({
 const mockedUseNetworkId = jest.mocked(useNetworkId)
 const mockedGetTrades = jest.mocked(getTrades)
 const mockedTransformTrade = jest.mocked(transformTrade)
+const mockedGetSlotTimestamp = jest.mocked(getSlotTimestamp)
 
 const ONE = new BigNumber(1)
 const TWO = new BigNumber(2)
@@ -72,6 +80,7 @@ beforeEach(() => {
   mockedUseNetworkId.mockReset()
   mockedGetTrades.mockReset()
   mockedTransformTrade.mockReset()
+  mockedGetSlotTimestamp.mockReset()
 
   mockedUseNetworkId.mockReturnValue(1)
   mockedTransformTrade.mockImplementation(
@@ -194,5 +203,28 @@ describe('useOrderTrades fetching every fill', () => {
 
     resolveSecond([createFill(9)])
     await waitFor(() => expect(result.current.trades).toHaveLength(1))
+  })
+})
+
+describe('useOrderTrades execution time', () => {
+  it('resolves Solana fills from their slot and skips fills not indexed yet', async () => {
+    mockedUseNetworkId.mockReturnValue(SupportedChainId.SOLANA)
+    mockedGetSlotTimestamp.mockResolvedValue(1791553269)
+    serveFills([
+      { txHash: 'solanaSig1', blockNumber: 454882660, logIndex: 0 } as RawTrade,
+      { txHash: 'solanaSig2', blockNumber: 0, logIndex: 0 } as RawTrade,
+    ])
+
+    renderHook(() => useOrderTrades(createMockOrder(), 0, 10), { wrapper: FreshSwrCache })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSig1' }),
+        expect.anything(),
+        1791553269,
+      ),
+    )
+    expect(mockedGetSlotTimestamp).toHaveBeenCalledTimes(1)
+    expect(mockedGetSlotTimestamp).toHaveBeenCalledWith(454882660)
   })
 })
