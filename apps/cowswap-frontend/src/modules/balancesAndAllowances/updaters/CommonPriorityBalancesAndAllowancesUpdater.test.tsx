@@ -25,6 +25,7 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 import { CommonPriorityBalancesAndAllowancesUpdater } from './CommonPriorityBalancesAndAllowancesUpdater'
 
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
+import { useConfirmedTransactionsTrigger } from '../hooks/useConfirmedTransactionsTrigger'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
@@ -63,6 +64,10 @@ jest.mock('../hooks/useOrdersFilledEventsTrigger', () => ({
   useOrdersFilledEventsTrigger: jest.fn(),
 }))
 
+jest.mock('../hooks/useConfirmedTransactionsTrigger', () => ({
+  useConfirmedTransactionsTrigger: jest.fn(),
+}))
+
 const mockBalancesWatcherUpdater = BalancesWatcherUpdater as jest.MockedFunction<typeof BalancesWatcherUpdater>
 const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.MockedFunction<
   typeof BalancesAndAllowancesUpdater
@@ -80,6 +85,9 @@ const mockUseBridgeCustomTokensForChain = useBridgeCustomTokensForChain as jest.
 >
 const mockUseOrdersFilledEventsTrigger = useOrdersFilledEventsTrigger as jest.MockedFunction<
   typeof useOrdersFilledEventsTrigger
+>
+const mockUseConfirmedTransactionsTrigger = useConfirmedTransactionsTrigger as jest.MockedFunction<
+  typeof useConfirmedTransactionsTrigger
 >
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
@@ -122,6 +130,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     mockUsePriorityTokenAddresses.mockReturnValue(new Set())
     mockUseBridgeCustomTokensForChain.mockReturnValue([])
     mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+    mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
   })
 
   it('passes isBridgeMode=true when output selector is open on a non-wallet chain', () => {
@@ -176,6 +185,63 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       expect.objectContaining({ chainId: SupportedChainId.SOLANA }),
       undefined,
     )
+  })
+
+  // FE-929: a self-paid Solana order carries its SPL delegation in the transaction that creates it, so
+  // the snapshot taken before placement reads zero until a confirmation forces a refetch. These cover
+  // the wiring between the trigger hooks and the updater that consumes it, not the hooks themselves.
+  describe('refresh trigger wiring', () => {
+    function renderOnSolana(): void {
+      mockUseWalletInfo.mockReturnValue({
+        account: 'SoLanaPubKey11111111111111111111111111111',
+        chainId: SupportedChainId.SOLANA,
+      } as WalletInfo)
+      mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.SOLANA, source: 'wallet' })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: false }))
+
+      renderWithHealth(healthy())
+    }
+
+    it('passes a trigger combining both sources', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(2)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(3)
+
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater).toHaveBeenLastCalledWith(
+        expect.objectContaining({ refreshTrigger: 5 }),
+        undefined,
+      )
+    })
+
+    it('changes the trigger when a transaction confirms', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
+
+      renderOnSolana()
+
+      const beforeConfirmation = mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger
+
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(1)
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger).not.toBe(beforeConfirmation)
+    })
+
+    // Orders filling must keep forcing a refetch; the confirmation source is additional, not a swap.
+    it('changes the trigger when an order fills', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
+
+      renderOnSolana()
+
+      const beforeFill = mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger
+
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(1)
+      renderOnSolana()
+
+      expect(mockBalancesAndAllowancesUpdater.mock.lastCall?.[0].refreshTrigger).not.toBe(beforeFill)
+    })
   })
 
   describe('watcher fallback wiring', () => {
