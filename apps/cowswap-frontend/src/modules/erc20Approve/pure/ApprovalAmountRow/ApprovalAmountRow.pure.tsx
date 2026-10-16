@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -29,7 +30,12 @@ export function ApprovalAmountRow({
 }: ApprovalAmountRowProps): ReactNode {
   return (
     <styledEl.Wrapper data-approval-amount-row>
-      <styledEl.Header type="button" onClick={onToggle} aria-expanded={isOpen}>
+      <styledEl.Header
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        data-testid={TEST_IDS.approvalAmountToggle}
+      >
         <styledEl.Label>
           <Trans>Approval amount</Trans>
         </styledEl.Label>

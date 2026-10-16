@@ -124,7 +124,7 @@ export class SwapPage implements TradePage {
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
     this.approveModeSelector = page.locator(`[data-testid="${TEST_IDS.approveModeSelector}"]`)
-    this.approvalAmountToggle = page.locator('[data-approval-amount-row] > button')
+    this.approvalAmountToggle = page.locator(`[data-testid="${TEST_IDS.approvalAmountToggle}"]`)
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
     this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
     this.slippageInput = page.locator('#slippage-input')
