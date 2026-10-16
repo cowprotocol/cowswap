@@ -96,3 +96,10 @@ export const COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST: RestrictedTokenList 
     'https://raw.githubusercontent.com/afahdenCB/coinbase-tokenized-stocks/e02f8a02bc76dd756f4e9388c21c8302be1a6509/CowSwap.json',
   restrictedCountries: [...RESTRICTED_COUNTRIES],
 } as const
+
+export const ST0X_FALLBACK_TOKEN_LIST: RestrictedTokenList = {
+  name: 'ST0x Base Token List',
+  tokenListUrl:
+    'https://raw.githubusercontent.com/ST0x-Technology/st0x.registry/986e3c8cb85f854b15a4aa5ad24b47606d8ba339/token-lists/base.json',
+  restrictedCountries: [...RESTRICTED_COUNTRIES],
+} as const
