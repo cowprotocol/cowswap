@@ -186,7 +186,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         {frozenShouldDisplayBridgeDetails && frozenBridgeProvider && frozenSwapContext && frozenBridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label={t`Price`} rateInfoParams={frozenRateInfoParams} fontSize={13} fontBold labelBold />
+                <RateInfo label={t`Price`} rateInfoParams={frozenRateInfoParams} fontSize={13} fontBold />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={frozenBridgeProvider}

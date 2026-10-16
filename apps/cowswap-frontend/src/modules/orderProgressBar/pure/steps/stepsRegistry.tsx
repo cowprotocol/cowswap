@@ -10,6 +10,7 @@ import { InitialStep } from './InitialStep'
 import { SolvingStep } from './SolvingStep'
 
 import { OrderProgressBarStepName } from '../../constants'
+import { useAuctionWaitState } from '../../hooks/useAuctionWaitState'
 import { OrderProgressBarProps } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
@@ -98,9 +99,16 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
 }
 
 function InitialStepWrapper(props: OrderProgressBarProps): ReactNode {
+  const { auctionValidFrom, isAuctionWaiting, onAuctionRemainingChange } = useAuctionWaitState(props.order)
+
   return (
-    <InitialStep isBridgingTrade={props.isBridgingTrade}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    <InitialStep isBridgingTrade={props.isBridgingTrade} hideSteps={isAuctionWaiting}>
+      <RenderProgressTopSection
+        {...props}
+        auctionValidFrom={auctionValidFrom}
+        onAuctionRemainingChange={onAuctionRemainingChange}
+        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      />
     </InitialStep>
   )
 }
