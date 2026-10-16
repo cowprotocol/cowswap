@@ -87,6 +87,28 @@ describe('useSwrConfigWithPauseForNetwork', () => {
     expect(render(7).result.current).toBe(true)
   })
 
+  // A failed fetch writes no timestamp, so the request stays outstanding and the query stays enabled to
+  // retry. Settling on anything other than a landed fetch would hand back a pause while the data the
+  // caller asked for had still never been read.
+  it('keeps the pause lifted while fetches keep failing, and settles on the first success', () => {
+    setLastUpdate(NOW - 5_000)
+
+    const { result, rerender } = render(0)
+    rerender({ trigger: 1 })
+    expect(result.current).toBe(false)
+
+    // Two failed attempts: the timestamp never moves.
+    rerender({ trigger: 1 })
+    rerender({ trigger: 1 })
+    expect(result.current).toBe(false)
+
+    setLastUpdate(NOW + 1_000)
+    rerender({ trigger: 1 })
+    rerender({ trigger: 1 })
+
+    expect(result.current).toBe(true)
+  })
+
   it('resumes pausing once a fetch newer than the trigger has landed', () => {
     setLastUpdate(NOW - 5_000)
 
