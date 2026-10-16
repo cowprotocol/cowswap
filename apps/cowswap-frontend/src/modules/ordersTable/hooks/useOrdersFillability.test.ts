@@ -56,6 +56,29 @@ describe('useOrdersFillability', () => {
     expect(result.current[order.id]?.hasEnoughBalance).toBe(true)
   })
 
+  // FE-929: an on-chain Solana order is delegated in the same transaction that created it, but the
+  // snapshot taken before placement still reads zero, which showed a false "Unfillable" right after.
+  it('treats the allowance as satisfied for a self-paid Solana order', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA } as ReturnType<typeof useWalletInfo>)
+    mockFunding({ [getAddressKey(usdc.address)]: BigInt(SELL_AMOUNT) }, {})
+
+    const order = buildOrder()
+    const { result } = renderHook(() => useOrdersFillability([order]))
+
+    expect(result.current[order.id]?.hasEnoughAllowance).toBe(true)
+  })
+
+  it('still reports insufficient balance for a self-paid Solana order', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA } as ReturnType<typeof useWalletInfo>)
+    mockFunding({ [getAddressKey(usdc.address)]: 0n }, {})
+
+    const order = buildOrder()
+    const { result } = renderHook(() => useOrdersFillability([order]))
+
+    expect(result.current[order.id]?.hasEnoughAllowance).toBe(true)
+    expect(result.current[order.id]?.hasEnoughBalance).toBe(false)
+  })
+
   it('still reports insufficient balance for a sponsored order', () => {
     mockFunding({ [getAddressKey(usdc.address)]: 0n }, {})
 
