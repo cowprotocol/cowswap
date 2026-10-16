@@ -25,6 +25,7 @@ import { usePriorityTokenAddresses } from 'modules/trade'
 import { CommonPriorityBalancesAndAllowancesUpdater } from './CommonPriorityBalancesAndAllowancesUpdater'
 
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
+import { useConfirmedTransactionsTrigger } from '../hooks/useConfirmedTransactionsTrigger'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
@@ -63,6 +64,10 @@ jest.mock('../hooks/useOrdersFilledEventsTrigger', () => ({
   useOrdersFilledEventsTrigger: jest.fn(),
 }))
 
+jest.mock('../hooks/useConfirmedTransactionsTrigger', () => ({
+  useConfirmedTransactionsTrigger: jest.fn(),
+}))
+
 const mockBalancesWatcherUpdater = BalancesWatcherUpdater as jest.MockedFunction<typeof BalancesWatcherUpdater>
 const mockBalancesAndAllowancesUpdater = BalancesAndAllowancesUpdater as jest.MockedFunction<
   typeof BalancesAndAllowancesUpdater
@@ -80,6 +85,9 @@ const mockUseBridgeCustomTokensForChain = useBridgeCustomTokensForChain as jest.
 >
 const mockUseOrdersFilledEventsTrigger = useOrdersFilledEventsTrigger as jest.MockedFunction<
   typeof useOrdersFilledEventsTrigger
+>
+const mockUseConfirmedTransactionsTrigger = useConfirmedTransactionsTrigger as jest.MockedFunction<
+  typeof useConfirmedTransactionsTrigger
 >
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
@@ -122,6 +130,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     mockUsePriorityTokenAddresses.mockReturnValue(new Set())
     mockUseBridgeCustomTokensForChain.mockReturnValue([])
     mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
+    mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
   })
 
   it('passes isBridgeMode=true when output selector is open on a non-wallet chain', () => {

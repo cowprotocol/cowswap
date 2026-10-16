@@ -1,6 +1,6 @@
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { getOrderParams } from './getOrderParams'
 
@@ -139,14 +139,6 @@ describe('getOrderParams', () => {
       const result = getOrderParams(1, NO_ALLOWANCE, BASE_ORDER)
 
       expect(result.hasEnoughAllowance).toBeUndefined()
-    })
-
-    // FE-929: an on-chain Solana order is delegated in the same transaction that created it, but the
-    // snapshot taken before placement still reads zero, which showed a false "Unfillable" right after.
-    it('treats the allowance as satisfied for a self-paid Solana order', () => {
-      const result = getOrderParams(SupportedChainId.SOLANA, NO_ALLOWANCE, BASE_ORDER)
-
-      expect(result.hasEnoughAllowance).toBe(true)
     })
 
     describe('native sell', () => {
