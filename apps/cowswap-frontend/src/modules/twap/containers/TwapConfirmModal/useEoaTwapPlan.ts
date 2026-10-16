@@ -3,7 +3,8 @@ import { useCallback, useMemo } from 'react'
 import { Currency } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useTradeConfirmActions } from 'modules/trade'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
+import { useFreezeWhileConfirming, useTradeConfirmActions } from 'modules/trade'
 
 import { useEoaTwapFlowUpdater, useEoaTwapSigningStep } from '../../hooks/useEoaTwapSigningStep'
 import { EoaTwapSigningSteps } from '../../state/eoaTwapSigningStepAtom'
@@ -34,6 +35,8 @@ export function useEoaTwapPlan({ inputToken, inputSymbolLabel }: UseEoaTwapPlanP
   const { chainId } = useWalletInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const updateEoaTwapFlow = useEoaTwapFlowUpdater()
+  const amountToSignApprove = useGetAmountToSignApprove()
+  const amountToApprove = useFreezeWhileConfirming(amountToSignApprove)
 
   const steps = useMemo(() => {
     return eoaTwapSigningStep
@@ -41,9 +44,10 @@ export function useEoaTwapPlan({ inputToken, inputSymbolLabel }: UseEoaTwapPlanP
           chainId,
           signingStep: eoaTwapSigningStep,
           token: inputToken,
+          amountToApprove,
         })
       : null
-  }, [chainId, eoaTwapSigningStep, inputToken])
+  }, [amountToApprove, chainId, eoaTwapSigningStep, inputToken])
 
   const { badgeProps, buttonProps } = useMemo(() => {
     const currentStep = eoaTwapSigningStep?.step
@@ -58,9 +62,9 @@ export function useEoaTwapPlan({ inputToken, inputSymbolLabel }: UseEoaTwapPlanP
 
     return {
       badgeProps: getEoaTwapCurrentStepBadge(currentStep, currentOrderStepStatus),
-      buttonProps: getEoaTwapCurrentStepButton(currentStep, currentOrderStepStatus, inputSymbolLabel),
+      buttonProps: getEoaTwapCurrentStepButton(currentStep, currentOrderStepStatus, inputSymbolLabel, amountToApprove),
     }
-  }, [steps, eoaTwapSigningStep, inputSymbolLabel])
+  }, [amountToApprove, steps, eoaTwapSigningStep, inputSymbolLabel])
 
   const onDismiss = useCallback(() => {
     updateEoaTwapFlow(null)
