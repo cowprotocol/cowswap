@@ -188,6 +188,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
   const { isWaitForCowsEnabled } = useFeatureFlags()
+  const showWaitForCows = Boolean(isWaitForCowsEnabled && !isSolanaChain(chainId))
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -224,7 +225,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
               {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             </TradeRows>
 
-            {isWaitForCowsEnabled && <WaitAndSaveRowContainer />}
+            {showWaitForCows && <WaitAndSaveRowContainer />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             {captcha}
@@ -250,7 +251,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
-        isWaitForCowsEnabled,
+        showWaitForCows,
         hideQuoteAmount,
         isFeeExceedsError,
         hasInputAmount,
