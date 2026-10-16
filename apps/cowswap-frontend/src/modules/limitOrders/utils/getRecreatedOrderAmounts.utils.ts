@@ -8,7 +8,7 @@ import { isParsedOrder } from 'utils/orderUtils/parseOrder'
 
 /**
  * Returns integer amount strings in token base units.
- * For expired partial-fill orders, both amounts scale by the unfilled sell or buy volume, including proportional legacy fees.
+ * For expired or cancelled partial-fill orders, both amounts scale by the unfilled sell or buy volume, including proportional legacy fees.
  * Input rounds down and output rounds up to avoid weakening the limit price.
  * Other orders retain their original amounts.
  */
@@ -24,7 +24,8 @@ export function getRecreatedOrderAmounts(order: GenericOrder): {
     outputCurrencyAmount: buyAmount.toString(),
   }
 
-  if (order.status !== OrderStatus.EXPIRED || !order.partiallyFillable) return originalAmounts
+  const canRecreateRemainder = order.status === OrderStatus.EXPIRED || order.status === OrderStatus.CANCELLED
+  if (!canRecreateRemainder || !order.partiallyFillable) return originalAmounts
 
   const totalAmount = order.kind === OrderKind.SELL ? sellAmount : buyAmount
   if (totalAmount <= 0n) return originalAmounts

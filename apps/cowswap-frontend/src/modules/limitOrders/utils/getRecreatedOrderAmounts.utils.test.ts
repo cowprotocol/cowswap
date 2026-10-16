@@ -49,15 +49,40 @@ describe('getRecreatedOrderAmounts', () => {
     expect(getRecreatedOrderAmounts(parseOrder(order))).toEqual(getRecreatedOrderAmounts(order))
   })
 
-  it.each([OrderStatus.PENDING, OrderStatus.CANCELLED, OrderStatus.FULFILLED])(
-    'retains original amounts for %s orders',
-    (status) => {
-      expect(getRecreatedOrderAmounts(buildOrder({ status }))).toEqual({
-        inputCurrencyAmount: '1100',
-        outputCurrencyAmount: '2000',
-      })
-    },
-  )
+  it.each([OrderStatus.PENDING, OrderStatus.FULFILLED])('retains original amounts for %s orders', (status) => {
+    expect(getRecreatedOrderAmounts(buildOrder({ status }))).toEqual({
+      inputCurrencyAmount: '1100',
+      outputCurrencyAmount: '2000',
+    })
+  })
+
+  it.each([false, true])('uses the remainder of a cancelled sell order (parsed: %s)', (parsed) => {
+    const order = buildOrder(
+      {
+        status: OrderStatus.CANCELLED,
+        sellAmount: '5000000000000000000',
+        buyAmount: '112109258939876320',
+        feeAmount: '0',
+      },
+      {
+        executedSellAmount: '4000000000000000000',
+        executedFeeAmount: '0',
+        executedBuyAmount: '89812399892528981',
+        invalidated: true,
+      },
+    )
+    expect(getRecreatedOrderAmounts(parsed ? parseOrder(order) : order)).toEqual({
+      inputCurrencyAmount: '1000000000000000000',
+      outputCurrencyAmount: '22421851787975264',
+    })
+  })
+
+  it('uses unfilled buy volume for cancelled buy orders', () => {
+    expect(getRecreatedOrderAmounts(buildOrder({ status: OrderStatus.CANCELLED, kind: OrderKind.BUY }))).toEqual({
+      inputCurrencyAmount: '605',
+      outputCurrencyAmount: '1100',
+    })
+  })
 
   it('retains original amounts for fill-or-kill orders', () => {
     expect(getRecreatedOrderAmounts(buildOrder({ partiallyFillable: false }))).toEqual({
