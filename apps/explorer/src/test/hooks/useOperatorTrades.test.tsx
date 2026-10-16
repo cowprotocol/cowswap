@@ -227,4 +227,41 @@ describe('useOrderTrades execution time', () => {
     expect(mockedGetSlotTimestamp).toHaveBeenCalledTimes(1)
     expect(mockedGetSlotTimestamp).toHaveBeenCalledWith(454882660)
   })
+
+  it('keeps resolved Solana fill times when another slot fails, and retries the failed slot', async () => {
+    mockedUseNetworkId.mockReturnValue(SupportedChainId.SOLANA)
+    mockedGetSlotTimestamp.mockImplementation(async (slot) => {
+      if (slot === 300) throw new Error('Block 300 cleaned up')
+      return 1791553000
+    })
+    serveFills([
+      { txHash: 'solanaSigOk', blockNumber: 200, logIndex: 0 } as RawTrade,
+      { txHash: 'solanaSigFailed', blockNumber: 300, logIndex: 0 } as RawTrade,
+    ])
+
+    const { rerender } = renderHook(({ order }) => useOrderTrades(order, 0, 10), {
+      initialProps: { order: createMockOrder({ uid: '0xfirstVisit' }) },
+      wrapper: FreshSwrCache,
+    })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSigOk' }),
+        expect.anything(),
+        1791553000,
+      ),
+    )
+
+    mockedGetSlotTimestamp.mockResolvedValue(1791553100)
+    rerender({ order: createMockOrder({ uid: '0xsecondVisit' }) })
+
+    await waitFor(() =>
+      expect(mockedTransformTrade).toHaveBeenCalledWith(
+        expect.objectContaining({ txHash: 'solanaSigFailed' }),
+        expect.anything(),
+        1791553100,
+      ),
+    )
+    expect(mockedGetSlotTimestamp.mock.calls.filter(([slot]) => slot === 300)).toHaveLength(2)
+  })
 })

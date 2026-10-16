@@ -129,17 +129,24 @@ async function fetchTradesTimestamps(
       return cachedValue.then((timestamp) => ({ txHash, timestamp }))
     }
 
-    const request = getTimestamp(blockNumber)
+    const request = getTimestamp(blockNumber).catch((err: unknown) => {
+      delete cache[blockNumber]
+      throw normalizeError(err)
+    })
 
     cache[blockNumber] = request
 
     return request.then((timestamp) => ({ txHash, timestamp }))
   })
 
-  const data = await Promise.all(requests)
+  const results = await Promise.allSettled(requests)
 
-  return data.reduce((acc, val) => {
-    if (val.txHash) acc[val.txHash] = val.timestamp
+  return results.reduce((acc, result) => {
+    if (result.status === 'rejected') {
+      console.error('Trades timestamps fetching error: ', result.reason)
+    } else if (result.value.txHash) {
+      acc[result.value.txHash] = result.value.timestamp
+    }
 
     return acc
   }, {} as TradesTimestamps)
