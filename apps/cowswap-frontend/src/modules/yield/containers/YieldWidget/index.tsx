@@ -15,7 +15,7 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
-import { TradeWidget, TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import { TradeRows, TradeWidget, TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -199,11 +199,13 @@ export function YieldWidget() {
       (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {
         return (
           <>
-            <TradeRateDetails
-              isTradePriceUpdating={isRateLoading}
-              rateInfoParams={rateInfoParams}
-              deadline={deadlineState[0]}
-            />
+            <TradeRows>
+              <TradeRateDetails
+                isTradePriceUpdating={isRateLoading}
+                rateInfoParams={rateInfoParams}
+                deadline={deadlineState[0]}
+              />
+            </TradeRows>
             <Warnings />
             {tradeWarnings}
             {captcha}

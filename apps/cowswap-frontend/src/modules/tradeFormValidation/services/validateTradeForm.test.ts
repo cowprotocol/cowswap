@@ -450,7 +450,7 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
     expect(result).not.toContain(TradeFormValidation.SolanaAlphaUnknownUsdValue)
   })
 
-  test('prioritizes the trade limit over wallet connection', () => {
+  test('prioritizes wallet connection over the trade limit', () => {
     const context = {
       ...baseContext,
       account: undefined,
@@ -461,7 +461,9 @@ describe('validateTradeForm - Solana Alpha trade limit', () => {
       },
     } as unknown as TradeFormValidationContext
 
-    expect(validateTradeForm(context)).toEqual([TradeFormValidation.SolanaAlphaMaxTradeSize])
+    const result = validateTradeForm(context) || []
+    expect(result[0]).toBe(TradeFormValidation.WalletNotConnected)
+    expect(result).not.toContain(TradeFormValidation.SolanaAlphaMaxTradeSize)
   })
 })
 

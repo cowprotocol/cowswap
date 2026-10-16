@@ -1,0 +1,133 @@
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 20px 24px 16px;
+}
+
+.title {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.title h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 28px;
+  letter-spacing: -0.22px;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.selected td {
+  background: var(--color-selected);
+}
+
+.selected td:first-child {
+  position: relative;
+}
+
+.selected td:first-child::before {
+  position: absolute;
+  top: 24px;
+  left: 4px;
+  width: 3px;
+  height: 24px;
+  border-radius: 2px;
+  background: var(--color-accent);
+  content: '';
+}
+
+.token {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tokenText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.symbol {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.issuer {
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+
+.address {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-decoration: none;
+}
+
+a.address:hover {
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actions button {
+  width: 60px;
+  height: 32px;
+  padding: 0 8px;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.buy {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.sell {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.actions button:hover {
+  filter: brightness(0.96);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
