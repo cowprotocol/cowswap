@@ -124,3 +124,7 @@ export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolana
 export type { SolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'
 export { planSolanaTradeFundedAccounts } from './services/feeAmountCalculator/planSolanaTradeFundedAccounts'
 export type { SolanaFlowStep, SolanaFundedAccount } from './services/solanaFlow/types'
+
+export { PricePercentageShortcuts } from './pure/PricePercentageShortcuts/PricePercentageShortcuts.pure'
+export { getPercentageRate } from './utils/percentageRate.utils'
+export { getTakeProfitOrder, getTakeProfitNavigation, getTakeProfitContext } from './utils/takeProfit.utils'
