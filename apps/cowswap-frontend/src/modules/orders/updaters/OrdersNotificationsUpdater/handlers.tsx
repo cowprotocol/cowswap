@@ -16,6 +16,7 @@ import { IconType } from '@cowprotocol/snackbars'
 import { t } from '@lingui/core/macro'
 
 import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
+import { ExpiredOrderNotification } from '../../containers/ExpiredOrderNotification/ExpiredOrderNotification.container'
 import { FulfilledOrderInfo } from '../../containers/FulfilledOrderInfo'
 import { OrderNotification } from '../../containers/OrderNotification'
 import { PostedOrderNotification } from '../../containers/PostedOrderNotification'
@@ -88,16 +89,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<OrderStatusEvents, OrdersNotif
   [OrderStatusEvents.ON_EXPIRED_ORDER]: {
     icon: 'alert',
     handler: (payload: OnExpiredOrderPayload) => {
-      const { chainId, order } = payload
-
-      return (
-        <OrderNotification
-          title={t`Order expired`}
-          chainId={chainId}
-          orderUid={order.uid}
-          messageType={ToastMessageType.ORDER_EXPIRED}
-        />
-      )
+      return <ExpiredOrderNotification payload={payload} />
     },
   },
   [OrderStatusEvents.ON_PRESIGNED_ORDER]: {
