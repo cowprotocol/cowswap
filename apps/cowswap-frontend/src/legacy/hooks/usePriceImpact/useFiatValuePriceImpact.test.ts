@@ -3,7 +3,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
 import { act, renderHook } from '@testing-library/react'
 
-import { useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { isQuoteForCurrencies, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
@@ -16,6 +16,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 
 jest.mock('modules/trade', () => ({
   useDerivedTradeState: jest.fn(),
+  useIsWrapOrUnwrap: jest.fn(),
 }))
 
 jest.mock('modules/tradeQuote', () => ({
@@ -37,6 +38,7 @@ jest.mock('./logger', () => ({
 }))
 
 const mockedUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
+const mockedUseIsWrapOrUnwrap = useIsWrapOrUnwrap as jest.MockedFunction<typeof useIsWrapOrUnwrap>
 const mockedUseTradeUsdAmounts = useTradeUsdAmounts as jest.MockedFunction<typeof useTradeUsdAmounts>
 const mockedUseTradeQuote = useTradeQuote as jest.MockedFunction<typeof useTradeQuote>
 const mockedIsQuoteForCurrencies = isQuoteForCurrencies as jest.MockedFunction<typeof isQuoteForCurrencies>
@@ -79,6 +81,20 @@ describe('useFiatValuePriceImpact', () => {
       tradeQuoteState({ isLoading: false, hasParamsChanged: false, fetchStartTimestamp: 1 }),
     )
     mockedIsQuoteForCurrencies.mockReturnValue(true)
+    mockedUseIsWrapOrUnwrap.mockReturnValue(false)
+  })
+
+  it('does not report loading for a wrap/unwrap, which never gets a quote', () => {
+    mockedUseIsWrapOrUnwrap.mockReturnValue(true)
+    mockedIsQuoteForCurrencies.mockReturnValue(false)
+    mockedUseTradeUsdAmounts.mockReturnValue({
+      inputAmount: { value: null, isLoading: false },
+      outputAmount: { value: null, isLoading: false },
+    })
+
+    const { result } = renderHook(() => useFiatValuePriceImpact())
+
+    expect(result.current).toEqual({ priceImpact: undefined, isLoading: false })
   })
 
   afterEach(() => {
