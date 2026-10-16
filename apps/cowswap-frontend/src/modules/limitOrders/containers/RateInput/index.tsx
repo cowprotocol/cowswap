@@ -18,7 +18,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
-import { useLocation } from 'react-router'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
@@ -31,7 +30,7 @@ import {
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { PricePercentageShortcuts, getTakeProfitContext } from 'modules/trade'
+import { PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -39,7 +38,6 @@ import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetwor
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { getQuoteCurrency, getQuoteCurrencyByStableCoin } from 'common/services/getQuoteCurrency'
-
 
 import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
@@ -70,8 +68,6 @@ export function RateInput() {
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
-  const { state: navigationState } = useLocation()
-  const takeProfit = getTakeProfitContext(navigationState, inputCurrency, outputCurrency)
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -299,12 +295,10 @@ export function RateInput() {
         </styledEl.Body>
         <PricePercentageShortcuts
           key={`${chainId}:${inputCurrency && getAddress(inputCurrency)}:${outputCurrency && getAddress(outputCurrency)}:${isInverted}`}
-          referenceRate={takeProfit?.referenceRate ?? marketRate}
-          reference={takeProfit ? 'execution' : 'market'}
-          focusCustom={takeProfit?.focusCustom}
+          referenceRate={marketRate}
           activeRate={activeRate}
           isInverted={isInverted}
-          disabled={isRateInputDisabled || !areBothCurrencies || (!takeProfit && isLoadingMarketRate)}
+          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate}
           onSelect={(rate) => {
             setTypedTrailingZeros('')
             updateLimitRateState({ typedValue: null })
