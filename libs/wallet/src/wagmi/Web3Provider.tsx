@@ -27,7 +27,10 @@ function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
     const handler = (event: Event): void => {
       const detail: OpenWalletModalEventDetail | undefined = event instanceof CustomEvent ? event.detail : undefined
-      reownAppKit?.open({ view: 'Connect', namespace: detail?.namespace })
+      const namespace = detail?.namespace
+      // Filtering by a namespace with no adapter (Solana while its flag is off) leaves the modal empty
+      const isNamespaceLoaded = !!namespace && !!reownAppKit?.getCaipNetworks(namespace).length
+      reownAppKit?.open({ view: 'Connect', namespace: isNamespaceLoaded ? namespace : undefined })
       flushDeferredProviders()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)
