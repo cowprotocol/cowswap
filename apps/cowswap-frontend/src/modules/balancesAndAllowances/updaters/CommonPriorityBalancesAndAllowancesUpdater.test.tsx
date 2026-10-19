@@ -187,6 +187,15 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
   })
 
+  it('still mounts the priority-token poller on EVM when the watcher is unavailable', () => {
+    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
+    mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: false }))
+
+    renderWithHealth(recovering())
+
+    expect(mockPriorityTokensUpdater).toHaveBeenCalled()
+  })
+
   // FE-929: a self-paid Solana order carries its SPL delegation in the transaction that creates it, so
   // the snapshot taken before placement reads zero until a confirmation forces a refetch. These cover
   // the wiring between the trigger hooks and the updater that consumes it, not the hooks themselves.
@@ -209,21 +218,6 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       renderOnSolana()
 
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenLastCalledWith(
-        expect.objectContaining({ refreshTrigger: 5 }),
-        undefined,
-      )
-    })
-
-    // The pending order's own sell and buy tokens become priority tokens, so this updater owns exactly
-    // the balances the unfillable warning reads. Without the trigger here a confirmation never reaches
-    // them and the warning waits out the priority poll instead.
-    it('passes the trigger to the priority-token updater too', () => {
-      mockUseOrdersFilledEventsTrigger.mockReturnValue(2)
-      mockUseConfirmedTransactionsTrigger.mockReturnValue(3)
-
-      renderOnSolana()
-
-      expect(mockPriorityTokensUpdater).toHaveBeenLastCalledWith(
         expect.objectContaining({ refreshTrigger: 5 }),
         undefined,
       )
@@ -308,7 +302,9 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
 
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
-      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
+      // One batched call already covers every token on Solana, so the trade's tokens get no second
+      // poller — which would otherwise write without a refresh trigger and undo a forced refetch.
+      expect(mockPriorityTokensUpdater).not.toHaveBeenCalled()
     })
 
     // Regression guard: account resolution for the multicall stack must go through

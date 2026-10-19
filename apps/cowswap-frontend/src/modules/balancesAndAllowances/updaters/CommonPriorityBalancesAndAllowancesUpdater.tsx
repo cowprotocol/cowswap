@@ -78,17 +78,23 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   //   successful snapshot, so retry transitions (Connecting/Connected/Fallback)
   //   don't briefly unmount it and leave a balance gap.
   const needsMulticallStack = !isWatcherActive || isWatcherRecovering
+  // Solana reads every balance and delegation in one batched call, so polling the trade's tokens
+  // separately buys nothing there. It costs, though: this second poller keeps its own schedule and no
+  // refresh trigger, so after an order is placed its in-flight snapshot — taken before the transaction
+  // landed — overwrites the refetch the confirmation asked for, and the sell token reads as unfunded.
+  const needsPriorityTokensUpdater = !isSolanaChain(sourceChainId)
   const multicallStack = needsMulticallStack ? (
     <>
-      <PriorityTokensUpdater
-        // We can and should save one RPC call at the very beginning
-        // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
-        // We can skip first update for PriorityTokensUpdater
-        account={skipFirstPriorityUpdate ? undefined : balancesAccount}
-        chainId={sourceChainId}
-        tokenAddresses={priorityTokenAddressesAsArray}
-        refreshTrigger={refreshTrigger}
-      />
+      {needsPriorityTokensUpdater && (
+        <PriorityTokensUpdater
+          // We can and should save one RPC call at the very beginning
+          // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
+          // We can skip first update for PriorityTokensUpdater
+          account={skipFirstPriorityUpdate ? undefined : balancesAccount}
+          chainId={sourceChainId}
+          tokenAddresses={priorityTokenAddressesAsArray}
+        />
+      )}
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
