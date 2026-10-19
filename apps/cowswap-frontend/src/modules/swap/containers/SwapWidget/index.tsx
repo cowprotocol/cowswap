@@ -16,12 +16,14 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList, useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeRows,
   TradeWidget,
   TradeWidgetSlots,
+  ButtonsContainer,
   useGetReceiveAmountInfo,
   useIsCustomRecipientLockedOnSolana,
   useIsEoaEthFlow,
@@ -193,23 +195,26 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
     topContent,
     lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
-      <SettingsTab
-        recipientToggleState={getRecipientToggleState(
-          isNonEvmBridging,
-          isRecipientLockedOnSolana,
-          recipientToggleState,
-        )}
-        hooksEnabledState={hooksEnabledState}
-        deadlineState={deadlineState}
-        enablePartialApprovalState={enablePartialApprovalState}
-        partialApprovalLocked={isInfiniteApproveDisabled}
-        isRecipientToggleDisabled={isNonEvmBridging || isRecipientLockedOnSolana}
-        isRecipientToggleHidden={disableCustomRecipient}
-        recipientToggleDisabledNote={
-          isRecipientLockedOnSolana ? <Trans>Custom recipients are not available on Solana yet.</Trans> : undefined
-        }
-        isHooksToggleDisabled={isSolanaChain(chainId)}
-      />
+      <ButtonsContainer>
+        <PriceChartToggleButton />
+        <SettingsTab
+          recipientToggleState={getRecipientToggleState(
+            isNonEvmBridging,
+            isRecipientLockedOnSolana,
+            recipientToggleState,
+          )}
+          hooksEnabledState={hooksEnabledState}
+          deadlineState={deadlineState}
+          enablePartialApprovalState={enablePartialApprovalState}
+          partialApprovalLocked={isInfiniteApproveDisabled}
+          isRecipientToggleDisabled={isNonEvmBridging || isRecipientLockedOnSolana}
+          isRecipientToggleHidden={disableCustomRecipient}
+          recipientToggleDisabledNote={
+            isRecipientLockedOnSolana ? <Trans>Custom recipients are not available on Solana yet.</Trans> : undefined
+          }
+          isHooksToggleDisabled={isSolanaChain(chainId)}
+        />
+      </ButtonsContainer>
     ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {

@@ -5,6 +5,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
+  isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
