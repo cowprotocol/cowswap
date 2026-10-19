@@ -71,6 +71,9 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Picking before the URL state lands lets the default pair overwrite the picked one, leaving
+      // WETH on the sell side.
+      await swapPage.waitForBothCurrenciesResolved()
 
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
@@ -219,6 +222,8 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Same reason as [CS-59].
+      await swapPage.waitForBothCurrenciesResolved()
       await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')

@@ -2,6 +2,8 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import type { Page, Locator } from '@playwright/test'
 
+const RETRY_OPEN_TIMEOUT_MS = 10_000
+
 export class TokenSelector {
   readonly page: Page
   readonly inputSelectButton: Locator
@@ -43,7 +45,8 @@ export class TokenSelector {
   private async retryOpen(button: Locator): Promise<void> {
     await button.click()
     try {
-      await this.searchInput.waitFor({ state: 'visible' })
+      // Without a timeout this waits on the 120s action timeout and the retry below never runs
+      await this.searchInput.waitFor({ state: 'visible', timeout: RETRY_OPEN_TIMEOUT_MS })
     } catch {
       await button.click()
       await this.searchInput.waitFor({ state: 'visible' })
