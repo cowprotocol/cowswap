@@ -141,7 +141,25 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
         margin: 0 0 10px;
       `}
   }
+
+  ${({ isDisabled, isDropdownVisible, theme }) =>
+    isDisabled &&
+    css`
+      ${DisabledLink} {
+        padding: 0;
+      }
+
+      ${DisabledLabel} {
+        padding: ${getMenuItemPadding(theme.isWidget, isDropdownVisible)};
+      }
+    `}
 `
+
+function getMenuItemPadding(isWidget: boolean, isDropdownVisible: boolean): string {
+  if (isDropdownVisible) return '16px'
+
+  return isWidget ? '7px' : '5px 10px'
+}
 
 export const SelectMenu = styled.div`
   display: block;
