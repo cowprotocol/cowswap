@@ -1,3 +1,5 @@
+import { getDailyStats } from '../lib/dailyStats'
+
 import type { RwaAggregateMarket, RwaAsset, RwaChartPoint, RwaMarketData, RwaMarketOverviewItem } from './types'
 
 const HOUR_SECONDS = 3600
@@ -79,6 +81,17 @@ export function fillHourlySeries(points: RwaChartPoint[], nowSeconds: number, ho
   })
 }
 
+/**
+ * Percent, measured on the 1D sparkline, because a bad tick of one token skews the aggregate `change24h`.
+ * A stale market has a `null` `change24h` and a sparkline ending days ago, so it keeps `null`
+ */
+export function getDailyChange(market: RwaAggregateMarket): number | null {
+  const dailySeries = market.change24h === null ? null : buildDailySeries(market)
+  const dailyStats = dailySeries ? getDailyStats(dailySeries, market.price) : null
+
+  return dailyStats?.change24h ?? market.change24h
+}
+
 export function latestUpdatedAt(markets: Pick<RwaMarketData, 'updatedAt'>[]): string | null {
   return markets.reduce<string | null>(
     (latest, { updatedAt }) =>
@@ -110,7 +123,7 @@ export function toOverviewItem(asset: RwaAsset, market: RwaAggregateMarket): Rwa
     ticker: asset.ticker,
     title: asset.title,
     logoUrl: asset.logoUrl ?? null,
-    change24h: market.change24h,
+    change24h: getDailyChange(market),
     volume24h: market.volume24h,
     series: null,
   }
