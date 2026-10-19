@@ -5,14 +5,14 @@ import { useEffect } from 'react'
  * Difference between local time and real time, in seconds.
  * Populated from quote timestamps via `useSetLocalTimeOffset`.
  */
-const localTimeOffsetState = atom<number | undefined>(undefined)
+export const localTimeOffsetAtom = atom<number | undefined>(undefined)
 
 export function useLocalTimeOffset(): number | undefined {
-  return useAtomValue(localTimeOffsetState)
+  return useAtomValue(localTimeOffsetAtom)
 }
 
 export function useSetLocalTimeOffset(timeOffset: number | undefined): void {
-  const setLocalTimeOffset = useSetAtom(localTimeOffsetState)
+  const setLocalTimeOffset = useSetAtom(localTimeOffsetAtom)
 
   useEffect(() => {
     setLocalTimeOffset(timeOffset)

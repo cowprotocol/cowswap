@@ -6040,6 +6040,10 @@ msgstr "Current network costs make up <0><1>{formattedFeePercentage}%</1></0> of
 msgid "Switch network"
 msgstr "Switch network"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "With Wait for CoWs, expiration starts after the next batch. Total time until expiry is the batch wait plus this expiration."
+msgstr "With Wait for CoWs, expiration starts after the next batch. Total time until expiry is the batch wait plus this expiration."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Hooks buy order"
 msgstr "Hooks buy order"
