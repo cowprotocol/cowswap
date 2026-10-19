@@ -15,6 +15,8 @@ export interface PriorityTokensUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
   tokenAddresses: string[]
+  // Increment to force an immediate refetch (e.g. after a transaction confirms)
+  refreshTrigger?: number
 }
 
 export function PriorityTokensUpdater(props: PriorityTokensUpdaterProps): null {

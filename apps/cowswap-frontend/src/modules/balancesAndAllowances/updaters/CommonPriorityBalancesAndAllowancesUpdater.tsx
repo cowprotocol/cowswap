@@ -87,6 +87,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         account={skipFirstPriorityUpdate ? undefined : balancesAccount}
         chainId={sourceChainId}
         tokenAddresses={priorityTokenAddressesAsArray}
+        refreshTrigger={refreshTrigger}
       />
       <BalancesAndAllowancesUpdater
         account={balancesAccount}

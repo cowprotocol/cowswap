@@ -214,6 +214,21 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       )
     })
 
+    // The pending order's own sell and buy tokens become priority tokens, so this updater owns exactly
+    // the balances the unfillable warning reads. Without the trigger here a confirmation never reaches
+    // them and the warning waits out the priority poll instead.
+    it('passes the trigger to the priority-token updater too', () => {
+      mockUseOrdersFilledEventsTrigger.mockReturnValue(2)
+      mockUseConfirmedTransactionsTrigger.mockReturnValue(3)
+
+      renderOnSolana()
+
+      expect(mockPriorityTokensUpdater).toHaveBeenLastCalledWith(
+        expect.objectContaining({ refreshTrigger: 5 }),
+        undefined,
+      )
+    })
+
     it('changes the trigger when a transaction confirms', () => {
       mockUseOrdersFilledEventsTrigger.mockReturnValue(0)
       mockUseConfirmedTransactionsTrigger.mockReturnValue(0)
