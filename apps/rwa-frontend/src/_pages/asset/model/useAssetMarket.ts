@@ -19,7 +19,8 @@ export function useAssetMarket(ticker: string): AssetMarketState {
   const { data, error } = useAtomValue(assetQueryAtomFamily(ticker))
   const { data: dailyChart } = useAtomValue(assetDailyChartQueryAtomFamily(ticker))
   const market = data?.market
-  const dailyStats = useMemo(() => (dailyChart ? getDailyStats(dailyChart.points) : null), [dailyChart])
+  const price = market?.price ?? null
+  const dailyStats = useMemo(() => (dailyChart ? getDailyStats(dailyChart.points, price) : null), [dailyChart, price])
 
   return {
     data,

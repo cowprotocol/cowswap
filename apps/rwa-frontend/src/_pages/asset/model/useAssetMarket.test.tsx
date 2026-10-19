@@ -78,14 +78,32 @@ async function settle(fetchMock: jest.Mock): Promise<void> {
 }
 
 describe('useAssetMarket', () => {
-  it('takes the 24h change and day range from the 1D chart', async () => {
+  it('measures the 24h change and day range from the 1D chart to the price', async () => {
     const fetchMock = mockFetch({ asset: () => response(ASSET), chart: () => response(chart(POINTS)) })
 
     const { result } = renderAssetMarket()
 
-    await waitFor(() => expect(result.current.market).toEqual({ ...MARKET, change24h: 1, dayLow: 395, dayHigh: 410 }))
+    await waitFor(() =>
+      expect(result.current.market).toEqual({
+        ...MARKET,
+        change24h: expect.closeTo(0.595),
+        dayLow: 395,
+        dayHigh: 410,
+      }),
+    )
     expect(result.current.data).toEqual(ASSET)
     expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining(`/chart/${TICKER}?range=1D`))
+  })
+
+  it('keeps the price within the day range when it is below every chart point', async () => {
+    const market = { ...MARKET, price: 390 }
+    mockFetch({ asset: () => response({ ...ASSET, market }), chart: () => response(chart(POINTS)) })
+
+    const { result } = renderAssetMarket()
+
+    await waitFor(() =>
+      expect(result.current.market).toEqual({ ...market, change24h: -2.5, dayLow: 390, dayHigh: 410 }),
+    )
   })
 
   it('keeps the aggregate market while the chart is loading', async () => {
