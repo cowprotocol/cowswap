@@ -5,8 +5,11 @@ import localFont from 'next/font/local'
 import { Footer } from './Footer'
 import { Providers } from './Providers'
 
+import { APPLE_ICON, FAVICON } from '../seo'
+
 import type { Metadata, Viewport } from 'next'
 
+import { buildPageMetadata, IS_INDEXABLE, SITE_DESCRIPTION, SITE_NAME, SITE_URL } from '@/shared/lib/seo/index.server'
 import { THEME_INIT_SCRIPT } from '@/shared/lib/theme'
 import { OfflineBanner } from '@/shared/ui/offline-banner'
 import { Header } from '@/widgets/header'
@@ -20,9 +23,17 @@ const inter = localFont({
   variable: '--font-inter',
 })
 
+const DEFAULT_TITLE = `${SITE_NAME}: trade tokenized stocks and ETFs`
+
 export const metadata: Metadata = {
-  title: { default: 'CoW RWA', template: '%s | CoW RWA' },
-  description: 'Trade tokenized stocks with CoW Protocol',
+  ...buildPageMetadata({ title: DEFAULT_TITLE, description: SITE_DESCRIPTION, path: '' }),
+  // Pages inherit an unset field, and the canonical URL of one page must not leak into another
+  alternates: null,
+  metadataBase: new URL(SITE_URL),
+  title: { default: DEFAULT_TITLE, template: `%s | ${SITE_NAME}` },
+  applicationName: SITE_NAME,
+  icons: { icon: FAVICON, apple: APPLE_ICON },
+  robots: IS_INDEXABLE ? { index: true, follow: true } : { index: false, follow: false },
 }
 
 export const viewport: Viewport = {
