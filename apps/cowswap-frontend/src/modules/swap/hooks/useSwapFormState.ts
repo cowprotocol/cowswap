@@ -27,7 +27,6 @@ export function useSwapFormState(): SwapFormState | null {
   return useMemo(() => {
     if (state.inputCurrency && getIsNativeToken(state.inputCurrency)) {
       if (isHooksStore) return SwapFormState.SellNativeInHooks
-      // Solana native sell uses the regular Swap button; wrap+delegate is bundled into the confirm step.
       if (isSolanaChain(state.inputCurrency.chainId)) return SwapFormState.SolanaNativeSell
 
       const isBridging =

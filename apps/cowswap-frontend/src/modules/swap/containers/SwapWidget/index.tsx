@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useTryFindToken } from '@cowprotocol/tokens'
@@ -15,11 +16,14 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList, useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { PriceChartToggleButton } from 'modules/priceChart'
 import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
+  TradeRows,
   TradeWidget,
   TradeWidgetSlots,
+  ButtonsContainer,
   useGetReceiveAmountInfo,
   useIsCustomRecipientLockedOnSolana,
   useIsEoaEthFlow,
@@ -51,6 +55,7 @@ import {
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
+import { WaitAndSaveRow } from '../../pure/WaitAndSaveRow/WaitAndSaveRow.pure'
 import { BottomBanners } from '../BottomBanners/BottomBanners.container'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapDebugPanel } from '../SwapDebugPanel'
@@ -184,38 +189,47 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
+  const { isWaitForCowsEnabled } = useFeatureFlags()
 
   const slots: TradeWidgetSlots = {
     topContent,
     lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
-      <SettingsTab
-        recipientToggleState={getRecipientToggleState(
-          isNonEvmBridging,
-          isRecipientLockedOnSolana,
-          recipientToggleState,
-        )}
-        hooksEnabledState={hooksEnabledState}
-        deadlineState={deadlineState}
-        enablePartialApprovalState={enablePartialApprovalState}
-        partialApprovalLocked={isInfiniteApproveDisabled}
-        isRecipientToggleDisabled={isNonEvmBridging || isRecipientLockedOnSolana}
-        isRecipientToggleHidden={disableCustomRecipient}
-        recipientToggleDisabledNote={
-          isRecipientLockedOnSolana ? <Trans>Custom recipients are not available on Solana yet.</Trans> : undefined
-        }
-        isHooksToggleDisabled={isSolanaChain(chainId)}
-      />
+      <ButtonsContainer>
+        <PriceChartToggleButton />
+        <SettingsTab
+          recipientToggleState={getRecipientToggleState(
+            isNonEvmBridging,
+            isRecipientLockedOnSolana,
+            recipientToggleState,
+          )}
+          hooksEnabledState={hooksEnabledState}
+          deadlineState={deadlineState}
+          enablePartialApprovalState={enablePartialApprovalState}
+          partialApprovalLocked={isInfiniteApproveDisabled}
+          isRecipientToggleDisabled={isNonEvmBridging || isRecipientLockedOnSolana}
+          isRecipientToggleHidden={disableCustomRecipient}
+          recipientToggleDisabledNote={
+            isRecipientLockedOnSolana ? <Trans>Custom recipients are not available on Solana yet.</Trans> : undefined
+          }
+          isHooksToggleDisabled={isSolanaChain(chainId)}
+        />
+      </ButtonsContainer>
     ),
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null, captcha: ReactNode | null) => {
         return (
           <>
             {bottomContent}
-            {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
-              <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-            )}
-            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+
+            <TradeRows>
+              {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
+                <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+              )}
+              {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+            </TradeRows>
+
+            {isWaitForCowsEnabled && <WaitAndSaveRow />}
             <Warnings buyingFiatAmount={buyingFiatAmount} hideQuoteAmount={hideQuoteAmount} />
             {tradeWarnings}
             {captcha}
@@ -241,6 +255,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
+        isWaitForCowsEnabled,
         hideQuoteAmount,
         isFeeExceedsError,
         hasInputAmount,

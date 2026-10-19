@@ -5,9 +5,11 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
+  isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
+  isWaitForCowsEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any

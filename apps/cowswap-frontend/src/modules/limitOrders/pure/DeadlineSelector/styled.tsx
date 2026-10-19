@@ -1,36 +1,43 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, font } from '@cowprotocol/ui'
 
 import { MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
+import { StyledToggleArrow } from 'common/pure/ToggleArrow'
+
 export const Wrapper = styled.div`
-  color: inherit;
   padding: 0;
   justify-content: space-between;
   display: flex;
   flex-flow: row wrap;
   width: 100%;
-  font-size: 13px;
-  font-weight: inherit;
 `
 
 export const Label = styled.span`
   display: flex;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
   align-self: center;
   justify-self: center;
+  color: var(${UI.COLOR_TEXT});
+  ${font('FONT_SMALL_PLUS', 'medium')}
+`
+
+export const Value = styled.div`
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+  ${font('FONT_SMALL_PLUS', 'medium')}
 `
 
 export const Current = styled(MenuButton)<{ $custom?: boolean }>`
-  color: inherit;
-  font-size: ${({ $custom }) => ($custom ? '12px' : '100%')};
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+  font-size: ${({ $custom }) => ($custom ? '12px' : '13px')};
+  line-height: ${({ $custom }) => ($custom ? 'inherit' : '18px')};
   letter-spacing: ${({ $custom }) => ($custom ? '-0.3px' : '0')};
-  font-weight: inherit;
-  display: flex;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
+  gap: 5px;
+  width: auto;
+  max-width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -41,10 +48,13 @@ export const Current = styled(MenuButton)<{ $custom?: boolean }>`
 
   > span {
     display: inline-block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
-  > svg {
-    margin: 0 0 0 auto;
+  &[aria-expanded='true'] ${StyledToggleArrow} {
+    transform: rotate(180deg);
   }
 `
 

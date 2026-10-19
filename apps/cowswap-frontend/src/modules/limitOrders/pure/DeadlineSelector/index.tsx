@@ -6,7 +6,8 @@ import { useExtractText } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
-import { ChevronDown } from 'react-feather'
+
+import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { getLimitOrderDeadlines, LimitOrderDeadline } from './deadlines'
 import * as styledEl from './styled'
@@ -77,16 +78,16 @@ export function DeadlineSelector(props: DeadlineSelectorProps): ReactNode {
       </styledEl.Label>
 
       {isDeadlineDisabled ? (
-        <div>
+        <styledEl.Value>
           <span>{deadlineDisplay}</span>
-        </div>
+        </styledEl.Value>
       ) : (
         <Menu>
           {/* TODO: Replace any with proper type definitions */}
           {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
           <styledEl.Current ref={currentDeadlineNode as any} $custom={!!customDeadline}>
             <span>{deadlineDisplay}</span>
-            <ChevronDown size="18" />
+            <ToggleArrow isOpen={false} />
           </styledEl.Current>
           <styledEl.ListWrapper>
             {limitOrderDeadlines.map((item) => (

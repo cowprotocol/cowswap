@@ -52,21 +52,6 @@ export const hookDappsRegistry = {
       supportedNetworks: [11155111],
     },
   },
-  COW_AMM_WITHDRAW: {
-    name: `CoW AMM Withdraw Liquidity`,
-    type: 'IFRAME',
-    descriptionShort: `Remove liquidity from a CoW AMM pool before the swap`,
-    description: `Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity.`,
-    version: '0.0.1',
-    website: 'https://balancer.fi/pools/cow',
-    image: 'https://cow-hooks-dapps-withdraw-pool.vercel.app/icon.png',
-    url: 'https://cow-hooks-dapps-withdraw-pool.vercel.app/',
-    conditions: {
-      position: 'pre',
-      walletCompatibility: ['EOA'],
-      supportedNetworks: [1, 100, 8453, 42161, 11155111],
-    },
-  },
   CLAIM_LLAMAPAY_VESTING: {
     type: 'IFRAME',
     name: `Claim LlamaPay Vesting Hook`,
@@ -109,21 +94,6 @@ export const hookDappsRegistry = {
       position: 'pre',
       walletCompatibility: ['EOA'],
       supportedNetworks: [1, 42161, 11155111, 8453],
-    },
-  },
-  COW_AMM_DEPOSIT: {
-    name: `CoW AMM Deposit`,
-    type: 'IFRAME',
-    descriptionShort: `Add liquidity to any of the CoW AMM pools`,
-    description: `Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n\n Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process.`,
-    version: '0.0.1',
-    website: 'https://balancer.fi/pools/cow',
-    image: 'https://cow-hooks-dapps-cow-amm-deposit.vercel.app/icon.png',
-    url: 'https://cow-hooks-dapps-cow-amm-deposit.vercel.app/',
-    conditions: {
-      position: 'post',
-      walletCompatibility: ['EOA'],
-      supportedNetworks: [1, 100, 8453, 42161, 11155111],
     },
   },
   UNI_V2_DEPOSIT: {
