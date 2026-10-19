@@ -56,6 +56,10 @@ export type OrdersState = {
   readonly [chainId in ChainId]?: OrdersStateNetwork
 }
 export interface OrdersStateNetwork extends OrderLists {
+  /**
+   * Block of the first completed pending-orders poll per chain per session, not the latest one.
+   * Only used as a "hydrated" marker: any value other than the chain default means orders were polled.
+   */
   lastCheckedBlock: number
 }
 
