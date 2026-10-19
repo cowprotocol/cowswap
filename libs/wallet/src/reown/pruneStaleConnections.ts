@@ -1,4 +1,6 @@
-import { ChainController, ConnectionController, StorageUtil } from '@reown/appkit-controllers'
+import { logWallet, normalizeError } from '@cowprotocol/common-utils'
+
+import { ChainController, ConnectionController, ConnectorController, StorageUtil } from '@reown/appkit-controllers'
 
 import type { ChainNamespace } from '@reown/appkit-common'
 
@@ -13,20 +15,13 @@ import type { ChainNamespace } from '@reown/appkit-common'
  * stuck: the wallet stays unselectable until a different one is connected.
  */
 export function pruneStaleConnections(): void {
-  for (const namespace of [...ChainController.state.chains.keys()]) {
-    if (!isNamespaceWithoutAccount(namespace)) continue
-
-    const connections = ConnectionController.getConnections(namespace)
-
-    if (!connections.length) continue
-
-    for (const { connectorId, accounts } of connections) {
-      for (const { address } of accounts) {
-        StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace })
-      }
+  // The modal is opened right after this call, so a failure here must never swallow the click
+  try {
+    for (const namespace of [...ChainController.state.chains.keys()]) {
+      pruneNamespace(namespace)
     }
-
-    ConnectionController.setConnections([], namespace)
+  } catch (err: unknown) {
+    logWallet.error(new Error('Failed to prune stale AppKit connections', { cause: normalizeError(err) }))
   }
 }
 
@@ -37,4 +32,25 @@ function isNamespaceWithoutAccount(namespace: ChainNamespace): boolean {
 
   // A restore still in flight has no address yet, and its records must survive
   return account?.status !== 'connecting' && account?.status !== 'reconnecting'
+}
+
+function pruneNamespace(namespace: ChainNamespace): void {
+  if (!isNamespaceWithoutAccount(namespace)) return
+
+  const connections = ConnectionController.getConnections(namespace)
+
+  if (!connections.length) return
+
+  for (const { connectorId, accounts } of connections) {
+    for (const { address } of accounts ?? []) {
+      StorageUtil.deleteAddressFromConnection({ connectorId, address, namespace })
+    }
+  }
+
+  ConnectionController.setConnections([], namespace)
+
+  // The failed restore leaves the connector marked as active. AppKit's connecting view only closes
+  // the modal when the active connector id changes, so reconnecting the very same wallet would
+  // leave the user stuck on the connecting screen.
+  ConnectorController.removeConnectorId(namespace)
 }

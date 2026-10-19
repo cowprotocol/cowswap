@@ -1,4 +1,4 @@
-import { ChainController, ConnectionController, StorageUtil } from '@reown/appkit-controllers'
+import { ChainController, ConnectionController, ConnectorController, StorageUtil } from '@reown/appkit-controllers'
 
 import { pruneStaleConnections } from './pruneStaleConnections'
 
@@ -8,12 +8,14 @@ import type { AccountState, ChainControllerState } from '@reown/appkit-controlle
 jest.mock('@reown/appkit-controllers', () => ({
   ChainController: { state: { chains: new Map() }, getAccountData: jest.fn() },
   ConnectionController: { getConnections: jest.fn(), setConnections: jest.fn() },
+  ConnectorController: { removeConnectorId: jest.fn() },
   StorageUtil: { deleteAddressFromConnection: jest.fn() },
 }))
 
 const getAccountDataMock = ChainController.getAccountData as jest.Mock
 const getConnectionsMock = ConnectionController.getConnections as jest.Mock
 const setConnectionsMock = ConnectionController.setConnections as jest.Mock
+const removeConnectorIdMock = ConnectorController.removeConnectorId as jest.Mock
 const deleteAddressMock = StorageUtil.deleteAddressFromConnection as jest.Mock
 
 interface NamespaceState {
@@ -47,6 +49,7 @@ describe('pruneStaleConnections', () => {
       namespace: 'solana',
     })
     expect(setConnectionsMock).toHaveBeenCalledWith([], 'solana')
+    expect(removeConnectorIdMock).toHaveBeenCalledWith('solana')
   })
 
   it('drops every account of a multi-account record', () => {
@@ -75,6 +78,7 @@ describe('pruneStaleConnections', () => {
 
     expect(deleteAddressMock).not.toHaveBeenCalled()
     expect(setConnectionsMock).not.toHaveBeenCalled()
+    expect(removeConnectorIdMock).not.toHaveBeenCalled()
   })
 
   it.each(['connecting', 'reconnecting'] as const)('keeps the records while the restore is %s', (status) => {
@@ -92,6 +96,7 @@ describe('pruneStaleConnections', () => {
     pruneStaleConnections()
 
     expect(setConnectionsMock).not.toHaveBeenCalled()
+    expect(removeConnectorIdMock).not.toHaveBeenCalled()
   })
 
   it('prunes only the namespaces that lost their account', () => {
@@ -109,5 +114,16 @@ describe('pruneStaleConnections', () => {
 
     expect(setConnectionsMock).toHaveBeenCalledTimes(1)
     expect(setConnectionsMock).toHaveBeenCalledWith([], 'solana')
+    expect(removeConnectorIdMock).toHaveBeenCalledTimes(1)
+    expect(removeConnectorIdMock).toHaveBeenCalledWith('solana')
+  })
+
+  it('does not let a controller failure block the modal', () => {
+    mockNamespaces({ solana: { account: { status: 'disconnected' }, connections: [PHANTOM] } })
+    setConnectionsMock.mockImplementation(() => {
+      throw new Error('boom')
+    })
+
+    expect(() => pruneStaleConnections()).not.toThrow()
   })
 })

@@ -1,14 +1,15 @@
 import { useCallback } from 'react'
 
-import { useAppKit } from '@reown/appkit/react'
+import { logWallet, normalizeError } from '@cowprotocol/common-utils'
 
 import { pruneStaleConnections } from '../../reown/pruneStaleConnections'
+import { reownAppKit } from '../../wagmi/config'
 
 export function useOpenWalletConnectionModal(): () => void {
-  const { open } = useAppKit()
-
   return useCallback(() => {
     pruneStaleConnections()
-    open()
-  }, [open])
+    reownAppKit.open().catch((err: unknown) => {
+      logWallet.error(new Error('Failed to open the wallet connection modal', { cause: normalizeError(err) }))
+    })
+  }, [])
 }
