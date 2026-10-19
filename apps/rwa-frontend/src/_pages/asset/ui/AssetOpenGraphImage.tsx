@@ -5,15 +5,13 @@ import { getAssetSeoTokensLabel } from '../lib/assetSeo'
 import type { ImageResponse } from 'next/og'
 
 import { getAssetByTicker } from '@/entities/asset/index.server'
-import { renderOgImage, SITE_NAME } from '@/shared/lib/seo/index.server'
+import { renderOgImage } from '@/shared/lib/seo/index.server'
 
-export const ASSET_OPEN_GRAPH_IMAGE_ALT = `${SITE_NAME} tokenized asset`
-
-interface AssetOpenGraphImageProps {
+interface AssetOgImageRouteProps {
   params: Promise<{ ticker: string }>
 }
 
-export async function AssetOpenGraphImage({ params }: AssetOpenGraphImageProps): Promise<ImageResponse> {
+export async function getAssetOgImage(_request: Request, { params }: AssetOgImageRouteProps): Promise<ImageResponse> {
   const asset = getAssetByTicker((await params).ticker)
 
   if (!asset) notFound()

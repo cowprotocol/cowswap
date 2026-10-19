@@ -52,7 +52,7 @@ This file: rwa-frontend app-specific commands only.
 - A response built without upstream data sets `degraded: true` (`DegradableResponse` in `@/shared/api`). `jsonResponse` sends it with `no-store`, and the IndexedDB query persistence never saves it, so an outage can't overwrite the last good data.
 - The app is served at `https://swap.cow.fi/rwa` (`basePath`, `BASE_PATH` in `shared/config`), on the CoW Swap origin, to share localStorage and the wallet connection. Next.js prefixes `Link`, router and asset URLs, but not `fetch`, `next/image` `src` or metadata URLs: wrap those with `withBasePath`. Local dev runs at `http://localhost:3000/rwa`.
 - `robots.txt` belongs to the CoW Swap origin, so this app has none: `swap.cow.fi/robots.txt` must list `https://swap.cow.fi/rwa/sitemap.xml`.
-- Icons are a route handler (`/icons/[size]`), not the `icon`/`apple-icon` file conventions: Next.js leaves the `basePath` out of their links.
+- Icons (`/icons/[size]`) and Open Graph images (`/og-image`, `/asset/[ticker]/og-image`) are static route handlers, not the `icon`/`apple-icon`/`opengraph-image` file conventions: Next.js leaves the `basePath` out of their links, and resolves social images against the branch URL on Vercel previews. `buildPageMetadata` links them with absolute URLs (`DEPLOYMENT_URL`).
 - Asset pages are prerendered for upper-case tickers only (`dynamicParams = false`). `proxy.ts` redirects other casings.
 - The service worker (`public/sw.js`) is registered as `/rwa/sw.js?v=<NEXT_PUBLIC_APP_VERSION>` with the `/rwa` scope (allowed by the `Service-Worker-Allowed` header in `next.config.ts`), so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.
 

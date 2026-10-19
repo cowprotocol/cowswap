@@ -32,6 +32,7 @@ export async function generateMetadata({ params }: AssetPageProps): Promise<Meta
     title: getAssetSeoTitle(asset),
     description: getAssetSeoDescription(asset),
     path: `/asset/${asset.ticker}`,
+    image: { path: `/asset/${asset.ticker}/og-image`, alt: `${asset.title} (${asset.ticker})` },
   })
 }
 
