@@ -8,6 +8,8 @@ import { Trans } from '@lingui/react/macro'
 
 import { useSolanaTransferFeeBps } from 'common/hooks/useSolanaTransferFeeBps'
 
+const DENY_LISTED_REASON = 'token is deny listed'
+
 interface UnsupportedTokenReasonProps {
   chainId: SupportedChainId
   token: Token
@@ -26,6 +28,10 @@ export function UnsupportedTokenReason({ chainId, token, reason }: UnsupportedTo
         {symbol} charges a {feePercent}% fee on every transfer, which CoW Protocol does not support.
       </Trans>
     )
+  }
+
+  if (reason === DENY_LISTED_REASON) {
+    return <Trans>{symbol} is unsupported: the token is on the denylist.</Trans>
   }
 
   if (reason) {
