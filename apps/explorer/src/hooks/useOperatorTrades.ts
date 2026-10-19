@@ -10,8 +10,16 @@ import { Network, UiError } from 'types'
 import { transformTrade } from 'utils'
 
 import { getTrades, Order, RawTrade, Trade } from 'api/operator'
+import { getSlotTimestamp } from 'api/solanaOrderbook/solanaRpc'
 
 import { web3 } from '../explorer/api'
+
+type BlockTimestampsCache = { [blockNumber: number]: Promise<number> }
+
+type BlockTimestampSource = {
+  getTimestamp: (blockNumber: number) => Promise<number>
+  cache: BlockTimestampsCache
+}
 
 type Result = {
   /** The requested page of fills. */
@@ -23,7 +31,15 @@ type Result = {
 
 type TradesTimestamps = { [txHash: string]: number }
 
-const tradesTimestampsCache: { [blockNumber: number]: Promise<number> } = {}
+const EVM_BLOCK_TIMESTAMPS: BlockTimestampSource = {
+  getTimestamp: (blockNumber) => web3.eth.getBlock(blockNumber).then(({ timestamp }) => +timestamp),
+  cache: {},
+}
+
+const SOLANA_SLOT_TIMESTAMPS: BlockTimestampSource = {
+  getTimestamp: getSlotTimestamp,
+  cache: {},
+}
 
 type AllTradesResult = {
   // Undefined while unknown (loading, failed, or no order).
@@ -50,14 +66,14 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
 
   // Fetch blocks timestamps for the visible page only
   useEffect(() => {
-    if (!pageTrades.length) return
-    // `blockNumber` carries a slot there, which the EVM RPC behind `web3.eth.getBlock` cannot
-    // resolve. Fills keep a null `executionTime` until a Solana RPC does it.
-    if (networkId && isSolanaChain(networkId)) return
+    const isSolana = !!networkId && isSolanaChain(networkId)
+    const tradesToResolve = isSolana ? pageTrades.filter(({ blockNumber }) => blockNumber > 0) : pageTrades
+
+    if (!tradesToResolve.length) return
 
     let cancelled = false
 
-    fetchTradesTimestamps(pageTrades)
+    fetchTradesTimestamps(tradesToResolve, isSolana ? SOLANA_SLOT_TIMESTAMPS : EVM_BLOCK_TIMESTAMPS)
       // Merged, not replaced: a timestamp belongs to its tx, so earlier pages stay correct.
       .then((timestamps) => {
         if (!cancelled) setTradesTimestamps((current) => ({ ...current, ...timestamps }))
@@ -102,25 +118,35 @@ export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Res
   )
 }
 
-async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimestamps> {
+async function fetchTradesTimestamps(
+  rawTrades: RawTrade[],
+  { getTimestamp, cache }: BlockTimestampSource,
+): Promise<TradesTimestamps> {
   const requests = rawTrades.map(({ txHash, blockNumber }) => {
-    const cachedValue = tradesTimestampsCache[blockNumber]
+    const cachedValue = cache[blockNumber]
 
     if (cachedValue) {
       return cachedValue.then((timestamp) => ({ txHash, timestamp }))
     }
 
-    const request = web3.eth.getBlock(blockNumber).then(({ timestamp }) => +timestamp)
+    const request = getTimestamp(blockNumber).catch((err: unknown) => {
+      delete cache[blockNumber]
+      throw normalizeError(err)
+    })
 
-    tradesTimestampsCache[blockNumber] = request
+    cache[blockNumber] = request
 
     return request.then((timestamp) => ({ txHash, timestamp }))
   })
 
-  const data = await Promise.all(requests)
+  const results = await Promise.allSettled(requests)
 
-  return data.reduce((acc, val) => {
-    if (val.txHash) acc[val.txHash] = val.timestamp
+  return results.reduce((acc, result) => {
+    if (result.status === 'rejected') {
+      console.error('Trades timestamps fetching error: ', result.reason)
+    } else if (result.value.txHash) {
+      acc[result.value.txHash] = result.value.timestamp
+    }
 
     return acc
   }, {} as TradesTimestamps)

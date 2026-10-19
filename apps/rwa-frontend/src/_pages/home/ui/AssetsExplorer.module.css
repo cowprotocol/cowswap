@@ -1,0 +1,148 @@
+.explorer {
+  display: flex;
+  flex-direction: column;
+  padding: 0 8px 8px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 8px 12px;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  margin-right: auto;
+  overflow-x: auto;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-secondary);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tab[aria-selected='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.tabCount {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: 9px;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+
+.tab[aria-selected='true'] .tabCount {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.filterInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 260px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: text;
+}
+
+.filterInput:focus-within {
+  outline: 1px solid var(--color-accent);
+}
+
+.filterInput input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 14px;
+  outline: none;
+}
+
+.filterInput input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.filterControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.watchlistButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 20px;
+  background: var(--color-bg);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.watchlistButton:hover {
+  background: var(--color-surface);
+}
+
+.watchlistButton[aria-pressed='true'] {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .filterInput {
+    flex: 1 1 100%;
+    width: auto;
+  }
+}

@@ -1,0 +1,30 @@
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.logo,
+.placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.placeholder {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.chainBadge {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid var(--color-bg);
+  border-radius: 50%;
+  background: var(--color-bg);
+}
