@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-15 15:14\n"
+"PO-Revision-Date: 2026-10-19 08:36\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -94,6 +94,10 @@ msgstr "Comme vous utilisez un wallet smart contract, vous paierez des frais de 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "cancelled. Too many order cancellations"
 #~ msgstr "cancelled. Too many order cancellations"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartToggleButton.tsx
+msgid "Price chart is unavailable on this network."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
@@ -279,9 +283,9 @@ msgstr "Frais de réseau (estimés)"
 msgid "The account address which will/did receive the bought amount."
 msgstr "L’adresse du compte qui recevra ou a reçu le montant acheté."
 
-#: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
-#~ msgid "Volume"
-#~ msgstr "Volume"
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "Volume"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
@@ -333,6 +337,11 @@ msgstr "Les frais de réseau dépassent la valeur de chaque tranche : vous ne re
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
 #~ msgstr "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Chart settings"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "If you fall into any of these categories, select Cancel."
@@ -552,6 +561,7 @@ msgstr "SAISIR LE CODE"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 msgid "Open"
 msgstr "Ouvrir"
 
@@ -729,6 +739,10 @@ msgstr "Montant de vente par partie (1/{partsCount})"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 #~ msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 #~ msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Maximum width"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "generate"
@@ -1125,6 +1139,11 @@ msgstr "Tolérance au slippage personnalisée définie{amountRange}."
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Activating TWAP"
 msgstr "Activation de l’ordre TWAP"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "Market Cap"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/CustomRecipientWarningBanner/index.tsx
 msgid "Order recipient address differs from order owner!"
@@ -1729,6 +1748,10 @@ msgstr "<0>Nouveau !</0> Recevez des notifications Telegram concernant le statut
 msgid "Become an affiliate"
 msgstr "Devenir affilié"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Area chart"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 msgid "Insufficient {symbol} balance"
 msgstr "Solde de {symbol} insuffisant"
@@ -1848,6 +1871,10 @@ msgstr "Volume éligible"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 msgid "Insufficient <0><1/></0> balance detected."
 msgstr "Solde insuffisant en <0><1/></0> détecté."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Market Cap is an approximation based on the latest reported supply. Total Supply can include locked, burned, or otherwise non-circulating tokens. When disabled, Circulating Supply will be used."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "5 Minutes"
@@ -1979,6 +2006,10 @@ msgstr "En savoir plus sur la tokenomics"
 msgid "s"
 msgstr "s"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Price chart period"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Order Cancelled"
@@ -2023,6 +2054,10 @@ msgstr "Impact sur le prix dû aux niveaux de liquidité actuels ainsi qu’aux 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "You got an extra"
 msgstr "Vous avez reçu un surplus de"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+#~ msgid "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
+#~ msgstr "Market Cap is an approximation based on the latest reported supply. Total supply can include locked, burned, or otherwise non-circulating tokens."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapTradeConfirmationDetails.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
@@ -2600,6 +2635,11 @@ msgstr "Type d’ordre"
 msgid "Expired orders"
 msgstr "Ordres expirés"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartToggleButton.tsx
+msgid "Show price chart"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "Learn more."
 msgstr "En savoir plus."
@@ -2807,6 +2847,10 @@ msgstr "Révoquer l’approbation de {tokenSymbol}"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "Use the <0/> to see {orderTabLink}"
 #~ msgstr "Use the <0/> to see {orderTabLink}"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Chart Settings"
+msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/AppziButton/index.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateFeedbackButton.container.tsx
@@ -3488,6 +3532,10 @@ msgstr "placer un nouvel ordre"
 msgid "Not found"
 msgstr "Introuvable"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Candlestick chart"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 msgid "Disable Alpha Networks"
 msgstr "Désactiver les réseaux en version alpha"
@@ -3555,6 +3603,10 @@ msgstr "Délai de signature expiré"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 msgstr "Comme {accountProxyLabelString} n’est pas un smart contract évolutif, il peut comporter plusieurs versions. Il existe actuellement"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Total Supply for Market Cap"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "open"
@@ -4224,6 +4276,10 @@ msgstr "Pas maintenant"
 msgid "Start earning rewards when you trade."
 msgstr "Commencez à gagner des récompenses lorsque vous tradez."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartToggleButton.tsx
+msgid "Select a token to view its price chart."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/UnsupportedNetwork/OrdersTableUnsupportedNetworkContent.tsx
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Unsupported network"
@@ -4266,6 +4322,10 @@ msgstr "Vous pourriez obtenir <0><1/></0> de plus qu’avec un {swapOrderLink}"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Native currency (e.g ETH)"
 msgstr "Monnaie native (par ex. ETH)"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+#~ msgid "Show opening, closing, high, and low prices for each interval."
+#~ msgstr "Show opening, closing, high, and low prices for each interval."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 #~ msgid "Sell amount per part (1/{numOfParts})"
@@ -4932,6 +4992,10 @@ msgstr "Booooostez l’APR !"
 msgid "The output token cannot be transferred. There may be an issue with the output token. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 msgstr "Impossible de transférer le token de sortie. Ce token présente peut-être un problème. Remarque : les tokens avec frais de transfert et les tokens à rebase sont incompatibles avec Uniswap V3."
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartStatus.tsx
+msgid "Failed to load price history for {assetSymbol}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 #~ msgid "blocked activities"
 #~ msgstr "blocked activities"
@@ -5047,6 +5111,10 @@ msgstr "Cela peut être dû à l’absence de connexion Internet ou à la public
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWarnings/index.tsx
 #~ msgid "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
 #~ msgstr "For your convenience, token approval and order placement will be bundled into a single transaction, streamlining your experience!"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+#~ msgid "Total supply for Market Cap"
+#~ msgstr "Total supply for Market Cap"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "No open orders"
@@ -5766,6 +5834,10 @@ msgstr "Approuver"
 msgid "Execution time"
 msgstr "Date d’exécution"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartToggleButton.tsx
+msgid "Hide price chart"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Code already taken or wallet already linked."
 #~ msgstr "Code already taken or wallet already linked."
@@ -5860,6 +5932,10 @@ msgstr "Votre ordre se compose de <0>{parts, plural, one {# tranche} few {# tran
 msgid "Swap with Wrapped {nativeSymbol}"
 msgstr "Swapper avec du {nativeSymbol} wrappés"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettings.tsx
+msgid "Show or hide the price chart next to the trade form."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Analytics"
 msgstr "Données analytiques"
@@ -5936,6 +6012,8 @@ msgstr "Utilisez l’onglet Swap pour les trades qui n’impliquent aucun token 
 msgid "off-chain"
 msgstr "off-chain"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 msgid "Price"
@@ -6316,6 +6394,10 @@ msgstr "Saisir une adresse de token valide"
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #~ msgid "Confirm and continue"
 #~ msgstr "Confirm and continue"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartStatus.tsx
+msgid "Service unavailable"
+msgstr ""
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "vCOW conversion"
@@ -7510,6 +7592,10 @@ msgstr "Vous n’avez pas assez de {nativeCurrencySymbol} pour couvrir les frais
 #~ msgid "at least "
 #~ msgstr "at least "
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/ChartSettingsDropdown/index.tsx
+#~ msgid "Maximize price chart"
+#~ msgstr "Maximize price chart"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 msgid "Recover funds from {accountProxyLabelString}"
 msgstr "Récupérer des fonds depuis {accountProxyLabelString}"
@@ -7740,6 +7826,10 @@ msgstr "Swapper maintenant"
 msgid "Send to {networkName} wallet"
 msgstr "Envoyer vers le wallet {networkName}"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Price chart period: {period}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "Une erreur inattendue est survenue"
@@ -7936,9 +8026,17 @@ msgstr "l’ordre s’exécute à"
 msgid "Information"
 msgstr "Informations"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "Low"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 #~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 #~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
+msgid "Price chart asset"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
@@ -8114,6 +8212,10 @@ msgstr "rendement"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowQuoteId/QuoteVerificationIndicator.tsx
 msgid "Quote not yet verified by CoW Protocol simulation"
 msgstr "Cotation pas encore vérifiée par la simulation de CoW Protocol"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
+msgid "Chart metric"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "TWAP orders are now available for everyone, regardless of the wallet you use!"
@@ -8345,6 +8447,10 @@ msgstr "En approuvant un montant illimité, vous n’aurez à effectuer cette op
 msgid "Try Again"
 msgstr "Réessayer"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartStatus.tsx
+msgid "Loading price history for {assetSymbol}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/trade/services/wrapNativeSolana/solanaWrapUnwrapCallback.ts
 #~ msgid "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
 #~ msgstr "Unwrap {inputAmountStr} {wrapped} to {receiveAmountStr} {native}"
@@ -8467,6 +8573,10 @@ msgstr "Sélectionner"
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.ts
 #~ msgid "Order created"
 #~ msgstr "Order created"
+
+#: apps/cowswap-frontend/src/modules/priceChart/containers/PriceChart.container.tsx
+msgid "Price chart"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Route"
@@ -8821,6 +8931,10 @@ msgstr "Wrapper {inputSymbol}"
 msgid "Confirm Swap"
 msgstr "Confirmer le swap"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Expand the price chart to use more space."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #~ msgid "Save"
@@ -8901,6 +9015,10 @@ msgstr "Échec de la transaction"
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Autoriser CoW Swap à dépenser <0/> <1/>"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
+msgid "Price chart type"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "Trade notifications are not yet available on Solana."
@@ -9636,6 +9754,10 @@ msgstr "Retour à l’accueil"
 #~ msgid "Wallet chainId differs from app chainId. Wallet: {network}, App: {chainId}. Action: {description}"
 #~ msgstr "Wallet chainId differs from app chainId. Wallet: {network}, App: {chainId}. Action: {description}"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
+msgid "High"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 msgid "Refund started"
 msgstr "Remboursement lancé"
@@ -9645,6 +9767,7 @@ msgstr "Remboursement lancé"
 #: apps/cowswap-frontend/src/modules/application/containers/NetworkSelector/NetworkSelector.container.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartTooltip.tsx
 #: apps/cowswap-frontend/src/modules/solanaAlpha/pure/SolanaAlphaRiskModal/index.tsx
 #: libs/ui/src/pure/IconButton/close/CloseIconButton.pure.tsx
 msgid "Close"
