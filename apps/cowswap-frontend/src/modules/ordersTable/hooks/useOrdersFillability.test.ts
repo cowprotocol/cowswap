@@ -5,8 +5,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
-
 import { GenericOrder } from 'common/types'
 
 import { useOrdersFillability } from './useOrdersFillability'
@@ -76,29 +74,6 @@ describe('useOrdersFillability', () => {
     const { result } = renderHook(() => useOrdersFillability([order]))
 
     expect(result.current[order.id]?.hasEnoughBalance).toBe(true)
-  })
-
-  // FE-929: until the creating transaction lands there is nothing on chain to judge — the sell funds
-  // and the delegation both arrive with it. This covers a native sell, where the WSOL being sold is
-  // produced by that same transaction.
-  it('skips both checks while the creating transaction has not landed', () => {
-    mockFunding({}, {})
-
-    const order = buildOrder({ inputToken: wrappedNative, isNativeSell: true, status: OrderStatus.CREATING })
-    const { result } = renderHook(() => useOrdersFillability([order]))
-
-    expect(result.current[order.id]?.hasEnoughBalance).toBe(true)
-    expect(result.current[order.id]?.hasEnoughAllowance).toBe(true)
-  })
-
-  it('checks both again once the order is on chain', () => {
-    mockFunding({ [getAddressKey(usdc.address)]: 0n }, {})
-
-    const order = buildOrder({ status: OrderStatus.PENDING })
-    const { result } = renderHook(() => useOrdersFillability([order]))
-
-    expect(result.current[order.id]?.hasEnoughBalance).toBe(false)
-    expect(result.current[order.id]?.hasEnoughAllowance).toBeUndefined()
   })
 
   it('reads the sold token balance for a self-paid native sell', () => {

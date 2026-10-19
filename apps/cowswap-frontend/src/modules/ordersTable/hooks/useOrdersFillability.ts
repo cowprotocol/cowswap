@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { GenericOrder } from 'common/types'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 import { getIsAllowanceDeferredToSettlement } from 'utils/orderUtils/getIsAllowanceDeferredToSettlement'
-import { getIsOrderCreating } from 'utils/orderUtils/getIsOrderCreating'
+import { getIsWithinPlacementGrace } from 'utils/orderUtils/getIsWithinPlacementGrace'
 import { getOrderFundingToken } from 'utils/orderUtils/getOrderFundingToken'
 
 export interface OrderFillability {
@@ -43,11 +43,11 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
         allowance !== undefined && sellAmount !== undefined ? allowance >= sellAmount : undefined
 
       const hasEnoughBalance = balance !== undefined && sellAmount !== undefined ? balance >= sellAmount : undefined
-      const isCreating = getIsOrderCreating(order)
+      const isJustPlaced = getIsWithinPlacementGrace(chainId, order)
 
       acc[order.id] = {
-        hasEnoughBalance: isCreating ? true : hasEnoughBalance,
-        hasEnoughAllowance: isCreating || getIsAllowanceDeferredToSettlement(order) ? true : hasEnoughAllowance,
+        hasEnoughBalance: isJustPlaced ? true : hasEnoughBalance,
+        hasEnoughAllowance: isJustPlaced || getIsAllowanceDeferredToSettlement(order) ? true : hasEnoughAllowance,
         hasPermit: doesOrderHavePermit(order),
         order,
       }
