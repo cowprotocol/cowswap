@@ -162,6 +162,20 @@ describe('listAssets', () => {
     expect(page.items[2]).not.toHaveProperty('logoUrl')
   })
 
+  it('sorts by the 24h change of the RWA markets sparkline, not of a bad RWA markets tick', async () => {
+    getRwaMarketsMock.mockResolvedValue(
+      new Map([
+        ['nvidia', { ...NVDA_MARKET, change24h: -70 }],
+        ['apple', AAPL_MARKET],
+      ]),
+    )
+
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'change24h', order: 'desc' })
+
+    expect(tickers(page.items)).toEqual(['NVDA', 'AAPL', 'SPY'])
+    expect(page.items[0]?.market?.change24h).toBeCloseTo(((180 - 170) / 170) * 100)
+  })
+
   it('filters and counts the types with the other filters applied', async () => {
     const page = await listAssets({ page: 1, pageSize: 10, sort: 'priority', order: 'desc', type: 'index' })
 
@@ -203,7 +217,7 @@ describe('getAsset', () => {
     expect(asset?.degraded).toBe(false)
     expect(asset?.market).toEqual({
       price: 180,
-      change24h: 2,
+      change24h: expect.closeTo(((180 - 170) / 170) * 100),
       dayLow: 175,
       dayHigh: 182,
       marketCap: 1000,
