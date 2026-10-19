@@ -5,7 +5,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, isValidTokenListSource } from '@cowprotocol/common-utils'
 import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { environmentAtom, ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -64,9 +64,9 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   }
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onDismiss}>
+      <Modal.Header onBack={onBack} onClose={onDismiss}>
         <Trans>Manage</Trans>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.TabsContainer>
         <styledEl.Tab active$={isListsTab} onClick={setListsTab}>
           <Trans>Lists</Trans>

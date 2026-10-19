@@ -290,6 +290,7 @@ test.describe('Market Orders', () => {
       // Select "Partial approval" so the wallet requests a finite amount tied to the trade instead
       // of the default infinite (MaxUint256) approval — only then is there a "maximum sent" figure
       // to compare against.
+      await swapPage.expandApprovalAmount()
       await swapPage.approveModeSelector.getByText('Partial approval').click()
       const approvalAmount = await readTitledAmount(swapPage.approveModeSelector)
 
@@ -323,6 +324,8 @@ test.describe('Market Orders', () => {
 
     test('[CS-62] Buy order: ETH as sell token (ETH-flow buy not supported) @smoke', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
+      await swapPage.waitForBothCurrenciesResolved()
+      await expect(swapPage.inputAmount).toHaveValue('1')
 
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')

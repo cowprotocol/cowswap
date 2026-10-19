@@ -11,7 +11,7 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { TradeRows, useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -40,15 +40,18 @@ import {
 import { useTwapDemandAnalytics } from '../../hooks/useTwapDemandAnalytics'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { DeadlineSelector } from '../../pure/DeadlineSelector'
+import { DeadlineSelector } from '../../pure/DeadlineSelector/DeadlineSelector.pure'
+import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
-import { TwapFormWarnings } from '../TwapFormWarnings'
+import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
 
-export type { LabelTooltip, LabelTooltipItems } from './tooltips'
+export type { LabelTooltip, LabelTooltipContent, LabelTooltipFn, LabelTooltipItems } from './tooltips'
+export type { TotalDurationTooltipProps } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
+export { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
 
 interface TwapFormWidget {
   tradeWarnings: ReactNode
@@ -178,18 +181,16 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
   return (
     <>
       {!hideQuoteAmount && (
-        <>
-          <styledEl.FooterBox>
-            <RateInfo
-              label={tooltips.price.label}
-              rateInfoParams={rateInfoParams}
-              isInvertedState={isInvertedState}
-              fontSize={13}
-              rightAlign
-            />
-            {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-          </styledEl.FooterBox>
-        </>
+        <TradeRows>
+          <RateInfo
+            label={tooltips.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+            fontSize={13}
+            rightAlign
+          />
+          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+        </TradeRows>
       )}
 
       <TwapWorstAcceptedPriceInput
@@ -222,10 +223,9 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
           label={tooltips.totalDuration.label}
-          tooltip={renderTooltip(tooltips.totalDuration.tooltip, {
-            parts: numberOfPartsValue,
-            partDuration: timeInterval,
-          })}
+          tooltip={TotalDurationTooltip}
+          parts={numberOfPartsValue}
+          partDuration={timeInterval}
         />
 
         <TradeTextBox label={tooltips.partDuration.label} tooltip={tooltips.partDuration.tooltip}>
@@ -239,9 +239,13 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
           are pointless: only the warning explaining the block stays visible */}
       {!localFormValidation && tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      {isPrimaryValidationPassed && !localFormValidation && (
-        <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
-      )}
+
+      <TradeRows>
+        {isPrimaryValidationPassed && !localFormValidation && (
+          <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
+        )}
+      </TradeRows>
+
       {captcha}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}

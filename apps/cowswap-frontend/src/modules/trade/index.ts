@@ -12,12 +12,14 @@ export {
   useIsAlternativeOrderModalVisible,
 } from './state/alternativeOrder/hooks'
 export * from './utils/getCrossChainReceiveAmountInfo'
+export * from './utils/getIsNativeSellUnsupported'
 export * from './utils/getTotalCosts'
 export * from './utils/getOrderTypeReceiveAmounts'
 export * from './utils/tradeFlowAnalytics'
 export * from './utils/logger'
 export { addPendingOrderStep } from './utils/addPendingOrderStep'
 export * from './containers/TradeRouteRedirect'
+export { TradeRows, TradeRowsWide, tradeRowsWideStyles } from './containers/TradeWidget/TradeRows.styled'
 export * from './containers/TradeWidget'
 export * from './containers/TradeConfirmModal'
 export * from './containers/TradeWidgetLinks'
@@ -62,6 +64,9 @@ export * from './hooks/useIsSwapEth'
 export * from './hooks/useIsSafeEthFlow'
 export * from './hooks/useIsCurrentTradeBridging'
 export * from './hooks/useIsNonEvmBridging'
+export * from './hooks/useIsCustomRecipientDisabled'
+export * from './hooks/useIsSolanaSponsoredTrade'
+export * from './hooks/useIsFreeOrderPlacement'
 export * from './hooks/usePriorityTokenAddresses'
 export * from './hooks/useGetReceiveAmountInfo'
 export * from './hooks/useGetSwapReceiveAmountInfo'
@@ -101,7 +106,11 @@ export { estimateSolanaSigningDeadline } from './services/solanaSend/estimateSol
 export type { SolanaSigningDeadline } from './services/solanaSend/estimateSolanaSigningDeadline'
 export { SOLANA_MAX_APPROVE_AMOUNT } from './services/solanaApprove/const'
 export { sendSolanaFlow } from './services/solanaFlow/sendSolanaFlow'
-export { signSolanaFlow, getSigningWindowClosedError } from './services/solanaFlow/signSolanaFlow'
+export {
+  signSolanaFlow,
+  getSigningWindowClosedError,
+  SigningWindowClosedError,
+} from './services/solanaFlow/signSolanaFlow'
 export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
 export { planWrapStep } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'

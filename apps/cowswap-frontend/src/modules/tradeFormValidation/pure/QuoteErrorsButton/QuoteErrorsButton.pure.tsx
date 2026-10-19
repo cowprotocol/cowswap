@@ -8,6 +8,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 
+import { getTemporaryBridgeMinimumAmount } from './getTemporaryBridgeMinimumAmount.utils'
 import { getBridgeQuoteErrorTexts, getDefaultQuoteError } from './quoteErrors.utils'
 
 import { TradeFormButtonContext } from '../../types'
@@ -27,7 +28,11 @@ export function QuoteErrorsButton(props: TradeFormButtonContext): ReactNode {
 
   if (quote.error instanceof BridgeProviderQuoteError) {
     const errorMessage = quote.error.message as BridgeQuoteErrors
-    const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
+    const minimumBridgeAmount =
+      errorMessage === BridgeQuoteErrors.API_ERROR ? getTemporaryBridgeMinimumAmount(quote.error.context) : null
+    const errorText = minimumBridgeAmount
+      ? t`Minimum bridge amount is ${minimumBridgeAmount} (temporary)`
+      : bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
 
     return (
       <TradeFormBlankButton disabled={true}>

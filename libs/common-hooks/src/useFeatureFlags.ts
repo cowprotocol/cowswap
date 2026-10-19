@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
@@ -7,6 +9,7 @@ export interface FeatureFlags {
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
+  isWaitForCowsEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any
@@ -21,6 +24,11 @@ declare global {
 // const defaults: Partial<FeatureFlags> = {
 // }
 
+// Solana is not supported in the widget yet (e.g. partner fees)
+const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
+  isSolanaEnabled: false,
+}
+
 export function useFeatureFlags(): FeatureFlags {
   const flags = useFlags<FeatureFlags>()
 
@@ -34,8 +42,11 @@ export function useFeatureFlags(): FeatureFlags {
     return { ...flags, ...window.__COWSWAP_E2E_FEATURE_FLAGS__ }
   }, [flags])
 
-  if (e2eOverrideFlags) return e2eOverrideFlags
+  const resolvedFlags = e2eOverrideFlags ?? flags
 
-  return flags
+  return useMemo(
+    () => (isInjectedWidget() ? { ...resolvedFlags, ...WIDGET_FLAG_OVERRIDES } : resolvedFlags),
+    [resolvedFlags],
+  )
   // return { ...defaults, ...flags }
 }

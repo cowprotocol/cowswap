@@ -132,7 +132,7 @@ describe('planCreateLimitOrderStep', () => {
     expect(orderId).toBe('0xdeadbeef')
     expect(signingScheme).toBe(SigningScheme.PRESIGN)
     expect(step.instructions).toEqual(['CREATE_LIMIT_ORDER_IX'])
-    expect(step.createsOrder).toBe(true)
+    expect(step.createdOrderId).toBe('0xdeadbeef')
   })
 
   // A limit order creates the same order PDA as a swap; without this declaration the pre-flight

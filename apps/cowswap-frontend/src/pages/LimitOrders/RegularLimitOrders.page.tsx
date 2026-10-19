@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense, useCallback } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -60,7 +60,7 @@ export function RegularLimitOrdersPage(): ReactNode {
             >
               <Modal.Root className="trade-orders-table">
                 {isUpToLarge && (
-                  <ModalHeader
+                  <Modal.Header
                     sticky
                     title={t`Limit orders`}
                     titleAs={Dialog.Title}

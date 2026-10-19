@@ -86,21 +86,28 @@ export const FINAL_STATES: OrderProgressBarStepName[] = [
   OrderProgressBarStepName.CANCELLATION_FAILED,
 ]
 
+const TELEGRAM_NOTIFICATIONS_BENEFIT = msg`You can now get Telegram notifications when your trades execute! Sign up by tapping on the bell icon.`
+const TWAP_FOR_REGULAR_WALLETS_BENEFIT = msg`TWAP orders now work with regular wallets too, not just Safe!`
+
 export const COW_SWAP_BENEFITS = [
-  msg`CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price.`,
+  msg`CoW Swap solvers search Uniswap, 1inch, Matcha, and more to find you the best price!`,
   msg`CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.`,
-  msg`CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations.`,
+  msg`CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations!`,
   msg`CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs.`,
   msg`You can avoid price impact on large trades by using TWAP orders on CoW Swap.`,
-  msg`Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for.`,
+  msg`Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you can get more than you asked for!`,
   msg`On CoW Swap, you can set limit orders for balances you don't have yet.`,
-  msg`Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!`,
-  msg`Liquidity pools on CoW AMM grow faster than on other AMMs because they don't lose money to arbitrage bots.`,
+  TELEGRAM_NOTIFICATIONS_BENEFIT,
+  msg`CoW Swap passes more positive slippage on to users than other top exchanges.`,
   msg`CoW Swap has over 20 active solvers - more than any other exchange.`,
   msg`CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots.`,
-  msg`Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info.`,
-  msg`Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails.`,
+  msg`Advanced users can create complex, conditional orders directly through CoW Protocol. Read the docs for more info!`,
+  TWAP_FOR_REGULAR_WALLETS_BENEFIT,
 ]
+
+const SOLANA_BENEFITS = COW_SWAP_BENEFITS.filter(
+  (benefit) => benefit !== TELEGRAM_NOTIFICATIONS_BENEFIT && benefit !== TWAP_FOR_REGULAR_WALLETS_BENEFIT,
+)
 
 const availableChainsText = getAvailableChainsText()
 export const TRADE_ON_NEW_CHAINS_BENEFIT = msg`CoW Swap is live on ${availableChainsText}. Switch the network toggle in the nav bar for quick, cheap transactions.`
@@ -117,7 +124,7 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, MessageDescriptor
   [SupportedChainId.LINEA]: COW_SWAP_BENEFITS,
   [SupportedChainId.PLASMA]: COW_SWAP_BENEFITS,
   [SupportedChainId.INK]: COW_SWAP_BENEFITS,
-  [SupportedChainId.SOLANA]: COW_SWAP_BENEFITS,
+  [SupportedChainId.SOLANA]: SOLANA_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [

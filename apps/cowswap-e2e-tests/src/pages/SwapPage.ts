@@ -51,6 +51,7 @@ export class SwapPage implements TradePage {
   readonly recipientConfirmationCheckbox: Locator
   /** `TradeApproveButton`'s toggle between "Partial approval" (a finite, trade-tied amount) and infinite (MaxUint256). */
   readonly approveModeSelector: Locator
+  readonly approvalAmountToggle: Locator
   readonly settingsDialogButton: Locator
   readonly tradeFormActionButton: Locator
   readonly slippageInput: Locator
@@ -123,6 +124,7 @@ export class SwapPage implements TradePage {
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
     this.approveModeSelector = page.locator(`[data-testid="${TEST_IDS.approveModeSelector}"]`)
+    this.approvalAmountToggle = page.locator(`[data-testid="${TEST_IDS.approvalAmountToggle}"]`)
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
     this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
     this.slippageInput = page.locator('#slippage-input')
@@ -221,6 +223,13 @@ export class SwapPage implements TradePage {
   async clickPrimaryAction(): Promise<void> {
     await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
+  }
+
+  async expandApprovalAmount(): Promise<void> {
+    if ((await this.approvalAmountToggle.getAttribute('aria-expanded')) !== 'true') {
+      await this.approvalAmountToggle.click()
+    }
+    await expect(this.approveModeSelector).toBeVisible()
   }
 
   async dismissOrderProgressModal(): Promise<void> {

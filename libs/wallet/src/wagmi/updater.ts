@@ -16,6 +16,7 @@ import ms from 'ms.macro'
 import { useAccountState } from './hooks/useAccountState'
 import { useAccountType, useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
+import { useSyncReownNetworkWhileDisconnected } from './hooks/useSyncReownNetworkWhileDisconnected'
 import { useIsSafeApp, useWalletMetaData } from './hooks/useWalletMetadata'
 
 import { useIsMetamaskBrowserExtensionWallet } from '../api/hooks'
@@ -136,6 +137,8 @@ export function WalletUpdater(): null {
   const setWalletInfo = useSetAtom(walletInfoAtom)
   const setWalletDetails = useSetAtom(walletDetailsAtom)
   const setGnosisSafeInfo = useSetAtom(gnosisSafeInfoAtom)
+
+  useSyncReownNetworkWhileDisconnected(chainId, !!active)
 
   useEffect(() => {
     setWalletInfo({ chainId, active, account, connector })

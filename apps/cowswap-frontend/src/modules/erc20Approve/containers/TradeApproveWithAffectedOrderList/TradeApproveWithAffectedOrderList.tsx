@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
 import { usePermitInfo } from 'modules/permit'
+import { TradeRowsWide } from 'modules/trade'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
@@ -66,13 +67,16 @@ export function TradeApproveWithAffectedOrderList({
         <TradeApproveToggle
           updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
           amountToApprove={partialAmountToApprove}
+          wideDetails
         />
       )}
       {showAffectedOrders && currencyToApprove && (
-        <ActiveOrdersWithAffectedPermit
-          currency={currencyToApprove}
-          approvalTarget={approvalTarget ?? 'vault-relayer'}
-        />
+        <TradeRowsWide>
+          <ActiveOrdersWithAffectedPermit
+            currency={currencyToApprove}
+            approvalTarget={approvalTarget ?? 'vault-relayer'}
+          />
+        </TradeRowsWide>
       )}
     </>
   )

@@ -8,8 +8,8 @@ import {
   ButtonOutlined,
   ButtonPrimary,
   InlineBanner,
-  ModalHeader,
   StatusColorVariant,
+  Modal,
 } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
@@ -34,9 +34,9 @@ export function SolanaAlphaRiskModal(props: SolanaAlphaRiskModalProps): ReactNod
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader>
+      <Modal.Header>
         <Trans>CoW Swap on Solana is in Alpha</Trans>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.Contents>
         <styledEl.NetworkBlock>
           <styledEl.NetworkLogo

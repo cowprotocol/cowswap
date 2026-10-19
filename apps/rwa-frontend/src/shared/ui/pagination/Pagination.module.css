@@ -1,0 +1,24 @@
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px 0;
+}
+
+.pagination button {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  font-weight: 500;
+}
+
+.pagination button:not(:disabled):hover {
+  background: var(--color-surface);
+}
+
+.pagination span {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}

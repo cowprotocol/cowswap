@@ -30,6 +30,8 @@ interface SettingsTabProps {
   partialApprovalLocked?: boolean
   isRecipientToggleDisabled?: boolean
   isRecipientToggleHidden?: boolean
+  /** Appended to the Custom Recipient tooltip to say why the toggle is greyed out. */
+  recipientToggleDisabledNote?: ReactNode
   isHooksToggleDisabled?: boolean
 }
 
@@ -43,6 +45,7 @@ export function SettingsDropdown({
   partialApprovalLocked = false,
   isRecipientToggleDisabled = false,
   isRecipientToggleHidden = false,
+  recipientToggleDisabledNote,
   isHooksToggleDisabled = false,
 }: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
@@ -101,7 +104,19 @@ export function SettingsDropdown({
                   <SettingsBox
                     id="toggle-recipient-mode-button"
                     title={t`Custom Recipient`}
-                    tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
+                    tooltip={
+                      <>
+                        <Trans>
+                          Allows you to choose a destination address for the swap other than the connected one.
+                        </Trans>
+                        {recipientToggleDisabledNote && (
+                          <>
+                            <br />
+                            {recipientToggleDisabledNote}
+                          </>
+                        )}
+                      </>
+                    }
                     checked={recipientToggleVisible}
                     toggle={toggleRecipientVisibility}
                     disabled={isRecipientToggleDisabled}

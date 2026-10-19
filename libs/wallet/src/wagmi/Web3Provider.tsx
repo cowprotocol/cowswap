@@ -6,7 +6,7 @@ import { SafeProvider } from '@safe-global/safe-apps-react-sdk'
 
 import { reownAppKit, wagmiAdapter } from './config'
 
-import { OPEN_WALLET_MODAL_EVENT } from '../constants'
+import { OPEN_WALLET_MODAL_EVENT, type OpenWalletModalEventDetail } from '../constants'
 import { flushDeferredProviders } from '../providerIsolation'
 
 interface Web3ProviderProps {
@@ -25,8 +25,9 @@ export function Web3Provider({ children }: Web3ProviderProps): ReactNode {
 
 function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
-    const handler = (): void => {
-      reownAppKit?.open({ view: 'Connect' })
+    const handler = (event: Event): void => {
+      const detail: OpenWalletModalEventDetail | undefined = event instanceof CustomEvent ? event.detail : undefined
+      reownAppKit?.open({ view: 'Connect', namespace: detail?.namespace })
       flushDeferredProviders()
     }
     document.addEventListener(OPEN_WALLET_MODAL_EVENT, handler)

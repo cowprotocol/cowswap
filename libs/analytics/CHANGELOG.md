@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.14.0...analytics-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/types@4.13.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/analytics-v3.13.0...analytics-v3.14.0) (2026-10-06)
 
 ### Minor Changes

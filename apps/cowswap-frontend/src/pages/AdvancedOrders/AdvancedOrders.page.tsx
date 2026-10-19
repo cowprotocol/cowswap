@@ -3,7 +3,7 @@ import { ReactNode, Suspense, useCallback } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -124,7 +124,7 @@ export function AdvancedOrdersPage(): ReactNode {
               >
                 <Modal.Root className="trade-orders-table">
                   {isUpToLarge && (
-                    <ModalHeader
+                    <Modal.Header
                       sticky
                       title={t`TWAP orders`}
                       titleAs={Dialog.Title}

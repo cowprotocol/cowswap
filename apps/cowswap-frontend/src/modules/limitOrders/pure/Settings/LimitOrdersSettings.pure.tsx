@@ -12,9 +12,9 @@ import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { useIsInfiniteApproveDisabledInWidget } from 'modules/injectedWidget'
+import { useIsInfiniteApproveDisabled } from 'modules/erc20Approve'
 import { PriceChartSettings } from 'modules/priceChart'
-import { getOrdersTableSettings, SettingsContainer } from 'modules/trade'
+import { getOrdersTableSettings, SettingsContainer, useIsCustomRecipientLockedOnSolana } from 'modules/trade'
 
 import * as styledEl from './LimitOrdersSettings.styled'
 
@@ -34,7 +34,8 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
   const { disableCustomRecipient } = useInjectedWidgetParams()
-  const isPartialApprovalLockedByWidget = useIsInfiniteApproveDisabledInWidget()
+  const isRecipientLockedOnSolana = useIsCustomRecipientLockedOnSolana()
+  const isPartialApprovalLocked = useIsInfiniteApproveDisabled()
   const {
     showRecipient,
     partialFillsEnabled,
@@ -109,9 +110,20 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             {!disableCustomRecipient && (
               <SettingsBox
                 title={t`Custom Recipient`}
-                tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
-                checked={showRecipient}
+                tooltip={
+                  <>
+                    <Trans>Allows you to choose a destination address for the swap other than the connected one.</Trans>
+                    {isRecipientLockedOnSolana && (
+                      <>
+                        <br />
+                        <Trans>Custom recipients are not available on Solana yet.</Trans>
+                      </>
+                    )}
+                  </>
+                }
+                checked={isRecipientLockedOnSolana ? false : showRecipient}
                 toggle={handleRecipientToggle}
+                disabled={isRecipientLockedOnSolana}
               />
             )}
 
@@ -150,9 +162,9 @@ export function LimitOrdersSettingsDropdown({ state, onStateChanged }: SettingsP
             <SettingsBox
               title={t`Enable Partial Approvals`}
               tooltip={t`Allows you to set partial token approvals instead of full approvals.`}
-              checked={isPartialApprovalLockedByWidget ? true : enablePartialApprovalBySettings}
+              checked={isPartialApprovalLocked ? true : enablePartialApprovalBySettings}
               toggle={handlePartialApprovalToggle}
-              disabled={isPartialApprovalLockedByWidget}
+              disabled={isPartialApprovalLocked}
             />
           </SettingsBoxGroup>
         </SettingsDropdownSection>
