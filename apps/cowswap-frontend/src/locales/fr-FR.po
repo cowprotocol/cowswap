@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-19 08:36\n"
+"PO-Revision-Date: 2026-10-19 15:04\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2200,6 +2200,10 @@ msgstr "Récent"
 msgid "Recipient override"
 msgstr "Remplacement du destinataire"
 
+#: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
+msgid "Info"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Market price"
 msgstr "Prix du marché"
@@ -2661,6 +2665,10 @@ msgstr "Effacer la sélection"
 msgid "TVL"
 msgstr "TVL"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+msgid "· Joins batch in <0/>"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
 msgid "Unlimited one-time"
 msgstr "Illimité, en une seule fois"
@@ -2946,6 +2954,10 @@ msgstr "Pour continuer, cliquez sur SWAP ci-dessous afin d’utiliser votre sold
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 #~ msgstr "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "Minimum {minMinutes} min, maximum {maxMinutes} min."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "An order's actual execution price will vary based on the market price and network fees and costs."
@@ -3264,6 +3276,10 @@ msgstr "Natif"
 msgid "To sign the transaction in your wallet"
 msgstr "Pour signer la transaction dans votre wallet"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/AuctionCountdown.pure.tsx
+msgid "Until your order enters the auction"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #~ msgid "Loading tokens..."
 #~ msgstr "Loading tokens..."
@@ -3509,6 +3525,10 @@ msgstr "Impossible de récupérer le manifeste depuis {manifestUrl}. Vérifiez l
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Order executes at"
 msgstr "L’ordre s’exécute à"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "With Wait for CoWs, expiration starts after the next batch (~<0/>). Total time until expiry ≈ <1/>."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.container.tsx
 msgid "Trade alert settings"
@@ -4292,6 +4312,10 @@ msgstr "Réseau non pris en charge"
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
 #~ msgstr "You and your referrals can earn a flat fee <0/> for the eligible volume done through the app. link."
+
+#: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
+#~ msgid "· Joins batch in {joinsBatchInLabel}"
+#~ msgstr "· Joins batch in {joinsBatchInLabel}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Batching orders"
@@ -5912,6 +5936,7 @@ msgstr "Voir les offres d’emploi (s’ouvre dans un nouvel onglet)"
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderEstimatedExecutionPrice/OrderEstimatedExecutionPrice.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
+#: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
 msgid "Alert"
 msgstr "Alerte"
 
@@ -6083,6 +6108,10 @@ msgstr "Les frais de réseau actuels représentent <0><1>{formattedFeePercentage
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTrader/AffiliateTraderUnsupportedNetwork.tsx
 msgid "Switch network"
 msgstr "Changer de réseau"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+msgid "With Wait for CoWs, expiration starts after the next batch. Total time until expiry is the batch wait plus this expiration."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "Hooks buy order"
@@ -6296,6 +6325,10 @@ msgstr "Action"
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
 msgstr "Swapper avec"
+
+#: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
+msgid "Help"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Current network fees"
@@ -6807,6 +6840,10 @@ msgstr "Aucun ordre ouvert trouvé parmi vos {limit} ordres les plus récents."
 msgid "Chain Id from contracts should match (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
 msgstr "Les identifiants de chaîne des contrats doivent correspondre (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
 
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "With Wait for CoWs, your swap stays open for this duration after it joins the next batch. Total time until expiry is the batch wait plus this expiration."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Back to wallet selection"
 msgstr "Retour à la sélection du wallet"
@@ -6938,11 +6975,9 @@ msgstr "Solde"
 msgid "No networks match {chainQuery}."
 msgstr "Aucun réseau ne correspond à {chainQuery}."
 
-#. placeholder {0}: deadlineRangeParams.minMinutes
-#. placeholder {1}: deadlineRangeParams.maxMinutes
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
-msgid "Minimum {0} min, maximum {1} min."
-msgstr "Minimum {0} min, maximum {1} min."
+#~ msgid "Minimum {0} min, maximum {1} min."
+#~ msgstr "Minimum {0} min, maximum {1} min."
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "Swap at most {inputAmountValue} {inputSymbol} for {outputAmountValue} {outputSymbol}"
@@ -6957,8 +6992,8 @@ msgstr "Le swap n’a pas respecté l’invariant x*y=k d’Uniswap. Cela signif
 #~ msgstr "Transaction rejected"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
-msgid "· Joins batch in 6m 42s"
-msgstr ""
+#~ msgid "· Joins batch in 6m 42s"
+#~ msgstr "· Joins batch in 6m 42s"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "dynamic"
@@ -7508,6 +7543,10 @@ msgstr "{twapOrderN, plural, one {Ordre TWAP divisé en # tranche} few {Ordre TW
 #: apps/cowswap-frontend/src/pages/games/CowRunner/index.tsx
 msgid "Sandwich icon"
 msgstr "Icône de sandwich"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
+#~ msgid "With Wait for CoWs, expiration starts after the next batch (~{batchWaitLabel}). Total time until expiry ≈ {totalExpiryLabel}."
+#~ msgstr "With Wait for CoWs, expiration starts after the next batch (~{batchWaitLabel}). Total time until expiry ≈ {totalExpiryLabel}."
 
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping {sentAmount} to {receivedAmount}"
