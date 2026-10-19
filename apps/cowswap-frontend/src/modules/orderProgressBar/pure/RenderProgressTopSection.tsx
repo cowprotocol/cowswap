@@ -26,6 +26,8 @@ interface ProgressContentProps {
   surplusPercentValue: string
   randomBenefit: string
   shouldShowSurplus: boolean
+  auctionValidFrom?: number
+  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 const AnimatePresence = lazy(() => import('framer-motion').then((r) => ({ default: r.AnimatePresence })))
@@ -38,8 +40,12 @@ export function RenderProgressTopSection({
   chainId,
   surplusData,
   debugForceShowSurplus = false,
+  auctionValidFrom,
+  onAuctionRemainingChange,
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
+  auctionValidFrom?: number
+  onAuctionRemainingChange?: (remainingSec: number) => void
 }): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -73,6 +79,8 @@ export function RenderProgressTopSection({
     surplusPercentValue,
     randomBenefit,
     shouldShowSurplus,
+    auctionValidFrom: stepName === OrderProgressBarStepName.INITIAL ? auctionValidFrom : undefined,
+    onAuctionRemainingChange,
   }
 
   return (
@@ -102,6 +110,8 @@ function ProgressContent({
   surplusPercentValue,
   randomBenefit,
   shouldShowSurplus,
+  auctionValidFrom,
+  onAuctionRemainingChange,
 }: ProgressContentProps): ReactNode {
   if (!isLayoutReady) {
     return <ProgressSkeleton />
@@ -134,6 +144,8 @@ function ProgressContent({
               surplusPercentValue={surplusPercentValue}
               randomBenefit={randomBenefit}
               shouldShowSurplus={shouldShowSurplus}
+              auctionValidFrom={auctionValidFrom}
+              onAuctionRemainingChange={onAuctionRemainingChange}
             />
           )}
         </MotionDiv>

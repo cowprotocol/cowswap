@@ -4,7 +4,6 @@ import { t } from '@lingui/core/macro'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeFees, TradeTotalCostsDetails, useIsFreeOrderPlacement } from 'modules/trade'
-import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
@@ -77,13 +76,10 @@ export function TradeRateDetails({
           rightAlign
           fontSize={13}
           fontBold
-          labelBold
           mutedValue
         />
-        <Box noMargin>
-          {tradeFees}
-          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-        </Box>
+        {tradeFees}
+        {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
       </>
     )
   }

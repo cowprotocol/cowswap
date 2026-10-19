@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { TooltipIcon } from '@cowprotocol/ui'
@@ -8,13 +8,14 @@ import SVG from 'react-inlinesvg'
 
 import * as styledEl from './WaitAndSaveRow.styled'
 
-export function WaitAndSaveRow(): ReactNode {
-  const { t } = useLingui()
-  const [isEnabled, setIsEnabled] = useState(false)
+export interface WaitAndSaveRowProps {
+  isEnabled: boolean
+  toggle: () => void
+  joinsBatchInRef: RefObject<HTMLElement | null>
+}
 
-  const toggle = useCallback(() => {
-    setIsEnabled((prev) => !prev)
-  }, [])
+export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSaveRowProps): ReactNode {
+  const { t } = useLingui()
 
   return (
     <styledEl.Wrapper>
@@ -41,7 +42,9 @@ export function WaitAndSaveRow(): ReactNode {
               <Trans>Save $2.50</Trans>
             </styledEl.SaveAmount>
             <styledEl.NextBatch>
-              <Trans>· Joins batch in 6m 42s</Trans>
+              <Trans>
+                · Joins batch in <span ref={joinsBatchInRef} />
+              </Trans>
             </styledEl.NextBatch>
           </styledEl.DescriptionRow>
         </styledEl.TextColumn>
