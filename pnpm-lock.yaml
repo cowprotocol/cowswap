@@ -2467,12 +2467,6 @@ importers:
         version: 19.1.2(react@19.1.2)
 
 packages:
-  lightweight-charts@5.2.1:
-    resolution: {integrity: sha512-IVwoK1RLFiLPubaKIjNbtjWLnpPMqiABSrTay6whmNa8L1+19292VtHJ+BWyPUuLCwF0tcQlhEWd1CLB2a1nsQ==}
-
-  fancy-canvas@2.1.0:
-    resolution: {integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==}
-
 
   '@1inch/permit-signed-approvals-utils@1.5.2':
     resolution: {integrity: sha512-M3l1YdSSzdsRTusiPkcfgCQ25ZLJeC41LUWDOrunGMpl4F/D058FtXk0e5lxMJ7Wi+CmIKxmm7KVUFtIiEi1dw==}
@@ -19116,12 +19110,6 @@ packages:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
-  lightweight-charts@5.2.1:
-    dependencies:
-      fancy-canvas: 2.1.0
-
-  fancy-canvas@2.1.0: {}
-
 
   '@1inch/permit-signed-approvals-utils@1.5.2(bufferutil@4.0.8)(utf-8-validate@5.0.10)':
     dependencies:
