@@ -1,0 +1,30 @@
+diff --git a/dist/esm/src/views/w3m-connecting-external-view/index.js b/dist/esm/src/views/w3m-connecting-external-view/index.js
+index 72701d9..fef963b 100644
+--- a/dist/esm/src/views/w3m-connecting-external-view/index.js
++++ b/dist/esm/src/views/w3m-connecting-external-view/index.js
+@@ -5,7 +5,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
+     return c > 3 && r && Object.defineProperty(target, key, r), r;
+ };
+ import { ConstantsUtil as CommonConstantsUtil, ErrorUtil } from '@reown/appkit-common';
+-import { AppKitError, ConnectionController, ConnectionControllerUtil, ConnectorController, EventsController, ModalController, OptionsController, RouterController, SnackController } from '@reown/appkit-controllers';
++import { AppKitError, ChainController, ConnectionController, ConnectionControllerUtil, ConnectorController, EventsController, ModalController, OptionsController, RouterController, SnackController } from '@reown/appkit-controllers';
+ import { customElement } from '@reown/appkit-ui';
+ import { HelpersUtil } from '@reown/appkit-utils';
+ import { W3mConnectingWidget } from '../../utils/w3m-connecting-widget/index.js';
+@@ -124,6 +124,16 @@ let W3mConnectingExternalView = class W3mConnectingExternalView extends W3mConne
+         }
+     }
+     isAlreadyConnected(connector) {
++        /*
++         * A connection record for a namespace that has no account is left over from a restore that
++         * never produced one: the adapter re-adds records from storage on every boot, and
++         * disconnectConnector() skips removing them while the namespace has no address. Treating
++         * those as "already linked" makes onConnectProxy() a no-op, so the wallet can never be
++         * selected again.
++         */
++        if (!ChainController.getAccountData(connector?.chain)?.caipAddress) {
++            return false;
++        }
+         return (Boolean(connector) &&
+             this.connectionsByNamespace.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)));
+     }
