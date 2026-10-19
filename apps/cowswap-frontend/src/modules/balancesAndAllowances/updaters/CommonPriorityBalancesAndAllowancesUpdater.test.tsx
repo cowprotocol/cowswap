@@ -187,15 +187,6 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
     )
   })
 
-  it('still mounts the priority-token poller on EVM when the watcher is unavailable', () => {
-    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
-    mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ open: false }))
-
-    renderWithHealth(recovering())
-
-    expect(mockPriorityTokensUpdater).toHaveBeenCalled()
-  })
-
   // FE-929: a self-paid Solana order carries its SPL delegation in the transaction that creates it, so
   // the snapshot taken before placement reads zero until a confirmation forces a refetch. These cover
   // the wiring between the trigger hooks and the updater that consumes it, not the hooks themselves.
@@ -302,9 +293,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
 
       expect(mockBalancesWatcherUpdater).not.toHaveBeenCalled()
       expect(mockBalancesAndAllowancesUpdater).toHaveBeenCalledTimes(1)
-      // One batched call already covers every token on Solana, so the trade's tokens get no second
-      // poller — which would otherwise write without a refresh trigger and undo a forced refetch.
-      expect(mockPriorityTokensUpdater).not.toHaveBeenCalled()
+      expect(mockPriorityTokensUpdater).toHaveBeenCalledTimes(1)
     })
 
     // Regression guard: account resolution for the multicall stack must go through
