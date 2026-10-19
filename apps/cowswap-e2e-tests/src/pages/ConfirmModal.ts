@@ -7,7 +7,7 @@ export class ConfirmModal {
   readonly root: Locator
   readonly confirmButton: Locator
   readonly submittingButton: Locator
-  readonly priceUpdatedBanner: Locator
+  readonly acceptPriceUpdateButton: Locator
   readonly minimumReceive: Locator
 
   constructor(page: Page) {
@@ -15,7 +15,7 @@ export class ConfirmModal {
     this.root = page.locator('#trade-confirmation')
     this.confirmButton = page.locator('#trade-confirmation > button')
     this.submittingButton = page.locator('#trade-confirmation > button[aria-busy="true"]')
-    this.priceUpdatedBanner = page.getByText(/price updated/i)
+    this.acceptPriceUpdateButton = this.root.getByRole('button', { name: /^accept$/i })
     this.minimumReceive = page.getByText(/minimum receive/i)
   }
 
@@ -35,8 +35,8 @@ export class ConfirmModal {
   /**
    * A background quote refresh can land while this modal is open (`useTradeQuotePolling`'s
    * periodic-refresh effect isn't gated on the confirm modal being open) and flips `isPriceChanged`
-   * true, disabling `confirmButton` until the "price updated" banner is dismissed. It can land between
-   * Playwright's enabled check and the click, turning the click into a silent no-op, so re-click until
+   * true, disabling `confirmButton` until the "Price updated" banner's Accept is clicked. It can land
+   * between Playwright's enabled check and the click, turning the click into a silent no-op, so re-click until
    * the button reports `aria-busy` (set on the same render as a click that went through) or the modal
    * moves on. A disabled or busy button is never clicked, so a landed click can't be sent twice.
    */
@@ -49,8 +49,8 @@ export class ConfirmModal {
     await expect(async () => {
       if (await isSubmitted()) return
 
-      if (await this.priceUpdatedBanner.isVisible()) {
-        await this.priceUpdatedBanner.click()
+      if (await this.acceptPriceUpdateButton.isVisible()) {
+        await this.acceptPriceUpdateButton.click()
       }
       await this.confirmButton.click({ timeout: 2_000 })
       await expect.poll(isSubmitted, { timeout: 3_000 }).toBe(true)
