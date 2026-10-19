@@ -4,9 +4,12 @@ import { notFound } from 'next/navigation'
 
 import { AssetView } from './AssetView'
 
+import { getAssetSeoDescription, getAssetSeoTitle } from '../lib/assetSeo'
+
 import type { Metadata } from 'next'
 
 import { getAssetByTicker, getAssets } from '@/entities/asset/index.server'
+import { buildPageMetadata } from '@/shared/lib/seo/index.server'
 
 interface AssetPageProps {
   params: Promise<{ ticker: string }>
@@ -23,7 +26,13 @@ export async function AssetPage({ params }: AssetPageProps): Promise<ReactNode> 
 export async function generateMetadata({ params }: AssetPageProps): Promise<Metadata> {
   const asset = getAssetByTicker((await params).ticker)
 
-  return { title: asset ? `${asset.title} (${asset.ticker})` : 'Asset not found' }
+  if (!asset) return { title: 'Asset not found' }
+
+  return buildPageMetadata({
+    title: getAssetSeoTitle(asset),
+    description: getAssetSeoDescription(asset),
+    path: `/asset/${asset.ticker}`,
+  })
 }
 
 export function generateStaticParams(): { ticker: string }[] {

@@ -27,6 +27,7 @@ This file: rwa-frontend app-specific commands only.
 - `NEXT_PUBLIC_WC_PROJECT_ID`: Reown project id (defaults to the cowswap-frontend one).
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
 - `NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL`: balances watcher API (defaults to `https://balances-watcher.cow.fi`).
+- `NEXT_PUBLIC_SITE_ORIGIN`: origin that serves the app under `/rwa`, used for canonical links, Open Graph and the sitemap (defaults to `https://swap.cow.fi`). Only `VERCEL_ENV=production` is indexable: other deployments get `noindex`.
 - `NEXT_PUBLIC_RWA_TOKEN_LIST_URL`: hosted copy of `/api/v1/token-list` for the balances watcher, which only accepts lists from `files.cow.fi` and `raw.githubusercontent.com`. Without it the list's tokens are sent as `customTokens`.
 
 ## App rules
@@ -49,8 +50,11 @@ This file: rwa-frontend app-specific commands only.
 - Every CoinGecko response is cached per URL with `unstable_cache` (`shared/api/coingecko/coingeckoClient.ts`), never with `fetch` `next.revalidate`. Next keeps serving a stale entry when its refresh fails, and `withRetryBackoff` spaces the upstream retries of a failing URL: 60s, 120s, 240s and so on, up to an hour, per server instance. Concurrent requests for a URL share one upstream call, which times out after 10s. Only OHLCV treats a 404 as data (`allowNotFound`); elsewhere it's a failure, so it never replaces a good entry. When a cached CoinGecko payload changes shape, bump `RESPONSE_CACHE_KEY` there.
 - `/coins/markets` and onchain `tokens/multi` are requested in batches cut from every registry coin id (250) or token address on a network (30), so assets of the same batch share one cache entry. Pass the registry list as `batchIds`/`batchAddresses`, not the ids of a single asset.
 - A response built without upstream data sets `degraded: true` (`DegradableResponse` in `@/shared/api`). `jsonResponse` sends it with `no-store`, and the IndexedDB query persistence never saves it, so an outage can't overwrite the last good data.
+- The app is served at `https://swap.cow.fi/rwa` (`basePath`, `BASE_PATH` in `shared/config`), on the CoW Swap origin, to share localStorage and the wallet connection. Next.js prefixes `Link`, router and asset URLs, but not `fetch`, `next/image` `src` or metadata URLs: wrap those with `withBasePath`. Local dev runs at `http://localhost:3000/rwa`.
+- `robots.txt` belongs to the CoW Swap origin, so this app has none: `swap.cow.fi/robots.txt` must list `https://swap.cow.fi/rwa/sitemap.xml`.
+- Icons are a route handler (`/icons/[size]`), not the `icon`/`apple-icon` file conventions: Next.js leaves the `basePath` out of their links.
 - Asset pages are prerendered for upper-case tickers only (`dynamicParams = false`). `proxy.ts` redirects other casings.
-- The service worker (`public/sw.js`) is registered as `/sw.js?v=<NEXT_PUBLIC_APP_VERSION>`, so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.
+- The service worker (`public/sw.js`) is registered as `/rwa/sw.js?v=<NEXT_PUBLIC_APP_VERSION>` with the `/rwa` scope (allowed by the `Service-Worker-Allowed` header in `next.config.ts`), so each deploy gets fresh caches. It never caches `/api/`, because IndexedDB holds that data.
 
 ## Architecture: Feature-Sliced Design
 
