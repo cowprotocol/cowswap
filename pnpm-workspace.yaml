@@ -8,3 +8,4 @@ patchedDependencies:
   '@reown/appkit-controllers@1.8.19': patches/@reown__appkit-controllers@1.8.19.patch
   '@wagmi/connectors@8.0.9': patches/@wagmi__connectors@8.0.9.patch
   '@wagmi/core@3.4.8': patches/@wagmi__core@3.4.8.patch
+  '@reown/appkit-adapter-solana@1.8.19': patches/@reown__appkit-adapter-solana@1.8.19.patch
