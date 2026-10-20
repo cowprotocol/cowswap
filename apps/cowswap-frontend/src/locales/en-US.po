@@ -4673,7 +4673,7 @@ msgstr "Couldn't verify {accountProxyLabel}, please try later"
 msgid "Creation time"
 msgstr "Creation time"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
 msgid "Unfillable · {label}"
 msgstr "Unfillable · {label}"
 
@@ -5384,10 +5384,9 @@ msgstr "This contract is deployed per account, with that account becoming the si
 msgid "Request cancellations"
 msgstr "Request cancellations"
 
-#. placeholder {0}: order.inputToken.symbol || 'TOKEN'
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
-msgid "Sell {formattedSellAmount} {0}"
-msgstr "Sell {formattedSellAmount} {0}"
+#~ msgid "Sell {formattedSellAmount} {0}"
+#~ msgstr "Sell {formattedSellAmount} {0}"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
@@ -6370,10 +6369,9 @@ msgstr "Action"
 msgid "Swap with"
 msgstr "Swap with"
 
-#. placeholder {0}: order.outputToken.symbol || 'TOKEN'
 #: apps/cowswap-frontend/src/modules/limitOrders/hooks/useOpenLimitOrderChartLines.ts
-msgid "Buy {formattedBuyAmount} {0}"
-msgstr "Buy {formattedBuyAmount} {0}"
+#~ msgid "Buy {formattedBuyAmount} {0}"
+#~ msgstr "Buy {formattedBuyAmount} {0}"
 
 #: libs/ui/src/pure/TooltipIcon/TooltipIcon.pure.tsx
 msgid "Help"
@@ -7461,6 +7459,10 @@ msgstr "Minimum tokens you'll receive."
 #~ msgid "Choose a custom deadline for your limit order"
 #~ msgstr "Choose a custom deadline for your limit order"
 
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
+msgid "Sell {formattedSellAmount} {sellSymbol}"
+msgstr "Sell {formattedSellAmount} {sellSymbol}"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Cancelled order"
 msgstr "Cancelled order"
@@ -8385,6 +8387,10 @@ msgstr "Only A-Z, 0-9, dashes, and underscores are allowed."
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
+msgid "Buy {formattedBuyAmount} {buySymbol}"
+msgstr "Buy {formattedBuyAmount} {buySymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"
