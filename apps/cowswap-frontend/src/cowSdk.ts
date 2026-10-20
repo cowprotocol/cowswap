@@ -16,7 +16,6 @@ import {
   Signer,
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
-import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -65,14 +64,12 @@ export function CowSdkUpdater(): null {
 
   useEffect(() => {
     if (!publicClient) return
-    let adapter: ViemAdapter
+
     if (walletClient) {
-      adapter = new ViemAdapter({ provider: publicClient, walletClient })
-    } else {
-      adapter = new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT })
+      const adapter = new ViemAdapter({ provider: publicClient, walletClient })
+      setGlobalAdapter(adapter as AbstractProviderAdapter)
+      setAppSigner(adapter.signer)
     }
-    setGlobalAdapter(adapter as AbstractProviderAdapter)
-    setAppSigner(walletClient ? adapter.signer : undefined)
   }, [publicClient, walletClient, setAppSigner])
 
   return null

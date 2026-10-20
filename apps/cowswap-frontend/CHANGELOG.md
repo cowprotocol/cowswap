@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.31.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.1...cowswap-v3.31.2) (2026-10-20)
+
+### Patch Changes
+
+- fix: fix Viem Adapter instance (#8433)
+
 ## [3.31.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.0...cowswap-v3.31.1) (2026-10-15)
 
 ### Patch Changes
