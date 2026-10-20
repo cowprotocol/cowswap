@@ -74,3 +74,22 @@
   color: var(--color-accent);
   text-decoration: none;
 }
+
+.error {
+  display: block;
+  margin-top: 4px;
+  color: var(--color-negative);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: right;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
