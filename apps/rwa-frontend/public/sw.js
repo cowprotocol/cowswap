@@ -1,7 +1,10 @@
 /* eslint-env serviceworker */
 
-// Registered as `/sw.js?v=<build version>`, so every deploy installs a worker with fresh caches
+// Registered as `<basePath>/sw.js?v=<build version>`, so every deploy installs a worker with fresh caches
 const VERSION = new URL(self.location.href).searchParams.get('v') || 'dev'
+// The registration scope is the app basePath, e.g. `/rwa`
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '')
+const HOME_URL = BASE_PATH || '/'
 const PAGES_CACHE = `rwa-pages-${VERSION}`
 const STATIC_CACHE = `rwa-static-${VERSION}`
 const CACHES = [PAGES_CACHE, STATIC_CACHE]
@@ -11,7 +14,7 @@ const MAX_ENTRIES = {
   [STATIC_CACHE]: 300,
 }
 
-const APP_SHELL = ['/', '/manifest.webmanifest']
+const APP_SHELL = [HOME_URL, `${BASE_PATH}/manifest.webmanifest`]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -93,7 +96,7 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET' || url.origin !== self.location.origin) return
 
   // API data is persisted in IndexedDB by the app
-  if (url.pathname.startsWith('/api/')) return
+  if (url.pathname.startsWith(`${BASE_PATH}/api/`)) return
 
   // RSC payloads fall back to a full navigation when offline, so the page HTML is cached instead
   if (url.searchParams.has('_rsc') || request.headers.get('RSC') === '1') {
@@ -102,12 +105,12 @@ self.addEventListener('fetch', (event) => {
   }
 
   if (request.mode === 'navigate') {
-    event.respondWith(networkFirst(request, PAGES_CACHE, '/'))
+    event.respondWith(networkFirst(request, PAGES_CACHE, HOME_URL))
     return
   }
 
   // Next.js hashes these file names, so they never change under the same URL
-  if (url.pathname.startsWith('/_next/static/')) {
+  if (url.pathname.startsWith(`${BASE_PATH}/_next/static/`)) {
     event.respondWith(cacheFirst(request, STATIC_CACHE))
     return
   }
