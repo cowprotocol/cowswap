@@ -69,9 +69,13 @@ export class TokenSelector {
     // `TokenListItem` sets `data-token-symbol`/`data-address` on the row itself — targeting those
     // directly (rather than the rendered text) avoids picking an unrelated element that merely
     // contains the search string, e.g. a tooltip icon next to the token's shortened address.
+    // Scoped to `#token-search-results`: until the search re-renders, the unfiltered view still shows
+    // the Favorites chips, which carry the same attributes but mark selection via `disabled`, not
+    // `token-item-selected` — on a slow machine the check below would miss an already-selected token.
+    const searchResults = this.page.locator('#token-search-results')
     const row = symbolOrAddress.startsWith('0x')
-      ? this.page.locator(`[data-address="${getAddressKey(symbolOrAddress)}"]`)
-      : this.page.locator(`[data-token-symbol="${symbolOrAddress}"]`)
+      ? searchResults.locator(`[data-address="${getAddressKey(symbolOrAddress)}"]`)
+      : searchResults.locator(`[data-token-symbol="${symbolOrAddress}"]`)
     const firstRow = row.first()
     // `TokenListItem`'s click handler no-ops on the already-selected token (it's a picker, not a
     // toggle) — this happens whenever the requested token is already active, e.g. the app's own
