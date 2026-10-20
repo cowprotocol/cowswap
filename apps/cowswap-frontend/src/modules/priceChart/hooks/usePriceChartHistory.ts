@@ -1,11 +1,16 @@
+import { useAtomValue } from 'jotai'
+
 import { keepPreviousData, skipToken, useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query'
 
 import { getCurrencyAddress, getWrappedToken } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import type { Currency } from '@cowprotocol/currency'
 
-import { loadPriceChartHistory, toMarketCapBars } from '../lib/loadPriceChartHistory'
+import { PRICE_CHART_REFRESH_INTERVAL } from '../config/priceChart.constants'
+import { toMarketCapBars } from '../lib/loadPriceChartHistory'
 import { getTimeRangeConfig } from '../lib/priceChart.utils'
+import { priceHistoryQueryOptions } from '../lib/priceHistoryQuery.utils'
+import { priceChartAutoRefreshAtom } from '../state/priceChartAutoRefreshAtom'
 
 import type { Candle, ChartMetric, SupplyVariant, TimeRange } from '../lib/priceChart.types'
 
@@ -15,6 +20,7 @@ export function usePriceChartHistory(
   metric: ChartMetric,
   supplyVariant: SupplyVariant,
 ): UseQueryResult<Candle[]> {
+  const autoRefresh = useAtomValue(priceChartAutoRefreshAtom)
   const queryClient = useQueryClient()
   const token = currency ? getWrappedToken(currency) : undefined
   const chainId = token?.chainId
@@ -31,21 +37,16 @@ export function usePriceChartHistory(
     ],
     queryFn: currency
       ? async () => {
-          const bars = await queryClient.fetchQuery({
-            queryKey: ['priceChart', 'prices', chainId, address, period],
-            queryFn: () => {
-              const { from, interval, to } = getTimeRangeConfig(period, Date.now() / 1000)
-              return loadPriceChartHistory(currency, from, to, interval, 'price', supplyVariant)
-            },
-            staleTime: 0,
-            retry: false,
-          })
+          const { from, interval, to } = getTimeRangeConfig(period, Date.now() / 1000)
+          const bars = await queryClient.fetchQuery(priceHistoryQueryOptions(currency, from, to, interval))
 
           return metric === 'price' ? bars : toMarketCapBars(currency, bars, supplyVariant)
         }
       : skipToken,
     placeholderData: keepPreviousData,
-    refetchInterval: 30_000,
+    refetchInterval: autoRefresh ? PRICE_CHART_REFRESH_INTERVAL : false,
+    refetchOnWindowFocus: autoRefresh,
+    refetchOnReconnect: autoRefresh,
     retry: false,
   })
 }

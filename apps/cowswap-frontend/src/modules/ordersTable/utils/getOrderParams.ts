@@ -5,6 +5,7 @@ import { Currency, CurrencyAmount, Percent, Token } from '@cowprotocol/currency'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getIsAllowanceDeferredToSettlement } from 'utils/orderUtils/getIsAllowanceDeferredToSettlement'
+import { getIsWithinPlacementGrace } from 'utils/orderUtils/getIsWithinPlacementGrace'
 import { getOrderFundingToken } from 'utils/orderUtils/getOrderFundingToken'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -64,13 +65,15 @@ export function getOrderParams(
     allowance: !isOrderAtLeastOnceFilled ? getBiggerAmount(allowance, permitAmount) : allowance,
   })
 
+  const isJustPlaced = getIsWithinPlacementGrace(chainId, order)
+
   return {
     chainId,
     sellAmount,
     buyAmount,
     rateInfoParams,
-    hasEnoughBalance,
-    hasEnoughAllowance: getIsAllowanceDeferredToSettlement(order) ? true : hasEnoughAllowance,
+    hasEnoughBalance: isJustPlaced ? true : hasEnoughBalance,
+    hasEnoughAllowance: isJustPlaced || getIsAllowanceDeferredToSettlement(order) ? true : hasEnoughAllowance,
   }
 }
 

@@ -1,5 +1,7 @@
 import path from 'node:path'
 
+import { BASE_PATH } from './src/shared/config/basePath'
+
 import type { NextConfig } from 'next'
 
 const workspaceRoot = path.join(__dirname, '../..')
@@ -18,6 +20,10 @@ const OPTIONAL_WALLET_DEPENDENCIES = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  basePath: BASE_PATH,
+  async headers() {
+    return [{ source: '/sw.js', headers: [{ key: 'Service-Worker-Allowed', value: BASE_PATH }] }]
+  },
   env: {
     NEXT_PUBLIC_APP_VERSION: appVersion,
   },

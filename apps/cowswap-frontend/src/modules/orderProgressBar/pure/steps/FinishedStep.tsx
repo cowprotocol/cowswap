@@ -123,20 +123,28 @@ export function FinishedSuccessHeading({ order, chainId, receiverEnsName }: Fini
   )
 }
 
-function buildFinishedTokenPair(order: Order, soldLabel: string, receivedLabel: string): TradeTokenPairProps {
+function buildFinishedTokenPair(
+  order: Order,
+  soldLabel: string,
+  receivedLabel: string,
+): TradeTokenPairProps | undefined {
   const executedSellAmount = order.apiAdditionalInfo?.executedSellAmount
   const executedBuyAmount = order.apiAdditionalInfo?.executedBuyAmount
+
+  if (!isNonZeroAmount(executedSellAmount) || !isNonZeroAmount(executedBuyAmount)) {
+    return undefined
+  }
 
   return {
     variant: 'slim',
     inputCurrencyInfo: {
-      amount: executedSellAmount ? CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount) : null,
+      amount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
       fiatAmount: null,
       balance: null,
       label: soldLabel,
     },
     outputCurrencyInfo: {
-      amount: executedBuyAmount ? CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount) : null,
+      amount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
       fiatAmount: null,
       balance: null,
       label: receivedLabel,
@@ -214,4 +222,8 @@ function FinishedSubtitle({
       Your {tokenSymbol} is in your wallet. <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
     </Trans>
   )
+}
+
+function isNonZeroAmount(amount: string | undefined): amount is string {
+  return !!amount && amount !== '0'
 }

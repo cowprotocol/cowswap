@@ -1,6 +1,5 @@
 'use client'
 
-import { useAtomValue } from 'jotai'
 import { type ReactNode, useRef } from 'react'
 
 import Link from 'next/link'
@@ -10,9 +9,10 @@ import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { TradeWidget } from './TradeWidget'
 
+import { useAssetMarket } from '../model/useAssetMarket'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
-import { assetQueryAtomFamily, AssetStats, type RwaAsset } from '@/entities/asset'
+import { AssetStats, type RwaAsset } from '@/entities/asset'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -20,7 +20,7 @@ import { TokenLogo } from '@/shared/ui/token-logo'
 const SIDE_STICKY_GAP = 16
 
 export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
-  const { data, error } = useAtomValue(assetQueryAtomFamily(asset.ticker))
+  const { data, error, market } = useAssetMarket(asset.ticker)
   const sideRef = useRef<HTMLElement>(null)
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
@@ -35,7 +35,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
         {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
-        <AssetStats asset={asset} market={data?.market} />
+        <AssetStats asset={asset} market={market} />
         <AssetPriceChart ticker={asset.ticker} />
         <AssetAccount asset={asset} />
       </div>
