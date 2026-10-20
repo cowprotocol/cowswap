@@ -51,11 +51,12 @@ export const TokenImg: React.FC<Props> = (props) => {
   if (!iconFile && addressMainnet) {
     iconFile = tokensIconsFilesByAddress[getAddressKey(addressMainnet)]
   }
-  const iconFileUrl: string | undefined =
+  const iconFileUrl: string =
     tokenLogo ||
     (iconFile
       ? tokensIconsRequire[iconFile].default
-      : tokenListTokens?.[getAddressKey(address)]?.logoURI || getImageUrl(addressMainnet || address))
+      : tokenListTokens?.[getAddressKey(address)]?.logoURI || getImageUrl(addressMainnet || address)) ||
+    imgUnknownTokenSrc
 
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442
