@@ -6768,6 +6768,10 @@ msgstr "Sell → Buy"
 msgid "Cancel order {shortId}"
 msgstr "Cancel order {shortId}"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+msgid "IPFS and IPNS token lists are no longer supported. Use an https list URL."
+msgstr "IPFS and IPNS token lists are no longer supported. Use an https list URL."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "without worry."
 msgstr "without worry."
