@@ -68,6 +68,19 @@ const csp = buildCsp([
 ])
 
 // ---------------------------------------------------------------------------
+// RWA app, served from its own deployment under /rwa
+// ---------------------------------------------------------------------------
+
+const rwaOrigin = process.env.RWA_ORIGIN
+
+const rwaRewrites = rwaOrigin
+  ? [
+      { source: '/rwa', destination: `${rwaOrigin}/rwa` },
+      { source: '/rwa/:path*', destination: `${rwaOrigin}/rwa/:path*` },
+    ]
+  : []
+
+// ---------------------------------------------------------------------------
 // Vercel config
 // ---------------------------------------------------------------------------
 
@@ -78,11 +91,13 @@ export const config: VercelConfig = {
   installCommand: 'cd ../../ && pnpm run install:ci',
   redirects: [
     {
-      source: '/((?!#|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
+      // Redirects run before rewrites, so /rwa must not be sent to /
+      source: '/((?!#|rwa(?:/|$)|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
       destination: '/',
       permanent: false,
     },
   ],
+  rewrites: rwaRewrites,
   headers: [
     routes.header('/(.*)', [
       // Controls which resources the browser is allowed to load; prevents XSS and data injection attacks.
