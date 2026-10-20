@@ -312,7 +312,7 @@ export default defineConfig(({ mode, isPreview }) => {
       manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      sourcemap: !isPreview,
+      sourcemap: !isPreview && process.env.BUNDLE_SIZE_BUILD !== 'true',
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading

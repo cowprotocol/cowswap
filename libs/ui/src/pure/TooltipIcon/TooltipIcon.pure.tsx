@@ -24,12 +24,6 @@ export type TooltipIconType = 'info' | 'alert' | 'help'
 
 const ICON_SIZE_PX = 14
 
-const DRAWER_TITLE: Record<TooltipIconType, string> = {
-  info: 'Info',
-  alert: 'Alert',
-  help: 'Help',
-}
-
 export function TooltipIcon({ type, content, title, placement }: TooltipIconProps): ReactNode {
   const isNarrowViewport = useMediaQuery(Media.upToExtraSmall(false))
   const hasFinePointer = useMediaQuery('(pointer: fine)')
@@ -37,7 +31,7 @@ export function TooltipIcon({ type, content, title, placement }: TooltipIconProp
   const showClickForDetailsHint = isNarrowViewport && hasFinePointer
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const drawerTitle = title ?? DRAWER_TITLE[type]
+  const drawerTitle = title ?? getDefaultDrawerTitle(type)
 
   const openDrawer = useCallback(() => {
     setIsDrawerOpen(true)
@@ -84,6 +78,17 @@ export function TooltipIcon({ type, content, title, placement }: TooltipIconProp
       {icon}
     </styledEl.InstantTooltip>
   )
+}
+
+function getDefaultDrawerTitle(type: TooltipIconType): string {
+  switch (type) {
+    case 'info':
+      return t`Info`
+    case 'alert':
+      return t`Alert`
+    case 'help':
+      return t`Help`
+  }
 }
 
 function TooltipTypeIcon({ type }: { type: TooltipIconType }): ReactNode {
