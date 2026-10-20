@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f790d5a646 100644
+index 79697e3..54c9976 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
 @@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
@@ -15,7 +15,25 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f7
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -520,13 +521,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -379,6 +380,17 @@ export class WagmiAdapter extends AdapterBlueprint {
+                 };
+             }
+         }
++        /*
++         * initialize() awaits syncExistingConnection() before syncAdapterConnections(), the call
++         * that actually reconnects wagmi, so on a cold start getConnections() is still empty here.
++         * Falling through would checksum an undefined address and throw, and syncAdapterConnection()
++         * turns that throw into onDisconnectNamespace(), which records the connector as disconnected
++         * — so the wagmi reconnect that runs next skips it and the wallet stays disconnected for
++         * good. Reporting "nothing to restore" instead leaves the namespace merely disconnected.
++         */
++        if (!connection?.accounts?.length) {
++            return undefined;
++        }
+         return {
+             chainId: Number(connection?.chainId),
+             address: this.toChecksummedAddress(connection?.accounts[0]),
+@@ -520,13 +532,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
