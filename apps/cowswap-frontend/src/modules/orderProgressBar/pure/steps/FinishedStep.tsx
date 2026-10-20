@@ -100,7 +100,9 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {solversList.length > 0 ? <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} /> : null}
+        {solversList.length > 0 ? (
+          <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
+        ) : null}
 
         {children}
 

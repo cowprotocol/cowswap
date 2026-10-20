@@ -32,7 +32,9 @@ export const SolverStack = styled.div`
   flex-shrink: 0;
 `
 
-export const SolverAvatar = styled.img`
+export const SolverAvatar = styled.img<{ $stackIndex: number }>`
+  position: relative;
+  z-index: ${({ $stackIndex }) => 3 - $stackIndex};
   width: 20px;
   height: 20px;
   border-radius: 10px;
@@ -41,7 +43,7 @@ export const SolverAvatar = styled.img`
   object-fit: cover;
 
   &:not(:first-child) {
-    margin-left: -5px;
+    margin-left: -6px;
   }
 `
 
@@ -73,9 +75,4 @@ export const Chevron = styled.span<{ $expanded: boolean }>`
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
-`
-
-export const ExpandedPanel = styled.div`
-  width: 100%;
-  padding: 8px;
 `

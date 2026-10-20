@@ -9,6 +9,10 @@ import { SolverCompetition } from 'common/types/soverCompetition'
 
 import { SolverCompetitionExpand } from './SolverCompetitionExpand.pure'
 
+jest.mock('modules/usdAmount', () => ({
+  useUsdAmount: jest.fn().mockReturnValue({ value: null, isLoading: false }),
+}))
+
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
@@ -45,23 +49,26 @@ const solvers = [
   { solver: 'tsolver', displayName: 'Tsolver' },
   { solver: 'quasi', displayName: 'Quasi' },
   { solver: 'fractal', displayName: 'Fractal' },
+  { solver: 'barn', displayName: 'Barn' },
 ] as SolverCompetition[]
 
 describe('SolverCompetitionExpand', () => {
-  it('renders the collapsed summary row', () => {
+  it('renders the collapsed summary row with up to three solver icons', () => {
     renderExpand(<SolverCompetitionExpand solvers={solvers} totalSolvers={12} />)
 
     expect(screen.getByTestId('solver-competition-expand').textContent).toContain('12 solvers competed')
     expect(screen.getByTestId('solver-competition-expand').textContent).toContain('Tsolver won')
+    expect(screen.getByTestId('solver-competition-stack').querySelectorAll('img')).toHaveLength(3)
   })
 
-  it('expands rankings when the summary row is clicked', () => {
+  it('expands SolverAuctionResult when the summary row is clicked', () => {
     renderExpand(<SolverCompetitionExpand solvers={solvers} />)
 
-    fireEvent.click(screen.getByRole('button'))
+    fireEvent.click(screen.getByRole('button', { name: /solvers competed/i }))
 
-    expect(screen.getByText('Solver auction rankings')).toBeTruthy()
+    expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
     expect(screen.getByText('Winning solver')).toBeTruthy()
+    expect(screen.getByTestId('solver-auction-result').textContent).toContain('4 solvers competed for your order')
   })
 
   it('renders nothing when there are no solvers', () => {
