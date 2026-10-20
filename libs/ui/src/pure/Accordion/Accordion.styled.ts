@@ -17,7 +17,7 @@ export const Item = styled(BaseAccordion.Item)<{ $isCollapsible?: boolean }>`
   border-radius: ${({ $isCollapsible }) => ($isCollapsible ? '10px' : '12px')};
   padding: 0;
   overflow: hidden;
-  /* Use opaque paper (not transparent) so background-color transitions match ConfirmAmounts,
+  /* Use opaque paper (not transparent) so background-color transitions match TradeTokenPair,
      instead of blending through alpha over the modal. */
   background-color: ${({ $isCollapsible }) => ($isCollapsible ? `var(${UI.COLOR_PAPER})` : 'transparent')};
   transition: ${slowTransition(['padding', 'background-color', 'border-radius'])};
