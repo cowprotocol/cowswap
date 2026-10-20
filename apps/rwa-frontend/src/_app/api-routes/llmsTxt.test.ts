@@ -53,11 +53,16 @@ describe('buildLlmsTxt', () => {
     ])
   })
 
-  it('lists every asset once with its type and issuers', () => {
-    const llmsTxt = buildLlmsTxt([ASSET, { ...ASSET, ticker: 'SPY', title: 'SPDR S&P 500', type: 'index' }], APP_URL)
+  it('lists every asset once with its type, issuers and networks', () => {
+    const llmsTxt = buildLlmsTxt(
+      [ASSET, { ...ASSET, ticker: 'SPY', title: 'SPDR S&P 500', type: 'index', tokens: [ASSET.tokens[2]] }],
+      APP_URL,
+    )
 
-    expect(llmsTxt).toContain('- [Apple (AAPL)](https://rwa.example/rwa/asset/AAPL): Stock, Ondo, xStocks\n')
-    expect(llmsTxt).toContain('- [SPDR S&P 500 (SPY)](https://rwa.example/rwa/asset/SPY): ETF, Ondo, xStocks\n')
+    expect(llmsTxt).toContain(
+      '- [Apple (AAPL)](https://rwa.example/rwa/asset/AAPL): Stock by Ondo, xStocks on Ethereum, BNB\n',
+    )
+    expect(llmsTxt).toContain('- [SPDR S&P 500 (SPY)](https://rwa.example/rwa/asset/SPY): ETF by xStocks on Ethereum\n')
     expect(llmsTxt).toContain('CoW RWA lists 2 real-world assets tokenized by Ondo, xStocks on Ethereum, BNB')
   })
 

@@ -62,8 +62,9 @@ export function getLlmsTxtHandler(): Response {
 
 function formatAsset(asset: RwaAsset, appUrl: string): string {
   const issuers = unique(asset.tokens.map((token) => token.issuer)).sort()
+  const networks = unique(asset.tokens.map((token) => getChainLabel(token.chainId)))
 
-  return `- [${asset.title} (${asset.ticker})](${appUrl}/asset/${asset.ticker}): ${RWA_ASSET_TYPE_LABELS[asset.type]}, ${issuers.join(', ')}`
+  return `- [${asset.title} (${asset.ticker})](${appUrl}/asset/${asset.ticker}): ${RWA_ASSET_TYPE_LABELS[asset.type]} by ${issuers.join(', ')} on ${networks.join(', ')}`
 }
 
 function unique(values: string[]): string[] {
