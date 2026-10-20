@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isAddress, isValidTokenListSource } from '@cowprotocol/common-utils'
+import { isAddress, isDeprecatedTokenListProtocol, isValidTokenListSource } from '@cowprotocol/common-utils'
 import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { environmentAtom, ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 import { Modal } from '@cowprotocol/ui'
@@ -44,11 +44,19 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
     return isSolanaChain(chainId) ? isSolanaAddress(tokenInput) : !!isAddress(tokenInput)
   }, [tokenInput, chainId])
 
+  // ipfs/ipns lists load here through an http gateway but are unreadable to the balances watcher,
+  // and one of them fails its whole session - so they are no longer accepted
+  const isListProtocolUnsupported = useMemo(() => {
+    if (!listInput) return false
+
+    return isDeprecatedTokenListProtocol(listInput)
+  }, [listInput])
+
   const isListUrlValid = useMemo(() => {
     if (!listInput) return false
 
-    return isValidTokenListSource(listInput)
-  }, [listInput])
+    return isValidTokenListSource(listInput) && !isListProtocolUnsupported
+  }, [listInput, isListProtocolUnsupported])
 
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
   const listSearchResponse = useSearchList(isListUrlValid ? listInput : null)
@@ -81,7 +89,12 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
           placeholder={isListsTab ? i18n._(listsInputPlaceholder) : tokensInputPlaceholder}
           type="text"
         />
-        {!isListUrlValid && listInput && (
+        {isListProtocolUnsupported && (
+          <styledEl.InputError>
+            <Trans>IPFS and IPNS token lists are no longer supported. Use an https list URL.</Trans>
+          </styledEl.InputError>
+        )}
+        {!isListUrlValid && !isListProtocolUnsupported && listInput && (
           <styledEl.InputError>
             <Trans>Enter valid list location</Trans>
           </styledEl.InputError>

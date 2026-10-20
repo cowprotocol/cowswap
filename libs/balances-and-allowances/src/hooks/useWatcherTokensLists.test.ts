@@ -76,10 +76,15 @@ describe('useWatcherTokensLists', () => {
       expect(renderLists().tokensListsUrls).toEqual(['https://example.com/list-a.json'])
     })
 
-    it('keeps non-http(s) sources that are not virtual lists (e.g. ipfs/ipns/ENS)', () => {
-      mockEnabledState({ 'ipfs://QmSomeHash': true, 'tokens.uniswap.eth': true })
+    it('drops ipfs/ipns/ENS sources, which fail the whole session request on the watcher', () => {
+      mockEnabledState({
+        'ipfs://QmSomeHash': true,
+        'ipns://tokens.uniswap.org': true,
+        'tokens.uniswap.eth': true,
+        'https://example.com/list-a.json': true,
+      })
 
-      expect(renderLists().tokensListsUrls).toEqual(['ipfs://QmSomeHash', 'tokens.uniswap.eth'])
+      expect(renderLists().tokensListsUrls).toEqual(['https://example.com/list-a.json'])
     })
 
     it('returns urls sorted alphabetically', () => {
@@ -95,43 +100,19 @@ describe('useWatcherTokensLists', () => {
     })
   })
 
-  describe('lists already parsed here', () => {
-    it('sends their tokens as addresses instead of the url', () => {
-      mockEnabledState({ 'https://example.com/list-a.json': true })
-      mockLoadedLists({
-        'https://example.com/list-a.json': [{ address: TOKEN_A, chainId: CHAIN_ID }],
-      })
+  describe('lists the watcher cannot fetch', () => {
+    it('sends an ipfs list as addresses instead of as a url', () => {
+      mockEnabledState({ 'ipfs://QmSomeHash': true })
+      mockLoadedLists({ 'ipfs://QmSomeHash': [{ address: TOKEN_A, chainId: CHAIN_ID }] })
 
       expect(renderLists()).toEqual({ tokensListsUrls: [], listsTokens: [TOKEN_A] })
     })
 
-    it('keeps an unloaded list on the url side while covering a loaded one', () => {
-      mockEnabledState({
-        'https://example.com/loaded.json': true,
-        'https://example.com/pending.json': true,
-      })
-      mockLoadedLists({
-        'https://example.com/loaded.json': [{ address: TOKEN_A, chainId: CHAIN_ID }],
-      })
-
-      expect(renderLists()).toEqual({
-        tokensListsUrls: ['https://example.com/pending.json'],
-        listsTokens: [TOKEN_A],
-      })
-    })
-
-    it('ignores a loaded list that is disabled', () => {
-      mockEnabledState({ 'https://example.com/list-a.json': false })
+    it('leaves a fetchable list as a url even once it is loaded here', () => {
+      mockEnabledState({ 'https://example.com/list-a.json': true })
       mockLoadedLists({
         'https://example.com/list-a.json': [{ address: TOKEN_A, chainId: CHAIN_ID }],
       })
-
-      expect(renderLists()).toEqual({ tokensListsUrls: [], listsTokens: [] })
-    })
-
-    it('keeps a list whose fetch left it empty on the url side, so it is not silently dropped', () => {
-      mockEnabledState({ 'https://example.com/list-a.json': true })
-      mockLoadedLists({ 'https://example.com/list-a.json': [] })
 
       expect(renderLists()).toEqual({
         tokensListsUrls: ['https://example.com/list-a.json'],
@@ -139,10 +120,23 @@ describe('useWatcherTokensLists', () => {
       })
     })
 
+    it('ignores an ipfs list that is disabled', () => {
+      mockEnabledState({ 'ipfs://QmSomeHash': false })
+      mockLoadedLists({ 'ipfs://QmSomeHash': [{ address: TOKEN_A, chainId: CHAIN_ID }] })
+
+      expect(renderLists()).toEqual({ tokensListsUrls: [], listsTokens: [] })
+    })
+
+    it('contributes nothing for an ipfs list this client never loaded', () => {
+      mockEnabledState({ 'ipfs://QmSomeHash': true })
+
+      expect(renderLists()).toEqual({ tokensListsUrls: [], listsTokens: [] })
+    })
+
     it('drops tokens belonging to another chain', () => {
-      mockEnabledState({ 'https://example.com/list-a.json': true })
+      mockEnabledState({ 'ipfs://QmSomeHash': true })
       mockLoadedLists({
-        'https://example.com/list-a.json': [
+        'ipfs://QmSomeHash': [
           { address: TOKEN_A, chainId: CHAIN_ID },
           { address: TOKEN_B, chainId: SupportedChainId.ARBITRUM_ONE },
         ],
@@ -151,14 +145,11 @@ describe('useWatcherTokensLists', () => {
       expect(renderLists().listsTokens).toEqual([TOKEN_A])
     })
 
-    it('deduplicates an address listed by two lists, and sorts the result', () => {
-      mockEnabledState({
-        'https://example.com/list-a.json': true,
-        'https://example.com/list-b.json': true,
-      })
+    it('deduplicates an address listed by two unfetchable lists, and sorts the result', () => {
+      mockEnabledState({ 'ipfs://QmSomeHash': true, 'tokens.uniswap.eth': true })
       mockLoadedLists({
-        'https://example.com/list-a.json': [{ address: TOKEN_B, chainId: CHAIN_ID }],
-        'https://example.com/list-b.json': [
+        'ipfs://QmSomeHash': [{ address: TOKEN_B, chainId: CHAIN_ID }],
+        'tokens.uniswap.eth': [
           { address: TOKEN_B, chainId: CHAIN_ID },
           { address: TOKEN_A, chainId: CHAIN_ID },
         ],

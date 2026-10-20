@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { isWatcherUnfetchableListSource } from '@cowprotocol/common-utils'
 import { AddressKey, getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllListsList, useListsEnabledState, useVirtualLists } from '@cowprotocol/tokens'
 
@@ -7,22 +8,23 @@ const EMPTY_URLS: string[] = []
 const EMPTY_TOKENS: AddressKey[] = []
 
 export interface WatcherTokensLists {
-  /** Enabled list urls the watcher still has to fetch for itself. */
+  /** Enabled list urls the watcher can fetch for itself. */
   tokensListsUrls: string[]
-  /** Addresses of the enabled lists this client has already parsed, for the given chain. */
+  /** Addresses of the enabled lists the watcher cannot fetch, taken from this client's copy. */
   listsTokens: AddressKey[]
 }
 
 /**
- * Splits the enabled token lists into the ones the BalancesWatcher still has to download and the
- * tokens of the ones already held here.
+ * Keeps sources the BalancesWatcher cannot fetch out of `tokensListsUrls`, passing their tokens as
+ * plain addresses instead.
  *
- * The watcher fetches every url it is handed, so passing a list this client has already parsed
- * makes it download the same file a second time. Those lists travel as plain addresses instead —
- * the watched set is identical either way, since the watcher resolves urls to the same addresses.
+ * The watcher runs every url through an SSRF guard that admits http(s) only, and resolves the whole
+ * set with `try_join_all` — so a single `ipfs://` source fails the entire session request with a
+ * 400, and the client then retries it every 30s forever while balances sit on the multicall
+ * fallback. This browser reaches those lists through an http gateway (`uriToHttp`), so their tokens
+ * are already here and can be sent by address.
  *
- * Both halves are produced together so the url side and the address side cannot disagree about
- * which lists are already covered.
+ * Both halves come from one hook so a source lands on exactly one side.
  */
 export function useWatcherTokensLists(chainId: SupportedChainId): WatcherTokensLists {
   const enabledState = useListsEnabledState()
@@ -31,32 +33,27 @@ export function useWatcherTokensLists(chainId: SupportedChainId): WatcherTokensL
   const allLists = useAllListsList()
 
   return useMemo(() => {
-    const coveredSources = new Set<string>()
     const addresses = new Set<AddressKey>()
 
     for (const list of allLists) {
-      const tokens = list.list.tokens
+      if (enabledState[list.source] !== true || !isWatcherUnfetchableListSource(list.source)) continue
 
-      /*
-       * An entry with no tokens at all is a list that never loaded — a failed fetch leaves the
-       * state behind. Leaving it on the url side lets the watcher try the download itself rather
-       * than silently dropping the list from the watched set.
-       */
-      if (enabledState[list.source] !== true || tokens.length === 0) continue
-
-      coveredSources.add(list.source)
-
-      for (const token of tokens) {
+      for (const token of list.list.tokens) {
         if (token.chainId === chainId) {
           addresses.add(getAddressKey(token.address))
         }
       }
     }
 
-    // Virtual list sources are internal identifiers rather than fetchable urls, so they never
-    // belong on the url side regardless of whether their tokens were collected above
+    /*
+     * An unfetchable source this client has not loaded contributes nothing: there are no addresses
+     * to send and handing over the url would fail the session. Dropping one list's balances beats
+     * losing every balance.
+     */
     const urls = Object.entries(enabledState)
-      .filter(([source, enabled]) => enabled === true && !virtualLists[source] && !coveredSources.has(source))
+      .filter(
+        ([source, enabled]) => enabled === true && !virtualLists[source] && !isWatcherUnfetchableListSource(source),
+      )
       .map(([source]) => source)
       .sort()
 
