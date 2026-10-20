@@ -1,19 +1,18 @@
-import type { NextRequest } from 'next/server'
-
 import { RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
 import { getAssets } from '@/entities/asset/index.server'
 import { getChainLabel } from '@/shared/lib/chain'
+import { DEPLOYMENT_URL } from '@/shared/lib/seo/index.server'
 
 const LLMS_TXT_MAX_AGE_SECONDS = 3600
 const WIDGET_DOCS_URL = 'https://docs.cow.fi/cow-protocol/tutorials/widget'
 const COW_PROTOCOL_DOCS_URL = 'https://docs.cow.fi/cow-protocol'
 
-/** `origin` prefixes every app link, e.g. `https://example.com` */
-export function buildLlmsTxt(assets: RwaAsset[], origin: string): string {
+/** `appUrl` prefixes every app link, e.g. `https://swap.cow.fi/rwa` */
+export function buildLlmsTxt(assets: RwaAsset[], appUrl: string): string {
   const issuers = unique(assets.flatMap((asset) => asset.tokens.map((token) => token.issuer)))
   const networks = unique(assets.flatMap((asset) => asset.tokens.map((token) => getChainLabel(token.chainId))))
   const [exampleAsset] = assets
-  const exampleUrl = exampleAsset ? `${origin}/asset/${exampleAsset.ticker}` : `${origin}/`
+  const exampleUrl = exampleAsset ? `${appUrl}/asset/${exampleAsset.ticker}` : appUrl
 
   return [
     '# CoW RWA',
@@ -34,8 +33,8 @@ export function buildLlmsTxt(assets: RwaAsset[], origin: string): string {
     '',
     '## Pages',
     '',
-    `- [Markets](${origin}/): every asset with price, 24h change, market cap and volume, plus the most traded assets and top movers`,
-    `- [Portfolio](${origin}/portfolio): balances and trades of the connected wallet`,
+    `- [Markets](${appUrl}): every asset with price, 24h change, market cap and volume, plus the most traded assets and top movers`,
+    `- [Portfolio](${appUrl}/portfolio): balances and trades of the connected wallet`,
     `- [Asset page](${exampleUrl}): price chart, tokens per issuer and network, onchain stats, issuer news and the trade widget`,
     '',
     '## Trading',
@@ -46,14 +45,14 @@ export function buildLlmsTxt(assets: RwaAsset[], origin: string): string {
     '## Optional',
     '',
     `- [CoW Protocol docs](${COW_PROTOCOL_DOCS_URL}): how orders are matched and settled`,
-    ...assets.map((asset) => formatAsset(asset, origin)),
+    ...assets.map((asset) => formatAsset(asset, appUrl)),
     '',
   ].join('\n')
 }
 
 /** [llms.txt](https://llmstxt.org) of the app: pages, trading and every registry asset */
-export function getLlmsTxtHandler(request: NextRequest): Response {
-  return new Response(buildLlmsTxt(getAssets(), request.nextUrl.origin), {
+export function getLlmsTxtHandler(): Response {
+  return new Response(buildLlmsTxt(getAssets(), DEPLOYMENT_URL), {
     headers: {
       'Content-Type': 'text/markdown; charset=utf-8',
       'Cache-Control': `public, s-maxage=${LLMS_TXT_MAX_AGE_SECONDS}`,
@@ -61,10 +60,11 @@ export function getLlmsTxtHandler(request: NextRequest): Response {
   })
 }
 
-function formatAsset(asset: RwaAsset, origin: string): string {
+function formatAsset(asset: RwaAsset, appUrl: string): string {
   const issuers = unique(asset.tokens.map((token) => token.issuer)).sort()
+  const networks = unique(asset.tokens.map((token) => getChainLabel(token.chainId)))
 
-  return `- [${asset.title} (${asset.ticker})](${origin}/asset/${asset.ticker}): ${RWA_ASSET_TYPE_LABELS[asset.type]}, ${issuers.join(', ')}`
+  return `- [${asset.title} (${asset.ticker})](${appUrl}/asset/${asset.ticker}): ${RWA_ASSET_TYPE_LABELS[asset.type]} by ${issuers.join(', ')} on ${networks.join(', ')}`
 }
 
 function unique(values: string[]): string[] {
