@@ -30,7 +30,7 @@ const ItemWithIcon = css`
   }
 `
 
-export const Link = styled(NavLink)`
+const linkStyles = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,6 +44,14 @@ export const Link = styled(NavLink)`
     fill var(${UI.ANIMATION_DURATION}) ease-in-out;
 
   ${ItemWithIcon};
+`
+
+export const Link = styled(NavLink)`
+  ${linkStyles};
+`
+
+export const PageLink = styled.a`
+  ${linkStyles};
 `
 
 export const DisabledLink = styled.span`

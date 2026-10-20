@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isLocal } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -35,7 +34,7 @@ export function useMenuItems(): IMenuItem[] {
     items.push(extractMenuItem(HOOKS_STORE_MENU_ITEM))
   }
 
-  if (isYieldEnabled || isLocal) {
+  if (isYieldEnabled) {
     items.push(extractMenuItem(YIELD_MENU_ITEM))
   }
 

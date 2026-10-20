@@ -1,5 +1,7 @@
-import { useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
@@ -30,6 +32,8 @@ interface MenuItemConfig {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
+const RWA_PATH = '/rwa'
+
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
   limit: Routes.LIMIT_ORDERS,
@@ -41,15 +45,13 @@ interface TradeWidgetLinksProps {
   isDropdown?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
+export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps): ReactNode {
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
+  const { isRwaEnabled } = useFeatureFlags()
   const getTradeStateByType = useGetTradeStateByRoute()
   const getTradeUrlParams = useGetTradeUrlParams()
 
@@ -123,6 +125,9 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
   const { t } = useLingui()
 
+  const rwaMenuItem =
+    !isRwaEnabled || isInjectedWidget() ? null : <RwaMenuItem isDropdownVisible={isDropdown && isDropdownVisible} />
+
   return isDropdown ? (
     <>
       <styledEl.MenuItem
@@ -141,12 +146,18 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
           <Modal.Header onBack={handleMenuItemClick}>
             <Trans>Trading mode</Trans>
           </Modal.Header>
-          <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
+          <styledEl.TradeWidgetContent>
+            {menuItemsElements}
+            {rwaMenuItem}
+          </styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
     </>
   ) : (
-    <styledEl.Wrapper>{menuItemsElements}</styledEl.Wrapper>
+    <styledEl.Wrapper>
+      {menuItemsElements}
+      {rwaMenuItem}
+    </styledEl.Wrapper>
   )
 }
 
@@ -197,6 +208,19 @@ const MenuItem = ({
   return (
     <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
       <styledEl.Link to={routePath}>{content}</styledEl.Link>
+    </styledEl.MenuItem>
+  )
+}
+
+function RwaMenuItem({ isDropdownVisible }: { isDropdownVisible: boolean }): ReactNode {
+  return (
+    <styledEl.MenuItem isDropdownVisible={isDropdownVisible}>
+      <styledEl.PageLink href={RWA_PATH}>
+        <Trans>RWA</Trans>
+        <Badge type={BadgeTypes.ALERT}>
+          <Trans>New</Trans>
+        </Badge>
+      </styledEl.PageLink>
     </styledEl.MenuItem>
   )
 }
