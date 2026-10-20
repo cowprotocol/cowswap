@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-19 15:04\n"
+"PO-Revision-Date: 2026-10-20 13:58\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -3999,6 +3999,10 @@ msgstr "TWAP"
 msgid "Insufficient liquidity for this trade"
 msgstr "Liquidité insuffisante pour ce trade"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Turn this on for technical indicators, drawing tools, and more ways to explore price movements."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Get a new link"
 msgstr "Obtenir un nouveau lien"
@@ -5759,6 +5763,10 @@ msgstr "Recherche toujours en cours"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "check"
 msgstr "coché"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Advanced chart"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "and saved {amount}"
@@ -9055,6 +9063,10 @@ msgstr "Échec de la transaction"
 msgid "Approve spending <0/> <1/> on CoW Swap"
 msgstr "Autoriser CoW Swap à dépenser <0/> <1/>"
 
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Refresh chart data every 30 seconds."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartControls.tsx
 msgid "Price chart type"
 msgstr ""
@@ -9443,6 +9455,10 @@ msgstr "Simuler"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Start time"
 msgstr "Heure de début"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartSettingsDropdown.tsx
+msgid "Auto-refresh"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/AddressInputPanel/ReceiverPanelHeader.container.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
@@ -9871,6 +9887,10 @@ msgstr "Transaction de création"
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
 msgstr "Ajouter un token"
+
+#: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartUpdateProgress.tsx
+#~ msgid "Chart updated {time} ago"
+#~ msgstr "Chart updated {time} ago"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
