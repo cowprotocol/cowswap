@@ -50,6 +50,7 @@ jobs:
         run: pnpm build:all
         env:
           BUNDLE_SIZE_BUILD: 'true'
+          NODE_OPTIONS: --max-old-space-size=8192
 
       - name: Measure bundle sizes
         run: pnpm bundle:size

@@ -2,6 +2,7 @@ import {
   buildDailySeries,
   buildMarketCapSeries,
   fillHourlySeries,
+  getDailyChange,
   latestUpdatedAt,
   rankMostTraded,
   splitMovers,
@@ -48,6 +49,36 @@ describe('toOverviewItem', () => {
 
   it('has a null logo for an asset without one', () => {
     expect(toOverviewItem(asset('NVDA', []), aggregate({})).logoUrl).toBeNull()
+  })
+})
+
+describe('getDailyChange', () => {
+  it('measures the change from the 1D sparkline to the price, ignoring a bad tick in the RWA market change', () => {
+    const market = aggregate({
+      price: 400,
+      change24h: -70.9,
+      updatedAt: '2026-10-19T09:17:40Z',
+      sparkline7d: [1375, 401.6, ...Array.from({ length: 9 }, () => 1375), ...Array.from({ length: 15 }, () => 402)],
+    })
+
+    expect(getDailyChange(market)).toBeCloseTo(-0.4)
+  })
+
+  it('keeps the null change of a stale RWA market', () => {
+    const market = aggregate({
+      price: 7.55,
+      change24h: null,
+      updatedAt: '2026-10-14T00:21:20Z',
+      sparkline7d: [25.54, 25.78, 15.29, 7.55],
+    })
+
+    expect(getDailyChange(market)).toBeNull()
+  })
+
+  it('falls back to the RWA market change without a 1D sparkline', () => {
+    expect(getDailyChange(aggregate({ change24h: 1.5, updatedAt: '2026-10-19T09:17:40Z', sparkline7d: [400] }))).toBe(
+      1.5,
+    )
   })
 })
 
