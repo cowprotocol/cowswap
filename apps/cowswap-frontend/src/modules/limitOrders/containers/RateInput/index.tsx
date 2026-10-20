@@ -4,9 +4,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { FiatAmount, HelpTooltip, HoverTooltip, Media, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -26,6 +27,7 @@ import {
 import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
+import { priceChartModalOpenAtom, priceChartVisibleAtom } from 'modules/priceChart'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -60,6 +62,9 @@ export function RateInput() {
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
+  const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
@@ -273,23 +278,32 @@ export function RateInput() {
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>
-              <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
-                <styledEl.ActiveSymbol $active={!isUsdRateMode}>
-                  <TokenLogo token={secondaryCurrency} size={16} />
-                  <TokenSymbol token={secondaryCurrency} />
-                </styledEl.ActiveSymbol>
-              </styledEl.ActiveCurrency>
+              <styledEl.CurrencyToggle>
+                <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
+                  <styledEl.ActiveSymbol $active={!isUsdRateMode}>
+                    <TokenLogo token={secondaryCurrency} size={16} />
+                    <TokenSymbol token={secondaryCurrency} />
+                  </styledEl.ActiveSymbol>
+                </styledEl.ActiveCurrency>
 
-              <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
-                <SVG src={iconUsdSrc} />
-              </styledEl.UsdButton>
+                <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
+                  <SVG src={iconUsdSrc} />
+                </styledEl.UsdButton>
+              </styledEl.CurrencyToggle>
 
               <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
                 <styledEl.IconButton
                   aria-label={t`Pick the limit price from the chart`}
                   aria-pressed={isLimitPickerMode}
                   onClick={() => {
-                    if (!isLimitPickerMode) setIsUsdRateMode(true)
+                    if (!isLimitPickerMode) {
+                      setIsUsdRateMode(true)
+                      if (isUpToLarge) {
+                        setChartModalOpen(true)
+                      } else {
+                        setChartVisible(true)
+                      }
+                    }
                     setLimitPickerMode((state) => !state)
                   }}
                   $active={isLimitPickerMode}

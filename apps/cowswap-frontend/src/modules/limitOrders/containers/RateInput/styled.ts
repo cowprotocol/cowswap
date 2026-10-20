@@ -151,19 +151,32 @@ const ToggleButtonBase = css<{ $active?: boolean }>`
   }
 `
 
+export const CurrencyToggle = styled.div`
+  display: flex;
+  overflow: hidden;
+`
+
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
+  --height: 25px;
   --skew-width: 6px;
   --skew-offset: -3px;
   --skew-angle: -10deg;
   --padding: 10px;
   --gap: 6px;
   --font-size: 13px;
+  --border-radius: 8px;
 
-  ${ToggleButtonBase}
+  display: flex;
+  align-items: center;
   gap: var(--gap);
   font-size: var(--font-size);
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   position: relative;
+  height: var(--height);
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease-in-out;
+  background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_50 + ')')};
   padding: 0 10px;
 
   &:first-child {
@@ -208,6 +221,10 @@ export const ActiveCurrency = styled.button<{ $active?: boolean }>`
         z-index: 5;
       }
     `}
+  }
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
   }
 `
 
