@@ -9,7 +9,7 @@ import {
 import { TradeTokenPair, TradeTokenPairProps } from '../TradeTokenPair/TradeTokenPair.pure'
 
 export interface BaseTradeConfirmationProps {
-  heading: ConfirmationSuccessHeadingProps
+  heading?: ConfirmationSuccessHeadingProps
   tokenPair?: TradeTokenPairProps
   children?: ReactNode
   className?: string
@@ -25,7 +25,7 @@ export function BaseTradeConfirmation({
 
   return (
     <styledEl.Wrapper className={className} data-testid="base-trade-confirmation">
-      <ConfirmationSuccessHeading {...heading} />
+      {heading ? <ConfirmationSuccessHeading {...heading} /> : null}
       {hasBody ? (
         <styledEl.Content>
           {tokenPair ? <TradeTokenPair {...tokenPair} /> : null}

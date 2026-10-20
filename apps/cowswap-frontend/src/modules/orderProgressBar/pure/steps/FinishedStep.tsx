@@ -1,27 +1,19 @@
-import React, { ReactNode, useMemo, useState, Suspense, lazy } from 'react'
-
-import { i18n } from '@lingui/core'
+import { ReactNode, useMemo } from 'react'
 
 import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
-import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
-import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
-import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { getCoWExplorerLinkTitle, getExplorerOrderLink, getRandomInt, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { TokenLogo } from '@cowprotocol/tokens'
-import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { Confetti, ExternalLink } from '@cowprotocol/ui'
 
-import { plural } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
-import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
 
-import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 import { Order } from 'legacy/state/orders/actions'
-import { useIsDarkMode } from 'legacy/state/user/hooks'
+
+import { BaseTradeConfirmation, TradeTokenPairProps } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -30,12 +22,17 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
+import { CHAIN_SPECIFIC_BENEFITS } from '../../constants'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
+import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
 
-const Lottie = lazy(() => import('lottie-react'))
+export interface FinishedSuccessHeadingProps {
+  order: Order
+  chainId: SupportedChainId
+  receiverEnsName?: string | null
+}
 
 interface FinishedStepProps {
   children: React.ReactNode
@@ -49,9 +46,6 @@ interface FinishedStepProps {
   debugForceShowSurplus?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
 export function FinishedStep({
   children,
   stepName,
@@ -59,16 +53,14 @@ export function FinishedStep({
   solvers,
   order,
   chainId,
-  receiverEnsName,
   totalSolvers,
   debugForceShowSurplus,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
-  const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
-  const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
-  const shouldShowSurplus = debugForceShowSurplus || showSurplus
+  const { showSurplus } = surplusData || {}
+  const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
 
   const showConfetti = useWithConfetti({
     isFinished: stepName === 'finished',
@@ -76,21 +68,10 @@ export function FinishedStep({
     debugForceShowSurplus,
   })
 
-  const visibleSolvers = useMemo(() => {
-    return showAllSolvers ? solvers : solvers?.slice(0, 3)
-  }, [showAllSolvers, solvers])
-
-  const isSell = order && isSellOrder(order.kind)
-  const isCustomRecipient = order && getIsCustomRecipient(order)
-  const receiver = order?.receiver || order?.owner
-
-  const isDarkMode = useIsDarkMode()
-
   const { randomBenefit } = useMemo(() => {
     const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
 
     return {
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
       randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
     }
   }, [chainId, t])
@@ -99,272 +80,136 @@ export function FinishedStep({
     return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
   }, [shouldShowSurplus, surplusData, order, randomBenefit])
 
-  // If order is not set, return null
+  const soldLabel = t`You sold`
+  const receivedLabel = t`You received`
+  const tokenPair = useMemo(
+    () => (order ? buildFinishedTokenPair(order, soldLabel, receivedLabel) : undefined),
+    [order, soldLabel, receivedLabel],
+  )
+
   if (!order) {
     return null
   }
-  const solversLength = solvers?.length || 0
+
+  const showShare = !disablePostTradeTips || shouldShowSurplus
+  const solversList = solvers ?? []
 
   return (
     <styledEl.FinishedStepContainer>
       {showConfetti && <Confetti start={true} />}
-      {cancellationFailed && (
-        <styledEl.CancellationFailedBanner>
-          <b>
-            <Trans>Cancellation failed</Trans>:
-          </b>{' '}
-          <Trans>The order was executed before it could be cancelled.</Trans>
-        </styledEl.CancellationFailedBanner>
-      )}
+      {cancellationFailed ? <CancellationFailedBanner /> : null}
 
-      <styledEl.ConclusionContent>
-        <TransactionStatus isDarkMode={isDarkMode} />
+      <BaseTradeConfirmation tokenPair={tokenPair}>
+        {solversList.length > 0 ? <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} /> : null}
 
-        {order?.apiAdditionalInfo?.executedSellAmount && <SoldAmount order={order} />}
+        {children}
 
-        {order?.apiAdditionalInfo?.executedBuyAmount && (
-          <ReceivedAmount
-            order={order}
-            chainId={chainId}
-            isCustomRecipient={isCustomRecipient}
-            receiver={receiver}
-            receiverEnsName={receiverEnsName}
-          />
-        )}
-
-        {shouldShowSurplus ? (
-          <ExtraAmount
-            surplusAmount={surplusAmount}
-            surplusFiatValue={surplusFiatValue}
-            isCustomRecipient={isCustomRecipient}
-            isSell={isSell}
-          />
-        ) : null}
-
-        {solvers && solversLength > 0 && (
-          <styledEl.SolverRankings>
-            <h3>
-              <Trans>Solver auction rankings</Trans>
-            </h3>
-            {solversLength > 1 && (
-              <p>
-                <b>
-                  {totalSolvers ? (
-                    <Trans>
-                      {solversLength} out of {totalSolvers} solvers
-                    </Trans>
-                  ) : (
-                    <Trans>{solversLength} solvers</Trans>
-                  )}
-                </b>{' '}
-                <Trans>submitted a solution</Trans>
-              </p>
-            )}
-
-            <styledEl.SolverTable>
-              <tbody>
-                {visibleSolvers?.map((solver, index) => (
-                  <SolverRow key={`${solver.solver}-${index}`} solver={solver} index={index} solvers={solvers} />
-                ))}
-              </tbody>
-            </styledEl.SolverTable>
-
-            {solversLength > 3 && (
-              <styledEl.ViewMoreButton
-                data-click-event={toCowSwapGtmEvent({
-                  category: CowSwapAnalyticsCategory.PROGRESS_BAR,
-                  action: 'Click Toggle Solvers',
-                  label: showAllSolvers ? 'Hide' : 'Show',
-                })}
-                onClick={() => setShowAllSolvers((prev) => !prev)}
-              >
-                {showAllSolvers ? (
-                  <>
-                    <Trans>Collapse</Trans> <PiCaretUp />
-                  </>
-                ) : (
-                  <>
-                    {t`View ${plural(solversLength - 3, {
-                      one: '# more',
-                      few: '# more',
-                      many: '# more',
-                      other: '# more',
-                    })}`}{' '}
-                    <PiCaretDown />
-                  </>
-                )}
-              </styledEl.ViewMoreButton>
-            )}
-          </styledEl.SolverRankings>
-        )}
-      </styledEl.ConclusionContent>
-
-      {children}
-      {(!disablePostTradeTips || shouldShowSurplus) && (
-        <styledEl.ShareButton
-          as="a"
-          href={twitterUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.PROGRESS_BAR,
-            action: 'Click Share Button',
-            label: shouldShowSurplus ? 'Surplus' : 'Tip',
-          })}
-        >
-          <SVG src={iconSocialXSrc} />
-          <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
-        </styledEl.ShareButton>
-      )}
+        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={shouldShowSurplus} /> : null}
+      </BaseTradeConfirmation>
     </styledEl.FinishedStepContainer>
   )
 }
 
-function ExtraAmount({
-  surplusAmount,
-  surplusFiatValue,
-  isCustomRecipient,
-  isSell,
-}: {
-  surplusAmount?: CurrencyAmount<Currency> | null
-  surplusFiatValue?: CurrencyAmount<Currency> | null
-  isCustomRecipient?: boolean
-  isSell?: boolean
-}): ReactNode {
-  const amount = (
-    <i>
-      +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
-    </i>
-  )
-
+export function FinishedSuccessHeading({ order, chainId, receiverEnsName }: FinishedSuccessHeadingProps): ReactNode {
   return (
-    <styledEl.ExtraAmount>
-      {isSell ? (
-        isCustomRecipient ? (
-          <Trans>including an extra {amount}</Trans>
-        ) : (
-          <Trans>and got an extra {amount}</Trans>
-        )
-      ) : (
-        <Trans>and saved {amount}</Trans>
-      )}{' '}
-      {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
-    </styledEl.ExtraAmount>
+    <BaseTradeConfirmation
+      heading={{
+        title: <Trans>Swap complete</Trans>,
+        subtitle: <FinishedSubtitle order={order} chainId={chainId} receiverEnsName={receiverEnsName} />,
+      }}
+    />
   )
 }
 
-function ReceivedAmount({
+function buildFinishedTokenPair(order: Order, soldLabel: string, receivedLabel: string): TradeTokenPairProps {
+  const executedSellAmount = order.apiAdditionalInfo?.executedSellAmount
+  const executedBuyAmount = order.apiAdditionalInfo?.executedBuyAmount
+
+  return {
+    variant: 'slim',
+    inputCurrencyInfo: {
+      amount: executedSellAmount ? CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount) : null,
+      fiatAmount: null,
+      balance: null,
+      label: soldLabel,
+    },
+    outputCurrencyInfo: {
+      amount: executedBuyAmount ? CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount) : null,
+      fiatAmount: null,
+      balance: null,
+      label: receivedLabel,
+    },
+    priceImpact: { priceImpact: undefined, loading: false },
+    inputTestId: TEST_IDS.orderSoldAmount,
+    outputTestId: TEST_IDS.orderReceivedAmount,
+  }
+}
+
+function CancellationFailedBanner(): ReactNode {
+  return (
+    <styledEl.CancellationFailedBanner>
+      <b>
+        <Trans>Cancellation failed</Trans>:
+      </b>{' '}
+      <Trans>The order was executed before it could be cancelled.</Trans>
+    </styledEl.CancellationFailedBanner>
+  )
+}
+
+function FinishedShareButton({
+  twitterUrl,
+  shouldShowSurplus,
+}: {
+  twitterUrl: string
+  shouldShowSurplus: boolean
+}): ReactNode {
+  return (
+    <styledEl.ShareButton
+      as="a"
+      href={twitterUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-click-event={toCowSwapGtmEvent({
+        category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+        action: 'Click Share Button',
+        label: shouldShowSurplus ? 'Surplus' : 'Tip',
+      })}
+    >
+      <SVG src={iconSocialXSrc} />
+      <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
+    </styledEl.ShareButton>
+  )
+}
+
+function FinishedSubtitle({
   order,
   chainId,
-  isCustomRecipient,
-  receiver,
   receiverEnsName,
 }: {
   order: Order
   chainId: SupportedChainId
-  isCustomRecipient?: boolean
-  receiver?: string | null
   receiverEnsName?: string | null
 }): ReactNode {
-  return (
-    <styledEl.ReceivedAmount data-testid={TEST_IDS.orderReceivedAmount}>
-      {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
-      <TokenLogo token={order.outputToken} size={20} />
-      <b>
-        <TokenAmount
-          amount={CurrencyAmount.fromRawAmount(order.outputToken, order.apiAdditionalInfo?.executedBuyAmount || 0)}
-          tokenSymbol={order.outputToken}
-        />
-      </b>{' '}
-      {isCustomRecipient && receiver && (
-        <>
-          <Trans>was sent to</Trans>
-          <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
-            {receiverEnsName || shortenAddress(receiver)} ↗
-          </ExternalLink>
-        </>
-      )}
-    </styledEl.ReceivedAmount>
-  )
-}
+  const isCustomRecipient = getIsCustomRecipient(order)
+  const receiver = order.receiver || order.owner
+  const tokenSymbol = order.outputToken.symbol ?? order.outputToken.name ?? ''
+  const explorerHref = getExplorerOrderLink(chainId, order.id)
+  const explorerTitle = getCoWExplorerLinkTitle()
 
-function SoldAmount({ order }: { order: Order }): ReactNode {
-  return (
-    <styledEl.SoldAmount data-testid={TEST_IDS.orderSoldAmount}>
+  if (isCustomRecipient && receiver) {
+    const recipientLabel = receiverEnsName || shortenAddress(receiver)
+
+    return (
       <Trans>
-        You sold <TokenLogo token={order.inputToken} size={20} />
+        Your {tokenSymbol} was sent to {recipientLabel}.{' '}
+        <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
       </Trans>
-      <b>
-        <TokenAmount
-          amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
-          tokenSymbol={order.inputToken}
-        />
-      </b>
-    </styledEl.SoldAmount>
-  )
-}
+    )
+  }
 
-function SolverRow({
-  solver,
-  index,
-  solvers,
-}: {
-  solver: SolverCompetition
-  index: number
-  solvers: SolverCompetition[]
-}): ReactNode {
   return (
-    <styledEl.SolverTableRow isWinner={index === 0}>
-      {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
-      <styledEl.SolverTableCell>
-        <styledEl.SolverInfo>
-          <styledEl.SolverLogo>
-            <img
-              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
-              alt={`${solver.solver} logo`}
-              width="24"
-              height="24"
-            />
-          </styledEl.SolverLogo>
-          <styledEl.SolverName>
-            {solver.displayName || solver.solver}
-            {solver.description && (
-              <span>
-                <InfoTooltip content={solver.description} />
-              </span>
-            )}
-          </styledEl.SolverName>
-        </styledEl.SolverInfo>
-      </styledEl.SolverTableCell>
-      <styledEl.SolverTableCell>
-        {index === 0 && (
-          <styledEl.WinningBadge>
-            <styledEl.TrophyIcon>
-              <PiTrophyFill />
-            </styledEl.TrophyIcon>
-            <span>
-              <Trans>Winning solver</Trans>
-            </span>
-          </styledEl.WinningBadge>
-        )}
-      </styledEl.SolverTableCell>
-    </styledEl.SolverTableRow>
-  )
-}
-
-function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
-  return (
-    <styledEl.TransactionStatus margin={'0 auto 24px'}>
-      {/* TODO: what fallback should be used here? */}
-      <Suspense fallback={null}>
-        <Lottie
-          animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}
-          loop={false}
-          autoplay
-          style={{ width: '36px', height: '36px' }}
-        />
-      </Suspense>
-      <Trans>Transaction completed!</Trans>
-    </styledEl.TransactionStatus>
+    <Trans>
+      Your {tokenSymbol} is in your wallet. <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
+    </Trans>
   )
 }

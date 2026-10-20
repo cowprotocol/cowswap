@@ -24,7 +24,13 @@ export function ExpandableContent({ expanded, children, className }: ExpandableC
     }
 
     const syncHeight = (): void => {
-      setHeightPx(expanded ? inner.scrollHeight : 0)
+      // overflow:hidden on the measure target prevents margin-collapse from
+      // under-reporting scrollHeight (margins would otherwise escape the box).
+      const previousOverflow = inner.style.overflow
+      inner.style.overflow = 'hidden'
+      const nextHeight = expanded ? inner.scrollHeight : 0
+      inner.style.overflow = previousOverflow
+      setHeightPx(nextHeight)
     }
 
     syncHeight()

@@ -360,7 +360,7 @@ test.describe('Hooks store', () => {
 
     await expect(swapPage.orderProgressBarModal).toContainText('Batching orders')
     mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, parseUnits('10', 18), 0n)
-    await expect(swapPage.orderProgressBarModal).toContainText('Transaction completed!')
+    await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
     await swapPage.page.keyboard.press('Escape')
 
     // `mocks.orders`'s `buildOpenOrder` already echoes the posted `appData` back as `fullAppData`

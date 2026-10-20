@@ -25,6 +25,7 @@ export interface CurrencyPreviewInfo {
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   variant?: CurrencyAmountPreviewVariant
   id: string
+  testId?: string
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
   priceImpactParams?: PriceImpact
@@ -43,6 +44,7 @@ interface BuiltItProps {
 export function CurrencyAmountPreview({
   variant = 'default',
   id,
+  testId,
   currencyInfo,
   className,
   priceImpactParams,
@@ -55,7 +57,7 @@ export function CurrencyAmountPreview({
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
-    <styledEl.Container id={id} className={containerClassName}>
+    <styledEl.Container id={id} className={containerClassName} data-testid={testId}>
       <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
       <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>

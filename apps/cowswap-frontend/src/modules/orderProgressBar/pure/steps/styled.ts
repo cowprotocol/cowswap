@@ -293,11 +293,11 @@ export const TransactionStatus = styled.div<{ status?: string; flexFlow?: string
 
 export const SolverRankings = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin: 32px auto 0;
+  margin: 0;
 
   > h3 {
     font-size: 17px;

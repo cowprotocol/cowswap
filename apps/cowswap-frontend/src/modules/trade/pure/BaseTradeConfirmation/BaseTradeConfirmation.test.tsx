@@ -73,4 +73,16 @@ describe('BaseTradeConfirmation', () => {
     expect(screen.getByTestId('confirmation-success-heading').textContent).toContain('Your TWAP is active')
     expect(screen.queryByTestId('trade-token-pair')).toBeNull()
   })
+
+  it('renders body without heading when heading is omitted', () => {
+    renderConfirmation(
+      <BaseTradeConfirmation tokenPair={tokenPair}>
+        <div data-testid="confirmation-children">Child body</div>
+      </BaseTradeConfirmation>,
+    )
+
+    expect(screen.queryByTestId('confirmation-success-heading')).toBeNull()
+    expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
+    expect(screen.getByTestId('confirmation-children').textContent).toBe('Child body')
+  })
 })

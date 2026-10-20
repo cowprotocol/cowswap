@@ -21,6 +21,8 @@ export interface TradeTokenPairProps {
   priceImpact: PriceImpact
   footer?: ReactNode
   cowParticipation?: TradeTokenPairCowParticipation
+  inputTestId?: string
+  outputTestId?: string
   className?: string
 }
 
@@ -31,6 +33,8 @@ export function TradeTokenPair({
   priceImpact,
   footer,
   cowParticipation,
+  inputTestId,
+  outputTestId,
   className,
 }: TradeTokenPairProps): ReactNode {
   const isBridging = getAreBridgeCurrencies(inputCurrencyInfo.amount?.currency, outputCurrencyInfo.amount?.currency)
@@ -44,6 +48,7 @@ export function TradeTokenPair({
         <CurrencyAmountPreview
           variant={variant}
           id="input-currency-preview"
+          testId={inputTestId}
           currencyInfo={inputCurrencyInfo}
           isBridging={isBridging}
         />
@@ -53,6 +58,7 @@ export function TradeTokenPair({
         <CurrencyAmountPreview
           variant={variant}
           id="output-currency-preview"
+          testId={outputTestId}
           currencyInfo={outputCurrencyInfo}
           priceImpactParams={priceImpact}
           isBridging={isBridging}

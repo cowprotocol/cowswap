@@ -11,5 +11,4 @@ export const Content = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding: 16px 10px 10px;
 `

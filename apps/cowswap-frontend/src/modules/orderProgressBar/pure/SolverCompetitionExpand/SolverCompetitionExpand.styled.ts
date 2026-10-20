@@ -77,5 +77,5 @@ export const Chevron = styled.span<{ $expanded: boolean }>`
 
 export const ExpandedPanel = styled.div`
   width: 100%;
-  padding: 0 8px 8px;
+  padding: 8px;
 `
