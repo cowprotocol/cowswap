@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { SyntheticEvent } from 'react'
 
-import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import svgUnknownSolanaTokenSrc from 'assets/img/unknown-solana-token.svg'
 import imgUnknownTokenSrc from 'assets/img/unknown-token.png'
 import { getImageUrl, RequireContextMock, safeTokenName } from 'utils'
 
@@ -17,11 +18,6 @@ export interface Props {
   addressMainnet?: string
   faded?: boolean
   tokenLogo?: string
-}
-
-function _loadFallbackTokenImage(event: React.SyntheticEvent<HTMLImageElement>): void {
-  const image = event.currentTarget
-  image.src = imgUnknownTokenSrc
 }
 
 const tokensIconsRequire =
@@ -47,6 +43,8 @@ export const TokenImg: React.FC<Props> = (props) => {
   const { address, addressMainnet, symbol, name, network, tokenLogo } = props
   const { data: tokenListTokens } = useTokenList(network)
 
+  const fallbackSrc = isSolanaChain(network) ? svgUnknownSolanaTokenSrc : imgUnknownTokenSrc
+
   let iconFile = address && tokensIconsFilesByAddress[getAddressKey(address)]
   if (!iconFile && addressMainnet) {
     iconFile = tokensIconsFilesByAddress[getAddressKey(addressMainnet)]
@@ -56,11 +54,15 @@ export const TokenImg: React.FC<Props> = (props) => {
     (iconFile
       ? tokensIconsRequire[iconFile].default
       : tokenListTokens?.[getAddressKey(address)]?.logoURI || getImageUrl(addressMainnet || address)) ||
-    imgUnknownTokenSrc
+    fallbackSrc
+
+  const loadFallbackTokenImage = (event: SyntheticEvent<HTMLImageElement>): void => {
+    event.currentTarget.src = fallbackSrc
+  }
 
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442
   const safeName = address && safeTokenName({ address, symbol, name })
 
-  return <Wrapper alt={safeName} src={iconFileUrl} onError={_loadFallbackTokenImage} {...props} />
+  return <Wrapper alt={safeName} src={iconFileUrl} onError={loadFallbackTokenImage} {...props} />
 }
