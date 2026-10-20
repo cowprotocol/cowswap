@@ -209,6 +209,8 @@ export function SimpleChartCanvas({
       },
     })
     priceSeries.applyOptions({ priceFormat })
+    // Work around stale time-scale points in Lightweight Charts 5.2.1: https://github.com/tradingview/lightweight-charts/issues/2154
+    priceSeries.setData([])
     priceSeries.setData(
       data.map((bar) =>
         chartType === 'line'
