@@ -81,9 +81,6 @@ const rwaRewrites = rwaOrigin
     ]
   : []
 
-// Redirects run before rewrites, so /rwa must not be sent to /
-const redirectExclusions = ['#', ...(rwaOrigin ? ['rwa(?:/|$)'] : []), '.*[\\w\\d\\.-]\\.\\w{2,15}$']
-
 // ---------------------------------------------------------------------------
 // Vercel config
 // ---------------------------------------------------------------------------
@@ -95,7 +92,8 @@ export const config: VercelConfig = {
   installCommand: 'cd ../../ && pnpm run install:ci',
   redirects: [
     {
-      source: `/((?!${redirectExclusions.join('|')}).+)`,
+      // Redirects run before rewrites, so /rwa must not be sent to /
+      source: '/((?!#|rwa(?:/|$)|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
       destination: '/',
       permanent: false,
     },
