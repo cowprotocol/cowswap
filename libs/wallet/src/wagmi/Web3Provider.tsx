@@ -8,7 +8,6 @@ import { reownAppKit, wagmiAdapter } from './config'
 
 import { OPEN_WALLET_MODAL_EVENT, type OpenWalletModalEventDetail } from '../constants'
 import { flushDeferredProviders } from '../providerIsolation'
-import { clearStaleConnectorIds } from '../reown/clearStaleConnectorIds'
 
 interface Web3ProviderProps {
   children: ReactNode
@@ -28,7 +27,6 @@ function OpenWalletModalOnCustomEvent(): null {
   useEffect(() => {
     const handler = (event: Event): void => {
       const detail: OpenWalletModalEventDetail | undefined = event instanceof CustomEvent ? event.detail : undefined
-      clearStaleConnectorIds()
       reownAppKit?.open({ view: 'Connect', namespace: detail?.namespace })
       flushDeferredProviders()
     }
