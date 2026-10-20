@@ -1,8 +1,6 @@
 /**
  * @jest-environment node
  */
-import { NextRequest } from 'next/server'
-
 import { buildLlmsTxt, getLlmsTxtHandler } from './llmsTxt'
 
 import type { RwaAsset } from '@/entities/asset'
@@ -44,11 +42,11 @@ const ASSET: RwaAsset = {
   ],
 }
 
-const ORIGIN = 'https://rwa.example'
+const APP_URL = 'https://rwa.example/rwa'
 
 describe('buildLlmsTxt', () => {
   it('starts with the title and summary', () => {
-    expect(buildLlmsTxt([ASSET], ORIGIN).split('\n').slice(0, 3)).toEqual([
+    expect(buildLlmsTxt([ASSET], APP_URL).split('\n').slice(0, 3)).toEqual([
       '# CoW RWA',
       '',
       '> Trade tokenized stocks and ETFs with CoW Protocol',
@@ -56,38 +54,38 @@ describe('buildLlmsTxt', () => {
   })
 
   it('lists every asset once with its type and issuers', () => {
-    const llmsTxt = buildLlmsTxt([ASSET, { ...ASSET, ticker: 'SPY', title: 'SPDR S&P 500', type: 'index' }], ORIGIN)
+    const llmsTxt = buildLlmsTxt([ASSET, { ...ASSET, ticker: 'SPY', title: 'SPDR S&P 500', type: 'index' }], APP_URL)
 
-    expect(llmsTxt).toContain('- [Apple (AAPL)](https://rwa.example/asset/AAPL): Stock, Ondo, xStocks\n')
-    expect(llmsTxt).toContain('- [SPDR S&P 500 (SPY)](https://rwa.example/asset/SPY): ETF, Ondo, xStocks\n')
+    expect(llmsTxt).toContain('- [Apple (AAPL)](https://rwa.example/rwa/asset/AAPL): Stock, Ondo, xStocks\n')
+    expect(llmsTxt).toContain('- [SPDR S&P 500 (SPY)](https://rwa.example/rwa/asset/SPY): ETF, Ondo, xStocks\n')
     expect(llmsTxt).toContain('CoW RWA lists 2 real-world assets tokenized by Ondo, xStocks on Ethereum, BNB')
   })
 
   it('links only absolute URLs', () => {
-    const urls = [...buildLlmsTxt([ASSET], ORIGIN).matchAll(/\]\(([^)]+)\)/g)].map(([, url]) => url)
+    const urls = [...buildLlmsTxt([ASSET], APP_URL).matchAll(/\]\(([^)]+)\)/g)].map(([, url]) => url)
 
     expect(urls.length).toBeGreaterThan(0)
     expect(urls.filter((url) => !url.startsWith('https://'))).toEqual([])
   })
 
   it('puts only link lists under H2 sections', () => {
-    const [, ...sections] = buildLlmsTxt([ASSET], ORIGIN).split(/^## /m)
+    const [, ...sections] = buildLlmsTxt([ASSET], APP_URL).split(/^## /m)
     const lines = sections.flatMap((section) => section.split('\n').slice(1).filter(Boolean))
 
     expect(lines.filter((line) => !/^- \[[^\]]+\]\([^)]+\)/.test(line))).toEqual([])
   })
 
   it('does not link the API routes', () => {
-    expect(buildLlmsTxt([ASSET], ORIGIN)).not.toContain('/api/')
+    expect(buildLlmsTxt([ASSET], APP_URL)).not.toContain('/api/')
   })
 })
 
 describe('getLlmsTxtHandler', () => {
-  it('serves cached Markdown with links on the request origin', async () => {
-    const response = getLlmsTxtHandler(new NextRequest('https://rwa.example/llms.txt'))
+  it('serves cached Markdown with links under the base path', async () => {
+    const response = getLlmsTxtHandler()
 
     expect(response.headers.get('Content-Type')).toBe('text/markdown; charset=utf-8')
     expect(response.headers.get('Cache-Control')).toBe('public, s-maxage=3600')
-    expect(await response.text()).toContain('- [Portfolio](https://rwa.example/portfolio)')
+    expect(await response.text()).toMatch(/^- \[Portfolio\]\(https:\/\/[^/]+\/rwa\/portfolio\)/m)
   })
 })
