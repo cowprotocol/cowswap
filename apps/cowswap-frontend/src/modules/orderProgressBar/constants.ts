@@ -88,13 +88,14 @@ export const FINAL_STATES: OrderProgressBarStepName[] = [
 
 const TELEGRAM_NOTIFICATIONS_BENEFIT = msg`You can now get Telegram notifications when your trades execute! Sign up by tapping on the bell icon.`
 const TWAP_FOR_REGULAR_WALLETS_BENEFIT = msg`TWAP orders now work with regular wallets too, not just Safe!`
+const TWAP_PRICE_IMPACT_BENEFIT = msg`You can avoid price impact on large trades by using TWAP orders on CoW Swap.`
 
 export const COW_SWAP_BENEFITS = [
   msg`CoW Swap solvers search Uniswap, 1inch, Matcha, and more to find you the best price!`,
   msg`CoW Swap sets the standard for protecting against MEV attacks such as frontrunning and sandwiching.`,
   msg`CoW Swap was the first DEX to offer intent-based trading, gasless swaps, coincidences of wants, and many other DeFi innovations!`,
   msg`CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs.`,
-  msg`You can avoid price impact on large trades by using TWAP orders on CoW Swap.`,
+  TWAP_PRICE_IMPACT_BENEFIT,
   msg`Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you can get more than you asked for!`,
   msg`On CoW Swap, you can set limit orders for balances you don't have yet.`,
   TELEGRAM_NOTIFICATIONS_BENEFIT,
@@ -106,7 +107,10 @@ export const COW_SWAP_BENEFITS = [
 ]
 
 const SOLANA_BENEFITS = COW_SWAP_BENEFITS.filter(
-  (benefit) => benefit !== TELEGRAM_NOTIFICATIONS_BENEFIT && benefit !== TWAP_FOR_REGULAR_WALLETS_BENEFIT,
+  (benefit) =>
+    benefit !== TELEGRAM_NOTIFICATIONS_BENEFIT &&
+    benefit !== TWAP_FOR_REGULAR_WALLETS_BENEFIT &&
+    benefit !== TWAP_PRICE_IMPACT_BENEFIT,
 )
 
 const availableChainsText = getAvailableChainsText()
