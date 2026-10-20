@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
@@ -51,7 +51,6 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
   const [isDropdownVisible, setDropdownVisible] = useState(false)
   const { enabledTradeTypes } = useInjectedWidgetParams()
   const menuItems = useMenuItems()
-  const { isRwaEnabled } = useFeatureFlags()
   const getTradeStateByType = useGetTradeStateByRoute()
   const getTradeUrlParams = useGetTradeUrlParams()
 
@@ -125,8 +124,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
 
   const { t } = useLingui()
 
-  const rwaMenuItem =
-    !isRwaEnabled || isInjectedWidget() ? null : <RwaMenuItem isDropdownVisible={isDropdown && isDropdownVisible} />
+  const rwaMenuItem = <RwaMenuItem isDropdownVisible={isDropdown && isDropdownVisible} />
 
   return isDropdown ? (
     <>
@@ -213,6 +211,10 @@ const MenuItem = ({
 }
 
 function RwaMenuItem({ isDropdownVisible }: { isDropdownVisible: boolean }): ReactNode {
+  const { isRwaEnabled } = useFeatureFlags()
+
+  if (!isRwaEnabled || isInjectedWidget() || getIsSafeAppIframe()) return null
+
   return (
     <styledEl.MenuItem isDropdownVisible={isDropdownVisible}>
       <styledEl.PageLink href={RWA_PATH}>

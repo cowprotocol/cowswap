@@ -75,10 +75,14 @@ const rwaOrigin = process.env.RWA_ORIGIN
 
 const rwaRewrites = rwaOrigin
   ? [
+      // `/rwa/:path*` alone sends `/rwa` to `/rwa/`, which Next redirects back to `/rwa`: a loop
       { source: '/rwa', destination: `${rwaOrigin}/rwa` },
       { source: '/rwa/:path*', destination: `${rwaOrigin}/rwa/:path*` },
     ]
   : []
+
+// Redirects run before rewrites, so /rwa must not be sent to /
+const redirectExclusions = ['#', ...(rwaOrigin ? ['rwa(?:/|$)'] : []), '.*[\\w\\d\\.-]\\.\\w{2,15}$']
 
 // ---------------------------------------------------------------------------
 // Vercel config
@@ -91,8 +95,7 @@ export const config: VercelConfig = {
   installCommand: 'cd ../../ && pnpm run install:ci',
   redirects: [
     {
-      // Redirects run before rewrites, so /rwa must not be sent to /
-      source: '/((?!#|rwa(?:/|$)|.*[\\w\\d\\.-]\\.\\w{2,15}$).+)',
+      source: `/((?!${redirectExclusions.join('|')}).+)`,
       destination: '/',
       permanent: false,
     },
