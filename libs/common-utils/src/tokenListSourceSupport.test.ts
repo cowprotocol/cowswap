@@ -1,23 +1,37 @@
-import { isDeprecatedTokenListProtocol, isWatcherUnfetchableListSource } from './tokenListSourceSupport'
+import { isDeprecatedTokenListSource, isWatcherUnfetchableListSource } from './tokenListSourceSupport'
 
-describe('isDeprecatedTokenListProtocol', () => {
+describe('isDeprecatedTokenListSource', () => {
   it('rejects ipfs and ipns, the protocols dropped for new imports', () => {
-    expect(isDeprecatedTokenListProtocol('ipfs://QmHash')).toBe(true)
-    expect(isDeprecatedTokenListProtocol('ipns://tokens.uniswap.org')).toBe(true)
+    expect(isDeprecatedTokenListSource('ipfs://QmHash')).toBe(true)
+    expect(isDeprecatedTokenListSource('ipns://tokens.uniswap.org')).toBe(true)
   })
 
   it('rejects them regardless of case', () => {
-    expect(isDeprecatedTokenListProtocol('IPFS://QmHash')).toBe(true)
-    expect(isDeprecatedTokenListProtocol('IpNs://tokens.uniswap.org')).toBe(true)
+    expect(isDeprecatedTokenListSource('IPFS://QmHash')).toBe(true)
+    expect(isDeprecatedTokenListSource('IpNs://tokens.uniswap.org')).toBe(true)
   })
 
-  it('keeps ENS importable - it still works here, it is only passed to the watcher by address', () => {
-    expect(isDeprecatedTokenListProtocol('tokens.uniswap.eth')).toBe(false)
+  it('rejects http gateway urls, which are the same content behind an https url', () => {
+    expect(isDeprecatedTokenListSource('https://cloudflare-ipfs.com/ipns/tokens.uniswap.org')).toBe(true)
+    expect(isDeprecatedTokenListSource('https://ipfs.io/ipfs/QmHash/list.json')).toBe(true)
+    expect(isDeprecatedTokenListSource('http://ipfs.io/ipns/tokens.uniswap.org')).toBe(true)
+    expect(isDeprecatedTokenListSource('https://QmHash.ipfs.dweb.link/')).toBe(true)
   })
 
-  it('leaves http(s) alone', () => {
-    expect(isDeprecatedTokenListProtocol('https://example.com/list.json')).toBe(false)
-    expect(isDeprecatedTokenListProtocol('http://example.com/list.json')).toBe(false)
+  it('rejects ENS names, whose contenthash resolves to ipfs/ipns', () => {
+    expect(isDeprecatedTokenListSource('tokens.uniswap.eth')).toBe(true)
+    expect(isDeprecatedTokenListSource('defi.cmc.eth')).toBe(true)
+    expect(isDeprecatedTokenListSource('tokens.uniswap.eth/list.json')).toBe(true)
+  })
+
+  it('leaves ordinary http(s) alone', () => {
+    expect(isDeprecatedTokenListSource('https://example.com/list.json')).toBe(false)
+    expect(isDeprecatedTokenListSource('http://example.com/list.json')).toBe(false)
+    expect(isDeprecatedTokenListSource('https://example.com/ipfs-tokens/list.json')).toBe(false)
+  })
+
+  it('keeps ar importable - it is not part of the ipfs deprecation', () => {
+    expect(isDeprecatedTokenListSource('ar://hash')).toBe(false)
   })
 })
 
@@ -33,14 +47,21 @@ describe('isWatcherUnfetchableListSource', () => {
     expect(isWatcherUnfetchableListSource('tokens.uniswap.eth/list.json')).toBe(true)
   })
 
-  it('leaves http(s) sources on the url side', () => {
+  it('covers http gateway urls, which fail the session when the gateway is down', () => {
+    expect(isWatcherUnfetchableListSource('https://cloudflare-ipfs.com/ipns/tokens.uniswap.org')).toBe(true)
+    expect(isWatcherUnfetchableListSource('https://ipfs.io/ipfs/QmHash/list.json')).toBe(true)
+    expect(isWatcherUnfetchableListSource('https://QmHash.ipfs.dweb.link/')).toBe(true)
+  })
+
+  it('leaves ordinary http(s) sources on the url side', () => {
     expect(isWatcherUnfetchableListSource('https://example.com/list.json')).toBe(false)
     expect(isWatcherUnfetchableListSource('http://example.com/list.json')).toBe(false)
   })
 
-  it('does not flag sources that are invalid for other reasons', () => {
-    expect(isWatcherUnfetchableListSource('')).toBe(false)
-    expect(isWatcherUnfetchableListSource('ftp://example.com/list.json')).toBe(false)
-    expect(isWatcherUnfetchableListSource('javascript:alert(1)')).toBe(false)
+  it('covers every other non-http(s) source, which the watcher guard turns down outright', () => {
+    expect(isWatcherUnfetchableListSource('data:application/json,{"tokens":[]}')).toBe(true)
+    expect(isWatcherUnfetchableListSource('ftp://example.com/list.json')).toBe(true)
+    expect(isWatcherUnfetchableListSource('javascript:alert(1)')).toBe(true)
+    expect(isWatcherUnfetchableListSource('')).toBe(true)
   })
 })

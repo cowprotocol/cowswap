@@ -87,6 +87,15 @@ describe('useWatcherTokensLists', () => {
       expect(renderLists().tokensListsUrls).toEqual(['https://example.com/list-a.json'])
     })
 
+    it('drops http ipfs gateway urls, which fail the request when the gateway is down', () => {
+      mockEnabledState({
+        'https://cloudflare-ipfs.com/ipns/tokens.uniswap.org': true,
+        'https://example.com/list-a.json': true,
+      })
+
+      expect(renderLists().tokensListsUrls).toEqual(['https://example.com/list-a.json'])
+    })
+
     it('returns urls sorted alphabetically', () => {
       mockEnabledState({
         'https://example.com/z-list.json': true,

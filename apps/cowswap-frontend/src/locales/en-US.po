@@ -3122,6 +3122,10 @@ msgstr "so we can investigate the problem."
 msgid "(via WalletConnect)"
 msgstr "(via WalletConnect)"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+msgid "IPFS, IPNS and ENS (.eth) token lists are no longer supported. Use a direct https list URL."
+msgstr "IPFS, IPNS and ENS (.eth) token lists are no longer supported. Use a direct https list URL."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
@@ -4785,6 +4789,10 @@ msgstr "The time each part of your TWAP order will remain active."
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
 #~ msgid "Authorize Telegram"
 #~ msgstr "Authorize Telegram"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+msgid "https:// list URL"
+msgstr "https:// list URL"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
@@ -6769,8 +6777,8 @@ msgid "Cancel order {shortId}"
 msgstr "Cancel order {shortId}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
-msgid "IPFS and IPNS token lists are no longer supported. Use an https list URL."
-msgstr "IPFS and IPNS token lists are no longer supported. Use an https list URL."
+#~ msgid "IPFS and IPNS token lists are no longer supported. Use an https list URL."
+#~ msgstr "IPFS and IPNS token lists are no longer supported. Use an https list URL."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "without worry."
@@ -7488,8 +7496,8 @@ msgstr "Approval amount"
 #~ msgstr "Payout history"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
-msgid "https:// or ipfs:// or ENS name"
-msgstr "https:// or ipfs:// or ENS name"
+#~ msgid "https:// or ipfs:// or ENS name"
+#~ msgstr "https:// or ipfs:// or ENS name"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokens"
@@ -7928,6 +7936,10 @@ msgstr "Confirm with your wallet"
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderOnboard.tsx
 #~ msgid "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
 #~ msgstr "Use a referral code to earn a flat fee for<0/>the eligible volume done through the app.<1/><2/>New wallets only."
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+#~ msgid "IPFS and IPNS token lists are no longer supported. Use a direct https list URL."
+#~ msgstr "IPFS and IPNS token lists are no longer supported. Use a direct https list URL."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTable.tsx
 msgid "Date"
