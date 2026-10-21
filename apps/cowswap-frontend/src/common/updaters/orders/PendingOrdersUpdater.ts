@@ -2,7 +2,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
+import { getExplorerOrderLink, normalizeError, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { areAddressesEqual, EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
@@ -337,8 +337,10 @@ async function _updateCreatingOrders(
             return
           }
 
+          const error = normalizeError(err)
+
           // Nothing to do here, keep waiting until the order shows up
-          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, err)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
         })
 
       acc.push(promise)
