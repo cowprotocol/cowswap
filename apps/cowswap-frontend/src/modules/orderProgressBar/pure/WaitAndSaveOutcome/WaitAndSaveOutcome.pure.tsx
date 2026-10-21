@@ -40,7 +40,7 @@ export function WaitAndSaveOutcome({
   const percentLabel = formatGainPercentLabel(gainPercent)
   const tooltipContent =
     comparisonTooltip ??
-    t`Compared to the estimated amount you would have received by trading alone outside a CoW batch.`
+    t`Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote.`
 
   return (
     <styledEl.Wrapper className={className} data-testid="wait-and-save-outcome">

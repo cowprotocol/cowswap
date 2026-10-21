@@ -1,8 +1,16 @@
 import { font, transitions, UI } from '@cowprotocol/ui'
 
-import styled, { keyframes } from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components/macro'
 
-const fadeIn = keyframes`
+const reducedMotion = css`
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+    filter: none;
+  }
+`
+
+const gradientIn = keyframes`
   from {
     opacity: 0;
     transform: translateY(-24px);
@@ -32,16 +40,25 @@ const checkReveal = keyframes`
 export const Wrapper = styled.div`
   --confirmation-success-duration: ${transitions.duration.slow};
 
+  position: relative;
   width: 100%;
-  background: linear-gradient(
-    to bottom,
-    var(${UI.COLOR_SUCCESS_BG}) 0%,
-    var(${UI.COLOR_SUCCESS_BG}) 18%,
-    transparent 100%
-  );
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+      to bottom,
+      var(${UI.COLOR_SUCCESS_BG}) 0%,
+      var(${UI.COLOR_SUCCESS_BG}) 18%,
+      transparent 100%
+    );
+  }
 `
 
 export const Content = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,11 +66,8 @@ export const Content = styled.div`
   width: 100%;
   padding: 24px 44px;
   text-align: center;
-  animation: ${fadeIn} var(--confirmation-success-duration) ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-  }
+  animation: ${gradientIn} var(--confirmation-success-duration) ${transitions.timing.out} both;
+  ${reducedMotion}
 `
 
 export const IconCircle = styled.div`
@@ -66,14 +80,8 @@ export const IconCircle = styled.div`
   border-radius: 50%;
   background: var(${UI.COLOR_SUCCESS_BG});
   color: var(${UI.COLOR_SUCCESS_TEXT});
-  animation: ${checkReveal} var(--confirmation-success-duration) ease-out both;
-
-  @media (prefers-reduced-motion: reduce) {
-    animation: none;
-    opacity: 1;
-    filter: none;
-    transform: none;
-  }
+  animation: ${checkReveal} var(--confirmation-success-duration) ${transitions.timing.out} both;
+  ${reducedMotion}
 `
 
 export const CheckIcon = styled.span`
