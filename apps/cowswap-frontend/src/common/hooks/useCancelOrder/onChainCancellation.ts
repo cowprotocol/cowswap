@@ -11,7 +11,7 @@ import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 import type { EthFlowContractData, SettlementContractData } from '../useContract'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
-const CANCELLATION_GAS_LIMIT_DEFAULT = 150000n
+const CANCELLATION_GAS_LIMIT_DEFAULT = 300_000n
 
 export type CancelledOrderInfo = {
   txHash: string

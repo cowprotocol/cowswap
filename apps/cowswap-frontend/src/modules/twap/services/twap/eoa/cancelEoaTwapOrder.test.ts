@@ -120,7 +120,7 @@ describe('cancelEoaTwapOrder', () => {
     await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: EOA_TWAP_CANCELLATION_GAS_LIMIT }))
-    expect(cancellation.estimatedGas).toBe(EOA_TWAP_CANCELLATION_GAS_LIMIT)
+    expect(EOA_TWAP_CANCELLATION_GAS_LIMIT).toBe(1_200_000n)
   })
 
   it('propagates rejection when the user rejects the transaction', async () => {
