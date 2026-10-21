@@ -8,7 +8,7 @@ import { tradeFlow } from './index'
 
 jest.mock('modules/permit', () => ({
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),
-  callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
+  callDataContainsPermitPlaceholder: jest.fn().mockReturnValue(false),
 }))
 
 jest.mock('modules/injectedWidget', () => {

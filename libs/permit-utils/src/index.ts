@@ -2,6 +2,7 @@ export { DEFAULT_MIN_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_ACCOUNT } from './c
 
 export { checkIsCallDataAValidPermit } from './lib/checkIsCallDataAValidPermit'
 export { generatePermitHook } from './lib/generatePermitHook'
+export { getPermitHookPlaceholder, isPermitHookPlaceholder } from './lib/getPermitHookPlaceholder'
 export { getPermitUtilsInstance } from './lib/getPermitUtilsInstance'
 export { getTokenPermitInfo } from './lib/getTokenPermitInfo'
 export { isSupportedPermitInfo } from './utils/isSupportedPermitInfo'

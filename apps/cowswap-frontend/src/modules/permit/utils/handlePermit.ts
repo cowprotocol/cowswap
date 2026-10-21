@@ -6,7 +6,7 @@ import { t } from '@lingui/core/macro'
 import {
   addPermitHookToHooks,
   AppDataInfo,
-  filterPermitSignerPermit,
+  filterPermitPlaceholder,
   removePermitHookFromAppData,
   replaceHooksOnAppData,
 } from 'modules/appData'
@@ -52,7 +52,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
 
     const hooks = addPermitHookToHooks(typedHooks, permitData)
 
-    return replaceHooksOnAppData(appData, hooks, filterPermitSignerPermit)
+    return replaceHooksOnAppData(appData, hooks, filterPermitPlaceholder)
   } else {
     // Otherwise, pass along exiting hooks, minus permit
     return removePermitHookFromAppData(appData, typedHooks)

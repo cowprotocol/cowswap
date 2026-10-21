@@ -32,7 +32,7 @@ export function PermitHookApp({ context }: HookDappProps) {
   )
   const generatePermitHook = useGeneratePermitHook()
   const token = useTokenBySymbolOrAddress(tokenAddress)
-  const permitInfo = usePermitInfo(token, TradeType.SWAP, spenderAddress)
+  const permitInfo = usePermitInfo(token, TradeType.SWAP)
 
   const onButtonClick = useCallback(async () => {
     if (!permitInfo) return

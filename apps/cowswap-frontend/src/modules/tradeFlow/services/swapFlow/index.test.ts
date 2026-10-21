@@ -8,7 +8,7 @@ import { TradeFlowContext } from '../../types/TradeFlowContext'
 import { swapFlow } from './index'
 
 jest.mock('modules/permit', () => ({
-  callDataContainsPermitSigner: jest.fn().mockReturnValue(false),
+  callDataContainsPermitPlaceholder: jest.fn().mockReturnValue(false),
   handlePermit: jest.fn().mockResolvedValue({ fullAppData: '{}', doc: {} }),
 }))
 jest.mock('modules/injectedWidget', () => {

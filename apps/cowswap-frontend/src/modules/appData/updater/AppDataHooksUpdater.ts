@@ -9,7 +9,7 @@ import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { Nullish } from 'types'
 
-import { useAccountAgnosticPermitHookData } from 'modules/permit'
+import { usePermitHookPlaceholder } from 'modules/permit'
 import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType, useIsSellNative } from 'modules/trade'
 
 import { useUpdateAppDataHooks } from '../hooks'
@@ -26,7 +26,7 @@ export function AppDataHooksUpdater(): null {
   const preHooks = isHooksTradeType ? hooksStoreState.preHooks : null
   const postHooks = isHooksTradeType ? hooksStoreState.postHooks : null
   const updateAppDataHooks = useUpdateAppDataHooks()
-  const permitData = useAgnosticPermitDataIfUserHasNoAllowance()
+  const permitData = usePermitPlaceholderIfUserHasNoAllowance()
   const hooksPrev = useRef<OrderInteractionHooks | undefined>(undefined)
   const hasTradeInfo = !!tradeState
   // This is already covered up the dependency chain, but it still slips through some times
@@ -114,8 +114,8 @@ export function AppDataHooksUpdater(): null {
   return null
 }
 
-function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
-  const hookData = useAccountAgnosticPermitHookData()
+function usePermitPlaceholderIfUserHasNoAllowance(): Nullish<PermitHookData> {
+  const hookData = usePermitHookPlaceholder()
 
   // Remove permitData if the user has enough allowance for the current trade
   const hasTradeEnoughAllowance = useHasTradeEnoughAllowance()

@@ -1,13 +1,9 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-
-import { useConfig, usePublicClient } from 'wagmi'
-
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Token } from '@cowprotocol/currency'
-import { getTokenPermitInfo } from '@cowprotocol/permit-utils'
 import type { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { renderHook, waitFor } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 import { TradeType } from 'common/modules/tradeNavigation'
@@ -15,36 +11,13 @@ import { TradeType } from 'common/modules/tradeNavigation'
 import { usePermitInfo } from './usePermitInfo'
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
-import { getPermittableTokenKey } from '../state/permittableTokensAtom'
-
-const defaultSpender = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
-const customSpender = '0x1111111111111111111111111111111111111111'
-
-jest.mock('jotai', () => ({
-  ...jest.requireActual('jotai'),
-  useAtomValue: jest.fn(),
-  useSetAtom: jest.fn(),
-}))
-
 jest.mock('@cowprotocol/common-utils', () => ({
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS: { 1: defaultSpender },
   getIsNativeToken: jest.fn().mockReturnValue(false),
   getWrappedToken: jest.fn((token) => token),
-  isAddress: jest.fn(),
-}))
-
-jest.mock('@cowprotocol/permit-utils', () => ({
-  DEFAULT_MIN_GAS_LIMIT: 50000n,
-  getTokenPermitInfo: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
-}))
-
-jest.mock('wagmi', () => ({
-  useConfig: jest.fn(),
-  usePublicClient: jest.fn(),
 }))
 
 jest.mock('common/hooks/featureFlags/useIsPermitEnabled', () => ({
@@ -64,113 +37,72 @@ jest.mock('./usePreGeneratedPermitInfoForToken', () => ({
   usePreGeneratedPermitInfoForToken: jest.fn(),
 }))
 
-const mockedUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
-const mockedUseSetAtom = useSetAtom as jest.MockedFunction<typeof useSetAtom>
-const mockedGetTokenPermitInfo = getTokenPermitInfo as jest.MockedFunction<typeof getTokenPermitInfo>
+const mockedGetIsNativeToken = getIsNativeToken as jest.MockedFunction<typeof getIsNativeToken>
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockedUseConfig = useConfig as jest.MockedFunction<typeof useConfig>
-const mockedUsePublicClient = usePublicClient as jest.MockedFunction<typeof usePublicClient>
 const mockedUseIsPermitEnabled = useIsPermitEnabled as jest.MockedFunction<typeof useIsPermitEnabled>
 const mockedUsePreGeneratedPermitInfoForToken = usePreGeneratedPermitInfoForToken as jest.MockedFunction<
   typeof usePreGeneratedPermitInfoForToken
 >
 
-const commonUtils = jest.requireMock('@cowprotocol/common-utils') as {
-  isAddress: jest.MockedFunction<(value: string | undefined | null) => string | false>
-}
-
 describe('usePermitInfo', () => {
   const token = new Token(1, '0x1234567890123456789012345678901234567890', 18, 'TEST', 'Test Token')
-  const addPermitInfo = jest.fn()
-  const defaultPermitInfo: PermitInfo = { type: 'eip-2612', name: 'Test Token', version: '1' }
-  const fetchedPermitInfo: PermitInfo = { type: 'unsupported', name: 'Test Token' }
+  const preGeneratedPermitInfo: PermitInfo = { type: 'eip-2612', name: 'Test Token', version: '1' }
 
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockedUseAtomValue.mockReturnValue({})
-    mockedUseSetAtom.mockReturnValue(addPermitInfo)
+    mockedGetIsNativeToken.mockReturnValue(false)
     mockedUseWalletInfo.mockReturnValue({ chainId: 1 } as ReturnType<typeof useWalletInfo>)
-    mockedUseConfig.mockReturnValue({} as ReturnType<typeof useConfig>)
-    mockedUsePublicClient.mockReturnValue({} as ReturnType<typeof usePublicClient>)
     mockedUseIsPermitEnabled.mockReturnValue(true)
-    mockedUsePreGeneratedPermitInfoForToken.mockImplementation(() => ({ permitInfo: undefined, isLoading: false }))
-    mockedGetTokenPermitInfo.mockResolvedValue(fetchedPermitInfo)
-    commonUtils.isAddress.mockImplementation((value) => {
-      if (!value || !/^0x[a-fA-F0-9]{40}$/.test(value)) return false
-
-      return value
-    })
-  })
-
-  it('does not reuse cached permit info that belongs to a different spender', async () => {
-    mockedUseAtomValue.mockReturnValue({
-      1: {
-        [getPermittableTokenKey(token.address, defaultSpender)]: defaultPermitInfo,
-      },
-    })
-
-    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP, customSpender))
-
-    expect(result.current).toBeUndefined()
-
-    await waitFor(() => {
-      expect(mockedGetTokenPermitInfo).toHaveBeenCalledWith(
-        expect.objectContaining({
-          spender: customSpender,
-          tokenAddress: token.address,
-        }),
-      )
-    })
-  })
-
-  it('revalidates custom spenders instead of reusing pre-generated permit info', async () => {
     mockedUsePreGeneratedPermitInfoForToken.mockImplementation((tokenToCheck) => ({
-      permitInfo: tokenToCheck ? defaultPermitInfo : undefined,
+      permitInfo: tokenToCheck ? preGeneratedPermitInfo : undefined,
       isLoading: false,
     }))
-
-    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP, customSpender))
-
-    expect(result.current).toBeUndefined()
-    expect(mockedUsePreGeneratedPermitInfoForToken).toHaveBeenCalledWith(undefined)
-
-    await waitFor(() => {
-      expect(mockedGetTokenPermitInfo).toHaveBeenCalledWith(
-        expect.objectContaining({
-          spender: customSpender,
-          tokenAddress: token.address,
-        }),
-      )
-    })
-
-    await waitFor(() => {
-      expect(addPermitInfo).toHaveBeenCalledWith({
-        chainId: 1,
-        tokenAddress: token.address,
-        spender: customSpender,
-        permitInfo: fetchedPermitInfo,
-      })
-    })
   })
 
-  it('reuses pre-generated permit info for the default spender', () => {
-    mockedUsePreGeneratedPermitInfoForToken.mockImplementation((tokenToCheck) => ({
-      permitInfo: tokenToCheck ? defaultPermitInfo : undefined,
-      isLoading: false,
-    }))
+  it('returns pre-generated permit info for the token', () => {
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
+
+    expect(result.current).toEqual(preGeneratedPermitInfo)
+  })
+
+  it('treats tokens missing from the pre-generated list as unsupported', () => {
+    mockedUsePreGeneratedPermitInfoForToken.mockReturnValue({ permitInfo: undefined, isLoading: false })
 
     const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
 
-    expect(result.current).toEqual(defaultPermitInfo)
-    expect(mockedGetTokenPermitInfo).not.toHaveBeenCalled()
+    expect(result.current).toEqual({ type: 'unsupported', name: 'Test Token' })
   })
 
-  it('skips permit lookup for an invalid custom spender', () => {
-    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP, '0x1'))
+  it('returns undefined while the pre-generated list is loading', () => {
+    mockedUsePreGeneratedPermitInfoForToken.mockReturnValue({ permitInfo: undefined, isLoading: true })
+
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
+
+    expect(result.current).toBeUndefined()
+  })
+
+  it('returns unsupported for native tokens', () => {
+    mockedGetIsNativeToken.mockReturnValue(true)
+
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
+
+    expect(result.current).toEqual({ type: 'unsupported', name: 'native' })
+    expect(mockedUsePreGeneratedPermitInfoForToken).toHaveBeenCalledWith(undefined)
+  })
+
+  it('returns undefined when the trade type does not support permit', () => {
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.ADVANCED_ORDERS))
 
     expect(result.current).toBeUndefined()
     expect(mockedUsePreGeneratedPermitInfoForToken).toHaveBeenCalledWith(undefined)
-    expect(mockedGetTokenPermitInfo).not.toHaveBeenCalled()
+  })
+
+  it('returns undefined when permit is disabled', () => {
+    mockedUseIsPermitEnabled.mockReturnValue(false)
+
+    const { result } = renderHook(() => usePermitInfo(token, TradeType.SWAP))
+
+    expect(result.current).toBeUndefined()
   })
 })

@@ -1,17 +1,7 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
-
-import { useConfig, usePublicClient } from 'wagmi'
-
-import {
-  getIsNativeToken,
-  getWrappedToken,
-  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
-  isAddress,
-} from '@cowprotocol/common-utils'
-import { getAddressKey, isNonEvmChain, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
+import { isNonEvmChain } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
-import { DEFAULT_MIN_GAS_LIMIT, getTokenPermitInfo, PermitInfo } from '@cowprotocol/permit-utils'
+import { PermitInfo } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
@@ -21,11 +11,6 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { usePreGeneratedPermitInfoForToken } from './usePreGeneratedPermitInfoForToken'
 
-import {
-  addPermitInfoForTokenAtom,
-  getPermittableTokenKey,
-  permittableTokensAtom,
-} from '../state/permittableTokensAtom'
 import { IsTokenPermittableResult } from '../types'
 
 const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
@@ -37,130 +22,31 @@ const ORDER_TYPE_SUPPORTS_PERMIT: Record<TradeType, boolean> = {
 
 const UNSUPPORTED: PermitInfo = { type: 'unsupported', name: 'native' }
 
-export const PERMIT_GAS_LIMIT_MIN: Record<SupportedChainId, bigint> = mapSupportedNetworks(DEFAULT_MIN_GAS_LIMIT)
-
 /**
- * Check whether the token is permittable, and returns the permit info for it
- * Tries to find it out from the pre-generated list
- * If not found, tries to load the info from chain
- * The result will be cached on localStorage if a final conclusion is found
+ * Returns the permit info for the token from the pre-generated list (CDN), the only source of truth
  *
- * When it is, returned type is `{type: 'dai-like' | 'eip-2612', gasLimit: number}
- * When it is not, returned type is `{type: 'unsupported'}`
- * When it is unknown, returned type is `undefined`
+ * When it is permittable, returned type is `{type: 'dai-like' | 'eip-2612', ...}`
+ * When it is not, or the token is not in the list, returned type is `{type: 'unsupported'}`
+ * When it is unknown (list is loading or permit is not applicable), returned type is `undefined`
  */
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
-export function usePermitInfo(
-  token: Nullish<Currency>,
-  tradeType: Nullish<TradeType>,
-  customSpender?: string,
-): IsTokenPermittableResult {
+export function usePermitInfo(token: Nullish<Currency>, tradeType: Nullish<TradeType>): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
-  const config = useConfig()
-  const publicClient = usePublicClient()
-
-  const tokenAddress = token ? getWrappedToken(token).address : undefined
-  const lowerCaseAddress = tokenAddress ? getAddressKey(tokenAddress) : undefined
+  const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType] && !isNonEvmChain(chainId)
+  const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
   const isNative = !!token && getIsNativeToken(token)
 
-  // Avoid building permit info in the first place if order type is not supported
-  const isPermitSupported = !!tradeType && ORDER_TYPE_SUPPORTS_PERMIT[tradeType]
-
-  const isPermitEnabled = useIsPermitEnabled() && isPermitSupported
-  const defaultSpender = chainId && !isNonEvmChain(chainId) ? COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId] : undefined
-  const customSpenderAddress = customSpender ? isAddress(customSpender) || undefined : undefined
-  const spender = customSpender ? customSpenderAddress : defaultSpender
-  const shouldUsePreGeneratedInfo = !customSpender
-
-  const addPermitInfo = useAddPermitInfo()
-  const permitInfo = usePermitInfoState(chainId, isPermitEnabled ? lowerCaseAddress : undefined, spender)
-  const { permitInfo: preGeneratedInfo, isLoading: preGeneratedIsLoading } = usePreGeneratedPermitInfoForToken(
-    isPermitEnabled && !isNative && shouldUsePreGeneratedInfo ? token : undefined,
+  const { permitInfo, isLoading } = usePreGeneratedPermitInfoForToken(
+    isPermitEnabled && token && !isNative ? getWrappedToken(token) : undefined,
   )
-  const hasResolvedPermitInfo =
-    permitInfo !== undefined || (shouldUsePreGeneratedInfo && preGeneratedInfo !== undefined)
-  const shouldSkipPermitInfoLoad =
-    !chainId ||
-    !isPermitEnabled ||
-    !lowerCaseAddress ||
-    !spender ||
-    !config ||
-    !publicClient ||
-    hasResolvedPermitInfo ||
-    isNative ||
-    preGeneratedIsLoading
-
-  useEffect(() => {
-    if (shouldSkipPermitInfoLoad || isNonEvmChain(chainId)) {
-      return
-    }
-
-    const minGasLimit = PERMIT_GAS_LIMIT_MIN[chainId]
-
-    getTokenPermitInfo({
-      spender,
-      tokenAddress: lowerCaseAddress as `0x${string}`,
-      chainId,
-      config,
-      publicClient,
-      minGasLimit,
-    }).then((result) => {
-      if ('error' in result) {
-        // When error, we don't know. Log and don't cache.
-        console.debug(
-          `useIsTokenPermittable: failed to check whether token ${lowerCaseAddress} is permittable: ${result.error}`,
-        )
-      } else {
-        // TODO: there is a Single Responsibility Principle breach here. This hook should not be responsible for caching.
-        // TODO: better to create a separate updater for caching.
-        // Otherwise, we know it is permittable or not. Cache it.
-        addPermitInfo({ chainId, tokenAddress: lowerCaseAddress, spender, permitInfo: result })
-      }
-    })
-  }, [
-    addPermitInfo,
-    chainId,
-    config,
-    publicClient,
-    isNative,
-    isPermitEnabled,
-    lowerCaseAddress,
-    permitInfo,
-    preGeneratedInfo,
-    preGeneratedIsLoading,
-    shouldUsePreGeneratedInfo,
-    shouldSkipPermitInfoLoad,
-    spender,
-  ])
 
   if (isNative) {
     return UNSUPPORTED
   }
 
-  return shouldUsePreGeneratedInfo ? (preGeneratedInfo ?? permitInfo) : permitInfo
-}
+  if (!isPermitEnabled || !token || isLoading) {
+    return undefined
+  }
 
-/**
- * Returns a callback for adding PermitInfo for a given token
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useAddPermitInfo() {
-  return useSetAtom(addPermitInfoForTokenAtom)
-}
-
-function usePermitInfoState(
-  chainId: SupportedChainId,
-  tokenAddress: string | undefined,
-  spender: string | undefined,
-): IsTokenPermittableResult {
-  const permitableTokens = useAtomValue(permittableTokensAtom)
-
-  return useMemo(() => {
-    if (!tokenAddress || !spender) return undefined
-
-    return permitableTokens[chainId]?.[getPermittableTokenKey(tokenAddress, spender)]
-  }, [chainId, permitableTokens, spender, tokenAddress])
+  return permitInfo ?? { type: 'unsupported', name: token.name }
 }

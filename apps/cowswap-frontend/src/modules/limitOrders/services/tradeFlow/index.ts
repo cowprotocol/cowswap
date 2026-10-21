@@ -1,10 +1,11 @@
 import type { Hex } from 'viem'
 import { sendTransaction } from 'wagmi/actions'
 
-import { captureError, ERROR_TYPES, normalizeError, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { captureError, ERROR_TYPES, normalizeError, reportPermitPlaceholderInOrder } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
@@ -14,7 +15,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext, WidgetHookDeclineError } from 'modules/limitOrders/services/types'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
+import { callDataContainsPermitPlaceholder, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -78,8 +79,9 @@ export async function tradeFlow(
       preSignCallback: beforePermit,
     })
 
-    if (callDataContainsPermitSigner(postOrderParams.appData.fullAppData)) {
-      reportPermitWithDefaultSigner(postOrderParams)
+    if (callDataContainsPermitPlaceholder(postOrderParams.appData.fullAppData)) {
+      reportPermitPlaceholderInOrder(postOrderParams)
+      throw new Error(t`Unable to generate permit data`)
     }
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 3: send transaction')

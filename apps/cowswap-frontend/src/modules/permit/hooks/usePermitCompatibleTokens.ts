@@ -1,66 +1,29 @@
-import { useAtomValue } from 'jotai'
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
-import { getAddressKey, isNonEvmChain } from '@cowprotocol/cow-sdk'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
 import { usePreGeneratedPermitInfo } from './usePreGeneratedPermitInfo'
 
-import {
-  getPermittableTokenKey,
-  getTokenAddressFromPermittableTokenKey,
-  permittableTokensAtom,
-} from '../state/permittableTokensAtom'
 import { PermitCompatibleTokens } from '../types'
 
 export function usePermitCompatibleTokens(): PermitCompatibleTokens {
-  const { chainId } = useWalletInfo()
-  const permitInfoAllChains = useAtomValue(permittableTokensAtom)
-  const localPermitInfo = permitInfoAllChains[chainId] || {}
   const { allPermitInfo } = usePreGeneratedPermitInfo()
-  const defaultSpender = isNonEvmChain(chainId) ? undefined : COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
-
   const isPermitEnabled = useIsPermitEnabled()
 
-  const stableRef = JSON.stringify(Object.keys(localPermitInfo).concat(Object.keys(allPermitInfo)))
-
-  const localPermitInfoRef = useRef(localPermitInfo)
-  localPermitInfoRef.current = localPermitInfo
-  const preGeneratedPermitInfoRef = useRef(allPermitInfo)
-  preGeneratedPermitInfoRef.current = allPermitInfo
-
   return useMemo(() => {
-    // Don't deal with permit when it's not enabled
     if (!isPermitEnabled) {
       return {}
     }
 
     const permitCompatibleTokens: PermitCompatibleTokens = {}
 
-    for (const address of Object.keys(preGeneratedPermitInfoRef.current)) {
-      const addressLowerCased = getAddressKey(address)
-
-      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(
-        preGeneratedPermitInfoRef.current[addressLowerCased],
-      )
-    }
-
-    for (const permitTokenKey of Object.keys(localPermitInfoRef.current)) {
-      const tokenAddress = getTokenAddressFromPermittableTokenKey(permitTokenKey)
-
-      if (!defaultSpender || permitTokenKey !== getPermittableTokenKey(tokenAddress, defaultSpender)) continue
-
-      const addressLowerCased = getAddressKey(tokenAddress)
-
-      permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(localPermitInfoRef.current[permitTokenKey])
+    for (const [address, permitInfo] of Object.entries(allPermitInfo)) {
+      permitCompatibleTokens[getAddressKey(address)] = isSupportedPermitInfo(permitInfo)
     }
 
     return permitCompatibleTokens
-    // Reducing unnecessary re-renders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaultSpender, stableRef, isPermitEnabled])
+  }, [allPermitInfo, isPermitEnabled])
 }

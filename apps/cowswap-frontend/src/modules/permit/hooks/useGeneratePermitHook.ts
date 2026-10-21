@@ -68,7 +68,9 @@ async function runPermitRequest(
   storePermit: PermitDeps['storePermit'],
   walletClient: PermitDeps['walletClient'],
 ): Promise<PermitHookData | undefined> {
-  if (!publicClient || !isSupportedPermitInfo(params.permitInfo)) return undefined
+  const { account } = params
+
+  if (!publicClient || !account || !isSupportedPermitInfo(params.permitInfo)) return undefined
 
   const chainIdMissMatch = publicClient.chain.id !== chainId
 
@@ -78,18 +80,13 @@ async function runPermitRequest(
    */
   if (chainIdMissMatch) return
 
-  const eip2612Utils = await getPermitUtilsInstance({
-    chainId,
-    publicClient,
-    account: params.account,
-    walletClient: params.account ? walletClient : undefined,
-  })
+  const eip2612Utils = await getPermitUtilsInstance({ chainId, publicClient, account, walletClient })
   const spender = params.customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId as SupportedChainId]
-  const nonce = params.account ? await eip2612Utils.getTokenNonce(params.inputToken.address, params.account) : undefined
+  const nonce = await eip2612Utils.getTokenNonce(params.inputToken.address, account)
   const permitParams = {
     chainId,
     tokenAddress: params.inputToken.address,
-    account: params.account,
+    account,
     nonce,
     amount,
   }
@@ -100,11 +97,11 @@ async function runPermitRequest(
   // Cache miss: a real permit signature is about to be requested. When a sell currency is provided
   // (i.e. this is a user-facing trade approval), give the host widget a chance to veto it first.
   // Throws WidgetHookDeclineError on decline so the calling flow aborts.
-  if (params.sellCurrency && params.account) {
+  if (params.sellCurrency) {
     await fireOnBeforeApprovalHook({
       sellCurrency: params.sellCurrency,
       sellAmount: params.amount,
-      walletAddress: params.account,
+      walletAddress: account,
       spenderAddress: spender,
     })
   }
@@ -112,7 +109,7 @@ async function runPermitRequest(
   await params.preSignCallback?.()
   try {
     const hookData = await generatePermitHook({
-      account: params.account,
+      account,
       amount,
       chainId,
       config,

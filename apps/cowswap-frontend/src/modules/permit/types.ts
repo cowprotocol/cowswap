@@ -4,13 +4,6 @@ import { PermitHookData, PermitHookParams, PermitInfo } from '@cowprotocol/permi
 
 import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 
-export type AddPermitTokenParams = {
-  chainId: SupportedChainId
-  tokenAddress: string
-  spender: string
-  permitInfo: PermitInfo
-}
-
 export type CachedPermitData = {
   hookData: PermitHookData
   nonce: number | undefined

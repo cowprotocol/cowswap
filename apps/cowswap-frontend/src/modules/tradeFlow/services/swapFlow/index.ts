@@ -8,7 +8,7 @@ import {
   ERROR_TYPES,
   getCurrencyAddress,
   normalizeError,
-  reportPermitWithDefaultSigner,
+  reportPermitPlaceholderInOrder,
 } from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
@@ -16,6 +16,7 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
 import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
@@ -26,7 +27,7 @@ import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/
 
 import { WidgetHookDeclineError } from 'modules/injectedWidget'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
+import { callDataContainsPermitPlaceholder, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
 import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -110,8 +111,9 @@ export async function swapFlow(
         : undefined,
     })
 
-    if (callDataContainsPermitSigner(orderParams.appData.fullAppData)) {
-      reportPermitWithDefaultSigner(orderParams)
+    if (callDataContainsPermitPlaceholder(orderParams.appData.fullAppData)) {
+      reportPermitPlaceholderInOrder(orderParams)
+      throw new Error(t`Unable to generate permit data`)
     }
 
     logTradeFlow('SWAP FLOW', 'STEP 3: send transaction')

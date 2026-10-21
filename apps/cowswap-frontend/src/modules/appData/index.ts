@@ -5,7 +5,7 @@ export { useWaitAndSaveValidFrom } from './hooks/useWaitAndSaveValidFrom'
 export { uploadAppDataDocOrderbookApi } from './services'
 
 export { getAppData } from './utils/fullAppData'
-export { filterPermitSignerPermit } from './utils/appDataFilter'
+export { filterPermitPlaceholder } from './utils/appDataFilter'
 export { decodeAppData } from './utils/decodeAppData'
 export { getAppDataValidFrom, getValidFromFromAppDataDoc } from './utils/getAppDataValidFrom'
 export { replaceHooksOnAppData, buildAppData, removePermitHookFromAppData } from './utils/buildAppData'

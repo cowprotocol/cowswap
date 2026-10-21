@@ -30,10 +30,9 @@ export function captureError(
   })
 }
 
-export function reportPermitWithDefaultSigner(params: Record<string, unknown>): void {
-  // report this to sentry if we ever use the default signer in the permit
-  Sentry.captureException('User signed the permit using PERMIT_SIGNER instead of their account', {
-    tags: { errorType: 'permitWithDefaultSigner' },
+export function reportPermitPlaceholderInOrder(params: Record<string, unknown>): void {
+  Sentry.captureException('Order appData contains a placeholder permit instead of a user signed one', {
+    tags: { errorType: 'permitPlaceholderInOrder' },
     contexts: { params },
   })
 }
