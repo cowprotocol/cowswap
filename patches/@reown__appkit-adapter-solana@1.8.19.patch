@@ -24,7 +24,7 @@ index 0c84226663c5465126079c7c175ece93163705bd..7273cbbe8213002a817a7a1914e33609
 -        const decodedTransaction = Buffer.from(result.transaction, 'base64');
 -        if (isVersionedTransaction(transaction)) {
 -            return VersionedTransaction.deserialize(new Uint8Array(decodedTransaction));
-+        if (!('signature' in result)) {
++        if (!result.signature) {
 +            throw new Error('Invalid solana_signTransaction response: missing signature and transaction');
          }
 -        return Transaction.from(decodedTransaction);

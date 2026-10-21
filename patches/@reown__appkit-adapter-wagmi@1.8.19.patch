@@ -2,7 +2,7 @@ diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
 index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f790d5a646 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
-@@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -152,9 +152,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                  }
                  if (accountData.status === 'connected') {
                      const hasAccountChanged = accountData.address !== prevAccountData?.address;
@@ -10,12 +10,16 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f7
 +                    const hasConnectorChanged = accountData.connector?.id !== prevAccountData.connector?.id;
                      const hasConnectionStatusChanged = prevAccountData.status !== 'connected';
 -                    if (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged) {
-+                    if (accountData.connector &&
++                    // A WalletConnect session approved for Solana only (Ledger Live) leaves wagmi
++                    // connected with no eip155 account, and handleAccountChanged checksums the
++                    // address without a guard.
++                    if (accountData.address &&
++                        accountData.connector &&
 +                        (hasAccountChanged || hasConnectorChanged || hasConnectionStatusChanged)) {
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -520,13 +521,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -520,13 +525,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
