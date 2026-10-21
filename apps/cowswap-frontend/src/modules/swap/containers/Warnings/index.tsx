@@ -17,6 +17,8 @@ import {
 } from 'modules/trade'
 import { HighFeeWarning, MetamaskTransactionWarning, SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
+import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
+
 import { useShouldCheckBridgingRecipient } from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { SwapFormState, useSwapFormState } from '../../hooks/useSwapFormState'
@@ -46,8 +48,12 @@ export function Warnings({ buyingFiatAmount, hideQuoteAmount }: WarningsProps): 
   const widgetParams = useInjectedWidgetParams()
 
   const { enabledTradeTypes } = widgetParams
+  // The same predicate that disables the TWAP tab, so the banner cannot advertise a destination the
+  // menu next to it refuses to open.
   const showTwapSuggestionBanner =
-    (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) && !isCurrentTradeBridging
+    (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) &&
+    !isCurrentTradeBridging &&
+    isTwapSupportedChain(chainId)
 
   // Reset confirmation when trade params change
   useEffect(() => {

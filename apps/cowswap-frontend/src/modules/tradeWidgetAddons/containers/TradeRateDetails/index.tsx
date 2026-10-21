@@ -120,9 +120,7 @@ export function TradeRateDetails({
       </TradeTotalCostsDetails>
 
       {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
-      {shouldShowSlippageProminent && !isFeeDetailsOpen && (
-        <div style={{ padding: '0 6px', marginTop: '-5px' }}>{slippageRow}</div>
-      )}
+      {shouldShowSlippageProminent && !isFeeDetailsOpen && slippageRow}
     </>
   )
 }

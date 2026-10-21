@@ -1,5 +1,17 @@
 # Changelog
 
+## [4.11.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.10.0...widget-lib-v4.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/iframe-transport@2.3.11
+
 ## [4.10.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.9.0...widget-lib-v4.10.0) (2026-10-14)
 
 ### Minor Changes

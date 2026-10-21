@@ -1,5 +1,26 @@
 # Changelog
 
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.16.0...widget-configurator-v3.17.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/analytics@3.16.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/ui@3.18.0
+  - @cowprotocol/widget-lib@4.11.0
+  - @cowprotocol/widget-react@3.3.0
+
 ## [3.16.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.15.0...widget-configurator-v3.16.0) (2026-10-14)
 
 ### Minor Changes

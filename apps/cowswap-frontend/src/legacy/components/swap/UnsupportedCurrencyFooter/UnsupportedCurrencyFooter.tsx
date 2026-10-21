@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
 
 import { getEtherscanLink, getWrappedToken } from '@cowprotocol/common-utils'
-import { Currency } from '@cowprotocol/currency'
-import { TokenLogo, useIsUnsupportedToken } from '@cowprotocol/tokens'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { Currency, Token } from '@cowprotocol/currency'
+import { TokenLogo, useUnsupportedTokens } from '@cowprotocol/tokens'
 import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -15,6 +16,7 @@ import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 import Card, { OutlineCard } from 'legacy/components/Card'
 import { AutoColumn } from 'legacy/components/Column'
 
+import { UnsupportedTokenReason } from 'common/containers/UnsupportedTokenReason'
 import { Modal } from 'common/pure/Modal'
 
 export const DetailsFooter = styled.div<{ show: boolean }>`
@@ -49,6 +51,11 @@ export const AddressText = styled(ThemedText.Blue)`
   }
 `
 
+const ReasonText = styled(ThemedText.Body)`
+  font-size: 14px;
+  margin: 0 0 10px;
+`
+
 export interface UnsupportedCurrencyFooterParams {
   currencies: (Currency | null | undefined)[]
   detailsText?: React.ReactNode
@@ -57,26 +64,28 @@ export interface UnsupportedCurrencyFooterParams {
   showDetailsText?: MessageDescriptor
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function UnsupportedCurrencyFooter({
   show,
   currencies,
   detailsTitle,
   detailsText,
   showDetailsText,
-}: UnsupportedCurrencyFooterParams) {
+}: UnsupportedCurrencyFooterParams): ReactNode {
   const { i18n } = useLingui()
   const { chainId } = useWalletInfo()
   const [showDetails, setShowDetails] = useState(false)
+  const unsupportedTokens = useUnsupportedTokens()
   const tokens =
     chainId && currencies
-      ? currencies.map((currency) => {
-          return currency && getWrappedToken(currency)
-        })
+      ? currencies.reduce<Token[]>((acc, currency) => {
+          const token = currency && getWrappedToken(currency)
+
+          if (token && unsupportedTokens[getAddressKey(token.address)]) acc.push(token)
+
+          return acc
+        }, [])
       : []
-  const isUnsupportedToken = useIsUnsupportedToken()
+  const getReason = (token: Token): string | undefined => unsupportedTokens[getAddressKey(token.address)]?.reason
 
   return (
     <DetailsFooter show={show}>
@@ -87,34 +96,38 @@ export default function UnsupportedCurrencyFooter({
               <ThemedText.MediumHeader>{detailsTitle ? i18n._(detailsTitle) : ''}</ThemedText.MediumHeader>
               <CloseIcon onClick={() => setShowDetails(false)} />
             </RowBetween>
-            {tokens.map((token) => {
-              return (
-                token &&
-                isUnsupportedToken(token.address) && (
-                  <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
-                    <AutoColumn gap="10px">
-                      <AutoRow gap="5px" align="center">
-                        <TokenLogo token={token} size={24} />
-                        <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
-                      </AutoRow>
-                      {chainId && (
-                        <ExternalLink href={getEtherscanLink(chainId, 'address', token.address)}>
-                          <AddressText>{token.address}</AddressText>
-                        </ExternalLink>
-                      )}
-                    </AutoColumn>
-                  </OutlineCard>
-                )
-              )
-            })}
+            {tokens.map((token) => (
+              <OutlineCard key={token.address.concat('not-supported')} padding="10px 16px">
+                <AutoColumn gap="10px">
+                  <AutoRow gap="5px" align="center">
+                    <TokenLogo token={token} size={24} />
+                    <ThemedText.Body fontWeight={500}>{token.symbol}</ThemedText.Body>
+                  </AutoRow>
+                  {chainId && (
+                    <ExternalLink href={getEtherscanLink(chainId, 'address', token.address)}>
+                      <AddressText>{token.address}</AddressText>
+                    </ExternalLink>
+                  )}
+                  <ThemedText.Body>
+                    <UnsupportedTokenReason chainId={chainId} token={token} reason={getReason(token)} />
+                  </ThemedText.Body>
+                </AutoColumn>
+              </OutlineCard>
+            ))}
             <AutoColumn gap="lg">
               <ThemedText.Body fontWeight={500}>{detailsText}</ThemedText.Body>
             </AutoColumn>
           </AutoColumn>
         </Card>
       </Modal>
+      {tokens.map((token) => (
+        <ReasonText key={token.address}>
+          <UnsupportedTokenReason chainId={chainId} token={token} reason={getReason(token)} />
+        </ReasonText>
+      ))}
       <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
         <ThemedText.Error error={!!showDetailsText} color={'danger'}>
+          <br />
           {showDetailsText ? i18n._(showDetailsText) : ''}
         </ThemedText.Error>
       </StyledButtonEmpty>

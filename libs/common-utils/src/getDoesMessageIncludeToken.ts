@@ -1,7 +1,9 @@
-import { getAddressKey } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+
+const WORD_REGEX = /[0-9a-zA-Z]+/g
 
 export function getDoesMessageIncludeToken(message: string, tokenAddress: string): string | null {
-  if (message.toLowerCase().includes(getAddressKey(tokenAddress))) return tokenAddress
+  const words = message.match(WORD_REGEX) ?? []
 
-  return null
+  return words.some((word) => areAddressesEqual(word, tokenAddress)) ? tokenAddress : null
 }
