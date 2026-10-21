@@ -63,6 +63,17 @@ describe('SolverAuctionResult', () => {
     expect(screen.getByTestId('solver-auction-dot-map').children).toHaveLength(72)
   })
 
+  it('uses singular solver labels when only one solver competed', () => {
+    renderResult(<SolverAuctionResult solvers={[solvers[0]]} totalSolvers={1} buyToken={buyToken} />)
+
+    const root = screen.getByTestId('solver-auction-result')
+
+    expect(root.textContent).toContain('1 solver competed for your order')
+    expect(root.textContent).not.toContain('solvers competed')
+    expect(root.textContent).toContain('1 solver')
+    expect(root.textContent).not.toContain('1 solvers')
+  })
+
   it('shows the first three solvers and expands on view all bids', () => {
     renderResult(<SolverAuctionResult solvers={solvers} />)
 

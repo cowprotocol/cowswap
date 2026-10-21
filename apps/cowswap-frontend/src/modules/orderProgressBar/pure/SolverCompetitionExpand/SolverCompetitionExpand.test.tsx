@@ -61,6 +61,13 @@ describe('SolverCompetitionExpand', () => {
     expect(screen.getByTestId('solver-competition-stack').querySelectorAll('img')).toHaveLength(3)
   })
 
+  it('uses the singular solver label when only one solver competed', () => {
+    renderExpand(<SolverCompetitionExpand solvers={[solvers[0]]} />)
+
+    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('1 solver competed')
+    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('solvers competed')
+  })
+
   it('expands SolverAuctionResult when the summary row is clicked', () => {
     renderExpand(<SolverCompetitionExpand solvers={solvers} />)
 

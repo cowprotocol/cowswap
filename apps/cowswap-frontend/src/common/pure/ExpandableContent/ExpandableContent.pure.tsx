@@ -62,6 +62,7 @@ export function ExpandableContent({
       $variant={variant}
       style={{ height: heightPx }}
       aria-hidden={!expanded}
+      inert={!expanded}
     >
       <div ref={innerRef}>{children}</div>
     </styledEl.ExpandableContent>

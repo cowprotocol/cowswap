@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { plural } from '@lingui/core/macro'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
@@ -59,7 +59,13 @@ export function SolverAuctionResult({
           <Trans>Solver auction</Trans>
         </styledEl.Eyebrow>
         <styledEl.Title>
-          <Trans>{solversLength} solvers competed for your order</Trans>
+          <Plural
+            value={solversLength}
+            one="# solver competed for your order"
+            few="# solvers competed for your order"
+            many="# solvers competed for your order"
+            other="# solvers competed for your order"
+          />
         </styledEl.Title>
       </styledEl.Header>
 
@@ -153,7 +159,7 @@ function AuctionLegend({
         ) : null}
       </styledEl.LegendItems>
       <styledEl.LegendTotal>
-        <Trans>{total} solvers</Trans>
+        <Plural value={total} one="# solver" few="# solvers" many="# solvers" other="# solvers" />
       </styledEl.LegendTotal>
     </styledEl.Legend>
   )

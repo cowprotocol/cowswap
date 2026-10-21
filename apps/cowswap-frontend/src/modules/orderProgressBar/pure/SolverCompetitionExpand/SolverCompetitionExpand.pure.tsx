@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
 
-import { Trans } from '@lingui/react/macro'
+import { Plural, Trans } from '@lingui/react/macro'
 import { PiCaretDown } from 'react-icons/pi'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
@@ -78,7 +78,13 @@ export function SolverCompetitionExpand({
         </styledEl.SolverStack>
 
         <styledEl.CompetedLabel>
-          <Trans>{competedCount} solvers competed</Trans>
+          <Plural
+            value={competedCount}
+            one="# solver competed"
+            few="# solvers competed"
+            many="# solvers competed"
+            other="# solvers competed"
+          />
         </styledEl.CompetedLabel>
 
         {winnerName ? (
