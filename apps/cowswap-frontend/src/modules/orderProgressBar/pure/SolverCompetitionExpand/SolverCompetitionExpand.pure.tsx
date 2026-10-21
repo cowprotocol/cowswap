@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Currency } from '@cowprotocol/currency'
 
@@ -33,12 +33,22 @@ export function SolverCompetitionExpand({
   defaultExpanded = false,
 }: SolverCompetitionExpandProps): ReactNode {
   const [expanded, setExpanded] = useState(defaultExpanded)
+  const [dotsAnimationKey, setDotsAnimationKey] = useState(0)
+  const wasExpandedRef = useRef(defaultExpanded)
 
   const solversLength = solvers.length
   const winner = solvers[0]
   const winnerName = winner?.displayName || winner?.solver || ''
   const competedCount = totalSolvers && totalSolvers > solversLength ? totalSolvers : solversLength
   const stackedSolvers = useMemo(() => solvers.slice(0, MAX_STACKED_AVATARS), [solvers])
+
+  useEffect(() => {
+    if (expanded && !wasExpandedRef.current) {
+      setDotsAnimationKey((key) => key + 1)
+    }
+
+    wasExpandedRef.current = expanded
+  }, [expanded])
 
   if (solversLength === 0) {
     return null
@@ -83,7 +93,12 @@ export function SolverCompetitionExpand({
       </styledEl.ToggleRow>
 
       <ExpandableContent expanded={expanded} variant="bordered">
-        <SolverAuctionResult solvers={solvers} totalSolvers={totalSolvers} buyToken={buyToken} />
+        <SolverAuctionResult
+          solvers={solvers}
+          totalSolvers={totalSolvers}
+          buyToken={buyToken}
+          dotsAnimationKey={dotsAnimationKey}
+        />
       </ExpandableContent>
     </styledEl.Wrapper>
   )

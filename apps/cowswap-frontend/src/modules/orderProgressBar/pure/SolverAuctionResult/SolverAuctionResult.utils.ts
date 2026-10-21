@@ -37,7 +37,14 @@ export function buildAuctionDots(totalSolvers: number, bidCount: number): Auctio
 }
 
 export function getAuctionDotSlotCount(realSolverCount: number): number {
-  return AUCTION_DOT_COLUMNS * AUCTION_DOT_MIN_ROWS + (Math.max(realSolverCount, 0) % AUCTION_DOT_COLUMNS)
+  const minSlots = AUCTION_DOT_COLUMNS * AUCTION_DOT_MIN_ROWS
+  const count = Math.max(realSolverCount, 0)
+
+  if (count <= minSlots) {
+    return minSlots
+  }
+
+  return Math.ceil(count / AUCTION_DOT_COLUMNS) * AUCTION_DOT_COLUMNS
 }
 
 export function getAuctionLegendCounts(

@@ -24,6 +24,7 @@ export interface SolverAuctionResultProps {
   totalSolvers?: number
   buyToken?: Currency
   className?: string
+  dotsAnimationKey?: number
 }
 
 export function SolverAuctionResult({
@@ -31,6 +32,7 @@ export function SolverAuctionResult({
   totalSolvers,
   buyToken,
   className,
+  dotsAnimationKey = 0,
 }: SolverAuctionResultProps): ReactNode {
   const { t } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
@@ -61,7 +63,7 @@ export function SolverAuctionResult({
         </styledEl.Title>
       </styledEl.Header>
 
-      <AuctionDotMap dots={dots} />
+      <AuctionDotMap dots={dots} animationKey={dotsAnimationKey} />
       <AuctionLegend won={legend.won} alsoBid={legend.alsoBid} didntBid={legend.didntBid} total={legend.total} />
 
       <styledEl.List>
@@ -107,11 +109,11 @@ export function SolverAuctionResult({
   )
 }
 
-function AuctionDotMap({ dots }: { dots: AuctionDotKind[] }): ReactNode {
+function AuctionDotMap({ dots, animationKey }: { dots: AuctionDotKind[]; animationKey: number }): ReactNode {
   return (
-    <styledEl.DotMap aria-hidden data-testid="solver-auction-dot-map">
+    <styledEl.DotMap key={animationKey} aria-hidden data-testid="solver-auction-dot-map">
       {dots.map((kind, index) => (
-        <styledEl.Dot key={`${kind}-${index}`} $kind={kind} />
+        <styledEl.Dot key={`${kind}-${index}`} $kind={kind} $index={index} />
       ))}
     </styledEl.DotMap>
   )

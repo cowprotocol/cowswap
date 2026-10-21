@@ -22,10 +22,12 @@ describe('SolverAuctionResult.utils', () => {
   })
 
   describe('getAuctionDotSlotCount', () => {
-    it('uses 3 rows of 12 plus the real solver count modulo 12', () => {
-      expect(getAuctionDotSlotCount(61)).toBe(37)
+    it('floors at 3 rows of 12 and rounds up to the next multiple of 12 above that', () => {
+      expect(getAuctionDotSlotCount(4)).toBe(36)
       expect(getAuctionDotSlotCount(12)).toBe(36)
-      expect(getAuctionDotSlotCount(4)).toBe(40)
+      expect(getAuctionDotSlotCount(36)).toBe(36)
+      expect(getAuctionDotSlotCount(37)).toBe(48)
+      expect(getAuctionDotSlotCount(61)).toBe(72)
     })
   })
 
@@ -40,11 +42,11 @@ describe('SolverAuctionResult.utils', () => {
         { won: 0, bid: 0, idle: 0, placeholder: 0 },
       )
 
-      expect(dots).toHaveLength(37)
+      expect(dots).toHaveLength(72)
       expect(counts.won).toBe(1)
       expect(counts.bid).toBe(11)
-      expect(counts.idle).toBe(25)
-      expect(counts.placeholder).toBe(0)
+      expect(counts.idle).toBe(49)
+      expect(counts.placeholder).toBe(11)
     })
 
     it('pads with placeholders when real solvers are below the min grid', () => {

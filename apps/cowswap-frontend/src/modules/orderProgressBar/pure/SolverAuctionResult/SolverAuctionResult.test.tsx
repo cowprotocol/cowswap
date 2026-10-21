@@ -60,7 +60,7 @@ describe('SolverAuctionResult', () => {
     expect(root.textContent).toContain("57 didn't bid")
     expect(root.textContent).toContain('61 solvers')
     expect(screen.getByText('Winning solver')).toBeTruthy()
-    expect(screen.getByTestId('solver-auction-dot-map').children).toHaveLength(37)
+    expect(screen.getByTestId('solver-auction-dot-map').children).toHaveLength(72)
   })
 
   it('shows the first three solvers and expands on view all bids', () => {
