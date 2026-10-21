@@ -28,6 +28,7 @@ import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
+  InvalidateAbandonedCreatingOrdersBatchCallback,
   InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
@@ -36,6 +37,7 @@ import {
   useCombinedPendingOrders,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
+  useInvalidateAbandonedCreatingOrdersBatch,
   useInvalidateOrdersBatch,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
@@ -88,6 +90,7 @@ interface UpdateOrdersParams {
   addOrUpdateOrders: AddOrUpdateOrdersCallback
   fulfillOrdersBatch: FulfillOrdersBatchWithTypes
   invalidateOrdersBatch: InvalidateOrdersBatchCallback
+  invalidateAbandonedCreatingOrdersBatch: InvalidateAbandonedCreatingOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
@@ -141,6 +144,7 @@ export function PendingOrdersUpdater(): null {
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const invalidateOrdersBatch = useInvalidateOrdersBatch()
+  const invalidateAbandonedCreatingOrdersBatch = useInvalidateAbandonedCreatingOrdersBatch()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
@@ -207,6 +211,7 @@ export function PendingOrdersUpdater(): null {
           addOrUpdateOrders,
           fulfillOrdersBatch,
           invalidateOrdersBatch,
+          invalidateAbandonedCreatingOrdersBatch,
           expireOrdersBatch,
           cancelOrdersBatch,
           presignOrders,
@@ -228,6 +233,7 @@ export function PendingOrdersUpdater(): null {
       expireOrdersBatch,
       cancelOrdersBatch,
       invalidateOrdersBatch,
+      invalidateAbandonedCreatingOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
       updatePresignGnosisSafeTx,
@@ -301,7 +307,7 @@ async function _updateCreatingOrders(
   pendingOrders: Order[],
   isSafeWallet: boolean,
   addOrUpdateOrders: AddOrUpdateOrdersCallback,
-  invalidateOrdersBatch: InvalidateOrdersBatchCallback,
+  invalidateAbandonedCreatingOrdersBatch: InvalidateAbandonedCreatingOrdersBatchCallback,
 ): Promise<void> {
   const abandonedIds: string[] = []
 
@@ -352,7 +358,7 @@ async function _updateCreatingOrders(
   await Promise.all(promises)
 
   if (abandonedIds.length) {
-    invalidateOrdersBatch({ ids: abandonedIds, chainId, isSafeWallet })
+    invalidateAbandonedCreatingOrdersBatch({ ids: abandonedIds, chainId, isSafeWallet })
   }
 }
 
@@ -370,6 +376,7 @@ async function _updateOrders({
   expireOrdersBatch,
   cancelOrdersBatch,
   invalidateOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
   updatePresignGnosisSafeTx,
@@ -486,7 +493,7 @@ async function _updateOrders({
     cancelOrdersBatch,
     safeNonce,
   )
-  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders, invalidateOrdersBatch)
+  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders, invalidateAbandonedCreatingOrdersBatch)
 
   markPollComplete?.(chainId)
 }

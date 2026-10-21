@@ -18,6 +18,7 @@ import {
   deleteOrders,
   expireOrdersBatch,
   fulfillOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   invalidateOrdersBatch,
   OrderStatus,
   preSignOrders,
@@ -188,6 +189,19 @@ function deleteOrderById(state: Required<OrdersState>, chainId: ChainId, id: str
   delete stateForChain.creating[id]
   delete stateForChain.failed[id]
   delete stateForChain.scheduled[id]
+}
+
+function failOrderById(state: Required<OrdersState>, chainId: ChainId, id: string, isSafeWallet: boolean): void {
+  const orderObject = getOrderById(state, chainId, id)
+
+  if (!orderObject) return
+
+  deleteOrderById(state, chainId, id)
+
+  orderObject.order.status = OrderStatus.FAILED
+  orderObject.order.isCancelling = false
+
+  addOrderToState(state, chainId, id, 'failed', orderObject.order, isSafeWallet)
 }
 
 function getDefaultLastCheckedBlock(chainId: ChainId): number {
@@ -417,19 +431,24 @@ export default createReducer(initialState, (builder) =>
       prefillState(state, action)
       const { ids, chainId, isSafeWallet } = action.payload
 
-      // if there are any newly fulfilled orders
-      // update them
+      ids.forEach((id) => {
+        failOrderById(state, chainId, id, isSafeWallet)
+      })
+    })
+    .addCase(invalidateAbandonedCreatingOrdersBatch, (state, action) => {
+      prefillState(state, action)
+      const { ids, chainId, isSafeWallet } = action.payload
+
       ids.forEach((id) => {
         const orderObject = getOrderById(state, chainId, id)
 
-        if (orderObject) {
-          deleteOrderById(state, chainId, id)
-
-          orderObject.order.status = OrderStatus.FAILED
-          orderObject.order.isCancelling = false
-
-          addOrderToState(state, chainId, id, 'failed', orderObject.order, isSafeWallet)
+        // Re-read rather than trusting the id: another updater may have advanced this order to
+        // pending or filled since the 404 that collected it. See the action's own doc comment.
+        if (!orderObject || orderObject.order.status !== OrderStatus.CREATING || orderObject.order.orderCreationHash) {
+          return
         }
+
+        failOrderById(state, chainId, id, isSafeWallet)
       })
     })
     .addCase(setOrderCancellationHash, (state, action) => {
