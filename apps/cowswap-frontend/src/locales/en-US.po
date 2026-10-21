@@ -6632,6 +6632,7 @@ msgid "continue"
 msgstr "continue"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/ExpiredOrderNotification/ExpiredOrderNotification.container.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 msgid "order"
 msgstr "order"
@@ -6943,6 +6944,7 @@ msgstr "of your sell amount! Therefore, your order is unlikely to execute."
 msgid "Something went wrong. Please try again."
 msgstr "Something went wrong. Please try again."
 
+#: apps/cowswap-frontend/src/modules/orders/containers/ExpiredOrderNotification/ExpiredOrderNotification.container.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Recreate"
@@ -9492,7 +9494,7 @@ msgid "{symbol} is unsupported: the token is on the denylist."
 msgstr "{symbol} is unsupported: the token is on the denylist."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TopSections.tsx
-#: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/ExpiredOrderNotification/ExpiredOrderNotification.container.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapOrderStatus/TwapOrderStatus.pure.tsx
 msgid "Order expired"

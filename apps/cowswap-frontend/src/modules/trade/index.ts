@@ -10,6 +10,7 @@ export * from './state/isEoaEthFlowAtom'
 export * from './state/nonEvmReceiverConfirmedAtom.atoms'
 export {
   useAlternativeOrder,
+  useSetAlternativeOrder,
   useHideAlternativeOrderModal,
   useIsAlternativeOrderModalVisible,
 } from './state/alternativeOrder/hooks'
