@@ -63,7 +63,7 @@ The initial `ordersStateAtom` value should keep the existing `OrdersState` / `Or
 
 5. Migrate persistence and remove Redux storage.
 
-   Add a defensive persisted-state migration for the old Redux `orders` key. The migration must tolerate malformed data and should preserve `lastCheckedBlock` defaults per chain. After the migration has shipped long enough, remove `orders` from Redux `PERSISTED_KEYS` and delete the Redux reducer/actions/hooks that are no longer used.
+   Add a defensive persisted-state migration for the old Redux `orders` key. The migration must tolerate malformed data and should preserve `lastCheckedBlock` defaults per chain. `lastCheckedBlock` is only written once per chain per session and only read by `hasHydratedOrders`, so consider replacing it with a boolean hydrated flag (mapping any non-default persisted value to `true`). After the migration has shipped long enough, remove `orders` from Redux `PERSISTED_KEYS` and delete the Redux reducer/actions/hooks that are no longer used.
 
    This could be a good opportunity to rethink this persistence layer and consider eviction strategies for orders that we no longer need to store. Also, we could implement this with IndexedDb instead of `localStorage`, given its size.
 
