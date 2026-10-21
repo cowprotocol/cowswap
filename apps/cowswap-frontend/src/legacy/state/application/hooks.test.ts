@@ -1,8 +1,8 @@
 import { createStore, Provider } from 'jotai'
 import { createElement, ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { OPEN_WALLET_MODAL_EVENT, useWalletInfo } from '@cowprotocol/wallet'
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getReownChainNamespace, OPEN_WALLET_MODAL_EVENT, useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
 import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
@@ -11,10 +11,16 @@ import { useToggleWalletModal } from './hooks'
 
 jest.mock('@cowprotocol/wallet', () => ({
   OPEN_WALLET_MODAL_EVENT: 'cowswap-open-wallet-modal',
+  getReownChainNamespace: jest.fn(),
   useWalletInfo: jest.fn(),
 }))
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockGetReownChainNamespace = getReownChainNamespace as jest.MockedFunction<typeof getReownChainNamespace>
+
+beforeEach(() => {
+  mockGetReownChainNamespace.mockImplementation((chainId) => (isSolanaChain(chainId) ? 'solana' : 'eip155'))
+})
 
 function openModal(chainId: SupportedChainId, areAlphaNetworksEnabled: boolean): unknown {
   mockUseWalletInfo.mockReturnValue({ chainId })
@@ -42,7 +48,7 @@ describe('useToggleWalletModal', () => {
     expect(openModal(SupportedChainId.MAINNET, true)).toEqual({ namespace: undefined })
   })
 
-  it('does not filter on Solana, so direct links can still connect a Solana wallet', () => {
-    expect(openModal(SupportedChainId.SOLANA, false)).toEqual({ namespace: undefined })
+  it('limits the connect modal to Solana wallets on Solana while alpha networks are off', () => {
+    expect(openModal(SupportedChainId.SOLANA, false)).toEqual({ namespace: 'solana' })
   })
 })
