@@ -38,13 +38,14 @@ describe('ConfirmationSuccessHeading', () => {
     expect(heading.textContent).toContain('Your COW is in your wallet.')
   })
 
-  it('animates the success gradient and check blur, and skips both when motion is reduced', () => {
+  it('animates the success heading and check, and skips both when motion is reduced', () => {
     renderHeading(<ConfirmationSuccessHeading title="Your TWAP is active" />)
 
     const cssText = getInjectedCss().replace(/\s/g, '')
 
-    expect(cssText).toContain('filter:blur(8px)')
+    expect(cssText).toContain('filter:blur(4px)')
     expect(cssText).toContain('filter:blur(0)')
+    expect(cssText).toContain('transform:scale(2)')
     expect(cssText).toContain('@media(prefers-reduced-motion:reduce)')
     expect(cssText).toMatch(/@media\(prefers-reduced-motion:reduce\)\{[^}]*animation:none/)
   })

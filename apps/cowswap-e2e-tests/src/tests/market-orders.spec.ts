@@ -165,7 +165,7 @@ test.describe('Market Orders', () => {
       mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled.
-      await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
+      await expect(swapPage.confirmationSuccessHeading).toContainText('Swap complete')
 
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts
       // (`order.apiAdditionalInfo.executedSellAmount`/`executedBuyAmount`), not the originally
@@ -249,7 +249,7 @@ test.describe('Market Orders', () => {
       // Unlike a still-open progress modal, this order was dismissed before settling — reopening it
       // goes through the surplus-modal queue driven by `PendingOrdersUpdater`'s own polling cadence,
       // so it needs more room than the default 5s — mirrors [CS-59].
-      await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
+      await expect(swapPage.confirmationSuccessHeading).toContainText('Swap complete')
       await swapPage.page.keyboard.press('Escape')
 
       // Buy amount is fixed by the order kind — it lands exactly on the typed amount, unlike the
@@ -643,9 +643,9 @@ test.describe('Market Orders', () => {
 
       // Once truly fulfilled, `TransactionSubmittedContent` stops rendering `EthFlowStepper`
       // (`!isFinished`) and shows the same generic completed screen every other order type uses —
-      // there's no "Received USDC" checkmark state to catch, the stepper disappears entirely. This
-      // is what makes `#order-progress-bar-modal` get mounted in the first place, per [CS-59]/[CS-60].
-      await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
+      // there's no "Received USDC" checkmark state to catch, the stepper disappears entirely. The
+      // finished heading is `Modal.Header` chrome (not inside `#order-progress-bar-modal`).
+      await expect(swapPage.confirmationSuccessHeading).toContainText('Swap complete')
 
       await expectActivityStatus(accountModal, 'Filled')
 
@@ -741,7 +741,7 @@ test.describe('Market Orders', () => {
       seedTrader(mocks, wallet, CHAIN_ID, { balances: { [USDC]: orderParams.buyAmount } })
       ethFlow.confirmFilled()
 
-      await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
+      await expect(swapPage.confirmationSuccessHeading).toContainText('Swap complete')
       await swapPage.dismissOrderProgressModal()
 
       await expect(swapPage.buyBalance).toHaveAttribute('title', `${formatUnits(orderParams.buyAmount, 18)} USDC`)
@@ -1240,7 +1240,7 @@ test.describe('Market Orders', () => {
       mocks.orders.fulfillOrder(orderId, mocks.balances, CHAIN_ID, INITIAL_USDC_BALANCE, 0n)
 
       // Step 4 (FINISHED, backend TRADED) — trade settled, filled confirmation shown.
-      await expect(swapPage.orderProgressBarModal).toContainText('Swap complete')
+      await expect(swapPage.confirmationSuccessHeading).toContainText('Swap complete')
 
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
