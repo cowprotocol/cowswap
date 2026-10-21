@@ -30,11 +30,14 @@ packageExtensionsChecksum: sha256-MJ/weFfhczWAxcKBkOSA2U6hqYQqwBJPmicil25hZZ4=
 
 patchedDependencies:
   '@reown/appkit-adapter-wagmi@1.8.19':
-    hash: b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c
+    hash: 20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22
     path: patches/@reown__appkit-adapter-wagmi@1.8.19.patch
   '@reown/appkit-controllers@1.8.19':
     hash: 451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5
     path: patches/@reown__appkit-controllers@1.8.19.patch
+  '@reown/appkit-scaffold-ui@1.8.19':
+    hash: bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05
+    path: patches/@reown__appkit-scaffold-ui@1.8.19.patch
   '@synthetixio/synpress-metamask@0.0.11':
     hash: 100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f
     path: patches/@synthetixio__synpress-metamask@0.0.11.patch
@@ -726,7 +729,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-controllers':
         specifier: 1.8.19
         version: 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -1235,7 +1238,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22)(2a624a5ca7599c58d338dfde53633d80)
       '@tanstack/query-core':
         specifier: 5.90.20
         version: 5.90.20
@@ -1438,7 +1441,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-controllers':
         specifier: 1.8.19
         version: 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -2334,7 +2337,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-common':
         specifier: 1.8.19
         version: 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -24583,13 +24586,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-adapter-wagmi@1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)':
+  '@reown/appkit-adapter-wagmi@1.8.19(patch_hash=20b959da4c65be56aea700d3e63f388f203933a4d6fab17394540d4e87f8aa22)(2a624a5ca7599c58d338dfde53633d80)':
     dependencies:
       '@reown/appkit': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@wagmi/core': 3.4.8(patch_hash=07892dbe5fe941d27b4a3633c7a6596abec9a855359683732b70a4159b2788be)(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -24745,7 +24748,7 @@ snapshots:
     dependencies:
       buffer: 6.0.3
 
-  '@reown/appkit-scaffold-ui@1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
+  '@reown/appkit-scaffold-ui@1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
     dependencies:
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -24781,7 +24784,7 @@ snapshots:
       - valtio
       - zod
 
-  '@reown/appkit-scaffold-ui@1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
+  '@reown/appkit-scaffold-ui@1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
     dependencies:
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -24950,7 +24953,7 @@ snapshots:
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-pay': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -24993,7 +24996,7 @@ snapshots:
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-pay': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)

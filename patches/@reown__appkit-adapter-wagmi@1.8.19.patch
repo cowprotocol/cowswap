@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f790d5a646 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..2cb7e430d34b3be987ca72edab8885ff6efcf139 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
 @@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
@@ -15,7 +15,42 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f7
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -520,13 +521,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -351,6 +352,16 @@ export class WagmiAdapter extends AdapterBlueprint {
+         })
+             .map(connector => this.getWagmiConnector(connector.id))
+             .filter(Boolean);
++        /*
++         * wagmi's reconnect() reads an empty `connectors` array as "no preference" and falls back
++         * to every configured connector, connecting the first one whose isAuthorized() is true. A
++         * wallet approved for another namespace is approved on eip155 too — MetaMask connected to
++         * Solana alone still answers eth_accounts — so the empty list silently connects an EVM
++         * account the user never connected here. Nothing eligible means nothing to reconnect.
++         */
++        if (!wagmiConnectors.length) {
++            return;
++        }
+         await reconnect(this.wagmiConfig, {
+             connectors: wagmiConnectors
+         });
+@@ -379,6 +390,17 @@ export class WagmiAdapter extends AdapterBlueprint {
+                 };
+             }
+         }
++        /*
++         * initialize() awaits syncExistingConnection() before syncAdapterConnections(), the call
++         * that actually reconnects wagmi, so on a cold start getConnections() is still empty here.
++         * Falling through would checksum an undefined address and throw, and syncAdapterConnection()
++         * turns that throw into onDisconnectNamespace(), which records the connector as disconnected
++         * — so the wagmi reconnect that runs next skips it and the wallet stays disconnected for
++         * good. Reporting "nothing to restore" instead leaves the namespace merely disconnected.
++         */
++        if (!connection?.accounts?.length) {
++            return undefined;
++        }
+         return {
+             chainId: Number(connection?.chainId),
+             address: this.toChecksummedAddress(connection?.accounts[0]),
+@@ -520,13 +542,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });
