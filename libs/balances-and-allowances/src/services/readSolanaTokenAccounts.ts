@@ -48,7 +48,7 @@ export async function readSolanaTokenAccounts(
       const ata = getAssociatedTokenAddressSync(
         new PublicKey(mint),
         owner,
-        false,
+        true,
         programId,
         ASSOCIATED_TOKEN_PROGRAM_ID,
       )

@@ -2,10 +2,10 @@ import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/commo
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { ACCOUNT_SIZE, getAssociatedTokenAddressSync, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { ACCOUNT_SIZE } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 
-import { WSOL_MINT } from './const'
+import { getWsolAssociatedTokenAccount } from './const'
 
 export interface SolanaWrapPreview {
   /** What the owner spends on this wrap — always exactly the typed amount. */
@@ -32,7 +32,7 @@ export async function getSolanaWrapPreview(
   owner: PublicKey,
   lamports: bigint,
 ): Promise<SolanaWrapPreview> {
-  const associatedTokenAccount = getAssociatedTokenAddressSync(WSOL_MINT, owner, false, TOKEN_PROGRAM_ID)
+  const associatedTokenAccount = getWsolAssociatedTokenAccount(owner)
 
   const [accountInfo, rentExemptLamports] = await Promise.all([
     connection.getAccountInfo(associatedTokenAccount),
