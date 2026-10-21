@@ -1,4 +1,4 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -9,15 +9,10 @@ export const Wrapper = styled.div<{ isOpen: boolean }>`
   flex-flow: row wrap;
   align-items: center;
   width: 100%;
-  padding: 6px;
   gap: 8px;
   height: auto;
   font-size: 13px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
-
-  ${Media.upToSmall()} {
-    padding: 2px;
-  }
 `
 
 export const Details = styled.div<{ isVisible: boolean }>`

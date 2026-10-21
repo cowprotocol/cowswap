@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
@@ -26,6 +26,8 @@ export type ReviewOrderAmountRowProps = {
   highlighted?: boolean
   isLast?: boolean
   loading?: boolean
+  /** Limit form detail-row typography (medium label, secondary value). */
+  detailRowStyle?: boolean
   /** Overrides the default `confirmOrderAmount` test hook — e.g. for a row reused in a surface (the bridge route panel) that can render alongside the plain Confirm modal these rows normally tag. */
   testId?: string
 }
@@ -42,12 +44,15 @@ export function ReviewOrderModalAmountRow({
   highlighted = false,
   isLast = false,
   loading = false,
+  detailRowStyle = false,
   testId = TEST_IDS.confirmOrderAmount,
 }: ReviewOrderAmountRowProps): ReactElement {
+  const contentTextColor = detailRowStyle ? `var(${UI.COLOR_TEXT_SECONDARY})` : undefined
+
   const Amount = loading ? (
     <ThreeDots centered aria-label={t`Loading amount`} />
   ) : (
-    <Content highlighted={highlighted}>
+    <Content highlighted={highlighted} contentTextColor={contentTextColor}>
       {children}
       {!isAmountAccurate && '≈ '}
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
@@ -68,6 +73,8 @@ export function ReviewOrderModalAmountRow({
       label={highlighted ? undefined : label}
       withTimelineDot={withTimelineDot}
       isLast={isLast}
+      mediumLabel={detailRowStyle}
+      contentTextColor={contentTextColor}
     >
       {highlighted ? (
         <>

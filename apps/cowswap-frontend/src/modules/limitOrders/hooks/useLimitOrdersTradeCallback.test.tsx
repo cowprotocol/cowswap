@@ -191,7 +191,9 @@ describe('useLimitOrdersTradeCallback', () => {
 
       await result.current()
 
-      expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything())
+      expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything(), {
+        isAtaCreationDisabled: false,
+      })
       expect(mockTradeFlow).not.toHaveBeenCalled()
       expect(mockSafeBundleFlow).not.toHaveBeenCalled()
     })

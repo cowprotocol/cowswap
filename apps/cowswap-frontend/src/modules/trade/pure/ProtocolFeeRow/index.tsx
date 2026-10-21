@@ -18,6 +18,7 @@ interface ProtocolFeeRowProps {
   withTimelineDot: boolean
   isLast?: boolean
   loading?: boolean
+  detailRowStyle?: boolean
   testId?: string
 }
 
@@ -28,6 +29,7 @@ export function ProtocolFeeRow({
   withTimelineDot,
   isLast = false,
   loading = false,
+  detailRowStyle = false,
   testId,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps
@@ -63,6 +65,7 @@ export function ProtocolFeeRow({
       }
       isLast={isLast}
       loading={loading}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     />
   )

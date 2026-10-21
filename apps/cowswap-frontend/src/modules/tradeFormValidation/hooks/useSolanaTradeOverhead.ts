@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -41,6 +42,7 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
 
   const isSponsored = useIsSolanaSponsoredTrade()
+  const { isAtaCreationDisabled } = useFeatureFlags()
 
   const request = useMemo<OverheadRequest | null>(() => {
     if (!isSolanaChain(chainId) || !account) return null
@@ -59,10 +61,11 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
         owner: new PublicKey(account),
         quote: solanaQuote,
         isNativeSell,
+        isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
       }),
       ownerPaysFees: true,
     }
-  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap])
+  }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, isAtaCreationDisabled])
 
   // Keyed on the accounts rather than the typed amount: rent doesn't depend on how much is being sold,
   // so typing must not refetch. The amount only enters the callers' comparisons. `rpcEndpoint` keys the

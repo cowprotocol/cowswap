@@ -2,8 +2,6 @@ import { Media, QuestionTooltipIconWrapper, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { RateWrapper } from 'common/pure/RateInfo'
-
 export const Row = styled.div`
   display: flex;
   gap: 10px;
@@ -21,17 +19,5 @@ export const Row = styled.div`
     &:hover {
       opacity: 1;
     }
-  }
-`
-
-export const FooterBox = styled.div`
-  width: 100%;
-  padding: 0 6px;
-  gap: 4px;
-  display: flex;
-  flex-flow: column wrap;
-
-  ${RateWrapper} {
-    text-align: right;
   }
 `

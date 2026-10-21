@@ -72,6 +72,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const isFastQuote = getIsFastQuote(fetchParams)
 
   const isXstockTradeBelowLimit = getIsXstockTradeBelowLimit(context)
+  const isWalletNotConnected = !isSwapUnsupported && !account
 
   const validations: TradeFormValidation[] = []
 
@@ -112,7 +113,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       ]
     }
 
-    if (getIsSolanaTradeAboveLimit(context)) {
+    if (!isWalletNotConnected && getIsSolanaTradeAboveLimit(context)) {
       return [TradeFormValidation.SolanaAlphaMaxTradeSize]
     }
   }
@@ -150,7 +151,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!isSwapUnsupported && !account) {
+  if (isWalletNotConnected) {
     validations.push(
       isRestoringConnection ? TradeFormValidation.RestoringWallet : TradeFormValidation.WalletNotConnected,
     )
