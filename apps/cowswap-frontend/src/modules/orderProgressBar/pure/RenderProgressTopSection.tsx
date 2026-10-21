@@ -12,7 +12,7 @@ import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, OrderProgressBarStepName, SURPLUS_IMAGES } from '../constants'
+import { OrderProgressBarStepName, SURPLUS_IMAGES } from '../constants'
 import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
 import { OrderProgressBarProps } from '../types'
 
@@ -40,10 +40,12 @@ export function RenderProgressTopSection({
   chainId,
   surplusData,
   debugForceShowSurplus = false,
+  randomBenefit = '',
   auctionValidFrom,
   onAuctionRemainingChange,
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
+  randomBenefit?: string
   auctionValidFrom?: number
   onAuctionRemainingChange?: (remainingSec: number) => void
 }): ReactNode {
@@ -53,14 +55,7 @@ export function RenderProgressTopSection({
   const hideIntent =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
 
-  const { randomImage, randomBenefit } = useMemo(() => {
-    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
-
-    return {
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
-    }
-  }, [chainId, t])
+  const randomImage = useMemo(() => SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)], [])
 
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || Boolean(showSurplus)

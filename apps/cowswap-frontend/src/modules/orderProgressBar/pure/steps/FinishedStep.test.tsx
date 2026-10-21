@@ -93,6 +93,7 @@ describe('FinishedStep', () => {
         stepName={OrderProgressBarStepName.FINISHED}
         order={order}
         chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
         solvers={[
           { solver: 'tsolver', displayName: 'Tsolver' },
           { solver: 'quasi', displayName: 'Quasi' },
@@ -120,7 +121,12 @@ describe('FinishedStep', () => {
 
   it('omits solver expand when there are no solvers', () => {
     renderFinished(
-      <FinishedStep stepName={OrderProgressBarStepName.FINISHED} order={order} chainId={SupportedChainId.MAINNET}>
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
         <div />
       </FinishedStep>,
     )

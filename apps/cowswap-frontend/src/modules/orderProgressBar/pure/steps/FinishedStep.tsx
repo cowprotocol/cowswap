@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
-import { getCoWExplorerLinkTitle, getExplorerOrderLink, getRandomInt, shortenAddress } from '@cowprotocol/common-utils'
+import { getCoWExplorerLinkTitle, getExplorerOrderLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
@@ -22,7 +22,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS } from '../../constants'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
@@ -43,6 +42,7 @@ interface FinishedStepProps {
   chainId: SupportedChainId
   receiverEnsName?: string | null
   totalSolvers?: number
+  randomBenefit: string
   debugForceShowSurplus?: boolean
 }
 
@@ -52,8 +52,8 @@ export function FinishedStep({
   surplusData,
   solvers,
   order,
-  chainId,
   totalSolvers,
+  randomBenefit,
   debugForceShowSurplus,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
@@ -67,14 +67,6 @@ export function FinishedStep({
     surplusData,
     debugForceShowSurplus,
   })
-
-  const { randomBenefit } = useMemo(() => {
-    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
-
-    return {
-      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
-    }
-  }, [chainId, t])
 
   const twitterUrl = useMemo(() => {
     return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)

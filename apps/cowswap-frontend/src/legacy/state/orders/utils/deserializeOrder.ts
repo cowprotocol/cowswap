@@ -34,29 +34,38 @@ export function deserializeBridgeOutputAmount(value: unknown): CurrencyAmount<To
   }
 }
 
+// Immer keeps the reference of an unchanged OrderObject, so caching by reference returns the same Order
+// instance until the order itself changes. Expiry depends on the current time, so it is checked outside the cache.
+const deserializedOrdersCache = new WeakMap<OrderObject, Order>()
+const expiredOrdersCache = new WeakMap<OrderObject, Order>()
+
 export function deserializeOrder(orderObject: OrderObject | V2OrderObject | undefined): Order | undefined {
-  let order: Order | undefined
   // we need to make sure the incoming order is a valid
   // V3 typed order as users can have stale data from V2
-  if (isV3Order(orderObject)) {
-    const { order: serialisedOrder } = orderObject
-
-    const deserialisedInputToken = deserializeToken(serialisedOrder.inputToken)
-    const deserialisedOutputToken = deserializeToken(serialisedOrder.outputToken)
-    order = {
-      ...serialisedOrder,
-      inputToken: deserialisedInputToken,
-      outputToken: deserialisedOutputToken,
-      bridgeOutputAmount: deserializeBridgeOutputAmount((serialisedOrder as PersistedOrder).bridgeOutputAmount),
-    }
-
-    // Fix for edge-case, where for some reason the order is still pending but its actually expired
-    if (order.status === OrderStatus.PENDING && isOrderExpired(order)) {
-      order.status = OrderStatus.EXPIRED
-    }
-  } else {
+  if (!isV3Order(orderObject)) {
     orderObject?.order &&
       console.debug('[Order::hooks] - V2 Order detected, skipping serialisation.', orderObject.order)
+
+    return undefined
+  }
+
+  let order = deserializedOrdersCache.get(orderObject)
+
+  if (!order) {
+    order = deserializeV3Order(orderObject)
+    deserializedOrdersCache.set(orderObject, order)
+  }
+
+  // Fix for edge-case, where for some reason the order is still pending but its actually expired
+  if (order.status === OrderStatus.PENDING && isOrderExpired(order)) {
+    let expiredOrder = expiredOrdersCache.get(orderObject)
+
+    if (!expiredOrder) {
+      expiredOrder = { ...order, status: OrderStatus.EXPIRED }
+      expiredOrdersCache.set(orderObject, expiredOrder)
+    }
+
+    return expiredOrder
   }
 
   return order
@@ -64,6 +73,15 @@ export function deserializeOrder(orderObject: OrderObject | V2OrderObject | unde
 
 function deserializeToken(serializedToken: SerializedToken): TokenWithLogo {
   return TokenWithLogo.fromToken(serializedToken, serializedToken.logoURI)
+}
+
+function deserializeV3Order({ order: serialisedOrder }: OrderObject): Order {
+  return {
+    ...serialisedOrder,
+    inputToken: deserializeToken(serialisedOrder.inputToken),
+    outputToken: deserializeToken(serialisedOrder.outputToken),
+    bridgeOutputAmount: deserializeBridgeOutputAmount((serialisedOrder as PersistedOrder).bridgeOutputAmount),
+  }
 }
 
 function extractTokenInfo(

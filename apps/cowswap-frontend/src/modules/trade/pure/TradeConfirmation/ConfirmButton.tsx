@@ -24,6 +24,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const { buttonText, onConfirm, hasPendingTrade, signingStep, clickEvent } = props
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
+  const isPending = hasPendingTrade || isConfirmClicked
 
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
@@ -62,10 +63,11 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     <ButtonPrimary
       onClick={handleConfirmClick}
       disabled={isButtonDisabled}
+      aria-busy={isPending}
       buttonSize={ButtonSize.BIG}
       data-click-event={clickEvent}
     >
-      {hasPendingTrade || isConfirmClicked ? (
+      {isPending ? (
         <LongLoadText>
           {pendingText}
           <ThreeDots />
