@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { MouseEvent, ReactNode, useMemo, useState } from 'react'
 
 import { useChainId, useConnection, useWalletClient } from 'wagmi'
@@ -9,15 +10,15 @@ import {
   COW_WIDGET_CONNECTOR_ID,
   getIsInjectedMobileBrowser,
   getIsSafeAppIframe,
+  isSmartContractWalletAtom,
   useIsEagerConnectInProgress,
-  useIsSmartContractWallet,
   useWalletDetails,
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useAppData, useAppDataHooks, useWaitAndSaveValidFrom } from 'modules/appData'
 import {
   TradeTypeToUiOrderType,
   useDerivedTradeState,
@@ -211,7 +212,7 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const walletConnection = useConnection()
   const wagmiChainId = useChainId()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const settlementContract = useGP2SettlementContractData()
   const walletClientQuery = useWalletClient()
   const walletClient = walletClientQuery.data
@@ -245,7 +246,8 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const outputAmount = receiveAmountInfo?.amountsToSign.buyAmount
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
-  const validTo = getOrderValidTo(deadline, tradeQuote)
+  const waitAndSaveValidFrom = useWaitAndSaveValidFrom()
+  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidFrom)
   const quotePriceQuality = tradeQuote.fetchParams?.priceQuality
 
   const readyChecks = useMemo(

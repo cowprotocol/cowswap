@@ -3,8 +3,7 @@ import { ReactElement, useCallback, useState } from 'react'
 import { t } from '@lingui/core/macro'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
-import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
-import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { TradeFees, TradeTotalCostsDetails, useIsFreeOrderPlacement } from 'modules/trade'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
@@ -35,6 +34,7 @@ export function TradeRateDetails({
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
   const protocolFeeBps = useTradeQuoteProtocolFee()
+  const isFreePlacement = useIsFreeOrderPlacement()
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
@@ -52,6 +52,8 @@ export function TradeRateDetails({
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
       loading={loading}
+      detailRowStyle
+      isFreePlacement={isFreePlacement}
     />
   )
 
@@ -74,11 +76,10 @@ export function TradeRateDetails({
           rightAlign
           fontSize={13}
           fontBold
+          mutedValue
         />
-        <Box noMargin>
-          {tradeFees}
-          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-        </Box>
+        {tradeFees}
+        {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
       </>
     )
   }

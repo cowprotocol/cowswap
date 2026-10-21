@@ -1,5 +1,31 @@
 # Changelog
 
+## [3.11.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.10.0...permit-utils-v3.11.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.4.0
+
+## [3.10.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.9.0...permit-utils-v3.10.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.3.2
+
 ## [3.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.8.0...permit-utils-v3.9.0) (2026-10-06)
 
 ### Minor Changes

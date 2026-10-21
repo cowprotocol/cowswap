@@ -32,6 +32,7 @@ Order progress and prominent status headlines:
 - `TransactionSubmittedContent.Title` — fallback transaction/order status headline (`.../TransactionSubmittedContent/styled.tsx` `Title`)
 - `TransactionStatus` — “Transaction completed!”, “Your order expired”, “Your order was cancelled” (`.../steps/styled.ts`)
 - `CountdownText` — large circular countdown number in the order-solving progress screen (`.../steps/styled.ts`)
+- `AuctionCountdown.Timer` — large MM:SS Wait for CoWs auction wait countdown (`.../steps/AuctionCountdown.styled.ts` `Timer`)
 - `BridgingStatusHeader > h3` — “Bridging…”, “Bridging completed!”, “Refund completed!”, etc.
 
 Surplus and post-trade brand moments:

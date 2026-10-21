@@ -26,7 +26,10 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import type { AppDataInfo } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { tradeConfirmStateAtom } from 'modules/trade'
-import { planCreateBuyAtaStep } from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
+import {
+  getIsBuyAtaCreationSkipped,
+  planCreateBuyAtaStep,
+} from 'modules/trade/services/solanaFlow/planCreateBuyAtaStep'
 import { planCreateLimitOrderStep } from 'modules/trade/services/solanaFlow/planCreateLimitOrderStep'
 import { planCreateOrderStep } from 'modules/trade/services/solanaFlow/planCreateOrderStep'
 import { planDelegateStep } from 'modules/trade/services/solanaFlow/planDelegateStep'
@@ -73,7 +76,10 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
 }))
 jest.mock('modules/trade/services/solanaFlow/planWrapStep', () => ({ planWrapStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planDelegateStep', () => ({ planDelegateStep: jest.fn() }))
-jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({ planCreateBuyAtaStep: jest.fn() }))
+jest.mock('modules/trade/services/solanaFlow/planCreateBuyAtaStep', () => ({
+  planCreateBuyAtaStep: jest.fn(),
+  getIsBuyAtaCreationSkipped: jest.fn(),
+}))
 jest.mock('modules/trade/services/solanaFlow/planCreateOrderStep', () => ({ planCreateOrderStep: jest.fn() }))
 jest.mock('modules/trade/services/solanaFlow/planCreateLimitOrderStep', () => ({ planCreateLimitOrderStep: jest.fn() }))
 
@@ -82,6 +88,9 @@ const mockSignSolanaFlow = signSolanaFlow as jest.MockedFunction<typeof signSola
 const mockPlanWrapStep = planWrapStep as jest.MockedFunction<typeof planWrapStep>
 const mockPlanDelegateStep = planDelegateStep as jest.MockedFunction<typeof planDelegateStep>
 const mockPlanCreateBuyAtaStep = planCreateBuyAtaStep as jest.MockedFunction<typeof planCreateBuyAtaStep>
+const mockGetIsBuyAtaCreationSkipped = getIsBuyAtaCreationSkipped as jest.MockedFunction<
+  typeof getIsBuyAtaCreationSkipped
+>
 const mockPlanCreateOrderStep = planCreateOrderStep as jest.MockedFunction<typeof planCreateOrderStep>
 const mockPlanCreateLimitOrderStep = planCreateLimitOrderStep as jest.MockedFunction<typeof planCreateLimitOrderStep>
 const mockEmitPostedOrderEvent = emitPostedOrderEvent as jest.MockedFunction<typeof emitPostedOrderEvent>
@@ -275,6 +284,7 @@ beforeEach(() => {
   mockPlanWrapStep.mockReturnValue(WRAP_STEP)
   mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
   mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
+  mockGetIsBuyAtaCreationSkipped.mockReturnValue(false)
   mockPlanCreateOrderStep.mockResolvedValue({
     step: ORDER_STEP,
     orderId: ORDER_ID,
@@ -334,14 +344,14 @@ describe('solanaFlow', () => {
     expect(mockPlanWrapStep).toHaveBeenCalledWith(expect.objectContaining({ sellAmount: 0n }))
   })
 
-  it('drops steps the planners skip, but always creates the buy account', async () => {
+  it('drops steps the planners skip, but still creates the buy account', async () => {
     mockPlanWrapStep.mockReturnValue(null)
     mockPlanDelegateStep.mockReturnValue(null)
 
     await solanaFlow(buildContext(), buildAnalytics())
 
-    // The buy-ATA step has no skip condition on purpose: the instruction is idempotent, so including it
-    // unconditionally is cheaper than an RPC existence check and immune to the account appearing mid-flight.
+    // Without the flag the buy-ATA step has no skip condition: the instruction is idempotent, so including
+    // it unconditionally is cheaper than an RPC existence check and immune to the account appearing mid-flight.
     expect(sentSteps()).toEqual([BUY_ATA_STEP, ORDER_STEP])
   })
 
@@ -492,7 +502,7 @@ describe('solanaFlow', () => {
   it('marks the local order as sponsored', async () => {
     mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
 
-    await solanaFlow(buildContext(), buildAnalytics(), true)
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ isSponsored: true }) }),
@@ -505,7 +515,7 @@ describe('solanaFlow', () => {
   it('records whether a sponsored order is a native sell', async () => {
     mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
 
-    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), true)
+    await solanaFlow(buildContext({ isNativeSell: true }), buildAnalytics(), { isSponsored: true })
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ isNativeSell: true }) }),
@@ -699,6 +709,34 @@ describe('solanaFlow', () => {
   })
 })
 
+describe('solanaFlow · buy account creation', () => {
+  it('leaves the account to the driver when the flag disables the creation', async () => {
+    mockGetIsBuyAtaCreationSkipped.mockReturnValue(true)
+    mockPlanCreateBuyAtaStep.mockReturnValue(null)
+
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics(), { isAtaCreationDisabled: true })
+
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith({
+      quote: context.solanaQuote,
+      owner: context.solana.owner,
+      isAtaCreationDisabled: true,
+    })
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: true }))
+    expect(sentSteps()).toEqual([WRAP_STEP, DELEGATE_STEP, ORDER_STEP])
+  })
+
+  it('keeps the creation step while the flag is off', async () => {
+    await solanaFlow(buildContext(), buildAnalytics())
+
+    expect(mockGetIsBuyAtaCreationSkipped).toHaveBeenCalledWith(
+      expect.objectContaining({ isAtaCreationDisabled: false }),
+    )
+    expect(mockPlanCreateBuyAtaStep).toHaveBeenCalledWith(expect.objectContaining({ isCreationSkipped: false }))
+  })
+})
+
 describe('solanaFlow · order not placed', () => {
   const KEYRING_ERROR = 'An unknown error occurred while handling the keyring (v2) request'
 
@@ -768,7 +806,7 @@ describe('solanaFlow · sponsored', () => {
       return staleSign.promise
     })
     const context = buildContext()
-    const run = solanaFlow(context, buildAnalytics(), true)
+    const run = solanaFlow(context, buildAnalytics(), { isSponsored: true })
     await tick()
 
     jotaiStore.set(solanaSigningAbandonedAtom, true)
@@ -784,7 +822,7 @@ describe('solanaFlow · sponsored', () => {
 
       return neverSettles()
     })
-    void solanaFlow(buildContext(), buildAnalytics(), true)
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
     await tick()
 
     return { context, run, reject: staleSign.reject }
@@ -825,7 +863,7 @@ describe('solanaFlow · sponsored', () => {
 
       return neverSettles()
     })
-    void solanaFlow(buildContext(), buildAnalytics(), true)
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
     await tick()
 
     mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
@@ -833,7 +871,7 @@ describe('solanaFlow · sponsored', () => {
 
       return neverSettles()
     })
-    void solanaFlow(buildContext(), buildAnalytics(), true)
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
     await tick()
 
     resolveStaleEstimate({ expiresAt: Date.now() + 30_000, durationMs: 30_000 })
@@ -852,7 +890,7 @@ describe('solanaFlow · sponsored', () => {
       return neverSettles()
     })
 
-    void solanaFlow(buildContext(), buildAnalytics(), true)
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
     await tick()
     await tick()
 
@@ -892,7 +930,7 @@ describe('solanaFlow · sponsored', () => {
       return { transaction: 'signed-tx', signedAtMs }
     })
 
-    const result = await solanaFlow(buildContext(), buildAnalytics(), true)
+    const result = await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
 
     expect(result).toBe(true)
     expect(mockPostSolanaSponsoredOrder).toHaveBeenCalledTimes(1)
@@ -912,7 +950,7 @@ describe('solanaFlow · sponsored', () => {
     })
     const context = buildContext()
 
-    const result = await solanaFlow(context, buildAnalytics(), true)
+    const result = await solanaFlow(context, buildAnalytics(), { isSponsored: true })
 
     expect(result).toBeUndefined()
     expect(mockPostSolanaSponsoredOrder).not.toHaveBeenCalled()
@@ -938,7 +976,7 @@ describe('solanaFlow · sponsored', () => {
     )
     const context = buildContext()
 
-    const result = await solanaFlow(context, buildAnalytics(), true)
+    const result = await solanaFlow(context, buildAnalytics(), { isSponsored: true })
 
     expect(result).toBeUndefined()
     expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
@@ -958,7 +996,7 @@ describe('solanaFlow · sponsored', () => {
     )
     const context = buildContext()
 
-    await solanaFlow(context, buildAnalytics(), true)
+    await solanaFlow(context, buildAnalytics(), { isSponsored: true })
 
     expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
     expect(jotaiStore.get(solanaSigningWindowExpiredAtom)).toBeNull()
@@ -974,7 +1012,7 @@ describe('solanaFlow · sponsored', () => {
       }),
     )
 
-    await solanaFlow(buildContext(), buildAnalytics(), true)
+    await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
 
     expect(jotaiStore.get(solanaOrderNotPlacedAtom)).toBeNull()
   })
@@ -992,7 +1030,7 @@ describe('solanaFlow · sponsored', () => {
       })
     })
     const staleContext = buildContext()
-    const staleRun = solanaFlow(staleContext, buildAnalytics(), true)
+    const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored: true })
     await tick()
 
     mockSignSolanaFlow.mockImplementationOnce(async (signContext) => {
@@ -1000,7 +1038,7 @@ describe('solanaFlow · sponsored', () => {
 
       return neverSettles()
     })
-    void solanaFlow(buildContext(), buildAnalytics(), true)
+    void solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
     await tick()
 
     approveStaleSign()
@@ -1030,7 +1068,7 @@ describe('solanaFlow · sponsored', () => {
       return undefined as never
     })
 
-    const result = await solanaFlow(buildContext(), buildAnalytics(), true)
+    const result = await solanaFlow(buildContext(), buildAnalytics(), { isSponsored: true })
 
     expect(result).toBe(true)
     expect(deadlineAtPostTime).toBeNull()
@@ -1049,7 +1087,7 @@ describe('solanaFlow · sponsored', () => {
     })
     const context = buildContext()
 
-    await solanaFlow(context, buildAnalytics(), true)
+    await solanaFlow(context, buildAnalytics(), { isSponsored: true })
 
     expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
     // `true` forces the "Price Updated" banner: the quote refreshed while the prompt was open.

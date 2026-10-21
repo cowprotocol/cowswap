@@ -1,11 +1,11 @@
-import { useSetAtom, useStore } from 'jotai'
+import { useAtomValue, useSetAtom, useStore } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { normalizeError } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderTabId } from 'entities/routes/routes.atom'
 
@@ -59,7 +59,7 @@ export function useHandleOrderPlacement(
   const canUsePermit = Boolean(tradeContext?.allowsOffchainSigning && isSupportedPermitInfo(tradeContext.permitInfo))
   const isSafeApprovalBundle = isSafeBundle && Boolean(tradeContext?.postOrderParams.isSafeWallet) && !canUsePermit
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
 
   const isTradeContextReady = isSolana ? !!solanaContext : !!tradeContext
 

@@ -15,6 +15,7 @@ import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersW
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import {
+  TradeRows,
   TradeWidget,
   TradeWidgetParams,
   TradeWidgetSlots,
@@ -235,20 +236,20 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
-          {!hideTradeRateDetails && (
-            <styledEl.FooterBox>
-              <DeadlineInput />
-              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
-            </styledEl.FooterBox>
-          )}
+
+          <TradeRows>
+            {!hideTradeRateDetails && (
+              <>
+                <DeadlineInput />
+                <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
+              </>
+            )}
+            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+          </TradeRows>
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
-
-          {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-
           {captcha}
-
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>

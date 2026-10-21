@@ -185,11 +185,11 @@ const MenuItem = ({
 
     return (
       <styledEl.MenuItem isDisabled isDropdownVisible={isDropdownVisible}>
-        <HoverTooltip wrapInContainer placement="top" content={reason}>
-          <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
-            {content}
-          </styledEl.DisabledLink>
-        </HoverTooltip>
+        <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
+          <HoverTooltip wrapInContainer placement="top" content={reason}>
+            <styledEl.DisabledLabel>{content}</styledEl.DisabledLabel>
+          </HoverTooltip>
+        </styledEl.DisabledLink>
       </styledEl.MenuItem>
     )
   }

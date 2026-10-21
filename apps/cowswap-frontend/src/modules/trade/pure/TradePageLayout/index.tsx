@@ -5,6 +5,18 @@ import { WIDGET_MAX_WIDTH } from 'theme'
 
 const DEFAULT_MAX_WIDTH = '1500px'
 
+const secondaryLayout = css<{ secondaryOnLeft?: boolean; stacked?: boolean }>`
+  grid-template-columns: ${({ secondaryOnLeft, stacked }) =>
+    stacked
+      ? 'minmax(0, 1fr)'
+      : secondaryOnLeft
+        ? `minmax(0, 1fr) minmax(auto, ${WIDGET_MAX_WIDTH.swap})`
+        : `minmax(auto, ${WIDGET_MAX_WIDTH.swap}) minmax(0, 1fr)`};
+  grid-template-rows: ${({ stacked }) => (stacked ? 'auto 1fr' : '1fr')};
+  grid-template-areas: ${({ secondaryOnLeft, stacked }) =>
+    stacked ? '"primary" "secondary"' : secondaryOnLeft ? '"secondary primary"' : '"primary secondary"'};
+`
+
 export const PageWrapper = styled.div<{
   isUnlocked: boolean
   secondaryOnLeft?: boolean
@@ -22,35 +34,35 @@ export const PageWrapper = styled.div<{
   grid-template-areas: ${({ hideOrdersTable }) => (hideOrdersTable ? '"primary"' : '"primary" "secondary"')};
   gap: 20px;
 
+  &:has(.price-chart) {
+    grid-template-areas: 'primary' 'secondary';
+  }
+
+  &:has(> .price-chart[data-expanded='true']) {
+    max-width: 1800px;
+  }
+
   ${Media.LargeAndUp()} {
-    grid-template-columns: ${({ isUnlocked, hideOrdersTable, secondaryOnLeft, stacked }) =>
-      stacked
-        ? '1fr'
-        : isUnlocked && !hideOrdersTable
-          ? secondaryOnLeft
-            ? '1fr minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px)'
-            : 'minmax(auto, ' + WIDGET_MAX_WIDTH.swap.replace('px', '') + 'px) 1fr'
-          : '1fr'};
-    grid-template-rows: ${({ stacked, hideOrdersTable }) => (stacked && !hideOrdersTable ? 'auto 1fr' : '1fr')};
-    grid-template-areas: ${({ secondaryOnLeft, hideOrdersTable, stacked }) =>
-      stacked
-        ? hideOrdersTable
-          ? '"primary"'
-          : '"primary" "secondary"'
-        : hideOrdersTable
-          ? '"primary"'
-          : secondaryOnLeft
-            ? '"secondary primary"'
-            : '"primary secondary"'};
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas: 'primary';
+
+    ${({ isUnlocked, hideOrdersTable }) => isUnlocked && !hideOrdersTable && secondaryLayout}
+
+    &:has(.price-chart) {
+      ${secondaryLayout}
+    }
   }
 
   > .trade-orders-table {
     display: ${({ isUnlocked }) => (!isUnlocked ? 'none' : '')};
     grid-area: secondary;
     flex: 1;
-    min-height: 200px;
-    height: 100%;
-    max-height: 100%;
+
+    &:not(.price-chart) {
+      height: 100%;
+      max-height: 100%;
+    }
   }
 `
 
@@ -64,6 +76,18 @@ export const PrimaryWrapper = styled.div`
   margin: 0 auto;
   color: inherit;
   grid-area: primary;
+`
+
+export const SecondaryColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  grid-area: secondary;
+  min-width: 0;
+
+  &:empty {
+    display: none;
+  }
 `
 
 // Graph + orders table
@@ -93,4 +117,29 @@ export const SecondaryWrapper = styled.div.attrs({
           min-height: 0;
           height: 100%;
         `}
+`
+
+export const ChartWrapper = styled(SecondaryWrapper)<{ $isExpanded?: boolean }>`
+  overflow: visible;
+  width: 100%;
+  padding: 10px 14px;
+  max-width: ${({ $isExpanded, $inDrawer }) => ($isExpanded || $inDrawer ? 'none' : '780px')};
+  height: 450px;
+  min-height: 450px;
+  max-height: 450px;
+
+  ${({ $inDrawer }) =>
+    $inDrawer &&
+    css`
+      min-height: 0;
+      max-height: none;
+      height: calc(100dvh - 32px);
+      ${Media.upToSmall()} {
+        height: calc(100dvh - 16px);
+      }
+
+      ${Media.upToExtraSmall()} {
+        height: 100dvh;
+      }
+    `}
 `

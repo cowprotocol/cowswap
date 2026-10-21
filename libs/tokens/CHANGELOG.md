@@ -1,5 +1,51 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.15.0...tokens-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): explain token-2022 transfer fee (#8423)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/core@3.13.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/ui@3.18.0
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.14.0...tokens-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- fix(solana): allow importing SPL and Token2022 tokens by address (#8338)
+
+- fix(solana): import custom tokens from orders (#8356)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/core@3.12.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/ui@3.17.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.13.1...tokens-v3.14.0) (2026-10-06)
 
 ### Minor Changes

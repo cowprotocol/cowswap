@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.3.0](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.11...widget-react-v3.3.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(rwa): trade widget skeleton and disable chart zoom (#8398)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/widget-lib@4.11.0
+
+## [3.2.11](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.10...widget-react-v3.2.11) (2026-10-14)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.16.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/widget-lib@4.10.0
+
 ## [3.2.10](https://github.com/cowprotocol/cowswap/compare/widget-react-v3.2.9...widget-react-v3.2.10) (2026-10-06)
 
 ### Patch Changes

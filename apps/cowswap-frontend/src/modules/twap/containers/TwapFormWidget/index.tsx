@@ -4,14 +4,14 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { renderTooltip } from '@cowprotocol/ui'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { TradeRows, useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
@@ -62,8 +62,8 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function
 export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const isRewardsRowEnabled = useIsRewardsRowEnabled()
@@ -181,18 +181,16 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
   return (
     <>
       {!hideQuoteAmount && (
-        <>
-          <styledEl.FooterBox>
-            <RateInfo
-              label={tooltips.price.label}
-              rateInfoParams={rateInfoParams}
-              isInvertedState={isInvertedState}
-              fontSize={13}
-              rightAlign
-            />
-            {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-          </styledEl.FooterBox>
-        </>
+        <TradeRows>
+          <RateInfo
+            label={tooltips.price.label}
+            rateInfoParams={rateInfoParams}
+            isInvertedState={isInvertedState}
+            fontSize={13}
+            rightAlign
+          />
+          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+        </TradeRows>
       )}
 
       <TwapWorstAcceptedPriceInput
@@ -241,9 +239,13 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
           are pointless: only the warning explaining the block stays visible */}
       {!localFormValidation && tradeWarnings}
       <TwapFormWarnings localFormValidation={localFormValidation} />
-      {isPrimaryValidationPassed && !localFormValidation && (
-        <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
-      )}
+
+      <TradeRows>
+        {isPrimaryValidationPassed && !localFormValidation && (
+          <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
+        )}
+      </TradeRows>
+
       {captcha}
       <ActionButtons
         fallbackHandlerIsNotSet={isFallbackHandlerRequired}

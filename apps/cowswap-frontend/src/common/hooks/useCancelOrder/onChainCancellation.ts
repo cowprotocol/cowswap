@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { encodeFunctionData, type Hex } from 'viem'
 import type { Config } from 'wagmi'
 import { estimateGas, writeContract } from 'wagmi/actions'
@@ -7,13 +6,12 @@ import { calculateGasMargin } from '@cowprotocol/common-utils'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { logTradeFlowError } from 'modules/trade/utils/logger'
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 import type { EthFlowContractData, SettlementContractData } from '../useContract'
 
 // Fallback If we couldn't estimate gas for on-chain cancellation
 const CANCELLATION_GAS_LIMIT_DEFAULT = 150000n
-const LOG_LABEL = 'CANCEL ETH FLOW ORDER'
 
 export type CancelledOrderInfo = {
   txHash: string
@@ -51,21 +49,18 @@ export async function getEthFlowCancellation({
     },
   ] as const
 
-  const estimatedGas = await estimateGas(config, {
-    to: ethFlowContract.address as `0x${string}`,
-    data: encodeFunctionData({
-      abi: ethFlowContract.abi,
-      functionName: 'invalidateOrder',
-      args: cancelOrderParams,
-    }),
-  }).catch((error: Error) => {
-    logTradeFlowError(
-      LOG_LABEL,
-      `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
-      error,
-    )
-    return CANCELLATION_GAS_LIMIT_DEFAULT
-  })
+  const estimatedGas = await estimateGasWithFallback(
+    () =>
+      estimateGas(config, {
+        to: ethFlowContract.address as `0x${string}`,
+        data: encodeFunctionData({
+          abi: ethFlowContract.abi,
+          functionName: 'invalidateOrder',
+          args: cancelOrderParams,
+        }),
+      }),
+    CANCELLATION_GAS_LIMIT_DEFAULT,
+  )
 
   return {
     estimatedGas: estimatedGas,
@@ -99,21 +94,18 @@ export async function getOnChainCancellation({
 }): Promise<OnChainCancellation> {
   const cancelOrderParams = [order.id as Hex] as const
 
-  const estimatedGas = await estimateGas(config, {
-    to: settlementContract.address as `0x${string}`,
-    data: encodeFunctionData({
-      abi: settlementContract.abi,
-      functionName: 'invalidateOrder',
-      args: cancelOrderParams,
-    }),
-  }).catch((error: Error) => {
-    logTradeFlowError(
-      LOG_LABEL,
-      `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
-      error,
-    )
-    return CANCELLATION_GAS_LIMIT_DEFAULT
-  })
+  const estimatedGas = await estimateGasWithFallback(
+    () =>
+      estimateGas(config, {
+        to: settlementContract.address as `0x${string}`,
+        data: encodeFunctionData({
+          abi: settlementContract.abi,
+          functionName: 'invalidateOrder',
+          args: cancelOrderParams,
+        }),
+      }),
+    CANCELLATION_GAS_LIMIT_DEFAULT,
+  )
 
   return {
     estimatedGas,

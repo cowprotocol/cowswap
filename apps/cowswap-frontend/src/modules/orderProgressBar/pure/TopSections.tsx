@@ -17,6 +17,7 @@ import { PROCESS_IMAGE_WRAPPER_BG_COLOR } from './constants'
 import { FullSizeLottie } from './LottieContainer'
 import { ProgressImageWrapper } from './ProgressImageWrapper'
 import { AnimatedTokens } from './steps/AnimatedToken'
+import { AuctionCountdown } from './steps/AuctionCountdown.pure'
 import { CircularCountdown } from './steps/CircularCountdown'
 import * as styledEl from './styled'
 
@@ -36,6 +37,8 @@ interface FinishedCancellationFailedTopSectionProps extends BaseTopSectionProps 
 
 interface InitialTopSectionProps extends BaseTopSectionProps {
   order: OrderProgressBarProps['order']
+  auctionValidFrom?: number
+  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 interface SolvingTopSectionProps {
@@ -157,10 +160,19 @@ export function FinishedCancellationFailedTopSection({
   )
 }
 
-export function InitialTopSection({ stepName, order }: InitialTopSectionProps): ReactNode {
+export function InitialTopSection({
+  stepName,
+  order,
+  auctionValidFrom,
+  onAuctionRemainingChange,
+}: InitialTopSectionProps): ReactNode {
   return (
     <ProgressImageWrapper stepName={stepName}>
-      <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+      {auctionValidFrom !== undefined ? (
+        <AuctionCountdown targetEpochSec={auctionValidFrom} onRemainingChange={onAuctionRemainingChange} />
+      ) : (
+        <AnimatedTokens sellToken={order?.inputToken} buyToken={order?.outputToken} />
+      )}
     </ProgressImageWrapper>
   )
 }

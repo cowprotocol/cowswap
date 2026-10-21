@@ -21,3 +21,68 @@
 .widget iframe {
   color-scheme: normal;
 }
+
+.frame {
+  position: relative;
+}
+
+/* The iframe is appended in an effect after the first paint; hold the skeleton height until then */
+.frame[data-loading] {
+  min-height: 640px;
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 640px;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-widget);
+}
+
+.skeletonOverlay {
+  position: absolute;
+  inset: 0;
+  height: auto;
+}
+
+.skeletonTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.skeletonBlock {
+  display: block;
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.skeletonTab {
+  width: 72px;
+  height: 32px;
+}
+
+.skeletonField {
+  height: 112px;
+}
+
+.skeletonButton {
+  height: 56px;
+  margin-top: auto;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonBlock {
+    animation: none;
+  }
+}

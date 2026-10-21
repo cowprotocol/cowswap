@@ -18,16 +18,24 @@ interface FreeFeeRowProps {
   withTimelineDot?: boolean
   loading?: boolean
   isLast?: boolean
+  detailRowStyle?: boolean
   testId?: string
 }
 
-export function FreeFeeRow({ withTimelineDot = true, loading, isLast = false, testId }: FreeFeeRowProps): ReactElement {
+export function FreeFeeRow({
+  withTimelineDot = true,
+  loading,
+  isLast = false,
+  detailRowStyle = false,
+  testId,
+}: FreeFeeRowProps): ReactElement {
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
       tooltip={t`No fee for order placement!`}
       label={t`Fee`}
       isLast={isLast}
+      detailRowStyle={detailRowStyle}
       testId={testId}
     >
       {loading ? (

@@ -212,7 +212,7 @@ test.describe('Cross-chain swaps', () => {
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })
@@ -276,7 +276,7 @@ test.describe('Cross-chain swaps', () => {
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })

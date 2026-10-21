@@ -3,7 +3,7 @@ import { RowFixed, UI } from '@cowprotocol/ui'
 import { MenuList } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
-import { SettingsButton } from 'modules/trade/pure/Settings/styled'
+import { SettingsButton } from './Settings/styled'
 
 // TODO: There's some duplication between this file and modules/trade/pure/Settings/styled.
 // Using a re-export here until that's addressed properly.

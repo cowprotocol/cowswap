@@ -57,5 +57,6 @@ export {
 export { AssetStats } from './ui/AssetStats'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
+export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
 export { isUsMarketOpen } from './lib/usMarketStatus'
