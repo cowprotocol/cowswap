@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { usePublicClient } from 'wagmi'
@@ -8,7 +8,7 @@ import { logSafeApi } from '@cowprotocol/common-utils'
 import { normalizeSafeError, SAFE_RATE_LIMIT_MSG } from '@cowprotocol/core'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { Nullish } from '@cowprotocol/types'
-import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useIsWalletConnect } from '@cowprotocol/wallet'
 import type SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
@@ -33,7 +33,7 @@ export function useZeroApprove(
   const publicClient = usePublicClient()
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
 
   return useCallback(async () => {
     if (!amountToApprove) return

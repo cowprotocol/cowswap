@@ -4,7 +4,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
-import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
+import {
+  formatInputAmount,
+  getCurrencyAddress,
+  isFractionFalsy,
+  tryParseCurrencyAmount,
+} from '@cowprotocol/common-utils'
+import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -207,9 +213,12 @@ export function RateInput() {
     const quoteCurrency =
       getQuoteCurrencyByStableCoin(chainId, inputCurrency, outputCurrency) ||
       getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
-    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
 
-    updateLimitRateState({ isInverted: quoteCurrencyAddress !== inputCurrencyAddress })
+    if (!quoteCurrency) return
+
+    updateLimitRateState({
+      isInverted: !areAddressesEqual(getCurrencyAddress(quoteCurrency), getCurrencyAddress(inputCurrency)),
+    })
     setIsQuoteCurrencySet(true)
   }, [
     isQuoteCurrencySet,
