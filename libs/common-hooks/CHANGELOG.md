@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.15.0...common-hooks-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat: wait for cows + compact approval form changes (#8376)
+
+- feat: add FF to disable ata creation instruction (#8422)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/types@4.14.0
+
 ## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.14.0...common-hooks-v3.15.0) (2026-10-14)
 
 ### Minor Changes

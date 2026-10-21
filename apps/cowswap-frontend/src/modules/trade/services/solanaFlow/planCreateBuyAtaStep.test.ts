@@ -13,7 +13,7 @@ import {
 } from '@solana/spl-token'
 import { PublicKey } from '@solana/web3.js'
 
-import { planCreateBuyAtaStep } from './planCreateBuyAtaStep'
+import { getIsBuyAtaCreationSkipped, planCreateBuyAtaStep } from './planCreateBuyAtaStep'
 import { SolanaFlowStep } from './types'
 
 import type { PlanCreateBuyAtaStepParams } from './planCreateBuyAtaStep'
@@ -96,5 +96,73 @@ describe('planCreateBuyAtaStep', () => {
 
     expect(step.instructions[0].keys[1].pubkey.equals(buyTokenAccount)).toBe(true)
     expect(buyTokenAccount.equals(classic)).toBe(false)
+  })
+
+  it('plans nothing when the creation is left to the driver', () => {
+    const buyTokenAccount = getAssociatedTokenAddressSync(BUY_MINT, RECEIVER, false, TOKEN_PROGRAM_ID)
+
+    const step = planCreateBuyAtaStep({
+      payer: PAYER,
+      receiver: RECEIVER,
+      quote: {
+        intent: { buyMint: BUY_MINT, buyTokenAccount },
+        buyTokenProgramId: TOKEN_PROGRAM_ID,
+      } as PlanQuote,
+      buySymbol: 'WSOL',
+      isCreationSkipped: true,
+    })
+
+    expect(step).toBeNull()
+  })
+})
+
+describe('getIsBuyAtaCreationSkipped', () => {
+  function quoteForOwner(owner: PublicKey, programId = TOKEN_PROGRAM_ID): PlanQuote {
+    return {
+      intent: { buyMint: BUY_MINT, buyTokenAccount: getAssociatedTokenAddressSync(BUY_MINT, owner, false, programId) },
+      buyTokenProgramId: programId,
+    } as PlanQuote
+  }
+
+  it('leaves the account to the driver when the order pays out to the owner', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: quoteForOwner(PAYER),
+      owner: PAYER,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(isSkipped).toBe(true)
+  })
+
+  it('keeps the creation while the flag is off', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: quoteForOwner(PAYER),
+      owner: PAYER,
+      isAtaCreationDisabled: false,
+    })
+
+    expect(isSkipped).toBe(false)
+  })
+
+  // Placement refuses an order paying out to another wallet's missing account: the driver only
+  // derives the owner's own associated address, so nothing on its side can create that one.
+  it('keeps the creation for a custom receiver', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: quoteForOwner(RECEIVER),
+      owner: PAYER,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(isSkipped).toBe(false)
+  })
+
+  it('keeps the creation when the account sits under a different token program', () => {
+    const isSkipped = getIsBuyAtaCreationSkipped({
+      quote: { ...quoteForOwner(PAYER, TOKEN_2022_PROGRAM_ID), buyTokenProgramId: TOKEN_PROGRAM_ID } as PlanQuote,
+      owner: PAYER,
+      isAtaCreationDisabled: true,
+    })
+
+    expect(isSkipped).toBe(false)
   })
 })

@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.19.0...common-utils-v3.20.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): explain token-2022 transfer fee (#8423)
+
+- feat(rwa): skeleton app (#8248)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+
 ## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.18.0...common-utils-v3.19.0) (2026-10-14)
 
 ### Minor Changes
