@@ -20,6 +20,10 @@ export interface Props {
   tokenLogo?: string
 }
 
+function _loadFallbackTokenImage(event: SyntheticEvent<HTMLImageElement>, fallbackSrc: string): void {
+  event.currentTarget.src = fallbackSrc
+}
+
 const tokensIconsRequire =
   process.env.NODE_ENV === 'test'
     ? RequireContextMock
@@ -56,13 +60,16 @@ export const TokenImg: React.FC<Props> = (props) => {
       : tokenListTokens?.[getAddressKey(address)]?.logoURI || getImageUrl(addressMainnet || address)) ||
     fallbackSrc
 
-  const loadFallbackTokenImage = (event: SyntheticEvent<HTMLImageElement>): void => {
-    event.currentTarget.src = fallbackSrc
-  }
-
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442
   const safeName = address && safeTokenName({ address, symbol, name })
 
-  return <Wrapper alt={safeName} src={iconFileUrl} onError={loadFallbackTokenImage} {...props} />
+  return (
+    <Wrapper
+      alt={safeName}
+      src={iconFileUrl}
+      onError={(event) => _loadFallbackTokenImage(event, fallbackSrc)}
+      {...props}
+    />
+  )
 }
