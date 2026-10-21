@@ -4,6 +4,8 @@ import Image from 'next/image'
 
 import styles from './HomeHero.module.css'
 
+import { withBasePath } from '@/shared/config'
+
 const ISSUER_LOGO_SIZE = 22
 
 interface IssuerProps {
@@ -18,8 +20,9 @@ export function HomeHero(): ReactNode {
     <header className={styles.hero}>
       <h1 className={styles.heading}>Explore tokenized real-world assets</h1>
       <p className={styles.subtitle}>
-        Trade tokenized stocks and ETFs from <Issuer name="Ondo" logo="/issuers/ondo.svg" monochrome />,{' '}
-        <Issuer name="xStocks" logo="/issuers/xstocks.svg" /> and other issuers across chains, powered by CoW Protocol.
+        Trade tokenized stocks and ETFs from <Issuer name="Ondo" logo={withBasePath('/issuers/ondo.svg')} monochrome />,{' '}
+        <Issuer name="xStocks" logo={withBasePath('/issuers/xstocks.svg')} /> and other issuers across chains, powered
+        by CoW Protocol.
       </p>
     </header>
   )

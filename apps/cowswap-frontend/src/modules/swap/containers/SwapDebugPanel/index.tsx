@@ -18,7 +18,7 @@ import {
 
 import styled from 'styled-components/macro'
 
-import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useAppData, useAppDataHooks, useWaitAndSaveValidFrom } from 'modules/appData'
 import {
   TradeTypeToUiOrderType,
   useDerivedTradeState,
@@ -246,7 +246,8 @@ function SwapDebugPanelContent({ contextIsReady, deadline }: SwapDebugPanelProps
   const outputAmount = receiveAmountInfo?.amountsToSign.buyAmount
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
-  const validTo = getOrderValidTo(deadline, tradeQuote)
+  const waitAndSaveValidFrom = useWaitAndSaveValidFrom()
+  const validTo = getOrderValidTo(deadline, tradeQuote, waitAndSaveValidFrom)
   const quotePriceQuality = tradeQuote.fetchParams?.priceQuality
 
   const readyChecks = useMemo(

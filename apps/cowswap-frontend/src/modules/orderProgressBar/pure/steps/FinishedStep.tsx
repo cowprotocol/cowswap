@@ -83,6 +83,9 @@ export function FinishedStep({
   const isSell = order && isSellOrder(order.kind)
   const isCustomRecipient = order && getIsCustomRecipient(order)
   const receiver = order?.receiver || order?.owner
+  const hasExecutedAmounts =
+    isNonZeroAmount(order?.apiAdditionalInfo?.executedSellAmount) &&
+    isNonZeroAmount(order?.apiAdditionalInfo?.executedBuyAmount)
 
   const isDarkMode = useIsDarkMode()
 
@@ -120,9 +123,9 @@ export function FinishedStep({
       <styledEl.ConclusionContent>
         <TransactionStatus isDarkMode={isDarkMode} />
 
-        {order?.apiAdditionalInfo?.executedSellAmount && <SoldAmount order={order} />}
+        {hasExecutedAmounts && <SoldAmount order={order} />}
 
-        {order?.apiAdditionalInfo?.executedBuyAmount && (
+        {hasExecutedAmounts && (
           <ReceivedAmount
             order={order}
             chainId={chainId}
@@ -251,6 +254,10 @@ function ExtraAmount({
       {surplusFiatValue && +surplusFiatValue.toFixed(2) > 0 && <>(~${surplusFiatValue.toFixed(2)})</>}
     </styledEl.ExtraAmount>
   )
+}
+
+function isNonZeroAmount(amount: string | undefined): boolean {
+  return !!amount && amount !== '0'
 }
 
 function ReceivedAmount({

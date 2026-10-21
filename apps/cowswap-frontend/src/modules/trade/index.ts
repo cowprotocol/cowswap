@@ -2,6 +2,8 @@
 export * from './types'
 export * from './const/common'
 export * from './state/tradeTypeAtom'
+export { waitAndSaveEnabledAtom } from './state/waitAndSaveEnabledAtom'
+export { cowBatchValidFromAtom } from './state/cowBatchValidFromAtom'
 export * from './state/derivedTradeStateAtom'
 export * from './state/isWrapOrUnwrapAtom'
 export * from './state/isEoaEthFlowAtom'

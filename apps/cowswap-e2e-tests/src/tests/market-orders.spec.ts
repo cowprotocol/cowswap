@@ -71,6 +71,9 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Picking before the URL state lands lets the default pair overwrite the picked one, leaving
+      // WETH on the sell side.
+      await swapPage.waitForBothCurrenciesResolved()
 
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
@@ -172,12 +175,8 @@ test.describe('Market Orders', () => {
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
-      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
-      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
-      // instead of a one-shot read to ride out that gap, same as [CS-118]'s identical read.
-      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
@@ -219,8 +218,7 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
-      // Same currency-resolution race as [CS-68]/[CS-104]: picking USDC before the default pair
-      // has latched in `useNavigateOnCurrencySelection`'s refs can leave sell stuck on WETH.
+      // Same reason as [CS-59].
       await swapPage.waitForBothCurrenciesResolved()
       await selectTokens(swapPage, 'USDC', 'WETH')
 
@@ -1247,18 +1245,13 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
       // order at, same as [CS-59].
-      //
-      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
-      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
-      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
-      // instead of a one-shot read to ride out that gap.
       const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
       const receivedAmountRow = swapPage.orderProgressBarModal.locator(
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
     test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({

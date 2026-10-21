@@ -41,7 +41,6 @@ export interface RateInfoProps {
   rightAlign?: boolean
   fontBold?: boolean
   fontSize?: number
-  labelBold?: boolean
   /** Use secondary text color for the rate value (e.g. Limit form detail rows). */
   mutedValue?: boolean
 }
@@ -57,7 +56,7 @@ const Wrapper = styled.div<{ stylized: boolean; fontSize?: number }>`
   flex: 1 1 min-content;
 `
 
-const RateLabel = styled.div<{ labelBold?: boolean }>`
+const RateLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
@@ -65,7 +64,7 @@ const RateLabel = styled.div<{ labelBold?: boolean }>`
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   white-space: nowrap;
-  font-weight: ${({ labelBold }) => (labelBold ? 500 : 'inherit')};
+  font-weight: 500;
 `
 
 const InvertIcon = styled.div`
@@ -164,7 +163,6 @@ export function RateInfo({
   rightAlign = false,
   fontBold = false,
   fontSize,
-  labelBold = false,
   mutedValue = false,
 }: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
@@ -243,7 +241,7 @@ export function RateInfo({
   return (
     <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
-        <RateLabel labelBold={labelBold}>
+        <RateLabel>
           {label ? label : t`Limit price`}
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>
