@@ -21,12 +21,18 @@ import { ConnectionType, WalletInfo } from '../../api/types'
 
 const mockGetCode = jest.fn()
 
-jest.mock('@cowprotocol/common-utils', () => ({
-  ...jest.requireActual('@cowprotocol/common-utils'),
-  getPublicClient: () => ({
-    getCode: (...args: unknown[]) => mockGetCode(...args),
-  }),
-}))
+jest.mock('@cowprotocol/common-utils', () => {
+  const actual = jest.requireActual('@cowprotocol/common-utils') as typeof import('@cowprotocol/common-utils')
+
+  return {
+    ...actual,
+    getPublicClient: () => ({
+      getCode: (...args: unknown[]) => mockGetCode(...args),
+    }),
+    retry: (fn: Parameters<typeof actual.retry>[0], options: Parameters<typeof actual.retry>[1]) =>
+      actual.retry(fn, { ...options, minWait: 0, maxWait: 0 }),
+  }
+})
 
 function createMockConnector(overrides: Record<string, unknown>): NonNullable<WalletInfo['connector']> {
   return {
@@ -46,8 +52,22 @@ function setWalletInfoConnector(
   })
 }
 
+async function withAccountTypeSubscription(
+  store: ReturnType<typeof createStore>,
+  run: () => Promise<void>,
+): Promise<void> {
+  const unsub = store.sub(accountTypeLoadableAtom, () => undefined)
+
+  try {
+    await run()
+  } finally {
+    unsub()
+  }
+}
+
 describe('walletMetadata atoms', () => {
   beforeEach(() => {
+    jest.useRealTimers()
     mockGetCode.mockReset()
     mockGetCode.mockImplementation(() => new Promise(() => undefined))
   })
@@ -375,6 +395,7 @@ describe('walletMetadata atoms', () => {
 
 describe('isSmartContractWalletAtom', () => {
   beforeEach(() => {
+    jest.useRealTimers()
     mockGetCode.mockReset()
     mockGetCode.mockImplementation(() => new Promise(() => undefined))
   })
@@ -426,16 +447,18 @@ describe('isSmartContractWalletAtom', () => {
       }),
     )
 
-    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
-    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    await withAccountTypeSubscription(store, async () => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+      expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    await waitFor(() => {
-      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+      await waitFor(() => {
+        expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+      })
+      expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
+      expect(store.get(isSmartContractWalletAtom)).toBe(false)
+      expect(store.get(isEoaAtom)).toBe(true)
+      expect(mockGetCode).toHaveBeenCalledTimes(2)
     })
-    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
-    expect(store.get(isSmartContractWalletAtom)).toBe(false)
-    expect(store.get(isEoaAtom)).toBe(true)
-    expect(mockGetCode).toHaveBeenCalledTimes(2)
   })
 
   it('keeps wallet type unknown after retries are exhausted, and allows a manual refresh', async () => {
@@ -450,26 +473,28 @@ describe('isSmartContractWalletAtom', () => {
       }),
     )
 
-    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
-    expect(store.get(isSmartContractWalletAtom)).toBe(false)
+    await withAccountTypeSubscription(store, async () => {
+      expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+      expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+      await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
 
-    expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
-    expect(store.get(isSmartContractWalletAtom)).toBe(null)
-    expect(store.get(isEoaAtom)).toBe(null)
-    expect(mockGetCode).toHaveBeenCalledTimes(4)
+      expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
+      expect(store.get(isSmartContractWalletAtom)).toBe(null)
+      expect(store.get(isEoaAtom)).toBe(null)
+      expect(mockGetCode).toHaveBeenCalledTimes(4)
 
-    mockGetCode.mockReset()
-    mockGetCode.mockResolvedValue('0x')
-    store.set(accountTypeAsyncAtom)
+      mockGetCode.mockReset()
+      mockGetCode.mockResolvedValue('0x')
+      store.set(accountTypeAsyncAtom)
 
-    await waitFor(() => {
-      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+      await waitFor(() => {
+        expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
+      })
+      expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
+      expect(store.get(isSmartContractWalletAtom)).toBe(false)
+      expect(store.get(isEoaAtom)).toBe(true)
     })
-    expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
-    expect(store.get(isSmartContractWalletAtom)).toBe(false)
-    expect(store.get(isEoaAtom)).toBe(true)
   })
 })
 
