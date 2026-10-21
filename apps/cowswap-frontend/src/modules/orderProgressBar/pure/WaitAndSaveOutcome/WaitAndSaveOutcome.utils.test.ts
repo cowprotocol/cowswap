@@ -1,13 +1,39 @@
-import { formatGainPercentLabel, getGainBarLayout, MIN_GAIN_BAR_PX, truncateSymbol } from './WaitAndSaveOutcome.utils'
+import {
+  fitHeroFontSize,
+  formatGainPercentLabel,
+  getGainBarLayout,
+  HERO_FONT_MAX_PX,
+  HERO_FONT_MIN_PX,
+  MIN_GAIN_BAR_PX,
+} from './WaitAndSaveOutcome.utils'
 
 describe('WaitAndSaveOutcome utils', () => {
-  describe('truncateSymbol', () => {
-    it('keeps short symbols intact', () => {
-      expect(truncateSymbol('USDC')).toBe('USDC')
+  describe('fitHeroFontSize', () => {
+    it('keeps the max size when the text already fits', () => {
+      const element = createMeasurableElement({ clientWidth: 400, widthPerPx: 5 })
+
+      expect(fitHeroFontSize(element)).toBe(HERO_FONT_MAX_PX)
+      expect(element.style.fontSize).toBe(`${HERO_FONT_MAX_PX}px`)
     })
 
-    it('truncates symbols longer than 12 characters', () => {
-      expect(truncateSymbol('SUPERLONGTOKENX')).toBe('SUPERLONGTOK…')
+    it('does not shrink before the element has a width', () => {
+      const element = createMeasurableElement({ clientWidth: 0, widthPerPx: 20 })
+
+      expect(fitHeroFontSize(element)).toBe(HERO_FONT_MAX_PX)
+    })
+
+    it('steps down until the text fits the available width', () => {
+      const element = createMeasurableElement({ clientWidth: 400, widthPerPx: 16 })
+
+      expect(fitHeroFontSize(element)).toBe(25)
+      expect(element.style.fontSize).toBe('25px')
+    })
+
+    it('stops at the minimum size when the text still overflows', () => {
+      const element = createMeasurableElement({ clientWidth: 100, widthPerPx: 20 })
+
+      expect(fitHeroFontSize(element)).toBe(HERO_FONT_MIN_PX)
+      expect(element.style.fontSize).toBe(`${HERO_FONT_MIN_PX}px`)
     })
   })
 
@@ -38,3 +64,20 @@ describe('WaitAndSaveOutcome utils', () => {
     })
   })
 })
+
+function createMeasurableElement({ clientWidth, widthPerPx }: { clientWidth: number; widthPerPx: number }): {
+  clientWidth: number
+  scrollWidth: number
+  style: { fontSize: string }
+} {
+  const element = {
+    clientWidth,
+    style: { fontSize: '' },
+    get scrollWidth() {
+      const size = Number.parseFloat(element.style.fontSize) || HERO_FONT_MAX_PX
+      return size * widthPerPx
+    },
+  }
+
+  return element
+}

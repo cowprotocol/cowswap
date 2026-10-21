@@ -6,5 +6,5 @@ export const WAIT_AND_SAVE_OUTCOME_DEMO = {
   tradingAloneAmount: '2,564,267.07',
   tradingAloneNumeric: 2_564_267.07,
   gainNumeric: 48_213.0542,
-  tokenSymbol: 'USDC',
+  tokenSymbol: 'B-80BAL-20WETH',
 } as const

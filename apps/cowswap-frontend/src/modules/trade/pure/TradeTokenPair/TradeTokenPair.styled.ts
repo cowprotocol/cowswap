@@ -14,17 +14,13 @@ export const Wrapper = styled.div<{ $hasFooter: boolean }>`
   ${({ $hasFooter }) =>
     $hasFooter &&
     `
-    > ${PairGrid} > * {
+
+    > ${PairGrid} > div:first-child {
       border-bottom-left-radius: 0;
+    }
+
+    > ${PairGrid} > div:last-child {
       border-bottom-right-radius: 0;
-    }
-
-    > ${PairGrid} > *:first-child {
-      border-bottom-right-radius: 24px;
-    }
-
-    > ${PairGrid} > *:last-child {
-      border-bottom-left-radius: 24px;
     }
   `}
 `

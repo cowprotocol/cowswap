@@ -5205,6 +5205,10 @@ msgstr "This could have happened due to the lack of internet or the release of a
 #~ msgid "No rewards to claim"
 #~ msgstr "No rewards to claim"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "Your trade was matched with other orders in a Coincidence of Wants (CoW)."
+msgstr "Your trade was matched with other orders in a Coincidence of Wants (CoW)."
+
 #: libs/common-utils/src/tooltips.ts
 msgid "Maximum tokens you'll sell."
 msgstr "Maximum tokens you'll sell."

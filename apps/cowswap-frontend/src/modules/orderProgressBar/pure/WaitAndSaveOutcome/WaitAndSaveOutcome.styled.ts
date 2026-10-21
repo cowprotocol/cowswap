@@ -3,6 +3,7 @@ import { font, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 import svgDotRampSrc from './assets/dot-ramp.svg'
+import { HERO_FONT_MAX_PX } from './WaitAndSaveOutcome.utils'
 
 export const Wrapper = styled.div`
   position: relative;
@@ -86,13 +87,22 @@ export const Hero = styled.div`
   min-width: 0;
 `
 
-export const GainAmount = styled.p`
+export const GainAmount = styled.p<{ $isFitted: boolean }>`
   margin: 0;
-  font-size: 34px;
+  width: 100%;
+  font-size: ${HERO_FONT_MAX_PX}px;
   font-weight: var(${UI.FONT_WEIGHT_BOLD});
   line-height: 1.1;
   color: var(${UI.COLOR_SUCCESS_TEXT});
-  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  filter: blur(${({ $isFitted }) => ($isFitted ? 0 : 4)}px);
+  transition: filter var(${UI.ANIMATION_DURATION_SLOW}) ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    filter: none;
+    transition: none;
+  }
 `
 
 export const SubRow = styled.div`

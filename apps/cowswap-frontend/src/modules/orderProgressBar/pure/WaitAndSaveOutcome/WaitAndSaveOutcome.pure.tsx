@@ -1,13 +1,14 @@
 import { ReactNode } from 'react'
 
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { TokenSymbol, TooltipIcon } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { useFitHeroFontSize } from './useFitHeroFontSize'
 import * as styledEl from './WaitAndSaveOutcome.styled'
-import { formatGainPercentLabel, getGainBarLayout, truncateSymbol } from './WaitAndSaveOutcome.utils'
+import { formatGainPercentLabel, getGainBarLayout } from './WaitAndSaveOutcome.utils'
 
 export interface WaitAndSaveOutcomeProps {
   gainAmount: string
@@ -33,7 +34,8 @@ export function WaitAndSaveOutcome({
   className,
 }: WaitAndSaveOutcomeProps): ReactNode {
   const { t } = useLingui()
-  const symbol = truncateSymbol(tokenSymbol)
+  const heroContent = `+${gainAmount} ${tokenSymbol}`
+  const { ref: heroRef, isFitted } = useFitHeroFontSize(heroContent)
   const barLayout = getGainBarLayout(tradingAloneNumeric, gainNumeric)
   const percentLabel = formatGainPercentLabel(gainPercent)
   const tooltipContent =
@@ -57,14 +59,14 @@ export function WaitAndSaveOutcome({
       </styledEl.TopRow>
 
       <styledEl.Hero>
-        <styledEl.GainAmount>
-          +{gainAmount} {symbol}
+        <styledEl.GainAmount ref={heroRef} $isFitted={isFitted}>
+          +{gainAmount} <TokenSymbol token={{ symbol: tokenSymbol }} />
         </styledEl.GainAmount>
         <styledEl.SubRow>
           <styledEl.SubText>
             <Trans>≈ ${gainFiat} more than trading alone</Trans>
           </styledEl.SubText>
-          <InfoTooltip content={tooltipContent} size={16} />
+          <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
         </styledEl.SubRow>
       </styledEl.Hero>
 

@@ -1,11 +1,32 @@
-export const MAX_SYMBOL_LENGTH = 12
 export const MIN_GAIN_BAR_PX = 4
 export const MIN_GAIN_PERCENT_DISPLAY = 0.01
+export const HERO_FONT_MAX_PX = 34
+export const HERO_FONT_MIN_PX = 20
 
 export interface GainBarLayout {
   aloneFlex: number
   gainFlex: number
   gainMinWidthPx: number
+}
+
+export function fitHeroFontSize(
+  element: Pick<HTMLElement, 'scrollWidth' | 'clientWidth'> & { style: { fontSize: string } },
+  maxPx: number = HERO_FONT_MAX_PX,
+  minPx: number = HERO_FONT_MIN_PX,
+): number {
+  let size = maxPx
+  element.style.fontSize = `${size}px`
+
+  if (element.clientWidth <= 0) {
+    return size
+  }
+
+  while (size > minPx && element.scrollWidth > element.clientWidth) {
+    size -= 1
+    element.style.fontSize = `${size}px`
+  }
+
+  return size
 }
 
 export function formatGainPercentLabel(percent: number): string {
@@ -35,12 +56,4 @@ export function getGainBarLayout(tradingAloneAmount: number, gainAmount: number)
     gainFlex: safeGain / total,
     gainMinWidthPx: MIN_GAIN_BAR_PX,
   }
-}
-
-export function truncateSymbol(symbol: string, maxLength: number = MAX_SYMBOL_LENGTH): string {
-  if (symbol.length <= maxLength) {
-    return symbol
-  }
-
-  return `${symbol.slice(0, maxLength)}…`
 }

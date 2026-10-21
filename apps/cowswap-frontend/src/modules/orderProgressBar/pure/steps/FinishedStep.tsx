@@ -26,6 +26,8 @@ import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
+import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
+import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
 export interface FinishedSuccessHeadingProps {
   order: Order
@@ -44,6 +46,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
+  showWaitAndSave?: boolean
 }
 
 export function FinishedStep({
@@ -55,6 +58,7 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
+  showWaitAndSave = false,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -74,10 +78,23 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const tokenPair = useMemo(
-    () => (order ? buildFinishedTokenPair(order, soldLabel, receivedLabel) : undefined),
-    [order, soldLabel, receivedLabel],
-  )
+  const cowParticipationTooltip = t`Your trade was matched with other orders in a Coincidence of Wants (CoW).`
+  const tokenPair = useMemo(() => {
+    if (!order) {
+      return undefined
+    }
+
+    const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel)
+
+    if (!pair || !showWaitAndSave) {
+      return pair
+    }
+
+    return {
+      ...pair,
+      cowParticipation: { tooltip: cowParticipationTooltip },
+    }
+  }, [order, soldLabel, receivedLabel, showWaitAndSave, cowParticipationTooltip])
 
   if (!order) {
     return null
@@ -92,6 +109,8 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
+        {showWaitAndSave ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+
         {solversList.length > 0 ? (
           <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
         ) : null}

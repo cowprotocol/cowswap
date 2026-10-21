@@ -15,7 +15,13 @@ export function CowParticipationFooter({ tooltip }: CowParticipationFooterProps)
   return (
     <styledEl.CowParticipation>
       <styledEl.CowMark>
-        <ProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={12} heightMobile={12} />
+        <ProductLogo
+          variant={ProductVariant.CowSwap}
+          logoIconOnly
+          height={12}
+          heightMobile={12}
+          overrideColor="inherit"
+        />
       </styledEl.CowMark>
       <styledEl.CowParticipationLabel>
         <Trans>You were part of a CoW</Trans>

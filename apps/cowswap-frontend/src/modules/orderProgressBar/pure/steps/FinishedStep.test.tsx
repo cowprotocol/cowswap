@@ -24,9 +24,11 @@ jest.mock('react-inlinesvg', () => ({
 jest.mock('modules/trade', () => ({
   BaseTradeConfirmation: ({
     heading,
+    tokenPair,
     children,
   }: {
     heading?: { title: ReactNode; subtitle?: ReactNode }
+    tokenPair?: { cowParticipation?: { tooltip: ReactNode } }
     children?: ReactNode
   }) => (
     <div data-testid="base-trade-confirmation">
@@ -36,7 +38,9 @@ jest.mock('modules/trade', () => ({
           <div>{heading.subtitle}</div>
         </div>
       ) : null}
-      <div data-testid="trade-token-pair" />
+      <div data-testid="trade-token-pair">
+        {tokenPair?.cowParticipation ? <div data-testid="cow-participation-footer" /> : null}
+      </div>
       {children}
     </div>
   ),
@@ -44,6 +48,10 @@ jest.mock('modules/trade', () => ({
 
 jest.mock('../SolverCompetitionExpand/SolverCompetitionExpand.pure', () => ({
   SolverCompetitionExpand: () => <div data-testid="solver-competition-expand" />,
+}))
+
+jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
+  WaitAndSaveOutcome: () => <div data-testid="wait-and-save-outcome" />,
 }))
 
 jest.mock('entities/injectedWidget', () => ({
@@ -132,5 +140,47 @@ describe('FinishedStep', () => {
     )
 
     expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+  })
+
+  it('omits CoW footer and WaitAndSaveOutcome when Wait & Save is off', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+  })
+
+  it('renders CoW footer and WaitAndSaveOutcome above solvers when Wait & Save is on', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        showWaitAndSave
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
+    expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+
+    const confirmation = screen.getByTestId('base-trade-confirmation')
+    const outcome = screen.getByTestId('wait-and-save-outcome')
+    const solvers = screen.getByTestId('solver-competition-expand')
+    expect(confirmation.compareDocumentPosition(outcome) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(outcome.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })

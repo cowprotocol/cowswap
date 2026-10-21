@@ -7,6 +7,7 @@ export const CowParticipation = styled.div`
   align-items: center;
   gap: 6px;
   padding: 4px 8px;
+  color: var(${UI.COLOR_TEXT_SECONDARY});
 `
 
 export const CowMark = styled.span`
@@ -29,6 +30,7 @@ export const CowMark = styled.span`
 
 export const CowParticipationLabel = styled.span`
   ${font('FONT_SMALL', 'semibold')}
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   white-space: nowrap;
+  color: var(${UI.COLOR_TEXT_SECONDARY});
 `

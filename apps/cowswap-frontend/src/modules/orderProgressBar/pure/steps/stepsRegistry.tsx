@@ -1,4 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
+
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
+
+import { waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { BridgingStep } from './BridgingStep'
 import { CancelledStep } from './CancelledStep'
@@ -83,6 +89,9 @@ function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
 function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const randomBenefit = useRandomBenefit(chainId)
+  const { isWaitForCowsEnabled } = useFeatureFlags()
+  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  const showWaitAndSave = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
 
   return (
     <FinishedStep
@@ -95,6 +104,7 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
       totalSolvers={totalSolvers}
       randomBenefit={randomBenefit}
       debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      showWaitAndSave={showWaitAndSave}
     >
       <RenderProgressTopSection
         {...props}

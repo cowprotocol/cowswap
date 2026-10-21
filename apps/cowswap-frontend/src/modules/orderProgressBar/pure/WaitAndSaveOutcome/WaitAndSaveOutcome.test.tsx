@@ -45,7 +45,8 @@ describe('WaitAndSaveOutcome', () => {
       <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} tokenSymbol="SUPERLONGTOKENXYZ" gainPercent={0.004} />,
     )
 
-    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('SUPERLONGTOK…')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('SUPERLONGTOK...')
+    expect(screen.getByTitle('SUPERLONGTOKENXYZ').textContent).toBe('SUPERLONGTOK...')
     expect(screen.getByTestId('wait-and-save-gain-pill').textContent).toBe('<0.01%')
   })
 })
