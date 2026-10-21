@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { OnExpiredOrderPayload, ToastMessageType } from '@cowprotocol/events'
+import { useRemoveSnackbar } from '@cowprotocol/snackbars'
 import { UiOrderType } from '@cowprotocol/types'
 import { LinkStyledButton } from '@cowprotocol/ui'
 
@@ -17,6 +18,7 @@ import { Routes } from 'common/constants/routes'
 import { useTradeNavigate } from 'common/modules/tradeNavigation'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
+import { OrderStatusEvents } from '../../events/events'
 import { OrderNotification } from '../OrderNotification'
 
 const RecreateOrderButton = styled(LinkStyledButton)`
@@ -38,6 +40,8 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
   const order = useOrder({ chainId, id: orderUid })
   const setAlternativeOrder = useSetAlternativeOrder()
   const tradeNavigate = useTradeNavigate()
+  const removeSnackbar = useRemoveSnackbar()
+  const dismissNotification = (): void => removeSnackbar(OrderStatusEvents.ON_EXPIRED_ORDER)
   const canRecreate = order?.status === OrderStatus.EXPIRED && getUiOrderType(order) === UiOrderType.LIMIT
 
   return (
@@ -46,11 +50,13 @@ export function ExpiredOrderNotification({ payload }: ExpiredOrderNotificationPr
       chainId={chainId}
       orderUid={orderUid}
       messageType={ToastMessageType.ORDER_EXPIRED}
+      onExplorerClick={dismissNotification}
       bottomContent={
         canRecreate && (
           <p>
             <RecreateOrderButton
               onClick={() => {
+                dismissNotification()
                 setAlternativeOrder({ ...order, apiAdditionalInfo: expiredOrder })
                 tradeNavigate(
                   chainId,
