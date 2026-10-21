@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-20 13:58\n"
+"PO-Revision-Date: 2026-10-21 10:42\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -2270,6 +2270,10 @@ msgstr "Échec du swap"
 msgid "Switch to WETH"
 msgstr "Passer à WETH"
 
+#: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
+msgid "CoW Swap does not support all tokens. Some tokens use Token-2022 extensions, such as transfer fees, which do not operate optimally with CoW Protocol.<0>For more information, please refer to the <1>FAQ</1>.</0>"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Great!"
 msgstr "Parfait !"
@@ -4442,6 +4446,10 @@ msgstr "gas"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
 msgstr "détails"
+
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} charges a {feePercent}% fee on every transfer, which CoW Protocol does not support."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #~ msgid "TWAP order split into {twapOrderN} parts"
@@ -8330,6 +8338,10 @@ msgstr "Les swaps cross-chain sont disponibles"
 msgid "Fee discount"
 msgstr "Réduction sur les frais"
 
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} is unsupported: {reason}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -9436,6 +9448,10 @@ msgstr "Saisissez un code pour copier le lien de parrainage"
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "<0>CoW Swap requires offline signatures, which is currently not supported by some wallets.</0><1>Read more in the <2>FAQ</2>.</1>"
 msgstr "<0>CoW Swap nécessite des signatures hors ligne, qui ne sont actuellement pas prises en charge par certains wallets.</0><1>Pour en savoir plus, consultez la <2>FAQ</2>.</1>"
+
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} is unsupported: the token is on the denylist."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TopSections.tsx
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
