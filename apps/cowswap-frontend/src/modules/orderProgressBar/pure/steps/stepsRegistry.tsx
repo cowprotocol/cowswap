@@ -91,7 +91,10 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
   const randomBenefit = useRandomBenefit(chainId)
   const { isWaitForCowsEnabled } = useFeatureFlags()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  const showWaitAndSave = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
+  const wasWaitAndSaveToggledOn = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
+
+  // TODO: Update this to only show it if we can measure the gains:
+  const showWaitAndSaveOutcome = wasWaitAndSaveToggledOn
 
   return (
     <FinishedStep
@@ -104,7 +107,7 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
       totalSolvers={totalSolvers}
       randomBenefit={randomBenefit}
       debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-      showWaitAndSave={showWaitAndSave}
+      showWaitAndSaveOutcome={showWaitAndSaveOutcome}
     >
       <RenderProgressTopSection
         {...props}

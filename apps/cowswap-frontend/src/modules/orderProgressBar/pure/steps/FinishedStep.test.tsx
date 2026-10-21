@@ -158,23 +158,24 @@ describe('FinishedStep', () => {
     expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
   })
 
-  it('renders CoW footer and WaitAndSaveOutcome above solvers when Wait & Save is on', () => {
+  it('renders WaitAndSaveOutcome instead of finished tips when Wait & Save is on', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
         order={order}
         chainId={SupportedChainId.MAINNET}
         randomBenefit="CoW Protocol is MEV protected"
-        showWaitAndSave
+        showWaitAndSaveOutcome
         solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
         totalSolvers={10}
       >
-        <div />
+        <div data-testid="finished-tips">Tips</div>
       </FinishedStep>,
     )
 
     expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
     expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
 
     const confirmation = screen.getByTestId('base-trade-confirmation')

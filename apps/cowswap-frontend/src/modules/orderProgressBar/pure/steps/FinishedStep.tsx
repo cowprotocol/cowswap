@@ -46,7 +46,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
-  showWaitAndSave?: boolean
+  showWaitAndSaveOutcome?: boolean
 }
 
 export function FinishedStep({
@@ -58,7 +58,7 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
-  showWaitAndSave = false,
+  showWaitAndSaveOutcome = false,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -86,7 +86,7 @@ export function FinishedStep({
 
     const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel)
 
-    if (!pair || !showWaitAndSave) {
+    if (!pair || !showWaitAndSaveOutcome) {
       return pair
     }
 
@@ -94,7 +94,7 @@ export function FinishedStep({
       ...pair,
       cowParticipation: { tooltip: cowParticipationTooltip },
     }
-  }, [order, soldLabel, receivedLabel, showWaitAndSave, cowParticipationTooltip])
+  }, [order, soldLabel, receivedLabel, showWaitAndSaveOutcome, cowParticipationTooltip])
 
   if (!order) {
     return null
@@ -109,13 +109,13 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSave ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {showWaitAndSaveOutcome ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
 
         {solversList.length > 0 ? (
           <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
         ) : null}
 
-        {children}
+        {showWaitAndSaveOutcome ? null : children}
 
         {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={shouldShowSurplus} /> : null}
       </BaseTradeConfirmation>
