@@ -56,6 +56,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import {
   fetchAndClassifyOrder,
   getFulfilledOrderUidsForSurplusQueue,
+  getIsAbandonedCreatingOrder,
   getOrdersFromTransitionData,
   getOrderTypesByUid,
   OrderTransitionData,
@@ -300,7 +301,10 @@ async function _updateCreatingOrders(
   pendingOrders: Order[],
   isSafeWallet: boolean,
   addOrUpdateOrders: AddOrUpdateOrdersCallback,
+  invalidateOrdersBatch: InvalidateOrdersBatchCallback,
 ): Promise<void> {
+  const abandonedIds: string[] = []
+
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
       // Orders that are only known locally until the backend indexes their creation tx
@@ -327,9 +331,14 @@ async function _updateCreatingOrders(
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder], isSafeWallet })
         })
-        .catch((error) => {
+        .catch((err: unknown) => {
+          if (getIsAbandonedCreatingOrder(order, err)) {
+            abandonedIds.push(order.id)
+            return
+          }
+
           // Nothing to do here, keep waiting until the order shows up
-          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
+          console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, err)
         })
 
       acc.push(promise)
@@ -339,6 +348,10 @@ async function _updateCreatingOrders(
   }, [])
 
   await Promise.all(promises)
+
+  if (abandonedIds.length) {
+    invalidateOrdersBatch({ ids: abandonedIds, chainId, isSafeWallet })
+  }
 }
 
 // TODO: Break down this large function into smaller functions
@@ -471,8 +484,7 @@ async function _updateOrders({
     cancelOrdersBatch,
     safeNonce,
   )
-  // Update the creating EthFlow orders (if any)
-  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders, invalidateOrdersBatch)
 
   markPollComplete?.(chainId)
 }
