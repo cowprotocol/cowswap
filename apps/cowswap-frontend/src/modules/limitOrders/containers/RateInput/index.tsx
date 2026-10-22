@@ -296,7 +296,7 @@ export function RateInput() {
           )}
         </styledEl.Body>
         <PricePercentageShortcuts
-          key={`${chainId}:${inputCurrency && getAddress(inputCurrency)}:${outputCurrency && getAddress(outputCurrency)}:${isInverted}`}
+          key={`${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}`}
           referenceRate={marketRate}
           activeRate={activeRate}
           isInverted={isInverted}

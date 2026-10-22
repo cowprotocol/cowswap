@@ -12,6 +12,10 @@ const shortcutStyles = css`
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});
 
+  &:not(:disabled):hover {
+    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
+  }
+
   ${Media.upToExtraSmall()} {
     ${font('FONT_MEDIUM', 'medium')}
     padding: 5px 12px;
@@ -32,13 +36,18 @@ export const Shortcut = styled(ButtonOutlined)`
   min-width: 60px;
   gap: 0;
 
+  &:hover,
+  &:focus,
+  &:active {
+    box-shadow: none;
+  }
+
   &:hover {
     border: 2px solid transparent;
   }
 
-  &[aria-pressed='true'] {
-    border-color: var(${UI.COLOR_PRIMARY});
-    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
+  &:disabled:hover {
+    background: var(${UI.COLOR_PAPER});
   }
 
   &:focus-visible {
@@ -46,40 +55,66 @@ export const Shortcut = styled(ButtonOutlined)`
     outline-offset: 2px;
   }
 
-  &:disabled:hover {
-    background: var(${UI.COLOR_PAPER});
+  &[aria-pressed='true'] {
+    border-color: var(${UI.COLOR_PRIMARY});
+    background: var(${UI.COLOR_PRIMARY_OPACITY_10});
   }
 `
 
 export const CustomPercentage = styled.div<{ $selected: boolean; $invalid: boolean }>`
-  ${shortcutStyles}
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  ${font('FONT_SMALL_PLUS', 'medium')}
+  position: relative;
   width: 84px;
   flex-shrink: 0;
-  border-color: ${({ $selected, $invalid }) =>
-    $invalid ? `var(${UI.COLOR_DANGER})` : $selected ? `var(${UI.COLOR_PRIMARY})` : 'transparent'};
-  color: ${({ $invalid }) => `var(${$invalid ? UI.COLOR_DANGER : UI.COLOR_TEXT})`};
 
-  ${Media.upToExtraSmall()} {
-    width: 110px;
+  > input {
+    border-color: ${({ $selected, $invalid }) =>
+      $invalid ? `var(${UI.COLOR_DANGER})` : $selected ? `var(${UI.COLOR_PRIMARY})` : 'transparent'};
+    background: ${({ $selected }) => `var(${$selected ? UI.COLOR_PRIMARY_OPACITY_10 : UI.COLOR_PAPER})`};
+    color: ${({ $invalid }) => `var(${$invalid ? UI.COLOR_DANGER : UI.COLOR_TEXT})`};
   }
 
-  &:focus-within {
+  &:focus-within > input {
     border-color: ${({ $invalid }) => `var(${$invalid ? UI.COLOR_DANGER : UI.COLOR_PRIMARY})`};
+  }
+
+  > span {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: ${({ $invalid }) => `var(${$invalid ? UI.COLOR_DANGER : UI.COLOR_TEXT})`};
+  }
+
+  ${Media.upToExtraSmall()} {
+    ${font('FONT_MEDIUM', 'medium')}
+    width: 110px;
+
+    > span {
+      right: 14px;
+    }
   }
 `
 
 export const CustomInput = styled(Input)`
-  font: inherit;
+  ${shortcutStyles}
   width: 100%;
-  flex: 1 1 auto;
   min-width: 0;
   text-align: center;
-  color: inherit;
   outline: none;
-  background: transparent;
+
+  &::placeholder {
+    color: var(${UI.COLOR_TEXT_OPACITY_50});
+  }
+
+  &:not(:placeholder-shown) {
+    padding-right: 22px;
+
+    ${Media.upToExtraSmall()} {
+      padding-right: 32px;
+    }
+  }
 
   &:disabled {
     opacity: 0.4;

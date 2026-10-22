@@ -85,7 +85,7 @@ export function PricePercentageShortcuts({
           aria-label={isInverted ? t`Custom percentage below market` : t`Custom percentage above market`}
           aria-invalid={!!customValue && !customRate}
         />
-        {customValue && <span>%</span>}
+        {customValue && <span aria-hidden="true">%</span>}
       </styledEl.CustomPercentage>
     </styledEl.Shortcuts>
   )
