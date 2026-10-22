@@ -1,11 +1,14 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
+import { useNavigateToNewOrderCallback, useTradeConfirmState, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
@@ -18,6 +21,10 @@ export function OrderSubmittedContent({ onDismiss }: OrderSubmittedContentProps)
   const { chainId } = useWalletInfo()
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
+  const { isWaitForCowsEnabled } = useFeatureFlags()
+  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  // TODO: POC: hardcoded outcome on this confirmation only. Surplus/history of another order does not set this.
+  const showWaitAndSaveOutcome = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
 
   const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
 
@@ -29,7 +36,7 @@ export function OrderSubmittedContent({ onDismiss }: OrderSubmittedContentProps)
       hash={transactionHash || undefined}
       onDismiss={onDismiss}
       activityDerivedState={activityDerivedState}
-      orderProgressBarProps={orderProgressBarProps}
+      orderProgressBarProps={{ ...orderProgressBarProps, showWaitAndSaveOutcome }}
       navigateToNewOrderCallback={navigateToNewOrderCallback}
     />
   )

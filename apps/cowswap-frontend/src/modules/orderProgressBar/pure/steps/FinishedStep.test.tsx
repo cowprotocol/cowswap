@@ -142,7 +142,7 @@ describe('FinishedStep', () => {
     expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
   })
 
-  it('omits CoW footer and WaitAndSaveOutcome when Wait & Save is off', () => {
+  it('keeps surplus tips and omits WaitAndSaveOutcome by default', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
@@ -150,15 +150,16 @@ describe('FinishedStep', () => {
         chainId={SupportedChainId.MAINNET}
         randomBenefit="CoW Protocol is MEV protected"
       >
-        <div />
+        <div data-testid="finished-tips">Tips</div>
       </FinishedStep>,
     )
 
     expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
     expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
   })
 
-  it('renders WaitAndSaveOutcome instead of finished tips when Wait & Save is on', () => {
+  it('renders WaitAndSaveOutcome instead of finished tips when Wait & Save confirmation is on', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
