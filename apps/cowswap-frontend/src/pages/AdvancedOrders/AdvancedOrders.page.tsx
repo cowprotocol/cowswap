@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai'
+import { useAtom, useAtomValue } from 'jotai'
 import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
@@ -42,6 +42,7 @@ import {
   useTwapFormState,
   useTwapSlippage,
   TwapFormState,
+  twapRateInvertedAtom,
 } from 'modules/twap'
 
 import { Routes } from 'common/constants/routes'
@@ -57,6 +58,7 @@ export function AdvancedOrdersPage(): ReactNode {
   const params = useParams()
   const { i18n, t } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
+  const [isInverted, setIsInverted] = useAtom(twapRateInvertedAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
@@ -138,7 +140,13 @@ export function AdvancedOrdersPage(): ReactNode {
 
         {isUnlocked && (
           <styledEl.SecondaryColumn>
-            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} referenceLines={referenceLines} />
+            <PriceChart
+              inputCurrency={inputCurrency}
+              outputCurrency={outputCurrency}
+              selectedCurrency={isInverted ? outputCurrency : inputCurrency}
+              onSelectCurrency={(currency) => setIsInverted(Boolean(outputCurrency?.equals(currency)))}
+              referenceLines={referenceLines}
+            />
             {!hideOrdersTable && (
               <DialogOrInline
                 isDialog={isUpToLarge}

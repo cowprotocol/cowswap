@@ -1,8 +1,9 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getAddress } from '@cowprotocol/common-utils'
 import { renderTooltip } from '@cowprotocol/ui'
 import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -42,7 +43,7 @@ import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { DeadlineSelector } from '../../pure/DeadlineSelector/DeadlineSelector.pure'
 import { TotalDurationTooltip } from '../../pure/TotalDurationTooltip/TotalDurationTooltip.pure'
-import { twapTimeIntervalAtom } from '../../state/twapOrderAtom'
+import { twapRateInvertedAtom, twapTimeIntervalAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
@@ -163,7 +164,8 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
     }
   }, [account, isFallbackHandlerRequired, isFallbackHandlerCompatible, localFormValidation, verification, cowAnalytics])
 
-  const isInvertedState = useState(false)
+  const isInvertedState = useAtom(twapRateInvertedAtom)
+  const ratePairKey = [inputCurrency?.chainId, getAddress(inputCurrency), getAddress(outputCurrency)].join(':')
   const [isInverted] = isInvertedState
 
   const { onSlippageInput, onNumOfPartsInput } = useMemo(() => {
@@ -183,6 +185,8 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
       {!hideQuoteAmount && (
         <TradeRows>
           <RateInfo
+            key={ratePairKey}
+            setSmartQuoteSelectionOnce
             label={tooltips.price.label}
             rateInfoParams={rateInfoParams}
             isInvertedState={isInvertedState}
