@@ -74,6 +74,28 @@ describe('useRemainingSeconds', () => {
     expect(jest.getTimerCount()).toBe(0)
   })
 
+  it('never renders a value that belongs to the previous target', () => {
+    const nowMs = Date.now()
+    const rendered: Array<number | undefined> = []
+
+    const { rerender } = renderHook(
+      ({ target }) => {
+        const remainingSec = useRemainingSeconds(target)
+        rendered.push(remainingSec)
+        return remainingSec
+      },
+      { initialProps: { target: (nowMs + 30_000) as number | null } },
+    )
+
+    rendered.length = 0
+    rerender({ target: null })
+    expect(rendered).toEqual([undefined])
+
+    rendered.length = 0
+    rerender({ target: nowMs + 5000 })
+    expect(new Set(rendered)).toEqual(new Set([5]))
+  })
+
   it('clears the pending timer on unmount', () => {
     const { unmount } = renderHook(() => useRemainingSeconds(Date.now() + 90_000))
 

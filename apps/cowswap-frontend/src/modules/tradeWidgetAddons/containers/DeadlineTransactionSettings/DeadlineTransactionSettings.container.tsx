@@ -41,7 +41,8 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const waitRemainingSecRef = useRef<number | undefined>(undefined)
   const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
 
-  const totalExpiryEpochSec = hasValidFrom ? validFrom + deadline : undefined
+  const batchWaitEpochSec = showWaitForCows ? validFrom : undefined
+  const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
 
   const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {
     const next = remainingSec !== undefined && deadlineSec > 0 && deadlineSec < remainingSec
@@ -62,7 +63,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
 
   useCountdown({
     targetRef: batchWaitRef,
-    targetEpochSec: hasValidFrom ? validFrom : undefined,
+    targetEpochSec: batchWaitEpochSec,
     format: formatBatchCountdown,
     onRemainingChange: onBatchWaitRemainingChange,
   })
