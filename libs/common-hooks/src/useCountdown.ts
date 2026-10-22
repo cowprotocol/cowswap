@@ -1,4 +1,4 @@
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useEffect } from 'react'
 
 import { getServerNowSec } from '@cowprotocol/common-utils'
 
@@ -27,7 +27,6 @@ export function useCountdown({ targetRef, targetEpochSec, format, onRemainingCha
   const timeOffsetSec = useLocalTimeOffset() ?? 0
   const formatRef = useLatestRef(format)
   const onRemainingChangeRef = useLatestRef(onRemainingChange)
-  const lastRemainingRef = useRef<number | undefined>(undefined)
 
   useEffect(() => {
     if (targetEpochSec == null) {
@@ -43,11 +42,8 @@ export function useCountdown({ targetRef, targetEpochSec, format, onRemainingCha
           return false
         }
 
-        if (remainingSec !== lastRemainingRef.current) {
-          lastRemainingRef.current = remainingSec
-          element.textContent = formatRef.current(remainingSec)
-          onRemainingChangeRef.current?.(remainingSec)
-        }
+        element.textContent = formatRef.current(remainingSec)
+        onRemainingChangeRef.current?.(remainingSec)
 
         return true
       },

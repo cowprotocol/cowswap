@@ -18,6 +18,8 @@ import { DeadlineTransactionSettings } from './DeadlineTransactionSettings.conta
 const VALID_FROM = 1_800_000_000
 const DEADLINE = 1200
 
+let mockDeadlineError: string | false = false
+
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useCountdown: jest.fn(),
@@ -38,7 +40,7 @@ jest.mock('./hooks/useCustomDeadline', () => ({
   useCustomDeadline: () => ({
     viewValue: '20',
     parseCustomDeadline: jest.fn(),
-    error: false,
+    error: mockDeadlineError,
     isDisabled: false,
     onBlur: jest.fn(),
     deadlineRangeParams: { minMinutes: 5, maxMinutes: 180 },
@@ -79,6 +81,7 @@ function renderSettings({
 describe('DeadlineTransactionSettings countdowns', () => {
   beforeEach(() => {
     useCountdownMock.mockClear()
+    mockDeadlineError = false
   })
 
   it('counts down the batch wait and total expiry when Wait for CoWs is shown', () => {
@@ -106,5 +109,17 @@ describe('DeadlineTransactionSettings countdowns', () => {
     ],
   ])('does not start countdowns when %s', (_, scenario) => {
     expect(renderSettings(scenario)).toEqual([undefined, undefined])
+  })
+
+  it('does not start countdowns while the deadline error replaces the Wait for CoWs message', () => {
+    mockDeadlineError = 'tooSmall'
+
+    const targets = renderSettings({
+      isWaitForCowsEnabled: true,
+      isWaitAndSaveEnabled: true,
+      chainId: SupportedChainId.MAINNET,
+    })
+
+    expect(targets).toEqual([undefined, undefined])
   })
 })

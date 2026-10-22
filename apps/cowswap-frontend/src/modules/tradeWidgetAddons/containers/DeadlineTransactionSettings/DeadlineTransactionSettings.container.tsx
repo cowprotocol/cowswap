@@ -41,7 +41,8 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
   const waitRemainingSecRef = useRef<number | undefined>(undefined)
   const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
 
-  const batchWaitEpochSec = showWaitForCows ? validFrom : undefined
+  // The countdown spans only exist in the Wait for CoWs message, which the deadline error replaces.
+  const batchWaitEpochSec = showWaitForCows && !error ? validFrom : undefined
   const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
 
   const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {

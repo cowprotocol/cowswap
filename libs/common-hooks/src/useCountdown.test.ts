@@ -170,6 +170,26 @@ describe('useCountdown', () => {
     expect(element.textContent).toBe('90s')
   })
 
+  it('writes a replacement element right away when the countdown restarts on the same second', () => {
+    const targetRef = createTarget()
+    const onRemainingChange = jest.fn()
+    const targetEpochSec = Date.now() / 1000 + 90
+
+    const { rerender } = renderHook(
+      ({ target }) =>
+        useCountdown({ targetRef, targetEpochSec: target, format: (remaining) => `${remaining}s`, onRemainingChange }),
+      { initialProps: { target: targetEpochSec as number | undefined } },
+    )
+    expect(targetRef.current?.textContent).toBe('90s')
+
+    rerender({ target: undefined })
+    targetRef.current = document.createElement('span')
+    rerender({ target: targetEpochSec })
+
+    expect(targetRef.current?.textContent).toBe('90s')
+    expect(onRemainingChange).toHaveBeenCalledTimes(2)
+  })
+
   it('clears the pending timer on unmount', () => {
     const targetRef = createTarget()
     const nowSec = Date.now() / 1000
