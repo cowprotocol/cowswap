@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { Fraction } from '@cowprotocol/currency'
@@ -26,10 +26,18 @@ export function PricePercentageShortcuts({
   disabled,
   onSelect,
 }: PricePercentageShortcutsProps): ReactNode {
-  const [customPercentage, setCustomPercentage] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
+  const [customInput, setCustomInput] = useState<{ value: string; rate: Fraction | null } | null>(null)
+
+  useEffect(() => {
+    setCustomInput((current) => {
+      if (!current) return current
+      const matchesAppliedRate = current.rate ? activeRate?.equalTo(current.rate) : !activeRate?.greaterThan(0)
+      return matchesAppliedRate ? current : null
+    })
+  }, [activeRate])
   const isDisabled = disabled || !referenceRate?.greaterThan(0)
-  const customRate = getPercentageRate(referenceRate, customPercentage, isInverted)
+  const customRate = customInput?.rate ?? null
+  const customValue = customInput?.value ?? ''
   const matchesRate = (rate: Fraction | null): boolean =>
     !!rate &&
     !!activeRate?.greaterThan(0) &&
@@ -39,8 +47,6 @@ export function PricePercentageShortcuts({
     matchesRate(getPercentageRate(referenceRate, percentage, isInverted)),
   )
   const customMatches = !selectedPreset && matchesRate(customRate)
-  const hasInvalidCustomValue = !!customPercentage && !customRate && !activeRate?.greaterThan(0)
-  const customValue = isEditing || customMatches || hasInvalidCustomValue ? customPercentage : ''
 
   return (
     <styledEl.Shortcuts role="group" aria-label={t`Price relative to market`}>
@@ -55,7 +61,7 @@ export function PricePercentageShortcuts({
             aria-pressed={!isDisabled && selectedPreset === percentage}
             title={isInverted ? t`${percentage}% below market` : t`${percentage}% above market`}
             onClick={() => {
-              setCustomPercentage('')
+              setCustomInput(null)
               onSelect(rate)
             }}
           >
@@ -69,11 +75,11 @@ export function PricePercentageShortcuts({
           value={customValue}
           onUserInput={(value) => {
             if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return
-            setCustomPercentage(value)
-            onSelect(getPercentageRate(referenceRate, value, isInverted))
+            const rate = getPercentageRate(referenceRate, value, isInverted)
+            if (Number(value) > 0 && !rate) return
+            setCustomInput({ value, rate })
+            onSelect(rate)
           }}
-          onFocus={() => setIsEditing(true)}
-          onBlur={() => setIsEditing(false)}
           disabled={isDisabled}
           placeholder={t`Custom %`}
           aria-label={isInverted ? t`Custom percentage below market` : t`Custom percentage above market`}

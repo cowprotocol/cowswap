@@ -1,5 +1,9 @@
 import { Fraction } from '@cowprotocol/currency'
 
+const MIN_PERCENTAGE = new Fraction(1, 100)
+const MAX_PERCENTAGE = new Fraction(99999, 100)
+const MAX_INVERTED_PERCENTAGE = new Fraction(9999, 100)
+
 // eslint-disable-next-line complexity
 export function getPercentageRate(
   referenceRate: Fraction | null,
@@ -10,7 +14,9 @@ export function getPercentageRate(
 
   const decimals = percentage.split('.')[1]?.length ?? 0
   const percent = new Fraction(percentage.replace('.', ''), '1' + '0'.repeat(decimals))
-  if (!percent.greaterThan(0) || (isInverted && !percent.lessThan(100))) return null
+  if (percent.lessThan(MIN_PERCENTAGE) || percent.greaterThan(isInverted ? MAX_INVERTED_PERCENTAGE : MAX_PERCENTAGE)) {
+    return null
+  }
 
   const factor = isInverted ? new Fraction(100).subtract(percent) : new Fraction(100).add(percent)
 

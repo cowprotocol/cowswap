@@ -44,4 +44,30 @@ describe('getPercentageRate', () => {
   it('allows sell targets over 100 percent', () => {
     expect(getPercentageRate(new Fraction(2010), '150', false)?.toFixed(0)).toBe('5025')
   })
+
+  it.each([
+    [false, '0.01', '100.01'],
+    [false, '999.99', '1099.99'],
+    [true, '0.01', '99.99'],
+    [true, '99.99', '0.01'],
+  ])('accepts boundary %s / %s', (isInverted, percentage, expected) => {
+    const referenceRate = isInverted ? new Fraction(1, 100) : new Fraction(100)
+    const rate = getPercentageRate(referenceRate, percentage, isInverted)
+    expect((isInverted ? rate?.invert() : rate)?.toFixed(2)).toBe(expected)
+  })
+
+  it.each([false, true])('rejects percentages below the minimum when inverted=%s', (isInverted) => {
+    expect(getPercentageRate(new Fraction(100), '0.009', isInverted)).toBeNull()
+  })
+
+  it.each([
+    [false, '999.991'],
+    [false, '1000'],
+    [true, '99.991'],
+    [true, '100'],
+    [false, '1111111111111111'],
+    [true, '1111111111111111'],
+  ])('rejects percentages above the maximum %s / %s', (isInverted, percentage) => {
+    expect(getPercentageRate(new Fraction(100), percentage, isInverted)).toBeNull()
+  })
 })
