@@ -71,7 +71,7 @@ describe('priceChartVisibleAtom', () => {
     },
   )
 
-  it.each([true, false])('preserves the existing Limit and TWAP preference (%s)', (visible) => {
+  it.each([true, false])('preserves the existing shared preference until a mode has its own choice (%s)', (visible) => {
     localStorage.setItem('price-chart-visible:v0', JSON.stringify(visible))
     const store = createChartStore(TradeType.LIMIT_ORDER)
     expect(store.get(priceChartVisibleAtom)).toBe(visible)
@@ -79,7 +79,7 @@ describe('priceChartVisibleAtom', () => {
     setTradeType(store, TradeType.ADVANCED_ORDERS)
     expect(store.get(priceChartVisibleAtom)).toBe(visible)
     setTradeType(store, TradeType.SWAP)
-    expect(store.get(priceChartVisibleAtom)).toBe(false)
+    expect(store.get(priceChartVisibleAtom)).toBe(visible)
   })
 
   it('keeps an existing shared preference unchanged when a mode is toggled', () => {
@@ -140,5 +140,28 @@ describe('priceChartVisibleAtom', () => {
     store.set(priceChartVisibleAtom, (visible) => !visible)
     expect(store.get(priceChartVisibleAtom)).toBe(true)
     expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe('true')
+  })
+
+  it.each([true, false])('keeps an explicit Swap choice (%s) ahead of the legacy preference', (visible) => {
+    localStorage.setItem('price-chart-visible:v0', JSON.stringify(!visible))
+    localStorage.setItem('swapPriceChartVisible:v0', JSON.stringify(visible))
+    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(visible)
+  })
+
+  it('keeps Swap off for invalid JSON even when the legacy preference is on', () => {
+    localStorage.setItem('price-chart-visible:v0', 'true')
+    localStorage.setItem('swapPriceChartVisible:v0', '{invalid')
+    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
+  })
+
+  it('lets the user turn off an inherited Swap preference and remembers the new choice', () => {
+    localStorage.setItem('price-chart-visible:v0', 'true')
+    const store = createChartStore(TradeType.SWAP)
+    expect(store.get(priceChartVisibleAtom)).toBe(true)
+
+    store.set(priceChartVisibleAtom, (visible) => !visible)
+    expect(store.get(priceChartVisibleAtom)).toBe(false)
+    expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe('false')
+    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
   })
 })

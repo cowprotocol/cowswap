@@ -7,16 +7,18 @@ import { tradeTypeAtom } from 'modules/trade'
 
 import { TradeType } from 'common/modules/tradeNavigation'
 
-const defaultPriceChartVisibleAtom = atomWithStorage<boolean>(
+const SWAP_PRICE_CHART_VISIBLE_STORAGE_KEY = 'swapPriceChartVisible:v0'
+
+const defaultPriceChartVisibleAtom = atomWithStorage<boolean | null>(
   'price-chart-visible:v0',
-  true,
+  null,
   getJotaiIsolatedStorage(),
   { getOnInit: true },
 )
 
-const swapPriceChartVisibleAtom = atomWithStorage<boolean>(
-  'swapPriceChartVisible:v0',
-  false,
+const swapPriceChartVisibleAtom = atomWithStorage<boolean | undefined>(
+  SWAP_PRICE_CHART_VISIBLE_STORAGE_KEY,
+  undefined,
   getJotaiIsolatedStorage(),
   { getOnInit: true },
 )
@@ -59,7 +61,22 @@ export const priceChartVisibleAtom = atom(
     const visible: unknown = get(currentAtom)
 
     if (typeof visible === 'boolean') return visible
-    if (currentAtom === swapPriceChartVisibleAtom) return false
+    if (currentAtom === swapPriceChartVisibleAtom) {
+      if (visible !== undefined) return false
+      try {
+        if (
+          typeof localStorage === 'undefined' ||
+          localStorage.getItem(SWAP_PRICE_CHART_VISIBLE_STORAGE_KEY) !== null
+        ) {
+          return false
+        }
+      } catch {
+        return false
+      }
+
+      const legacyVisible: unknown = get(defaultPriceChartVisibleAtom)
+      return typeof legacyVisible === 'boolean' ? legacyVisible : false
+    }
     if (visible !== null) return true
 
     const defaultVisible: unknown = get(defaultPriceChartVisibleAtom)
