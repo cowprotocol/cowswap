@@ -65,11 +65,13 @@ export function CowSdkUpdater(): null {
   useEffect(() => {
     if (!publicClient) return
 
-    if (walletClient) {
-      const adapter = new ViemAdapter({ provider: publicClient, walletClient })
-      setGlobalAdapter(adapter as AbstractProviderAdapter)
-      setAppSigner(adapter.signer)
-    }
+    // A WalletConnect session approved for Solana only (Ledger Live) leaves wagmi connected with no
+    // eip155 account; the wallet client it resolves then has none, and ViemAdapter throws on that.
+    if (!walletClient?.account) return
+
+    const adapter = new ViemAdapter({ provider: publicClient, walletClient })
+    setGlobalAdapter(adapter as AbstractProviderAdapter)
+    setAppSigner(adapter.signer)
   }, [publicClient, walletClient, setAppSigner])
 
   return null
