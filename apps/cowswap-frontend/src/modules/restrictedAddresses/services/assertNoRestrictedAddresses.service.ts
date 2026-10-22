@@ -6,6 +6,7 @@ import type { GuardedTransaction } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
+import { findForeignCowShedHookUser } from '../utils/findForeignCowShedHookUser'
 import { findRestrictedAddress } from '../utils/findRestrictedAddress'
 
 const RESTRICTED_ADDRESS_ERROR_TYPE = 'restrictedAddress'
@@ -41,6 +42,22 @@ export function assertOrderHasNoRestrictedAddresses(order: OrderCreation, chainI
   })
 }
 
+export function assertOrderHooksBelongToOwner(order: OrderCreation, chainId: SupportedChainId): void {
+  const hookUser = order.from ? findForeignCowShedHookUser(order.appData, order.from) : undefined
+
+  if (!hookUser) return
+
+  reportAndThrow(
+    t`This order contains hooks signed for another account and was blocked. Please refresh the quote and try again.`,
+    {
+      chainId,
+      hookUser,
+      from: order.from,
+      appData: order.appData,
+    },
+  )
+}
+
 export function assertTransactionsHaveNoRestrictedAddresses(
   transactions: GuardedTransaction[],
   chainId: SupportedChainId,
@@ -60,7 +77,7 @@ export function assertTransactionsHaveNoRestrictedAddresses(
 }
 
 function getOrderBlockedMessage(): string {
-  return t`This order contains a restricted address and was blocked.`
+  return t`This order contains a restricted address and was blocked. Please refresh the quote and try again.`
 }
 
 function reportAndThrow(message: string, params: Record<string, unknown>): never {

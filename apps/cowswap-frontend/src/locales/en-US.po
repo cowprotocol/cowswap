@@ -1778,6 +1778,10 @@ msgstr "This hook is not compatible with your wallet"
 msgid "Get started with limit orders"
 msgstr "Get started with limit orders"
 
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "This order contains a restricted address and was blocked. Please refresh the quote and try again."
+msgstr "This order contains a restricted address and was blocked. Please refresh the quote and try again."
+
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
 msgstr "Minimize price impact with TWAP"
@@ -5812,8 +5816,8 @@ msgid "and saved {amount}"
 msgstr "and saved {amount}"
 
 #: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
-msgid "This order contains a restricted address and was blocked."
-msgstr "This order contains a restricted address and was blocked."
+#~ msgid "This order contains a restricted address and was blocked."
+#~ msgstr "This order contains a restricted address and was blocked."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #~ msgid "Are you sure you want to cancel {ordersCount} orders?"
@@ -7325,6 +7329,10 @@ msgstr "HTTPS is required. Please use <0>https://</0>"
 msgid "Transaction in progress. See below for live status updates."
 msgstr "Transaction in progress. See below for live status updates."
 
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
+msgstr "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "Please sign order"
 msgstr "Please sign order"
@@ -8631,6 +8639,10 @@ msgstr "Still activating"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Operation in progress!"
 msgstr "Operation in progress!"
+
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+#~ msgid "This order contains hooks signed for another account and was blocked."
+#~ msgstr "This order contains hooks signed for another account and was blocked."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Request is being rate limited"

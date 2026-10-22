@@ -6,6 +6,7 @@ import { orderBookApi, prodOrderBookApi } from 'cowSdk'
 import {
   assertAppDataHasNoRestrictedAddresses,
   assertOrderHasNoRestrictedAddresses,
+  assertOrderHooksBelongToOwner,
   assertTransactionsHaveNoRestrictedAddresses,
 } from './assertNoRestrictedAddresses.service'
 
@@ -22,7 +23,10 @@ function guardOrderBookApi(api: OrderBookApi): void {
   const uploadAppData = api.uploadAppData.bind(api)
 
   api.sendOrder = async (requestBody, contextOverride) => {
-    assertOrderHasNoRestrictedAddresses(requestBody, contextOverride?.chainId ?? api.context.chainId)
+    const chainId = contextOverride?.chainId ?? api.context.chainId
+
+    assertOrderHasNoRestrictedAddresses(requestBody, chainId)
+    assertOrderHooksBelongToOwner(requestBody, chainId)
 
     return sendOrder(requestBody, contextOverride)
   }
