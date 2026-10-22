@@ -68,6 +68,7 @@ export function RateInput() {
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
+  const priceChangePercent = useRateImpact(isInverted)
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -244,6 +245,7 @@ export function RateInput() {
             inputCurrency={inputCurrency}
             currency={primaryCurrency}
             rateImpact={rateImpact}
+            priceChangePercent={priceChangePercent}
             toggleIcon={
               <HoverTooltip
                 content={t`When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes.`}

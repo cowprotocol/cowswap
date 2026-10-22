@@ -1,26 +1,22 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
+
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 
-const FRACTION_DIGITS = 15
-
-export function useRateImpact(): number {
+export function useRateImpact(isInverted = false): number {
   const { activeRate, marketRate, isLoading, isLoadingMarketRate } = useAtomValue(limitRateAtom)
 
   return useMemo(() => {
-    const noActiveRate = !activeRate || activeRate.equalTo(0)
-    const noExecutionRate = !marketRate || marketRate.equalTo(0)
+    if (isLoading || isLoadingMarketRate || !activeRate || !marketRate) return 0
+    if (activeRate.equalTo(0) || marketRate.equalTo(0)) return 0
 
-    if (noActiveRate || noExecutionRate || isLoading || isLoadingMarketRate) return 0
+    const active = FractionUtils.fractionLikeToFraction(activeRate)
+    const market = FractionUtils.fractionLikeToFraction(marketRate)
+    const ratio = isInverted ? market.divide(active) : active.divide(market)
+    const ratePercent = Number(ratio.subtract(1).multiply(100).toFixed(1))
 
-    const ar = +activeRate.toFixed(FRACTION_DIGITS)
-    const mr = +marketRate.toFixed(FRACTION_DIGITS)
-    const ratio = ar / mr
-    const percent = ratio * 100 - 100
-
-    const ratePercent = +percent.toFixed(1)
-
-    return !ratePercent || !Number.isFinite(ratePercent) || Number.isNaN(ratePercent) ? 0 : ratePercent
-  }, [activeRate, marketRate, isLoading, isLoadingMarketRate])
+    return Number.isFinite(ratePercent) ? ratePercent : 0
+  }, [activeRate, marketRate, isLoading, isLoadingMarketRate, isInverted])
 }
