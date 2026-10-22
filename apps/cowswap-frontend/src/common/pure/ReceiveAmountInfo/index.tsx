@@ -34,6 +34,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
       protocolFee,
       bridgeFee,
+      accountRentFee,
     },
     beforeAllFees,
   } = receiveAmountInfo
@@ -46,6 +47,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
   const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)
   const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
+  const hasAccountRentFee = !isFractionFalsy(accountRentFee)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
   const hasFee = hasNetworkFee || hasAnyFee
@@ -72,6 +74,8 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       {hasPartnerFee && (
         <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} testId={TEST_IDS.partnerFee} />
       )}
+
+      {hasAccountRentFee && <FeeItem title={t`Recoverable rent`} isSell={isSell} feeAmount={accountRentFee} />}
 
       <NetworkFeeItem
         discount={discount}
