@@ -8,7 +8,7 @@ msgstr ""
 "Language: fr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-20 13:58\n"
+"PO-Revision-Date: 2026-10-21 15:35\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
@@ -412,6 +412,10 @@ msgstr "Sélectionner un token"
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 #~ msgid "Trade your way - personalize the interface and customize your limit orders"
 #~ msgstr "Trade your way - personalize the interface and customize your limit orders"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approving <0/> <1/>"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -1564,7 +1568,6 @@ msgstr "Certains ordres ne peuvent pas être annulés !"
 #~ msgstr "The selling amount for the order is lower than the fee"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approving {symbol}"
 msgstr "Approbation de {symbol}"
 
@@ -2118,6 +2121,10 @@ msgstr "Pour en savoir plus, consultez"
 #~ msgid "Additional confirmation required for this token"
 #~ msgstr "Additional confirmation required for this token"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Permit token (unlimited)"
+msgstr ""
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee"
 #~ msgstr "Bungee"
@@ -2269,6 +2276,10 @@ msgstr "Échec du swap"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to WETH"
 msgstr "Passer à WETH"
+
+#: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
+msgid "CoW Swap does not support all tokens. Some tokens use Token-2022 extensions, such as transfer fees, which do not operate optimally with CoW Protocol.<0>For more information, please refer to the <1>FAQ</1>.</0>"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Great!"
@@ -2454,6 +2465,10 @@ msgstr "L’utilisateur a rejeté la demande."
 msgid "{REF_CODE_MIN_LENGTH, plural, one {The code must be at least # character long.} few {The code must be at least # characters long.} many {The code must be at least # characters long.} other {The code must be at least # characters long.}}"
 msgstr "{REF_CODE_MIN_LENGTH, plural, one {Le code doit comporter au moins # caractère.} few {Le code doit comporter au moins # caractères.} many {Le code doit comporter au moins # caractères.} other {Le code doit comporter au moins # caractères.}}"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve <0/> <1/>"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
 msgstr "Montant d’approbation insuffisant !"
@@ -2611,6 +2626,10 @@ msgstr "Cela tient compte du prix actuel et de la tolérance au slippage ({allow
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "No fees for failed transactions"
 msgstr "Aucuns frais en cas d’échec de la transaction"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Permit {symbol} (unlimited)"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Across"
@@ -3291,6 +3310,10 @@ msgstr "Données du pool"
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 #~ msgid "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
 #~ msgstr "You don't have enough ETH to cover the network fee. Reduce the amount or add more ETH to your wallet."
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve {symbol} (unlimited)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -4443,6 +4466,10 @@ msgstr "gas"
 msgid "details"
 msgstr "détails"
 
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} charges a {feePercent}% fee on every transfer, which CoW Protocol does not support."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 #~ msgid "TWAP order split into {twapOrderN} parts"
 #~ msgstr "TWAP order split into {twapOrderN} parts"
@@ -4971,7 +4998,6 @@ msgstr "Actualisation de la cotation..."
 msgid "Order not placed"
 msgstr "Ordre non placé"
 
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve token"
 msgstr "Approuver le token"
@@ -6262,6 +6288,10 @@ msgstr "Le gagnant de la compétition exécute maintenant votre ordre on-chain."
 msgid "Network costs"
 msgstr "Frais de réseau"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approve token (unlimited)"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Switch to Ethereum mainnet to create a code."
 #~ msgstr "Switch to Ethereum mainnet to create a code."
@@ -6407,6 +6437,10 @@ msgstr "{ordersToCancelCount, plural, one {Annuler # ordre sélectionné} few {A
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
 msgstr "Confirmer l’impact sur le prix"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Approving {symbol} (unlimited)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing"
@@ -7573,7 +7607,6 @@ msgid "Network compatibility error"
 msgstr "Erreur de compatibilité du réseau"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit token"
 msgstr "Autorisation du token"
 
@@ -7902,6 +7935,10 @@ msgstr "L’ordre démarrera une fois validé et exécuté dans votre Safe."
 #~ msgid "Paid weekly via airdrop."
 #~ msgstr "Paid weekly via airdrop."
 
+#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
+msgid "Permit <0/> <1/>"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/ConfirmButton.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
@@ -7928,7 +7965,6 @@ msgstr "Confirmer avec votre wallet"
 msgid "Date"
 msgstr "Date"
 
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit {symbol}"
 msgstr "Signer le permit pour {symbol}"
@@ -8330,6 +8366,10 @@ msgstr "Les swaps cross-chain sont disponibles"
 msgid "Fee discount"
 msgstr "Réduction sur les frais"
 
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} is unsupported: {reason}"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/hooks/useAffiliateTraderVerification.ts
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
@@ -8518,9 +8558,6 @@ msgstr "Ajouter un hook personnalisé"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/trade/services/solanaApprove/solanaApproveCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/services/solanaFlow/planDelegateStep.ts
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
-#: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol}"
 msgstr "Approuver {symbol}"
@@ -9436,6 +9473,10 @@ msgstr "Saisissez un code pour copier le lien de parrainage"
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "<0>CoW Swap requires offline signatures, which is currently not supported by some wallets.</0><1>Read more in the <2>FAQ</2>.</1>"
 msgstr "<0>CoW Swap nécessite des signatures hors ligne, qui ne sont actuellement pas prises en charge par certains wallets.</0><1>Pour en savoir plus, consultez la <2>FAQ</2>.</1>"
+
+#: apps/cowswap-frontend/src/common/containers/UnsupportedTokenReason/index.tsx
+msgid "{symbol} is unsupported: the token is on the denylist."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TopSections.tsx
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
