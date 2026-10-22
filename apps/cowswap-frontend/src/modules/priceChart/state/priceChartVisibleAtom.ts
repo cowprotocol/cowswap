@@ -21,11 +21,42 @@ const swapPriceChartVisibleAtom = atomWithStorage<boolean>(
   { getOnInit: true },
 )
 
-const currentPriceChartVisibleAtom = atom((get) =>
-  get(tradeTypeAtom)?.tradeType === TradeType.SWAP ? swapPriceChartVisibleAtom : defaultPriceChartVisibleAtom,
+const limitPriceChartVisibleAtom = atomWithStorage<boolean | null>(
+  'limitPriceChartVisible:v0',
+  null,
+  getJotaiIsolatedStorage(),
+  { getOnInit: true },
+)
+
+const twapPriceChartVisibleAtom = atomWithStorage<boolean | null>(
+  'twapPriceChartVisible:v0',
+  null,
+  getJotaiIsolatedStorage(),
+  { getOnInit: true },
+)
+
+const yieldPriceChartVisibleAtom = atomWithStorage<boolean | null>(
+  'yieldPriceChartVisible:v0',
+  null,
+  getJotaiIsolatedStorage(),
+  { getOnInit: true },
+)
+
+const priceChartVisibleAtoms = {
+  [TradeType.SWAP]: swapPriceChartVisibleAtom,
+  [TradeType.LIMIT_ORDER]: limitPriceChartVisibleAtom,
+  [TradeType.ADVANCED_ORDERS]: twapPriceChartVisibleAtom,
+  [TradeType.YIELD]: yieldPriceChartVisibleAtom,
+}
+
+const currentPriceChartVisibleAtom = atom(
+  (get) => priceChartVisibleAtoms[get(tradeTypeAtom)?.tradeType ?? TradeType.SWAP],
 )
 
 export const priceChartVisibleAtom = atom(
-  (get) => get(get(currentPriceChartVisibleAtom)),
-  (get, set, update: boolean | ((value: boolean) => boolean)) => set(get(currentPriceChartVisibleAtom), update),
+  (get) => get(get(currentPriceChartVisibleAtom)) ?? get(defaultPriceChartVisibleAtom),
+  (get, set, update: boolean | ((value: boolean) => boolean)) => {
+    const value = typeof update === 'function' ? update(get(priceChartVisibleAtom)) : update
+    set(get(currentPriceChartVisibleAtom), value)
+  },
 )

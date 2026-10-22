@@ -10,6 +10,13 @@ jest.mock('modules/trade', () => jest.requireActual('modules/trade/state/tradeTy
 jest.mock('common/modules/tradeNavigation', () => jest.requireActual('common/modules/tradeNavigation/consts'))
 jest.mock('@cowprotocol/core', () => jest.requireActual('../../../../../../libs/core/src/jotaiStore'))
 
+const TRADE_CHART_PREFERENCES = [
+  [TradeType.SWAP, 'swapPriceChartVisible:v0', false],
+  [TradeType.LIMIT_ORDER, 'limitPriceChartVisible:v0', true],
+  [TradeType.ADVANCED_ORDERS, 'twapPriceChartVisible:v0', true],
+  [TradeType.YIELD, 'yieldPriceChartVisible:v0', true],
+] as const
+
 function createChartStore(tradeType: TradeType): ReturnType<typeof createStore> {
   const store = createStore()
   setTradeType(store, tradeType)
@@ -36,33 +43,33 @@ describe('priceChartVisibleAtom', () => {
     }
   })
 
-  it.each([true, false])('restores the saved Swap preference (%s)', (visible) => {
-    const store = createChartStore(TradeType.SWAP)
-    store.set(priceChartVisibleAtom, visible)
+  it.each(TRADE_CHART_PREFERENCES)('restores both saved choices for %s', (tradeType, storageKey) => {
+    for (const visible of [true, false]) {
+      const store = createChartStore(tradeType)
+      store.set(priceChartVisibleAtom, visible)
 
-    expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe(JSON.stringify(visible))
-    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(visible)
+      expect(localStorage.getItem(storageKey)).toBe(JSON.stringify(visible))
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(visible)
+    }
   })
 
-  it('keeps Swap toggles separate from Limit and TWAP across navigation', () => {
-    const store = createChartStore(TradeType.SWAP)
-    store.set(priceChartVisibleAtom, (visible) => !visible)
+  it.each(TRADE_CHART_PREFERENCES)(
+    'keeps %s toggles separate from every other mode',
+    (tradeType, _key, defaultVisible) => {
+      const store = createChartStore(tradeType)
+      store.set(priceChartVisibleAtom, (visible) => !visible)
 
-    setTradeType(store, TradeType.LIMIT_ORDER)
-    store.set(priceChartVisibleAtom, false)
-    setTradeType(store, TradeType.ADVANCED_ORDERS)
-    expect(store.get(priceChartVisibleAtom)).toBe(false)
+      for (const [otherTradeType, , otherDefaultVisible] of TRADE_CHART_PREFERENCES) {
+        if (otherTradeType === tradeType) continue
+        setTradeType(store, otherTradeType)
+        expect(store.get(priceChartVisibleAtom)).toBe(otherDefaultVisible)
+      }
 
-    setTradeType(store, TradeType.SWAP)
-    expect(store.get(priceChartVisibleAtom)).toBe(true)
-    store.set(priceChartVisibleAtom, (visible) => !visible)
-    expect(store.get(priceChartVisibleAtom)).toBe(false)
-
-    setTradeType(store, TradeType.LIMIT_ORDER)
-    store.set(priceChartVisibleAtom, true)
-    setTradeType(store, TradeType.SWAP)
-    expect(store.get(priceChartVisibleAtom)).toBe(false)
-  })
+      setTradeType(store, tradeType)
+      expect(store.get(priceChartVisibleAtom)).toBe(!defaultVisible)
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(!defaultVisible)
+    },
+  )
 
   it.each([true, false])('preserves the existing Limit and TWAP preference (%s)', (visible) => {
     localStorage.setItem('price-chart-visible:v0', JSON.stringify(visible))
@@ -75,8 +82,32 @@ describe('priceChartVisibleAtom', () => {
     expect(store.get(priceChartVisibleAtom)).toBe(false)
   })
 
-  it('falls back to off if the saved Swap preference is invalid JSON', () => {
-    localStorage.setItem('swapPriceChartVisible:v0', '{invalid')
-    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
+  it('keeps an existing shared preference unchanged when a mode is toggled', () => {
+    localStorage.setItem('price-chart-visible:v0', 'false')
+    const store = createChartStore(TradeType.LIMIT_ORDER)
+    store.set(priceChartVisibleAtom, (visible) => !visible)
+    expect(store.get(priceChartVisibleAtom)).toBe(true)
+
+    setTradeType(store, TradeType.ADVANCED_ORDERS)
+    expect(store.get(priceChartVisibleAtom)).toBe(false)
+    expect(localStorage.getItem('price-chart-visible:v0')).toBe('false')
+  })
+
+  it.each(TRADE_CHART_PREFERENCES)(
+    'falls back to the %s default for invalid JSON',
+    (tradeType, storageKey, visible) => {
+      localStorage.setItem(storageKey, '{invalid')
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(visible)
+    },
+  )
+
+  it('keeps mode-specific choices ahead of the old shared preference', () => {
+    localStorage.setItem('price-chart-visible:v0', 'false')
+    localStorage.setItem('limitPriceChartVisible:v0', 'true')
+    const store = createChartStore(TradeType.LIMIT_ORDER)
+    expect(store.get(priceChartVisibleAtom)).toBe(true)
+
+    setTradeType(store, TradeType.ADVANCED_ORDERS)
+    expect(store.get(priceChartVisibleAtom)).toBe(false)
   })
 })
