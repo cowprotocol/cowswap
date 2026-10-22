@@ -13,6 +13,7 @@ import { OptionsController } from '@reown/appkit-controllers'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
+import { installWalletTransactionGuard } from './walletTransactionGuard'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
@@ -203,6 +204,7 @@ if (isSafeApp) {
 }
 
 bindActiveProvider(wagmiAdapter)
+installWalletTransactionGuard(wagmiAdapter.wagmiConfig)
 
 if (IS_SOLANA_WALLET_ENABLED) {
   bindActiveNamespaceToWalletConnect(reownAppKit)

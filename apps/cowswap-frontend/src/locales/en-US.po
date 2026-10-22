@@ -3306,6 +3306,10 @@ msgstr "To sign the transaction in your wallet"
 msgid "Until your order enters the auction"
 msgstr "Until your order enters the auction"
 
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "This transaction contains a restricted address and was blocked."
+msgstr "This transaction contains a restricted address and was blocked."
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #~ msgid "Loading tokens..."
 #~ msgstr "Loading tokens..."
@@ -5806,6 +5810,10 @@ msgstr "Advanced chart"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "and saved {amount}"
 msgstr "and saved {amount}"
+
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "This order contains a restricted address and was blocked."
+msgstr "This order contains a restricted address and was blocked."
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #~ msgid "Are you sure you want to cancel {ordersCount} orders?"

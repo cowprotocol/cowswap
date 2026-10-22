@@ -25,6 +25,8 @@ export * from './wagmi/hooks/useIsRestoringConnection'
 export { WidgetStandaloneModeUpdater } from './updaters/WidgetStandaloneMode.updater'
 export { WidgetSafeApp } from './updaters/WidgetSafeApp.updater'
 export { wagmiConfig, reownAppKit, wagmiAdapter, wagmiStorage } from './wagmi/config'
+export { setWalletTransactionGuard } from './wagmi/walletTransactionGuard'
+export type { GuardedTransaction, WalletTransactionGuard } from './wagmi/walletTransactionGuard'
 
 // Updater
 export { WalletUpdater } from './wagmi/updater'
