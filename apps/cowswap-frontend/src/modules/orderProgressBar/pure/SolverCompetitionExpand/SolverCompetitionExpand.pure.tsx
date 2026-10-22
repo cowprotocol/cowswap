@@ -39,7 +39,7 @@ export function SolverCompetitionExpand({
   const solversLength = solvers.length
   const winner = solvers[0]
   const winnerName = winner?.displayName || winner?.solver || ''
-  const competedCount = totalSolvers && totalSolvers > solversLength ? totalSolvers : solversLength
+  const competedCount = solversLength
   const stackedSolvers = useMemo(() => solvers.slice(0, MAX_STACKED_AVATARS), [solvers])
 
   useEffect(() => {
@@ -78,16 +78,20 @@ export function SolverCompetitionExpand({
         </styledEl.SolverStack>
 
         <styledEl.CompetedLabel>
-          <Plural
-            value={competedCount}
-            one="# solver competed"
-            few="# solvers competed"
-            many="# solvers competed"
-            other="# solvers competed"
-          />
+          {solversLength === 1 && winnerName ? (
+            <Trans>{winnerName} solved your order</Trans>
+          ) : (
+            <Plural
+              value={competedCount}
+              one="# solver competed"
+              few="# solvers competed"
+              many="# solvers competed"
+              other="# solvers competed"
+            />
+          )}
         </styledEl.CompetedLabel>
 
-        {winnerName ? (
+        {winnerName && solversLength > 1 ? (
           <styledEl.WinnerLabel>
             <Trans>{winnerName} won</Trans>
           </styledEl.WinnerLabel>

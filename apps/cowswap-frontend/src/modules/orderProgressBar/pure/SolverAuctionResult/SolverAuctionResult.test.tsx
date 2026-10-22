@@ -63,13 +63,13 @@ describe('SolverAuctionResult', () => {
     expect(screen.getByTestId('solver-auction-dot-map').children).toHaveLength(72)
   })
 
-  it('uses singular solver labels when only one solver competed', () => {
+  it('names the solver when only one provided a solution', () => {
     renderResult(<SolverAuctionResult solvers={[solvers[0]]} totalSolvers={1} buyToken={buyToken} />)
 
     const root = screen.getByTestId('solver-auction-result')
 
-    expect(root.textContent).toContain('1 solver competed for your order')
-    expect(root.textContent).not.toContain('solvers competed')
+    expect(root.textContent).toContain('Tsolver solved your order')
+    expect(root.textContent).not.toContain('competed for your order')
     expect(root.textContent).toContain('1 solver')
     expect(root.textContent).not.toContain('1 solvers')
   })

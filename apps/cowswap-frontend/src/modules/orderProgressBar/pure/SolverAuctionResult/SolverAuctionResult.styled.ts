@@ -211,7 +211,8 @@ export const List = styled.ul`
 
 export const Row = styled.li<{ $isWinner: boolean }>`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  align-items: flex-start;
   gap: 8px;
   width: 100%;
   padding: 10px 12px;
@@ -222,10 +223,20 @@ export const Row = styled.li<{ $isWinner: boolean }>`
 
 export const SolverInfo = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
+  flex: 1 1 auto;
   min-width: 0;
   color: inherit;
+`
+
+export const SolverDetails = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
 `
 
 export const SolverLogo = styled.img`
@@ -241,7 +252,7 @@ export const SolverName = styled.span`
   display: flex;
   align-items: center;
   gap: 4px;
-  min-width: 0;
+  flex: 0 0 auto;
   color: inherit;
   text-transform: capitalize;
 `
@@ -250,7 +261,7 @@ export const WinningBadge = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   padding: 4px 8px;
   border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(${UI.COLOR_SUCCESS_TEXT}) 35%, transparent);

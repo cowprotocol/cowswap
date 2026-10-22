@@ -37,6 +37,8 @@ export function SolverAuctionResult({
   const { t } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const solversLength = solvers.length
+  const winner = solvers[0]
+  const winnerName = winner?.displayName || winner?.solver || ''
   const visibleSolvers = useMemo(
     () => (showAllSolvers ? solvers : solvers.slice(0, INITIAL_VISIBLE_SOLVERS)),
     [showAllSolvers, solvers],
@@ -44,8 +46,8 @@ export function SolverAuctionResult({
   const legend = useMemo(() => getAuctionLegendCounts(solversLength, totalSolvers), [solversLength, totalSolvers])
   const dots = useMemo(() => buildAuctionDots(legend.total, solversLength), [legend.total, solversLength])
   const winnerBuyAmount = useMemo(
-    () => (buyToken && solvers[0] ? getSolverBuyAmount(solvers[0], buyToken) : null),
-    [buyToken, solvers],
+    () => (buyToken && winner ? getSolverBuyAmount(winner, buyToken) : null),
+    [buyToken, winner],
   )
 
   if (solversLength === 0) {
@@ -59,13 +61,17 @@ export function SolverAuctionResult({
           <Trans>Solver auction</Trans>
         </styledEl.Eyebrow>
         <styledEl.Title>
-          <Plural
-            value={solversLength}
-            one="# solver competed for your order"
-            few="# solvers competed for your order"
-            many="# solvers competed for your order"
-            other="# solvers competed for your order"
-          />
+          {solversLength === 1 && winnerName ? (
+            <Trans>{winnerName} solved your order</Trans>
+          ) : (
+            <Plural
+              value={solversLength}
+              one="# solver competed for your order"
+              few="# solvers competed for your order"
+              many="# solvers competed for your order"
+              other="# solvers competed for your order"
+            />
+          )}
         </styledEl.Title>
       </styledEl.Header>
 
@@ -199,19 +205,21 @@ function SolverAuctionRow({
     <styledEl.Row $isWinner={isWinner}>
       <styledEl.SolverInfo>
         <styledEl.SolverLogo src={logoSrc} alt="" />
-        <styledEl.SolverName>
-          {name}
-          {solver.description ? <InfoTooltip content={solver.description} /> : null}
-        </styledEl.SolverName>
+        <styledEl.SolverDetails>
+          <styledEl.SolverName>
+            {name}
+            {solver.description ? <InfoTooltip content={solver.description} /> : null}
+          </styledEl.SolverName>
+          {isWinner ? (
+            <styledEl.WinningBadge>
+              <styledEl.TrophyIcon aria-hidden>
+                <PiTrophyFill />
+              </styledEl.TrophyIcon>
+              <Trans>Winning solver</Trans>
+            </styledEl.WinningBadge>
+          ) : null}
+        </styledEl.SolverDetails>
       </styledEl.SolverInfo>
-      {isWinner ? (
-        <styledEl.WinningBadge>
-          <styledEl.TrophyIcon aria-hidden>
-            <PiTrophyFill />
-          </styledEl.TrophyIcon>
-          <Trans>Winning solver</Trans>
-        </styledEl.WinningBadge>
-      ) : null}
       {isWinner && buyAmount ? (
         <styledEl.BidValue $isWinner>
           <TokenAmount amount={buyAmount} tokenSymbol={buyAmount.currency} />

@@ -56,16 +56,18 @@ describe('SolverCompetitionExpand', () => {
   it('renders the collapsed summary row with up to three solver icons', () => {
     renderExpand(<SolverCompetitionExpand solvers={solvers} totalSolvers={12} />)
 
-    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('12 solvers competed')
+    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('4 solvers competed')
+    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('12 solvers competed')
     expect(screen.getByTestId('solver-competition-expand').textContent).toContain('Tsolver won')
     expect(screen.getByTestId('solver-competition-stack').querySelectorAll('img')).toHaveLength(3)
   })
 
-  it('uses the singular solver label when only one solver competed', () => {
-    renderExpand(<SolverCompetitionExpand solvers={[solvers[0]]} />)
+  it('names the solver on the summary row when only one provided a solution', () => {
+    renderExpand(<SolverCompetitionExpand solvers={[solvers[0]]} totalSolvers={12} />)
 
-    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('1 solver competed')
-    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('solvers competed')
+    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('Tsolver solved your order')
+    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('1 solver competed')
+    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('Tsolver won')
   })
 
   it('expands SolverAuctionResult when the summary row is clicked', () => {
@@ -76,6 +78,14 @@ describe('SolverCompetitionExpand', () => {
     expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
     expect(screen.getByText('Winning solver')).toBeTruthy()
     expect(screen.getByTestId('solver-auction-result').textContent).toContain('4 solvers competed for your order')
+  })
+
+  it('expands to the named solver title when only one solver provided a solution', () => {
+    renderExpand(<SolverCompetitionExpand solvers={[solvers[0]]} defaultExpanded />)
+
+    expect(screen.getByTestId('solver-competition-expand').textContent).toContain('Tsolver solved your order')
+    expect(screen.getByTestId('solver-auction-result').textContent).toContain('Tsolver solved your order')
+    expect(screen.getByTestId('solver-competition-expand').textContent).not.toContain('Tsolver won')
   })
 
   it('renders nothing when there are no solvers', () => {
