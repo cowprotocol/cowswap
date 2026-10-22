@@ -110,4 +110,35 @@ describe('priceChartVisibleAtom', () => {
     setTradeType(store, TradeType.ADVANCED_ORDERS)
     expect(store.get(priceChartVisibleAtom)).toBe(false)
   })
+
+  it.each(['null', '"false"', '1', '{}', '[]'])('defaults Swap to off for a saved %s value', (savedValue) => {
+    localStorage.setItem('price-chart-visible:v0', 'true')
+    localStorage.setItem('swapPriceChartVisible:v0', savedValue)
+    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
+  })
+
+  it.each(TRADE_CHART_PREFERENCES.slice(1))(
+    'uses the shared preference only for the intentional null value on %s',
+    (tradeType, storageKey) => {
+      localStorage.setItem('price-chart-visible:v0', 'false')
+      localStorage.setItem(storageKey, 'null')
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(false)
+
+      localStorage.setItem(storageKey, '"false"')
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(true)
+    },
+  )
+
+  it.each(['null', '"false"', '{}', '[]'])('ignores a malformed shared preference of %s', (savedValue) => {
+    localStorage.setItem('price-chart-visible:v0', savedValue)
+    expect(createChartStore(TradeType.LIMIT_ORDER).get(priceChartVisibleAtom)).toBe(true)
+  })
+
+  it('toggles a malformed Swap preference from its off default and saves a boolean', () => {
+    localStorage.setItem('swapPriceChartVisible:v0', 'null')
+    const store = createChartStore(TradeType.SWAP)
+    store.set(priceChartVisibleAtom, (visible) => !visible)
+    expect(store.get(priceChartVisibleAtom)).toBe(true)
+    expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe('true')
+  })
 })

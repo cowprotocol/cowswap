@@ -54,7 +54,17 @@ const currentPriceChartVisibleAtom = atom(
 )
 
 export const priceChartVisibleAtom = atom(
-  (get) => get(get(currentPriceChartVisibleAtom)) ?? get(defaultPriceChartVisibleAtom),
+  (get) => {
+    const currentAtom = get(currentPriceChartVisibleAtom)
+    const visible: unknown = get(currentAtom)
+
+    if (typeof visible === 'boolean') return visible
+    if (currentAtom === swapPriceChartVisibleAtom) return false
+    if (visible !== null) return true
+
+    const defaultVisible: unknown = get(defaultPriceChartVisibleAtom)
+    return typeof defaultVisible === 'boolean' ? defaultVisible : true
+  },
   (get, set, update: boolean | ((value: boolean) => boolean)) => {
     const value = typeof update === 'function' ? update(get(priceChartVisibleAtom)) : update
     set(get(currentPriceChartVisibleAtom), value)
