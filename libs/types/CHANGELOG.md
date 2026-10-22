@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.14.0](https://github.com/cowprotocol/cowswap/compare/types-v4.13.0...types-v4.14.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.0
+
 ## [4.13.0](https://github.com/cowprotocol/cowswap/compare/types-v4.12.0...types-v4.13.0) (2026-10-14)
 
 ### Minor Changes

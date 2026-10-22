@@ -10,6 +10,7 @@ export * from './state/isEoaEthFlowAtom'
 export * from './state/nonEvmReceiverConfirmedAtom.atoms'
 export {
   useAlternativeOrder,
+  useSetAlternativeOrder,
   useHideAlternativeOrderModal,
   useIsAlternativeOrderModalVisible,
 } from './state/alternativeOrder/hooks'
@@ -116,7 +117,7 @@ export {
 export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
 export { planWrapStep } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'
-export { planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
+export { getIsBuyAtaCreationSkipped, planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
 export { planCreateOrderStep } from './services/solanaFlow/planCreateOrderStep'
 export { planCreateLimitOrderStep } from './services/solanaFlow/planCreateLimitOrderStep'
 export { getSolanaTradeOverhead } from './services/feeAmountCalculator/getSolanaTradeOverhead'

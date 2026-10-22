@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { DEFAULT_APP_CODE, SAFE_APP_CODE } from '@cowprotocol/common-const'
-import { useIsSafeApp } from '@cowprotocol/wallet'
+import { isSafeAppAtom } from '@cowprotocol/wallet'
 
 import { appDataHooksAtom, appDataInfoAtom } from './state/atoms'
 import { AppDataInfo } from './types'
@@ -10,7 +10,7 @@ import { AppDataInfo } from './types'
 const APP_CODE = process.env.REACT_APP_APP_CODE
 
 export function useAppCode(): string | null {
-  const isSafeApp = useIsSafeApp()
+  const isSafeApp = useAtomValue(isSafeAppAtom) === true
 
   return useMemo(() => {
     if (APP_CODE) {

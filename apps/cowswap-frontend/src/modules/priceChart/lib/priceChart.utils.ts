@@ -45,7 +45,7 @@ export function formatPriceChartValue(value: number, locale: string): string {
   })
 }
 
-export function getCandlePriceFormat(bars: Candle[]): PriceFormatBuiltIn {
+export function getPriceChartPriceFormat(bars: Candle[]): PriceFormatBuiltIn {
   const smallestPrice = bars.reduce((smallest, bar) => (bar.low > 0 ? Math.min(smallest, bar.low) : smallest), Infinity)
   const precision = smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : FIAT_PRECISION
 

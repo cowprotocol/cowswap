@@ -9,6 +9,7 @@ export interface FeatureFlags {
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
+  isAtaCreationDisabled?: boolean
   isWaitForCowsEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

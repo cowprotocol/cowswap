@@ -19,6 +19,7 @@ import { useSelectTokenWidgetState, useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
 import { useBridgeCustomTokensForChain } from '../hooks/useBridgeCustomTokensForChain'
+import { useConfirmedTransactionsTrigger } from '../hooks/useConfirmedTransactionsTrigger'
 import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
@@ -64,7 +65,8 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const refreshTrigger = useOrdersFilledEventsTrigger()
+  // Both counters only ever increase, so their sum changes whenever either fires.
+  const refreshTrigger = useOrdersFilledEventsTrigger() + useConfirmedTransactionsTrigger()
 
   const bridgeTokenList = useBridgeCustomTokensForChain(sourceChainId)
 

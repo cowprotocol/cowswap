@@ -1,7 +1,5 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, HoverTooltip, Modal } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
@@ -12,7 +10,7 @@ import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
-import { Routes, RoutesValues } from 'common/constants/routes'
+import { IMenuItem, Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 import { TradeUrlParams, addChainIdToRoute, parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
@@ -31,8 +29,6 @@ interface MenuItemConfig {
   badgeImage?: string
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
-
-const RWA_PATH = '/rwa'
 
 const TRADE_TYPE_TO_ROUTE: Record<TradeType, string> = {
   swap: Routes.SWAP,
@@ -60,6 +56,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
 
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
+      if (item.route === Routes.RWA) return false
       if (!enabledTradeTypes?.length) return true
 
       return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
@@ -124,7 +121,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps):
 
   const { t } = useLingui()
 
-  const rwaMenuItem = <RwaMenuItem isDropdownVisible={isDropdown && isDropdownVisible} />
+  const rwaMenuItem = <RwaMenuItem menuItems={menuItems} isDropdownVisible={isDropdown && isDropdownVisible} />
 
   return isDropdown ? (
     <>
@@ -194,11 +191,11 @@ const MenuItem = ({
 
     return (
       <styledEl.MenuItem isDisabled isDropdownVisible={isDropdownVisible}>
-        <HoverTooltip wrapInContainer placement="top" content={reason}>
-          <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
-            {content}
-          </styledEl.DisabledLink>
-        </HoverTooltip>
+        <styledEl.DisabledLink aria-disabled="true" aria-label={`${item.label}. ${reason}`}>
+          <HoverTooltip wrapInContainer placement="top" content={reason}>
+            <styledEl.DisabledLabel>{content}</styledEl.DisabledLabel>
+          </HoverTooltip>
+        </styledEl.DisabledLink>
       </styledEl.MenuItem>
     )
   }
@@ -210,18 +207,22 @@ const MenuItem = ({
   )
 }
 
-function RwaMenuItem({ isDropdownVisible }: { isDropdownVisible: boolean }): ReactNode {
-  const { isRwaEnabled } = useFeatureFlags()
+function RwaMenuItem({
+  menuItems,
+  isDropdownVisible,
+}: {
+  menuItems: IMenuItem[]
+  isDropdownVisible: boolean
+}): ReactNode {
+  const item = menuItems.find(({ route }) => route === Routes.RWA)
 
-  if (!isRwaEnabled || isInjectedWidget() || getIsSafeAppIframe()) return null
+  if (!item) return null
 
   return (
     <styledEl.MenuItem isDropdownVisible={isDropdownVisible}>
-      <styledEl.PageLink href={RWA_PATH}>
-        <Trans>RWA</Trans>
-        <Badge type={BadgeTypes.ALERT}>
-          <Trans>New</Trans>
-        </Badge>
+      <styledEl.PageLink href={item.route}>
+        {item.label}
+        {item.badge && <Badge {...(item.badgeType && { type: item.badgeType })}>{item.badge}</Badge>}
       </styledEl.PageLink>
     </styledEl.MenuItem>
   )

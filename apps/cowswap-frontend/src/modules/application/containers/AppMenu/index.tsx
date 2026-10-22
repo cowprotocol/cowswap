@@ -31,6 +31,11 @@ import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
 
+  // The RWA app is served by a separate deployment, so it needs a full page load instead of a hash route
+  if (href === Routes.RWA) {
+    return <a href={href}>{children}</a>
+  }
+
   return (
     <NavLink to={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
       {children}
@@ -94,7 +99,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       {
         label: t`Trade`,
         children: tradeMenuItems.map((item) => {
-          const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
+          const href =
+            item.route === Routes.RWA ? item.route : parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
             href,

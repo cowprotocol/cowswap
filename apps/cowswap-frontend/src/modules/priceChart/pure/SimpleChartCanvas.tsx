@@ -7,7 +7,6 @@ import {
   createChart,
   CrosshairMode,
   HistogramSeries,
-  TickMarkType,
   type IChartApi,
   type ISeriesApi,
   type MouseEventParams,
@@ -18,7 +17,9 @@ import {
 import { PriceChartTooltip } from './PriceChartTooltip'
 import * as styledEl from './SimpleChartCanvas.styled'
 
-import { formatPriceChartValue, getCandlePriceFormat } from '../lib/priceChart.utils'
+import { CANDLE_DOWN_COLOR, CANDLE_UP_COLOR } from '../config/priceChart.constants'
+import { formatPriceChartValue, getPriceChartPriceFormat } from '../lib/priceChart.utils'
+import { createPriceChartTimeFormatters } from '../lib/priceChartTime.utils'
 
 import type { ChartTooltipData } from './PriceChartTooltip'
 import type { Candle, ChartMetric, ChartType } from '../lib/priceChart.types'
@@ -32,8 +33,6 @@ export interface SimpleChartCanvasProps {
   colors: {
     primary: string
     text: string
-    success: string
-    danger: string
   }
 }
 
@@ -50,7 +49,7 @@ export function SimpleChartCanvas({
   metric,
   showTooltip,
   locale,
-  colors: { primary, text, success, danger },
+  colors: { primary, text },
 }: SimpleChartCanvasProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<SimpleChartInstance | null>(null)
@@ -133,27 +132,28 @@ export function SimpleChartCanvas({
     instance.priceSeries.applyOptions(
       chartType === 'line'
         ? { lineColor: primary, topColor: transparentize(primary, 0.75), bottomColor: transparentize(primary, 1) }
-        : { upColor: success, downColor: danger, wickUpColor: success, wickDownColor: danger },
+        : {
+            upColor: CANDLE_UP_COLOR,
+            downColor: CANDLE_DOWN_COLOR,
+            wickUpColor: CANDLE_UP_COLOR,
+            wickDownColor: CANDLE_DOWN_COLOR,
+          },
     )
     instance.volumeSeries.applyOptions({ color: transparentize(text, 0.75) })
-  }, [chartType, primary, text, success, danger])
+  }, [chartType, primary, text])
 
   useEffect(() => {
     const instance = chartRef.current
     if (!instance) return
 
     const { chart, priceSeries, volumeSeries } = instance
-    const priceFormat = getCandlePriceFormat(data)
-    const dateFormatter = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', timeZone: 'UTC' })
+    const priceFormat = getPriceChartPriceFormat(data)
+    const { tickMarkFormatter, timeFormatter } = createPriceChartTimeFormatters(locale)
     chart.applyOptions({
-      timeScale: {
-        tickMarkFormatter: (time: Time, tickMarkType: TickMarkType) =>
-          tickMarkType === TickMarkType.DayOfMonth && typeof time === 'number'
-            ? dateFormatter.format(new Date(time * 1000))
-            : null,
-      },
+      timeScale: { tickMarkFormatter },
       localization: {
         locale,
+        timeFormatter,
         priceFormatter: (value: number) =>
           formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale),
       },

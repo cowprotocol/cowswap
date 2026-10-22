@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f790d5a646 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..881a01a1056cb7f202defc2c319865114601c212 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
 @@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
@@ -15,7 +15,35 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..756c36ce47242f7e907f7c4de78954f7
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -520,13 +521,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -358,8 +359,13 @@ export class WagmiAdapter extends AdapterBlueprint {
+     async syncConnection(params) {
+         const { id, chainId } = params;
+         const connections = getConnections(this.wagmiConfig);
+-        const connection = connections.find(c => c.connector.id === id);
++        let connection = connections.find(c => c.connector.id === id);
+         const connector = this.getWagmiConnector(id);
++        if (connection && connector && typeof connection.connector.getProvider !== 'function') {
++            await reconnect(this.wagmiConfig, { connectors: [connector] });
++            connection = getConnections(this.wagmiConfig).find(c => c.connector.id === id);
++            if (!connection) throw new Error('Failed to restore wallet connection');
++        }
+         const provider = (await connector?.getProvider());
+         const isSafeApp = CoreHelperUtil.isSafeApp();
+         if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
+@@ -424,7 +430,11 @@ export class WagmiAdapter extends AdapterBlueprint {
+             if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
+                 connector.setEip6963Wallet?.({ provider, info });
+             }
+-            const connection = this.wagmiConfig.state?.connections?.get(connector.uid);
++            let connection = this.wagmiConfig.state?.connections?.get(connector.uid);
++            if (connection && typeof connection.connector.getProvider !== 'function') {
++                await reconnect(this.wagmiConfig, { connectors: [connector] });
++                connection = this.wagmiConfig.state.connections.get(connector.uid);
++            }
+             if (connection) {
+                 await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id);
+                 const sortedAccounts = [...connection.accounts].sort((a, b) => {
+@@ -520,13 +530,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });

@@ -45,7 +45,7 @@ export function SimplePriceChart({
 }: SimplePriceChartProps): ReactNode {
   const { i18n } = useLingui()
   const isMobile = useMediaQuery('(max-width: 600px)')
-  const { primary, text, success, danger } = useTheme()
+  const { primary, text } = useTheme()
   const [period, setPeriod] = useAtom(priceChartPeriodAtom)
   const [chartType, setChartType] = useAtom(priceChartTypeAtom)
   const {
@@ -87,7 +87,7 @@ export function SimplePriceChart({
           metric={metric}
           showTooltip={!showStatus}
           locale={i18n.locale}
-          colors={{ primary, text, success, danger }}
+          colors={{ primary, text }}
         />
         {showStatus ? (
           <styledEl.OverlayState>
