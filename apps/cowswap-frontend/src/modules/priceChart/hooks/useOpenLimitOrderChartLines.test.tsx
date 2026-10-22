@@ -48,7 +48,7 @@ it('keeps matching pending limits, including native/wrapped pairs', () => {
 
 it('uses remaining amounts for labels, original price, and reversed/unfillable labels', () => {
   const [line] = renderLines([order('direct')])
-  expect(line.labels).toEqual({ sell: 'Sell 30 WETH', buy: 'Buy 60 USDC' })
+  expect(line.labels).toEqual({ sell: 'Limit · Sell 30 WETH', buy: 'Limit · Buy 60 USDC' })
   expect(line.price.toSignificant(4)).toBe('2')
   jest.mocked(getRemainderAmountsWithoutSurplus).mockReturnValue({
     buyAmount: '2000000000000000000',
@@ -56,7 +56,7 @@ it('uses remaining amounts for labels, original price, and reversed/unfillable l
   })
   const [reverse] = renderLines([order('reverse', { inputToken: USDC, outputToken: WETH, isUnfillable: true })])
   expect(reverse).toMatchObject({
-    labels: { sell: 'Unfillable · Buy 2 WETH', buy: 'Unfillable · Sell 500 USDC' },
+    labels: { sell: 'Unfillable · Limit · Buy 2 WETH', buy: 'Unfillable · Limit · Sell 500 USDC' },
     variant: 'unfillable-order',
   })
 })

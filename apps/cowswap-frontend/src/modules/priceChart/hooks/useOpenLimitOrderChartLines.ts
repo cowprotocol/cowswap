@@ -52,8 +52,8 @@ export function useOpenLimitOrderChartLines({
         const formattedBuyAmount = formatTokenAmount(CurrencyAmount.fromRawAmount(order.outputToken, buyAmount))
         const sellSymbol = order.inputToken.symbol || FALLBACK_TOKEN_SYMBOL
         const buySymbol = order.outputToken.symbol || FALLBACK_TOKEN_SYMBOL
-        const sellLabel = t`Sell ${formattedSellAmount} ${sellSymbol}`
-        const buyLabel = t`Buy ${formattedBuyAmount} ${buySymbol}`
+        const sellLabel = t`Limit · Sell ${formattedSellAmount} ${sellSymbol}`
+        const buyLabel = t`Limit · Buy ${formattedBuyAmount} ${buySymbol}`
         const isInverted = !currenciesMatch(order.inputToken, inputCurrency)
         const prefixLabel = (label: string): string => (order.isUnfillable ? t`Unfillable · ${label}` : label)
         const labels = {

@@ -7460,8 +7460,8 @@ msgstr "Minimum tokens you'll receive."
 #~ msgstr "Choose a custom deadline for your limit order"
 
 #: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
-msgid "Sell {formattedSellAmount} {sellSymbol}"
-msgstr "Sell {formattedSellAmount} {sellSymbol}"
+#~ msgid "Sell {formattedSellAmount} {sellSymbol}"
+#~ msgstr "Sell {formattedSellAmount} {sellSymbol}"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Cancelled order"
@@ -7491,6 +7491,10 @@ msgstr "on {chainLabel}"
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
 msgid "Invalid price. Try increasing input/output amount."
 msgstr "Invalid price. Try increasing input/output amount."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
+msgid "Limit · Buy {formattedBuyAmount} {buySymbol}"
+msgstr "Limit · Buy {formattedBuyAmount} {buySymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerStats.tsx
 msgid "Volume referred"
@@ -8389,8 +8393,8 @@ msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
 
 #: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
-msgid "Buy {formattedBuyAmount} {buySymbol}"
-msgstr "Buy {formattedBuyAmount} {buySymbol}"
+#~ msgid "Buy {formattedBuyAmount} {buySymbol}"
+#~ msgstr "Buy {formattedBuyAmount} {buySymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"
@@ -8630,6 +8634,10 @@ msgstr "Request is being rate limited"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process."
 #~ msgstr "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process."
+
+#: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
+msgid "Limit · Sell {formattedSellAmount} {sellSymbol}"
+msgstr "Limit · Sell {formattedSellAmount} {sellSymbol}"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/ReferralIneligibleCopy.tsx
 #~ msgid "This wallet has already traded on CoW Swap. Referral rewards are for new wallets only."
