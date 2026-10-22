@@ -106,4 +106,9 @@ export const Subtitle = styled.p`
   ${font('FONT_SMALL_PLUS', 'regular')}
   margin: 0;
   color: var(${UI.COLOR_SUCCESS_TEXT});
+
+  a {
+    color: inherit;
+    white-space: nowrap;
+  }
 `

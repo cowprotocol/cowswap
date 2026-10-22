@@ -1,8 +1,14 @@
 import { ReactNode, useMemo } from 'react'
 
 import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
-import { getCoWExplorerLinkTitle, getExplorerOrderLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  ExplorerDataType,
+  getCoWExplorerLinkTitle,
+  getExplorerLink,
+  getExplorerOrderLink,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
+import { isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 import { Confetti, ExternalLink } from '@cowprotocol/ui'
@@ -219,10 +225,18 @@ function FinishedSubtitle({
 
   if (isCustomRecipient && receiver) {
     const recipientLabel = receiverEnsName || shortenAddress(receiver)
+    const recipientHref = isSupportedAddress(receiver)
+      ? getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)
+      : null
+    const recipientNode = recipientHref ? (
+      <ExternalLink href={recipientHref}>{recipientLabel}</ExternalLink>
+    ) : (
+      recipientLabel
+    )
 
     return (
       <Trans>
-        Your {tokenSymbol} was sent to {recipientLabel}.{' '}
+        Your {tokenSymbol} was sent to {recipientNode}.{' '}
         <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
       </Trans>
     )

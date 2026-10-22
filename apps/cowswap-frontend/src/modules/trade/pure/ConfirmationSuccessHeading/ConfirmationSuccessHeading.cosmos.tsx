@@ -25,6 +25,20 @@ const Fixtures = {
       }
     />
   ),
+  customRecipient: (
+    <HeadingFixture
+      title="Swap complete"
+      subtitle={
+        <>
+          Your USDC was sent to{' '}
+          <ExternalLink href="https://etherscan.io/address/0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb">
+            0xdd9E...43cb
+          </ExternalLink>
+          . <ExternalLink href="https://explorer.cow.fi">View on Explorer ↗</ExternalLink>
+        </>
+      }
+    />
+  ),
   twapActive: <HeadingFixture title="Your TWAP is active" subtitle="Track its progress in Orders." />,
 }
 

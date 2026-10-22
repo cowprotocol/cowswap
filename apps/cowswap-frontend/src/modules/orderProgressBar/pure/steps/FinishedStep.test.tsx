@@ -125,6 +125,19 @@ describe('FinishedStep', () => {
     const heading = screen.getByTestId('confirmation-success-heading')
     expect(heading.textContent).toContain('Swap complete')
     expect(heading.textContent).toMatch(/Your .+ is in your wallet/)
+    expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
+  })
+
+  it('links a custom recipient address to the block explorer', () => {
+    const receiver = '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb'
+    renderFinished(<FinishedSuccessHeading order={{ ...order, receiver }} chainId={SupportedChainId.MAINNET} />)
+
+    const heading = screen.getByTestId('confirmation-success-heading')
+    expect(heading.textContent).toMatch(/was sent to/)
+    expect(screen.getByRole('link', { name: '0xdd9E...43cb' }).getAttribute('href')).toBe(
+      `https://etherscan.io/address/${receiver}`,
+    )
+    expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
   })
 
   it('omits solver expand when there are no solvers', () => {

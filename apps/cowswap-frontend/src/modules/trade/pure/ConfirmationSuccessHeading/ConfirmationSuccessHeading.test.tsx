@@ -38,6 +38,14 @@ describe('ConfirmationSuccessHeading', () => {
     expect(heading.textContent).toContain('Your COW is in your wallet.')
   })
 
+  it('keeps subtitle links on the success text color', () => {
+    renderHeading(<ConfirmationSuccessHeading title="Swap complete" subtitle="Your COW is in your wallet." />)
+
+    const cssText = getInjectedCss().replace(/\s/g, '')
+
+    expect(cssText).toMatch(/a\{color:inherit;white-space:nowrap/)
+  })
+
   it('animates the success heading and check, and skips both when motion is reduced', () => {
     renderHeading(<ConfirmationSuccessHeading title="Your TWAP is active" />)
 
