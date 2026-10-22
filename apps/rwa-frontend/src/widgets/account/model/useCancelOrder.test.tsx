@@ -75,7 +75,7 @@ describe('useCancelOrder', () => {
       await cancelling
     })
 
-    expect(waitForReceiptMock).toHaveBeenCalledWith({}, { chainId: 1, hash: TX_HASH })
+    expect(waitForReceiptMock).toHaveBeenCalledWith({}, expect.objectContaining({ chainId: 1, hash: TX_HASH }))
     expect(result.current.state).toEqual({ status: 'cancelled', type: 'hard' })
   })
 
@@ -91,6 +91,68 @@ describe('useCancelOrder', () => {
       type: 'hard',
       error: 'The cancellation transaction reverted',
     })
+  })
+
+  it('follows a sped-up cancellation transaction', async () => {
+    const REPRICED_HASH = `0x${'cd'.repeat(32)}`
+    let replace: () => void = () => undefined
+    let confirm: (receipt: { status: string }) => void = () => undefined
+    cancelOrderMock.mockResolvedValue(TX_HASH)
+    waitForReceiptMock.mockImplementation((_config, { onReplaced }) => {
+      replace = () => onReplaced({ reason: 'repriced', transaction: { hash: REPRICED_HASH } })
+
+      return new Promise((resolve) => (confirm = resolve))
+    })
+    const { result } = renderCancelOrder()
+
+    let cancelling: Promise<void> = Promise.resolve()
+    await act(async () => {
+      cancelling = result.current.cancel(ORDER, 'hard')
+    })
+    act(() => replace())
+
+    expect(result.current.state).toEqual({ status: 'pending', type: 'hard', txHash: REPRICED_HASH })
+
+    await act(async () => {
+      confirm({ status: 'success' })
+      await cancelling
+    })
+
+    expect(result.current.state).toEqual({ status: 'cancelled', type: 'hard' })
+  })
+
+  it('keeps the order actionable when the user cancels the transaction in the wallet', async () => {
+    cancelOrderMock.mockResolvedValue(TX_HASH)
+    waitForReceiptMock.mockImplementation(async (_config, { onReplaced }) => {
+      onReplaced({ reason: 'cancelled', transaction: { hash: `0x${'cd'.repeat(32)}` } })
+
+      return { status: 'success' }
+    })
+    const { result, invalidateQueries } = renderCancelOrder()
+
+    await act(() => result.current.cancel(ORDER, 'hard'))
+
+    expect(result.current.state).toBe(undefined)
+    expect(invalidateQueries).not.toHaveBeenCalled()
+  })
+
+  it('reports a cancellation transaction replaced by an unrelated one', async () => {
+    cancelOrderMock.mockResolvedValue(TX_HASH)
+    waitForReceiptMock.mockImplementation(async (_config, { onReplaced }) => {
+      onReplaced({ reason: 'replaced', transaction: { hash: `0x${'cd'.repeat(32)}` } })
+
+      return { status: 'success' }
+    })
+    const { result, invalidateQueries } = renderCancelOrder()
+
+    await act(() => result.current.cancel(ORDER, 'hard'))
+
+    expect(result.current.state).toEqual({
+      status: 'failed',
+      type: 'hard',
+      error: 'The cancellation transaction was replaced',
+    })
+    expect(invalidateQueries).not.toHaveBeenCalled()
   })
 
   it('forgets the cancellation when the user rejects it in the wallet', async () => {

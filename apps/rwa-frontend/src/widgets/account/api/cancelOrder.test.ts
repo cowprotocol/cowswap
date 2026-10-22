@@ -55,4 +55,31 @@ describe('cancelOrder', () => {
     expect(onChainCancelOrder).toHaveBeenCalledWith({ orderUid: ORDER_UID })
     expect(offChainCancelOrder).not.toHaveBeenCalled()
   })
+
+  it('runs overlapping cancellations one at a time', async () => {
+    let finishFirst: (hash: string) => void = () => undefined
+    onChainCancelOrder.mockReturnValueOnce(new Promise((resolve) => (finishFirst = resolve)))
+
+    const first = cancelOrder({ config, chainId: 1, orderUid: '0xfirst', type: 'hard' })
+    const second = cancelOrder({ config, chainId: 42161, orderUid: '0xsecond', type: 'hard' })
+
+    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(TradingSdk).toHaveBeenCalledTimes(1)
+    expect(switchChainMock).not.toHaveBeenCalled()
+
+    finishFirst(TX_HASH)
+
+    await expect(first).resolves.toBe(TX_HASH)
+    await expect(second).resolves.toBe(TX_HASH)
+    expect(TradingSdk).toHaveBeenCalledTimes(2)
+    expect(switchChainMock).toHaveBeenCalledWith(config, { chainId: 42161 })
+  })
+
+  it('keeps running cancellations after a failed one', async () => {
+    onChainCancelOrder.mockRejectedValueOnce(new Error('rejected'))
+
+    await expect(cancelOrder({ config, chainId: 1, orderUid: ORDER_UID, type: 'hard' })).rejects.toThrow('rejected')
+    await expect(cancelOrder({ config, chainId: 1, orderUid: ORDER_UID, type: 'hard' })).resolves.toBe(TX_HASH)
+  })
 })

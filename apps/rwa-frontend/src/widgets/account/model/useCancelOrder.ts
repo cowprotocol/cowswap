@@ -4,7 +4,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useQueryClient } from '@tanstack/react-query'
-import { BaseError, isHash, UserRejectedRequestError } from 'viem'
+import { BaseError, isHash, type ReplacementReason, UserRejectedRequestError } from 'viem'
 import { useConfig } from 'wagmi'
 import { waitForTransactionReceipt } from 'wagmi/actions'
 
@@ -37,8 +37,27 @@ export function useCancelOrder(): (order: OpenOrder, type: CancellationType) => 
 
           setCancellation(uid, { status: 'pending', type: 'hard', txHash })
 
-          const receipt = await waitForTransactionReceipt(config, { chainId, hash: txHash })
+          let replacement: ReplacementReason | undefined
 
+          const receipt = await waitForTransactionReceipt(config, {
+            chainId,
+            hash: txHash,
+            onReplaced: ({ reason, transaction }) => {
+              replacement = reason
+
+              if (reason === 'repriced') {
+                setCancellation(uid, { status: 'pending', type: 'hard', txHash: transaction.hash })
+              }
+            },
+          })
+
+          if (replacement === 'cancelled') {
+            setCancellation(uid, null)
+
+            return
+          }
+
+          if (replacement === 'replaced') throw new Error('The cancellation transaction was replaced')
           if (receipt.status === 'reverted') throw new Error('The cancellation transaction reverted')
         }
 

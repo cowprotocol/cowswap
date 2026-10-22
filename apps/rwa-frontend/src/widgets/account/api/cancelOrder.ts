@@ -16,8 +16,20 @@ export interface CancelOrderParams {
   type: CancellationType
 }
 
+// TradingSdk keeps its adapter in a global that onChainCancelOrder re-reads after awaiting the order lookup,
+// so overlapping cancellations would sign with the adapter of whichever started last
+let queue: Promise<unknown> = Promise.resolve()
+
 /** Resolves with the transaction hash of a hard cancellation, `null` for a soft one */
-export async function cancelOrder({ config, chainId, orderUid, type }: CancelOrderParams): Promise<string | null> {
+export function cancelOrder(params: CancelOrderParams): Promise<string | null> {
+  const result = queue.then(() => submitCancellation(params))
+
+  queue = result.catch(() => undefined)
+
+  return result
+}
+
+async function submitCancellation({ config, chainId, orderUid, type }: CancelOrderParams): Promise<string | null> {
   if (getConnection(config).chainId !== chainId) await switchChain(config, { chainId })
 
   const publicClient = getPublicClient(config, { chainId })
