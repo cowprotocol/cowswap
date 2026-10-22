@@ -375,8 +375,16 @@ describe('walletMetadata atoms', () => {
 
 describe('isSmartContractWalletAtom', () => {
   beforeEach(() => {
+    jest.useFakeTimers()
+    jest.spyOn(Math, 'random').mockReturnValue(1)
     mockGetCode.mockReset()
     mockGetCode.mockImplementation(() => new Promise(() => undefined))
+  })
+
+  afterEach(() => {
+    jest.clearAllTimers()
+    jest.useRealTimers()
+    jest.restoreAllMocks()
   })
 
   it('treats a Safe as a smart-contract wallet even while account type is unknown', () => {
@@ -429,6 +437,7 @@ describe('isSmartContractWalletAtom', () => {
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
+    await jest.runAllTimersAsync()
     await waitFor(() => {
       expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
     })
@@ -453,7 +462,9 @@ describe('isSmartContractWalletAtom', () => {
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    await expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+    const rejectedLookup = expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+    await jest.runAllTimersAsync()
+    await rejectedLookup
 
     expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
     expect(store.get(isSmartContractWalletAtom)).toBe(null)
