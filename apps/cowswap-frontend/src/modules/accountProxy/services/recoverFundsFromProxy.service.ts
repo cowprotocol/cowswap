@@ -11,7 +11,7 @@ import { getRecoverFundsCalls } from './getRecoverFundsCalls'
 import { assertFactoryDeployed } from '../utils/assertFactoryDeployed'
 
 const INFINITE_DEADLINE = 99999999999
-const DEFAULT_GAS_LIMIT = 600_000n
+const DEFAULT_GAS_LIMIT = 1_200_000n
 
 export interface RecoverFundsFromProxyParams {
   config: Config

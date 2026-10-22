@@ -23,8 +23,8 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { WethContractData } from 'common/hooks/useContract'
 import { logEthSendingIntention, logEthSendingTransaction } from 'common/services/logEthSendingTransaction'
 
-// Use a 180K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
-const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = 180_000n
+// Use 360K gas as a fallback if there's issue calculating the gas estimation (fixes some issues with some nodes failing to calculate gas costs for SC wallets)
+const WRAP_UNWRAP_GAS_LIMIT_DEFAULT = 360_000n
 
 export interface WrapDescription {
   confirmationMessage: string

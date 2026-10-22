@@ -1,9 +1,9 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 
 import {
   acrossBridgeProvider,
@@ -19,7 +19,7 @@ export function BridgeProvidersUpdater(): null {
   const setBridgeProvidersReady = useSetAtom(bridgeProvidersReadyAtom)
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
     useFeatureFlags()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
 
   useEffect(() => {
     // Skip updating till all flags are loaded

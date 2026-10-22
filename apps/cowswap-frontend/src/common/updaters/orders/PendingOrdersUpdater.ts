@@ -152,15 +152,20 @@ export function PendingOrdersUpdater(): null {
     getSerializedBridgeOrderRef.current = getSerializedBridgeOrder
   }, [getSerializedBridgeOrder])
 
+  // lastCheckedBlock is only read by the orders table hasHydratedOrders flag, which needs a single non-default value.
+  // Rewriting it on every poll would replace the orders slice reference every block and re-deserialize all orders.
+  const lastCheckedBlockMarkedChainsRef = useRef(new Set<ChainId>())
+
   const markPollComplete = useCallback(
     (targetChainId: ChainId) => {
-      if (!chainId || targetChainId !== chainId) {
+      if (!chainId || targetChainId !== chainId || lastCheckedBlockMarkedChainsRef.current.has(targetChainId)) {
         return
       }
 
       const latestBlock = blockNumberRef.current
 
       if (typeof latestBlock === 'number') {
+        lastCheckedBlockMarkedChainsRef.current.add(targetChainId)
         dispatch(updateLastCheckedBlock({ chainId: targetChainId, lastCheckedBlock: latestBlock }))
       }
     },

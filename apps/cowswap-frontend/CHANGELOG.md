@@ -1,5 +1,62 @@
 # Changelog
 
+## [3.32.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.2...cowswap-v3.32.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat(solana): explain token-2022 transfer fee (#8423)
+
+- feat: wait for cows + compact approval form changes (#8376)
+
+- feat: add FF to disable ata creation instruction (#8422)
+
+### Patch Changes
+
+- fix(orderProgressBar): update CoW Swap benefit messages (#8385)
+
+- fix(solana): do not display trade limit when wallet not connected (#8380)
+
+- fix(solana): handle stuck self-paid created orders (#8374)
+
+- fix(e2e): fix failed tests (#8355)
+
+- fix: fix slippage styling (#8428)
+
+- fix(solana): hide the TWAP suggestion where TWAP is unavailable (#8421)
+
+- fix: improve near bridge quote error (#8383)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/analytics@3.16.0
+  - @cowprotocol/balances-and-allowances@3.18.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/core@3.13.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/ens@3.11.0
+  - @cowprotocol/events@4.17.0
+  - @cowprotocol/multicall@3.11.0
+  - @cowprotocol/permit-utils@3.11.0
+  - @cowprotocol/tokens@3.16.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/ui@3.18.0
+  - @cowprotocol/wallet@3.18.0
+  - @cowprotocol/widget-lib@4.11.0
+  - @cowprotocol/hook-dapp-lib@2.4.0
+  - @cowprotocol/snackbars@2.3.9
+  - @cowprotocol/iframe-transport@2.3.11
+
+## [3.31.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.1...cowswap-v3.31.2) (2026-10-20)
+
+### Patch Changes
+
+- fix: fix Viem Adapter instance (#8433)
+
 ## [3.31.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.0...cowswap-v3.31.1) (2026-10-15)
 
 ### Patch Changes

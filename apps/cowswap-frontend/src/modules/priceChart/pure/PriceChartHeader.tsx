@@ -10,6 +10,7 @@ import { useLingui } from '@lingui/react/macro'
 import * as styledEl from './PriceChartHeader.styled'
 import { PriceChartSettingsDropdown } from './PriceChartSettingsDropdown'
 
+import { FALLBACK_TOKEN_SYMBOL } from '../config/priceChart.constants'
 import { formatPercentageChange, formatPriceChartValue } from '../lib/priceChart.utils'
 
 import type { ChartMetric, ExpansionControl } from '../lib/priceChart.types'
@@ -85,10 +86,10 @@ export function PriceChartHeader({
                 aria-pressed={Boolean(activeCurrency?.equals(currency))}
                 key={`${currency.chainId}:${getAddressKey(getCurrencyAddress(currency))}`}
                 onClick={() => onSelectCurrency(currency)}
-                title={`${currency.symbol || 'TOKEN'}/USD`}
+                title={currency.symbol || FALLBACK_TOKEN_SYMBOL}
                 type="button"
               >
-                {currency.symbol || 'TOKEN'}
+                {currency.symbol || FALLBACK_TOKEN_SYMBOL}
               </styledEl.SegmentedControlButton>
             ))}
           </styledEl.SegmentedControl>

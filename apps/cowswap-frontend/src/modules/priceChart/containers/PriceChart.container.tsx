@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { memo, ReactNode, useCallback, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import type { Currency } from '@cowprotocol/currency'
@@ -9,12 +9,14 @@ import { useLingui } from '@lingui/react/macro'
 
 import { ChartWrapper } from 'modules/trade'
 
+import { AdvancedPriceChart } from './AdvancedPriceChart.container'
 import { SimplePriceChart } from './SimplePriceChart.container'
 
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
 import { priceChartMetricAtom } from '../state/priceChartMetricAtom'
 import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
+import { priceChartModeAtom } from '../state/priceChartModeAtom'
 import { priceChartPairAtom } from '../state/priceChartPairAtom'
 import { priceChartSupplyVariantAtom } from '../state/priceChartSupplyVariantAtom'
 
@@ -24,8 +26,13 @@ export interface PriceChartProps {
   expandable?: boolean
 }
 
-export function PriceChart({ inputCurrency, outputCurrency, expandable = false }: PriceChartProps): ReactNode {
+export const PriceChart = memo(function PriceChart({
+  inputCurrency,
+  outputCurrency,
+  expandable = false,
+}: PriceChartProps): ReactNode {
   const { t } = useLingui()
+  const chartMode = useAtomValue(priceChartModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const isVisible = usePriceChartVisibility(inputCurrency, outputCurrency)
@@ -66,7 +73,7 @@ export function PriceChart({ inputCurrency, outputCurrency, expandable = false }
       className="price-chart trade-orders-table"
       data-expanded={!isUpToLarge && expandable && isExpanded}
     >
-      <SimplePriceChart {...chartProps} />
+      {chartMode === 'advanced' ? <AdvancedPriceChart {...chartProps} /> : <SimplePriceChart {...chartProps} />}
     </ChartWrapper>
   )
 
@@ -80,4 +87,4 @@ export function PriceChart({ inputCurrency, outputCurrency, expandable = false }
       {isUpToLarge ? <Modal.Root>{chart}</Modal.Root> : chart}
     </DialogOrInline>
   )
-}
+})
