@@ -1391,6 +1391,10 @@ msgstr "Delegate (v)COW"
 msgid "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
 msgstr "This deployment has not been independently audited. Bugs, vulnerabilities or unexpected behaviour could cause failed transactions or partial or total loss of assets."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "Show less"
+msgstr "Show less"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
 msgstr "On CoW Swap, you can set limit orders for balances you don't have yet."
@@ -3067,8 +3071,8 @@ msgid "Use your (v)COW balance to vote on important proposals or participate in 
 msgstr "Use your (v)COW balance to vote on important proposals or participate in forum discussions."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
-msgid "Collapse"
-msgstr "Collapse"
+#~ msgid "Collapse"
+#~ msgstr "Collapse"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/DeadlineTransactionSettings/DeadlineTransactionSettings.container.tsx
 msgid "minutes"
@@ -3376,6 +3380,10 @@ msgstr "Connecting..."
 msgid "Pre"
 msgstr "Pre"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "It was the only bid this time."
+msgstr "It was the only bid this time."
+
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/constants.ts
 msgid "(v)COW token holders are eligible for a fee discount"
 msgstr "(v)COW token holders are eligible for a fee discount"
@@ -3508,6 +3516,10 @@ msgstr "{fieldLabel} is required"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "You got at least the best price any solver offered for your order on its own. Bundled bids only count if every trader in the bundle gets a fair price."
+msgstr "You got at least the best price any solver offered for your order on its own. Bundled bids only count if every trader in the bundle gets a fair price."
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NotificationAlertPopover/NotificationAlertPopover.pure.tsx
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/NotificationSidebar.styled.tsx
@@ -3919,6 +3931,10 @@ msgstr "Sell amount too small"
 msgid "Your position has 0 liquidity, and is not earning fees."
 msgstr "Your position has 0 liquidity, and is not earning fees."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "How the auction works"
+msgstr "How the auction works"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "No failed orders found"
 #~ msgstr "No failed orders found"
@@ -4301,6 +4317,10 @@ msgstr "This order can be partially filled"
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "This link expired before you tapped Start in Telegram."
 msgstr "This link expired before you tapped Start in Telegram."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "View all bids"
+msgstr "View all bids"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Build your own hook"
@@ -6293,8 +6313,8 @@ msgstr "Can't find your token on the list? <0>Read our guide</0> on how to add c
 #~ msgstr "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
-msgid "View all {solversLength, plural, one {# bid} few {# bids} many {# bids} other {# bids}}"
-msgstr "View all {solversLength, plural, one {# bid} few {# bids} many {# bids} other {# bids}}"
+#~ msgid "View all {solversLength, plural, one {# bid} few {# bids} many {# bids} other {# bids}}"
+#~ msgstr "View all {solversLength, plural, one {# bid} few {# bids} many {# bids} other {# bids}}"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -8371,6 +8391,10 @@ msgstr "Quote not yet verified by CoW Protocol simulation"
 #: apps/cowswap-frontend/src/modules/priceChart/pure/PriceChartHeader.tsx
 msgid "Chart metric"
 msgstr "Chart metric"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+msgid "Why {name} won"
+msgstr "Why {name} won"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "TWAP orders are now available for everyone, regardless of the wallet you use!"

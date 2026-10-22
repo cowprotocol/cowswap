@@ -8,6 +8,12 @@ describe('font', () => {
     expect(font('FONT_MEDIUM')).toBe('font-size: 16px; line-height: 22px;')
   })
 
+  it('emits the 11px overline token with 100% line-height', () => {
+    expect(font('FONT_OVERLINE', 'semibold')).toBe(
+      `font-size: 11px; line-height: 11px; font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});`,
+    )
+  })
+
   it('emits a CSS variable for a named weight', () => {
     expect(font('FONT_MEDIUM', 'semibold')).toBe(
       `font-size: 16px; line-height: 22px; font-weight: var(${UI.FONT_WEIGHT_SEMIBOLD});`,

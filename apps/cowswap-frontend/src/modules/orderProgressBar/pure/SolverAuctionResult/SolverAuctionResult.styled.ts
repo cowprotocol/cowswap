@@ -1,4 +1,4 @@
-import { font, Media, UI } from '@cowprotocol/ui'
+import { ExternalLink, font, Media, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
@@ -105,55 +105,69 @@ export const Header = styled.div`
 `
 
 export const Eyebrow = styled.span`
-  ${font('FONT_SMALL', 'semibold')}
-  line-height: 1;
+  ${font('FONT_OVERLINE', 'semibold')}
   letter-spacing: 0.08em;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  color: color-mix(in srgb, var(${UI.COLOR_TEXT}) 65%, transparent);
   text-transform: uppercase;
 `
 
 export const Title = styled.h3`
   ${font('FONT_LARGE', 'semibold')}
   margin: 0;
-  line-height: 1;
   color: var(${UI.COLOR_TEXT});
+`
+
+export const Subtitle = styled.p`
+  ${font('FONT_SMALL_PLUS', 'regular')}
+  margin: 0;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 export const DotMap = styled.div`
   display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  width: 100%;
-  margin: 0 calc(-1 * (100% - 40px) / 12 / 2);
-  width: auto;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  width: calc(100% + 100% / 18);
+  overflow: visible;
+  padding: 0 3px;
 `
 
-export const Dot = styled.span<{ $kind: AuctionDotKind; $index: number }>`
+export const Dot = styled.span<{ $rowIsOdd: boolean }>`
+  position: relative;
   width: 100%;
-  aspect-ratio: 1;
-  display: grid;
-  place-items: center;
+  height: 20px;
+  transform: ${({ $rowIsOdd }) => ($rowIsOdd ? '' : 'translate(-50%, 0)')};
+`
 
-  &::before {
-    content: '';
-    width: ${({ $kind }) => dotSizePx($kind)};
-    height: ${({ $kind }) => dotSizePx($kind)};
-    border-radius: 50%;
-    background: ${({ $kind }) => dotBackground($kind)};
-    transform-origin: center;
-    animation: ${({ $index }) => dotPopAnimation($index)} ${DOT_POP_DURATION} ease both;
-    animation-delay: ${({ $index }) => dotPopDelayMs($index)}ms;
+export const DotAnchor = styled.span<{ $rowIsOdd: boolean }>`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: ${({ $rowIsOdd }) => ($rowIsOdd ? '0' : 'auto')};
+  right: ${({ $rowIsOdd }) => ($rowIsOdd ? 'auto' : '0')};
+  transform: ${({ $rowIsOdd }) => ($rowIsOdd ? 'translate(-50%, 0)' : 'translate(50%, 0)')};
+  display: flex;
+  align-items: center;
+`
 
-    ${({ $kind }) =>
-      $kind === 'won'
-        ? `
+export const DotDisc = styled.span<{ $kind: AuctionDotKind; $index: number }>`
+  width: ${({ $kind }) => dotSizePx($kind)};
+  height: ${({ $kind }) => dotSizePx($kind)};
+  border-radius: 50%;
+  background: ${({ $kind }) => dotBackground($kind)};
+  transform-origin: center;
+  animation: ${({ $index }) => dotPopAnimation($index)} ${DOT_POP_DURATION} ease both;
+  animation-delay: ${({ $index }) => dotPopDelayMs($index)}ms;
+
+  ${({ $kind }) =>
+    $kind === 'won'
+      ? `
       box-shadow: 0 0 0 6px color-mix(in srgb, var(${UI.COLOR_SUCCESS}) 28%, transparent);
     `
-        : ''}
+      : ''}
 
-    @media (prefers-reduced-motion: reduce) {
-      transform: scale(1);
-      animation: none;
-    }
+  @media (prefers-reduced-motion: reduce) {
+    transform: scale(1);
+    animation: none;
   }
 `
 
@@ -210,33 +224,59 @@ export const List = styled.ul`
 `
 
 export const Row = styled.li<{ $isWinner: boolean }>`
+  position: relative;
+  overflow: visible;
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 8px;
   width: 100%;
-  padding: 10px 12px;
+  min-height: 36px;
+  padding: 6px 12px 6px 6px;
   border-radius: 12px;
-  background: ${({ $isWinner }) => ($isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  background: ${({ $isWinner }) =>
+    $isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `color-mix(in srgb, var(${UI.COLOR_TEXT}) 2%, transparent)`};
   color: ${({ $isWinner }) => ($isWinner ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+`
+
+export const RowFill = styled.span<{ $percent: number }>`
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: ${({ $percent }) => `${$percent}%`};
+  border-radius: 12px;
+  background: color-mix(in srgb, var(${UI.COLOR_TEXT}) 6%, transparent);
+  pointer-events: none;
+`
+
+export const RowContent = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
 `
 
 export const SolverInfo = styled.div`
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
   flex: 1 1 auto;
   min-width: 0;
+  height: 100%;
   color: inherit;
 `
 
 export const SolverDetails = styled.div`
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
   flex: 1 1 auto;
   min-width: 0;
+  height: 100%;
 `
 
 export const SolverLogo = styled.img`
@@ -262,11 +302,13 @@ export const WinningBadge = styled.span`
   align-items: center;
   gap: 4px;
   flex: 0 0 auto;
-  padding: 4px 8px;
+  height: 23px;
+  padding: 0 8px;
   border-radius: 12px;
   border: 1px solid color-mix(in srgb, var(${UI.COLOR_SUCCESS_TEXT}) 35%, transparent);
   color: var(${UI.COLOR_SUCCESS_TEXT});
   ${font('FONT_SMALL', 'bold')}
+  line-height: 1;
   white-space: nowrap;
 `
 
@@ -279,6 +321,23 @@ export const TrophyIcon = styled.span`
     width: 12px;
     height: 12px;
   }
+`
+
+export const BadgeTooltip = styled.span`
+  display: inline-flex;
+  align-items: center;
+  color: inherit;
+`
+
+export const TooltipTitle = styled.strong`
+  ${font('FONT_NORMAL', 'semibold')}
+  display: block;
+  margin-bottom: 4px;
+`
+
+export const TooltipBody = styled.span`
+  ${font('FONT_SMALL_PLUS', 'regular')}
+  display: block;
 `
 
 export const BidValue = styled.span<{ $isWinner?: boolean }>`
@@ -297,21 +356,47 @@ export const BidValue = styled.span<{ $isWinner?: boolean }>`
   }
 `
 
-export const ViewMoreButton = styled.button`
+export const Footer = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  width: 100%;
+`
+
+export const ViewMoreButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
   gap: 4px;
   width: fit-content;
-  margin: 0 auto;
+  margin: 0;
   padding: 4px 0;
   border: none;
   background: transparent;
-  color: var(${UI.COLOR_TEXT});
+  color: color-mix(in srgb, var(${UI.COLOR_TEXT}) 80%, transparent);
   cursor: pointer;
-  ${font('FONT_NORMAL', 'semibold')}
+  ${font('FONT_SMALL_PLUS', 'semibold')}
+  line-height: 1;
 
   &:hover {
     opacity: 0.85;
+  }
+`
+
+export const AuctionDocsLink = styled(ExternalLink)`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  ${font('FONT_SMALL', 'medium')}
+  line-height: 1;
+
+  > svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
 `

@@ -1,6 +1,9 @@
+import { formatFiatAmount } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
+
 export type AuctionDotKind = 'won' | 'bid' | 'idle' | 'placeholder'
 
-export const AUCTION_DOT_COLUMNS = 12
+export const AUCTION_DOT_COLUMNS = 9
 const AUCTION_DOT_MIN_ROWS = 3
 
 export function buildAuctionDots(totalSolvers: number, bidCount: number): AuctionDotKind[] {
@@ -36,6 +39,17 @@ export function buildAuctionDots(totalSolvers: number, bidCount: number): Auctio
   return shuffleAuctionDots(dots, realSolverCount * 17 + bidCount * 31)
 }
 
+export function formatSolverBidUsdDelta(usdDelta: CurrencyAmount<Currency>): string {
+  const centScale = Math.max(usdDelta.currency.decimals - 2, 0)
+  const oneCent = CurrencyAmount.fromRawAmount(usdDelta.currency, 10n ** BigInt(centScale))
+
+  if (usdDelta.greaterThan(0) && usdDelta.lessThan(oneCent)) {
+    return '<$0.01'
+  }
+
+  return `-$${formatFiatAmount(usdDelta)}`
+}
+
 export function getAuctionDotSlotCount(realSolverCount: number): number {
   const minSlots = AUCTION_DOT_COLUMNS * AUCTION_DOT_MIN_ROWS
   const count = Math.max(realSolverCount, 0)
@@ -57,6 +71,27 @@ export function getAuctionLegendCounts(
   const didntBid = Math.max(total - bidCount, 0)
 
   return { won, alsoBid, didntBid, total }
+}
+
+export function getSolverBidFillPercent(
+  buyAmount: CurrencyAmount<Currency> | null,
+  winnerBuyAmount: CurrencyAmount<Currency> | null,
+): number | null {
+  if (!buyAmount || !winnerBuyAmount || !winnerBuyAmount.greaterThan(0)) {
+    return null
+  }
+
+  const percent = Number(new Fraction(buyAmount.quotient, winnerBuyAmount.quotient).multiply(100).toSignificant(6))
+
+  if (!Number.isFinite(percent)) {
+    return null
+  }
+
+  return Math.min(100, Math.max(0, percent))
+}
+
+export function isAuctionDotOddRow(index: number): boolean {
+  return Math.floor(index / AUCTION_DOT_COLUMNS) % 2 === 0
 }
 
 function shuffleAuctionDots(dots: AuctionDotKind[], seed: number): AuctionDotKind[] {
