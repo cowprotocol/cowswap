@@ -4,7 +4,7 @@ import type { Config, Connector } from 'wagmi'
 import {
   getGuardedTransactions,
   installWalletTransactionGuard,
-  setWalletTransactionGuard,
+  runWalletTransactionGuard,
 } from './walletTransactionGuard'
 
 const ACCOUNT = '0x1111111111111111111111111111111111111111'
@@ -63,10 +63,6 @@ describe('getGuardedTransactions', () => {
 })
 
 describe('installWalletTransactionGuard', () => {
-  afterEach(() => {
-    setWalletTransactionGuard(null)
-  })
-
   it('blocks a transaction rejected by the guard before it reaches the wallet', async () => {
     const request = jest.fn()
     const connector = createConnector({ request } as Pick<EIP1193Provider, 'request'>)
@@ -74,8 +70,7 @@ describe('installWalletTransactionGuard', () => {
       throw new Error('blocked')
     })
 
-    installWalletTransactionGuard(createConfig([connector]))
-    setWalletTransactionGuard(guard)
+    installWalletTransactionGuard(createConfig([connector]), guard)
 
     const client = await connector.getClient?.({ chainId: CHAIN_ID })
 
@@ -91,8 +86,7 @@ describe('installWalletTransactionGuard', () => {
     const connector = createConnector({ request } as Pick<EIP1193Provider, 'request'>)
     const guard = jest.fn()
 
-    installWalletTransactionGuard(createConfig([connector]))
-    setWalletTransactionGuard(guard)
+    installWalletTransactionGuard(createConfig([connector]), guard)
 
     const client = await connector.getClient?.({ chainId: CHAIN_ID })
     const result = await client?.request({ method: 'eth_sendTransaction', params: [{ to: TO }] } as never)
@@ -107,11 +101,10 @@ describe('installWalletTransactionGuard', () => {
     const connector = createConnector({ request } as Pick<EIP1193Provider, 'request'>)
     const config = createConfig([])
 
-    installWalletTransactionGuard(config)
-    config.emitConnectors([connector])
-    setWalletTransactionGuard(() => {
+    installWalletTransactionGuard(config, () => {
       throw new Error('blocked')
     })
+    config.emitConnectors([connector])
 
     const client = await connector.getClient?.({ chainId: CHAIN_ID })
 
@@ -124,8 +117,47 @@ describe('installWalletTransactionGuard', () => {
     const getClient = jest.fn()
     const connector = { ...createConnector({ request: jest.fn() } as never), getClient } as unknown as Connector
 
-    installWalletTransactionGuard(createConfig([connector]))
+    installWalletTransactionGuard(createConfig([connector]), jest.fn())
 
     expect(connector.getClient).toBe(getClient)
+  })
+
+  it('uses the latest guard without patching the config twice', async () => {
+    const request = jest.fn().mockResolvedValue('0xhash')
+    const connector = createConnector({ request } as Pick<EIP1193Provider, 'request'>)
+    const config = createConfig([connector])
+    const subscribe = jest.spyOn(config._internal.connectors, 'subscribe')
+    const firstGuard = jest.fn()
+    const secondGuard = jest.fn()
+
+    installWalletTransactionGuard(config, firstGuard)
+    installWalletTransactionGuard(config, secondGuard)
+
+    const client = await connector.getClient?.({ chainId: CHAIN_ID })
+    await client?.request({ method: 'eth_sendTransaction', params: [{ to: TO }] } as never)
+
+    expect(subscribe).toHaveBeenCalledTimes(1)
+    expect(firstGuard).not.toHaveBeenCalled()
+    expect(secondGuard).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('runWalletTransactionGuard', () => {
+  it('runs the installed guard', () => {
+    const guard = jest.fn()
+
+    installWalletTransactionGuard(createConfig([]), guard)
+    runWalletTransactionGuard([{ to: TO }], CHAIN_ID)
+
+    expect(guard).toHaveBeenCalledWith([{ to: TO }], CHAIN_ID)
+  })
+
+  it('skips an empty transaction list', () => {
+    const guard = jest.fn()
+
+    installWalletTransactionGuard(createConfig([]), guard)
+    runWalletTransactionGuard([], CHAIN_ID)
+
+    expect(guard).not.toHaveBeenCalled()
   })
 })

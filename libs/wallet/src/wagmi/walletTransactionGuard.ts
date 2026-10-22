@@ -17,6 +17,7 @@ type RequestArguments = Parameters<EIP1193Provider['request']>[0]
 const TRANSACTION_METHODS = new Set(['eth_sendTransaction', 'eth_signTransaction'])
 const BATCH_METHODS = new Set(['wallet_sendCalls'])
 
+const guardedConfigs = new WeakSet<Config>()
 const patchedConnectors = new WeakSet<Connector>()
 
 let transactionGuard: WalletTransactionGuard | null = null
@@ -43,7 +44,13 @@ export function getGuardedTransactions(args: { method: string; params?: unknown 
  * so defining it lets every transaction go through the guard
  * without replacing `connector.getProvider`, whose identity the tab isolation relies on.
  */
-export function installWalletTransactionGuard(config: Config): void {
+export function installWalletTransactionGuard(config: Config, guard: WalletTransactionGuard): void {
+  transactionGuard = guard
+
+  if (guardedConfigs.has(config)) return
+
+  guardedConfigs.add(config)
+
   const patchConnectors = (connectors: readonly Connector[]): void => {
     connectors.forEach((connector) => patchConnector(config, connector))
   }
@@ -52,8 +59,11 @@ export function installWalletTransactionGuard(config: Config): void {
   config._internal.connectors.subscribe(patchConnectors)
 }
 
-export function setWalletTransactionGuard(guard: WalletTransactionGuard | null): void {
-  transactionGuard = guard
+/**
+ * For transactions sent without a wagmi connector client, such as through the Safe Apps SDK.
+ */
+export function runWalletTransactionGuard(transactions: GuardedTransaction[], chainId: number): void {
+  if (transactionGuard && transactions.length) transactionGuard(transactions, chainId)
 }
 
 function createGuardedProvider(
@@ -62,11 +72,7 @@ function createGuardedProvider(
 ): { request(args: RequestArguments): Promise<unknown> } {
   return {
     request: async (args) => {
-      if (transactionGuard) {
-        const transactions = getGuardedTransactions(args)
-
-        if (transactions.length) transactionGuard(transactions, chainId)
-      }
+      runWalletTransactionGuard(getGuardedTransactions(args), chainId)
 
       return provider.request(args)
     },
