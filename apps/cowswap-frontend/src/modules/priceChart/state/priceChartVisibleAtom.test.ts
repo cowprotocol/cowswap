@@ -164,4 +164,13 @@ describe('priceChartVisibleAtom', () => {
     expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe('false')
     expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
   })
+
+  it.each(TRADE_CHART_PREFERENCES.slice(1))(
+    'uses the %s default for malformed JSON instead of a legacy off preference',
+    (tradeType, storageKey) => {
+      localStorage.setItem('price-chart-visible:v0', 'false')
+      localStorage.setItem(storageKey, '{invalid')
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(true)
+    },
+  )
 })
