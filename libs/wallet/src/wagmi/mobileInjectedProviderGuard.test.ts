@@ -20,10 +20,6 @@ describe('guardMobileInjectedProvider', () => {
     jest.useRealTimers()
   })
 
-  afterEach(() => {
-    jest.useRealTimers()
-  })
-
   it('does not patch non-mobile providers', async () => {
     mockIsMobile = false
     const request = jest.fn<EIP1193Provider['request']>().mockResolvedValue(['0x1'])
