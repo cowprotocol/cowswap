@@ -118,7 +118,7 @@
       "semver": "7.8.0",
       "undici-types": "6.19.2",
       "use-sync-external-store": "1.5.0",
-      "viem": "2.48.8",
+      "viem": "2.57.7",
       "wagmi": "3.6.9",
       "zod": "3.25.76",
       "@cowprotocol/cow-sdk": "https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.21-pr-1066-109bbaa6.0/722c9abb337c88b5849d64ebae792e9a5b85d00f",
