@@ -36,7 +36,7 @@ export function PricePercentageShortcuts({
     })
   }, [activeRate])
   const isDisabled = disabled || !referenceRate?.greaterThan(0)
-  const customRate = customInput?.rate ?? null
+  const customRate = customInput ? getPercentageRate(referenceRate, customInput.value, isInverted) : null
   const customValue = customInput?.value ?? ''
   const matchesRate = (rate: Fraction | null): boolean =>
     !!rate &&
