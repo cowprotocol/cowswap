@@ -120,7 +120,25 @@
       "use-sync-external-store": "1.5.0",
       "viem": "2.48.8",
       "wagmi": "3.6.9",
-      "zod": "3.25.76"
+      "zod": "3.25.76",
+      "@cowprotocol/cow-sdk": "https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/9.2.21-pr-1065-56de554c.0/23fa523e2ba8f992d8d62dd9823b5074e9145c58",
+      "@cowprotocol/sdk-app-data": "https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/6.0.11-pr-1065-56de554c.0/fb28e37f89d9b28a8df74e7db5d6e326300ae9ec",
+      "@cowprotocol/sdk-bridging": "https://npm.pkg.github.com/download/@cowprotocol/sdk-bridging/4.4.19-pr-1065-56de554c.0/7c670eeccff916496d596ee14c93dca628641fe0",
+      "@cowprotocol/sdk-common": "https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.14.5-pr-1065-56de554c.0/bd828acfe4f1ac144365817e608919dd6e045de8",
+      "@cowprotocol/sdk-composable": "https://npm.pkg.github.com/download/@cowprotocol/sdk-composable/1.8.8-pr-1065-56de554c.0/2d6bbc3dfd5280566435398545621e95afe49999",
+      "@cowprotocol/sdk-config": "https://npm.pkg.github.com/download/@cowprotocol/sdk-config/2.10.0-pr-1065-56de554c.0/72678d98c72ef18b6125a41a7c82296e191819bd",
+      "@cowprotocol/sdk-contracts-ts": "https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/3.7.5-pr-1065-56de554c.0/e45b1c9903859fe1a159f42b094950b78627e892",
+      "@cowprotocol/sdk-cow-shed": "https://npm.pkg.github.com/download/@cowprotocol/sdk-cow-shed/0.6.5-pr-1065-56de554c.0/892da9ba1450d7b602379c9c848439e868e3762d",
+      "@cowprotocol/sdk-ethers-v5-adapter": "https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v5-adapter/0.4.21-pr-1065-56de554c.0/6156d088b5f7d0b98d8b224f8a25653ac1cb075c",
+      "@cowprotocol/sdk-ethers-v6-adapter": "https://npm.pkg.github.com/download/@cowprotocol/sdk-ethers-v6-adapter/0.4.21-pr-1065-56de554c.0/eb3ee4e321c60e19837f59988ab71e30997cc25e",
+      "@cowprotocol/sdk-flash-loans": "https://npm.pkg.github.com/download/@cowprotocol/sdk-flash-loans/4.0.0-pr-1065-56de554c.0/0f9dbc3fc96f93e89a5fb05c2e67e3c457f3b7d8",
+      "@cowprotocol/sdk-order-book": "https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/4.3.4-pr-1065-56de554c.0/c2a98b59c4cdc5f2a811296a3c472ca1765d41ee",
+      "@cowprotocol/sdk-order-signing": "https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/1.1.20-pr-1065-56de554c.0/6d68db461a5be8bfdca6b2eac20109d5d168e47c",
+      "@cowprotocol/sdk-subgraph": "https://npm.pkg.github.com/download/@cowprotocol/sdk-subgraph/1.2.11-pr-1065-56de554c.0/7d3c8ee14602855f8122c9f88189cf93c6e948d0",
+      "@cowprotocol/sdk-trading-solana": "https://npm.pkg.github.com/download/@cowprotocol/sdk-trading-solana/0.15.1-pr-1065-56de554c.0/1b1065f9c992277d8d570122a7d596d51f4bd85c",
+      "@cowprotocol/sdk-trading": "https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/2.7.8-pr-1065-56de554c.0/f8168910de22b9b5d4fe65e0410906ec82039520",
+      "@cowprotocol/sdk-viem-adapter": "https://npm.pkg.github.com/download/@cowprotocol/sdk-viem-adapter/0.3.36-pr-1065-56de554c.0/f8e6018b9e0fb0b4152daed8e963d47c9229d9b3",
+      "@cowprotocol/sdk-weiroll": "https://npm.pkg.github.com/download/@cowprotocol/sdk-weiroll/0.2.12-pr-1065-56de554c.0/71847193e7c07174155c07be57e05d3edb09ea05"
     },
     "peerDependencyRules": {
       "allowedVersions": {
