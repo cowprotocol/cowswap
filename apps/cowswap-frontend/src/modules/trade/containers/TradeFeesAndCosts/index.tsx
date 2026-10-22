@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
-import { useIsFreeOrderPlacement } from '../../hooks/useIsFreeOrderPlacement'
 import { AccountRentRow } from '../../pure/AccountRentRow'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { TradeFees } from '../../pure/TradeFees'
@@ -46,7 +45,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const accountRentFeeUsd = useUsdAmount(accountRentFee).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip()
-  const isFreePlacement = useIsFreeOrderPlacement()
 
   const hasNetworkCosts = networkFeeAmount?.greaterThan(0)
   const hasAccountRent = accountRentFee?.greaterThan(0)
@@ -64,7 +62,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         withTimelineDot={withTimelineDot}
         isLast={!hasNetworkCosts && !hasAccountRent}
         testId={feeTestId}
-        isFreePlacement={isFreePlacement}
       />
 
       {hasAccountRent && accountRentFee && (

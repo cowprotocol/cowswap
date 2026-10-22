@@ -3,7 +3,7 @@ import { ReactElement, useCallback, useState } from 'react'
 import { t } from '@lingui/core/macro'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
-import { TradeFees, TradeTotalCostsDetails, TxCostRow, useIsFreeOrderPlacement, useSolanaTxCost } from 'modules/trade'
+import { TradeFees, TradeTotalCostsDetails, TxCostRow, useSolanaTxCost } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -35,7 +35,6 @@ export function TradeRateDetails({
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
   const protocolFeeBps = useTradeQuoteProtocolFee()
-  const isFreePlacement = useIsFreeOrderPlacement()
   const txCost = useSolanaTxCost()
   const txCostUsd = useUsdAmount(txCost?.amount).value
 
@@ -56,7 +55,6 @@ export function TradeRateDetails({
       volumeFeeTooltip={volumeFeeTooltip}
       loading={loading}
       detailRowStyle
-      isFreePlacement={isFreePlacement}
     />
   )
 

@@ -42,7 +42,7 @@ export function AccountRentRow({
           <Trans>The deposit stays yours: closing the account once it is empty returns it to you as SOL.</Trans>
         </>
       }
-      label={t`Recoverable rent`}
+      label={t`Account deposit`}
       isLast={isLast}
       testId={testId}
     />

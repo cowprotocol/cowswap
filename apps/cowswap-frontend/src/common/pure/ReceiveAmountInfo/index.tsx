@@ -11,7 +11,7 @@ import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, useIsFreeOrderPlacement, ReceiveAmountInfo } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, ReceiveAmountInfo } from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'
@@ -25,7 +25,6 @@ export interface ReceiveAmountInfoTooltipProps {
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
-  const isFreePlacement = useIsFreeOrderPlacement()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
   const {
@@ -75,18 +74,17 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
         <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} testId={TEST_IDS.partnerFee} />
       )}
 
-      {hasAccountRentFee && <FeeItem title={t`Recoverable rent`} isSell={isSell} feeAmount={accountRentFee} />}
+      {hasAccountRentFee && <FeeItem title={t`Account deposit`} isSell={isSell} feeAmount={accountRentFee} />}
 
       <NetworkFeeItem
         discount={discount}
         networkFeeAmount={networkFeeAmount}
         isSell={isSell}
         hasFee={hasFee}
-        isFreePlacement={isFreePlacement}
         testId={TEST_IDS.networkCosts}
       />
 
-      {!hasAnyFee && !isEoaNotEthFlow && isFreePlacement && (
+      {!hasAnyFee && !isEoaNotEthFlow && (
         <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />
       )}
 
