@@ -1,5 +1,7 @@
 import { Fraction } from '@cowprotocol/currency'
 
+export const PRICE_PERCENTAGE_PRESETS = ['5', '10', '20']
+
 const MIN_PERCENTAGE = new Fraction(1, 100)
 const MAX_PERCENTAGE = new Fraction(99999, 100)
 const MAX_INVERTED_PERCENTAGE = new Fraction(9999, 100)
@@ -22,4 +24,12 @@ export function getPercentageRate(
 
   // The stored rate is output/input, so a discount on the inverted price divides the stored rate.
   return isInverted ? referenceRate.multiply(100).divide(factor) : referenceRate.multiply(factor).divide(100)
+}
+
+export function isValidPercentageInput(value: string): boolean {
+  return /^\d*(?:\.\d{0,2})?$/.test(value)
+}
+
+export function isValidPricePercentageParam(value: string): boolean {
+  return value === 'custom' || (/^\d+(?:\.\d{1,2})?$/.test(value) && !!getPercentageRate(new Fraction(1), value, false))
 }

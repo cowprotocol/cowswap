@@ -66,6 +66,7 @@ export function useUpdateCurrencyAmount() {
         if (newRate) {
           updateLimitRateState({
             activeRate: FractionUtils.fractionLikeToFraction(newRate),
+            percentageSelection: null,
             isTypedValue: false,
             isRateFromUrl: false,
             isAlternativeOrderRate: false,

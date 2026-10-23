@@ -120,6 +120,7 @@ export function TransactionSubmittedContent({
           {activityDerivedState && showProgressBar && isProgressBarSetup && (
             <OrderProgressBar
               {...orderProgressBarProps}
+              onDismiss={onDismiss}
               order={order}
               navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
             />
