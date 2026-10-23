@@ -11,8 +11,6 @@ interface RestrictedAddressMatcher {
   pattern: RegExp
 }
 
-const RESTRICTED_OWNERS = [PERMIT_ACCOUNT.address, BRIDGE_QUOTE_ACCOUNT]
-
 const matchersCache = new Map<SupportedChainId, RestrictedAddressMatcher[]>()
 
 /**
@@ -24,15 +22,17 @@ export function findRestrictedAddress(values: Nullish<string>[], chainId: Suppor
 }
 
 export function getRestrictedAddresses(chainId: SupportedChainId): string[] {
+  // Read lazily: modules/tradeQuote and this module import each other, so the constants are not ready at load time
+  const restrictedOwners = [PERMIT_ACCOUNT.address, BRIDGE_QUOTE_ACCOUNT]
   const proxies = isEvmChain(chainId)
-    ? RESTRICTED_OWNERS.flatMap((owner) =>
+    ? restrictedOwners.flatMap((owner) =>
         ACCOUNT_PROXY_CONFIGS.map((accountProxyConfig) =>
           getCowShedHooks({ chainId, accountProxyConfig }).proxyOf(owner),
         ),
       )
     : []
 
-  return [...RESTRICTED_OWNERS, ...proxies]
+  return [...restrictedOwners, ...proxies]
 }
 
 function getMatchers(chainId: SupportedChainId): RestrictedAddressMatcher[] {
