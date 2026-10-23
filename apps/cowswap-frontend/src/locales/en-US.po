@@ -1011,7 +1011,7 @@ msgstr "View all {totalChains} networks"
 msgid "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
 msgstr "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{won} won"
 msgstr "{won} won"
 
@@ -3354,7 +3354,7 @@ msgstr "Native"
 msgid "To sign the transaction in your wallet"
 msgstr "To sign the transaction in your wallet"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}"
 msgstr "{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}"
 
@@ -3552,7 +3552,7 @@ msgstr "{fieldLabel} is required"
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionRow/SolverAuctionRow.pure.tsx
 msgid "You got at least the best price any solver offered for your order on its own. Bundled bids only count if every trader in the bundle gets a fair price."
 msgstr "You got at least the best price any solver offered for your order on its own. Bundled bids only count if every trader in the bundle gets a fair price."
 
@@ -4820,7 +4820,7 @@ msgid "Safe confirmed signatures"
 msgstr "Safe confirmed signatures"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionRow/SolverAuctionRow.pure.tsx
 msgid "Winning solver"
 msgstr "Winning solver"
 
@@ -8459,7 +8459,7 @@ msgstr "Quote not yet verified by CoW Protocol simulation"
 msgid "Chart metric"
 msgstr "Chart metric"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionRow/SolverAuctionRow.pure.tsx
 msgid "Why {name} won"
 msgstr "Why {name} won"
 
@@ -8685,7 +8685,7 @@ msgstr "Enable Partial Approvals"
 msgid "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
 msgstr "The Safe App License Fee incurred here is charged by the Safe Foundation for the display of the app within their Safe Store. The fee is automatically calculated in this quote. Part of the fees will contribute to the CoW DAO treasury that supports the CoW Community."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{didntBid} didn't bid"
 msgstr "{didntBid} didn't bid"
 
@@ -9113,7 +9113,7 @@ msgstr "CoW Swap was the first DEX to offer intent-based trading, gasless swaps,
 msgid "Could not connect to the provided URL. Please check if the URL is correct and the server is accessible."
 msgstr "Could not connect to the provided URL. Please check if the URL is correct and the server is accessible."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/AuctionLegend/AuctionLegend.pure.tsx
 msgid "{alsoBid} also bid"
 msgstr "{alsoBid} also bid"
 
