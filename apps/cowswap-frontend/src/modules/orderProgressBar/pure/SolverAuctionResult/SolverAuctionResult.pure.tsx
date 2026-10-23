@@ -1,28 +1,19 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { Currency } from '@cowprotocol/currency'
 
 import { Plural, Trans } from '@lingui/react/macro'
 import { ExternalLink as ExternalLinkIcon } from 'react-feather'
-import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
-
-import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
-
-import { useUsdAmount } from 'modules/usdAmount'
+import { PiCaretDown, PiCaretUp } from 'react-icons/pi'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SolverCompetition } from 'common/types/soverCompetition'
 
+import { AuctionDotMap } from './AuctionDotMap/AuctionDotMap.pure'
+import { AuctionLegend } from './AuctionLegend/AuctionLegend.pure'
 import * as styledEl from './SolverAuctionResult.styled'
-import {
-  AuctionDotKind,
-  buildAuctionDots,
-  formatSolverBidUsdDelta,
-  getAuctionLegendCounts,
-  getSolverBidFillPercent,
-  isAuctionDotOddRow,
-} from './SolverAuctionResult.utils'
+import { buildAuctionDots, getAuctionLegendCounts, getSolverBuyAmount } from './SolverAuctionResult.utils'
+import { SolverAuctionRow } from './SolverAuctionRow/SolverAuctionRow.pure'
 
 const INITIAL_VISIBLE_SOLVERS = 3
 const AUCTION_DOCS_HREF = 'https://docs.cow.fi/cow-protocol/concepts/introduction/fair-combinatorial-auction'
@@ -33,6 +24,7 @@ export interface SolverAuctionResultProps {
   buyToken?: Currency
   className?: string
   dotsAnimationKey?: number
+  framed?: boolean
 }
 
 export function SolverAuctionResult({
@@ -41,6 +33,7 @@ export function SolverAuctionResult({
   buyToken,
   className,
   dotsAnimationKey = 0,
+  framed = false,
 }: SolverAuctionResultProps): ReactNode {
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const solversLength = solvers.length
@@ -56,14 +49,13 @@ export function SolverAuctionResult({
     () => (buyToken && winner ? getSolverBuyAmount(winner, buyToken) : null),
     [buyToken, winner],
   )
-  const canExpandSolvers = solversLength > INITIAL_VISIBLE_SOLVERS
 
   if (solversLength === 0) {
     return null
   }
 
   return (
-    <styledEl.Wrapper className={className} data-testid="solver-auction-result">
+    <styledEl.Wrapper className={className} $framed={framed} data-testid="solver-auction-result">
       <styledEl.Header>
         <styledEl.Eyebrow>
           <Trans>Solver auction</Trans>
@@ -104,7 +96,7 @@ export function SolverAuctionResult({
       </styledEl.List>
 
       <styledEl.Footer>
-        {canExpandSolvers ? (
+        {solversLength > INITIAL_VISIBLE_SOLVERS ? (
           <styledEl.ViewMoreButton
             type="button"
             data-click-event={toCowSwapGtmEvent({
@@ -138,156 +130,5 @@ export function SolverAuctionResult({
         </styledEl.AuctionDocsLink>
       </styledEl.Footer>
     </styledEl.Wrapper>
-  )
-}
-
-function AuctionDotMap({ dots, animationKey }: { dots: AuctionDotKind[]; animationKey: number }): ReactNode {
-  return (
-    <styledEl.DotMap key={animationKey} aria-hidden data-testid="solver-auction-dot-map">
-      {dots.map((kind, index) => (
-        <styledEl.Dot key={`${kind}-${index}`} $rowIsOdd={isAuctionDotOddRow(index)}>
-          <styledEl.DotAnchor $rowIsOdd={isAuctionDotOddRow(index)}>
-            <styledEl.DotDisc $kind={kind} $index={index} />
-          </styledEl.DotAnchor>
-        </styledEl.Dot>
-      ))}
-    </styledEl.DotMap>
-  )
-}
-
-function AuctionLegend({
-  won,
-  alsoBid,
-  didntBid,
-  total,
-}: {
-  won: number
-  alsoBid: number
-  didntBid: number
-  total: number
-}): ReactNode {
-  return (
-    <styledEl.Legend>
-      <styledEl.LegendItems>
-        {won > 0 ? (
-          <styledEl.LegendItem>
-            <styledEl.LegendDot $kind="won" />
-            <Trans>{won} won</Trans>
-          </styledEl.LegendItem>
-        ) : null}
-        {alsoBid > 0 ? (
-          <styledEl.LegendItem>
-            <styledEl.LegendDot $kind="bid" />
-            <Trans>{alsoBid} also bid</Trans>
-          </styledEl.LegendItem>
-        ) : null}
-        {didntBid > 0 ? (
-          <styledEl.LegendItem>
-            <styledEl.LegendDot $kind="idle" />
-            <Trans>{didntBid} didn't bid</Trans>
-          </styledEl.LegendItem>
-        ) : null}
-      </styledEl.LegendItems>
-      <styledEl.LegendTotal>
-        <Plural value={total} one="# solver" few="# solvers" many="# solvers" other="# solvers" />
-      </styledEl.LegendTotal>
-    </styledEl.Legend>
-  )
-}
-
-function getSolverBuyAmount(solver: SolverCompetition, buyToken: Currency): CurrencyAmount<Currency> | null {
-  const rawBuy = solver.executedAmounts?.buy
-
-  if (!rawBuy || !/^\d+$/.test(rawBuy)) {
-    return null
-  }
-
-  return CurrencyAmount.fromRawAmount(buyToken, rawBuy)
-}
-
-function SolverAuctionRow({
-  solver,
-  index,
-  buyToken,
-  winnerBuyAmount,
-}: {
-  solver: SolverCompetition
-  index: number
-  buyToken?: Currency
-  winnerBuyAmount: CurrencyAmount<Currency> | null
-}): ReactNode {
-  const isWinner = index === 0
-  const name = solver.displayName || solver.solver
-  const logoSrc = solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src
-  const buyAmount = buyToken ? getSolverBuyAmount(solver, buyToken) : null
-  const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount) : null
-  const deltaAmount =
-    !isWinner && winnerBuyAmount && buyAmount && winnerBuyAmount.greaterThan(buyAmount)
-      ? winnerBuyAmount.subtract(buyAmount)
-      : null
-
-  return (
-    <styledEl.Row $isWinner={isWinner}>
-      {fillPercent !== null ? (
-        <styledEl.RowFill $percent={fillPercent} data-testid="solver-auction-row-fill" data-percent={fillPercent} />
-      ) : null}
-      <styledEl.RowContent>
-        <styledEl.SolverInfo>
-          <styledEl.SolverLogo src={logoSrc} alt="" />
-          <styledEl.SolverDetails>
-            <styledEl.SolverName>
-              {name}
-              {solver.description ? <InfoTooltip content={solver.description} /> : null}
-            </styledEl.SolverName>
-            {isWinner ? (
-              <styledEl.WinningBadge>
-                <styledEl.TrophyIcon aria-hidden>
-                  <PiTrophyFill />
-                </styledEl.TrophyIcon>
-                <Trans>Winning solver</Trans>
-                <styledEl.BadgeTooltip
-                  data-testid="solver-auction-winner-info"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                  }}
-                >
-                  <InfoTooltip size={12}>
-                    <styledEl.TooltipTitle>
-                      <Trans>Why {name} won</Trans>
-                    </styledEl.TooltipTitle>
-                    <styledEl.TooltipBody>
-                      <Trans>
-                        You got at least the best price any solver offered for your order on its own. Bundled bids only
-                        count if every trader in the bundle gets a fair price.
-                      </Trans>
-                    </styledEl.TooltipBody>
-                  </InfoTooltip>
-                </styledEl.BadgeTooltip>
-              </styledEl.WinningBadge>
-            ) : null}
-          </styledEl.SolverDetails>
-        </styledEl.SolverInfo>
-        {isWinner && buyAmount ? (
-          <styledEl.BidValue $isWinner>
-            <TokenAmount amount={buyAmount} tokenSymbol={buyAmount.currency} />
-          </styledEl.BidValue>
-        ) : null}
-        {!isWinner && deltaAmount ? <SolverDeltaValue delta={deltaAmount} /> : null}
-      </styledEl.RowContent>
-    </styledEl.Row>
-  )
-}
-
-function SolverDeltaValue({ delta }: { delta: CurrencyAmount<Currency> }): ReactNode {
-  const { value: usdDelta } = useUsdAmount(delta)
-
-  if (usdDelta) {
-    return <styledEl.BidValue>{formatSolverBidUsdDelta(usdDelta)}</styledEl.BidValue>
-  }
-
-  return (
-    <styledEl.BidValue>
-      -<TokenAmount amount={delta} tokenSymbol={delta.currency} />
-    </styledEl.BidValue>
   )
 }

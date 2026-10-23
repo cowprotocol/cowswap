@@ -2390,8 +2390,8 @@ msgid "Closed"
 msgstr "Closed"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Share this tip!"
-msgstr "Share this tip!"
+#~ msgid "Share this tip!"
+#~ msgstr "Share this tip!"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
@@ -2579,6 +2579,10 @@ msgstr "This price is taken from external sources and may not accurately reflect
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "Now is the time to take some action!"
 msgstr "Now is the time to take some action!"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "The extra amount you received compared to your limit price."
+msgstr "The extra amount you received compared to your limit price."
 
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
 msgid "Swap order filled"
@@ -8539,6 +8543,10 @@ msgstr "Only A-Z, 0-9, dashes, and underscores are allowed."
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "Share this swap"
+msgstr "Share this swap"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"

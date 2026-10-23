@@ -1,6 +1,8 @@
 import { formatFiatAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
+import { SolverCompetition } from 'common/types/soverCompetition'
+
 export type AuctionDotKind = 'won' | 'bid' | 'idle' | 'placeholder'
 
 export const AUCTION_DOT_COLUMNS = 9
@@ -88,6 +90,16 @@ export function getSolverBidFillPercent(
   }
 
   return Math.min(100, Math.max(0, percent))
+}
+
+export function getSolverBuyAmount(solver: SolverCompetition, buyToken: Currency): CurrencyAmount<Currency> | null {
+  const rawBuy = solver.executedAmounts?.buy
+
+  if (!rawBuy || !/^\d+$/.test(rawBuy)) {
+    return null
+  }
+
+  return CurrencyAmount.fromRawAmount(buyToken, rawBuy)
 }
 
 export function isAuctionDotOddRow(index: number): boolean {

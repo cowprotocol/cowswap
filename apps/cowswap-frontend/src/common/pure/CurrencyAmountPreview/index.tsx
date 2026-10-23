@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
@@ -33,8 +33,10 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 
 export interface CurrencyPreviewSecondaryAmount {
   amount: CurrencyAmount<Currency>
+  fiatAmount?: Nullish<CurrencyAmount<Currency>>
   prefix?: ReactNode
   tooltip?: ReactNode
+  variant?: 'default' | 'success'
 }
 
 interface BuiltItProps {
@@ -68,12 +70,15 @@ export function CurrencyAmountPreview({
           prefix={prefix}
         />
         {secondaryAmount ? (
-          <styledEl.SecondaryAmount>
+          <styledEl.SecondaryAmount $variant={secondaryAmount.variant} data-testid="currency-preview-secondary-amount">
             <styledEl.SecondaryAmountValue
               amount={secondaryAmount.amount}
               tokenSymbol={secondaryCurrency}
               prefix={secondaryAmount.prefix}
             />
+            {secondaryAmount.fiatAmount ? (
+              <FiatAmount amount={secondaryAmount.fiatAmount} accurate={false} withParentheses />
+            ) : null}
             {secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null}
           </styledEl.SecondaryAmount>
         ) : (

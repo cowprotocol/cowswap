@@ -23,6 +23,7 @@ import { BaseTradeConfirmation, TradeTokenPairProps } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { CurrencyPreviewSecondaryAmount } from 'common/pure/CurrencyAmountPreview'
 import { SolverCompetition } from 'common/types/soverCompetition'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
@@ -31,6 +32,7 @@ import * as styledEl from './styled'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
+import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
 import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
@@ -71,6 +73,12 @@ export function FinishedStep({
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
+  const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
+  const surplusTooltip = t`The extra amount you received compared to your limit price.`
+  const surplusSecondaryAmount = useMemo(
+    () => getFinishedSurplusSecondaryAmount(surplusData, shouldShowSurplus && !showWaitAndSaveCard, surplusTooltip),
+    [surplusData, shouldShowSurplus, showWaitAndSaveCard, surplusTooltip],
+  )
 
   const showConfetti = useWithConfetti({
     isFinished: stepName === 'finished',
@@ -90,9 +98,9 @@ export function FinishedStep({
       return undefined
     }
 
-    const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel)
+    const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
 
-    if (!pair || !showWaitAndSaveOutcome) {
+    if (!pair || !showWaitAndSaveCard) {
       return pair
     }
 
@@ -100,7 +108,7 @@ export function FinishedStep({
       ...pair,
       cowParticipation: { tooltip: cowParticipationTooltip },
     }
-  }, [order, soldLabel, receivedLabel, showWaitAndSaveOutcome, cowParticipationTooltip])
+  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, cowParticipationTooltip])
 
   if (!order) {
     return null
@@ -108,6 +116,9 @@ export function FinishedStep({
 
   const showShare = !disablePostTradeTips || shouldShowSurplus
   const solversList = solvers ?? []
+  const hasSolvers = solversList.length > 0
+  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
+  const showCollapsedSolvers = hasSolvers && !showExpandedAuction
 
   return (
     <styledEl.FinishedStepContainer>
@@ -115,13 +126,17 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSaveOutcome ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
 
-        {solversList.length > 0 ? (
-          <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
+        {showExpandedAuction ? (
+          <SolverAuctionResult solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} framed />
         ) : null}
 
-        {showWaitAndSaveOutcome ? null : children}
+        {showWaitAndSaveCard || showExpandedAuction ? null : children}
+
+        {showCollapsedSolvers ? (
+          <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
+        ) : null}
 
         {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={shouldShowSurplus} /> : null}
       </BaseTradeConfirmation>
@@ -144,6 +159,7 @@ function buildFinishedTokenPair(
   order: Order,
   soldLabel: string,
   receivedLabel: string,
+  surplusSecondaryAmount?: CurrencyPreviewSecondaryAmount,
 ): TradeTokenPairProps | undefined {
   const executedSellAmount = order.apiAdditionalInfo?.executedSellAmount
   const executedBuyAmount = order.apiAdditionalInfo?.executedBuyAmount
@@ -165,6 +181,7 @@ function buildFinishedTokenPair(
       fiatAmount: null,
       balance: null,
       label: receivedLabel,
+      secondaryAmount: surplusSecondaryAmount,
     },
     priceImpact: { priceImpact: undefined, loading: false },
     inputTestId: TEST_IDS.orderSoldAmount,
@@ -203,7 +220,7 @@ function FinishedShareButton({
       })}
     >
       <SVG src={iconSocialXSrc} />
-      <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this tip!</Trans>}</span>
+      <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this swap</Trans>}</span>
     </styledEl.ShareButton>
   )
 }
@@ -247,6 +264,24 @@ function FinishedSubtitle({
       Your {tokenSymbol} is in your wallet. <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
     </Trans>
   )
+}
+
+function getFinishedSurplusSecondaryAmount(
+  surplusData: SurplusData | undefined,
+  shouldShowReceivedSurplus: boolean,
+  tooltip: string,
+): CurrencyPreviewSecondaryAmount | undefined {
+  if (!shouldShowReceivedSurplus || !surplusData?.surplusAmount) {
+    return undefined
+  }
+
+  return {
+    amount: surplusData.surplusAmount,
+    fiatAmount: surplusData.showFiatValue ? surplusData.surplusFiatValue : undefined,
+    prefix: '+',
+    tooltip,
+    variant: 'success',
+  }
 }
 
 function isNonZeroAmount(amount: string | undefined): amount is string {
