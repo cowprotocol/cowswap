@@ -4,6 +4,7 @@ import { normalizeError } from '@cowprotocol/common-utils'
 
 import { toMarketCapBars } from './loadPriceChartHistory'
 import { mapCandlesToTradingViewBars, mapResolutionToCandleInterval } from './priceChartAdvancedBars.utils'
+import { getExecutionMarks } from './priceChartAdvancedExecutionMarkers.utils'
 import { createPriceChartSubscriptions } from './priceChartAdvancedSubscriptions.service'
 import { findChartSymbol } from './priceChartAdvancedSymbols.utils'
 import { priceHistoryQueryOptions } from './priceHistoryQuery.utils'
@@ -17,6 +18,7 @@ import {
 
 import type { Candle, CandleInterval } from './priceChart.types'
 import type { ChartSymbol } from './priceChartAdvancedSymbols.utils'
+import type { AttachedPriceChartExecutionMarker } from './priceChartExecutionMarker.utils'
 import type { IBasicDataFeed, LibrarySymbolInfo, OnReadyCallback } from 'charting_library'
 
 export interface CreatePriceChartDatafeedParams {
@@ -29,6 +31,7 @@ export interface PriceChartDatafeedController {
   datafeed: IBasicDataFeed
   setAutoRefreshEnabled: (enabled: boolean) => void
   setActiveTicker: (ticker: string) => void
+  setExecutionMarkers: (ticker: string, markers: AttachedPriceChartExecutionMarker[]) => void
   dispose: () => void
 }
 
@@ -64,6 +67,8 @@ export function createPriceChartDatafeed({
 }: CreatePriceChartDatafeedParams): PriceChartDatafeedController {
   let disposed = false
   let activeTicker: string | undefined
+  let markerTicker: string | undefined
+  let executionMarkers: AttachedPriceChartExecutionMarker[] = []
   const historiesByTicker = new Map<string, { bars: Candle[]; requestId: number; interval: CandleInterval }>()
   const latestRequestIdsByTicker = new Map<string, number>()
 
@@ -116,13 +121,24 @@ export function createPriceChartDatafeed({
         setActiveTicker,
         symbols,
       }),
+      getMarks: (symbolInfo, from, to, callback) => {
+        setTimeout(() => {
+          callback(!disposed && symbolInfo.ticker === markerTicker ? getExecutionMarks(executionMarkers, from, to) : [])
+        }, 0)
+      },
       subscribeBars: subscriptions.subscribeBars,
       unsubscribeBars: subscriptions.unsubscribeBars,
     },
     setAutoRefreshEnabled: subscriptions.setAutoRefreshEnabled,
     setActiveTicker,
+    setExecutionMarkers: (ticker, markers) => {
+      if (disposed) return
+      markerTicker = ticker
+      executionMarkers = markers
+    },
     dispose: () => {
       disposed = true
+      executionMarkers = []
       subscriptions.dispose()
       historiesByTicker.clear()
       latestRequestIdsByTicker.clear()
@@ -144,6 +160,7 @@ function createBasicDatafeed(params: GetBarsHandlerParams): IBasicDataFeed {
             },
           ],
           supported_resolutions: ADVANCED_CHART_SUPPORTED_RESOLUTIONS,
+          supports_marks: true,
           supports_time: false,
         })
       }, 0)
