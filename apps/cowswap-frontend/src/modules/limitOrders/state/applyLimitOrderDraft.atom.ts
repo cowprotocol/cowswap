@@ -25,8 +25,8 @@ export const applyLimitOrderDraftAtom = atom(null, (get, set, request: PendingLi
   const rateState: Partial<LimitRateState> = {
     ...initLimitRateState(),
     isDraftInitialized: true,
-    percentageSelection: draft.price.type === 'percentage' ? { value: draft.price.value, isInverted: false } : null,
-    focusCustomPercentage: draft.price.type === 'custom',
+    percentageSelection: draft.price?.type === 'percentage' ? { value: draft.price.value, isInverted: false } : null,
+    focusCustomPercentage: draft.price?.type === 'custom',
   }
   set<null, [SetStateAction<Partial<LimitRateState>>], void>(updateLimitRateAtom, rateState)
   set(updateLimitOrdersSettingsAtom, { showRecipient: false })

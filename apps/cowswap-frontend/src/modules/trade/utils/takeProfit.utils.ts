@@ -1,5 +1,5 @@
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@cowprotocol/currency'
+import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -12,17 +12,28 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import { getCurrencyId } from './getCurrencyId.utils'
 
-interface TakeProfitOrder {
-  inputAmount: CurrencyAmount<Token>
-  outputCurrency: Token
+export function getTakeProfitDraft(order: Order): LimitOrderDraft | null {
+  if (order.class !== OrderClass.MARKET || getIsCustomRecipient(order) || getIsBridgeOrder(order)) return null
+
+  const { executedBuyAmount, executedSellAmount } = order.apiAdditionalInfo ?? {}
+  if (!executedBuyAmount || !executedSellAmount) return null
+
+  const inputAmount = CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount)
+  const outputAmount = CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount)
+  if (!inputAmount.greaterThan(0) || !outputAmount.greaterThan(0)) return null
+
+  return {
+    inputAmount,
+    outputCurrency: outputAmount.currency,
+  }
 }
 
 export function getTakeProfitNavigation(
-  order: TakeProfitOrder,
+  order: LimitOrderDraft,
   percentage: string | null,
-): { path: string; draft: LimitOrderDraft } {
+): { pathname: string; draft: LimitOrderDraft } {
   const { inputAmount, outputCurrency } = order
-  const path = parameterizeTradeRoute(
+  const pathname = parameterizeTradeRoute(
     {
       chainId: String(inputAmount.currency.chainId),
       inputCurrencyAmount: undefined,
@@ -37,21 +48,5 @@ export function getTakeProfitNavigation(
     ...order,
     price: percentage === null ? { type: 'custom' } : { type: 'percentage', value: percentage },
   }
-  return { path, draft }
-}
-
-export function getTakeProfitOrder(order: Order): TakeProfitOrder | null {
-  if (order.class !== OrderClass.MARKET || getIsCustomRecipient(order) || getIsBridgeOrder(order)) return null
-
-  const { executedBuyAmount, executedSellAmount } = order.apiAdditionalInfo ?? {}
-  if (!executedBuyAmount || !executedSellAmount) return null
-
-  const inputAmount = CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount)
-  const outputAmount = CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount)
-  if (!inputAmount.greaterThan(0) || !outputAmount.greaterThan(0)) return null
-
-  return {
-    inputAmount,
-    outputCurrency: outputAmount.currency,
-  }
+  return { pathname, draft }
 }

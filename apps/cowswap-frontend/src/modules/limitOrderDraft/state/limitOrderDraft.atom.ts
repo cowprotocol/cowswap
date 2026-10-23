@@ -5,7 +5,7 @@ import { CurrencyAmount, Token } from '@cowprotocol/currency'
 export interface LimitOrderDraft {
   inputAmount: CurrencyAmount<Token>
   outputCurrency: Token
-  price: { type: 'percentage'; value: string } | { type: 'custom' }
+  price?: { type: 'percentage'; value: string } | { type: 'custom' }
 }
 
 export interface PendingLimitOrderDraft {

@@ -11,7 +11,7 @@ import { PiTrendUpBold } from 'react-icons/pi'
 import { Order } from 'legacy/state/orders/actions'
 
 import { pendingLimitOrderDraftAtom } from 'modules/limitOrderDraft'
-import { getTakeProfitNavigation, getTakeProfitOrder, PricePercentageShortcuts } from 'modules/trade'
+import { getTakeProfitNavigation, getTakeProfitDraft, PricePercentageShortcuts } from 'modules/trade'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -26,13 +26,13 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
   const navigate = useNavigate()
   const setDraft = useSetAtom(pendingLimitOrderDraftAtom)
   const { account } = useWalletInfo()
-  const takeProfitOrder = getTakeProfitOrder(order)
-  if (!takeProfitOrder) return null
+  const takeProfitDraft = getTakeProfitDraft(order)
+  if (!takeProfitDraft) return null
 
   const openLimitOrder = (percentage: string | null): void => {
-    const { path, draft } = getTakeProfitNavigation(takeProfitOrder, percentage)
-    setDraft({ draft, pathname: path, account })
-    navigate(path)
+    const { pathname, draft } = getTakeProfitNavigation(takeProfitDraft, percentage)
+    setDraft({ draft, pathname, account })
+    navigate(pathname)
     onDismiss?.()
   }
 
@@ -52,7 +52,7 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
     >
       <styledEl.Title>
         <Trans>
-          Take profit on your <TokenSymbol token={takeProfitOrder.inputAmount.currency} />
+          Take profit on your <TokenSymbol token={takeProfitDraft.inputAmount.currency} />
         </Trans>
       </styledEl.Title>
       <styledEl.Description>
