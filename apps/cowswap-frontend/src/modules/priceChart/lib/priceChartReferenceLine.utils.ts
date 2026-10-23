@@ -6,7 +6,7 @@ export function getReferenceLineColor(
   theme: DefaultTheme,
 ): string {
   return {
-    trade: theme.success,
+    trade: theme.warning,
     'worst-acceptable-price': theme.warning,
     'open-order': '#8A8A8A',
     'unfillable-order': theme.danger,
