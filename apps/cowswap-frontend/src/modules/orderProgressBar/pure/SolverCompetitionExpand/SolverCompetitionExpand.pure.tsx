@@ -1,0 +1,115 @@
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+
+import { Currency } from '@cowprotocol/currency'
+
+import { Plural, Trans } from '@lingui/react/macro'
+import { PiCaretDown } from 'react-icons/pi'
+
+import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { ExpandableContent } from 'common/pure/ExpandableContent/ExpandableContent.pure'
+import { SolverCompetition } from 'common/types/soverCompetition'
+
+import * as styledEl from './SolverCompetitionExpand.styled'
+
+import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
+
+const MAX_STACKED_AVATARS = 3
+
+export interface SolverCompetitionExpandProps {
+  solvers: SolverCompetition[]
+  totalSolvers?: number
+  buyToken?: Currency
+  className?: string
+  defaultExpanded?: boolean
+}
+
+export function SolverCompetitionExpand({
+  solvers,
+  totalSolvers,
+  buyToken,
+  className,
+  defaultExpanded = false,
+}: SolverCompetitionExpandProps): ReactNode {
+  const [expanded, setExpanded] = useState(defaultExpanded)
+  const [dotsAnimationKey, setDotsAnimationKey] = useState(0)
+  const wasExpandedRef = useRef(defaultExpanded)
+
+  const solversLength = solvers.length
+  const winner = solvers[0]
+  const winnerName = winner?.displayName || winner?.solver || ''
+  const competedCount = solversLength
+  const stackedSolvers = useMemo(() => solvers.slice(0, MAX_STACKED_AVATARS), [solvers])
+
+  useEffect(() => {
+    if (expanded && !wasExpandedRef.current) {
+      setDotsAnimationKey((key) => key + 1)
+    }
+
+    wasExpandedRef.current = expanded
+  }, [expanded])
+
+  if (solversLength === 0) {
+    return null
+  }
+
+  return (
+    <styledEl.Wrapper className={className} data-testid="solver-competition-expand">
+      <styledEl.ToggleRow
+        type="button"
+        aria-expanded={expanded}
+        data-click-event={toCowSwapGtmEvent({
+          category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+          action: 'Click Toggle Solver Expand',
+          label: expanded ? 'Collapse' : 'Expand',
+        })}
+        onClick={() => setExpanded((prev) => !prev)}
+      >
+        <styledEl.SolverStack aria-hidden data-testid="solver-competition-stack">
+          {stackedSolvers.map((solver, index) => (
+            <styledEl.SolverAvatar
+              key={`${solver.solver}-${index}`}
+              $stackIndex={index}
+              src={solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src}
+              alt=""
+            />
+          ))}
+        </styledEl.SolverStack>
+
+        <styledEl.CompetedLabel>
+          {solversLength === 1 && winnerName ? (
+            <Trans>{winnerName} solved your order</Trans>
+          ) : (
+            <Plural
+              value={competedCount}
+              one="# solver competed"
+              few="# solvers competed"
+              many="# solvers competed"
+              other="# solvers competed"
+            />
+          )}
+        </styledEl.CompetedLabel>
+
+        {winnerName && solversLength > 1 ? (
+          <styledEl.WinnerLabel>
+            <Trans>{winnerName} won</Trans>
+          </styledEl.WinnerLabel>
+        ) : null}
+
+        <styledEl.Chevron $expanded={expanded} aria-hidden>
+          <PiCaretDown size={12} />
+        </styledEl.Chevron>
+      </styledEl.ToggleRow>
+
+      <ExpandableContent expanded={expanded} variant="bordered">
+        <SolverAuctionResult
+          solvers={solvers}
+          totalSolvers={totalSolvers}
+          buyToken={buyToken}
+          dotsAnimationKey={dotsAnimationKey}
+        />
+      </ExpandableContent>
+    </styledEl.Wrapper>
+  )
+}

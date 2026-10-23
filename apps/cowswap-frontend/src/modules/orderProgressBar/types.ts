@@ -33,6 +33,7 @@ export type OrderProgressBarProps = {
   isProgressBarSetup: boolean
   swapAndBridgeContext?: SwapAndBridgeContext
   isBridgingTrade: boolean
+  showWaitAndSaveOutcome?: boolean
 }
 
 export type OrderProgressBarState = {

@@ -68,12 +68,18 @@ export const FiatAmountSlot = styled(FiatValue)`
   }
 `
 
-export const SecondaryAmount = styled.div`
+export const SecondaryAmount = styled.div<{ $variant?: 'default' | 'success' }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 4px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: ${({ $variant }) =>
+    $variant === 'success' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`};
+
+  .fiat-amount {
+    opacity: 1;
+  }
 `
 
 export const SecondaryAmountValue = styled(TokenAmount)`

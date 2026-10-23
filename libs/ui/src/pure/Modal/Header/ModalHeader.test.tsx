@@ -112,4 +112,20 @@ describe('ModalHeader', () => {
 
     expect(container.querySelector('h2')?.textContent).toBe('Orders')
   })
+
+  it('renders headerContent in flow and keeps the close button clickable over chrome', () => {
+    const onClose = jest.fn()
+
+    const { container } = render(<ModalHeader headerContent={<div>Success heading</div>} onClose={onClose} />)
+
+    expect(screen.getByText('Success heading')).not.toBeNull()
+
+    const chrome = container.querySelector('.overlay')
+    expect(chrome).not.toBeNull()
+
+    const closeButton = screen.getByRole('button', { name: 'Close' })
+    expect(closeButton.hasAttribute('disabled')).toBe(false)
+    closeButton.click()
+    expect(onClose).toHaveBeenCalledTimes(1)
+  })
 })

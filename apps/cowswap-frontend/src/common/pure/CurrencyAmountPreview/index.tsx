@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { FiatAmount, InfoTooltip } from '@cowprotocol/ui'
 
 import { Nullish } from 'types'
 
@@ -25,6 +25,7 @@ export interface CurrencyPreviewInfo {
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   variant?: CurrencyAmountPreviewVariant
   id: string
+  testId?: string
   currencyInfo: CurrencyPreviewInfo
   isBridging?: boolean
   priceImpactParams?: PriceImpact
@@ -32,8 +33,10 @@ export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
 
 export interface CurrencyPreviewSecondaryAmount {
   amount: CurrencyAmount<Currency>
+  fiatAmount?: Nullish<CurrencyAmount<Currency>>
   prefix?: ReactNode
   tooltip?: ReactNode
+  variant?: 'default' | 'success'
 }
 
 interface BuiltItProps {
@@ -43,6 +46,7 @@ interface BuiltItProps {
 export function CurrencyAmountPreview({
   variant = 'default',
   id,
+  testId,
   currencyInfo,
   className,
   priceImpactParams,
@@ -55,7 +59,7 @@ export function CurrencyAmountPreview({
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
-    <styledEl.Container id={id} className={containerClassName}>
+    <styledEl.Container id={id} className={containerClassName} data-testid={testId}>
       <styledEl.TopLabel>{topLabel}</styledEl.TopLabel>
       <styledEl.TokenLogo token={currency} size={TOKEN_SIZE_DEFAULT} />
       <styledEl.Amounts>
@@ -66,12 +70,15 @@ export function CurrencyAmountPreview({
           prefix={prefix}
         />
         {secondaryAmount ? (
-          <styledEl.SecondaryAmount>
+          <styledEl.SecondaryAmount $variant={secondaryAmount.variant} data-testid="currency-preview-secondary-amount">
             <styledEl.SecondaryAmountValue
               amount={secondaryAmount.amount}
               tokenSymbol={secondaryCurrency}
               prefix={secondaryAmount.prefix}
             />
+            {secondaryAmount.fiatAmount ? (
+              <FiatAmount amount={secondaryAmount.fiatAmount} accurate={false} withParentheses />
+            ) : null}
             {secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null}
           </styledEl.SecondaryAmount>
         ) : (
