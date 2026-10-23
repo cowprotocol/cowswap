@@ -71,6 +71,11 @@ export function Modal({
 
   useEffect(() => {
     setOpenModal(isOpen)
+
+    // Parents may unmount an open modal instead of closing it, which would leave the flag stuck
+    return () => {
+      if (isOpen) setOpenModal(false)
+    }
   }, [isOpen, setOpenModal])
 
   return (
