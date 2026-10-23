@@ -1,6 +1,10 @@
+import { BaseError } from 'viem'
+
 import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
+
+import { RestrictedAddressError } from 'modules/restrictedAddresses'
 
 const MAX_ERROR_DEPTH = 8
 
@@ -9,6 +13,12 @@ export function getErrorMessage(error: unknown): string {
 
   if (isUserRejectionError(error)) {
     return t`User rejected transaction`
+  }
+
+  const restrictedAddressError = findRestrictedAddressError(error)
+
+  if (restrictedAddressError) {
+    return restrictedAddressError.shortMessage
   }
 
   const flat = collectErrorMessages(error)
@@ -41,6 +51,14 @@ function collectErrorMessages(error: unknown, depth = 0): string {
     return collectErrorMessageFromObject(error)
   }
   return ''
+}
+
+function findRestrictedAddressError(error: unknown): RestrictedAddressError | undefined {
+  if (!(error instanceof BaseError)) return undefined
+
+  const found = error.walk((e) => e instanceof RestrictedAddressError)
+
+  return found instanceof RestrictedAddressError ? found : undefined
 }
 
 function getInvalidArgumentError(flatMessage: string): string | undefined {
