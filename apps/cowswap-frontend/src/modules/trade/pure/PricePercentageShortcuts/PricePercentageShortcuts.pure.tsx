@@ -17,7 +17,7 @@ export type PricePercentageShortcutsProps = {
       mode: 'input'
       referenceRate: Fraction | null
       activeRate: Fraction | null
-      selectedPercentage?: string | null
+      percentageSelection?: PercentageSelection | null
       onSelect: (rate: Fraction | null, percentage?: string) => void
       focusCustom?: boolean
     }
@@ -27,6 +27,16 @@ export type PricePercentageShortcutsProps = {
     }
 )
 
+interface CustomPercentageInput {
+  value: string
+  rate: Fraction | null
+}
+
+interface PercentageSelection {
+  value: string
+  isInverted: boolean
+}
+
 const PRESETS = ['5', '10', '20']
 
 export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): ReactNode {
@@ -34,11 +44,18 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
   const input = props.mode === 'input' ? props : null
   const referenceRate = input?.referenceRate ?? null
   const activeRate = input?.activeRate
-  const selectedPercentage = input?.selectedPercentage
+  const selection = input?.percentageSelection
+  const selectedPercentage = getSelectedPercentage(selection, isInverted)
   const focusCustom = input?.focusCustom
   const customField = useRef<HTMLDivElement>(null)
   const didFocusCustom = useRef(false)
-  const [customInput, setCustomInput] = useState<{ value: string; rate: Fraction | null } | null>(null)
+  const [customInput, setCustomInput] = useState<CustomPercentageInput | null>(null)
+  const selectedPreset = PRESETS.find((percentage) =>
+    matchesRate(getPercentageRate(referenceRate, percentage, isInverted), activeRate, isInverted),
+  )
+  const customValue = getCustomValue(customInput, selectedPreset, selectedPercentage)
+  const customRate = getCustomRate(referenceRate, customInput, selection, isInverted)
+  const customMatches = !selectedPreset && matchesRate(customRate, activeRate, isInverted)
 
   useEffect(() => {
     setCustomInput((current) => {
@@ -47,23 +64,14 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
       return matchesAppliedRate ? current : null
     })
   }, [activeRate, selectedPercentage])
+
   const isDisabled = disabled || (props.mode === 'input' && !referenceRate?.greaterThan(0))
+
   useEffect(() => {
     if (!focusCustom || isDisabled || didFocusCustom.current) return
     customField.current?.querySelector('input')?.focus()
     didFocusCustom.current = true
   }, [focusCustom, isDisabled])
-  const customRate = customInput ? getPercentageRate(referenceRate, customInput.value, isInverted) : null
-  const customValue = customInput?.value ?? ''
-  const matchesRate = (rate: Fraction | null): boolean =>
-    !!rate &&
-    !!activeRate?.greaterThan(0) &&
-    formatInputAmount(isInverted ? rate.invert() : rate) ===
-      formatInputAmount(isInverted ? activeRate.invert() : activeRate)
-  const selectedPreset = PRESETS.find((percentage) =>
-    matchesRate(getPercentageRate(referenceRate, percentage, isInverted)),
-  )
-  const customMatches = !selectedPreset && matchesRate(customRate)
 
   return (
     <styledEl.Shortcuts role="group" aria-label={t`Price relative to market`}>
@@ -116,5 +124,44 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
         </styledEl.CustomPercentage>
       )}
     </styledEl.Shortcuts>
+  )
+}
+
+function getCustomRate(
+  referenceRate: Fraction | null,
+  customInput: CustomPercentageInput | null,
+  selection: PercentageSelection | null | undefined,
+  isInverted: boolean,
+): Fraction | null {
+  if (customInput) return getPercentageRate(referenceRate, customInput.value, isInverted)
+  if (!selection) return null
+  return getPercentageRate(referenceRate, selection.value, selection.isInverted)
+}
+
+function getCustomValue(
+  customInput: CustomPercentageInput | null,
+  selectedPreset: string | undefined,
+  selectedPercentage: string | null,
+): string {
+  if (customInput) return customInput.value
+  return selectedPreset ? '' : (selectedPercentage ?? '')
+}
+
+function getSelectedPercentage(selection: PercentageSelection | null | undefined, isInverted: boolean): string | null {
+  if (!selection) return null
+  if (selection.isInverted === isInverted) return selection.value
+
+  const rate = getPercentageRate(new Fraction(1), selection.value, selection.isInverted)
+  if (!rate) return null
+
+  return (isInverted ? new Fraction(1).subtract(rate.invert()) : rate.subtract(1)).multiply(100).toFixed(2)
+}
+
+function matchesRate(rate: Fraction | null, activeRate: Fraction | null | undefined, isInverted: boolean): boolean {
+  if (!rate || !activeRate?.greaterThan(0)) return false
+
+  return (
+    formatInputAmount(isInverted ? rate.invert() : rate) ===
+    formatInputAmount(isInverted ? activeRate.invert() : activeRate)
   )
 }

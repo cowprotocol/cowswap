@@ -308,7 +308,7 @@ export function RateInput() {
           key={`${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}:${focusCustomPercentage}`}
           referenceRate={marketRate}
           focusCustom={focusCustomPercentage}
-          selectedPercentage={percentageSelection?.isInverted === isInverted ? percentageSelection.value : null}
+          percentageSelection={percentageSelection}
           activeRate={activeRate}
           isInverted={isInverted}
           disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate}

@@ -1,17 +1,14 @@
-import { useSetAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 import { PiTrendUpBold } from 'react-icons/pi'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { pendingLimitOrderDraftAtom } from 'modules/limitOrderDraft'
-import { getTakeProfitNavigation, getTakeProfitDraft, PricePercentageShortcuts } from 'modules/trade'
+import { getTakeProfitNavigation, getTakeProfitOrder, PricePercentageShortcuts } from 'modules/trade'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
@@ -24,15 +21,11 @@ export interface TakeProfitPromptProps {
 
 export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): ReactNode {
   const navigate = useNavigate()
-  const setDraft = useSetAtom(pendingLimitOrderDraftAtom)
-  const { account } = useWalletInfo()
-  const takeProfitDraft = getTakeProfitDraft(order)
-  if (!takeProfitDraft) return null
+  const takeProfitOrder = getTakeProfitOrder(order)
+  if (!takeProfitOrder) return null
 
   const openLimitOrder = (percentage: string | null): void => {
-    const { pathname, draft } = getTakeProfitNavigation(takeProfitDraft, percentage)
-    setDraft({ draft, pathname, account })
-    navigate(pathname)
+    navigate(getTakeProfitNavigation(takeProfitOrder, percentage))
     onDismiss?.()
   }
 
@@ -52,7 +45,7 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
     >
       <styledEl.Title>
         <Trans>
-          Take profit on your <TokenSymbol token={takeProfitDraft.inputAmount.currency} />
+          Take profit on your <TokenSymbol token={takeProfitOrder.inputAmount.currency} />
         </Trans>
       </styledEl.Title>
       <styledEl.Description>

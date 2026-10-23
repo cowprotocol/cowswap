@@ -5,7 +5,6 @@ import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 export interface LimitRateState {
   readonly percentageSelection: { value: string; isInverted: boolean } | null
-  readonly isDraftInitialized: boolean
   readonly focusCustomPercentage: boolean
   readonly isLoading: boolean
   readonly isLoadingMarketRate: boolean
@@ -27,7 +26,6 @@ export interface LimitRateState {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const initLimitRateState = () => ({
   percentageSelection: null,
-  isDraftInitialized: false,
   focusCustomPercentage: false,
   isInverted: false,
   isLoading: false,

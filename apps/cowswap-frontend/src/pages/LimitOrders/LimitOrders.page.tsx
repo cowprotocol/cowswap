@@ -12,8 +12,6 @@ import { PageTitle } from 'modules/application'
 import { Erc20ApproveWidget } from 'modules/erc20Approve'
 import {
   AlternativeLimitOrderUpdater,
-  LimitOrderDraftInitializer,
-  isLimitOrderDraftActiveAtom,
   ExecutionPriceUpdater,
   InitialPriceUpdater,
   LIMIT_ORDER_SLIPPAGE,
@@ -35,7 +33,6 @@ import { RegularLimitOrdersPage } from './RegularLimitOrders.page'
 export function LimitOrdersPage(): ReactNode {
   const params = useParams()
   const isAlternative = useIsAlternativeOrderModalVisible()
-  const isDraftActive = useAtomValue(isLimitOrderDraftActiveAtom)
   const { i18n } = useLingui()
 
   const limitOrdersDerivedStateToFill = useLimitOrdersDerivedStateToFill()
@@ -58,13 +55,8 @@ export function LimitOrdersPage(): ReactNode {
         </>
       ) : (
         <>
-          <LimitOrderDraftInitializer />
-          {!isDraftActive && (
-            <>
-              <InitialPriceUpdater />
-              <SetupLimitOrderAmountsFromUrlUpdater />
-            </>
-          )}
+          <InitialPriceUpdater />
+          <SetupLimitOrderAmountsFromUrlUpdater />
           <TriggerAppziLimitOrdersSurveyUpdater />
           <RegularLimitOrdersPage />
         </>
