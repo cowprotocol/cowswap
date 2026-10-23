@@ -6,14 +6,14 @@ import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
+import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { getPercentageRate, useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useUsdPrice } from 'modules/usdAmount'
+import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
-import { limitRateAtom, updateLimitRateAtom } from '../../state/limitRateAtom'
 
 export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()

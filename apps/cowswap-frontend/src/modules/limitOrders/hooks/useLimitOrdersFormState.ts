@@ -4,13 +4,12 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 import { pendingLimitOrderDraftAtom } from 'modules/limitOrderDraft'
+import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
-
-import { limitRateAtom } from '../state/limitRateAtom'
 
 export enum LimitOrdersFormState {
   RateLoading = 'RateLoading',

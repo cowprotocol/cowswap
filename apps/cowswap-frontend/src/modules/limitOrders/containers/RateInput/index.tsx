@@ -19,6 +19,17 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
+import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
+import { useUpdateActiveRate } from 'modules/limitOrders/hooks/useUpdateActiveRate'
+import { HeadingText } from 'modules/limitOrders/pure/RateInput/HeadingText'
+import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
+import {
+  limitOrdersSettingsAtom,
+  updateLimitOrdersSettingsAtom,
+} from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { toFraction } from 'modules/limitOrders/utils/toFraction'
 import { PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -32,15 +43,6 @@ import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
-
-import { useLimitOrdersDerivedState } from '../../hooks/useLimitOrdersDerivedState'
-import { useRateImpact } from '../../hooks/useRateImpact'
-import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
-import { HeadingText } from '../../pure/RateInput/HeadingText'
-import { executionPriceAtom } from '../../state/executionPriceAtom'
-import { limitOrdersSettingsAtom, updateLimitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
-import { limitRateAtom, updateLimitRateAtom } from '../../state/limitRateAtom'
-import { toFraction } from '../../utils/toFraction'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
