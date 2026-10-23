@@ -28,7 +28,11 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
   const focusCustom = customInput?.focus
 
   useEffect(() => {
-    if (!focusCustom || disabled || didFocusCustom.current) return
+    if (!focusCustom) {
+      didFocusCustom.current = false
+      return
+    }
+    if (disabled || didFocusCustom.current) return
     customField.current?.querySelector('input')?.focus()
     didFocusCustom.current = true
   }, [focusCustom, disabled])

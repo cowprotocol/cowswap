@@ -4,7 +4,6 @@ import { Fraction } from '@cowprotocol/currency'
 import { getPercentageRate } from 'modules/trade'
 
 export interface CustomPercentageInput {
-  key: string
   value: string
   rate: Fraction | null
 }

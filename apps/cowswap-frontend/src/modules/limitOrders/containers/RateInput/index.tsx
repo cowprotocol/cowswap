@@ -253,9 +253,7 @@ export function RateInput() {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
 
-  const percentageShortcutsKey = `${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}:${focusCustomPercentage}`
-  const [customPercentageDraft, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
-  const customInput = customPercentageDraft?.key === percentageShortcutsKey ? customPercentageDraft : null
+  const [customInput, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
   const selectedPercentage = getSelectedPercentage(percentageSelection, isInverted)
   const selectedPreset = PRICE_PERCENTAGE_PRESETS.find((percentage) =>
     matchesRate(getPercentageRate(marketRate, percentage, isInverted), activeRate, isInverted),
@@ -264,13 +262,17 @@ export function RateInput() {
   const customRate = getCustomRate(marketRate, customInput, percentageSelection, isInverted)
 
   useEffect(() => {
+    setCustomPercentageDraft(null)
+  }, [chainId, inputCurrency, outputCurrency, isInverted, focusCustomPercentage])
+
+  useEffect(() => {
     setCustomPercentageDraft((current) => {
-      if (current?.key !== percentageShortcutsKey) return null
+      if (!current) return null
       if (current.value === selectedPercentage) return current
       const matchesAppliedRate = current.rate ? activeRate?.equalTo(current.rate) : !activeRate?.greaterThan(0)
       return matchesAppliedRate ? current : null
     })
-  }, [activeRate, selectedPercentage, percentageShortcutsKey])
+  }, [activeRate, selectedPercentage])
 
   const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
     setTypedTrailingZeros('')
@@ -343,7 +345,6 @@ export function RateInput() {
           )}
         </styledEl.Body>
         <PricePercentageShortcuts
-          key={percentageShortcutsKey}
           selectedPreset={selectedPreset}
           onSelect={(percentage) => {
             setCustomPercentageDraft(null)
@@ -360,7 +361,7 @@ export function RateInput() {
             onChange: (value) => {
               const rate = getPercentageRate(marketRate, value, isInverted)
               if (Number(value) > 0 && !rate) return
-              setCustomPercentageDraft({ value, rate, key: percentageShortcutsKey })
+              setCustomPercentageDraft({ value, rate })
               handlePercentageRateChange(rate, value)
             },
           }}
