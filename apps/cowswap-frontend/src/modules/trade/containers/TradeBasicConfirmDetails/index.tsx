@@ -73,8 +73,8 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
 
   const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
   const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
-  const txCost = useSolanaTxCost()
-  const txCostUsd = useUsdAmount(hideUsdValues ? null : txCost?.amount).value
+  const solanaTxCost = useSolanaTxCost()
+  const solanaTxCostUsd = useUsdAmount(hideUsdValues ? null : solanaTxCost?.amount).value
 
   // Limit price is the same for all parts
   const limitPrice = useMemo(() => getLimitPriceFromReceiveAmount(receiveAmountInfo), [receiveAmountInfo])
@@ -98,11 +98,11 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
-      {txCost && (
+      {solanaTxCost && (
         <TxCostRow
-          txCost={txCost.amount}
-          txCostUsd={txCostUsd}
-          isSponsored={txCost.isSponsored}
+          txCost={solanaTxCost.amount}
+          txCostUsd={solanaTxCostUsd}
+          isSponsored={solanaTxCost.isSponsored}
           withTimelineDot={withTimelineDot}
         />
       )}

@@ -63,10 +63,10 @@ export function TradeRateDetails({
   const { error: quoteError } = useTradeQuote()
 
   const networkFeeAmount = useNetworkFeeAmount()
-  const txCost = useSolanaTxCost()
+  const solanaTxCost = useSolanaTxCost()
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
-  const txCostUsd = useUsdAmount(txCost?.amount).value
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
 
   const toggleAccordion = useCallback(() => {
     setFeeDetailsOpen((prev) => !prev)
@@ -124,7 +124,9 @@ export function TradeRateDetails({
       </TradeTotalCostsDetails>
 
       {/* Paid from the wallet rather than taken out of the trade, so it sits outside the costs accordion */}
-      {txCost && <TxCostRow txCost={txCost.amount} txCostUsd={txCostUsd} isSponsored={txCost.isSponsored} />}
+      {solanaTxCost && (
+        <TxCostRow txCost={solanaTxCost.amount} txCostUsd={solanaTxCostUsd} isSponsored={solanaTxCost.isSponsored} />
+      )}
 
       {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
       {shouldShowSlippageProminent && !isFeeDetailsOpen && slippageRow}

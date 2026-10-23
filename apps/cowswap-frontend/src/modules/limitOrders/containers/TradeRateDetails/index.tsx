@@ -35,8 +35,8 @@ export function TradeRateDetails({
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
   const protocolFeeBps = useTradeQuoteProtocolFee()
-  const txCost = useSolanaTxCost()
-  const txCostUsd = useUsdAmount(txCost?.amount).value
+  const solanaTxCost = useSolanaTxCost()
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
@@ -59,8 +59,13 @@ export function TradeRateDetails({
   )
 
   // Paid from the wallet rather than taken out of the trade, so it sits outside the costs block.
-  const txCostRow = txCost && (
-    <TxCostRow txCost={txCost.amount} txCostUsd={txCostUsd} isSponsored={txCost.isSponsored} detailRowStyle />
+  const txCostRow = solanaTxCost && (
+    <TxCostRow
+      txCost={solanaTxCost.amount}
+      txCostUsd={solanaTxCostUsd}
+      isSponsored={solanaTxCost.isSponsored}
+      detailRowStyle
+    />
   )
 
   if (!rateInfoParams) {
