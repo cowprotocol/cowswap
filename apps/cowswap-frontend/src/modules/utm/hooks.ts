@@ -4,17 +4,20 @@ import { useLayoutEffect, useRef } from 'react'
 import { waitForAnalytics } from '@cowprotocol/analytics'
 import { getUtmParams, cleanUpUtmParams, isInjectedWidget, UtmParams } from '@cowprotocol/common-utils'
 
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
 import { utmAtom } from './state'
+import { shouldEnableAlphaNetworks } from './utils/shouldEnableAlphaNetworks'
 
 export function useInitializeUtm(): void {
   const navigate = useNavigate()
   const { search, pathname, hash } = useLocation()
   const hasProcessedUtm = useRef(false)
   const setUtm = useSetAtom(utmAtom)
+  const setAlphaNetworksEnabled = useSetAtom(alphaNetworksEnabledAtom)
 
   useLayoutEffect(() => {
     logUtmDebug('useInitializeUtm effect running:', {
@@ -37,6 +40,11 @@ export function useInitializeUtm(): void {
     if (hasUtmParams) {
       // Mark as processed to prevent re-runs
       hasProcessedUtm.current = true
+
+      if (shouldEnableAlphaNetworks(utm)) {
+        setAlphaNetworksEnabled(true)
+      }
+
       return processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
     }
 

@@ -19,6 +19,7 @@ export enum CowFiCategory {
   HOME = 'Homepage',
   NAVIGATION = 'Navigation',
   WIDGET = 'Widget',
+  SOLANA = 'Solana',
   COWAMM = 'CoW AMM',
   COWSWAP = 'CoW Swap',
   COWPROTOCOL = 'CoW Protocol',
