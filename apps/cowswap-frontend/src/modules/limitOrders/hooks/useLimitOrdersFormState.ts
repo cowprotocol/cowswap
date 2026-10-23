@@ -3,12 +3,14 @@ import { useAtomValue } from 'jotai'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
-import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
+import { pendingLimitOrderDraftAtom } from 'modules/limitOrderDraft'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
+
+import { limitRateAtom } from '../state/limitRateAtom'
 
 export enum LimitOrdersFormState {
   RateLoading = 'RateLoading',
@@ -26,6 +28,7 @@ interface LimitOrdersFormParams {
 }
 
 export function useLimitOrdersFormState(): LimitOrdersFormState | null {
+  const pendingDraft = useAtomValue(pendingLimitOrderDraftAtom)
   const { quote } = useTradeQuote()
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
@@ -39,7 +42,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState | null {
   const params: LimitOrdersFormParams = {
     activeRate,
     feeAmount,
-    isRateLoading: isLoading,
+    isRateLoading: isLoading || !!pendingDraft,
     sellAmount: inputCurrencyAmount,
     buyAmount: outputCurrencyAmount,
   }

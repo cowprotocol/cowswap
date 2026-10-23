@@ -9,14 +9,15 @@ import { Writeable } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
-import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
-import { LimitOrdersRawState } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-
 import { calculateAmountForRate } from 'utils/orderUtils/calculateAmountForRate'
 import { calculateRateForAmount } from 'utils/orderUtils/calculateRateForAmount'
+
+import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
+import { useUpdateLimitOrdersRawState } from './useLimitOrdersRawState'
+
+import { LimitOrdersRawState } from '../state/limitOrdersRawStateAtom'
+import { limitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
+import { updateLimitRateAtom } from '../state/limitRateAtom'
 
 type CurrencyAmountProps = {
   activeRate: Fraction | null
@@ -66,6 +67,7 @@ export function useUpdateCurrencyAmount() {
         if (newRate) {
           updateLimitRateState({
             activeRate: FractionUtils.fractionLikeToFraction(newRate),
+            percentageSelection: null,
             isTypedValue: false,
             isRateFromUrl: false,
             isAlternativeOrderRate: false,

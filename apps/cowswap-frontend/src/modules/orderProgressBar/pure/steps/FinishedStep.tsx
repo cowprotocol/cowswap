@@ -11,6 +11,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Command } from '@cowprotocol/types'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { plural } from '@lingui/core/macro'
@@ -30,6 +31,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
+import { TakeProfitPrompt } from '../../containers/TakeProfitPrompt/TakeProfitPrompt.container'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
@@ -47,6 +49,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
+  onDismiss?: Command
 }
 
 // TODO: Break down this large function into smaller functions
@@ -63,6 +66,7 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
+  onDismiss,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -135,6 +139,8 @@ export function FinishedStep({
             isSell={isSell}
           />
         ) : null}
+
+        {stepName === OrderProgressBarStepName.FINISHED && <TakeProfitPrompt order={order} onDismiss={onDismiss} />}
 
         {solvers && solversLength > 0 && (
           <styledEl.SolverRankings>

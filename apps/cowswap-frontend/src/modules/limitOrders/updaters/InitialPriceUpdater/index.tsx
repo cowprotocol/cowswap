@@ -15,7 +15,7 @@ import { limitRateAtom, LimitRateState, updateLimitRateAtom } from '../../state/
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InitialPriceUpdater() {
   const { inputCurrencyId, outputCurrencyId, chainId } = useLimitOrdersRawState()
-  const { isTypedValue, activeRate } = useAtomValue(limitRateAtom)
+  const { isTypedValue, activeRate, percentageSelection } = useAtomValue(limitRateAtom)
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
   const updateRate = useUpdateActiveRate()
 
@@ -47,7 +47,7 @@ export function InitialPriceUpdater() {
      */
     const shouldSkipPriceUpdate = Boolean(hasActivePrice && price && prevPrice?.equalTo(price))
 
-    if (!price || isInitialPriceSet || isLoading || shouldSkipPriceUpdate) return
+    if (!price || percentageSelection || isInitialPriceSet || isLoading || shouldSkipPriceUpdate) return
 
     setIsInitialPriceSet(true)
 
@@ -59,7 +59,16 @@ export function InitialPriceUpdater() {
       isAlternativeOrderRate: false,
     })
     updateLimitRateState({ isLoading })
-  }, [isInitialPriceSet, updateLimitRateState, updateRate, price, isLoading, prevPrice, hasActivePrice])
+  }, [
+    isInitialPriceSet,
+    percentageSelection,
+    updateLimitRateState,
+    updateRate,
+    price,
+    isLoading,
+    prevPrice,
+    hasActivePrice,
+  ])
 
   // Reset initial price set flag when any token or chain was changed
   useLayoutEffect(() => {

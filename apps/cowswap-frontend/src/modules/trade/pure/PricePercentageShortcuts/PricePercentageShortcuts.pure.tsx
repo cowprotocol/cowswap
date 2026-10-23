@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { Fraction } from '@cowprotocol/currency'
@@ -9,33 +9,50 @@ import * as styledEl from './PricePercentageShortcuts.styled'
 
 import { getPercentageRate } from '../../utils/percentageRate.utils'
 
-export interface PricePercentageShortcutsProps {
-  referenceRate: Fraction | null
-  activeRate: Fraction | null
+export type PricePercentageShortcutsProps = {
   isInverted: boolean
   disabled: boolean
-  onSelect: (rate: Fraction | null) => void
-}
+} & (
+  | {
+      mode: 'input'
+      referenceRate: Fraction | null
+      activeRate: Fraction | null
+      selectedPercentage?: string | null
+      onSelect: (rate: Fraction | null, percentage?: string) => void
+      focusCustom?: boolean
+    }
+  | {
+      mode: 'navigation'
+      onSelect: (percentage: string | null) => void
+    }
+)
 
 const PRESETS = ['5', '10', '20']
 
-export function PricePercentageShortcuts({
-  referenceRate,
-  activeRate,
-  isInverted,
-  disabled,
-  onSelect,
-}: PricePercentageShortcutsProps): ReactNode {
+export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): ReactNode {
+  const { isInverted, disabled } = props
+  const input = props.mode === 'input' ? props : null
+  const referenceRate = input?.referenceRate ?? null
+  const activeRate = input?.activeRate
+  const selectedPercentage = input?.selectedPercentage
+  const focusCustom = input?.focusCustom
+  const customField = useRef<HTMLDivElement>(null)
+  const didFocusCustom = useRef(false)
   const [customInput, setCustomInput] = useState<{ value: string; rate: Fraction | null } | null>(null)
 
   useEffect(() => {
     setCustomInput((current) => {
-      if (!current) return current
+      if (!current || current.value === selectedPercentage) return current
       const matchesAppliedRate = current.rate ? activeRate?.equalTo(current.rate) : !activeRate?.greaterThan(0)
       return matchesAppliedRate ? current : null
     })
-  }, [activeRate])
-  const isDisabled = disabled || !referenceRate?.greaterThan(0)
+  }, [activeRate, selectedPercentage])
+  const isDisabled = disabled || (props.mode === 'input' && !referenceRate?.greaterThan(0))
+  useEffect(() => {
+    if (!focusCustom || isDisabled || didFocusCustom.current) return
+    customField.current?.querySelector('input')?.focus()
+    didFocusCustom.current = true
+  }, [focusCustom, isDisabled])
   const customRate = customInput ? getPercentageRate(referenceRate, customInput.value, isInverted) : null
   const customValue = customInput?.value ?? ''
   const matchesRate = (rate: Fraction | null): boolean =>
@@ -62,7 +79,8 @@ export function PricePercentageShortcuts({
             title={isInverted ? t`${percentage}% below market` : t`${percentage}% above market`}
             onClick={() => {
               setCustomInput(null)
-              onSelect(rate)
+              if (props.mode === 'navigation') props.onSelect(percentage)
+              else props.onSelect(rate, percentage)
             }}
           >
             {isInverted ? '−' : '+'}
@@ -70,23 +88,33 @@ export function PricePercentageShortcuts({
           </styledEl.Shortcut>
         )
       })}
-      <styledEl.CustomPercentage $selected={!isDisabled && customMatches} $invalid={!!customValue && !customRate}>
-        <styledEl.CustomInput
-          value={customValue}
-          onUserInput={(value) => {
-            if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return
-            const rate = getPercentageRate(referenceRate, value, isInverted)
-            if (Number(value) > 0 && !rate) return
-            setCustomInput({ value, rate })
-            onSelect(rate)
-          }}
-          disabled={isDisabled}
-          placeholder={t`Custom %`}
-          aria-label={isInverted ? t`Custom percentage below market` : t`Custom percentage above market`}
-          aria-invalid={!!customValue && !customRate}
-        />
-        {customValue && <span aria-hidden="true">%</span>}
-      </styledEl.CustomPercentage>
+      {props.mode === 'navigation' ? (
+        <styledEl.Shortcut type="button" disabled={isDisabled} onClick={() => props.onSelect(null)}>
+          {t`Custom %`}
+        </styledEl.Shortcut>
+      ) : (
+        <styledEl.CustomPercentage
+          ref={customField}
+          $selected={!isDisabled && customMatches}
+          $invalid={!!customValue && !customRate}
+        >
+          <styledEl.CustomInput
+            value={customValue}
+            onUserInput={(value) => {
+              if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return
+              const rate = getPercentageRate(referenceRate, value, isInverted)
+              if (Number(value) > 0 && !rate) return
+              setCustomInput({ value, rate })
+              props.onSelect(rate, value)
+            }}
+            disabled={isDisabled}
+            placeholder={t`Custom %`}
+            aria-label={isInverted ? t`Custom percentage below market` : t`Custom percentage above market`}
+            aria-invalid={!!customValue && !customRate}
+          />
+          {customValue && <span aria-hidden="true">%</span>}
+        </styledEl.CustomPercentage>
+      )}
     </styledEl.Shortcuts>
   )
 }

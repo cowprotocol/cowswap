@@ -4,6 +4,9 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Fraction } from '@cowprotocol/currency'
 
 export interface LimitRateState {
+  readonly percentageSelection: { value: string; isInverted: boolean } | null
+  readonly isDraftInitialized: boolean
+  readonly focusCustomPercentage: boolean
   readonly isLoading: boolean
   readonly isLoadingMarketRate: boolean
   readonly isInverted: boolean
@@ -23,6 +26,9 @@ export interface LimitRateState {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const initLimitRateState = () => ({
+  percentageSelection: null,
+  isDraftInitialized: false,
+  focusCustomPercentage: false,
   isInverted: false,
   isLoading: false,
   isLoadingMarketRate: false,

@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
@@ -6,15 +6,19 @@ import { CurrencyAmount, Fraction, Token } from '@cowprotocol/currency'
 
 import { Nullish } from 'types'
 
-import { updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { useDerivedTradeState } from 'modules/trade'
+import { getPercentageRate, useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
+import { useUsdPrice } from 'modules/usdAmount'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
+import { useUpdateActiveRate } from '../../hooks/useUpdateActiveRate'
+import { limitRateAtom, updateLimitRateAtom } from '../../state/limitRateAtom'
+
 export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
+  const { percentageSelection, activeRate } = useAtomValue(limitRateAtom)
+  const updateRate = useUpdateActiveRate()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
 
@@ -26,16 +30,27 @@ export function QuoteObserverUpdater(): null {
 
   const { price, isLoading } = useSpotPrice(inputToken, outputToken)
 
-  // Update market rate based on spot prices
   useSafeEffect(() => {
     updateLimitRateState({ marketRate: price, isLoadingMarketRate: isLoading })
   }, [price, isLoading, updateLimitRateState])
+
+  useSafeEffect(() => {
+    if (!percentageSelection || isLoading || !state?.inputCurrencyAmount) return
+    const rate = getPercentageRate(price, percentageSelection.value, percentageSelection.isInverted)
+    if (!rate || activeRate?.equalTo(rate)) return
+    updateRate({
+      activeRate: rate,
+      percentageSelection,
+      isTypedValue: false,
+      isRateFromUrl: false,
+      isAlternativeOrderRate: false,
+    })
+  }, [price, isLoading, percentageSelection, activeRate, state?.inputCurrencyAmount, updateRate])
 
   const { quote } = useTradeQuote()
   const feeAmountRaw = quote?.quoteResults.quoteResponse.quote.feeAmount
   const feeAmount = inputCurrency && feeAmountRaw ? CurrencyAmount.fromRawAmount(inputCurrency, feeAmountRaw) : null
 
-  // Update fee amount based on quote response
   useSafeEffect(() => {
     updateLimitRateState({ feeAmount })
   }, [feeAmount, updateLimitRateState])
