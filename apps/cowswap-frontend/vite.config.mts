@@ -197,6 +197,11 @@ export default defineConfig(({ mode, isPreview }) => {
           target: 'http://localhost:4317',
           changeOrigin: true,
         },
+        // Mirrors the Vercel rewrite, run the RWA app with `pnpm start:rwa`
+        '/rwa': {
+          target: 'http://localhost:3002',
+          ws: true,
+        },
       },
     },
 

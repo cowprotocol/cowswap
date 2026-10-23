@@ -1,9 +1,17 @@
-import { encodeFunctionData, erc20Abi, maxUint256, type Hex, type WalletClient } from 'viem'
+import {
+  encodeFunctionData,
+  erc20Abi,
+  maxUint256,
+  type Hex,
+  type SendTransactionParameters,
+  type WalletClient,
+} from 'viem'
 import type { Config } from 'wagmi'
 import { readContract } from 'wagmi/actions'
 
 import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
+  calculateGasMargin,
   createCowLogger,
   normalizeError,
   slowPromiseHandler,
@@ -15,12 +23,14 @@ import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
 import { COW_SHED_2_1_0_VERSION, CowShedSdk, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
+import { estimateGas } from 'viem/actions'
 
 import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { TransactionNotBroadcastError } from 'common/hooks/useGetReceipt'
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 import { buildEoaTwapTrustedExecuteTx } from './buildEoaTwapTrustedExecuteTx'
 import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
@@ -39,8 +49,7 @@ import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 import type { ComposableCowPollerSchedule } from '../../../composable-cow-poller/composable-cow-poller.types'
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
-/** Default gas limit for the executeHooks calls. */
-const DEFAULT_GAS_LIMIT = 1_000_000n
+const DEFAULT_GAS_LIMIT = 2_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
 const SUBMIT_TWAP_SLOW_MS = 10_000
@@ -350,14 +359,18 @@ export async function placeEoaTwapOrder({
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
-  const setupTxHash = await walletClient.sendTransaction({
+  const transaction = {
     to: setupTx.to as Hex,
     data: setupTx.data as Hex,
     account,
     chain: walletClient.chain,
-    gas: DEFAULT_GAS_LIMIT,
     value: setupTx.value,
-  })
+  } satisfies SendTransactionParameters
+  const gas = await estimateGasWithFallback(
+    () => estimateGas(walletClient, transaction).then(calculateGasMargin),
+    DEFAULT_GAS_LIMIT,
+  )
+  const setupTxHash = await walletClient.sendTransaction({ ...transaction, gas })
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
 

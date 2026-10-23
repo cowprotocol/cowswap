@@ -192,10 +192,16 @@ function getWalletStorageKeys(): string[] {
 }
 
 function stringifyDebug(value: unknown): string {
+  const seen = new WeakSet<object>()
+
   return JSON.stringify(
     value,
     (_key: string, nestedValue: unknown) => {
       if (typeof nestedValue === 'bigint') return `${nestedValue.toString()}n`
+      if (nestedValue !== null && typeof nestedValue === 'object') {
+        if (seen.has(nestedValue)) return '[Circular]'
+        seen.add(nestedValue)
+      }
 
       return nestedValue
     },
