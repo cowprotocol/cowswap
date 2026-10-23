@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef } from 'react'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { COW_PROTOCOL_ETH_FLOW_ADDRESS, getCurrencyAddress } from '@cowprotocol/common-utils'
-import { getGlobalAdapter, isSolanaChain, OrderKind } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, OrderKind, type Signer } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { isEoaAtom, useWalletInfo } from '@cowprotocol/wallet'
@@ -18,6 +18,7 @@ import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import type { VolumeFee } from 'modules/volumeFee'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useAppSignerForAccount } from 'common/hooks/useAppSigner'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -45,6 +46,7 @@ interface BuildQuoteParamsArgs {
   orderKind: OrderKind
   amount: string
   account: string | undefined
+  accountSigner: Signer | undefined
   appDataDoc: AppDataInfo['doc'] | undefined
   receiver: Nullish<string>
   bridgeRecipient: Nullish<string>
@@ -56,6 +58,7 @@ interface BuildQuoteParamsArgs {
 
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account, chainId } = useWalletInfo()
+  const accountSigner = useAppSignerForAccount(account)
   const isEoa = useAtomValue(isEoaAtom)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const appData = useAppData()
@@ -110,6 +113,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       orderKind,
       amount,
       account,
+      accountSigner,
       appDataDoc,
       receiver,
       bridgeRecipient,
@@ -128,6 +132,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
     receiver,
     bridgeRecipient,
     account,
+    accountSigner,
     isWrapOrUnwrap,
     isProviderNetworkUnsupported,
     isProviderNetworkDeprecated,
@@ -138,12 +143,11 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 }
 
 function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
-  const { inputCurrency, outputCurrency, orderKind, amount, account } = args
+  const { inputCurrency, outputCurrency, orderKind, amount, account, accountSigner } = args
   const { appDataDoc, receiver, bridgeRecipient, volumeFee, userSlippageBps, partiallyFillable, hasSmartSlippage } =
     args
 
-  const adapterSigner = account ? getGlobalAdapter().signerOrNull() : null
-  const signer = adapterSigner || getBridgeQuoteSigner(inputCurrency.chainId)
+  const signer = accountSigner || getBridgeQuoteSigner(inputCurrency.chainId)
   const owner = (account || getDefaultOwnerPlaceholder(inputCurrency.chainId)) as `0x${string}`
 
   const quoteParams: QuoteBridgeRequest = {
