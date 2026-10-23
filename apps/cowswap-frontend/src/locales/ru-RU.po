@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-22 13:21\n"
+"PO-Revision-Date: 2026-10-23 10:59\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -64,7 +64,7 @@ msgstr "Подпись не найдена!"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokenized real-world assets"
-msgstr ""
+msgstr "Торговля токенизированными активами реального мира"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Learn about surplus on CoW Swap"
@@ -419,7 +419,7 @@ msgstr "Выбрать токен"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approving <0/> <1/>"
-msgstr ""
+msgstr "Одобрение <0/> <1/>"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Supported networks:"
@@ -2127,7 +2127,7 @@ msgstr "Подробнее в этом"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit token (unlimited)"
-msgstr ""
+msgstr "Permit токена (неограниченно)"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee"
@@ -2471,7 +2471,7 @@ msgstr "{REF_CODE_MIN_LENGTH, plural, one {Код должен содержат�
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve <0/> <1/>"
-msgstr ""
+msgstr "Одобрить <0/> <1/>"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approval amount insufficient!"
@@ -2633,7 +2633,7 @@ msgstr "Нет комиссий за неудачные транзакции"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit {symbol} (unlimited)"
-msgstr ""
+msgstr "Permit {symbol} (неограниченно)"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Across"
@@ -3140,7 +3140,7 @@ msgstr "(через WalletConnect)"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "IPFS, IPNS and ENS (.eth) token lists are no longer supported. Use a direct https list URL."
-msgstr ""
+msgstr "Списки токенов IPFS, IPNS и ENS (.eth) больше не поддерживаются. Используйте прямой HTTPS-URL списка."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/FAQContent.pure.tsx
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
@@ -3321,7 +3321,7 @@ msgstr "Аналитика пула"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve {symbol} (unlimited)"
-msgstr ""
+msgstr "Одобрить {symbol} (неограниченно)"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
@@ -4820,7 +4820,7 @@ msgstr "Время, в течение которого каждая часть �
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "https:// list URL"
-msgstr ""
+msgstr "https:// URL листа"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
@@ -6302,7 +6302,7 @@ msgstr "Сетевые расходы"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approve token (unlimited)"
-msgstr ""
+msgstr "Одобрить токен (неограниченно)"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Switch to Ethereum mainnet to create a code."
@@ -6452,7 +6452,7 @@ msgstr "Подтвердить влияние на цену"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Approving {symbol} (unlimited)"
-msgstr ""
+msgstr "Одобрение {symbol} (неограниченно)"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing"
@@ -7491,7 +7491,7 @@ msgstr "Отмененный ордер"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "RWA"
-msgstr ""
+msgstr "RWA"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 #~ msgid "Limit Order Settings"
@@ -7960,7 +7960,7 @@ msgstr "Ордер будет запущен после его валидаци�
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Permit <0/> <1/>"
-msgstr ""
+msgstr "Permit <0/> <1/>"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/ConfirmButton.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
