@@ -81,7 +81,7 @@
     "react": "19.1.2",
     "safe-stable-stringify": "2.5.0",
     "ua-parser-js": "1.0.38",
-    "viem": "2.57.7",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {

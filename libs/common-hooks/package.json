@@ -38,7 +38,7 @@
     "styled-components": "5.3.11",
     "swr": "2.3.3",
     "timeago.js": "4.0.2",
-    "viem": "2.57.7",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {
