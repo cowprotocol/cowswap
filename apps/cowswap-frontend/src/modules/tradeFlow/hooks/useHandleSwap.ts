@@ -32,7 +32,7 @@ import { TradeFlowParams, useTradeFlowContext } from './useTradeFlowContext'
 import { useTradeFlowType } from './useTradeFlowType'
 
 import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundleFlow'
-import { solanaFlow } from '../services/solanaFlow'
+import { solanaFlow, SolanaFlowOptions } from '../services/solanaFlow'
 import { swapFlow } from '../services/swapFlow'
 import { FlowType, SafeBundleFlowContext, SolanaTradeFlowContext, TradeFlowContext } from '../types/TradeFlowContext'
 
@@ -52,7 +52,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
-  const { isSolanaSponsoredOrdersEnabled } = useFeatureFlags()
+  const { isSolanaSponsoredOrdersEnabled, isAtaCreationDisabled } = useFeatureFlags()
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
@@ -94,7 +94,10 @@ export function useHandleSwap(
         confirmPriceImpactWithoutFee,
         analytics,
         config,
-        isSolanaSponsoredOrdersEnabled: Boolean(isSolanaSponsoredOrdersEnabled),
+        solanaFlowOptions: {
+          isSponsored: Boolean(isSolanaSponsoredOrdersEnabled),
+          isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
+        },
       })
 
       if (result === true && isCurrent()) {
@@ -114,6 +117,7 @@ export function useHandleSwap(
     confirmPriceImpactWithoutFee,
     analytics,
     isSolanaSponsoredOrdersEnabled,
+    isAtaCreationDisabled,
     ethFlowContext,
     safeBundleFlowContext,
     onChangeRecipient,
@@ -168,13 +172,13 @@ async function runFlowByType(
     confirmPriceImpactWithoutFee: ConfirmPriceImpactFn
     analytics: ReturnType<typeof useTradeFlowAnalytics>
     config: ReturnType<typeof useConfig>
-    isSolanaSponsoredOrdersEnabled: boolean
+    solanaFlowOptions: SolanaFlowOptions
   },
 ): Promise<boolean> {
   if (tradeFlowType === FlowType.SOLANA_SWAP) {
     if (!deps.solanaFlowContext) throw new Error('Solana flow context is not ready')
     logTradeFlow('SOLANA FLOW', 'Start solana flow')
-    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics, deps.isSolanaSponsoredOrdersEnabled)
+    const result = await solanaFlow(deps.solanaFlowContext, deps.analytics, deps.solanaFlowOptions)
     return result === true
   }
   if (!tradeFlowContext) throw new Error('Trade flow context is not ready')

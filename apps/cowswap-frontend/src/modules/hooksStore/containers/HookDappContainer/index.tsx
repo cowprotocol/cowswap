@@ -1,7 +1,8 @@
+import { useAtomValue } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 
@@ -46,7 +47,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
 
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const orderParams = useOrderParams()
-  const isSmartContract = useIsSmartContractWallet()
+  const isSmartContract = useAtomValue(isSmartContractWalletAtom)
   const tradeState = useTradeState()
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
@@ -61,7 +62,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       account,
       orderParams,
       hookToEdit: hookToEditDetails,
-      isSmartContract,
+      isSmartContract: isSmartContract ?? undefined,
       isPreHook,
       isDarkMode,
       balancesDiff,

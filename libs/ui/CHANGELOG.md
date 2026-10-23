@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.17.0...ui-v3.18.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: wait for cows + compact approval form changes (#8376)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/analytics@3.16.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/core@3.13.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+
 ## [3.17.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.16.0...ui-v3.17.0) (2026-10-14)
 
 ### Minor Changes

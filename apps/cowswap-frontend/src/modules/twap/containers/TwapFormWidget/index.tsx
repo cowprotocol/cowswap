@@ -5,7 +5,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getAddress } from '@cowprotocol/common-utils'
 import { renderTooltip } from '@cowprotocol/ui'
-import { useIsSafeViaWc, useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
@@ -63,8 +63,8 @@ interface TwapFormWidget {
 // eslint-disable-next-line max-lines-per-function
 export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): ReactNode {
   const { account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
-  const isSafeViaWc = useIsSafeViaWc()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
+  const isSafeViaWc = useAtomValue(isSafeViaWcAtom) === true
   const { isTwapEoaEnabled } = useFeatureFlags()
   const isEoaTwap = !!isTwapEoaEnabled && !isSafeWallet && !isSafeViaWc
   const isRewardsRowEnabled = useIsRewardsRowEnabled()

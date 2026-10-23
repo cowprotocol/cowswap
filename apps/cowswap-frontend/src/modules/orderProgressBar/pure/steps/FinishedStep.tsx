@@ -6,7 +6,7 @@ import iconSocialXSrc from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
@@ -30,7 +30,6 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
@@ -46,6 +45,7 @@ interface FinishedStepProps {
   chainId: SupportedChainId
   receiverEnsName?: string | null
   totalSolvers?: number
+  randomBenefit: string
   debugForceShowSurplus?: boolean
 }
 
@@ -61,6 +61,7 @@ export function FinishedStep({
   chainId,
   receiverEnsName,
   totalSolvers,
+  randomBenefit,
   debugForceShowSurplus,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
@@ -88,15 +89,6 @@ export function FinishedStep({
     isNonZeroAmount(order?.apiAdditionalInfo?.executedBuyAmount)
 
   const isDarkMode = useIsDarkMode()
-
-  const { randomBenefit } = useMemo(() => {
-    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
-
-    return {
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
-    }
-  }, [chainId, t])
 
   const twitterUrl = useMemo(() => {
     return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
