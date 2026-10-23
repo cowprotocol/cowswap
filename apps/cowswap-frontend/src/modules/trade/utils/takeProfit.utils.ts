@@ -1,4 +1,3 @@
-import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 
@@ -10,6 +9,8 @@ import { Routes } from 'common/constants/routes'
 import { parameterizeTradeRoute } from 'common/modules/tradeNavigation'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
+
+import { getCurrencyId } from './getCurrencyId.utils'
 
 interface TakeProfitOrder {
   inputAmount: CurrencyAmount<Token>
@@ -27,12 +28,8 @@ export function getTakeProfitNavigation(
       inputCurrencyAmount: undefined,
       outputCurrencyAmount: undefined,
       orderKind: OrderKind.SELL,
-      inputCurrencyId: getIsNativeToken(inputAmount.currency.chainId, inputAmount.currency.address)
-        ? inputAmount.currency.symbol
-        : inputAmount.currency.address,
-      outputCurrencyId: getIsNativeToken(outputCurrency.chainId, outputCurrency.address)
-        ? outputCurrency.symbol
-        : outputCurrency.address,
+      inputCurrencyId: getCurrencyId(inputAmount.currency),
+      outputCurrencyId: getCurrencyId(outputCurrency),
     },
     Routes.LIMIT_ORDERS,
   )
