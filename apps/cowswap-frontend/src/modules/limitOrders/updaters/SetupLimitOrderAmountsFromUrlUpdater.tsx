@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { FractionUtils } from '@cowprotocol/common-utils'
 import { Price } from '@cowprotocol/currency'
 
 import { useSetupTradeAmountsFromUrl } from 'modules/trade'
@@ -38,9 +37,7 @@ export function SetupLimitOrderAmountsFromUrlUpdater() {
   const params = useMemo(() => {
     return {
       onAmountsUpdate: (amounts: TradeAmounts) => {
-        const activeRate = FractionUtils.fromPrice(
-          new Price({ baseAmount: amounts.inputAmount, quoteAmount: amounts.outputAmount }),
-        )
+        const activeRate = new Price({ baseAmount: amounts.inputAmount, quoteAmount: amounts.outputAmount })
         updateRate({ activeRate, isTypedValue: false, isRateFromUrl: true, isAlternativeOrderRate: false })
       },
     }
