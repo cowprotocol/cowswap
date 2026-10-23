@@ -4,6 +4,8 @@ import { Currency, CurrencyAmount, Price } from '@cowprotocol/currency'
 import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
 
 import { applyConsumedHookGasReceive, hookGasConsumesQuotedPart } from './applyConsumedHookGasReceive'
+import { applySolanaQuoteCosts } from './applySolanaQuoteCosts'
+import { positiveIntegerAtom } from './positiveIntegerAtom'
 import { ReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
@@ -59,11 +61,13 @@ export function getReceiveAmountInfo(
     amountsToSign: mapSellBuyAmounts(result.amountsToSign, currencies),
   }
 
-  const networkFeeInSellAtoms = positiveIntegerAtom(params.orderParams.feeAmount)
+  if (consumedByHookGas) {
+    const networkFeeInSellAtoms = positiveIntegerAtom(params.orderParams.feeAmount)
 
-  return consumedByHookGas
-    ? applyConsumedHookGasReceive(info, networkFeeInSellAtoms ?? beforeNetworkCosts.sellAmount.quotient)
-    : info
+    return applyConsumedHookGasReceive(info, networkFeeInSellAtoms ?? beforeNetworkCosts.sellAmount.quotient)
+  }
+
+  return applySolanaQuoteCosts(info, params.solanaQuoteCosts)
 }
 
 function calculateNetworkFee(
@@ -113,11 +117,4 @@ function mapSellBuyAmounts(
     sellAmount: CurrencyAmount.fromRawAmount(currencies.inputCurrency, amounts.sellAmount.toString()),
     buyAmount: CurrencyAmount.fromRawAmount(currencies.outputCurrency, amounts.buyAmount.toString()),
   }
-}
-
-function positiveIntegerAtom(amount: string): bigint | null {
-  if (!/^\d+$/.test(amount)) return null
-
-  const value = BigInt(amount)
-  return value > 0n ? value : null
 }

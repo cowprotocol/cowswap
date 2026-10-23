@@ -13,9 +13,11 @@ import { LimitPriceRow } from './LimitPriceRow'
 import { SlippageConfirmRow } from './SlippageConfirmRow'
 import * as styledEl from './styled'
 
+import { useSolanaTxCost } from '../../hooks/useSolanaTxCost'
 import { RecipientRow } from '../../pure/RecipientRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
+import { TxCostRow } from '../../pure/TxCostRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getLimitPriceFromReceiveAmount } from '../../utils/getLimitPriceFromReceiveAmount'
 import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
@@ -71,6 +73,8 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
 
   const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
   const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
+  const solanaTxCost = useSolanaTxCost()
+  const solanaTxCostUsd = useUsdAmount(hideUsdValues ? null : solanaTxCost?.amount).value
 
   // Limit price is the same for all parts
   const limitPrice = useMemo(() => getLimitPriceFromReceiveAmount(receiveAmountInfo), [receiveAmountInfo])
@@ -94,6 +98,14 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
         networkCostsSuffix={networkCostsSuffix}
         networkCostsTooltipSuffix={networkCostsTooltipSuffix}
       />
+      {solanaTxCost && (
+        <TxCostRow
+          txCost={solanaTxCost.amount}
+          txCostUsd={solanaTxCostUsd}
+          isSponsored={solanaTxCost.isSponsored}
+          withTimelineDot={withTimelineDot}
+        />
+      )}
       <ReviewOrderModalAmountRow
         highlighted
         amount={amountAfterFees}
