@@ -13,7 +13,7 @@ import { TradeAmounts } from 'common/types'
 import { useLimitOrdersRawState, useUpdateLimitOrdersRawState } from '../hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
 import { updateLimitOrdersSettingsAtom } from '../state/limitOrdersSettingsAtom'
-import { updateLimitRateAtom } from '../state/limitRateAtom'
+import { defaultLimitPriceState, updateLimitRateAtom } from '../state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from '../state/partiallyFillableOverride'
 
 // TODO: Add proper return type annotation
@@ -47,25 +47,25 @@ export function SetupLimitOrderAmountsFromUrlUpdater() {
   }, [tokensPair, chainId, account, updateRateState])
 
   const params = useMemo(() => {
+    const resetDefaults = (): void => {
+      updateRawState({ outputCurrencyAmount: null, recipient: null, recipientAddress: null, isUnlocked: true })
+      updateRateState(defaultLimitPriceState)
+      updateSettings({ showRecipient: false })
+      setPartiallyFillableOverride(undefined)
+    }
+
     return {
       onSetup: (params: URLSearchParams) => {
         const percentage = params.get(TRADE_URL_PRICE_PERCENTAGE_KEY)
         if (!percentage || !isValidPricePercentageParam(percentage)) return
         const isCustom = percentage === 'custom'
 
-        updateRawState({ outputCurrencyAmount: null, recipient: null, recipientAddress: null, isUnlocked: true })
+        resetDefaults()
         updateRateState({
-          activeRate: null,
-          typedValue: null,
-          isTypedValue: false,
-          isInverted: false,
           isRateFromUrl: true,
-          isAlternativeOrderRate: false,
           percentageSelection: isCustom ? null : { value: percentage, isInverted: false },
           focusCustomPercentage: isCustom,
         })
-        updateSettings({ showRecipient: false })
-        setPartiallyFillableOverride(undefined)
       },
       onAmountsUpdate: (amounts: TradeAmounts) => {
         const activeRate = new Price({ baseAmount: amounts.inputAmount, quoteAmount: amounts.outputAmount })
