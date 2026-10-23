@@ -2,7 +2,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
-import { getExplorerOrderLink, timeSinceInSeconds } from '@cowprotocol/common-utils'
+import { getExplorerOrderLink, normalizeError, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { areAddressesEqual, EnrichedOrder, EthflowData, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
@@ -28,6 +28,7 @@ import {
   AddOrUpdateOrdersCallback,
   CancelOrdersBatchCallback,
   ExpireOrdersBatchCallback,
+  InvalidateAbandonedCreatingOrdersBatchCallback,
   InvalidateOrdersBatchCallback,
   PresignOrdersCallback,
   UpdatePresignGnosisSafeTxCallback,
@@ -36,6 +37,7 @@ import {
   useCombinedPendingOrders,
   useExpireOrdersBatch,
   useFulfillOrdersBatch,
+  useInvalidateAbandonedCreatingOrdersBatch,
   useInvalidateOrdersBatch,
   usePresignOrders,
   useUpdatePresignGnosisSafeTx,
@@ -56,6 +58,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import {
   fetchAndClassifyOrder,
   getFulfilledOrderUidsForSurplusQueue,
+  getIsAbandonedCreatingOrder,
   getOrdersFromTransitionData,
   getOrderTypesByUid,
   OrderTransitionData,
@@ -87,6 +90,7 @@ interface UpdateOrdersParams {
   addOrUpdateOrders: AddOrUpdateOrdersCallback
   fulfillOrdersBatch: FulfillOrdersBatchWithTypes
   invalidateOrdersBatch: InvalidateOrdersBatchCallback
+  invalidateAbandonedCreatingOrdersBatch: InvalidateAbandonedCreatingOrdersBatchCallback
   expireOrdersBatch: ExpireOrdersBatchCallback
   cancelOrdersBatch: CancelOrdersBatchCallback
   presignOrders: PresignOrdersCallback
@@ -140,6 +144,7 @@ export function PendingOrdersUpdater(): null {
   const cancelOrdersBatch = useCancelOrdersBatch()
   const addOrUpdateOrders = useAddOrUpdateOrders()
   const invalidateOrdersBatch = useInvalidateOrdersBatch()
+  const invalidateAbandonedCreatingOrdersBatch = useInvalidateAbandonedCreatingOrdersBatch()
   const presignOrders = usePresignOrders()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
@@ -211,6 +216,7 @@ export function PendingOrdersUpdater(): null {
           addOrUpdateOrders,
           fulfillOrdersBatch,
           invalidateOrdersBatch,
+          invalidateAbandonedCreatingOrdersBatch,
           expireOrdersBatch,
           cancelOrdersBatch,
           presignOrders,
@@ -232,6 +238,7 @@ export function PendingOrdersUpdater(): null {
       expireOrdersBatch,
       cancelOrdersBatch,
       invalidateOrdersBatch,
+      invalidateAbandonedCreatingOrdersBatch,
       presignOrders,
       addOrderToSurplusQueue,
       updatePresignGnosisSafeTx,
@@ -305,7 +312,10 @@ async function _updateCreatingOrders(
   pendingOrders: Order[],
   isSafeWallet: boolean,
   addOrUpdateOrders: AddOrUpdateOrdersCallback,
+  invalidateAbandonedCreatingOrdersBatch: InvalidateAbandonedCreatingOrdersBatchCallback,
 ): Promise<void> {
+  const abandonedIds: string[] = []
+
   const promises = pendingOrders.reduce<Promise<void>[]>((acc, order) => {
     if (order.status === OrderStatus.CREATING) {
       // Orders that are only known locally until the backend indexes their creation tx
@@ -332,7 +342,14 @@ async function _updateCreatingOrders(
           }
           addOrUpdateOrders({ chainId, orders: [updatedOrder], isSafeWallet })
         })
-        .catch((error) => {
+        .catch((err: unknown) => {
+          if (getIsAbandonedCreatingOrder(order, err)) {
+            abandonedIds.push(order.id)
+            return
+          }
+
+          const error = normalizeError(err)
+
           // Nothing to do here, keep waiting until the order shows up
           console.debug(`[PendingOrdersUpdater] Order ${order.id} couldn't be fetched from API`, error)
         })
@@ -344,6 +361,10 @@ async function _updateCreatingOrders(
   }, [])
 
   await Promise.all(promises)
+
+  if (abandonedIds.length) {
+    invalidateAbandonedCreatingOrdersBatch({ ids: abandonedIds, chainId, isSafeWallet })
+  }
 }
 
 // TODO: Break down this large function into smaller functions
@@ -360,6 +381,7 @@ async function _updateOrders({
   expireOrdersBatch,
   cancelOrdersBatch,
   invalidateOrdersBatch,
+  invalidateAbandonedCreatingOrdersBatch,
   presignOrders,
   addOrderToSurplusQueue,
   updatePresignGnosisSafeTx,
@@ -476,8 +498,7 @@ async function _updateOrders({
     cancelOrdersBatch,
     safeNonce,
   )
-  // Update the creating EthFlow orders (if any)
-  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+  await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders, invalidateAbandonedCreatingOrdersBatch)
 
   markPollComplete?.(chainId)
 }
