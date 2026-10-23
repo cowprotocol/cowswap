@@ -4,7 +4,7 @@ import { t } from '@lingui/core/macro'
 
 import * as styledEl from './PricePercentageShortcuts.styled'
 
-import { PRICE_PERCENTAGE_PRESETS } from '../../utils/percentageRate.utils'
+import { isValidPercentageInput, PRICE_PERCENTAGE_PRESETS } from '../../utils/percentageRate.utils'
 
 export interface PricePercentageShortcutsProps {
   isInverted: boolean
@@ -61,7 +61,7 @@ export function PricePercentageShortcuts(props: PricePercentageShortcutsProps): 
           <styledEl.CustomInput
             value={customInput.value}
             onUserInput={(value) => {
-              if (/^\d*(?:\.\d{0,2})?$/.test(value)) customInput.onChange(value)
+              if (isValidPercentageInput(value)) customInput.onChange(value)
             }}
             disabled={disabled}
             placeholder={t`Custom %`}

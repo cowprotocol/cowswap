@@ -25,3 +25,11 @@ export function getPercentageRate(
   // The stored rate is output/input, so a discount on the inverted price divides the stored rate.
   return isInverted ? referenceRate.multiply(100).divide(factor) : referenceRate.multiply(factor).divide(100)
 }
+
+export function isValidPercentageInput(value: string): boolean {
+  return /^\d*(?:\.\d{0,2})?$/.test(value)
+}
+
+export function isValidPricePercentageParam(value: string): boolean {
+  return value === 'custom' || (/^\d+(?:\.\d{1,2})?$/.test(value) && !!getPercentageRate(new Fraction(1), value, false))
+}

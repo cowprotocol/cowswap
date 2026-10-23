@@ -1,7 +1,7 @@
 import { formatInputAmount } from '@cowprotocol/common-utils'
 import { Fraction } from '@cowprotocol/currency'
 
-import { getPercentageRate } from 'modules/trade'
+import { getPercentageRate, PRICE_PERCENTAGE_PRESETS } from 'modules/trade'
 
 export interface CustomPercentageInput {
   value: string
@@ -33,6 +33,16 @@ export function getCustomValue(
   return selectedPreset ? '' : (selectedPercentage ?? '')
 }
 
+export function getMatchingCustomInput(
+  customInput: CustomPercentageInput | null,
+  selectedPercentage: string | null,
+  activeRate: Fraction | null,
+): CustomPercentageInput | null {
+  if (!customInput || customInput.value === selectedPercentage) return customInput
+  const matchesAppliedRate = customInput.rate ? activeRate?.equalTo(customInput.rate) : !activeRate?.greaterThan(0)
+  return matchesAppliedRate ? customInput : null
+}
+
 export function getSelectedPercentage(
   selection: PercentageSelection | null | undefined,
   isInverted: boolean,
@@ -44,6 +54,16 @@ export function getSelectedPercentage(
   if (!rate) return null
 
   return (isInverted ? new Fraction(1).subtract(rate.invert()) : rate.subtract(1)).multiply(100).toFixed(2)
+}
+
+export function getSelectedPreset(
+  referenceRate: Fraction | null,
+  activeRate: Fraction | null,
+  isInverted: boolean,
+): string | undefined {
+  return PRICE_PERCENTAGE_PRESETS.find((percentage) =>
+    matchesRate(getPercentageRate(referenceRate, percentage, isInverted), activeRate, isInverted),
+  )
 }
 
 export function matchesRate(

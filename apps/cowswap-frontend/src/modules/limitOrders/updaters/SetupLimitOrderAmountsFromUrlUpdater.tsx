@@ -2,10 +2,10 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { Fraction, Price } from '@cowprotocol/currency'
+import { Price } from '@cowprotocol/currency'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getPercentageRate, useSetupTradeAmountsFromUrl } from 'modules/trade'
+import { isValidPricePercentageParam, useSetupTradeAmountsFromUrl } from 'modules/trade'
 
 import { TRADE_URL_PRICE_PERCENTAGE_KEY } from 'common/modules/tradeNavigation'
 import { TradeAmounts } from 'common/types'
@@ -50,14 +50,8 @@ export function SetupLimitOrderAmountsFromUrlUpdater() {
     return {
       onSetup: (params: URLSearchParams) => {
         const percentage = params.get(TRADE_URL_PRICE_PERCENTAGE_KEY)
-        if (!percentage) return
+        if (!percentage || !isValidPricePercentageParam(percentage)) return
         const isCustom = percentage === 'custom'
-        if (
-          !isCustom &&
-          (!/^\d+(?:\.\d{1,2})?$/.test(percentage) || !getPercentageRate(new Fraction(1), percentage, false))
-        ) {
-          return
-        }
 
         updateRawState({ outputCurrencyAmount: null, recipient: null, recipientAddress: null, isUnlocked: true })
         updateRateState({

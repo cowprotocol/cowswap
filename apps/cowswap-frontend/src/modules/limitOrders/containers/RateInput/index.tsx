@@ -31,7 +31,7 @@ import {
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { getPercentageRate, PRICE_PERCENTAGE_PRESETS, PricePercentageShortcuts } from 'modules/trade'
+import { getPercentageRate, PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -48,7 +48,9 @@ import {
   CustomPercentageInput,
   getCustomRate,
   getCustomValue,
+  getMatchingCustomInput,
   getSelectedPercentage,
+  getSelectedPreset,
   matchesRate,
 } from './utils/pricePercentage.utils'
 
@@ -255,9 +257,7 @@ export function RateInput() {
 
   const [customInput, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
   const selectedPercentage = getSelectedPercentage(percentageSelection, isInverted)
-  const selectedPreset = PRICE_PERCENTAGE_PRESETS.find((percentage) =>
-    matchesRate(getPercentageRate(marketRate, percentage, isInverted), activeRate, isInverted),
-  )
+  const selectedPreset = getSelectedPreset(marketRate, activeRate, isInverted)
   const customValue = getCustomValue(customInput, selectedPreset, selectedPercentage)
   const customRate = getCustomRate(marketRate, customInput, percentageSelection, isInverted)
 
@@ -266,12 +266,7 @@ export function RateInput() {
   }, [chainId, inputCurrency, outputCurrency, isInverted, focusCustomPercentage])
 
   useEffect(() => {
-    setCustomPercentageDraft((current) => {
-      if (!current) return null
-      if (current.value === selectedPercentage) return current
-      const matchesAppliedRate = current.rate ? activeRate?.equalTo(current.rate) : !activeRate?.greaterThan(0)
-      return matchesAppliedRate ? current : null
-    })
+    setCustomPercentageDraft((current) => getMatchingCustomInput(current, selectedPercentage, activeRate))
   }, [activeRate, selectedPercentage])
 
   const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
