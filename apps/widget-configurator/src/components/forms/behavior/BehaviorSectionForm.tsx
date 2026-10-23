@@ -55,6 +55,11 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         onChange={(enabled) => onChange('hideBridgeInfo', !enabled)}
       />
       <SwitchInput
+        checked={!values.hideWrapBanner}
+        label="Show wrap native token banner"
+        onChange={(enabled) => onChange('hideWrapBanner', !enabled)}
+      />
+      <SwitchInput
         checked={!values.hideOrdersTable}
         label="Show orders table"
         onChange={(enabled) => onChange('hideOrdersTable', !enabled)}
