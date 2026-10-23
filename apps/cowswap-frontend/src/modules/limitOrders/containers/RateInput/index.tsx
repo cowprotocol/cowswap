@@ -11,6 +11,7 @@ import {
   tryParseCurrencyAmount,
 } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { Fraction } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -30,7 +31,7 @@ import {
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { PricePercentageShortcuts } from 'modules/trade'
+import { getPercentageRate, PRICE_PERCENTAGE_PRESETS, PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -43,6 +44,13 @@ import { isLocalUsdRateModeAtom } from './atoms'
 import { useExecutionPriceUsdValue } from './hooks/useExecutionPriceUsdValue'
 import { useRateDisplayedValue } from './hooks/useRateDisplayedValue'
 import * as styledEl from './styled'
+import {
+  CustomPercentageInput,
+  getCustomRate,
+  getCustomValue,
+  getSelectedPercentage,
+  matchesRate,
+} from './utils/pricePercentage.utils'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -245,6 +253,37 @@ export function RateInput() {
     setIsQuoteCurrencySet(false)
   }, [inputCurrency, outputCurrency])
 
+  const percentageShortcutsKey = `${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}:${focusCustomPercentage}`
+  const [customPercentageDraft, setCustomPercentageDraft] = useState<CustomPercentageInput | null>(null)
+  const customInput = customPercentageDraft?.key === percentageShortcutsKey ? customPercentageDraft : null
+  const selectedPercentage = getSelectedPercentage(percentageSelection, isInverted)
+  const selectedPreset = PRICE_PERCENTAGE_PRESETS.find((percentage) =>
+    matchesRate(getPercentageRate(marketRate, percentage, isInverted), activeRate, isInverted),
+  )
+  const customValue = getCustomValue(customInput, selectedPreset, selectedPercentage)
+  const customRate = getCustomRate(marketRate, customInput, percentageSelection, isInverted)
+
+  useEffect(() => {
+    setCustomPercentageDraft((current) => {
+      if (current?.key !== percentageShortcutsKey) return null
+      if (current.value === selectedPercentage) return current
+      const matchesAppliedRate = current.rate ? activeRate?.equalTo(current.rate) : !activeRate?.greaterThan(0)
+      return matchesAppliedRate ? current : null
+    })
+  }, [activeRate, selectedPercentage, percentageShortcutsKey])
+
+  const handlePercentageRateChange = (rate: Fraction | null, percentage?: string): void => {
+    setTypedTrailingZeros('')
+    updateLimitRateState({ typedValue: null })
+    updateRate({
+      activeRate: rate ?? toFraction('0'),
+      percentageSelection: rate && percentage ? { value: percentage, isInverted } : null,
+      isTypedValue: rate === null,
+      isRateFromUrl: false,
+      isAlternativeOrderRate: false,
+    })
+  }
+
   return (
     <styledEl.OuterWrapper $disabled={isRateInputDisabled} htmlFor="rate-limit-amount-input">
       <styledEl.Wrapper>
@@ -304,25 +343,29 @@ export function RateInput() {
           )}
         </styledEl.Body>
         <PricePercentageShortcuts
-          mode="input"
-          key={`${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}:${focusCustomPercentage}`}
-          referenceRate={marketRate}
-          focusCustom={focusCustomPercentage}
-          percentageSelection={percentageSelection}
-          activeRate={activeRate}
-          isInverted={isInverted}
-          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate}
-          onSelect={(rate, percentage) => {
-            setTypedTrailingZeros('')
-            updateLimitRateState({ typedValue: null })
-            updateRate({
-              activeRate: rate ?? toFraction('0'),
-              percentageSelection: rate && percentage ? { value: percentage, isInverted } : null,
-              isTypedValue: rate === null,
-              isRateFromUrl: false,
-              isAlternativeOrderRate: false,
-            })
+          key={percentageShortcutsKey}
+          selectedPreset={selectedPreset}
+          onSelect={(percentage) => {
+            setCustomPercentageDraft(null)
+            handlePercentageRateChange(
+              getPercentageRate(marketRate, percentage ?? '', isInverted),
+              percentage ?? undefined,
+            )
           }}
+          customInput={{
+            value: customValue,
+            selected: !selectedPreset && matchesRate(customRate, activeRate, isInverted),
+            invalid: !!customValue && !customRate,
+            focus: focusCustomPercentage,
+            onChange: (value) => {
+              const rate = getPercentageRate(marketRate, value, isInverted)
+              if (Number(value) > 0 && !rate) return
+              setCustomPercentageDraft({ value, rate, key: percentageShortcutsKey })
+              handlePercentageRateChange(rate, value)
+            },
+          }}
+          isInverted={isInverted}
+          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate || !marketRate?.greaterThan(0)}
         />
       </styledEl.Wrapper>
 

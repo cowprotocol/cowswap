@@ -1,5 +1,7 @@
 import { Fraction } from '@cowprotocol/currency'
 
+export const PRICE_PERCENTAGE_PRESETS = ['5', '10', '20']
+
 const MIN_PERCENTAGE = new Fraction(1, 100)
 const MAX_PERCENTAGE = new Fraction(99999, 100)
 const MAX_INVERTED_PERCENTAGE = new Fraction(9999, 100)

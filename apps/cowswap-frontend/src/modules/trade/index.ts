@@ -126,5 +126,6 @@ export { planSolanaTradeFundedAccounts } from './services/feeAmountCalculator/pl
 export type { SolanaFlowStep, SolanaFundedAccount } from './services/solanaFlow/types'
 
 export { PricePercentageShortcuts } from './pure/PricePercentageShortcuts/PricePercentageShortcuts.pure'
-export { getPercentageRate } from './utils/percentageRate.utils'
+export type { PricePercentageShortcutsProps } from './pure/PricePercentageShortcuts/PricePercentageShortcuts.pure'
+export { getPercentageRate, PRICE_PERCENTAGE_PRESETS } from './utils/percentageRate.utils'
 export { getTakeProfitOrder, getTakeProfitNavigation } from './utils/takeProfit.utils'
