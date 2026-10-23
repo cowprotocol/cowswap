@@ -560,6 +560,20 @@ export const USDCE_INK = new TokenWithLogo(
   'Stargate Bridged USDC',
 )
 
+// Robinhood
+
+export const USDG_ROBINHOOD = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0x5fc5360d0400a0fd4f2af552add042d716f1d168', SupportedChainId.ROBINHOOD),
+  SupportedChainId.ROBINHOOD,
+  // https://robin.etherscan.io/token/0x5fc5360d0400a0fd4f2af552add042d716f1d168
+  '0x5fc5360d0400a0fd4f2af552add042d716f1d168',
+  6,
+  'USDG',
+  'Global Dollar',
+)
+
+const USDE_ROBINHOOD_ADDRESS = '0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34'
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
@@ -589,6 +603,8 @@ export const USDC: Record<TargetChainId, TokenWithLogo> = {
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
+  // No USDC on Robinhood yet, so USDG stands in as the USD reference token
+  [SupportedChainId.ROBINHOOD]: USDG_ROBINHOOD,
   [SupportedChainId.SOLANA]: USDC_SOLANA,
   // we need some stablecoin ref currency to calculate price impact in usd,
   // due to btc chain specific - there is no other currency than btc
@@ -680,6 +696,7 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
   [SupportedChainId.INK]: COW_TOKEN_INK,
+  [SupportedChainId.ROBINHOOD]: null,
   // COW token is not deployed on Solana.
   [SupportedChainId.SOLANA]: null,
 }
@@ -758,6 +775,8 @@ const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
 
 const INK_STABLECOINS = [USDC_INK.address, USDCE_INK.address, USDT_INK.address].map((t) => t.toLowerCase())
 
+const ROBINHOOD_STABLECOINS = [USDG_ROBINHOOD.address, USDE_ROBINHOOD_ADDRESS]
+
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
@@ -772,6 +791,7 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
   [SupportedChainId.INK]: new Set(INK_STABLECOINS),
+  [SupportedChainId.ROBINHOOD]: new Set(ROBINHOOD_STABLECOINS),
   [SupportedChainId.SOLANA]: new Set([USDC_SOLANA.address]),
 }
 

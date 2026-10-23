@@ -38,6 +38,12 @@ describe('getSafeWebUrl', () => {
     expect(url).toContain(`&id=multisig_${SAFE_ADDRESS}_${SAFE_TX_HASH}`)
     expect(url).not.toContain(`/${gnosisPrefix}:${SAFE_ADDRESS}/transactions`)
   })
+
+  it('uses the Safe short name on ROBINHOOD', () => {
+    const url = getSafeWebUrl(SupportedChainId.ROBINHOOD, SAFE_ADDRESS, SAFE_TX_HASH)
+
+    expect(url).toContain(`?safe=robinhood:${SAFE_ADDRESS}`)
+  })
 })
 
 describe('normalizeSafeError', () => {

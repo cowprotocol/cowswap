@@ -13,6 +13,7 @@ import {
   optimism,
   plasma,
   polygon,
+  robinhood,
   sepolia,
 } from 'viem/chains'
 
@@ -30,6 +31,7 @@ export const VIEM_CHAINS: Record<EvmChains, Chain> = {
   [EvmChains.AVALANCHE]: avalanche,
   [EvmChains.LINEA]: linea,
   [EvmChains.INK]: ink,
+  [EvmChains.ROBINHOOD]: robinhood,
   [EvmChains.SEPOLIA]: sepolia,
   [EvmChains.OPTIMISM]: optimism,
 }

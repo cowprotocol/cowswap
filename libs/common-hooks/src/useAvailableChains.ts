@@ -19,7 +19,7 @@ export interface UseAvailableChainsOptions {
  */
 export function useAvailableChains({ excludeSolana = false }: UseAvailableChainsOptions = {}): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isSolanaEnabled } = useFeatureFlags()
+  const { isSolanaEnabled, isRobinhoodEnabled } = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
@@ -31,8 +31,12 @@ export function useAvailableChains({ excludeSolana = false }: UseAvailableChains
         chainsToSkip.push(SupportedChainId.SOLANA)
       }
 
+      if (!isRobinhoodEnabled) {
+        chainsToSkip.push(SupportedChainId.ROBINHOOD)
+      }
+
       return getAvailableSourceChains(chainsToSkip)
     },
-    [isSolanaEnabled, excludeSolana],
+    [isSolanaEnabled, excludeSolana, isRobinhoodEnabled],
   )
 }
