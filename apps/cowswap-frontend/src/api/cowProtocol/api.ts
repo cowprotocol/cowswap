@@ -14,6 +14,7 @@ import {
 import { orderBookApi } from 'cowSdk'
 
 export { getIsOrderBookTypedError } from './getIsOrderBookTypedError'
+export { getIsOrderNotFoundError } from './getIsOrderNotFoundError'
 
 export async function getNativePrice(chainId: ChainId, currencyAddress: string): Promise<NativePriceResponse> {
   return orderBookApi.getNativePrice(currencyAddress, { chainId })
