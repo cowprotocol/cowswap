@@ -1,9 +1,11 @@
+import { normalizeError } from '@cowprotocol/common-utils'
 import {
   CompetitionOrderStatus,
   CowEnv,
   EnrichedOrder,
   NativePriceResponse,
   PartialApiContext,
+  SolverCompetitionResponse,
   SupportedChainId as ChainId,
   Trade,
   TotalSurplus,
@@ -48,6 +50,19 @@ export async function getOrderCompetitionStatus(
 
 export async function getOrders(params: GetOrdersRequest, context: PartialApiContext): Promise<EnrichedOrder[]> {
   return orderBookApi.getOrders(params, context)
+}
+
+export async function getSolverCompetition(
+  chainId: ChainId,
+  txHash: string,
+): Promise<SolverCompetitionResponse | undefined> {
+  try {
+    return await orderBookApi.getSolverCompetition(txHash, { chainId })
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.debug(`[getSolverCompetition] Non successful response:`, error.message)
+    return undefined
+  }
 }
 
 export async function getSurplusData(chainId: ChainId, address: string): Promise<TotalSurplus> {

@@ -34,8 +34,9 @@ import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
+
+import type { WaitAndSaveFinishedView } from '../WaitAndSaveOutcome/deriveWaitAndSaveOutcome.utils'
 
 export interface FinishedSuccessHeadingProps {
   order: Order
@@ -54,7 +55,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
-  showWaitAndSaveOutcome?: boolean
+  waitAndSave?: WaitAndSaveFinishedView
 }
 
 export function FinishedStep({
@@ -66,14 +67,15 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
-  showWaitAndSaveOutcome = false,
+  waitAndSave,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
-  const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
+  const showWaitAndSaveCard = Boolean(waitAndSave?.outcome)
+  const matchingFooter = waitAndSave?.footerVariant
   const surplusTooltip = t`The extra amount you received compared to your limit price.`
   const surplusSecondaryAmount = useMemo(
     () => getFinishedSurplusSecondaryAmount(surplusData, shouldShowSurplus && !showWaitAndSaveCard, surplusTooltip),
@@ -92,7 +94,6 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const cowParticipationTooltip = t`Your trade was matched with other orders in a Coincidence of Wants (CoW).`
   const tokenPair = useMemo(() => {
     if (!order) {
       return undefined
@@ -100,15 +101,15 @@ export function FinishedStep({
 
     const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
 
-    if (!pair || !showWaitAndSaveCard) {
+    if (!pair || !matchingFooter) {
       return pair
     }
 
     return {
       ...pair,
-      cowParticipation: { tooltip: cowParticipationTooltip },
+      cowParticipation: { variant: matchingFooter },
     }
-  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, cowParticipationTooltip])
+  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, matchingFooter])
 
   if (!order) {
     return null
@@ -117,7 +118,12 @@ export function FinishedStep({
   const showShare = !disablePostTradeTips || shouldShowSurplus
   const solversList = solvers ?? []
   const hasSolvers = solversList.length > 0
-  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
+  const showExpandedAuction = shouldShowExpandedSolverAuction(
+    hasSolvers,
+    shouldShowSurplus,
+    showWaitAndSaveCard,
+    Boolean(matchingFooter),
+  )
   const showCollapsedSolvers = hasSolvers && !showExpandedAuction
 
   return (
@@ -126,7 +132,7 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {waitAndSave?.outcome ? <WaitAndSaveOutcome {...waitAndSave.outcome} /> : null}
 
         {showExpandedAuction ? (
           <SolverAuctionResult solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} framed />
@@ -286,4 +292,13 @@ function getFinishedSurplusSecondaryAmount(
 
 function isNonZeroAmount(amount: string | undefined): amount is string {
   return !!amount && amount !== '0'
+}
+
+function shouldShowExpandedSolverAuction(
+  hasSolvers: boolean,
+  shouldShowSurplus: boolean,
+  showWaitAndSaveCard: boolean,
+  hasMatchingFooter: boolean,
+): boolean {
+  return hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard && !hasMatchingFooter
 }

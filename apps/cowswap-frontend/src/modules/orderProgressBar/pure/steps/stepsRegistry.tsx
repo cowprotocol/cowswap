@@ -12,6 +12,7 @@ import { SolvingStep } from './SolvingStep'
 import { OrderProgressBarStepName } from '../../constants'
 import { useAuctionWaitState } from '../../hooks/useAuctionWaitState'
 import { useRandomBenefit } from '../../hooks/useRandomBenefit'
+import { useWaitAndSaveOutcome } from '../../hooks/useWaitAndSaveOutcome'
 import { OrderProgressBarProps } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
@@ -83,6 +84,11 @@ function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
 function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
   const randomBenefit = useRandomBenefit(chainId)
+  const waitAndSave = useWaitAndSaveOutcome({
+    enabled: Boolean(props.showWaitAndSaveOutcome),
+    chainId,
+    order,
+  })
 
   return (
     <FinishedStep
@@ -95,7 +101,7 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
       totalSolvers={totalSolvers}
       randomBenefit={randomBenefit}
       debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
-      showWaitAndSaveOutcome={Boolean(props.showWaitAndSaveOutcome)}
+      waitAndSave={waitAndSave}
     >
       <RenderProgressTopSection
         {...props}

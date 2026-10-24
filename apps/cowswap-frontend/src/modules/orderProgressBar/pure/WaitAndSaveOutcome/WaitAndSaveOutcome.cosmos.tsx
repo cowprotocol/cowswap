@@ -5,7 +5,7 @@ import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 
 import { DemoContainer } from 'cosmos.decorator'
 
-import { BaseTradeConfirmation } from 'modules/trade'
+import { BaseTradeConfirmation, CowParticipationVariant } from 'modules/trade'
 
 import { WAIT_AND_SAVE_OUTCOME_DEMO } from './waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome, WaitAndSaveOutcomeProps } from './WaitAndSaveOutcome.pure'
@@ -35,7 +35,15 @@ const TINY_GAIN_OUTCOME: WaitAndSaveOutcomeProps = {
   tokenSymbol: 'USDC',
 }
 
-function ComposedConfirmation(props: WaitAndSaveOutcomeProps): ReactNode {
+function ComposedConfirmation({
+  outcome,
+  footerVariant = 'cow',
+}: {
+  outcome?: WaitAndSaveOutcomeProps
+  footerVariant?: CowParticipationVariant | null
+}): ReactNode {
+  // TODO: If wait & save was on, show a skeleton while waiting for outcome.
+
   return (
     <DemoContainer>
       <BaseTradeConfirmation
@@ -58,12 +66,10 @@ function ComposedConfirmation(props: WaitAndSaveOutcomeProps): ReactNode {
             label: 'You received',
           },
           priceImpact: { priceImpact: undefined, loading: false },
-          cowParticipation: {
-            tooltip: 'Your trade was matched with other orders in a Coincidence of Wants (CoW).',
-          },
+          cowParticipation: footerVariant ? { variant: footerVariant } : undefined,
         }}
       >
-        <WaitAndSaveOutcome {...props} />
+        {outcome ? <WaitAndSaveOutcome {...outcome} /> : null}
       </BaseTradeConfirmation>
     </DemoContainer>
   )
@@ -81,8 +87,14 @@ const Fixtures = {
   default: <OutcomeCard {...WAIT_AND_SAVE_OUTCOME_DEMO} />,
   longSymbol: <OutcomeCard {...LONG_SYMBOL_OUTCOME} />,
   tinyGain: <OutcomeCard {...TINY_GAIN_OUTCOME} />,
-  swapCompleteWaitAndSave: <ComposedConfirmation {...WAIT_AND_SAVE_OUTCOME_DEMO} />,
-  swapCompleteLongSymbol: <ComposedConfirmation {...LONG_SYMBOL_OUTCOME} />,
+  swapCompleteWaitAndSave: <ComposedConfirmation outcome={WAIT_AND_SAVE_OUTCOME_DEMO} />,
+  swapCompleteLongSymbol: <ComposedConfirmation outcome={LONG_SYMBOL_OUTCOME} />,
+  cowNoMeasuredGain: <ComposedConfirmation footerVariant="cow" />,
+  batchGainMatchingUnconfirmed: (
+    <ComposedConfirmation footerVariant="unconfirmed" outcome={WAIT_AND_SAVE_OUTCOME_DEMO} />
+  ),
+  noMeasuredGainMatchingUnconfirmed: <ComposedConfirmation footerVariant="unconfirmed" />,
+  matchingDetailsUnavailable: <ComposedConfirmation footerVariant="unavailable" />,
 }
 
 export default Fixtures

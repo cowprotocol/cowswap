@@ -1,4 +1,4 @@
-// Demo values until backend can report CoW membership and a trading-alone baseline.
+// Cosmos fixtures only. Production fills these from the solver competition.
 export const WAIT_AND_SAVE_OUTCOME_DEMO = {
   gainAmount: '48,213.0542',
   gainFiat: '48,213.05',

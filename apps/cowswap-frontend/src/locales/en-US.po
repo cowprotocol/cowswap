@@ -1097,6 +1097,10 @@ msgstr "Unsupported Token"
 #~ msgid "Limit price (incl. costs)"
 #~ msgstr "Limit price (incl. costs)"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+msgid "We couldn't confirm whether this order was matched with another trader in the same auction."
+msgstr "We couldn't confirm whether this order was matched with another trader in the same auction."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ContextMenu/OrderContextMenu.pure.tsx
 msgid "Order receipt"
 msgstr "Order receipt"
@@ -1300,6 +1304,11 @@ msgstr "{minutes, plural, one {# minute} few {# minutes} many {# minutes} other 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Already seen today's fortune? Return tomorrow for a fresh one!"
 msgstr "Already seen today's fortune? Return tomorrow for a fresh one!"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+msgid "Matching unconfirmed"
+msgstr "Matching unconfirmed"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Enough signatures, <0>but not executed</0>"
@@ -2591,6 +2600,11 @@ msgstr "Swap order filled"
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "Let's slice some"
 msgstr "Let's slice some"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+msgid "Matching details unavailable"
+msgstr "Matching details unavailable"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Unable to load affiliate code right now."
@@ -4142,6 +4156,10 @@ msgstr "Approval was cancelled or not broadcast. Please try again."
 #~ msgid "Approval confirmed"
 #~ msgstr "Approval confirmed"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
+msgid "Auction details aren't available, so we can't tell whether this order was part of a CoW."
+msgstr "Auction details aren't available, so we can't tell whether this order was part of a CoW."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "The referral code expired before this trade was executed."
 msgstr "The referral code expired before this trade was executed."
@@ -5279,7 +5297,7 @@ msgstr "This could have happened due to the lack of internet or the release of a
 #~ msgid "No rewards to claim"
 #~ msgstr "No rewards to claim"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Your trade was matched with other orders in a Coincidence of Wants (CoW)."
 msgstr "Your trade was matched with other orders in a Coincidence of Wants (CoW)."
 
