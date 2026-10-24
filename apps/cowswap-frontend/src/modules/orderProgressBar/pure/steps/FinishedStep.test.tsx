@@ -18,6 +18,7 @@ import { FinishedStep, FinishedSuccessHeading } from './FinishedStep'
 
 import { getOrderMock } from '../../../../mocks/orderMock'
 import { OrderProgressBarStepName } from '../../types'
+import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 
 jest.mock('react-inlinesvg', () => ({
   __esModule: true,
@@ -32,7 +33,7 @@ jest.mock('modules/trade', () => ({
   }: {
     heading?: { title: ReactNode; subtitle?: ReactNode }
     tokenPair?: {
-      cowParticipation?: { tooltip: ReactNode }
+      cowParticipation?: { variant?: string; tooltip?: ReactNode }
       outputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
     }
     children?: ReactNode
@@ -51,7 +52,9 @@ jest.mock('modules/trade', () => ({
             {tokenPair.outputCurrencyInfo.secondaryAmount.tooltip}
           </div>
         ) : null}
-        {tokenPair?.cowParticipation ? <div data-testid="cow-participation-footer" /> : null}
+        {tokenPair?.cowParticipation ? (
+          <div data-testid="cow-participation-footer">{tokenPair.cowParticipation.variant ?? 'cow'}</div>
+        ) : null}
       </div>
       {children}
     </div>
@@ -229,7 +232,7 @@ describe('FinishedStep', () => {
     expect(tips.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
-  it('renders WaitAndSaveOutcome instead of finished tips and surplus amount when Wait & Save has a gain', () => {
+  it('renders WaitAndSaveOutcome instead of finished tips and surplus amount when a CoW gain is measured', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
@@ -237,7 +240,7 @@ describe('FinishedStep', () => {
         chainId={SupportedChainId.MAINNET}
         randomBenefit="CoW Protocol is MEV protected"
         surplusData={surplusData}
-        showWaitAndSaveOutcome
+        waitAndSave={{ footerVariant: 'cow', outcome: WAIT_AND_SAVE_OUTCOME_DEMO }}
         solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
         totalSolvers={10}
       >
@@ -245,7 +248,7 @@ describe('FinishedStep', () => {
       </FinishedStep>,
     )
 
-    expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
     expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()
@@ -256,5 +259,104 @@ describe('FinishedStep', () => {
     const solvers = screen.getByTestId('solver-competition-expand')
     expect(confirmation.compareDocumentPosition(outcome) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(outcome.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('keeps the CoW footer and finished tips when the CoW gain cannot be measured', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ footerVariant: 'cow', outcome: null }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+  })
+
+  it('shows the gain card with an unconfirmed matching footer', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ footerVariant: 'unconfirmed', outcome: WAIT_AND_SAVE_OUTCOME_DEMO }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('unconfirmed')
+    expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+  })
+
+  it('shows an unconfirmed footer and finished tips when neither CoW nor gain is known', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ footerVariant: 'unconfirmed', outcome: null }}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('unconfirmed')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+  })
+
+  it('shows an unavailable footer when auction details are missing', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ footerVariant: 'unavailable', outcome: null }}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('unavailable')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+  })
+
+  it('uses regular finished chrome when the fill was not a CoW', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ footerVariant: null, outcome: null }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
   })
 })

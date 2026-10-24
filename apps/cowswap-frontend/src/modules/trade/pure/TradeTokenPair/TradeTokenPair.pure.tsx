@@ -39,7 +39,10 @@ export function TradeTokenPair({
 }: TradeTokenPairProps): ReactNode {
   const isBridging = getAreBridgeCurrencies(inputCurrencyInfo.amount?.currency, outputCurrencyInfo.amount?.currency)
   const footerContent =
-    footer ?? (cowParticipation ? <CowParticipationFooter tooltip={cowParticipation.tooltip} /> : null)
+    footer ??
+    (cowParticipation ? (
+      <CowParticipationFooter variant={cowParticipation.variant} tooltip={cowParticipation.tooltip} />
+    ) : null)
   const hasFooter = Boolean(footerContent)
 
   return (

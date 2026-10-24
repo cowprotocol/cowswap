@@ -84,4 +84,24 @@ describe('TradeTokenPair', () => {
     expect(footer.textContent).toContain('You were part of a CoW')
     expect(screen.getByTestId('tooltip-icon').textContent).toBe('CoW tooltip')
   })
+
+  it('renders the unconfirmed and unavailable matching labels', () => {
+    const { rerender } = renderPair(
+      <TradeTokenPair {...tokenPairProps} cowParticipation={{ variant: 'unconfirmed' }} />,
+    )
+
+    expect(screen.getByTestId('trade-token-pair-footer').textContent).toContain('Matching unconfirmed')
+    expect(screen.getByTestId('tooltip-icon').textContent).toContain("couldn't confirm")
+
+    rerender(
+      <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
+        <I18nProvider i18n={i18n}>
+          <TradeTokenPair {...tokenPairProps} cowParticipation={{ variant: 'unavailable' }} />
+        </I18nProvider>
+      </StyledComponentsThemeProvider>,
+    )
+
+    expect(screen.getByTestId('trade-token-pair-footer').textContent).toContain('Matching details unavailable')
+    expect(screen.getByTestId('tooltip-icon').textContent).toContain("aren't available")
+  })
 })
