@@ -143,22 +143,20 @@ function classifyWinner(
   classByOrderUid: CompanionClassByUid,
 ): CowMembership {
   let traderCount = 0
-  let unknownCount = 0
 
   for (const order of winner.orders ?? []) {
+    // Ignore our own order:
     if (!order.id || sameOrderUid(order.id, orderUid)) continue
 
     const orderClass = lookupCompanionClass(classByOrderUid, order.id)
+
+    // Ignore LIQUIDITY orders:
     if (orderClass === OrderClass.MARKET || orderClass === OrderClass.LIMIT) {
       traderCount += 1
-    } else if (orderClass !== OrderClass.LIQUIDITY) {
-      unknownCount += 1
     }
   }
 
-  if (traderCount > 0) return 'cow'
-  if (unknownCount > 0) return 'unconfirmed'
-  return 'not_cow'
+  return traderCount > 0 ? 'cow' : 'not_cow'
 }
 
 function isTradingAloneSolution(
