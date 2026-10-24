@@ -55,7 +55,6 @@ export function CurrencyAmountPreview({
   const { fiatAmount, amount, prefix, secondaryAmount } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
-  const secondaryCurrency = secondaryAmount?.amount.currency
   const containerClassName = [className, variant === 'slim' ? 'slim' : null].filter(Boolean).join(' ')
 
   return (
@@ -70,17 +69,7 @@ export function CurrencyAmountPreview({
           prefix={prefix}
         />
         {secondaryAmount ? (
-          <styledEl.SecondaryAmount $variant={secondaryAmount.variant} data-testid="currency-preview-secondary-amount">
-            <styledEl.SecondaryAmountValue
-              amount={secondaryAmount.amount}
-              tokenSymbol={secondaryCurrency}
-              prefix={secondaryAmount.prefix}
-            />
-            {secondaryAmount.fiatAmount ? (
-              <FiatAmount amount={secondaryAmount.fiatAmount} accurate={false} withParentheses />
-            ) : null}
-            {secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null}
-          </styledEl.SecondaryAmount>
+          <SecondaryAmountRow secondaryAmount={secondaryAmount} />
         ) : (
           <styledEl.FiatAmountSlot
             fiatValue={fiatAmount}
@@ -90,5 +79,32 @@ export function CurrencyAmountPreview({
         )}
       </styledEl.Amounts>
     </styledEl.Container>
+  )
+}
+
+function SecondaryAmountRow({ secondaryAmount }: { secondaryAmount: CurrencyPreviewSecondaryAmount }): ReactNode {
+  const tokenAmount = (
+    <styledEl.SecondaryAmountValue
+      amount={secondaryAmount.amount}
+      tokenSymbol={secondaryAmount.amount.currency}
+      prefix={secondaryAmount.prefix}
+    />
+  )
+  const fiatAmount = secondaryAmount.fiatAmount ? (
+    <FiatAmount amount={secondaryAmount.fiatAmount} accurate={false} withParentheses />
+  ) : null
+  const tooltip = secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null
+
+  return (
+    <styledEl.SecondaryAmount $variant={secondaryAmount.variant} data-testid="currency-preview-secondary-amount">
+      {fiatAmount || !tooltip ? tokenAmount : null}
+      {fiatAmount || tooltip ? (
+        <styledEl.SecondaryAmountEnd>
+          {!fiatAmount ? tokenAmount : null}
+          {fiatAmount}
+          {tooltip}
+        </styledEl.SecondaryAmountEnd>
+      ) : null}
+    </styledEl.SecondaryAmount>
   )
 }

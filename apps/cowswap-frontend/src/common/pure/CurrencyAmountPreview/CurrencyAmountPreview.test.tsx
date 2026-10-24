@@ -20,7 +20,7 @@ jest.mock('@cowprotocol/ui', () => {
     ...actual,
     TokenAmount: ({ prefix }: { prefix?: ReactNode }) => <span data-testid="token-amount">{prefix}amount</span>,
     FiatAmount: ({ withParentheses }: { withParentheses?: boolean }) => (
-      <span className="fiat-amount">{withParentheses ? '(≈ $7.61)' : '$7.61'}</span>
+      <span className="fiat-amount">{withParentheses ? '(~$7.61)' : '$7.61'}</span>
     ),
     InfoTooltip: ({ content }: { content: ReactNode }) => <span data-testid="info-tooltip">{content}</span>,
   }
@@ -57,7 +57,7 @@ describe('CurrencyAmountPreview', () => {
 
     const secondary = screen.getByTestId('currency-preview-secondary-amount')
     expect(secondary.textContent).toContain('+')
-    expect(secondary.textContent).toContain('(≈ $7.61)')
+    expect(secondary.textContent).toContain('(~$7.61)')
     expect(screen.getByTestId('info-tooltip').textContent).toBe('Surplus tooltip')
   })
 })

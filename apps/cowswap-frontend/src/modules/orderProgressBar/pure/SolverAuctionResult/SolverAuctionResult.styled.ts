@@ -95,15 +95,8 @@ export const ViewMoreButton = styled.button`
 export const AuctionDocsLink = styled(ExternalLink)`
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   margin-left: auto;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   ${font('FONT_SMALL', 'medium')}
   line-height: 1;
-
-  > svg {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
-  }
 `

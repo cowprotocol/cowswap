@@ -78,12 +78,20 @@ export const SecondaryAmount = styled.div<{ $variant?: 'default' | 'success' }>`
     $variant === 'success' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`};
 
   .fiat-amount {
+    ${font('FONT_SMALL', 'semibold')}
     opacity: 1;
   }
 `
 
+export const SecondaryAmountEnd = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+`
+
 export const SecondaryAmountValue = styled(TokenAmount)`
-  ${font('FONT_SMALL_PLUS', 'medium')}
+  ${font('FONT_SMALL', 'semibold')}
 `
 
 export const TokenLogo = styled(TokenLogoBase)`

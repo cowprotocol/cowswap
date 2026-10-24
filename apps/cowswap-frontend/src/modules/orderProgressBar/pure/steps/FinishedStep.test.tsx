@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 
 import { render, RenderResult, screen } from '@testing-library/react'
@@ -33,6 +33,7 @@ jest.mock('modules/trade', () => ({
     heading?: { title: ReactNode; subtitle?: ReactNode }
     tokenPair?: {
       cowParticipation?: { tooltip: ReactNode }
+      inputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
       outputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
     }
     children?: ReactNode
@@ -45,6 +46,12 @@ jest.mock('modules/trade', () => ({
         </div>
       ) : null}
       <div data-testid="trade-token-pair">
+        {tokenPair?.inputCurrencyInfo?.secondaryAmount ? (
+          <div data-testid="sold-surplus">
+            {tokenPair.inputCurrencyInfo.secondaryAmount.prefix}
+            {tokenPair.inputCurrencyInfo.secondaryAmount.tooltip}
+          </div>
+        ) : null}
         {tokenPair?.outputCurrencyInfo?.secondaryAmount ? (
           <div data-testid="received-surplus">
             {tokenPair.outputCurrencyInfo.secondaryAmount.prefix}
@@ -196,11 +203,12 @@ describe('FinishedStep', () => {
 
     expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
     expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
   })
 
-  it('shows surplus under You received and keeps surplus tips on a regular swap', () => {
+  it('shows surplus under You received and keeps surplus tips on a regular sell swap', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
@@ -215,6 +223,7 @@ describe('FinishedStep', () => {
       </FinishedStep>,
     )
 
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.getByTestId('received-surplus').textContent).toContain('+')
     expect(screen.getByTestId('received-surplus').textContent).toContain(
       'The extra amount you received compared to your limit price.',
@@ -227,6 +236,41 @@ describe('FinishedStep', () => {
     const tips = screen.getByTestId('finished-tips')
     const solvers = screen.getByTestId('solver-competition-expand')
     expect(tips.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('shows surplus under You sold for a buy order', () => {
+    const buyOrder = {
+      ...order,
+      kind: OrderKind.BUY,
+    } as Order
+    const buySurplusData: SurplusData = {
+      ...surplusData,
+      surplusAmount: CurrencyAmount.fromRawAmount(buyOrder.inputToken, '2470000'),
+      surplusFiatValue: CurrencyAmount.fromRawAmount(buyOrder.inputToken, '7610000'),
+      surplusToken: buyOrder.inputToken,
+    }
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={buyOrder}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={buySurplusData}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.getByTestId('sold-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('sold-surplus').textContent).toContain(
+      'The amount you saved compared to your limit price.',
+    )
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
   })
 
   it('renders WaitAndSaveOutcome instead of finished tips and surplus amount when Wait & Save has a gain', () => {
@@ -247,6 +291,7 @@ describe('FinishedStep', () => {
 
     expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
     expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()

@@ -3,7 +3,6 @@ import { ReactNode, useMemo, useState } from 'react'
 import { Currency } from '@cowprotocol/currency'
 
 import { Plural, Trans } from '@lingui/react/macro'
-import { ExternalLink as ExternalLinkIcon } from 'react-feather'
 import { PiCaretDown, PiCaretUp } from 'react-icons/pi'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -125,8 +124,7 @@ export function SolverAuctionResult({
             label: 'How the auction works',
           })}
         >
-          <Trans>How the auction works</Trans>
-          <ExternalLinkIcon size={14} aria-hidden />
+          <Trans>How the auction works</Trans> ↗
         </styledEl.AuctionDocsLink>
       </styledEl.Footer>
     </styledEl.Wrapper>

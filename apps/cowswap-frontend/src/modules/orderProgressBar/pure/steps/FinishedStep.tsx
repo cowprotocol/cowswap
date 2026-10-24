@@ -6,6 +6,7 @@ import {
   getCoWExplorerLinkTitle,
   getExplorerLink,
   getExplorerOrderLink,
+  isSellOrder,
   shortenAddress,
 } from '@cowprotocol/common-utils'
 import { isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -57,6 +58,7 @@ interface FinishedStepProps {
   showWaitAndSaveOutcome?: boolean
 }
 
+// eslint-disable-next-line complexity
 export function FinishedStep({
   children,
   stepName,
@@ -74,7 +76,10 @@ export function FinishedStep({
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
   const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
-  const surplusTooltip = t`The extra amount you received compared to your limit price.`
+  const isSell = Boolean(order && isSellOrder(order.kind))
+  const surplusTooltip = isSell
+    ? t`The extra amount you received compared to your limit price.`
+    : t`The amount you saved compared to your limit price.`
   const surplusSecondaryAmount = useMemo(
     () => getFinishedSurplusSecondaryAmount(surplusData, shouldShowSurplus && !showWaitAndSaveCard, surplusTooltip),
     [surplusData, shouldShowSurplus, showWaitAndSaveCard, surplusTooltip],
@@ -168,6 +173,8 @@ function buildFinishedTokenPair(
     return undefined
   }
 
+  const showSurplusOnSoldSide = Boolean(surplusSecondaryAmount) && !isSellOrder(order.kind)
+
   return {
     variant: 'slim',
     inputCurrencyInfo: {
@@ -175,13 +182,14 @@ function buildFinishedTokenPair(
       fiatAmount: null,
       balance: null,
       label: soldLabel,
+      secondaryAmount: showSurplusOnSoldSide ? surplusSecondaryAmount : undefined,
     },
     outputCurrencyInfo: {
       amount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
       fiatAmount: null,
       balance: null,
       label: receivedLabel,
-      secondaryAmount: surplusSecondaryAmount,
+      secondaryAmount: showSurplusOnSoldSide ? undefined : surplusSecondaryAmount,
     },
     priceImpact: { priceImpact: undefined, loading: false },
     inputTestId: TEST_IDS.orderSoldAmount,
