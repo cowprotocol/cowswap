@@ -90,6 +90,11 @@ export const SecondaryAmountEnd = styled.span`
   white-space: nowrap;
 `
 
+export const SecondaryAmountTooltip = styled.span`
+  display: inline-flex;
+  color: var(${UI.COLOR_TEXT_SECONDARY});
+`
+
 export const SecondaryAmountValue = styled(TokenAmount)`
   ${font('FONT_SMALL', 'semibold')}
 `

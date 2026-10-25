@@ -5181,11 +5181,9 @@ msgstr ""
 #~ msgid "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
 #~ msgstr "Confirm the approval transaction in your connected wallet. Each part is pulled right before it trades."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-#~ msgid "saved"
-#~ msgstr "saved"
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "saved"
+msgstr "saved"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Hook Store"

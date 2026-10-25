@@ -93,7 +93,11 @@ function SecondaryAmountRow({ secondaryAmount }: { secondaryAmount: CurrencyPrev
   const fiatAmount = secondaryAmount.fiatAmount ? (
     <FiatAmount amount={secondaryAmount.fiatAmount} accurate={false} withParentheses />
   ) : null
-  const tooltip = secondaryAmount.tooltip ? <InfoTooltip content={secondaryAmount.tooltip} size={12} /> : null
+  const tooltip = secondaryAmount.tooltip ? (
+    <styledEl.SecondaryAmountTooltip>
+      <InfoTooltip content={secondaryAmount.tooltip} size={12} />
+    </styledEl.SecondaryAmountTooltip>
+  ) : null
 
   return (
     <styledEl.SecondaryAmount $variant={secondaryAmount.variant} data-testid="currency-preview-secondary-amount">

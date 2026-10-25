@@ -80,9 +80,16 @@ export function FinishedStep({
   const surplusTooltip = isSell
     ? t`The extra amount you received compared to your limit price.`
     : t`The amount you saved compared to your limit price.`
+  const surplusPrefix = isSell ? '+' : `${t`saved`} `
   const surplusSecondaryAmount = useMemo(
-    () => getFinishedSurplusSecondaryAmount(surplusData, shouldShowSurplus && !showWaitAndSaveCard, surplusTooltip),
-    [surplusData, shouldShowSurplus, showWaitAndSaveCard, surplusTooltip],
+    () =>
+      getFinishedSurplusSecondaryAmount(
+        surplusData,
+        shouldShowSurplus && !showWaitAndSaveCard,
+        surplusTooltip,
+        surplusPrefix,
+      ),
+    [surplusData, shouldShowSurplus, showWaitAndSaveCard, surplusTooltip, surplusPrefix],
   )
 
   const showConfetti = useWithConfetti({
@@ -278,6 +285,7 @@ function getFinishedSurplusSecondaryAmount(
   surplusData: SurplusData | undefined,
   shouldShowReceivedSurplus: boolean,
   tooltip: string,
+  prefix: ReactNode,
 ): CurrencyPreviewSecondaryAmount | undefined {
   if (!shouldShowReceivedSurplus || !surplusData?.surplusAmount) {
     return undefined
@@ -286,7 +294,7 @@ function getFinishedSurplusSecondaryAmount(
   return {
     amount: surplusData.surplusAmount,
     fiatAmount: surplusData.showFiatValue ? surplusData.surplusFiatValue : undefined,
-    prefix: '+',
+    prefix,
     tooltip,
     variant: 'success',
   }

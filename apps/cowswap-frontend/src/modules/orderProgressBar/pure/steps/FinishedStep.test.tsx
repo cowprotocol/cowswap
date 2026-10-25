@@ -265,7 +265,8 @@ describe('FinishedStep', () => {
     )
 
     expect(screen.queryByTestId('received-surplus')).toBeNull()
-    expect(screen.getByTestId('sold-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('sold-surplus').textContent).toContain('saved')
+    expect(screen.getByTestId('sold-surplus').textContent).not.toContain('+')
     expect(screen.getByTestId('sold-surplus').textContent).toContain(
       'The amount you saved compared to your limit price.',
     )
