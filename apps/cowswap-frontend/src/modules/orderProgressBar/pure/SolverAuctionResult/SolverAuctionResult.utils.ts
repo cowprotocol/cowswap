@@ -46,7 +46,7 @@ export function formatSolverBidUsdDelta(usdDelta: CurrencyAmount<Currency>): str
   const oneCent = CurrencyAmount.fromRawAmount(usdDelta.currency, 10n ** BigInt(centScale))
 
   if (usdDelta.greaterThan(0) && usdDelta.lessThan(oneCent)) {
-    return '<$0.01'
+    return '-<$0.01'
   }
 
   return `-$${formatFiatAmount(usdDelta)}`

@@ -147,7 +147,7 @@ describe('SolverAuctionResult', () => {
     expect(fills[1]?.getAttribute('data-percent')).toBe(String(fractalPercent))
   })
 
-  it('shows <$0.01 when the usd bid gap is below one cent', () => {
+  it('shows -<$0.01 when the usd bid gap is below one cent', () => {
     mockedUseUsdAmount.mockReturnValue({
       value: CurrencyAmount.fromRawAmount(USDC_MAINNET, '9000'),
       isLoading: false,
@@ -155,7 +155,7 @@ describe('SolverAuctionResult', () => {
 
     renderResult(<SolverAuctionResult solvers={solvers} buyToken={buyToken} />)
 
-    expect(screen.getAllByText('<$0.01').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('-<$0.01').length).toBeGreaterThan(0)
   })
 
   it('renders nothing when there are no solvers', () => {

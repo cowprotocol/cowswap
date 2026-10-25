@@ -114,10 +114,10 @@ describe('SolverAuctionResult.utils', () => {
   })
 
   describe('formatSolverBidUsdDelta', () => {
-    it('shows <$0.01 when the usd gap is below one cent', () => {
+    it('shows -<$0.01 when the usd gap is below one cent', () => {
       const tiny = CurrencyAmount.fromRawAmount(USDC_MAINNET, '9000')
 
-      expect(formatSolverBidUsdDelta(tiny)).toBe('<$0.01')
+      expect(formatSolverBidUsdDelta(tiny)).toBe('-<$0.01')
     })
 
     it('shows -$X when the usd gap is at least one cent', () => {
