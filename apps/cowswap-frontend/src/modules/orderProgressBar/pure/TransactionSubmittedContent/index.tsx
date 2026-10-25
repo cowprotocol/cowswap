@@ -47,6 +47,7 @@ export interface TransactionSubmittedContentProps {
   currencyToAdd?: Nullish<Currency>
   orderProgressBarProps: OrderProgressBarProps
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
+  successTitle?: ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
@@ -60,6 +61,7 @@ export function TransactionSubmittedContent({
   activityDerivedState,
   orderProgressBarProps,
   navigateToNewOrderCallback,
+  successTitle,
 }: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
   const { isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } = orderProgressBarProps
@@ -91,7 +93,15 @@ export function TransactionSubmittedContent({
       <Modal.Root>
         <Modal.Header
           onClose={onDismiss}
-          headerContent={<FinishedSuccessHeading order={order} chainId={chainId} receiverEnsName={receiverEnsName} />}
+          headerContent={
+            <FinishedSuccessHeading
+              order={order}
+              chainId={chainId}
+              receiverEnsName={receiverEnsName}
+              stepName={stepName}
+              title={successTitle}
+            />
+          }
         />
         <Modal.Content>
           {progressBar}

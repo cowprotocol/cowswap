@@ -15,9 +15,10 @@ import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent
 
 interface OrderSubmittedContentProps {
   onDismiss: Command
+  successTitle?: ReactNode
 }
 
-export function OrderSubmittedContent({ onDismiss }: OrderSubmittedContentProps): ReactNode {
+export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmittedContentProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { transactionHash } = useTradeConfirmState()
   const order = useOrder({ chainId, id: transactionHash || undefined })
@@ -38,6 +39,7 @@ export function OrderSubmittedContent({ onDismiss }: OrderSubmittedContentProps)
       activityDerivedState={activityDerivedState}
       orderProgressBarProps={{ ...orderProgressBarProps, showWaitAndSaveOutcome }}
       navigateToNewOrderCallback={navigateToNewOrderCallback}
+      successTitle={successTitle}
     />
   )
 }

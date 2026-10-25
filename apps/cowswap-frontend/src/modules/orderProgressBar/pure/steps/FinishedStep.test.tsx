@@ -161,6 +161,25 @@ describe('FinishedStep', () => {
     expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
   })
 
+  it('uses Order complete for cancellation-failed finished chrome', () => {
+    renderFinished(
+      <FinishedSuccessHeading
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        stepName={OrderProgressBarStepName.CANCELLATION_FAILED}
+      />,
+    )
+
+    expect(screen.getByTestId('confirmation-success-heading').textContent).toContain('Order complete')
+    expect(screen.getByTestId('confirmation-success-heading').textContent).not.toContain('Swap complete')
+  })
+
+  it('uses an explicit success title when provided', () => {
+    renderFinished(<FinishedSuccessHeading order={order} chainId={SupportedChainId.MAINNET} title="Order complete" />)
+
+    expect(screen.getByTestId('confirmation-success-heading').textContent).toContain('Order complete')
+  })
+
   it('links a custom recipient address to the block explorer', () => {
     const receiver = '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb'
     renderFinished(<FinishedSuccessHeading order={{ ...order, receiver }} chainId={SupportedChainId.MAINNET} />)

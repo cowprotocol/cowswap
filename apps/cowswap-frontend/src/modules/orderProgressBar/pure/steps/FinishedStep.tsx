@@ -42,6 +42,8 @@ export interface FinishedSuccessHeadingProps {
   order: Order
   chainId: SupportedChainId
   receiverEnsName?: string | null
+  stepName?: OrderProgressBarStepName
+  title?: ReactNode
 }
 
 interface FinishedStepProps {
@@ -156,11 +158,17 @@ export function FinishedStep({
   )
 }
 
-export function FinishedSuccessHeading({ order, chainId, receiverEnsName }: FinishedSuccessHeadingProps): ReactNode {
+export function FinishedSuccessHeading({
+  order,
+  chainId,
+  receiverEnsName,
+  stepName,
+  title,
+}: FinishedSuccessHeadingProps): ReactNode {
   return (
     <BaseTradeConfirmation
       heading={{
-        title: <Trans>Swap complete</Trans>,
+        title: title ?? getFinishedSuccessTitle(stepName),
         subtitle: <FinishedSubtitle order={order} chainId={chainId} receiverEnsName={receiverEnsName} />,
       }}
     />
@@ -279,6 +287,14 @@ function FinishedSubtitle({
       Your {tokenSymbol} is in your wallet. <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
     </Trans>
   )
+}
+
+function getFinishedSuccessTitle(stepName?: OrderProgressBarStepName): ReactNode {
+  if (stepName === OrderProgressBarStepName.CANCELLATION_FAILED) {
+    return <Trans>Order complete</Trans>
+  }
+
+  return <Trans>Swap complete</Trans>
 }
 
 function getFinishedSurplusSecondaryAmount(
