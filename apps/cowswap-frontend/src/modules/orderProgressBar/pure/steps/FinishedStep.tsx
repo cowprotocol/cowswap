@@ -35,8 +35,8 @@ import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
+import { buildWaitAndSaveOutcomeProps } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.utils'
 
 export interface FinishedSuccessHeadingProps {
   order: Order
@@ -60,7 +60,7 @@ interface FinishedStepProps {
   showWaitAndSaveOutcome?: boolean
 }
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity, max-lines-per-function
 export function FinishedStep({
   children,
   stepName,
@@ -77,8 +77,30 @@ export function FinishedStep({
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
-  const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
   const isSell = Boolean(order && isSellOrder(order.kind))
+  const waitAndSaveOutcomeProps = useMemo(() => {
+    if (!showWaitAndSaveOutcome || !shouldShowSurplus || !order || !surplusData?.surplusAmount) {
+      return null
+    }
+
+    const executedRaw = isSell
+      ? order.apiAdditionalInfo?.executedBuyAmount
+      : order.apiAdditionalInfo?.executedSellAmount
+
+    if (!isNonZeroAmount(executedRaw)) {
+      return null
+    }
+
+    return buildWaitAndSaveOutcomeProps({
+      surplusAmount: surplusData.surplusAmount,
+      surplusFiatValue: surplusData.surplusFiatValue,
+      showFiatValue: surplusData.showFiatValue,
+      surplusPercent: surplusData.surplusPercent,
+      executedAmount: CurrencyAmount.fromRawAmount(surplusData.surplusAmount.currency, executedRaw),
+      isSell,
+    })
+  }, [showWaitAndSaveOutcome, shouldShowSurplus, order, surplusData, isSell])
+  const showWaitAndSaveCard = waitAndSaveOutcomeProps !== null
   const surplusTooltip = isSell
     ? t`The extra amount you received compared to your limit price.`
     : t`The amount you saved compared to your limit price.`
@@ -106,7 +128,7 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const cowParticipationTooltip = t`Your trade was matched with other orders in a Coincidence of Wants (CoW).`
+  const waitAndSaveTooltip = t`Waiting helps solvers offer a better price, and you get reduced fees on selected trades.`
   const tokenPair = useMemo(() => {
     if (!order) {
       return undefined
@@ -120,9 +142,9 @@ export function FinishedStep({
 
     return {
       ...pair,
-      cowParticipation: { tooltip: cowParticipationTooltip },
+      cowParticipation: { tooltip: waitAndSaveTooltip },
     }
-  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, cowParticipationTooltip])
+  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, waitAndSaveTooltip])
 
   if (!order) {
     return null
@@ -140,7 +162,7 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {waitAndSaveOutcomeProps ? <WaitAndSaveOutcome {...waitAndSaveOutcomeProps} /> : null}
 
         {showExpandedAuction ? (
           <SolverAuctionResult solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} framed />

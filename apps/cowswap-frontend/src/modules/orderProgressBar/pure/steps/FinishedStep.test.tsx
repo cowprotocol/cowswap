@@ -74,7 +74,11 @@ jest.mock('../SolverAuctionResult/SolverAuctionResult.pure', () => ({
 }))
 
 jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
-  WaitAndSaveOutcome: () => <div data-testid="wait-and-save-outcome" />,
+  WaitAndSaveOutcome: ({ gainAmount, tokenSymbol }: { gainAmount: string; tokenSymbol: string }) => (
+    <div data-testid="wait-and-save-outcome">
+      +{gainAmount} {tokenSymbol}
+    </div>
+  ),
 }))
 
 jest.mock('entities/injectedWidget', () => ({
@@ -310,7 +314,10 @@ describe('FinishedStep', () => {
     )
 
     expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
-    expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain(
+      surplusData.surplusAmount?.currency.symbol ?? '',
+    )
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('+')
     expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()

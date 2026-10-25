@@ -59,7 +59,7 @@ function ComposedConfirmation(props: WaitAndSaveOutcomeProps): ReactNode {
           },
           priceImpact: { priceImpact: undefined, loading: false },
           cowParticipation: {
-            tooltip: 'Your trade was matched with other orders in a Coincidence of Wants (CoW).',
+            tooltip: 'Waiting helps solvers offer a better price, and you get reduced fees on selected trades.',
           },
         }}
       >

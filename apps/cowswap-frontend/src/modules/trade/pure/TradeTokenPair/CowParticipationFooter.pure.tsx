@@ -24,9 +24,9 @@ export function CowParticipationFooter({ tooltip }: CowParticipationFooterProps)
         />
       </styledEl.CowMark>
       <styledEl.CowParticipationLabel>
-        <Trans>You were part of a CoW</Trans>
+        <Trans>Wait & Save</Trans>
       </styledEl.CowParticipationLabel>
-      <TooltipIcon type="info" title={t`You were part of a CoW`} content={tooltip} />
+      <TooltipIcon type="info" title={t`Wait & Save`} content={tooltip} />
     </styledEl.CowParticipation>
   )
 }

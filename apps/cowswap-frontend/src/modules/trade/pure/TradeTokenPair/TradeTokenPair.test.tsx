@@ -77,11 +77,11 @@ describe('TradeTokenPair', () => {
     expect(screen.getByTestId('trade-token-pair-footer').textContent).toContain('Custom footer')
   })
 
-  it('renders the CoW participation footer when cowParticipation is set', () => {
-    renderPair(<TradeTokenPair {...tokenPairProps} cowParticipation={{ tooltip: 'CoW tooltip' }} />)
+  it('renders the Wait & Save footer when cowParticipation is set', () => {
+    renderPair(<TradeTokenPair {...tokenPairProps} cowParticipation={{ tooltip: 'Wait & Save tooltip' }} />)
 
     const footer = screen.getByTestId('trade-token-pair-footer')
-    expect(footer.textContent).toContain('You were part of a CoW')
-    expect(screen.getByTestId('tooltip-icon').textContent).toBe('CoW tooltip')
+    expect(footer.textContent).toContain('Wait & Save')
+    expect(screen.getByTestId('tooltip-icon').textContent).toBe('Wait & Save tooltip')
   })
 })

@@ -46,12 +46,9 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
             />
           </styledEl.TitleRow>
           <styledEl.DescriptionRow>
-            <styledEl.SaveAmount>
-              <Trans>Save $2.50</Trans>
-            </styledEl.SaveAmount>
             <styledEl.NextBatch>
               <Trans>
-                · Joins batch in <span ref={joinsBatchInRef} />
+                Joins batch in <span ref={joinsBatchInRef} />
               </Trans>
             </styledEl.NextBatch>
           </styledEl.DescriptionRow>
