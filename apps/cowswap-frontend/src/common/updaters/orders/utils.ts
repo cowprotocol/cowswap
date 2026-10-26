@@ -4,9 +4,10 @@ import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { BridgeOrderData, Nullish, UiOrderType } from '@cowprotocol/types'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
+import { UNWATCHED_CREATING_ORDER_TIMEOUT } from 'legacy/state/orders/consts'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
-import { getOrder } from 'api/cowProtocol'
+import { getIsOrderNotFoundError, getOrder } from 'api/cowProtocol'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -62,6 +63,21 @@ export function getFulfilledOrderUidsForSurplusQueue(
   return fulfilledOrders
     .filter((order) => orderTypesByUid[order.uid] === UiOrderType.SWAP && !getIsBridgeOrder(order))
     .map((order) => order.uid)
+}
+
+/**
+ * Whether a creating order can be given up on: the order book says it does not exist, and nothing
+ * else is in a position to ever say otherwise.
+ *
+ * An order whose creation transaction is known is failed by `FinalizeTxUpdater` once that
+ * transaction dies. A sponsored Solana order has none — its bundle is handed to the order book
+ * rather than broadcast — so no failure can reach it, and without this it is polled, and 404s, for
+ * as long as the app is open.
+ */
+export function getIsAbandonedCreatingOrder(order: Order, error: unknown): boolean {
+  if (order.orderCreationHash || !getIsOrderNotFoundError(error)) return false
+
+  return Date.now() - new Date(order.creationTime).getTime() > UNWATCHED_CREATING_ORDER_TIMEOUT
 }
 
 export function getOrdersFromTransitionData(orderData: OrderTransitionData[]): EnrichedOrder[] {

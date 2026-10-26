@@ -30,6 +30,7 @@ import {
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
+import { PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -67,6 +68,7 @@ export function RateInput() {
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
+  const priceChangePercent = useRateImpact(isInverted)
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -243,6 +245,7 @@ export function RateInput() {
             inputCurrency={inputCurrency}
             currency={primaryCurrency}
             rateImpact={rateImpact}
+            priceChangePercent={priceChangePercent}
             toggleIcon={
               <HoverTooltip
                 content={t`When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes.`}
@@ -292,6 +295,23 @@ export function RateInput() {
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>
+        <PricePercentageShortcuts
+          key={`${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}`}
+          referenceRate={marketRate}
+          activeRate={activeRate}
+          isInverted={isInverted}
+          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate}
+          onSelect={(rate) => {
+            setTypedTrailingZeros('')
+            updateLimitRateState({ typedValue: null })
+            updateRate({
+              activeRate: rate ?? toFraction('0'),
+              isTypedValue: rate === null,
+              isRateFromUrl: false,
+              isAlternativeOrderRate: false,
+            })
+          }}
+        />
       </styledEl.Wrapper>
 
       <styledEl.EstimatedRate>
