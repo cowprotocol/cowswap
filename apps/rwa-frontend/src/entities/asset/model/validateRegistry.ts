@@ -7,7 +7,7 @@ import type { RwaAsset, RwaRegistry, RwaToken, RwaTradingTime } from './types'
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
 /** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-const ALLOWED_ISSUERS: readonly string[] = ['Ondo', 'xStocks']
+const ALLOWED_ISSUERS: readonly string[] = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality']
 
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []
