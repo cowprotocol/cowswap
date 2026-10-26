@@ -35,6 +35,7 @@ export function TradeRateDetails({
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
   const protocolFeeBps = useTradeQuoteProtocolFee()
+  const detailRowStyle = !!rateInfoParams
   const solanaTxCost = useSolanaTxCost()
   const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
 
@@ -54,17 +55,17 @@ export function TradeRateDetails({
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
       loading={loading}
-      detailRowStyle
+      detailRowStyle={detailRowStyle}
     />
   )
 
-  // Paid from the wallet rather than taken out of the trade, so it sits outside the costs block.
+  // Paid from the wallet rather than taken out of the trade, so it stays out of the costs accordion.
   const txCostRow = solanaTxCost && (
     <TxCostRow
       txCost={solanaTxCost.amount}
       txCostUsd={solanaTxCostUsd}
       isSponsored={solanaTxCost.isSponsored}
-      detailRowStyle
+      detailRowStyle={detailRowStyle}
     />
   )
 
@@ -94,8 +95,8 @@ export function TradeRateDetails({
         <Box noMargin>
           {tradeFees}
           {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+          {txCostRow}
         </Box>
-        {txCostRow}
       </>
     )
   }

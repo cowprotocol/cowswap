@@ -2,9 +2,11 @@
 import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -25,6 +27,7 @@ export interface ReceiveAmountInfoTooltipProps {
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
+  const { chainId } = useWalletInfo()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
   const {
@@ -52,6 +55,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const hasFee = hasNetworkFee || hasAnyFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
+  const showFreeFee = !hasAnyFee && (isSolanaChain(chainId) || !isEoaNotEthFlow)
 
   const beforeAllFeesAmount = isSell ? beforeAllFees.buyAmount : beforeAllFees.sellAmount
 
@@ -84,9 +88,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
         testId={TEST_IDS.networkCosts}
       />
 
-      {!hasAnyFee && !isEoaNotEthFlow && (
-        <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />
-      )}
+      {showFreeFee && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />}
 
       {bridgeFee && (
         <FeeItem

@@ -74,7 +74,7 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
   const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
   const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
   const solanaTxCost = useSolanaTxCost()
-  const solanaTxCostUsd = useUsdAmount(hideUsdValues ? null : solanaTxCost?.amount).value
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
 
   // Limit price is the same for all parts
   const limitPrice = useMemo(() => getLimitPriceFromReceiveAmount(receiveAmountInfo), [receiveAmountInfo])

@@ -125,7 +125,12 @@ export function TradeRateDetails({
 
       {/* Paid from the wallet rather than taken out of the trade, so it sits outside the costs accordion */}
       {solanaTxCost && (
-        <TxCostRow txCost={solanaTxCost.amount} txCostUsd={solanaTxCostUsd} isSponsored={solanaTxCost.isSponsored} />
+        <TxCostRow
+          txCost={solanaTxCost.amount}
+          txCostUsd={solanaTxCostUsd}
+          isSponsored={solanaTxCost.isSponsored}
+          detailRowStyle
+        />
       )}
 
       {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
