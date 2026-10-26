@@ -26,6 +26,7 @@ import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
   { side: 'buy', title: 'Buy' },
@@ -75,14 +76,11 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           ))}
         </div>
         {!isAutoSelected && (
-          <button
-            type="button"
-            className={styles.auto}
-            title="Trade the token with the best quote"
-            onClick={() => setTokenKey(null)}
-          >
-            Use Auto
-          </button>
+          <Tooltip content="Trade the token with the best quote">
+            <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>
+              Use Auto
+            </button>
+          </Tooltip>
         )}
         <NetworkSelect asset={asset} chainId={selection.chainId} />
       </div>
@@ -90,14 +88,11 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
         <span>Stock token</span>
         <span className={styles.quoteTitle}>
           {sideTitle} quote / share
-          <span
-            className={styles.info}
-            role="img"
-            aria-label="Quote details"
-            title={`Price per share for a $1,000 ${side} order, including network costs and fees`}
-          >
-            <InfoIcon />
-          </span>
+          <Tooltip content={`Price per share for a $1,000 ${side} order, including network costs and fees`}>
+            <span className={styles.info} role="img" aria-label="Quote details">
+              <InfoIcon />
+            </span>
+          </Tooltip>
         </span>
       </div>
       {selection.quotesError && (
@@ -187,16 +182,16 @@ function TradeTokenOption({
       </span>
       <span className={styles.quote}>
         {isPriceOutlier ? (
-          <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
-            Insufficient liquidity
-          </span>
+          <Tooltip content="The quote is far from the stock price, liquidity is too low">
+            <span className={styles.secondary}>Insufficient liquidity</span>
+          </Tooltip>
         ) : pricePerShare !== null ? (
           <>
             <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
             {isUnverifiedShown && (
-              <span className={styles.secondary} title="The order book could not simulate this trade">
-                Unverified quote
-              </span>
+              <Tooltip content="The order book could not simulate this trade">
+                <span className={styles.secondary}>Unverified quote</span>
+              </Tooltip>
             )}
             {stockPrice && (
               <span className={styles.secondary}>{formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock</span>
