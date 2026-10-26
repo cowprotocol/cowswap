@@ -14,12 +14,11 @@ import {
   TrustedSection,
   WhySection,
 } from './sections'
-
-import { PageWrapper } from '@/styles/styled'
+import { SolanaPageWrapper } from './styled'
 
 export default function Page(): ReactNode {
   return (
-    <PageWrapper>
+    <SolanaPageWrapper>
       <HeroSection />
       <StatsStrip />
       <WhySection />
@@ -30,6 +29,6 @@ export default function Page(): ReactNode {
       <FaqSection />
       <FinalCtaSection />
       <DisclaimerSection />
-    </PageWrapper>
+    </SolanaPageWrapper>
   )
 }

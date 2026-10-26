@@ -7,7 +7,6 @@ import svgProgrammaticOrdersSrc from '@cowprotocol/assets/images/image-programma
 import svgSolversSrc from '@cowprotocol/assets/images/image-solvers.svg'
 import svgSurplusSrc from '@cowprotocol/assets/images/image-surplus.svg'
 import svgTwapSrc from '@cowprotocol/assets/images/image-twap.svg'
-import svgWidgetSrc from '@cowprotocol/assets/images/image-widget.svg'
 import iconAaveSrc from '@cowprotocol/assets/images/logo-aave-icon.svg'
 import svgCoinbaseWalletSrc from '@cowprotocol/assets/images/logo-coinbase-wallet.svg'
 import svgKaminoSrc from '@cowprotocol/assets/images/logo-kamino.svg'
@@ -51,18 +50,18 @@ export const ACTIVE_HEADLINES = LAUNCH_HEADLINES
 export const HERO = {
   subhead:
     'Get more solvers competing for every trade. More order types for your users. More ways for your app to earn. All with just one integration.',
-  signOff: 'It’s a CoW. Let’s get serious.',
 }
+
+/** Flip to `true` at launch; the match card shows “It’s complicated.” until then. */
+export const IS_LAUNCHED = false
 
 export const MATCH_CARD = {
   title: 'It’s a match.',
   subtitle: 'CoW Protocol + Solana builders',
-  rows: [
-    { label: 'Looking for', value: 'Builders who want more for their users.' },
-    { label: 'Turn-ons', value: 'Intents. Batch auctions. Limit orders. Good documentation.' },
-    { label: 'Dealbreakers', value: 'Third wheels. Getting stood up. Closed doors.' },
-    { label: 'Relationship status', value: 'Integrated.' },
-  ],
+  status: IS_LAUNCHED ? 'Integrated.' : 'It’s complicated.',
+  lookingFor: 'Builders who want more for their users.',
+  turnOns: ['Intents', 'Batch auctions', 'Limit orders', 'Good documentation'],
+  dealbreakers: ['Third wheels', 'Getting stood up', 'Closed doors'],
 }
 
 export const STATS = [
@@ -138,6 +137,7 @@ export const HOW_IT_WORKS = {
 export const TRUSTED = {
   lead: {
     logo: svgKaminoSrc,
+    stat: { value: '$1.6B', caption: 'TVL, the largest lending protocol on Solana' },
     title: 'Kamino is integrating CoW Protocol from day one.',
     description:
       'Kamino is the largest lending protocol on Solana, with $1.6B in TVL, and it’s building CoW Protocol into its product from launch. When the biggest lender on the chain picks your engine, that’s worth a look.',
@@ -148,14 +148,14 @@ export const TRUSTED = {
       description:
         'Coinbase Wallet gives its users swaps powered by CoW Protocol, settled in batch auctions designed to protect trades from MEV. No solver network of its own to build, no interface to maintain.',
       logo: svgCoinbaseWalletSrc,
-      link: null,
+      link: { text: 'Visit Coinbase Wallet', href: 'https://wallet.coinbase.com/', action: 'visit-coinbase-wallet' },
     },
     {
       title: 'Trusted at serious size.',
       description:
         'Aave DAO used CoW Swap to move over $4 million directly into a Balancer liquidity pool. For a treasury trade at that size, how the order settles is exactly what matters most. Size, meet care.',
       logo: iconAaveSrc,
-      link: '/learn/aave-trade-breakdown',
+      link: { text: 'Read the case study', href: '/learn/aave-trade-breakdown', action: 'read-aave-case-study' },
     },
   ],
   closing: 'Relationship status: Integrated. Yours could be next. (We’ll bring the cow costume.)',
@@ -172,16 +172,34 @@ export const DEVELOPERS = {
     ],
     imageSrc: svgProgrammaticOrdersSrc,
   },
-  easy: {
-    title: 'Easy',
-    paragraphs: [
-      'Looking for the easy way in? Pick your door.',
-      'SDK. Solana is a supported chain in the CoW SDK, with USDC and wrapped SOL ready to go. Quote, sign and submit orders with the same toolkit you’d use on EVM chains.',
-      'API. Prefer to go direct? The REST APIs cover the orderbook.',
-      'Widget. The fastest way in. Drop the CoW Swap widget into your app and offer swaps without building the interface or the solver network. Recent widget releases already include Solana support and sponsored orders.',
-      'And when you get stuck: real documentation, plus a live-coding environment at learn.cow.fi that runs in your browser. No setup, no stale code samples.',
-    ],
-    imageSrc: svgWidgetSrc,
+  doorsIntro: 'Looking for the easy way in? Pick your door.',
+  doors: [
+    {
+      title: 'SDK',
+      description:
+        'Solana is a supported chain in the CoW SDK, with USDC and wrapped SOL ready to go. Quote, sign and submit orders with the same toolkit you’d use on EVM chains.',
+      linkText: 'Read the SDK docs',
+      linkHref: 'https://docs.cow.fi/cow-protocol/reference/sdks/cow-sdk',
+    },
+    {
+      title: 'API',
+      description: 'Prefer to go direct? The REST APIs cover the orderbook.',
+      linkText: 'Read the API docs',
+      linkHref: 'https://docs.cow.fi/cow-protocol/reference/apis/orderbook',
+    },
+    {
+      title: 'Widget',
+      description:
+        'The fastest way in. Drop the CoW Swap widget into your app and offer swaps without building the interface or the solver network. Recent widget releases already include Solana support and sponsored orders.',
+      linkText: 'Get the widget',
+      linkHref: '/widget',
+    },
+  ],
+  learn: {
+    before: 'And when you get stuck: real documentation, plus a live-coding environment at ',
+    linkText: 'learn.cow.fi',
+    href: 'https://learn.cow.fi',
+    after: ' that runs in your browser. No setup, no stale code samples.',
   },
   trusted: {
     title: 'Trusted',
@@ -252,6 +270,7 @@ export const SOLANA_FAQ = [
 ]
 
 export const FINAL_CTA = {
+  signOff: 'It’s a CoW. Let’s get serious.',
   body: 'Whether you’re shipping a wallet, routing flow or running a lending protocol, we’d like to hear what you’re building. Bring a use case; we’ll bring the solvers.',
 }
 
