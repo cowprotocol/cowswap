@@ -74,7 +74,7 @@ export interface RwaAssetWithMarket extends RwaAsset {
 
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
 export interface RwaMarketData extends Omit<RwaAggregateMarket, 'sparkline7d'> {
-  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` only, `{}` elsewhere */
+  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` and tickers-filtered `/assets` only, `{}` elsewhere */
   tokens: Record<string, RwaTokenMarketData>
 }
 

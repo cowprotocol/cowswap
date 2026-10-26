@@ -16,6 +16,7 @@ import { AssetStats, type RwaAsset } from '@/entities/asset'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const SIDE_STICKY_GAP = 16
 
@@ -71,9 +72,9 @@ function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
         <h1>{asset.title}</h1>
         <div className={styles.meta}>
           <span>{asset.ticker}</span>
-          <span className={styles.issuers} title={issuers.join(', ')}>
+          <Tooltip className={styles.issuers} content={issuers.join(', ')}>
             {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-          </span>
+          </Tooltip>
           <NetworkLogos chainIds={chainIds} />
         </div>
       </div>

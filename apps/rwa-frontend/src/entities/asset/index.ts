@@ -57,6 +57,7 @@ export {
 export { AssetStats } from './ui/AssetStats'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
+export { getDividendModel, getDividendNotes, RWA_ISSUERS, type RwaDividendModel, type RwaIssuer } from './model/issuers'
 export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
 export { isUsMarketOpen } from './lib/usMarketStatus'

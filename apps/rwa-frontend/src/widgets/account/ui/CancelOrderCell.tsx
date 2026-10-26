@@ -10,6 +10,7 @@ import { useCancelOrder, useOrderCancellation } from '../model/useCancelOrder'
 import type { OpenOrder } from '../api/openOrders'
 
 import { getExplorerTxUrl } from '@/shared/lib/chain'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
   const cancellation = useOrderCancellation(order.uid)
@@ -54,9 +55,9 @@ export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
     <>
       <RowMenu label="Order actions" items={items} />
       {cancellation?.status === 'failed' && (
-        <span className={styles.error} title={cancellation.error}>
+        <Tooltip className={styles.error} content={cancellation.error}>
           Cancellation failed
-        </span>
+        </Tooltip>
       )}
     </>
   )

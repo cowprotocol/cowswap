@@ -6,6 +6,7 @@ import styles from './NetworkLogos.module.css'
 
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { useIsDarkTheme } from '@/shared/lib/theme'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const NETWORK_LOGO_SIZE = 16
 
@@ -19,15 +20,9 @@ export function NetworkLogos({ chainIds }: { chainIds: number[] }): ReactNode {
         const label = getChainLabel(chainId)
 
         return logoUrl ? (
-          <Image
-            key={chainId}
-            src={logoUrl}
-            alt={label}
-            title={label}
-            width={NETWORK_LOGO_SIZE}
-            height={NETWORK_LOGO_SIZE}
-            unoptimized
-          />
+          <Tooltip key={chainId} className={styles.logo} content={label}>
+            <Image src={logoUrl} alt={label} width={NETWORK_LOGO_SIZE} height={NETWORK_LOGO_SIZE} unoptimized />
+          </Tooltip>
         ) : null
       })}
     </span>

@@ -151,9 +151,18 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
 
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
   const registry = getAssets()
-  const { byId, degraded } = await loadRwaMarkets()
-  const matches = filterAssets(registry, filter).map((asset): RwaAssetListItem => {
-    return { ...asset, market: toMarketData(byId.get(asset.coingeckoId)), series: null }
+  const filtered = filterAssets(registry, filter)
+  const [{ byId, degraded: marketsDegraded }, tokenMarkets] = await Promise.all([
+    loadRwaMarkets(),
+    filter.tickers?.length ? loadTokenMarkets(filtered.flatMap((asset) => asset.tokens)) : {},
+  ])
+  const degraded = marketsDegraded || tokenMarkets === null
+  const matches = filtered.map((asset): RwaAssetListItem => {
+    return {
+      ...asset,
+      market: toListedMarketData(asset, byId.get(asset.coingeckoId), tokenMarkets ?? {}),
+      series: null,
+    }
   })
   const sorted = sortAssets(matches, sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
@@ -233,6 +242,35 @@ async function loadTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaT
     console.error('[rwa] Failed to load token markets', error)
 
     return null
+  }
+}
+
+/** Market data with the asset's own token markets, kept without the RWA market so holdings can still be valued */
+function toListedMarketData(
+  asset: RwaAsset,
+  market: RwaAggregateMarket | undefined,
+  tokenMarkets: Record<string, RwaTokenMarketData>,
+): RwaMarketData | null {
+  const tokens = Object.fromEntries(
+    asset.tokens.flatMap(({ coingeckoId }) => {
+      const tokenMarket = coingeckoId ? tokenMarkets[coingeckoId] : undefined
+
+      return coingeckoId && tokenMarket ? [[coingeckoId, tokenMarket] as const] : []
+    }),
+  )
+
+  if (market) return toMarketData(market, tokens)
+  if (!Object.keys(tokens).length) return null
+
+  return {
+    price: null,
+    change24h: null,
+    dayLow: null,
+    dayHigh: null,
+    marketCap: null,
+    volume24h: null,
+    updatedAt: null,
+    tokens,
   }
 }
 

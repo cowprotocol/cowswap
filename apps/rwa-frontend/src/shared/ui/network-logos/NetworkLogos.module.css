@@ -5,3 +5,7 @@
   align-items: center;
   gap: 4px;
 }
+
+.logo {
+  display: inline-flex;
+}

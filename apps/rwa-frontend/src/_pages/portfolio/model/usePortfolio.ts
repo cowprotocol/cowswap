@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { portfolioMarketsQueryAtomFamily } from './portfolioMarketsQueryAtom'
 
 import { getHeldTickersKey } from '../lib/heldTickers'
-import { buildHoldings, type Holding } from '../lib/holdings'
+import { buildHoldings, type Holding, type HoldingPrices } from '../lib/holdings'
 import { matchesPortfolioFilter, type PortfolioFilter } from '../lib/portfolioFilter'
 
 import { getTokenKey, type RwaAssetSummary, type RwaAssetWithMarket, type RwaTokenSummary } from '@/entities/asset'
@@ -80,10 +80,14 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     () => new Map<string, RwaAssetWithMarket>(markets?.map((item) => [item.ticker, item])),
     [markets],
   )
+  const tokenPricesByKey = useMemo(() => getTokenPricesByKey(markets), [markets])
 
   return useMemo((): Portfolio => {
     const getAsset = (token: RwaTokenSummary): RwaAssetSummary | undefined => assetsByTokenKey.get(getTokenKey(token))
-    const getPrice = (asset: RwaAssetSummary): number | null => marketsByTicker.get(asset.ticker)?.market?.price ?? null
+    const prices: HoldingPrices = {
+      getAssetPrice: (asset) => marketsByTicker.get(asset.ticker)?.market?.price ?? null,
+      getTokenPrice: (token) => tokenPricesByKey.get(getTokenKey(token)) ?? null,
+    }
     const matchesFilter = (token: RwaTokenSummary): boolean => {
       const asset = getAsset(token)
 
@@ -93,13 +97,13 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
       legs?.filter((leg) => matchesFilter(leg.assetToken))
 
     return {
-      holdings: positions && buildHoldings(assets, positions, getPrice),
+      holdings: positions && buildHoldings(assets, positions, prices),
       filteredHoldings:
         positions &&
         buildHoldings(
           assets,
           positions.filter(({ token }) => matchesFilter(token)),
-          getPrice,
+          prices,
         ),
       balancesError,
       failedChainIds,
@@ -128,5 +132,17 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     orders,
     positions,
     refreshBalances,
+    tokenPricesByKey,
   ])
+}
+
+/** USD per token, keyed by `getTokenKey` */
+function getTokenPricesByKey(markets: RwaAssetWithMarket[] | undefined): Map<string, number | null> {
+  return new Map(
+    markets?.flatMap(({ tokens, market }) =>
+      tokens.flatMap(({ coingeckoId, ...token }) =>
+        coingeckoId ? [[getTokenKey(token), market?.tokens[coingeckoId]?.price ?? null] as const] : [],
+      ),
+    ),
+  )
 }

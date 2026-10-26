@@ -6,6 +6,7 @@ import { type ReactNode, useMemo, useState } from 'react'
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
 
+import { getPremiumNote } from '../lib/premiumNote'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 
@@ -22,6 +23,7 @@ import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/sh
 import { SelectPill } from '@/shared/ui/select-pill'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const ALL = ''
 
@@ -146,9 +148,7 @@ function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: Stock
       </td>
       <td className={tableStyles.numeric}>
         {typeof price === 'number' ? `≈ ${formatUsd(price)}` : formatUsd(price)}
-        {typeof price === 'number' && stockPrice ? (
-          <span className={tableStyles.secondary}>{formatPercent((price / stockPrice - 1) * 100)} vs stock</span>
-        ) : null}
+        {typeof price === 'number' && stockPrice ? <VsStock token={token} premium={price / stockPrice - 1} /> : null}
       </td>
       <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
       <td>
@@ -172,5 +172,13 @@ function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: Stock
         </div>
       </td>
     </tr>
+  )
+}
+
+function VsStock({ token, premium }: { token: RwaToken; premium: number }): ReactNode {
+  return (
+    <Tooltip className={`${tableStyles.secondary} ${tableStyles.hint}`} content={getPremiumNote(token.issuer, premium)}>
+      {formatPercent(premium * 100)} vs stock
+    </Tooltip>
   )
 }

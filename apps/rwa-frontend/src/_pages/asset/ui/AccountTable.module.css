@@ -60,6 +60,10 @@
   line-height: 16px;
 }
 
+.hint {
+  cursor: help;
+}
+
 .warning {
   margin: 0;
   padding: 12px 24px 16px;

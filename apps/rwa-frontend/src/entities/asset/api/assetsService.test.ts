@@ -194,6 +194,44 @@ describe('listAssets', () => {
     expect(tickers(page.items)).toEqual(['AAPL', 'NVDA', 'SPY'])
     expect(page.items.every((item) => item.market === null)).toBe(true)
   })
+
+  it('fills the token markets of the matched assets when filtered by tickers', async () => {
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['NVDA'] })
+
+    expect(getTokenMarketsMock).toHaveBeenCalledWith(nvda().tokens)
+    expect(page.items[0]?.market?.tokens).toEqual(NVDA_TOKEN_MARKETS)
+    expect(page.degraded).toBe(false)
+  })
+
+  it('gives every asset the markets of its own tokens only', async () => {
+    const appleTokenMarket = { price: 251, marketCap: 10, volume24h: 1, logoUrl: null }
+    getTokenMarketsMock.mockResolvedValue({ ...NVDA_TOKEN_MARKETS, 'apple-xstock': appleTokenMarket })
+
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['AAPL', 'NVDA'] })
+
+    expect(page.items.map((item) => item.market?.tokens)).toEqual([
+      { 'apple-xstock': appleTokenMarket },
+      NVDA_TOKEN_MARKETS,
+    ])
+  })
+
+  it('keeps the token markets of an asset missing from the RWA markets', async () => {
+    getRwaMarketsMock.mockRejectedValue(new Error('CoinGecko responded with 429'))
+
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['NVDA'] })
+
+    expect(page.degraded).toBe(true)
+    expect(page.items[0]?.market).toMatchObject({ price: null, marketCap: null, tokens: NVDA_TOKEN_MARKETS })
+  })
+
+  it('keeps the asset prices and degrades when token markets fail', async () => {
+    getTokenMarketsMock.mockRejectedValue(new Error('CoinGecko responded with 429'))
+
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['NVDA'] })
+
+    expect(page.degraded).toBe(true)
+    expect(page.items[0]?.market).toMatchObject({ price: 180, tokens: {} })
+  })
 })
 
 describe('findAssets', () => {
