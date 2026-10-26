@@ -60,6 +60,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
 
   topLabel?: string
   topContent?: ReactNode
+  bottomContent?: ReactNode
   customSelectTokenButton?: ReactNode
 }
 
@@ -100,6 +101,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     },
     topLabel,
     topContent,
+    bottomContent,
     customSelectTokenButton,
     isInvalid,
   } = props
@@ -295,7 +297,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
               </styledEl.FiatAmountText>
             )}
           </div>
-          {!isUsdValuesMode && balanceView}
+          <styledEl.BottomRowEnd>
+            {bottomContent}
+            {!isUsdValuesMode && balanceView}
+          </styledEl.BottomRowEnd>
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 

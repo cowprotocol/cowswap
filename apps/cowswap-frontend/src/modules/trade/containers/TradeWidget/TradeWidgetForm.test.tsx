@@ -117,6 +117,7 @@ jest.mock('common/pure/CurrencyInputPanel', () => ({
   CurrencyInputPanel: () => null,
 }))
 
+jest.mock('common/containers/TokenWarnings', () => ({ TokenWarnings: () => null }))
 jest.mock('common/pure/CurrencyArrowSeparator', () => ({
   CurrencyArrowSeparator: () => null,
 }))
