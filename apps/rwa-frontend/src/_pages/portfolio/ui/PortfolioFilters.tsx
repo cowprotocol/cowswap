@@ -6,9 +6,7 @@ import type { PortfolioFilter } from '../lib/portfolioFilter'
 import type { RwaAssetSummary, RwaAssetType } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
-import { SelectPill } from '@/shared/ui/select-pill'
-
-const ALL = ''
+import { Select } from '@/shared/ui/select'
 
 const ASSET_TYPES: { type: RwaAssetType | null; title: string }[] = [
   { type: null, title: 'All' },
@@ -42,32 +40,26 @@ export function PortfolioFilters({ assets, filter, onChange }: PortfolioFiltersP
           </button>
         ))}
       </div>
-      <SelectPill
+      <Select
         variant="small"
         aria-label="Issuer"
-        value={filter.issuer ?? ALL}
-        onChange={(event) => onChange({ ...filter, issuer: event.target.value || null })}
-      >
-        <option value={ALL}>All issuers</option>
-        {issuers.map((issuer) => (
-          <option key={issuer} value={issuer}>
-            {issuer}
-          </option>
-        ))}
-      </SelectPill>
-      <SelectPill
+        value={filter.issuer}
+        options={[
+          { value: null, label: 'All issuers' },
+          ...issuers.map((issuer) => ({ value: issuer, label: issuer })),
+        ]}
+        onChange={(issuer) => onChange({ ...filter, issuer })}
+      />
+      <Select
         variant="small"
         aria-label="Network"
-        value={filter.chainId === null ? ALL : String(filter.chainId)}
-        onChange={(event) => onChange({ ...filter, chainId: event.target.value ? Number(event.target.value) : null })}
-      >
-        <option value={ALL}>All networks</option>
-        {chainIds.map((chainId) => (
-          <option key={chainId} value={String(chainId)}>
-            {getChainLabel(chainId)}
-          </option>
-        ))}
-      </SelectPill>
+        value={filter.chainId}
+        options={[
+          { value: null, label: 'All networks' },
+          ...chainIds.map((chainId) => ({ value: chainId, label: getChainLabel(chainId) })),
+        ]}
+        onChange={(chainId) => onChange({ ...filter, chainId })}
+      />
     </div>
   )
 }

@@ -4,7 +4,6 @@ import {
   cloneElement,
   type ReactElement,
   type ReactNode,
-  type RefObject,
   useCallback,
   useEffect,
   useId,
@@ -17,6 +16,8 @@ import { createPortal } from 'react-dom'
 
 import styles from './Tooltip.module.css'
 import { getTooltipPosition, type TooltipPosition } from './tooltipPosition'
+
+import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 
 interface TooltipProps {
   content: ReactNode
@@ -53,7 +54,19 @@ export function Tooltip({ content, children }: TooltipProps): ReactNode {
     )
   }, [isOpen])
 
-  useDismiss(isOpen, triggerRef, close)
+  useDismissOnOutsideInteraction(isOpen, [triggerRef], close)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') close()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, close])
 
   const describedBy = [children.props['aria-describedby'], descriptionId].filter(Boolean).join(' ')
 
@@ -85,29 +98,4 @@ export function Tooltip({ content, children }: TooltipProps): ReactNode {
         )}
     </span>
   )
-}
-
-function useDismiss(isOpen: boolean, triggerRef: RefObject<HTMLElement | null>, close: () => void): void {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const onPointerDown = (event: PointerEvent): void => {
-      if (event.target instanceof Node && !triggerRef.current?.contains(event.target)) close()
-    }
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') close()
-    }
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    window.addEventListener('scroll', close, true)
-    window.addEventListener('resize', close)
-
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('scroll', close, true)
-      window.removeEventListener('resize', close)
-    }
-  }, [isOpen, triggerRef, close])
 }

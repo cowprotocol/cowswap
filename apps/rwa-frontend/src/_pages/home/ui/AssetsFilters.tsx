@@ -16,7 +16,7 @@ import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
 import { getChainLabel } from '@/shared/lib/chain'
 import { SearchIcon } from '@/shared/ui/icons'
-import { SelectPill } from '@/shared/ui/select-pill'
+import { Select } from '@/shared/ui/select'
 
 export function AssetsFilters(): ReactNode {
   const query = useAtomValue(assetsFilterQueryAtom)
@@ -43,30 +43,21 @@ export function AssetsFilters(): ReactNode {
         {data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`}
       </span>
       <div className={styles.filterControls}>
-        <SelectPill
+        <Select
           aria-label="Issuer"
-          value={issuer ?? ''}
-          onChange={(event) => updateFilters({ issuer: event.target.value || null })}
-        >
-          <option value="">All issuers</option>
-          {issuers.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </SelectPill>
-        <SelectPill
+          value={issuer}
+          options={[{ value: null, label: 'All issuers' }, ...issuers.map((item) => ({ value: item, label: item }))]}
+          onChange={(value) => updateFilters({ issuer: value })}
+        />
+        <Select
           aria-label="Network"
-          value={chainId ?? ''}
-          onChange={(event) => updateFilters({ chainId: event.target.value ? Number(event.target.value) : null })}
-        >
-          <option value="">All networks</option>
-          {chainIds.map((item) => (
-            <option key={item} value={item}>
-              {getChainLabel(item)}
-            </option>
-          ))}
-        </SelectPill>
+          value={chainId}
+          options={[
+            { value: null, label: 'All networks' },
+            ...chainIds.map((item) => ({ value: item, label: getChainLabel(item) })),
+          ]}
+          onChange={(value) => updateFilters({ chainId: value })}
+        />
         <button
           type="button"
           className={styles.watchlistButton}
