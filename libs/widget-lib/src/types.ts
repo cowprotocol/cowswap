@@ -477,6 +477,13 @@ export interface CowSwapWidgetParams {
   hideBridgeInfo?: boolean
 
   /**
+   * Hides the Wait & Save (batch deferral) toggle and related confirmation UI.
+   * Use when the host prefers its own deferred/withdrawal flow.
+   * Defaults to false.
+   */
+  hideWaitAndSave?: boolean
+
+  /**
    * Option to hide orders table on LIMIT and TWAP forms.
    *
    * Warning! When `true`, users won't be able to see their LIMIT/TWAP order status or history, neither they'll be able to cancel active orders.
