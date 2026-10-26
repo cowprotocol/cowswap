@@ -23,7 +23,7 @@ import {
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import type { AppDataInfo } from 'modules/appData'
+import { type AppDataInfo, uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import { tradeConfirmStateAtom } from 'modules/trade'
 import {
@@ -51,6 +51,7 @@ import type { Provider as SolanaProvider } from '@reown/appkit-adapter-solana/re
 
 jest.mock('modules/trade/utils/addPendingOrderStep')
 jest.mock('modules/orders', () => ({ emitPostedOrderEvent: jest.fn() }))
+jest.mock('modules/appData/services', () => ({ uploadAppDataDocOrderbookApi: jest.fn() }))
 
 // The step planners are unit-tested on their own; mocking them here keeps this a test of the flow's
 // composition, and keeps the real instruction builders (which need ed25519 curve math jsdom can't run)
@@ -98,6 +99,7 @@ const mockEstimateSolanaSigningDeadline = estimateSolanaSigningDeadline as jest.
   typeof estimateSolanaSigningDeadline
 >
 const mockPostSolanaSponsoredOrder = postSolanaSponsoredOrder as jest.MockedFunction<typeof postSolanaSponsoredOrder>
+const mockUploadAppData = uploadAppDataDocOrderbookApi as jest.MockedFunction<typeof uploadAppDataDocOrderbookApi>
 
 // Canonical Solana System Program address (32 zero bytes) — always a syntactically
 // valid Solana pubkey, used here as a stand-in "connected account".
@@ -119,9 +121,8 @@ const DELEGATE_STEP = step('Approve WSOL')
 const BUY_ATA_STEP = step('Create USDC account')
 const ORDER_STEP = step('Swap SOL for USDC')
 const ORDER_ID = '0xdeadbeef'
-// Distinct fixture hex strings standing in for whatever each planner actually signed — real values would
-// be the pre-agreed Solana appData constants (see common/constants/solanaAppData.ts), but this test only
-// needs to confirm the planner's own return value reaches the local order, not that specific bytes.
+// Distinct fixture hex strings standing in for whatever each planner actually signed: this test only needs
+// to confirm the planner's own return value reaches the upload and the local order, not specific bytes.
 const MARKET_APP_DATA_HEX = '0x' + 'aa'.repeat(32)
 const LIMIT_APP_DATA_HEX = '0x' + 'bb'.repeat(32)
 // Deliberately different from solanaQuote.intent's amounts (1_000_000n/1_900_000n) and from each other:
@@ -281,6 +282,7 @@ beforeEach(() => {
   // deadline resolve it explicitly.
   mockEstimateSolanaSigningDeadline.mockImplementation(() => neverSettles())
   mockPostSolanaSponsoredOrder.mockResolvedValue(undefined as never)
+  mockUploadAppData.mockResolvedValue(undefined)
   mockPlanWrapStep.mockReturnValue(WRAP_STEP)
   mockPlanDelegateStep.mockReturnValue(DELEGATE_STEP)
   mockPlanCreateBuyAtaStep.mockReturnValue(BUY_ATA_STEP)
@@ -452,7 +454,6 @@ describe('solanaFlow', () => {
   // The quote's own OrderParameters.appData is a meaningless stub for Solana (ZERO_APP_DATA in
   // getSolanaQuote.ts) — the local order has to carry what the planner actually signed instead, the same
   // way it already overrides sellAmount/buyAmount/receiver/validTo from the signed intent, not the quote.
-  // This is load-bearing: getUiOrderType reads this exact field to recognize a Solana limit order at all.
   it("records the market planner's actually-signed appData on the local order, not the quote's stub", async () => {
     const context = buildContext({ orderClass: OrderClass.MARKET })
 
@@ -706,6 +707,54 @@ describe('solanaFlow', () => {
 
     expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
     expect(staleContext.tradeConfirmActions.onOpen).not.toHaveBeenCalled()
+  })
+})
+
+describe('solanaFlow · appData', () => {
+  it("signs the app's appData doc into a swap", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appDataDoc: APP_DATA.doc }))
+  })
+
+  it("signs the app's appData hash into a limit order", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ appDataHash: APP_DATA.appDataKeccak256 }),
+    )
+  })
+
+  it('registers the full appData under the signed hash before sending the transaction', async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(mockUploadAppData).toHaveBeenCalledWith({
+      appDataKeccak256: LIMIT_APP_DATA_HEX,
+      fullAppData: APP_DATA.fullAppData,
+      chainId: SOLANA_CHAIN_ID,
+    })
+    expect(mockUploadAppData.mock.invocationCallOrder[0]).toBeLessThan(mockSendSolanaFlow.mock.invocationCallOrder[0])
+  })
+
+  it('places nothing when the appData cannot be registered', async () => {
+    mockUploadAppData.mockRejectedValue(new Error('AppDataHashMismatch'))
+    const context = buildContext()
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockSendSolanaFlow).not.toHaveBeenCalled()
+    expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).toHaveBeenCalled()
+    expect(jotaiStore.get(solanaOrderNotPlacedAtom)).not.toBeNull()
+  })
+
+  it('records the full appData on the local order, so its type is read from it', async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: APP_DATA.fullAppData }) }),
+      expect.anything(),
+    )
   })
 })
 

@@ -18,6 +18,7 @@ import {
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
@@ -79,6 +80,7 @@ export async function solanaFlow(
     currentDelegation,
     delegationAmount,
     isNativeSell,
+    appData,
   } = input
   const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind, orderClass, partiallyFillable } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -136,6 +138,7 @@ export async function solanaFlow(
           kind: orderKind,
           validTo,
           partiallyFillable,
+          appDataHash: appData.appDataKeccak256,
           sellSymbol,
           buySymbol,
         })
@@ -146,7 +149,12 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
+          appDataDoc: appData.doc,
         })
+
+    // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
+    // Registered under the signed hash, so a doc that does not hash to it is rejected before anything is sent.
+    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData: appData.fullAppData, chainId })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -198,6 +206,7 @@ export async function solanaFlow(
           validTo,
           orderClass,
           appData: signedAppData,
+          fullAppData: appData.fullAppData,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
           partiallyFillable,
@@ -295,6 +304,7 @@ function buildSolanaOrder(params: {
   validTo: number
   orderClass: OrderClass
   appData: string
+  fullAppData: string
   inputToken: Token
   outputToken: Token
   partiallyFillable: boolean
@@ -302,7 +312,7 @@ function buildSolanaOrder(params: {
   isNativeSell: boolean
 }): Order {
   const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
-  const { appData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
+  const { appData, fullAppData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -319,9 +329,9 @@ function buildSolanaOrder(params: {
     receiver,
     validTo,
     // Override the quote's own appData: it's a meaningless constant stub for Solana (getSolanaQuote.ts's
-    // ZERO_APP_DATA) — this is what was actually signed, and getUiOrderType reads exactly this field to
-    // tell a limit order apart from a market one (Solana has no real appData-doc convention to decode).
+    // ZERO_APP_DATA) — this is what was actually signed.
     appData,
+    fullAppData,
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
     // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
     partiallyFillable,
