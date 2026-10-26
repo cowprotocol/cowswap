@@ -6,6 +6,7 @@ import {
   OrderClass,
   OrderKind,
   SigningScheme,
+  stringifyDeterministic,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
@@ -734,6 +735,23 @@ describe('solanaFlow · appData', () => {
       chainId: SOLANA_CHAIN_ID,
     })
     expect(mockUploadAppData.mock.invocationCallOrder[0]).toBeLessThan(mockSendSolanaFlow.mock.invocationCallOrder[0])
+  })
+
+  // `APP_DATA.fullAppData` deliberately differs from its doc, as the non-deterministic fallback appData does.
+  it('registers and records the deterministic doc for a swap, which is what the SDK hashes', async () => {
+    const expectedFullAppData = await stringifyDeterministic(APP_DATA.doc)
+
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockUploadAppData).toHaveBeenCalledWith({
+      appDataKeccak256: MARKET_APP_DATA_HEX,
+      fullAppData: expectedFullAppData,
+      chainId: SOLANA_CHAIN_ID,
+    })
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: expectedFullAppData }) }),
+      expect.anything(),
+    )
   })
 
   it('places nothing when the appData cannot be registered', async () => {

@@ -1,6 +1,6 @@
 import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, OrderParameters, stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
@@ -152,9 +152,14 @@ export async function solanaFlow(
           appDataDoc: appData.doc,
         })
 
+    // A swap signs the SDK's hash of `doc`, which only matches `fullAppData` when that was stringified
+    // deterministically — the fallback appData (`getAppData()`) is not.
+    const fullAppData =
+      orderClass === OrderClass.LIMIT ? appData.fullAppData : await stringifyDeterministic(appData.doc)
+
     // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
     // Registered under the signed hash, so a doc that does not hash to it is rejected before anything is sent.
-    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData: appData.fullAppData, chainId })
+    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -206,7 +211,7 @@ export async function solanaFlow(
           validTo,
           orderClass,
           appData: signedAppData,
-          fullAppData: appData.fullAppData,
+          fullAppData,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
           partiallyFillable,
