@@ -50,8 +50,12 @@ export const EVERGREEN_HEADLINES: typeof LAUNCH_HEADLINES = {
 export const ACTIVE_HEADLINES = LAUNCH_HEADLINES
 
 export const HERO = {
-  subhead:
-    'Get more solvers competing for every trade. More order types for your users. More ways for your app to earn. All with just one integration.',
+  subhead: [
+    'Get more solvers competing for every trade.',
+    'More order types for your users.',
+    'More ways for your app to earn.',
+    'All with just one integration.',
+  ],
 }
 
 /** Flip to `true` at launch; the match card shows “It’s complicated.” until then. */

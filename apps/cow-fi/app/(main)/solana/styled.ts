@@ -135,6 +135,11 @@ export const SolanaHero = styled(HeroContainer)`
   }
 `
 
+export const SubheadLine = styled.span`
+  display: block;
+  text-wrap: balance;
+`
+
 export const StatusPill = styled.p`
   position: absolute;
   top: 28px;

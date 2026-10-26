@@ -12,7 +12,16 @@ import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 import { SolanaMatchCard } from './SolanaMatchCard'
-import { CardFooter, DeveloperParagraphs, InlineLink, LeadAside, LeadStat, SignOff, SolanaHero } from './styled'
+import {
+  CardFooter,
+  DeveloperParagraphs,
+  InlineLink,
+  LeadAside,
+  LeadStat,
+  SignOff,
+  SolanaHero,
+  SubheadLine,
+} from './styled'
 
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
@@ -212,7 +221,11 @@ export function HeroSection(): ReactNode {
         <HeroTitle fontSize={67} fontSizeMobile={40} maxWidth={620}>
           {ACTIVE_HEADLINES.hero}
         </HeroTitle>
-        <HeroDescription>{HERO.subhead}</HeroDescription>
+        <HeroDescription>
+          {HERO.subhead.map((sentence) => (
+            <SubheadLine key={sentence}>{sentence}</SubheadLine>
+          ))}
+        </HeroDescription>
         <HeroButtonWrapper>
           <PurpleLink href={SOLANA_LINKS.getInTouch} action="get-in-touch" fontSize={27} fontSizeMobile={21}>
             Get in touch
