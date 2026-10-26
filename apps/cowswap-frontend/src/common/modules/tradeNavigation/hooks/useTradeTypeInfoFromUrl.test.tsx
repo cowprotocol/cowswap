@@ -25,11 +25,22 @@ describe('useTradeTypeInfoFromUrl', () => {
     ['/100/limit/WETH/COW', TradeType.LIMIT_ORDER, Routes.LIMIT_ORDERS],
     ['/1/advanced/WETH/COW', TradeType.ADVANCED_ORDERS, Routes.ADVANCED_ORDERS],
     ['/1/yield', TradeType.YIELD, Routes.YIELD],
+    ['/1/limit/', TradeType.LIMIT_ORDER, Routes.LIMIT_ORDERS],
+    ['/1/SWAP/WETH', TradeType.SWAP, Routes.SWAP],
+    ['/swap/limit', TradeType.SWAP, Routes.SWAP],
+    ['/swap/hooks', TradeType.SWAP, Routes.HOOKS],
   ])('resolves %s', (path, tradeType, route) => {
     expect(renderAt(path)).toEqual({ tradeType, route })
   })
 
-  it.each(['/1/account', '/1/swapper', '/'])('returns null for the non-trade path %s', (path) => {
-    expect(renderAt(path)).toBeNull()
+  it('returns the same object for the same route across paths', () => {
+    expect(renderAt('/1/swap/WETH')).toBe(renderAt('/100/swap/COW'))
   })
+
+  it.each(['/1/account', '/1/swapper', '/', '/1/limit-orders', '/1/2/swap'])(
+    'returns null for the non-trade path %s',
+    (path) => {
+      expect(renderAt(path)).toBeNull()
+    },
+  )
 })
