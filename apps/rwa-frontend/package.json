@@ -11,6 +11,7 @@
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/sdk-viem-adapter": "0.3.36",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
     "@reown/appkit": "1.8.19",

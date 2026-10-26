@@ -1224,6 +1224,9 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: 9.2.22
         version: 9.2.22(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-viem-adapter':
+        specifier: 0.3.36
+        version: 0.3.36(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/widget-lib':
         specifier: workspace:*
         version: link:../../libs/widget-lib
