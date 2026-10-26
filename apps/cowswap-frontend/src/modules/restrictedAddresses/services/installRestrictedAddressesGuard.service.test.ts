@@ -96,7 +96,9 @@ describe('installRestrictedAddressesGuard', () => {
     it('blocks an order with a CoW Shed hook signed for another account', async () => {
       const order = getOrder({ appData: getCowShedHookAppData(OTHER_USER) })
 
-      await expect(orderBookApi.sendOrder(order)).rejects.toThrow('hooks signed for another account')
+      await expect(orderBookApi.sendOrder(order)).rejects.toThrow(
+        'An error has occurred. Please refresh the quote and try again.',
+      )
 
       expect(mockSendOrder).not.toHaveBeenCalled()
       expect(captureError).toHaveBeenCalledWith(
@@ -129,7 +131,7 @@ describe('installRestrictedAddressesGuard', () => {
       const data = `0xa9059cbb000000000000000000000000${RESTRICTED.slice(2)}`
 
       expect(() => transactionGuard([{ from: USER, to: USER, data }], SupportedChainId.MAINNET)).toThrow(
-        'restricted address',
+        'An error has occurred. Please refresh the page and try again.',
       )
       expect(captureError).toHaveBeenCalledTimes(1)
     })

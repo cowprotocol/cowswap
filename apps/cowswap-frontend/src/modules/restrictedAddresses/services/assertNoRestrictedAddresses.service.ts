@@ -47,15 +47,12 @@ export function assertOrderHooksBelongToOwner(order: OrderCreation, chainId: Sup
 
   if (!hookUser) return
 
-  reportAndThrow(
-    t`This order contains hooks signed for another account and was blocked. Please refresh the quote and try again.`,
-    {
-      chainId,
-      hookUser,
-      from: order.from,
-      appData: order.appData,
-    },
-  )
+  reportAndThrow(t`An error has occurred. Please refresh the quote and try again.`, {
+    chainId,
+    hookUser,
+    from: order.from,
+    appData: order.appData,
+  })
 }
 
 export function assertTransactionsHaveNoRestrictedAddresses(
@@ -69,7 +66,7 @@ export function assertTransactionsHaveNoRestrictedAddresses(
 
   if (!restrictedAddress) return
 
-  reportAndThrow(t`This transaction contains a restricted address and was blocked.`, {
+  reportAndThrow(t`An error has occurred. Please refresh the page and try again.`, {
     chainId,
     restrictedAddress,
     transactions,
