@@ -8,7 +8,9 @@ import svgSolversSrc from '@cowprotocol/assets/images/image-solvers.svg'
 import svgSurplusSrc from '@cowprotocol/assets/images/image-surplus.svg'
 import svgTwapSrc from '@cowprotocol/assets/images/image-twap.svg'
 import iconAaveSrc from '@cowprotocol/assets/images/logo-aave-icon.svg'
+import svgCoinbaseWalletIconSrc from '@cowprotocol/assets/images/logo-coinbase-wallet-icon.svg'
 import svgCoinbaseWalletSrc from '@cowprotocol/assets/images/logo-coinbase-wallet.svg'
+import svgKaminoIconSrc from '@cowprotocol/assets/images/logo-kamino-icon.svg'
 import svgKaminoSrc from '@cowprotocol/assets/images/logo-kamino.svg'
 import { Color } from '@cowprotocol/ui'
 
@@ -62,6 +64,11 @@ export const MATCH_CARD = {
   lookingFor: 'Builders who want more for their users.',
   turnOns: ['Intents', 'Batch auctions', 'Limit orders', 'Good documentation'],
   dealbreakers: ['Third wheels', 'Getting stood up', 'Closed doors'],
+  mutualFriends: [
+    { name: 'Kamino', logo: svgKaminoIconSrc },
+    { name: 'Coinbase Wallet', logo: svgCoinbaseWalletIconSrc },
+    { name: 'Aave', logo: iconAaveSrc },
+  ],
 }
 
 export const STATS = [

@@ -14,8 +14,8 @@ import {
 } from '@/styles/styled'
 
 const EASE_OUT_EXPO = 'cubic-bezier(0.16, 1, 0.3, 1)'
-const AVATAR_SIZE = 88
-const AVATAR_SIZE_MOBILE = 72
+const AVATAR_SIZE = 80
+const AVATAR_SIZE_MOBILE = 64
 const AVATAR_OVERLAP = 20
 const SUBTLE_LINE = `color-mix(in srgb, ${Color.cowfi_purple_bright} 25%, transparent)`
 
@@ -92,7 +92,7 @@ export const MatchCard = styled.article`
   width: 470px;
   max-width: 100%;
   margin: 0 0 0 auto;
-  padding: 32px;
+  padding: 28px 32px;
   border-radius: 32px;
   background: ${Color.cowfi_purple3};
   color: ${Color.neutral98};
@@ -100,7 +100,7 @@ export const MatchCard = styled.article`
   ${Media.upToMedium()} {
     width: 100%;
     margin: 0;
-    padding: 24px;
+    padding: 20px;
   }
 `
 
@@ -176,7 +176,7 @@ export const MatchAvatars = styled.div`
   position: relative;
   display: flex;
   width: max-content;
-  margin: 0 0 20px;
+  margin: 0 0 16px;
 `
 
 export const Avatar = styled.span<{ $variant: 'cow' | 'builders' }>`
@@ -198,7 +198,7 @@ export const Avatar = styled.span<{ $variant: 'cow' | 'builders' }>`
             ${nuzzleRight} ${IDLE_LOOP} ease-in-out ${IDLE_DELAY} infinite;
 
           svg {
-            width: 44px;
+            width: 40px;
             height: auto;
           }
         `
@@ -227,7 +227,7 @@ export const Avatar = styled.span<{ $variant: 'cow' | 'builders' }>`
     height: ${AVATAR_SIZE_MOBILE}px;
 
     svg {
-      width: 36px;
+      width: 32px;
     }
 
     > strong {
@@ -273,7 +273,7 @@ export const MatchCardTitle = styled.h2`
 `
 
 export const MatchCardSubtitle = styled.p`
-  margin: 8px 0 28px;
+  margin: 6px 0 16px;
   font-size: 18px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   color: ${Color.cowfi_purple_bright};
@@ -283,25 +283,90 @@ export const MatchCardSubtitle = styled.p`
   }
 `
 
+export const MutualFriends = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+
+  > p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.35;
+    color: ${Color.neutral98};
+    text-wrap: balance;
+  }
+
+  > p > strong {
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    color: ${Color.cowfi_purple_bright};
+  }
+
+  ${Media.upToMedium()} {
+    margin: 0 0 8px;
+  }
+`
+
+export const FriendAvatars = styled.span`
+  display: flex;
+  flex: 0 0 auto;
+`
+
+export const FriendAvatar = styled.span`
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid ${Color.cowfi_purple3};
+  background: ${Color.neutral98};
+  color: ${Color.cowfi_purple_dark};
+
+  & + & {
+    margin-left: -8px;
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`
+
 export const ProfileToggle = styled.button`
   display: none;
 
   ${Media.upToMedium()} {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    min-height: 48px;
     margin: 0;
     padding: 0;
     border: 0;
+    border-top: 1px solid ${SUBTLE_LINE};
     background: none;
     color: ${Color.cowfi_purple_bright};
     font: inherit;
     font-size: 16px;
     font-weight: var(${UI.FONT_WEIGHT_BOLD});
-    text-decoration: underline;
-    text-underline-offset: 3px;
+    text-align: left;
     cursor: pointer;
 
-    &[aria-expanded='true'] {
-      margin: 0 0 16px;
+    > svg {
+      width: 20px;
+      height: 20px;
+      transition: transform 0.3s ${EASE_OUT_EXPO};
+    }
+
+    &[aria-expanded='true'] > svg {
+      transform: rotate(180deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    > svg {
+      transition: none;
     }
   }
 `
@@ -348,6 +413,9 @@ export const ProfileList = styled.dl`
   }
 
   ${Media.upToMedium()} {
+    padding: 8px 0 4px;
+    border-top: 0;
+
     &[data-expanded='false'] {
       display: none;
     }

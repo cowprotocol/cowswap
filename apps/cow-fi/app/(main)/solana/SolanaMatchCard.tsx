@@ -7,11 +7,14 @@ import {
   Avatar,
   Chip,
   Chips,
+  FriendAvatar,
+  FriendAvatars,
   MatchAvatars,
   MatchCard,
   MatchCardSubtitle,
   MatchCardTitle,
   MatchSpark,
+  MutualFriends,
   ProfileList,
   ProfileToggle,
   StatusPill,
@@ -20,6 +23,9 @@ import {
 
 import LazySVG from '@/components/LazySVG'
 import { MATCH_CARD } from '@/data/solana/const'
+
+const MUTUAL_FRIEND_NAMES = MATCH_CARD.mutualFriends.map(({ name }) => name)
+const MUTUAL_FRIENDS_TEXT = `${MUTUAL_FRIEND_NAMES.slice(0, -1).join(', ')} and ${MUTUAL_FRIEND_NAMES.at(-1)}`
 
 const CHIP_STAGGER = 0.05
 const TURN_ONS_DELAY = 0.2
@@ -53,6 +59,19 @@ export function SolanaMatchCard(): ReactNode {
       <MatchCardTitle id={titleId}>{MATCH_CARD.title}</MatchCardTitle>
       <MatchCardSubtitle>{MATCH_CARD.subtitle}</MatchCardSubtitle>
 
+      <MutualFriends>
+        <FriendAvatars aria-hidden="true">
+          {MATCH_CARD.mutualFriends.map(({ name, logo }) => (
+            <FriendAvatar key={name}>
+              <LazySVG uniquifyIDs src={logo} />
+            </FriendAvatar>
+          ))}
+        </FriendAvatars>
+        <p>
+          <strong>Mutual friends:</strong> {MUTUAL_FRIENDS_TEXT}
+        </p>
+      </MutualFriends>
+
       <ProfileToggle
         type="button"
         aria-expanded={isProfileOpen}
@@ -60,6 +79,9 @@ export function SolanaMatchCard(): ReactNode {
         onClick={() => setIsProfileOpen((open) => !open)}
       >
         {isProfileOpen ? 'Hide profile' : 'See full profile'}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} aria-hidden="true">
+          <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
       </ProfileToggle>
 
       <ProfileList id={profileId} data-expanded={isProfileOpen}>

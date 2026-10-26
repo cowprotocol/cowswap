@@ -209,7 +209,7 @@ export function HeroSection(): ReactNode {
   return (
     <SolanaHero variant="secondary">
       <HeroContent variant="secondary">
-        <HeroTitle fontSize={67} fontSizeMobile={44} maxWidth={620}>
+        <HeroTitle fontSize={67} fontSizeMobile={40} maxWidth={620}>
           {ACTIVE_HEADLINES.hero}
         </HeroTitle>
         <HeroDescription>{HERO.subhead}</HeroDescription>
