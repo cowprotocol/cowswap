@@ -5,7 +5,7 @@ import Page, { generateMetadata } from './page'
 import { getPageBySlug } from '../../../../services/cms'
 
 jest.mock('../../../../services/cms', () => ({ getPageBySlug: jest.fn() }))
-jest.mock('@/util/cms', () => ({ extractRichTextContent: () => 'CMS referral instructions' }))
+jest.mock('react-markdown', () => () => null)
 jest.mock('@/components/ReferToEarnPageContent', () => ({ ReferToEarnPageContent: () => null }))
 jest.mock('next/navigation', () => ({
   notFound: () => {
@@ -17,7 +17,7 @@ const cmsPage = {
   attributes: {
     heading: 'Refer-to-Earn',
     description: 'CMS referral description',
-    contentSections: [{ __component: 'sections.rich-text' }],
+    contentSections: [{ __component: 'sections.rich-text', content: 'CMS referral instructions' }],
   },
 }
 
@@ -40,6 +40,20 @@ describe('Refer-to-Earn CMS page', () => {
 
   it('returns not found when the CMS entry is unavailable', async () => {
     jest.mocked(getPageBySlug).mockResolvedValue(null)
+    await expect(Page()).rejects.toThrow('Not found')
+  })
+
+  it.each([
+    { name: 'no sections', contentSections: [] },
+    { name: 'an unrelated section', contentSections: [{ __component: 'sections.heading', heading: 'Instructions' }] },
+    { name: 'missing rich text', contentSections: [{ __component: 'sections.rich-text' }] },
+    { name: 'empty rich text', contentSections: [{ __component: 'sections.rich-text', content: '' }] },
+    { name: 'whitespace-only rich text', contentSections: [{ __component: 'sections.rich-text', content: ' \n\t ' }] },
+  ])('returns not found for $name', async ({ contentSections }) => {
+    jest.mocked(getPageBySlug).mockResolvedValue({
+      attributes: { ...cmsPage.attributes, contentSections },
+    })
+
     await expect(Page()).rejects.toThrow('Not found')
   })
 })

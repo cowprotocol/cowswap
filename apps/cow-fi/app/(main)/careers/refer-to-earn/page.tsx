@@ -24,7 +24,10 @@ export default async function Page(): Promise<ReactNode> {
   const page = await getPageBySlug('refer-to-earn')
   if (!page?.attributes?.heading || !page.attributes.contentSections?.length) return notFound()
 
-  return <ReferToEarnPageContent title={page.attributes.heading} content={extractRichTextContent(page)} />
+  const content = extractRichTextContent(page)
+  if (!content.trim()) return notFound()
+
+  return <ReferToEarnPageContent title={page.attributes.heading} content={content} />
 }
 
 export const revalidate = 43200
