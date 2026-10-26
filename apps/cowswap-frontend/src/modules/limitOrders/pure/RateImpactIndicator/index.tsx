@@ -10,6 +10,7 @@ import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 
 interface RateImpactProps {
   rateImpact: number
+  priceChangePercent: number
   inputCurrency: Currency | null
 }
 
@@ -32,11 +33,15 @@ const ImpactTooltip = styled.span`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactProps) {
+export function RateImpactIndicator({ rateImpact, priceChangePercent, inputCurrency }: RateImpactProps) {
   const isPositive = rateImpact > 0
-  const hugePositiveImpact = rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT
   const isTooLowRate = rateImpact < LOW_RATE_THRESHOLD_PERCENT
-  const displayedPercent = hugePositiveImpact ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : rateImpact
+
+  const exceedsDisplayLimit = priceChangePercent > MAX_POSITIVE_RATE_IMPACT_PERCENT
+  const displayedPriceChange = exceedsDisplayLimit ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : priceChangePercent
+
+  const displayedPercent =
+    rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : rateImpact
 
   if (!rateImpact) return null
 
@@ -56,10 +61,10 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
 
   return (
     <HoverTooltip wrapInContainer={false} content={tooltipContent} placement="bottom">
-      <PercentBox isPositive={isPositive} isTooLowRate={isTooLowRate}>
+      <PercentBox isPositive={isPositive && priceChangePercent > 0} isTooLowRate={isTooLowRate}>
         <span>
-          ({isPositive && !hugePositiveImpact ? '+' : ''}
-          {displayedPercent}%)
+          ({priceChangePercent > 0 && !exceedsDisplayLimit ? '+' : ''}
+          {displayedPriceChange}%)
         </span>
         {isTooLowRate && <AlertTriangle size={14} />}
       </PercentBox>

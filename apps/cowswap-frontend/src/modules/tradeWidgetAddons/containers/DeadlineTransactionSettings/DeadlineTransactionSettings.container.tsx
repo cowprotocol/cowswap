@@ -1,10 +1,18 @@
-import { JSX } from 'react'
+import { useAtomValue } from 'jotai'
+import { JSX, useCallback, useEffect, useRef, useState } from 'react'
 
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
+import { useCountdown, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { formatBatchCountdown } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { StatefulValue } from '@cowprotocol/types'
 import { SettingsInput, SettingsFeedback } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
+import { cowBatchValidFromAtom, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -18,12 +26,78 @@ interface DeadlineSettingsProps {
 export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsProps): JSX.Element {
   const { viewValue, parseCustomDeadline, error, isDisabled, onBlur, deadlineRangeParams } =
     useCustomDeadline(deadlineState)
+  const [deadline] = deadlineState
   const nativeCurrency = useNativeCurrency()
+  const { chainId } = useWalletInfo()
+  const { isWaitForCowsEnabled } = useFeatureFlags()
+  const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
+  const validFrom = useAtomValue(cowBatchValidFromAtom)
 
-  const deadlineRangeMessage = t`Minimum ${deadlineRangeParams.minMinutes} min, maximum ${deadlineRangeParams.maxMinutes} min.`
+  const showWaitForCows = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
+  const hasValidFrom = validFrom !== undefined
+
+  const batchWaitRef = useRef<HTMLElement | null>(null)
+  const totalExpiryRef = useRef<HTMLElement | null>(null)
+  const waitRemainingSecRef = useRef<number | undefined>(undefined)
+  const [isExpirationShorterThanWait, setIsExpirationShorterThanWait] = useState(false)
+
+  // The countdown spans only exist in the Wait for CoWs message, which the deadline error replaces.
+  const batchWaitEpochSec = showWaitForCows && !error ? validFrom : undefined
+  const totalExpiryEpochSec = batchWaitEpochSec !== undefined ? batchWaitEpochSec + deadline : undefined
+
+  const syncWarning = useCallback((remainingSec: number | undefined, deadlineSec: number) => {
+    const next = remainingSec !== undefined && deadlineSec > 0 && deadlineSec < remainingSec
+    setIsExpirationShorterThanWait((prev) => (prev === next ? prev : next))
+  }, [])
+
+  const onBatchWaitRemainingChange = useCallback(
+    (remainingSec: number) => {
+      waitRemainingSecRef.current = remainingSec
+      syncWarning(remainingSec, deadline)
+    },
+    [deadline, syncWarning],
+  )
+
+  useEffect(() => {
+    syncWarning(waitRemainingSecRef.current, deadline)
+  }, [deadline, syncWarning])
+
+  useCountdown({
+    targetRef: batchWaitRef,
+    targetEpochSec: batchWaitEpochSec,
+    format: formatBatchCountdown,
+    onRemainingChange: onBatchWaitRemainingChange,
+  })
+
+  useCountdown({
+    targetRef: totalExpiryRef,
+    targetEpochSec: totalExpiryEpochSec,
+    format: formatBatchCountdown,
+  })
+
+  const minMinutes = deadlineRangeParams.minMinutes
+  const maxMinutes = deadlineRangeParams.maxMinutes
+  const deadlineRangeMessage = t`Minimum ${minMinutes} min, maximum ${maxMinutes} min.`
+
+  const waitForCowsMessage = showWaitForCows ? (
+    hasValidFrom ? (
+      <Trans>
+        With Wait for CoWs, expiration starts after the next batch (~
+        <span ref={batchWaitRef} />
+        ). Total time until expiry ≈ <span ref={totalExpiryRef} />.
+      </Trans>
+    ) : (
+      <Trans>
+        With Wait for CoWs, expiration starts after the next batch. Total time until expiry is the batch wait plus this
+        expiration.
+      </Trans>
+    )
+  ) : null
 
   const footerSlot = error ? (
-    <SettingsFeedback variant={error ? 'error' : 'info'} message={deadlineRangeMessage} />
+    <SettingsFeedback variant="error" message={deadlineRangeMessage} />
+  ) : waitForCowsMessage ? (
+    <SettingsFeedback variant={isExpirationShorterThanWait ? 'warning' : 'info'} message={waitForCowsMessage} />
   ) : null
 
   return (
@@ -33,7 +107,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
       tooltip={
         deadlineRangeParams.isEoaEthFlow
           ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
-          : getNonNativeOrderDeadlineTooltip()
+          : getNonNativeOrderDeadlineTooltip(showWaitForCows)
       }
       placeholder={(DEFAULT_DEADLINE_FROM_NOW / 60).toString()}
       value={viewValue}

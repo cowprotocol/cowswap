@@ -11,6 +11,7 @@ import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '.
 import {
   buildDailySeries,
   buildMarketCapSeries,
+  getDailyChange,
   latestUpdatedAt,
   rankMostTraded,
   splitMovers,
@@ -243,7 +244,7 @@ function toMarketData(
 
   return {
     price: market.price,
-    change24h: market.change24h,
+    change24h: getDailyChange(market),
     dayLow: market.dayLow,
     dayHigh: market.dayHigh,
     marketCap: market.marketCap,

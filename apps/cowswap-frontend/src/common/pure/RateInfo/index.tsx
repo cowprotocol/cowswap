@@ -1,6 +1,6 @@
 import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
-import { getAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
@@ -12,6 +12,8 @@ import { Nullish } from 'types'
 
 import { usePrice } from 'common/hooks/usePrice'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+
+import { getSmartQuoteInverted } from './getSmartQuoteInverted'
 
 const DEFAULT_DECIMALS = 4
 
@@ -39,7 +41,6 @@ export interface RateInfoProps {
   rightAlign?: boolean
   fontBold?: boolean
   fontSize?: number
-  labelBold?: boolean
   /** Use secondary text color for the rate value (e.g. Limit form detail rows). */
   mutedValue?: boolean
 }
@@ -55,7 +56,7 @@ const Wrapper = styled.div<{ stylized: boolean; fontSize?: number }>`
   flex: 1 1 min-content;
 `
 
-const RateLabel = styled.div<{ labelBold?: boolean }>`
+const RateLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
@@ -63,7 +64,7 @@ const RateLabel = styled.div<{ labelBold?: boolean }>`
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   white-space: nowrap;
-  font-weight: ${({ labelBold }) => (labelBold ? 500 : 'inherit')};
+  font-weight: 500;
 `
 
 const InvertIcon = styled.div`
@@ -162,7 +163,6 @@ export function RateInfo({
   rightAlign = false,
   fontBold = false,
   fontSize,
-  labelBold = false,
   mutedValue = false,
 }: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
@@ -198,30 +198,38 @@ export function RateInfo({
     return getQuoteCurrency(chainId, inputCurrencyAmount, outputCurrencyAmount)
   }, [chainId, inputCurrencyAmount, outputCurrencyAmount])
 
+  const inputAddress = inputCurrency ? getCurrencyAddress(inputCurrency) : undefined
+  const outputAddress = outputCurrency ? getCurrencyAddress(outputCurrency) : undefined
+  const quoteAddress = quoteCurrency ? getCurrencyAddress(quoteCurrency) : undefined
+  const isNativeInvolved =
+    (!!quoteCurrency && getIsNativeToken(quoteCurrency)) || (!!inputCurrency && getIsNativeToken(inputCurrency))
+
   useEffect(() => {
     setCurrentIsInverted(isInverted)
   }, [isInverted, setCurrentIsInverted])
 
-  // Set isInverted based on quoteCurrency
+  useEffect(() => {
+    setIsSmartQuoteSelectionSet(false)
+  }, [inputAddress, outputAddress])
+
   useEffect(() => {
     if (isSmartQuoteSelectionSet || doNotUseSmartQuote) return
 
-    const [quoteCurrencyAddress, inputCurrencyAddress] = [getAddress(quoteCurrency), getAddress(inputCurrency)]
+    const nextIsInverted = getSmartQuoteInverted(quoteAddress, inputAddress, isNativeInvolved)
+    if (nextIsInverted === null) return
 
-    if (!quoteCurrencyAddress || !inputCurrencyAddress) return
-
-    setCurrentIsInverted(quoteCurrencyAddress !== inputCurrencyAddress)
+    setCurrentIsInverted(nextIsInverted)
 
     if (setSmartQuoteSelectionOnce) {
       setIsSmartQuoteSelectionSet(true)
     }
   }, [
-    quoteCurrency,
-    inputCurrency,
-    outputCurrency,
+    quoteAddress,
+    inputAddress,
+    outputAddress,
+    isNativeInvolved,
     setCurrentIsInverted,
     isSmartQuoteSelectionSet,
-    setIsSmartQuoteSelectionSet,
     setSmartQuoteSelectionOnce,
     doNotUseSmartQuote,
   ])
@@ -233,7 +241,7 @@ export function RateInfo({
   return (
     <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
-        <RateLabel labelBold={labelBold}>
+        <RateLabel>
           {label ? label : t`Limit price`}
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>

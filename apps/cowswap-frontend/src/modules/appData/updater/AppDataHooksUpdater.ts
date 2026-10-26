@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { useEffect, useRef, useState } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { PermitHookData } from '@cowprotocol/permit-utils'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom } from '@cowprotocol/wallet'
 
 import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { Nullish } from 'types'
@@ -30,7 +31,7 @@ export function AppDataHooksUpdater(): null {
   const hasTradeInfo = !!tradeState
   // This is already covered up the dependency chain, but it still slips through some times
   // Adding this additional check here to try to prevent a race condition to ever allowing this to pass through
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   // Remove hooks if the order is selling native. There's no need for approval
   const isNativeSell = useIsSellNative()
 
@@ -69,7 +70,7 @@ export function AppDataHooksUpdater(): null {
 
     const shouldNotUpdateHooks =
       !hasTradeInfo || // If there's no trade info, wait until we have one to update the hooks (i.e. missing quote)
-      isSmartContractWallet === undefined // We don't know what type of wallet it is, wait until it's defined
+      isSmartContractWallet === null // We don't know what type of wallet it is, wait until it's defined
 
     if (shouldNotUpdateHooks && !areHooksChanged) {
       return undefined

@@ -14,6 +14,7 @@ import { AppDataInfoUpdater, UseAppDataParams } from './AppDataInfoUpdater'
 
 import { useAppCode, useAppDataHooks } from '../hooks'
 import { useRwaConsentForAppData } from '../hooks/useRwaConsentForAppData'
+import { useWaitAndSaveValidFrom } from '../hooks/useWaitAndSaveValidFrom'
 import { AppDataOrderClass } from '../types'
 
 interface AppDataUpdaterProps {
@@ -34,6 +35,8 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const userConsent = useRwaConsentForAppData()
   const { savedCode: refCode } = useAtomValue(affiliateTraderSavedCodeAtom)
   const isRefCodeExpired = useIsRefCodeExpired()
+  const waitAndSaveValidFrom = useWaitAndSaveValidFrom()
+  const validFrom = orderClass === 'market' ? waitAndSaveValidFrom : undefined
 
   if (!chainId) return null
 
@@ -49,6 +52,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       replacedOrderUid={replacedOrderUid}
       userConsent={userConsent}
       refCode={isRefCodeExpired ? undefined : refCode}
+      validFrom={validFrom}
     />
   )
 })

@@ -1,8 +1,9 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areAddressesEqual, isEvmChain } from '@cowprotocol/cow-sdk'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useDeployedCowShedAddresses } from './useDeployedCowShedAddresses'
 
@@ -18,7 +19,7 @@ import type { AccountProxyInfo } from '../accountProxy.types'
 
 export function useAccountProxies(): AccountProxyInfo[] | null {
   const { chainId, account } = useWalletInfo()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
   const { isTwapEoaEnabled } = useFeatureFlags()
   const deployedAddresses = useDeployedCowShedAddresses(
     SHOW_ONLY_DEPLOYED_ACCOUNT_PROXIES ? account : undefined,

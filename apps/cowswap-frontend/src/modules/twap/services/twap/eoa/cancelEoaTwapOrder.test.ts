@@ -3,9 +3,13 @@ import { decodeFunctionData, parseAbi, type Hex, type WalletClient } from 'viem'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi, GPv2SettlementAbi } from '@cowprotocol/cowswap-abis'
 
+import { estimateGas } from 'viem/actions'
+
 import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
 
 import { EOA_TWAP_CANCELLATION_GAS_LIMIT, cancelEoaTwapOrder, CancelEoaTwapOrderParams } from './cancelEoaTwapOrder'
+
+jest.mock('viem/actions', () => ({ estimateGas: jest.fn() }))
 
 jest.mock('modules/accountProxy', () => ({
   ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG: { id: 'twap-account-proxy' },
@@ -44,13 +48,29 @@ const context = {
 describe('cancelEoaTwapOrder', () => {
   beforeEach(() => {
     jest.clearAllMocks()
+    jest.mocked(estimateGas).mockResolvedValue(500_000n)
     ;(getCowShedHooks as jest.Mock).mockReturnValue({
       proxyOf,
     })
   })
 
+  it('prepares the displayed gas limit without submitting, then reuses it when sending', async () => {
+    jest.mocked(estimateGas).mockResolvedValueOnce(875_000n)
+
+    const cancellation = await cancelEoaTwapOrder(context)
+
+    expect(cancellation.estimatedGas).toBe(1_050_000n)
+    expect(sendTransaction).not.toHaveBeenCalled()
+
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
+
+    expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: cancellation.estimatedGas }))
+    expect(estimateGas).toHaveBeenCalledTimes(1)
+  })
+
   it('cancels the parent and active slice through the proxy in one transaction', async () => {
-    await expect(cancelEoaTwapOrder(context)).resolves.toBe(txHash)
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     expect(sendTransaction).toHaveBeenCalledTimes(1)
     const {
@@ -89,21 +109,33 @@ describe('cancelEoaTwapOrder', () => {
       data: expect.any(String),
       account: context.walletClient.account,
       chain: context.walletClient.chain,
-      gas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
+      gas: 600_000n,
     })
+  })
+
+  it('uses the fallback when estimation fails', async () => {
+    jest.mocked(estimateGas).mockRejectedValueOnce(new Error('RPC unavailable'))
+
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
+
+    expect(sendTransaction).toHaveBeenCalledWith(expect.objectContaining({ gas: EOA_TWAP_CANCELLATION_GAS_LIMIT }))
+    expect(EOA_TWAP_CANCELLATION_GAS_LIMIT).toBe(1_200_000n)
   })
 
   it('propagates rejection when the user rejects the transaction', async () => {
     const error = Object.assign(new Error('User rejected the request'), { code: 4001 })
     sendTransaction.mockRejectedValueOnce(error)
 
-    await expect(cancelEoaTwapOrder(context)).rejects.toBe(error)
+    const cancellation = await cancelEoaTwapOrder(context)
+    await expect(cancellation.sendTransaction()).rejects.toBe(error)
 
     expect(sendTransaction).toHaveBeenCalledTimes(1)
   })
 
   it('invalidates only the selected part through the Shed without removing the parent', async () => {
-    await expect(cancelEoaTwapOrder({ ...context, partOnly: true })).resolves.toBe(txHash)
+    const cancellation = await cancelEoaTwapOrder({ ...context, partOnly: true })
+    await expect(cancellation.sendTransaction()).resolves.toBe(txHash)
 
     const {
       functionName,

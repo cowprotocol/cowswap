@@ -20,7 +20,7 @@ import { resetEoaTwapSuccessScreenIfMatches } from './useEoaTwapSigningStep'
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
 import { processTwapCancellation } from '../services/processTwapCancellation'
 import { programmaticOrdersApi } from '../services/programmaticOrdersApi'
-import { EOA_TWAP_CANCELLATION_GAS_LIMIT, cancelEoaTwapOrder } from '../services/twap/eoa/cancelEoaTwapOrder'
+import { cancelEoaTwapOrder } from '../services/twap/eoa/cancelEoaTwapOrder'
 import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
@@ -109,10 +109,12 @@ export function useCancelTwapOrder(): (
           throw new Error(t`Wallet not connected`)
         }
 
+        const cancellation = await cancelEoaTwapOrder({ ...context, partOnly, walletClient })
+
         return {
-          estimatedGas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
+          estimatedGas: cancellation.estimatedGas,
           sendTransaction: async (processCancelledOrder) => {
-            const txHash = await cancelEoaTwapOrder({ ...context, partOnly, walletClient })
+            const txHash = await cancellation.sendTransaction()
             processTransaction(txHash, processCancelledOrder)
           },
         }

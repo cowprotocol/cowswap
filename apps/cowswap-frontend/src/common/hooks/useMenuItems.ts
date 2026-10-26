@@ -1,17 +1,24 @@
 import { useCallback } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isLocal } from '@cowprotocol/common-utils'
+import { getIsSafeAppIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { useLingui } from '@lingui/react/macro'
 
 import { useHooksEnabled } from 'legacy/state/user/hooks'
 
-import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, IMenuItem, I18nIMenuItem, YIELD_MENU_ITEM } from '../constants/routes'
+import {
+  HOOKS_STORE_MENU_ITEM,
+  MENU_ITEMS,
+  IMenuItem,
+  I18nIMenuItem,
+  RWA_MENU_ITEM,
+  YIELD_MENU_ITEM,
+} from '../constants/routes'
 
 export function useMenuItems(): IMenuItem[] {
   const isHooksEnabled = useHooksEnabled()
-  const { isYieldEnabled } = useFeatureFlags()
+  const { isYieldEnabled, isRwaEnabled } = useFeatureFlags()
   const { i18n } = useLingui()
 
   const extractMenuItem = useCallback(
@@ -35,8 +42,12 @@ export function useMenuItems(): IMenuItem[] {
     items.push(extractMenuItem(HOOKS_STORE_MENU_ITEM))
   }
 
-  if (isYieldEnabled || isLocal) {
+  if (isYieldEnabled) {
     items.push(extractMenuItem(YIELD_MENU_ITEM))
+  }
+
+  if (isRwaEnabled && !isInjectedWidget() && !getIsSafeAppIframe()) {
+    items.push(extractMenuItem(RWA_MENU_ITEM))
   }
 
   return items

@@ -6,7 +6,7 @@
   "schemaVersion": 2,
   "apps": {
     "@cowprotocol/cow-fi": 5,
-    "@cowprotocol/cowswap": 11.1,
+    "@cowprotocol/cowswap": 11.3,
     "@cowprotocol/explorer": 11.7,
     "@cowprotocol/rwa-frontend": 4.9,
     "@cowprotocol/sdk-tools": 10,

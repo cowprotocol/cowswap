@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
-import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -68,7 +69,7 @@ export function TradeButtons({
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const isNonEvmBridging = useIsNonEvmBridging()
   const nonEvmReceiverConfirmed = useNonEvmReceiverConfirmed()
-  const isSafeWallet = useIsSafeWallet()
+  const isSafeWallet = useAtomValue(isSafeWalletAtom)
 
   const { confirmTrade } = useConfirmTradeWithRwaCheck()
 

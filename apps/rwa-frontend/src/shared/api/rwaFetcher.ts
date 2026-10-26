@@ -1,4 +1,6 @@
-export const RWA_API_PREFIX = '/api/v1/'
+import { withBasePath } from '@/shared/config'
+
+export const RWA_API_PREFIX = withBasePath('/api/v1/')
 
 /** First element of every query key of this app, used to tell app queries apart from wallet ones */
 export const RWA_QUERY_KEY_ROOT = 'rwa'
