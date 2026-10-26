@@ -1,9 +1,15 @@
+import type { ReactNode } from 'react'
+
 import { getJobs } from '../../../services/ashByHq'
+import { getPageBySlug } from '../../../services/cms'
 
 import { CareersPageContent } from '@/components/CareersPageContent'
+import { parseCareersContent } from '@/util/marketingContent'
 
-export default async function Page() {
-  const jobsData = (await getJobs()) || {}
+export default async function Page(): Promise<ReactNode> {
+  const [jobs, page] = await Promise.all([getJobs(), getPageBySlug('careers')])
+  const jobsData = jobs || {}
+  const content = parseCareersContent(page)
   const department = 'All'
 
   const jobsCount = Object.keys(jobsData).reduce((acc, cur) => acc + jobsData[cur].length, 0)
@@ -11,6 +17,7 @@ export default async function Page() {
 
   return (
     <CareersPageContent
+      content={content}
       department={department}
       jobsCountForDepartment={jobsCountForDepartment}
       jobsCount={jobsCount}
@@ -18,3 +25,5 @@ export default async function Page() {
     />
   )
 }
+
+export const revalidate = 43200
