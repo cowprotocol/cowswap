@@ -42,17 +42,29 @@ export function getAutoToken(
  * only when no quote is verified. `null` when no token has a ranked quote
  */
 export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQuotes['side']): RwaToken | null {
-  const ranked = quotedTokens.filter(isRankedQuote)
-  const verified = ranked.filter(({ quote }) => quote?.verified)
-  const [best] = [...(verified.length ? verified : ranked)].sort((a, b) =>
-    side === 'buy' ? a.pricePerShare - b.pricePerShare : b.pricePerShare - a.pricePerShare,
-  )
+  const [best] = sortQuotedTokens(quotedTokens, side)
 
-  return best?.token ?? null
+  return best && isRankedQuote(best) ? best.token : null
 }
 
 export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken {
   return quoted.pricePerShare !== null && !quoted.isPriceOutlier
+}
+
+/**
+ * The best quote first: verified quotes by price, then unverified ones by price, then tokens without a ranked quote in
+ * their original order
+ */
+export function sortQuotedTokens(quotedTokens: QuotedToken[], side: RwaAssetQuotes['side']): QuotedToken[] {
+  const getTier = (quoted: QuotedToken): number => (isRankedQuote(quoted) ? (quoted.quote?.verified ? 0 : 1) : 2)
+
+  return [...quotedTokens].sort((a, b) => {
+    const tierDiff = getTier(a) - getTier(b)
+
+    if (tierDiff !== 0 || !isRankedQuote(a) || !isRankedQuote(b)) return tierDiff
+
+    return side === 'buy' ? a.pricePerShare - b.pricePerShare : b.pricePerShare - a.pricePerShare
+  })
 }
 
 /** `stockPrice` is `null` while market data is loading, then no price is an outlier */

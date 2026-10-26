@@ -6,7 +6,13 @@ import { useChainId, useConnection } from 'wagmi'
 import { networkStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
 
-import { getAutoToken, getBestQuotedToken, type QuotedToken, toQuotedTokens } from '../lib/quotedTokens'
+import {
+  getAutoToken,
+  getBestQuotedToken,
+  type QuotedToken,
+  sortQuotedTokens,
+  toQuotedTokens,
+} from '../lib/quotedTokens'
 import { resolveTradeChainId, resolveTradeToken, type TradeToken } from '../lib/tradeToken'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
@@ -42,7 +48,10 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
 
   return useMemo(() => {
     const chainTokens = asset.tokens.filter((token) => token.chainId === chainId)
-    const quotedTokens = toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice)
+    const quotedTokens = sortQuotedTokens(
+      toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice),
+      side,
+    )
     const bestToken = getBestQuotedToken(quotedTokens, side)
     const autoToken = getAutoToken(chainTokens, chainQuotes, stockPrice)
     const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, autoToken?.address ?? null)
