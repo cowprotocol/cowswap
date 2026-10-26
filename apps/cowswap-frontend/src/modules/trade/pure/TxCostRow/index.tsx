@@ -9,21 +9,13 @@ import { Nullish } from 'types'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
-const SponsoredAmount = styled.span`
+const CoveredAmount = styled.span`
   text-decoration: line-through;
   opacity: 0.5;
 `
 
-const SponsoredTag = styled.span`
-  background: var(${UI.COLOR_SUCCESS_BG});
-  color: var(${UI.COLOR_SUCCESS_TEXT});
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.2px;
-  text-transform: uppercase;
-  white-space: nowrap;
+const FreeText = styled.span`
+  color: var(${UI.COLOR_GREEN});
 `
 
 interface TxCostRowProps {
@@ -91,7 +83,7 @@ export function TxCostRow({
     >
       {isSponsored && (
         <>
-          <SponsoredAmount>
+          <CoveredAmount>
             <TokenAmount amount={txCost} tokenSymbol={txCost.currency} />
             {txCostUsd && (
               <>
@@ -99,11 +91,11 @@ export function TxCostRow({
                 <FiatAmount amount={txCostUsd} withParentheses />
               </>
             )}
-          </SponsoredAmount>
+          </CoveredAmount>
           &nbsp;
-          <SponsoredTag>
-            <Trans>Sponsored</Trans>
-          </SponsoredTag>
+          <FreeText>
+            <Trans>FREE</Trans>
+          </FreeText>
         </>
       )}
     </ReviewOrderModalAmountRow>

@@ -5027,8 +5027,8 @@ msgstr "CoW Swap's robust solver competition protects your slippage from being e
 #~ msgstr "Rewards ended for this code. Try another."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
-msgid "Sponsored"
-msgstr "Sponsored"
+#~ msgid "Sponsored"
+#~ msgstr "Sponsored"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Aave Debt Swap Flashloan"
@@ -9125,6 +9125,7 @@ msgstr "MEV is lethal these days!"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "FREE"
 msgstr "FREE"
 
