@@ -18,8 +18,8 @@ jest.mock('../hooks/useBalancesWatcherSession', () => ({
 jest.mock('../hooks/useCustomTokensForChain', () => ({
   useCustomTokensForChain: jest.fn(),
 }))
-jest.mock('../hooks/useEnabledTokensListsUrls', () => ({
-  useEnabledTokensListsUrls: jest.fn(),
+jest.mock('../hooks/useWatcherTokensLists', () => ({
+  useWatcherTokensLists: jest.fn(),
 }))
 jest.mock('./BalancesCacheUpdater', () => ({
   BalancesCacheUpdater: jest.fn(() => null),
@@ -37,9 +37,9 @@ const mockUseBalancesWatcherSession = jest.requireMock<{ useBalancesWatcherSessi
 const mockUseCustomTokensForChain = jest.requireMock<{ useCustomTokensForChain: jest.Mock }>(
   '../hooks/useCustomTokensForChain',
 ).useCustomTokensForChain
-const mockUseEnabledTokensListsUrls = jest.requireMock<{ useEnabledTokensListsUrls: jest.Mock }>(
-  '../hooks/useEnabledTokensListsUrls',
-).useEnabledTokensListsUrls
+const mockUseWatcherTokensLists = jest.requireMock<{ useWatcherTokensLists: jest.Mock }>(
+  '../hooks/useWatcherTokensLists',
+).useWatcherTokensLists
 const mockBalancesCacheUpdater = jest.requireMock<{ BalancesCacheUpdater: jest.Mock }>(
   './BalancesCacheUpdater',
 ).BalancesCacheUpdater
@@ -64,7 +64,7 @@ function lastSessionParams(): UseBalancesWatcherSessionParams {
 describe('BalancesWatcherUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
-    mockUseEnabledTokensListsUrls.mockReturnValue([ENABLED_LIST_URL])
+    mockUseWatcherTokensLists.mockReturnValue({ tokensListsUrls: [ENABLED_LIST_URL], listsTokens: [] })
     mockUseCustomTokensForChain.mockReturnValue([CUSTOM_TOKEN])
   })
 
@@ -78,6 +78,30 @@ describe('BalancesWatcherUpdater', () => {
       customTokens: [CUSTOM_TOKEN],
       isChainSynced: true,
     })
+  })
+
+  it('merges tokens of already-parsed lists into customTokens, deduplicated and sorted', () => {
+    mockUseWatcherTokensLists.mockReturnValue({ tokensListsUrls: [], listsTokens: [BRIDGE_TOKEN, CUSTOM_TOKEN] })
+
+    render(<BalancesWatcherUpdater account={ACCOUNT} chainId={SupportedChainId.MAINNET} />)
+
+    expect(lastSessionParams().tokensListsUrls).toEqual([])
+    expect(lastSessionParams().customTokens).toEqual([CUSTOM_TOKEN, BRIDGE_TOKEN].sort())
+  })
+
+  it('keeps bridge mode free of list tokens, so only bridge buy-tokens are watched', () => {
+    mockUseWatcherTokensLists.mockReturnValue({ tokensListsUrls: [], listsTokens: [CUSTOM_TOKEN] })
+
+    render(
+      <BalancesWatcherUpdater
+        account={ACCOUNT}
+        chainId={SupportedChainId.ARBITRUM_ONE}
+        isBridgeMode
+        bridgeTokenList={[BRIDGE_TOKEN]}
+      />,
+    )
+
+    expect(lastSessionParams().customTokens).toEqual([BRIDGE_TOKEN])
   })
 
   it('treats an explicit isBridgeMode=false the same as the default normal mode', () => {

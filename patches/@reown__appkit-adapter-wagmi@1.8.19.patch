@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..8a76ea0c2f03f6f801e6b1a8a088f9320300b32f 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023a5302f39 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
 @@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
@@ -51,7 +51,22 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..8a76ea0c2f03f6f801e6b1a8a088f932
          await reconnect(this.wagmiConfig, {
              connectors: wagmiConnectors
          });
-@@ -379,6 +400,25 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -358,8 +379,13 @@ export class WagmiAdapter extends AdapterBlueprint {
+     async syncConnection(params) {
+         const { id, chainId } = params;
+         const connections = getConnections(this.wagmiConfig);
+-        const connection = connections.find(c => c.connector.id === id);
++        let connection = connections.find(c => c.connector.id === id);
+         const connector = this.getWagmiConnector(id);
++        if (connection && connector && typeof connection.connector.getProvider !== 'function') {
++            await reconnect(this.wagmiConfig, { connectors: [connector] });
++            connection = getConnections(this.wagmiConfig).find(c => c.connector.id === id);
++            if (!connection) throw new Error('Failed to restore wallet connection');
++        }
+         const provider = (await connector?.getProvider());
+         const isSafeApp = CoreHelperUtil.isSafeApp();
+         if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
+@@ -379,6 +405,17 @@ export class WagmiAdapter extends AdapterBlueprint {
                  };
              }
          }
@@ -62,22 +77,27 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..8a76ea0c2f03f6f801e6b1a8a088f932
 +         * turns that throw into onDisconnectNamespace(), which records the connector as disconnected
 +         * — so the wagmi reconnect that runs next skips it and the wallet stays disconnected for
 +         * good. Reporting "nothing to restore" instead leaves the namespace merely disconnected.
-+         *
-+         * A wallet that revoked this origin is the other reason there is no connection, and it
-+         * must keep taking the disconnect path: the connector is recorded as disconnected and
-+         * nothing tries to restore it again. isAuthorized() tells the two apart — it reads
-+         * eth_accounts, which still answers for a wallet that only lost its wagmi state.
 +         */
 +        if (!connection?.accounts?.length) {
-+            const isAuthorized = await connector?.isAuthorized().catch(() => false);
-+            if (isAuthorized) {
-+                return undefined;
-+            }
++            return undefined;
 +        }
          return {
              chainId: Number(connection?.chainId),
              address: this.toChecksummedAddress(connection?.accounts[0]),
-@@ -520,13 +560,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -424,7 +461,11 @@ export class WagmiAdapter extends AdapterBlueprint {
+             if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
+                 connector.setEip6963Wallet?.({ provider, info });
+             }
+-            const connection = this.wagmiConfig.state?.connections?.get(connector.uid);
++            let connection = this.wagmiConfig.state?.connections?.get(connector.uid);
++            if (connection && typeof connection.connector.getProvider !== 'function') {
++                await reconnect(this.wagmiConfig, { connectors: [connector] });
++                connection = this.wagmiConfig.state.connections.get(connector.uid);
++            }
+             if (connection) {
+                 await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id);
+                 const sortedAccounts = [...connection.accounts].sort((a, b) => {
+@@ -520,13 +561,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });

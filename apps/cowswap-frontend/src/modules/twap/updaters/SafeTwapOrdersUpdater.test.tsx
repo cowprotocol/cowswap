@@ -1,11 +1,11 @@
-import { atom, createStore, Provider, useAtomValue } from 'jotai'
+import { atom, createStore, PrimitiveAtom, Provider, useAtomValue } from 'jotai'
 
 import { encodeAbiParameters } from 'viem'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ComposableCoWAbi } from '@cowprotocol/cowswap-abis'
 import { UiOrderType } from '@cowprotocol/types'
-import { useIsSafeViaWc, useIsSafeWallet, walletInfoAtom } from '@cowprotocol/wallet'
+import { isSafeViaWcAtom, isSafeWalletAtom, walletInfoAtom } from '@cowprotocol/wallet'
 
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { triggerAppziSurvey } from 'appzi'
@@ -32,8 +32,8 @@ jest.mock('@cowprotocol/wallet', () => {
   return {
     walletInfoAtom,
     useWalletInfo: () => useAtomValue(walletInfoAtom),
-    useIsSafeWallet: jest.fn(),
-    useIsSafeViaWc: jest.fn(),
+    isSafeWalletAtom: atom(false),
+    isSafeViaWcAtom: atom(false),
     useGnosisSafeInfo: () => undefined,
   }
 })
@@ -44,6 +44,9 @@ jest.mock('./PartOrdersUpdater', () => ({ PartOrdersUpdater: jest.fn(() => null)
 jest.mock('../services/fetchCachedTwapOrdersFromSafe')
 jest.mock('../hooks/useTwapOrdersExecutions')
 jest.mock('../hooks/useTwapOrdersAuthMulticall')
+
+const writableIsSafeWalletAtom = isSafeWalletAtom as PrimitiveAtom<boolean>
+const writableIsSafeViaWcAtom = isSafeViaWcAtom as PrimitiveAtom<boolean | null>
 
 const OWNER = '0x1111111111111111111111111111111111111111'
 const OTHER_OWNER = '0x2222222222222222222222222222222222222222'
@@ -118,8 +121,6 @@ beforeEach(() => {
   jest.useFakeTimers({ now: NOW })
   jest.clearAllMocks()
   localStorage.clear()
-  jest.mocked(useIsSafeWallet).mockReturnValue(true)
-  jest.mocked(useIsSafeViaWc).mockReturnValue(false)
   jest.mocked(useComposableCowContractData).mockReturnValue(CONTRACT)
   jest.mocked(useTwapOrdersAuthMulticall).mockReturnValue({})
   jest.mocked(useTwapOrdersExecutions).mockImplementation(function useMockExecutions() {
@@ -143,10 +144,10 @@ it.each([
   { wallet: 'Safe via WalletConnect', viaWc: true, status: TwapOrderStatus.Fulfilled, event: { traded: true } },
   { wallet: 'Safe via WalletConnect', viaWc: true, status: TwapOrderStatus.Expired, event: { expired: true } },
 ])('triggers $status NPS for $wallet after leaving the TWAP page', async ({ viaWc, status, event }) => {
-  jest.mocked(useIsSafeWallet).mockReturnValue(!viaWc)
-  jest.mocked(useIsSafeViaWc).mockReturnValue(viaWc)
   const store = createStore()
   store.set(walletInfoAtom, { account: OWNER, chainId: CONTRACT.chainId })
+  store.set(writableIsSafeWalletAtom, !viaWc)
+  store.set(writableIsSafeViaWcAtom, viaWc)
   const id = getConditionalOrderId(makeSafeData().conditionalOrderParams)
   mount(store)
   await flushOrders()
@@ -187,7 +188,8 @@ it.each([
 it.each(['EOA', 'disconnected', 'unsupported chain'])('does not start Safe polling for %s', async (context) => {
   const store = createStore()
   store.set(walletInfoAtom, { account: context === 'disconnected' ? undefined : OWNER, chainId: CONTRACT.chainId })
-  if (context === 'EOA') jest.mocked(useIsSafeWallet).mockReturnValue(false)
+  store.set(writableIsSafeWalletAtom, context !== 'EOA')
+  store.set(writableIsSafeViaWcAtom, false)
   if (context === 'unsupported chain')
     jest.mocked(useComposableCowContractData).mockReturnValue({ ...CONTRACT, address: undefined })
   mount(store)
@@ -200,6 +202,8 @@ it.each(['EOA', 'disconnected', 'unsupported chain'])('does not start Safe polli
 it.each(['account', 'chain'] as const)('discards previous Safe history after changing %s', async (context) => {
   const store = createStore()
   store.set(walletInfoAtom, { account: OWNER, chainId: CONTRACT.chainId })
+  store.set(writableIsSafeWalletAtom, true)
+  store.set(writableIsSafeViaWcAtom, false)
   mount(store)
   await flushOrders()
   const id = getConditionalOrderId(makeSafeData().conditionalOrderParams)

@@ -1,14 +1,18 @@
-import type { Hex, WalletClient } from 'viem'
+import type { Hex, SendTransactionParameters, WalletClient } from 'viem'
 
-import { isRejectRequestProviderError, logTwap, normalizeError } from '@cowprotocol/common-utils'
+import { calculateGasMargin, isRejectRequestProviderError, logTwap, normalizeError } from '@cowprotocol/common-utils'
+
+import { estimateGas } from 'viem/actions'
 
 import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG, getCowShedHooks } from 'modules/accountProxy'
+
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 import { encodeTrustedExecuteHooksCalldata } from './buildEoaTwapTrustedExecuteTx'
 
 import { cancelTwapOrderTxs, CancelTwapOrderContext } from '../../cancelTwapOrderTxs'
 
-export const EOA_TWAP_CANCELLATION_GAS_LIMIT = 600_000n
+export const EOA_TWAP_CANCELLATION_GAS_LIMIT = 1_200_000n
 
 export interface CancelEoaTwapOrderParams
   extends Pick<
@@ -25,7 +29,12 @@ export interface CancelEoaTwapOrderParams
   partOnly?: boolean
 }
 
-export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Promise<Hex> {
+export interface TwapCancellation {
+  estimatedGas: bigint
+  sendTransaction(): Promise<Hex>
+}
+
+export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Promise<TwapCancellation> {
   const { chainId, walletClient } = context
 
   if (!walletClient.account || !walletClient.chain) {
@@ -38,37 +47,46 @@ export async function cancelEoaTwapOrder(context: CancelEoaTwapOrderParams): Pro
     partOnly: context.partOnly,
   }
 
-  logTwap.info('Cancelling EOA TWAP order', logContext)
+  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
+  const calls = cancelTwapOrderTxs(context).map(({ to, data }) => ({
+    target: to,
+    callData: data,
+    value: 0n,
+    isDelegateCall: false,
+    allowFailure: false,
+  }))
+  const transaction = {
+    to: cowShedHooks.proxyOf(walletClient.account.address) as Hex,
+    data: encodeTrustedExecuteHooksCalldata(calls),
+    account: walletClient.account,
+    chain: walletClient.chain,
+  } satisfies SendTransactionParameters
+  const gas = await estimateGasWithFallback(
+    () => estimateGas(walletClient, transaction).then(calculateGasMargin),
+    EOA_TWAP_CANCELLATION_GAS_LIMIT,
+  )
+  return {
+    estimatedGas: gas,
+    sendTransaction: async () => {
+      logTwap.info('Cancelling EOA TWAP order', logContext)
 
-  try {
-    const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
-    const calls = cancelTwapOrderTxs(context).map(({ to, data }) => ({
-      target: to,
-      callData: data,
-      value: 0n,
-      isDelegateCall: false,
-      allowFailure: false,
-    }))
-    const txHash = await walletClient.sendTransaction({
-      to: cowShedHooks.proxyOf(walletClient.account.address) as Hex,
-      data: encodeTrustedExecuteHooksCalldata(calls),
-      account: walletClient.account,
-      chain: walletClient.chain,
-      gas: EOA_TWAP_CANCELLATION_GAS_LIMIT,
-    })
+      try {
+        const txHash = await walletClient.sendTransaction({ ...transaction, gas })
 
-    logTwap.info('Submitted EOA TWAP cancellation', { ...logContext, txHash })
+        logTwap.info('Submitted EOA TWAP cancellation', { ...logContext, txHash })
 
-    return txHash
-  } catch (err: unknown) {
-    const error = normalizeError(err)
+        return txHash
+      } catch (err: unknown) {
+        const error = normalizeError(err)
 
-    if (isRejectRequestProviderError(err)) {
-      logTwap.info('EOA TWAP cancellation rejected by user', logContext)
-    } else {
-      logTwap.error(error, { orderId: context.orderId })
-    }
+        if (isRejectRequestProviderError(err)) {
+          logTwap.info('EOA TWAP cancellation rejected by user', logContext)
+        } else {
+          logTwap.error(error, { orderId: context.orderId })
+        }
 
-    throw error
+        throw error
+      }
+    },
   }
 }

@@ -13,6 +13,7 @@ const SETTINGS_FEEDBACK_VARIANT_COLORS = {
 
 export const FeedbackWrapper = styled.div<{ $variant: SettingsFeedbackVariant }>`
   display: flex;
+  align-items: flex-start;
   gap: 4px;
   width: 100%;
   color: var(${({ $variant }) => SETTINGS_FEEDBACK_VARIANT_COLORS[$variant]});
@@ -24,4 +25,9 @@ export const FeedbackWrapper = styled.div<{ $variant: SettingsFeedbackVariant }>
     height: 16px;
     min-width: 16px;
   }
+`
+
+export const FeedbackMessage = styled.span`
+  min-width: 0;
+  flex: 1;
 `

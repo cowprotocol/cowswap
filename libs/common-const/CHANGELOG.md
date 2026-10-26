@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.15.0...common-const-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(rwa): display asset quotes (#8281)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+
 ## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.14.0...common-const-v3.15.0) (2026-10-14)
 
 ### Minor Changes

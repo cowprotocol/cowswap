@@ -279,8 +279,10 @@ describe('HomePage', () => {
     mockApi(OVERVIEW)
     const { container } = renderHomePage()
 
-    expect(container.querySelector('img[src="/issuers/ondo.svg"]')?.className).toContain('monochromeLogo')
-    expect(container.querySelector('img[src="/issuers/xstocks.svg"]')?.className ?? '').not.toContain('monochromeLogo')
+    expect(container.querySelector('img[src="/rwa/issuers/ondo.svg"]')?.className).toContain('monochromeLogo')
+    expect(container.querySelector('img[src="/rwa/issuers/xstocks.svg"]')?.className ?? '').not.toContain(
+      'monochromeLogo',
+    )
   })
 
   it('shows an error when the overview fails', async () => {

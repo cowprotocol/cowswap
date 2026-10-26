@@ -4,10 +4,17 @@ import { ReactNode } from 'react'
 import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import styled from 'styled-components/macro'
 
 import { StyledInfoIcon, StyledRowBetween, TextWrapper } from '../../tradeWidgetAddons/pure/Row/styled'
 import { toggleTraderModalAtom } from '../state/affiliateTraderModalAtom'
 import { affiliateTraderSavedCodeAtom } from '../state/affiliateTraderSavedCodeAtom'
+
+const LabelText = styled.span`
+  font-size: 13px;
+  font-weight: 500;
+  color: inherit;
+`
 
 export function AffiliateTraderRewardsRow(): ReactNode {
   const toggleAffiliateModal = useSetAtom(toggleTraderModalAtom)
@@ -17,9 +24,9 @@ export function AffiliateTraderRewardsRow(): ReactNode {
   return (
     <StyledRowBetween>
       <RowFixed>
-        <TextWrapper>
+        <LabelText>
           <Trans>Referral code</Trans>
-        </TextWrapper>
+        </LabelText>
         <HoverTooltip
           wrapInContainer
           content={

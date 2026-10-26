@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "3.31.1",
+  "version": "3.32.0",
   "private": true,
   "description": "CoW Swap",
   "main": "index.js",
@@ -161,6 +161,7 @@
     "@types/styled-components": "5.1.34",
     "@vercel/config": "0.1.0",
     "@web3-react/types": "8.2.3",
+    "charting_library": "https://files.cow.fi/charting-library/32.1.0/charting-library-types.tgz",
     "jest-fetch-mock": "3.0.3",
     "jotai-devtools": "0.8.0",
     "react-cosmos": "7.0.0",

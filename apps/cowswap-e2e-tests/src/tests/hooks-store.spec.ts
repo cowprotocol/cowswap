@@ -83,7 +83,7 @@ test.describe('Hooks store', () => {
     await expect(swapPage.page.getByText('Add Post-Hook Action')).toBeVisible()
   })
 
-  test('[CS-136] Hooks: cross-chain swaps are not available @smoke', async ({ swapPage, wallet, mocks, context }) => {
+  test('[CS-136] Hooks: cross-chain swaps are not available', async ({ swapPage, wallet, mocks, context }) => {
     // Resolving WXDAI@Gnosis as a currency relies on the real, live Gnosis token list — same as
     // every other test in this suite resolves its Sepolia WETH/USDC via the real, unmocked
     // per-chain token list (there's no `mocks.tokenLists` fixture in this app; token lists aren't

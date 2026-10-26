@@ -21,6 +21,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
+  getIsBuyAtaCreationSkipped,
   getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
@@ -52,11 +53,17 @@ import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 // newest run may touch the confirm-screen state, and every stale one goes silent.
 let latestAttemptId = 0
 
+export interface SolanaFlowOptions {
+  isSponsored?: boolean
+  /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
+  isAtaCreationDisabled?: boolean
+}
+
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
-  isSponsored = false,
+  { isSponsored = false, isAtaCreationDisabled = false }: SolanaFlowOptions = {},
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -149,7 +156,13 @@ export async function solanaFlow(
     const steps = [
       planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
-      planCreateBuyAtaStep({ payer: rentPayer, receiver: buyAtaReceiver, quote: solanaQuote, buySymbol }),
+      planCreateBuyAtaStep({
+        payer: rentPayer,
+        receiver: buyAtaReceiver,
+        quote: solanaQuote,
+        buySymbol,
+        isCreationSkipped: getIsBuyAtaCreationSkipped({ quote: solanaQuote, owner, isAtaCreationDisabled }),
+      }),
       createOrderStep,
     ].filter((step): step is SolanaFlowStep => step !== null)
 

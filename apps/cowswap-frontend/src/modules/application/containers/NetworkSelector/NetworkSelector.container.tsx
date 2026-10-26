@@ -4,7 +4,7 @@ import { ReactNode, useRef, type MouseEvent } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
-import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
+import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
@@ -55,7 +55,7 @@ export function NetworkSelector(): ReactNode {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
-  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
+  const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
   useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
