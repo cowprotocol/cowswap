@@ -14,8 +14,8 @@ import {
 } from '../model/assetsFiltersAtoms'
 import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
-import { getChainLabel } from '@/shared/lib/chain'
 import { SearchIcon } from '@/shared/ui/icons'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { Select } from '@/shared/ui/select'
 
 export function AssetsFilters(): ReactNode {
@@ -25,7 +25,7 @@ export function AssetsFilters(): ReactNode {
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
   const { data } = useAtomValue(assetsPageQueryAtom)
   const issuers = data?.issuers ?? []
-  const chainIds = data?.chainIds ?? []
+  const networkOptions = useNetworkOptions(data?.chainIds ?? [])
 
   return (
     <div className={styles.filters}>
@@ -52,10 +52,7 @@ export function AssetsFilters(): ReactNode {
         <Select
           aria-label="Network"
           value={chainId}
-          options={[
-            { value: null, label: 'All networks' },
-            ...chainIds.map((item) => ({ value: item, label: getChainLabel(item) })),
-          ]}
+          options={[{ value: null, label: 'All networks' }, ...networkOptions]}
           onChange={(value) => updateFilters({ chainId: value })}
         />
         <button

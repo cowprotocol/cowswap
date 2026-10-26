@@ -19,6 +19,7 @@ import {
 } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { Select } from '@/shared/ui/select'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -40,6 +41,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
 
   const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
   const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
+  const networkOptions = useNetworkOptions(chainIds)
   const tokens = asset.tokens.filter(
     (token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network),
   )
@@ -68,10 +70,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
             variant="small"
             aria-label="Network"
             value={network}
-            options={[
-              { value: null, label: 'All networks' },
-              ...chainIds.map((chainId) => ({ value: chainId, label: getChainLabel(chainId) })),
-            ]}
+            options={[{ value: null, label: 'All networks' }, ...networkOptions]}
             onChange={setNetwork}
           />
         </div>

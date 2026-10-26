@@ -54,11 +54,6 @@
   background: var(--color-surface);
 }
 
-.networkLogo {
-  flex-shrink: 0;
-  border-radius: 50%;
-}
-
 .tableHeader {
   display: flex;
   align-items: center;

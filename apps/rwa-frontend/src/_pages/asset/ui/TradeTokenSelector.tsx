@@ -3,8 +3,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 
-import Image from 'next/image'
-
 import styles from './TradeTokenSelector.module.css'
 
 import { isRankedQuote } from '../lib/quotedTokens'
@@ -21,10 +19,9 @@ import {
   type RwaMarketData,
   type RwaQuoteSide,
 } from '@/entities/asset'
-import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { useIsDarkTheme } from '@/shared/lib/theme'
 import { InfoIcon } from '@/shared/ui/icons'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { Select } from '@/shared/ui/select'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
@@ -120,29 +117,10 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
 }
 
 function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number }): ReactNode {
-  const isDark = useIsDarkTheme()
   const selectNetwork = useSelectTradeNetwork()
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
+  const options = useNetworkOptions([...new Set(asset.tokens.map((token) => token.chainId))], 20)
 
-  return (
-    <Select
-      variant="filled"
-      aria-label="Network"
-      value={chainId}
-      options={chainIds.map((id) => {
-        const logoUrl = getChainLogoUrl(id, isDark)
-
-        return {
-          value: id,
-          label: getChainLabel(id),
-          icon: logoUrl && (
-            <Image className={styles.networkLogo} src={logoUrl} alt="" width={20} height={20} unoptimized />
-          ),
-        }
-      })}
-      onChange={selectNetwork}
-    />
-  )
+  return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={selectNetwork} />
 }
 
 function TradeTokenOption({
