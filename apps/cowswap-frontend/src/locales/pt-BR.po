@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-23 17:15\n"
+"PO-Revision-Date: 2026-10-26 16:48\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -455,6 +455,7 @@ msgstr "Defina qualquer preço limite e horizonte de tempo"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/AccountRentRow/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/useTwapConfirmCurrencyPreview.ts
 msgid "token"
 msgstr "token"
@@ -676,6 +677,10 @@ msgstr "Executar uma simulação"
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "This CoW doesn't run away any more! Not from MEV!"
 msgstr "Esta CoW não foge mais! Nem do MEV!"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/AccountRentRow/index.tsx
+msgid "Solana charges a one-time deposit to open your {tokenLabel} account, which is taken out of this trade."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 #~ msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
@@ -1334,6 +1339,10 @@ msgstr "Aguente firme! Estamos preparando sua ordem"
 msgid "Trade limit exceeded"
 msgstr "Limite de negociação excedido"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "You need no SOL of your own to place this order."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeLinkingStatusSection.tsx
 #~ msgid "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays} days."
 #~ msgstr "Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for {timeCapDays} days."
@@ -1533,6 +1542,10 @@ msgstr "Token não suportado"
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 msgid "is on {chainName} network"
 msgstr "está na rede {chainName}"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "You pay it from your SOL balance when you sign, so it comes on top of the amount you sell rather than out of your trade."
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokenApproveActionCell.tsx
@@ -2208,6 +2221,10 @@ msgstr "A configuração TWAP foi cancelada ou não foi transmitida. Por favor, 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "Eligible trade"
 msgstr "Negociação elegível"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/AccountRentRow/index.tsx
+msgid "The deposit stays yours: closing the account once it is empty returns it to you as SOL."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/tokensVirtualListUtils.ts
 msgid "Recent"
@@ -5709,6 +5726,10 @@ msgstr "Mercado:"
 msgid "This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information."
 msgstr "Este token não é suportado, pois não opera de forma otimizada com o CoW Protocol. Consulte as Perguntas Frequentes para mais informações."
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "Tx cost"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "You haven't added any custom hooks yet. Add a custom hook to get started."
 msgstr "Você ainda não adicionou nenhum hook personalizado. Adicione um hook personalizado para começar."
@@ -5892,6 +5913,10 @@ msgstr "Buscando impacto no preço"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 #~ msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 #~ msgstr "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "Putting this order on-chain costs SOL in Solana transaction fees and account deposits, and CoW Swap covers it for you."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
 #~ msgid "Limit order to sell at a higher price. How much higher?"
@@ -7150,6 +7175,10 @@ msgstr "Aprovação pendente"
 #: apps/cowswap-frontend/src/common/pure/OrderSubmittedContent/TrackOrderBanner.pure.tsx
 msgid "Get Telegram updates when it fills or expires."
 msgstr "Receba atualizações no Telegram quando ela preencher ou expirar."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
+msgid "Solana charges this to put your order on-chain: the transaction fee, and a deposit for the accounts the order needs."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
@@ -8665,6 +8694,11 @@ msgstr "Selecionar rede"
 #~ msgid "is required"
 #~ msgstr "is required"
 
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/AccountRentRow/index.tsx
+msgid "Account deposit"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 msgid "Still activating"
 msgstr "Ainda ativando"
@@ -9327,6 +9361,7 @@ msgstr "MEV é letal hoje em dia!"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "FREE"
 msgstr "GRÁTIS"
 
