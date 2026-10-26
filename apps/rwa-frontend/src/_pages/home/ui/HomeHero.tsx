@@ -10,7 +10,7 @@ const ISSUER_LOGO_SIZE = 22
 
 interface IssuerProps {
   name: string
-  logo: string
+  logo?: string
   /** Black logo, inverted on dark backgrounds */
   monochrome?: boolean
 }
@@ -21,8 +21,8 @@ export function HomeHero(): ReactNode {
       <h1 className={styles.heading}>Explore tokenized real-world assets</h1>
       <p className={styles.subtitle}>
         Trade tokenized stocks and ETFs from <Issuer name="Ondo" logo={withBasePath('/issuers/ondo.svg')} monochrome />,{' '}
-        <Issuer name="xStocks" logo={withBasePath('/issuers/xstocks.svg')} /> and other issuers across chains, powered
-        by CoW Protocol.
+        <Issuer name="xStocks" logo={withBasePath('/issuers/xstocks.svg')} />, <Issuer name="Coinbase" />,{' '}
+        <Issuer name="bStocks" /> and <Issuer name="Reality" /> across chains, powered by CoW Protocol.
       </p>
     </header>
   )
@@ -31,14 +31,16 @@ export function HomeHero(): ReactNode {
 function Issuer({ name, logo, monochrome = false }: IssuerProps): ReactNode {
   return (
     <span className={styles.issuer}>
-      <Image
-        className={monochrome ? styles.monochromeLogo : undefined}
-        src={logo}
-        alt=""
-        width={ISSUER_LOGO_SIZE}
-        height={ISSUER_LOGO_SIZE}
-        unoptimized
-      />
+      {logo && (
+        <Image
+          className={monochrome ? styles.monochromeLogo : undefined}
+          src={logo}
+          alt=""
+          width={ISSUER_LOGO_SIZE}
+          height={ISSUER_LOGO_SIZE}
+          unoptimized
+        />
+      )}
       {name}
     </span>
   )
