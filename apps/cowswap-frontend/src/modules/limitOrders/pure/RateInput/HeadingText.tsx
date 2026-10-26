@@ -11,6 +11,7 @@ type Props = {
   currency: Currency | null
   inputCurrency: Currency | null
   rateImpact: number
+  priceChangePercent: number
   toggleIcon?: React.ReactNode
   onToggle?: () => void
 }
@@ -57,7 +58,7 @@ const TextWrapper = styled.span<{ clickable: boolean }>`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, onToggle }: Props) {
+export function HeadingText({ inputCurrency, currency, rateImpact, priceChangePercent, toggleIcon, onToggle }: Props) {
   if (!currency) {
     return (
       <Wrapper>
@@ -77,7 +78,11 @@ export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, o
           <TokenSymbol token={currency} />
         </TokenWrapper>
         <Trans>is worth</Trans>
-        {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
+        <RateImpactIndicator
+          inputCurrency={inputCurrency}
+          rateImpact={rateImpact}
+          priceChangePercent={priceChangePercent}
+        />
       </TextWrapper>
     </Wrapper>
   )

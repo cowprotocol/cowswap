@@ -125,12 +125,7 @@ test.describe('Cross-chain swaps', () => {
     await swapPage.page.goto(url)
   }
 
-  test('[CS-285] Cross-chain swap UI: accessible via Swap form @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-285] Cross-chain swap UI: accessible via Swap form', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -164,7 +159,13 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Near Intents')).toBeVisible()
   })
 
-  test('[CS-286] Cross-chain swap: Near provider', async ({ swapPage, wallet, confirmModal, mocks, rpcProxy }) => {
+  test('[CS-286] Cross-chain swap: Near provider @smoke', async ({
+    swapPage,
+    wallet,
+    confirmModal,
+    mocks,
+    rpcProxy,
+  }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -429,7 +430,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
-  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination @smoke', async ({
+  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination', async ({
     swapPage,
     wallet,
     mocks,
@@ -496,12 +497,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
-  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },

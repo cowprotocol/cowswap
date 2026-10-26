@@ -429,9 +429,8 @@ describe('isSmartContractWalletAtom', () => {
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    await waitFor(() => {
-      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
-    })
+    await expect(store.get(accountTypeAsyncAtom)).resolves.toBe(AccountType.EOA)
+
     expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
     expect(store.get(isEoaAtom)).toBe(true)
