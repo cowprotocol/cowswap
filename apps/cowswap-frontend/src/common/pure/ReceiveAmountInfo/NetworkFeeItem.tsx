@@ -12,20 +12,11 @@ interface NetworkFeeItemProps {
   isSell: boolean
   hasFee: boolean
   networkFeeAmount: CurrencyAmount<Currency> | undefined
-  /** Defaults to true. When false, the row is dropped instead of claiming the costs are free. */
-  isFreePlacement?: boolean
   /** Test hook — most callers don't need one, only those an e2e test targets directly. */
   testId?: string
 }
 
-export function NetworkFeeItem({
-  discount,
-  isSell,
-  hasFee,
-  networkFeeAmount,
-  isFreePlacement = true,
-  testId,
-}: NetworkFeeItemProps): ReactNode {
+export function NetworkFeeItem({ discount, isSell, hasFee, networkFeeAmount, testId }: NetworkFeeItemProps): ReactNode {
   const typeString = !isSell ? '+' : '-'
 
   const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
@@ -38,8 +29,6 @@ export function NetworkFeeItem({
   )
 
   if (!networkFeeAmount) return null
-
-  if (!hasFee && !isFreePlacement) return null
 
   return (
     <div data-testid={testId}>

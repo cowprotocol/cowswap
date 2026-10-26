@@ -3,7 +3,7 @@ import { ReactElement, useCallback, useState } from 'react'
 import { t } from '@lingui/core/macro'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
-import { TradeFees, TradeTotalCostsDetails, useIsFreeOrderPlacement } from 'modules/trade'
+import { TradeFees, TradeTotalCostsDetails, TxCostRow, useSolanaTxCost } from 'modules/trade'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
@@ -34,7 +34,9 @@ export function TradeRateDetails({
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
   const protocolFeeBps = useTradeQuoteProtocolFee()
-  const isFreePlacement = useIsFreeOrderPlacement()
+  const detailRowStyle = !!rateInfoParams
+  const solanaTxCost = useSolanaTxCost()
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
@@ -52,8 +54,17 @@ export function TradeRateDetails({
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
       loading={loading}
-      detailRowStyle
-      isFreePlacement={isFreePlacement}
+      detailRowStyle={detailRowStyle}
+    />
+  )
+
+  // Paid from the wallet rather than taken out of the trade, so it stays out of the costs accordion.
+  const txCostRow = solanaTxCost && (
+    <TxCostRow
+      txCost={solanaTxCost.amount}
+      txCostUsd={solanaTxCostUsd}
+      isSponsored={solanaTxCost.isSponsored}
+      detailRowStyle={detailRowStyle}
     />
   )
 
@@ -62,6 +73,7 @@ export function TradeRateDetails({
       <>
         {tradeFees}
         {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+        {txCostRow}
       </>
     )
   }
@@ -80,19 +92,23 @@ export function TradeRateDetails({
         />
         {tradeFees}
         {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+        {txCostRow}
       </>
     )
   }
 
   return (
-    <TradeTotalCostsDetails
-      rateInfoParams={rateInfoParams}
-      totalCosts={partnerFeeAmount}
-      isFeeDetailsOpen={isFeeDetailsOpen}
-      toggleAccordion={toggleAccordion}
-    >
-      {tradeFees}
-      {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-    </TradeTotalCostsDetails>
+    <>
+      <TradeTotalCostsDetails
+        rateInfoParams={rateInfoParams}
+        totalCosts={partnerFeeAmount}
+        isFeeDetailsOpen={isFeeDetailsOpen}
+        toggleAccordion={toggleAccordion}
+      >
+        {tradeFees}
+        {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+      </TradeTotalCostsDetails>
+      {txCostRow}
+    </>
   )
 }
