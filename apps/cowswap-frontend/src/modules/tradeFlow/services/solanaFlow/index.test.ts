@@ -754,6 +754,32 @@ describe('solanaFlow · appData', () => {
     )
   })
 
+  it.each([false, true])(
+    'opens no wallet prompt for an attempt retried past during its upload (sponsored: %s)',
+    async (isSponsored) => {
+      let finishStaleUpload: () => void = () => undefined
+      mockUploadAppData.mockImplementationOnce(
+        () =>
+          new Promise<void>((resolve) => {
+            finishStaleUpload = resolve
+          }),
+      )
+      const staleContext = buildContext()
+      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored })
+      await tick()
+
+      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored })
+      finishStaleUpload()
+      await staleRun
+
+      const walletPrompt = isSponsored ? mockSignSolanaFlow : mockSendSolanaFlow
+      expect(walletPrompt).toHaveBeenCalledTimes(1)
+      expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledTimes(1)
+      expect(staleContext.tradeConfirmActions.onSuccess).not.toHaveBeenCalled()
+      expect(staleContext.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    },
+  )
+
   it('places nothing when the appData cannot be registered', async () => {
     mockUploadAppData.mockRejectedValue(new Error('AppDataHashMismatch'))
     const context = buildContext()

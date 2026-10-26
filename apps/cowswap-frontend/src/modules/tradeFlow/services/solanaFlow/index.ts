@@ -161,6 +161,10 @@ export async function solanaFlow(
     // Registered under the signed hash, so a doc that does not hash to it is rejected before anything is sent.
     await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
+    // A retry started while the upload was in flight owns the flow now: going on would open a second
+    // wallet prompt for this stale order.
+    if (attemptId !== latestAttemptId) return
+
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
     // `isNativeSell` reflects the user's actual selection, not `inputAmount.currency` — the Solana quote
