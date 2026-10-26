@@ -9,19 +9,35 @@ describe('getListboxPosition', () => {
       top: 144,
       left: 200,
       minWidth: 120,
+      maxHeight: 200,
     })
   })
 
   it('places the listbox above the trigger when it does not fit below', () => {
     const trigger = { ...TRIGGER, top: 700, bottom: 740 }
 
-    expect(getListboxPosition(trigger, { width: 100, height: 200 }, VIEWPORT).top).toBe(496)
+    expect(getListboxPosition(trigger, { width: 100, height: 200 }, VIEWPORT)).toMatchObject({
+      top: 496,
+      maxHeight: 200,
+    })
   })
 
-  it('keeps the listbox below the trigger when it fits neither below nor above', () => {
+  it('cuts the listbox to the space below when that side has more room', () => {
     const trigger = { ...TRIGGER, top: 300, bottom: 340 }
 
-    expect(getListboxPosition(trigger, { width: 100, height: 600 }, VIEWPORT).top).toBe(344)
+    expect(getListboxPosition(trigger, { width: 100, height: 600 }, VIEWPORT)).toMatchObject({
+      top: 344,
+      maxHeight: 448,
+    })
+  })
+
+  it('cuts the listbox to the space above when that side has more room', () => {
+    const trigger = { ...TRIGGER, top: 500, bottom: 540 }
+
+    expect(getListboxPosition(trigger, { width: 100, height: 600 }, VIEWPORT)).toMatchObject({
+      top: 8,
+      maxHeight: 488,
+    })
   })
 
   it('keeps the listbox inside the right edge of the viewport', () => {

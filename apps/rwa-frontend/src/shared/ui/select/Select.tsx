@@ -218,7 +218,9 @@ function SelectListbox<T>({
       role="listbox"
       aria-label={label}
       style={
-        position ? { top: position.top, left: position.left, minWidth: position.minWidth } : { visibility: 'hidden' }
+        position
+          ? { top: position.top, left: position.left, minWidth: position.minWidth, maxHeight: position.maxHeight }
+          : { visibility: 'hidden' }
       }
       // Keeps the focus on the combobox, which would close the listbox on blur before the click selects
       onMouseDown={(event) => event.preventDefault()}

@@ -5,6 +5,7 @@ import { useChainId, useConnection } from 'wagmi'
 
 import { networkStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
 import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
+import { useKeptQuotedTokensOrder } from './useKeptQuotedTokensOrder'
 
 import {
   getAutoToken,
@@ -46,12 +47,18 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
   const chainQuotes = quotesQuery.data?.chainId === chainId ? quotesQuery.data : undefined
   const quotes = chainQuotes?.side === side ? chainQuotes : undefined
 
+  const chainTokens = useMemo(() => asset.tokens.filter((token) => token.chainId === chainId), [asset.tokens, chainId])
+  const sortedTokens = useMemo(
+    () =>
+      sortQuotedTokens(
+        toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice),
+        side,
+      ),
+    [chainTokens, quotes, stats, chainId, stockPrice, side],
+  )
+  const quotedTokens = useKeptQuotedTokensOrder(sortedTokens, `${chainId}:${side}`)
+
   return useMemo(() => {
-    const chainTokens = asset.tokens.filter((token) => token.chainId === chainId)
-    const quotedTokens = sortQuotedTokens(
-      toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice),
-      side,
-    )
     const bestToken = getBestQuotedToken(quotedTokens, side)
     const autoToken = getAutoToken(chainTokens, chainQuotes, stockPrice)
     const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, autoToken?.address ?? null)
@@ -67,5 +74,5 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
       isQuotesLoading: !quotes && !quotesQuery.error,
       quotesError: quotes ? null : quotesQuery.error,
     }
-  }, [asset.tokens, chainId, chainQuotes, quotes, stats, stockPrice, side, selectedTokenKey, quotesQuery.error])
+  }, [chainTokens, quotedTokens, chainId, chainQuotes, quotes, stockPrice, side, selectedTokenKey, quotesQuery.error])
 }
