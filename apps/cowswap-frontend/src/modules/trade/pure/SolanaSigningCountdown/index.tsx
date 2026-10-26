@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { useRemainingSeconds } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
@@ -11,7 +12,6 @@ import { NewModal, NewModalProps } from 'common/pure/NewModal'
 
 import { CountdownDigits } from './CountdownDigits'
 import { MilkGlass } from './MilkGlass'
-import { useRemainingMs } from './useRemainingMs'
 
 import { SolanaTradeAmountsRow } from '../SolanaTradeAmountsRow'
 
@@ -37,7 +37,7 @@ export type SolanaSigningCountdownProps = NewModalProps & {
 export function SolanaSigningCountdown(props: SolanaSigningCountdownProps): ReactNode {
   const { expiresAt, durationMs, inputAmount, outputAmount, recipient, onExpiredDismiss, ...rest } = props
 
-  const remainingMs = useRemainingMs(expiresAt)
+  const remainingMs = (useRemainingSeconds(expiresAt) ?? 0) * 1000
   const isExpired = remainingMs === 0
   const onDismiss = isExpired && onExpiredDismiss ? onExpiredDismiss : rest.onDismiss
 
