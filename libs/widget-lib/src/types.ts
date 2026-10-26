@@ -477,8 +477,7 @@ export interface CowSwapWidgetParams {
   hideBridgeInfo?: boolean
 
   /**
-   * Hides the Wait & Save (batch deferral) toggle and related confirmation UI.
-   * Use when the host prefers its own deferred/withdrawal flow.
+   * Hides the Wait & Save toggle and related confirmation UI.
    * Defaults to false.
    */
   hideWaitAndSave?: boolean
