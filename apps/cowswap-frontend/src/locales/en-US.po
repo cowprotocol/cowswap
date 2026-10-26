@@ -3331,8 +3331,8 @@ msgid "Until your order enters the auction"
 msgstr "Until your order enters the auction"
 
 #: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
-msgid "This transaction contains a restricted address and was blocked."
-msgstr "This transaction contains a restricted address and was blocked."
+#~ msgid "This transaction contains a restricted address and was blocked."
+#~ msgstr "This transaction contains a restricted address and was blocked."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #~ msgid "Loading tokens..."
@@ -5387,6 +5387,10 @@ msgstr "This transaction will not succeed due to price movement. Try increasing 
 msgid "Approve all"
 msgstr "Approve all"
 
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "An error has occurred. Please refresh the quote and try again."
+msgstr "An error has occurred. Please refresh the quote and try again."
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsDropdown/SettingsDropdown.container.tsx
 msgid "Hooks are not available on Solana yet."
 msgstr "Hooks are not available on Solana yet."
@@ -6507,6 +6511,10 @@ msgstr "Executing"
 msgid "Another order has used up the approval amount. Set a new token approval to proceed with your order."
 msgstr "Another order has used up the approval amount. Set a new token approval to proceed with your order."
 
+#: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
+msgid "An error has occurred. Please refresh the page and try again."
+msgstr "An error has occurred. Please refresh the page and try again."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 #~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
 #~ msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -7370,8 +7378,8 @@ msgid "Transaction in progress. See below for live status updates."
 msgstr "Transaction in progress. See below for live status updates."
 
 #: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
-msgid "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
-msgstr "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
+#~ msgid "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
+#~ msgstr "This order contains hooks signed for another account and was blocked. Please refresh the quote and try again."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 msgid "Please sign order"
