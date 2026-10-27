@@ -17,7 +17,7 @@ export function buildLlmsTxt(assets: RwaAsset[], appUrl: string): string {
   return [
     '# CoW RWA',
     '',
-    '> Trade tokenized stocks and ETFs with CoW Protocol',
+    '> Third-party tokens referencing stocks and ETFs, with swaps powered by CoW Protocol',
     '',
     `CoW RWA lists ${assets.length} real-world assets tokenized by ${issuers.join(', ')} on ${networks.join(', ')}.`,
     'Each asset groups the tokens of every issuer and network. Prices, market cap and volume are the tokenized market of the asset over every chain and issuer, from CoinGecko.',

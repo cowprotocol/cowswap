@@ -4,7 +4,7 @@ import { renderOgImage } from '@/shared/lib/seo/index.server'
 
 export function getSiteOgImage(): ImageResponse {
   return renderOgImage({
-    title: 'Trade tokenized stocks and ETFs',
-    subtitle: 'Ondo, xStocks, Coinbase, bStocks and Reality tokens',
+    title: 'Tokens referencing stocks and ETFs',
+    subtitle: 'From onchain issuers across chains, with swaps powered by CoW Protocol',
   })
 }
