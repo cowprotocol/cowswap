@@ -53,7 +53,7 @@ export function OrderStepItem({
       >
         <styledEl.StepsIconWrapper data-status={status}>{ICONS_BY_STATUS[status]}</styledEl.StepsIconWrapper>
 
-        <styledEl.StepHeaderButton>
+        <styledEl.StepHeaderButton tabIndex={canExpand ? undefined : -1}>
           <styledEl.StepLabel>{label}</styledEl.StepLabel>
 
           {canExpand ? (
