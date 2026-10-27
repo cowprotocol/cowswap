@@ -1,8 +1,7 @@
 'use client'
 
 import {
-  cloneElement,
-  type ReactElement,
+  type PointerEvent,
   type ReactNode,
   useCallback,
   useEffect,
@@ -21,26 +20,35 @@ import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 
 interface TooltipProps {
   content: ReactNode
-  /** A single element, which gets `content` as its accessible description */
-  children: ReactElement<{ 'aria-describedby'?: string }>
+  children: ReactNode
+  /** Class of the trigger, a `span` wrapping `children` */
+  className?: string
 }
 
-export function Tooltip({ content, children }: TooltipProps): ReactNode {
-  const descriptionId = useId()
+const FOCUSABLE_SELECTOR = 'a[href], button, input, select, textarea, [tabindex]'
+
+export function Tooltip({ content, children, className }: TooltipProps): ReactNode {
+  const tooltipId = useId()
   const triggerRef = useRef<HTMLSpanElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
+  const isHoveredRef = useRef(false)
+  const isFocusedRef = useRef(false)
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState<TooltipPosition | null>(null)
+  const [hasFocusableChild, setHasFocusableChild] = useState(false)
 
-  const open = useCallback(() => setIsOpen(true), [])
-  const close = useCallback(() => {
+  const close = useCallback((): void => {
     setIsOpen(false)
     setPosition(null)
   }, [])
 
-  // The tooltip is fixed to the viewport, so `overflow` of the trigger's containers doesn't clip it
   useLayoutEffect(() => {
-    const trigger = triggerRef.current?.firstElementChild
+    setHasFocusableChild(!!triggerRef.current?.querySelector(FOCUSABLE_SELECTOR))
+  }, [children])
+
+  // Fixed to the viewport, so an `overflow: auto` table can't clip it
+  useLayoutEffect(() => {
+    const trigger = triggerRef.current
     const tooltip = tooltipRef.current
 
     if (!isOpen || !trigger || !tooltip) return
@@ -68,34 +76,53 @@ export function Tooltip({ content, children }: TooltipProps): ReactNode {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [isOpen, close])
 
-  const describedBy = [children.props['aria-describedby'], descriptionId].filter(Boolean).join(' ')
+  // A tap fires `pointerleave` right after `pointerenter`, so touch tooltips stay open until the next tap
+  const onPointerEnter = (event: PointerEvent): void => {
+    if (event.pointerType !== 'touch') isHoveredRef.current = true
+    setIsOpen(true)
+  }
+  const onPointerLeave = (event: PointerEvent): void => {
+    if (event.pointerType === 'touch') return
+
+    isHoveredRef.current = false
+    if (!isFocusedRef.current) close()
+  }
+  const onFocus = (): void => {
+    isFocusedRef.current = true
+    setIsOpen(true)
+  }
+  const onBlur = (): void => {
+    isFocusedRef.current = false
+    if (!isHoveredRef.current) close()
+  }
 
   return (
-    <span
-      ref={triggerRef}
-      className={styles.trigger}
-      onPointerEnter={open}
-      // A touch pointer leaves right after the tap, so the tooltip stays open until the next tap elsewhere
-      onPointerLeave={(event) => event.pointerType !== 'touch' && close()}
-      onFocus={open}
-      onBlur={close}
-    >
-      {cloneElement(children, { 'aria-describedby': describedBy })}
-      <span id={descriptionId} hidden>
-        {content}
+    <>
+      <span
+        ref={triggerRef}
+        className={className}
+        tabIndex={hasFocusableChild ? undefined : 0}
+        aria-describedby={isOpen ? tooltipId : undefined}
+        onPointerEnter={onPointerEnter}
+        onPointerLeave={onPointerLeave}
+        onFocus={onFocus}
+        onBlur={onBlur}
+      >
+        {children}
       </span>
       {isOpen &&
         createPortal(
           <div
             ref={tooltipRef}
+            id={tooltipId}
             className={styles.tooltip}
-            aria-hidden="true"
+            role="tooltip"
             style={position ? { top: position.top, left: position.left } : { visibility: 'hidden' }}
           >
             {content}
           </div>,
           document.body,
         )}
-    </span>
+    </>
   )
 }

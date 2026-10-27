@@ -1,21 +1,17 @@
-.trigger {
-  display: contents;
-}
-
 .tooltip {
   position: fixed;
-  top: 0;
-  left: 0;
   z-index: 110;
   max-width: min(280px, calc(100vw - 16px));
-  padding: 6px 10px;
+  padding: 8px 10px;
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   background: var(--color-bg);
   box-shadow: var(--shadow-widget);
   color: var(--color-text);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 18px;
+  line-height: 16px;
+  text-align: left;
+  white-space: normal;
   pointer-events: none;
 }

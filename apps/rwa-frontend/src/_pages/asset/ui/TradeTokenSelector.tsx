@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 
 import styles from './TradeTokenSelector.module.css'
 
+import { getPremiumNote } from '../lib/premiumNote'
 import { isRankedQuote } from '../lib/quotedTokens'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
@@ -18,6 +19,7 @@ import {
   type RwaAsset,
   type RwaMarketData,
   type RwaQuoteSide,
+  type RwaToken,
 } from '@/entities/asset'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
@@ -54,6 +56,12 @@ interface TradeTokenSelectorProps {
   selection: TradeSelection
 }
 
+interface VsStockProps {
+  token: RwaToken
+  sharesPerToken: number | null
+  premium: number
+}
+
 export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const setSide = useSetAtom(tradeSideAtom)
@@ -74,7 +82,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           ))}
         </div>
         {!isAutoSelected && (
-          <Tooltip content="Trade the token with the best quote">
+          <Tooltip className={styles.autoTrigger} content="Trade the token with the best quote">
             <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>
               Use Auto
             </button>
@@ -86,8 +94,11 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
         <span>Stock token</span>
         <span className={styles.quoteTitle}>
           {sideTitle} quote / share
-          <Tooltip content={`Price per share for a $1,000 ${side} order, including network costs and fees`}>
-            <span className={styles.info} role="img" aria-label="Quote details">
+          <Tooltip
+            className={styles.info}
+            content={`Price per share for a $1,000 ${side} order, including network costs and fees`}
+          >
+            <span role="img" aria-label="Quote details">
               <InfoIcon />
             </span>
           </Tooltip>
@@ -124,7 +135,7 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 }
 
 function TradeTokenOption({
-  quoted: { token, quote, pricePerShare, isPriceOutlier, stats },
+  quoted: { token, quote, pricePerShare, sharesPerToken, isPriceOutlier, stats },
   market,
   isSelected,
   isSelectedByUser,
@@ -165,20 +176,20 @@ function TradeTokenOption({
       </span>
       <span className={styles.quote}>
         {isPriceOutlier ? (
-          <Tooltip content="The quote is far from the stock price, liquidity is too low">
-            <span className={styles.secondary}>Insufficient liquidity</span>
+          <Tooltip className={styles.secondary} content="The quote is far from the stock price, liquidity is too low">
+            Insufficient liquidity
           </Tooltip>
         ) : pricePerShare !== null ? (
           <>
             <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
             {isUnverifiedShown && (
-              <Tooltip content="The order book could not simulate this trade">
-                <span className={styles.secondary}>Unverified quote</span>
+              <Tooltip className={styles.secondary} content="The order book could not simulate this trade">
+                Unverified quote
               </Tooltip>
             )}
-            {stockPrice && (
-              <span className={styles.secondary}>{formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock</span>
-            )}
+            {stockPrice ? (
+              <VsStock token={token} sharesPerToken={sharesPerToken} premium={pricePerShare / stockPrice - 1} />
+            ) : null}
           </>
         ) : (
           <span className={styles.secondary}>
@@ -187,5 +198,13 @@ function TradeTokenOption({
         )}
       </span>
     </button>
+  )
+}
+
+function VsStock({ token, sharesPerToken, premium }: VsStockProps): ReactNode {
+  return (
+    <Tooltip className={`${styles.secondary} ${styles.hint}`} content={getPremiumNote(token, sharesPerToken, premium)}>
+      {formatPercent(premium * 100)} vs stock
+    </Tooltip>
   )
 }

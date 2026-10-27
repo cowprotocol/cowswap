@@ -35,6 +35,7 @@ function market(overrides: Partial<RwaMarketData>): RwaMarketData {
     marketCap: 1,
     volume24h: 1,
     tokens: {},
+    sharesPerToken: {},
     updatedAt: null,
     ...overrides,
   }

@@ -71,6 +71,7 @@ const NVDA_LIST_ITEM: RwaAssetListItem = {
     volume24h: 12_400_000,
     updatedAt: '2026-10-01T14:00:00.000Z',
     tokens: {},
+    sharesPerToken: {},
   },
   series: null,
 }

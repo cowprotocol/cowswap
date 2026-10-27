@@ -21,7 +21,7 @@ export function ThemeSwitcher(): ReactNode {
   return (
     <div className={styles.switcher} role="group" aria-label="Theme">
       {OPTIONS.map((option) => (
-        <Tooltip key={option.preference} content={option.title}>
+        <Tooltip key={option.preference} className={styles.option} content={option.title}>
           <button
             type="button"
             aria-pressed={option.preference === preference}

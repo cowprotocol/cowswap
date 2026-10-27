@@ -1,8 +1,13 @@
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 
-import type { RwaAssetQuotes, RwaNetworkStats, RwaToken, RwaTokenNetworkStats, RwaTokenQuote } from '@/entities/asset'
-
-import { getTokenKey } from '@/entities/asset'
+import {
+  getTokenKey,
+  type RwaAssetQuotes,
+  type RwaNetworkStats,
+  type RwaToken,
+  type RwaTokenNetworkStats,
+  type RwaTokenQuote,
+} from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
 /**
@@ -15,8 +20,10 @@ export interface QuotedToken {
   token: RwaToken
   /** `undefined` while quotes are loading */
   quote: RwaTokenQuote | undefined
-  /** USD per token: paid on `buy`, received on `sell`. Includes fees */
+  /** USD per share of the underlying: paid on `buy`, received on `sell`. Includes fees. Per token without `sharesPerToken` */
   pricePerShare: number | null
+  /** Shares of the underlying one token stands for, from the issuer */
+  sharesPerToken: number | null
   /** `pricePerShare` is more than `MAX_STOCK_PRICE_DEVIATION` away from the stock price */
   isPriceOutlier: boolean
   stats: RwaTokenNetworkStats | undefined
@@ -32,10 +39,14 @@ export function getAutoToken(
   chainTokens: RwaToken[],
   chainQuotes: RwaAssetQuotes | undefined,
   stockPrice: number | null,
+  sharesPerToken: Record<string, number>,
 ): RwaToken | null {
   if (!chainQuotes) return null
 
-  return getBestQuotedToken(toQuotedTokens(chainTokens, chainQuotes, undefined, stockPrice), chainQuotes.side)
+  return getBestQuotedToken(
+    toQuotedTokens(chainTokens, chainQuotes, undefined, stockPrice, sharesPerToken),
+    chainQuotes.side,
+  )
 }
 
 /**
@@ -87,22 +98,27 @@ export function sortQuotedTokens(quotedTokens: QuotedToken[], side: RwaAssetQuot
   })
 }
 
-/** `stockPrice` is `null` while market data is loading, then no price is an outlier */
+/**
+ * `stockPrice` is `null` while market data is loading, then no price is an outlier.
+ * `sharesPerToken` is `RwaMarketData.sharesPerToken`
+ */
 export function toQuotedTokens(
   chainTokens: RwaToken[],
   quotes: RwaAssetQuotes | undefined,
   stats: RwaNetworkStats | undefined,
   stockPrice: number | null,
+  sharesPerToken: Record<string, number>,
 ): QuotedToken[] {
   return chainTokens.map((token) => {
     const quote = quotes?.quotes.find(({ address }) => areAddressesEqual(address, token.address))
-    const units = quote?.amount ? toTokenUnits(quote.amount, token.decimals) : 0
-    const pricePerShare = quotes && units > 0 ? quotes.amountUsd / units : null
+    const tokenSharesPerToken = sharesPerToken[getTokenKey(token)] ?? null
+    const pricePerShare = quotes && quote ? getPricePerShare(token, quotes.amountUsd, quote, tokenSharesPerToken) : null
 
     return {
       token,
       quote,
       pricePerShare,
+      sharesPerToken: tokenSharesPerToken,
       isPriceOutlier:
         pricePerShare !== null &&
         stockPrice !== null &&
@@ -111,6 +127,17 @@ export function toQuotedTokens(
       stats: stats?.tokens.find(({ address }) => areAddressesEqual(address, token.address)),
     }
   })
+}
+
+function getPricePerShare(
+  token: RwaToken,
+  amountUsd: number,
+  quote: RwaTokenQuote,
+  sharesPerToken: number | null,
+): number | null {
+  const shares = quote.amount ? toTokenUnits(quote.amount, token.decimals) * (sharesPerToken ?? 1) : 0
+
+  return shares > 0 ? amountUsd / shares : null
 }
 
 function getQuoteTier(quoted: QuotedToken): number {

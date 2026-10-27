@@ -20,7 +20,7 @@ export function NetworkLogos({ chainIds }: { chainIds: number[] }): ReactNode {
         const label = getChainLabel(chainId)
 
         return logoUrl ? (
-          <Tooltip key={chainId} content={label}>
+          <Tooltip key={chainId} className={styles.logo} content={label}>
             <Image src={logoUrl} alt={label} width={NETWORK_LOGO_SIZE} height={NETWORK_LOGO_SIZE} unoptimized />
           </Tooltip>
         ) : null

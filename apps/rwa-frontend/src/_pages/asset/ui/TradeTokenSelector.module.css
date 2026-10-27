@@ -50,6 +50,10 @@
   font-weight: 500;
 }
 
+.autoTrigger {
+  display: inline-flex;
+}
+
 .auto:hover {
   background: var(--color-surface);
 }
@@ -74,6 +78,10 @@
 
 .info {
   display: inline-flex;
+  cursor: help;
+}
+
+.hint {
   cursor: help;
 }
 

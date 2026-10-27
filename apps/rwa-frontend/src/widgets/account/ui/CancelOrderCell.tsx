@@ -55,8 +55,8 @@ export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
     <>
       <RowMenu label="Order actions" items={items} />
       {cancellation?.status === 'failed' && (
-        <Tooltip content={cancellation.error}>
-          <span className={styles.error}>Cancellation failed</span>
+        <Tooltip className={styles.error} content={cancellation.error}>
+          Cancellation failed
         </Tooltip>
       )}
     </>

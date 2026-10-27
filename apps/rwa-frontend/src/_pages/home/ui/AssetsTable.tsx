@@ -111,10 +111,8 @@ function IssuersCount({ asset }: { asset: RwaAssetListItem }): ReactNode {
   const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
 
   return (
-    <Tooltip content={issuers.join(', ')}>
-      <span className={styles.issuers}>
-        {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-      </span>
+    <Tooltip className={styles.issuers} content={issuers.join(', ')}>
+      {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
     </Tooltip>
   )
 }

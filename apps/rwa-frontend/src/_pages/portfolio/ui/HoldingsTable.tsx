@@ -9,7 +9,7 @@ import styles from './Portfolio.module.css'
 import type { Holding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { getTokenKey } from '@/entities/asset'
+import { DividendNotes, getTokenKey } from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatTokenAmount, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
@@ -33,22 +33,28 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
   if (!holdings.length) return <StatusMessage>No holdings match the filters</StatusMessage>
 
   return (
-    <div className={styles.scroll}>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Asset</th>
-            <th className={styles.numeric}>Equivalent shares</th>
-            <th className={styles.numeric}>Underlying value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {holdings.map((holding) => (
-            <HoldingRows key={holding.asset.ticker} holding={holding} getLogoUrl={getLogoUrl} />
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <div className={styles.scroll}>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Asset</th>
+              <th className={styles.numeric}>Equivalent shares</th>
+              <th className={styles.numeric}>Underlying value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {holdings.map((holding) => (
+              <HoldingRows key={holding.asset.ticker} holding={holding} getLogoUrl={getLogoUrl} />
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <DividendNotes
+        className={styles.dividendNotes}
+        tokens={holdings.flatMap(({ tokens }) => tokens.map(({ token }) => token))}
+      />
+    </>
   )
 }
 

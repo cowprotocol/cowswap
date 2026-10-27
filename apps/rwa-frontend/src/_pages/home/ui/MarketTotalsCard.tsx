@@ -39,8 +39,8 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
           label={
             <>
               24h volume
-              <Tooltip content={VOLUME_HINT}>
-                <span className={styles.info} role="img" aria-label="Volume details">
+              <Tooltip className={styles.info} content={VOLUME_HINT}>
+                <span role="img" aria-label={VOLUME_HINT}>
                   <InfoIcon />
                 </span>
               </Tooltip>

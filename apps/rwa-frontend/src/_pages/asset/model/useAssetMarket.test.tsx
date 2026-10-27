@@ -21,6 +21,7 @@ const MARKET: RwaMarketData = {
   volume24h: 2291.01,
   updatedAt: '2026-10-19T08:01:30Z',
   tokens: {},
+  sharesPerToken: {},
 }
 
 const ASSET: RwaAssetResponse = {
@@ -31,6 +32,7 @@ const ASSET: RwaAssetResponse = {
   priority: 0,
   tokens: [],
   market: MARKET,
+  tradingPause: null,
   degraded: false,
 }
 
