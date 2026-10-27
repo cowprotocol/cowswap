@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.11.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.11.0...widget-lib-v4.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/iframe-transport@2.3.12
+
 ## [4.11.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.10.0...widget-lib-v4.11.0) (2026-10-21)
 
 ### Minor Changes

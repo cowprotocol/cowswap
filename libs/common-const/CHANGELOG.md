@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.0...common-const-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/types@4.14.1
+
 ## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.15.0...common-const-v3.16.0) (2026-10-21)
 
 ### Minor Changes
