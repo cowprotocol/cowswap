@@ -1804,8 +1804,8 @@ msgid "Get started with limit orders"
 msgstr "Get started with limit orders"
 
 #: apps/cowswap-frontend/src/modules/restrictedAddresses/services/assertNoRestrictedAddresses.service.ts
-msgid "This order contains a restricted address and was blocked. Please refresh the quote and try again."
-msgstr "This order contains a restricted address and was blocked. Please refresh the quote and try again."
+#~ msgid "This order contains a restricted address and was blocked. Please refresh the quote and try again."
+#~ msgstr "This order contains a restricted address and was blocked. Please refresh the quote and try again."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
