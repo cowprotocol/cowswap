@@ -1,13 +1,16 @@
+import { createStore, Provider } from 'jotai'
+import { createElement, ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { OPEN_WALLET_MODAL_EVENT, useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
-import { useFlags } from 'launchdarkly-react-client-sdk'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 
 import { useToggleWalletModal } from './hooks'
 
 jest.mock('launchdarkly-react-client-sdk', () => ({
-  useFlags: jest.fn(),
+  useFlags: () => ({ isAlphaNetworksOptionVisible: true }),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -16,29 +19,30 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseFlags = useFlags as jest.MockedFunction<typeof useFlags>
 
-function openModal(chainId: SupportedChainId, isSolanaEnabled: boolean): unknown {
+function openModal(chainId: SupportedChainId, areAlphaNetworksEnabled: boolean): unknown {
   mockUseWalletInfo.mockReturnValue({ chainId })
-  mockUseFlags.mockReturnValue({ isSolanaEnabled })
+  const store = createStore()
+  store.set(alphaNetworksEnabledAtom, areAlphaNetworksEnabled)
+  const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)
 
   let detail: unknown
   const listener = (event: Event): void => {
     detail = (event as CustomEvent).detail
   }
   document.addEventListener(OPEN_WALLET_MODAL_EVENT, listener)
-  renderHook(() => useToggleWalletModal()).result.current()
+  renderHook(() => useToggleWalletModal(), { wrapper }).result.current()
   document.removeEventListener(OPEN_WALLET_MODAL_EVENT, listener)
 
   return detail
 }
 
 describe('useToggleWalletModal', () => {
-  it('limits the connect modal to EVM wallets while Solana is off', () => {
+  it('limits the connect modal to EVM wallets while alpha networks are off', () => {
     expect(openModal(SupportedChainId.MAINNET, false)).toEqual({ namespace: 'eip155' })
   })
 
-  it('does not filter once Solana is on', () => {
+  it('does not filter once alpha networks are on', () => {
     expect(openModal(SupportedChainId.MAINNET, true)).toEqual({ namespace: undefined })
   })
 

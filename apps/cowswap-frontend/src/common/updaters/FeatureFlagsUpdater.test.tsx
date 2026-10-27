@@ -89,6 +89,20 @@ describe('FeatureFlagsUpdater', () => {
     expect(syncBootFeatureFlagsMock).toHaveBeenCalledWith(flags)
   })
 
+  it('loads Solana on the next page load while the alpha networks option is visible, without the user opting in', () => {
+    const store = createStore()
+    useFeatureFlagsMock.mockReturnValue({ isAlphaNetworksOptionVisible: true })
+    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
+
+    render(
+      <Provider store={store}>
+        <FeatureFlagsUpdater />
+      </Provider>,
+    )
+
+    expect(syncBootFeatureFlagsMock).toHaveBeenCalledWith({ isSolanaEnabled: true })
+  })
+
   it('does not sync boot-critical flags inside the widget', () => {
     const store = createStore()
     useFeatureFlagsMock.mockReturnValue({ isSolanaEnabled: false })

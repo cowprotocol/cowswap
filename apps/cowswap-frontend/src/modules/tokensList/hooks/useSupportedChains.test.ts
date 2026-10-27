@@ -2,10 +2,10 @@ import { createStore, Provider } from 'jotai'
 import { createElement, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { alphaNetworksEnabledAtom } from '@cowprotocol/common-hooks'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 import { useSupportedChains } from './useSupportedChains'

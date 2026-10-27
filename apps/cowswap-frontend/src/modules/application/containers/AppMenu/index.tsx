@@ -2,12 +2,13 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { alphaNetworksEnabledAtom, useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 

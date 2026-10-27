@@ -1,5 +1,3 @@
-import { useAtomValue } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
 import { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -31,16 +29,19 @@ declare global {
 // Solana is not supported in the widget yet (e.g. partner fees)
 const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isSolanaEnabled: false,
+  isAlphaNetworksOptionVisible: false,
 }
 
-/** User opt-in from the app menu, only honoured while `isAlphaNetworksOptionVisible` shows that setting */
-export const alphaNetworksEnabledAtom = atomWithStorage<boolean>('alphaNetworksEnabled:v0', false, undefined, {
-  getOnInit: true,
-})
+/**
+ * Whether Solana's wallet connector, chain and quotes are loaded. Ignores the user's alpha networks opt-in,
+ * which only decides whether Solana is listed, so direct Solana links keep working without it.
+ */
+export function getIsSolanaAvailable({ isSolanaEnabled, isAlphaNetworksOptionVisible }: FeatureFlags): boolean {
+  return !!isSolanaEnabled || !!isAlphaNetworksOptionVisible
+}
 
 export function useFeatureFlags(): FeatureFlags {
   const flags = useFlags<FeatureFlags>()
-  const areAlphaNetworksEnabled = useAtomValue(alphaNetworksEnabledAtom)
 
   // e2e tests can't get LaunchDarkly to resolve real flag values (no client-side ID is configured
   // for that environment, so the SDK never even attempts the flag-evaluation request) — they set
@@ -54,13 +55,9 @@ export function useFeatureFlags(): FeatureFlags {
 
   const resolvedFlags = e2eOverrideFlags ?? flags
 
-  return useMemo(() => {
-    // The LD flag turns Solana on for everyone; while it's off, users can still opt in via alpha networks.
-    // Resolved here so every Solana gate (chain lists, quotes, boot-time wallet config) follows the same value.
-    const isSolanaEnabled =
-      !!resolvedFlags.isSolanaEnabled || (!!resolvedFlags.isAlphaNetworksOptionVisible && areAlphaNetworksEnabled)
-
-    return { ...resolvedFlags, isSolanaEnabled, ...(isInjectedWidget() ? WIDGET_FLAG_OVERRIDES : undefined) }
-  }, [resolvedFlags, areAlphaNetworksEnabled])
+  return useMemo(
+    () => (isInjectedWidget() ? { ...resolvedFlags, ...WIDGET_FLAG_OVERRIDES } : resolvedFlags),
+    [resolvedFlags],
+  )
   // return { ...defaults, ...flags }
 }

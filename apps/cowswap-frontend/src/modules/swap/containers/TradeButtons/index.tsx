@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsSolanaAvailable, useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -56,7 +56,7 @@ export function TradeButtons({
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency } = useSwapDerivedState()
   const { chainId } = useWalletInfo()
-  const { isSolanaEnabled } = useFeatureFlags()
+  const isSolanaAvailable = getIsSolanaAvailable(useFeatureFlags())
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -117,12 +117,12 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  // TODO(solana): temporary bypass tied to isSolanaEnabled. The Solana order-flow context isn't wired
+  // TODO(solana): temporary bypass tied to the Solana flags. The Solana order-flow context isn't wired
   // yet, so `isTradeContextReady` is always false on Solana and would keep the approve button permanently
-  // disabled. While Solana is behind the flag, skip that gate (the Solana swap callback is a no-op until
+  // disabled. While Solana is behind the flags, skip that gate (the Solana swap callback is a no-op until
   // the order flow lands). Remove this when the Solana trade flow is implemented — surfaces on the grep
-  // for isSolanaEnabled when the flag is cleaned up.
-  const skipTradeContextReadyGate = isSolanaEnabled && isSolanaChain(chainId)
+  // for getIsSolanaAvailable when the flags are cleaned up.
+  const skipTradeContextReadyGate = isSolanaAvailable && isSolanaChain(chainId)
   const isDisabled =
     (!skipTradeContextReadyGate && !isTradeContextReady) ||
     !feeWarningAccepted ||
