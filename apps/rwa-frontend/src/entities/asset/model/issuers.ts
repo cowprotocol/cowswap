@@ -25,7 +25,7 @@ export type RwaIssuer = (typeof RWA_ISSUERS)[number]
 export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
   Ondo: 'https://app.ondo.finance/legal-documentation',
   xStocks: 'https://assets.backed.fi/legal-documentation',
-  Coinbase: 'https://www.coinbase.com/legal',
+  Coinbase: 'https://www.coinbase.com/tokenize',
   bStocks: 'https://www.binance.com/en/about-legal/bstocks-digital-securities-documentation',
 }
 

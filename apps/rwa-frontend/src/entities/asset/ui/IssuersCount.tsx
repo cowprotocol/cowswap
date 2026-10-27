@@ -7,7 +7,7 @@ import type { RwaToken } from '../model/types'
 import { Tooltip } from '@/shared/ui/tooltip'
 
 const ISSUERS_HINT =
-  'Different issuers offer separate tokens referencing the same stock. Rights, risks and restrictions may vary.'
+  'Different issuers offer separate tokens referencing the same underlying asset. Rights, risks and restrictions may vary.'
 
 interface IssuersCountProps {
   tokens: Pick<RwaToken, 'issuer'>[]
