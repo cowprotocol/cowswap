@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useRef } from 'react'
 
 import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
@@ -12,7 +12,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
-import { openModalState } from '../../state/openModalState'
+import { openModalElementsState } from '../../state/openModalState'
 
 export { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay, CloseIcon } from './styled'
 
@@ -43,7 +43,7 @@ export function Modal({
   className,
   children,
 }: ModalProps) {
-  const setOpenModal = useSetAtom(openModalState)
+  const setOpenModalElements = useSetAtom(openModalElementsState)
   const fadeTransition = useTransition(isOpen, {
     config: { duration: 200 },
     from: { opacity: 0 },
@@ -64,19 +64,22 @@ export function Modal({
     },
   })
 
-  const onDismissCallback = useCallback(() => {
-    onDismiss()
-    setOpenModal(false)
-  }, [onDismiss, setOpenModal])
+  const modalElementRef = useRef<HTMLElement | null>(null)
+  // react-spring's animated() forwards this ref and calls it with null on unmount, but ignores a returned cleanup
+  const registerOpenModal = useCallback(
+    (element: HTMLElement | null) => {
+      const previousElement = modalElementRef.current
+      if (previousElement === element) return
 
-  useEffect(() => {
-    setOpenModal(isOpen)
+      modalElementRef.current = element
+      setOpenModalElements((elements) => {
+        const otherElements = elements.filter((openElement) => openElement !== previousElement)
 
-    // Parents may unmount an open modal instead of closing it, which would leave the flag stuck
-    return () => {
-      if (isOpen) setOpenModal(false)
-    }
-  }, [isOpen, setOpenModal])
+        return element ? [...otherElements, element] : otherElements
+      })
+    },
+    [setOpenModalElements],
+  )
 
   return (
     <>
@@ -86,11 +89,12 @@ export function Modal({
             <StyledDialogOverlay
               className={className}
               style={props}
-              onDismiss={onDismissCallback}
+              onDismiss={onDismiss}
               initialFocusRef={initialFocusRef}
               dangerouslyBypassFocusLock={true}
             >
               <StyledDialogContent
+                ref={registerOpenModal}
                 {...(isMobile
                   ? {
                       ...bind(),

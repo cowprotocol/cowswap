@@ -7,10 +7,10 @@ import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-li
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { openModalState } from 'common/state/openModalState'
+import { openModalElementsState } from 'common/state/openModalState'
 
 export function IframeResizer(): null {
-  const isModalOpen = useAtomValue(openModalState)
+  const modalElements = useAtomValue(openModalElementsState)
   const previousHeightRef = useRef(0)
   const { disableScrollbars } = useInjectedWidgetParams()
 
@@ -34,24 +34,12 @@ export function IframeResizer(): null {
     if (!shouldPropagateHeightUpdates(parentOrigin)) return
 
     const contentElement = getContentElement(document)
-    const modalElements = isModalOpen ? getModalContentElements(document) : []
 
     const sendHeightUpdate = (): void => {
-      if (isModalOpen && !modalElements.length) {
-        widgetIframeTransport.postMessageToWindow(
-          window.parent,
-          WidgetMethodsEmit.SET_FULL_HEIGHT,
-          void 0,
-          parentOrigin,
-        )
-
-        previousHeightRef.current = 0
-        return
-      }
-
+      // Legacy modals render in a portal outside #root, so they are measured separately
       const contentHeight = Math.max(
         getContentHeight(contentElement),
-        ...modalElements.map((modalElement) => Math.max(modalElement.offsetHeight, modalElement.scrollHeight)),
+        ...modalElements.map((modalElement) => modalElement.offsetHeight),
       )
 
       if (contentHeight !== previousHeightRef.current) {
@@ -104,7 +92,7 @@ export function IframeResizer(): null {
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [isModalOpen])
+  }, [modalElements])
 
   return null
 }
@@ -119,11 +107,6 @@ function getContentHeight(contentElement: HTMLElement): number {
     contentElement.clientHeight,
     Math.ceil(contentElement.getBoundingClientRect().height),
   )
-}
-
-// Legacy modals render in a portal outside #root, so their height has to be measured separately
-function getModalContentElements(doc: Document): HTMLElement[] {
-  return Array.from(doc.querySelectorAll<HTMLElement>('[data-reach-dialog-content]'))
 }
 
 function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): boolean {

@@ -82,7 +82,7 @@ describe('IframeResizer', () => {
     document.body.appendChild(rootElement)
     document.documentElement.style.removeProperty('overflow')
 
-    useAtomValueMock.mockReturnValue(false as never)
+    useAtomValueMock.mockReturnValue([] as never)
     useInjectedWidgetParamsMock.mockReturnValue({} as never)
     isIframeMock.mockReturnValue(true)
     isInjectedWidgetMock.mockReturnValue(true)
@@ -95,7 +95,6 @@ describe('IframeResizer', () => {
   afterEach(() => {
     rootElement?.remove()
     rootElement = null
-    document.querySelectorAll('[data-reach-dialog-content]').forEach((modal) => modal.remove())
     document.documentElement.style.removeProperty('overflow')
   })
 
@@ -210,8 +209,8 @@ describe('IframeResizer', () => {
   })
 
   it('sizes the widget to an open modal that is taller than the page and watches its size', () => {
-    useAtomValueMock.mockReturnValue(true as never)
-    const modal = addModalContent(607)
+    const modal = createModalContent(607)
+    useAtomValueMock.mockReturnValue([modal] as never)
 
     render(<IframeResizer />)
 
@@ -222,17 +221,10 @@ describe('IframeResizer', () => {
       MOCK_PARENT_ORIGIN,
     )
     expect(resizeObserverObserveMock).toHaveBeenCalledWith(modal)
-    expect(postMessageToWindowSpy).not.toHaveBeenCalledWith(
-      window.parent,
-      WidgetMethodsEmit.SET_FULL_HEIGHT,
-      void 0,
-      MOCK_PARENT_ORIGIN,
-    )
   })
 
   it('keeps the page height when the open modal is shorter than the page', () => {
-    useAtomValueMock.mockReturnValue(true as never)
-    addModalContent(300)
+    useAtomValueMock.mockReturnValue([createModalContent(300)] as never)
 
     render(<IframeResizer />)
 
@@ -244,27 +236,25 @@ describe('IframeResizer', () => {
     )
   })
 
-  it('falls back to full height while a modal is open but its content is not rendered', () => {
-    useAtomValueMock.mockReturnValue(true as never)
+  it('uses the tallest of several stacked modals', () => {
+    useAtomValueMock.mockReturnValue([createModalContent(650), createModalContent(400)] as never)
 
     render(<IframeResizer />)
 
     expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
       window.parent,
-      WidgetMethodsEmit.SET_FULL_HEIGHT,
-      void 0,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      { height: 650 },
       MOCK_PARENT_ORIGIN,
     )
   })
 
   it('shrinks back to the page height once the modal closes', () => {
-    useAtomValueMock.mockReturnValue(true as never)
-    const modal = addModalContent(607)
+    useAtomValueMock.mockReturnValue([createModalContent(607)] as never)
 
     const { rerender } = render(<IframeResizer />)
 
-    modal.remove()
-    useAtomValueMock.mockReturnValue(false as never)
+    useAtomValueMock.mockReturnValue([] as never)
     rerender(<IframeResizer />)
 
     expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
@@ -301,12 +291,9 @@ describe('IframeResizer', () => {
   })
 })
 
-function addModalContent(height: number): HTMLDivElement {
+function createModalContent(height: number): HTMLDivElement {
   const modal = document.createElement('div')
-  modal.setAttribute('data-reach-dialog-content', '')
   Object.defineProperty(modal, 'offsetHeight', { configurable: true, value: height })
-  Object.defineProperty(modal, 'scrollHeight', { configurable: true, value: height })
-  document.body.appendChild(modal)
 
   return modal
 }
