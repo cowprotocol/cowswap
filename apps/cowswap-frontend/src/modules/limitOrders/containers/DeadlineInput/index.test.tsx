@@ -69,14 +69,18 @@ describe('DeadlineInput', () => {
     expect(getCustomDeadline(store)).toBe(null)
   })
 
-  it('keeps a custom deadline that is too far away to schedule a reset for', () => {
+  it('resets a custom deadline beyond the setTimeout() range once it expires', () => {
     const customDeadline = NOW_SECONDS + 30 * ONE_DAY
     const store = renderDeadlineInput(customDeadline)
 
     act(() => {
-      jest.runOnlyPendingTimers()
+      jest.advanceTimersByTime(30 * ONE_DAY * 1000 - 1)
     })
-
     expect(getCustomDeadline(store)).toBe(customDeadline)
+
+    act(() => {
+      jest.advanceTimersByTime(1)
+    })
+    expect(getCustomDeadline(store)).toBe(null)
   })
 })

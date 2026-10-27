@@ -56,19 +56,21 @@ export function DeadlineInput() {
   useEffect(() => {
     if (!customDeadlineTimestamp) return
 
-    const resetCustomDeadline = (): void => updateSettingsState({ customDeadlineTimestamp: null })
-    const now = Date.now()
+    let timeout: ReturnType<typeof setTimeout> | undefined
 
-    if (isCustomDeadlineExpired(customDeadlineTimestamp, now)) {
-      resetCustomDeadline()
-      return
+    const resetOnExpiry = (): void => {
+      const now = Date.now()
+
+      if (isCustomDeadlineExpired(customDeadlineTimestamp, now)) {
+        updateSettingsState({ customDeadlineTimestamp: null })
+        return
+      }
+
+      // A deadline beyond the setTimeout() range is re-checked in bounded steps until it expires
+      timeout = setTimeout(resetOnExpiry, Math.min(customDeadlineTimestamp * 1000 - now, MAX_TIMEOUT_MS))
     }
 
-    const delay = customDeadlineTimestamp * 1000 - now
-
-    if (delay > MAX_TIMEOUT_MS) return
-
-    const timeout = setTimeout(resetCustomDeadline, delay)
+    resetOnExpiry()
 
     return () => clearTimeout(timeout)
   }, [customDeadlineTimestamp, updateSettingsState])
