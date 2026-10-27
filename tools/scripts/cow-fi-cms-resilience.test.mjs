@@ -5,13 +5,42 @@ import { assertPageAvailable, checkPages, discoverPageChecks } from './cow-fi-cm
 
 test('discovers future static pages and generated dynamic pages without adding test cases', () => {
   const pages = discoverPageChecks(
-    { staticRoutes: [{ page: '/' }, { page: '/future-page' }, { page: '/_not-found' }] },
+    {
+      '/(main)/page': '/',
+      '/(main)/future-page/page': '/future-page',
+      '/_not-found/page': '/_not-found',
+      '/(learn)/articles/[slug]/page': '/articles/[slug]',
+    },
     { routes: { '/articles/new-slug': { srcRoute: '/articles/[slug]' } } },
   )
   assert.deepEqual(pages, [
     { path: '/', source: '/' },
     { path: '/articles/new-slug', source: '/articles/[slug]' },
     { path: '/future-page', source: '/future-page' },
+  ])
+})
+
+test('excludes API and metadata handlers even when they are prerendered', () => {
+  const pages = discoverPageChecks(
+    {
+      '/(main)/careers/page': '/careers',
+      '/api/revalidate/route': '/api/revalidate',
+      '/robots.txt/route': '/robots.txt',
+      '/api/status/page': '/api/status',
+      '/docs/route/page': '/docs/route',
+    },
+    {
+      routes: {
+        '/careers': { srcRoute: '/careers' },
+        '/api/revalidate': { srcRoute: '/api/revalidate' },
+        '/robots.txt': { srcRoute: null },
+      },
+    },
+  )
+  assert.deepEqual(pages, [
+    { path: '/api/status', source: '/api/status' },
+    { path: '/careers', source: '/careers' },
+    { path: '/docs/route', source: '/docs/route' },
   ])
 })
 

@@ -46,7 +46,7 @@ jobs:
         run: pnpm run install:ci
         env:
           PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
-      - name: Test production pages with unavailable and malformed CMS content
+      - name: Test production pages with unavailable, malformed and stalled CMS responses
         run: pnpm exec nx run cow-fi:test-cms-resilience
       - name: Upload build and server logs
         if: always()

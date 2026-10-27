@@ -31,7 +31,7 @@ The page's main heading and description supply the Careers introduction. Keep th
 
 Publish the entry before deploying code that depends on it. The website uses the existing CMS cache and authenticated revalidation endpoint. Time-based refresh remains available; webhook delivery must be configured separately. Saving a CMS entry does not deploy website code.
 
-Careers and Affiliate Program use the validated CMS copy when it is available. If fetching or validation fails, they render the published-copy snapshot in `apps/cow-fi/data/marketingContentFallback.json`. This also covers a fresh build with no CMS cache. Careers continues to load job listings from Ashby independently.
+Careers and Affiliate Program use the validated CMS copy when it is available. CMS requests have a five-second abort deadline, including response-body reads, and retain caller cancellation. If fetching or validation fails, they render the published-copy snapshot in `apps/cow-fi/data/marketingContentFallback.json`. This also covers a fresh build with no CMS cache. Careers continues to load job listings from Ashby independently.
 
 The snapshot is an availability fallback and can be older than the CMS. Refresh it when approving changes that must also apply during an outage, especially referral rewards, safety notices, or program terms. Fix and republish invalid CMS edits to restore the current copy through the normal refresh cycle.
 
@@ -39,10 +39,10 @@ The snapshot is an availability fallback and can be older than the CMS. Refresh 
 
 Run `pnpm exec nx run cow-fi:test-cms-resilience`. The same check runs in GitHub Actions for changes to cow.fi, its shared libraries, or the check itself.
 
-It builds the entire production site twice with an isolated local CMS: once returning HTTP 503, then returning an incomplete page template. Each build starts with a fresh cache. It discovers static pages and generated dynamic URLs from Next.js's manifests, starts the production server, and requests every discovered URL. New static pages and generated URLs are included automatically. Up to four URL checks run concurrently, with a 15-second timeout per request; a failure stops queued checks after in-flight requests finish. The output reports build time and URL-check time separately.
+It builds the entire production site three times with an isolated local CMS: returning HTTP 503, returning an incomplete page template, and sending response headers but never completing the body. Each build starts with a fresh cache. It discovers static pages and generated dynamic URLs from Next.js's page entries, starts the production server, and requests every discovered page URL. New static pages and generated URLs are included automatically; route handlers are excluded. Up to four URL checks run concurrently, with a 15-second timeout per request; a failure stops queued checks after in-flight requests finish. The output reports build time and URL-check time separately.
 
 The check rejects failed builds, HTTP server errors, streamed error responses hidden behind HTTP 200, unexpected not-found pages, and missing fallback copy on Careers or Affiliate Program. Existing CMS-only documents and article pagination explicitly allow not-found responses when their content is unavailable. A new exception must be added deliberately in `tools/scripts/cow-fi-cms-resilience.mjs`; there is no blanket allowance for future pages.
 
-Dynamic URLs that are not generated during the build still need a representative test case. This check verifies availability under the two CMS failure scenarios; content-specific behavior remains covered by route/parser tests.
+Dynamic URLs that are not generated during the build still need a representative test case. This check verifies availability under the three CMS failure scenarios; content-specific behavior remains covered by route/parser tests.
 
 Test output and logs are stored in `apps/cow-fi/.next-cms-resilience/`. The check restores Next.js's generated changes to `tsconfig.json` and `next-env.d.ts` after it finishes.

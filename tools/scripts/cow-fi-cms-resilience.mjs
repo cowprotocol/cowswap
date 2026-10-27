@@ -30,10 +30,18 @@ const contentChecks = {
   '/affiliate-program': ['Moo &amp; Earn', 'Generate your link'],
 }
 
-export function discoverPageChecks(routesManifest, prerenderManifest) {
-  const pages = new Map(routesManifest.staticRoutes.map(({ page }) => [page, { path: page, source: page }]))
+export function discoverPageChecks(appRoutesManifest, prerenderManifest) {
+  const pageSources = new Set(
+    Object.entries(appRoutesManifest)
+      .filter(([entry]) => entry.endsWith('/page'))
+      .map(([, route]) => route),
+  )
+  const pages = new Map(
+    [...pageSources].filter((route) => !route.includes('[')).map((route) => [route, { path: route, source: route }]),
+  )
   for (const [url, route] of Object.entries(prerenderManifest.routes)) {
-    pages.set(url, { path: url, source: route.srcRoute ?? url })
+    const source = route.srcRoute ?? url
+    if (pageSources.has(source)) pages.set(url, { path: url, source })
   }
   pages.delete('/_not-found')
   return [...pages.values()].sort((left, right) => left.path.localeCompare(right.path))
@@ -77,6 +85,11 @@ function cmsResponse(request, response, requestCounts) {
   const scenario = url.pathname.split('/')[1]
   requestCounts[scenario] = (requestCounts[scenario] ?? 0) + 1
   response.setHeader('Content-Type', 'application/json')
+  if (scenario === 'stalled') {
+    response.writeHead(200)
+    response.write('{"data":')
+    return
+  }
   if (scenario === 'unavailable') {
     response.writeHead(503).end(JSON.stringify({ data: null, error: { status: 503, message: 'CMS unavailable' } }))
     return
@@ -167,9 +180,9 @@ async function runScenario(scenario, cmsOrigin) {
   assert.equal(exitCode, 0, `CMS ${scenario}: production build failed. See ${buildLog}`)
   const buildSeconds = ((performance.now() - buildStart) / 1000).toFixed(1)
 
-  const routes = JSON.parse(readFileSync(path.join(distDirectory, 'routes-manifest.json'), 'utf8'))
+  const appRoutes = JSON.parse(readFileSync(path.join(distDirectory, 'app-path-routes-manifest.json'), 'utf8'))
   const prerender = JSON.parse(readFileSync(path.join(distDirectory, 'prerender-manifest.json'), 'utf8'))
-  const pages = discoverPageChecks(routes, prerender)
+  const pages = discoverPageChecks(appRoutes, prerender)
   assert(pages.length > 0, 'No pages discovered from the production build')
   const port = await availablePort()
   const origin = `http://127.0.0.1:${port}`
@@ -204,7 +217,7 @@ async function main() {
   const cms = createServer((request, response) => cmsResponse(request, response, requestCounts))
   const port = await listen(cms)
   try {
-    for (const scenario of ['unavailable', 'malformed']) {
+    for (const scenario of ['unavailable', 'malformed', 'stalled']) {
       await runScenario(scenario, `http://127.0.0.1:${port}`)
       assert(requestCounts[scenario] > 0, `The ${scenario} CMS fixture was not exercised`)
     }
