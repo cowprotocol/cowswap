@@ -46,6 +46,7 @@ import {
   USER_SWAP_REJECTED_ERROR,
 } from 'common/utils/getSwapErrorMessage'
 
+import { assertSignedAppData, SolanaAppDataMismatchError } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
@@ -157,8 +158,9 @@ export async function solanaFlow(
     const fullAppData =
       orderClass === OrderClass.LIMIT ? appData.fullAppData : await stringifyDeterministic(appData.doc)
 
+    assertSignedAppData(signedAppData, fullAppData)
+
     // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
-    // Registered under the signed hash, so a doc that does not hash to it is rejected before anything is sent.
     await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
     // A retry started while the upload was in flight owns the flow now: going on would open a second
@@ -252,7 +254,11 @@ export async function solanaFlow(
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
-    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
+    captureError(error, ERROR_TYPES.ON_SWAP, {
+      swapErrorMessage,
+      // Never reaches the order book on a mismatch, so this is the only record of what failed to hash.
+      ...(error instanceof SolanaAppDataMismatchError && { fullAppData: error.fullAppData }),
+    })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     // The user retried while this attempt's prompt was still open: its screen belongs to the newer
