@@ -32,6 +32,11 @@ export class SwapPage implements TradePage {
   readonly tokens: TokenSelector
   readonly unlockButton: Locator
   readonly orderProgressBarModal: Locator
+  /**
+   * `FinishedSuccessHeading` lives on `Modal.Header`, not inside `#order-progress-bar-modal`.
+   * The progress-bar body shows "You sold"/"You received" instead of this title.
+   */
+  readonly confirmationSuccessHeading: Locator
   readonly sellTokenSelect: Locator
   readonly buyTokenSelect: Locator
   readonly sellFiatAmount: Locator
@@ -117,6 +122,7 @@ export class SwapPage implements TradePage {
     this.openOrders = page.locator(`[data-testid="${TEST_IDS.openOrdersList}"]`)
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
+    this.confirmationSuccessHeading = page.locator('[data-testid="confirmation-success-heading"]')
     this.tokens = new TokenSelector(page)
     this.routePanel = new BridgeRoutePanel(page)
     this.recipientPanel = page.locator('#recipient')

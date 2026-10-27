@@ -73,6 +73,7 @@ export const PrimaryWrapper = styled.div`
   gap: 16px;
   width: 100%;
   max-width: ${WIDGET_MAX_WIDTH.swap};
+  min-width: 0;
   margin: 0 auto;
   color: inherit;
   grid-area: primary;

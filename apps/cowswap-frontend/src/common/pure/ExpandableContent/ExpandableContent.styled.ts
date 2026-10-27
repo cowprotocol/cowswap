@@ -2,7 +2,9 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const ExpandableContent = styled.div`
+export type ExpandableContentVariant = 'default' | 'bordered'
+
+export const ExpandableContent = styled.div<{ $variant: ExpandableContentVariant }>`
   overflow: hidden;
   opacity: 0;
   height: 0;
@@ -13,4 +15,14 @@ export const ExpandableContent = styled.div`
   &[aria-hidden='false'] {
     opacity: 1;
   }
+
+  ${({ $variant }) =>
+    $variant === 'bordered'
+      ? `
+    &[aria-hidden='false'] {
+      border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+      border-radius: 12px;
+    }
+  `
+      : ''}
 `
