@@ -1,4 +1,4 @@
-import type { OrderParameters } from '@cowprotocol/cow-sdk'
+import type { OrderParameters, SolanaQuoteCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@cowprotocol/currency'
 
 export interface BridgeFeeAmounts {
@@ -24,4 +24,6 @@ export interface ReceiveAmountInfoParams {
   slippagePercent: Percent
   partnerFeeBps: number | undefined
   protocolFeeBps: number | undefined
+  /** The costs a Solana quote netted out of `orderParams`. Absent on every other chain. */
+  solanaQuoteCosts?: SolanaQuoteCosts
 }

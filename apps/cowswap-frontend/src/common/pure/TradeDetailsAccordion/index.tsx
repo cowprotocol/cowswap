@@ -18,8 +18,6 @@ interface TradeDetailsAccordionProps {
   open: boolean
   onToggle: () => void
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
-  /** Defaults to true. When false, the summary stays empty instead of claiming the trade is free. */
-  isFreePlacement?: boolean
 }
 
 /**
@@ -36,7 +34,6 @@ export function TradeDetailsAccordion({
   open,
   onToggle,
   feeWrapper,
-  isFreePlacement = true,
 }: TradeDetailsAccordionProps): ReactNode {
   const handleKeyDown = useCallback(
     (e: { key: string; preventDefault: () => void }): void => {
@@ -48,13 +45,7 @@ export function TradeDetailsAccordion({
     [onToggle],
   )
 
-  const defaultFeeContent = (
-    <DefaultFeeContent
-      feeUsdTotalAmount={feeUsdTotalAmount}
-      feeTotalAmount={feeTotalAmount}
-      isFreePlacement={isFreePlacement}
-    />
-  )
+  const defaultFeeContent = <DefaultFeeContent feeUsdTotalAmount={feeUsdTotalAmount} feeTotalAmount={feeTotalAmount} />
 
   return (
     <Wrapper className="trade-details-accordion" isOpen={open}>
@@ -81,11 +72,9 @@ export function TradeDetailsAccordion({
 function DefaultFeeContent({
   feeUsdTotalAmount,
   feeTotalAmount,
-  isFreePlacement,
 }: {
   feeUsdTotalAmount: CurrencyAmount<Currency> | null
   feeTotalAmount: CurrencyAmount<Currency> | null
-  isFreePlacement: boolean
 }): ReactNode {
   if (feeUsdTotalAmount?.greaterThan(0)) {
     return <FiatAmount amount={feeUsdTotalAmount} />
@@ -98,8 +87,6 @@ function DefaultFeeContent({
       </>
     )
   }
-
-  if (!isFreePlacement) return null
 
   return <Trans>Free</Trans>
 }
