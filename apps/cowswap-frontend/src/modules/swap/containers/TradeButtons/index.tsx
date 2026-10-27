@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getIsSolanaAvailable, useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSolanaAvailable } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSafeWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -56,7 +56,7 @@ export function TradeButtons({
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency } = useSwapDerivedState()
   const { chainId } = useWalletInfo()
-  const isSolanaAvailable = getIsSolanaAvailable(useFeatureFlags())
+  const isSolanaAvailable = useIsSolanaAvailable()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -121,7 +121,7 @@ export function TradeButtons({
   // yet, so `isTradeContextReady` is always false on Solana and would keep the approve button permanently
   // disabled. While Solana is behind the flags, skip that gate (the Solana swap callback is a no-op until
   // the order flow lands). Remove this when the Solana trade flow is implemented — surfaces on the grep
-  // for getIsSolanaAvailable when the flags are cleaned up.
+  // for useIsSolanaAvailable when the flags are cleaned up.
   const skipTradeContextReadyGate = isSolanaAvailable && isSolanaChain(chainId)
   const isDisabled =
     (!skipTradeContextReadyGate && !isTradeContextReady) ||

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getAvailableSourceChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { getIsSolanaAvailable, useFeatureFlags } from './useFeatureFlags'
+import { useIsSolanaAvailable } from './useIsSolanaAvailable'
 
 export interface UseAvailableChainsOptions {
   /** Excludes Solana regardless of the feature flag. Defaults to `false` */
@@ -19,7 +19,7 @@ export interface UseAvailableChainsOptions {
  */
 export function useAvailableChains({ excludeSolana = false }: UseAvailableChainsOptions = {}): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const isSolanaAvailable = getIsSolanaAvailable(useFeatureFlags())
+  const isSolanaAvailable = useIsSolanaAvailable()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude

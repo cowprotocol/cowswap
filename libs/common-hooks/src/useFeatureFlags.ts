@@ -32,14 +32,6 @@ const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isAlphaNetworksOptionVisible: false,
 }
 
-/**
- * Whether Solana's wallet connector, chain and quotes are loaded. Ignores the user's alpha networks opt-in,
- * which only decides whether Solana is listed, so direct Solana links keep working without it.
- */
-export function getIsSolanaAvailable({ isSolanaEnabled, isAlphaNetworksOptionVisible }: FeatureFlags): boolean {
-  return !!isSolanaEnabled || !!isAlphaNetworksOptionVisible
-}
-
 export function useFeatureFlags(): FeatureFlags {
   const flags = useFlags<FeatureFlags>()
 

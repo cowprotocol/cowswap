@@ -2,7 +2,7 @@ import { Provider, createStore } from 'jotai'
 import { act } from 'react'
 
 import { syncBootFeatureFlags } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsSolanaAvailable } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
 import { useLDClient, useLDClientError } from 'launchdarkly-react-client-sdk'
@@ -19,6 +19,7 @@ jest.mock('@cowprotocol/common-const', () => ({
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useFeatureFlags: jest.fn(),
+  useIsSolanaAvailable: jest.fn(),
 }))
 
 jest.mock('launchdarkly-react-client-sdk', () => ({
@@ -29,6 +30,7 @@ jest.mock('launchdarkly-react-client-sdk', () => ({
 
 const syncBootFeatureFlagsMock = syncBootFeatureFlags as jest.MockedFunction<typeof syncBootFeatureFlags>
 const useFeatureFlagsMock = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
+const useIsSolanaAvailableMock = useIsSolanaAvailable as jest.MockedFunction<typeof useIsSolanaAvailable>
 const useLDClientMock = useLDClient as jest.MockedFunction<typeof useLDClient>
 const useLDClientErrorMock = useLDClientError as jest.MockedFunction<typeof useLDClientError>
 
@@ -38,6 +40,7 @@ describe('FeatureFlagsUpdater', () => {
     localStorage.clear()
     syncBootFeatureFlagsMock.mockClear()
     useFeatureFlagsMock.mockReturnValue({})
+    useIsSolanaAvailableMock.mockReturnValue(false)
     useLDClientMock.mockReturnValue(undefined)
     useLDClientErrorMock.mockReturnValue(undefined)
   })
@@ -74,24 +77,9 @@ describe('FeatureFlagsUpdater', () => {
     expect(store.get(featureFlagsStatusAtom)).toBe('ready')
   })
 
-  it('syncs the boot-critical flags once LaunchDarkly resolves, for the next page load', () => {
+  it('syncs Solana availability once LaunchDarkly resolves, for the next page load', () => {
     const store = createStore()
-    const flags = { isSolanaEnabled: true }
-    useFeatureFlagsMock.mockReturnValue(flags)
-    useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
-
-    render(
-      <Provider store={store}>
-        <FeatureFlagsUpdater />
-      </Provider>,
-    )
-
-    expect(syncBootFeatureFlagsMock).toHaveBeenCalledWith(flags)
-  })
-
-  it('loads Solana on the next page load while the alpha networks option is visible, without the user opting in', () => {
-    const store = createStore()
-    useFeatureFlagsMock.mockReturnValue({ isAlphaNetworksOptionVisible: true })
+    useIsSolanaAvailableMock.mockReturnValue(true)
     useLDClientMock.mockReturnValue({} as ReturnType<typeof useLDClient>)
 
     render(
