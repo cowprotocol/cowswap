@@ -5922,13 +5922,13 @@ msgstr "Fetching price impact"
 #~ msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 #~ msgstr "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
-#~ msgid "Limit order to sell at a higher price. How much higher?"
-#~ msgstr "Limit order to sell at a higher price. How much higher?"
-
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "Putting this order on-chain costs SOL in Solana transaction fees and account deposits, and CoW Swap covers it for you."
 msgstr "Putting this order on-chain costs SOL in Solana transaction fees and account deposits, and CoW Swap covers it for you."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/containers/TakeProfitPrompt/TakeProfitPrompt.container.tsx
+#~ msgid "Limit order to sell at a higher price. How much higher?"
+#~ msgstr "Limit order to sell at a higher price. How much higher?"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Swap bridged via your"
