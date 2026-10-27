@@ -34,6 +34,8 @@ const USER = '0x1111111111111111111111111111111111111111'
 const OTHER_USER = '0x2222222222222222222222222222222222222222'
 const RESTRICTED = PERMIT_ACCOUNT.address
 
+const ORDER_BLOCKED_MESSAGE = 'An error has occurred. Please refresh the quote and try again.'
+
 const COW_SHED_FACTORY_ABI = parseAbi([
   'function executeHooks((address target, uint256 value, bytes callData, bool allowFailure, bool isDelegateCall)[] calls, bytes32 nonce, uint256 deadline, address user, bytes signature)',
 ])
@@ -76,7 +78,7 @@ describe('installRestrictedAddressesGuard', () => {
       ['receiver', { receiver: RESTRICTED }],
       ['appData hooks', { appData: JSON.stringify({ metadata: { hooks: { pre: [{ target: RESTRICTED }] } } }) }],
     ])('blocks an order with a restricted %s', async (_, overrides) => {
-      await expect(orderBookApi.sendOrder(getOrder(overrides))).rejects.toThrow('restricted address')
+      await expect(orderBookApi.sendOrder(getOrder(overrides))).rejects.toThrow(ORDER_BLOCKED_MESSAGE)
 
       expect(mockSendOrder).not.toHaveBeenCalled()
       expect(captureError).toHaveBeenCalledWith(
@@ -96,9 +98,7 @@ describe('installRestrictedAddressesGuard', () => {
     it('blocks an order with a CoW Shed hook signed for another account', async () => {
       const order = getOrder({ appData: getCowShedHookAppData(OTHER_USER) })
 
-      await expect(orderBookApi.sendOrder(order)).rejects.toThrow(
-        'An error has occurred. Please refresh the quote and try again.',
-      )
+      await expect(orderBookApi.sendOrder(order)).rejects.toThrow(ORDER_BLOCKED_MESSAGE)
 
       expect(mockSendOrder).not.toHaveBeenCalled()
       expect(captureError).toHaveBeenCalledWith(
@@ -120,7 +120,7 @@ describe('installRestrictedAddressesGuard', () => {
     it('blocks uploading an appData document with a restricted address', async () => {
       const appData = JSON.stringify({ metadata: { hooks: { post: [{ target: RESTRICTED }] } } })
 
-      await expect(orderBookApi.uploadAppData('0x01', appData)).rejects.toThrow('restricted address')
+      await expect(orderBookApi.uploadAppData('0x01', appData)).rejects.toThrow(ORDER_BLOCKED_MESSAGE)
 
       expect(mockUploadAppData).not.toHaveBeenCalled()
     })
