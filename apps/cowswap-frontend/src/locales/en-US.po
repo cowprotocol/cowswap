@@ -8654,13 +8654,13 @@ msgstr "Only A-Z, 0-9, dashes, and underscores are allowed."
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
 
-#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "Share this swap"
-msgstr "Share this swap"
-
 #: apps/cowswap-frontend/src/modules/priceChart/hooks/useOpenLimitOrderChartLines.ts
 #~ msgid "Buy {formattedBuyAmount} {buySymbol}"
 #~ msgstr "Buy {formattedBuyAmount} {buySymbol}"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "Share this swap"
+msgstr "Share this swap"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeStatusMessages.tsx
 #~ msgid "successfully"
