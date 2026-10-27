@@ -50,6 +50,37 @@ describe('Tooltip', () => {
     expect(screen.queryByRole('tooltip')).toBe(null)
   })
 
+  it('stays open while focused after the pointer leaves, and while hovered after blur', () => {
+    render(<Tooltip content="Hint">Label</Tooltip>)
+    const trigger = screen.getByText('Label')
+
+    fireEvent.pointerEnter(trigger, { pointerType: 'mouse' })
+    fireEvent.focus(trigger)
+    fireEvent.pointerLeave(trigger, { pointerType: 'mouse' })
+    expect(screen.getByRole('tooltip')).toBeTruthy()
+
+    fireEvent.pointerEnter(trigger, { pointerType: 'mouse' })
+    fireEvent.blur(trigger)
+    expect(screen.getByRole('tooltip')).toBeTruthy()
+
+    fireEvent.pointerLeave(trigger, { pointerType: 'mouse' })
+    expect(screen.queryByRole('tooltip')).toBe(null)
+  })
+
+  it('makes the trigger focusable unless it wraps a focusable control', () => {
+    render(
+      <>
+        <Tooltip content="Issuers">2 issuers</Tooltip>
+        <Tooltip content="Light theme">
+          <button type="button">Light</button>
+        </Tooltip>
+      </>,
+    )
+
+    expect(screen.getByText('2 issuers').tabIndex).toBe(0)
+    expect(screen.getByRole('button', { name: 'Light' }).parentElement?.hasAttribute('tabindex')).toBe(false)
+  })
+
   it('closes on Escape', () => {
     render(<Tooltip content="Hint">Label</Tooltip>)
 

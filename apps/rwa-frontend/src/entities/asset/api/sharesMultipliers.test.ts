@@ -7,11 +7,7 @@ import { getTokenKey } from '../lib/tokenKey'
 
 import type { RwaAsset, RwaToken } from '../model/types'
 
-import {
-  fetchOndoSharesMultipliers,
-  fetchXStocksPendingActivation,
-  readVaultAssetsPerShare,
-} from '@/shared/api/index.server'
+import { fetchOndoSharesMultipliers, fetchXStocksActivation, readVaultAssetsPerShare } from '@/shared/api/index.server'
 
 jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
@@ -19,7 +15,7 @@ jest.mock('next/cache', () => ({
 
 jest.mock('@/shared/api/index.server', () => ({
   fetchOndoSharesMultipliers: jest.fn(),
-  fetchXStocksPendingActivation: jest.fn(),
+  fetchXStocksActivation: jest.fn(),
   readVaultAssetsPerShare: jest.fn(),
   withRetryBackoff: <T>(_key: string, load: () => Promise<T>) => load(),
 }))
@@ -42,7 +38,7 @@ const WSPYX = token('WSPYX', 42161, '0x0000000000000000000000000000000000000005'
 const mockRegistryTokens = [NVDAON, NFLXON, NVDAX, WNVDAX, WNVDAX_ARBITRUM, WSPYX]
 
 const fetchOndoMock = fetchOndoSharesMultipliers as jest.Mock
-const fetchPendingActivationMock = fetchXStocksPendingActivation as jest.Mock
+const fetchActivationMock = fetchXStocksActivation as jest.Mock
 const readVaultRatesMock = readVaultAssetsPerShare as jest.Mock
 
 beforeEach(() => {
@@ -110,30 +106,41 @@ describe('loadTradingPause', () => {
 
   it('pauses rebasing xStocks tokens 15 minutes around the pending multiplier activation', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-10-27T12:00:00.000Z'))
-    fetchPendingActivationMock.mockResolvedValue(activatesAt)
+    fetchActivationMock.mockResolvedValue(activatesAt)
 
     expect(await loadTradingPause(asset)).toEqual({
       issuer: 'xStocks',
       start: '2026-10-28T00:15:00.000Z',
       end: '2026-10-28T00:45:00.000Z',
     })
-    expect(fetchPendingActivationMock).toHaveBeenCalledWith('NVDAx', 57073)
+    expect(fetchActivationMock).toHaveBeenCalledWith('NVDAx', 57073)
+  })
+
+  it('keeps the pause after the multiplier activated', async () => {
+    jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-10-28T00:40:00.000Z'))
+    fetchActivationMock.mockResolvedValue(activatesAt)
+
+    expect(await loadTradingPause(asset)).toEqual({
+      issuer: 'xStocks',
+      start: '2026-10-28T00:15:00.000Z',
+      end: '2026-10-28T00:45:00.000Z',
+    })
   })
 
   it('is null once the pause is over', async () => {
     jest.spyOn(Date, 'now').mockReturnValue(Date.parse('2026-10-28T00:45:00.000Z'))
-    fetchPendingActivationMock.mockResolvedValue(activatesAt)
+    fetchActivationMock.mockResolvedValue(activatesAt)
 
     expect(await loadTradingPause(asset)).toBeNull()
   })
 
-  it('is null without a pending multiplier, a rebasing xStocks token, or when the request fails', async () => {
-    fetchPendingActivationMock.mockResolvedValue(null)
+  it('is null without a known activation, a rebasing xStocks token, or when the request fails', async () => {
+    fetchActivationMock.mockResolvedValue(null)
     expect(await loadTradingPause(asset)).toBeNull()
 
     expect(await loadTradingPause({ ...asset, tokens: [NVDAON, WNVDAX] })).toBeNull()
 
-    fetchPendingActivationMock.mockRejectedValue(new Error('xStocks responded with 500'))
+    fetchActivationMock.mockRejectedValue(new Error('xStocks responded with 500'))
     expect(await loadTradingPause(asset)).toBeNull()
   })
 })

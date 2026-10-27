@@ -30,18 +30,26 @@ interface TooltipProps {
 
 const TOOLTIP_OFFSET_PX = 6
 const VIEWPORT_MARGIN_PX = 8
+const FOCUSABLE_SELECTOR = 'a[href], button, input, select, textarea, [tabindex]'
 
 export function Tooltip({ content, children, className }: TooltipProps): ReactNode {
   const tooltipId = useId()
   const triggerRef = useRef<HTMLSpanElement>(null)
   const tooltipRef = useRef<HTMLDivElement>(null)
+  const isHoveredRef = useRef(false)
+  const isFocusedRef = useRef(false)
   const [isOpen, setIsOpen] = useState(false)
   const [position, setPosition] = useState<TooltipPosition | null>(null)
+  const [hasFocusableChild, setHasFocusableChild] = useState(false)
 
   const close = useCallback((): void => {
     setIsOpen(false)
     setPosition(null)
   }, [])
+
+  useLayoutEffect(() => {
+    setHasFocusableChild(!!triggerRef.current?.querySelector(FOCUSABLE_SELECTOR))
+  }, [children])
 
   // Fixed to the viewport, so an `overflow: auto` table can't clip it
   useLayoutEffect(() => {
@@ -56,8 +64,23 @@ export function Tooltip({ content, children, className }: TooltipProps): ReactNo
   useDismiss(isOpen, triggerRef, close)
 
   // A tap fires `pointerleave` right after `pointerenter`, so touch tooltips stay open until the next tap
+  const onPointerEnter = (event: PointerEvent): void => {
+    if (event.pointerType !== 'touch') isHoveredRef.current = true
+    setIsOpen(true)
+  }
   const onPointerLeave = (event: PointerEvent): void => {
-    if (event.pointerType !== 'touch') close()
+    if (event.pointerType === 'touch') return
+
+    isHoveredRef.current = false
+    if (!isFocusedRef.current) close()
+  }
+  const onFocus = (): void => {
+    isFocusedRef.current = true
+    setIsOpen(true)
+  }
+  const onBlur = (): void => {
+    isFocusedRef.current = false
+    if (!isHoveredRef.current) close()
   }
 
   return (
@@ -65,11 +88,12 @@ export function Tooltip({ content, children, className }: TooltipProps): ReactNo
       <span
         ref={triggerRef}
         className={className}
+        tabIndex={hasFocusableChild ? undefined : 0}
         aria-describedby={isOpen ? tooltipId : undefined}
-        onPointerEnter={() => setIsOpen(true)}
+        onPointerEnter={onPointerEnter}
         onPointerLeave={onPointerLeave}
-        onFocus={() => setIsOpen(true)}
-        onBlur={close}
+        onFocus={onFocus}
+        onBlur={onBlur}
       >
         {children}
       </span>

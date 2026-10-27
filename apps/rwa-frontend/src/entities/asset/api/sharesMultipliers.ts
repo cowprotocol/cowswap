@@ -13,7 +13,7 @@ import type { RwaAsset, RwaToken, RwaTradingPause } from '../model/types'
 
 import {
   fetchOndoSharesMultipliers,
-  fetchXStocksPendingActivation,
+  fetchXStocksActivation,
   readVaultAssetsPerShare,
   withRetryBackoff,
 } from '@/shared/api/index.server'
@@ -58,14 +58,14 @@ export async function loadSharesPerToken(tokens: RwaToken[]): Promise<SharesPerT
   return { byKey, degraded: ondo.degraded || wrapped.degraded }
 }
 
-/** `null` when the asset has no rebasing xStocks token, no multiplier is pending, or the pause is over */
+/** `null` when the asset has no rebasing xStocks token, no multiplier activation is known, or the pause is over */
 export async function loadTradingPause(asset: RwaAsset): Promise<RwaTradingPause | null> {
   const token = asset.tokens.find((item) => item.issuer === 'xStocks' && !isWrappedXStock(item))
 
   if (!token) return null
 
   try {
-    const activatesAt = await fetchXStocksPendingActivation(toXStocksSymbol(token.symbol), token.chainId)
+    const activatesAt = await fetchXStocksActivation(toXStocksSymbol(token.symbol), token.chainId)
 
     if (activatesAt === null || Date.now() >= activatesAt + XSTOCKS_PAUSE_MARGIN_MS) return null
 
