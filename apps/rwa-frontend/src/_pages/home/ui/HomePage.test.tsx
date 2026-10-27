@@ -148,7 +148,8 @@ describe('HomePage', () => {
     renderHomePage()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
-    fireEvent.change(screen.getByRole('combobox', { name: 'Issuer' }), { target: { value: 'Ondo' } })
+    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>

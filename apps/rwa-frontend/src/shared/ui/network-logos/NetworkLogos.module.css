@@ -5,3 +5,8 @@
   align-items: center;
   gap: 4px;
 }
+
+.optionLogo {
+  flex-shrink: 0;
+  border-radius: 50%;
+}

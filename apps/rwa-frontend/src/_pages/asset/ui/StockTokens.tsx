@@ -19,11 +19,10 @@ import {
 } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
-import { SelectPill } from '@/shared/ui/select-pill'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { Select } from '@/shared/ui/select'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
-
-const ALL = ''
 
 interface StockTokenRowProps {
   token: RwaToken
@@ -37,13 +36,14 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const selectedToken = useTradeSelection(asset)?.assetToken
   const selectTradeToken = useSelectTradeToken()
-  const [issuer, setIssuer] = useState(ALL)
-  const [network, setNetwork] = useState(ALL)
+  const [issuer, setIssuer] = useState<string | null>(null)
+  const [network, setNetwork] = useState<number | null>(null)
 
   const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
   const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
+  const networkOptions = useNetworkOptions(chainIds)
   const tokens = asset.tokens.filter(
-    (token) => (issuer === ALL || token.issuer === issuer) && (network === ALL || String(token.chainId) === network),
+    (token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network),
   )
 
   return (
@@ -56,32 +56,23 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
           </span>
         </div>
         <div className={styles.filters}>
-          <SelectPill
+          <Select
             variant="small"
             aria-label="Issuer"
             value={issuer}
-            onChange={(event) => setIssuer(event.target.value)}
-          >
-            <option value={ALL}>All issuers</option>
-            {issuers.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </SelectPill>
-          <SelectPill
+            options={[
+              { value: null, label: 'All issuers' },
+              ...issuers.map((option) => ({ value: option, label: option })),
+            ]}
+            onChange={setIssuer}
+          />
+          <Select
             variant="small"
             aria-label="Network"
             value={network}
-            onChange={(event) => setNetwork(event.target.value)}
-          >
-            <option value={ALL}>All networks</option>
-            {chainIds.map((chainId) => (
-              <option key={chainId} value={String(chainId)}>
-                {getChainLabel(chainId)}
-              </option>
-            ))}
-          </SelectPill>
+            options={[{ value: null, label: 'All networks' }, ...networkOptions]}
+            onChange={setNetwork}
+          />
         </div>
       </div>
       {tokens.length ? (

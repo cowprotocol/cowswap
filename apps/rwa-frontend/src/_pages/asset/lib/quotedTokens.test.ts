@@ -1,7 +1,14 @@
 import { AAPLX_ARBITRUM, AAPLX_MAINNET } from './fixtures'
-import { getAutoToken, getBestQuotedToken, toQuotedTokens } from './quotedTokens'
+import {
+  getAutoToken,
+  getBestQuotedToken,
+  keepPreviousOrder,
+  type QuotedToken,
+  sortQuotedTokens,
+  toQuotedTokens,
+} from './quotedTokens'
 
-import type { RwaAssetQuotes, RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaAssetQuotes, type RwaToken } from '@/entities/asset'
 
 const AAPLON_MAINNET: RwaToken = {
   ...AAPLX_MAINNET,
@@ -132,6 +139,155 @@ describe('getBestQuotedToken', () => {
 
     expect(quoted.map(({ isPriceOutlier }) => isPriceOutlier)).toEqual([false, true])
     expect(getBestQuotedToken(quoted, 'sell')).toBe(AAPLX_MAINNET)
+  })
+})
+
+describe('sortQuotedTokens', () => {
+  const AAPLB_MAINNET: RwaToken = {
+    ...AAPLX_MAINNET,
+    address: '0x0000000000000000000000000000000000000aab',
+    symbol: 'AAPLb',
+    issuer: 'Backed',
+  }
+
+  function symbols(quoted: ReturnType<typeof toQuotedTokens>): string[] {
+    return quoted.map(({ token }) => token.symbol)
+  }
+
+  it('puts the cheapest share to buy first', () => {
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('buy', '4000000000000000000', '5000000000000000000'),
+      undefined,
+      null,
+    )
+
+    expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLon', 'AAPLx'])
+  })
+
+  it('puts the most paid share to sell first', () => {
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('sell', '5000000000000000000', '4000000000000000000'),
+      undefined,
+      null,
+    )
+
+    expect(symbols(sortQuotedTokens(quoted, 'sell'))).toEqual(['AAPLon', 'AAPLx'])
+  })
+
+  it('puts verified quotes before cheaper unverified ones', () => {
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('buy', '4000000000000000000', '50000000000000000000', 'aaplx'),
+      undefined,
+      null,
+    )
+
+    expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLx', 'AAPLon'])
+  })
+
+  it('puts tokens without a ranked quote last, in their original order', () => {
+    const quoted = toQuotedTokens(
+      [AAPLB_MAINNET, ...CHAIN_TOKENS],
+      quotes('buy', null, '5000000000000000000'),
+      undefined,
+      null,
+    )
+
+    expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLon', 'AAPLb', 'AAPLx'])
+  })
+
+  it('puts a price far from the stock price after ranked quotes', () => {
+    const quoted = toQuotedTokens(
+      CHAIN_TOKENS,
+      quotes('sell', '320000000000000000', '4000000000000000000'),
+      undefined,
+      230,
+    )
+
+    expect(symbols(sortQuotedTokens(quoted, 'sell'))).toEqual(['AAPLon', 'AAPLx'])
+  })
+
+  it('keeps the original order while quotes are loading', () => {
+    expect(symbols(sortQuotedTokens(toQuotedTokens(CHAIN_TOKENS, undefined, undefined, null), 'buy'))).toEqual([
+      'AAPLx',
+      'AAPLon',
+    ])
+  })
+})
+
+describe('keepPreviousOrder', () => {
+  const AAPLB_MAINNET: RwaToken = {
+    ...AAPLX_MAINNET,
+    address: '0x0000000000000000000000000000000000000aab',
+    symbol: 'AAPLb',
+    issuer: 'Backed',
+  }
+
+  function quoted(token: RwaToken, pricePerShare: number | null): QuotedToken {
+    return {
+      token,
+      quote: { address: token.address, amount: '1', verified: true, error: null },
+      pricePerShare,
+      isPriceOutlier: false,
+      stats: undefined,
+    }
+  }
+
+  function order(...tokens: RwaToken[]): string[] {
+    return tokens.map(getTokenKey)
+  }
+
+  function symbols(quotedTokens: QuotedToken[]): string[] {
+    return quotedTokens.map(({ token }) => token.symbol)
+  }
+
+  it('keeps the previous order when a refresh swaps only tokens after the best one', () => {
+    const sorted = sortQuotedTokens(
+      [quoted(AAPLON_MAINNET, 100), quoted(AAPLX_MAINNET, 102), quoted(AAPLB_MAINNET, 101)],
+      'buy',
+    )
+
+    expect(symbols(sorted)).toEqual(['AAPLon', 'AAPLb', 'AAPLx'])
+    expect(symbols(keepPreviousOrder(sorted, order(AAPLON_MAINNET, AAPLX_MAINNET, AAPLB_MAINNET)))).toEqual([
+      'AAPLon',
+      'AAPLx',
+      'AAPLb',
+    ])
+  })
+
+  it('re-sorts when the best token changes', () => {
+    const sorted = sortQuotedTokens(
+      [quoted(AAPLON_MAINNET, 100), quoted(AAPLX_MAINNET, 99), quoted(AAPLB_MAINNET, 101)],
+      'buy',
+    )
+
+    expect(symbols(keepPreviousOrder(sorted, order(AAPLON_MAINNET, AAPLB_MAINNET, AAPLX_MAINNET)))).toEqual([
+      'AAPLx',
+      'AAPLon',
+      'AAPLb',
+    ])
+  })
+
+  it('re-sorts when a token loses its ranked quote', () => {
+    const sorted = sortQuotedTokens(
+      [quoted(AAPLON_MAINNET, 100), quoted(AAPLX_MAINNET, 102), quoted(AAPLB_MAINNET, null)],
+      'buy',
+    )
+
+    expect(symbols(keepPreviousOrder(sorted, order(AAPLON_MAINNET, AAPLB_MAINNET, AAPLX_MAINNET)))).toEqual([
+      'AAPLon',
+      'AAPLx',
+      'AAPLb',
+    ])
+  })
+
+  it('returns the sorted tokens without a previous order or when the tokens changed', () => {
+    const sorted = sortQuotedTokens([quoted(AAPLON_MAINNET, 100), quoted(AAPLX_MAINNET, 102)], 'buy')
+
+    expect(keepPreviousOrder(sorted, null)).toBe(sorted)
+    expect(keepPreviousOrder(sorted, order(AAPLX_MAINNET, AAPLB_MAINNET))).toBe(sorted)
   })
 })
 

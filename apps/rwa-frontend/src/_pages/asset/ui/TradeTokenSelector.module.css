@@ -54,49 +54,6 @@
   background: var(--color-surface);
 }
 
-.network {
-  position: relative;
-  display: flex;
-  align-items: center;
-  height: 40px;
-  border-radius: var(--radius-pill);
-  background: var(--color-surface);
-}
-
-.network select {
-  height: 100%;
-  padding: 0 36px 0 38px;
-  border: none;
-  border-radius: var(--radius-pill);
-  background: none;
-  font-size: 15px;
-  font-weight: 600;
-  appearance: none;
-}
-
-.networkLogo {
-  position: absolute;
-  left: 10px;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-.chevron {
-  position: absolute;
-  right: 14px;
-  color: var(--color-text-muted);
-  pointer-events: none;
-}
-
-.visuallyHidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-}
-
 .tableHeader {
   display: flex;
   align-items: center;
