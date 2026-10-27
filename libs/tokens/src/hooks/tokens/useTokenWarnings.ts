@@ -8,6 +8,8 @@ import { Currency } from '@cowprotocol/currency'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
+import { useIsRwaToken } from '../lists/useIsRwaToken'
+
 export interface TokenWarning {
   type: string
   severity: TokenWarningSeverity
@@ -32,6 +34,14 @@ const ERROR_RETRY_COUNT = 3
 
 const NO_WARNINGS: TokenWarning[] = []
 
+/**
+ * A tokenised equity has to let its issuer mint, freeze and claw back holdings — that is the
+ * regulation it exists to satisfy, not a sign the token is unsafe. Shield reports them anyway, and
+ * `HAS_PERMANENT_DELEGATE` at `critical` would put a red badge on most of the RWA list. They stay
+ * visible, demoted to the severity that says "worth knowing" rather than "danger".
+ */
+const RWA_EXPECTED_TYPES = new Set(['HAS_PERMANENT_DELEGATE', 'HAS_FREEZE_AUTHORITY', 'HAS_MINT_AUTHORITY'])
+
 // Worst first, so a badge built from the head of the list shows the severity that matters.
 const SEVERITY_RANK: Record<TokenWarningSeverity, number> = {
   critical: 0,
@@ -43,11 +53,16 @@ const SEVERITY_RANK: Record<TokenWarningSeverity, number> = {
 export function toTokenWarnings(
   stored: StoredWarning[] | undefined,
   messages: Record<string, string> | undefined,
+  isRwa = false,
 ): TokenWarning[] {
   if (!stored?.length) return NO_WARNINGS
 
   return stored
-    .map(({ type, severity }) => ({ type, severity, message: messages?.[type] ?? '' }))
+    .map(({ type, severity }) => ({
+      type,
+      severity: isRwa && RWA_EXPECTED_TYPES.has(type) ? 'info' : severity,
+      message: messages?.[type] ?? '',
+    }))
     .sort((a, b) => severityRank(a.severity) - severityRank(b.severity))
 }
 
@@ -61,6 +76,7 @@ export function toTokenWarnings(
 export function useTokenWarnings(currency: Currency | null | undefined): TokenWarning[] {
   const address = currency && !getIsNativeToken(currency) ? currency.address : undefined
   const isSolana = !!currency && isSolanaChain(currency.chainId)
+  const isRwa = useIsRwaToken(address ? { address } : undefined)
 
   const { data } = useSWR<TokenWarningsFile>(isSolana ? SOLANA_TOKEN_WARNINGS_URL : null, fetchTokenWarnings, {
     refreshInterval: REFRESH_INTERVAL,
@@ -73,8 +89,8 @@ export function useTokenWarnings(currency: Currency | null | undefined): TokenWa
   })
 
   return useMemo(
-    () => toTokenWarnings(address ? data?.warnings?.[address] : undefined, data?.messages),
-    [data, address],
+    () => toTokenWarnings(address ? data?.warnings?.[address] : undefined, data?.messages, isRwa),
+    [data, address, isRwa],
   )
 }
 

@@ -39,3 +39,47 @@ describe('toTokenWarnings', () => {
     expect(toTokenWarnings([{ type: 'HAS_MINT_AUTHORITY', severity: 'info' }], undefined)[0].message).toBe('')
   })
 })
+
+describe('toTokenWarnings on an RWA token', () => {
+  const ISSUER_PERMISSIONS = [
+    { type: 'HAS_PERMANENT_DELEGATE', severity: 'critical' },
+    { type: 'HAS_FREEZE_AUTHORITY', severity: 'warning' },
+    { type: 'HAS_MINT_AUTHORITY', severity: 'info' },
+  ] as const
+
+  it('demotes the permissions a tokenised equity is required to have', () => {
+    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, true)
+
+    expect(result.map((warning) => warning.severity)).toEqual(['info', 'info', 'info'])
+  })
+
+  it('keeps those warnings visible rather than dropping them', () => {
+    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, true)
+
+    expect(result.map((warning) => warning.type).sort()).toEqual([
+      'HAS_FREEZE_AUTHORITY',
+      'HAS_MINT_AUTHORITY',
+      'HAS_PERMANENT_DELEGATE',
+    ])
+  })
+
+  it('leaves warnings that are not inherent to an RWA alone', () => {
+    const result = toTokenWarnings(
+      [
+        { type: 'HAS_PERMANENT_DELEGATE', severity: 'critical' },
+        { type: 'NOT_SELLABLE', severity: 'critical' },
+      ],
+      MESSAGES,
+      true,
+    )
+
+    expect(result[0]).toMatchObject({ type: 'NOT_SELLABLE', severity: 'critical' })
+    expect(result[1]).toMatchObject({ type: 'HAS_PERMANENT_DELEGATE', severity: 'info' })
+  })
+
+  it('does not demote anything for a non-RWA token', () => {
+    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, false)
+
+    expect(result.map((warning) => warning.severity)).toEqual(['critical', 'warning', 'info'])
+  })
+})
