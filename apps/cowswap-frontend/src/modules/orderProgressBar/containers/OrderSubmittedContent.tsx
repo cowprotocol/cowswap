@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import {
@@ -14,6 +15,7 @@ import {
 } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
+import { useWaitAndSaveSolverCompetition } from '../hooks/useWaitAndSaveSolverCompetition'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
 interface OrderSubmittedContentProps {
@@ -31,6 +33,12 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   const showWaitAndSaveOutcome = isWaitAndSaveAvailable && isWaitAndSaveEnabled
 
   const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
+
+  useWaitAndSaveSolverCompetition({
+    chainId,
+    enabled: showWaitAndSaveOutcome && order?.status === OrderStatus.FULFILLED,
+    orderUid: order?.id,
+  })
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
