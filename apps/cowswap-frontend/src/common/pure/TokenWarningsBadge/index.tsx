@@ -3,17 +3,19 @@ import { ReactNode } from 'react'
 import { TokenWarning } from '@cowprotocol/tokens'
 import { HoverTooltip } from '@cowprotocol/ui'
 
-import { Plural, Trans } from '@lingui/react/macro'
+import { Plural, Trans, useLingui } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 
 import * as styledEl from './TokenWarningsBadge.styled'
-import { humanizeWarningType } from './TokenWarningsBadge.utils'
+import { getWarningTitle } from './TokenWarningsBadge.utils'
 
 export interface TokenWarningsBadgeProps {
   warnings: TokenWarning[]
 }
 
 export function TokenWarningsBadge({ warnings }: TokenWarningsBadgeProps): ReactNode {
+  const { i18n } = useLingui()
+
   if (!warnings.length) return null
 
   // Sorted worst-first upstream, so the first one carries the badge's severity.
@@ -24,12 +26,16 @@ export function TokenWarningsBadge({ warnings }: TokenWarningsBadgeProps): React
       <styledEl.TooltipTitle>
         <Trans>Token warnings</Trans>
       </styledEl.TooltipTitle>
-      {warnings.map((warning) => (
-        <styledEl.WarningItem key={warning.type} severity={warning.severity}>
-          <styledEl.WarningTitle severity={warning.severity}>{humanizeWarningType(warning.type)}</styledEl.WarningTitle>
-          {warning.message && <styledEl.WarningMessage>{warning.message}</styledEl.WarningMessage>}
-        </styledEl.WarningItem>
-      ))}
+      {warnings.map((warning) => {
+        const title = getWarningTitle(warning.code)
+
+        return (
+          <styledEl.WarningItem key={warning.code} severity={warning.severity}>
+            {title && <styledEl.WarningTitle severity={warning.severity}>{i18n._(title)}</styledEl.WarningTitle>}
+            {warning.message && <styledEl.WarningMessage>{warning.message}</styledEl.WarningMessage>}
+          </styledEl.WarningItem>
+        )
+      })}
     </styledEl.TooltipContent>
   )
 

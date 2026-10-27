@@ -11,22 +11,22 @@ import useSWR from 'swr'
 import { useIsRwaToken } from '../lists/useIsRwaToken'
 
 export interface TokenWarning {
-  type: string
+  code: string
   severity: TokenWarningSeverity
   message: string
 }
 
 export type TokenWarningSeverity = 'info' | 'warning' | 'critical'
 
-interface StoredWarning {
-  type: string
-  severity: TokenWarningSeverity
-}
-
 /** Parsed from the CDN, so every field is treated as possibly absent. */
 interface TokenWarningsFile {
-  messages?: Record<string, string>
-  warnings?: Record<string, StoredWarning[]>
+  types?: Record<string, WarningType>
+  warnings?: Record<string, string[]>
+}
+
+interface WarningType {
+  severity: TokenWarningSeverity
+  message: string
 }
 
 const REFRESH_INTERVAL = ms`1h`
@@ -37,10 +37,10 @@ const NO_WARNINGS: TokenWarning[] = []
 /**
  * A tokenised equity has to let its issuer mint, freeze and claw back holdings — that is the
  * regulation it exists to satisfy, not a sign the token is unsafe. Shield reports them anyway, and
- * `HAS_PERMANENT_DELEGATE` at `critical` would put a red badge on most of the RWA list. They stay
- * visible, demoted to the severity that says "worth knowing" rather than "danger".
+ * `PERM_DEL` at `critical` would put a red badge on most of the RWA list. They stay visible,
+ * demoted to the severity that says "worth knowing" rather than "danger".
  */
-const RWA_EXPECTED_TYPES = new Set(['HAS_PERMANENT_DELEGATE', 'HAS_FREEZE_AUTHORITY', 'HAS_MINT_AUTHORITY'])
+const RWA_EXPECTED_CODES = new Set(['PERM_DEL', 'FREEZE', 'MINT'])
 
 // Worst first, so a badge built from the head of the list shows the severity that matters.
 const SEVERITY_RANK: Record<TokenWarningSeverity, number> = {
@@ -49,20 +49,30 @@ const SEVERITY_RANK: Record<TokenWarningSeverity, number> = {
   info: 2,
 }
 
-/** Joins each stored warning with its message and orders them worst severity first. */
+/** Resolves each published code against the shared type dictionary, worst severity first. */
 export function toTokenWarnings(
-  stored: StoredWarning[] | undefined,
-  messages: Record<string, string> | undefined,
+  codes: string[] | undefined,
+  types: Record<string, WarningType> | undefined,
   isRwa = false,
 ): TokenWarning[] {
-  if (!stored?.length) return NO_WARNINGS
+  if (!codes?.length || !types) return NO_WARNINGS
 
-  return stored
-    .map(({ type, severity }) => ({
-      type,
-      severity: isRwa && RWA_EXPECTED_TYPES.has(type) ? 'info' : severity,
-      message: messages?.[type] ?? '',
-    }))
+  return codes
+    .reduce<TokenWarning[]>((warnings, code) => {
+      const type = types[code]
+
+      // A code the dictionary does not describe cannot be rendered, and inventing copy for it
+      // would be worse than staying quiet.
+      if (type) {
+        warnings.push({
+          code,
+          severity: isRwa && RWA_EXPECTED_CODES.has(code) ? 'info' : type.severity,
+          message: type.message,
+        })
+      }
+
+      return warnings
+    }, [])
     .sort((a, b) => severityRank(a.severity) - severityRank(b.severity))
 }
 
@@ -89,7 +99,7 @@ export function useTokenWarnings(currency: Currency | null | undefined): TokenWa
   })
 
   return useMemo(
-    () => toTokenWarnings(address ? data?.warnings?.[address] : undefined, data?.messages, isRwa),
+    () => toTokenWarnings(address ? data?.warnings?.[address] : undefined, data?.types, isRwa),
     [data, address, isRwa],
   )
 }

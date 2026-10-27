@@ -1,12 +1,27 @@
+import { MessageDescriptor } from '@lingui/core'
+
+import { msg } from '@lingui/core/macro'
+
 /**
- * `HAS_MINT_AUTHORITY` reads as "Has Mint Authority", `2.69%_TRANSFER_FEES` as "2.69% Transfer Fees".
+ * Titles for the warning codes published in `TokenWarnings.1000000001.json`.
  *
- * The rate is baked into the warning type upstream, so the set of types is open-ended and cannot be
- * mapped to fixed copy. Words already starting with a digit are left alone to keep the rate intact.
+ * Kept here rather than shipped in the file so they go through Crowdin like the rest of the UI —
+ * the `message` the file carries is Jupiter's own English text, which cannot be translated. A code
+ * missing from this map is rendered from that message alone, so a new upstream warning degrades to
+ * untitled rather than disappearing.
  */
-export function humanizeWarningType(type: string): string {
-  return type
-    .split('_')
-    .map((word) => (/^[a-z]/i.test(word) ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : word))
-    .join(' ')
+const WARNING_TITLES: Record<string, MessageDescriptor> = {
+  MINT: msg`Mint authority`,
+  FREEZE: msg`Freeze authority`,
+  PERM_DEL: msg`Permanent delegate`,
+  CONCENTRATED: msg`High single ownership`,
+  LOW_LIQ: msg`Low liquidity`,
+  LOW_ORGANIC: msg`Low organic activity`,
+  LOW_VOLUME: msg`Very low trading activity`,
+  UNVERIFIED: msg`Not verified`,
+  NO_SELL: msg`May not be sellable`,
+}
+
+export function getWarningTitle(code: string): MessageDescriptor | undefined {
+  return WARNING_TITLES[code]
 }

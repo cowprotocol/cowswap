@@ -1,84 +1,66 @@
 import { toTokenWarnings } from './useTokenWarnings'
 
-const MESSAGES = {
-  HAS_FREEZE_AUTHORITY: 'The authority can freeze your token account',
-  HAS_MINT_AUTHORITY: 'The authority can mint more tokens',
-  NOT_SELLABLE: 'This token may not be sellable',
-}
+const TYPES = {
+  MINT: { severity: 'info', message: 'The authority can mint more tokens' },
+  FREEZE: { severity: 'warning', message: 'The authority can freeze your token account' },
+  PERM_DEL: { severity: 'critical', message: 'The owner can control this token in your wallet' },
+  NO_SELL: { severity: 'critical', message: 'This token may not be sellable' },
+} as const
 
 describe('toTokenWarnings', () => {
   it('returns nothing for a mint with no entry', () => {
-    expect(toTokenWarnings(undefined, MESSAGES)).toEqual([])
+    expect(toTokenWarnings(undefined, TYPES)).toEqual([])
   })
 
   it('returns nothing for an empty list', () => {
-    expect(toTokenWarnings([], MESSAGES)).toEqual([])
+    expect(toTokenWarnings([], TYPES)).toEqual([])
   })
 
-  it('joins each warning with its message', () => {
-    expect(toTokenWarnings([{ type: 'HAS_MINT_AUTHORITY', severity: 'info' }], MESSAGES)).toEqual([
-      { type: 'HAS_MINT_AUTHORITY', severity: 'info', message: MESSAGES.HAS_MINT_AUTHORITY },
-    ])
+  it('returns nothing when the type dictionary is missing', () => {
+    expect(toTokenWarnings(['MINT'], undefined)).toEqual([])
+  })
+
+  it('resolves each code against the shared dictionary', () => {
+    expect(toTokenWarnings(['MINT'], TYPES)).toEqual([{ code: 'MINT', severity: 'info', message: TYPES.MINT.message }])
   })
 
   it('orders worst severity first, so the badge takes its colour from the head', () => {
-    const result = toTokenWarnings(
-      [
-        { type: 'HAS_MINT_AUTHORITY', severity: 'info' },
-        { type: 'NOT_SELLABLE', severity: 'critical' },
-        { type: 'HAS_FREEZE_AUTHORITY', severity: 'warning' },
-      ],
-      MESSAGES,
-    )
+    const result = toTokenWarnings(['MINT', 'PERM_DEL', 'FREEZE'], TYPES)
 
     expect(result.map((warning) => warning.severity)).toEqual(['critical', 'warning', 'info'])
   })
 
-  it('falls back to an empty message when the dictionary is missing the type', () => {
-    expect(toTokenWarnings([{ type: 'BRAND_NEW_TYPE', severity: 'warning' }], MESSAGES)[0].message).toBe('')
-    expect(toTokenWarnings([{ type: 'HAS_MINT_AUTHORITY', severity: 'info' }], undefined)[0].message).toBe('')
+  it('skips a code the dictionary does not describe rather than rendering it blank', () => {
+    const result = toTokenWarnings(['MINT', 'BRAND_NEW_CODE'], TYPES)
+
+    expect(result.map((warning) => warning.code)).toEqual(['MINT'])
   })
 })
 
 describe('toTokenWarnings on an RWA token', () => {
-  const ISSUER_PERMISSIONS = [
-    { type: 'HAS_PERMANENT_DELEGATE', severity: 'critical' },
-    { type: 'HAS_FREEZE_AUTHORITY', severity: 'warning' },
-    { type: 'HAS_MINT_AUTHORITY', severity: 'info' },
-  ] as const
+  const ISSUER_PERMISSIONS = ['PERM_DEL', 'FREEZE', 'MINT']
 
   it('demotes the permissions a tokenised equity is required to have', () => {
-    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, true)
+    const result = toTokenWarnings(ISSUER_PERMISSIONS, TYPES, true)
 
     expect(result.map((warning) => warning.severity)).toEqual(['info', 'info', 'info'])
   })
 
   it('keeps those warnings visible rather than dropping them', () => {
-    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, true)
+    const result = toTokenWarnings(ISSUER_PERMISSIONS, TYPES, true)
 
-    expect(result.map((warning) => warning.type).sort()).toEqual([
-      'HAS_FREEZE_AUTHORITY',
-      'HAS_MINT_AUTHORITY',
-      'HAS_PERMANENT_DELEGATE',
-    ])
+    expect(result.map((warning) => warning.code).sort()).toEqual(['FREEZE', 'MINT', 'PERM_DEL'])
   })
 
   it('leaves warnings that are not inherent to an RWA alone', () => {
-    const result = toTokenWarnings(
-      [
-        { type: 'HAS_PERMANENT_DELEGATE', severity: 'critical' },
-        { type: 'NOT_SELLABLE', severity: 'critical' },
-      ],
-      MESSAGES,
-      true,
-    )
+    const result = toTokenWarnings(['PERM_DEL', 'NO_SELL'], TYPES, true)
 
-    expect(result[0]).toMatchObject({ type: 'NOT_SELLABLE', severity: 'critical' })
-    expect(result[1]).toMatchObject({ type: 'HAS_PERMANENT_DELEGATE', severity: 'info' })
+    expect(result[0]).toMatchObject({ code: 'NO_SELL', severity: 'critical' })
+    expect(result[1]).toMatchObject({ code: 'PERM_DEL', severity: 'info' })
   })
 
   it('does not demote anything for a non-RWA token', () => {
-    const result = toTokenWarnings([...ISSUER_PERMISSIONS], MESSAGES, false)
+    const result = toTokenWarnings(ISSUER_PERMISSIONS, TYPES, false)
 
     expect(result.map((warning) => warning.severity)).toEqual(['critical', 'warning', 'info'])
   })
