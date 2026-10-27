@@ -22,6 +22,13 @@ export interface RwaDividendNote {
 
 export type RwaIssuer = (typeof RWA_ISSUERS)[number]
 
+export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
+  Ondo: 'https://app.ondo.finance/legal-documentation',
+  xStocks: 'https://assets.backed.fi/legal-documentation',
+  Coinbase: 'https://www.coinbase.com/legal',
+  bStocks: 'https://www.binance.com/en/about-legal/bstocks-digital-securities-documentation',
+}
+
 type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
 
 const ISSUER_DIVIDEND_MODELS: Record<RwaIssuer, RwaDividendModel> = {
@@ -79,6 +86,10 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
   }
 
   return [...notes.values()]
+}
+
+export function getIssuerLegalDocsUrl(issuer: string): string | null {
+  return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
 }
 
 /** An ERC-4626 wrapper of a rebasing xStocks token: its balance stays fixed and its price accrues the rebases */

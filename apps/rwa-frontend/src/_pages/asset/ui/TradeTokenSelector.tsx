@@ -33,6 +33,11 @@ const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
   { side: 'sell', title: 'Sell' },
 ]
 
+const BEST_QUOTE_LABELS: Record<RwaQuoteSide, string> = {
+  buy: 'Lowest buy quote',
+  sell: 'Highest sell quote',
+}
+
 const QUOTE_ERRORS: Record<string, string> = {
   NoLiquidity: 'No liquidity',
   UnsupportedToken: 'Not tradable',
@@ -42,6 +47,7 @@ const QUOTE_ERRORS: Record<string, string> = {
 interface TradeTokenOptionProps {
   quoted: QuotedToken
   market: RwaMarketData | null | undefined
+  side: RwaQuoteSide
   isSelected: boolean
   isSelectedByUser: boolean
   isBest: boolean
@@ -82,7 +88,10 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           ))}
         </div>
         {!isAutoSelected && (
-          <Tooltip className={styles.autoTrigger} content="Trade the token with the best quote">
+          <Tooltip
+            className={styles.autoTrigger}
+            content={`Trade the token with the ${BEST_QUOTE_LABELS[side].toLowerCase()}`}
+          >
             <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>
               Use Auto
             </button>
@@ -96,7 +105,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           {sideTitle} quote / share
           <Tooltip
             className={styles.info}
-            content={`Price per share for a $1,000 ${side} order, including network costs and fees`}
+            content={`Price per share for a $1,000 ${side} order, including network costs and fees. Tokens from different issuers may have different rights and risks.`}
           >
             <span role="img" aria-label="Quote details">
               <InfoIcon />
@@ -113,6 +122,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
             <TradeTokenOption
               quoted={quoted}
               market={market}
+              side={side}
               isSelected={quoted.token === assetToken}
               isSelectedByUser={quoted.token === assetToken && !isAutoSelected}
               isBest={rankedCount > 1 && quoted.token === bestToken}
@@ -137,6 +147,7 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 function TradeTokenOption({
   quoted: { token, quote, pricePerShare, sharesPerToken, isPriceOutlier, stats },
   market,
+  side,
   isSelected,
   isSelectedByUser,
   isBest,
@@ -161,7 +172,7 @@ function TradeTokenOption({
           <span>
             {token.symbol} · {token.issuer}
           </span>
-          {isBest && <span className={styles.bestBadge}>Best quote</span>}
+          {isBest && <span className={styles.bestBadge}>{BEST_QUOTE_LABELS[side]}</span>}
           {isSelectedByUser && !isBest && <span className={styles.secondary}>Selected by you</span>}
         </span>
         <span className={styles.stats}>

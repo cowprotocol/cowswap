@@ -74,10 +74,14 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       {!isConnected && (
         // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
         <div className={styles.connectPrompt}>
-          <span>Connect your wallet to trade {asset.ticker}</span>
+          <span>Connect your wallet to trade this tokenized asset</span>
           <ConnectButton />
         </div>
       )}
+      <p className={styles.disclaimer}>
+        Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check
+        issuer terms and eligibility before trading.
+      </p>
       <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
         <CowSwapWidget params={params} provider={provider} onReady={onWidgetSettled} onLoadingError={onWidgetSettled} />
         {isWidgetLoading && <TradeWidgetSkeleton overlay />}
