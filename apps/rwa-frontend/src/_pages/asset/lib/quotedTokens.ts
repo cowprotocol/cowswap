@@ -8,6 +8,7 @@ import {
   type RwaTokenNetworkStats,
   type RwaTokenQuote,
 } from '@/entities/asset'
+import { getTokenKey } from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
 /**
@@ -54,13 +55,9 @@ export function getAutoToken(
  * only when no quote is verified. `null` when no token has a ranked quote
  */
 export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQuotes['side']): RwaToken | null {
-  const ranked = quotedTokens.filter(isRankedQuote)
-  const verified = ranked.filter(({ quote }) => quote?.verified)
-  const [best] = [...(verified.length ? verified : ranked)].sort((a, b) =>
-    side === 'buy' ? a.pricePerShare - b.pricePerShare : b.pricePerShare - a.pricePerShare,
-  )
+  const [best] = sortQuotedTokens(quotedTokens, side)
 
-  return best?.token ?? null
+  return best && isRankedQuote(best) ? best.token : null
 }
 
 export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken {
@@ -68,10 +65,44 @@ export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken 
 }
 
 /**
+ * `sorted` in its `previousOrder` of token keys when the refresh moves no token to another tier and keeps the best one,
+ * so tokens with close quotes don't swap rows under the cursor on every refresh
+ */
+export function keepPreviousOrder(sorted: QuotedToken[], previousOrder: string[] | null): QuotedToken[] {
+  if (!previousOrder) return sorted
+
+  const byKey = new Map(sorted.map((quoted) => [getTokenKey(quoted.token), quoted]))
+  const previous = previousOrder.flatMap((key) => byKey.get(key) ?? [])
+  const isSameRanking =
+    previous.length === sorted.length &&
+    previous[0] === sorted[0] &&
+    previous.every((quoted, index) => {
+      const current = sorted[index]
+
+      return current !== undefined && getQuoteTier(quoted) === getQuoteTier(current)
+    })
+
+  return isSameRanking ? previous : sorted
+}
+
+/**
+ * The best quote first: verified quotes by price, then unverified ones by price, then tokens without a ranked quote in
+ * their original order
+ */
+export function sortQuotedTokens(quotedTokens: QuotedToken[], side: RwaAssetQuotes['side']): QuotedToken[] {
+  return [...quotedTokens].sort((a, b) => {
+    const tierDiff = getQuoteTier(a) - getQuoteTier(b)
+
+    if (tierDiff !== 0 || !isRankedQuote(a) || !isRankedQuote(b)) return tierDiff
+
+    return side === 'buy' ? a.pricePerShare - b.pricePerShare : b.pricePerShare - a.pricePerShare
+  })
+}
+
+/**
  * `stockPrice` is `null` while market data is loading, then no price is an outlier.
  * `sharesPerToken` is `RwaMarketData.sharesPerToken`
- */
-export function toQuotedTokens(
+ */ export function toQuotedTokens(
   chainTokens: RwaToken[],
   quotes: RwaAssetQuotes | undefined,
   stats: RwaNetworkStats | undefined,
@@ -107,4 +138,10 @@ function getPricePerShare(
   const shares = quote.amount ? toTokenUnits(quote.amount, token.decimals) * (sharesPerToken ?? 1) : 0
 
   return shares > 0 ? amountUsd / shares : null
+}
+
+function getQuoteTier(quoted: QuotedToken): number {
+  if (!isRankedQuote(quoted)) return 2
+
+  return quoted.quote?.verified ? 0 : 1
 }

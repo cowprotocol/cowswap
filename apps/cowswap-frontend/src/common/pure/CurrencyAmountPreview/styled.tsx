@@ -68,16 +68,35 @@ export const FiatAmountSlot = styled(FiatValue)`
   }
 `
 
-export const SecondaryAmount = styled.div`
+export const SecondaryAmount = styled.div<{ $variant?: 'default' | 'success' }>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 4px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: ${({ $variant }) =>
+    $variant === 'success' ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`};
+
+  .fiat-amount {
+    ${font('FONT_SMALL', 'semibold')}
+    opacity: 1;
+  }
+`
+
+export const SecondaryAmountEnd = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+`
+
+export const SecondaryAmountTooltip = styled.span`
+  display: inline-flex;
+  color: var(${UI.COLOR_TEXT_SECONDARY});
 `
 
 export const SecondaryAmountValue = styled(TokenAmount)`
-  ${font('FONT_SMALL_PLUS', 'medium')}
+  ${font('FONT_SMALL', 'semibold')}
 `
 
 export const TokenLogo = styled(TokenLogoBase)`

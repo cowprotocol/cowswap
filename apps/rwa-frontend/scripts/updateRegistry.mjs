@@ -22,7 +22,13 @@ const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/
 
 const ASSET_TYPES = { stock: 'stock', etf: 'index' }
 /** CoinGecko issuer id -> registry issuer name. Must match `ALLOWED_ISSUERS` in `validateRegistry.ts` */
-const ALLOWED_ISSUERS = { 'ondo-tokenized-assets': 'Ondo', 'xstocks-ecosystem': 'xStocks' }
+const ALLOWED_ISSUERS = {
+  'ondo-tokenized-assets': 'Ondo',
+  'xstocks-ecosystem': 'xStocks',
+  'coinbase-ecosystem': 'Coinbase',
+  'bstocks-ecosystem': 'bStocks',
+  'reality-ecosystem': 'Reality',
+}
 const DEFAULT_PRIORITY = 0
 const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
 

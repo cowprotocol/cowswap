@@ -22,7 +22,7 @@ import {
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
-import { SelectPill } from '@/shared/ui/select-pill'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
@@ -56,15 +56,16 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const selectedToken = useTradeSelection(asset)?.assetToken
   const selectTradeToken = useSelectTradeToken()
-  const [issuer, setIssuer] = useState(ALL)
-  const [network, setNetwork] = useState(ALL)
+  const [issuer, setIssuer] = useState<string | null>(null)
+  const [network, setNetwork] = useState<number | null>(null)
   const [areDividendNotesShown, setAreDividendNotesShown] = useState(false)
   const dividendNotesId = useId()
 
   const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
   const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
+  const networkOptions = useNetworkOptions(chainIds)
   const tokens = asset.tokens.filter(
-    (token) => (issuer === ALL || token.issuer === issuer) && (network === ALL || String(token.chainId) === network),
+    (token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network),
   )
 
   return (
@@ -101,15 +102,9 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
             variant="small"
             aria-label="Network"
             value={network}
-            onChange={(event) => setNetwork(event.target.value)}
-          >
-            <option value={ALL}>All networks</option>
-            {chainIds.map((chainId) => (
-              <option key={chainId} value={String(chainId)}>
-                {getChainLabel(chainId)}
-              </option>
-            ))}
-          </SelectPill>
+            options={[{ value: null, label: 'All networks' }, ...networkOptions]}
+            onChange={setNetwork}
+          />
         </div>
       </div>
       {areDividendNotesShown && (
