@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.16.0...common-hooks-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/types@4.14.1
+
 ## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.15.0...common-hooks-v3.16.0) (2026-10-21)
 
 ### Minor Changes

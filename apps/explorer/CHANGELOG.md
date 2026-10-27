@@ -1,5 +1,21 @@
 # Changelog
 
+## [4.16.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.16.0...explorer-v4.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.16.1
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/ui@3.18.1
+  - @cowprotocol/hook-dapp-lib@2.4.1
+
 ## [4.16.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.15.0...explorer-v4.16.0) (2026-10-21)
 
 ### Minor Changes

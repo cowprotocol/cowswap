@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.18.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.0...balances-and-allowances-v3.18.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/tokens@3.16.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/wallet@3.18.1
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.17.0...balances-and-allowances-v3.18.0) (2026-10-21)
 
 ### Minor Changes
