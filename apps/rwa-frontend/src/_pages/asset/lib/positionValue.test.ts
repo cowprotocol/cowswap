@@ -1,6 +1,6 @@
 import { getPositionValue } from './positionValue'
 
-import type { RwaMarketData, RwaToken } from '@/entities/asset'
+import { getTokenKey, type RwaMarketData, type RwaToken } from '@/entities/asset'
 
 const NVDAON: RwaToken = {
   chainId: 1,
@@ -21,6 +21,7 @@ const MARKET: RwaMarketData = {
   volume24h: null,
   updatedAt: null,
   tokens: { 'nvidia-ondo-tokenized-stock': { price: 190, marketCap: null, volume24h: null, logoUrl: null } },
+  sharesPerToken: {},
 }
 
 const TWO = '2000000000000000000'
@@ -33,6 +34,12 @@ describe('getPositionValue', () => {
   it('falls back to the stock price without a token price', () => {
     expect(getPositionValue({ ...NVDAON, coingeckoId: undefined }, TWO, MARKET)).toBe(360)
     expect(getPositionValue(NVDAON, TWO, { ...MARKET, tokens: {} })).toBe(360)
+  })
+
+  it('falls back to the stock price of the shares a token stands for', () => {
+    expect(
+      getPositionValue(NVDAON, TWO, { ...MARKET, tokens: {}, sharesPerToken: { [getTokenKey(NVDAON)]: 1.5 } }),
+    ).toBe(540)
   })
 
   it('is null without any price', () => {

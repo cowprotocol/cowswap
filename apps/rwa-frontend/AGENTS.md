@@ -24,6 +24,7 @@ This file: rwa-frontend app-specific commands only.
 - `COINGECKO_API_KEY`: CoinGecko key (server-only). Without it the keyless public API is used, which is heavily rate limited.
 - `COINGECKO_API_PLAN`: `pro` for `pro-api.coingecko.com`; any other value uses the Demo API.
 - `COW_API_KEY`: CoW Partner API key (server-only), used by `/api/v1/quotes`. Without it the public order book API is used.
+- `ONDO_API_KEY`: Ondo GM API key (server-only), for Ondo shares multipliers. Without it Ondo equivalent shares are estimated from the token price.
 - `NEXT_PUBLIC_WC_PROJECT_ID`: Reown project id (defaults to the cowswap-frontend one).
 - `NEXT_PUBLIC_ENABLE_SW=true`: register the service worker in dev (production always registers it).
 - `NEXT_PUBLIC_BALANCES_WATCHER_BASE_URL`: balances watcher API (defaults to `https://balances-watcher.cow.fi`).
@@ -39,6 +40,7 @@ This file: rwa-frontend app-specific commands only.
 - Styling uses CSS Modules (`*.module.css`) instead of `styled-components/macro`: Turbopack does not run Babel macros.
 - Import `@cowprotocol/common-*` libs through side-effect-free subpaths (e.g. `@cowprotocol/common-utils/errors`). Their root entries pull Lingui macros.
 - Market data must come through `entities/asset/api/assetsService.ts`. Do not call providers from routes directly.
+- Shares per token (`RwaMarketData.sharesPerToken`) come from `entities/asset/api/sharesMultipliers.ts`: Ondo's `sharesMultiplier` (it includes stock splits, so it can be below 1), 1 for rebasing xStocks (EVM `balanceOf()` is already scaled), and onchain `convertToAssets` for wrapped xStocks (never the xStocks multiplier: v1 wrappers are anchored at their first deposit). Equivalent shares are balance × multiplier, and quote/token prices are shown and ranked per share. The dividend model is per token (`getDividendModel(token)`), not per issuer.
 - `/api/v1/token-list` is the token list of `data/RWAs.json`. Balances come from the balances watcher for the tokens in that list: the asset page streams them (`useAccountBalances`), the portfolio loads one snapshot per chain, cached for a minute, with a manual refresh (`useAccountBalanceSnapshots`).
 - Every balances watcher SSE stream holds one of the browser's 6 HTTP/1.1 connections to its host. Every watcher request goes through the pool in `widgets/account/model/watcherConnections.ts`: snapshot loads with `withWatcherConnection`, live streams with `holdWatcherConnection`. An asset on more than 6 networks streams 5 and loads the rest once (`splitWatchedChains`).
 - Account activity must come through `ActivityProvider` (`widgets/account/api/activity`). It is backed by the CoW order book trades for now; swap the implementation there, not in the UI.

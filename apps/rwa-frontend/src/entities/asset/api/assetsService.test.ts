@@ -3,6 +3,7 @@
  */
 import { findAssets, getAsset, getAssetNetworkStats, getMarketOverview, listAssets } from './assetsService'
 import { coingeckoProvider } from './marketData'
+import { loadSharesPerToken, loadTradingPause } from './sharesMultipliers'
 
 import { getAssetByTicker } from '../model/registry'
 
@@ -16,6 +17,11 @@ jest.mock('./marketData', () => ({
     getNetworkStats: jest.fn(),
     getHourlyDexVolume: jest.fn(),
   },
+}))
+
+jest.mock('./sharesMultipliers', () => ({
+  loadSharesPerToken: jest.fn(),
+  loadTradingPause: jest.fn(),
 }))
 
 jest.mock('../model/registry', () => {
@@ -73,7 +79,23 @@ const getTokenMarketsMock = coingeckoProvider.getTokenMarkets as jest.Mock
 const getChartMock = coingeckoProvider.getChart as jest.Mock
 const getNetworkStatsMock = coingeckoProvider.getNetworkStats as jest.Mock
 const getHourlyDexVolumeMock = coingeckoProvider.getHourlyDexVolume as jest.Mock
-const ALL_MOCKS = [getRwaMarketsMock, getTokenMarketsMock, getChartMock, getNetworkStatsMock, getHourlyDexVolumeMock]
+const loadSharesPerTokenMock = loadSharesPerToken as jest.Mock
+const loadTradingPauseMock = loadTradingPause as jest.Mock
+const ALL_MOCKS = [
+  getRwaMarketsMock,
+  getTokenMarketsMock,
+  getChartMock,
+  getNetworkStatsMock,
+  getHourlyDexVolumeMock,
+  loadSharesPerTokenMock,
+  loadTradingPauseMock,
+]
+
+const NVDAON_KEY = '1:0x0000000000000000000000000000000000000002'
+const NVDAX_KEY = '56:0x0000000000000000000000000000000000000003'
+const AAPLX_KEY = '1:0x0000000000000000000000000000000000000001'
+const SHARES_PER_TOKEN = { [AAPLX_KEY]: 1, [NVDAON_KEY]: 1.0017, [NVDAX_KEY]: 1 }
+const XSTOCKS_PAUSE = { issuer: 'xStocks', start: '2026-10-28T00:15:00.000Z', end: '2026-10-28T00:45:00.000Z' }
 
 const NVDA_MARKET: RwaAggregateMarket = {
   price: 180,
@@ -128,6 +150,8 @@ beforeEach(() => {
   )
   getTokenMarketsMock.mockResolvedValue(NVDA_TOKEN_MARKETS)
   getHourlyDexVolumeMock.mockResolvedValue([{ time: 1, value: 1 }])
+  loadSharesPerTokenMock.mockResolvedValue({ byKey: SHARES_PER_TOKEN, degraded: false })
+  loadTradingPauseMock.mockResolvedValue(null)
 })
 
 afterEach(() => {
@@ -203,6 +227,29 @@ describe('listAssets', () => {
     expect(page.degraded).toBe(false)
   })
 
+  it('gives every asset the shares per token of its own tokens when filtered by tickers', async () => {
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['AAPL', 'NVDA'] })
+
+    expect(page.items.map((item) => item.market?.sharesPerToken)).toEqual([
+      { [AAPLX_KEY]: 1 },
+      { [NVDAON_KEY]: 1.0017, [NVDAX_KEY]: 1 },
+    ])
+  })
+
+  it('loads no shares per token without tickers', async () => {
+    await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc' })
+
+    expect(loadSharesPerTokenMock).not.toHaveBeenCalled()
+  })
+
+  it('degrades when a shares multiplier source fails', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
+
+    const page = await listAssets({ page: 1, pageSize: 10, sort: 'ticker', order: 'asc', tickers: ['NVDA'] })
+
+    expect(page.degraded).toBe(true)
+  })
+
   it('gives every asset the markets of its own tokens only', async () => {
     const appleTokenMarket = { price: 251, marketCap: 10, volume24h: 1, logoUrl: null }
     getTokenMarketsMock.mockResolvedValue({ ...NVDA_TOKEN_MARKETS, 'apple-xstock': appleTokenMarket })
@@ -262,7 +309,27 @@ describe('getAsset', () => {
       volume24h: 500,
       updatedAt: '2026-10-02T13:00:00.000Z',
       tokens: NVDA_TOKEN_MARKETS,
+      sharesPerToken: SHARES_PER_TOKEN,
     })
+    expect(loadSharesPerTokenMock).toHaveBeenCalledWith(nvda().tokens)
+  })
+
+  it('returns the trading pause of the asset', async () => {
+    loadTradingPauseMock.mockResolvedValue(XSTOCKS_PAUSE)
+
+    const asset = await getAsset('NVDA')
+
+    expect(asset?.tradingPause).toEqual(XSTOCKS_PAUSE)
+    expect(loadTradingPauseMock).toHaveBeenCalledWith(nvda())
+  })
+
+  it('degrades the asset when a shares multiplier source fails', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
+
+    const asset = await getAsset('NVDA')
+
+    expect(asset?.degraded).toBe(true)
+    expect(asset?.market).toMatchObject({ price: 180, sharesPerToken: {} })
   })
 
   it('keeps the headline when token markets fail', async () => {

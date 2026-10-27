@@ -72,22 +72,15 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     () => getHeldTickersKey(positions, (token) => assetsByTokenKey.get(getTokenKey(token))),
     [positions, assetsByTokenKey],
   )
-  const { data: markets, error: marketsError } = useAtomValue(portfolioMarketsQueryAtomFamily(heldTickersKey))
+  const { data: marketsData, error: marketsError } = useAtomValue(portfolioMarketsQueryAtomFamily(heldTickersKey))
+  const markets = marketsData?.items
   const orders = useAtomValue(openOrdersQueryAtomFamily(params))
   const activity = useAtomValue(activityQueryAtomFamily(params))
 
-  const marketsByTicker = useMemo(
-    () => new Map<string, RwaAssetWithMarket>(markets?.map((item) => [item.ticker, item])),
-    [markets],
-  )
-  const tokenPricesByKey = useMemo(() => getTokenPricesByKey(markets), [markets])
+  const prices = useMemo(() => getHoldingPrices(markets), [markets])
 
   return useMemo((): Portfolio => {
     const getAsset = (token: RwaTokenSummary): RwaAssetSummary | undefined => assetsByTokenKey.get(getTokenKey(token))
-    const prices: HoldingPrices = {
-      getAssetPrice: (asset) => marketsByTicker.get(asset.ticker)?.market?.price ?? null,
-      getTokenPrice: (token) => tokenPricesByKey.get(getTokenKey(token)) ?? null,
-    }
     const matchesFilter = (token: RwaTokenSummary): boolean => {
       const asset = getAsset(token)
 
@@ -128,12 +121,23 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
     heldTickersKey,
     markets,
     marketsError,
-    marketsByTicker,
     orders,
     positions,
+    prices,
     refreshBalances,
-    tokenPricesByKey,
   ])
+}
+
+function getHoldingPrices(markets: RwaAssetWithMarket[] | undefined): HoldingPrices {
+  const marketsByTicker = new Map(markets?.map((item) => [item.ticker, item.market]))
+  const tokenPricesByKey = getTokenPricesByKey(markets)
+  const sharesPerTokenByKey = new Map(markets?.flatMap(({ market }) => Object.entries(market?.sharesPerToken ?? {})))
+
+  return {
+    getAssetPrice: (asset) => marketsByTicker.get(asset.ticker)?.price ?? null,
+    getTokenPrice: (token) => tokenPricesByKey.get(getTokenKey(token)) ?? null,
+    getSharesPerToken: (token) => sharesPerTokenByKey.get(getTokenKey(token)) ?? null,
+  }
 }
 
 /** USD per token, keyed by `getTokenKey` */

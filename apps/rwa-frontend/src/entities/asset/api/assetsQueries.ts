@@ -18,9 +18,9 @@ import {
 
 import type {
   RwaAssetQuotes,
-  RwaAssetListItem,
   RwaAssetNews,
   RwaAssetResponse,
+  RwaAssetsByTickers,
   RwaAssetsPage,
   RwaAssetsSearchResult,
   RwaChart,
@@ -93,7 +93,7 @@ export function assetQuotesQueryOptions(
   }
 }
 
-export function assetsByTickersQueryOptions(tickers: string[]): RwaQueryOptions<RwaAssetListItem[]> {
+export function assetsByTickersQueryOptions(tickers: string[]): RwaQueryOptions<RwaAssetsByTickers> {
   return {
     queryKey: [RWA_QUERY_KEY_ROOT, 'assets-by-tickers', tickers],
     queryFn: () => fetchAssetsByTickers(tickers),
@@ -119,8 +119,8 @@ export function assetsSearchQueryOptions(query: string, limit?: number): RwaQuer
   }
 }
 
-/** Requests `tickers` in batches that fit a single `/api/v1/assets` page */
-export async function fetchAssetsByTickers(tickers: string[]): Promise<RwaAssetListItem[]> {
+/** Requests `tickers` in batches that fit a single `/api/v1/assets` page. Degraded when any page is */
+export async function fetchAssetsByTickers(tickers: string[]): Promise<RwaAssetsByTickers> {
   const batches: string[][] = []
 
   for (let index = 0; index < tickers.length; index += MAX_ASSETS_PAGE_TICKERS) {
@@ -135,7 +135,7 @@ export async function fetchAssetsByTickers(tickers: string[]): Promise<RwaAssetL
     ),
   )
 
-  return pages.flatMap((page) => page.items)
+  return { items: pages.flatMap((page) => page.items), degraded: pages.some((page) => page.degraded) }
 }
 
 /** `/api/v1/market-overview` caches the overview for the same interval */

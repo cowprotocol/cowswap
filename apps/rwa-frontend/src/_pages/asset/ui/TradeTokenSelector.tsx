@@ -21,6 +21,7 @@ import {
   type RwaAsset,
   type RwaMarketData,
   type RwaQuoteSide,
+  type RwaToken,
 } from '@/entities/asset'
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
@@ -55,6 +56,12 @@ interface TradeTokenOptionProps {
 interface TradeTokenSelectorProps {
   asset: RwaAsset
   selection: TradeSelection
+}
+
+interface VsStockProps {
+  token: RwaToken
+  sharesPerToken: number | null
+  premium: number
 }
 
 export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps): ReactNode {
@@ -145,7 +152,7 @@ function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number })
 }
 
 function TradeTokenOption({
-  quoted: { token, quote, pricePerShare, isPriceOutlier, stats },
+  quoted: { token, quote, pricePerShare, sharesPerToken, isPriceOutlier, stats },
   market,
   isSelected,
   isSelectedByUser,
@@ -197,7 +204,9 @@ function TradeTokenOption({
                 Unverified quote
               </Tooltip>
             )}
-            {stockPrice ? <VsStock issuer={token.issuer} premium={pricePerShare / stockPrice - 1} /> : null}
+            {stockPrice ? (
+              <VsStock token={token} sharesPerToken={sharesPerToken} premium={pricePerShare / stockPrice - 1} />
+            ) : null}
           </>
         ) : (
           <span className={styles.secondary}>
@@ -209,9 +218,9 @@ function TradeTokenOption({
   )
 }
 
-function VsStock({ issuer, premium }: { issuer: string; premium: number }): ReactNode {
+function VsStock({ token, sharesPerToken, premium }: VsStockProps): ReactNode {
   return (
-    <Tooltip className={`${styles.secondary} ${styles.hint}`} content={getPremiumNote(issuer, premium)}>
+    <Tooltip className={`${styles.secondary} ${styles.hint}`} content={getPremiumNote(token, sharesPerToken, premium)}>
       {formatPercent(premium * 100)} vs stock
     </Tooltip>
   )

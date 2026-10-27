@@ -25,6 +25,7 @@ export {
   type RwaAssetListItem,
   type RwaAssetNews,
   type RwaAssetResponse,
+  type RwaAssetsByTickers,
   type RwaAssetSummary,
   type RwaAssetsFilter,
   type RwaAssetsPage,
@@ -52,12 +53,22 @@ export {
   type RwaTokenSummary,
   type RwaTokenMarketData,
   type RwaTokenNetworkStats,
+  type RwaTradingPause,
   type RwaTradingTime,
 } from './model/types'
 export { AssetStats } from './ui/AssetStats'
+export { DividendNotes } from './ui/DividendNotes'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
-export { getDividendModel, getDividendNotes, RWA_ISSUERS, type RwaDividendModel, type RwaIssuer } from './model/issuers'
+export {
+  getDividendModel,
+  getDividendNote,
+  isWrappedXStock,
+  RWA_ISSUERS,
+  type RwaDividendModel,
+  type RwaDividendNote,
+  type RwaIssuer,
+} from './model/issuers'
 export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
 export { isUsMarketOpen } from './lib/usMarketStatus'

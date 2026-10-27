@@ -1,5 +1,6 @@
 'use client'
 
+import { useAtomValue } from 'jotai'
 import { type ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useConnection } from 'wagmi'
@@ -12,11 +13,11 @@ import dynamic from 'next/dynamic'
 import { TradeTokenSelector } from './TradeTokenSelector'
 import styles from './TradeWidget.module.css'
 
+import { getTradingPauseMessage } from '../lib/tradingPause'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 
-import type { RwaAsset, RwaToken } from '@/entities/asset'
-
+import { assetQueryAtomFamily, type RwaAsset, type RwaToken } from '@/entities/asset'
 import { ConnectButton } from '@/features/connect-wallet'
 import { APP_CODE } from '@/shared/config'
 import { useIsDarkTheme } from '@/shared/lib/theme'
@@ -37,6 +38,9 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
   const assetToken = selection?.assetToken
+  const tradingPause = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.tradingPause
+  const tradingPauseMessage =
+    tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
   const [isWidgetLoading, setIsWidgetLoading] = useState(true)
   const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
@@ -66,6 +70,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   return (
     <section id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
+      {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
       {!isConnected && (
         // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
         <div className={styles.connectPrompt}>

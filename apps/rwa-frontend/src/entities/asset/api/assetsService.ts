@@ -5,8 +5,10 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
 import { getTokenQuotes, QUOTE_AMOUNT_USD } from './quotes'
+import { loadSharesPerToken, loadTradingPause, type SharesPerTokenLoadResult } from './sharesMultipliers'
 
 import { sumNullable } from '../lib/sumNullable'
+import { getTokenKey } from '../lib/tokenKey'
 import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
   buildDailySeries,
@@ -46,6 +48,8 @@ const marketDataProvider: MarketDataProvider = coingeckoProvider
 
 const MARKET_OVERVIEW_LIST_LIMIT = 3
 
+const NO_SHARES_PER_TOKEN: SharesPerTokenLoadResult = { byKey: {}, degraded: false }
+
 export interface ListAssetsParams extends RwaAssetsFilter {
   page: number
   pageSize: number
@@ -78,12 +82,18 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
   if (!asset) return null
 
-  const [{ byId, degraded }, tokenMarkets] = await Promise.all([loadRwaMarkets(), loadTokenMarkets(asset.tokens)])
+  const [{ byId, degraded }, tokenMarkets, sharesPerToken, tradingPause] = await Promise.all([
+    loadRwaMarkets(),
+    loadTokenMarkets(asset.tokens),
+    loadSharesPerToken(asset.tokens),
+    loadTradingPause(asset),
+  ])
 
   return {
     ...asset,
-    market: toMarketData(byId.get(asset.coingeckoId), tokenMarkets ?? {}),
-    degraded: degraded || tokenMarkets === null,
+    market: toMarketData(byId.get(asset.coingeckoId), tokenMarkets ?? {}, sharesPerToken.byKey),
+    tradingPause,
+    degraded: degraded || tokenMarkets === null || sharesPerToken.degraded,
   }
 }
 
@@ -152,15 +162,18 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
   const registry = getAssets()
   const filtered = filterAssets(registry, filter)
-  const [{ byId, degraded: marketsDegraded }, tokenMarkets] = await Promise.all([
+  const withTokens = Boolean(filter.tickers?.length)
+  const filteredTokens = filtered.flatMap((asset) => asset.tokens)
+  const [{ byId, degraded: marketsDegraded }, tokenMarkets, sharesPerToken] = await Promise.all([
     loadRwaMarkets(),
-    filter.tickers?.length ? loadTokenMarkets(filtered.flatMap((asset) => asset.tokens)) : {},
+    withTokens ? loadTokenMarkets(filteredTokens) : {},
+    withTokens ? loadSharesPerToken(filteredTokens) : NO_SHARES_PER_TOKEN,
   ])
-  const degraded = marketsDegraded || tokenMarkets === null
+  const degraded = marketsDegraded || tokenMarkets === null || sharesPerToken.degraded
   const matches = filtered.map((asset): RwaAssetListItem => {
     return {
       ...asset,
-      market: toListedMarketData(asset, byId.get(asset.coingeckoId), tokenMarkets ?? {}),
+      market: toListedMarketData(asset, byId.get(asset.coingeckoId), tokenMarkets ?? {}, sharesPerToken.byKey),
       series: null,
     }
   })
@@ -245,11 +258,12 @@ async function loadTokenMarkets(tokens: RwaToken[]): Promise<Record<string, RwaT
   }
 }
 
-/** Market data with the asset's own token markets, kept without the RWA market so holdings can still be valued */
+/** Market data with the asset's own token data, kept without the RWA market so holdings can still be valued */
 function toListedMarketData(
   asset: RwaAsset,
   market: RwaAggregateMarket | undefined,
   tokenMarkets: Record<string, RwaTokenMarketData>,
+  sharesPerTokenByKey: Record<string, number>,
 ): RwaMarketData | null {
   const tokens = Object.fromEntries(
     asset.tokens.flatMap(({ coingeckoId }) => {
@@ -258,9 +272,16 @@ function toListedMarketData(
       return coingeckoId && tokenMarket ? [[coingeckoId, tokenMarket] as const] : []
     }),
   )
+  const sharesPerToken = Object.fromEntries(
+    asset.tokens.flatMap((token) => {
+      const multiplier = sharesPerTokenByKey[getTokenKey(token)]
 
-  if (market) return toMarketData(market, tokens)
-  if (!Object.keys(tokens).length) return null
+      return multiplier === undefined ? [] : [[getTokenKey(token), multiplier] as const]
+    }),
+  )
+
+  if (market) return toMarketData(market, tokens, sharesPerToken)
+  if (!Object.keys(tokens).length && !Object.keys(sharesPerToken).length) return null
 
   return {
     price: null,
@@ -271,12 +292,14 @@ function toListedMarketData(
     volume24h: null,
     updatedAt: null,
     tokens,
+    sharesPerToken,
   }
 }
 
 function toMarketData(
   market: RwaAggregateMarket | undefined,
   tokens: Record<string, RwaTokenMarketData> = {},
+  sharesPerToken: Record<string, number> = {},
 ): RwaMarketData | null {
   if (!market) return null
 
@@ -289,6 +312,7 @@ function toMarketData(
     volume24h: market.volume24h,
     updatedAt: market.updatedAt,
     tokens,
+    sharesPerToken,
   }
 }
 

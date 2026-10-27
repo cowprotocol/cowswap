@@ -9,7 +9,7 @@ import { getPositionValue } from '../lib/positionValue'
 
 import type { AccountBalances } from '@/widgets/account'
 
-import { assetQueryAtomFamily, getDividendNotes, type RwaAsset, type RwaToken } from '@/entities/asset'
+import { assetQueryAtomFamily, DividendNotes, type RwaAsset, type RwaToken } from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatTokenAmount, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
@@ -25,8 +25,6 @@ export function PositionsTab({ asset, balances: { positions, error } }: Position
   if (!positions) {
     return <StatusMessage>{error ? `Failed to load balances: ${error.message}` : 'Loading balances…'}</StatusMessage>
   }
-
-  const dividendNotes = getDividendNotes(positions.map(({ token }) => token.issuer))
 
   return (
     <>
@@ -60,11 +58,7 @@ export function PositionsTab({ asset, balances: { positions, error } }: Position
       ) : (
         <StatusMessage>You don&apos;t hold any {asset.ticker} tokens</StatusMessage>
       )}
-      {dividendNotes.map((note) => (
-        <p key={note} className={styles.warning}>
-          {note}
-        </p>
-      ))}
+      <DividendNotes className={styles.dividendNotes} tokens={positions.map(({ token }) => token)} />
     </>
   )
 }

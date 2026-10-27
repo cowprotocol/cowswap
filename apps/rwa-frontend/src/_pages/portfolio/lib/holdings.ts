@@ -19,6 +19,8 @@ export interface HoldingPrices {
   getAssetPrice(asset: RwaAssetSummary): number | null
   /** USD per token */
   getTokenPrice(token: RwaTokenSummary): number | null
+  /** Shares of the underlying one token stands for, from the issuer */
+  getSharesPerToken(token: RwaTokenSummary): number | null
 }
 
 export interface PortfolioTotals {
@@ -53,7 +55,7 @@ export function buildHoldings(assets: RwaAssetSummary[], positions: Position[], 
 
       const price = prices.getAssetPrice(asset)
       const tokenHoldings = tokens.map(({ token, balance }) =>
-        toTokenHolding(token, balance, prices.getTokenPrice(token), price),
+        toTokenHolding(token, balance, prices.getTokenPrice(token), price, prices.getSharesPerToken(token)),
       )
       const shares = tokenHoldings.reduce((sum, holding) => sum + holding.shares, 0)
       const value = tokenHoldings.every((holding) => holding.value !== null)
@@ -78,21 +80,24 @@ export function getPortfolioTotals(holdings: Holding[]): PortfolioTotals {
   }
 }
 
+/** A price-accrual token carries its multiplier in its price, so without the issuer's one the price ratio stands in */
+function estimateSharesPerToken(token: RwaTokenSummary, tokenPrice: number | null, assetPrice: number | null): number {
+  return getDividendModel(token) === 'price-accrual' && tokenPrice !== null && assetPrice !== null && assetPrice > 0
+    ? tokenPrice / assetPrice
+    : 1
+}
+
 function toTokenHolding(
   token: RwaTokenSummary,
   balance: string,
   tokenPrice: number | null,
   assetPrice: number | null,
+  sharesPerToken: number | null,
 ): TokenHolding {
   const units = toTokenUnits(balance, token.decimals)
-  const price = tokenPrice ?? assetPrice
+  const price = tokenPrice ?? (assetPrice === null ? null : assetPrice * (sharesPerToken ?? 1))
   const value = price === null ? null : units * price
-  // A price-accrual token carries its reinvested dividends in its price, so value / stock price is the share count
-  // it stands for. That count only grows, so a market discount is floored at the balance
-  const shares =
-    getDividendModel(token.issuer) === 'price-accrual' && value !== null && assetPrice !== null && assetPrice > 0
-      ? Math.max(units, value / assetPrice)
-      : units
+  const shares = units * (sharesPerToken ?? estimateSharesPerToken(token, tokenPrice, assetPrice))
 
   return { token, balance, shares, value }
 }

@@ -19,20 +19,34 @@ describe('fetchAssetsByTickers', () => {
     rwaFetcherMock.mockReset()
     rwaFetcherMock.mockImplementation(async (url: string) => ({
       items: requestedTickers([url]).map((ticker) => ({ ticker })),
+      degraded: false,
     }))
   })
 
   it('requests every ticker in pages of at most 100', async () => {
     const tickers = Array.from({ length: 205 }, (_, index) => `T${index}`)
 
-    const items = await fetchAssetsByTickers(tickers)
+    const { items, degraded } = await fetchAssetsByTickers(tickers)
 
     expect(rwaFetcherMock.mock.calls.map((call) => requestedTickers(call).length)).toEqual([100, 100, 5])
     expect(items.map((item) => item.ticker)).toEqual(tickers)
+    expect(degraded).toBe(false)
+  })
+
+  it('is degraded when any page is, so the query persistence skips it', async () => {
+    rwaFetcherMock.mockImplementation(async (url: string) => {
+      const tickers = requestedTickers([url])
+
+      return { items: tickers.map((ticker) => ({ ticker })), degraded: tickers.includes('T150') }
+    })
+
+    const { degraded } = await fetchAssetsByTickers(Array.from({ length: 205 }, (_, index) => `T${index}`))
+
+    expect(degraded).toBe(true)
   })
 
   it('requests nothing without tickers', async () => {
-    expect(await fetchAssetsByTickers([])).toEqual([])
+    expect(await fetchAssetsByTickers([])).toEqual({ items: [], degraded: false })
     expect(rwaFetcherMock).not.toHaveBeenCalled()
   })
 })

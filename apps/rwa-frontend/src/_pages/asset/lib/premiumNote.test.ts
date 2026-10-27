@@ -1,27 +1,40 @@
 import { getPremiumNote } from './premiumNote'
 
-const BASE = 'Token price compared with the stock price.'
+const BASE = 'Token price per share compared with the stock price.'
+const ONDO = { symbol: 'NVDAon', issuer: 'Ondo', coingeckoId: 'nvidia-ondo-tokenized-stock' }
+const XSTOCKS = { symbol: 'NVDAx', issuer: 'xStocks', coingeckoId: 'nvidia-xstock' }
+const ONDO_NOTE =
+  'Ondo: Dividends are reinvested into the token price, so one token stands for a growing number of shares.'
 
 describe('getPremiumNote', () => {
-  it('explains the premium of a price-accrual issuer', () => {
-    expect(getPremiumNote('Ondo', 0.02)).toBe(
-      `${BASE} Ondo reinvests dividends into the token price, so one token is worth more than one share. The premium over the stock price is accrued dividends, not mispricing.`,
+  it('gives the shares a token stands for when its price is per share', () => {
+    expect(getPremiumNote(ONDO, 1.00171524, 0.0003)).toBe(`${BASE} One NVDAon stands for 1.0017 shares.`)
+    expect(getPremiumNote(ONDO, 10, -0.001)).toBe(`${BASE} One NVDAon stands for 10 shares.`)
+  })
+
+  it('has only the base hint for a price-accrual token of one share', () => {
+    expect(getPremiumNote(ONDO, 1, 0.02)).toBe(BASE)
+  })
+
+  it('explains the premium of a price-accrual token without its multiplier', () => {
+    expect(getPremiumNote(ONDO, null, 0.02)).toBe(
+      `${BASE} ${ONDO_NOTE} The premium over the stock price is accrued dividends, not mispricing.`,
     )
   })
 
   it('does not attribute a discount of a price-accrual token to dividends', () => {
-    expect(getPremiumNote('Ondo', 0)).toBe(BASE)
-    expect(getPremiumNote('Ondo', -0.0012)).toBe(BASE)
+    expect(getPremiumNote(ONDO, null, 0)).toBe(BASE)
+    expect(getPremiumNote(ONDO, null, -0.0012)).toBe(BASE)
   })
 
-  it('explains a rebasing issuer at any premium', () => {
-    const note = `${BASE} xStocks reinvests dividends by increasing token balances, so one token stays close to one share.`
+  it('explains a rebasing token at any premium', () => {
+    const note = `${BASE} xStocks: Dividends are reinvested by increasing token balances, so one token stays close to one share.`
 
-    expect(getPremiumNote('xStocks', 0.02)).toBe(note)
-    expect(getPremiumNote('xStocks', -0.0007)).toBe(note)
+    expect(getPremiumNote(XSTOCKS, 1, 0.02)).toBe(note)
+    expect(getPremiumNote(XSTOCKS, null, -0.0007)).toBe(note)
   })
 
   it('has only the base hint for an unknown issuer', () => {
-    expect(getPremiumNote('Dinari', 0.02)).toBe(BASE)
+    expect(getPremiumNote({ symbol: 'NVDAd', issuer: 'Dinari' }, null, 0.02)).toBe(BASE)
   })
 })

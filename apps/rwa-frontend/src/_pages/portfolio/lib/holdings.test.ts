@@ -49,10 +49,11 @@ const SPY: RwaAsset = {
 const ONE = '1000000000000000000'
 const PRICES: Record<string, number> = { AAPL: 200, QQQ: 500 }
 
-function prices(tokenPrices: Record<string, number> = {}): HoldingPrices {
+function prices(tokenPrices: Record<string, number> = {}, sharesPerToken: Record<string, number> = {}): HoldingPrices {
   return {
     getAssetPrice: (asset) => PRICES[asset.ticker] ?? null,
     getTokenPrice: (token) => tokenPrices[getTokenKey(token)] ?? null,
+    getSharesPerToken: (token) => sharesPerToken[getTokenKey(token)] ?? null,
   }
 }
 
@@ -110,17 +111,37 @@ describe('buildHoldings', () => {
     expect(apple?.value).toBe(410)
   })
 
-  it('derives Ondo equivalent shares from the token value', () => {
+  it('multiplies the balance by the issuer multiplier, whatever the token price', () => {
+    const [apple] = buildHoldings(
+      [AAPL],
+      [{ token: AAPLON, balance: '2000000000000000000' }],
+      prices({ [getTokenKey(AAPLON)]: 190 }, { [getTokenKey(AAPLON)]: 1.0125 }),
+    )
+
+    expect(apple?.shares).toBeCloseTo(2.025)
+    expect(apple?.value).toBe(380)
+  })
+
+  it('counts fewer shares than tokens after a reverse split', () => {
+    const [apple] = buildHoldings(
+      [AAPL],
+      [{ token: AAPLON, balance: ONE }],
+      prices({}, { [getTokenKey(AAPLON)]: 0.25 }),
+    )
+
+    expect(apple?.shares).toBe(0.25)
+  })
+
+  it('values the shares a token stands for at the stock price without a token price', () => {
+    const [apple] = buildHoldings([AAPL], [{ token: AAPLON, balance: ONE }], prices({}, { [getTokenKey(AAPLON)]: 10 }))
+
+    expect(apple?.value).toBe(2000)
+  })
+
+  it('estimates Ondo shares from the token price without the issuer multiplier', () => {
     const [apple] = buildHoldings([AAPL], [{ token: AAPLON, balance: ONE }], prices({ [getTokenKey(AAPLON)]: 210 }))
 
     expect(apple?.shares).toBeCloseTo(1.05)
-  })
-
-  it('never shows fewer Ondo shares than tokens when the token trades at a discount', () => {
-    const [apple] = buildHoldings([AAPL], [{ token: AAPLON, balance: ONE }], prices({ [getTokenKey(AAPLON)]: 190 }))
-
-    expect(apple?.shares).toBe(1)
-    expect(apple?.value).toBe(190)
   })
 
   it('falls back to the stock price and one share per token without a token price', () => {

@@ -9,6 +9,7 @@ import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
 import { TradeWidget } from './TradeWidget'
 
+import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
@@ -23,6 +24,7 @@ const SIDE_STICKY_GAP = 16
 export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
   const { data, error, market } = useAssetMarket(asset.ticker)
   const sideRef = useRef<HTMLElement>(null)
+  const tradingPauseMessage = getTradingPauseMessage(data?.tradingPause, new Date())
 
   useFitStickyTop(sideRef, SIDE_STICKY_GAP)
 
@@ -36,6 +38,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
         {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
+        {tradingPauseMessage && <StatusMessage>{tradingPauseMessage}</StatusMessage>}
         <AssetStats asset={asset} market={market} />
         <AssetPriceChart ticker={asset.ticker} />
         <AssetAccount asset={asset} />

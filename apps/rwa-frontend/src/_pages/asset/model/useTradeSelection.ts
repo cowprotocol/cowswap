@@ -9,7 +9,20 @@ import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelec
 import { getAutoToken, getBestQuotedToken, type QuotedToken, toQuotedTokens } from '../lib/quotedTokens'
 import { resolveTradeChainId, resolveTradeToken, type TradeToken } from '../lib/tradeToken'
 
-import { assetQueryAtomFamily, type RwaAsset, type RwaQuoteSide, type RwaToken } from '@/entities/asset'
+import {
+  assetQueryAtomFamily,
+  type RwaAsset,
+  type RwaMarketData,
+  type RwaQuoteSide,
+  type RwaToken,
+} from '@/entities/asset'
+
+interface SharePricing {
+  stockPrice: number | null
+  sharesPerToken: Record<string, number>
+}
+
+const NO_SHARES_PER_TOKEN: Record<string, number> = {}
 
 export interface TradeSelection extends TradeToken {
   chainId: number
@@ -27,7 +40,7 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
   const side = useAtomValue(tradeSideAtom)
   const selectedTokenKey = useAtomValue(tradeTokenKeyAtom)
   const preferredChainId = useAtomValue(tradeChainIdAtom)
-  const stockPrice = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market?.price ?? null
+  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
 
   const chainId =
     resolveTradeChainId(asset.tokens, selectedTokenKey, preferredChainId, isConnected ? walletChainId : undefined) ??
@@ -41,10 +54,17 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
   const quotes = chainQuotes?.side === side ? chainQuotes : undefined
 
   return useMemo(() => {
+    const { stockPrice, sharesPerToken } = getSharePricing(market)
     const chainTokens = asset.tokens.filter((token) => token.chainId === chainId)
-    const quotedTokens = toQuotedTokens(chainTokens, quotes, stats?.chainId === chainId ? stats : undefined, stockPrice)
+    const quotedTokens = toQuotedTokens(
+      chainTokens,
+      quotes,
+      stats?.chainId === chainId ? stats : undefined,
+      stockPrice,
+      sharesPerToken,
+    )
     const bestToken = getBestQuotedToken(quotedTokens, side)
-    const autoToken = getAutoToken(chainTokens, chainQuotes, stockPrice)
+    const autoToken = getAutoToken(chainTokens, chainQuotes, stockPrice, sharesPerToken)
     const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, autoToken?.address ?? null)
 
     if (!tradeToken) return null
@@ -58,5 +78,9 @@ export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
       isQuotesLoading: !quotes && !quotesQuery.error,
       quotesError: quotes ? null : quotesQuery.error,
     }
-  }, [asset.tokens, chainId, chainQuotes, quotes, stats, stockPrice, side, selectedTokenKey, quotesQuery.error])
+  }, [asset.tokens, chainId, chainQuotes, quotes, stats, market, side, selectedTokenKey, quotesQuery.error])
+}
+
+function getSharePricing(market: RwaMarketData | null | undefined): SharePricing {
+  return { stockPrice: market?.price ?? null, sharesPerToken: market?.sharesPerToken ?? NO_SHARES_PER_TOKEN }
 }

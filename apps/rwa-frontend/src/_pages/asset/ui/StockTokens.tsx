@@ -1,7 +1,7 @@
 'use client'
 
 import { useAtomValue } from 'jotai'
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useId, useMemo, useState } from 'react'
 
 import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
@@ -12,6 +12,7 @@ import { useTradeSelection } from '../model/useTradeSelection'
 
 import {
   assetQueryAtomFamily,
+  DividendNotes,
   getTokenKey,
   type RwaAsset,
   type RwaQuoteSide,
@@ -20,6 +21,7 @@ import {
 } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
+import { InfoIcon } from '@/shared/ui/icons'
 import { SelectPill } from '@/shared/ui/select-pill'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -27,12 +29,27 @@ import { Tooltip } from '@/shared/ui/tooltip'
 
 const ALL = ''
 
+interface DividendNotesToggleProps {
+  isExpanded: boolean
+  /** Id of the notes panel */
+  controls: string
+  onToggle(): void
+}
+
 interface StockTokenRowProps {
   token: RwaToken
   market: RwaTokenMarketData | undefined
+  /** Shares of the underlying one token stands for, from the issuer */
+  sharesPerToken: number | null
   stockPrice: number | null | undefined
   isSelected: boolean
   onTrade(side: RwaQuoteSide): void
+}
+
+interface VsStockProps {
+  token: RwaToken
+  sharesPerToken: number | null
+  premium: number
 }
 
 export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
@@ -41,6 +58,8 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const selectTradeToken = useSelectTradeToken()
   const [issuer, setIssuer] = useState(ALL)
   const [network, setNetwork] = useState(ALL)
+  const [areDividendNotesShown, setAreDividendNotesShown] = useState(false)
+  const dividendNotesId = useId()
 
   const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
   const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
@@ -58,19 +77,26 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
           </span>
         </div>
         <div className={styles.filters}>
-          <SelectPill
-            variant="small"
-            aria-label="Issuer"
-            value={issuer}
-            onChange={(event) => setIssuer(event.target.value)}
-          >
-            <option value={ALL}>All issuers</option>
-            {issuers.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </SelectPill>
+          <div className={styles.issuerFilter}>
+            <SelectPill
+              variant="small"
+              aria-label="Issuer"
+              value={issuer}
+              onChange={(event) => setIssuer(event.target.value)}
+            >
+              <option value={ALL}>All issuers</option>
+              {issuers.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </SelectPill>
+            <DividendNotesToggle
+              isExpanded={areDividendNotesShown}
+              controls={dividendNotesId}
+              onToggle={() => setAreDividendNotesShown((shown) => !shown)}
+            />
+          </div>
           <SelectPill
             variant="small"
             aria-label="Network"
@@ -86,6 +112,9 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
           </SelectPill>
         </div>
       </div>
+      {areDividendNotesShown && (
+        <DividendNotes id={dividendNotesId} className={styles.dividendNotes} tokens={asset.tokens} />
+      )}
       {tokens.length ? (
         <div className={tableStyles.scroll}>
           <table className={tableStyles.table}>
@@ -105,6 +134,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                   key={getTokenKey(token)}
                   token={token}
                   market={token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined}
+                  sharesPerToken={market?.sharesPerToken[getTokenKey(token)] ?? null}
                   stockPrice={market?.price}
                   isSelected={token === selectedToken}
                   onTrade={(side) => selectTradeToken(token, side)}
@@ -121,10 +151,32 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   )
 }
 
-function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: StockTokenRowProps): ReactNode {
+function DividendNotesToggle({ isExpanded, controls, onToggle }: DividendNotesToggleProps): ReactNode {
+  return (
+    <button
+      type="button"
+      className={styles.infoButton}
+      aria-label="How issuers pass on dividends"
+      aria-expanded={isExpanded}
+      aria-controls={controls}
+      onClick={onToggle}
+    >
+      <InfoIcon />
+    </button>
+  )
+}
+
+function StockTokenRow({
+  token,
+  market,
+  sharesPerToken,
+  stockPrice,
+  isSelected,
+  onTrade,
+}: StockTokenRowProps): ReactNode {
   const network = getChainLabel(token.chainId)
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
-  const price = market?.price
+  const price = typeof market?.price === 'number' ? market.price / (sharesPerToken ?? 1) : market?.price
 
   return (
     <tr className={isSelected ? styles.selected : undefined} aria-current={isSelected || undefined}>
@@ -148,7 +200,9 @@ function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: Stock
       </td>
       <td className={tableStyles.numeric}>
         {typeof price === 'number' ? `≈ ${formatUsd(price)}` : formatUsd(price)}
-        {typeof price === 'number' && stockPrice ? <VsStock token={token} premium={price / stockPrice - 1} /> : null}
+        {typeof price === 'number' && stockPrice ? (
+          <VsStock token={token} sharesPerToken={sharesPerToken} premium={price / stockPrice - 1} />
+        ) : null}
       </td>
       <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
       <td>
@@ -175,9 +229,12 @@ function StockTokenRow({ token, market, stockPrice, isSelected, onTrade }: Stock
   )
 }
 
-function VsStock({ token, premium }: { token: RwaToken; premium: number }): ReactNode {
+function VsStock({ token, sharesPerToken, premium }: VsStockProps): ReactNode {
   return (
-    <Tooltip className={`${tableStyles.secondary} ${tableStyles.hint}`} content={getPremiumNote(token.issuer, premium)}>
+    <Tooltip
+      className={`${tableStyles.secondary} ${tableStyles.hint}`}
+      content={getPremiumNote(token, sharesPerToken, premium)}
+    >
       {formatPercent(premium * 100)} vs stock
     </Tooltip>
   )

@@ -9,7 +9,7 @@ import styles from './Portfolio.module.css'
 import type { Holding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { getDividendNotes, getTokenKey } from '@/entities/asset'
+import { DividendNotes, getTokenKey } from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
 import { formatTokenAmount, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
@@ -32,8 +32,6 @@ interface HoldingsTableProps {
 export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): ReactNode {
   if (!holdings.length) return <StatusMessage>No holdings match the filters</StatusMessage>
 
-  const dividendNotes = getDividendNotes(holdings.flatMap(({ tokens }) => tokens.map(({ token }) => token.issuer)))
-
   return (
     <>
       <div className={styles.scroll}>
@@ -52,11 +50,10 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
           </tbody>
         </table>
       </div>
-      {dividendNotes.map((note) => (
-        <p key={note} className={styles.note}>
-          {note}
-        </p>
-      ))}
+      <DividendNotes
+        className={styles.dividendNotes}
+        tokens={holdings.flatMap(({ tokens }) => tokens.map(({ token }) => token))}
+      />
     </>
   )
 }

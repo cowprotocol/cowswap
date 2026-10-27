@@ -327,6 +327,10 @@
   white-space: nowrap;
 }
 
+.dividendNotes {
+  margin: 12px 24px 16px;
+}
+
 .note {
   margin: 0;
   color: var(--color-text-secondary);
