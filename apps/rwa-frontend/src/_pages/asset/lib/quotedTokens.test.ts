@@ -204,6 +204,7 @@ describe('sortQuotedTokens', () => {
       quotes('buy', '4000000000000000000', '5000000000000000000'),
       undefined,
       null,
+      NO_SHARES,
     )
 
     expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLon', 'AAPLx'])
@@ -215,6 +216,7 @@ describe('sortQuotedTokens', () => {
       quotes('sell', '5000000000000000000', '4000000000000000000'),
       undefined,
       null,
+      NO_SHARES,
     )
 
     expect(symbols(sortQuotedTokens(quoted, 'sell'))).toEqual(['AAPLon', 'AAPLx'])
@@ -226,6 +228,7 @@ describe('sortQuotedTokens', () => {
       quotes('buy', '4000000000000000000', '50000000000000000000', 'aaplx'),
       undefined,
       null,
+      NO_SHARES,
     )
 
     expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLx', 'AAPLon'])
@@ -237,6 +240,7 @@ describe('sortQuotedTokens', () => {
       quotes('buy', null, '5000000000000000000'),
       undefined,
       null,
+      NO_SHARES,
     )
 
     expect(symbols(sortQuotedTokens(quoted, 'buy'))).toEqual(['AAPLon', 'AAPLb', 'AAPLx'])
@@ -248,16 +252,16 @@ describe('sortQuotedTokens', () => {
       quotes('sell', '320000000000000000', '4000000000000000000'),
       undefined,
       230,
+      NO_SHARES,
     )
 
     expect(symbols(sortQuotedTokens(quoted, 'sell'))).toEqual(['AAPLon', 'AAPLx'])
   })
 
   it('keeps the original order while quotes are loading', () => {
-    expect(symbols(sortQuotedTokens(toQuotedTokens(CHAIN_TOKENS, undefined, undefined, null), 'buy'))).toEqual([
-      'AAPLx',
-      'AAPLon',
-    ])
+    expect(
+      symbols(sortQuotedTokens(toQuotedTokens(CHAIN_TOKENS, undefined, undefined, null, NO_SHARES), 'buy')),
+    ).toEqual(['AAPLx', 'AAPLon'])
   })
 })
 
@@ -274,6 +278,7 @@ describe('keepPreviousOrder', () => {
       token,
       quote: { address: token.address, amount: '1', verified: true, error: null },
       pricePerShare,
+      sharesPerToken: null,
       isPriceOutlier: false,
       stats: undefined,
     }

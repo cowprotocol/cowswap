@@ -22,7 +22,7 @@ export function getPremiumNote(
   const model = getDividendModel(token)
   const note = getDividendNote(token)
 
-  if (model === 'rebase' && note) return `${BASE_NOTE} ${note.label}: ${note.text}`
+  if ((model === 'rebase' || model === 'cash-payout') && note) return `${BASE_NOTE} ${note.label}: ${note.text}`
   if (model === 'price-accrual' && note && sharesPerToken === null && premium > 0) {
     return `${BASE_NOTE} ${note.label}: ${note.text} ${ACCRUED_DIVIDENDS_NOTE}`
   }

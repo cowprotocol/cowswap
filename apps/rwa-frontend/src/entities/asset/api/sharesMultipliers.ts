@@ -39,8 +39,9 @@ const VAULT_RATES_CACHE_KEY = ['wrapped-xstocks-rates', 'v1']
 const EMPTY_SOURCE: SourceResult = { values: {}, degraded: false }
 
 /**
- * Shares of the underlying one token stands for. Ondo publishes a shares multiplier; a rebasing xStocks token is one
- * share, because `balanceOf()` already applies the multiplier; a wrapped xStocks token is what it redeems for
+ * Shares of the underlying one token stands for. Ondo publishes a shares multiplier; a rebasing token is one share,
+ * because `balanceOf()` already applies the multiplier; a cash-payout token is one share, because dividends leave it;
+ * a wrapped xStocks token is what it redeems for
  */
 export async function loadSharesPerToken(tokens: RwaToken[]): Promise<SharesPerTokenLoadResult> {
   const [ondo, wrapped] = await Promise.all([
@@ -90,7 +91,9 @@ function getSharesMultiplier(
   if (isWrappedXStock(token)) return wrappedRates[getTokenKey(token)]
   if (isOndoToken(token)) return ondoMultipliers[token.symbol.toUpperCase()]
 
-  return getDividendModel(token) === 'rebase' ? 1 : undefined
+  const model = getDividendModel(token)
+
+  return model === 'rebase' || model === 'cash-payout' ? 1 : undefined
 }
 
 function isOndoToken(token: RwaToken): boolean {

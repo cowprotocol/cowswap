@@ -8,7 +8,6 @@ import {
   type RwaTokenNetworkStats,
   type RwaTokenQuote,
 } from '@/entities/asset'
-import { getTokenKey } from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
 /**
@@ -102,7 +101,8 @@ export function sortQuotedTokens(quotedTokens: QuotedToken[], side: RwaAssetQuot
 /**
  * `stockPrice` is `null` while market data is loading, then no price is an outlier.
  * `sharesPerToken` is `RwaMarketData.sharesPerToken`
- */ export function toQuotedTokens(
+ */
+export function toQuotedTokens(
   chainTokens: RwaToken[],
   quotes: RwaAssetQuotes | undefined,
   stats: RwaNetworkStats | undefined,

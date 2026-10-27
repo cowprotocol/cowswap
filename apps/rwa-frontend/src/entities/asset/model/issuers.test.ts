@@ -8,6 +8,9 @@ describe('getDividendModel', () => {
   it('maps every allowed issuer', () => {
     expect(getDividendModel(ONDO)).toBe('price-accrual')
     expect(getDividendModel(XSTOCKS)).toBe('rebase')
+    expect(getDividendModel({ issuer: 'Coinbase' })).toBe('price-accrual')
+    expect(getDividendModel({ issuer: 'bStocks' })).toBe('rebase')
+    expect(getDividendModel({ issuer: 'Reality' })).toBe('cash-payout')
   })
 
   it('treats wrapped xStocks as price-accrual', () => {

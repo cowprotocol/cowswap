@@ -16,6 +16,7 @@ function sorted(prices: [RwaToken, number][]): QuotedToken[] {
       token,
       quote: { address: token.address, amount: '1', verified: true, error: null },
       pricePerShare,
+      sharesPerToken: null,
       isPriceOutlier: false,
       stats: undefined,
     })),

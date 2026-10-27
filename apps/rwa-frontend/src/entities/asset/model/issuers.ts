@@ -4,11 +4,12 @@ import type { RwaToken } from './types'
  * How a token passes dividends on to holders.
  * - `price-accrual`: dividends raise the token's redemption price; one token represents a growing number of shares
  * - `rebase`: dividends increase token balances; one token stays one share
+ * - `cash-payout`: dividends are paid out separately in stablecoins; one token stays one share
  */
-export type RwaDividendModel = 'price-accrual' | 'rebase'
+export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
 /** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-export const RWA_ISSUERS = ['Ondo', 'xStocks'] as const
+export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality'] as const
 
 export interface RwaDividendNote {
   /** Who applies the scheme, e.g. `Ondo` or `Wrapped xStocks` */
@@ -26,6 +27,9 @@ type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
 const ISSUER_DIVIDEND_MODELS: Record<RwaIssuer, RwaDividendModel> = {
   Ondo: 'price-accrual',
   xStocks: 'rebase',
+  Coinbase: 'price-accrual',
+  bStocks: 'rebase',
+  Reality: 'cash-payout',
 }
 
 const DIVIDEND_NOTES: Record<RwaDividendModel, Omit<RwaDividendNote, 'label'>> = {
@@ -36,6 +40,10 @@ const DIVIDEND_NOTES: Record<RwaDividendModel, Omit<RwaDividendNote, 'label'>> =
   rebase: {
     scheme: 'Rebasing',
     text: 'Dividends are reinvested by increasing token balances, so one token stays close to one share.',
+  },
+  'cash-payout': {
+    scheme: 'Cash payout',
+    text: 'Dividends are paid out separately in stablecoins, so one token stays close to one share.',
   },
 }
 

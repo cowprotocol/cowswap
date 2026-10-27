@@ -34,6 +34,13 @@ describe('getPremiumNote', () => {
     expect(getPremiumNote(XSTOCKS, null, -0.0007)).toBe(note)
   })
 
+  it('explains a cash-payout token at any premium', () => {
+    const reality = { symbol: 'RNVDA', issuer: 'Reality', coingeckoId: 'nvidia-rstock' }
+    const note = `${BASE} Reality: Dividends are paid out separately in stablecoins, so one token stays close to one share.`
+
+    expect(getPremiumNote(reality, 1, 0.02)).toBe(note)
+  })
+
   it('has only the base hint for an unknown issuer', () => {
     expect(getPremiumNote({ symbol: 'NVDAd', issuer: 'Dinari' }, null, 0.02)).toBe(BASE)
   })

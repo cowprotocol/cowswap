@@ -3,7 +3,6 @@
 import {
   type PointerEvent,
   type ReactNode,
-  type RefObject,
   useCallback,
   useEffect,
   useId,
@@ -15,11 +14,9 @@ import {
 import { createPortal } from 'react-dom'
 
 import styles from './Tooltip.module.css'
+import { getTooltipPosition, type TooltipPosition } from './tooltipPosition'
 
-interface TooltipPosition {
-  top: number
-  left: number
-}
+import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 
 interface TooltipProps {
   content: ReactNode
@@ -28,8 +25,6 @@ interface TooltipProps {
   className?: string
 }
 
-const TOOLTIP_OFFSET_PX = 6
-const VIEWPORT_MARGIN_PX = 8
 const FOCUSABLE_SELECTOR = 'a[href], button, input, select, textarea, [tabindex]'
 
 export function Tooltip({ content, children, className }: TooltipProps): ReactNode {
@@ -58,10 +53,28 @@ export function Tooltip({ content, children, className }: TooltipProps): ReactNo
 
     if (!isOpen || !trigger || !tooltip) return
 
-    setPosition(getPosition(trigger.getBoundingClientRect(), tooltip.getBoundingClientRect()))
+    setPosition(
+      getTooltipPosition(
+        trigger.getBoundingClientRect(),
+        tooltip.getBoundingClientRect(),
+        document.documentElement.clientWidth,
+      ),
+    )
   }, [isOpen])
 
-  useDismiss(isOpen, triggerRef, close)
+  useDismissOnOutsideInteraction(isOpen, [triggerRef], close)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') close()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, close])
 
   // A tap fires `pointerleave` right after `pointerenter`, so touch tooltips stay open until the next tap
   const onPointerEnter = (event: PointerEvent): void => {
@@ -112,43 +125,4 @@ export function Tooltip({ content, children, className }: TooltipProps): ReactNo
         )}
     </>
   )
-}
-
-/** Above the trigger, or below it when there is no room above, kept inside the viewport */
-function getPosition(trigger: DOMRect, tooltip: DOMRect): TooltipPosition {
-  const above = trigger.top - tooltip.height - TOOLTIP_OFFSET_PX
-  const top = above >= VIEWPORT_MARGIN_PX ? above : trigger.bottom + TOOLTIP_OFFSET_PX
-  const centered = trigger.left + trigger.width / 2 - tooltip.width / 2
-  const maxLeft = window.innerWidth - tooltip.width - VIEWPORT_MARGIN_PX
-
-  return { top, left: Math.max(VIEWPORT_MARGIN_PX, Math.min(centered, maxLeft)) }
-}
-
-function useDismiss(isOpen: boolean, triggerRef: RefObject<HTMLElement | null>, close: () => void): void {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const onPointerDown = (event: globalThis.PointerEvent): void => {
-      const { target } = event
-
-      if (target instanceof Node && triggerRef.current?.contains(target)) return
-      close()
-    }
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') close()
-    }
-    const onViewportChange = (): void => close()
-
-    document.addEventListener('pointerdown', onPointerDown)
-    document.addEventListener('keydown', onKeyDown)
-    window.addEventListener('scroll', onViewportChange, true)
-    window.addEventListener('resize', onViewportChange)
-
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      document.removeEventListener('keydown', onKeyDown)
-      window.removeEventListener('scroll', onViewportChange, true)
-      window.removeEventListener('resize', onViewportChange)
-    }
-  }, [isOpen, triggerRef, close])
 }

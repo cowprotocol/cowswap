@@ -23,11 +23,10 @@ import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { Select } from '@/shared/ui/select'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
-
-const ALL = ''
 
 interface DividendNotesToggleProps {
   isExpanded: boolean
@@ -79,26 +78,23 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
         </div>
         <div className={styles.filters}>
           <div className={styles.issuerFilter}>
-            <SelectPill
+            <Select
               variant="small"
               aria-label="Issuer"
               value={issuer}
-              onChange={(event) => setIssuer(event.target.value)}
-            >
-              <option value={ALL}>All issuers</option>
-              {issuers.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </SelectPill>
+              options={[
+                { value: null, label: 'All issuers' },
+                ...issuers.map((option) => ({ value: option, label: option })),
+              ]}
+              onChange={setIssuer}
+            />
             <DividendNotesToggle
               isExpanded={areDividendNotesShown}
               controls={dividendNotesId}
               onToggle={() => setAreDividendNotesShown((shown) => !shown)}
             />
           </div>
-          <SelectPill
+          <Select
             variant="small"
             aria-label="Network"
             value={network}

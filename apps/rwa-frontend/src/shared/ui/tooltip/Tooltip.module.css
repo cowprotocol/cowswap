@@ -1,6 +1,6 @@
 .tooltip {
   position: fixed;
-  z-index: 100;
+  z-index: 110;
   max-width: min(280px, calc(100vw - 16px));
   padding: 8px 10px;
   border: 1px solid var(--color-border);

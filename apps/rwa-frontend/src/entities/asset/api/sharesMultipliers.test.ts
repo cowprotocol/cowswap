@@ -83,6 +83,17 @@ describe('loadSharesPerToken', () => {
     expect(readVaultRatesMock).not.toHaveBeenCalled()
   })
 
+  it('takes one share per rebasing or cash-payout token and leaves Coinbase tokens out', async () => {
+    const nvdab = token('NVDAB', 56, '0x0000000000000000000000000000000000000006', 'bStocks')
+    const rnvda = token('RNVDA', 42161, '0x0000000000000000000000000000000000000007', 'Reality')
+    const nvdac = token('NVDAC', 8453, '0x0000000000000000000000000000000000000008', 'Coinbase')
+
+    expect(await loadSharesPerToken([nvdab, rnvda, nvdac])).toEqual({
+      byKey: { [getTokenKey(nvdab)]: 1, [getTokenKey(rnvda)]: 1 },
+      degraded: false,
+    })
+  })
+
   it('leaves Ondo tokens out without degrading when no API key is set', async () => {
     fetchOndoMock.mockResolvedValue(null)
 
