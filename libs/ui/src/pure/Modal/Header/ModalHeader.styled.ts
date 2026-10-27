@@ -118,6 +118,10 @@ export const RightSlot = styled.div`
   transform: translateX(0);
   transition: ${transition(['opacity', 'max-width', 'transform'])};
 
+  .overlay & {
+    pointer-events: auto;
+  }
+
   &[aria-hidden='true'] {
     max-width: 0;
     pointer-events: none;
@@ -181,6 +185,10 @@ export const BackButton = styled(BackIconButton)`
   ${headerIconButtonCss}
   --pressableInset: -18px 0 -18px -11px;
   left: 10px;
+
+  .overlay & {
+    pointer-events: auto;
+  }
 
   &[aria-hidden='true'] {
     transform: translate(calc(-100% - 16px), -50%);
