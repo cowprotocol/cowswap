@@ -59,6 +59,21 @@ export const Header = styled.header<BottomEdgeProps>`
   }
 `
 
+export const HeaderContent = styled.div`
+  width: 100%;
+`
+
+export const Wrapper = styled.div`
+  &.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+`
+
 export const Inner = styled.div`
   position: relative;
   display: flex;
@@ -84,6 +99,8 @@ export const Title = styled.div`
 
   flex: 1;
   min-width: 0;
+  /* FONT_LARGE line-height (24) + vertical padding (16 * 2) — keeps close/back aligned with an empty title */
+  min-height: 56px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -173,6 +190,10 @@ export const BackButton = styled(BackIconButton)`
 export const CloseButton = styled(CloseIconButton)`
   ${headerIconButtonCss}
   right: 4px;
+
+  .overlay & {
+    pointer-events: auto;
+  }
 
   &[aria-hidden='true'] {
     transform: translate(calc(100% + 16px), -50%);
