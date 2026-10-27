@@ -22,9 +22,13 @@ interface TxCostRowProps {
   txCost: CurrencyAmount<Currency>
   txCostUsd: Nullish<CurrencyAmount<Currency>>
   isSponsored: boolean
-  /** The part of `txCost` a sponsored order still leaves to the owner — `SolanaTxCost.ownerDeposit`. */
-  ownerDeposit?: Nullish<CurrencyAmount<Currency>>
-  ownerDepositUsd?: Nullish<CurrencyAmount<Currency>>
+  /**
+   * The part of `txCost` a sponsored order still leaves to the owner — `SolanaTxCost.ownerDeposit`.
+   * Required rather than optional: a caller that omitted it would have the row claim a sponsored
+   * placement is free while the owner is in fact funding a deposit.
+   */
+  ownerDeposit: Nullish<CurrencyAmount<Currency>>
+  ownerDepositUsd: Nullish<CurrencyAmount<Currency>>
   withTimelineDot?: boolean
   isLast?: boolean
   /** Limit form detail-row typography (medium label, secondary value). */
