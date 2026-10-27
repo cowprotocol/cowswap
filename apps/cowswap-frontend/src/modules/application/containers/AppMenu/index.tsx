@@ -2,13 +2,12 @@ import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { alphaNetworksEnabledAtom, useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
-import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -52,7 +51,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled, isSolanaEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isAlphaNetworksOptionVisible } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
@@ -69,7 +68,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
         label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
-      ...(isSolanaEnabled
+      ...(isAlphaNetworksOptionVisible
         ? [
             {
               label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
@@ -78,7 +77,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           ]
         : []),
     ],
-    [darkMode, toggleDarkMode, isSolanaEnabled, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
+    [darkMode, toggleDarkMode, isAlphaNetworksOptionVisible, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
   )
 
   const languageNavItems = {

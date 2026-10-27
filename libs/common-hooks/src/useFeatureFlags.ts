@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+import { atomWithStorage } from 'jotai/utils'
 import { useMemo } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -8,6 +10,7 @@ export interface FeatureFlags {
   isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
+  isAlphaNetworksOptionVisible?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
   isWaitForCowsEnabled?: boolean
@@ -30,8 +33,14 @@ const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isSolanaEnabled: false,
 }
 
+/** User opt-in from the app menu, only honoured while `isAlphaNetworksOptionVisible` shows that setting */
+export const alphaNetworksEnabledAtom = atomWithStorage<boolean>('alphaNetworksEnabled:v0', false, undefined, {
+  getOnInit: true,
+})
+
 export function useFeatureFlags(): FeatureFlags {
   const flags = useFlags<FeatureFlags>()
+  const areAlphaNetworksEnabled = useAtomValue(alphaNetworksEnabledAtom)
 
   // e2e tests can't get LaunchDarkly to resolve real flag values (no client-side ID is configured
   // for that environment, so the SDK never even attempts the flag-evaluation request) — they set
@@ -45,9 +54,13 @@ export function useFeatureFlags(): FeatureFlags {
 
   const resolvedFlags = e2eOverrideFlags ?? flags
 
-  return useMemo(
-    () => (isInjectedWidget() ? { ...resolvedFlags, ...WIDGET_FLAG_OVERRIDES } : resolvedFlags),
-    [resolvedFlags],
-  )
+  return useMemo(() => {
+    // The LD flag turns Solana on for everyone; while it's off, users can still opt in via alpha networks.
+    // Resolved here so every Solana gate (chain lists, quotes, boot-time wallet config) follows the same value.
+    const isSolanaEnabled =
+      !!resolvedFlags.isSolanaEnabled || (!!resolvedFlags.isAlphaNetworksOptionVisible && areAlphaNetworksEnabled)
+
+    return { ...resolvedFlags, isSolanaEnabled, ...(isInjectedWidget() ? WIDGET_FLAG_OVERRIDES : undefined) }
+  }, [resolvedFlags, areAlphaNetworksEnabled])
   // return { ...defaults, ...flags }
 }

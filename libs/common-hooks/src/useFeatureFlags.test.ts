@@ -1,7 +1,10 @@
+import { createStore, Provider } from 'jotai'
+import { createElement, ReactNode } from 'react'
+
 import { renderHook } from '@testing-library/react'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
-import { useFeatureFlags } from './useFeatureFlags'
+import { alphaNetworksEnabledAtom, useFeatureFlags } from './useFeatureFlags'
 
 jest.mock('launchdarkly-react-client-sdk', () => ({
   useFlags: jest.fn(),
@@ -23,7 +26,7 @@ describe('useFeatureFlags', () => {
   it('returns LaunchDarkly flags as is outside the widget', () => {
     const { result } = renderHook(() => useFeatureFlags())
 
-    expect(result.current).toBe(LD_FLAGS)
+    expect(result.current).toEqual(LD_FLAGS)
   })
 
   it('forces Solana off inside the widget and keeps the rest, including bridging to Solana', () => {
@@ -33,4 +36,25 @@ describe('useFeatureFlags', () => {
 
     expect(result.current).toEqual({ isSolanaEnabled: false, isSolBridgeEnabled: true, isTwapEoaEnabled: true })
   })
+
+  it.each`
+    isSolanaEnabled | isAlphaNetworksOptionVisible | optedIn  | expected
+    ${true}         | ${false}                     | ${false} | ${true}
+    ${true}         | ${true}                      | ${false} | ${true}
+    ${false}        | ${true}                      | ${false} | ${false}
+    ${false}        | ${true}                      | ${true}  | ${true}
+    ${false}        | ${false}                     | ${true}  | ${false}
+  `(
+    'resolves isSolanaEnabled to $expected (flag $isSolanaEnabled, option visible $isAlphaNetworksOptionVisible, opted in $optedIn)',
+    ({ isSolanaEnabled, isAlphaNetworksOptionVisible, optedIn, expected }) => {
+      mockUseFlags.mockReturnValue({ isSolanaEnabled, isAlphaNetworksOptionVisible })
+      const store = createStore()
+      store.set(alphaNetworksEnabledAtom, optedIn)
+      const wrapper = ({ children }: { children: ReactNode }): ReactNode => createElement(Provider, { store }, children)
+
+      const { result } = renderHook(() => useFeatureFlags(), { wrapper })
+
+      expect(result.current.isSolanaEnabled).toBe(expected)
+    },
+  )
 })
