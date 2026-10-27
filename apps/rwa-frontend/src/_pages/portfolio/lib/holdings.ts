@@ -1,6 +1,12 @@
 import type { Position } from '@/widgets/account'
 
-import { getDividendModel, getTokenKey, type RwaAssetSummary, type RwaTokenSummary } from '@/entities/asset'
+import {
+  getDividendModel,
+  getTokenKey,
+  getTokenUsdPrice,
+  type RwaAssetSummary,
+  type RwaTokenSummary,
+} from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
 export interface Holding {
@@ -95,7 +101,7 @@ function toTokenHolding(
   sharesPerToken: number | null,
 ): TokenHolding {
   const units = toTokenUnits(balance, token.decimals)
-  const price = tokenPrice ?? (assetPrice === null ? null : assetPrice * (sharesPerToken ?? 1))
+  const price = getTokenUsdPrice(tokenPrice, assetPrice, sharesPerToken)
   const value = price === null ? null : units * price
   const shares = units * (sharesPerToken ?? estimateSharesPerToken(token, tokenPrice, assetPrice))
 

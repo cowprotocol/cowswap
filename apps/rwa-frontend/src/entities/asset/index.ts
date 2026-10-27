@@ -71,4 +71,5 @@ export {
 } from './model/issuers'
 export { getDailyStats, type RwaDailyStats } from './lib/dailyStats'
 export { getTokenKey } from './lib/tokenKey'
+export { getTokenUsdPrice } from './lib/tokenUsdPrice'
 export { isUsMarketOpen } from './lib/usMarketStatus'

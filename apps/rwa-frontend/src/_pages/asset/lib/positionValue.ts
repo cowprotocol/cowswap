@@ -1,22 +1,16 @@
-import { getTokenKey, type RwaMarketData, type RwaToken } from '@/entities/asset'
+import { getTokenKey, getTokenUsdPrice, type RwaMarketData, type RwaToken } from '@/entities/asset'
 import { toTokenUnits } from '@/shared/lib/format'
 
-/**
- * USD at the token price, or at the stock price of the shares the token stands for when it has none.
- * `null` without either
- */
+/** USD at `getTokenUsdPrice`. `null` without any price */
 export function getPositionValue(
   token: RwaToken,
   balance: string,
   market: RwaMarketData | null | undefined,
 ): number | null {
-  const price = market ? getTokenPrice(token, market) : null
+  if (!market) return null
+
+  const tokenPrice = (token.coingeckoId ? market.tokens[token.coingeckoId]?.price : null) ?? null
+  const price = getTokenUsdPrice(tokenPrice, market.price, market.sharesPerToken[getTokenKey(token)] ?? null)
 
   return price === null ? null : toTokenUnits(balance, token.decimals) * price
-}
-
-function getTokenPrice(token: RwaToken, market: RwaMarketData): number | null {
-  const tokenPrice = token.coingeckoId ? market.tokens[token.coingeckoId]?.price : null
-
-  return tokenPrice ?? (market.price === null ? null : market.price * (market.sharesPerToken[getTokenKey(token)] ?? 1))
 }

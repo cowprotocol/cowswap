@@ -31,6 +31,14 @@ describe('getPositionValue', () => {
     expect(getPositionValue(NVDAON, TWO, MARKET)).toBe(380)
   })
 
+  it('values the shares a token stands for at the stock price when the multiplier is known', () => {
+    const arbitrum = { ...NVDAON, chainId: 42161 }
+    const market = { ...MARKET, sharesPerToken: { [getTokenKey(NVDAON)]: 0.99, [getTokenKey(arbitrum)]: 1 } }
+
+    expect(getPositionValue(NVDAON, TWO, market)).toBeCloseTo(356.4)
+    expect(getPositionValue(arbitrum, TWO, market)).toBe(360)
+  })
+
   it('falls back to the stock price without a token price', () => {
     expect(getPositionValue({ ...NVDAON, coingeckoId: undefined }, TWO, MARKET)).toBe(360)
     expect(getPositionValue(NVDAON, TWO, { ...MARKET, tokens: {} })).toBe(360)

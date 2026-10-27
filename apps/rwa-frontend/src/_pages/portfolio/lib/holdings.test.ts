@@ -119,7 +119,24 @@ describe('buildHoldings', () => {
     )
 
     expect(apple?.shares).toBeCloseTo(2.025)
-    expect(apple?.value).toBe(380)
+    expect(apple?.value).toBeCloseTo(405)
+  })
+
+  it('values tokens of one CoinGecko id by the multiplier of their network', () => {
+    const aaplonBnb: RwaToken = { ...AAPLON, chainId: 56 }
+    const [apple] = buildHoldings(
+      [{ ...AAPL, tokens: [AAPLON, aaplonBnb] }],
+      [
+        { token: AAPLON, balance: ONE },
+        { token: aaplonBnb, balance: ONE },
+      ],
+      prices(
+        { [getTokenKey(AAPLON)]: 200, [getTokenKey(aaplonBnb)]: 200 },
+        { [getTokenKey(AAPLON)]: 0.99, [getTokenKey(aaplonBnb)]: 1 },
+      ),
+    )
+
+    expect(apple?.tokens.map(({ value }) => value)).toEqual([198, 200])
   })
 
   it('counts fewer shares than tokens after a reverse split', () => {
