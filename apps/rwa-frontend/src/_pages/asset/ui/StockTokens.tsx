@@ -7,6 +7,7 @@ import tableStyles from './AccountTable.module.css'
 import styles from './StockTokens.module.css'
 
 import { getPremiumNote } from '../lib/premiumNote'
+import { getTokenPriceSharesPerToken } from '../lib/tokenPriceShares'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 
@@ -38,7 +39,7 @@ interface DividendNotesToggleProps {
 interface StockTokenRowProps {
   token: RwaToken
   market: RwaTokenMarketData | undefined
-  /** Shares of the underlying one token stands for, from the issuer */
+  /** `getTokenPriceSharesPerToken` of the token, `null` keeps its price per token */
   sharesPerToken: number | null
   stockPrice: number | null | undefined
   isSelected: boolean
@@ -63,6 +64,10 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
   const issuers = useMemo(() => [...new Set(asset.tokens.map((token) => token.issuer))], [asset.tokens])
   const chainIds = useMemo(() => [...new Set(asset.tokens.map((token) => token.chainId))], [asset.tokens])
   const networkOptions = useNetworkOptions(chainIds)
+  const priceSharesPerToken = useMemo(
+    () => getTokenPriceSharesPerToken(asset.tokens, market?.sharesPerToken ?? {}),
+    [asset.tokens, market?.sharesPerToken],
+  )
   const tokens = asset.tokens.filter(
     (token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network),
   )
@@ -125,7 +130,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                   key={getTokenKey(token)}
                   token={token}
                   market={token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined}
-                  sharesPerToken={market?.sharesPerToken[getTokenKey(token)] ?? null}
+                  sharesPerToken={priceSharesPerToken[getTokenKey(token)] ?? null}
                   stockPrice={market?.price}
                   isSelected={token === selectedToken}
                   onTrade={(side) => selectTradeToken(token, side)}
