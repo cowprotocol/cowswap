@@ -15,6 +15,8 @@ import {
   expireOrdersBatch,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
+  invalidateAbandonedCreatingOrdersBatch,
+  InvalidateAbandonedCreatingOrdersBatchParams,
   invalidateOrdersBatch,
   InvalidateOrdersBatchParams,
   Order,
@@ -58,6 +60,9 @@ export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBa
 
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
 
+export type InvalidateAbandonedCreatingOrdersBatchCallback = (
+  params: InvalidateAbandonedCreatingOrdersBatchParams,
+) => void
 export type InvalidateOrdersBatchCallback = (params: InvalidateOrdersBatchParams) => void
 export type PresignOrdersCallback = (fulfillOrderParams: PresignOrdersParams) => void
 export type SetIsOrderRefundedBatchCallback = (params: SetIsOrderRefundedBatch) => void
@@ -321,6 +326,15 @@ export const useInvalidateOrdersBatch = (): InvalidateOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
 
   return useCallback((params: InvalidateOrdersBatchParams) => dispatch(invalidateOrdersBatch(params)), [dispatch])
+}
+
+export const useInvalidateAbandonedCreatingOrdersBatch = (): InvalidateAbandonedCreatingOrdersBatchCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+
+  return useCallback(
+    (params: InvalidateAbandonedCreatingOrdersBatchParams) => dispatch(invalidateAbandonedCreatingOrdersBatch(params)),
+    [dispatch],
+  )
 }
 
 export const useSetOrderCancellationHash = (): SetOrderCancellationHashCallback => {

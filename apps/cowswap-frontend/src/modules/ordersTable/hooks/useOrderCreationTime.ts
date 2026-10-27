@@ -1,4 +1,4 @@
-import { useMachineTimeMs, useTimeAgo } from '@cowprotocol/common-hooks'
+import { useRemainingSeconds, useTimeAgo } from '@cowprotocol/common-hooks'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -8,16 +8,15 @@ export function useOrderCreationTime(
   creationTime: Date,
   status: OrderStatus,
 ): { isScheduledCreating: boolean; creationTimeAgo: string } {
-  const now = useMachineTimeMs(1000)
+  const isScheduled = status === OrderStatus.SCHEDULED
+  const remainingSeconds = useRemainingSeconds(isScheduled ? creationTime.getTime() : null)
   const timeAgo = useTimeAgo(creationTime)
   const { i18n } = useLingui()
-  const remainingSeconds = Math.ceil((creationTime.getTime() - now) / 1000)
-  const isScheduled = status === OrderStatus.SCHEDULED
 
   return {
-    isScheduledCreating: isScheduled && remainingSeconds <= 0,
+    isScheduledCreating: remainingSeconds === 0,
     creationTimeAgo:
-      isScheduled && remainingSeconds > 0 && remainingSeconds < 60
+      remainingSeconds !== undefined && remainingSeconds > 0 && remainingSeconds < 60
         ? new Intl.RelativeTimeFormat(i18n.locale).format(remainingSeconds, 'second')
         : timeAgo,
   }

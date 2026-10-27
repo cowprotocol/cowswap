@@ -18,6 +18,7 @@ import { useTradeSelection } from '../model/useTradeSelection'
 import type { RwaAsset, RwaToken } from '@/entities/asset'
 
 import { ConnectButton } from '@/features/connect-wallet'
+import { APP_CODE } from '@/shared/config'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 import { useWalletProvider } from '@/shared/lib/wallet'
 
@@ -26,7 +27,6 @@ const CowSwapWidget = dynamic(() => import('@cowprotocol/widget-react').then((mo
   loading: () => <TradeWidgetSkeleton />,
 })
 
-const APP_CODE = 'CoW RWA'
 const QUOTE_ASSET = 'USDC'
 const QUOTE_ASSET_AMOUNT = '1000'
 const ASSET_TOKEN_AMOUNT = '1'
