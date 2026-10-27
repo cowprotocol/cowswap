@@ -141,20 +141,18 @@ export const CowModal = styled(Modal)<{
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
     ${Media.upToSmall()} {
-      max-height: 100vh;
       max-width: 100%;
-      height: 100%;
       width: 100vw;
       border-radius: 0;
-    }
 
-    /* The widget iframe is resized to fit the modal (see IframeResizer), so it must keep its natural height */
-    ${({ theme }) =>
-      theme.isWidget &&
-      css`
-        height: auto;
-        max-height: none;
-      `}
+      /* The widget iframe is resized to fit the modal (see IframeResizer), so it must keep its natural height */
+      ${({ theme }) =>
+        !theme.isWidget &&
+        css`
+          max-height: 100vh;
+          height: 100%;
+        `}
+    }
 
     ${HeaderRow} {
       ${Media.upToSmall()} {
