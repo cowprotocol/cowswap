@@ -21,7 +21,15 @@ const compat = new FlatCompat({
 module.exports = [
   pluginLingui.configs['flat/recommended'],
   {
-    ignores: ['static-files/', '.nx/', '**/.next/', 'apps/rwa-frontend/next-env.d.ts', 'build/', 'dist/'],
+    ignores: [
+      'static-files/',
+      '.nx/',
+      '**/.next/',
+      '**/.next-cms-resilience/',
+      'apps/rwa-frontend/next-env.d.ts',
+      'build/',
+      'dist/',
+    ],
   },
   {
     plugins: {

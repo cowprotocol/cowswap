@@ -15,6 +15,7 @@ jest.mock('next/navigation', () => ({
 
 const cmsPage = {
   attributes: {
+    metadata: {},
     heading: 'Refer-to-Earn',
     description: 'CMS referral description',
     contentSections: [{ __component: 'sections.rich-text', content: 'CMS referral instructions' }],

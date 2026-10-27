@@ -1,13 +1,11 @@
 import type { ReactNode } from 'react'
 
-import { getPageBySlug } from '../../../services/cms'
-
 import { AffiliateProgramPageContent } from '@/components/AffiliateProgramPageContent'
-import { parseAffiliateContent } from '@/util/marketingContent'
+import { getAffiliateContent } from '@/util/getMarketingContent'
 
 export default async function Page(): Promise<ReactNode> {
-  const page = await getPageBySlug('affiliate-program')
-  return <AffiliateProgramPageContent content={parseAffiliateContent(page)} />
+  const content = await getAffiliateContent()
+  return <AffiliateProgramPageContent content={content} />
 }
 
 export const revalidate = 43200

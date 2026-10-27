@@ -1,15 +1,13 @@
 import type { ReactNode } from 'react'
 
 import { getJobs } from '../../../services/ashByHq'
-import { getPageBySlug } from '../../../services/cms'
 
 import { CareersPageContent } from '@/components/CareersPageContent'
-import { parseCareersContent } from '@/util/marketingContent'
+import { getCareersContent } from '@/util/getMarketingContent'
 
 export default async function Page(): Promise<ReactNode> {
-  const [jobs, page] = await Promise.all([getJobs(), getPageBySlug('careers')])
+  const [jobs, content] = await Promise.all([getJobs(), getCareersContent()])
   const jobsData = jobs || {}
-  const content = parseCareersContent(page)
   const department = 'All'
 
   const jobsCount = Object.keys(jobsData).reduce((acc, cur) => acc + jobsData[cur].length, 0)
