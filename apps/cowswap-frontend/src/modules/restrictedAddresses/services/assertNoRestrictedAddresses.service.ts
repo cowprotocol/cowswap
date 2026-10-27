@@ -74,7 +74,7 @@ export function assertTransactionsHaveNoRestrictedAddresses(
 }
 
 function getOrderBlockedMessage(): string {
-  return t`This order contains a restricted address and was blocked. Please refresh the quote and try again.`
+  return t`An error has occurred. Please refresh the quote and try again.`
 }
 
 function reportAndThrow(message: string, params: Record<string, unknown>): never {
