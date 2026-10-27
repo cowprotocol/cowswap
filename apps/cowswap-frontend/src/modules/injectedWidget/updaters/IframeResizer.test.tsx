@@ -249,6 +249,21 @@ describe('IframeResizer', () => {
     )
   })
 
+  it('rounds a fractional modal height up so the modal is not cut short', () => {
+    const modal = createModalContent(607)
+    modal.getBoundingClientRect = jest.fn(() => ({ height: 607.4 }) as DOMRect)
+    useAtomValueMock.mockReturnValue([modal] as never)
+
+    render(<IframeResizer />)
+
+    expect(postMessageToWindowSpy).toHaveBeenLastCalledWith(
+      window.parent,
+      WidgetMethodsEmit.UPDATE_HEIGHT,
+      { height: 608 },
+      MOCK_PARENT_ORIGIN,
+    )
+  })
+
   it('shrinks back to the page height once the modal closes', () => {
     useAtomValueMock.mockReturnValue([createModalContent(607)] as never)
 

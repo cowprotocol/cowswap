@@ -68,6 +68,13 @@ export const StyledDialogOverlay = styled(AnimatedDialogOverlay)`
 
     background-color: ${({ theme }) => (theme.darkMode ? 'rgba(0,0,0,.425)' : 'rgba(0,0,0,0.3)')};
     backdrop-filter: blur(5px);
+
+    /* Hosts with a fixed or capped height don't grow the widget iframe to fit the modal (see IframeResizer) */
+    ${({ theme }) =>
+      theme.isWidget &&
+      css`
+        overflow-y: auto;
+      `}
   }
 `
 

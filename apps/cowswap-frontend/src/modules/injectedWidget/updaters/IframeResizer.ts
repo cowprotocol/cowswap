@@ -37,10 +37,7 @@ export function IframeResizer(): null {
 
     const sendHeightUpdate = (): void => {
       // Legacy modals render in a portal outside #root, so they are measured separately
-      const contentHeight = Math.max(
-        getContentHeight(contentElement),
-        ...modalElements.map((modalElement) => modalElement.offsetHeight),
-      )
+      const contentHeight = Math.max(getContentHeight(contentElement), ...modalElements.map(getContentHeight))
 
       if (contentHeight !== previousHeightRef.current) {
         widgetIframeTransport.postMessageToWindow(
