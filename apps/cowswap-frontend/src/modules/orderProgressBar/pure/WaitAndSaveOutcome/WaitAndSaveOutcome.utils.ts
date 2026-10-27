@@ -1,12 +1,69 @@
+import { formatFiatAmount, formatTokenAmount } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { Nullish } from '@cowprotocol/types'
+
+import { WaitAndSaveOutcomeProps } from './WaitAndSaveOutcome.types'
+
 export const MIN_GAIN_BAR_PX = 4
 export const MIN_GAIN_PERCENT_DISPLAY = 0.01
 export const HERO_FONT_MAX_PX = 34
 export const HERO_FONT_MIN_PX = 20
 
+export interface BuildWaitAndSaveOutcomeParams {
+  surplusAmount: CurrencyAmount<Currency>
+  surplusFiatValue: Nullish<CurrencyAmount<Currency>>
+  showFiatValue: boolean
+  surplusPercent: Nullish<string>
+  executedAmount: CurrencyAmount<Currency>
+  isSell: boolean
+}
+
 export interface GainBarLayout {
   aloneFlex: number
   gainFlex: number
   gainMinWidthPx: number
+}
+
+// eslint-disable-next-line complexity
+export function buildWaitAndSaveOutcomeProps({
+  surplusAmount,
+  surplusFiatValue,
+  showFiatValue,
+  surplusPercent,
+  executedAmount,
+  isSell,
+}: BuildWaitAndSaveOutcomeParams): WaitAndSaveOutcomeProps | null {
+  if (!surplusAmount.currency.equals(executedAmount.currency)) {
+    return null
+  }
+
+  const gainNumeric = Number(surplusAmount.toExact())
+  if (!(gainNumeric > 0)) {
+    return null
+  }
+
+  const quotedAmount = isSell ? getSellQuotedAmount(executedAmount, surplusAmount) : executedAmount
+  if (!quotedAmount || !quotedAmount.greaterThan(0)) {
+    return null
+  }
+
+  const gainPercent = Number.parseFloat(surplusPercent ?? '0')
+  const gainAmount = formatTokenAmount(surplusAmount)
+  const tradingAloneAmount = formatTokenAmount(quotedAmount)
+
+  if (!gainAmount || !tradingAloneAmount) {
+    return null
+  }
+
+  return {
+    gainAmount,
+    gainFiat: showFiatValue && surplusFiatValue ? formatFiatAmount(surplusFiatValue) : undefined,
+    gainPercent: Number.isFinite(gainPercent) ? gainPercent : 0,
+    tradingAloneAmount,
+    tradingAloneNumeric: Number(quotedAmount.toExact()),
+    gainNumeric,
+    tokenSymbol: surplusAmount.currency.symbol ?? surplusAmount.currency.name ?? '',
+  }
 }
 
 export function fitHeroFontSize(
@@ -56,4 +113,15 @@ export function getGainBarLayout(tradingAloneAmount: number, gainAmount: number)
     gainFlex: safeGain / total,
     gainMinWidthPx: MIN_GAIN_BAR_PX,
   }
+}
+
+function getSellQuotedAmount(
+  executedAmount: CurrencyAmount<Currency>,
+  surplusAmount: CurrencyAmount<Currency>,
+): CurrencyAmount<Currency> | null {
+  if (!executedAmount.greaterThan(surplusAmount)) {
+    return null
+  }
+
+  return executedAmount.subtract(surplusAmount)
 }

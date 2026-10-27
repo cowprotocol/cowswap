@@ -1,4 +1,4 @@
-// Demo values until backend can report CoW membership and a trading-alone baseline.
+// Demo values until backend can report a quoted baseline for Wait & Save surplus.
 export const WAIT_AND_SAVE_OUTCOME_DEMO = {
   gainAmount: '48,213.0542',
   gainFiat: '48,213.05',

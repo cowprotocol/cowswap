@@ -1,4 +1,8 @@
+import { USDC_MAINNET, WETH_MAINNET } from '@cowprotocol/common-const'
+import { CurrencyAmount } from '@cowprotocol/currency'
+
 import {
+  buildWaitAndSaveOutcomeProps,
   fitHeroFontSize,
   formatGainPercentLabel,
   getGainBarLayout,
@@ -8,6 +12,66 @@ import {
 } from './WaitAndSaveOutcome.utils'
 
 describe('WaitAndSaveOutcome utils', () => {
+  describe('buildWaitAndSaveOutcomeProps', () => {
+    const surplusAmount = CurrencyAmount.fromRawAmount(USDC_MAINNET, '2470000')
+    const executedAmount = CurrencyAmount.fromRawAmount(USDC_MAINNET, '1000000000')
+    const surplusFiatValue = CurrencyAmount.fromRawAmount(USDC_MAINNET, '7610000')
+
+    it('maps sell surplus onto Wait & Save outcome props', () => {
+      const props = buildWaitAndSaveOutcomeProps({
+        surplusAmount,
+        surplusFiatValue,
+        showFiatValue: true,
+        surplusPercent: '0.51',
+        executedAmount,
+        isSell: true,
+      })
+
+      expect(props).toEqual({
+        gainAmount: expect.any(String),
+        gainFiat: expect.any(String),
+        gainPercent: 0.51,
+        tradingAloneAmount: expect.any(String),
+        tradingAloneNumeric: Number(executedAmount.subtract(surplusAmount).toExact()),
+        gainNumeric: Number(surplusAmount.toExact()),
+        tokenSymbol: USDC_MAINNET.symbol,
+      })
+      expect(props?.gainAmount.length).toBeGreaterThan(0)
+      expect(props?.gainFiat?.length).toBeGreaterThan(0)
+    })
+
+    it('uses executed amount as the quoted baseline for buy surplus', () => {
+      const props = buildWaitAndSaveOutcomeProps({
+        surplusAmount,
+        surplusFiatValue,
+        showFiatValue: false,
+        surplusPercent: '1.25',
+        executedAmount,
+        isSell: false,
+      })
+
+      expect(props).toMatchObject({
+        gainPercent: 1.25,
+        tradingAloneNumeric: Number(executedAmount.toExact()),
+        gainNumeric: Number(surplusAmount.toExact()),
+        gainFiat: undefined,
+      })
+    })
+
+    it('returns null when surplus currency does not match executed amount', () => {
+      const props = buildWaitAndSaveOutcomeProps({
+        surplusAmount,
+        surplusFiatValue: null,
+        showFiatValue: false,
+        surplusPercent: '1',
+        executedAmount: CurrencyAmount.fromRawAmount(WETH_MAINNET, '1000000000000000000'),
+        isSell: true,
+      })
+
+      expect(props).toBeNull()
+    })
+  })
+
   describe('fitHeroFontSize', () => {
     it('keeps the max size when the text already fits', () => {
       const element = createMeasurableElement({ clientWidth: 400, widthPerPx: 5 })

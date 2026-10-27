@@ -24,7 +24,6 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   const order = useOrder({ chainId, id: transactionHash || undefined })
   const { isWaitForCowsEnabled } = useFeatureFlags()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  // TODO: POC: hardcoded outcome on this confirmation only. Surplus/history of another order does not set this.
   const showWaitAndSaveOutcome = Boolean(isWaitForCowsEnabled && isWaitAndSaveEnabled && !isSolanaChain(chainId))
 
   const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)

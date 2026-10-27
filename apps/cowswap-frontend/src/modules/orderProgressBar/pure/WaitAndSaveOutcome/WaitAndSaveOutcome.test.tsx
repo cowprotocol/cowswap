@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -14,15 +14,6 @@ jest.mock('react-inlinesvg', () => ({
   __esModule: true,
   default: () => <svg data-testid="inline-svg" />,
 }))
-
-jest.mock('@cowprotocol/ui', () => {
-  const actual = jest.requireActual('@cowprotocol/ui')
-
-  return {
-    ...actual,
-    TooltipIcon: ({ content }: { content: ReactNode }) => <span data-testid="tooltip-icon">{content}</span>,
-  }
-})
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -57,14 +48,8 @@ describe('WaitAndSaveOutcome', () => {
     expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('SUPERLONGTOK...')
     expect(screen.getByTitle('SUPERLONGTOKENXYZ').textContent).toBe('SUPERLONGTOK...')
     expect(screen.getByTestId('wait-and-save-gain-pill').textContent).toBe('<0.01%')
-  })
-
-  it('explains trading alone as the best same-auction single-order offer', () => {
-    renderOutcome(<WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} />)
-
-    expect(screen.getByTestId('tooltip-icon').textContent).toBe(
-      "Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote.",
-    )
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('more than quoted')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toContain('Quoted ·')
   })
 
   it('skips the hero blur transition when the user prefers reduced motion', () => {
