@@ -2,12 +2,13 @@ import { isAddress } from 'viem'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
+import { RWA_ISSUERS } from './issuers'
+
 import type { RwaAsset, RwaRegistry, RwaToken, RwaTradingTime } from './types'
 
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
-/** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-const ALLOWED_ISSUERS: readonly string[] = ['Ondo', 'xStocks']
+const ALLOWED_ISSUERS: readonly string[] = RWA_ISSUERS
 
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []

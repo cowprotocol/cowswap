@@ -41,9 +41,6 @@ export interface ParsedOrder {
   expirationTime: Date
   fulfillmentTime: string | undefined
   composableCowInfo?: ComposableCowInfo
-  // `getUiOrderType` reads this to tell a Solana limit order from a market one, and reaches it
-  // through an optional field — drop it here and every Solana order silently becomes unclassified.
-  appData: Order['appData']
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
   executionData: ParsedOrderExecutionData
@@ -135,7 +132,6 @@ export const parseOrder = (order: Order): ParsedOrder => {
     creationTime,
     expirationTime,
     fulfillmentTime,
-    appData: order.appData,
     fullAppData: order.fullAppData,
     executionData,
     signingScheme: order.signingScheme,

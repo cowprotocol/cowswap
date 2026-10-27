@@ -80,10 +80,14 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
             <>
               {balancesError && <p className={styles.note}>Some balances are unavailable: {balancesError.message}</p>}
               <HoldingsTable holdings={filteredHoldings} getLogoUrl={portfolio.getLogoUrl} />
-              <p className={styles.note}>
-                Valued at underlying asset prices × equivalent shares. Actual sale proceeds may differ.
-                {pricesUpdatedAt && ` Updated ${formatDateTime(Date.parse(pricesUpdatedAt) / 1000)}.`}
-              </p>
+              <div className={styles.valuationNote}>
+                <p>Estimated from token market prices. Actual sale proceeds may differ.</p>
+                {pricesUpdatedAt && (
+                  <time dateTime={pricesUpdatedAt}>
+                    Prices updated {formatDateTime(Date.parse(pricesUpdatedAt) / 1000)}
+                  </time>
+                )}
+              </div>
             </>
           ) : (
             <StatusMessage>

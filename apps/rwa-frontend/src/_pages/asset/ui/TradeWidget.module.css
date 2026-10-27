@@ -4,6 +4,15 @@
   gap: 10px;
 }
 
+.notice {
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
 .connectPrompt {
   display: flex;
   align-items: center;
