@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getAddressKey, type OrderParameters } from '@cowprotocol/cow-sdk'
+import { getAddressKey, type OrderParameters, type SolanaQuoteCosts } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -13,6 +13,7 @@ import {
   applyUnpricedHookGasToOrderParams,
   getEoaTwapQuotePreHooks,
   isSolanaQuoteAndPost,
+  type TradeQuoteState,
   useTradeQuote,
   useTradeQuoteProtocolFee,
 } from 'modules/tradeQuote'
@@ -47,6 +48,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
   const quotedOrderParams = quoteResponse?.quote
   const orderParams = useOrderParamsWithEoaTwapHookGas(quotedOrderParams)
   const protocolFeeBps = useTradeQuoteProtocolFee()
+  const solanaQuoteCosts = getSolanaQuoteCosts(tradeQuote?.quote)
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 
@@ -63,6 +65,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
       slippagePercent: derivedSlippage,
       partnerFeeBps: volumeFeeBps,
       protocolFeeBps,
+      solanaQuoteCosts,
     }
   }, [
     orderKind,
@@ -73,7 +76,12 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
     outputCurrency,
     protocolFeeBps,
     derivedSlippage,
+    solanaQuoteCosts,
   ])
+}
+
+function getSolanaQuoteCosts(quote: TradeQuoteState['quote']): SolanaQuoteCosts | undefined {
+  return isSolanaQuoteAndPost(quote) ? quote.solanaQuote.costs : undefined
 }
 
 function useOrderParamsWithEoaTwapHookGas(quotedOrderParams: OrderParameters | undefined): OrderParameters | undefined {

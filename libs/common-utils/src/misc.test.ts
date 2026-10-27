@@ -180,9 +180,59 @@ describe('isInsufficientFundsProviderError', () => {
 })
 
 describe('getProviderErrorMessage', () => {
+  const hostError = (reason: unknown): object => ({
+    isRpcError: true,
+    code: -32600,
+    reason,
+    message: `-32600: ${String(reason)}`,
+  })
+  // Same nesting viem produces when the widget host rejects an approval
+  const viemWrapped = (cause: object): object => ({
+    name: 'ContractFunctionExecutionError',
+    shortMessage: 'JSON is not a valid request object.',
+    cause: {
+      name: 'TransactionExecutionError',
+      shortMessage: 'JSON is not a valid request object.',
+      cause: {
+        name: 'InvalidRequestRpcError',
+        code: -32600,
+        shortMessage: 'JSON is not a valid request object.',
+        cause,
+      },
+    },
+  })
+
   it('ignores a non-string error.message instead of returning it as-is', () => {
     // Falls through to the generic `.toString()` fallback rather than returning the object
     // as-is, which would make downstream `.toLowerCase()` calls throw.
     expect(getProviderErrorMessage({ message: {} })).toBe('[object Object]')
+  })
+
+  it("returns viem's short message for a regular wallet error", () => {
+    expect(getProviderErrorMessage(viemWrapped({ code: -32600, message: 'raw' }))).toBe(
+      'JSON is not a valid request object.',
+    )
+  })
+
+  it("returns the widget host's message when the host's provider rejected the request", () => {
+    expect(getProviderErrorMessage(viemWrapped(hostError('Safety of the transaction could not be verified')))).toBe(
+      'Safety of the transaction could not be verified',
+    )
+  })
+
+  it('keeps only the first line when the host rethrows a multi-line viem error', () => {
+    const reason = 'User rejected the request.\n\nRequest Arguments:\n  from: 0x123\n\nVersion: viem@2.48.8'
+    expect(getProviderErrorMessage(viemWrapped(hostError(reason)))).toBe('User rejected the request.')
+  })
+
+  it('falls back to the regular message when the host sent no usable reason', () => {
+    expect(getProviderErrorMessage(viemWrapped(hostError(undefined)))).toBe('JSON is not a valid request object.')
+    expect(getProviderErrorMessage(viemWrapped(hostError('   ')))).toBe('JSON is not a valid request object.')
+  })
+
+  it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {
+    const hostRejection = viemWrapped({ ...hostError('Your wallet declined'), code: 4001 })
+    expect(isRejectRequestProviderError(hostRejection)).toBe(true)
+    expect(isInsufficientFundsProviderError(hostRejection)).toBe(false)
   })
 })
