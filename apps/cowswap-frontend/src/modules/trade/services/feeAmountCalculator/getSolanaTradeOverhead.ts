@@ -28,6 +28,11 @@ export interface SolanaTradeOverhead {
   required: bigint
   /** `required` plus headroom for wallet-injected priority fees — what the MAX button reserves. */
   maxReserve: bigint
+  /**
+   * The part of `required` the transaction actually spends: rent for the accounts it creates, plus the
+   * fees. Excludes the fee payer's own rent-exempt reserve, which `required` demands but nothing debits.
+   */
+  spent: bigint
 }
 
 export interface SolanaTradeOverheadOptions {
@@ -65,11 +70,14 @@ export async function getSolanaTradeOverhead(
   const rents = await Promise.all(sizes.map((size) => connection.getMinimumBalanceForRentExemption(size)))
 
   const fees = ownerPaysFees ? SIGNATURE_FEE_LAMPORTS : 0n
-  const required = rents.reduce<bigint>((total, rent) => total + BigInt(rent), fees)
+  const [payerReserve, ...createdAccountRents] = rents
+  const spent = createdAccountRents.reduce<bigint>((total, rent) => total + BigInt(rent), fees)
+  const required = spent + BigInt(payerReserve)
 
   return {
     required,
     maxReserve: ownerPaysFees ? required + PRIORITY_FEES_RESERVE_LAMPORTS : required,
+    spent,
   }
 }
 
