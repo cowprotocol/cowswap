@@ -2,16 +2,18 @@
 import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
 import { TokenAmount } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, useIsFreeOrderPlacement, ReceiveAmountInfo } from 'modules/trade'
+import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, ReceiveAmountInfo } from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'
@@ -25,7 +27,7 @@ export interface ReceiveAmountInfoTooltipProps {
 
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
-  const isFreePlacement = useIsFreeOrderPlacement()
+  const { chainId } = useWalletInfo()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
   const {
@@ -34,6 +36,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
       protocolFee,
       bridgeFee,
+      accountRentFee,
     },
     beforeAllFees,
   } = receiveAmountInfo
@@ -46,11 +49,13 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
   const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)
   const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
+  const hasAccountRentFee = !isFractionFalsy(accountRentFee)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
   const hasFee = hasNetworkFee || hasAnyFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
+  const showFreeFee = !hasAnyFee && (isSolanaChain(chainId) || !isEoaNotEthFlow)
 
   const beforeAllFeesAmount = isSell ? beforeAllFees.buyAmount : beforeAllFees.sellAmount
 
@@ -73,18 +78,17 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
         <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} testId={TEST_IDS.partnerFee} />
       )}
 
+      {hasAccountRentFee && <FeeItem title={t`Account deposit`} isSell={isSell} feeAmount={accountRentFee} />}
+
       <NetworkFeeItem
         discount={discount}
         networkFeeAmount={networkFeeAmount}
         isSell={isSell}
         hasFee={hasFee}
-        isFreePlacement={isFreePlacement}
         testId={TEST_IDS.networkCosts}
       />
 
-      {!hasAnyFee && !isEoaNotEthFlow && isFreePlacement && (
-        <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />
-      )}
+      {showFreeFee && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} testId={TEST_IDS.freeFee} />}
 
       {bridgeFee && (
         <FeeItem

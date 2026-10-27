@@ -19,6 +19,15 @@ import {
 import type { SolanaFundedAccount, SolanaTradeOverhead } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
+export interface UseSolanaTradeOverheadOptions {
+  /**
+   * Prices the bundle as if nobody sponsored it — what placing the order costs, rather than what the
+   * owner has to hold. A sponsor rents every account the bundle creates and pays the fee, so the
+   * un-sponsored figure is also what it spends on the owner's behalf.
+   */
+  ignoreSponsor?: boolean
+}
+
 interface OverheadRequest {
   fundedAccounts: SolanaFundedAccount[]
   ownerPaysFees: boolean
@@ -30,7 +39,9 @@ interface OverheadRequest {
  * sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
  * still debits the owner). `null` while unknown or when nothing debits the wallet at all.
  */
-export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
+export function useSolanaTradeOverhead({
+  ignoreSponsor = false,
+}: UseSolanaTradeOverheadOptions = {}): SolanaTradeOverhead | null {
   const { chainId, account } = useWalletInfo()
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()
@@ -41,7 +52,8 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
 
-  const isSponsored = useIsSolanaSponsoredTrade()
+  const isSponsoredTrade = useIsSolanaSponsoredTrade()
+  const isSponsored = isSponsoredTrade && !ignoreSponsor
   const { isAtaCreationDisabled } = useFeatureFlags()
 
   const request = useMemo<OverheadRequest | null>(() => {

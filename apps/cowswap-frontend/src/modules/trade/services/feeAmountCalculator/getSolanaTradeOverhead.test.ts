@@ -141,6 +141,23 @@ describe('getSolanaTradeOverhead', () => {
     expect(overhead.maxReserve).toBe(overhead.required + PRIORITY_FEES_RESERVE)
   })
 
+  it('leaves the payer reserve out of what the transaction spends', async () => {
+    const connection = createConnection([])
+
+    const overhead = await getSolanaTradeOverhead(connection, [WSOL_FUNDED_ACCOUNT, ORDER_ACCOUNT])
+
+    expect(overhead.spent).toBe(BigInt(ORDER_RENT) + BigInt(TOKEN_ACCOUNT_RENT) + FEES)
+    expect(overhead.required).toBe(overhead.spent + BigInt(WALLET_RENT))
+  })
+
+  it('spends nothing when a sponsor pays the fees and no step creates an account', async () => {
+    const connection = createConnection([])
+
+    const overhead = await getSolanaTradeOverhead(connection, [], { ownerPaysFees: false })
+
+    expect(overhead.spent).toBe(0n)
+  })
+
   it('skips the rent of accounts that already exist on chain', async () => {
     const connection = createConnection([BUY_TOKEN_ACCOUNT, WSOL_ACCOUNT])
 

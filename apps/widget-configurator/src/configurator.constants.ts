@@ -186,6 +186,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   hideFavoriteTokens: false,
   hideBridgeInfo: false,
   hideWaitAndSave: false,
+  hideWrapBanner: false,
   hideOrdersTable: false,
   disableWindowOpen: false,
   disableTradeWhenPriceImpactIsUnknown: false,

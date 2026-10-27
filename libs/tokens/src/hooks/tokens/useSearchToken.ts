@@ -173,22 +173,18 @@ function useSearchTokensInApi(
 }
 
 function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const { chainId } = useAtomValue(environmentAtom)
   const activeTokens = useAtomValue(allActiveTokensAtom).tokens
   const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
-  const { data: inListsResult } = useSWR<FromListsResult>(
-    ['searchTokensInLists', chainId, input, activeTokens, inactiveTokens],
-    () => {
-      if (!input) return emptyFromListsResult
+  // Not useSWR: its key would hold both token arrays, which SWR re-serializes into a huge string on every render.
+  return useMemo(() => {
+    if (!input) return emptyFromListsResult
 
-      const filter = getTokenSearchFilter(input)
-      const tokensFromActiveLists = activeTokens.filter(filter)
-      const tokensFromInactiveLists = inactiveTokens.filter(filter)
+    const filter = getTokenSearchFilter(input)
 
-      return { tokensFromActiveLists, tokensFromInactiveLists }
-    },
-  )
-
-  return inListsResult ?? emptyFromListsResult
+    return {
+      tokensFromActiveLists: activeTokens.filter(filter),
+      tokensFromInactiveLists: inactiveTokens.filter(filter),
+    }
+  }, [input, activeTokens, inactiveTokens])
 }

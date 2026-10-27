@@ -478,9 +478,13 @@ export interface CowSwapWidgetParams {
 
   /**
    * Hides the Wait & Save toggle and related confirmation UI.
-   * Defaults to false.
    */
   hideWaitAndSave?: boolean
+
+  /**
+   * Option to hide the banner suggesting to wrap the native token (e.g. ETH -> WETH) when selling it.
+   */
+  hideWrapBanner?: boolean
 
   /**
    * Option to hide orders table on LIMIT and TWAP forms.
