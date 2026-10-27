@@ -122,5 +122,13 @@ export const StyledDialogContent = styled(({ ...rest }) => <AnimatedDialogConten
         `}
       `}
     }
+
+    /* The widget iframe is resized to fit the modal (see IframeResizer), so it must keep its natural height */
+    ${({ theme }) =>
+      theme.isWidget &&
+      css`
+        margin: 0;
+        max-height: none;
+      `}
   }
 `

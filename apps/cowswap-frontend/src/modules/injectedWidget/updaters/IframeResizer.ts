@@ -34,11 +34,10 @@ export function IframeResizer(): null {
     if (!shouldPropagateHeightUpdates(parentOrigin)) return
 
     const contentElement = getContentElement(document)
+    const modalElements = isModalOpen ? getModalContentElements(document) : []
 
     const sendHeightUpdate = (): void => {
-      const contentHeight = getContentHeight(contentElement)
-
-      if (isModalOpen) {
+      if (isModalOpen && !modalElements.length) {
         widgetIframeTransport.postMessageToWindow(
           window.parent,
           WidgetMethodsEmit.SET_FULL_HEIGHT,
@@ -49,6 +48,11 @@ export function IframeResizer(): null {
         previousHeightRef.current = 0
         return
       }
+
+      const contentHeight = Math.max(
+        getContentHeight(contentElement),
+        ...modalElements.map((modalElement) => Math.max(modalElement.offsetHeight, modalElement.scrollHeight)),
+      )
 
       if (contentHeight !== previousHeightRef.current) {
         widgetIframeTransport.postMessageToWindow(
@@ -78,6 +82,8 @@ export function IframeResizer(): null {
     if (contentElement !== document.body) {
       resizeObserver?.observe(document.body)
     }
+
+    modalElements.forEach((modalElement) => resizeObserver?.observe(modalElement))
 
     const mutationObserver =
       !resizeObserver && typeof MutationObserver !== 'undefined'
@@ -113,6 +119,11 @@ function getContentHeight(contentElement: HTMLElement): number {
     contentElement.clientHeight,
     Math.ceil(contentElement.getBoundingClientRect().height),
   )
+}
+
+// Legacy modals render in a portal outside #root, so their height has to be measured separately
+function getModalContentElements(doc: Document): HTMLElement[] {
+  return Array.from(doc.querySelectorAll<HTMLElement>('[data-reach-dialog-content]'))
 }
 
 function shouldPropagateHeightUpdates(parentOrigin: string | null | undefined): boolean {

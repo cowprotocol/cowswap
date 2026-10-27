@@ -8,7 +8,7 @@ import { Media, UI } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { ContentWrapper, HeaderRow, HoverText, StyledDialogContent, StyledDialogOverlay } from './styled'
 
@@ -143,6 +143,14 @@ export const CowModal = styled(Modal)<{
       width: 100vw;
       border-radius: 0;
     }
+
+    /* The widget iframe is resized to fit the modal (see IframeResizer), so it must keep its natural height */
+    ${({ theme }) =>
+      theme.isWidget &&
+      css`
+        height: auto;
+        max-height: none;
+      `}
 
     ${HeaderRow} {
       ${Media.upToSmall()} {
