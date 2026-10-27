@@ -3,6 +3,8 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { TradeType } from '@cowprotocol/widget-lib'
 
+import ms from 'ms.macro'
+
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
 import { DeadlineSelector } from 'modules/limitOrders/pure/DeadlineSelector'
 import {
@@ -16,6 +18,9 @@ import {
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 
 import { isCustomDeadlineExpired } from '../../utils/calculateLimitOrdersDeadline'
+
+// setTimeout() delays over 2^31-1 ms (~24.8 days) overflow and fire too early
+const MAX_TIMEOUT_MS = ms`24d`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -47,11 +52,25 @@ export function DeadlineInput() {
     }
   }, [widgetDeadlineMinutes, updateSettingsState])
 
-  // A persisted custom deadline that is already in the past is no longer applicable, reset it
+  // calculateLimitOrdersDeadline() ignores a passed custom deadline, reset it on expiry to keep the selector in sync
   useEffect(() => {
-    if (customDeadlineTimestamp && isCustomDeadlineExpired(customDeadlineTimestamp)) {
-      updateSettingsState({ customDeadlineTimestamp: null })
+    if (!customDeadlineTimestamp) return
+
+    const resetCustomDeadline = (): void => updateSettingsState({ customDeadlineTimestamp: null })
+    const now = Date.now()
+
+    if (isCustomDeadlineExpired(customDeadlineTimestamp, now)) {
+      resetCustomDeadline()
+      return
     }
+
+    const delay = customDeadlineTimestamp * 1000 - now
+
+    if (delay > MAX_TIMEOUT_MS) return
+
+    const timeout = setTimeout(resetCustomDeadline, delay)
+
+    return () => clearTimeout(timeout)
   }, [customDeadlineTimestamp, updateSettingsState])
 
   const isDeadlineDisabled = !!widgetDeadlineMinutes
