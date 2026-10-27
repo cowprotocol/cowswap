@@ -47,7 +47,7 @@ export function assertOrderHooksBelongToOwner(order: OrderCreation, chainId: Sup
 
   if (!hookUser) return
 
-  reportAndThrow(t`An error has occurred. Please refresh the quote and try again.`, {
+  reportAndThrow(getOrderBlockedMessage(), {
     chainId,
     hookUser,
     from: order.from,
