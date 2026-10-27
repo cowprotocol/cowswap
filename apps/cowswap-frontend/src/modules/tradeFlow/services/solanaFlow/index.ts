@@ -114,11 +114,12 @@ export async function solanaFlow(
     // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
     // owner paying — the only thing it can do there.
     //
-    // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
-    // rented by the sponsor too. The order book allows that; only the wrap transfer has to stay the
-    // owner's, since those are the funds being wrapped.
+    // A sponsored order covers the fees and rents the accounts the order itself needs. The WSOL
+    // account a native sell opens is not one of them: it is the owner's own account, and closing it
+    // returns the rent to the owner, so a sponsor-funded one would be a standing withdrawal from the
+    // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
     const sponsor = isSponsored ? solanaQuote.funder : undefined
-    const rentPayer = sponsor ?? owner
+    const buyAtaRentPayer = sponsor ?? owner
 
     const {
       step: createOrderStep,
@@ -173,10 +174,10 @@ export async function solanaFlow(
     // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
     // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       planCreateBuyAtaStep({
-        payer: rentPayer,
+        payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
         quote: solanaQuote,
         buySymbol,
