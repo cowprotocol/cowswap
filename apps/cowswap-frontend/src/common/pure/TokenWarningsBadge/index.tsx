@@ -39,9 +39,9 @@ export function TokenWarningsBadge({ warnings }: TokenWarningsBadgeProps): React
     </styledEl.TooltipContent>
   )
 
-  // HoverTooltip is deprecated in favour of NewTooltip, which opens only for mouse-like pointer
-  // types. This badge is the only route to the warning text, so on touch that would leave a count
-  // with no way to read what it means.
+  // NewTooltip opens only for mouse-like pointer types and this badge is the only route to the
+  // warning text, so the deprecated HoverTooltip stays. It binds no click handler on mobile either;
+  // the <button> trigger is what makes mobile browsers emit the synthetic mouse events it listens for.
   return (
     <HoverTooltip wrapInContainer content={tooltip}>
       <styledEl.Badge severity={severity} type="button">
