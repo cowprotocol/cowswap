@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url)
 const nextCli = require.resolve('next/dist/bin/next')
 const appDirectory = fileURLToPath(new URL('../../apps/cow-fi/', import.meta.url))
 const outputDirectory = path.join(appDirectory, '.next-cms-resilience')
+const PAGE_CHECK_CONCURRENCY = 4
 
 const cmsOnlyRoutes = new Set([
   '/careers/refer-to-earn',
@@ -55,6 +56,20 @@ export function assertPageAvailable(page, response) {
   for (const text of contentChecks[page.path] ?? []) {
     assert(response.body.includes(text), `${page.path}: expected fallback content is missing: ${text}`)
   }
+}
+
+export async function checkPages(pages, check) {
+  let nextPage = 0
+  let failure
+  const worker = async () => {
+    while (!failure && nextPage < pages.length) {
+      const page = pages[nextPage++]
+      const [result] = await Promise.allSettled([Promise.resolve().then(() => check(page))])
+      if (result.status === 'rejected') failure = result
+    }
+  }
+  await Promise.all(Array.from({ length: Math.min(PAGE_CHECK_CONCURRENCY, pages.length) }, worker))
+  if (failure) throw failure.reason
 }
 
 function cmsResponse(request, response, requestCounts) {
@@ -146,9 +161,11 @@ async function runScenario(scenario, cmsOrigin) {
   }
   const buildLog = path.join(outputDirectory, `${scenario}.build.log`)
   console.log(`CMS ${scenario}: building every page from a fresh cache…`)
+  const buildStart = performance.now()
   const build = startNext(['build', '--no-lint'], env, buildLog)
   const [exitCode] = await once(build, 'close')
   assert.equal(exitCode, 0, `CMS ${scenario}: production build failed. See ${buildLog}`)
+  const buildSeconds = ((performance.now() - buildStart) / 1000).toFixed(1)
 
   const routes = JSON.parse(readFileSync(path.join(distDirectory, 'routes-manifest.json'), 'utf8'))
   const prerender = JSON.parse(readFileSync(path.join(distDirectory, 'prerender-manifest.json'), 'utf8'))
@@ -160,11 +177,15 @@ async function runScenario(scenario, cmsOrigin) {
   const server = startNext(['start', '--hostname', '127.0.0.1', '--port', String(port)], env, serverLog)
   try {
     await waitUntilReady(server, origin, serverLog)
-    for (const page of pages) {
+    const checksStart = performance.now()
+    await checkPages(pages, async (page) => {
       const response = await fetch(origin + page.path, { signal: AbortSignal.timeout(15_000) })
       assertPageAvailable(page, { status: response.status, body: await response.text() })
-    }
-    console.log(`CMS ${scenario}: build passed; ${pages.length} discovered pages checked.`)
+    })
+    const checkSeconds = ((performance.now() - checksStart) / 1000).toFixed(1)
+    console.log(
+      `CMS ${scenario}: build passed in ${buildSeconds}s; ${pages.length} discovered pages checked in ${checkSeconds}s (up to ${PAGE_CHECK_CONCURRENCY} at once).`,
+    )
   } finally {
     if (server.exitCode === null && server.signalCode === null) {
       server.kill('SIGTERM')

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import { assertPageAvailable, discoverPageChecks } from './cow-fi-cms-resilience.mjs'
+import { assertPageAvailable, checkPages, discoverPageChecks } from './cow-fi-cms-resilience.mjs'
 
 test('discovers future static pages and generated dynamic pages without adding test cases', () => {
   const pages = discoverPageChecks(
@@ -61,4 +61,42 @@ test('requires actual fallback copy on Careers instead of accepting an empty lay
     () => assertPageAvailable({ path: '/careers', source: '/careers' }, { status: 200, body: '<main></main>' }),
     /fallback content is missing/,
   )
+})
+
+test('checks 200 pages with at most four requests in flight', async () => {
+  const pages = Array.from({ length: 200 }, (_, index) => `/page-${index}`)
+  const checked = []
+  let active = 0
+  let maximumActive = 0
+  await checkPages(pages, async (page) => {
+    active++
+    maximumActive = Math.max(maximumActive, active)
+    await new Promise((resolve) => setImmediate(resolve))
+    checked.push(page)
+    active--
+  })
+  assert.equal(maximumActive, 4)
+  assert.deepEqual(checked.sort(), [...pages].sort())
+})
+
+test('stops taking queued pages after a failure and waits for in-flight checks', async () => {
+  const error = new Error('Page failed')
+  const started = []
+  let releaseChecks
+  const pendingChecks = new Promise((resolve) => {
+    releaseChecks = resolve
+  })
+  const result = checkPages(
+    Array.from({ length: 200 }, (_, index) => index),
+    async (page) => {
+      started.push(page)
+      if (page === 0) throw error
+      await pendingChecks
+    },
+  )
+  const rejected = assert.rejects(result, (reason) => reason === error)
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.deepEqual(started, [0, 1, 2, 3])
+  releaseChecks()
+  await rejected
 })

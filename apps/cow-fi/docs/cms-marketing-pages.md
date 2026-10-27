@@ -39,7 +39,7 @@ The snapshot is an availability fallback and can be older than the CMS. Refresh 
 
 Run `pnpm exec nx run cow-fi:test-cms-resilience`. The same check runs in GitHub Actions for changes to cow.fi, its shared libraries, or the check itself.
 
-It builds the entire production site twice with an isolated local CMS: once returning HTTP 503, then returning an incomplete page template. Each build starts with a fresh cache. It discovers static pages and generated dynamic URLs from Next.js's manifests, starts the production server, and requests every discovered URL. New static pages and generated URLs are included automatically.
+It builds the entire production site twice with an isolated local CMS: once returning HTTP 503, then returning an incomplete page template. Each build starts with a fresh cache. It discovers static pages and generated dynamic URLs from Next.js's manifests, starts the production server, and requests every discovered URL. New static pages and generated URLs are included automatically. Up to four URL checks run concurrently, with a 15-second timeout per request; a failure stops queued checks after in-flight requests finish. The output reports build time and URL-check time separately.
 
 The check rejects failed builds, HTTP server errors, streamed error responses hidden behind HTTP 200, unexpected not-found pages, and missing fallback copy on Careers or Affiliate Program. Existing CMS-only documents and article pagination explicitly allow not-found responses when their content is unavailable. A new exception must be added deliberately in `tools/scripts/cow-fi-cms-resilience.mjs`; there is no blanket allowance for future pages.
 
