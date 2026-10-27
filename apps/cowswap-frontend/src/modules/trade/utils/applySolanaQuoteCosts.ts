@@ -1,7 +1,7 @@
 import type { SolanaQuoteCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { positiveIntegerAtom } from './positiveIntegerAtom'
+import { getSolanaCostAtoms } from './getSolanaCostAtoms'
 
 import type { ReceiveAmountInfo } from '../types'
 
@@ -18,12 +18,7 @@ export function applySolanaQuoteCosts(info: ReceiveAmountInfo, costs?: SolanaQuo
 
   const { isSell } = info
   const costsCurrency = isSell ? info.beforeAllFees.buyAmount.currency : info.beforeAllFees.sellAmount.currency
-  const networkFeeAtoms = positiveIntegerAtom(costs.networkFees) ?? 0n
-  const accountRentAtoms = positiveIntegerAtom(costs.buyTokenAtaCosts) ?? 0n
-  // Summed rather than read off `costs.total`, which also carries `costs.protocolFee`: a protocol fee
-  // reaches these stages through `protocolFeeBps`, which `getQuoteAmountsAndCosts` has already added
-  // back. Taking the total would count it twice and still leave it off the breakdown.
-  const total = networkFeeAtoms + accountRentAtoms
+  const { networkFeeAtoms, accountRentAtoms, total } = getSolanaCostAtoms(costs)
 
   if (total === 0n) return info
 
