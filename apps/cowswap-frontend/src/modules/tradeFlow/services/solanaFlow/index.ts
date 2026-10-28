@@ -48,6 +48,7 @@ import {
 
 import { assertSignedAppData, SolanaAppDataMismatchError } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
+import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -59,13 +60,15 @@ export interface SolanaFlowOptions {
   isSponsored?: boolean
   /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
   isAtaCreationDisabled?: boolean
+  /** LaunchDarkly `isSolanaAppDataEnabled`: off until the order book serves appData for Solana. */
+  isSolanaAppDataEnabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
-  { isSponsored = false, isAtaCreationDisabled = false }: SolanaFlowOptions = {},
+  { isSponsored = false, isAtaCreationDisabled = false, isSolanaAppDataEnabled = false }: SolanaFlowOptions = {},
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -140,7 +143,7 @@ export async function solanaFlow(
           kind: orderKind,
           validTo,
           partiallyFillable,
-          appDataHash: appData.appDataKeccak256,
+          appDataHash: isSolanaAppDataEnabled ? appData.appDataKeccak256 : LEGACY_SOLANA_LIMIT_APP_DATA_HASH,
           sellSymbol,
           buySymbol,
         })
@@ -151,22 +154,27 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
-          appDataDoc: appData.doc,
+          appDataDoc: isSolanaAppDataEnabled ? appData.doc : LEGACY_SOLANA_SWAP_APP_DATA,
         })
 
     // A swap signs the SDK's hash of `doc`, which only matches `fullAppData` when that was stringified
     // deterministically — the fallback appData (`getAppData()`) is not.
-    const fullAppData =
-      orderClass === OrderClass.LIMIT ? appData.fullAppData : await stringifyDeterministic(appData.doc)
+    const fullAppData = !isSolanaAppDataEnabled
+      ? undefined
+      : orderClass === OrderClass.LIMIT
+        ? appData.fullAppData
+        : await stringifyDeterministic(appData.doc)
 
-    assertSignedAppData(signedAppData, fullAppData)
+    if (fullAppData !== undefined) {
+      assertSignedAppData(signedAppData, fullAppData)
 
-    // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
-    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
+      // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
+      await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
-    // A retry started while the upload was in flight owns the flow now: going on would open a second
-    // wallet prompt for this stale order.
-    if (attemptId !== latestAttemptId) return
+      // A retry started while the upload was in flight owns the flow now: going on would open a second
+      // wallet prompt for this stale order.
+      if (attemptId !== latestAttemptId) return
+    }
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -320,7 +328,7 @@ function buildSolanaOrder(params: {
   validTo: number
   orderClass: OrderClass
   appData: string
-  fullAppData: string
+  fullAppData: string | undefined
   inputToken: Token
   outputToken: Token
   partiallyFillable: boolean
