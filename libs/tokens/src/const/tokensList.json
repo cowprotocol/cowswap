@@ -23,6 +23,11 @@
       "priority": 5,
       "category": "RWA",
       "source": "https://raw.githubusercontent.com/backed-fi/cowswap-xstocks-tokenlist/ca393f14a21111d32b0092f9800f91135a590fff/tokenlist.json"
+    },
+    {
+      "priority": 6,
+      "category": "RWA",
+      "source": "https://raw.githubusercontent.com/InverterNetwork/brix-token-list/3c9cd63729d690ccba467acd774e2043e33041f1/tokenlist.json"
     }
   ],
   "100": [
