@@ -24,7 +24,18 @@ const mockedUseUsdAmount = useUsdAmount as jest.MockedFunction<typeof useUsdAmou
 i18n.load('en-US', {})
 i18n.activate('en-US')
 
+class TestPointerEvent extends MouseEvent {
+  readonly pointerType: string
+
+  constructor(type: string, init: PointerEventInit = {}) {
+    super(type, init)
+    this.pointerType = init.pointerType ?? ''
+  }
+}
+
 beforeAll(() => {
+  Object.defineProperty(window, 'PointerEvent', { value: TestPointerEvent, configurable: true })
+
   window.matchMedia =
     window.matchMedia ||
     (() =>
@@ -48,6 +59,16 @@ beforeAll(() => {
     value: ResizeObserverMock,
   })
 })
+
+function getBidTrigger(bidValues: HTMLElement[], index: number): HTMLElement {
+  const trigger = bidValues[index]?.parentElement
+
+  if (!trigger) {
+    throw new Error(`Missing solver auction bid trigger at index ${index}`)
+  }
+
+  return trigger
+}
 
 function renderResult(element: ReactElement): RenderResult {
   return render(<I18nProvider i18n={i18n}>{element}</I18nProvider>)
@@ -170,6 +191,25 @@ describe('SolverAuctionResult', () => {
     renderResult(<SolverAuctionResult solvers={solvers} buyToken={buyToken} />)
 
     expect(screen.getAllByText('-<$0.01').length).toBeGreaterThan(0)
+  })
+
+  it('shows each bid amount in token units on price hover', () => {
+    mockedUseUsdAmount.mockReturnValue({
+      value: CurrencyAmount.fromRawAmount(USDC_MAINNET, '9000'),
+      isLoading: false,
+    })
+
+    renderResult(<SolverAuctionResult solvers={solvers} buyToken={buyToken} />)
+
+    const bidValues = screen.getAllByTestId('solver-auction-bid-value')
+    const winnerTrigger = getBidTrigger(bidValues, 0)
+    const quasiTrigger = getBidTrigger(bidValues, 1)
+
+    fireEvent.pointerEnter(winnerTrigger, { pointerType: 'mouse' })
+    expect(screen.getByText('36.84 RAI')).toBeTruthy()
+
+    fireEvent.pointerEnter(quasiTrigger, { pointerType: 'mouse' })
+    expect(screen.getByText('36.6 RAI')).toBeTruthy()
   })
 
   it('renders nothing when there are no solvers', () => {

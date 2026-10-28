@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { getTokenAmountTitle, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { PiTrophyFill } from 'react-icons/pi'
@@ -83,11 +83,17 @@ export function SolverAuctionRow({
           </styledEl.SolverDetails>
         </styledEl.SolverInfo>
         {isWinner && buyAmount ? (
-          <sharedStyledEl.BidValue $isWinner>
-            <TokenAmount amount={buyAmount} tokenSymbol={buyAmount.currency} />
-          </sharedStyledEl.BidValue>
+          <sharedStyledEl.BidValueTooltip
+            content={getTokenAmountTitle({ amount: buyAmount, tokenSymbol: buyAmount.currency })}
+            disableHoverablePopup
+            placement="top"
+          >
+            <sharedStyledEl.BidValue $isWinner data-testid="solver-auction-bid-value">
+              <TokenAmount amount={buyAmount} noTitle tokenSymbol={buyAmount.currency} />
+            </sharedStyledEl.BidValue>
+          </sharedStyledEl.BidValueTooltip>
         ) : null}
-        {!isWinner && deltaAmount ? <SolverDeltaValue delta={deltaAmount} /> : null}
+        {!isWinner && deltaAmount && buyAmount ? <SolverDeltaValue buyAmount={buyAmount} delta={deltaAmount} /> : null}
       </styledEl.RowContent>
     </styledEl.Row>
   )
