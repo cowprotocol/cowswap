@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.18.1...wallet-v3.19.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(rwa): serve RWA under /rwa in CoW Swap and share wallet connection (#8432)
+
+- feat: replace deprecated hooks with atoms for wallet/safe (#8307)
+
+### Patch Changes
+
+- fix: sync reown network while disconnected (#8404)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+  - @cowprotocol/ens@3.11.2
+
 ## [3.18.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.18.0...wallet-v3.18.1) (2026-10-27)
 
 ### Patch Changes

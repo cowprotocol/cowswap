@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.18.1...ui-v3.19.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: wait for cows alpha (#8393)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/analytics@3.16.2
+
 ## [3.18.1](https://github.com/cowprotocol/cowswap/compare/ui-v3.18.0...ui-v3.18.1) (2026-10-27)
 
 ### Patch Changes

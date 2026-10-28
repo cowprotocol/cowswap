@@ -1,5 +1,24 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.17.1...widget-configurator-v3.18.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner
+
+### Patch Changes
+
+- fix(balances): stop sending ipfs token lists to the balances watcher (#8441)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/widget-lib@4.12.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+  - @cowprotocol/analytics@3.16.2
+  - @cowprotocol/widget-react@3.3.2
+
 ## [3.17.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v3.17.0...widget-configurator-v3.17.1) (2026-10-27)
 
 ### Patch Changes
