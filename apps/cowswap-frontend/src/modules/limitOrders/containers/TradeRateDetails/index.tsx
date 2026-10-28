@@ -4,6 +4,7 @@ import { t } from '@lingui/core/macro'
 
 import { AffiliateTraderRewardsRow, useIsRewardsRowEnabled } from 'modules/affiliate'
 import { TradeFees, TradeTotalCostsDetails, TxCostRow, useSolanaTxCost } from 'modules/trade'
+import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
@@ -37,6 +38,7 @@ export function TradeRateDetails({
   const detailRowStyle = !!rateInfoParams
   const solanaTxCost = useSolanaTxCost()
   const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
+  const solanaOwnerDepositUsd = useUsdAmount(solanaTxCost?.ownerDeposit).value
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
@@ -64,6 +66,8 @@ export function TradeRateDetails({
       txCost={solanaTxCost.amount}
       txCostUsd={solanaTxCostUsd}
       isSponsored={solanaTxCost.isSponsored}
+      ownerDeposit={solanaTxCost.ownerDeposit}
+      ownerDepositUsd={solanaOwnerDepositUsd}
       detailRowStyle={detailRowStyle}
     />
   )
@@ -90,9 +94,11 @@ export function TradeRateDetails({
           fontBold
           mutedValue
         />
-        {tradeFees}
-        {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
-        {txCostRow}
+        <Box noMargin>
+          {tradeFees}
+          {isRewardsRowEnabled && <AffiliateTraderRewardsRow />}
+          {txCostRow}
+        </Box>
       </>
     )
   }
