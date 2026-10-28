@@ -22,11 +22,23 @@ interface TxCostRowProps {
   txCost: CurrencyAmount<Currency>
   txCostUsd: Nullish<CurrencyAmount<Currency>>
   isSponsored: boolean
+  /**
+   * The part of `txCost` a sponsored order still leaves to the owner — `SolanaTxCost.ownerDeposit`.
+   * Required rather than optional: a caller that omitted it would have the row claim a sponsored
+   * placement is free while the owner is in fact funding a deposit.
+   */
+  ownerDeposit: Nullish<CurrencyAmount<Currency>>
+  ownerDepositUsd: Nullish<CurrencyAmount<Currency>>
   withTimelineDot?: boolean
   isLast?: boolean
   /** Limit form detail-row typography (medium label, secondary value). */
   detailRowStyle?: boolean
   testId?: string
+}
+
+interface TxCostTooltipProps {
+  isSponsored: boolean
+  hasOwnerDeposit: boolean
 }
 
 /**
@@ -38,6 +50,8 @@ export function TxCostRow({
   txCost,
   txCostUsd,
   isSponsored,
+  ownerDeposit,
+  ownerDepositUsd,
   withTimelineDot = false,
   isLast = false,
   detailRowStyle = false,
@@ -45,43 +59,22 @@ export function TxCostRow({
 }: TxCostRowProps): ReactNode {
   const { t } = useLingui()
 
+  const isFullyCovered = isSponsored && !ownerDeposit
+  const shownAmount = isSponsored ? ownerDeposit : txCost
+  const shownAmountUsd = isSponsored ? ownerDepositUsd : txCostUsd
+
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
-      amount={isSponsored ? undefined : txCost}
-      fiatAmount={isSponsored ? undefined : txCostUsd}
-      tooltip={
-        isSponsored ? (
-          <>
-            <Trans>
-              Putting this order on-chain costs SOL in Solana transaction fees and account deposits, and CoW Swap covers
-              it for you.
-            </Trans>
-            <br />
-            <br />
-            <Trans>You need no SOL of your own to place this order.</Trans>
-          </>
-        ) : (
-          <>
-            <Trans>
-              Solana charges this to put your order on-chain: the transaction fee, and a deposit for the accounts the
-              order needs.
-            </Trans>
-            <br />
-            <br />
-            <Trans>
-              You pay it from your SOL balance when you sign, so it comes on top of the amount you sell rather than out
-              of your trade.
-            </Trans>
-          </>
-        )
-      }
+      amount={shownAmount}
+      fiatAmount={shownAmountUsd}
+      tooltip={<TxCostTooltip isSponsored={isSponsored} hasOwnerDeposit={!!ownerDeposit} />}
       label={t`Tx cost`}
       isLast={isLast}
       detailRowStyle={detailRowStyle}
       testId={testId}
     >
-      {isSponsored && (
+      {isFullyCovered && (
         <>
           <CoveredAmount>
             <TokenAmount amount={txCost} tokenSymbol={txCost.currency} />
@@ -99,5 +92,50 @@ export function TxCostRow({
         </>
       )}
     </ReviewOrderModalAmountRow>
+  )
+}
+
+function TxCostTooltip({ isSponsored, hasOwnerDeposit }: TxCostTooltipProps): ReactNode {
+  if (!isSponsored) {
+    return (
+      <>
+        <Trans>
+          Solana charges this to put your order on-chain: the transaction fee, and a deposit for the accounts the order
+          needs.
+        </Trans>
+        <br />
+        <br />
+        <Trans>
+          You pay it from your SOL balance when you sign, so it comes on top of the amount you sell rather than out of
+          your trade.
+        </Trans>
+      </>
+    )
+  }
+
+  if (!hasOwnerDeposit) {
+    return (
+      <>
+        <Trans>
+          Putting this order on-chain costs SOL in Solana transaction fees and account deposits, and CoW Swap covers it
+          for you.
+        </Trans>
+        <br />
+        <br />
+        <Trans>You need no SOL of your own to place this order.</Trans>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <Trans>CoW Swap covers the Solana transaction fees and the deposits for the accounts your order needs.</Trans>
+      <br />
+      <br />
+      <Trans>
+        This deposit opens the wrapped SOL account the sale goes through. The account is yours, so you fund it from your
+        SOL balance and get the deposit back when you close or unwrap it.
+      </Trans>
+    </>
   )
 }
