@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.17.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.17.0...explorer-v4.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ui@3.19.1
+
 ## [4.17.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.16.1...explorer-v4.17.0) (2026-10-28)
 
 ### Minor Changes

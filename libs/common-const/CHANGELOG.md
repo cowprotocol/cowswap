@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.0...common-const-v3.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
 ## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.1...common-const-v3.17.0) (2026-10-28)
 
 ### Minor Changes
