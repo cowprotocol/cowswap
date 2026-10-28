@@ -1,5 +1,42 @@
 # Changelog
 
+## [4.17.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.16.1...explorer-v4.17.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(explorer): show execution time for Solana orders (#8408)
+
+- fix(explorer): show placeholder icon for tokens without a resolvable image (#8438)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.0
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+  - @cowprotocol/analytics@3.16.2
+
+## [4.16.1](https://github.com/cowprotocol/cowswap/compare/explorer-v4.16.0...explorer-v4.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.16.1
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/ui@3.18.1
+  - @cowprotocol/hook-dapp-lib@2.4.1
+
 ## [4.16.0](https://github.com/cowprotocol/cowswap/compare/explorer-v4.15.0...explorer-v4.16.0) (2026-10-21)
 
 ### Minor Changes

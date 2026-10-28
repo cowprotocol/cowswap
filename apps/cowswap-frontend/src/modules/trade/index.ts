@@ -125,7 +125,7 @@ export {
   SigningWindowClosedError,
 } from './services/solanaFlow/signSolanaFlow'
 export type { SignedSolanaFlow, SignSolanaFlowContext } from './services/solanaFlow/signSolanaFlow'
-export { planWrapStep } from './services/solanaFlow/planWrapStep'
+export { planWrapStep, getWrapFundedAccounts } from './services/solanaFlow/planWrapStep'
 export { planDelegateStep } from './services/solanaFlow/planDelegateStep'
 export { getIsBuyAtaCreationSkipped, planCreateBuyAtaStep } from './services/solanaFlow/planCreateBuyAtaStep'
 export { planCreateOrderStep } from './services/solanaFlow/planCreateOrderStep'
