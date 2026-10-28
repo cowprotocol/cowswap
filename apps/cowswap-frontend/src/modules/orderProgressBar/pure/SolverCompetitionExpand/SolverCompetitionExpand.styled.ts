@@ -1,27 +1,32 @@
-import { font, UI } from '@cowprotocol/ui'
+import { Collapsible, font, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-`
+export const ToggleRow = styled(Collapsible.Trigger)`
+  --collapsible-trigger-hover-background: transparent;
+  --collapsible-trigger-open-hover-background: transparent;
 
-export const ToggleRow = styled.button`
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 8px;
   width: 100%;
+  min-height: unset;
   padding: 8px;
   margin: 0;
   border: none;
+  border-radius: 0;
   background: transparent;
   color: inherit;
-  cursor: pointer;
   text-align: left;
+  ${font('FONT_NORMAL', 'regular')}
 
-  &:hover {
+  &[data-panel-open] {
+    background: transparent;
+    color: inherit;
+  }
+
+  &:not([aria-disabled='true']):hover {
     opacity: 0.85;
   }
 `
@@ -61,7 +66,7 @@ export const WinnerLabel = styled.span`
   white-space: nowrap;
 `
 
-export const Chevron = styled.span<{ $expanded: boolean }>`
+export const Chevron = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -69,10 +74,18 @@ export const Chevron = styled.span<{ $expanded: boolean }>`
   width: 12px;
   height: 12px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  transform: rotate(${({ $expanded }) => ($expanded ? '180deg' : '0deg')});
   transition: transform 0.2s ease;
+
+  ${ToggleRow}[data-panel-open] & {
+    transform: rotate(180deg);
+  }
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
   }
+`
+
+export const PanelFrame = styled.div`
+  border: 1px solid var(${UI.COLOR_BORDER});
+  border-radius: 12px;
 `
