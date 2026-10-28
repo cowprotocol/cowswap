@@ -1,5 +1,22 @@
 # Changelog
 
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.20.1...common-utils-v3.21.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: wait for cows alpha (#8393)
+
+- feat: simple price chart (#8305)
+
+### Patch Changes
+
+- fix(balances): stop sending ipfs token lists to the balances watcher (#8441)
+
+- fix(widget): display widget provider error in the UI
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+
 ## [3.20.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.20.0...common-utils-v3.20.1) (2026-10-27)
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/core-v3.13.1...core-v3.14.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(rwa): add st0x token list (#8405)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+
 ## [3.13.1](https://github.com/cowprotocol/cowswap/compare/core-v3.13.0...core-v3.13.1) (2026-10-27)
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.16.2](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.1...analytics-v3.16.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+
 ## [3.16.1](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.0...analytics-v3.16.1) (2026-10-27)
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.5.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.4.1...hook-dapp-lib-v2.5.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(hook-dapps): register aave v3 leverage and v4 flash-loan hooks (#8429)
+
 ## [2.4.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v2.4.0...hook-dapp-lib-v2.4.1) (2026-10-27)
 
 ### Patch Changes

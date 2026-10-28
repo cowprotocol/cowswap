@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.12.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.11.1...widget-lib-v4.12.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner
+
+- feat: simple price chart (#8305)
+
 ## [4.11.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v4.11.0...widget-lib-v4.11.1) (2026-10-27)
 
 ### Patch Changes

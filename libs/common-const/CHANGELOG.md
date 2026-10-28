@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.1...common-const-v3.17.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+- feat(rwa): serve RWA under /rwa in CoW Swap and share wallet connection (#8432)
+
+- feat: wait for cows alpha (#8393)
+
 ## [3.16.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.0...common-const-v3.16.1) (2026-10-27)
 
 ### Patch Changes
