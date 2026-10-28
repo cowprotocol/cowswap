@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -11,7 +10,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { buildTradeWidgetHookPayload, BuildTradeWidgetHookPayloadParams, callWidgetHook } from 'modules/injectedWidget'
 import { TradeConfirmActions, useTradeFlowAnalytics } from 'modules/trade'
-import { solanaFlow, SolanaTradeFlowContext } from 'modules/tradeFlow'
+import { solanaFlow, SolanaTradeFlowContext, useSolanaFlowOptions } from 'modules/tradeFlow'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
@@ -44,7 +43,7 @@ export function useLimitOrdersTradeCallback(
   const shouldUseSafeBundle =
     !isSolana && isSafeBundle && Boolean(tradeContext?.postOrderParams.isSafeWallet) && !canUsePermit
   const analytics = useTradeFlowAnalytics()
-  const { isAtaCreationDisabled } = useFeatureFlags()
+  const solanaFlowOptions = useSolanaFlowOptions()
 
   return useCallback(async (): Promise<string | true | undefined> => {
     const widgetHookPayloadParams = getTradeWidgetHookPayloadParams(solanaContext, tradeContext, settingsState)
@@ -60,9 +59,7 @@ export function useLimitOrdersTradeCallback(
 
     // Solana flow
     if (isSolana && solanaContext) {
-      const placed = await solanaFlow(solanaContext, analytics, {
-        isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
-      })
+      const placed = await solanaFlow(solanaContext, analytics, solanaFlowOptions)
       return placed === true ? true : undefined
     }
 
@@ -83,7 +80,7 @@ export function useLimitOrdersTradeCallback(
     isSolana,
     solanaContext,
     analytics,
-    isAtaCreationDisabled,
+    solanaFlowOptions,
     shouldUseSafeBundle,
     tradeContext,
     safeBundleFlowContext,
