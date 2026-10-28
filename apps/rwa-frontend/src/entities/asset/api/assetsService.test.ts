@@ -139,8 +139,8 @@ function nvda(): RwaAsset {
   return asset
 }
 
-const NVDA_DAILY_SERIES = NVDA_SPARKLINE.slice(-25).map((value, index) => ({
-  time: Date.parse('2026-10-02T13:00:00.000Z') / 1000 - (24 - index) * 3600,
+const NVDA_DAILY_SERIES = NVDA_SPARKLINE.slice(-24).map((value, index) => ({
+  time: Date.parse('2026-10-02T13:00:00.000Z') / 1000 - (23 - index) * 3600,
   value,
 }))
 
@@ -447,12 +447,35 @@ describe('getMarketOverview', () => {
     expect(getHourlyDexVolumeMock).toHaveBeenCalledWith(nvda().tokens)
     expect(tickers(overview.gainers)).toEqual(['NVDA'])
     expect(overview.gainers[0]?.series).toEqual(NVDA_DAILY_SERIES)
-    expect(getChartMock).not.toHaveBeenCalled()
     expect(tickers(overview.losers)).toEqual(['AAPL'])
     expect(overview.updatedAt).toBe('2026-10-02T13:05:00.000Z')
     expect(overview.tradingTime).toEqual({ title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' })
     expect(getTokenMarketsMock).not.toHaveBeenCalled()
     expect(getNetworkStatsMock).not.toHaveBeenCalled()
+  })
+
+  it('takes the series of a mover without a full sparkline from its 1D chart', async () => {
+    const chart = [
+      { time: 1, value: 248 },
+      { time: 2, value: 250 },
+    ]
+    getChartMock.mockResolvedValue(chart)
+
+    const overview = await getMarketOverview()
+
+    expect(overview.losers[0]?.series).toEqual(chart)
+    expect(getChartMock).toHaveBeenCalledTimes(1)
+    expect(getChartMock).toHaveBeenCalledWith(getAssetByTicker('AAPL'), '1D')
+  })
+
+  it('nulls the series of a mover whose 1D chart fails', async () => {
+    getChartMock.mockRejectedValue(new Error('CoinGecko responded with 500'))
+
+    const overview = await getMarketOverview()
+
+    expect(overview.degraded).toBe(false)
+    expect(overview.losers[0]?.series).toBeNull()
+    expect(overview.gainers[0]?.series).toEqual(NVDA_DAILY_SERIES)
   })
 
   it('degrades and nulls the totals when the RWA markets fail', async () => {

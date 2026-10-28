@@ -61,9 +61,9 @@ describe('getDailyChange', () => {
       change24h: -70.9,
       updatedAt: '2026-10-19T09:17:40Z',
       sparkline7d: [
-        ...Array.from({ length: 144 }, () => 1375),
+        ...Array.from({ length: 145 }, () => 1375),
         401.6,
-        ...Array.from({ length: 9 }, () => 1375),
+        ...Array.from({ length: 8 }, () => 1375),
         ...Array.from({ length: 15 }, () => 402),
       ],
     })
@@ -255,14 +255,14 @@ describe('buildMarketCapSeries', () => {
 })
 
 describe('buildDailySeries', () => {
-  it('takes the last 24 hours of the sparkline, ending at the update hour', () => {
+  it('takes the last 24 points of the sparkline, ending at the update hour', () => {
     const sparkline7d = Array.from({ length: SPARKLINE_LENGTH }, (_, index) => index)
     const series = buildDailySeries(aggregate({ sparkline7d, updatedAt: '2026-10-02T13:20:00.000Z' }))
     const lastHour = Date.parse('2026-10-02T13:00:00.000Z') / 1000
 
-    expect(series).toHaveLength(25)
-    expect(series?.[0]).toEqual({ time: lastHour - 24 * HOUR, value: 144 })
-    expect(series?.[24]).toEqual({ time: lastHour, value: 168 })
+    expect(series).toHaveLength(24)
+    expect(series?.[0]).toEqual({ time: lastHour - 23 * HOUR, value: 145 })
+    expect(series?.[23]).toEqual({ time: lastHour, value: 168 })
   })
 
   it('drops non-finite points', () => {
@@ -270,9 +270,9 @@ describe('buildDailySeries', () => {
     const series = buildDailySeries(aggregate({ sparkline7d, updatedAt: '2026-10-02T13:00:00.000Z' }))
     const lastHour = Date.parse('2026-10-02T13:00:00.000Z') / 1000
 
-    expect(series).toHaveLength(24)
-    expect(series?.[22]).toEqual({ time: lastHour - 2 * HOUR, value: 1 })
-    expect(series?.[23]).toEqual({ time: lastHour, value: 3 })
+    expect(series).toHaveLength(23)
+    expect(series?.[21]).toEqual({ time: lastHour - 2 * HOUR, value: 1 })
+    expect(series?.[22]).toEqual({ time: lastHour, value: 3 })
   })
 
   it('returns null for a sparkline with skipped hours', () => {

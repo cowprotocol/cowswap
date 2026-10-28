@@ -11,7 +11,12 @@ interface Movers {
   losers: RwaMarketOverviewItem[]
 }
 
-/** The last 24 hours of `sparkline7d`, ending at the hour of `updatedAt`. `null` for a sparkline that isn't hourly */
+/**
+ * The last 24 hourly points of `sparkline7d`, the last one labelled with the hour of `updatedAt`.
+ * CoinGecko adds an hour's point some minutes after the hour, so the last point lags `updatedAt` by up to an hour
+ * and a 25th point would start the window up to 26 hours before the price.
+ * `null` for a sparkline that isn't hourly
+ */
 export function buildDailySeries({ sparkline7d, updatedAt }: RwaAggregateMarket): RwaChartPoint[] | null {
   const updatedSeconds = updatedAt ? Date.parse(updatedAt) / 1000 : NaN
 
@@ -19,7 +24,7 @@ export function buildDailySeries({ sparkline7d, updatedAt }: RwaAggregateMarket)
 
   const lastHour = floorToHour(updatedSeconds)
   const points = sparkline7d
-    .slice(-(DAILY_SERIES_HOURS + 1))
+    .slice(-DAILY_SERIES_HOURS)
     .flatMap((value, index, window) =>
       Number.isFinite(value) ? [{ time: lastHour - (window.length - 1 - index) * HOUR_SECONDS, value }] : [],
     )

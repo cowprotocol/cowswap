@@ -145,12 +145,20 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const markets = listed.map(({ market }) => market)
   const items = listed.map(({ asset, market }) => toOverviewItem(asset, market))
   const marketsByTicker = new Map(listed.map(({ asset, market }) => [asset.ticker, market]))
-  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): RwaMarketOverviewItem[] =>
-    moverItems.map((item) => ({ ...item, series: getDailySeries(marketsByTicker.get(item.ticker)) }))
+  // A token that skips hours leaves the sparkline incomplete, while its 1D chart has every trade
+  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): Promise<RwaMarketOverviewItem[]> =>
+    withSeries(
+      moverItems,
+      async (asset) => getDailySeries(marketsByTicker.get(asset.ticker)) ?? getAssetChart(asset, '1D'),
+    )
   const { gainers, losers } = splitMovers(items, MARKET_OVERVIEW_LIST_LIMIT)
-  const mostTraded = await withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
-    marketDataProvider.getHourlyDexVolume(asset.tokens),
-  )
+  const [mostTraded, gainersWithSeries, losersWithSeries] = await Promise.all([
+    withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
+      marketDataProvider.getHourlyDexVolume(asset.tokens),
+    ),
+    withDailySeries(gainers),
+    withDailySeries(losers),
+  ])
 
   return {
     totals: {
@@ -159,8 +167,8 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
       marketCapSeries: buildMarketCapSeries(markets),
     },
     mostTraded,
-    gainers: withDailySeries(gainers),
-    losers: withDailySeries(losers),
+    gainers: gainersWithSeries,
+    losers: losersWithSeries,
     updatedAt: latestUpdatedAt(markets),
     tradingTime: assets.find((asset) => asset.allowedTradingTime)?.allowedTradingTime ?? null,
     degraded,
