@@ -1,7 +1,14 @@
 /**
  * @jest-environment node
  */
-import { findAssets, getAsset, getAssetNetworkStats, getMarketOverview, listAssets } from './assetsService'
+import {
+  findAssets,
+  getAsset,
+  getAssetChart,
+  getAssetNetworkStats,
+  getMarketOverview,
+  listAssets,
+} from './assetsService'
 import { coingeckoProvider } from './marketData'
 import { loadSharesPerToken, loadTradingPause } from './sharesMultipliers'
 
@@ -359,6 +366,46 @@ describe('getAsset', () => {
 
   it('returns null for an unknown ticker', async () => {
     expect(await getAsset('UNKNOWN')).toBeNull()
+  })
+})
+
+describe('getAssetChart', () => {
+  const TOKEN_POINTS = [
+    { time: 1, value: 0.5 },
+    { time: 2, value: 0.75 },
+  ]
+
+  beforeEach(() => {
+    getChartMock.mockResolvedValue(TOKEN_POINTS)
+  })
+
+  it('converts the token prices to prices per share', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toEqual([
+      { time: 1, value: 2 },
+      { time: 2, value: 3 },
+    ])
+    expect(getChartMock).toHaveBeenCalledWith(nvda(), '1D')
+    expect(loadSharesPerTokenMock).toHaveBeenCalledWith([nvda().tokens[0]])
+  })
+
+  it('keeps the token prices when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
+
+    expect(await getAssetChart(nvda(), '1D')).toEqual(TOKEN_POINTS)
+  })
+
+  it('keeps the token prices when the tokens of the charted coin have different multipliers', async () => {
+    const asset = nvda()
+    const [ondoToken] = asset.tokens
+    const bnbToken = { ...ondoToken, chainId: 56 }
+    loadSharesPerTokenMock.mockResolvedValue({
+      byKey: { [NVDAON_KEY]: 0.25, [`56:${ondoToken.address}`]: 0.5 },
+      degraded: false,
+    })
+
+    expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toEqual(TOKEN_POINTS)
   })
 })
 
