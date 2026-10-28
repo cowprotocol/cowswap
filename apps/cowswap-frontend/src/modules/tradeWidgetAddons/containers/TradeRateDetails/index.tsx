@@ -67,6 +67,7 @@ export function TradeRateDetails({
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
   const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
+  const solanaOwnerDepositUsd = useUsdAmount(solanaTxCost?.ownerDeposit).value
 
   const toggleAccordion = useCallback(() => {
     setFeeDetailsOpen((prev) => !prev)
@@ -129,6 +130,8 @@ export function TradeRateDetails({
           txCost={solanaTxCost.amount}
           txCostUsd={solanaTxCostUsd}
           isSponsored={solanaTxCost.isSponsored}
+          ownerDeposit={solanaTxCost.ownerDeposit}
+          ownerDepositUsd={solanaOwnerDepositUsd}
           detailRowStyle
         />
       )}
