@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
+import { areBalancesLoadedAtom, BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useFavoriteTokens } from '@cowprotocol/tokens'
@@ -21,6 +21,10 @@ import { useTokensToSelect } from './useTokensToSelect'
 jest.mock('jotai', () => ({
   ...jest.requireActual('jotai'),
   useAtomValue: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/balances-and-allowances', () => ({
+  areBalancesLoadedAtom: Symbol('areBalancesLoadedAtom'),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -122,22 +126,27 @@ const createWidgetState = (override: Partial<WidgetState>): WidgetState => {
   } as WidgetState
 }
 
-function createBalancesState(values: BalancesState['values'], hasFirstLoad = true): BalancesState {
+function createBalancesState(values: BalancesState['values']): BalancesState {
   return {
     values,
-    hasFirstLoad,
-    isLoading: !hasFirstLoad,
+    hasFirstLoad: true,
+    isLoading: false,
     chainId: SupportedChainId.MAINNET,
     fromCache: false,
     error: null,
   }
 }
 
+function mockAtomValues(listTokens: TokenWithLogo[], areBalancesLoaded = true): void {
+  mockUseAtomValue.mockImplementation(((atom: unknown) =>
+    atom === areBalancesLoadedAtom ? areBalancesLoaded : listTokens) as typeof useAtomValue)
+}
+
 describe('useTokensToSelect', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseAtomValue.mockReturnValue([mainnetToken])
+    mockAtomValues([mainnetToken])
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseFavoriteTokens.mockReturnValue([])
     mockUseInjectedWidgetParams.mockReturnValue({})
@@ -217,7 +226,7 @@ describe('useTokensToSelect', () => {
   })
 
   it('filters favorite tokens to the currently selectable token set', () => {
-    mockUseAtomValue.mockReturnValue([scopedFavoriteToken])
+    mockAtomValues([scopedFavoriteToken])
     mockUseFavoriteTokens.mockReturnValue([scopedFavoriteToken, leakedFavoriteToken])
     mockUseSelectTokenWidgetState.mockReturnValue(
       createWidgetState({
@@ -240,7 +249,7 @@ describe('useTokensToSelect', () => {
     ['buyTokenLists on input', Field.INPUT, { buyTokenLists: ['https://example.com/buy.json'] }, false],
     ['sellTokenLists on output', Field.OUTPUT, { sellTokenLists: ['https://example.com/sell.json'] }, false],
   ])('applies the expected recent-token scope for %s', (_label, field, widgetParams, isRestricted) => {
-    mockUseAtomValue.mockReturnValue([scopedFavoriteToken])
+    mockAtomValues([scopedFavoriteToken])
     mockUseInjectedWidgetParams.mockReturnValue(widgetParams)
     mockUseSelectTokenWidgetState.mockReturnValue(
       createWidgetState({
@@ -266,7 +275,7 @@ describe('useTokensToSelect', () => {
     } as TokenWithLogo
     const leakedBridgeFavorite = { ...leakedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
 
-    mockUseAtomValue.mockReturnValue([scopedBridgeFavorite, scopedUnsupportedRecent])
+    mockAtomValues([scopedBridgeFavorite, scopedUnsupportedRecent])
     mockUseFavoriteTokens.mockReturnValue([scopedBridgeFavorite, leakedBridgeFavorite])
     mockUseInjectedWidgetParams.mockReturnValue({ buyTokenLists: ['https://example.com/buy.json'] })
     mockUseBridgeSupportedTokens.mockReturnValue({
@@ -290,7 +299,7 @@ describe('useTokensToSelect', () => {
 
   describe('tokens filters', () => {
     beforeEach(() => {
-      mockUseAtomValue.mockReturnValue([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
+      mockAtomValues([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
       mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET, account: ACCOUNT } as WalletInfo)
       mockUseTokensBalancesCombined.mockReturnValue(
         createBalancesState({
@@ -337,7 +346,7 @@ describe('useTokensToSelect', () => {
     })
 
     it('is loading until the balances are loaded', () => {
-      mockUseTokensBalancesCombined.mockReturnValue(createBalancesState({}, false))
+      mockAtomValues([], false)
       mockUseInjectedWidgetParams.mockReturnValue({ sellTokensFilter: { onlyWithBalance: true } })
       mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ field: Field.INPUT }))
 

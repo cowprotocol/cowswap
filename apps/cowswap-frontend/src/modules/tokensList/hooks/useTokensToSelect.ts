@@ -1,6 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { areBalancesLoadedAtom } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
@@ -164,13 +165,14 @@ function getHasScopedListRestriction(
 function useSelectorTokensFilter(field: Field | undefined, areTokensFromBridge: boolean): SelectorTokensFilter {
   const { account } = useWalletInfo()
   const tokensFilter = getTokenSelectorFilter(field, useInjectedWidgetParams())
-  const { values, hasFirstLoad } = useTokensBalancesCombined()
+  const { values } = useTokensBalancesCombined()
+  const areBalancesLoaded = useAtomValue(areBalancesLoadedAtom)
   // Balances are of the source network, so they can't narrow the bridge target tokens
   const isFilteredByBalance = Boolean(tokensFilter?.onlyWithBalance && account && !areTokensFromBridge)
 
   return {
     tokensFilter,
     balances: isFilteredByBalance ? values : null,
-    areBalancesLoading: isFilteredByBalance && !hasFirstLoad,
+    areBalancesLoading: isFilteredByBalance && !areBalancesLoaded,
   }
 }
