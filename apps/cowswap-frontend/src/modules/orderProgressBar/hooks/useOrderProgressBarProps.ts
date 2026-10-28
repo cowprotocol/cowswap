@@ -28,6 +28,8 @@ import { ActivityDerivedState } from 'common/types/activity'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
+import { useHoldFinishedStep } from './useHoldFinishedStep'
+
 import { DEFAULT_STEP_NAME, getProgressBarTimerDuration, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
@@ -244,6 +246,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     previousStepName,
     bridgingStatus,
     isBridgingTrade,
+    order,
+    apiSolverCompetition,
   )
   useCancellingOrderUpdater(orderId, getIsCancellationRequested(order, isCancelling))
   useCountdownStartUpdater(
@@ -448,10 +452,12 @@ function useProgressBarStepNameUpdater(
   previousStepName: OrderProgressBarState['previousStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
+  order: Order | undefined,
+  apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
 ): void {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
-  const stepName = getProgressBarStepName(
+  const rawStepName = getProgressBarStepName(
     isUnfillable,
     isCancelled,
     isExpired,
@@ -465,6 +471,7 @@ function useProgressBarStepNameUpdater(
     bridgingStatus,
     isBridgingTrade,
   )
+  const stepName = useHoldFinishedStep(rawStepName, order, apiSolverCompetition)
 
   // Update state with new step name
   useEffect(() => {

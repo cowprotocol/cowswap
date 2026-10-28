@@ -45,21 +45,23 @@ jest.mock('modules/trade', () => ({
           <div>{heading.subtitle}</div>
         </div>
       ) : null}
-      <div data-testid="trade-token-pair">
-        {tokenPair?.inputCurrencyInfo?.secondaryAmount ? (
-          <div data-testid="sold-surplus">
-            {tokenPair.inputCurrencyInfo.secondaryAmount.prefix}
-            {tokenPair.inputCurrencyInfo.secondaryAmount.tooltip}
-          </div>
-        ) : null}
-        {tokenPair?.outputCurrencyInfo?.secondaryAmount ? (
-          <div data-testid="received-surplus">
-            {tokenPair.outputCurrencyInfo.secondaryAmount.prefix}
-            {tokenPair.outputCurrencyInfo.secondaryAmount.tooltip}
-          </div>
-        ) : null}
-        {tokenPair?.footer}
-      </div>
+      {tokenPair ? (
+        <div data-testid="trade-token-pair">
+          {tokenPair.inputCurrencyInfo?.secondaryAmount ? (
+            <div data-testid="sold-surplus">
+              {tokenPair.inputCurrencyInfo.secondaryAmount.prefix}
+              {tokenPair.inputCurrencyInfo.secondaryAmount.tooltip}
+            </div>
+          ) : null}
+          {tokenPair.outputCurrencyInfo?.secondaryAmount ? (
+            <div data-testid="received-surplus">
+              {tokenPair.outputCurrencyInfo.secondaryAmount.prefix}
+              {tokenPair.outputCurrencyInfo.secondaryAmount.tooltip}
+            </div>
+          ) : null}
+          {tokenPair.footer}
+        </div>
+      ) : null}
       {children}
     </div>
   ),
@@ -193,6 +195,29 @@ describe('FinishedStep', () => {
       `https://etherscan.io/address/${receiver}`,
     )
     expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
+  })
+
+  it('omits the token pair while executed amounts are still zero', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={
+          {
+            ...order,
+            apiAdditionalInfo: {
+              executedBuyAmount: '0',
+              executedSellAmount: '0',
+            },
+          } as Order
+        }
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('trade-token-pair')).toBeNull()
   })
 
   it('omits solver expand and auction when there are no solvers', () => {
