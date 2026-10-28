@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.18.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.2...balances-and-allowances-v3.18.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/tokens@3.17.1
+  - @cowprotocol/wallet@3.19.1
+
 ## [3.18.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v3.18.1...balances-and-allowances-v3.18.2) (2026-10-28)
 
 ### Patch Changes
