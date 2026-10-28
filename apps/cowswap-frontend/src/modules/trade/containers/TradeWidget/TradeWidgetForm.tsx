@@ -22,6 +22,7 @@ import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { TradeFormValidation, useGetTradeFormValidation, useSolanaTradeOverhead } from 'modules/tradeFormValidation'
 import { WalletStatusButton } from 'modules/wallet'
 
+import { TokenWarnings } from 'common/containers/TokenWarnings'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { TradeType, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
@@ -272,6 +273,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 maxBalance={maxBalance}
                 topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
                 topContent={inputCurrencyInfo.topContent}
+                bottomContent={<TokenWarnings currency={sellToken} />}
                 openTokenSelectWidget={openSellTokenSelect}
                 customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}
@@ -304,6 +306,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
                 topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
                 topContent={outputCurrencyInfo.topContent}
+                bottomContent={<TokenWarnings currency={buyToken} />}
                 openTokenSelectWidget={openBuyTokenSelect}
                 customSelectTokenButton={params.customSelectTokenButton}
                 {...currencyInputCommonProps}

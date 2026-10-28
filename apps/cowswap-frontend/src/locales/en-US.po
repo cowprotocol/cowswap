@@ -333,6 +333,10 @@ msgstr "Are you sure you want to cancel order <0>{shortId}</0>?"
 msgid "My Custom Hooks ({customHooksCount})"
 msgstr "My Custom Hooks ({customHooksCount})"
 
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/index.tsx
+msgid "Token warnings"
+msgstr "Token warnings"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
 msgstr "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
@@ -1150,6 +1154,10 @@ msgstr "Please, type the word <0>\"{confirmWord}\"</0> to continue:"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/LimitOrdersSettings.pure.tsx
 msgid "Limit Price Position"
 msgstr "Limit Price Position"
+
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Mint authority"
+msgstr "Mint authority"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Pre Hooks"
@@ -4233,6 +4241,10 @@ msgstr "Fill or kill"
 msgid "Description"
 msgstr "Description"
 
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Freeze authority"
+msgstr "Freeze authority"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The estimated amount you'll receive after bridge costs."
 msgstr "The estimated amount you'll receive after bridge costs."
@@ -7015,6 +7027,10 @@ msgstr "Edit"
 #~ msgid "Order Expiration"
 #~ msgstr "Order Expiration"
 
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Low liquidity"
+msgstr "Low liquidity"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/AffiliateTradeCodeForm.tsx
 #~ msgid "The code must be at least {REF_CODE_MIN_LENGTH} characters long."
@@ -7705,6 +7721,10 @@ msgstr "Cancelled order"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "CoW AMM Deposit"
 #~ msgstr "CoW AMM Deposit"
+
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Permanent delegate"
+msgstr "Permanent delegate"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate stats are temporarily unavailable. Try again later."
@@ -8515,6 +8535,10 @@ msgstr "Set approval amount"
 msgid "CoW Fortune of the day"
 msgstr "CoW Fortune of the day"
 
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Low organic activity"
+msgstr "Low organic activity"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid ""
 "Hey, I just got an extra {surplus} on @CoWSwap! 🐮💸\n"
@@ -8733,6 +8757,11 @@ msgstr "Order Created"
 #: apps/cowswap-frontend/src/modules/twap/containers/EoaTwapSigningPendingContent/EoaTwapSigningPendingContent.tsx
 #~ msgid "Confirm the approval transaction in your connected wallet."
 #~ msgstr "Confirm the approval transaction in your connected wallet."
+
+#. placeholder {0}: warnings.length
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/index.tsx
+msgid "{0, plural, one {# Warning} other {# Warnings}}"
+msgstr "{0, plural, one {# Warning} other {# Warnings}}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
@@ -9055,6 +9084,10 @@ msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "The competition has started"
 msgstr "The competition has started"
+
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Very low trading activity"
+msgstr "Very low trading activity"
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderActivityTableRow.tsx
 msgid "This trade fee was too low to qualify for affiliate rewards."
@@ -9394,6 +9427,10 @@ msgstr "Search hooks..."
 msgid "{value} sec"
 msgstr "{value} sec"
 
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "Not verified"
+msgstr "Not verified"
+
 #: apps/cowswap-frontend/src/modules/injectedWidget/utils/validatePartnerFee.ts
 msgid "Partner fee recipient must be set!"
 msgstr "Partner fee recipient must be set!"
@@ -9490,6 +9527,10 @@ msgstr "Bridging succeeded"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/QuoteErrorsButton/quoteErrors.utils.ts
 msgid "Tokens must be different"
 msgstr "Tokens must be different"
+
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "High single ownership"
+msgstr "High single ownership"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useGetSafeTxInfo.ts
 #~ msgid "There is no provider to get Gnosis safe info"
@@ -10066,6 +10107,10 @@ msgstr "View cancellation"
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "Base Account"
 msgstr "Base Account"
+
+#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+msgid "May not be sellable"
+msgstr "May not be sellable"
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"
