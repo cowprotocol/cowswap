@@ -217,6 +217,8 @@
   display: inline-block;
   width: 112px;
   height: 32px;
+  line-height: 32px;
+  text-align: right;
   vertical-align: middle;
 }
 

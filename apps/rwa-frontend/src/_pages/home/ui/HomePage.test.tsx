@@ -144,6 +144,16 @@ describe('HomePage', () => {
     expect(screen.getByText('$180M')).toBeTruthy()
   })
 
+  it('shows a dash in the 24h chart column of an asset without a series', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    const chartCell = (await screen.findByText('$180M')).closest('tr')?.lastElementChild
+
+    expect(chartCell?.querySelector('svg')).toBeNull()
+    expect(chartCell?.textContent).toBe('—')
+  })
+
   it('requests the selected type, issuer and sort', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
