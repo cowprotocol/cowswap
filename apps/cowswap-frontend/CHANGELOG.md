@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.33.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.33.0...cowswap-v3.33.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/balances-and-allowances@3.18.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ens@3.11.3
+  - @cowprotocol/multicall@3.11.3
+  - @cowprotocol/tokens@3.17.1
+  - @cowprotocol/ui@3.19.1
+  - @cowprotocol/wallet@3.19.1
+  - @cowprotocol/snackbars@2.3.12
+
 ## [3.33.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.32.1...cowswap-v3.33.0) (2026-10-28)
 
 ### Minor Changes
