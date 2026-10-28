@@ -104,6 +104,8 @@ const AAPLX_KEY = '1:0x0000000000000000000000000000000000000001'
 const SHARES_PER_TOKEN = { [AAPLX_KEY]: 1, [NVDAON_KEY]: 1.0017, [NVDAX_KEY]: 1 }
 const XSTOCKS_PAUSE = { issuer: 'xStocks', start: '2026-10-28T00:15:00.000Z', end: '2026-10-28T00:45:00.000Z' }
 
+const NVDA_SPARKLINE = [...Array.from({ length: 7 * 24 }, () => 170), 180]
+
 const NVDA_MARKET: RwaAggregateMarket = {
   price: 180,
   change24h: 2,
@@ -112,7 +114,7 @@ const NVDA_MARKET: RwaAggregateMarket = {
   marketCap: 1000,
   volume24h: 500,
   updatedAt: '2026-10-02T13:00:00.000Z',
-  sparkline7d: [170, 180],
+  sparkline7d: NVDA_SPARKLINE,
 }
 
 const AAPL_MARKET: RwaAggregateMarket = {
@@ -137,10 +139,10 @@ function nvda(): RwaAsset {
   return asset
 }
 
-const NVDA_DAILY_SERIES = [
-  { time: Date.parse('2026-10-02T12:00:00.000Z') / 1000, value: 170 },
-  { time: Date.parse('2026-10-02T13:00:00.000Z') / 1000, value: 180 },
-]
+const NVDA_DAILY_SERIES = NVDA_SPARKLINE.slice(-25).map((value, index) => ({
+  time: Date.parse('2026-10-02T13:00:00.000Z') / 1000 - (24 - index) * 3600,
+  value,
+}))
 
 function tickers(items: { ticker: string }[]): string[] {
   return items.map(({ ticker }) => ticker)
@@ -431,11 +433,11 @@ describe('getMarketOverview', () => {
     expect(overview.degraded).toBe(false)
     expect(overview.totals.marketCap).toBe(4000)
     expect(overview.totals.volume24h).toBe(600)
-    expect(overview.totals.marketCapSeries).toHaveLength(2)
-    expect(overview.totals.marketCapSeries?.[0]?.time).toBe(at('2026-10-02T12:00:00.000Z'))
-    expect(overview.totals.marketCapSeries?.[0]?.value).toBeCloseTo((1000 / 180) * 170)
-    expect(overview.totals.marketCapSeries?.[1]?.time).toBe(at('2026-10-02T13:00:00.000Z'))
-    expect(overview.totals.marketCapSeries?.[1]?.value).toBeCloseTo(4000)
+    expect(overview.totals.marketCapSeries).toHaveLength(NVDA_SPARKLINE.length)
+    expect(overview.totals.marketCapSeries?.at(-2)?.time).toBe(at('2026-10-02T12:00:00.000Z'))
+    expect(overview.totals.marketCapSeries?.at(-2)?.value).toBeCloseTo((1000 / 180) * 170)
+    expect(overview.totals.marketCapSeries?.at(-1)?.time).toBe(at('2026-10-02T13:00:00.000Z'))
+    expect(overview.totals.marketCapSeries?.at(-1)?.value).toBeCloseTo(1000)
     expect(tickers(overview.mostTraded)).toEqual(['NVDA', 'AAPL'])
     expect(overview.mostTraded[0]).toMatchObject({
       logoUrl: 'https://example.com/nvda.png',
