@@ -43,6 +43,15 @@ export function getMatchingCustomInput(
   return matchesAppliedRate ? customInput : null
 }
 
+export function getPercentageLockedInversion(
+  selection: PercentageSelection | null | undefined,
+  focusCustomPercentage: boolean,
+): boolean | null {
+  if (selection) return selection.isInverted
+  if (focusCustomPercentage) return false
+  return null
+}
+
 export function getSelectedPercentage(
   selection: PercentageSelection | null | undefined,
   isInverted: boolean,

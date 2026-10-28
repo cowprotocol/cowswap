@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
@@ -53,6 +53,7 @@ import {
   getCustomRate,
   getCustomValue,
   getMatchingCustomInput,
+  getPercentageLockedInversion,
   getSelectedPercentage,
   getSelectedPreset,
   matchesRate,
@@ -224,10 +225,25 @@ export function RateInput() {
     }
   }, [activeRate, marketRate, isLoadingMarketRate, initialRate, inputCurrencyId, outputCurrencyId])
 
-  // Apply smart quote selection
-  // use getQuoteCurrencyByStableCoin() first for cases when there are no amounts
+  const hasAlignedPercentageInversion = useRef(false)
+
   useEffect(() => {
-    // Don't set quote currency until amounts are not set
+    const lockedInversion = getPercentageLockedInversion(percentageSelection, focusCustomPercentage)
+
+    if (lockedInversion === null) {
+      hasAlignedPercentageInversion.current = false
+      return
+    }
+
+    if (hasAlignedPercentageInversion.current) return
+
+    hasAlignedPercentageInversion.current = true
+    if (isInverted !== lockedInversion) {
+      updateLimitRateState({ isInverted: lockedInversion })
+    }
+  }, [percentageSelection, focusCustomPercentage, isInverted, updateLimitRateState])
+
+  useEffect(() => {
     if (
       isQuoteCurrencySet ||
       isFractionFalsy(inputCurrencyAmount) ||
@@ -235,6 +251,13 @@ export function RateInput() {
       !inputCurrency ||
       !outputCurrency
     ) {
+      return
+    }
+
+    const lockedInversion = getPercentageLockedInversion(percentageSelection, focusCustomPercentage)
+    if (lockedInversion !== null) {
+      updateLimitRateState({ isInverted: lockedInversion })
+      setIsQuoteCurrencySet(true)
       return
     }
 
@@ -255,6 +278,8 @@ export function RateInput() {
     outputCurrency,
     inputCurrencyAmount,
     outputCurrencyAmount,
+    percentageSelection,
+    focusCustomPercentage,
     updateLimitRateState,
   ])
 
