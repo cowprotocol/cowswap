@@ -13,6 +13,7 @@ import {
   optimism,
   plasma,
   polygon,
+  robinhood,
   sepolia,
 } from 'viem/chains'
 

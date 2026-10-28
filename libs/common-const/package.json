@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "@cowprotocol/cow-sdk": "9.3.0",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",
     "@cowprotocol/currency": "workspace:*",

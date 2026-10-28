@@ -28,7 +28,7 @@
     "react": "19.1.2",
     "react-dom": "19.1.2",
     "server-only": "0.0.1",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {
