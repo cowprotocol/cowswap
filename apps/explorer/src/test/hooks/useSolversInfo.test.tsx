@@ -4,6 +4,10 @@ import { fetchSolversInfo, SolversInfo } from 'utils/fetchSolversInfo'
 
 import { useSolversInfo } from '../../hooks/useSolversInfo'
 
+jest.mock('@cowprotocol/common-hooks', () => ({
+  useAvailableChains: () => [1, 8453],
+}))
+
 jest.mock('utils/fetchSolversInfo', () => ({
   fetchSolversInfo: jest.fn(),
 }))
@@ -77,5 +81,25 @@ describe('useSolversInfo', () => {
     expect(mockedFetchSolversInfo).toHaveBeenNthCalledWith(1, 1)
     expect(mockedFetchSolversInfo).toHaveBeenNthCalledWith(2, 8453)
     expect(result.current.solversInfo).toEqual(SOLVERS_BASE)
+  })
+
+  it('drops deployments on chains that are not available', async () => {
+    mockedFetchSolversInfo.mockResolvedValueOnce([
+      {
+        solverId: 'baseline',
+        displayName: 'Baseline',
+        networks: [],
+        deployments: [
+          { chainId: 1, chainName: 'Ethereum', active: true },
+          { chainId: 4663, chainName: 'Robinhood Chain', active: true },
+        ],
+      },
+    ])
+
+    const { result } = renderHook(() => useSolversInfo())
+
+    await waitFor(() => expect(result.current.isLoading).toBe(false))
+
+    expect(result.current.solversInfo[0].deployments.map(({ chainId }) => chainId)).toEqual([1])
   })
 })
