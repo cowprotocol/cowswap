@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -12,16 +12,6 @@ import { TradeTokenPair } from './TradeTokenPair.pure'
 jest.mock('common/pure/CurrencyAmountPreview', () => ({
   CurrencyAmountPreview: ({ id }: { id: string }) => <div data-testid={id} />,
 }))
-
-jest.mock('@cowprotocol/ui', () => {
-  const actual = jest.requireActual('@cowprotocol/ui')
-
-  return {
-    ...actual,
-    ProductLogo: () => <span data-testid="product-logo" />,
-    TooltipIcon: ({ content }: { content: ReactNode }) => <span data-testid="tooltip-icon">{content}</span>,
-  }
-})
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -71,17 +61,9 @@ describe('TradeTokenPair', () => {
     expect(screen.queryByTestId('trade-token-pair-footer')).toBeNull()
   })
 
-  it('renders a custom footer when provided', () => {
+  it('renders a footer when the caller provides one', () => {
     renderPair(<TradeTokenPair {...tokenPairProps} footer={<span>Custom footer</span>} />)
 
     expect(screen.getByTestId('trade-token-pair-footer').textContent).toContain('Custom footer')
-  })
-
-  it('renders the CoW participation footer when cowParticipation is set', () => {
-    renderPair(<TradeTokenPair {...tokenPairProps} cowParticipation={{ tooltip: 'CoW tooltip' }} />)
-
-    const footer = screen.getByTestId('trade-token-pair-footer')
-    expect(footer.textContent).toContain('You were part of a CoW')
-    expect(screen.getByTestId('tooltip-icon').textContent).toBe('CoW tooltip')
   })
 })

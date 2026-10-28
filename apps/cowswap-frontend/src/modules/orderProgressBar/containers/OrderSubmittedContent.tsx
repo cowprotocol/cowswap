@@ -15,7 +15,7 @@ import {
 } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
-import { useWaitAndSaveSolverCompetition } from '../hooks/useWaitAndSaveSolverCompetition'
+import { useWaitAndSaveConfirmation } from '../hooks/useWaitAndSaveConfirmation'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
 interface OrderSubmittedContentProps {
@@ -29,16 +29,19 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   const order = useOrder({ chainId, id: transactionHash || undefined })
   const isWaitAndSaveAvailable = useIsWaitAndSaveAvailable()
   const isWaitAndSaveEnabled = useAtomValue(waitAndSaveEnabledAtom)
-  // TODO: POC: hardcoded outcome on this confirmation only. Surplus/history of another order does not set this.
   const showWaitAndSaveOutcome = isWaitAndSaveAvailable && isWaitAndSaveEnabled
 
   const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
-
-  useWaitAndSaveSolverCompetition({
+  const waitAndSave = useWaitAndSaveConfirmation({
+    buyToken: order?.outputToken,
     chainId,
     enabled: showWaitAndSaveOutcome && order?.status === OrderStatus.FULFILLED,
     orderUid: order?.id,
   })
+  const solverCompetition =
+    waitAndSave.solvers && waitAndSave.solvers.length > 0
+      ? waitAndSave.solvers
+      : orderProgressBarProps.solverCompetition
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
@@ -48,7 +51,12 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
       hash={transactionHash || undefined}
       onDismiss={onDismiss}
       activityDerivedState={activityDerivedState}
-      orderProgressBarProps={{ ...orderProgressBarProps, showWaitAndSaveOutcome }}
+      orderProgressBarProps={{
+        ...orderProgressBarProps,
+        deferFinishedConfirmation: waitAndSave.pending,
+        solverCompetition,
+        waitAndSave: waitAndSave.strip ? { outcome: waitAndSave.outcome, strip: waitAndSave.strip } : undefined,
+      }}
       navigateToNewOrderCallback={navigateToNewOrderCallback}
       successTitle={successTitle}
     />

@@ -20,7 +20,7 @@ import SVG from 'react-inlinesvg'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { BaseTradeConfirmation, TradeTokenPairProps } from 'modules/trade'
+import { BaseTradeConfirmation, CowParticipationFooter, TradeTokenPairProps } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -32,10 +32,9 @@ import * as styledEl from './styled'
 
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
-import { OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
 export interface FinishedSuccessHeadingProps {
@@ -57,7 +56,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
-  showWaitAndSaveOutcome?: boolean
+  waitAndSave?: OrderProgressBarProps['waitAndSave']
 }
 
 // eslint-disable-next-line complexity
@@ -70,14 +69,14 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
-  showWaitAndSaveOutcome = false,
+  waitAndSave,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
-  const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
+  const showWaitAndSaveCard = Boolean(waitAndSave?.outcome)
   const isSell = Boolean(order && isSellOrder(order.kind))
   const surplusTooltip = isSell
     ? t`The extra amount you received compared to your limit price.`
@@ -106,7 +105,7 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const cowParticipationTooltip = t`Your trade was matched with other orders in a Coincidence of Wants (CoW).`
+  const celebrateWin = shouldShowSurplus || showWaitAndSaveCard
   const tokenPair = useMemo(() => {
     if (!order) {
       return undefined
@@ -114,21 +113,21 @@ export function FinishedStep({
 
     const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
 
-    if (!pair || !showWaitAndSaveCard) {
+    if (!pair || !waitAndSave) {
       return pair
     }
 
     return {
       ...pair,
-      cowParticipation: { tooltip: cowParticipationTooltip },
+      footer: <CowParticipationFooter {...waitAndSave.strip} />,
     }
-  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, cowParticipationTooltip])
+  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave])
 
   if (!order) {
     return null
   }
 
-  const showShare = !disablePostTradeTips || shouldShowSurplus
+  const showShare = !disablePostTradeTips || celebrateWin
   const solversList = solvers ?? []
   const hasSolvers = solversList.length > 0
   const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
@@ -140,7 +139,7 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {waitAndSave?.outcome ? <WaitAndSaveOutcome {...waitAndSave.outcome} /> : null}
 
         {showExpandedAuction ? (
           <SolverAuctionResult solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} framed />
@@ -152,7 +151,7 @@ export function FinishedStep({
           <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
         ) : null}
 
-        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={shouldShowSurplus} /> : null}
+        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={celebrateWin} /> : null}
       </BaseTradeConfirmation>
     </styledEl.FinishedStepContainer>
   )

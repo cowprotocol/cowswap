@@ -64,7 +64,8 @@ export function TransactionSubmittedContent({
   successTitle,
 }: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const { isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } = orderProgressBarProps
+  const { deferFinishedConfirmation, isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } =
+    orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   const isBridgeOrder = !!order && getIsBridgeOrder(order)
@@ -75,6 +76,8 @@ export function TransactionSubmittedContent({
   const cancellationFailed = stepName === OrderProgressBarStepName.CANCELLATION_FAILED
   const isFinishedProgressStep =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
+  const holdFinishedModal = Boolean(deferFinishedConfirmation) && isFinishedProgressStep
+  const progressStepName = holdFinishedModal ? OrderProgressBarStepName.EXECUTING : stepName
   const isFinished =
     activityDerivedState?.status === ActivityStatus.CONFIRMED ||
     activityDerivedState?.status === ActivityStatus.EXPIRED ||
@@ -83,12 +86,13 @@ export function TransactionSubmittedContent({
   const progressBar = activityDerivedState && showProgressBar && isProgressBarSetup && (
     <OrderProgressBar
       {...orderProgressBarProps}
+      stepName={progressStepName}
       order={order}
       navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
     />
   )
 
-  if (isFinishedProgressStep && showProgressBar && order) {
+  if (isFinishedProgressStep && showProgressBar && order && !holdFinishedModal) {
     return (
       <Modal.Root>
         <Modal.Header

@@ -32,7 +32,7 @@ jest.mock('modules/trade', () => ({
   }: {
     heading?: { title: ReactNode; subtitle?: ReactNode }
     tokenPair?: {
-      cowParticipation?: { tooltip: ReactNode }
+      footer?: ReactNode
       inputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
       outputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
     }
@@ -58,11 +58,12 @@ jest.mock('modules/trade', () => ({
             {tokenPair.outputCurrencyInfo.secondaryAmount.tooltip}
           </div>
         ) : null}
-        {tokenPair?.cowParticipation ? <div data-testid="cow-participation-footer" /> : null}
+        {tokenPair?.footer}
       </div>
       {children}
     </div>
   ),
+  CowParticipationFooter: ({ kind }: { kind: string }) => <div data-testid="cow-participation-footer">{kind}</div>,
 }))
 
 jest.mock('../SolverCompetitionExpand/SolverCompetitionExpand.pure', () => ({
@@ -74,7 +75,9 @@ jest.mock('../SolverAuctionResult/SolverAuctionResult.pure', () => ({
 }))
 
 jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
-  WaitAndSaveOutcome: () => <div data-testid="wait-and-save-outcome" />,
+  WaitAndSaveOutcome: ({ gainAmount }: { gainAmount: string }) => (
+    <div data-testid="wait-and-save-outcome">{gainAmount}</div>
+  ),
 }))
 
 jest.mock('entities/injectedWidget', () => ({
@@ -293,7 +296,7 @@ describe('FinishedStep', () => {
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
   })
 
-  it('renders WaitAndSaveOutcome instead of finished tips and surplus amount when Wait & Save has a gain', () => {
+  it('renders the green card and CoW strip instead of surplus when Wait & Save beat trading alone', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
@@ -301,7 +304,18 @@ describe('FinishedStep', () => {
         chainId={SupportedChainId.MAINNET}
         randomBenefit="CoW Protocol is MEV protected"
         surplusData={surplusData}
-        showWaitAndSaveOutcome
+        waitAndSave={{
+          outcome: {
+            gainAmount: '1.46',
+            gainFiat: '$4.50',
+            gainNumeric: 1.46,
+            gainPercent: 0.3,
+            tokenSymbol: 'RAI',
+            tradingAloneAmount: '485.72',
+            tradingAloneNumeric: 485.72,
+          },
+          strip: { hasAloneBid: true, kind: 'cow' },
+        }}
         solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
         totalSolvers={10}
       >
@@ -309,17 +323,67 @@ describe('FinishedStep', () => {
       </FinishedStep>,
     )
 
-    expect(screen.getByTestId('cow-participation-footer')).toBeTruthy()
-    expect(screen.getByTestId('wait-and-save-outcome')).toBeTruthy()
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toBe('1.46')
     expect(screen.queryByTestId('sold-surplus')).toBeNull()
     expect(screen.queryByTestId('received-surplus')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByText('Share this win!')).toBeTruthy()
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
 
     const confirmation = screen.getByTestId('base-trade-confirmation')
     const outcome = screen.getByTestId('wait-and-save-outcome')
     const solvers = screen.getByTestId('solver-competition-expand')
     expect(confirmation.compareDocumentPosition(outcome) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(outcome.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('keeps surplus and names the batch when Wait & Save has no gain to show', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        waitAndSave={{ strip: { companionCount: 3, hasAloneBid: false, kind: 'batched' } }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('batched')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('received-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+  })
+
+  it('shows the joined strip and the solver auction when there is no gain and no surplus', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' } }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('joined')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+    expect(screen.getByText('Share this swap')).toBeTruthy()
   })
 })
