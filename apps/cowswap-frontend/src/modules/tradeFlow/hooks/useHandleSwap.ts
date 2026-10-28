@@ -52,7 +52,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
-  const solanaFlowOptions = useSolanaFlowOptions()
+  const solanaFlowOptions = useSolanaFlowOptions({ canSponsor: true })
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =

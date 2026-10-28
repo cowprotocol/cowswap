@@ -21,14 +21,14 @@ describe('useSolanaFlowOptions', () => {
     })
   })
 
-  it('maps each flag onto its option', () => {
+  it('maps each flag onto its option for a surface that can sponsor', () => {
     mockUseFeatureFlags.mockReturnValue({
       isSolanaSponsoredOrdersEnabled: true,
       isAtaCreationDisabled: true,
       isSolanaAppDataEnabled: true,
     })
 
-    const { result } = renderHook(() => useSolanaFlowOptions())
+    const { result } = renderHook(() => useSolanaFlowOptions({ canSponsor: true }))
 
     expect(result.current).toEqual({
       isSponsored: true,
@@ -37,12 +37,22 @@ describe('useSolanaFlowOptions', () => {
     })
   })
 
+  // Only the swap flow reaches `planCreateOrderStep`, which is what consumes the sponsor; a sponsored
+  // limit order would also switch the wallet prompt and the submission path.
+  it('never sponsors a surface that cannot, however the flag is set', () => {
+    mockUseFeatureFlags.mockReturnValue({ isSolanaSponsoredOrdersEnabled: true })
+
+    const { result } = renderHook(() => useSolanaFlowOptions())
+
+    expect(result.current.isSponsored).toBe(false)
+  })
+
   // The options object is a dependency of the trade callbacks: a new identity per render would
   // rebuild them on every render of the widget.
   it('keeps the same object across renders while the flags do not change', () => {
     mockUseFeatureFlags.mockReturnValue({ isSolanaAppDataEnabled: true })
 
-    const { result, rerender } = renderHook(() => useSolanaFlowOptions())
+    const { result, rerender } = renderHook(() => useSolanaFlowOptions({ canSponsor: true }))
     const first = result.current
     rerender()
 
