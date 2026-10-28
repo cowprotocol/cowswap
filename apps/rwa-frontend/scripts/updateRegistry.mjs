@@ -20,7 +20,7 @@ import { areAddressesEqual, isSupportedChain } from '@cowprotocol/cow-sdk'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 
-const ASSET_TYPES = { stock: 'stock', etf: 'index' }
+const ASSET_TYPES = { stock: 'stock', etf: 'index', commodity: 'commodity' }
 /** CoinGecko issuer id -> registry issuer name. Must match `ALLOWED_ISSUERS` in `validateRegistry.ts` */
 const ALLOWED_ISSUERS = {
   'ondo-tokenized-assets': 'Ondo',
@@ -28,6 +28,8 @@ const ALLOWED_ISSUERS = {
   'coinbase-ecosystem': 'Coinbase',
   'bstocks-ecosystem': 'bStocks',
   'reality-ecosystem': 'Reality',
+  'paxos-ecosystem': 'Paxos',
+  'tether-ecosystem': 'Tether',
 }
 const DEFAULT_PRIORITY = 0
 const DEFAULT_TRADING_TIME = { title: 'US market open', start: '13:30 UTC', end: '20:00 UTC' }
@@ -106,7 +108,7 @@ async function main() {
       logoUrl: rwaMarkets.get(rwa.id)?.logoUrl,
       type: ASSET_TYPES[rwa.asset_type],
       priority: existing?.priority ?? DEFAULT_PRIORITY,
-      allowedTradingTime: existing ? existing.allowedTradingTime : DEFAULT_TRADING_TIME,
+      allowedTradingTime: existing ? existing.allowedTradingTime : getDefaultTradingTime(rwa),
       newsFeed: existing?.newsFeed,
       tokens,
     })
@@ -125,6 +127,11 @@ async function main() {
       ? `Wrote ${assets.length} assets, ${tokensCount} tokens, version ${next.version}`
       : `No changes (${assets.length} assets, ${tokensCount} tokens)`,
   )
+}
+
+/** Commodity tokens trade around the clock, stocks and ETFs only in US market hours */
+function getDefaultTradingTime(rwa) {
+  return rwa.asset_type === 'commodity' ? undefined : DEFAULT_TRADING_TIME
 }
 
 /** Tokens on CoW-supported chains, the largest token market cap first, so the first one is the price reference */

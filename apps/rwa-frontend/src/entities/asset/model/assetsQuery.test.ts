@@ -162,8 +162,8 @@ describe('filterAssets', () => {
   })
 
   it('counts every type with the other filters applied', () => {
-    expect(countByType(all, { type: 'stock' })).toEqual({ stock: 2, index: 2 })
-    expect(countByType(all, { issuer: 'xStocks' })).toEqual({ stock: 0, index: 2 })
+    expect(countByType(all, { type: 'stock' })).toEqual({ stock: 2, index: 2, commodity: 0 })
+    expect(countByType(all, { issuer: 'xStocks' })).toEqual({ stock: 0, index: 2, commodity: 0 })
   })
 })
 

@@ -9,7 +9,7 @@ import type { RwaToken } from './types'
 export type RwaDividendModel = 'price-accrual' | 'rebase' | 'cash-payout'
 
 /** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality'] as const
+export const RWA_ISSUERS = ['Ondo', 'xStocks', 'Coinbase', 'bStocks', 'Reality', 'Paxos', 'Tether'] as const
 
 export interface RwaDividendNote {
   /** Who applies the scheme, e.g. `Ondo` or `Wrapped xStocks` */
@@ -31,7 +31,8 @@ export const RWA_ISSUER_LEGAL_DOCS_URLS: Partial<Record<RwaIssuer, string>> = {
 
 type DividendToken = Pick<RwaToken, 'issuer' | 'coingeckoId'>
 
-const ISSUER_DIVIDEND_MODELS: Record<RwaIssuer, RwaDividendModel> = {
+/** Issuers of commodities, which pay no dividends, are missing */
+const ISSUER_DIVIDEND_MODELS: Partial<Record<RwaIssuer, RwaDividendModel>> = {
   Ondo: 'price-accrual',
   xStocks: 'rebase',
   Coinbase: 'price-accrual',
@@ -63,10 +64,10 @@ const WRAPPED_XSTOCKS_NOTE: RwaDividendNote = {
 export function getDividendModel(token: DividendToken): RwaDividendModel | null {
   if (!isRwaIssuer(token.issuer)) return null
 
-  return isWrappedXStock(token) ? 'price-accrual' : ISSUER_DIVIDEND_MODELS[token.issuer]
+  return isWrappedXStock(token) ? 'price-accrual' : (ISSUER_DIVIDEND_MODELS[token.issuer] ?? null)
 }
 
-/** `null` for a token of an unknown issuer */
+/** `null` for a token of an unknown issuer or of an issuer without dividends */
 export function getDividendNote(token: DividendToken): RwaDividendNote | null {
   if (isWrappedXStock(token)) return WRAPPED_XSTOCKS_NOTE
 
@@ -90,6 +91,11 @@ export function getDividendNotes(tokens: Iterable<DividendToken>): RwaDividendNo
 
 export function getIssuerLegalDocsUrl(issuer: string): string | null {
   return isRwaIssuer(issuer) ? (RWA_ISSUER_LEGAL_DOCS_URLS[issuer] ?? null) : null
+}
+
+/** A known issuer without dividends: its tokens are commodities */
+export function isCommodityIssuer(issuer: string): boolean {
+  return isRwaIssuer(issuer) && !ISSUER_DIVIDEND_MODELS[issuer]
 }
 
 /** An ERC-4626 wrapper of a rebasing xStocks token: its balance stays fixed and its price accrues the rebases */

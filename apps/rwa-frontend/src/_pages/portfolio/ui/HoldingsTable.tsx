@@ -17,7 +17,7 @@ import { TokenLogo } from '@/shared/ui/token-logo'
 
 const sharesFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })
 
-const ASSET_TYPE_LABELS = { stock: 'Stock', index: 'Index fund' } as const
+const ASSET_TYPE_LABELS = { stock: 'Stock', index: 'Index fund', commodity: 'Commodity' } as const
 
 interface HoldingRowsProps {
   holding: Holding

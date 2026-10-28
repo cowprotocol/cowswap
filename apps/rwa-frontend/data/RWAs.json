@@ -1,7 +1,89 @@
 {
-  "version": "0.1.7",
-  "lastModificationTime": "2026-10-26T12:24:09.235Z",
+  "version": "0.1.8",
+  "lastModificationTime": "2026-10-28T09:50:34.072Z",
   "assets": [
+    {
+      "ticker": "XAU",
+      "coingeckoId": "gold",
+      "title": "Gold",
+      "logoUrl": "https://coin-images.coingecko.com/coins/images/10481/large/logo.png?1774627372",
+      "type": "commodity",
+      "priority": 0,
+      "tokens": [
+        {
+          "chainId": 1,
+          "address": "0x68749665FF8D2d112Fa859AA293F07A622782F38",
+          "symbol": "XAUT",
+          "name": "Tether Gold",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold"
+        },
+        {
+          "chainId": 1,
+          "address": "0x45804880De22913dAFE09f4980848ECE6EcbAf78",
+          "symbol": "PAXG",
+          "name": "PAX Gold",
+          "decimals": 18,
+          "issuer": "Paxos",
+          "coingeckoId": "pax-gold"
+        },
+        {
+          "chainId": 9745,
+          "address": "0x1B64B9025EEbb9A6239575dF9Ea4b9Ac46D4d193",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        },
+        {
+          "chainId": 43114,
+          "address": "0x2775d5105276781B4b85bA6eA6a6653bEeD1dd32",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        },
+        {
+          "chainId": 57073,
+          "address": "0xF50258D3c1dd88946C567920B986A12e65b50dAc",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        },
+        {
+          "chainId": 56,
+          "address": "0x21cAef8A43163Eea865baeE23b9C2E327696A3bf",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        },
+        {
+          "chainId": 137,
+          "address": "0xF1815bd50389c46847f0Bda824eC8da914045D14",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        },
+        {
+          "chainId": 42161,
+          "address": "0x40461291347e1eCbb09499F3371D3f17f10d7159",
+          "symbol": "XAUT0",
+          "name": "Tether Gold Tokens",
+          "decimals": 6,
+          "issuer": "Tether",
+          "coingeckoId": "tether-gold-tokens"
+        }
+      ]
+    },
     {
       "ticker": "CRCL",
       "coingeckoId": "circle-internet-group",

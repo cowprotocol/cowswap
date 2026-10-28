@@ -213,7 +213,7 @@ describe('listAssets', () => {
     const page = await listAssets({ page: 1, pageSize: 10, sort: 'priority', order: 'desc', type: 'index' })
 
     expect(tickers(page.items)).toEqual(['SPY'])
-    expect(page.typeCounts).toEqual({ stock: 2, index: 1 })
+    expect(page.typeCounts).toEqual({ stock: 2, index: 1, commodity: 0 })
     expect(page.issuers).toEqual(['Ondo', 'xStocks'])
     expect(page.chainIds).toEqual([1, 56])
   })
