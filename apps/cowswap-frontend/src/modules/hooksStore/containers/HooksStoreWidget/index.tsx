@@ -1,14 +1,16 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import svgHookSrc from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
-import { SwapWidget } from 'modules/swap'
-import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
+import { PriceChart } from 'modules/priceChart'
+import { SwapWidget, useSwapDerivedState } from 'modules/swap'
+import { PageWrapper, PrimaryWrapper, useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
@@ -26,6 +28,7 @@ type HookPosition = 'pre' | 'post'
 
 export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
+  const { inputCurrency, outputCurrency, isUnlocked } = useSwapDerivedState()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
 
@@ -36,7 +39,7 @@ export function HooksStoreWidget(): ReactNode {
 
   const hooksDisabled = isChainIdUnsupported || isChainIdDeprecated
 
-  const walletType = useIsSmartContractWallet()
+  const walletType = useAtomValue(isSmartContractWalletAtom)
     ? HookDappWalletCompatibility.SMART_CONTRACT
     : HookDappWalletCompatibility.EOA
 
@@ -104,7 +107,14 @@ export function HooksStoreWidget(): ReactNode {
   return (
     <>
       <TradeWidgetWrapper visible$={!hideSwapWidget}>
-        <SwapWidget topContent={TopContent} bottomContent={BottomContent} allowSwapSameToken />
+        <PageWrapper isUnlocked={isUnlocked} maxWidth="1270px" hideOrdersTable>
+          <PrimaryWrapper>
+            <SwapWidget topContent={TopContent} bottomContent={BottomContent} allowSwapSameToken />
+          </PrimaryWrapper>
+          {isUnlocked && !hideSwapWidget && (
+            <PriceChart inputCurrency={inputCurrency} outputCurrency={outputCurrency} expandable />
+          )}
+        </PageWrapper>
       </TradeWidgetWrapper>
       <IframeDappsManifestUpdater />
       {isHookSelectionOpen && (

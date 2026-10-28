@@ -12,7 +12,7 @@ import { ProgressTopSection } from './ProgressTopSection'
 import { OrderIntent } from './steps/OrderIntent'
 import * as styledEl from './styled'
 
-import { CHAIN_SPECIFIC_BENEFITS, OrderProgressBarStepName, SURPLUS_IMAGES } from '../constants'
+import { OrderProgressBarStepName, SURPLUS_IMAGES } from '../constants'
 import { useProgressBarLayout } from '../hooks/useProgressBarLayout'
 import { OrderProgressBarProps } from '../types'
 
@@ -26,6 +26,8 @@ interface ProgressContentProps {
   surplusPercentValue: string
   randomBenefit: string
   shouldShowSurplus: boolean
+  auctionValidFrom?: number
+  onAuctionRemainingChange?: (remainingSec: number) => void
 }
 
 const AnimatePresence = lazy(() => import('framer-motion').then((r) => ({ default: r.AnimatePresence })))
@@ -38,8 +40,14 @@ export function RenderProgressTopSection({
   chainId,
   surplusData,
   debugForceShowSurplus = false,
+  randomBenefit = '',
+  auctionValidFrom,
+  onAuctionRemainingChange,
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
+  randomBenefit?: string
+  auctionValidFrom?: number
+  onAuctionRemainingChange?: (remainingSec: number) => void
 }): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
@@ -47,14 +55,7 @@ export function RenderProgressTopSection({
   const hideIntent =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
 
-  const { randomImage, randomBenefit } = useMemo(() => {
-    const benefits = CHAIN_SPECIFIC_BENEFITS[chainId]
-
-    return {
-      randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
-    }
-  }, [chainId, t])
+  const randomImage = useMemo(() => SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)], [])
 
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || Boolean(showSurplus)
@@ -73,6 +74,8 @@ export function RenderProgressTopSection({
     surplusPercentValue,
     randomBenefit,
     shouldShowSurplus,
+    auctionValidFrom: stepName === OrderProgressBarStepName.INITIAL ? auctionValidFrom : undefined,
+    onAuctionRemainingChange,
   }
 
   return (
@@ -102,6 +105,8 @@ function ProgressContent({
   surplusPercentValue,
   randomBenefit,
   shouldShowSurplus,
+  auctionValidFrom,
+  onAuctionRemainingChange,
 }: ProgressContentProps): ReactNode {
   if (!isLayoutReady) {
     return <ProgressSkeleton />
@@ -134,6 +139,8 @@ function ProgressContent({
               surplusPercentValue={surplusPercentValue}
               randomBenefit={randomBenefit}
               shouldShowSurplus={shouldShowSurplus}
+              auctionValidFrom={auctionValidFrom}
+              onAuctionRemainingChange={onAuctionRemainingChange}
             />
           )}
         </MotionDiv>

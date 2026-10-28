@@ -5,8 +5,10 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
+  isPriceChartEnabled?: boolean
   isTwapEoaEnabled?: boolean
   isSolanaEnabled?: boolean
+  isAlphaNetworksOptionVisible?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
   isWaitForCowsEnabled?: boolean
@@ -27,6 +29,7 @@ declare global {
 // Solana is not supported in the widget yet (e.g. partner fees)
 const WIDGET_FLAG_OVERRIDES: Partial<FeatureFlags> = {
   isSolanaEnabled: false,
+  isAlphaNetworksOptionVisible: false,
 }
 
 export function useFeatureFlags(): FeatureFlags {

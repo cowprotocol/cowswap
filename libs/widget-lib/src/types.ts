@@ -377,6 +377,12 @@ export interface CowSwapWidgetParams {
   disableCrossChainSwap?: boolean
 
   /**
+   * Hides the price chart and its controls.
+   * Defaults to false.
+   */
+  disablePriceChart?: boolean
+
+  /**
    * Disable setting custom recipient for all trading widgets (swap,limit,twap)
    * Important! Cross-chain swaps are based on custom recipient functionality!
    * If you want always having recipient === order owner, then set disableCrossChainSwap=true as well
@@ -469,6 +475,11 @@ export interface CowSwapWidgetParams {
    * Option to hide bridge info
    */
   hideBridgeInfo?: boolean
+
+  /**
+   * Option to hide the banner suggesting to wrap the native token (e.g. ETH -> WETH) when selling it.
+   */
+  hideWrapBanner?: boolean
 
   /**
    * Option to hide orders table on LIMIT and TWAP forms.

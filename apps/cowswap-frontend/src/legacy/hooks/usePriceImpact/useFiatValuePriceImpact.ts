@@ -8,7 +8,7 @@ import { Currency, CurrencyAmount, Fraction, Percent, Token } from '@cowprotocol
 import ms from 'ms.macro'
 import { Nullish } from 'types'
 
-import { useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { isQuoteForCurrencies, TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeUsdAmounts } from 'modules/usdAmount'
 
@@ -38,6 +38,7 @@ interface SettledPriceImpact {
 
 export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
   const state = useDerivedTradeState()
+  const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { inputCurrencyAmount, outputCurrencyAmount, inputCurrency, outputCurrency } = state || {}
 
   const inputToken = useMemo(() => (inputCurrency ? getWrappedToken(inputCurrency) : undefined), [inputCurrency])
@@ -67,6 +68,8 @@ export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
     if (!isTradeSetUp) return null
 
+    if (isWrapOrUnwrap) return { priceImpact: undefined, isLoading: false }
+
     const stillLoading = isLoading && !hasLoadingTimedOut
 
     // While a fresh quote is loading, don't expose the stale value at all — consumers
@@ -81,7 +84,7 @@ export function useFiatValuePriceImpact(): FiatValuePriceImpact | null {
     )
 
     return { priceImpact, isLoading: false }
-  }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
+  }, [isTradeSetUp, isWrapOrUnwrap, fiatValueInput, fiatValueOutput, isLoading, hasLoadingTimedOut])
 
   return useSettledDuringRequote(current, inputToken, outputToken)
 }

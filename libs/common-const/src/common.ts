@@ -31,6 +31,9 @@ export const PERCENTAGE_PRECISION = 2
 
 export const LONG_LOAD_THRESHOLD = 2000
 
+/** Canonical batch interval for Wait for CoWs (`validFrom = now + COW_BATCH_TIME_SECONDS`), in seconds. */
+export const COW_BATCH_TIME_SECONDS = 300
+
 export const AVG_APPROVE_COST_GWEI = 50000n
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`

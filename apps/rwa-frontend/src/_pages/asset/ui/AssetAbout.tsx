@@ -1,15 +1,16 @@
 'use client'
 
-import { useAtomValue } from 'jotai'
 import type { ReactNode } from 'react'
 
 import styles from './AssetAbout.module.css'
 
-import { assetQueryAtomFamily, RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
+import { useAssetMarket } from '../model/useAssetMarket'
+
+import { RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
 import { formatCompactUsd, formatRange } from '@/shared/lib/format'
 
 export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
-  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
+  const { market } = useAssetMarket(asset.ticker)
   const listings = asset.tokens.length
 
   return (

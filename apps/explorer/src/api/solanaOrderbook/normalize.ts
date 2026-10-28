@@ -56,6 +56,7 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
     kind,
     partiallyFillable,
     appData,
+    fullAppData,
     creationDate,
     executedSellAmount,
     executedBuyAmount,
@@ -73,6 +74,7 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
     kind: ORDER_KIND[kind],
     partiallyFillable,
     appData,
+    fullAppData,
     creationDate,
     executedSellAmount,
     executedBuyAmount,
@@ -90,7 +92,7 @@ export function toRawOrder(order: SolanaRawOrder): RawOrder {
     // Not carried by these endpoints.
     signature: '',
     settlementContract: '',
-    // No order classes on Solana yet; limit orders would make this a real value.
+    // No order classes on Solana; the UI order type is read from `fullAppData`.
     class: OrderClass.MARKET,
     // No EVM counterpart. Its presence is also what marks the order as Solana's.
     solana: { orderPda, sellTokenAccount, buyTokenAccount },

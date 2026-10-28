@@ -5,8 +5,17 @@ import { PortfolioView } from './PortfolioView'
 import type { Metadata } from 'next'
 
 import { getAssetSummaries } from '@/entities/asset/index.server'
+import { buildPageMetadata } from '@/shared/lib/seo/index.server'
 
-export const metadata: Metadata = { title: 'Portfolio' }
+export const metadata: Metadata = {
+  ...buildPageMetadata({
+    title: 'Portfolio',
+    description: 'Your tokenized stock and ETF holdings, open orders and trades across networks.',
+    path: '/portfolio',
+  }),
+  // The content depends on the connected wallet
+  robots: { index: false, follow: true },
+}
 
 export function PortfolioPage(): ReactNode {
   return <PortfolioView assets={getAssetSummaries()} />

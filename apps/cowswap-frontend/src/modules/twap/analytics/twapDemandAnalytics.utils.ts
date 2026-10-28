@@ -17,10 +17,10 @@ const INTEREST_STORAGE_PREFIX = 'twap-demand-analytics:interest:v1'
 
 export interface GetTwapDemandWalletTypeParams {
   account?: string
-  accountType: AccountType | undefined
+  accountType: AccountType | null
   isSafeViaWc: boolean
   isSafeWallet: boolean
-  isSmartContractWallet: boolean | undefined
+  isSmartContractWallet: boolean | null
 }
 
 type BrowserStorageName = 'localStorage' | 'sessionStorage'
@@ -50,9 +50,9 @@ export function getIsTwapDemandWalletTypePending(params: GetTwapDemandWalletType
 
   if (!account) return false
   if (isSafeWallet) return false
-  if (isSafeViaWc) return accountType === undefined
+  if (isSafeViaWc) return accountType === null
 
-  return accountType === undefined
+  return accountType === null
 }
 
 export function getIsTwapInterestRegistered(account?: string): boolean {

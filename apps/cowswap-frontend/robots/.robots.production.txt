@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
 Host: https://swap.cow.fi
+Sitemap: https://swap.cow.fi/rwa/sitemap.xml

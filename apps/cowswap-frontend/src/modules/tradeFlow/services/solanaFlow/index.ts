@@ -1,6 +1,6 @@
 import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, OrderParameters, stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
@@ -18,6 +18,7 @@ import {
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { uploadAppDataDocOrderbookApi } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
@@ -45,6 +46,7 @@ import {
   USER_SWAP_REJECTED_ERROR,
 } from 'common/utils/getSwapErrorMessage'
 
+import { assertSignedAppData, SolanaAppDataMismatchError } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
@@ -79,6 +81,7 @@ export async function solanaFlow(
     currentDelegation,
     delegationAmount,
     isNativeSell,
+    appData,
   } = input
   const { inputAmount, outputAmount, chainId, validTo, receiver, orderKind, orderClass, partiallyFillable } = context
   const tradeAmounts = { inputAmount, outputAmount }
@@ -111,11 +114,12 @@ export async function solanaFlow(
     // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
     // owner paying — the only thing it can do there.
     //
-    // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
-    // rented by the sponsor too. The order book allows that; only the wrap transfer has to stay the
-    // owner's, since those are the funds being wrapped.
+    // A sponsored order covers the fees and rents the accounts the order itself needs. The WSOL
+    // account a native sell opens is not one of them: it is the owner's own account, and closing it
+    // returns the rent to the owner, so a sponsor-funded one would be a standing withdrawal from the
+    // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
     const sponsor = isSponsored ? solanaQuote.funder : undefined
-    const rentPayer = sponsor ?? owner
+    const buyAtaRentPayer = sponsor ?? owner
 
     const {
       step: createOrderStep,
@@ -136,6 +140,7 @@ export async function solanaFlow(
           kind: orderKind,
           validTo,
           partiallyFillable,
+          appDataHash: appData.appDataKeccak256,
           sellSymbol,
           buySymbol,
         })
@@ -146,7 +151,22 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
+          appDataDoc: appData.doc,
         })
+
+    // A swap signs the SDK's hash of `doc`, which only matches `fullAppData` when that was stringified
+    // deterministically — the fallback appData (`getAppData()`) is not.
+    const fullAppData =
+      orderClass === OrderClass.LIMIT ? appData.fullAppData : await stringifyDeterministic(appData.doc)
+
+    assertSignedAppData(signedAppData, fullAppData)
+
+    // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
+    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
+
+    // A retry started while the upload was in flight owns the flow now: going on would open a second
+    // wallet prompt for this stale order.
+    if (attemptId !== latestAttemptId) return
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -154,10 +174,10 @@ export async function solanaFlow(
     // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
     // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       planCreateBuyAtaStep({
-        payer: rentPayer,
+        payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
         quote: solanaQuote,
         buySymbol,
@@ -198,6 +218,7 @@ export async function solanaFlow(
           validTo,
           orderClass,
           appData: signedAppData,
+          fullAppData,
           inputToken: inputAmount.currency as Token,
           outputToken: outputAmount.currency as Token,
           partiallyFillable,
@@ -234,7 +255,11 @@ export async function solanaFlow(
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
 
-    captureError(error, ERROR_TYPES.ON_SWAP, { swapErrorMessage })
+    captureError(error, ERROR_TYPES.ON_SWAP, {
+      swapErrorMessage,
+      // Never reaches the order book on a mismatch, so this is the only record of what failed to hash.
+      ...(error instanceof SolanaAppDataMismatchError && { fullAppData: error.fullAppData }),
+    })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
 
     // The user retried while this attempt's prompt was still open: its screen belongs to the newer
@@ -295,6 +320,7 @@ function buildSolanaOrder(params: {
   validTo: number
   orderClass: OrderClass
   appData: string
+  fullAppData: string
   inputToken: Token
   outputToken: Token
   partiallyFillable: boolean
@@ -302,7 +328,7 @@ function buildSolanaOrder(params: {
   isNativeSell: boolean
 }): Order {
   const { orderId, txHash, signingScheme, account, quoteParams, signedAmounts, receiver, validTo, orderClass } = params
-  const { appData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
+  const { appData, fullAppData, inputToken, outputToken, partiallyFillable, isSponsored, isNativeSell } = params
 
   const sellAmount = signedAmounts.sellAmount.toString()
   const buyAmount = signedAmounts.buyAmount.toString()
@@ -319,9 +345,9 @@ function buildSolanaOrder(params: {
     receiver,
     validTo,
     // Override the quote's own appData: it's a meaningless constant stub for Solana (getSolanaQuote.ts's
-    // ZERO_APP_DATA) — this is what was actually signed, and getUiOrderType reads exactly this field to
-    // tell a limit order apart from a market one (Solana has no real appData-doc convention to decode).
+    // ZERO_APP_DATA) — this is what was actually signed.
     appData,
+    fullAppData,
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
     // response says nothing about what the user actually chose to sign (see getSolanaQuote.ts).
     partiallyFillable,

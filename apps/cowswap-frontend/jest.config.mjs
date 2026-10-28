@@ -1,6 +1,7 @@
 // this is not used for now. we use "craco test", but eventually we will
 
 import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
 
 const require = createRequire(import.meta.url)
 
@@ -8,8 +9,8 @@ export default {
   displayName: 'cowswap',
   preset: '../../jest.preset.js',
   transform: {
-    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
-    '^.+\\.[tj]sx?$': [
+    '^(?!.*\\.(mjs|js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
+    '^.+\\.(mjs|[tj]sx?)$': [
       'babel-jest',
       {
         presets: ['@nx/react/babel'],
@@ -30,10 +31,14 @@ export default {
   setupFilesAfterEnv: ['./jest.setup.ts'],
   setupFiles: ['dotenv/config'],
   transformIgnorePatterns: [
-    '/node_modules/.pnpm/(?!.*(react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
-    '/node_modules/(?!(\\.pnpm|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
+    '/node_modules/.pnpm/(?!.*(lightweight-charts|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
+    '/node_modules/(?!(\\.pnpm|lightweight-charts|react-dnd|dnd-core|@react-dnd|wagmi|@wagmi|viem|@reown|jotai-tanstack-query))',
   ],
   moduleNameMapper: {
+    '^lightweight-charts$': join(
+      dirname(require.resolve('lightweight-charts/package.json')),
+      'dist/lightweight-charts.production.mjs',
+    ),
     '^wagmi$': require.resolve('wagmi'),
     '^@reown/appkit/react$': '<rootDir>/../../testing/reownMock.ts',
     '^@reown/appkit-adapter-wagmi$': '<rootDir>/src/mocks/reownAdapterMock.ts',

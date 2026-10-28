@@ -71,6 +71,9 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Picking before the URL state lands lets the default pair overwrite the picked one, leaving
+      // WETH on the sell side.
+      await swapPage.waitForBothCurrenciesResolved()
 
       // Typed before selecting tokens, not after: selecting a token with no amount set yet
       // auto-fills 1 whole unit of it (`useSetupTradeAmountsFromUrl`'s
@@ -172,12 +175,8 @@ test.describe('Market Orders', () => {
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
-      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
-      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
-      // instead of a one-shot read to ride out that gap, same as [CS-118]'s identical read.
-      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
 
       await swapPage.page.keyboard.press('Escape')
 
@@ -219,6 +218,8 @@ test.describe('Market Orders', () => {
       })
 
       await swapPage.goto({ chainId: CHAIN_ID })
+      // Same reason as [CS-59].
+      await swapPage.waitForBothCurrenciesResolved()
       await selectTokens(swapPage, 'USDC', 'WETH')
 
       await expect(swapPage.sellBalance).toHaveAttribute('title', '1500 USDC')
@@ -262,7 +263,7 @@ test.describe('Market Orders', () => {
       await expectActivityStatus(accountModal, 'Filled')
     })
 
-    test('[CS-61] Buy order: approval amount includes slippage buffer @smoke', async ({
+    test('[CS-61] Buy order: approval amount includes slippage buffer', async ({
       swapPage,
       wallet,
       mocks,
@@ -290,6 +291,7 @@ test.describe('Market Orders', () => {
       // Select "Partial approval" so the wallet requests a finite amount tied to the trade instead
       // of the default infinite (MaxUint256) approval — only then is there a "maximum sent" figure
       // to compare against.
+      await swapPage.expandApprovalAmount()
       await swapPage.approveModeSelector.getByText('Partial approval').click()
       const approvalAmount = await readTitledAmount(swapPage.approveModeSelector)
 
@@ -321,8 +323,10 @@ test.describe('Market Orders', () => {
       expect(approveMock.getApprovedAmount()).toBe((maximumSentRaw * 101n) / 100n)
     })
 
-    test('[CS-62] Buy order: ETH as sell token (ETH-flow buy not supported) @smoke', async ({ swapPage }) => {
+    test('[CS-62] Buy order: ETH as sell token (ETH-flow buy not supported)', async ({ swapPage }) => {
       await swapPage.goto({ chainId: CHAIN_ID })
+      await swapPage.waitForBothCurrenciesResolved()
+      await expect(swapPage.inputAmount).toHaveValue('1')
 
       await swapPage.tokens.openInput()
       await swapPage.tokens.searchAndPick('ETH')
@@ -992,7 +996,7 @@ test.describe('Market Orders', () => {
       expect(postedOrderAppDataHash).toBe(uploadedAppDataHash)
     })
 
-    test('[CS-103] Wrap ETH → WETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
+    test('[CS-103] Wrap ETH → WETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const WRAP_AMOUNT = parseUnits('0.5', 18)
 
@@ -1052,7 +1056,7 @@ test.describe('Market Orders', () => {
       await expect(swapPage.buyBalance).toHaveAttribute('title', '0.5 WETH')
     })
 
-    test('[CS-104] Unwrap WETH → ETH via swap form @smoke', async ({ swapPage, wallet, mocks, context }) => {
+    test('[CS-104] Unwrap WETH → ETH via swap form', async ({ swapPage, wallet, mocks, context }) => {
       const INITIAL_WETH_BALANCE = parseUnits('1', 18)
       const INITIAL_ETH_BALANCE = parseUnits('1', 18)
       const UNWRAP_AMOUNT = parseUnits('0.5', 18)
@@ -1170,7 +1174,7 @@ test.describe('Market Orders', () => {
       await expect(accountModal.activitiesList).toContainText('Cancelled')
     })
 
-    test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4', async ({
+    test('[CS-118] Progress bar: regular order happy path — steps 1 → 2 → 3 → 4 @smoke', async ({
       swapPage,
       wallet,
       confirmModal,
@@ -1241,21 +1245,16 @@ test.describe('Market Orders', () => {
       // `FinishedStep`'s "You sold"/"Received" rows render the order's actual executed amounts, not
       // the originally quoted ones — cross-check them against what `fulfill()` actually settled the
       // order at, same as [CS-59].
-      //
-      // These amounts come from a *separate*, slower-polled order-details endpoint than the one
-      // driving "Transaction completed!" (the faster competition `/status` poll), so the row can
-      // still be showing the pre-fulfillment "0" for a moment right after the text appears — poll
-      // instead of a one-shot read to ride out that gap.
       const soldAmountRow = swapPage.orderProgressBarModal.locator(`[data-testid="${TEST_IDS.orderSoldAmount}"]`)
       const receivedAmountRow = swapPage.orderProgressBarModal.locator(
         `[data-testid="${TEST_IDS.orderReceivedAmount}"]`,
       )
       const postedOrder = mocks.orders.getOrder(orderId)
-      await expect.poll(() => readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
-      await expect.poll(() => readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
+      expect(await readTitledAmount(soldAmountRow)).toBe(BigInt(postedOrder?.sellAmount ?? 0))
+      expect(await readTitledAmount(receivedAmountRow)).toBe(BigInt(postedOrder?.buyAmount ?? 0))
     })
 
-    test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair @smoke', async ({
+    test('[CS-127] Swap form: protocol fee applied at 0.02% (2 bps) for standard token pair', async ({
       setupTestConditions,
       swapPage,
       mocks,
@@ -1340,7 +1339,7 @@ test.describe('Market Orders', () => {
       expect(toAmount).toBe(beforeCosts - networkCosts - protocolFee)
     })
 
-    test('[CS-128] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs) @smoke', async ({
+    test('[CS-128] Swap form: protocol fee applied at 0.003% (0.3 bps) for correlated assets (stables/RWAs)', async ({
       setupTestConditions,
       swapPage,
       wallet,

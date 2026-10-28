@@ -4,10 +4,10 @@ import { ReactNode, useRef, type MouseEvent } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
-import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
+import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
-import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
+import { useIsSolanaVisible } from 'entities/alphaNetworks'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -55,7 +55,7 @@ export function NetworkSelector(): ReactNode {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
-  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
+  const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
   useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
@@ -67,9 +67,7 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains({
-    excludeSolana: !useAtomValue(alphaNetworksEnabledAtom),
-  })
+  const availableChains = useAvailableChains({ excludeSolana: !useIsSolanaVisible() })
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)
