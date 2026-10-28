@@ -16,6 +16,10 @@ export const Row = styled.li<{ $isWinner: boolean }>`
   background: ${({ $isWinner }) =>
     $isWinner ? `var(${UI.COLOR_SUCCESS_BG})` : `color-mix(in srgb, var(${UI.COLOR_TEXT}) 2%, transparent)`};
   color: ${({ $isWinner }) => ($isWinner ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT})`)};
+
+  & + & {
+    margin-top: 6px;
+  }
 `
 
 export const RowFill = styled.span<{ $percent: number }>`
@@ -25,6 +29,11 @@ export const RowFill = styled.span<{ $percent: number }>`
   border-radius: 12px;
   background: color-mix(in srgb, var(${UI.COLOR_TEXT}) 6%, transparent);
   pointer-events: none;
+  transition: width var(${UI.ANIMATION_DURATION_SLOW}) ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `
 
 export const RowContent = styled.div`

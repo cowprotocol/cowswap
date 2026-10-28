@@ -116,14 +116,17 @@ describe('SolverAuctionResult', () => {
   it('shows the first three solvers and expands on view all bids', () => {
     renderResult(<SolverAuctionResult solvers={solvers} />)
 
+    const extraSolvers = screen.getByTestId('solver-auction-extra-solvers')
+
     expect(screen.getByText('Tsolver')).toBeTruthy()
     expect(screen.getByText('Quasi')).toBeTruthy()
     expect(screen.getByText('Fractal')).toBeTruthy()
-    expect(screen.queryByText('Barn')).toBeNull()
+    expect(extraSolvers.getAttribute('data-expanded')).toBe('false')
     expect(screen.getByRole('link', { name: /how the auction works/i })).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: /view all bids/i }))
 
+    expect(extraSolvers.getAttribute('data-expanded')).toBe('true')
     expect(screen.getByText('Barn')).toBeTruthy()
     expect(screen.getByRole('button', { name: /show less/i })).toBeTruthy()
   })
@@ -133,18 +136,29 @@ describe('SolverAuctionResult', () => {
 
     const fills = screen.getAllByTestId('solver-auction-row-fill')
     const winnerAmount = CurrencyAmount.fromRawAmount(buyToken, '36840000000000000000')
-    const quasiPercent = getSolverBidFillPercent(
-      CurrencyAmount.fromRawAmount(buyToken, '36600000000000000000'),
-      winnerAmount,
-    )
-    const fractalPercent = getSolverBidFillPercent(
-      CurrencyAmount.fromRawAmount(buyToken, '36400000000000000000'),
-      winnerAmount,
-    )
+    const collapsedWorst = CurrencyAmount.fromRawAmount(buyToken, '36400000000000000000')
+    const quasiAmount = CurrencyAmount.fromRawAmount(buyToken, '36600000000000000000')
+    const quasiPercent = getSolverBidFillPercent(quasiAmount, winnerAmount, collapsedWorst)
+    const fractalPercent = getSolverBidFillPercent(collapsedWorst, winnerAmount, collapsedWorst)
 
-    expect(fills).toHaveLength(2)
+    expect(fills).toHaveLength(3)
     expect(fills[0]?.getAttribute('data-percent')).toBe(String(quasiPercent))
     expect(fills[1]?.getAttribute('data-percent')).toBe(String(fractalPercent))
+    expect(fills[2]?.getAttribute('data-percent')).toBe('10')
+    expect(fractalPercent).toBe(10)
+
+    fireEvent.click(screen.getByRole('button', { name: /view all bids/i }))
+
+    const expandedFills = screen.getAllByTestId('solver-auction-row-fill')
+    const expandedWorst = CurrencyAmount.fromRawAmount(buyToken, '36000000000000000000')
+
+    expect(expandedFills).toHaveLength(3)
+    expect(expandedFills[0]?.getAttribute('data-percent')).toBe(
+      String(getSolverBidFillPercent(quasiAmount, winnerAmount, expandedWorst)),
+    )
+    expect(expandedFills[2]?.getAttribute('data-percent')).toBe(
+      String(getSolverBidFillPercent(expandedWorst, winnerAmount, expandedWorst)),
+    )
   })
 
   it('shows -<$0.01 when the usd bid gap is below one cent', () => {

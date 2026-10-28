@@ -21,14 +21,21 @@ export interface SolverAuctionRowProps {
   index: number
   solver: SolverCompetition
   winnerBuyAmount: CurrencyAmount<Currency> | null
+  worstBuyAmount: CurrencyAmount<Currency> | null
 }
 
-export function SolverAuctionRow({ solver, index, buyToken, winnerBuyAmount }: SolverAuctionRowProps): ReactNode {
+export function SolverAuctionRow({
+  solver,
+  index,
+  buyToken,
+  winnerBuyAmount,
+  worstBuyAmount,
+}: SolverAuctionRowProps): ReactNode {
   const isWinner = index === 0
   const name = solver.displayName || solver.solver
   const logoSrc = solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src
   const buyAmount = buyToken ? getSolverBuyAmount(solver, buyToken) : null
-  const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount) : null
+  const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount, worstBuyAmount) : null
   const deltaAmount =
     !isWinner && winnerBuyAmount && buyAmount && winnerBuyAmount.greaterThan(buyAmount)
       ? winnerBuyAmount.subtract(buyAmount)
