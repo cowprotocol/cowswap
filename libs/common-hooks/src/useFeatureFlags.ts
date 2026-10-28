@@ -11,6 +11,7 @@ export interface FeatureFlags {
   isAlphaNetworksOptionVisible?: boolean
   isSolanaSponsoredOrdersEnabled?: boolean
   isAtaCreationDisabled?: boolean
+  isSolanaAppDataEnabled?: boolean
   isWaitForCowsEnabled?: boolean
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
