@@ -72,7 +72,8 @@ export const SolverLogo = styled.img`
   height: 24px;
   flex-shrink: 0;
   border-radius: 12px;
-  object-fit: cover;
+  object-fit: contain;
+  background: var(${UI.COLOR_WHITE});
 `
 
 export const SolverName = styled.span`
