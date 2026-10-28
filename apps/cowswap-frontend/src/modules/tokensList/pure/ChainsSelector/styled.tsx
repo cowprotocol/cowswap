@@ -105,6 +105,7 @@ export const ChainLogo = styled.div`
   --size: 28px;
   width: var(--size);
   height: var(--size);
+  flex-shrink: 0;
   overflow: hidden;
   background: transparent;
   display: flex;
@@ -121,6 +122,7 @@ export const ChainLogo = styled.div`
 export const ChainText = styled.span<{ disabled$?: boolean; loading$?: boolean }>`
   font-weight: 500;
   font-size: 15px;
+  text-align: left;
   color: ${({ disabled$, loading$ }) =>
     disabled$ || loading$ ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT})`};
 `
