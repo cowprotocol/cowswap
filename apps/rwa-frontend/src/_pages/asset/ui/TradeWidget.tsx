@@ -57,7 +57,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       rootStyle: { width: '100%', height: 'var(--dynamicHeight, 640px)' },
       chainId: assetToken.chainId,
       tradeType: TradeType.SWAP,
-      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT],
+      enabledTradeTypes: [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED],
       ...(side === 'buy'
         ? { sell: quote, buy: { asset: assetToken.address } }
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
