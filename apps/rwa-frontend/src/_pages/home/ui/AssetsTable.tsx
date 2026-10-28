@@ -17,6 +17,7 @@ import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 interface AssetsTableProps {
   id: string
@@ -110,9 +111,9 @@ function IssuersCount({ asset }: { asset: RwaAssetListItem }): ReactNode {
   const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
 
   return (
-    <span className={styles.issuers} title={issuers.join(', ')}>
+    <Tooltip className={styles.issuers} content={issuers.join(', ')}>
       {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-    </span>
+    </Tooltip>
   )
 }
 

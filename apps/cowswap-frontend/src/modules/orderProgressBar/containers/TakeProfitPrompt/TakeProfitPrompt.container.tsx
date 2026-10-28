@@ -38,7 +38,7 @@ export function TakeProfitPrompt({ order, onDismiss }: TakeProfitPromptProps): R
       }
       borderRadius="16px"
       padding="12px"
-      margin="24px 0 0"
+      margin="0"
       customContent={<PricePercentageShortcuts isInverted={false} disabled={false} onSelect={openLimitOrder} />}
     >
       <styledEl.Title>

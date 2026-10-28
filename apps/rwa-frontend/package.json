@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/rwa-frontend",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "private": true,
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
@@ -10,7 +10,8 @@
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.2.15",
+    "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/sdk-viem-adapter": "0.3.36",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
     "@reown/appkit": "1.8.19",

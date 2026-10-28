@@ -71,6 +71,7 @@ const NVDA_LIST_ITEM: RwaAssetListItem = {
     volume24h: 12_400_000,
     updatedAt: '2026-10-01T14:00:00.000Z',
     tokens: {},
+    sharesPerToken: {},
   },
   series: null,
 }
@@ -148,7 +149,8 @@ describe('HomePage', () => {
     renderHomePage()
 
     fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
-    fireEvent.change(screen.getByRole('combobox', { name: 'Issuer' }), { target: { value: 'Ondo' } })
+    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>

@@ -1,5 +1,113 @@
 # Changelog
 
+## [3.33.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.32.1...cowswap-v3.33.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: use gas limit = estimation + margin in eoa twap (#8388)
+
+- feat: advanced price chart (#8317)
+
+- feat: bump all gas limits 2x for Glamsterdam (#8389)
+
+- feat(solana): integrate appData api (#8467)
+
+- feat: show approval amount in twap stepper (#8413)
+
+- feat(limit): add price percentage shortcuts (#8412)
+
+- feat(widget): hide eth flow classic banner with hideWrapBanner
+
+- feat(rwa): serve RWA under /rwa in CoW Swap and share wallet connection (#8432)
+
+- feat: wait for cows alpha (#8393)
+
+- feat: replace deprecated hooks with atoms for wallet/safe (#8307)
+
+- feat: add isAlphaNetworksOptionVisible flag (#8477)
+
+- feat: simple price chart (#8305)
+
+### Patch Changes
+
+- fix(performance): reduce memory consumption on pending orders update (#8381)
+
+- fix(swap): show Wrap SOL and Swap button when selling native SOL (#8411)
+
+- fix(trade): do not show price impact loading for wrap/unwrap (#8410)
+
+- fix: reown connection restoration (#8440)
+
+- fix(e2e): fix CS-136, CS-61 and CS-62 failures (#8406)
+
+- fix(e2e): stabilize CS-59 and CS-60 token selection (#8426)
+
+- fix(progress-bar): hide TWAP tip on Solana and stop clipping benefit text (#8439)
+
+- fix(limit): recreate expired orders with unfilled amounts (#8392)
+
+- fix(solana): stop showing pending on-chain orders as unfillable (#8409)
+
+- fix(trade): align TWAP not-supported tooltip on tablet/mobile (#8417)
+
+- fix(balances): stop sending ipfs token lists to the balances watcher (#8441)
+
+- fix(widget): close modals on unmount
+
+- fix(progress-bar): hide zero amounts until order execution data arrives (#8436)
+
+- fix(solana): fund the wSOL sell account from the order owner (#8483)
+
+- fix(e2e): make swap confirmation more stable (#8419)
+
+- fix(widget): display widget provider error in the UI
+
+- fix(solana): fail a creating order the order book never indexed (#8447)
+
+- Updated dependencies []:
+  - @cowprotocol/tokens@3.17.0
+  - @cowprotocol/hook-dapp-lib@2.5.0
+  - @cowprotocol/permit-utils@3.12.0
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/wallet@3.19.0
+  - @cowprotocol/widget-lib@4.12.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/balances-and-allowances@3.18.2
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+  - @cowprotocol/analytics@3.16.2
+  - @cowprotocol/ens@3.11.2
+  - @cowprotocol/multicall@3.11.2
+  - @cowprotocol/snackbars@2.3.11
+
+## [3.32.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.32.0...cowswap-v3.32.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.16.1
+  - @cowprotocol/balances-and-allowances@3.18.1
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/ens@3.11.1
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/multicall@3.11.1
+  - @cowprotocol/permit-utils@3.11.1
+  - @cowprotocol/tokens@3.16.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/ui@3.18.1
+  - @cowprotocol/wallet@3.18.1
+  - @cowprotocol/widget-lib@4.11.1
+  - @cowprotocol/snackbars@2.3.10
+  - @cowprotocol/iframe-transport@2.3.12
+  - @cowprotocol/hook-dapp-lib@2.4.1
+
 ## [3.32.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v3.31.2...cowswap-v3.32.0) (2026-10-21)
 
 ### Minor Changes

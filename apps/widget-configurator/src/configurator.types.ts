@@ -66,6 +66,8 @@ export interface ConfiguratorFormValues {
   hideRecentTokens: boolean
   hideFavoriteTokens: boolean
   hideBridgeInfo: boolean | undefined
+  hideWaitAndSave: boolean | undefined
+  hideWrapBanner: boolean | undefined
   hideOrdersTable: boolean | undefined
   disableWindowOpen: boolean
   disableTradeWhenPriceImpactIsUnknown: boolean

@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from 'react'
+import { ReactNode, RefObject, useState } from 'react'
 
 import svgStarShineSrc from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { TooltipIcon } from '@cowprotocol/ui'
@@ -16,11 +16,19 @@ export interface WaitAndSaveRowProps {
 
 export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSaveRowProps): ReactNode {
   const { t } = useLingui()
+  const [starSpinKey, setStarSpinKey] = useState(0)
+
+  const handleToggle = (): void => {
+    if (!isEnabled) {
+      setStarSpinKey((key) => key + 1)
+    }
+    toggle()
+  }
 
   return (
     <styledEl.Wrapper>
       <styledEl.Content>
-        <styledEl.Icon>
+        <styledEl.Icon key={starSpinKey} $animate={starSpinKey > 0} aria-hidden>
           <SVG src={svgStarShineSrc} />
         </styledEl.Icon>
         <styledEl.TextColumn>
@@ -52,7 +60,7 @@ export function WaitAndSaveRow({ isEnabled, toggle, joinsBatchInRef }: WaitAndSa
       <styledEl.WaitAndSaveToggle
         id="wait-and-save-toggle"
         checked={isEnabled}
-        toggle={toggle}
+        toggle={handleToggle}
         variant="success"
         aria-label={t`Wait & save`}
       />

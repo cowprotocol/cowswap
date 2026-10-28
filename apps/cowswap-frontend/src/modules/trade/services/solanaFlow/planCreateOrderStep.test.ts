@@ -4,8 +4,6 @@ jest.mock('@cowprotocol/sdk-trading-solana', () => ({
 
 import { bytesToHex } from 'viem'
 
-import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
@@ -15,11 +13,11 @@ import { planCreateOrderStep } from './planCreateOrderStep'
 
 const mockBuildSolanaSwapOrder = buildSolanaSwapOrder as jest.MockedFunction<typeof buildSolanaSwapOrder>
 
-// Mirrors the planner's own default so the expectation tracks the source instead of hardcoding
-// an environment-dependent value.
-const DEFAULT_APP_DATA = {
-  appCode: DEFAULT_APP_CODE,
-  environment: isBarnBackendEnv ? 'staging' : 'prod',
+const APP_DATA_DOC = {
+  version: '1.6.0',
+  appCode: 'CoW Swap',
+  environment: 'production',
+  metadata: { orderClass: { orderClass: 'market' as const } },
 }
 
 const quote = {
@@ -53,7 +51,13 @@ describe('planCreateOrderStep', () => {
   })
 
   it('delegates instruction building to the SDK', async () => {
-    const { step } = await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO })
+    const { step } = await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
 
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       {
@@ -62,7 +66,7 @@ describe('planCreateOrderStep', () => {
       },
       {
         quoteRequest: { validTo: VALID_TO },
-        appData: { ...DEFAULT_APP_DATA, metadata: { orderClass: { orderClass: 'market' } } },
+        appData: APP_DATA_DOC,
       },
       { sponsor: undefined },
     )
@@ -73,6 +77,7 @@ describe('planCreateOrderStep', () => {
     // Not derived from `solanaQuote.uid`: a receiver/validTo override re-derives it inside the SDK.
     const { orderId, signingScheme } = await planCreateOrderStep({
       ...quote,
+      appDataDoc: APP_DATA_DOC,
       sellSymbol: 'SOL',
       buySymbol: 'USDC',
       validTo: VALID_TO,
@@ -90,6 +95,7 @@ describe('planCreateOrderStep', () => {
 
     const { feePayer } = await planCreateOrderStep({
       ...quote,
+      appDataDoc: APP_DATA_DOC,
       sellSymbol: 'SOL',
       buySymbol: 'USDC',
       validTo: VALID_TO,
@@ -103,7 +109,13 @@ describe('planCreateOrderStep', () => {
   // Without this the instruction inherits the quote's own TTL, so the on-chain order expires at a time
   // the UI never showed — the deadline setting appears to be ignored.
   it("applies the user's deadline to the instruction, not just to the local order", async () => {
-    await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO })
+    await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
 
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       expect.anything(),
@@ -112,10 +124,14 @@ describe('planCreateOrderStep', () => {
     )
   })
 
-  // This planner only ever builds a swap — a limit order goes through planCreateLimitOrderStep, which
-  // never quotes at all — so the order class it marks is always 'market'.
-  it("marks the order class as market, and builds the order at the quote's own price", async () => {
-    await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO })
+  it("signs the app's appData doc, and builds the order at the quote's own price", async () => {
+    await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
 
     expect(mockBuildSolanaSwapOrder).toHaveBeenCalledWith(
       expect.anything(),
@@ -131,6 +147,7 @@ describe('planCreateOrderStep', () => {
   it('returns the actually-signed appData as a 0x-prefixed hex string', async () => {
     const { appData } = await planCreateOrderStep({
       ...quote,
+      appDataDoc: APP_DATA_DOC,
       sellSymbol: 'SOL',
       buySymbol: 'USDC',
       validTo: VALID_TO,
@@ -144,6 +161,7 @@ describe('planCreateOrderStep', () => {
   it('returns the actually-signed sellAmount/buyAmount from the built intent', async () => {
     const { sellAmount, buyAmount } = await planCreateOrderStep({
       ...quote,
+      appDataDoc: APP_DATA_DOC,
       sellSymbol: 'SOL',
       buySymbol: 'USDC',
       validTo: VALID_TO,
@@ -154,7 +172,13 @@ describe('planCreateOrderStep', () => {
   })
 
   it('summarises the swap with both symbols', async () => {
-    const { step } = await planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO })
+    const { step } = await planCreateOrderStep({
+      ...quote,
+      appDataDoc: APP_DATA_DOC,
+      sellSymbol: 'SOL',
+      buySymbol: 'USDC',
+      validTo: VALID_TO,
+    })
 
     expect(step.summary).toContain('SOL')
     expect(step.summary).toContain('USDC')
@@ -164,7 +188,13 @@ describe('planCreateOrderStep', () => {
     mockBuildSolanaSwapOrder.mockRejectedValue(new Error('bad receiver'))
 
     await expect(
-      planCreateOrderStep({ ...quote, sellSymbol: 'SOL', buySymbol: 'USDC', validTo: VALID_TO }),
+      planCreateOrderStep({
+        ...quote,
+        appDataDoc: APP_DATA_DOC,
+        sellSymbol: 'SOL',
+        buySymbol: 'USDC',
+        validTo: VALID_TO,
+      }),
     ).rejects.toThrow('bad receiver')
   })
 })
