@@ -6,16 +6,24 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { TokenSelectorFilter } from '@cowprotocol/widget-lib'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
 
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
+
 import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { tokensToSelectAtom } from '../state/tokensToSelectAtom'
+import {
+  filterTokensForSelector,
+  getTokenSelectorFilter,
+  isTokenSelectorFiltered,
+} from '../utils/filterTokensForSelector'
 
 const EMPTY_TOKENS: TokenWithLogo[] = []
 
@@ -30,13 +38,20 @@ export interface TokensToSelectContext {
   bridgeSupportedTokensMap: Record<string, boolean> | null
 }
 
+interface SelectorTokensFilter {
+  tokensFilter: TokenSelectorFilter | undefined
+  /** `null` when the balances don't narrow the tokens */
+  balances: Record<string, bigint | undefined> | null
+  areBalancesLoading: boolean
+}
+
 export function useTokensToSelect(): TokensToSelectContext {
   const { chainId } = useWalletInfo()
   const favoriteTokens = useFavoriteTokens()
   const { selectedTargetChainId = chainId, field, oppositeToken } = useSelectTokenWidgetState()
   const { tokenLists, sellTokenLists, buyTokenLists } = useInjectedWidgetParams()
   const chainsToSelect = useChainsToSelect()
-  const allTokens = useAtomValue(tokensToSelectAtom)
+  const listTokens = useAtomValue(tokensToSelectAtom)
   const targetChainId = chainsToSelect?.defaultChainId ?? selectedTargetChainId
 
   const sourceChainId = useMemo(() => {
@@ -51,7 +66,19 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [chainId, field, oppositeToken])
 
   const areTokensFromBridge = field === Field.OUTPUT && targetChainId !== sourceChainId
-  const hasScopedListRestriction = getHasScopedListRestriction(field, tokenLists, sellTokenLists, buyTokenLists)
+  const {
+    tokensFilter,
+    balances: filterBalances,
+    areBalancesLoading,
+  } = useSelectorTokensFilter(field, areTokensFromBridge)
+  const hasScopedListRestriction =
+    getHasScopedListRestriction(field, tokenLists, sellTokenLists, buyTokenLists) ||
+    isTokenSelectorFiltered(tokensFilter)
+
+  const allTokens = useMemo(
+    () => filterTokensForSelector(listTokens, tokensFilter, filterBalances),
+    [listTokens, tokensFilter, filterBalances],
+  )
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
@@ -73,8 +100,10 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [result])
 
   const visibleTokens = useMemo(() => {
-    return (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS
-  }, [allTokens, areTokensFromBridge, result])
+    if (!areTokensFromBridge) return allTokens
+
+    return result?.tokens ? filterTokensForSelector(result.tokens, tokensFilter, filterBalances) : EMPTY_TOKENS
+  }, [allTokens, areTokensFromBridge, result, tokensFilter, filterBalances])
 
   const allowedRecentTokens = hasScopedListRestriction ? allTokens : undefined
 
@@ -93,7 +122,7 @@ export function useTokensToSelect(): TokensToSelectContext {
           })
 
     return {
-      isLoading: areTokensFromBridge ? isLoading : false,
+      isLoading: (areTokensFromBridge && isLoading) || areBalancesLoading,
       tokens: visibleTokens,
       favoriteTokens: favoriteTokensToSelect,
       allowedRecentTokens,
@@ -109,6 +138,7 @@ export function useTokensToSelect(): TokensToSelectContext {
     favoriteTokens,
     hasScopedListRestriction,
     isLoading,
+    areBalancesLoading,
     areTokensFromBridge,
     result,
     visibleTokens,
@@ -129,4 +159,18 @@ function getHasScopedListRestriction(
         : [tokenLists, sellTokenLists, buyTokenLists]
 
   return applicableLists.some((lists) => Boolean(lists?.length))
+}
+
+function useSelectorTokensFilter(field: Field | undefined, areTokensFromBridge: boolean): SelectorTokensFilter {
+  const { account } = useWalletInfo()
+  const tokensFilter = getTokenSelectorFilter(field, useInjectedWidgetParams())
+  const { values, hasFirstLoad } = useTokensBalancesCombined()
+  // Balances are of the source network, so they can't narrow the bridge target tokens
+  const isFilteredByBalance = Boolean(tokensFilter?.onlyWithBalance && account && !areTokensFromBridge)
+
+  return {
+    tokensFilter,
+    balances: isFilteredByBalance ? values : null,
+    areBalancesLoading: isFilteredByBalance && !hasFirstLoad,
+  }
 }

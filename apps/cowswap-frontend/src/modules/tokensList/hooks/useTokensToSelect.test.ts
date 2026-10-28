@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
 
+import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 
@@ -10,6 +11,8 @@ import { useBridgeSupportedTokens } from 'entities/bridgeProvider'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { Field } from 'legacy/state/types'
+
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 
 import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
@@ -36,6 +39,10 @@ jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: jest.fn(),
 }))
 
+jest.mock('modules/combinedBalances', () => ({
+  useTokensBalancesCombined: jest.fn(),
+}))
+
 jest.mock('./useSelectTokenWidgetState', () => ({
   useSelectTokenWidgetState: jest.fn(),
 }))
@@ -55,6 +62,9 @@ const mockUseBridgeSupportedTokens = useBridgeSupportedTokens as jest.MockedFunc
 const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 const mockUseChainsToSelect = useChainsToSelect as jest.MockedFunction<typeof useChainsToSelect>
+const mockUseTokensBalancesCombined = useTokensBalancesCombined as jest.MockedFunction<typeof useTokensBalancesCombined>
+
+const ACCOUNT = '0x4444444444444444444444444444444444444444'
 
 const mainnetToken = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -105,11 +115,22 @@ const DEFAULT_SELECT_TOKEN_WIDGET_STATE = {
 } as const
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
-const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
+const createWidgetState = (override: Partial<WidgetState>): WidgetState => {
   return {
     ...DEFAULT_SELECT_TOKEN_WIDGET_STATE,
     ...override,
   } as WidgetState
+}
+
+function createBalancesState(values: BalancesState['values'], hasFirstLoad = true): BalancesState {
+  return {
+    values,
+    hasFirstLoad,
+    isLoading: !hasFirstLoad,
+    chainId: SupportedChainId.MAINNET,
+    fromCache: false,
+    error: null,
+  }
 }
 
 describe('useTokensToSelect', () => {
@@ -125,6 +146,7 @@ describe('useTokensToSelect', () => {
       isLoading: false,
     } as ReturnType<typeof useBridgeSupportedTokens>)
     mockUseChainsToSelect.mockReturnValue(undefined)
+    mockUseTokensBalancesCombined.mockReturnValue(createBalancesState({}))
   })
 
   it('uses resolved default chain from chain selector state in bridge mode', () => {
@@ -264,5 +286,79 @@ describe('useTokensToSelect', () => {
     expect(result.current.tokens).toEqual([scopedBridgeFavorite, leakedBridgeFavorite])
     expect(result.current.favoriteTokens).toEqual([scopedBridgeFavorite])
     expect(result.current.allowedRecentTokens).toEqual([scopedBridgeFavorite, scopedUnsupportedRecent])
+  })
+
+  describe('tokens filters', () => {
+    beforeEach(() => {
+      mockUseAtomValue.mockReturnValue([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
+      mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET, account: ACCOUNT } as WalletInfo)
+      mockUseTokensBalancesCombined.mockReturnValue(
+        createBalancesState({
+          [getAddressKey(mainnetToken.address)]: 5n,
+          [getAddressKey(scopedFavoriteToken.address)]: 1n,
+        }),
+      )
+    })
+
+    it('keeps the given tokens held by the wallet in the sell selector', () => {
+      mockUseInjectedWidgetParams.mockReturnValue({
+        sellTokensFilter: { tokens: [scopedFavoriteToken.address, leakedFavoriteToken.address], onlyWithBalance: true },
+      })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ field: Field.INPUT }))
+
+      const { result } = renderHook(() => useTokensToSelect())
+
+      expect(result.current.tokens).toEqual([scopedFavoriteToken])
+      expect(result.current.hasScopedListRestriction).toBe(true)
+      expect(result.current.allowedRecentTokens).toEqual([scopedFavoriteToken])
+    })
+
+    it('does not apply the sell filter to the buy selector', () => {
+      mockUseInjectedWidgetParams.mockReturnValue({ sellTokensFilter: { onlyWithBalance: true } })
+      mockUseSelectTokenWidgetState.mockReturnValue(
+        createWidgetState({ field: Field.OUTPUT, selectedTargetChainId: SupportedChainId.MAINNET }),
+      )
+
+      const { result } = renderHook(() => useTokensToSelect())
+
+      expect(result.current.tokens).toEqual([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
+      expect(result.current.hasScopedListRestriction).toBe(false)
+    })
+
+    it('ignores the balances without a wallet', () => {
+      mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
+      mockUseInjectedWidgetParams.mockReturnValue({ sellTokensFilter: { onlyWithBalance: true } })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ field: Field.INPUT }))
+
+      const { result } = renderHook(() => useTokensToSelect())
+
+      expect(result.current.tokens).toEqual([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
+      expect(result.current.isLoading).toBe(false)
+    })
+
+    it('is loading until the balances are loaded', () => {
+      mockUseTokensBalancesCombined.mockReturnValue(createBalancesState({}, false))
+      mockUseInjectedWidgetParams.mockReturnValue({ sellTokensFilter: { onlyWithBalance: true } })
+      mockUseSelectTokenWidgetState.mockReturnValue(createWidgetState({ field: Field.INPUT }))
+
+      const { result } = renderHook(() => useTokensToSelect())
+
+      expect(result.current.isLoading).toBe(true)
+    })
+
+    it('narrows bridge tokens to the given tokens only', () => {
+      const bridgeToken = { ...leakedFavoriteToken, chainId: SupportedChainId.LINEA } as TokenWithLogo
+
+      mockUseInjectedWidgetParams.mockReturnValue({
+        buyTokensFilter: { tokens: [lineaToken.address, bridgeToken.address], onlyWithBalance: true },
+      })
+      mockUseSelectTokenWidgetState.mockReturnValue(
+        createWidgetState({ field: Field.OUTPUT, selectedTargetChainId: SupportedChainId.LINEA }),
+      )
+
+      const { result } = renderHook(() => useTokensToSelect())
+
+      expect(result.current.tokens).toEqual([lineaToken])
+    })
   })
 })

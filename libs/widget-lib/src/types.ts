@@ -121,6 +121,27 @@ export type TokenPairConstraint = {
   buy: { address: string; chainId: SupportedChainId }
 }
 
+/**
+ * Narrows the tokens of one token selector (sell or buy).
+ * Search results and recent tokens are narrowed the same way.
+ */
+export interface TokenSelectorFilter {
+  /**
+   * Addresses of the only tokens to show
+   */
+  tokens?: string[]
+
+  /**
+   * Shows only the tokens the connected wallet holds. Ignored while no wallet is connected, and for bridge target tokens.
+   */
+  onlyWithBalance?: boolean
+
+  /**
+   * Shown above the token list, to explain why tokens are missing
+   */
+  notice?: string
+}
+
 export type WidgetHookResult = Promise<boolean> | boolean
 
 export enum TradeType {
@@ -300,6 +321,16 @@ export interface CowSwapWidgetParams {
    * If omitted, the buy selector falls back to the globally enabled lists.
    */
   buyTokenLists?: string[]
+
+  /**
+   * Narrows the tokens of the sell selector, on top of `sellTokenLists`
+   */
+  sellTokensFilter?: TokenSelectorFilter
+
+  /**
+   * Narrows the tokens of the buy selector, on top of `buyTokenLists`
+   */
+  buyTokensFilter?: TokenSelectorFilter
 
   /**
    * Forces the widget locale.

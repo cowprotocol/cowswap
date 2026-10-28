@@ -166,3 +166,13 @@ export const RouteNotAvailable = styled.div`
   padding: 40px 0;
   text-align: center;
 `
+
+export const TokensFilterNotice = styled.p`
+  margin: 0 16px 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  background: var(${UI.COLOR_PAPER_DARKER});
+`
