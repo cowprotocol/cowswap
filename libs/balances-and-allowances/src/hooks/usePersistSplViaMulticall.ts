@@ -187,10 +187,12 @@ function buildSolanaTokenMints(
     .filter((address) => !getIsNativeToken(chainId, address))
     .map((address) => {
       const addressKey = getAddressKey(address)
-      // Tokens the user imported are absent from the per-chain list map and known only to the active
-      // map, which covers the connected chain alone — hence the chain check before trusting it.
+      // The active map wins because it unions tags across lists, imports and favourites, so a list that
+      // omits `extensions.isToken2022` cannot shadow the tag read off the mint at import. It covers the
+      // connected chain and enabled lists only — hence the chain check, and the list map behind it for
+      // tokens that live in a disabled list.
       const activeToken = activeTokensByAddress[addressKey]
-      const token = listTokensByAddress[addressKey] ?? (activeToken?.chainId === chainId ? activeToken : undefined)
+      const token = (activeToken?.chainId === chainId ? activeToken : undefined) ?? listTokensByAddress[addressKey]
 
       return {
         mint: address,

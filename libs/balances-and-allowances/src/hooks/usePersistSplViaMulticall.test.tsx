@@ -256,6 +256,37 @@ describe('usePersistSplViaMulticall', () => {
     expect(result.current.values[getAddressKey(MINT_A)]).toBe(82468n)
   })
 
+  it('falls back to the list map for a mint the active map does not carry (e.g. a disabled list)', async () => {
+    mockTokensByAddress = { [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG] } }
+    mockActiveTokensByAddress = {}
+    mockAmountByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: 5n }
+    mockInfoByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: { present: true } }
+
+    const { result } = renderWithBalances(makeParams({ tokenAddresses: [MINT_A] }))
+
+    await waitFor(() => expect(result.current.hasFirstLoad).toBe(true))
+
+    const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A, TOKEN_2022_PROGRAM))
+  })
+
+  it('prefers the active map, so a list entry missing the tag cannot shadow it', async () => {
+    mockTokensByAddress = { [getAddressKey(MINT_A)]: { tags: [] } }
+    mockActiveTokensByAddress = {
+      [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG], chainId: SupportedChainId.SOLANA },
+    }
+    mockAmountByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: 42n }
+    mockInfoByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: { present: true } }
+
+    const { result } = renderWithBalances(makeParams({ tokenAddresses: [MINT_A] }))
+
+    await waitFor(() => expect(result.current.hasFirstLoad).toBe(true))
+
+    const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A, TOKEN_2022_PROGRAM))
+    expect(result.current.values[getAddressKey(MINT_A)]).toBe(42n)
+  })
+
   it('ignores an active-map entry from another chain when picking the token program', async () => {
     mockActiveTokensByAddress = {
       [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG], chainId: SupportedChainId.MAINNET },
