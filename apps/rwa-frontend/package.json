@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/rwa-frontend",
-  "version": "0.1.1",
+  "version": "0.1.4",
   "private": true,
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",

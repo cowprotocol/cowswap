@@ -1,5 +1,48 @@
 # Changelog
 
+## [2.16.4](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.3...cow-fi-v2.16.4) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/analytics@3.16.3
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ui@3.19.1
+  - @cowprotocol/wallet@3.19.1
+
+## [2.16.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.2...cow-fi-v2.16.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/wallet@3.19.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+  - @cowprotocol/analytics@3.16.2
+  - @cowprotocol/widget-react@3.3.2
+
+## [2.16.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.1...cow-fi-v2.16.2) (2026-10-27)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/analytics@3.16.1
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/events@4.17.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/ui@3.18.1
+  - @cowprotocol/wallet@3.18.1
+  - @cowprotocol/widget-react@3.3.1
+
 ## [2.16.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v2.16.0...cow-fi-v2.16.1) (2026-10-21)
 
 ### Patch Changes

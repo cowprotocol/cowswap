@@ -14,7 +14,7 @@ export const Wrapper = styled.div<{ $framed?: boolean }>`
   ${({ $framed }) =>
     $framed
       ? `
-    border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+    border: 1px solid var(${UI.COLOR_BORDER});
     border-radius: 12px;
     overflow: hidden;
   `

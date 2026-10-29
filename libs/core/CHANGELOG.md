@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.14.1](https://github.com/cowprotocol/cowswap/compare/core-v3.14.0...core-v3.14.1) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
+## [3.14.0](https://github.com/cowprotocol/cowswap/compare/core-v3.13.1...core-v3.14.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(rwa): add st0x token list (#8405)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+
+## [3.13.1](https://github.com/cowprotocol/cowswap/compare/core-v3.13.0...core-v3.13.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+
 ## [3.13.0](https://github.com/cowprotocol/cowswap/compare/core-v3.12.0...core-v3.13.0) (2026-10-21)
 
 ### Minor Changes
