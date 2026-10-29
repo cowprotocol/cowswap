@@ -137,6 +137,38 @@ describe('getPositiveAloneGain', () => {
     expect(gain?.gainAmount).toBe(100n)
   })
 
+  it('ignores alone bids whose sell amount differs from the winning fill', () => {
+    const solutions = [
+      solution({
+        isWinner: true,
+        orders: [competitionOrder(ORDER_UID, '200', '10'), competitionOrder(COMPANION_A, '1')],
+        solverAddress: SOLVER_A,
+      }),
+      solution({ orders: [competitionOrder(ORDER_UID, '50', '5')], solverAddress: SOLVER_B }),
+      solution({ orders: [competitionOrder(ORDER_UID, '100', '10')], solverAddress: SOLVER_C }),
+    ]
+
+    const gain = getPositiveAloneGain(solutions, ORDER_UID)
+
+    expect(gain?.bestAloneBuyAmount).toBe(100n)
+    expect(gain?.gainAmount).toBe(100n)
+    expect(hasAloneBid(solutions, ORDER_UID)).toBe(true)
+  })
+
+  it('returns nothing when every alone bid uses a different sell amount', () => {
+    const solutions = [
+      solution({
+        isWinner: true,
+        orders: [competitionOrder(ORDER_UID, '200', '10'), competitionOrder(COMPANION_A, '1')],
+        solverAddress: SOLVER_A,
+      }),
+      solution({ orders: [competitionOrder(ORDER_UID, '50', '5')], solverAddress: SOLVER_B }),
+    ]
+
+    expect(getPositiveAloneGain(solutions, ORDER_UID)).toBeUndefined()
+    expect(hasAloneBid(solutions, ORDER_UID)).toBe(false)
+  })
+
   it('does not treat a higher non-winning buy as the execution', () => {
     const gain = getPositiveAloneGain(
       [
@@ -196,6 +228,7 @@ describe('getPositiveAloneGain', () => {
     expect(getPositiveAloneGain(batchedOnly, ORDER_UID)).toBeUndefined()
     expect(hasAloneBid(batchedOnly, ORDER_UID)).toBe(false)
     expect(getPositiveAloneGain(noWinner, ORDER_UID)).toBeUndefined()
+    expect(hasAloneBid(noWinner, ORDER_UID)).toBe(false)
     expect(getPositiveAloneGain(undefined, ORDER_UID)).toBeUndefined()
     expect(hasAloneBid(undefined, ORDER_UID)).toBe(false)
   })
@@ -409,7 +442,7 @@ describe('deriveWaitAndSaveCompetition', () => {
   it('reports a CoW gain together with the companion count and winner-first rows', () => {
     const derived = deriveWaitAndSaveCompetition(
       [
-        solution({ orders: [competitionOrder(ORDER_UID, '100', '3')], ranking: 2, solverAddress: SOLVER_B }),
+        solution({ orders: [competitionOrder(ORDER_UID, '100', '4')], ranking: 2, solverAddress: SOLVER_B }),
         solution({
           isWinner: true,
           orders: [competitionOrder(ORDER_UID, '130', '4'), competitionOrder(COMPANION_A, '1')],
@@ -429,7 +462,7 @@ describe('deriveWaitAndSaveCompetition', () => {
   it('reports a shared batch with no gain when the alone bid is not better', () => {
     const derived = deriveWaitAndSaveCompetition(
       [
-        solution({ orders: [competitionOrder(ORDER_UID, '140', '3')], ranking: 2, solverAddress: SOLVER_B }),
+        solution({ orders: [competitionOrder(ORDER_UID, '140', '4')], ranking: 2, solverAddress: SOLVER_B }),
         solution({
           isWinner: true,
           orders: [

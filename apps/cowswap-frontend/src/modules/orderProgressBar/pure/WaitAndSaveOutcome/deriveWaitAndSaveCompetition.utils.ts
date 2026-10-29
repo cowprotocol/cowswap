@@ -44,6 +44,9 @@ interface RankedSolution {
   solverAddress: string
 }
 
+/**
+ * Builds one UI ranking row per solver that included this order, winner first.
+ */
 export function buildSolverRankingRows(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
@@ -51,6 +54,11 @@ export function buildSolverRankingRows(
   return collectRankedSolutions(solutions, orderUid).map(toSolverCompetition)
 }
 
+/**
+ * Derives everything Wait & Save needs from one auction's solver settlements for `orderUid`:
+ * batch companions on the winner, whether a same-sell alone bid exists, positive CoW gain vs that bid,
+ * and winner-first solver ranking rows.
+ */
 export function deriveWaitAndSaveCompetition(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
@@ -63,6 +71,10 @@ export function deriveWaitAndSaveCompetition(
   }
 }
 
+/**
+ * Counts distinct other order UIDs on the winning solution that includes this order.
+ * `undefined` when there is no such winner.
+ */
 export function getBatchCompanionCount(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
@@ -73,28 +85,46 @@ export function getBatchCompanionCount(
   return countOtherOrderUids(winner.orders, orderUid)
 }
 
+/**
+ * Positive CoW gain when the winning fill buys more than the best alone bid with the same sell amount.
+ * Flow: resolve winning fill → best same-sell alone buy → return delta only when winning buy is strictly higher.
+ */
 export function getPositiveAloneGain(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
 ): PositiveAloneGain | undefined {
-  const winningBuyAmount = getWinningBuyAmount(solutions, orderUid)
-  const bestAloneBuyAmount = findBestAloneBuy(solutions, orderUid)
-  if (winningBuyAmount === undefined || bestAloneBuyAmount === undefined || winningBuyAmount <= bestAloneBuyAmount) {
+  const winningFill = getWinningOrderFill(solutions, orderUid)
+  if (!winningFill) return undefined
+
+  // Alone baseline must use the same sell fill as the winner; otherwise buy deltas are not comparable
+  // (e.g. a partial alone fill vs a full winning fill).
+  const bestAloneBuyAmount = findBestAloneBuy(solutions, orderUid, winningFill.sellAmountRaw)
+  // No CoW gain unless the batch buy strictly beats that same-sell alone offer.
+  if (bestAloneBuyAmount === undefined || winningFill.buyAmount <= bestAloneBuyAmount) {
     return undefined
   }
 
   return {
     bestAloneBuyAmount,
-    gainAmount: winningBuyAmount - bestAloneBuyAmount,
-    gainPercent: toGainPercent(winningBuyAmount - bestAloneBuyAmount, bestAloneBuyAmount),
-    winningBuyAmount,
+    gainAmount: winningFill.buyAmount - bestAloneBuyAmount,
+    gainPercent: toGainPercent(winningFill.buyAmount - bestAloneBuyAmount, bestAloneBuyAmount),
+    winningBuyAmount: winningFill.buyAmount,
   }
 }
 
+/**
+ * Whether any competing alone solution matches the winning fill's sell amount for this order.
+ */
 export function hasAloneBid(solutions: readonly SolverSettlement[] | undefined, orderUid: string): boolean {
-  return findBestAloneBuy(solutions, orderUid) !== undefined
+  const winningFill = getWinningOrderFill(solutions, orderUid)
+  if (!winningFill) return false
+
+  return findBestAloneBuy(solutions, orderUid, winningFill.sellAmountRaw) !== undefined
 }
 
+/**
+ * Dedupes competing solutions by solver address (keeping the better row) and sorts winner-first.
+ */
 function collectRankedSolutions(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
@@ -108,6 +138,7 @@ function collectRankedSolutions(
   return [...bySolver.values()].sort(compareSolverRows)
 }
 
+/** Sort key: lower auction ranking first, then higher buy amount. */
 function compareByRanking(left: RankedSolution, right: RankedSolution): number {
   const leftRank = left.ranking ?? Number.POSITIVE_INFINITY
   const rightRank = right.ranking ?? Number.POSITIVE_INFINITY
@@ -117,6 +148,7 @@ function compareByRanking(left: RankedSolution, right: RankedSolution): number {
   return left.fill.buyAmount > right.fill.buyAmount ? -1 : 1
 }
 
+/** Sort key: winners before non-winners; among winners prefer higher buy, else ranking. */
 function compareSolverRows(left: RankedSolution, right: RankedSolution): number {
   if (left.isWinner !== right.isWinner) return left.isWinner ? -1 : 1
   if (left.isWinner && left.fill.buyAmount !== right.fill.buyAmount) {
@@ -126,6 +158,7 @@ function compareSolverRows(left: RankedSolution, right: RankedSolution): number 
   return compareByRanking(left, right)
 }
 
+/** Distinct order UIDs on the solution other than `orderUid`. */
 function countOtherOrderUids(orders: SolverSettlement['orders'], orderUid: string): number {
   const others = new Set<string>()
 
@@ -137,11 +170,18 @@ function countOtherOrderUids(orders: SolverSettlement['orders'], orderUid: strin
   return others.size
 }
 
-function findBestAloneBuy(solutions: readonly SolverSettlement[] | undefined, orderUid: string): bigint | undefined {
+/**
+ * Highest alone-solution buy for this order among competing bids that sold exactly `requiredSellAmount`.
+ */
+function findBestAloneBuy(
+  solutions: readonly SolverSettlement[] | undefined,
+  orderUid: string,
+  requiredSellAmount: string,
+): bigint | undefined {
   let best: bigint | undefined
 
   for (const solution of solutions ?? []) {
-    const buyAmount = getAloneBuyAmount(solution, orderUid)
+    const buyAmount = getAloneBuyAmount(solution, orderUid, requiredSellAmount)
     if (buyAmount === undefined) continue
     if (best === undefined || buyAmount > best) best = buyAmount
   }
@@ -149,10 +189,15 @@ function findBestAloneBuy(solutions: readonly SolverSettlement[] | undefined, or
   return best
 }
 
+/** Locates this order on a solution's order list. */
 function findOrder(solution: SolverSettlement, orderUid: string): CompetitionOrder | undefined {
   return solution.orders?.find((order) => isSameOrderUid(order.id, orderUid))
 }
 
+/**
+ * Competing winning solution that includes this order.
+ * If several winners do, prefers the higher buy for this order, then better ranking.
+ */
 function findWinningSolution(
   solutions: readonly SolverSettlement[] | undefined,
   orderUid: string,
@@ -167,16 +212,28 @@ function findWinningSolution(
   return winner
 }
 
-function getAloneBuyAmount(solution: SolverSettlement, orderUid: string): bigint | undefined {
+/**
+ * Buy amount when the solution is a competing alone bid for this order with the required sell fill.
+ */
+function getAloneBuyAmount(
+  solution: SolverSettlement,
+  orderUid: string,
+  requiredSellAmount: string,
+): bigint | undefined {
   if (!isCompetingSolution(solution) || !isAloneSolution(solution, orderUid)) return undefined
 
-  return getOrderBuyAmount(solution, orderUid)
+  const fill = getOrderFill(solution, orderUid)
+  if (!fill || fill.sellAmountRaw !== requiredSellAmount) return undefined
+
+  return fill.buyAmount
 }
 
+/** Parsed buy atoms for this order on the solution, if present and valid. */
 function getOrderBuyAmount(solution: SolverSettlement, orderUid: string): bigint | undefined {
   return parseUint(findOrder(solution, orderUid)?.buyAmount)
 }
 
+/** Parsed buy/sell fill for this order; requires decimal uint atom strings. */
 function getOrderFill(solution: SolverSettlement, orderUid: string): OrderFill | undefined {
   const order = findOrder(solution, orderUid)
   const buyAmountRaw = order?.buyAmount
@@ -187,13 +244,18 @@ function getOrderFill(solution: SolverSettlement, orderUid: string): OrderFill |
   return { buyAmount, buyAmountRaw, sellAmountRaw }
 }
 
-function getWinningBuyAmount(solutions: readonly SolverSettlement[] | undefined, orderUid: string): bigint | undefined {
+/** Fill of this order on the preferred winning solution, if any. */
+function getWinningOrderFill(
+  solutions: readonly SolverSettlement[] | undefined,
+  orderUid: string,
+): OrderFill | undefined {
   const winner = findWinningSolution(solutions, orderUid)
   if (!winner) return undefined
 
-  return getOrderBuyAmount(winner, orderUid)
+  return getOrderFill(winner, orderUid)
 }
 
+/** True when every order on the solution is this order (solo bid). */
 function isAloneSolution(solution: SolverSettlement, orderUid: string): boolean {
   const orders = solution.orders
   if (!orders?.length) return false
@@ -201,6 +263,7 @@ function isAloneSolution(solution: SolverSettlement, orderUid: string): boolean 
   return orders.every((order) => isSameOrderUid(order.id, orderUid))
 }
 
+/** Lower ranking number wins; missing ranking sorts last. */
 function isBetterRanking(candidate: number | undefined, current: number | undefined): boolean {
   const candidateRank = candidate ?? Number.POSITIVE_INFINITY
   const currentRank = current ?? Number.POSITIVE_INFINITY
@@ -208,15 +271,23 @@ function isBetterRanking(candidate: number | undefined, current: number | undefi
   return candidateRank < currentRank
 }
 
-// Filtered solutions are removed before a batch settles, so they are not an offer to beat or a ranking row.
+/**
+ * Solutions still in the auction. Filtered-out entries are dropped before settlement,
+ * so they are neither an alone baseline nor a ranking row.
+ */
 function isCompetingSolution(solution: SolverSettlement): boolean {
   return solution.filteredOut !== true
 }
 
+/** Non-empty decimal digit string suitable for `BigInt`. */
 function isDecimalUint(value: string | undefined): value is string {
   return value !== undefined && /^\d+$/.test(value)
 }
 
+/**
+ * Whether `candidate` should replace `current` as the preferred winner for this order:
+ * higher buy first, then better ranking on a tie.
+ */
 function isPreferredWinner(candidate: SolverSettlement, current: SolverSettlement, orderUid: string): boolean {
   const candidateBuy = getOrderBuyAmount(candidate, orderUid)
   const currentBuy = getOrderBuyAmount(current, orderUid)
@@ -227,22 +298,26 @@ function isPreferredWinner(candidate: SolverSettlement, current: SolverSettlemen
   return isBetterRanking(candidate.ranking, current.ranking)
 }
 
+/** Case-insensitive order UID equality; missing candidates never match. */
 function isSameOrderUid(candidate: string | undefined, orderUid: string): boolean {
   if (!candidate) return false
 
   return candidate.toLowerCase() === orderUid.toLowerCase()
 }
 
+/** Competing solution marked as winner that includes this order. */
 function isWinningSolution(solution: SolverSettlement, orderUid: string): boolean {
   return solution.isWinner === true && isCompetingSolution(solution) && solutionIncludesOrder(solution, orderUid)
 }
 
+/** Parses a decimal uint atom string to `bigint`. */
 function parseUint(value: string | undefined): bigint | undefined {
   if (!isDecimalUint(value)) return undefined
 
   return BigInt(value)
 }
 
+/** Keeps the better ranked solution per solver address in `bySolver`. */
 function rememberBetterSolution(bySolver: Map<string, RankedSolution>, ranked: RankedSolution | undefined): void {
   if (!ranked) return
 
@@ -250,10 +325,15 @@ function rememberBetterSolution(bySolver: Map<string, RankedSolution>, ranked: R
   if (!current || compareSolverRows(ranked, current) < 0) bySolver.set(ranked.solverAddress, ranked)
 }
 
+/** Whether the solution lists this order. */
 function solutionIncludesOrder(solution: SolverSettlement, orderUid: string): boolean {
   return solution.orders?.some((order) => isSameOrderUid(order.id, orderUid)) ?? false
 }
 
+/**
+ * Gain as a percent of the alone baseline. Missing when the baseline is zero
+ * (no meaningful denominator) or the percent is not finite.
+ */
 function toGainPercent(gainAmount: bigint, baselineBuyAmount: bigint): number | undefined {
   if (baselineBuyAmount <= 0n) return undefined
 
@@ -262,6 +342,10 @@ function toGainPercent(gainAmount: bigint, baselineBuyAmount: bigint): number | 
   return Number.isFinite(percent) ? percent : undefined
 }
 
+/**
+ * Maps a competing solution that fills this order into a ranking row candidate.
+ * Skips filtered-out solutions, missing solver addresses, and invalid fills.
+ */
 function toRankedSolution(solution: SolverSettlement, orderUid: string): RankedSolution | undefined {
   if (!isCompetingSolution(solution) || !solution.solverAddress) return undefined
 
@@ -276,6 +360,7 @@ function toRankedSolution(solution: SolverSettlement, orderUid: string): RankedS
   }
 }
 
+/** Adapter from internal ranked solution to the shared `SolverCompetition` UI type. */
 function toSolverCompetition(ranked: RankedSolution): SolverCompetition {
   return {
     executedAmounts: { buy: ranked.fill.buyAmountRaw, sell: ranked.fill.sellAmountRaw },
