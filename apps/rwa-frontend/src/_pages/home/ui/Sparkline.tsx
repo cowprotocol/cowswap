@@ -16,14 +16,16 @@ interface SparklineProps {
   tone: SparklineTone
   /** Fills the area under the line */
   area?: boolean
+  /** Shown instead of a series with less than two points */
+  placeholder?: ReactNode
   className?: string
 }
 
-export function Sparkline({ series, tone, area = false, className }: SparklineProps): ReactNode {
+export function Sparkline({ series, tone, area = false, placeholder = null, className }: SparklineProps): ReactNode {
   const gradientId = useId()
   const points = series ? toSparklinePoints(series, VIEWBOX_WIDTH, VIEWBOX_HEIGHT) : null
 
-  if (!points) return null
+  if (!points) return placeholder
 
   return (
     <svg

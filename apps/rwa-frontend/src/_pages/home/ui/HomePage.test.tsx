@@ -82,7 +82,7 @@ const ASSETS_PAGE: RwaAssetsPage = {
   pageSize: 10,
   total: 1,
   totalPages: 1,
-  typeCounts: { stock: 3, index: 2 },
+  typeCounts: { stock: 3, index: 2, commodity: 0 },
   issuers: ['Ondo', 'xStocks'],
   chainIds: [1],
   degraded: false,
@@ -93,7 +93,7 @@ const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
   items: [],
   total: 0,
   totalPages: 0,
-  typeCounts: { stock: 0, index: 0 },
+  typeCounts: { stock: 0, index: 0, commodity: 0 },
   degraded: true,
 }
 
@@ -142,6 +142,16 @@ describe('HomePage', () => {
     expect(screen.getByRole('tab', { name: 'ETFs 2' })).toBeTruthy()
     expect(screen.getByText('2 issuers')).toBeTruthy()
     expect(screen.getByText('$180M')).toBeTruthy()
+  })
+
+  it('shows a dash in the 24h chart column of an asset without a series', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    const chartCell = (await screen.findByText('$180M')).closest('tr')?.lastElementChild
+
+    expect(chartCell?.querySelector('svg')).toBeNull()
+    expect(chartCell?.textContent).toBe('—')
   })
 
   it('requests the selected type, issuer and sort', async () => {

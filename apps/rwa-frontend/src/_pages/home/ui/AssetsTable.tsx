@@ -21,7 +21,7 @@ import {
   type RwaAssetListItem,
   type RwaSortField,
 } from '@/entities/asset'
-import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
+import { EMPTY_VALUE, formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -97,7 +97,7 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
       <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.market?.marketCap)}</td>
       <td className={`${styles.numeric} ${styles.chartColumn}`}>
         <span className={styles.sparkline}>
-          <Sparkline series={asset.series} tone={getTone(change)} />
+          <Sparkline series={asset.series} tone={getTone(change)} placeholder={EMPTY_VALUE} />
         </span>
       </td>
     </tr>

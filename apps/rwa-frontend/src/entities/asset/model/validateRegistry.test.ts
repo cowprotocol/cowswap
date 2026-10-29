@@ -94,7 +94,7 @@ describe('validateRegistry', () => {
 
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Coinbase' }] }]))).toEqual([])
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Dinari' }] }]))).toEqual([
-      'assets[0].tokens[0].issuer: "Dinari" is not an allowed issuer (Ondo, xStocks, Coinbase, bStocks, Reality)',
+      'assets[0].tokens[0].issuer: "Dinari" is not an allowed issuer (Ondo, xStocks, Coinbase, bStocks, Reality, Paxos, Tether)',
     ])
   })
 

@@ -97,8 +97,16 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
   }
 }
 
+/** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]> {
-  return marketDataProvider.getChart(asset, range)
+  const [points, sharesPerToken] = await Promise.all([
+    marketDataProvider.getChart(asset, range),
+    loadChartSharesPerToken(asset.tokens),
+  ])
+
+  if (sharesPerToken === null) return points
+
+  return points.map(({ time, value }) => ({ time, value: value / sharesPerToken }))
 }
 
 /** `chainId` must have tokens of the asset */
@@ -137,12 +145,20 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
   const markets = listed.map(({ market }) => market)
   const items = listed.map(({ asset, market }) => toOverviewItem(asset, market))
   const marketsByTicker = new Map(listed.map(({ asset, market }) => [asset.ticker, market]))
-  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): RwaMarketOverviewItem[] =>
-    moverItems.map((item) => ({ ...item, series: getDailySeries(marketsByTicker.get(item.ticker)) }))
+  // A token that skips hours leaves the sparkline incomplete, while its 1D chart has every trade
+  const withDailySeries = (moverItems: RwaMarketOverviewItem[]): Promise<RwaMarketOverviewItem[]> =>
+    withSeries(
+      moverItems,
+      async (asset) => getDailySeries(marketsByTicker.get(asset.ticker)) ?? getAssetChart(asset, '1D'),
+    )
   const { gainers, losers } = splitMovers(items, MARKET_OVERVIEW_LIST_LIMIT)
-  const mostTraded = await withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
-    marketDataProvider.getHourlyDexVolume(asset.tokens),
-  )
+  const [mostTraded, gainersWithSeries, losersWithSeries] = await Promise.all([
+    withSeries(rankMostTraded(items, MARKET_OVERVIEW_LIST_LIMIT), (asset) =>
+      marketDataProvider.getHourlyDexVolume(asset.tokens),
+    ),
+    withDailySeries(gainers),
+    withDailySeries(losers),
+  ])
 
   return {
     totals: {
@@ -151,8 +167,8 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
       marketCapSeries: buildMarketCapSeries(markets),
     },
     mostTraded,
-    gainers: withDailySeries(gainers),
-    losers: withDailySeries(losers),
+    gainers: gainersWithSeries,
+    losers: losersWithSeries,
     updatedAt: latestUpdatedAt(markets),
     tradingTime: assets.find((asset) => asset.allowedTradingTime)?.allowedTradingTime ?? null,
     degraded,
@@ -197,6 +213,23 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
 
 function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[] | null {
   return market ? buildDailySeries(market) : null
+}
+
+/**
+ * Shares per token of the coin `MarketDataProvider.getChart` reads, the first token's. Its price is shared by every
+ * token of that coin, so a multiplier that differs between them, or is unknown for one, leaves the chart per token
+ */
+async function loadChartSharesPerToken(tokens: RwaToken[]): Promise<number | null> {
+  const coingeckoId = tokens.find((token) => token.coingeckoId)?.coingeckoId
+
+  if (!coingeckoId) return null
+
+  const coinTokens = tokens.filter((token) => token.coingeckoId === coingeckoId)
+  const { byKey } = await loadSharesPerToken(coinTokens)
+  const multipliers = new Set(coinTokens.map((token) => byKey[getTokenKey(token)]))
+  const [multiplier] = multipliers
+
+  return multipliers.size === 1 && multiplier !== undefined && multiplier > 0 ? multiplier : null
 }
 
 async function loadNetworkStats(

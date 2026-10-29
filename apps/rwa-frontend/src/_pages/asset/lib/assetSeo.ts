@@ -2,7 +2,7 @@ import type { RwaAsset, RwaAssetType } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
 
-const ASSET_TYPE_NOUNS: Record<RwaAssetType, string> = { stock: 'stock', index: 'ETF' }
+const ASSET_TYPE_NOUNS: Record<RwaAssetType, string> = { stock: 'stock', index: 'ETF', commodity: 'commodity' }
 
 const MAX_LISTED_NETWORKS = 3
 

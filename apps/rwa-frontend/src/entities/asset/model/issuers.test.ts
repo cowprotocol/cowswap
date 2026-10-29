@@ -1,4 +1,4 @@
-import { getDividendModel, getDividendNote, getDividendNotes, isWrappedXStock } from './issuers'
+import { getDividendModel, getDividendNote, getDividendNotes, isCommodityIssuer, isWrappedXStock } from './issuers'
 
 const ONDO = { issuer: 'Ondo', coingeckoId: 'nvidia-ondo-tokenized-stock' }
 const XSTOCKS = { issuer: 'xStocks', coingeckoId: 'nvidia-xstock' }
@@ -19,6 +19,20 @@ describe('getDividendModel', () => {
 
   it('is null for an unknown issuer', () => {
     expect(getDividendModel({ issuer: 'Dinari' })).toBeNull()
+  })
+
+  it('is null for a commodity issuer', () => {
+    expect(getDividendModel({ issuer: 'Paxos' })).toBeNull()
+    expect(getDividendModel({ issuer: 'Tether' })).toBeNull()
+  })
+})
+
+describe('isCommodityIssuer', () => {
+  it('matches known issuers without dividends only', () => {
+    expect(isCommodityIssuer('Paxos')).toBe(true)
+    expect(isCommodityIssuer('Tether')).toBe(true)
+    expect(isCommodityIssuer('Ondo')).toBe(false)
+    expect(isCommodityIssuer('Dinari')).toBe(false)
   })
 })
 

@@ -16,11 +16,15 @@ export interface RwaAsset {
   tokens: RwaToken[]
 }
 
-export const RWA_ASSET_TYPES = ['stock', 'index'] as const
+export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
-export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
+export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = {
+  stock: 'Stock',
+  index: 'ETF',
+  commodity: 'Commodity',
+}
 
 /** CoinGecko tokenized market of an RWA over every chain and issuer. Server-only: never sent in a response */
 export interface RwaAggregateMarket {
