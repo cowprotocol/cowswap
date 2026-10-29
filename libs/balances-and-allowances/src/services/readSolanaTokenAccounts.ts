@@ -11,7 +11,8 @@ import { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 export interface SolanaTokenMint {
   mint: string
   // Token-2022 mints use a different program, which changes both the ATA address and its data layout.
-  // Sourced from the token list's `extensions.isToken2022` flag.
+  // Sourced from the token's `token-2022` tag, lifted from the list's `extensions.isToken2022` flag or
+  // read off the mint when the user imported it.
   isToken2022: boolean
 }
 

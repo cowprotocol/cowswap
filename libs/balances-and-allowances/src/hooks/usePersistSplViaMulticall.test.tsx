@@ -33,6 +33,8 @@ function ataKey(mint: string, program: string = CLASSIC_PROGRAM): string {
 let mockConnection: MockConnection | undefined
 // getAddressKey(address) -> token metadata, mirroring the token list; its tags drive program selection.
 let mockTokensByAddress: Record<string, { tags: string[] } | undefined>
+// The active-chain map, which unlike the list map also carries tokens the user imported.
+let mockActiveTokensByAddress: Record<string, { tags: string[]; chainId: number } | undefined>
 
 jest.mock('@reown/appkit-adapter-solana/react', () => ({
   useAppKitConnection: () => ({ connection: mockConnection }),
@@ -40,6 +42,7 @@ jest.mock('@reown/appkit-adapter-solana/react', () => ({
 
 jest.mock('@cowprotocol/tokens', () => ({
   useTokensByAddressMapForChain: () => mockTokensByAddress,
+  useTokensByAddressMap: () => mockActiveTokensByAddress,
 }))
 
 // The ATA-derivation math is not what we are testing; make it deterministic and echo the mint plus the
@@ -138,6 +141,7 @@ function wrapper({ children }: { children: ReactNode }): ReactNode {
 describe('usePersistSplViaMulticall', () => {
   beforeEach(() => {
     mockTokensByAddress = {}
+    mockActiveTokensByAddress = {}
     mockAmountByAta = { [ataKey(MINT_A)]: 100n, [ataKey(MINT_B)]: 250n }
     mockInfoByAta = { [ataKey(MINT_A)]: { present: true }, [ataKey(MINT_B)]: { present: true } }
     mockConnection = createConnection()
@@ -234,5 +238,36 @@ describe('usePersistSplViaMulticall', () => {
     const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
     expect(atas[0].toBase58()).toBe(ataKey(MINT_A, TOKEN_2022_PROGRAM))
     expect(result.current.values[getAddressKey(MINT_A)]).toBe(999n)
+  })
+
+  it('derives a Token-2022 ATA for a user-imported mint, which no token list knows about', async () => {
+    mockActiveTokensByAddress = {
+      [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG], chainId: SupportedChainId.SOLANA },
+    }
+    mockAmountByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: 82468n }
+    mockInfoByAta = { [ataKey(MINT_A, TOKEN_2022_PROGRAM)]: { present: true } }
+
+    const { result } = renderWithBalances(makeParams({ tokenAddresses: [MINT_A] }))
+
+    await waitFor(() => expect(result.current.hasFirstLoad).toBe(true))
+
+    const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A, TOKEN_2022_PROGRAM))
+    expect(result.current.values[getAddressKey(MINT_A)]).toBe(82468n)
+  })
+
+  it('ignores an active-map entry from another chain when picking the token program', async () => {
+    mockActiveTokensByAddress = {
+      [getAddressKey(MINT_A)]: { tags: [TOKEN_2022_TAG], chainId: SupportedChainId.MAINNET },
+    }
+    mockAmountByAta = { [ataKey(MINT_A)]: 100n }
+    mockInfoByAta = { [ataKey(MINT_A)]: { present: true } }
+
+    const { result } = renderWithBalances(makeParams({ tokenAddresses: [MINT_A] }))
+
+    await waitFor(() => expect(result.current.hasFirstLoad).toBe(true))
+
+    const [atas] = mockConnection!.getMultipleAccountsInfo.mock.calls[0]
+    expect(atas[0].toBase58()).toBe(ataKey(MINT_A))
   })
 })

@@ -6,7 +6,7 @@ import { skipToken, useQuery } from '@tanstack/react-query'
 import { getIsToken2022 } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { getAddressKey, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
+import { TokensByAddress, useTokensByAddressMap, useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
@@ -50,11 +50,12 @@ export function usePersistSplViaMulticall(params: PersistBalancesAndAllowancesPa
 
   const isSolana = isSolanaChain(chainId)
 
-  const tokensByAddress = useTokensByAddressMapForChain(chainId)
+  const listTokensByAddress = useTokensByAddressMapForChain(chainId)
+  const activeTokensByAddress = useTokensByAddressMap()
 
   const tokenMints = useMemo<SolanaTokenMint[]>(
-    () => buildSolanaTokenMints(tokenAddresses, chainId, tokensByAddress),
-    [tokenAddresses, chainId, tokensByAddress],
+    () => buildSolanaTokenMints(tokenAddresses, chainId, listTokensByAddress, activeTokensByAddress),
+    [tokenAddresses, chainId, listTokensByAddress, activeTokensByAddress],
   )
 
   const { enabled, refetchInterval } = getSolanaQueryConfig(params, isSolana, connection, tokenMints.length)
@@ -173,21 +174,27 @@ function applySolanaBalances(
 }
 
 // Native SOL is handled elsewhere and has no ATA, so deriving one would throw — keep only SPL mints.
-// The list's `isToken2022` flag picks the token program; mints absent from the list default to classic
-// SPL, so a wrong ATA simply reads as a zero balance rather than erroring.
+// The `token-2022` tag picks the token program, and the wrong program derives an ATA that does not
+// exist, which reads as a zero balance rather than erroring — so a mint whose tag is missing from both
+// maps silently loses its balance.
 function buildSolanaTokenMints(
   tokenAddresses: string[],
   chainId: PersistBalancesAndAllowancesParams['chainId'],
-  tokensByAddress: ReturnType<typeof useTokensByAddressMapForChain>,
+  listTokensByAddress: TokensByAddress,
+  activeTokensByAddress: TokensByAddress,
 ): SolanaTokenMint[] {
   return tokenAddresses
     .filter((address) => !getIsNativeToken(chainId, address))
     .map((address) => {
-      const isToken2022 = getIsToken2022(tokensByAddress[getAddressKey(address)])
+      const addressKey = getAddressKey(address)
+      // Tokens the user imported are absent from the per-chain list map and known only to the active
+      // map, which covers the connected chain alone — hence the chain check before trusting it.
+      const activeToken = activeTokensByAddress[addressKey]
+      const token = listTokensByAddress[addressKey] ?? (activeToken?.chainId === chainId ? activeToken : undefined)
 
       return {
         mint: address,
-        isToken2022,
+        isToken2022: getIsToken2022(token),
       }
     })
 }
