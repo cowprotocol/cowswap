@@ -123,6 +123,7 @@ describe('fetchAndProcessQuote', () => {
       reset: jest.fn(),
       onError: jest.fn(),
       onResponse: jest.fn(),
+      onSettled: jest.fn(),
     }
 
     mockBridgingSdk = bridgingSdk as jest.Mocked<typeof bridgingSdk>
@@ -159,7 +160,7 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true, sameChainQuoteParams)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(mockFetchParams, sameChainQuoteParams)
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(sameChainQuoteParams, {
         allowIntermediateEqSellToken: true,
         quoteRequest: {
@@ -200,7 +201,7 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true, crossChainQuoteParams)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(mockFetchParams, crossChainQuoteParams)
       expect(mockGetBridgeQuoteSigner).toHaveBeenCalledWith(SupportedChainId.MAINNET)
       expect(mockBridgingSdk.getBestQuote).toHaveBeenCalledWith({
         quoteBridgeRequest: crossChainQuoteParams,
@@ -346,6 +347,7 @@ describe('fetchAndProcessQuote', () => {
 
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onSettled).toHaveBeenCalledWith(mockFetchParams)
     })
 
     it('should handle QuoteApiError', async () => {
@@ -624,6 +626,7 @@ describe('fetchAndProcessQuote', () => {
       // Should not call any manager methods for null result
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onSettled).toHaveBeenCalledWith(mockFetchParams)
     })
 
     it('should handle unexpected exception in getBestQuote', async () => {
@@ -700,6 +703,7 @@ describe('fetchAndProcessQuote', () => {
       // Should not call any manager methods when request is cancelled
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onSettled).toHaveBeenCalledWith(mockFetchParams)
     })
   })
 
@@ -811,7 +815,7 @@ describe('fetchAndProcessQuote', () => {
         mockTradeQuoteManager,
       )
 
-      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(false, mockQuoteParams)
+      expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(noParamsChangedFetchParams, mockQuoteParams)
     })
   })
 })

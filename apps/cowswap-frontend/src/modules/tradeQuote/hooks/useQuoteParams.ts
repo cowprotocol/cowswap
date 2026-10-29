@@ -14,7 +14,7 @@ import { Nullish } from 'types'
 
 import { AppDataInfo, useAppData } from 'modules/appData'
 import { useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
-import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
+import { useShouldUseAutoSlippage, useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import type { VolumeFee } from 'modules/volumeFee'
 import { useVolumeFee } from 'modules/volumeFee'
 
@@ -25,6 +25,7 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 import { useSmartSlippageFromQuote } from './useSmartSlippageFromQuote'
+import { useTradeQuote } from './useTradeQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner, NON_EVM_CHAIN_CONFIG } from '../utils/getBridgeQuoteSigner'
 import { getEoaTwapQuotePreHooks } from '../utils/getEoaTwapQuotePreHooks'
@@ -68,7 +69,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const smartSlippageFromQuote = useSmartSlippageFromQuote()
   const smartSlippageBps = tradeSlippage.type === 'smart' ? tradeSlippage.value : undefined
 
   const smartSlippageBpsRef = useRef(smartSlippageBps)
@@ -77,15 +77,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   }, [smartSlippageBps])
 
   const { inputCurrency, outputCurrency, orderKind } = state || {}
-
-  // Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
-  // not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
-  // The exception is an uncapped smart slippage: the SDK signs its own fresh suggestion when none is passed,
-  // while passing it would send the previous quote's suggestion and requote once the new one arrives.
-  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
-  const isSolanaSlippageFromQuote = tradeSlippage.type === 'smart' && tradeSlippage.value === smartSlippageFromQuote
-  const userSlippageBps =
-    tradeSlippage.type === 'user' || (isSolana && !isSolanaSlippageFromQuote) ? tradeSlippage.value : undefined
+  const userSlippageBps = useQuoteSlippageBps(inputCurrency)
   const { receiver, bridgeRecipient } = useQuoteParamsRecipient()
 
   const appDataDoc = useMemo(() => {
@@ -180,4 +172,23 @@ function buildQuoteParams(args: BuildQuoteParamsArgs): QuoteParams {
  *  address format is respected instead of always using the EVM placeholder. */
 function getDefaultOwnerPlaceholder(sellTokenChainId: number): string {
   return NON_EVM_CHAIN_CONFIG.find(({ isChain }) => isChain(sellTokenChainId))?.defaultRecipient ?? BRIDGE_QUOTE_ACCOUNT
+}
+
+// Solana signs exactly the tolerance it is handed, so the resolved one must travel with the quote,
+// not only an explicit user override. Keyed on the sell token's chain — what the quote routes on.
+// The exception is an uncapped smart slippage: the SDK signs its own fresh suggestion when none is passed,
+// while passing it would send the previous quote's suggestion and requote once the new one arrives.
+// Before the first final quote there is no suggestion yet, so passing the default would requote the same way.
+function useQuoteSlippageBps(inputCurrency: Nullish<Currency>): number | undefined {
+  const tradeSlippage = useTradeSlippageValueAndType()
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
+  const shouldUseAutoSlippage = useShouldUseAutoSlippage()
+  const { hasFinalQuote } = useTradeQuote()
+
+  const isSolana = !!inputCurrency && isSolanaChain(inputCurrency.chainId)
+  const isSolanaSlippageFromQuote =
+    (tradeSlippage.type === 'smart' && tradeSlippage.value === smartSlippageFromQuote) ||
+    (tradeSlippage.type === 'default' && shouldUseAutoSlippage && !hasFinalQuote)
+
+  return tradeSlippage.type === 'user' || (isSolana && !isSolanaSlippageFromQuote) ? tradeSlippage.value : undefined
 }
