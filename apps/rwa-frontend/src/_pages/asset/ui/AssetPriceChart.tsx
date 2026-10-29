@@ -21,7 +21,7 @@ export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
   const candlesQuery = useAtomValue(assetCandlesQueryAtomFamily(ticker))
 
   usePrefetchOtherChartType(ticker)
-  const { data, error } = chartType === 'line' ? lineQuery : candlesQuery
+  const { data, error, isPlaceholderData } = chartType === 'line' ? lineQuery : candlesQuery
   const lineData = lineQuery.data
   const candleData = candlesQuery.data
   const candles = useMemo(
@@ -38,7 +38,14 @@ export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
       {error && !data ? (
         <p className={styles.status}>Chart is unavailable: {error.message}</p>
       ) : (
-        <PriceChart ticker={ticker} candles={candles} chartType={chartType} range={range} loading={!data} />
+        <PriceChart
+          ticker={ticker}
+          candles={candles}
+          chartType={chartType}
+          range={range}
+          loading={!data}
+          stale={isPlaceholderData}
+        />
       )}
     </section>
   )

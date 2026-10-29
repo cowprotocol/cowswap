@@ -70,9 +70,11 @@ interface PriceChartProps {
   range: RwaChartRange
   /** Shows a loader instead of an empty chart */
   loading: boolean
+  /** `candles` are a placeholder from another range, so the drawn bars are kept until the real ones arrive */
+  stale: boolean
 }
 
-export function PriceChart({ ticker, candles, chartType, range, loading }: PriceChartProps): ReactNode {
+export function PriceChart({ ticker, candles, chartType, range, loading, stale }: PriceChartProps): ReactNode {
   const containerRef = useRef<HTMLDivElement>(null)
   const resolution = CHART_RESOLUTIONS[chartType][range]
   const bars = useMemo(() => alignCandles(candles, resolution), [candles, resolution])
@@ -155,7 +157,7 @@ export function PriceChart({ ticker, candles, chartType, range, loading }: Price
   }, [ticker, hasData])
 
   useEffect(() => {
-    if (loading) return
+    if (loading || stale) return
 
     barsRef.current = bars
     resolutionRef.current = resolution
@@ -181,7 +183,7 @@ export function PriceChart({ ticker, candles, chartType, range, loading }: Price
     } else {
       chart.resetData()
     }
-  }, [widget, bars, resolution, chartType, loading])
+  }, [widget, bars, resolution, chartType, loading, stale])
 
   useChartTheme(widget, containerRef)
 
