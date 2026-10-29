@@ -70,7 +70,9 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     }
   }, [asset, assetToken, side, isDark])
 
-  if (!params || !selection) return <p>Trading is not available for {asset.ticker}</p>
+  if (!params || !selection) {
+    return <p>Trading is not available for {asset.ticker}</p>
+  }
 
   return (
     <section id={TRADE_WIDGET_ID} className={styles.widget}>
