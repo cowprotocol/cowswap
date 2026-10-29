@@ -2,6 +2,7 @@ import { AAPLX_ARBITRUM, AAPLX_MAINNET } from './fixtures'
 import {
   getAutoToken,
   getBestQuotedToken,
+  getBestQuoteLabel,
   keepPreviousOrder,
   type QuotedToken,
   sortQuotedTokens,
@@ -151,6 +152,18 @@ describe('getBestQuotedToken', () => {
 
     expect(quoted.map(({ isPriceOutlier }) => isPriceOutlier)).toEqual([false, true])
     expect(getBestQuotedToken(quoted, 'sell')).toBe(AAPLX_MAINNET)
+  })
+})
+
+describe('getBestQuoteLabel', () => {
+  it('names the best quote by side', () => {
+    expect(getBestQuoteLabel('buy', false)).toBe('Lowest buy quote')
+    expect(getBestQuoteLabel('sell', false)).toBe('Highest sell quote')
+  })
+
+  it('limits the claim to verified quotes when cheaper unverified ones can be listed', () => {
+    expect(getBestQuoteLabel('buy', true)).toBe('Lowest verified buy quote')
+    expect(getBestQuoteLabel('sell', true)).toBe('Highest verified sell quote')
   })
 })
 

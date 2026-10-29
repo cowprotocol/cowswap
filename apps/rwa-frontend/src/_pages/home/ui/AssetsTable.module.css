@@ -101,6 +101,13 @@
   line-height: 20px;
 }
 
+.info {
+  display: inline-flex;
+  margin-left: 4px;
+  vertical-align: middle;
+  cursor: help;
+}
+
 .watchColumn {
   width: 32px;
 }

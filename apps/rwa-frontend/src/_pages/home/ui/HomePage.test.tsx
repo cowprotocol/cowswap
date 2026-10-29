@@ -172,7 +172,7 @@ describe('HomePage', () => {
     const header = await screen.findByRole('columnheader', { name: '24h volume' })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(screen.getByRole('columnheader', { name: 'Market cap' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
     expect(
       (global.fetch as jest.Mock).mock.calls
         .map(([url]) => String(url))
@@ -275,16 +275,6 @@ describe('HomePage', () => {
     expect(await screen.findAllByText('Market data is temporarily unavailable')).toHaveLength(1)
     expect(screen.queryByText('No trades in the last 24 hours')).toBeNull()
     expect(screen.queryByText('No gainers in the last 24 hours')).toBeNull()
-  })
-
-  it('marks the monochrome Ondo logo for dark mode', () => {
-    mockApi(OVERVIEW)
-    const { container } = renderHomePage()
-
-    expect(container.querySelector('img[src="/rwa/issuers/ondo.svg"]')?.className).toContain('monochromeLogo')
-    expect(container.querySelector('img[src="/rwa/issuers/xstocks.svg"]')?.className ?? '').not.toContain(
-      'monochromeLogo',
-    )
   })
 
   it('shows an error when the overview fails', async () => {

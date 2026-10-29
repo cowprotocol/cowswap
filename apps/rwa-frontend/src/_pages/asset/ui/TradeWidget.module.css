@@ -13,6 +13,14 @@
   font-size: 13px;
 }
 
+.disclaimer {
+  margin: 0;
+  padding: 0 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
 .connectPrompt {
   display: flex;
   align-items: center;

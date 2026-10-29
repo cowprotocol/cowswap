@@ -10,7 +10,7 @@ export function getAssetSeoDescription(asset: RwaAsset): string {
   const { title, ticker, type } = asset
 
   return (
-    `Trade ${title} (${ticker}) tokenized ${ASSET_TYPE_NOUNS[type]} onchain with CoW Protocol: ` +
+    `Third-party tokens referencing ${title} (${ticker}) ${ASSET_TYPE_NOUNS[type]}, with swaps powered by CoW Protocol: ` +
     `${getAssetSeoTokensLabel(asset)}.`
   )
 }
