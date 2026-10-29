@@ -343,6 +343,8 @@ describe('useTokensToSelect', () => {
 
       expect(result.current.tokens).toEqual([mainnetToken, scopedFavoriteToken, leakedFavoriteToken])
       expect(result.current.isLoading).toBe(false)
+      expect(result.current.hasScopedListRestriction).toBe(false)
+      expect(result.current.allowedRecentTokens).toBeUndefined()
     })
 
     it('is loading until the balances are loaded', () => {

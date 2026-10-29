@@ -3,7 +3,7 @@ import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Field } from 'legacy/state/types'
 
-import { filterTokensForSelector, getTokenSelectorFilter, isTokenSelectorFiltered } from './filterTokensForSelector'
+import { filterTokensForSelector, getTokenSelectorFilter } from './filterTokensForSelector'
 
 const createToken = (address: string, symbol: string): TokenWithLogo =>
   ({ address, chainId: SupportedChainId.MAINNET, decimals: 18, symbol, name: symbol }) as TokenWithLogo
@@ -35,17 +35,6 @@ describe('filterTokensForSelector', () => {
     const filter = { tokens: [aaplOndo.address, aaplX.address], onlyWithBalance: true }
 
     expect(filterTokensForSelector(tokens, filter, balances)).toEqual([aaplX])
-  })
-})
-
-describe('isTokenSelectorFiltered', () => {
-  it('is false for a notice alone', () => {
-    expect(isTokenSelectorFiltered({ notice: 'Only tokens you hold' })).toBe(false)
-  })
-
-  it('is true for given tokens or tokens with balance', () => {
-    expect(isTokenSelectorFiltered({ tokens: [] })).toBe(true)
-    expect(isTokenSelectorFiltered({ onlyWithBalance: true })).toBe(true)
   })
 })
 

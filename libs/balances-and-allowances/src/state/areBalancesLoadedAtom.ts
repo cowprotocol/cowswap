@@ -11,9 +11,15 @@ export const areBalancesLoadedAtom = atom((get) => {
   const { hasFirstLoad, chainId } = get(balancesAtom)
 
   if (!hasFirstLoad) return false
-  if (!get(balancesWatcherHealthAtom).isRecovering) return true
+
+  const { isRecovering, recoveringSince } = get(balancesWatcherHealthAtom)
+
+  if (!isRecovering) return true
   if (!chainId) return false
 
-  // `BalancesResetUpdater` clears the updates on account change, so they are of the current account only
-  return Object.values(get(balancesUpdateAtom)[chainId] ?? {}).some(Boolean)
+  // `BalancesResetUpdater` clears the updates on account change, so they are of the current account only.
+  // Updates of an earlier recovery don't count: the balances may have been reset since then (e.g. chain switch)
+  return Object.values(get(balancesUpdateAtom)[chainId] ?? {}).some(
+    (updatedAt) => updatedAt !== undefined && updatedAt >= (recoveringSince ?? 0),
+  )
 })

@@ -32,7 +32,3 @@ export function getTokenSelectorFilter(
 
   return undefined
 }
-
-export function isTokenSelectorFiltered(filter: TokenSelectorFilter | undefined): boolean {
-  return Boolean(filter?.tokens || filter?.onlyWithBalance)
-}

@@ -62,13 +62,13 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
         ? { sell: quote, buy: { asset: assetToken.address } }
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
       customTokens: asset.tokens.map(toTokenInfo),
-      ...getTradeTokensFilters(asset, assetToken.chainId, side),
+      ...getTradeTokensFilters(asset, assetToken.chainId, side, isConnected),
       // The filters follow the Buy/Sell toggle above the widget, so the widget can't swap the tokens
       disableSwitchingTokens: true,
       standaloneMode: false,
       theme: isDark ? 'dark' : 'light',
     }
-  }, [asset, assetToken, side, isDark])
+  }, [asset, assetToken, side, isConnected, isDark])
 
   if (!params || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>

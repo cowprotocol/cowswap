@@ -20,11 +20,7 @@ import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { tokensToSelectAtom } from '../state/tokensToSelectAtom'
-import {
-  filterTokensForSelector,
-  getTokenSelectorFilter,
-  isTokenSelectorFiltered,
-} from '../utils/filterTokensForSelector'
+import { filterTokensForSelector, getTokenSelectorFilter } from '../utils/filterTokensForSelector'
 
 const EMPTY_TOKENS: TokenWithLogo[] = []
 
@@ -74,7 +70,8 @@ export function useTokensToSelect(): TokensToSelectContext {
   } = useSelectorTokensFilter(field, areTokensFromBridge)
   const hasScopedListRestriction =
     getHasScopedListRestriction(field, tokenLists, sellTokenLists, buyTokenLists) ||
-    isTokenSelectorFiltered(tokensFilter)
+    Boolean(tokensFilter?.tokens) ||
+    filterBalances !== null
 
   const allTokens = useMemo(
     () => filterTokensForSelector(listTokens, tokensFilter, filterBalances),

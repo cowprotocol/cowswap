@@ -101,11 +101,11 @@ function HealthHydrator({ health, children }: { health: WatcherHealthState; chil
 }
 
 function healthy(): WatcherHealthState {
-  return { status: BalancesWatcherHealth.Healthy, isRecovering: false }
+  return { status: BalancesWatcherHealth.Healthy, isRecovering: false, recoveringSince: null }
 }
 
 function recovering(status: BalancesWatcherHealth = BalancesWatcherHealth.Fallback): WatcherHealthState {
-  return { status, isRecovering: true }
+  return { status, isRecovering: true, recoveringSince: 0 }
 }
 
 function renderWithHealth(health: WatcherHealthState = DEFAULT_WATCHER_HEALTH_STATE): void {
@@ -256,7 +256,7 @@ describe('CommonPriorityBalancesAndAllowancesUpdater', () => {
       BalancesWatcherHealth.Connected,
       BalancesWatcherHealth.Healthy,
     ])('mounts only the watcher (no multicall fallback) when isRecovering=false and status=%s', (status) => {
-      renderWithHealth({ status, isRecovering: false })
+      renderWithHealth({ status, isRecovering: false, recoveringSince: null })
 
       expect(mockBalancesWatcherUpdater).toHaveBeenCalledTimes(1)
       expect(mockBalancesAndAllowancesUpdater).not.toHaveBeenCalled()

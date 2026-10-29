@@ -8,6 +8,7 @@ import { BalancesWatcherHealth, balancesWatcherHealthAtom } from './balancesWatc
 
 const CHAIN_ID = SupportedChainId.MAINNET
 const ACCOUNT = '0x00000000000000000000000000000000000000Ab'
+const RECOVERING_SINCE = 1_000
 
 function createLoadedStore(isRecovering: boolean): ReturnType<typeof createStore> {
   const store = createStore()
@@ -16,6 +17,7 @@ function createLoadedStore(isRecovering: boolean): ReturnType<typeof createStore
   store.set(balancesWatcherHealthAtom, {
     status: isRecovering ? BalancesWatcherHealth.Fallback : BalancesWatcherHealth.Healthy,
     isRecovering,
+    recoveringSince: isRecovering ? RECOVERING_SINCE : null,
   })
 
   return store
@@ -37,8 +39,22 @@ describe('areBalancesLoadedAtom', () => {
   it('is true while the watcher recovers once the multicall fallback has fetched the balances', () => {
     const store = createLoadedStore(true)
 
-    store.set(balancesUpdateAtom, (state) => ({ ...state, [CHAIN_ID]: { [getAddressKey(ACCOUNT)]: Date.now() } }))
+    store.set(balancesUpdateAtom, (state) => ({
+      ...state,
+      [CHAIN_ID]: { [getAddressKey(ACCOUNT)]: RECOVERING_SINCE + 1 },
+    }))
 
     expect(store.get(areBalancesLoadedAtom)).toBe(true)
+  })
+
+  it('is false while the watcher recovers when the balances were fetched in an earlier recovery only', () => {
+    const store = createLoadedStore(true)
+
+    store.set(balancesUpdateAtom, (state) => ({
+      ...state,
+      [CHAIN_ID]: { [getAddressKey(ACCOUNT)]: RECOVERING_SINCE - 1 },
+    }))
+
+    expect(store.get(areBalancesLoadedAtom)).toBe(false)
   })
 })
