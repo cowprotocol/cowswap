@@ -26,6 +26,8 @@ export type OrderProgressBarProps = {
   chainId: SupportedChainId
   countdown?: number | null | undefined
   solverCompetition?: SolverCompetition[]
+  solverCompetitionPending?: boolean
+  solverCompetitionReady?: boolean
   totalSolvers?: number
   order?: Order
   debugMode?: boolean
@@ -36,10 +38,10 @@ export type OrderProgressBarProps = {
   isProgressBarSetup: boolean
   swapAndBridgeContext?: SwapAndBridgeContext
   isBridgingTrade: boolean
-  deferFinishedConfirmation?: boolean
   waitAndSave?: {
     outcome?: WaitAndSaveOutcomeProps
-    strip: WaitAndSaveStrip
+    pending?: boolean
+    strip?: WaitAndSaveStrip
   }
 }
 

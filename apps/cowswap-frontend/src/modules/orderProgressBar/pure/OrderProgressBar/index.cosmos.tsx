@@ -120,6 +120,7 @@ const defaultProps: OrderProgressBarProps = {
     surplusPercent: '10',
     showFiatValue: true,
     showSurplus: true,
+    isReady: true,
   },
   isProgressBarSetup: true,
   swapAndBridgeContext: swapAndBridgeContextMock,

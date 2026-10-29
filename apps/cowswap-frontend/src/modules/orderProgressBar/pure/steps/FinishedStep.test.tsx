@@ -129,6 +129,7 @@ const surplusData: SurplusData = {
   surplusPercent: '0.51',
   showFiatValue: true,
   showSurplus: true,
+  isReady: true,
 }
 
 describe('FinishedStep', () => {
@@ -197,7 +198,7 @@ describe('FinishedStep', () => {
     expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
   })
 
-  it('omits the token pair while executed amounts are still zero', () => {
+  it('keeps the token pair mounted while executed amounts are still zero', () => {
     renderFinished(
       <FinishedStep
         stepName={OrderProgressBarStepName.FINISHED}
@@ -217,7 +218,7 @@ describe('FinishedStep', () => {
       </FinishedStep>,
     )
 
-    expect(screen.queryByTestId('trade-token-pair')).toBeNull()
+    expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
   })
 
   it('omits solver expand and auction when there are no solvers', () => {
@@ -319,6 +320,27 @@ describe('FinishedStep', () => {
     )
     expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
     expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+  })
+
+  it('holds a surplus-sized placeholder while the solver competition is still loading', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solverCompetitionPending
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('confirmation-outcome-loading')).toBeTruthy()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
   })
 
   it('renders the green card and CoW strip instead of surplus when Wait & Save beat trading alone', () => {

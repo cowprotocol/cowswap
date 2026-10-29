@@ -61,7 +61,7 @@ beforeAll(() => {
       }) as unknown as MediaQueryList)
 })
 
-function renderContent(deferFinishedConfirmation = false): RenderResult {
+function renderContent(stepName: OrderProgressBarStepName = OrderProgressBarStepName.FINISHED): RenderResult {
   const order = getOrderMock(SupportedChainId.MAINNET)
 
   return render(
@@ -80,11 +80,10 @@ function renderContent(deferFinishedConfirmation = false): RenderResult {
           }}
           orderProgressBarProps={{
             chainId: SupportedChainId.MAINNET,
-            deferFinishedConfirmation,
             isBridgingTrade: false,
             isProgressBarSetup: true,
             showCancellationModal: null,
-            stepName: OrderProgressBarStepName.FINISHED,
+            stepName,
           }}
         />
       </I18nProvider>
@@ -98,12 +97,5 @@ describe('TransactionSubmittedContent', () => {
 
     expect(screen.getByTestId('finished-success-heading')).toBeTruthy()
     expect(screen.getByTestId('order-progress-bar').textContent).toBe(OrderProgressBarStepName.FINISHED)
-  })
-
-  it('keeps the in-progress confirmation while the Wait & Save competition is pending', () => {
-    renderContent(true)
-
-    expect(screen.queryByTestId('finished-success-heading')).toBeNull()
-    expect(screen.getByTestId('order-progress-bar').textContent).toBe(OrderProgressBarStepName.EXECUTING)
   })
 })

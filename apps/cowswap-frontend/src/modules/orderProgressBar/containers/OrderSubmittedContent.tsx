@@ -4,7 +4,6 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import {
@@ -14,6 +13,7 @@ import {
   waitAndSaveEnabledAtom,
 } from 'modules/trade'
 
+import { OrderProgressBarStepName } from '../constants'
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { useWaitAndSaveConfirmation } from '../hooks/useWaitAndSaveConfirmation'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
@@ -32,16 +32,35 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   const showWaitAndSaveOutcome = isWaitAndSaveAvailable && isWaitAndSaveEnabled
 
   const { props: orderProgressBarProps, activityDerivedState } = useOrderProgressBarProps(chainId, order)
+  const isConfirmationScreen =
+    orderProgressBarProps.stepName === OrderProgressBarStepName.FINISHED ||
+    orderProgressBarProps.stepName === OrderProgressBarStepName.CANCELLATION_FAILED
+  const loadSolverCompetition = showWaitAndSaveOutcome && isConfirmationScreen
+
+  // Wait & Save only. The order-status solver list is already enough to draw the auction bars.
+  // This request loads the settlement, including every other order in each solution, so we can tell
+  // whether batching this order paid more than the best bid that contained only this order.
   const waitAndSave = useWaitAndSaveConfirmation({
     buyToken: order?.outputToken,
     chainId,
-    enabled: showWaitAndSaveOutcome && order?.status === OrderStatus.FULFILLED,
+    enabled: loadSolverCompetition,
     orderUid: order?.id,
   })
-  const solverCompetition =
-    waitAndSave.solvers && waitAndSave.solvers.length > 0
-      ? waitAndSave.solvers
-      : orderProgressBarProps.solverCompetition
+
+  let solverCompetition = orderProgressBarProps.solverCompetition
+  if (waitAndSave.pending) {
+    // Order-status solvers may already be here. Hide them until Wait & Save finishes, or the auction changes.
+    solverCompetition = undefined
+  } else if (waitAndSave.solvers && waitAndSave.solvers.length > 0) {
+    // Wait & Save finished with its own solver list. Show that one.
+    solverCompetition = waitAndSave.solvers
+  }
+  const solverCompetitionPending =
+    // Filled order: keep the placeholder until the order-status solver list has arrived.
+    (orderProgressBarProps.stepName === OrderProgressBarStepName.FINISHED &&
+      !orderProgressBarProps.solverCompetitionReady) ||
+    // Filled order or failed cancellation: also keep it up while Wait & Save is still loading.
+    (isConfirmationScreen && waitAndSave.pending)
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
@@ -53,9 +72,11 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
       activityDerivedState={activityDerivedState}
       orderProgressBarProps={{
         ...orderProgressBarProps,
-        deferFinishedConfirmation: waitAndSave.pending,
         solverCompetition,
-        waitAndSave: waitAndSave.strip ? { outcome: waitAndSave.outcome, strip: waitAndSave.strip } : undefined,
+        solverCompetitionPending,
+        waitAndSave: loadSolverCompetition
+          ? { outcome: waitAndSave.outcome, pending: waitAndSave.pending, strip: waitAndSave.strip }
+          : undefined,
       }}
       navigateToNewOrderCallback={navigateToNewOrderCallback}
       successTitle={successTitle}

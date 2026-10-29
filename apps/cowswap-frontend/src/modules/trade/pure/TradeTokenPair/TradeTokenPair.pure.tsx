@@ -32,7 +32,10 @@ export function TradeTokenPair({
   outputTestId,
   className,
 }: TradeTokenPairProps): ReactNode {
-  const isBridging = getAreBridgeCurrencies(inputCurrencyInfo.amount?.currency, outputCurrencyInfo.amount?.currency)
+  const isBridging = getAreBridgeCurrencies(
+    inputCurrencyInfo.amount?.currency ?? inputCurrencyInfo.token,
+    outputCurrencyInfo.amount?.currency ?? outputCurrencyInfo.token,
+  )
   const hasFooter = Boolean(footer)
 
   return (
