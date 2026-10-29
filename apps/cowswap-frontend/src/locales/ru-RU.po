@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-10-29 09:35\n"
+"PO-Revision-Date: 2026-10-29 13:20\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -26,7 +26,7 @@ msgstr "Кошелек не подключен"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "This deposit opens the wrapped SOL account the sale goes through. The account is yours, so you fund it from your SOL balance and get the deposit back when you close or unwrap it."
-msgstr ""
+msgstr "Данный депозит взимается за открытие счёта обёрнутого SOL, через который осуществляется продажа. Счёт является вашей собственностью: средства вносятся с вашего баланса SOL, а сумма депозита возвращается при закрытии счёта или обратном обмене в нативный SOL."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SetRecipient/index.tsx
 #~ msgid "Send to {chainLabel} wallet"
@@ -5449,7 +5449,7 @@ msgstr "Обернуть <0/> и обменять"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TxCostRow/index.tsx
 msgid "CoW Swap covers the Solana transaction fees and the deposits for the accounts your order needs."
-msgstr ""
+msgstr "CoW Swap покрывает комиссии за транзакции Solana и депозиты за аккаунты, необходимые для вашего ордера."
 
 #: apps/cowswap-frontend/src/modules/twap/services/twap/eoa/waitForEoaTwapTxReceipt.utils.ts
 msgid "Timed out waiting for the transaction. Please try again."
