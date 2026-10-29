@@ -31,6 +31,11 @@ import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
 
+  // The RWA app is served by a separate deployment, so it needs a full page load instead of a hash route
+  if (href === Routes.RWA) {
+    return <a href={href}>{children}</a>
+  }
+
   return (
     <NavLink to={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
       {children}
@@ -47,7 +52,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled, isSolanaEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isAlphaNetworksOptionVisible } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
@@ -64,7 +69,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
         label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
-      ...(isSolanaEnabled
+      ...(isAlphaNetworksOptionVisible
         ? [
             {
               label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
@@ -73,7 +78,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
           ]
         : []),
     ],
-    [darkMode, toggleDarkMode, isSolanaEnabled, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
+    [darkMode, toggleDarkMode, isAlphaNetworksOptionVisible, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
   )
 
   const languageNavItems = {
@@ -94,7 +99,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       {
         label: t`Trade`,
         children: tradeMenuItems.map((item) => {
-          const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
+          const href =
+            item.route === Routes.RWA ? item.route : parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
             href,

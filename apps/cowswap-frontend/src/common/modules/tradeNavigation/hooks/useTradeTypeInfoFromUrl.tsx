@@ -1,33 +1,28 @@
-import { useMemo } from 'react'
-
-import { PathMatch, useMatch } from 'react-router'
+import { useLocation } from 'react-router'
 
 import { Routes, TRADE_WIDGET_PREFIX } from 'common/constants/routes'
 
 import { TradeType } from '../consts'
 import { TradeTypeInfo } from '../types'
 
-export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
-  const swapMatch = !!useMatchTradeRoute('swap')
-  const hooksMatch = !!useMatchTradeRoute('swap/hooks')
-  const limitOrderMatch = !!useMatchTradeRoute('limit')
-  const advancedOrdersMatch = !!useMatchTradeRoute('advanced')
-  const yieldMatch = !!useMatchTradeRoute('yield')
-
-  return useMemo(() => {
-    if (hooksMatch) return { tradeType: TradeType.SWAP, route: Routes.HOOKS }
-    if (swapMatch) return { tradeType: TradeType.SWAP, route: Routes.SWAP }
-    if (limitOrderMatch) return { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDERS }
-    if (advancedOrdersMatch) return { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS }
-    if (yieldMatch) return { tradeType: TradeType.YIELD, route: Routes.YIELD }
-
-    return null
-  }, [swapMatch, hooksMatch, limitOrderMatch, advancedOrdersMatch, yieldMatch])
+const TRADE_TYPE_INFO_BY_SEGMENT: Record<string, TradeTypeInfo> = {
+  'swap/hooks': { tradeType: TradeType.SWAP, route: Routes.HOOKS },
+  swap: { tradeType: TradeType.SWAP, route: Routes.SWAP },
+  limit: { tradeType: TradeType.LIMIT_ORDER, route: Routes.LIMIT_ORDERS },
+  advanced: { tradeType: TradeType.ADVANCED_ORDERS, route: Routes.ADVANCED_ORDERS },
+  yield: { tradeType: TradeType.YIELD, route: Routes.YIELD },
 }
 
-function useMatchTradeRoute(route: string): PathMatch<'chainId'> | null {
-  const withChainId = useMatch({ path: `/:chainId${TRADE_WIDGET_PREFIX}/${route}/`, end: false })
-  const withoutChainId = useMatch({ path: `${TRADE_WIDGET_PREFIX}/${route}/`, end: false })
+// The chainId segment is lazy (`??`) so `/swap/limit` resolves to swap rather than reading `swap` as a chainId.
+// `swap/hooks` precedes `swap` so the longer route wins. Case-insensitive like react-router's own matching.
+const TRADE_ROUTE_REGEX = new RegExp(
+  `^(?:/[^/]+)??${TRADE_WIDGET_PREFIX}/(swap/hooks|swap|limit|advanced|yield)(?:/|$)`,
+  'i',
+)
 
-  return withChainId || withoutChainId
+export function useTradeTypeInfoFromUrl(): TradeTypeInfo | null {
+  const { pathname } = useLocation()
+  const segment = TRADE_ROUTE_REGEX.exec(pathname)?.[1]
+
+  return segment ? (TRADE_TYPE_INFO_BY_SEGMENT[segment.toLowerCase()] ?? null) : null
 }

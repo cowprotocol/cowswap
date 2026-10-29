@@ -1,6 +1,18 @@
 import { Toggle, UI, font } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css, keyframes } from 'styled-components/macro'
+
+const starTogglePop = keyframes`
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  45% {
+    transform: scale(2) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+`
 
 export const Wrapper = styled.div`
   display: flex;
@@ -30,7 +42,7 @@ export const Content = styled.div`
   min-width: 0;
 `
 
-export const Icon = styled.div`
+export const Icon = styled.div<{ $animate: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -42,10 +54,24 @@ export const Icon = styled.div`
   > svg {
     width: 100%;
     height: 100%;
+    transform-origin: center;
+
+    ${({ $animate }) =>
+      $animate
+        ? css`
+            animation: ${starTogglePop} 0.45s ease;
+          `
+        : undefined}
   }
 
   > svg path {
     fill: currentColor;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    > svg {
+      animation: none;
+    }
   }
 `
 

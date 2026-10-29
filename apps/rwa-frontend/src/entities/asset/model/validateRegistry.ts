@@ -2,12 +2,13 @@ import { isAddress } from 'viem'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
-import type { RwaAsset, RwaRegistry, RwaToken, RwaTradingTime } from './types'
+import { RWA_ISSUERS } from './issuers'
+import { RWA_ASSET_TYPES, type RwaAsset, type RwaRegistry, type RwaToken, type RwaTradingTime } from './types'
 
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
-/** Must match `ALLOWED_ISSUERS` in `scripts/updateRegistry.mjs`, which skips the tokens of other issuers */
-const ALLOWED_ISSUERS: readonly string[] = ['Ondo', 'xStocks']
+const ALLOWED_ISSUERS: readonly string[] = RWA_ISSUERS
+const ASSET_TYPES: readonly string[] = RWA_ASSET_TYPES
 
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []
@@ -45,7 +46,7 @@ function validateAsset(asset: RwaAsset, path: string): string[] {
 
   errors.push(...validateRequiredStrings(asset, path))
 
-  if (asset.type !== 'stock' && asset.type !== 'index') errors.push(`${path}.type: must be "stock" or "index"`)
+  if (!ASSET_TYPES.includes(asset.type)) errors.push(`${path}.type: must be one of ${ASSET_TYPES.join(', ')}`)
   if (!Number.isInteger(asset.priority) || asset.priority < 0 || asset.priority > 10) {
     errors.push(`${path}.priority: must be an integer from 0 to 10`)
   }

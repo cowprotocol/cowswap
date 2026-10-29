@@ -46,8 +46,11 @@ jest.mock('modules/injectedWidget', () => {
 // whose import chain circularly re-imports `modules/tradeFlow` while this factory is still resolving,
 // producing a second, disconnected `solanaFlow` mock this file's `beforeEach` never configures. This hook
 // only consumes `solanaFlow` from that module, so mock just that export instead of spreading the barrel.
+const SOLANA_FLOW_OPTIONS = { isSponsored: false, isAtaCreationDisabled: false, isSolanaAppDataEnabled: false }
+
 jest.mock('modules/tradeFlow', () => ({
   solanaFlow: jest.fn(),
+  useSolanaFlowOptions: () => SOLANA_FLOW_OPTIONS,
 }))
 jest.mock('@cowprotocol/wallet', () => {
   const actual = jest.requireActual('@cowprotocol/wallet')
@@ -191,9 +194,7 @@ describe('useLimitOrdersTradeCallback', () => {
 
       await result.current()
 
-      expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything(), {
-        isAtaCreationDisabled: false,
-      })
+      expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything(), SOLANA_FLOW_OPTIONS)
       expect(mockTradeFlow).not.toHaveBeenCalled()
       expect(mockSafeBundleFlow).not.toHaveBeenCalled()
     })

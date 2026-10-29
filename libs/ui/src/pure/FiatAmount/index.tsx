@@ -37,7 +37,7 @@ export function FiatAmount({
 }: FiatAmountProps): ReactNode {
   const formattedAmount = formatFiatAmount(amount)
   const title = FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION)
-  const accuracySymbol = accurate ? '' : '≈ '
+  const accuracySymbol = accurate ? '' : '~'
 
   const content = formattedAmount ? `${accuracySymbol}$${formattedAmount}` : defaultValue
 

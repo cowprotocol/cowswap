@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import {
   formatInputAmount,
   getCurrencyAddress,
@@ -12,11 +13,12 @@ import {
 } from '@cowprotocol/common-utils'
 import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { FiatAmount, HelpTooltip, HoverTooltip, Media, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { MousePointer } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -28,8 +30,11 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
+import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
+import { priceChartModalOpenAtom, priceChartVisibleAtom } from 'modules/priceChart'
+import { PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useConvertUsdToTokenValue } from 'common/hooks/useConvertUsdToTokenValue'
@@ -46,7 +51,7 @@ import * as styledEl from './styled'
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
 export function RateInput() {
   const { chainId } = useWalletInfo()
   // Rate state
@@ -63,10 +68,15 @@ export function RateInput() {
   const [isQuoteCurrencySet, setIsQuoteCurrencySet] = useState(false)
   const [typedTrailingZeros, setTypedTrailingZeros] = useState('')
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
+  const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
+  const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
   // Limit order state
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const rateImpact = useRateImpact()
+  const priceChangePercent = useRateImpact(isInverted)
   const areBothCurrencies = !!inputCurrency && !!outputCurrency
 
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -243,6 +253,7 @@ export function RateInput() {
             inputCurrency={inputCurrency}
             currency={primaryCurrency}
             rateImpact={rateImpact}
+            priceChangePercent={priceChangePercent}
             toggleIcon={
               <HoverTooltip
                 content={t`When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes.`}
@@ -279,19 +290,59 @@ export function RateInput() {
 
           {secondaryCurrency && (
             <styledEl.CurrencyToggleGroup>
-              <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
-                <styledEl.ActiveSymbol $active={!isUsdRateMode}>
-                  <TokenLogo token={secondaryCurrency} size={16} />
-                  <TokenSymbol token={secondaryCurrency} />
-                </styledEl.ActiveSymbol>
-              </styledEl.ActiveCurrency>
+              <styledEl.CurrencyToggle>
+                <styledEl.ActiveCurrency onClick={toggleSwitchUsdDisplay} $active={!isUsdRateMode}>
+                  <styledEl.ActiveSymbol $active={!isUsdRateMode}>
+                    <TokenLogo token={secondaryCurrency} size={16} />
+                    <TokenSymbol token={secondaryCurrency} />
+                  </styledEl.ActiveSymbol>
+                </styledEl.ActiveCurrency>
 
-              <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
-                <SVG src={iconUsdSrc} />
-              </styledEl.UsdButton>
+                <styledEl.UsdButton onClick={() => setIsUsdRateMode((state) => !state)} $active={isUsdRateMode}>
+                  <SVG src={iconUsdSrc} />
+                </styledEl.UsdButton>
+              </styledEl.CurrencyToggle>
+
+              <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
+                <styledEl.IconButton
+                  aria-label={t`Pick the limit price from the chart`}
+                  aria-pressed={isLimitPickerMode}
+                  onClick={() => {
+                    if (!isLimitPickerMode) {
+                      setIsUsdRateMode(true)
+                      if (isUpToLarge) {
+                        setChartModalOpen(true)
+                      } else {
+                        setChartVisible(true)
+                      }
+                    }
+                    setLimitPickerMode((state) => !state)
+                  }}
+                  $active={isLimitPickerMode}
+                >
+                  <MousePointer size={14} />
+                </styledEl.IconButton>
+              </HoverTooltip>
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>
+        <PricePercentageShortcuts
+          key={`${chainId}:${inputCurrency && getCurrencyAddress(inputCurrency)}:${outputCurrency && getCurrencyAddress(outputCurrency)}:${isInverted}`}
+          referenceRate={marketRate}
+          activeRate={activeRate}
+          isInverted={isInverted}
+          disabled={isRateInputDisabled || !areBothCurrencies || isLoadingMarketRate}
+          onSelect={(rate) => {
+            setTypedTrailingZeros('')
+            updateLimitRateState({ typedValue: null })
+            updateRate({
+              activeRate: rate ?? toFraction('0'),
+              isTypedValue: rate === null,
+              isRateFromUrl: false,
+              isAlternativeOrderRate: false,
+            })
+          }}
+        />
       </styledEl.Wrapper>
 
       <styledEl.EstimatedRate>

@@ -30,11 +30,14 @@ packageExtensionsChecksum: sha256-MJ/weFfhczWAxcKBkOSA2U6hqYQqwBJPmicil25hZZ4=
 
 patchedDependencies:
   '@reown/appkit-adapter-wagmi@1.8.19':
-    hash: b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c
+    hash: 60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c
     path: patches/@reown__appkit-adapter-wagmi@1.8.19.patch
   '@reown/appkit-controllers@1.8.19':
     hash: 451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5
     path: patches/@reown__appkit-controllers@1.8.19.patch
+  '@reown/appkit-scaffold-ui@1.8.19':
+    hash: bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05
+    path: patches/@reown__appkit-scaffold-ui@1.8.19.patch
   '@synthetixio/synpress-metamask@0.0.11':
     hash: 100ec0150aa2ec3de3d7e3d9c9f8f3be971da9c2a6b0d7b82539efa8998c848f
     path: patches/@synthetixio__synpress-metamask@0.0.11.patch
@@ -647,8 +650,8 @@ importers:
         specifier: 0.14.5
         version: 0.14.5
       '@cowprotocol/sdk-composable':
-        specifier: 1.8.10
-        version: 1.8.10(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.9
+        version: 1.8.9(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.7.5
         version: 3.7.5
@@ -726,7 +729,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-controllers':
         specifier: 1.8.19
         version: 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -1020,8 +1023,8 @@ importers:
         specifier: 4.4.20
         version: 4.4.20(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.8.10
-        version: 1.8.10(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.9
+        version: 1.8.9(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-contracts-ts':
         specifier: 3.7.5
         version: 3.7.5
@@ -1222,8 +1225,11 @@ importers:
         specifier: workspace:*
         version: link:../../libs/common-utils
       '@cowprotocol/cow-sdk':
-        specifier: 9.2.15
-        version: 9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+        specifier: 9.2.22
+        version: 9.2.22(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
+      '@cowprotocol/sdk-viem-adapter':
+        specifier: 0.3.36
+        version: 0.3.36(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
       '@cowprotocol/widget-lib':
         specifier: workspace:*
         version: link:../../libs/widget-lib
@@ -1235,7 +1241,10 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c)(2a624a5ca7599c58d338dfde53633d80)
+      '@reown/appkit-controllers':
+        specifier: 1.8.19
+        version: 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@tanstack/query-core':
         specifier: 5.90.20
         version: 5.90.20
@@ -1304,8 +1313,8 @@ importers:
         specifier: 9.2.22
         version: 9.2.22(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)
       '@cowprotocol/sdk-composable':
-        specifier: 1.8.10
-        version: 1.8.10(encoding@0.1.13)(typescript@5.9.3)
+        specifier: 1.8.9
+        version: 1.8.9(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.36
         version: 0.3.36(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -1438,7 +1447,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-controllers':
         specifier: 1.8.19
         version: 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -2334,7 +2343,7 @@ importers:
         version: 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-adapter-wagmi':
         specifier: 1.8.19
-        version: 1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)
+        version: 1.8.19(patch_hash=60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c)(2a624a5ca7599c58d338dfde53633d80)
       '@reown/appkit-common':
         specifier: 1.8.19
         version: 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -3427,18 +3436,6 @@ packages:
       multiformats:
         optional: true
 
-  '@cowprotocol/cow-sdk@9.2.15':
-    resolution: {integrity: sha512-xZLRFoSso3t1ARh3LPIAGsUu7jA9D3UbRnO1oy/Q1w6ejBYLf0Do6N77wq4Yvh7sOLRch8W6Sc6t6KveZ4Z60A==}
-    peerDependencies:
-      '@openzeppelin/merkle-tree': ^1.x
-      cross-fetch: ^3.x
-      multiformats: ^9.x
-    peerDependenciesMeta:
-      '@openzeppelin/merkle-tree':
-        optional: true
-      multiformats:
-        optional: true
-
   '@cowprotocol/cow-sdk@9.2.22':
     resolution: {integrity: sha512-ZZ2B/WUe34aKHV0Tr0g3aB6mwKUhsZXQAiOH9fZvhH/iKDOcHw7T1JPPbSRIuL/C462OCXIWuZZWdqrJVLKBPw==}
     peerDependencies:
@@ -3498,12 +3495,6 @@ packages:
       ajv: ^8.x
       multiformats: ^9.x
 
-  '@cowprotocol/sdk-app-data@6.0.7':
-    resolution: {integrity: sha512-06CXOw85b2yLJZ/C1rjQB6dP5HcFcGG9x68aqCmLotVWjxAp7aynkZl8t+4X2YpH+JKLzxkaMphrYh2ok00nMw==}
-    peerDependencies:
-      ajv: ^8.x
-      multiformats: ^9.x
-
   '@cowprotocol/sdk-bridging@4.4.20':
     resolution: {integrity: sha512-I7VwB5LG0Vo1wVx2mCWExXKG5nVWicOixyXi0eBXwq6ru8Yl8sXk+rr1AlrF2UCzxq+tAEDi0YTYJY7ZY+6IUw==}
 
@@ -3516,14 +3507,11 @@ packages:
   '@cowprotocol/sdk-common@0.12.1':
     resolution: {integrity: sha512-eh8o2b8iLHNRnS7ATRDNOkISp67KHV7JDzYn1qd/reCVPLlnN/lRDnNomT+A8uPU1aYV2eNkCkbLyTkkQ5bT4g==}
 
-  '@cowprotocol/sdk-common@0.14.1':
-    resolution: {integrity: sha512-lPsqiMUi7LoL4Uqx+lP/sYODZAu72Grz9+RTGze7/+nK6v+MDOAG12GfBjx0g5fd57NzaVE1g5swQaVzPHOi1g==}
-
   '@cowprotocol/sdk-common@0.14.5':
     resolution: {integrity: sha512-Y+pzjo1zsIKg3qc5d7hMs/4JBQjtP0FJWpcBquEpvqiw3aFlyp/6HjcaS5tTGhSKy85D1H2uq7H1reuy3GYKQA==}
 
-  '@cowprotocol/sdk-composable@1.8.10':
-    resolution: {integrity: sha512-4HS1o9rJmRMsKZB2k0x759YIviUYzcOek4wt1U2B0Md0JmvEamFAUIsgNJqekeHHgFnGLealvQvhHKfM+gsgHQ==}
+  '@cowprotocol/sdk-composable@1.8.9':
+    resolution: {integrity: sha512-8+QzFliYzRgr94QaPlMGDWAZhGJYPGdvlQwrq6lkSu2djNmoIVcTci5ezeQae4h1fi6zhsq9odcwLoSQ2bEclg==}
 
   '@cowprotocol/sdk-config@1.2.0':
     resolution: {integrity: sha512-upZ2OPycc+rikwAnfNt58qBMlYb+7zpFPzG6zT/sfE50FS1f2ba4SMtw37HVq+v0e9R32o/rWZFcDZT5Ty5yyQ==}
@@ -3534,17 +3522,11 @@ packages:
   '@cowprotocol/sdk-config@2.4.0':
     resolution: {integrity: sha512-NMJOqq3LfIjlFFUHd4zbx3Rc3YJl/oCklEaAxw10VHVDNMFMqcdK3tR6W9CPTILR8zAv5DDy1C2cPErXpcrzkQ==}
 
-  '@cowprotocol/sdk-config@2.7.1':
-    resolution: {integrity: sha512-odE8bmrSIl2x1DOQg1N109Jb28AAW/Qjvn98qn+l3MqmfOexxSzyNdxqOK3aRXbaat9TmsmOL2MUnZD8pS7SFg==}
-
   '@cowprotocol/sdk-contracts-ts@2.5.0':
     resolution: {integrity: sha512-UZSmqUO+XPwxQ/w75nwkLBK/sjUHdYgWBPhA4EV5x8y5XdBm5Dk8UqrLUemgAAVKwuXaWcoqhkoJWKrV2/gqGQ==}
 
   '@cowprotocol/sdk-contracts-ts@3.4.0':
     resolution: {integrity: sha512-mPnwaUp0rLX6o8dH9hXZoA0Nj5kpPaQMGePTpxq+DfggZc4Y17d6Re2rzaHJMoWMDm9zG+82xIXQnn4JWEwK7A==}
-
-  '@cowprotocol/sdk-contracts-ts@3.7.1':
-    resolution: {integrity: sha512-aSANpZNrJpNlz4QT3pvikpMfZH5NkQkdGEw+ISXtE+17clREtu/PkbvIb+jMMOSdgxycqJe9A9FlBswMv08HpA==}
 
   '@cowprotocol/sdk-contracts-ts@3.7.5':
     resolution: {integrity: sha512-UNdbi7NhHBc+jE4/KZFKUHEJCxPL1wPCnunBSLtTvX0fyRpjlaTE1HHXqBUKXJOxLwWccjnofgYxKDY++AFzpQ==}
@@ -3561,17 +3543,11 @@ packages:
   '@cowprotocol/sdk-order-book@4.0.2':
     resolution: {integrity: sha512-IuR6LARLtIrfRNkEqgPRkK5/1HRpR3+YktbkfqrH8B3Bi2YzMQxRVxu+N8KtEdC5fbHvkLixKKDDwN2gKAI3bA==}
 
-  '@cowprotocol/sdk-order-book@4.2.0':
-    resolution: {integrity: sha512-99QZYQt/tW0dq3nLbTgO9wVVUNxBKmij2IHb1ar9cxn53ulyOvmTk7cJhPdG7bPRpjPONlkc9FTKh4gcu6r+/g==}
-
   '@cowprotocol/sdk-order-book@4.4.0':
     resolution: {integrity: sha512-SzYZn9nyfYURONo2F/IYKULpCdqqbmWPWwAjLA/7ABrvJLf83g8v3nbBsYaf5pV4o9hQL90EO9e+ZKeqzNcj7Q==}
 
   '@cowprotocol/sdk-order-signing@0.3.0':
     resolution: {integrity: sha512-7+SVwsxW7tMipXhu+Se1pzvKm9XfSvHMNZbF28t0VCKigA39bUY9n5LZ6KLF9GTejswK6Rn/BKo6f7sl0RjKFw==}
-
-  '@cowprotocol/sdk-order-signing@1.1.14':
-    resolution: {integrity: sha512-yWPMLqaBkaXVdg8cQkwkYOv66CI38ELc+r5i4WfDhdWGdP33Yvy28KM0QhcSiUQ/WYAwZ8EyKBVVaKRVvYwi3Q==}
 
   '@cowprotocol/sdk-order-signing@1.1.21':
     resolution: {integrity: sha512-QQFOYCYj6ZGUEFOPF5o1ASpegWEDfsoxKg77WV+RUgz/dhSZq25Pq+5qBXebjUFSDCW4IfLVXV85FxEWw5/SCw==}
@@ -3590,9 +3566,6 @@ packages:
 
   '@cowprotocol/sdk-trading@2.3.0':
     resolution: {integrity: sha512-fuDfMTN/7t4PzXe0vcAHS09sEBMJqYIHx5gDgWMI65kMo9xnVJwHXHXV5nF2OpaTkvyOb6Z9CT7TIsSEmIAWrw==}
-
-  '@cowprotocol/sdk-trading@2.7.2':
-    resolution: {integrity: sha512-mf1ttsg64nIxYtGyeiwpbMCTvdbjypk3QEaUgRVjniJ3hWNCEQksq1KQZamb4HazUfdSO9dfwnywq/B+j1X9tg==}
 
   '@cowprotocol/sdk-trading@2.7.9':
     resolution: {integrity: sha512-BOWf1pVBwVQQ7vPgjI0JwdjVhyQdff22Znogd1tURQZgsLkzTyzNSUazGj3ci4aGv8L+GF9GMBFrq6Aunz8gnQ==}
@@ -20502,23 +20475,6 @@ snapshots:
       - ajv
       - encoding
 
-  '@cowprotocol/cow-sdk@9.2.15(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.14.1
-      '@cowprotocol/sdk-config': 2.7.1
-      '@cowprotocol/sdk-contracts-ts': 3.7.1
-      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.14(encoding@0.1.13)
-      '@cowprotocol/sdk-trading': 2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)
-      cross-fetch: 4.0.0(encoding@0.1.13)
-    optionalDependencies:
-      '@openzeppelin/merkle-tree': 1.0.8
-      multiformats: 14.0.0
-    transitivePeerDependencies:
-      - ajv
-      - encoding
-
   '@cowprotocol/cow-sdk@9.2.22(@openzeppelin/merkle-tree@1.0.8)(ajv@8.17.1)(cross-fetch@4.0.0(encoding@0.1.13))(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-app-data': 6.0.11(ajv@8.17.1)(multiformats@14.0.0)
@@ -20618,13 +20574,6 @@ snapshots:
       json-stringify-deterministic: 1.0.12
       multiformats: 14.0.0
 
-  '@cowprotocol/sdk-app-data@6.0.7(ajv@8.17.1)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.14.1
-      ajv: 8.17.1
-      json-stringify-deterministic: 1.0.12
-      multiformats: 14.0.0
-
   '@cowprotocol/sdk-bridging@4.4.20(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
     dependencies:
       '@cowprotocol/sdk-app-data': 6.0.11(ajv@8.17.1)(multiformats@14.0.0)
@@ -20669,15 +20618,11 @@ snapshots:
     dependencies:
       '@cowprotocol/sdk-config': 2.4.0
 
-  '@cowprotocol/sdk-common@0.14.1':
-    dependencies:
-      '@cowprotocol/sdk-config': 2.7.1
-
   '@cowprotocol/sdk-common@0.14.5':
     dependencies:
       '@cowprotocol/sdk-config': 2.10.0
 
-  '@cowprotocol/sdk-composable@1.8.10(encoding@0.1.13)(typescript@5.9.3)':
+  '@cowprotocol/sdk-composable@1.8.9(encoding@0.1.13)(typescript@5.9.3)':
     dependencies:
       '@cowprotocol/sdk-common': 0.14.5
       '@cowprotocol/sdk-config': 2.10.0
@@ -20707,11 +20652,6 @@ snapshots:
       exponential-backoff: 3.1.3
       limiter: 2.1.0
 
-  '@cowprotocol/sdk-config@2.7.1':
-    dependencies:
-      exponential-backoff: 3.1.3
-      limiter: 2.1.0
-
   '@cowprotocol/sdk-contracts-ts@2.5.0':
     dependencies:
       '@cowprotocol/sdk-common': 0.10.1
@@ -20721,11 +20661,6 @@ snapshots:
     dependencies:
       '@cowprotocol/sdk-common': 0.12.1
       '@cowprotocol/sdk-config': 2.4.0
-
-  '@cowprotocol/sdk-contracts-ts@3.7.1':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.14.1
-      '@cowprotocol/sdk-config': 2.7.1
 
   '@cowprotocol/sdk-contracts-ts@3.7.5':
     dependencies:
@@ -20764,16 +20699,6 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  '@cowprotocol/sdk-order-book@4.2.0(encoding@0.1.13)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.14.1
-      '@cowprotocol/sdk-config': 2.7.1
-      cross-fetch: 3.2.0(encoding@0.1.13)
-      exponential-backoff: 3.1.3
-      limiter: 3.0.0
-    transitivePeerDependencies:
-      - encoding
-
   '@cowprotocol/sdk-order-book@4.4.0(encoding@0.1.13)':
     dependencies:
       '@cowprotocol/sdk-common': 0.14.5
@@ -20790,15 +20715,6 @@ snapshots:
       '@cowprotocol/sdk-config': 1.2.0
       '@cowprotocol/sdk-contracts-ts': 2.5.0
       '@cowprotocol/sdk-order-book': 2.1.0(encoding@0.1.13)
-    transitivePeerDependencies:
-      - encoding
-
-  '@cowprotocol/sdk-order-signing@1.1.14(encoding@0.1.13)':
-    dependencies:
-      '@cowprotocol/sdk-common': 0.14.1
-      '@cowprotocol/sdk-config': 2.7.1
-      '@cowprotocol/sdk-contracts-ts': 3.7.1
-      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
 
@@ -20873,20 +20789,6 @@ snapshots:
       '@cowprotocol/sdk-contracts-ts': 3.4.0
       '@cowprotocol/sdk-order-book': 4.0.2(encoding@0.1.13)
       '@cowprotocol/sdk-order-signing': 1.1.7(encoding@0.1.13)
-      deepmerge: 4.3.1
-    transitivePeerDependencies:
-      - ajv
-      - encoding
-      - multiformats
-
-  '@cowprotocol/sdk-trading@2.7.2(ajv@8.17.1)(encoding@0.1.13)(multiformats@14.0.0)':
-    dependencies:
-      '@cowprotocol/sdk-app-data': 6.0.7(ajv@8.17.1)(multiformats@14.0.0)
-      '@cowprotocol/sdk-common': 0.14.1
-      '@cowprotocol/sdk-config': 2.7.1
-      '@cowprotocol/sdk-contracts-ts': 3.7.1
-      '@cowprotocol/sdk-order-book': 4.2.0(encoding@0.1.13)
-      '@cowprotocol/sdk-order-signing': 1.1.14(encoding@0.1.13)
       deepmerge: 4.3.1
     transitivePeerDependencies:
       - ajv
@@ -24583,13 +24485,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@reown/appkit-adapter-wagmi@1.8.19(patch_hash=b669cb20e36d425602b690643d4147fd1756aa3d94db205f5e4823777a277b1c)(2a624a5ca7599c58d338dfde53633d80)':
+  '@reown/appkit-adapter-wagmi@1.8.19(patch_hash=60a762a0eeccf3acc8ddae30ec35219b10515b8f89a2bd0a2b2c28586898978c)(2a624a5ca7599c58d338dfde53633d80)':
     dependencies:
       '@reown/appkit': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)
       '@wagmi/core': 3.4.8(patch_hash=07892dbe5fe941d27b4a3633c7a6596abec9a855359683732b70a4159b2788be)(@tanstack/query-core@5.90.20)(@types/react@19.1.3)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
@@ -24745,7 +24647,7 @@ snapshots:
     dependencies:
       buffer: 6.0.3
 
-  '@reown/appkit-scaffold-ui@1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
+  '@reown/appkit-scaffold-ui@1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
     dependencies:
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -24781,7 +24683,7 @@ snapshots:
       - valtio
       - zod
 
-  '@reown/appkit-scaffold-ui@1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
+  '@reown/appkit-scaffold-ui@1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)':
     dependencies:
       '@reown/appkit-common': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
@@ -24950,7 +24852,7 @@ snapshots:
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-pay': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(fastestsmallesttextencoderdecoder@1.0.22)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)
@@ -24993,7 +24895,7 @@ snapshots:
       '@reown/appkit-controllers': 1.8.19(patch_hash=451403154498a6d93d261fd413027711691e91dc82ec6e60827822b226fa00f5)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-pay': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-polyfills': 1.8.19
-      '@reown/appkit-scaffold-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
+      '@reown/appkit-scaffold-ui': 1.8.19(patch_hash=bfaef64fbacfd6e8e7ac5d6a15b4ac5312d551627a93f9dd2c21e7cb11da1f05)(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-ui': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(react@19.1.2)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76)
       '@reown/appkit-utils': 1.8.19(@types/react@19.1.3)(bufferutil@4.0.8)(encoding@0.1.13)(immer@10.2.0)(react@19.1.2)(typescript@5.9.3)(use-sync-external-store@1.5.0(react@19.1.2))(utf-8-validate@5.0.10)(valtio@2.1.7(@types/react@19.1.3)(react@19.1.2))(zod@3.25.76)
       '@reown/appkit-wallet': 1.8.19(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)

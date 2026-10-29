@@ -5,7 +5,7 @@ import { i18n, MessageDescriptor } from '@lingui/core'
 import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency } from '@cowprotocol/currency'
 import { Command } from '@cowprotocol/types'
-import { BackButton } from '@cowprotocol/ui'
+import { BackButton, Modal } from '@cowprotocol/ui'
 
 import { msg, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -25,9 +25,11 @@ import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
 import * as styledEl from './styled'
 
+import { OrderProgressBarStepName } from '../../constants'
 import { OrderProgressBarProps } from '../../types'
 import { OrderProgressBar } from '../OrderProgressBar'
 import { SolanaOrderStepper } from '../SolanaOrderStepper'
+import { FinishedSuccessHeading } from '../steps/FinishedStep'
 
 const activityStatusLabels: Partial<Record<ActivityStatus, MessageDescriptor>> = {
   [ActivityStatus.CONFIRMED]: msg`Confirmed`,
@@ -45,6 +47,7 @@ export interface TransactionSubmittedContentProps {
   currencyToAdd?: Nullish<Currency>
   orderProgressBarProps: OrderProgressBarProps
   navigateToNewOrderCallback?: (chainId: SupportedChainId, order?: Order, callback?: Command) => () => void
+  successTitle?: ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
@@ -58,9 +61,10 @@ export function TransactionSubmittedContent({
   activityDerivedState,
   orderProgressBarProps,
   navigateToNewOrderCallback,
+  successTitle,
 }: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
-  const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarProps
+  const { isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
   const isBridgeOrder = !!order && getIsBridgeOrder(order)
@@ -68,11 +72,51 @@ export function TransactionSubmittedContent({
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
-  const cancellationFailed = stepName === 'cancellationFailed'
+  const cancellationFailed = stepName === OrderProgressBarStepName.CANCELLATION_FAILED
+  const isFinishedProgressStep =
+    stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
   const isFinished =
     activityDerivedState?.status === ActivityStatus.CONFIRMED ||
     activityDerivedState?.status === ActivityStatus.EXPIRED ||
     cancellationFailed
+
+  const progressBar = activityDerivedState && showProgressBar && isProgressBarSetup && (
+    <OrderProgressBar
+      {...orderProgressBarProps}
+      order={order}
+      navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
+    />
+  )
+
+  if (isFinishedProgressStep && showProgressBar && order) {
+    return (
+      <Modal.Root>
+        <Modal.Header
+          onClose={onDismiss}
+          headerContent={
+            <FinishedSuccessHeading
+              order={order}
+              chainId={chainId}
+              receiverEnsName={receiverEnsName}
+              stepName={stepName}
+              title={successTitle}
+            />
+          }
+        />
+        <Modal.Content>
+          {progressBar}
+          <WatchAssetInWallet
+            shortLabel
+            currency={currencyToAdd}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.PROGRESS_BAR,
+              action: 'Click Watch Asset',
+            })}
+          />
+        </Modal.Content>
+      </Modal.Root>
+    )
+  }
 
   return (
     <styledEl.Wrapper>
@@ -117,13 +161,7 @@ export function TransactionSubmittedContent({
             ) : (
               <EthFlowStepper order={order} showProgressBar={!!showProgressBar} />
             ))}
-          {activityDerivedState && showProgressBar && isProgressBarSetup && (
-            <OrderProgressBar
-              {...orderProgressBarProps}
-              order={order}
-              navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
-            />
-          )}
+          {progressBar}
           <styledEl.ButtonGroup>
             <WatchAssetInWallet
               shortLabel
