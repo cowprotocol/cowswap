@@ -1,0 +1,114 @@
+{
+  "careers": {
+    "intro": {
+      "title": "Want to build the future of decentralized trading?",
+      "description": "We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that we can make markets more fair and more efficient by building the ultimate batch auction settlement layer across EVM-compatible blockchains"
+    },
+    "referral": {
+      "title": "💸 Refer a friend and earn up to 6,000 in USDC or USD!",
+      "description": "Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to earn up to $6,000 in USD or USDC",
+      "button": {
+        "text": "Refer-to-Earn details",
+        "url": "/careers/refer-to-earn",
+        "newTab": false
+      }
+    },
+    "notice": {
+      "title": "Important Notice: Beware of Recruitment Scams",
+      "description": "We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram and other unofficial channels, falsely claiming to represent CoW DAO",
+      "never": {
+        "title": "We Never:",
+        "description": "- Ask for payment or wallet information during the hiring process.\n- Request sensitive personal documents (e.g. passport) via chat apps."
+      },
+      "actions": {
+        "title": "What You Should Do:",
+        "description": "- Do not engage with suspicious messages claiming to offer you a job at CoW DAO.\n- Do not share personal information, crypto wallet data, or make payments.\n- Report impersonation attempts to us at [people@cow.fi](mailto:people@cow.fi).\n- Report fake accounts directly on Telegram or to [abuse@telegram.org](mailto:abuse@telegram.org)."
+      },
+      "channels": {
+        "title": "Official Communication Channels:",
+        "description": "All our hiring communications come from:\n\n- Official emails are sent from the cow.fi domain.\n- Telegram (we'll send confirmation email from the cow.fi domain).\n- Verified listings on [LinkedIn](https://linkedin.com/company/cow-protocol) or official job boards.\n- Official email or video conferencing platforms (Zoom, Meet)."
+      },
+      "closing": {
+        "title": "We are actively working to report and remove these impersonators. Your safety and trust are important to us.",
+        "description": "Stay safe,  \nThe CoW DAO Team"
+      }
+    }
+  },
+  "affiliateProgram": {
+    "label": "Affiliate Program",
+    "hero": {
+      "title": "Moo & Earn",
+      "description": "Turn your influence into income. Share CoW Swap with your audience and earn rewards every time they trade.  \nNo gatekeepers. No approval. Just your link - and the moos.",
+      "button": {
+        "text": "Become an affiliate",
+        "url": "https://swap.cow.fi/#/account/affiliate",
+        "newTab": true
+      }
+    },
+    "introduction": {
+      "title": "The more you moo, the more you earn",
+      "description": "Share CoW Swap with your community and earn USDC rewards when they hit volume milestones. It's permissionless, transparent, and built for the people who move markets."
+    },
+    "steps": {
+      "title": "How it works",
+      "items": [
+        {
+          "title": "Generate your link",
+          "description": "Head to the affiliate portal and generate your unique referral link. No application. No approval."
+        },
+        {
+          "title": "Share it",
+          "description": "Post it on X, drop it in your Telegram, link it in your YouTube description, or share it wherever your community lives."
+        },
+        {
+          "title": "Earn rewards",
+          "description": "When referred wallets hit trading milestones, rewards are triggered for you and your traders. Paid weekly in USDC."
+        }
+      ]
+    },
+    "benefits": {
+      "title": "Why CoW Swap?",
+      "description": "The DEX of choice for crypto whales and pros"
+    },
+    "faq": {
+      "title": "FAQs",
+      "description": "Looking for more details? Read the full documentation and FAQ.",
+      "items": [
+        {
+          "title": "Do I need approval to participate?",
+          "description": "No. The Moo & Earn Affiliate Program is fully permissionless. Anyone can generate a referral link and start sharing immediately. No application, no whitelist, no waiting."
+        },
+        {
+          "title": "How do rewards work?",
+          "description": "Rewards are triggered when wallets you refer hit qualifying trading volume milestones on CoW Swap. Both you and your referred traders can earn rewards depending on where they are in the milestone journey."
+        },
+        {
+          "title": "When are rewards paid?",
+          "description": "Rewards are distributed every week in USDC. Hit a milestone, get paid - simple as that."
+        },
+        {
+          "title": "What counts as qualifying volume?",
+          "description": "Only eligible trades on supported CoW Swap chains count toward milestone volume. Some trade types may be excluded based on program rules. Read the [full docs](https://docs.cow.fi/cow-protocol/affiliate-program/faq) for details."
+        },
+        {
+          "title": "Where can I get support?",
+          "description": "The CoW Swap [Discord](https://discord.com/invite/cowprotocol) is the best place to ask questions, get help, or connect with the community."
+        }
+      ]
+    },
+    "footer": {
+      "title": "Ready to turn your audience into earnings?",
+      "description": "Generate your link. Share it. Earn USDC - every week.",
+      "button": {
+        "text": "Generate your referral link →",
+        "url": "https://swap.cow.fi/#/account/affiliate",
+        "newTab": true
+      },
+      "docsButton": {
+        "text": "Read the docs →",
+        "url": "https://docs.cow.fi/cow-protocol/affiliate-program",
+        "newTab": true
+      }
+    }
+  }
+}

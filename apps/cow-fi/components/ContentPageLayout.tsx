@@ -6,6 +6,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { UI } from '@cowprotocol/ui'
 
 import { usePathname } from 'next/navigation'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
 import { Link } from '@/components/Link'
@@ -25,9 +26,10 @@ const Wrapper = styled.div`
 interface ContentPageLayoutProps {
   title: string
   children: ReactNode
+  variant?: 'default' | 'careers'
 }
 
-export function ContentPageLayout({ title, children }: ContentPageLayoutProps): ReactNode {
+export function ContentPageLayout({ title, children, variant = 'default' }: ContentPageLayoutProps): ReactNode {
   const analytics = useCowAnalytics()
   const pathname = usePathname()
 
@@ -51,26 +53,36 @@ export function ContentPageLayout({ title, children }: ContentPageLayoutProps): 
       >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
-            <Link
-              href="/"
-              onClick={() =>
-                analytics.sendEvent({
-                  category: 'Navigation',
-                  action: 'click-breadcrumb-home',
-                })
-              }
-            >
-              Home
-            </Link>
+            {variant === 'default' && (
+              <Link
+                href="/"
+                onClick={() =>
+                  analytics.sendEvent({
+                    category: 'Navigation',
+                    action: 'click-breadcrumb-home',
+                  })
+                }
+              >
+                Home
+              </Link>
+            )}
             {breadcrumbs.slice(0, -1).map((crumb) => (
               <Link
                 key={crumb.path}
                 href={crumb.path}
                 onClick={() =>
-                  analytics.sendEvent({
-                    category: 'Navigation',
-                    action: `click-breadcrumb-${crumb.segment}`,
-                  })
+                  analytics.sendEvent(
+                    variant === 'careers'
+                      ? {
+                          category: CowFiCategory.CAREERS,
+                          action: 'Click Breadcrumb',
+                          label: crumb.segment,
+                        }
+                      : {
+                          category: 'Navigation',
+                          action: `click-breadcrumb-${crumb.segment}`,
+                        },
+                  )
                 }
               >
                 {crumb.label}
@@ -79,7 +91,7 @@ export function ContentPageLayout({ title, children }: ContentPageLayoutProps): 
             <span>{title}</span>
           </Breadcrumbs>
 
-          <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
+          <ArticleMainTitle margin={variant === 'careers' ? undefined : '0 0 62px'} fontSize={52}>
             {title}
           </ArticleMainTitle>
 

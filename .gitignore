@@ -58,6 +58,7 @@ yalc.lock
 
 # Next.js
 .next
+.next-cms-resilience
 out
 
 # Next.js sitemap

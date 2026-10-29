@@ -1,0 +1,131 @@
+import assert from 'node:assert/strict'
+import test from 'node:test'
+
+import { assertPageAvailable, checkPages, discoverPageChecks } from './cow-fi-cms-resilience.mjs'
+
+test('discovers future static pages and generated dynamic pages without adding test cases', () => {
+  const pages = discoverPageChecks(
+    {
+      '/(main)/page': '/',
+      '/(main)/future-page/page': '/future-page',
+      '/_not-found/page': '/_not-found',
+      '/(learn)/articles/[slug]/page': '/articles/[slug]',
+    },
+    { routes: { '/articles/new-slug': { srcRoute: '/articles/[slug]' } } },
+  )
+  assert.deepEqual(pages, [
+    { path: '/', source: '/' },
+    { path: '/articles/new-slug', source: '/articles/[slug]' },
+    { path: '/future-page', source: '/future-page' },
+  ])
+})
+
+test('excludes API and metadata handlers even when they are prerendered', () => {
+  const pages = discoverPageChecks(
+    {
+      '/(main)/careers/page': '/careers',
+      '/api/revalidate/route': '/api/revalidate',
+      '/robots.txt/route': '/robots.txt',
+      '/api/status/page': '/api/status',
+      '/docs/route/page': '/docs/route',
+    },
+    {
+      routes: {
+        '/careers': { srcRoute: '/careers' },
+        '/api/revalidate': { srcRoute: '/api/revalidate' },
+        '/robots.txt': { srcRoute: null },
+      },
+    },
+  )
+  assert.deepEqual(pages, [
+    { path: '/api/status', source: '/api/status' },
+    { path: '/careers', source: '/careers' },
+    { path: '/docs/route', source: '/docs/route' },
+  ])
+})
+
+test('rejects a future page that returns a server error', () => {
+  assert.throws(
+    () => assertPageAvailable({ path: '/future-page', source: '/future-page' }, { status: 500, body: 'Error' }),
+    /HTTP 500/,
+  )
+})
+
+test('rejects a streamed error that still returns HTTP 200', () => {
+  assert.throws(
+    () =>
+      assertPageAvailable(
+        { path: '/future-page', source: '/future-page' },
+        { status: 200, body: '<script>self.__next_f.push([1,"7:E{\\"digest\\":\\"123456\\"}"])</script>' },
+      ),
+    /streamed server error/,
+  )
+})
+
+test('rejects a future page that silently turns into a streamed not-found page', () => {
+  assert.throws(
+    () =>
+      assertPageAvailable(
+        { path: '/future-page', source: '/future-page' },
+        {
+          status: 200,
+          body: '<script>self.__next_f.push([1,"7:E{\\"digest\\":\\"NEXT_HTTP_ERROR_FALLBACK;404\\"}"])</script>',
+        },
+      ),
+    /unexpected not-found/,
+  )
+})
+
+test('allows the existing CMS-only document routes to return not-found', () => {
+  assert.doesNotThrow(() =>
+    assertPageAvailable(
+      { path: '/legal/cowswap-terms', source: '/legal/cowswap-terms' },
+      { status: 404, body: 'Not found' },
+    ),
+  )
+})
+
+test('requires actual fallback copy on Careers instead of accepting an empty layout', () => {
+  assert.throws(
+    () => assertPageAvailable({ path: '/careers', source: '/careers' }, { status: 200, body: '<main></main>' }),
+    /fallback content is missing/,
+  )
+})
+
+test('checks 200 pages with at most four requests in flight', async () => {
+  const pages = Array.from({ length: 200 }, (_, index) => `/page-${index}`)
+  const checked = []
+  let active = 0
+  let maximumActive = 0
+  await checkPages(pages, async (page) => {
+    active++
+    maximumActive = Math.max(maximumActive, active)
+    await new Promise((resolve) => setImmediate(resolve))
+    checked.push(page)
+    active--
+  })
+  assert.equal(maximumActive, 4)
+  assert.deepEqual(checked.sort(), [...pages].sort())
+})
+
+test('stops taking queued pages after a failure and waits for in-flight checks', async () => {
+  const error = new Error('Page failed')
+  const started = []
+  let releaseChecks
+  const pendingChecks = new Promise((resolve) => {
+    releaseChecks = resolve
+  })
+  const result = checkPages(
+    Array.from({ length: 200 }, (_, index) => index),
+    async (page) => {
+      started.push(page)
+      if (page === 0) throw error
+      await pendingChecks
+    },
+  )
+  const rejected = assert.rejects(result, (reason) => reason === error)
+  await new Promise((resolve) => setImmediate(resolve))
+  assert.deepEqual(started, [0, 1, 2, 3])
+  releaseChecks()
+  await rejected
+})

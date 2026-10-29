@@ -1,10 +1,15 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
+import type { CareersContent } from '@/util/marketingContent'
+
+import { CmsInlineCopy, CmsNoticeCopy } from '@/components/CmsMarketingCopy'
 import { Link, LinkType } from '@/components/Link'
 import { CONFIG } from '@/const/meta'
 import {
@@ -13,7 +18,6 @@ import {
   DisclaimerColumn,
   DisclaimerGrid,
   DisclaimerHighlight,
-  DisclaimerList,
   DisclaimerSection,
   PageWrapper,
   SectionTitleDescription,
@@ -28,6 +32,7 @@ import {
 } from '@/styles/styled'
 
 interface CareersPageContentProps {
+  content: CareersContent
   department: string
   jobsCountForDepartment: number
   jobsCount: number
@@ -36,11 +41,13 @@ interface CareersPageContentProps {
 
 export function CareersPageContent({
   jobsData,
+  content,
   department,
   jobsCountForDepartment,
   jobsCount,
-}: CareersPageContentProps) {
+}: CareersPageContentProps): ReactNode {
   const analytics = useCowAnalytics()
+  const { intro, referral, notice } = content
 
   return (
     <PageWrapper>
@@ -50,15 +57,13 @@ export function CareersPageContent({
             <SectionTitleIcon $size={60}>
               <ProductLogo variant={ProductVariant.CowProtocol} theme="dark" logoIconOnly />
             </SectionTitleIcon>
-            <SectionTitleText fontSize={62}>Want to build the future of decentralized trading?</SectionTitleText>
+            <SectionTitleText fontSize={62}>{intro.title}</SectionTitleText>
             <SectionTitleDescription
               fontSize={24}
               color={`var(${UI.COLOR_NEUTRAL_40})`}
               fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
             >
-              We are an ambitious, fast-growing and international team working at the forefront of DeFi. We believe that
-              we can make markets more fair and more efficient by building the ultimate batch auction settlement layer
-              across EVM-compatible blockchains
+              <CmsInlineCopy content={intro.description} />
             </SectionTitleDescription>
           </SectionTitleWrapper>
 
@@ -83,7 +88,7 @@ export function CareersPageContent({
               (department === 'All'
                 ? Object.keys(jobsData).map((deptName: string) => (
                     <>
-                      {jobsData[deptName].map(({ id, title, locationName }: any) => (
+                      {jobsData[deptName].map(({ id, title, locationName }) => (
                         <TopicCard
                           key={id}
                           contentAlign={'left'}
@@ -126,7 +131,7 @@ export function CareersPageContent({
                 : jobsCount > 0 && (
                     <>
                       <h4>{department}</h4>
-                      {jobsData[department].map(({ id, title, locationName }: any, index: number) => (
+                      {jobsData[department].map(({ id, title, locationName }, index: number) => (
                         <TopicCard
                           key={index}
                           contentAlign={'left'}
@@ -172,17 +177,17 @@ export function CareersPageContent({
                 fullWidth
               >
                 <TopicCardInner contentAlign="left" height="100%">
-                  <TopicTitle fontSize={34}>💸 Refer a friend and earn up to 6,000 in USDC or USD!</TopicTitle>
+                  <TopicTitle fontSize={34}>{referral.title}</TopicTitle>
 
                   <TopicDescription fontSize={24} fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`} margin="0 0 24px">
-                    Know someone who is looking not just for a job, but for a great opportunity to grow? Refer them to
-                    earn up to $6,000 in USD or USDC{' '}
+                    <CmsInlineCopy content={referral.description} />
                   </TopicDescription>
                   <Link
                     linkType={LinkType.TopicButton}
                     bgColor={Color.cowamm_dark_green}
                     color={Color.cowamm_green}
-                    href="/careers/refer-to-earn"
+                    href={referral.button.url}
+                    external={referral.button.newTab}
                     onClick={() =>
                       analytics.sendEvent({
                         category: CowFiCategory.CAREERS,
@@ -191,7 +196,7 @@ export function CareersPageContent({
                       })
                     }
                   >
-                    Refer-to-Earn details
+                    {referral.button.text}
                   </Link>
                 </TopicCardInner>
               </TopicCard>
@@ -201,70 +206,35 @@ export function CareersPageContent({
           {/* Disclaimer content */}
           <SectionTitleWrapper maxWidth={900} margin="0 auto 32px">
             <SectionTitleText fontSize={32} color={Color.cowfi_orange_bright}>
-              Important Notice: Beware of Recruitment Scams
+              {notice.title}
             </SectionTitleText>
             <SectionTitleDescription
               fontSize={18}
               color={`var(${UI.COLOR_NEUTRAL_40})`}
               fontWeight={`var(${UI.FONT_WEIGHT_NORMAL})`}
             >
-              We have been made aware of individuals impersonating our team and reaching out to job seekers via Telegram
-              and other unofficial channels, falsely claiming to represent CoW DAO
+              <CmsInlineCopy content={notice.description} />
             </SectionTitleDescription>
 
             <DisclaimerGrid>
               <DisclaimerColumn>
                 <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
-                  We Never:
+                  {notice.never.title}
                 </SectionTitleText>
-                <DisclaimerList>
-                  <li>Ask for payment or wallet information during the hiring process.</li>
-                  <li>Request sensitive personal documents (e.g. passport) via chat apps.</li>
-                </DisclaimerList>
-
+                <CmsNoticeCopy content={notice.never.description} />
                 <DisclaimerSection>
                   <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
-                    What You Should Do:
+                    {notice.actions.title}
                   </SectionTitleText>
-                  <DisclaimerList>
-                    <li>Do not engage with suspicious messages claiming to offer you a job at CoW DAO.</li>
-                    <li>Do not share personal information, crypto wallet data, or make payments.</li>
-                    <li>
-                      Report impersonation attempts to us at <a href="mailto:people@cow.fi">people@cow.fi</a>.
-                    </li>
-                    <li>
-                      Report fake accounts directly on Telegram or to{' '}
-                      <a href="mailto:abuse@telegram.org">abuse@telegram.org</a>.
-                    </li>
-                  </DisclaimerList>
+                  <CmsNoticeCopy content={notice.actions.description} />
                 </DisclaimerSection>
               </DisclaimerColumn>
 
               <DisclaimerColumn>
                 <SectionTitleText fontSize={20} fontSizeMobile={18} textAlign="left">
-                  Official Communication Channels:
+                  {notice.channels.title}
                 </SectionTitleText>
-                <SectionTitleDescription
-                  fontSize={16}
-                  fontSizeMobile={14}
-                  color={`var(${UI.COLOR_NEUTRAL_40})`}
-                  textAlign="left"
-                  margin="8px 0"
-                >
-                  All our hiring communications come from:
-                </SectionTitleDescription>
-                <DisclaimerList>
-                  <li>Official emails are sent from the cow.fi domain.</li>
-                  <li>Telegram (we&apos;ll send confirmation email from the cow.fi domain).</li>
-                  <li>
-                    Verified listings on{' '}
-                    <a href="https://linkedin.com/company/cow-protocol" target="_blank" rel="noopener noreferrer">
-                      LinkedIn
-                    </a>{' '}
-                    or official job boards.
-                  </li>
-                  <li>Official email or video conferencing platforms (Zoom, Meet).</li>
-                </DisclaimerList>
+                <CmsNoticeCopy content={notice.channels.description} />
 
                 <DisclaimerHighlight>
                   <SectionTitleDescription
@@ -274,8 +244,7 @@ export function CareersPageContent({
                     textAlign="left"
                     margin="0 0 12px"
                   >
-                    We are actively working to report and remove these impersonators. Your safety and trust are
-                    important to us.
+                    <CmsInlineCopy content={notice.closing.title} />
                   </SectionTitleDescription>
                   <SectionTitleDescription
                     fontSize={16}
@@ -284,9 +253,7 @@ export function CareersPageContent({
                     textAlign="left"
                     margin="0"
                   >
-                    Stay safe,
-                    <br />
-                    The CoW DAO Team
+                    <CmsInlineCopy content={notice.closing.description} />
                   </SectionTitleDescription>
                 </DisclaimerHighlight>
               </DisclaimerColumn>
