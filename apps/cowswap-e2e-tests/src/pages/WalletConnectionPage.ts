@@ -1,6 +1,7 @@
 import type { Locator, Page } from '@playwright/test'
 
 export class WalletConnectionPage {
+  readonly allWallets: Locator
   readonly oath: Locator
   readonly walletConnect: Locator
   readonly qrCode: Locator
@@ -10,6 +11,7 @@ export class WalletConnectionPage {
   readonly back: Locator
 
   constructor(private readonly page: Page) {
+    this.allWallets = page.getByTestId('all-wallets')
     this.oath = page.getByText('Oath Wallet', { exact: true })
     this.walletConnect = page.getByText('WalletConnect', { exact: true })
     this.qrCode = page.getByTestId('wui-qr-code')

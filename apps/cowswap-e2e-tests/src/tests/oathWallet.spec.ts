@@ -44,3 +44,20 @@ test.describe('iPhone browser', () => {
     await expect.poll(() => picker.hasValidMobileHandoff()).toBe(true)
   })
 })
+
+test.describe('Android browser', () => {
+  test.use({
+    viewport: { width: 393, height: 851 },
+    isMobile: true,
+    hasTouch: true,
+    userAgent:
+      'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36',
+  })
+
+  test('does not offer the iOS-only Oath handoff and preserves wallet search', async ({ page }) => {
+    const picker = new WalletConnectionPage(page)
+    await picker.open()
+    await expect(picker.allWallets).toBeVisible()
+    await expect(picker.oath).toHaveCount(0)
+  })
+})

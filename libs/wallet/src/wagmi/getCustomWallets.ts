@@ -5,8 +5,9 @@ import type { createAppKit } from '@reown/appkit/react'
 export function getCustomWallets(
   isSafeApp: boolean,
   isWidget: boolean,
+  isAndroid: boolean,
 ): Parameters<typeof createAppKit>[0]['customWallets'] {
-  if (isSafeApp || isWidget) return undefined
+  if (isSafeApp || isWidget || isAndroid) return undefined
 
   return [
     {

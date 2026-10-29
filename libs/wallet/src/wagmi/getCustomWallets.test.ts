@@ -2,7 +2,7 @@ import { getCustomWallets } from './getCustomWallets'
 
 describe('getCustomWallets', () => {
   it('lists Oath in a standalone app', () => {
-    expect(getCustomWallets(false, false)).toEqual([
+    expect(getCustomWallets(false, false, false)).toEqual([
       expect.objectContaining({
         id: 'oath-wallet',
         name: 'Oath Wallet',
@@ -17,6 +17,10 @@ describe('getCustomWallets', () => {
     [false, true],
     [true, true],
   ])('leaves wallet selection to the host when Safe is %s and widget is %s', (isSafeApp, isWidget) => {
-    expect(getCustomWallets(isSafeApp, isWidget)).toBeUndefined()
+    expect(getCustomWallets(isSafeApp, isWidget, false)).toBeUndefined()
   })
+})
+
+it('does not offer an iOS-only app handoff on Android', () => {
+  expect(getCustomWallets(false, false, true)).toBeUndefined()
 })
