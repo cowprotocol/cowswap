@@ -171,10 +171,14 @@ export function PriceChart({ ticker, candles, chartType, range, loading }: Price
 
     if (applied.chartType !== chartType) chart.setChartType(getSeriesType(chartType)).catch(logChartError)
 
+    if (applied.resolution === resolution && applied.bars === bars) return
+
+    // TradingView caches bars per resolution, so a resolution shared by several ranges would show the old range
+    widget.resetCache()
+
     if (applied.resolution !== resolution) {
       chart.setResolution(resolution as ResolutionString).catch(logChartError)
-    } else if (applied.bars !== bars) {
-      widget.resetCache()
+    } else {
       chart.resetData()
     }
   }, [widget, bars, resolution, chartType, loading])
