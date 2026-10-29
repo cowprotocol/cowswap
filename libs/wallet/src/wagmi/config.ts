@@ -12,10 +12,10 @@ import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
 import { OptionsController } from '@reown/appkit-controllers'
 
 import { getConnectors } from './getConnectors'
+import { getCustomWallets } from './getCustomWallets'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
 import { installWalletTransactionGuard, type WalletTransactionGuard } from './walletTransactionGuard'
 
-import iconOathWalletSrc from '../api/assets/oathWalletIcon.svg'
 import { bindActiveProvider } from '../bindActiveProvider'
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
 import { interceptEIP6963Providers } from '../providerIsolation'
@@ -129,19 +129,7 @@ const reownAppKit = createAppKit({
   enableInjected: false,
   enableReconnect: isSafeApp || isMobile || isWidget || hasRecentConnector,
   enableWalletGuide: false,
-  customWallets:
-    isSafeApp || isWidget
-      ? undefined
-      : [
-          {
-            id: 'oath-wallet',
-            name: 'Oath Wallet',
-            homepage: 'https://oathwallet.org',
-            image_url: iconOathWalletSrc,
-            mobile_link: 'oathwallet://',
-            app_store: 'https://apps.apple.com/app/id6780187283',
-          },
-        ],
+  customWallets: getCustomWallets(isSafeApp, isWidget),
   featuredWalletIds: [
     // Coinbase Wallet
     'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',

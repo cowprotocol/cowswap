@@ -1,0 +1,17 @@
+import { getCustomWallets } from './getCustomWallets'
+
+describe('getCustomWallets', () => {
+  it('lists Oath in a standalone app', () => {
+    expect(getCustomWallets(false, false)).toEqual([
+      expect.objectContaining({ id: 'oath-wallet', name: 'Oath Wallet', mobile_link: 'oathwallet://' }),
+    ])
+  })
+
+  it.each([
+    [true, false],
+    [false, true],
+    [true, true],
+  ])('leaves wallet selection to the host when Safe is %s and widget is %s', (isSafeApp, isWidget) => {
+    expect(getCustomWallets(isSafeApp, isWidget)).toBeUndefined()
+  })
+})
