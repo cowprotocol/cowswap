@@ -3,6 +3,7 @@ import { TradeType as WidgetTradeType } from '@cowprotocol/widget-lib'
 export const TRADE_URL_SELL_AMOUNT_KEY = 'sellAmount'
 export const TRADE_URL_BUY_AMOUNT_KEY = 'buyAmount'
 export const TRADE_URL_ORDER_KIND_KEY = 'orderKind'
+export const TRADE_URL_PRICE_PERCENTAGE_KEY = 'pricePercentage'
 
 export enum TradeType {
   SWAP = 'SWAP',

@@ -77,6 +77,10 @@ jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
   WaitAndSaveOutcome: () => <div data-testid="wait-and-save-outcome" />,
 }))
 
+jest.mock('../../containers/TakeProfitPrompt/TakeProfitPrompt.container', () => ({
+  TakeProfitPrompt: () => <div data-testid="take-profit-prompt" />,
+}))
+
 jest.mock('entities/injectedWidget', () => ({
   useInjectedWidgetParams: () => ({ disablePostTradeTips: false }),
 }))
@@ -150,6 +154,10 @@ describe('FinishedStep', () => {
     expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
     expect(screen.queryByTestId('finished-tips')).toBeNull()
     expect(screen.getByText('Share this swap')).toBeTruthy()
+
+    const prompt = screen.getByTestId('take-profit-prompt')
+    const auction = screen.getByTestId('solver-auction-result')
+    expect(prompt.compareDocumentPosition(auction) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('renders the success heading for Modal.Header chrome', () => {
@@ -190,6 +198,21 @@ describe('FinishedStep', () => {
       `https://etherscan.io/address/${receiver}`,
     )
     expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
+  })
+
+  it('hides the take-profit prompt when cancellation failed', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.CANCELLATION_FAILED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('take-profit-prompt')).toBeNull()
   })
 
   it('omits solver expand and auction when there are no solvers', () => {

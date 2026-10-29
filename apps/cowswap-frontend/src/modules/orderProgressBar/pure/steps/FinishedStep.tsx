@@ -12,6 +12,7 @@ import {
 import { isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { TEST_IDS } from '@cowprotocol/test-ids'
+import { Command } from '@cowprotocol/types'
 import { Confetti, ExternalLink } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -30,6 +31,7 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
+import { TakeProfitPrompt } from '../../containers/TakeProfitPrompt/TakeProfitPrompt.container'
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
@@ -57,6 +59,7 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
+  onDismiss?: Command
   showWaitAndSaveOutcome?: boolean
 }
 
@@ -70,6 +73,7 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
+  onDismiss,
   showWaitAndSaveOutcome = false,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
@@ -140,6 +144,10 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
+        {stepName === OrderProgressBarStepName.FINISHED ? (
+          <TakeProfitPrompt order={order} onDismiss={onDismiss} />
+        ) : null}
+
         {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
 
         {showExpandedAuction ? (

@@ -29,6 +29,7 @@ export type OrderProgressBarProps = {
   showCancellationModal: Command | null
   surplusData?: SurplusData
   receiverEnsName?: string
+  onDismiss?: Command
   navigateToNewOrder?: Command
   isProgressBarSetup: boolean
   swapAndBridgeContext?: SwapAndBridgeContext
