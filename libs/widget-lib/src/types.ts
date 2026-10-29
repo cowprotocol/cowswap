@@ -508,6 +508,11 @@ export interface CowSwapWidgetParams {
   hideBridgeInfo?: boolean
 
   /**
+   * Hides the Wait & Save toggle and related confirmation UI.
+   */
+  hideWaitAndSave?: boolean
+
+  /**
    * Option to hide the banner suggesting to wrap the native token (e.g. ETH -> WETH) when selling it.
    */
   hideWrapBanner?: boolean

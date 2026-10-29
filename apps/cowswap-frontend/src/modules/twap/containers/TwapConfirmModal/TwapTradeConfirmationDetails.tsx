@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { Percent } from '@cowprotocol/currency'
-import { Accordion } from '@cowprotocol/ui'
+import { Collapsible } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -16,8 +16,6 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { TwapConfirmDetails } from './TwapConfirmDetails'
 import * as styledEl from './TwapTradeConfirmationDetails.styled'
-
-const ORDER_DETAILS_ITEM = 'order-details'
 
 const getConfirmModalConfig = (): {
   priceLabel: string
@@ -121,28 +119,25 @@ export function TwapTradeConfirmationDetails({
 
   return (
     <styledEl.Root className={className}>
-      <Accordion.Root
+      <Collapsible.Root
         disabled={!isCollapsible}
-        value={!isCollapsible || isExpanded ? [ORDER_DETAILS_ITEM] : []}
-        onValueChange={(value) => {
+        open={!isCollapsible || isExpanded}
+        onOpenChange={(open) => {
           if (!isCollapsible) return
-          setIsExpanded(value.includes(ORDER_DETAILS_ITEM))
+          setIsExpanded(open)
         }}
+        $isCollapsible={isCollapsible}
       >
-        <Accordion.Item value={ORDER_DETAILS_ITEM} $isCollapsible={isCollapsible}>
-          <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
-            <Accordion.Header>
-              <Accordion.Trigger>
-                <Trans>Order details</Trans>
-                <Accordion.Chevron aria-hidden />
-              </Accordion.Trigger>
-            </Accordion.Header>
-          </styledEl.TriggerSlot>
-          <Accordion.Panel keepMounted>
-            <styledEl.Body $withTopPadding={isCollapsible}>{details}</styledEl.Body>
-          </Accordion.Panel>
-        </Accordion.Item>
-      </Accordion.Root>
+        <styledEl.TriggerSlot $isVisible={isCollapsible} aria-hidden={!isCollapsible}>
+          <Collapsible.Trigger>
+            <Trans>Order details</Trans>
+            <Collapsible.Chevron aria-hidden />
+          </Collapsible.Trigger>
+        </styledEl.TriggerSlot>
+        <Collapsible.Panel keepMounted>
+          <styledEl.Body $withTopPadding={isCollapsible}>{details}</styledEl.Body>
+        </Collapsible.Panel>
+      </Collapsible.Root>
     </styledEl.Root>
   )
 }

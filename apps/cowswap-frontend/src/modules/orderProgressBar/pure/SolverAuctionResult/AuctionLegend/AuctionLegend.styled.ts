@@ -14,7 +14,7 @@ export const Legend = styled.div`
   align-items: center;
   gap: 12px 16px;
   width: 100%;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
   padding-bottom: var(--gap);
 `
 
