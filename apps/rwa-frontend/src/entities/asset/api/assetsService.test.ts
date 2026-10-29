@@ -392,8 +392,33 @@ describe('getAssetChart', () => {
       { time: 1, value: 2 },
       { time: 2, value: 3 },
     ])
-    expect(getChartMock).toHaveBeenCalledWith(nvda(), '1D')
-    expect(loadSharesPerTokenMock).toHaveBeenCalledWith([nvda().tokens[0]])
+    expect(getChartMock).toHaveBeenCalledTimes(1)
+    expect(getChartMock).toHaveBeenCalledWith('nvidia-ondo-tokenized-stock', '1D')
+    expect(loadSharesPerTokenMock).toHaveBeenCalledWith(nvda().tokens)
+  })
+
+  it('charts the next coin of the asset when the first one has no prices', async () => {
+    getChartMock.mockImplementation(async (coingeckoId: string) =>
+      coingeckoId === 'nvidia-xstock' ? TOKEN_POINTS : [],
+    )
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25, [NVDAX_KEY]: 0.5 }, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toEqual([
+      { time: 1, value: 1 },
+      { time: 2, value: 1.5 },
+    ])
+    expect(getChartMock.mock.calls).toEqual([
+      ['nvidia-ondo-tokenized-stock', '1D'],
+      ['nvidia-xstock', '1D'],
+    ])
+  })
+
+  it('returns no points when no coin of the asset has prices', async () => {
+    getChartMock.mockResolvedValue([])
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toEqual([])
+    expect(getChartMock).toHaveBeenCalledTimes(2)
   })
 
   it('keeps the token prices when the multiplier is unknown', async () => {
@@ -426,7 +451,16 @@ describe('getAssetCandles', () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
 
     expect(await getAssetCandles(nvda(), '1W')).toEqual([{ time: 1, open: 2, high: 4, low: 1, close: 3 }])
-    expect(getCandlesMock).toHaveBeenCalledWith(nvda(), '1W')
+    expect(getCandlesMock).toHaveBeenCalledWith('nvidia-ondo-tokenized-stock', '1W')
+  })
+
+  it('takes the candles of the next coin of the asset when the first one has none', async () => {
+    getCandlesMock.mockImplementation(async (coingeckoId: string) =>
+      coingeckoId === 'nvidia-xstock' ? TOKEN_CANDLES : [],
+    )
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25, [NVDAX_KEY]: 0.5 }, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toEqual([{ time: 1, open: 1, high: 2, low: 0.5, close: 1.5 }])
   })
 
   it('keeps the token candles when the multiplier is unknown', async () => {
@@ -490,7 +524,7 @@ describe('getMarketOverview', () => {
 
     expect(overview.losers[0]?.series).toEqual(chart)
     expect(getChartMock).toHaveBeenCalledTimes(1)
-    expect(getChartMock).toHaveBeenCalledWith(getAssetByTicker('AAPL'), '1D')
+    expect(getChartMock).toHaveBeenCalledWith('apple-xstock', '1D')
   })
 
   it('nulls the series of a mover whose 1D chart fails', async () => {
