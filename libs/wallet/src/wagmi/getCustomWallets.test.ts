@@ -3,7 +3,12 @@ import { getCustomWallets } from './getCustomWallets'
 describe('getCustomWallets', () => {
   it('lists Oath in a standalone app', () => {
     expect(getCustomWallets(false, false)).toEqual([
-      expect.objectContaining({ id: 'oath-wallet', name: 'Oath Wallet', mobile_link: 'oathwallet://' }),
+      expect.objectContaining({
+        id: 'oath-wallet',
+        name: 'Oath Wallet',
+        mobile_link: 'oathwallet://',
+        app_store: 'https://apps.apple.com/app/id6780187283',
+      }),
     ])
   })
 
