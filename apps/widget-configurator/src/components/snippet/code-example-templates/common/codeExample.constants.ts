@@ -43,6 +43,7 @@ export const COMMENTS_BY_PARAM_NAME: Partial<Record<keyof CowSwapWidgetParams, s
   disablePostTradeTips: 'Hide CoW Swap educational tips shown after a completed trade when there is no surplus card',
   hideRecentTokens: 'Hide the Recent section in the token selector',
   hideFavoriteTokens: 'Hide the Favorites section in the token selector',
+  hideWaitAndSave: 'Hide the Wait & save toggle and confirmation outcome',
 
   // Integrations:
 

@@ -4,11 +4,10 @@ import styled from 'styled-components/macro'
 
 export const DividerHorizontal = styled.hr<{ margin?: string }>`
   border: 0;
-  border-bottom: 1px solid var(${UI.COLOR_TEXT});
+  border-bottom: 1px solid var(${UI.COLOR_BORDER});
   display: flex;
   width: 100%;
   margin: ${({ margin }) => margin || '4px auto'};
-  opacity: 0.1;
 `
 
 export const TimelineDot = styled.div<{ isLast?: boolean }>`

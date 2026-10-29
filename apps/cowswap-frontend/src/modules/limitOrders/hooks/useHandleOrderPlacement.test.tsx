@@ -52,8 +52,11 @@ jest.mock('modules/limitOrders/hooks/useSolanaTradeFlowContext')
 // `beforeEach` never configures. `useHandleOrderPlacement` only consumes `solanaFlow` from this module
 // (the only other in-tree consumer, `useSolanaTradeFlowContext`, is separately auto-mocked below), so we
 // mock just that export instead of spreading the real barrel.
+const SOLANA_FLOW_OPTIONS = { isSponsored: false, isAtaCreationDisabled: false, isSolanaAppDataEnabled: false }
+
 jest.mock('modules/tradeFlow', () => ({
   solanaFlow: jest.fn(),
+  useSolanaFlowOptions: () => SOLANA_FLOW_OPTIONS,
 }))
 jest.mock('common/hooks/useNeedsApproval')
 jest.mock('common/hooks/useIsSafeApprovalBundle')
@@ -251,9 +254,7 @@ describe('useHandleOrderPlacement', () => {
       await result.current.callback()
     })
 
-    expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything(), {
-      isAtaCreationDisabled: false,
-    })
+    expect(mockSolanaFlow).toHaveBeenCalledWith(solanaContextMock, expect.anything(), SOLANA_FLOW_OPTIONS)
     expect(mockTradeFlow).not.toHaveBeenCalled()
     expect(mockSafeBundleFlow).not.toHaveBeenCalled()
   })

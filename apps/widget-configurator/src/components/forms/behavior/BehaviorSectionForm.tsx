@@ -55,6 +55,12 @@ export function BehaviorSectionForm({ values, onChange, toastManager }: Behavior
         onChange={(enabled) => onChange('hideBridgeInfo', !enabled)}
       />
       <SwitchInput
+        checked={!values.hideWaitAndSave}
+        label="Show Wait & save"
+        helperText="When off, the Wait & save toggle and confirmation outcome are hidden (e.g. hosts with their own withdrawal flow)."
+        onChange={(enabled) => onChange('hideWaitAndSave', !enabled)}
+      />
+      <SwitchInput
         checked={!values.hideWrapBanner}
         label="Show wrap native token banner"
         onChange={(enabled) => onChange('hideWrapBanner', !enabled)}

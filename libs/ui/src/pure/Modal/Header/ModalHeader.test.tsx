@@ -128,4 +128,31 @@ describe('ModalHeader', () => {
     closeButton.click()
     expect(onClose).toHaveBeenCalledTimes(1)
   })
+
+  it('keeps back and right-slot controls clickable when headerContent overlays chrome', () => {
+    const onBack = jest.fn()
+    const onRightSlotClick = jest.fn()
+
+    const { container } = render(
+      <ModalHeader
+        headerContent={<div>Success heading</div>}
+        onBack={onBack}
+        rightSlot={
+          <button type="button" onClick={onRightSlotClick}>
+            Filters
+          </button>
+        }
+      />,
+    )
+
+    expect(container.querySelector('.overlay')).not.toBeNull()
+
+    const backButton = screen.getByRole('button', { name: 'Back' })
+    expect(backButton.hasAttribute('disabled')).toBe(false)
+    backButton.click()
+    expect(onBack).toHaveBeenCalledTimes(1)
+
+    screen.getByRole('button', { name: 'Filters' }).click()
+    expect(onRightSlotClick).toHaveBeenCalledTimes(1)
+  })
 })

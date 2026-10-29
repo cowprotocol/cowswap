@@ -46,6 +46,8 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
+import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
+
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
 import { solanaFlow } from './index'
@@ -721,6 +723,8 @@ describe('solanaFlow', () => {
 })
 
 describe('solanaFlow · appData', () => {
+  const APP_DATA_ON = { isSolanaAppDataEnabled: true }
+
   const signMismatchedAppData = (): void => {
     const planned = {
       step: ORDER_STEP,
@@ -736,13 +740,13 @@ describe('solanaFlow · appData', () => {
   }
 
   it("signs the app's appData doc into a swap", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(expect.objectContaining({ appDataDoc: APP_DATA.doc }))
   })
 
   it("signs the app's appData hash into a limit order", async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ appDataHash: APP_DATA.appDataKeccak256 }),
@@ -750,7 +754,7 @@ describe('solanaFlow · appData', () => {
   })
 
   it('registers the full appData under the signed hash before sending the transaction', async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockUploadAppData).toHaveBeenCalledWith({
       appDataKeccak256: LIMIT_APP_DATA_HEX,
@@ -764,7 +768,7 @@ describe('solanaFlow · appData', () => {
   it('registers and records the deterministic doc for a swap, which is what the SDK hashes', async () => {
     const expectedFullAppData = await stringifyDeterministic(APP_DATA.doc)
 
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockUploadAppData).toHaveBeenCalledWith({
       appDataKeccak256: MARKET_APP_DATA_HEX,
@@ -788,10 +792,10 @@ describe('solanaFlow · appData', () => {
           }),
       )
       const staleContext = buildContext()
-      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored })
+      const staleRun = solanaFlow(staleContext, buildAnalytics(), { isSponsored, ...APP_DATA_ON })
       await tick()
 
-      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored })
+      await solanaFlow(buildContext(), buildAnalytics(), { isSponsored, ...APP_DATA_ON })
       finishStaleUpload()
       await staleRun
 
@@ -807,7 +811,7 @@ describe('solanaFlow · appData', () => {
     mockUploadAppData.mockRejectedValue(new Error('AppDataHashMismatch'))
     const context = buildContext()
 
-    await solanaFlow(context, buildAnalytics())
+    await solanaFlow(context, buildAnalytics(), APP_DATA_ON)
 
     expect(mockSendSolanaFlow).not.toHaveBeenCalled()
     expect(addPendingOrderStepModule.addPendingOrderStep).not.toHaveBeenCalled()
@@ -821,7 +825,7 @@ describe('solanaFlow · appData', () => {
       signMismatchedAppData()
       const context = buildContext({ orderClass })
 
-      await solanaFlow(context, buildAnalytics())
+      await solanaFlow(context, buildAnalytics(), APP_DATA_ON)
 
       expect(mockUploadAppData).not.toHaveBeenCalled()
       expect(mockSendSolanaFlow).not.toHaveBeenCalled()
@@ -834,7 +838,7 @@ describe('solanaFlow · appData', () => {
   it('reports a signed appData mismatch to Sentry with the doc that failed to hash', async () => {
     signMismatchedAppData()
 
-    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockCaptureError).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'SolanaAppDataMismatchError' }),
@@ -844,12 +848,64 @@ describe('solanaFlow · appData', () => {
   })
 
   it('records the full appData on the local order, so its type is read from it', async () => {
-    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics(), APP_DATA_ON)
 
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
       expect.objectContaining({ order: expect.objectContaining({ fullAppData: APP_DATA.fullAppData }) }),
       expect.anything(),
     )
+  })
+})
+describe('solanaFlow · appData (isSolanaAppDataEnabled off)', () => {
+  it("signs the legacy constant doc into a swap, not the app's", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics())
+
+    expect(mockPlanCreateOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ appDataDoc: LEGACY_SOLANA_SWAP_APP_DATA }),
+    )
+  })
+
+  it("signs the legacy constant hash into a limit order, not the app's", async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(mockPlanCreateLimitOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ appDataHash: LEGACY_SOLANA_LIMIT_APP_DATA_HASH }),
+    )
+  })
+
+  // The order book has no appData endpoint for Solana yet: calling it fails the whole placement.
+  it.each([OrderClass.MARKET, OrderClass.LIMIT])(
+    'registers no appData and still places the order (%s)',
+    async (orderClass) => {
+      const context = buildContext({ orderClass })
+
+      await solanaFlow(context, buildAnalytics())
+
+      expect(mockUploadAppData).not.toHaveBeenCalled()
+      expect(mockSendSolanaFlow).toHaveBeenCalled()
+      expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalled()
+      expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
+    },
+  )
+
+  // Nothing was registered, so a doc on the order would claim a hash the backend cannot resolve.
+  it('records no full appData on the local order', async () => {
+    await solanaFlow(buildContext({ orderClass: OrderClass.LIMIT }), buildAnalytics())
+
+    expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: undefined }) }),
+      expect.anything(),
+    )
+  })
+
+  // The mismatch check guards the upload; with nothing uploaded there is nothing to guard against.
+  it('places the order even when the signed appData does not match the app doc', async () => {
+    const context = buildContext({ orderClass: OrderClass.MARKET })
+
+    await solanaFlow(context, buildAnalytics())
+
+    expect(mockSendSolanaFlow).toHaveBeenCalled()
+    expect(context.tradeConfirmActions.onError).not.toHaveBeenCalled()
   })
 })
 

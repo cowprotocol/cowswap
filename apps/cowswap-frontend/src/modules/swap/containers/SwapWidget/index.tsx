@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useTryFindToken } from '@cowprotocol/tokens'
@@ -28,6 +27,7 @@ import {
   useIsCustomRecipientLockedOnSolana,
   useIsEoaEthFlow,
   useIsNonEvmBridging,
+  useIsWaitAndSaveAvailable,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -189,8 +189,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
 
   const isInfiniteApproveDisabled = useIsInfiniteApproveDisabled()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState()
-  const { isWaitForCowsEnabled } = useFeatureFlags()
-  const showWaitForCows = Boolean(isWaitForCowsEnabled && !isSolanaChain(chainId))
+  const showWaitForCows = useIsWaitAndSaveAvailable()
 
   const slots: TradeWidgetSlots = {
     topContent,
