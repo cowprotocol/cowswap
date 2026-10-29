@@ -1,27 +1,44 @@
 'use client'
 
 import { useAtomValue } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useMemo } from 'react'
 
 import styles from './AssetPriceChart.module.css'
 import { ChartRangeSelector } from './ChartRangeSelector'
+import { ChartTypeSelector } from './ChartTypeSelector'
 
-import { assetChartQueryAtomFamily } from '../model/assetChartQueryAtomFamily'
+import { assetCandlesQueryAtomFamily, assetChartQueryAtomFamily } from '../model/assetChartQueryAtomFamily'
 import { chartRangeAtom } from '../model/chartRangeAtom'
+import { chartTypeAtom } from '../model/chartTypeAtom'
+import { usePrefetchOtherChartType } from '../model/usePrefetchOtherChartType'
 
-import { PriceChart } from '@/entities/asset'
+import { pointsToCandles, PriceChart } from '@/entities/asset'
 
 export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
   const range = useAtomValue(chartRangeAtom)
-  const { data, error } = useAtomValue(assetChartQueryAtomFamily(ticker))
+  const chartType = useAtomValue(chartTypeAtom)
+  const lineQuery = useAtomValue(assetChartQueryAtomFamily(ticker))
+  const candlesQuery = useAtomValue(assetCandlesQueryAtomFamily(ticker))
+
+  usePrefetchOtherChartType(ticker)
+  const { data, error } = chartType === 'line' ? lineQuery : candlesQuery
+  const lineData = lineQuery.data
+  const candleData = candlesQuery.data
+  const candles = useMemo(
+    () => (chartType === 'line' ? pointsToCandles(lineData?.points ?? []) : (candleData?.candles ?? [])),
+    [chartType, lineData, candleData],
+  )
 
   return (
     <section className={styles.chartCard}>
-      <ChartRangeSelector />
+      <div className={styles.controls}>
+        <ChartRangeSelector />
+        <ChartTypeSelector />
+      </div>
       {error && !data ? (
         <p className={styles.status}>Chart is unavailable: {error.message}</p>
       ) : (
-        <PriceChart points={data?.points ?? []} showTime={range === '1D' || range === '1W'} />
+        <PriceChart ticker={ticker} candles={candles} chartType={chartType} range={range} loading={!data} />
       )}
     </section>
   )

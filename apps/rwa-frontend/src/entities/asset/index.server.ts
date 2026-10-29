@@ -2,6 +2,7 @@ export { getAssetNews, NEWS_FEED_REVALIDATE_SECONDS } from './api/assetNews'
 export {
   findAssets,
   getAsset,
+  getAssetCandles,
   getAssetChart,
   getAssetNetworkStats,
   getAssetQuotes,
@@ -20,6 +21,7 @@ export {
   RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAssetsFilter,
+  type RwaCandleChart,
   type RwaChart,
   type RwaSortOrder,
 } from './model/types'

@@ -238,6 +238,8 @@ export type RwaSortOrder = 'asc' | 'desc'
 
 export const RWA_CHART_RANGES = ['1D', '1W', '1M', '1Y', 'ALL'] as const
 
+export const RWA_CHART_TYPES = ['line', 'candles'] as const
+
 export const RWA_QUOTE_SIDES = ['buy', 'sell'] as const
 
 /** Quotes of every asset token on one network against a fixed USDC amount */
@@ -248,6 +250,22 @@ export interface RwaAssetQuotes extends DegradableResponse {
   /** USD, spent on `buy` and received on `sell` */
   amountUsd: number
   quotes: RwaTokenQuote[]
+}
+
+/** USD */
+export interface RwaCandle {
+  /** Unix seconds of the candle open */
+  time: number
+  open: number
+  high: number
+  low: number
+  close: number
+}
+
+export interface RwaCandleChart {
+  ticker: string
+  range: RwaChartRange
+  candles: RwaCandle[]
 }
 
 export interface RwaChart {
@@ -264,6 +282,8 @@ export interface RwaChartPoint {
 }
 
 export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
+
+export type RwaChartType = (typeof RWA_CHART_TYPES)[number]
 
 export type RwaQuoteSide = (typeof RWA_QUOTE_SIDES)[number]
 

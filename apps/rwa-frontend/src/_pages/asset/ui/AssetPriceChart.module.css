@@ -8,6 +8,13 @@
   box-shadow: var(--shadow-subtle);
 }
 
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .status {
   height: 300px;
   display: flex;

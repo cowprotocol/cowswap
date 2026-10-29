@@ -4,6 +4,7 @@
 import {
   findAssets,
   getAsset,
+  getAssetCandles,
   getAssetChart,
   getAssetNetworkStats,
   getMarketOverview,
@@ -21,6 +22,7 @@ jest.mock('./marketData', () => ({
     getRwaMarkets: jest.fn(),
     getTokenMarkets: jest.fn(),
     getChart: jest.fn(),
+    getCandles: jest.fn(),
     getNetworkStats: jest.fn(),
     getHourlyDexVolume: jest.fn(),
   },
@@ -84,6 +86,7 @@ jest.mock('../model/registry', () => {
 const getRwaMarketsMock = coingeckoProvider.getRwaMarkets as jest.Mock
 const getTokenMarketsMock = coingeckoProvider.getTokenMarkets as jest.Mock
 const getChartMock = coingeckoProvider.getChart as jest.Mock
+const getCandlesMock = coingeckoProvider.getCandles as jest.Mock
 const getNetworkStatsMock = coingeckoProvider.getNetworkStats as jest.Mock
 const getHourlyDexVolumeMock = coingeckoProvider.getHourlyDexVolume as jest.Mock
 const loadSharesPerTokenMock = loadSharesPerToken as jest.Mock
@@ -92,6 +95,7 @@ const ALL_MOCKS = [
   getRwaMarketsMock,
   getTokenMarketsMock,
   getChartMock,
+  getCandlesMock,
   getNetworkStatsMock,
   getHourlyDexVolumeMock,
   loadSharesPerTokenMock,
@@ -408,6 +412,27 @@ describe('getAssetChart', () => {
     })
 
     expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toEqual(TOKEN_POINTS)
+  })
+})
+
+describe('getAssetCandles', () => {
+  const TOKEN_CANDLES = [{ time: 1, open: 0.5, high: 1, low: 0.25, close: 0.75 }]
+
+  beforeEach(() => {
+    getCandlesMock.mockResolvedValue(TOKEN_CANDLES)
+  })
+
+  it('converts the token candles to candles per share', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toEqual([{ time: 1, open: 2, high: 4, low: 1, close: 3 }])
+    expect(getCandlesMock).toHaveBeenCalledWith(nvda(), '1W')
+  })
+
+  it('keeps the token candles when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
+
+    expect(await getAssetCandles(nvda(), '1W')).toEqual(TOKEN_CANDLES)
   })
 })
 

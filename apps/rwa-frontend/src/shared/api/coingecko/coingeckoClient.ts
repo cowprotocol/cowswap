@@ -26,6 +26,9 @@ export interface CoingeckoMarketChart {
   prices: [number, number][]
 }
 
+/** `[timestamp ms of the candle close, open, high, low, close]`, USD */
+export type CoingeckoOhlc = [number, number, number, number, number]
+
 /** `[timestamp s, open, high, low, close, volume]`, USD */
 export type CoingeckoOhlcvCandle = [number, number, number, number, number, number]
 
@@ -135,6 +138,18 @@ export async function fetchMarketChart(
 ): Promise<CoingeckoMarketChart> {
   return fetchJson<CoingeckoMarketChart>(
     `${getConfig().baseUrl}/coins/${encodeURIComponent(id)}/market_chart?vs_currency=usd&days=${days}`,
+    revalidateSeconds,
+  )
+}
+
+/** The candle size follows `days`: 30 minutes up to 2 days, 4 hours up to 30 days, 4 days above */
+export async function fetchOhlc(
+  id: string,
+  days: CoingeckoChartDays,
+  revalidateSeconds: number,
+): Promise<CoingeckoOhlc[]> {
+  return fetchJson<CoingeckoOhlc[]>(
+    `${getConfig().baseUrl}/coins/${encodeURIComponent(id)}/ohlc?vs_currency=usd&days=${days}`,
     revalidateSeconds,
   )
 }

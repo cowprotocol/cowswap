@@ -8,6 +8,7 @@ import {
   getAssetsSearchUrl,
   getAssetsUrl,
   getAssetUrl,
+  getCandlesUrl,
   getChartUrl,
   getMarketOverviewUrl,
   getNetworkStatsUrl,
@@ -23,6 +24,7 @@ import type {
   RwaAssetsByTickers,
   RwaAssetsPage,
   RwaAssetsSearchResult,
+  RwaCandleChart,
   RwaChart,
   RwaChartRange,
   RwaMarketOverview,
@@ -42,6 +44,15 @@ const MAX_ASSETS_PAGE_TICKERS = 100
 const TOKEN_LIST_STALE_TIME_MS = 60 * 60 * 1000
 /** Same as the `/api/v1/news` cache max-age */
 const NEWS_STALE_TIME_MS = 15 * 60 * 1000
+
+export function assetCandlesQueryOptions(ticker: string, range: RwaChartRange): RwaQueryOptions<RwaCandleChart> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'candles', ticker, range],
+    queryFn: () => rwaFetcher<RwaCandleChart>(getCandlesUrl(ticker, range)),
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
+  }
+}
 
 export function assetChartQueryOptions(ticker: string, range: RwaChartRange): RwaQueryOptions<RwaChart> {
   return {

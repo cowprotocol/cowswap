@@ -1,0 +1,10 @@
+.loader {
+  opacity: 0.7;
+  animation: rotate 2s linear infinite;
+}
+
+@keyframes rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
