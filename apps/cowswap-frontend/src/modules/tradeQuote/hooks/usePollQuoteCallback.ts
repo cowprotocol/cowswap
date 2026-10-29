@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { RefObject, useCallback, useRef } from 'react'
 
-import { useFeatureFlags, useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsSolanaAvailable, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
 
@@ -23,7 +23,7 @@ export function usePollQuoteCallback(
   quoteParamsState: QuoteParams | undefined,
   currentAmountRef: RefObject<string | null>,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
-  const { isSolanaEnabled } = useFeatureFlags()
+  const isSolanaAvailable = useIsSolanaAvailable()
   const canQuote = useAtomValue(captchaCanQuoteAtom)
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
@@ -76,7 +76,7 @@ export function usePollQuoteCallback(
           quotePollingParams,
           appData,
           tradeQuoteManager,
-          isSolanaEnabled,
+          isSolanaAvailable,
           getCorrelatedTokensByChainId,
         )
       }
@@ -119,7 +119,7 @@ export function usePollQuoteCallback(
       hasSmartSlippagePrev,
       currentAmountRef,
       canQuote,
-      isSolanaEnabled,
+      isSolanaAvailable,
     ],
   )
 }

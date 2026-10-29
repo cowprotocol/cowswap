@@ -3,7 +3,6 @@ import { useCallback, useRef } from 'react'
 
 import { useConfig } from 'wagmi'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { percentToBps } from '@cowprotocol/common-utils'
 import { Percent } from '@cowprotocol/currency'
 import { OnTradeParamsPayload } from '@cowprotocol/events'
@@ -27,6 +26,7 @@ import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImp
 import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useSafeBundleFlowContext } from './useSafeBundleFlowContext'
+import { useSolanaFlowOptions } from './useSolanaFlowOptions'
 import { useSolanaTradeFlowContext } from './useSolanaTradeFlowContext'
 import { TradeFlowParams, useTradeFlowContext } from './useTradeFlowContext'
 import { useTradeFlowType } from './useTradeFlowType'
@@ -52,7 +52,7 @@ export function useHandleSwap(
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
   const analytics = useTradeFlowAnalytics()
-  const { isSolanaSponsoredOrdersEnabled, isAtaCreationDisabled } = useFeatureFlags()
+  const solanaFlowOptions = useSolanaFlowOptions({ canSponsor: true })
   const derivedTradeState = useDerivedTradeState()
 
   const contextIsReady =
@@ -94,10 +94,7 @@ export function useHandleSwap(
         confirmPriceImpactWithoutFee,
         analytics,
         config,
-        solanaFlowOptions: {
-          isSponsored: Boolean(isSolanaSponsoredOrdersEnabled),
-          isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
-        },
+        solanaFlowOptions,
       })
 
       if (result === true && isCurrent()) {
@@ -116,8 +113,7 @@ export function useHandleSwap(
     priceImpactParams,
     confirmPriceImpactWithoutFee,
     analytics,
-    isSolanaSponsoredOrdersEnabled,
-    isAtaCreationDisabled,
+    solanaFlowOptions,
     ethFlowContext,
     safeBundleFlowContext,
     onChangeRecipient,
