@@ -18,7 +18,7 @@ import { getTradingPauseMessage } from '../lib/tradingPause'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 
-import { assetQueryAtomFamily, type RwaAsset, type RwaToken } from '@/entities/asset'
+import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
 import { ConnectButton } from '@/features/connect-wallet'
 import { APP_CODE, WIDGET_BASE_URL } from '@/shared/config'
 import { useIsDarkTheme } from '@/shared/lib/theme'
@@ -39,7 +39,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
   const assetToken = selection?.assetToken
-  const tradingPause = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.tradingPause
+  const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
   const tradingPauseMessage =
     tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
@@ -61,14 +61,14 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
       ...(side === 'buy'
         ? { sell: quote, buy: { asset: assetToken.address } }
         : { sell: { asset: assetToken.address, amount: ASSET_TOKEN_AMOUNT }, buy: { asset: QUOTE_ASSET } }),
-      customTokens: asset.tokens.map(toTokenInfo),
-      ...getTradeTokensFilters(asset, assetToken.chainId, side, isConnected),
+      customTokens: asset.tokens.map((token) => toTokenInfo(token, market)),
+      ...getTradeTokensFilters(asset, assetToken, side, isConnected),
       // The filters follow the Buy/Sell toggle above the widget, so the widget can't swap the tokens
       disableSwitchingTokens: true,
       standaloneMode: false,
       theme: isDark ? 'dark' : 'light',
     }
-  }, [asset, assetToken, side, isConnected, isDark])
+  }, [asset, assetToken, side, isConnected, isDark, market])
 
   if (!params || !selection) {
     return <p>Trading is not available for {asset.ticker}</p>
@@ -97,8 +97,13 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   )
 }
 
-function toTokenInfo({ chainId, address, name, decimals, symbol }: RwaToken): TokenInfo {
-  return { chainId, address, name, decimals, symbol }
+function toTokenInfo(
+  { chainId, address, name, decimals, symbol, coingeckoId }: RwaToken,
+  market: RwaMarketData | null | undefined,
+): TokenInfo {
+  const logoURI = coingeckoId ? market?.tokens[coingeckoId]?.logoUrl : null
+
+  return { chainId, address, name, decimals, symbol, ...(logoURI ? { logoURI } : {}) }
 }
 
 function TradeWidgetSkeleton({ overlay = false }: { overlay?: boolean }): ReactNode {

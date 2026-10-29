@@ -11,13 +11,15 @@ export function filterTokensForSelector(
   balances: Record<string, bigint | undefined> | null,
 ): TokenWithLogo[] {
   const allowedAddresses = filter?.tokens ? new Set(filter.tokens.map(getAddressKey)) : null
+  const excludedAddresses = filter?.excludedTokens ? new Set(filter.excludedTokens.map(getAddressKey)) : null
 
-  if (!allowedAddresses && !balances) return tokens
+  if (!allowedAddresses && !excludedAddresses && !balances) return tokens
 
   return tokens.filter((token) => {
     const address = getAddressKey(token.address)
 
     if (allowedAddresses && !allowedAddresses.has(address)) return false
+    if (excludedAddresses?.has(address)) return false
 
     return !balances || (balances[address] ?? 0n) > 0n
   })

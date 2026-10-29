@@ -70,8 +70,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   } = useSelectorTokensFilter(field, areTokensFromBridge)
   const hasScopedListRestriction =
     getHasScopedListRestriction(field, tokenLists, sellTokenLists, buyTokenLists) ||
-    Boolean(tokensFilter?.tokens) ||
-    filterBalances !== null
+    isTokensFilterScoped(tokensFilter, filterBalances)
 
   const allTokens = useMemo(
     () => filterTokensForSelector(listTokens, tokensFilter, filterBalances),
@@ -157,6 +156,13 @@ function getHasScopedListRestriction(
         : [tokenLists, sellTokenLists, buyTokenLists]
 
   return applicableLists.some((lists) => Boolean(lists?.length))
+}
+
+function isTokensFilterScoped(
+  tokensFilter: TokenSelectorFilter | undefined,
+  balances: SelectorTokensFilter['balances'],
+): boolean {
+  return Boolean(tokensFilter?.tokens || tokensFilter?.excludedTokens) || balances !== null
 }
 
 function useSelectorTokensFilter(field: Field | undefined, areTokensFromBridge: boolean): SelectorTokensFilter {

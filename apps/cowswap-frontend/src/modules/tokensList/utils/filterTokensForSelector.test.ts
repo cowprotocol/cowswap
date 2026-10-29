@@ -24,6 +24,12 @@ describe('filterTokensForSelector', () => {
     expect(filterTokensForSelector(tokens, filter, null)).toEqual([aaplOndo, aaplX])
   })
 
+  it('drops the excluded tokens, whatever the address casing', () => {
+    const filter = { excludedTokens: ['0x14c3abf95cb9c93a8b82c1cdcb76d72cb87b2d4c'] }
+
+    expect(filterTokensForSelector(tokens, filter, null)).toEqual([usdc, aaplX])
+  })
+
   it('keeps the tokens with a balance', () => {
     const balances = { [getAddressKey(usdc.address)]: 10n, [getAddressKey(aaplOndo.address)]: 0n }
 

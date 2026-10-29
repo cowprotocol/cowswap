@@ -19,30 +19,42 @@ const AAPL: RwaAsset = {
   tokens: [AAPLX_MAINNET, AAPLON_MAINNET, AAPLX_ARBITRUM],
 }
 
-describe('getTradeTokensFilters', () => {
-  it('buys the asset tokens of any network with any token held', () => {
-    const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, 1, 'buy', true)
+const ASSET_TOKENS = [AAPLX_MAINNET.address, AAPLON_MAINNET.address, AAPLX_ARBITRUM.address]
 
-    expect(sellTokensFilter).toEqual({ onlyWithBalance: true, notice: expect.stringContaining('your wallet') })
-    expect(buyTokensFilter?.tokens).toEqual([AAPLX_MAINNET.address, AAPLON_MAINNET.address, AAPLX_ARBITRUM.address])
+describe('getTradeTokensFilters', () => {
+  it('buys the asset tokens of any network with any other token held', () => {
+    const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'buy', true)
+
+    expect(sellTokensFilter).toEqual({
+      excludedTokens: ASSET_TOKENS,
+      onlyWithBalance: true,
+      notice: expect.stringContaining('positive balance in your wallet'),
+    })
+    expect(buyTokensFilter?.tokens).toEqual(ASSET_TOKENS)
     expect(buyTokensFilter?.onlyWithBalance).toBeUndefined()
     expect(buyTokensFilter?.notice).toContain('AAPL')
   })
 
-  it('sells the asset tokens held on the network for any token', () => {
-    const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, 42161, 'sell', true)
+  it('sells the asset tokens held on the network for any other token', () => {
+    const { sellTokensFilter, buyTokensFilter } = getTradeTokensFilters(AAPL, AAPLX_ARBITRUM, 'sell', true)
 
     expect(sellTokensFilter).toEqual({
       tokens: [AAPLX_ARBITRUM.address],
       onlyWithBalance: true,
       notice: expect.stringContaining('AAPL'),
     })
-    expect(buyTokensFilter).toBeUndefined()
+    expect(buyTokensFilter).toEqual({ excludedTokens: ASSET_TOKENS })
+  })
+
+  it('sells only the selected asset token without a wallet', () => {
+    const { sellTokensFilter } = getTradeTokensFilters(AAPL, AAPLON_MAINNET, 'sell', false)
+
+    expect(sellTokensFilter).toEqual({ tokens: [AAPLON_MAINNET.address], notice: expect.stringContaining('AAPLon') })
   })
 
   it('does not mention the wallet when it is not connected', () => {
-    const buyFilters = getTradeTokensFilters(AAPL, 1, 'buy', false)
-    const sellFilters = getTradeTokensFilters(AAPL, 1, 'sell', false)
+    const buyFilters = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'buy', false)
+    const sellFilters = getTradeTokensFilters(AAPL, AAPLX_MAINNET, 'sell', false)
 
     expect(buyFilters.sellTokensFilter?.notice).toBeUndefined()
     expect(sellFilters.sellTokensFilter?.notice).not.toContain('wallet')

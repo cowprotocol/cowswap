@@ -132,6 +132,11 @@ export interface TokenSelectorFilter {
   tokens?: string[]
 
   /**
+   * Addresses of tokens to hide. Like `tokens`, it limits search results to the token lists (no token import).
+   */
+  excludedTokens?: string[]
+
+  /**
    * Shows only the tokens the connected wallet holds. Ignored while no wallet is connected, and for bridge target tokens.
    */
   onlyWithBalance?: boolean
