@@ -76,9 +76,13 @@ export interface RwaAssetNews extends DegradableResponse {
 
 export interface RwaAssetsFilter {
   type?: RwaAssetType
-  /** Matches assets with a token of this issuer, on `chainId` when both are set */
-  issuer?: string
-  chainId?: number
+  /** Matches assets with a token of one of these issuers, on one of `chainIds` when both are set */
+  issuers?: string[]
+  chainIds?: number[]
+  /** USD */
+  minMarketCap?: number
+  /** USD */
+  minVolume24h?: number
   /** Matches ticker, title or token symbol */
   query?: string
   tickers?: string[]
@@ -240,6 +244,8 @@ export interface RwaAssetsPage extends DegradableResponse {
   page: number
   pageSize: number
   total: number
+  /** Assets of the selected type with no other filter applied */
+  typeTotal: number
   totalPages: number
   /** Matches of each type with every filter but `type` applied */
   typeCounts: Record<RwaAssetType, number>

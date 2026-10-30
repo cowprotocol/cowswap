@@ -60,7 +60,14 @@ function AssetsList(): ReactNode {
             : 'No assets match the filters'}
         </StatusMessage>
       )}
-      <Pagination page={data.page} totalPages={data.totalPages} onChange={setPage} />
+      <div className={styles.footer}>
+        {data.total < data.typeTotal && (
+          <span className={styles.scope}>
+            Showing {data.total} of {data.typeTotal} {data.typeTotal === 1 ? 'asset' : 'assets'}
+          </span>
+        )}
+        <Pagination page={data.page} totalPages={data.totalPages} onChange={setPage} />
+      </div>
     </>
   )
 }

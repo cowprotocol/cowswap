@@ -223,6 +223,22 @@ describe('listAssets', () => {
     expect(page.chainIds).toEqual([1, 56])
   })
 
+  it('applies the market minimums to the matches and the type counts, but not to the type total', async () => {
+    const page = await listAssets({
+      page: 1,
+      pageSize: 10,
+      sort: 'priority',
+      order: 'desc',
+      type: 'stock',
+      minMarketCap: 2000,
+    })
+
+    expect(tickers(page.items)).toEqual(['AAPL'])
+    expect(page.total).toBe(1)
+    expect(page.typeTotal).toBe(2)
+    expect(page.typeCounts).toEqual({ stock: 1, index: 0, commodity: 0 })
+  })
+
   it('degrades with null market data when the RWA markets fail', async () => {
     getRwaMarketsMock.mockRejectedValue(new Error('CoinGecko responded with 429'))
 

@@ -8,6 +8,7 @@
 }
 
 .toolbar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -42,7 +43,8 @@
 }
 
 .outlinedButton[aria-pressed='true'],
-.outlinedButton[aria-expanded='true'] {
+.outlinedButton[aria-expanded='true'],
+.outlinedButton[data-active='true'] {
   border-color: transparent;
   background: var(--color-accent-soft);
   color: var(--color-accent);
@@ -55,18 +57,10 @@
 }
 
 .filtersCount {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 5px;
-  border-radius: 9px;
-  background: var(--color-accent);
-  color: var(--color-on-accent);
-  font-size: 11px;
+  color: var(--color-accent);
+  font-size: 12px;
   font-weight: 600;
-  line-height: 14px;
+  line-height: 16px;
 }
 
 .clearButton {
@@ -111,16 +105,27 @@
   color: var(--color-text-secondary);
 }
 
-.filtersPanel {
-  display: flex;
-  flex: 1 1 100%;
-  flex-wrap: wrap;
+.footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   gap: 8px;
-  padding-top: 8px;
+  padding: 0 24px;
 }
 
-.filtersPanel[hidden] {
+.footer > nav {
+  grid-column: 2;
+}
+
+.footer:empty {
   display: none;
+}
+
+.scope {
+  padding: 16px 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
 }
 
 .aboutMetrics {
@@ -159,5 +164,11 @@
   .filterInput {
     flex-basis: 100%;
     order: -1;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
   }
 }

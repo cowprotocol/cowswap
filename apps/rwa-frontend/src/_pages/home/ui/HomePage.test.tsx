@@ -2,7 +2,7 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, type RenderResult, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HomePage } from './HomePage'
@@ -81,6 +81,7 @@ const ASSETS_PAGE: RwaAssetsPage = {
   page: 1,
   pageSize: 10,
   total: 1,
+  typeTotal: 1,
   totalPages: 1,
   typeCounts: { stock: 3, index: 2, commodity: 0 },
   issuers: ['Ondo', 'xStocks'],
@@ -161,15 +162,46 @@ describe('HomePage', () => {
 
     await screen.findByText('$180M')
     fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
-    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
-    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
+    fireEvent.click(
+      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: '$10M+' }),
+    )
 
-    expect(await screen.findByRole('button', { name: 'Filters 1 active' })).toBeTruthy()
+    expect(await screen.findByRole('button', { name: 'Filters 2 active' })).toBeTruthy()
+    expect(screen.getByText('2 of 2')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Clear' }))
 
     expect(await screen.findByRole('button', { name: 'Filters' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    expect(
+      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: 'Any' }),
+    ).toHaveProperty('checked', true)
+  })
+
+  it('restores the filters stored by a previous visit', async () => {
+    localStorage.setItem(
+      'rwaAssetsFilters:v1',
+      JSON.stringify({ type: 'index', issuers: ['Ondo'], chainIds: [1], minMarketCap: null, minVolume24h: 1000000 }),
+    )
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    expect(await screen.findByRole('button', { name: 'Filters 3 active' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: true })).toBeTruthy()
+    await waitFor(() =>
+      expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain(
+        'type=index&issuer=Ondo&chainId=1&minVolume24h=1000000',
+      ),
+    )
+  })
+
+  it('shows the scope of a filtered table in the footer', async () => {
+    mockApi(OVERVIEW, { ...ASSETS_PAGE, typeTotal: 5 })
+    renderHomePage()
+
+    expect(await screen.findByText('Showing 1 of 5 assets')).toBeTruthy()
   })
 
   it('shows a dash in the 24h chart column of an asset without a series', async () => {
@@ -188,8 +220,9 @@ describe('HomePage', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
     fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
-    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
-    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
+    fireEvent.click(within(screen.getByRole('radiogroup', { name: '24h volume' })).getByRole('radio', { name: '$1M+' }))
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>
@@ -198,7 +231,8 @@ describe('HomePage', () => {
     const lastUrl = String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])
 
     expect(lastUrl).toContain('type=index')
-    expect(lastUrl).toContain('issuer=Ondo')
+    expect(lastUrl).toContain('issuer=Ondo%2CxStocks')
+    expect(lastUrl).toContain('minVolume24h=1000000')
     expect(lastUrl).toContain('sort=title')
     expect(lastUrl).toContain('order=asc')
   })

@@ -9,7 +9,7 @@ import { loadSharesPerToken, loadTradingPause, type SharesPerTokenLoadResult } f
 
 import { sumNullable } from '../lib/sumNullable'
 import { getTokenKey } from '../lib/tokenKey'
-import { countByType, filterAssets, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
+import { countByType, filterAssets, filterByMarket, paginate, searchAssets, sortAssets } from '../model/assetsQuery'
 import {
   buildDailySeries,
   buildMarketCapSeries,
@@ -208,7 +208,7 @@ export async function getMarketOverview(): Promise<RwaMarketOverview> {
 
 export async function listAssets({ page, pageSize, sort, order, ...filter }: ListAssetsParams): Promise<RwaAssetsPage> {
   const registry = getAssets()
-  const filtered = filterAssets(registry, filter)
+  const filtered = filterAssets(registry, { ...filter, type: undefined })
   const withTokens = Boolean(filter.tickers?.length)
   const filteredTokens = filtered.flatMap((asset) => asset.tokens)
   const [{ byId, degraded: marketsDegraded }, tokenMarkets, sharesPerToken] = await Promise.all([
@@ -217,13 +217,15 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
     withTokens ? loadSharesPerToken(filteredTokens) : NO_SHARES_PER_TOKEN,
   ])
   const degraded = marketsDegraded || tokenMarkets === null || sharesPerToken.degraded
-  const matches = filtered.map((asset): RwaAssetListItem => {
+  const listed = filtered.map((asset): RwaAssetListItem => {
     return {
       ...asset,
       market: toListedMarketData(asset, byId.get(asset.coingeckoId), tokenMarkets ?? {}, sharesPerToken.byKey),
       series: null,
     }
   })
+  const allTypeMatches = filterByMarket(listed, filter)
+  const matches = filter.type ? allTypeMatches.filter((asset) => asset.type === filter.type) : allTypeMatches
   const sorted = sortAssets(matches, sort, order)
   const { items, totalPages } = paginate(sorted, page, pageSize)
 
@@ -232,8 +234,9 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
     page,
     pageSize,
     total: sorted.length,
+    typeTotal: filter.type ? registry.filter((asset) => asset.type === filter.type).length : registry.length,
     totalPages,
-    typeCounts: countByType(registry, filter),
+    typeCounts: countByType(allTypeMatches),
     issuers: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.issuer)))].sort(),
     chainIds: [...new Set(registry.flatMap((asset) => asset.tokens.map((token) => token.chainId)))].sort(
       (a, b) => a - b,

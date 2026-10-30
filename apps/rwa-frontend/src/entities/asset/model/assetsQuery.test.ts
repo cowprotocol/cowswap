@@ -1,7 +1,15 @@
 /**
  * @jest-environment node
  */
-import { countByType, filterAssets, getDefaultSortOrder, paginate, searchAssets, sortAssets } from './assetsQuery'
+import {
+  countByType,
+  filterAssets,
+  filterByMarket,
+  getDefaultSortOrder,
+  paginate,
+  searchAssets,
+  sortAssets,
+} from './assetsQuery'
 
 import type { RwaAssetListItem, RwaMarketData, RwaToken } from './types'
 
@@ -150,9 +158,15 @@ describe('filterAssets', () => {
   })
 
   it('requires one token to match both the issuer and the network', () => {
-    expect(tickers(filterAssets(all, { issuer: 'xStocks' }))).toEqual(['SPY', 'QQQ'])
-    expect(tickers(filterAssets(all, { issuer: 'xStocks', chainId: 56 }))).toEqual(['SPY'])
-    expect(tickers(filterAssets(all, { issuer: 'Ondo', chainId: 56 }))).toEqual([])
+    expect(tickers(filterAssets(all, { issuers: ['xStocks'] }))).toEqual(['SPY', 'QQQ'])
+    expect(tickers(filterAssets(all, { issuers: ['xStocks'], chainIds: [56] }))).toEqual(['SPY'])
+    expect(tickers(filterAssets(all, { issuers: ['Ondo'], chainIds: [56] }))).toEqual([])
+  })
+
+  it('matches any of the selected issuers and networks', () => {
+    expect(tickers(filterAssets(all, { issuers: ['Ondo', 'xStocks'] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
+    expect(tickers(filterAssets(all, { issuers: ['xStocks'], chainIds: [1, 56] }))).toEqual(['SPY', 'QQQ'])
+    expect(tickers(filterAssets(all, { issuers: [], chainIds: [] }))).toEqual(['AAPL', 'MSFT', 'SPY', 'QQQ'])
   })
 
   it('filters by query and tickers', () => {
@@ -161,9 +175,19 @@ describe('filterAssets', () => {
     expect(filterAssets(all, { tickers: [] })).toEqual([])
   })
 
-  it('counts every type with the other filters applied', () => {
-    expect(countByType(all, { type: 'stock' })).toEqual({ stock: 2, index: 2, commodity: 0 })
-    expect(countByType(all, { issuer: 'xStocks' })).toEqual({ stock: 0, index: 2, commodity: 0 })
+  it('counts every type', () => {
+    expect(countByType(all)).toEqual({ stock: 2, index: 2, commodity: 0 })
+  })
+})
+
+describe('filterByMarket', () => {
+  const all = [AAPL, MSFT, NVDA, META]
+
+  it('keeps assets at or above the minimums and drops the ones without market data', () => {
+    expect(tickers(filterByMarket(all, {}))).toEqual(['AAPL', 'MSFT', 'NVDA', 'META'])
+    expect(tickers(filterByMarket(all, { minMarketCap: 200 }))).toEqual(['MSFT', 'NVDA'])
+    expect(tickers(filterByMarket(all, { minVolume24h: 1 }))).toEqual(['AAPL', 'MSFT', 'NVDA'])
+    expect(tickers(filterByMarket(all, { minMarketCap: 200, minVolume24h: 2 }))).toEqual([])
   })
 })
 
