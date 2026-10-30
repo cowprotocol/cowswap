@@ -8,6 +8,8 @@ import styles from './StockTokens.module.css'
 
 import { getPremiumNote } from '../lib/premiumNote'
 import { getTokenPriceSharesPerToken } from '../lib/tokenPriceShares'
+import { formatTokenStat } from '../lib/tokenStat'
+import { tokenStatsQueryAtomFamily } from '../model/tradeQueryAtoms'
 import { useSelectTradeToken } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
 
@@ -20,15 +22,19 @@ import {
   type RwaQuoteSide,
   type RwaToken,
   type RwaTokenMarketData,
+  type RwaTokenNetworkStats,
 } from '@/entities/asset'
 import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
-import { formatCompactUsd, formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
+import { formatPercent, formatUsd, shortenAddress } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { Select } from '@/shared/ui/select'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
+
+const TOKEN_METRICS_HINT =
+  'Per token and network, from CoinGecko. Onchain market cap is the token supply on the network times the token price. 24h DEX volume is the DEX trading of the token on the network over the last 24 hours.'
 
 interface DividendNotesToggleProps {
   isExpanded: boolean
@@ -40,6 +46,7 @@ interface DividendNotesToggleProps {
 interface StockTokenRowProps {
   token: RwaToken
   market: RwaTokenMarketData | undefined
+  stats: RwaTokenNetworkStats | undefined
   /** `getTokenPriceSharesPerToken` of the token, `null` keeps its price per token */
   sharesPerToken: number | null
   stockPrice: number | null | undefined
@@ -69,9 +76,10 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
     () => getTokenPriceSharesPerToken(asset.tokens, market?.sharesPerToken ?? {}),
     [asset.tokens, market?.sharesPerToken],
   )
-  const tokens = asset.tokens.filter(
-    (token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network),
-  )
+  const statsByKey = useTokenStatsByKey(asset.ticker)
+  const tokens = asset.tokens
+    .filter((token) => (issuer === null || token.issuer === issuer) && (network === null || token.chainId === network))
+    .sort((a, b) => compareOnchainCaps(statsByKey.get(getTokenKey(a)), statsByKey.get(getTokenKey(b))))
 
   return (
     <section className={styles.section} aria-labelledby="stock-tokens-title">
@@ -119,7 +127,10 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
               <tr>
                 <th>Stock token / issuer</th>
                 <th className={tableStyles.numeric}>Token price / share</th>
-                <th className={tableStyles.numeric}>24h volume</th>
+                <th className={tableStyles.numeric}>24h DEX volume</th>
+                <th className={`${tableStyles.numeric} ${tableStyles.sorted}`} aria-sort="descending">
+                  <span aria-hidden="true">↓</span> Onchain market cap
+                </th>
                 <th>
                   <span className={styles.visuallyHidden}>Trade</span>
                 </th>
@@ -131,6 +142,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                   key={getTokenKey(token)}
                   token={token}
                   market={token.coingeckoId ? market?.tokens[token.coingeckoId] : undefined}
+                  stats={statsByKey.get(getTokenKey(token))}
                   sharesPerToken={priceSharesPerToken[getTokenKey(token)] ?? null}
                   stockPrice={market?.price}
                   isSelected={token === selectedToken}
@@ -143,10 +155,14 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
       ) : (
         <StatusMessage>No {asset.ticker} tokens match the filters</StatusMessage>
       )}
-      <p className={tableStyles.warning}>Price and volume of a token are aggregated across all its networks</p>
-      <IssuerLegalDocs issuers={issuers} />
+      <TokenLinks issuers={issuers} />
     </section>
   )
+}
+
+/** Highest first, unknown caps last */
+function compareOnchainCaps(a: RwaTokenNetworkStats | undefined, b: RwaTokenNetworkStats | undefined): number {
+  return (b?.onchainCap ?? -1) - (a?.onchainCap ?? -1)
 }
 
 function DividendNotesToggle({ isExpanded, controls, onToggle }: DividendNotesToggleProps): ReactNode {
@@ -175,10 +191,10 @@ function IssuerLegalDocs({ issuers }: { issuers: string[] }): ReactNode {
 
   return (
     <p className={styles.legalDocs}>
-      Issuer legal docs:
+      <span className={styles.legalDocsTitle}>Issuer legal docs</span>
       {links.map(({ issuer, url }) => (
         <a key={issuer} href={url} target="_blank" rel="noopener noreferrer">
-          {issuer} ↗
+          {issuer} <span aria-hidden="true">↗</span>
         </a>
       ))}
     </p>
@@ -188,6 +204,7 @@ function IssuerLegalDocs({ issuers }: { issuers: string[] }): ReactNode {
 function StockTokenRow({
   token,
   market,
+  stats,
   sharesPerToken,
   stockPrice,
   isSelected,
@@ -195,6 +212,7 @@ function StockTokenRow({
 }: StockTokenRowProps): ReactNode {
   const network = getChainLabel(token.chainId)
   const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
+  const legalDocsUrl = getIssuerLegalDocsUrl(token.issuer)
   const price = typeof market?.price === 'number' ? market.price / (sharesPerToken ?? 1) : market?.price
 
   return (
@@ -203,17 +221,29 @@ function StockTokenRow({
         <div className={styles.token}>
           <TokenLogo symbol={token.symbol} logoUrl={market?.logoUrl} chainId={token.chainId} />
           <div className={styles.tokenText}>
-            <span>
+            <span className={styles.tokenTitle}>
               <span className={styles.symbol}>{token.symbol}</span>
-              <span className={styles.issuer}> · {token.issuer}</span>
+              <span className={styles.issuer}>
+                {' · '}
+                {legalDocsUrl ? (
+                  <a href={legalDocsUrl} target="_blank" rel="noopener noreferrer">
+                    {token.issuer} <span aria-hidden="true">↗</span>
+                  </a>
+                ) : (
+                  token.issuer
+                )}
+              </span>
             </span>
-            {explorerUrl ? (
-              <a className={styles.address} href={explorerUrl} target="_blank" rel="noopener noreferrer">
-                {shortenAddress(token.address)} ↗
-              </a>
-            ) : (
-              <span className={styles.address}>{shortenAddress(token.address)}</span>
-            )}
+            <span className={styles.address}>
+              {network} ·{' '}
+              {explorerUrl ? (
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer">
+                  {shortenAddress(token.address)} <span aria-hidden="true">↗</span>
+                </a>
+              ) : (
+                shortenAddress(token.address)
+              )}
+            </span>
           </div>
         </div>
       </td>
@@ -223,7 +253,8 @@ function StockTokenRow({
           <VsStock token={token} sharesPerToken={sharesPerToken} premium={price / stockPrice - 1} />
         ) : null}
       </td>
-      <td className={tableStyles.numeric}>{formatCompactUsd(market?.volume24h)}</td>
+      <td className={tableStyles.numeric}>{formatTokenStat(stats?.dexVolume24h)}</td>
+      <td className={tableStyles.numeric}>{formatTokenStat(stats?.onchainCap)}</td>
       <td>
         <div className={styles.actions}>
           <button
@@ -246,6 +277,24 @@ function StockTokenRow({
       </td>
     </tr>
   )
+}
+
+function TokenLinks({ issuers }: { issuers: string[] }): ReactNode {
+  return (
+    <div className={styles.links}>
+      <IssuerLegalDocs issuers={issuers} />
+      <Tooltip className={styles.aboutMetrics} content={TOKEN_METRICS_HINT}>
+        About token metrics
+        <InfoIcon />
+      </Tooltip>
+    </div>
+  )
+}
+
+function useTokenStatsByKey(ticker: string): Map<string, RwaTokenNetworkStats> {
+  const tokenStats = useAtomValue(tokenStatsQueryAtomFamily(ticker)).data
+
+  return useMemo(() => new Map(tokenStats?.tokens.map((stats) => [getTokenKey(stats), stats])), [tokenStats])
 }
 
 function VsStock({ token, sharesPerToken, premium }: VsStockProps): ReactNode {

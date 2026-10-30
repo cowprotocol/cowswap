@@ -11,13 +11,18 @@ import styles from './ConnectButton.module.css'
 import { shortenAddress } from '@/shared/lib/format'
 import { ChevronDownIcon } from '@/shared/ui/icons'
 
-export function ConnectButton(): ReactNode {
+interface ConnectButtonProps {
+  /** `secondary` is the light button for a connect prompt in the page, beside the header's primary one */
+  variant?: 'primary' | 'secondary'
+}
+
+export function ConnectButton({ variant = 'primary' }: ConnectButtonProps): ReactNode {
   const { open } = useAppKit()
   const { address, isConnected } = useConnection()
 
   if (!isConnected || !address) {
     return (
-      <button className={styles.connect} type="button" onClick={() => open()}>
+      <button className={`${styles.connect} ${styles[variant]}`} type="button" onClick={() => open()}>
         Connect wallet
       </button>
     )

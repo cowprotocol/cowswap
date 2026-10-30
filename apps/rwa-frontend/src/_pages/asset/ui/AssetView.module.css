@@ -64,19 +64,6 @@
   font-size: 14px;
 }
 
-.issuers {
-  display: inline-flex;
-  align-items: center;
-  height: 22px;
-  padding: 0 9px;
-  border-radius: var(--radius-pill);
-  background: var(--color-border);
-  color: var(--color-text);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-}
-
 @media (max-width: 1100px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);

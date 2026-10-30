@@ -6,6 +6,7 @@ export {
   getAssetChart,
   getAssetNetworkStats,
   getAssetQuotes,
+  getAssetTokenStats,
   getMarketOverview,
   type ListAssetsParams,
   listAssets,

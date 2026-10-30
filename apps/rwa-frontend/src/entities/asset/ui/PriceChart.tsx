@@ -130,14 +130,10 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
         chartWidget.onChartReady(() => {
           if (cancelled) return
 
-          const chart = chartWidget.activeChart()
-          const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-          const timezoneApi = chart.getTimezoneApi()
-          const timezone = timezoneApi.availableTimezones().find(({ id }) => id === userTimezone)
-
-          if (timezone) timezoneApi.setTimezone(timezone.id)
-
-          chart.onDataLoaded().subscribe(null, () => fitBars(chartWidget, barsRef.current))
+          chartWidget
+            .activeChart()
+            .onDataLoaded()
+            .subscribe(null, () => fitBars(chartWidget, barsRef.current))
           setWidget(chartWidget)
         })
       })
@@ -259,8 +255,8 @@ function getSeriesType(chartType: RwaChartType): SeriesType {
 
 function getThemeOverrides(element: HTMLElement): Overrides {
   const border = readColor(element, '--color-border')
-  const positive = readColor(element, '--color-positive')
-  const negative = readColor(element, '--color-negative')
+  const positive = readColor(element, '--color-success')
+  const negative = readColor(element, '--color-danger')
 
   return {
     'paneProperties.background': readColor(element, '--color-bg'),

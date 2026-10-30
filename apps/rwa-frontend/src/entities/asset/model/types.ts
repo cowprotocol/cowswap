@@ -13,10 +13,27 @@ export interface RwaAsset {
   allowedTradingTime?: RwaTradingTime
   /** Official issuer press releases, hand-edited */
   newsFeed?: RwaNewsFeed
+  /** The company or fund behind the asset, hand-edited */
+  profile?: RwaAssetProfile
   tokens: RwaToken[]
 }
 
 export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
+
+export interface RwaAssetProfile {
+  /** One or two sentences */
+  description: string
+  /** e.g. `Technology · Semiconductors` */
+  sector: string
+  /** Official site, `https` */
+  website: string
+}
+
+/** Stats of every asset token on every network it has */
+export interface RwaAssetTokenStats extends DegradableResponse {
+  ticker: string
+  tokens: RwaChainTokenStats[]
+}
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
@@ -59,9 +76,13 @@ export interface RwaAssetNews extends DegradableResponse {
 
 export interface RwaAssetsFilter {
   type?: RwaAssetType
-  /** Matches assets with a token of this issuer, on `chainId` when both are set */
-  issuer?: string
-  chainId?: number
+  /** Matches assets with a token of one of these issuers, on one of `chainIds` when both are set */
+  issuers?: string[]
+  chainIds?: number[]
+  /** USD */
+  minMarketCap?: number
+  /** USD */
+  minVolume24h?: number
   /** Matches ticker, title or token symbol */
   query?: string
   tickers?: string[]
@@ -74,6 +95,10 @@ export interface RwaAssetSummary extends Pick<RwaAsset, 'ticker' | 'title' | 'lo
 
 export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
+}
+
+export interface RwaChainTokenStats extends RwaTokenNetworkStats {
+  chainId: number
 }
 
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
@@ -219,6 +244,8 @@ export interface RwaAssetsPage extends DegradableResponse {
   page: number
   pageSize: number
   total: number
+  /** Assets of the selected type with no other filter applied */
+  typeTotal: number
   totalPages: number
   /** Matches of each type with every filter but `type` applied */
   typeCounts: Record<RwaAssetType, number>

@@ -1,4 +1,4 @@
-import { areAddressesEqual } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { getTokenKey, type RwaToken } from '@/entities/asset'
 
@@ -10,7 +10,7 @@ export interface TradeToken {
 
 /**
  * The wallet network wins, because the widget follows the wallet. Then the network of the selected token, then the
- * network picked in the selector. `walletChainId` is `undefined` when no wallet is connected.
+ * network picked in the selector, then Ethereum. `walletChainId` is `undefined` when no wallet is connected.
  */
 export function resolveTradeChainId(
   tokens: RwaToken[],
@@ -26,6 +26,7 @@ export function resolveTradeChainId(
 
   if (selectedToken) return selectedToken.chainId
   if (preferredChainId !== null && hasTokensOn(preferredChainId)) return preferredChainId
+  if (hasTokensOn(SupportedChainId.MAINNET)) return SupportedChainId.MAINNET
 
   return tokens[0]?.chainId
 }

@@ -21,16 +21,20 @@ export function getAssetsUrl({
   sort,
   order,
   type,
-  issuer,
-  chainId,
+  issuers,
+  chainIds,
+  minMarketCap,
+  minVolume24h,
   query,
   tickers,
 }: AssetsPageQuery): string {
   const params = new URLSearchParams({ page: String(page), pageSize: String(pageSize), sort, order })
 
   if (type) params.set('type', type)
-  if (issuer) params.set('issuer', issuer)
-  if (chainId !== undefined) params.set('chainId', String(chainId))
+  if (issuers?.length) params.set('issuer', issuers.join(','))
+  if (chainIds?.length) params.set('chainId', chainIds.join(','))
+  if (minMarketCap !== undefined) params.set('minMarketCap', String(minMarketCap))
+  if (minVolume24h !== undefined) params.set('minVolume24h', String(minVolume24h))
   if (query) params.set('q', query)
   if (tickers) params.set('tickers', tickers.join(','))
 
@@ -69,4 +73,8 @@ export function getQuotesUrl(ticker: string, chainId: number, side: RwaQuoteSide
 
 export function getTokenListUrl(): string {
   return `${RWA_API_PREFIX}token-list`
+}
+
+export function getTokenStatsUrl(ticker: string): string {
+  return `${RWA_API_PREFIX}token-stats/${encodeURIComponent(ticker)}`
 }

@@ -32,13 +32,13 @@ export interface QuotedToken {
 type RankedQuotedToken = QuotedToken & { pricePerShare: number }
 
 const BEST_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
-  buy: 'Lowest buy quote',
-  sell: 'Highest sell quote',
+  buy: 'Lowest price',
+  sell: 'Highest price',
 }
 
 const BEST_VERIFIED_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
-  buy: 'Lowest verified buy quote',
-  sell: 'Highest verified sell quote',
+  buy: 'Lowest verified price',
+  sell: 'Highest verified price',
 }
 
 /**
@@ -75,6 +75,15 @@ export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQu
  */
 export function getBestQuoteLabel(side: RwaAssetQuotes['side'], hasVerifiedQuote: boolean): string {
   return (hasVerifiedQuote ? BEST_VERIFIED_QUOTE_LABELS : BEST_QUOTE_LABELS)[side]
+}
+
+/** Tokens of a collapsed list: the first `count` and the selected one */
+export function getCollapsedQuotedTokens(
+  quotedTokens: QuotedToken[],
+  selectedToken: RwaToken | undefined,
+  count: number,
+): QuotedToken[] {
+  return quotedTokens.filter((quoted, index) => index < count || quoted.token === selectedToken)
 }
 
 export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken {

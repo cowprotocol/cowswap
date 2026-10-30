@@ -14,6 +14,7 @@ import {
   getNetworkStatsUrl,
   getNewsUrl,
   getQuotesUrl,
+  getTokenStatsUrl,
   getTokenListUrl,
 } from './assetsApi'
 
@@ -24,6 +25,7 @@ import type {
   RwaAssetsByTickers,
   RwaAssetsPage,
   RwaAssetsSearchResult,
+  RwaAssetTokenStats,
   RwaCandleChart,
   RwaChart,
   RwaChartRange,
@@ -38,6 +40,7 @@ import { RWA_QUERY_KEY_ROOT, rwaFetcher } from '@/shared/api'
 type RwaQueryOptions<T> = AtomWithQueryOptions<T, Error>
 
 const MARKET_REFRESH_INTERVAL_MS = 60_000
+const TOKEN_STATS_REFRESH_INTERVAL_MS = 300_000
 /** `/api/v1/assets` accepts up to 100 `tickers` and returns up to 100 items */
 const MAX_ASSETS_PAGE_TICKERS = 100
 /** Same as the `/api/v1/token-list` cache max-age */
@@ -127,6 +130,16 @@ export function assetsSearchQueryOptions(query: string, limit?: number): RwaQuer
     queryFn: () => rwaFetcher<RwaAssetsSearchResult>(getAssetsSearchUrl(query, limit)),
     placeholderData: keepPreviousData,
     enabled: query.length > 0,
+  }
+}
+
+/** Polled at the cache period of the onchain data, which every network adds a call to */
+export function assetTokenStatsQueryOptions(ticker: string): RwaQueryOptions<RwaAssetTokenStats> {
+  return {
+    queryKey: [RWA_QUERY_KEY_ROOT, 'token-stats', ticker],
+    queryFn: () => rwaFetcher<RwaAssetTokenStats>(getTokenStatsUrl(ticker)),
+    placeholderData: keepPreviousData,
+    refetchInterval: TOKEN_STATS_REFRESH_INTERVAL_MS,
   }
 }
 

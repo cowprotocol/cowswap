@@ -1,7 +1,7 @@
 .overview {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
   margin: 0 24px;
   padding: 24px 0 26px;
   border-top: 1px solid var(--color-border);

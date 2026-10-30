@@ -1,40 +1,64 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
 
 import styles from './AssetsExplorer.module.css'
+import { AssetsFiltersPanel } from './AssetsFiltersPanel'
 import { StarIcon } from './StarIcon'
+import { FilterIcon } from './ToolbarIcons'
 
 import {
+  activePanelFiltersCountAtom,
   assetsFilterQueryAtom,
   assetsFiltersAtom,
+  NO_PANEL_FILTERS,
   setAssetsFilterQueryAtom,
   updateAssetsFiltersAtom,
 } from '../model/assetsFiltersAtoms'
 import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
+import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { SearchIcon } from '@/shared/ui/icons'
-import { useNetworkOptions } from '@/shared/ui/network-logos'
-import { Select } from '@/shared/ui/select'
 
 export function AssetsFilters(): ReactNode {
   const query = useAtomValue(assetsFilterQueryAtom)
   const setQuery = useSetAtom(setAssetsFilterQueryAtom)
-  const { issuer, chainId, watchlistOnly } = useAtomValue(assetsFiltersAtom)
+  const { watchlistOnly } = useAtomValue(assetsFiltersAtom)
+  const activeFilters = useAtomValue(activePanelFiltersCountAtom)
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
   const { data } = useAtomValue(assetsPageQueryAtom)
-  const issuers = data?.issuers ?? []
-  const networkOptions = useNetworkOptions(data?.chainIds ?? [])
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const panelId = useId()
+  const closePanel = useCallback(() => setIsPanelOpen(false), [])
+
+  useDismissOnOutsideInteraction(isPanelOpen, [wrapperRef], closePanel, false)
+
+  useEffect(() => {
+    if (!isPanelOpen) return
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return
+
+      closePanel()
+      triggerRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isPanelOpen, closePanel])
 
   return (
-    <div className={styles.filters}>
+    <>
       <label className={styles.filterInput}>
         <SearchIcon />
         <input
           type="search"
-          placeholder="Filter assets…"
-          aria-label="Filter assets"
+          placeholder="Search assets or tickers…"
+          aria-label="Search assets"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -42,29 +66,46 @@ export function AssetsFilters(): ReactNode {
       <span className={styles.visuallyHidden} role="status">
         {data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`}
       </span>
-      <div className={styles.filterControls}>
-        <Select
-          aria-label="Issuer"
-          value={issuer}
-          options={[{ value: null, label: 'All issuers' }, ...issuers.map((item) => ({ value: item, label: item }))]}
-          onChange={(value) => updateFilters({ issuer: value })}
-        />
-        <Select
-          aria-label="Network"
-          value={chainId}
-          options={[{ value: null, label: 'All networks' }, ...networkOptions]}
-          onChange={(value) => updateFilters({ chainId: value })}
-        />
+      <button
+        type="button"
+        className={styles.outlinedButton}
+        aria-pressed={watchlistOnly}
+        onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
+      >
+        <StarIcon filled={watchlistOnly} />
+        Watchlist
+      </button>
+      <div ref={wrapperRef}>
         <button
+          ref={triggerRef}
           type="button"
-          className={styles.watchlistButton}
-          aria-pressed={watchlistOnly}
-          onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
+          className={styles.outlinedButton}
+          data-active={activeFilters > 0}
+          aria-expanded={isPanelOpen}
+          aria-controls={panelId}
+          onClick={() => setIsPanelOpen((open) => !open)}
         >
-          <StarIcon filled={watchlistOnly} />
-          Watchlist
+          <FilterIcon />
+          Filters
+          {activeFilters > 0 && (
+            <span className={styles.filtersCount}>
+              {activeFilters}
+              <span className={styles.visuallyHidden}> active</span>
+            </span>
+          )}
         </button>
+        <AssetsFiltersPanel
+          id={panelId}
+          hidden={!isPanelOpen}
+          issuers={data?.issuers ?? []}
+          chainIds={data?.chainIds ?? []}
+        />
       </div>
-    </div>
+      {activeFilters > 0 && (
+        <button type="button" className={styles.clearButton} onClick={() => updateFilters(NO_PANEL_FILTERS)}>
+          Clear
+        </button>
+      )}
+    </>
   )
 }

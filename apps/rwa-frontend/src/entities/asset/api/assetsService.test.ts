@@ -7,6 +7,7 @@ import {
   getAssetCandles,
   getAssetChart,
   getAssetNetworkStats,
+  getAssetTokenStats,
   getMarketOverview,
   listAssets,
 } from './assetsService'
@@ -220,6 +221,22 @@ describe('listAssets', () => {
     expect(page.typeCounts).toEqual({ stock: 2, index: 1, commodity: 0 })
     expect(page.issuers).toEqual(['Ondo', 'xStocks'])
     expect(page.chainIds).toEqual([1, 56])
+  })
+
+  it('applies the market minimums to the matches and the type counts, but not to the type total', async () => {
+    const page = await listAssets({
+      page: 1,
+      pageSize: 10,
+      sort: 'priority',
+      order: 'desc',
+      type: 'stock',
+      minMarketCap: 2000,
+    })
+
+    expect(tickers(page.items)).toEqual(['AAPL'])
+    expect(page.total).toBe(1)
+    expect(page.typeTotal).toBe(2)
+    expect(page.typeCounts).toEqual({ stock: 1, index: 0, commodity: 0 })
   })
 
   it('degrades with null market data when the RWA markets fail', async () => {
@@ -481,6 +498,48 @@ describe('getAssetNetworkStats', () => {
     expect(getTokenMarketsMock).toHaveBeenCalledWith(nvda().tokens)
     expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
     expect(stats.degraded).toBe(false)
+  })
+})
+
+describe('getAssetTokenStats', () => {
+  it('loads every network of the asset and tags the stats with their chain', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      Promise.resolve(
+        chainId === 1
+          ? [{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }]
+          : [{ address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 }],
+      ),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(getTokenMarketsMock).toHaveBeenCalledTimes(1)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]], NVDA_TOKEN_MARKETS)
+    expect(stats).toEqual({
+      ticker: 'NVDA',
+      tokens: [
+        { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+        { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 },
+      ],
+      degraded: false,
+    })
+  })
+
+  it('keeps the networks that loaded and flags the response when one fails', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      chainId === 1
+        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }])
+        : Promise.reject(new Error('Upstream failed')),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(stats.degraded).toBe(true)
+    expect(stats.tokens).toEqual([
+      { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+      { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: null, dexVolume24h: null },
+    ])
   })
 })
 

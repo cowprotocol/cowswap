@@ -1,4 +1,12 @@
-import type { RwaAsset, RwaAssetListItem, RwaAssetsFilter, RwaAssetType, RwaSortField, RwaSortOrder } from './types'
+import type {
+  RwaAsset,
+  RwaAssetListItem,
+  RwaAssetsFilter,
+  RwaAssetType,
+  RwaAssetWithMarket,
+  RwaSortField,
+  RwaSortOrder,
+} from './types'
 
 const TEXT_SORT_FIELDS: readonly RwaSortField[] = ['ticker', 'title']
 
@@ -14,10 +22,10 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   title: (asset) => asset.title,
 }
 
-export function countByType(assets: RwaAsset[], filter: RwaAssetsFilter): Record<RwaAssetType, number> {
+export function countByType(assets: RwaAsset[]): Record<RwaAssetType, number> {
   const counts: Record<RwaAssetType, number> = { stock: 0, index: 0, commodity: 0 }
 
-  for (const asset of filterAssets(assets, { ...filter, type: undefined })) counts[asset.type]++
+  for (const asset of assets) counts[asset.type]++
 
   return counts
 }
@@ -31,6 +39,17 @@ export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsF
       (!filter.tickers || filter.tickers.includes(asset.ticker)) &&
       hasMatchingToken(asset, filter) &&
       (!needle || getSearchScore(asset, needle) > 0),
+  )
+}
+
+/** An asset without market data matches no minimum */
+export function filterByMarket<T extends RwaAssetWithMarket>(
+  assets: T[],
+  { minMarketCap, minVolume24h }: RwaAssetsFilter,
+): T[] {
+  return assets.filter(
+    ({ market }) =>
+      isAtLeast(market?.marketCap ?? null, minMarketCap) && isAtLeast(market?.volume24h ?? null, minVolume24h),
   )
 }
 
@@ -99,10 +118,15 @@ function getSearchScore(asset: RwaAsset, needle: string): number {
   return 0
 }
 
-function hasMatchingToken(asset: RwaAsset, { issuer, chainId }: RwaAssetsFilter): boolean {
-  if (!issuer && chainId === undefined) return true
+function hasMatchingToken(asset: RwaAsset, { issuers, chainIds }: RwaAssetsFilter): boolean {
+  if (!issuers?.length && !chainIds?.length) return true
 
   return asset.tokens.some(
-    (token) => (!issuer || token.issuer === issuer) && (chainId === undefined || token.chainId === chainId),
+    (token) =>
+      (!issuers?.length || issuers.includes(token.issuer)) && (!chainIds?.length || chainIds.includes(token.chainId)),
   )
+}
+
+function isAtLeast(value: number | null, min: number | undefined): boolean {
+  return min === undefined || (value !== null && value >= min)
 }

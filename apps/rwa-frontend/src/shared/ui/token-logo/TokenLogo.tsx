@@ -7,7 +7,7 @@ import styles from './TokenLogo.module.css'
 import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 
-const LOGO_SIZES = { regular: 32, large: 40, hero: 56 } as const
+const LOGO_SIZES = { small: 20, regular: 32, large: 40, hero: 56 } as const
 const CHAIN_BADGE_SIZE = 16
 
 interface TokenLogoProps {
@@ -24,7 +24,10 @@ export function TokenLogo({ symbol, logoUrl, chainId, size = 'regular' }: TokenL
   const pixels = LOGO_SIZES[size]
 
   return (
-    <span className={styles.wrapper} style={{ width: pixels, height: pixels }}>
+    <span
+      className={chainLogoUrl ? `${styles.wrapper} ${styles.withBadge}` : styles.wrapper}
+      style={{ width: pixels, height: pixels }}
+    >
       {logoUrl ? (
         <Image className={styles.logo} src={logoUrl} alt="" width={pixels} height={pixels} unoptimized />
       ) : (

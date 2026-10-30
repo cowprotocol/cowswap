@@ -43,10 +43,8 @@ export interface Portfolio {
   refreshBalances(): void
   orders: { data: OpenOrder[] | undefined; error: Error | null }
   activity: { data: Activity[] | undefined; error: Error | null }
-  /** Newest first, unfiltered */
-  recentActivity: Activity[] | undefined
-  getAsset(token: RwaTokenSummary): RwaAssetSummary | undefined
   getLogoUrl(asset: RwaAssetSummary, token?: RwaTokenSummary): string | null
+  getTokenLogoUrl(token: RwaTokenSummary): string | null
   /** ISO 8601, `null` while market data is loading */
   pricesUpdatedAt: string | null
   /** No market data and no error yet: every holding is unpriced until it loads */
@@ -81,11 +79,8 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
 
   return useMemo((): Portfolio => {
     const getAsset = (token: RwaTokenSummary): RwaAssetSummary | undefined => assetsByTokenKey.get(getTokenKey(token))
-    const matchesFilter = (token: RwaTokenSummary): boolean => {
-      const asset = getAsset(token)
-
-      return !!asset && matchesPortfolioFilter(filter, asset, token)
-    }
+    const matchesFilter = (token: RwaTokenSummary): boolean =>
+      !!getAsset(token) && matchesPortfolioFilter(filter, token)
     const filterLegs = <T extends TradeLeg>(legs: T[] | undefined): T[] | undefined =>
       legs?.filter((leg) => matchesFilter(leg.assetToken))
 
@@ -104,9 +99,8 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
       refreshBalances,
       orders: { data: filterLegs(orders.data), error: orders.error },
       activity: { data: filterLegs(activity.data), error: activity.error },
-      recentActivity: activity.data,
-      getAsset,
       getLogoUrl: (asset) => asset.logoUrl ?? null,
+      getTokenLogoUrl: (token) => getAsset(token)?.logoUrl ?? null,
       pricesUpdatedAt: markets?.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
       arePricesLoading: heldTickersKey !== '' && !markets && !marketsError,
     }
