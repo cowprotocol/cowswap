@@ -30,6 +30,7 @@ import type {
   RwaAssetsFilter,
   RwaAssetsPage,
   RwaAssetsSearchResult,
+  RwaCandle,
   RwaChartPoint,
   RwaChartRange,
   RwaMarketData,
@@ -95,6 +96,24 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
     tradingPause,
     degraded: degraded || tokenMarkets === null || sharesPerToken.degraded,
   }
+}
+
+/** Per share like `getAssetChart` */
+export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandle[]> {
+  const [candles, sharesPerToken] = await Promise.all([
+    marketDataProvider.getCandles(asset, range),
+    loadChartSharesPerToken(asset.tokens),
+  ])
+
+  if (sharesPerToken === null) return candles
+
+  return candles.map(({ time, open, high, low, close }) => ({
+    time,
+    open: open / sharesPerToken,
+    high: high / sharesPerToken,
+    low: low / sharesPerToken,
+    close: close / sharesPerToken,
+  }))
 }
 
 /** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
@@ -216,8 +235,9 @@ function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[]
 }
 
 /**
- * Shares per token of the coin `MarketDataProvider.getChart` reads, the first token's. Its price is shared by every
- * token of that coin, so a multiplier that differs between them, or is unknown for one, leaves the chart per token
+ * Shares per token of the coin `MarketDataProvider.getChart` and `getCandles` read, the first token's. Its price is
+ * shared by every token of that coin, so a multiplier that differs between them, or is unknown for one, leaves the
+ * chart per token
  */
 async function loadChartSharesPerToken(tokens: RwaToken[]): Promise<number | null> {
   const coingeckoId = tokens.find((token) => token.coingeckoId)?.coingeckoId

@@ -2,10 +2,19 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 20px 24px 16px;
+  padding: 3px 0 0 0;
   border-radius: var(--radius-card);
+  overflow: hidden;
   background: var(--color-bg);
   box-shadow: var(--shadow-subtle);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 5px 5px 0;
 }
 
 .status {
