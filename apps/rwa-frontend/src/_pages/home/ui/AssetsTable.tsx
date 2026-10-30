@@ -10,7 +10,7 @@ import { Sparkline, type SparklineTone } from './Sparkline'
 import { StarIcon } from './StarIcon'
 
 import { MARKET_DATA_HINT } from '../lib/marketDataHint'
-import { assetsPageAtom } from '../model/assetsPageAtom'
+import { ASSETS_PAGE_SIZE, assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
@@ -21,9 +21,21 @@ import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
 
+const COLUMNS_COUNT = 7
+
+/** Widths of the asset title and meta bars, varied per row so the skeleton reads as text */
+const SKELETON_TEXT_WIDTHS: [number, number][] = [
+  [54, 28],
+  [100, 30],
+  [106, 26],
+]
+
 interface AssetsTableProps {
   id: string
-  assets: RwaAssetListItem[]
+  /** `null` while loading */
+  assets: RwaAssetListItem[] | null
+  /** Shown in place of the rows when `assets` is empty */
+  emptyState: ReactNode
 }
 
 interface SortableHeaderProps {
@@ -34,10 +46,10 @@ interface SortableHeaderProps {
   hint?: string
 }
 
-export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
+export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): ReactNode {
   return (
     <div className={styles.frame}>
-      <table id={id} className={styles.table}>
+      <table id={id} className={styles.table} aria-busy={!assets}>
         <thead>
           <tr>
             <th className={styles.watchColumn}>
@@ -52,9 +64,15 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
           </tr>
         </thead>
         <tbody>
-          {assets.map((asset) => (
-            <AssetRow key={asset.ticker} asset={asset} />
-          ))}
+          {!assets ? (
+            Array.from({ length: ASSETS_PAGE_SIZE }, (_, index) => <SkeletonRow key={index} index={index} />)
+          ) : assets.length ? (
+            assets.map((asset) => <AssetRow key={asset.ticker} asset={asset} />)
+          ) : (
+            <tr className={styles.emptyRow}>
+              <td colSpan={COLUMNS_COUNT}>{emptyState}</td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
@@ -111,6 +129,47 @@ function getTone(change: number | null | undefined): SparklineTone {
   if (!change) return 'neutral'
 
   return change > 0 ? 'positive' : 'negative'
+}
+
+function SkeletonRow({ index }: { index: number }): ReactNode {
+  const [titleWidth, tickerWidth] = SKELETON_TEXT_WIDTHS[index % SKELETON_TEXT_WIDTHS.length] ?? [80, 28]
+
+  return (
+    <tr className={styles.skeletonRow} aria-hidden="true">
+      <td className={styles.watchColumn}>
+        <span className={styles.skeletonStar}>
+          <StarIcon filled={false} />
+        </span>
+      </td>
+      <td>
+        <div className={styles.asset}>
+          <span className={`${styles.skeletonBar} ${styles.skeletonLogo}`} />
+          <div className={styles.assetText}>
+            <span className={styles.skeletonBar} style={{ width: titleWidth }} />
+            <span className={styles.skeletonMeta}>
+              <span className={styles.skeletonBar} style={{ width: tickerWidth }} />
+              <span className={styles.skeletonBar} style={{ width: 58 }} />
+            </span>
+          </div>
+        </div>
+      </td>
+      <td className={styles.numeric}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={styles.numeric}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.optional}`}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.optional}`}>
+        <span className={styles.skeletonBar} />
+      </td>
+      <td className={`${styles.numeric} ${styles.chartColumn}`}>
+        <span className={`${styles.skeletonBar} ${styles.skeletonChart}`} />
+      </td>
+    </tr>
+  )
 }
 
 function SortableHeader({ field, title, numeric = false, className, hint }: SortableHeaderProps): ReactNode {

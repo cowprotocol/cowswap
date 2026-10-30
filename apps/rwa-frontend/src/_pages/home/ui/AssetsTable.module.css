@@ -218,6 +218,69 @@
   white-space: nowrap;
 }
 
+.emptyRow td {
+  height: 56px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+.table tbody .emptyRow:hover td,
+.table tbody .skeletonRow:hover td {
+  background: none;
+}
+
+.skeletonStar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--color-text-muted);
+}
+
+.skeletonBar {
+  display: inline-block;
+  width: 80px;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-selected);
+  vertical-align: middle;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.skeletonLogo {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+}
+
+.skeletonMeta {
+  display: flex;
+  gap: 32px;
+}
+
+.skeletonMeta .skeletonBar {
+  height: 8px;
+}
+
+.skeletonChart {
+  width: 124px;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonBar {
+    animation: none;
+  }
+}
+
 @media (max-width: 900px) {
   .optional {
     display: none;
