@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import * as styledEl from './ConfirmationOutcomeSlot.styled'
+import { trackOutcomeHeight } from './ConfirmationOutcomeSlot.utils'
 
 import { useProgressBarLayout } from '../../hooks/useProgressBarLayout'
 
@@ -72,75 +73,4 @@ function OutcomeReveal({
       <styledEl.Content>{children}</styledEl.Content>
     </styledEl.Reveal>
   )
-}
-
-function trackOutcomeHeight(panel: HTMLElement, onSettled: () => void): () => void {
-  const content = panel.firstElementChild
-  if (!(content instanceof HTMLElement) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    onSettled()
-    return () => undefined
-  }
-
-  let target = -1
-  let settled = false
-
-  const settle = (): void => {
-    if (settled) {
-      return
-    }
-
-    settled = true
-    window.cancelAnimationFrame(frame)
-    observer?.disconnect()
-    panel.removeEventListener('transitionend', onTransitionEnd)
-    panel.style.transition = 'none'
-    panel.style.height = 'auto'
-    onSettled()
-  }
-
-  const apply = (next: number): void => {
-    if (settled || next <= 0 || next === target) {
-      return
-    }
-
-    const current = Math.round(panel.getBoundingClientRect().height)
-    target = next
-    if (next === current) {
-      settle()
-      return
-    }
-
-    panel.style.height = `${next}px`
-  }
-
-  const onTransitionEnd = (event: TransitionEvent): void => {
-    if (event.propertyName !== 'height' || event.target !== panel) {
-      return
-    }
-
-    const next = Math.round(content.scrollHeight)
-    if (next > 0 && next !== target) {
-      target = next
-      panel.style.height = `${next}px`
-      return
-    }
-
-    settle()
-  }
-
-  const measure = (): void => {
-    apply(Math.round(content.scrollHeight))
-  }
-
-  const frame = window.requestAnimationFrame(measure)
-  const observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure)
-  panel.addEventListener('transitionend', onTransitionEnd)
-  observer?.observe(content)
-
-  return () => {
-    settled = true
-    window.cancelAnimationFrame(frame)
-    observer?.disconnect()
-    panel.removeEventListener('transitionend', onTransitionEnd)
-  }
 }
