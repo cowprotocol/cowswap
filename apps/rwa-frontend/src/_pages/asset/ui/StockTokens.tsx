@@ -14,6 +14,7 @@ import { useTradeSelection } from '../model/useTradeSelection'
 import {
   assetQueryAtomFamily,
   DividendNotes,
+  getIssuerLegalDocsUrl,
   getTokenKey,
   type RwaAsset,
   type RwaQuoteSide,
@@ -143,6 +144,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
         <StatusMessage>No {asset.ticker} tokens match the filters</StatusMessage>
       )}
       <p className={tableStyles.warning}>Price and volume of a token are aggregated across all its networks</p>
+      <IssuerLegalDocs issuers={issuers} />
     </section>
   )
 }
@@ -159,6 +161,27 @@ function DividendNotesToggle({ isExpanded, controls, onToggle }: DividendNotesTo
     >
       <InfoIcon />
     </button>
+  )
+}
+
+function IssuerLegalDocs({ issuers }: { issuers: string[] }): ReactNode {
+  const links = issuers.flatMap((issuer) => {
+    const url = getIssuerLegalDocsUrl(issuer)
+
+    return url ? [{ issuer, url }] : []
+  })
+
+  if (!links.length) return null
+
+  return (
+    <p className={styles.legalDocs}>
+      Issuer legal docs:
+      {links.map(({ issuer, url }) => (
+        <a key={issuer} href={url} target="_blank" rel="noopener noreferrer">
+          {issuer} ↗
+        </a>
+      ))}
+    </p>
   )
 }
 

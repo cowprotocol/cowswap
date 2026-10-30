@@ -31,6 +31,16 @@ export interface QuotedToken {
 
 type RankedQuotedToken = QuotedToken & { pricePerShare: number }
 
+const BEST_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
+  buy: 'Lowest buy quote',
+  sell: 'Highest sell quote',
+}
+
+const BEST_VERIFIED_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
+  buy: 'Lowest verified buy quote',
+  sell: 'Highest verified sell quote',
+}
+
 /**
  * The token Auto trades, ranked by the latest quotes on the network. While the quotes of a new side load, those are
  * the previous side's, so the widget keeps its token instead of falling back to the first one
@@ -57,6 +67,14 @@ export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQu
   const [best] = sortQuotedTokens(quotedTokens, side)
 
   return best && isRankedQuote(best) ? best.token : null
+}
+
+/**
+ * Label of the `getBestQuotedToken` quote. With a verified quote, cheaper unverified quotes are still listed below it,
+ * so the label must not claim the best price of all
+ */
+export function getBestQuoteLabel(side: RwaAssetQuotes['side'], hasVerifiedQuote: boolean): string {
+  return (hasVerifiedQuote ? BEST_VERIFIED_QUOTE_LABELS : BEST_QUOTE_LABELS)[side]
 }
 
 export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken {

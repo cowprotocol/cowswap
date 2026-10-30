@@ -13,11 +13,10 @@ import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
-import { AssetStats, type RwaAsset } from '@/entities/asset'
+import { AssetStats, IssuersCount, type RwaAsset } from '@/entities/asset'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
-import { Tooltip } from '@/shared/ui/tooltip'
 
 const SIDE_STICKY_GAP = 16
 
@@ -65,7 +64,6 @@ function ArrowLeftIcon(): ReactNode {
 }
 
 function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
-  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
   const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
 
   return (
@@ -75,9 +73,7 @@ function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
         <h1>{asset.title}</h1>
         <div className={styles.meta}>
           <span>{asset.ticker}</span>
-          <Tooltip className={styles.issuers} content={issuers.join(', ')}>
-            {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-          </Tooltip>
+          <IssuersCount className={styles.issuers} tokens={asset.tokens} />
           <NetworkLogos chainIds={chainIds} />
         </div>
       </div>

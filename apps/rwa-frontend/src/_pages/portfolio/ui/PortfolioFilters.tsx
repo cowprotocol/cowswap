@@ -12,6 +12,7 @@ const ASSET_TYPES: { type: RwaAssetType | null; title: string }[] = [
   { type: null, title: 'All' },
   { type: 'stock', title: 'Stocks' },
   { type: 'index', title: 'Index funds' },
+  { type: 'commodity', title: 'Commodities' },
 ]
 
 interface PortfolioFiltersProps {

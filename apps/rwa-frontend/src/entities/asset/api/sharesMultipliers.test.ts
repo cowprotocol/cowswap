@@ -94,6 +94,16 @@ describe('loadSharesPerToken', () => {
     })
   })
 
+  it('takes one unit per commodity token', async () => {
+    const paxg = token('PAXG', 1, '0x0000000000000000000000000000000000000009', 'Paxos')
+    const xaut = token('XAUT', 1, '0x000000000000000000000000000000000000000a', 'Tether')
+
+    expect(await loadSharesPerToken([paxg, xaut])).toEqual({
+      byKey: { [getTokenKey(paxg)]: 1, [getTokenKey(xaut)]: 1 },
+      degraded: false,
+    })
+  })
+
   it('leaves Ondo tokens out without degrading when no API key is set', async () => {
     fetchOndoMock.mockResolvedValue(null)
 

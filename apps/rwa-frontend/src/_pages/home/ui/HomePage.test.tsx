@@ -82,7 +82,7 @@ const ASSETS_PAGE: RwaAssetsPage = {
   pageSize: 10,
   total: 1,
   totalPages: 1,
-  typeCounts: { stock: 3, index: 2 },
+  typeCounts: { stock: 3, index: 2, commodity: 0 },
   issuers: ['Ondo', 'xStocks'],
   chainIds: [1],
   degraded: false,
@@ -93,7 +93,7 @@ const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
   items: [],
   total: 0,
   totalPages: 0,
-  typeCounts: { stock: 0, index: 0 },
+  typeCounts: { stock: 0, index: 0, commodity: 0 },
   degraded: true,
 }
 
@@ -144,6 +144,16 @@ describe('HomePage', () => {
     expect(screen.getByText('$180M')).toBeTruthy()
   })
 
+  it('shows a dash in the 24h chart column of an asset without a series', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    const chartCell = (await screen.findByText('$180M')).closest('tr')?.lastElementChild
+
+    expect(chartCell?.querySelector('svg')).toBeNull()
+    expect(chartCell?.textContent).toBe('—')
+  })
+
   it('requests the selected type, issuer and sort', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
@@ -172,7 +182,7 @@ describe('HomePage', () => {
     const header = await screen.findByRole('columnheader', { name: '24h volume' })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(screen.getByRole('columnheader', { name: 'Market cap' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
     expect(
       (global.fetch as jest.Mock).mock.calls
         .map(([url]) => String(url))
@@ -275,16 +285,6 @@ describe('HomePage', () => {
     expect(await screen.findAllByText('Market data is temporarily unavailable')).toHaveLength(1)
     expect(screen.queryByText('No trades in the last 24 hours')).toBeNull()
     expect(screen.queryByText('No gainers in the last 24 hours')).toBeNull()
-  })
-
-  it('marks the monochrome Ondo logo for dark mode', () => {
-    mockApi(OVERVIEW)
-    const { container } = renderHomePage()
-
-    expect(container.querySelector('img[src="/rwa/issuers/ondo.svg"]')?.className).toContain('monochromeLogo')
-    expect(container.querySelector('img[src="/rwa/issuers/xstocks.svg"]')?.className ?? '').not.toContain(
-      'monochromeLogo',
-    )
   })
 
   it('shows an error when the overview fails', async () => {

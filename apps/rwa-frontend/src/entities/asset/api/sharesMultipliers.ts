@@ -6,7 +6,7 @@ import { getAddressKey } from '@cowprotocol/cow-sdk'
 import { unstable_cache } from 'next/cache'
 
 import { getTokenKey } from '../lib/tokenKey'
-import { getDividendModel, isWrappedXStock } from '../model/issuers'
+import { getDividendModel, isCommodityIssuer, isWrappedXStock } from '../model/issuers'
 import { getAssets } from '../model/registry'
 
 import type { RwaAsset, RwaToken, RwaTradingPause } from '../model/types'
@@ -41,7 +41,7 @@ const EMPTY_SOURCE: SourceResult = { values: {}, degraded: false }
 /**
  * Shares of the underlying one token stands for. Ondo publishes a shares multiplier; a rebasing token is one share,
  * because `balanceOf()` already applies the multiplier; a cash-payout token is one share, because dividends leave it;
- * a wrapped xStocks token is what it redeems for
+ * a commodity token is one unit, because it has no dividends; a wrapped xStocks token is what it redeems for
  */
 export async function loadSharesPerToken(tokens: RwaToken[]): Promise<SharesPerTokenLoadResult> {
   const [ondo, wrapped] = await Promise.all([
@@ -93,7 +93,7 @@ function getSharesMultiplier(
 
   const model = getDividendModel(token)
 
-  return model === 'rebase' || model === 'cash-payout' ? 1 : undefined
+  return model === 'rebase' || model === 'cash-payout' || isCommodityIssuer(token.issuer) ? 1 : undefined
 }
 
 function isOndoToken(token: RwaToken): boolean {

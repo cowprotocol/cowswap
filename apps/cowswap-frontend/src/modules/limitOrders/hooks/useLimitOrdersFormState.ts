@@ -10,6 +10,8 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 
+import { getQuoteFeeAmountRaw } from '../utils/getQuoteFeeAmountRaw'
+
 export enum LimitOrdersFormState {
   RateLoading = 'RateLoading',
   FeeExceedsFrom = 'FeeExceedsFrom',
@@ -30,7 +32,7 @@ export function useLimitOrdersFormState(): LimitOrdersFormState | null {
   const { inputCurrencyAmount, outputCurrencyAmount } = useLimitOrdersDerivedState()
   const { activeRate, isLoading } = useAtomValue(limitRateAtom)
 
-  const feeRawAmount = quote?.quoteResults.quoteResponse.quote.feeAmount
+  const feeRawAmount = getQuoteFeeAmountRaw(quote)
   const feeAmount =
     feeRawAmount && inputCurrencyAmount
       ? CurrencyAmount.fromRawAmount(inputCurrencyAmount.currency, feeRawAmount)

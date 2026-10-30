@@ -10,7 +10,7 @@ import { buildPageMetadata } from '@/shared/lib/seo/index.server'
 export const metadata: Metadata = {
   ...buildPageMetadata({
     title: 'Portfolio',
-    description: 'Your tokenized stock and ETF holdings, open orders and trades across networks.',
+    description: 'Your holdings of tokens referencing stocks and ETFs, open orders and trades across networks.',
     path: '/portfolio',
   }),
   // The content depends on the connected wallet

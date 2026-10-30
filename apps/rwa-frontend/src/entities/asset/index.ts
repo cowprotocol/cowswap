@@ -58,11 +58,13 @@ export {
 } from './model/types'
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'
+export { IssuersCount } from './ui/IssuersCount'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export {
   getDividendModel,
   getDividendNote,
+  getIssuerLegalDocsUrl,
   isWrappedXStock,
   RWA_ISSUERS,
   type RwaDividendModel,
