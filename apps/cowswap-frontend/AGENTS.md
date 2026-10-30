@@ -40,7 +40,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
   - `pure/` (presentational components)
   - `hooks/`
   - `state/` (Jotai atoms)
-  - `updaters/` (legacy/internal pattern to avoid duplicate execution; see state notes below)
+  - `updaters/` (legacy; a new side effect uses `observe` from `jotai-effect` in `state/`. See state notes below)
   - `index.ts` (module entry for public exports)
 - Treat `src/common` as a shared module namespace; do not put domain-specific logic there.
 - Before adding code to `src/common`, verify it is truly cross-domain/shared and not owned by a specific module.
@@ -49,7 +49,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Modules may include additional directories (`utils/`, `constants/`, `types/`) when needed.
 
 ## File naming and exports
-- Prefer explicit suffixes: `*.container.tsx`, `*.pure.tsx`, `*.modal.tsx`, `*.input.tsx`, `*.updater.tsx`, `*.styled.ts`, `*.atoms.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`.
+- Prefer explicit suffixes: `*.container.tsx`, `*.pure.tsx`, `*.modal.tsx`, `*.input.tsx`, `*.updater.tsx` (legacy; do not add new updater files), `*.styled.ts`, `*.atoms.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`.
 - Non-barrel files should use an explicit approved suffix; hooks remain the naming exception.
 - Hooks are the naming exception: use descriptive `useX.ts`/`useX.tsx` filenames.
 - Avoid generic filenames like `styled` or `index` unless the file is an actual barrel export.
@@ -91,8 +91,10 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Full rule: [`docs/FONT_CONVENTIONS.md`](../../docs/FONT_CONVENTIONS.md). Do not migrate existing `Font.*` / raw sizes unless already editing that style.
 
 ## State management notes
-- Prefer managing side effects with `jotai-effect` rather than updaters.
-- Use `atom.onMount` to subscribe to external sources when needed.
+- `SHOULD` run side effects with `observe` from `jotai-effect` in `state/`. `SHOULD NOT` add an updater so a `useEffect` can write atoms after render.
+- Use `atom.onMount` to subscribe to an external source while the atom has listeners.
+- `SHOULD` wait for a deadline with `setTimeout`. `runCountdown` in `@cowprotocol/common-hooks` wakes when the whole second changes and stops at zero. `useRemainingSeconds` re-renders on that change. `useCountdown` writes text without a render when the value is only displayed.
+- `SHOULD NOT` poll a known deadline with `setInterval`.
 - Both SWR and `jotai/query` (`atomWithQuery`) are acceptable for data fetching; the team is evaluating migration.
 
 ## Business logic and unit tests

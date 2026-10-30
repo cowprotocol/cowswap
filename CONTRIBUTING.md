@@ -96,7 +96,7 @@ Start with issues labeled **Help Wanted**.
 ### React
 
 - Do not declare components inside another component's render
-- Put derived business logic in Jotai atoms (`state/`) or pure functions (`utils/`, `services/`), not in components or hooks. Call `useAtomValue` / `useSetAtom` / `useAtom` on the atom at the component. See [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
+- Put derived business logic in Jotai atoms (`state/`) or pure functions (`utils/`, `services/`), not in components or hooks. Call `useAtomValue` / `useSetAtom` / `useAtom` on the atom at the component. Run atom side effects with `observe` from `jotai-effect`. Wait for a deadline with `setTimeout` (`runCountdown` / `useRemainingSeconds`). See [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md)
 - Favour composition and named function components
 - Use `const` only when a type annotation is needed
 - Split large components into pure sub-components under `modules/<feature>/pure/`

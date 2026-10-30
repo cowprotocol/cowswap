@@ -53,7 +53,7 @@ cowswap-frontend keeps domain decisions out of the React tree:
 2. Jotai atoms in `state/` for stored values, derived reads, and writes.
 3. Components read and write those atoms with `useAtomValue`, `useSetAtom`, or `useAtom`. Hooks are for browser lifecycle or logic that is not an atom read.
 
-Hooks and components must not reimplement a derivation a derived atom can express, and a hook must not exist only to rename an atom read. Placement, hook limits, and unit-test rules: [`STATE_MANAGEMENT.md`](./STATE_MANAGEMENT.md).
+Hooks and components must not reimplement a derivation a derived atom can express, and a hook must not exist only to rename an atom read. A side effect that follows atom changes uses `observe` from `jotai-effect`. A deadline wait uses `setTimeout` until that moment (`runCountdown`, `useRemainingSeconds`). Placement, hook limits, and unit-test rules: [`STATE_MANAGEMENT.md`](./STATE_MANAGEMENT.md).
 
 Machine checks:
 

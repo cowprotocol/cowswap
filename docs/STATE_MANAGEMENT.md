@@ -18,7 +18,7 @@ source_of_truth_scope: Jotai usage, query patterns, persistence, and migration c
 Derived state and state transitions belong outside React.
 
 - `utils/` and `services/`: pure functions. No React, no Redux, no Jotai.
-- `state/`: Jotai primitive atoms, derived atoms (`atom((get) => ...)`), write atoms (`atom(null, (get, set, payload) => ...)`), and `jotai-effect` effects.
+- `state/`: Jotai primitive atoms, derived atoms (`atom((get) => ...)`), write atoms (`atom(null, (get, set, payload) => ...)`), and `observe` effects from `jotai-effect`.
 - `hooks/`: browser or React lifecycle integration (DOM, focus, observers), or logic that is not a single atom read. A hook must not chain domain hooks through `useMemo`, `useCallback`, `useEffect`, or `useLayoutEffect` to compute domain state.
 - A hook whose body only returns `useAtomValue(atom)`, `useSetAtom(atom)`, or `useAtom(atom)` is an alias, including a temporary that is returned immediately. Call the Jotai hook at the component. A property access, an index, or an atom-family argument is extra logic and can stay a hook.
 
@@ -27,6 +27,16 @@ Canonical derived atom: `apps/cowswap-frontend/src/modules/volumeFee/state/volum
 New files under `state/` and `utils/` must not import `react`, `react-redux`, or `legacy/state`. ESLint enforces that. Existing files are allowlisted in `eslint.config.js`. `pnpm arch:check` ratchets `legacy/state` imports anywhere in `apps/cowswap-frontend`, and ratchets alias hooks: a new file, or a higher alias count in an existing file, fails.
 
 Thin-hook pressure is the orchestration ratchet in `pnpm arch:check`: a `hooks/` file that combines `useMemo`, `useCallback`, `useEffect`, or `useLayoutEffect` with 3 or more domain hook imports cannot be introduced or grown.
+
+## Side effects and deadlines
+
+- `SHOULD` run a side effect that reads or writes atoms with `observe` from `jotai-effect`, inside `state/`. `observe` subscribes to the atoms it reads and writes on change, with no component mounted.
+- `SHOULD NOT` add an updater for that job. An updater waits until React renders, then runs an effect and writes state. That ties the update to the tree. Existing `updaters/` files stay until a focused migration.
+- `atom.onMount` is the subscription that should live only while the atom has listeners.
+- Example: `apps/cowswap-frontend/src/entities/twap/state/twapOrdersTokensAtom.ts` (`observe(observeTwapOrdersTokensCache, jotaiStore)`).
+- `SHOULD` wait for a deadline by scheduling `setTimeout` for that moment. `SHOULD NOT` use `setInterval` to poll until a known time: the period drifts from the deadline and keeps waking after the value is unchanged.
+- `libs/common-hooks/src/runCountdown.ts` sleeps until the next whole second and stops at zero. `useRemainingSeconds` re-renders only when that second changes. `useCountdown` writes the text into the DOM and does not re-render; use it when the value is only displayed as text.
+- An interval remains appropriate when the source has no known wake-up time (a poll of a remote API). A deadline is not that case.
 
 ## Unit tests
 

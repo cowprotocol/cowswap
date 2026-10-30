@@ -30,6 +30,7 @@ Business logic stays in pure functions and Jotai atoms. The rules live in root `
   - unit tests with more than 3 `jest.mock()` calls plus `render` / `renderHook` from `@testing-library/react`
 - Commands: `pnpm arch:check`, `pnpm arch:baseline:update`. `pnpm agents:check` runs the check.
 - `render` / `renderHook` imports from `@testing-library/react` in cowswap-frontend unit tests are ESLint warnings.
+- Side effects and deadline waits are documented in `docs/STATE_MANAGEMENT.md` and are prose. New work uses `observe` from `jotai-effect` instead of an updater, and `setTimeout` via `runCountdown` / `useRemainingSeconds` instead of `setInterval` when the wake-up time is known. Existing updaters are not ratcheted.
 
 Still pending:
 
