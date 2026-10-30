@@ -12,6 +12,11 @@ export interface ConfirmationOutcomeSlotProps {
 export function ConfirmationOutcomeSlot({ loading, children }: ConfirmationOutcomeSlotProps): ReactNode {
   const { cssVariables } = useProgressBarLayout()
   const [settled, setSettled] = useState(false)
+
+  if (loading && settled) {
+    setSettled(false)
+  }
+
   const reserveHeight = loading || !settled
 
   return (
