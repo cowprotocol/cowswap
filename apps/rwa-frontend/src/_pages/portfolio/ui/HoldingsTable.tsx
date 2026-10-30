@@ -29,6 +29,8 @@ interface HoldingRowsProps {
 interface HoldingsTableProps {
   holdings: Holding[]
   getLogoUrl: Portfolio['getLogoUrl']
+  /** The wallet holds no stock tokens, as opposed to none matching the filters */
+  isWalletEmpty: boolean
 }
 
 interface TokenRowProps {
@@ -38,8 +40,8 @@ interface TokenRowProps {
   className: string
 }
 
-export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): ReactNode {
-  if (!holdings.length) return <StatusMessage>No positions match the filters</StatusMessage>
+export function HoldingsTable({ holdings, getLogoUrl, isWalletEmpty }: HoldingsTableProps): ReactNode {
+  const isEmpty = !holdings.length
 
   return (
     <>
@@ -47,11 +49,15 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Asset / stock token</th>
+              <th className={styles.assetColumn}>Asset / stock token</th>
               <th className={styles.numeric}>You hold</th>
-              <th className={`${styles.numeric} ${styles.sorted}`} aria-sort="descending">
-                <span aria-hidden="true">↓</span> Underlying value
-              </th>
+              {isEmpty ? (
+                <th className={styles.numeric}>Underlying value</th>
+              ) : (
+                <th className={`${styles.numeric} ${styles.sorted}`} aria-sort="descending">
+                  <span aria-hidden="true">↓</span> Underlying value
+                </th>
+              )}
               <th className={styles.menuColumn}>
                 <span className={styles.visuallyHidden}>Actions</span>
               </th>
@@ -62,11 +68,31 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
           ))}
         </table>
       </div>
-      <DividendNotes
-        className={styles.dividendNotes}
-        tokens={holdings.flatMap(({ tokens }) => tokens.map(({ token }) => token))}
-      />
+      {isEmpty ? (
+        isWalletEmpty ? (
+          <EmptyWallet />
+        ) : (
+          <StatusMessage>No positions match the filters</StatusMessage>
+        )
+      ) : (
+        <DividendNotes
+          className={styles.dividendNotes}
+          tokens={holdings.flatMap(({ tokens }) => tokens.map(({ token }) => token))}
+        />
+      )}
     </>
+  )
+}
+
+function EmptyWallet(): ReactNode {
+  return (
+    <section className={styles.emptyWallet} aria-labelledby="portfolio-empty-title">
+      <h2 id="portfolio-empty-title">No stock tokens in this wallet yet</h2>
+      <p>Stock tokens you buy, from any issuer and network, show here with your open orders and activity.</p>
+      <Link className={styles.exploreLink} href="/">
+        Explore assets
+      </Link>
+    </section>
   )
 }
 

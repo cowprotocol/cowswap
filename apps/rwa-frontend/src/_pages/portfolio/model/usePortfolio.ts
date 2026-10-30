@@ -44,6 +44,7 @@ export interface Portfolio {
   orders: { data: OpenOrder[] | undefined; error: Error | null }
   activity: { data: Activity[] | undefined; error: Error | null }
   getLogoUrl(asset: RwaAssetSummary, token?: RwaTokenSummary): string | null
+  getTokenLogoUrl(token: RwaTokenSummary): string | null
   /** ISO 8601, `null` while market data is loading */
   pricesUpdatedAt: string | null
   /** No market data and no error yet: every holding is unpriced until it loads */
@@ -99,6 +100,7 @@ export function usePortfolio(owner: string, assets: RwaAssetSummary[], filter: P
       orders: { data: filterLegs(orders.data), error: orders.error },
       activity: { data: filterLegs(activity.data), error: activity.error },
       getLogoUrl: (asset) => asset.logoUrl ?? null,
+      getTokenLogoUrl: (token) => getAsset(token)?.logoUrl ?? null,
       pricesUpdatedAt: markets?.find((item) => item.market?.updatedAt)?.market?.updatedAt ?? null,
       arePricesLoading: heldTickersKey !== '' && !markets && !marketsError,
     }

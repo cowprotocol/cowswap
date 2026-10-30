@@ -63,9 +63,13 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
   const portfolio = usePortfolio(owner, assets, filter)
   const { filteredHoldings, orders, activity } = portfolio
 
+  const isWalletEmpty = portfolio.holdings?.length === 0
+  const isAccountEmpty =
+    isWalletEmpty && filter === NO_PORTFOLIO_FILTER && orders.data?.length === 0 && activity.data?.length === 0
+
   const tabs: AccountTab<PortfolioTab>[] = [
-    { id: 'positions', title: 'Positions', count: filteredHoldings?.length },
-    { id: 'orders', title: 'Open orders', count: orders.data?.length },
+    { id: 'positions', title: 'Positions', count: filteredHoldings?.length || undefined },
+    { id: 'orders', title: 'Open orders', count: orders.data?.length || undefined },
     { id: 'activity', title: 'Activity' },
   ]
 
@@ -81,21 +85,31 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
         tabs={tabs}
         activeTab={activeTab}
         onChange={setActiveTab}
-        toolbar={<PortfolioFilters assets={assets} filter={filter} onChange={setFilter} />}
+        toolbar={isAccountEmpty ? undefined : <PortfolioFilters assets={assets} filter={filter} onChange={setFilter} />}
       >
         {activeTab === 'positions' ? (
-          <Positions portfolio={portfolio} />
+          <Positions portfolio={portfolio} isWalletEmpty={isWalletEmpty} />
         ) : activeTab === 'orders' ? (
-          <OpenOrdersTable orders={orders.data} error={orders.error} emptyText="No open orders" />
+          <OpenOrdersTable
+            orders={orders.data}
+            error={orders.error}
+            emptyText="No open orders"
+            getLogoUrl={portfolio.getTokenLogoUrl}
+          />
         ) : (
-          <ActivityTable activity={activity.data} error={activity.error} emptyText="No activity yet" />
+          <ActivityTable
+            activity={activity.data}
+            error={activity.error}
+            emptyText="No activity yet"
+            getLogoUrl={portfolio.getTokenLogoUrl}
+          />
         )}
       </AccountTabs>
     </>
   )
 }
 
-function Positions({ portfolio }: { portfolio: Portfolio }): ReactNode {
+function Positions({ portfolio, isWalletEmpty }: { portfolio: Portfolio; isWalletEmpty: boolean }): ReactNode {
   const { filteredHoldings, balancesError, pricesUpdatedAt } = portfolio
 
   if (!filteredHoldings) {
@@ -109,19 +123,21 @@ function Positions({ portfolio }: { portfolio: Portfolio }): ReactNode {
   return (
     <>
       {balancesError && <p className={styles.note}>Some balances are unavailable: {balancesError.message}</p>}
-      <HoldingsTable holdings={filteredHoldings} getLogoUrl={portfolio.getLogoUrl} />
-      <div className={styles.panelNote}>
-        <p>
-          Confirmed balances
-          {pricesUpdatedAt && (
-            <>
-              {' · Prices updated '}
-              <time dateTime={pricesUpdatedAt}>{formatUtcTime(Date.parse(pricesUpdatedAt))}</time>
-            </>
-          )}
-        </p>
-        <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
-      </div>
+      <HoldingsTable holdings={filteredHoldings} getLogoUrl={portfolio.getLogoUrl} isWalletEmpty={isWalletEmpty} />
+      {!isWalletEmpty && (
+        <div className={styles.panelNote}>
+          <p>
+            Confirmed balances
+            {pricesUpdatedAt && (
+              <>
+                {' · Prices updated '}
+                <time dateTime={pricesUpdatedAt}>{formatUtcTime(Date.parse(pricesUpdatedAt))}</time>
+              </>
+            )}
+          </p>
+          <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
+        </div>
+      )}
     </>
   )
 }

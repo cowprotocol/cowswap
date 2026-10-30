@@ -1,3 +1,4 @@
+export { ArrowUpRightIcon } from './ArrowUpRightIcon'
 export { CheckIcon } from './CheckIcon'
 export { ChevronDownIcon } from './ChevronDownIcon'
 export { InfoIcon } from './InfoIcon'
