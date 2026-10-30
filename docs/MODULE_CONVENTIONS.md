@@ -12,7 +12,7 @@ source_of_truth_scope: naming, file structure, exports/imports, and React module
 - Prefer explicit suffixes:
   - `*.container.tsx`, `*.pure.tsx`, `*.styled.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`
 - Hooks are the naming exception and should use `useX.ts` / `useX.tsx`.
-- A `useX` hook whose body only returns `useAtomValue`, `useSetAtom`, or `useAtom` is an alias. Call the Jotai hook at the component.
+- A `useX` hook whose body only returns `useAtomValue`, `useSetAtom`, or `useAtom` is just an alias. Call the Jotai hook at the component instead.
 - Avoid generic filenames like `styled` unless the file is intentionally a barrel or module entry.
 
 ## Exports

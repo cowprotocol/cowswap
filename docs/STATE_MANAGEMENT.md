@@ -28,13 +28,17 @@ New files under `state/` and `utils/` must not import `react`, `react-redux`, or
 
 Thin-hook pressure is the orchestration ratchet in `pnpm arch:check`: a `hooks/` file that combines `useMemo`, `useCallback`, `useEffect`, or `useLayoutEffect` with 3 or more domain hook imports cannot be introduced or grown.
 
-## Side effects and deadlines
+## Side effects
 
 - `SHOULD` run a side effect that reads or writes atoms with `observe` from `jotai-effect`, inside `state/`. `observe` subscribes to the atoms it reads and writes on change, with no component mounted.
 - `SHOULD NOT` add an updater for that job. An updater waits until React renders, then runs an effect and writes state. That ties the update to the tree. Existing `updaters/` files stay until a focused migration.
 - `atom.onMount` is the subscription that should live only while the atom has listeners.
 - Example: `apps/cowswap-frontend/src/entities/twap/state/twapOrdersTokensAtom.ts` (`observe(observeTwapOrdersTokensCache, jotaiStore)`).
-- `SHOULD` wait for a deadline by scheduling `setTimeout` for that moment. `SHOULD NOT` use `setInterval` to poll until a known time: the period drifts from the deadline and keeps waking after the value is unchanged.
+
+## Deadlines
+
+- `SHOULD` wait for a deadline by scheduling `setTimeout` for that moment.
+- `SHOULD NOT` use `setInterval` to poll until a known time: the period drifts from the deadline and keeps waking after the value is unchanged.
 - `libs/common-hooks/src/runCountdown.ts` sleeps until the next whole second and stops at zero. `useRemainingSeconds` re-renders only when that second changes. `useCountdown` writes the text into the DOM and does not re-render; use it when the value is only displayed as text.
 - An interval remains appropriate when the source has no known wake-up time (a poll of a remote API). A deadline is not that case.
 
