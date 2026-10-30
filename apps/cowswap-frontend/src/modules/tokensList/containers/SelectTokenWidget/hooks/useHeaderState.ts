@@ -9,6 +9,7 @@ import { useManageWidgetVisibility } from './useManageWidgetVisibility'
 import { resolveModalTitle } from './useWidgetMetadata'
 
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
+import { getTokenSelectorFilter } from '../../../utils/filterTokensForSelector'
 
 export interface HeaderState {
   title: string
@@ -19,18 +20,21 @@ export interface HeaderState {
 export function useHeaderState(): HeaderState {
   const widgetState = useSelectTokenWidgetState()
   const { openManageWidget } = useManageWidgetVisibility()
-  const { disableTokenImport } = useInjectedWidgetParams()
+  const widgetParams = useInjectedWidgetParams()
+  const { disableTokenImport } = widgetParams
   const { standalone } = widgetState
   const resolvedField = widgetState.field ?? Field.INPUT
+  const tokensFilter = getTokenSelectorFilter(widgetState.field, widgetParams)
+  const hasScopedTokens = Boolean(tokensFilter?.tokens || tokensFilter?.excludedTokens)
 
   const title = resolveModalTitle(resolvedField, widgetState.tradeType) ?? t`Select token`
 
   return useMemo(
     () => ({
       title,
-      showManageButton: !standalone && !disableTokenImport,
+      showManageButton: !standalone && !disableTokenImport && !hasScopedTokens,
       onOpenManageWidget: openManageWidget,
     }),
-    [title, standalone, disableTokenImport, openManageWidget],
+    [title, standalone, disableTokenImport, hasScopedTokens, openManageWidget],
   )
 }
