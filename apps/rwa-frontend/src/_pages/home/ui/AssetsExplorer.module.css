@@ -1,7 +1,7 @@
 .explorer {
   display: flex;
   flex-direction: column;
-  padding: 0 8px 8px;
+  padding-bottom: 8px;
   border-radius: var(--radius-card);
   background: var(--color-bg);
   box-shadow: var(--shadow-subtle);
@@ -12,81 +12,89 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 14px 8px 12px;
+  padding: 14px 24px 16px;
 }
 
-.tabs {
+.types {
   display: flex;
-  gap: 2px;
-  margin-right: auto;
-  overflow-x: auto;
+  gap: 8px;
 }
 
-.tab {
+.outlinedButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   height: 40px;
   padding: 0 16px;
-  border: none;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
-  background: none;
+  background: var(--color-bg);
   color: var(--color-text-secondary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 20px;
   white-space: nowrap;
 }
 
-.tab:hover {
-  color: var(--color-text);
-}
-
-.tab[aria-selected='true'] {
+.outlinedButton:hover {
   background: var(--color-surface);
   color: var(--color-text);
 }
 
-.tabCount {
-  display: inline-flex;
-  align-items: center;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 9px;
-  background: var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
-}
-
-.tab[aria-selected='true'] .tabCount {
+.outlinedButton[aria-pressed='true'],
+.outlinedButton[aria-expanded='true'] {
+  border-color: transparent;
   background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
+.outlinedButton:focus-visible,
+.clearButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.filtersCount {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 14px;
+}
+
+.clearButton {
+  height: 40px;
+  padding: 0 8px;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .filterInput {
   display: flex;
+  flex: 1 1 240px;
   align-items: center;
   gap: 10px;
-  width: 260px;
+  min-width: 0;
   height: 40px;
-  padding: 0 14px;
-  border-radius: 20px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
   background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: text;
 }
 
 .filterInput:focus-within {
-  outline: 1px solid var(--color-accent);
+  outline: 2px solid var(--color-accent);
 }
 
 .filterInput input {
@@ -103,32 +111,31 @@
   color: var(--color-text-secondary);
 }
 
-.filterControls {
+.filtersPanel {
   display: flex;
+  flex: 1 1 100%;
   flex-wrap: wrap;
   gap: 8px;
+  padding-top: 8px;
 }
 
-.watchlistButton {
+.filtersPanel[hidden] {
+  display: none;
+}
+
+.aboutMetrics {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 20px;
-  background: var(--color-bg);
-  font-size: 14px;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 20px 4px 0;
+  color: var(--color-text);
+  font-size: 13px;
   font-weight: 500;
-  line-height: 20px;
-}
-
-.watchlistButton:hover {
-  background: var(--color-surface);
-}
-
-.watchlistButton[aria-pressed='true'] {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  line-height: 18px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: help;
 }
 
 .visuallyHidden {
@@ -141,8 +148,16 @@
 }
 
 @media (max-width: 600px) {
+  .toolbar {
+    padding: 12px 16px;
+  }
+
+  .types {
+    overflow-x: auto;
+  }
+
   .filterInput {
-    flex: 1 1 100%;
-    width: auto;
+    flex-basis: 100%;
+    order: -1;
   }
 }

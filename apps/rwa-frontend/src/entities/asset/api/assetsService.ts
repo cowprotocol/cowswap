@@ -28,6 +28,7 @@ import type {
   RwaAssetQuotes,
   RwaAssetResponse,
   RwaAssetsFilter,
+  RwaAssetTokenStats,
   RwaAssetsPage,
   RwaAssetsSearchResult,
   RwaCandle,
@@ -132,15 +133,10 @@ export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Prom
 
 /** `chainId` must have tokens of the asset */
 export async function getAssetNetworkStats(asset: RwaAsset, chainId: number): Promise<RwaNetworkStats> {
-  const tokens = asset.tokens.filter((token) => token.chainId === chainId)
   const tokenMarkets = await loadTokenMarkets(asset.tokens)
-  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets ?? {})
+  const { tokens, isLoaded } = await loadChainStats(asset, chainId, tokenMarkets ?? {})
 
-  if (stats) return { ticker: asset.ticker, chainId, tokens: stats, degraded: tokenMarkets === null }
-
-  const empty = tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null }))
-
-  return { ticker: asset.ticker, chainId, tokens: empty, degraded: true }
+  return { ticker: asset.ticker, chainId, tokens, degraded: !isLoaded || tokenMarkets === null }
 }
 
 /** `chainId` must have tokens of the asset */
@@ -153,6 +149,20 @@ export async function getAssetQuotes(
   const { quotes, degraded } = await getTokenQuotes(chainId, side, addresses)
 
   return { ticker: asset.ticker, chainId, side, amountUsd: QUOTE_AMOUNT_USD, quotes, degraded }
+}
+
+export async function getAssetTokenStats(asset: RwaAsset): Promise<RwaAssetTokenStats> {
+  const tokenMarkets = await loadTokenMarkets(asset.tokens)
+  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
+  const chains = await Promise.all(
+    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId, tokenMarkets ?? {})) })),
+  )
+
+  return {
+    ticker: asset.ticker,
+    tokens: chains.flatMap(({ chainId, tokens }) => tokens.map((stats) => ({ ...stats, chainId }))),
+    degraded: tokenMarkets === null || chains.some(({ isLoaded }) => !isLoaded),
+  }
 }
 
 export async function getMarketOverview(): Promise<RwaMarketOverview> {
@@ -245,6 +255,19 @@ function getCoinSharesPerToken(coinTokens: RwaToken[], sharesPerToken: Record<st
 
 function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[] | null {
   return market ? buildDailySeries(market) : null
+}
+
+async function loadChainStats(
+  asset: RwaAsset,
+  chainId: number,
+  tokenMarkets: Record<string, RwaTokenMarketData>,
+): Promise<{ tokens: RwaTokenNetworkStats[]; isLoaded: boolean }> {
+  const tokens = asset.tokens.filter((token) => token.chainId === chainId)
+  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
+
+  if (stats) return { tokens: stats, isLoaded: true }
+
+  return { tokens: tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null })), isLoaded: false }
 }
 
 /**

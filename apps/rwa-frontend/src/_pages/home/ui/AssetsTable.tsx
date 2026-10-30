@@ -14,13 +14,7 @@ import { assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
-import {
-  getDefaultSortOrder,
-  IssuersCount,
-  RWA_ASSET_TYPE_LABELS,
-  type RwaAssetListItem,
-  type RwaSortField,
-} from '@/entities/asset'
+import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
 import { EMPTY_VALUE, formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { NetworkLogos } from '@/shared/ui/network-logos'
@@ -51,10 +45,10 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
             </th>
             <SortableHeader field="title" title="Asset" />
             <SortableHeader field="price" title="Reference price" numeric hint={MARKET_DATA_HINT} />
-            <SortableHeader field="change24h" title="24H change" numeric />
+            <SortableHeader field="change24h" title="24h change" numeric />
             <SortableHeader field="volume24h" title="24h volume" numeric className={styles.optional} />
-            <SortableHeader field="marketCap" title="Tokenized market cap" numeric className={styles.optional} />
-            <th className={`${styles.numeric} ${styles.chartColumn}`}>24H chart</th>
+            <SortableHeader field="marketCap" title="Onchain market cap" numeric className={styles.optional} />
+            <th className={`${styles.numeric} ${styles.chartColumn}`}>24h chart</th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +63,7 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
 
 function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
   const change = asset.market?.change24h
+  const issuersCount = new Set(asset.tokens.map((token) => token.issuer)).size
 
   return (
     <tr>
@@ -85,7 +80,9 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
             <div className={styles.assetMeta}>
               <span>{asset.ticker}</span>
               <span className={styles.assetType}>{RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-              <IssuersCount className={styles.issuers} tokens={asset.tokens} />
+              <span className={styles.issuers}>
+                {issuersCount} {issuersCount === 1 ? 'issuer' : 'issuers'}
+              </span>
               <NetworkLogos chainIds={[...new Set(asset.tokens.map((token) => token.chainId))]} />
             </div>
           </div>

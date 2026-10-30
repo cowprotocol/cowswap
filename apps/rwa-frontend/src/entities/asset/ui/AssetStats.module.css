@@ -30,18 +30,26 @@
   line-height: 24px;
 }
 
-.period {
+.period,
+.reference {
   color: var(--color-text-secondary);
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
 }
 
+.reference,
 .status {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 4px;
+  cursor: help;
+}
+
+.status {
+  gap: 6px;
   padding-bottom: 8px;
+  color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 18px;
 }
@@ -51,6 +59,7 @@
   display: inline-flex;
   align-items: center;
   gap: 9px;
+  color: var(--color-text);
   font-weight: 500;
 }
 
@@ -68,10 +77,6 @@
 
 .statusClosed::before {
   background: var(--color-text-muted);
-}
-
-.hours {
-  color: var(--color-text-secondary);
 }
 
 .positive {

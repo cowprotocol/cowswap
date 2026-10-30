@@ -24,7 +24,10 @@ export function TokenLogo({ symbol, logoUrl, chainId, size = 'regular' }: TokenL
   const pixels = LOGO_SIZES[size]
 
   return (
-    <span className={styles.wrapper} style={{ width: pixels, height: pixels }}>
+    <span
+      className={chainLogoUrl ? `${styles.wrapper} ${styles.withBadge}` : styles.wrapper}
+      style={{ width: pixels, height: pixels }}
+    >
       {logoUrl ? (
         <Image className={styles.logo} src={logoUrl} alt="" width={pixels} height={pixels} unoptimized />
       ) : (

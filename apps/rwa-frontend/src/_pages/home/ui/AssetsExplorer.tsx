@@ -8,25 +8,34 @@ import { AssetsFilters } from './AssetsFilters'
 import { AssetsTable } from './AssetsTable'
 import { AssetsTypeTabs } from './AssetsTypeTabs'
 
+import { MARKET_DATA_HINT } from '../lib/marketDataHint'
 import { assetsFiltersAtom } from '../model/assetsFiltersAtoms'
 import { assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 import { watchlistAtom } from '../model/watchlistAtoms'
 
+import { InfoIcon } from '@/shared/ui/icons'
 import { Pagination } from '@/shared/ui/pagination'
 import { StatusMessage } from '@/shared/ui/status-message'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const ASSETS_TABLE_ID = 'assets-table'
 
 export function AssetsExplorer(): ReactNode {
   return (
-    <section className={styles.explorer} aria-label="Assets">
-      <div className={styles.toolbar}>
-        <AssetsTypeTabs tableId={ASSETS_TABLE_ID} />
-        <AssetsFilters />
-      </div>
-      <AssetsList />
-    </section>
+    <>
+      <section className={styles.explorer} aria-label="Assets">
+        <div className={styles.toolbar}>
+          <AssetsTypeTabs tableId={ASSETS_TABLE_ID} />
+          <AssetsFilters />
+        </div>
+        <AssetsList />
+      </section>
+      <Tooltip className={styles.aboutMetrics} content={MARKET_DATA_HINT}>
+        About token metrics
+        <InfoIcon />
+      </Tooltip>
+    </>
   )
 }
 

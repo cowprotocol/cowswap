@@ -3,21 +3,23 @@
 import { type ReactNode, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import styles from './Portfolio.module.css'
 
-import type { Holding } from '../lib/holdings'
+import type { Holding, TokenHolding } from '../lib/holdings'
 import type { Portfolio } from '../model/usePortfolio'
 
-import { DividendNotes, getTokenKey } from '@/entities/asset'
-import { getChainLabel } from '@/shared/lib/chain'
-import { formatTokenAmount, formatUsd } from '@/shared/lib/format'
+import { DividendNotes, getTokenKey, RWA_ASSET_TYPE_LABELS } from '@/entities/asset'
+import { getChainLabel, getExplorerAddressUrl } from '@/shared/lib/chain'
+import { EMPTY_VALUE, formatUsd, toTokenUnits } from '@/shared/lib/format'
+import { ChevronDownIcon } from '@/shared/ui/icons'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { RowMenu } from '@/widgets/account'
 
-const sharesFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 })
-
-const ASSET_TYPE_LABELS = { stock: 'Stock', index: 'Index fund', commodity: 'Commodity' } as const
+const sharesFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+const tokenAmountFormatter = new Intl.NumberFormat('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4 })
 
 interface HoldingRowsProps {
   holding: Holding
@@ -29,8 +31,15 @@ interface HoldingsTableProps {
   getLogoUrl: Portfolio['getLogoUrl']
 }
 
+interface TokenRowProps {
+  holding: Holding
+  tokenHolding: TokenHolding
+  getLogoUrl: Portfolio['getLogoUrl']
+  className: string
+}
+
 export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): ReactNode {
-  if (!holdings.length) return <StatusMessage>No holdings match the filters</StatusMessage>
+  if (!holdings.length) return <StatusMessage>No positions match the filters</StatusMessage>
 
   return (
     <>
@@ -38,16 +47,19 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Asset</th>
-              <th className={styles.numeric}>Equivalent shares</th>
-              <th className={styles.numeric}>Underlying value</th>
+              <th>Asset / stock token</th>
+              <th className={styles.numeric}>You hold</th>
+              <th className={`${styles.numeric} ${styles.sorted}`} aria-sort="descending">
+                <span aria-hidden="true">↓</span> Underlying value
+              </th>
+              <th className={styles.menuColumn}>
+                <span className={styles.visuallyHidden}>Actions</span>
+              </th>
             </tr>
           </thead>
-          <tbody>
-            {holdings.map((holding) => (
-              <HoldingRows key={holding.asset.ticker} holding={holding} getLogoUrl={getLogoUrl} />
-            ))}
-          </tbody>
+          {holdings.map((holding) => (
+            <HoldingRows key={holding.asset.ticker} holding={holding} getLogoUrl={getLogoUrl} />
+          ))}
         </table>
       </div>
       <DividendNotes
@@ -58,54 +70,115 @@ export function HoldingsTable({ holdings, getLogoUrl }: HoldingsTableProps): Rea
   )
 }
 
-function HoldingRows({ holding: { asset, tokens, shares, value }, getLogoUrl }: HoldingRowsProps): ReactNode {
-  const [isExpanded, setIsExpanded] = useState(false)
+function formatShares(shares: number): string {
+  return `${sharesFormatter.format(shares)} equivalent ${shares === 1 ? 'share' : 'shares'}`
+}
+
+function formatValue(value: number | null): string {
+  return value === null ? EMPTY_VALUE : `≈ ${formatUsd(value)}`
+}
+
+function getWellClassName(index: number, count: number): string {
+  return [styles.tokenRow, index === 0 && styles.firstTokenRow, index === count - 1 && styles.lastTokenRow]
+    .filter(Boolean)
+    .join(' ')
+}
+
+function HoldingRows({ holding, getLogoUrl }: HoldingRowsProps): ReactNode {
+  const { asset, tokens, shares, value } = holding
+  const router = useRouter()
+  const [isExpanded, setIsExpanded] = useState(tokens.length > 1)
+  const tokensLabel = `${tokens.length} stock token${tokens.length === 1 ? '' : 's'}`
 
   return (
-    <>
-      <tr>
+    <tbody className={styles.group}>
+      <tr className={styles.assetRow}>
         <td>
           <div className={styles.holding}>
-            <TokenLogo symbol={asset.ticker} logoUrl={getLogoUrl(asset)} size="large" />
+            <button
+              type="button"
+              className={styles.expandButton}
+              aria-expanded={isExpanded}
+              aria-label={`${isExpanded ? 'Hide' : 'Show'} ${asset.title} stock tokens`}
+              onClick={() => setIsExpanded((expanded) => !expanded)}
+            >
+              <ChevronDownIcon />
+            </button>
+            <TokenLogo symbol={asset.ticker} logoUrl={getLogoUrl(asset)} />
             <div className={styles.holdingIdentity}>
               <Link className={styles.holdingTitle} href={`/asset/${asset.ticker}`}>
                 {asset.title}
               </Link>
               <span className={styles.secondary}>
-                {asset.ticker} · {ASSET_TYPE_LABELS[asset.type]}
+                {asset.ticker} · {RWA_ASSET_TYPE_LABELS[asset.type]} · {tokensLabel}
               </span>
-              <button
-                type="button"
-                className={styles.tokensToggle}
-                aria-expanded={isExpanded}
-                onClick={() => setIsExpanded((expanded) => !expanded)}
-              >
-                {tokens.length} stock token{tokens.length === 1 ? '' : 's'} {isExpanded ? '▴' : '▾'}
-              </button>
             </div>
           </div>
         </td>
-        <td className={styles.numeric}>{sharesFormatter.format(shares)}</td>
-        <td className={`${styles.numeric} ${styles.value}`}>{formatUsd(value)}</td>
+        <td className={`${styles.numeric} ${styles.strong}`}>{formatShares(shares)}</td>
+        <td className={`${styles.numeric} ${styles.strong}`}>{formatValue(value)}</td>
+        <td className={styles.menuColumn}>
+          <RowMenu
+            label={`${asset.title} actions`}
+            items={[{ label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) }]}
+          />
+        </td>
       </tr>
       {isExpanded &&
-        tokens.map(({ token, balance, value: tokenValue }) => (
-          <tr key={getTokenKey(token)} className={styles.tokenRow}>
-            <td>
-              <div className={styles.holding}>
-                <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} />
-                <div className={styles.holdingIdentity}>
-                  {token.symbol}
-                  <span className={styles.secondary}>
-                    {token.issuer} · {getChainLabel(token.chainId)}
-                  </span>
-                </div>
-              </div>
-            </td>
-            <td className={styles.numeric}>{formatTokenAmount(balance, token.decimals)}</td>
-            <td className={styles.numeric}>{formatUsd(tokenValue)}</td>
-          </tr>
+        tokens.map((tokenHolding, index) => (
+          <TokenRow
+            key={getTokenKey(tokenHolding.token)}
+            holding={holding}
+            tokenHolding={tokenHolding}
+            getLogoUrl={getLogoUrl}
+            className={getWellClassName(index, tokens.length)}
+          />
         ))}
-    </>
+    </tbody>
+  )
+}
+
+function TokenRow({ holding: { asset }, tokenHolding, getLogoUrl, className }: TokenRowProps): ReactNode {
+  const { token, balance, shares, value } = tokenHolding
+  const router = useRouter()
+  const explorerUrl = getExplorerAddressUrl(token.chainId, token.address)
+  const amount =
+    token.decimals === null ? EMPTY_VALUE : tokenAmountFormatter.format(toTokenUnits(balance, token.decimals))
+
+  return (
+    <tr className={className}>
+      <td>
+        <div className={styles.holding}>
+          <TokenLogo symbol={token.symbol} logoUrl={getLogoUrl(asset, token)} chainId={token.chainId} />
+          <div className={styles.holdingIdentity}>
+            <span className={styles.tokenTitle}>
+              {token.symbol} · {token.issuer}
+            </span>
+            <span className={styles.secondary}>{getChainLabel(token.chainId)}</span>
+          </div>
+        </div>
+      </td>
+      <td className={styles.numeric}>
+        {amount} {token.symbol}
+        <span className={`${styles.secondary} ${styles.block}`}>{formatShares(shares)}</span>
+      </td>
+      <td className={styles.numeric}>{formatValue(value)}</td>
+      <td className={styles.menuColumn}>
+        <RowMenu
+          label={`${token.symbol} on ${getChainLabel(token.chainId)} actions`}
+          items={[
+            { label: `Open ${asset.title}`, onSelect: () => router.push(`/asset/${asset.ticker}`) },
+            ...(explorerUrl
+              ? [
+                  {
+                    label: 'View token on explorer',
+                    onSelect: () => window.open(explorerUrl, '_blank', 'noopener,noreferrer'),
+                  },
+                ]
+              : []),
+          ]}
+        />
+      </td>
+    </tr>
   )
 }

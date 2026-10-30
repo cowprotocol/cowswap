@@ -3,6 +3,7 @@ import {
   getAutoToken,
   getBestQuotedToken,
   getBestQuoteLabel,
+  getCollapsedQuotedTokens,
   keepPreviousOrder,
   type QuotedToken,
   sortQuotedTokens,
@@ -155,15 +156,28 @@ describe('getBestQuotedToken', () => {
   })
 })
 
+describe('getCollapsedQuotedTokens', () => {
+  const quoted = toQuotedTokens([AAPLX_MAINNET, AAPLON_MAINNET, AAPLX_ARBITRUM], undefined, undefined, null, NO_SHARES)
+  const tokensOf = (list: QuotedToken[]): RwaToken[] => list.map(({ token }) => token)
+
+  it('keeps the first tokens', () => {
+    expect(tokensOf(getCollapsedQuotedTokens(quoted, AAPLX_MAINNET, 2))).toEqual([AAPLX_MAINNET, AAPLON_MAINNET])
+  })
+
+  it('keeps a selected token past them', () => {
+    expect(tokensOf(getCollapsedQuotedTokens(quoted, AAPLX_ARBITRUM, 1))).toEqual([AAPLX_MAINNET, AAPLX_ARBITRUM])
+  })
+})
+
 describe('getBestQuoteLabel', () => {
   it('names the best quote by side', () => {
-    expect(getBestQuoteLabel('buy', false)).toBe('Lowest buy quote')
-    expect(getBestQuoteLabel('sell', false)).toBe('Highest sell quote')
+    expect(getBestQuoteLabel('buy', false)).toBe('Lowest price')
+    expect(getBestQuoteLabel('sell', false)).toBe('Highest price')
   })
 
   it('limits the claim to verified quotes when cheaper unverified ones can be listed', () => {
-    expect(getBestQuoteLabel('buy', true)).toBe('Lowest verified buy quote')
-    expect(getBestQuoteLabel('sell', true)).toBe('Highest verified sell quote')
+    expect(getBestQuoteLabel('buy', true)).toBe('Lowest verified price')
+    expect(getBestQuoteLabel('sell', true)).toBe('Highest verified price')
   })
 })
 

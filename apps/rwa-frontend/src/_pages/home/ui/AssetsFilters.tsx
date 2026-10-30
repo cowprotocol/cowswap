@@ -1,10 +1,11 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useId, useState } from 'react'
 
 import styles from './AssetsExplorer.module.css'
 import { StarIcon } from './StarIcon'
+import { FilterIcon } from './ToolbarIcons'
 
 import {
   assetsFilterQueryAtom,
@@ -26,15 +27,18 @@ export function AssetsFilters(): ReactNode {
   const { data } = useAtomValue(assetsPageQueryAtom)
   const issuers = data?.issuers ?? []
   const networkOptions = useNetworkOptions(data?.chainIds ?? [])
+  const [isPanelOpen, setIsPanelOpen] = useState(false)
+  const panelId = useId()
+  const activeFilters = Number(issuer !== null) + Number(chainId !== null)
 
   return (
-    <div className={styles.filters}>
+    <>
       <label className={styles.filterInput}>
         <SearchIcon />
         <input
           type="search"
-          placeholder="Filter assets…"
-          aria-label="Filter assets"
+          placeholder="Search assets or tickers…"
+          aria-label="Search assets"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
         />
@@ -42,7 +46,41 @@ export function AssetsFilters(): ReactNode {
       <span className={styles.visuallyHidden} role="status">
         {data && `${data.total} ${data.total === 1 ? 'asset' : 'assets'}`}
       </span>
-      <div className={styles.filterControls}>
+      <button
+        type="button"
+        className={styles.outlinedButton}
+        aria-pressed={watchlistOnly}
+        onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
+      >
+        <StarIcon filled={watchlistOnly} />
+        Watchlist
+      </button>
+      <button
+        type="button"
+        className={styles.outlinedButton}
+        aria-expanded={isPanelOpen}
+        aria-controls={panelId}
+        onClick={() => setIsPanelOpen((open) => !open)}
+      >
+        <FilterIcon />
+        Filters
+        {activeFilters > 0 && (
+          <span className={styles.filtersCount}>
+            {activeFilters}
+            <span className={styles.visuallyHidden}> active</span>
+          </span>
+        )}
+      </button>
+      {activeFilters > 0 && (
+        <button
+          type="button"
+          className={styles.clearButton}
+          onClick={() => updateFilters({ issuer: null, chainId: null })}
+        >
+          Clear
+        </button>
+      )}
+      <div id={panelId} className={styles.filtersPanel} hidden={!isPanelOpen}>
         <Select
           aria-label="Issuer"
           value={issuer}
@@ -55,16 +93,7 @@ export function AssetsFilters(): ReactNode {
           options={[{ value: null, label: 'All networks' }, ...networkOptions]}
           onChange={(value) => updateFilters({ chainId: value })}
         />
-        <button
-          type="button"
-          className={styles.watchlistButton}
-          aria-pressed={watchlistOnly}
-          onClick={() => updateFilters({ watchlistOnly: !watchlistOnly })}
-        >
-          <StarIcon filled={watchlistOnly} />
-          Watchlist
-        </button>
       </div>
-    </div>
+    </>
   )
 }

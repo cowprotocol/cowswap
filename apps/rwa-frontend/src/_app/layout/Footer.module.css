@@ -30,21 +30,6 @@
   color: #ffffff;
 }
 
-.disclaimer {
-  max-width: 760px;
-  font-size: 12px;
-  line-height: 18px;
-  text-align: center;
-}
-
-.disclaimer p {
-  margin: 0;
-}
-
-.disclaimer p + p {
-  margin-top: 8px;
-}
-
 @media (max-width: 720px) {
   .footer {
     padding: 24px 16px;

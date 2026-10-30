@@ -125,23 +125,51 @@ describe('HomePage', () => {
     localStorage.clear()
   })
 
-  it('renders the heading and the table filter', () => {
+  it('renders the heading and the table search', () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
     expect(screen.getByRole('heading', { level: 1, name: 'Explore tokenized real-world assets' })).toBeTruthy()
-    expect(screen.getByRole('searchbox', { name: 'Filter assets' })).toBeTruthy()
+    expect(screen.getByRole('searchbox', { name: 'Search assets' })).toBeTruthy()
   })
 
-  it('renders the type tabs with counts and the asset rows', async () => {
+  it('renders the type toggles without a selection and the asset rows', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    expect(await screen.findByRole('tab', { name: 'All assets 5' })).toBeTruthy()
-    expect(screen.getByRole('tab', { name: 'Stocks 3' })).toBeTruthy()
-    expect(screen.getByRole('tab', { name: 'ETFs 2' })).toBeTruthy()
+    expect(await screen.findByText('$180M')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Stocks', pressed: false })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
     expect(screen.getByText('2 issuers')).toBeTruthy()
-    expect(screen.getByText('$180M')).toBeTruthy()
+    expect(screen.getByText('on Ethereum')).toBeTruthy()
+  })
+
+  it('toggles a type off when it is selected again', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs', pressed: true }))
+
+    await screen.findByRole('button', { name: 'ETFs', pressed: false })
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).not.toContain('type=')
+  })
+
+  it('counts the set filters and clears them', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    await screen.findByText('$180M')
+    fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
+    fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
+    fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
+
+    expect(await screen.findByRole('button', { name: 'Filters 1 active' })).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear' }))
+
+    expect(await screen.findByRole('button', { name: 'Filters' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
   })
 
   it('shows a dash in the 24h chart column of an asset without a series', async () => {
@@ -158,7 +186,8 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    fireEvent.click(await screen.findByRole('tab', { name: 'ETFs 2' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
     fireEvent.click(screen.getByRole('combobox', { name: 'Issuer' }))
     fireEvent.click(screen.getByRole('option', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
@@ -182,7 +211,7 @@ describe('HomePage', () => {
     const header = await screen.findByRole('columnheader', { name: '24h volume' })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: 'Onchain market cap' })).toBeTruthy()
     expect(
       (global.fetch as jest.Mock).mock.calls
         .map(([url]) => String(url))
@@ -199,7 +228,7 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    await screen.findByRole('tab', { name: 'All assets 5' })
+    await screen.findByText('$180M')
 
     expect(
       (global.fetch as jest.Mock).mock.calls
@@ -208,15 +237,15 @@ describe('HomePage', () => {
     ).toBe(true)
   })
 
-  it('labels the totals and most traded with the tokenized market figures', async () => {
+  it('labels the totals and most traded with the tokenized market figures, at a UTC reference time', async () => {
     mockApi(OVERVIEW)
     renderHomePage()
 
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
-    expect(totals.textContent).toContain('Market cap')
+    expect(totals.textContent).toContain('Onchain market cap')
     expect(totals.textContent).toContain('24h volume')
-    expect(totals.textContent).not.toContain('Onchain')
+    expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
     expect(screen.getByText('24h volume · All networks')).toBeTruthy()
   })
 

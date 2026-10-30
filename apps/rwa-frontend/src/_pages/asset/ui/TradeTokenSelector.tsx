@@ -1,12 +1,15 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useId, useState } from 'react'
+
+import { useConnection } from 'wagmi'
 
 import styles from './TradeTokenSelector.module.css'
 
 import { getPremiumNote } from '../lib/premiumNote'
-import { getBestQuoteLabel, isRankedQuote } from '../lib/quotedTokens'
+import { getBestQuoteLabel, getCollapsedQuotedTokens, isRankedQuote } from '../lib/quotedTokens'
+import { formatTokenStat } from '../lib/tokenStat'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
 
@@ -21,12 +24,15 @@ import {
   type RwaQuoteSide,
   type RwaToken,
 } from '@/entities/asset'
-import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { InfoIcon } from '@/shared/ui/icons'
+import { ConnectButton } from '@/features/connect-wallet'
+import { formatPercent, formatUsd } from '@/shared/lib/format'
+import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
 import { useNetworkOptions } from '@/shared/ui/network-logos'
 import { Select } from '@/shared/ui/select'
 import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
+
+const COLLAPSED_TOKENS_COUNT = 2
 
 const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
   { side: 'buy', title: 'Buy' },
@@ -37,6 +43,14 @@ const QUOTE_ERRORS: Record<string, string> = {
   NoLiquidity: 'No liquidity',
   UnsupportedToken: 'Not tradable',
   Unavailable: 'Quote unavailable',
+}
+
+interface AllTokensToggleProps {
+  count: number
+  isExpanded: boolean
+  /** Id of the tokens list */
+  controls: string
+  onToggle(): void
 }
 
 interface TradeTokenOptionProps {
@@ -67,7 +81,13 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const setSide = useSetAtom(tradeSideAtom)
   const setTokenKey = useSetAtom(tradeTokenKeyAtom)
+  const { isConnected } = useConnection()
   const { side, quotedTokens, bestToken, assetToken, isAutoSelected } = selection
+  const [areAllTokensShown, setAreAllTokensShown] = useState(false)
+  const tokensListId = useId()
+  const shownTokens = areAllTokensShown
+    ? quotedTokens
+    : getCollapsedQuotedTokens(quotedTokens, assetToken, COLLAPSED_TOKENS_COUNT)
   const sideTitle = side === 'buy' ? 'Buy' : 'Sell'
   const rankedCount = quotedTokens.filter(isRankedQuote).length
   const hasVerifiedQuote = quotedTokens.some((quoted) => isRankedQuote(quoted) && quoted.quote?.verified)
@@ -109,8 +129,8 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
       {selection.quotesError && (
         <p className={styles.notice}>Quotes are unavailable: {selection.quotesError.message}</p>
       )}
-      <ul className={styles.tokens} role="radiogroup" aria-label={`${asset.ticker} token`}>
-        {quotedTokens.map((quoted) => (
+      <ul id={tokensListId} className={styles.tokens} role="radiogroup" aria-label={`${asset.ticker} token`}>
+        {shownTokens.map((quoted) => (
           <li key={getTokenKey(quoted.token)}>
             <TradeTokenOption
               quoted={quoted}
@@ -126,7 +146,37 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           </li>
         ))}
       </ul>
+      {quotedTokens.length > COLLAPSED_TOKENS_COUNT && (
+        <AllTokensToggle
+          count={quotedTokens.length}
+          isExpanded={areAllTokensShown}
+          controls={tokensListId}
+          onToggle={() => setAreAllTokensShown((shown) => !shown)}
+        />
+      )}
+      {!isConnected && (
+        // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
+        <div className={styles.connectPrompt}>
+          <span>Connect your wallet to trade this tokenized asset.</span>
+          <ConnectButton variant="secondary" />
+        </div>
+      )}
     </div>
+  )
+}
+
+function AllTokensToggle({ count, isExpanded, controls, onToggle }: AllTokensToggleProps): ReactNode {
+  return (
+    <button
+      type="button"
+      className={styles.allTokens}
+      aria-expanded={isExpanded}
+      aria-controls={controls}
+      onClick={onToggle}
+    >
+      {isExpanded ? 'Fewer tokens' : `All ${count} tokens`}
+      <ChevronDownIcon />
+    </button>
   )
 }
 
@@ -170,11 +220,11 @@ function TradeTokenOption({
         </span>
         <span className={styles.stats}>
           <span>
-            Onchain cap <strong>{formatCompactUsd(stats?.onchainCap)}</strong>
+            Onchain cap <strong>{formatTokenStat(stats?.onchainCap)}</strong>
           </span>
           <span aria-hidden="true">·</span>
           <span>
-            24h vol <strong>{formatCompactUsd(stats?.dexVolume24h)}</strong>
+            24h vol <strong>{formatTokenStat(stats?.dexVolume24h)}</strong>
           </span>
         </span>
       </span>

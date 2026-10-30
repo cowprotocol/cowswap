@@ -7,6 +7,7 @@ import {
   getAssetCandles,
   getAssetChart,
   getAssetNetworkStats,
+  getAssetTokenStats,
   getMarketOverview,
   listAssets,
 } from './assetsService'
@@ -481,6 +482,48 @@ describe('getAssetNetworkStats', () => {
     expect(getTokenMarketsMock).toHaveBeenCalledWith(nvda().tokens)
     expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
     expect(stats.degraded).toBe(false)
+  })
+})
+
+describe('getAssetTokenStats', () => {
+  it('loads every network of the asset and tags the stats with their chain', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      Promise.resolve(
+        chainId === 1
+          ? [{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }]
+          : [{ address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 }],
+      ),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(getTokenMarketsMock).toHaveBeenCalledTimes(1)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]], NVDA_TOKEN_MARKETS)
+    expect(stats).toEqual({
+      ticker: 'NVDA',
+      tokens: [
+        { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+        { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 },
+      ],
+      degraded: false,
+    })
+  })
+
+  it('keeps the networks that loaded and flags the response when one fails', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      chainId === 1
+        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }])
+        : Promise.reject(new Error('Upstream failed')),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(stats.degraded).toBe(true)
+    expect(stats.tokens).toEqual([
+      { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+      { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: null, dexVolume24h: null },
+    ])
   })
 })
 

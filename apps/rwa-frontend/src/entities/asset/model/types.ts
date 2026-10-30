@@ -13,10 +13,27 @@ export interface RwaAsset {
   allowedTradingTime?: RwaTradingTime
   /** Official issuer press releases, hand-edited */
   newsFeed?: RwaNewsFeed
+  /** The company or fund behind the asset, hand-edited */
+  profile?: RwaAssetProfile
   tokens: RwaToken[]
 }
 
 export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
+
+export interface RwaAssetProfile {
+  /** One or two sentences */
+  description: string
+  /** e.g. `Technology · Semiconductors` */
+  sector: string
+  /** Official site, `https` */
+  website: string
+}
+
+/** Stats of every asset token on every network it has */
+export interface RwaAssetTokenStats extends DegradableResponse {
+  ticker: string
+  tokens: RwaChainTokenStats[]
+}
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
@@ -74,6 +91,10 @@ export interface RwaAssetSummary extends Pick<RwaAsset, 'ticker' | 'title' | 'lo
 
 export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
+}
+
+export interface RwaChainTokenStats extends RwaTokenNetworkStats {
+  chainId: number
 }
 
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */

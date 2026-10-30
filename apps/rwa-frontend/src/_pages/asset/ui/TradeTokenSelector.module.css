@@ -92,6 +92,51 @@
   font-size: 12px;
 }
 
+.allTokens {
+  display: inline-flex;
+  align-items: center;
+  align-self: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.allTokens:hover {
+  background: var(--color-surface);
+}
+
+.allTokens:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+.allTokens svg {
+  color: var(--color-text-secondary);
+  transition: transform 0.15s;
+}
+
+.allTokens[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+.connectPrompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 6px 0 2px 8px;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  line-height: 18px;
+}
+
 .tokens {
   display: flex;
   flex-direction: column;

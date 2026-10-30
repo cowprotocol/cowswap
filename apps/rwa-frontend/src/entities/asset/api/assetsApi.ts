@@ -70,3 +70,7 @@ export function getQuotesUrl(ticker: string, chainId: number, side: RwaQuoteSide
 export function getTokenListUrl(): string {
   return `${RWA_API_PREFIX}token-list`
 }
+
+export function getTokenStatsUrl(ticker: string): string {
+  return `${RWA_API_PREFIX}token-stats/${encodeURIComponent(ticker)}`
+}

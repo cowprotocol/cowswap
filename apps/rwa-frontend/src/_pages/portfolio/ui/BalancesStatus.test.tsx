@@ -23,7 +23,7 @@ describe('BalancesStatus', () => {
     render(<BalancesStatus progress={LOADED} onRefresh={onRefresh} />)
 
     expect(screen.queryByRole('progressbar')).toBeNull()
-    expect(screen.getByText(/^Balances updated /)).toBeTruthy()
+    expect(screen.getByText('Balances updated 12:00 UTC')).toBeTruthy()
 
     fireEvent.click(screen.getByRole('button', { name: 'Refresh balances' }))
 
