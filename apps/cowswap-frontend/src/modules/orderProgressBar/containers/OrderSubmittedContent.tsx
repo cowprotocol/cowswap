@@ -17,6 +17,7 @@ import { OrderProgressBarStepName } from '../constants'
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { useWaitAndSaveConfirmation } from '../hooks/useWaitAndSaveConfirmation'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
+import { isSolverCompetitionPending } from '../utils/solverCompetitionPending.utils'
 
 interface OrderSubmittedContentProps {
   onDismiss: Command
@@ -48,6 +49,7 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
   })
 
   let solverCompetition = orderProgressBarProps.solverCompetition
+
   if (waitAndSave.pending) {
     // Order-status solvers may already be here. Hide them until Wait & Save finishes, or the auction changes.
     solverCompetition = undefined
@@ -55,12 +57,14 @@ export function OrderSubmittedContent({ onDismiss, successTitle }: OrderSubmitte
     // Wait & Save finished with its own solver list. Show that one.
     solverCompetition = waitAndSave.solvers
   }
-  const solverCompetitionPending =
-    // Filled order: keep the placeholder until the order-status solver list has arrived.
-    (orderProgressBarProps.stepName === OrderProgressBarStepName.FINISHED &&
-      !orderProgressBarProps.solverCompetitionReady) ||
-    // Filled order or failed cancellation: also keep it up while Wait & Save is still loading.
-    (isConfirmationScreen && waitAndSave.pending)
+
+  const solverCompetitionPending = isSolverCompetitionPending({
+    hasWaitAndSaveSolvers: Boolean(waitAndSave.solvers?.length),
+    isConfirmationScreen,
+    solverCompetitionReady: orderProgressBarProps.solverCompetitionReady,
+    stepName: orderProgressBarProps.stepName,
+    waitAndSavePending: waitAndSave.pending,
+  })
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
