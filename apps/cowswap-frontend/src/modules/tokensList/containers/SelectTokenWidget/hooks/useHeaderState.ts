@@ -24,16 +24,17 @@ export function useHeaderState(): HeaderState {
   const { disableTokenImport } = widgetParams
   const { standalone } = widgetState
   const resolvedField = widgetState.field ?? Field.INPUT
-  const hasFixedTokens = Boolean(getTokenSelectorFilter(widgetState.field, widgetParams)?.tokens)
+  const tokensFilter = getTokenSelectorFilter(widgetState.field, widgetParams)
+  const hasScopedTokens = Boolean(tokensFilter?.tokens || tokensFilter?.excludedTokens)
 
   const title = resolveModalTitle(resolvedField, widgetState.tradeType) ?? t`Select token`
 
   return useMemo(
     () => ({
       title,
-      showManageButton: !standalone && !disableTokenImport && !hasFixedTokens,
+      showManageButton: !standalone && !disableTokenImport && !hasScopedTokens,
       onOpenManageWidget: openManageWidget,
     }),
-    [title, standalone, disableTokenImport, hasFixedTokens, openManageWidget],
+    [title, standalone, disableTokenImport, hasScopedTokens, openManageWidget],
   )
 }
