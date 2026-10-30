@@ -87,7 +87,7 @@ function getCachedAta(
 
   let ata: PublicKey | null = null
   try {
-    ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, false, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
+    ata = getAssociatedTokenAddressSync(new PublicKey(mint), owner, true, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
   } catch {
     // Malformed mint: leave the default `null` so the rest of the list still loads.
   }

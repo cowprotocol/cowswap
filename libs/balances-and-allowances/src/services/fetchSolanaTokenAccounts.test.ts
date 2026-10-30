@@ -20,8 +20,10 @@ const TOKEN_2022_MINT = Keypair.generate().publicKey
 const AUTHORITY = Keypair.generate().publicKey
 const OTHER_DELEGATE = Keypair.generate().publicKey
 
-function ataFor(mint: PublicKey, programId: PublicKey): PublicKey {
-  return getAssociatedTokenAddressSync(mint, OWNER, false, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
+const [VAULT_OWNER] = PublicKey.findProgramAddressSync([Buffer.from('vault')], TOKEN_2022_PROGRAM_ID)
+
+function ataFor(mint: PublicKey, programId: PublicKey, owner: PublicKey = OWNER): PublicKey {
+  return getAssociatedTokenAddressSync(mint, owner, true, programId, ASSOCIATED_TOKEN_PROGRAM_ID)
 }
 
 function createConnection(accounts: Map<string, AccountInfo<Buffer> | null>): Connection {
@@ -43,12 +45,13 @@ function encodeTokenAccount(
   programId: PublicKey,
   delegate: PublicKey | null = null,
   delegatedAmount = 0n,
+  owner: PublicKey = OWNER,
 ): AccountInfo<Buffer> {
   const data = Buffer.alloc(ACCOUNT_SIZE)
   AccountLayout.encode(
     {
       mint,
-      owner: OWNER,
+      owner,
       amount,
       delegateOption: delegate ? 1 : 0,
       delegate: delegate ?? PublicKey.default,
@@ -129,6 +132,26 @@ describe('fetchSolanaTokenAccounts — balances', () => {
       { mint: BAD_MINT, balance: 0n, delegatedAmount: undefined },
       { mint: CLASSIC_MINT.toBase58(), balance: 500n, delegatedAmount: undefined },
     ])
+  })
+
+  it('reads balances for an off-curve owner, which a multisig vault always is', async () => {
+    expect(PublicKey.isOnCurve(VAULT_OWNER.toBytes())).toBe(false)
+
+    const vaultAta = ataFor(CLASSIC_MINT, TOKEN_PROGRAM_ID, VAULT_OWNER)
+    const connection = createConnection(
+      new Map<string, AccountInfo<Buffer> | null>([
+        [vaultAta.toBase58(), encodeTokenAccount(CLASSIC_MINT, 777n, TOKEN_PROGRAM_ID, null, 0n, VAULT_OWNER)],
+      ]),
+    )
+
+    const result = await fetchSolanaTokenAccounts(
+      connection,
+      VAULT_OWNER.toBase58(),
+      [{ mint: CLASSIC_MINT.toBase58(), isToken2022: false }],
+      AUTHORITY,
+    )
+
+    expect(result).toEqual([{ mint: CLASSIC_MINT.toBase58(), balance: 777n, delegatedAmount: undefined }])
   })
 })
 
