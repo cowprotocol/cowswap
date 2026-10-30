@@ -2,7 +2,7 @@ import { createStore } from 'jotai'
 
 import { tradeTypeAtom } from 'modules/trade'
 
-import { TradeType } from 'common/modules/tradeNavigation'
+import { TradeType, TradeTypeInfo } from 'common/modules/tradeNavigation'
 
 import { priceChartVisibleAtom } from './priceChartVisibleAtom'
 
@@ -17,15 +17,25 @@ const TRADE_CHART_PREFERENCES = [
   [TradeType.YIELD, 'yieldPriceChartVisible:v0', true],
 ] as const
 
+const UNUSABLE_SAVED_VALUES = ['null', '"false"', '1', '{}', '[]', '{invalid'] as const
+
+const TRADE_CHART_ROUTES: Record<TradeType, TradeTypeInfo['route']> = {
+  [TradeType.SWAP]: '/:chainId?/swap/:inputCurrencyId?/:outputCurrencyId?',
+  [TradeType.LIMIT_ORDER]: '/:chainId?/limit/:inputCurrencyId?/:outputCurrencyId?',
+  [TradeType.ADVANCED_ORDERS]: '/:chainId?/advanced/:inputCurrencyId?/:outputCurrencyId?',
+  [TradeType.YIELD]: '/:chainId?/yield/:inputCurrencyId?/:outputCurrencyId?',
+}
+
 function createChartStore(tradeType: TradeType): ReturnType<typeof createStore> {
   const store = createStore()
   setTradeType(store, tradeType)
+  // Mount storage atoms to read values seeded after module initialization.
   store.sub(priceChartVisibleAtom, () => undefined)
   return store
 }
 
 function setTradeType(store: ReturnType<typeof createStore>, tradeType: TradeType): void {
-  store.set(tradeTypeAtom, { tradeType, route: '/:chainId?/swap/:inputCurrencyId?/:outputCurrencyId?' })
+  store.set(tradeTypeAtom, { tradeType, route: TRADE_CHART_ROUTES[tradeType] })
 }
 
 describe('priceChartVisibleAtom', () => {
@@ -93,13 +103,18 @@ describe('priceChartVisibleAtom', () => {
     expect(localStorage.getItem('price-chart-visible:v0')).toBe('false')
   })
 
-  it.each(TRADE_CHART_PREFERENCES)(
-    'falls back to the %s default for invalid JSON',
-    (tradeType, storageKey, visible) => {
-      localStorage.setItem(storageKey, '{invalid')
-      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(visible)
-    },
-  )
+  describe.each(TRADE_CHART_PREFERENCES)('%s with an unusable saved value', (tradeType, storageKey, defaultVisible) => {
+    it.each(UNUSABLE_SAVED_VALUES)('uses the mode default for %s when no legacy preference exists', (savedValue) => {
+      localStorage.setItem(storageKey, savedValue)
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(defaultVisible)
+    })
+
+    it.each(UNUSABLE_SAVED_VALUES)('uses the legacy preference for %s when one exists', (savedValue) => {
+      localStorage.setItem(storageKey, savedValue)
+      localStorage.setItem('price-chart-visible:v0', JSON.stringify(!defaultVisible))
+      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(!defaultVisible)
+    })
+  })
 
   it('keeps mode-specific choices ahead of the old shared preference', () => {
     localStorage.setItem('price-chart-visible:v0', 'false')
@@ -110,24 +125,6 @@ describe('priceChartVisibleAtom', () => {
     setTradeType(store, TradeType.ADVANCED_ORDERS)
     expect(store.get(priceChartVisibleAtom)).toBe(false)
   })
-
-  it.each(['null', '"false"', '1', '{}', '[]'])('defaults Swap to off for a saved %s value', (savedValue) => {
-    localStorage.setItem('price-chart-visible:v0', 'true')
-    localStorage.setItem('swapPriceChartVisible:v0', savedValue)
-    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
-  })
-
-  it.each(TRADE_CHART_PREFERENCES.slice(1))(
-    'uses the shared preference only for the intentional null value on %s',
-    (tradeType, storageKey) => {
-      localStorage.setItem('price-chart-visible:v0', 'false')
-      localStorage.setItem(storageKey, 'null')
-      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(false)
-
-      localStorage.setItem(storageKey, '"false"')
-      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(true)
-    },
-  )
 
   it.each(['null', '"false"', '{}', '[]'])('ignores a malformed shared preference of %s', (savedValue) => {
     localStorage.setItem('price-chart-visible:v0', savedValue)
@@ -148,12 +145,6 @@ describe('priceChartVisibleAtom', () => {
     expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(visible)
   })
 
-  it('keeps Swap off for invalid JSON even when the legacy preference is on', () => {
-    localStorage.setItem('price-chart-visible:v0', 'true')
-    localStorage.setItem('swapPriceChartVisible:v0', '{invalid')
-    expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
-  })
-
   it('lets the user turn off an inherited Swap preference and remembers the new choice', () => {
     localStorage.setItem('price-chart-visible:v0', 'true')
     const store = createChartStore(TradeType.SWAP)
@@ -164,13 +155,4 @@ describe('priceChartVisibleAtom', () => {
     expect(localStorage.getItem('swapPriceChartVisible:v0')).toBe('false')
     expect(createChartStore(TradeType.SWAP).get(priceChartVisibleAtom)).toBe(false)
   })
-
-  it.each(TRADE_CHART_PREFERENCES.slice(1))(
-    'uses the %s default for malformed JSON instead of a legacy off preference',
-    (tradeType, storageKey) => {
-      localStorage.setItem('price-chart-visible:v0', 'false')
-      localStorage.setItem(storageKey, '{invalid')
-      expect(createChartStore(tradeType).get(priceChartVisibleAtom)).toBe(true)
-    },
-  )
 })
