@@ -8,13 +8,13 @@ import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteE
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
 
-import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
+import { TradeQuoteState, updatePendingQuotesAtom, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 import { getIsFinalQuote } from '../utils/getIsFastQuote'
 
 export interface TradeQuoteManager {
-  setLoading(hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void
+  setLoading(fetchParams: TradeQuoteFetchParams, quoteParams: QuoteBridgeRequest): void
 
   reset(): void
 
@@ -31,17 +31,20 @@ export interface TradeQuoteManager {
     fetchParams: TradeQuoteFetchParams,
     quoteParams: QuoteBridgeRequest,
   ): void
+
+  onSettled(fetchParams: TradeQuoteFetchParams): void
 }
 
 export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
+  const updatePendingQuotes = useSetAtom(updatePendingQuotesAtom)
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
   const lastQuoteParamsRef = useRef<QuoteBridgeRequest | null>(null)
 
   return useMemo((): TradeQuoteManager | null => {
     if (!sellTokenAddress) return null
 
-    const setLoading = (hasParamsChanged: boolean, quoteParams: QuoteBridgeRequest): void => {
+    const setLoading = (fetchParams: TradeQuoteFetchParams, quoteParams: QuoteBridgeRequest): void => {
       const prevQuoteParams = lastQuoteParamsRef.current
       lastQuoteParamsRef.current = quoteParams
 
@@ -52,9 +55,10 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       // and re-trigger this branch — flickering the form between error and loading.
       const tradeSubjectChanged = didTradeSubjectChange(prevQuoteParams, quoteParams)
 
+      updatePendingQuotes(sellTokenAddress, fetchParams, false)
       update(sellTokenAddress, {
         isLoading: true,
-        hasParamsChanged,
+        hasParamsChanged: fetchParams.hasParamsChanged,
         ...(tradeSubjectChanged ? { error: null } : null),
         // Quotes are keyed by sell token address, which can repeat across chains: never keep another chain's quote
         ...(didQuoteChainChange(prevQuoteParams, quoteParams) ? { quote: null } : null),
@@ -63,7 +67,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
 
     const reset = (): void => {
       lastQuoteParamsRef.current = null
-      update(sellTokenAddress, { quote: null, isLoading: false })
+      update(sellTokenAddress, { quote: null, isLoading: false, pendingQuotes: null })
     }
 
     const onError = (
@@ -72,6 +76,8 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       quoteParams: QuoteBridgeRequest,
       fetchParams: TradeQuoteFetchParams,
     ): void => {
+      updatePendingQuotes(sellTokenAddress, fetchParams, true)
+
       if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
         return
       }
@@ -96,6 +102,8 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       fetchParams: TradeQuoteFetchParams,
       quoteParams: QuoteBridgeRequest,
     ): void => {
+      updatePendingQuotes(sellTokenAddress, fetchParams, true)
+
       if (isStaleQuote(lastQuoteParamsRef.current, quoteParams)) {
         return
       }
@@ -110,13 +118,18 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       })
     }
 
+    const onSettled = (fetchParams: TradeQuoteFetchParams): void => {
+      updatePendingQuotes(sellTokenAddress, fetchParams, true)
+    }
+
     return {
       setLoading,
       reset,
       onError,
       onResponse,
+      onSettled,
     }
-  }, [update, processUnsupportedTokenError, sellTokenAddress])
+  }, [update, updatePendingQuotes, processUnsupportedTokenError, sellTokenAddress])
 }
 
 function didQuoteChainChange(prevQuoteParams: QuoteBridgeRequest | null, quoteParams: QuoteBridgeRequest): boolean {

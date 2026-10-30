@@ -32,7 +32,7 @@ import {
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
-import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
@@ -117,7 +117,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
   const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
   const isEoaEthFlow = useIsEoaEthFlow()
 
   useEffect(() => {
@@ -226,7 +226,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
               {(!hideQuoteAmount || (isFeeExceedsError && !isRateLoading && hasInputAmount)) && (
                 <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
               )}
-              {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+              {isValidationPassedOrRefreshing && <TradeApproveWithAffectedOrderList />}
             </TradeRows>
 
             {showWaitForCows && <WaitAndSaveRowContainer />}
@@ -254,7 +254,7 @@ export function SwapWidget({ topContent, bottomContent, allowSwapSameToken }: Sw
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
-        isPrimaryValidationPassed,
+        isValidationPassedOrRefreshing,
         showWaitForCows,
         hideQuoteAmount,
         isFeeExceedsError,

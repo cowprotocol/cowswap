@@ -43,7 +43,7 @@ export async function fetchAndProcessQuote(
   isSolanaEnabled = false,
   getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
-  const { hasParamsChanged, priceQuality } = fetchParams
+  const { priceQuality } = fetchParams
 
   const chainId = quoteParams.sellTokenChainId
   const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
@@ -67,19 +67,23 @@ export async function fetchAndProcessQuote(
     tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
   }
 
-  tradeQuoteManager.setLoading(hasParamsChanged, quoteParams)
+  tradeQuoteManager.setLoading(fetchParams, quoteParams)
 
-  if (isBridge) {
-    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
-  } else {
-    await fetchSwapQuote(
-      fetchParams,
-      quoteParams,
-      advancedSettings,
-      tradeQuoteManager,
-      processQuoteError,
-      isSolanaEnabled,
-    )
+  try {
+    if (isBridge) {
+      await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    } else {
+      await fetchSwapQuote(
+        fetchParams,
+        quoteParams,
+        advancedSettings,
+        tradeQuoteManager,
+        processQuoteError,
+        isSolanaEnabled,
+      )
+    }
+  } finally {
+    tradeQuoteManager.onSettled(fetchParams)
   }
 }
 

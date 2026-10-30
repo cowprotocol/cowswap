@@ -1,5 +1,5 @@
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
 import { TradeQuoteState } from 'modules/tradeQuote'
@@ -792,6 +792,35 @@ describe('validateTradeForm - Solana swap recipient', () => {
       recipientEnsAddress: EVM_RECIPIENT,
     })
     expect(result).toContain(TradeFormValidation.RecipientInvalid)
+  })
+
+  describe('quote loading', () => {
+    function withPendingQuotes(
+      pendingQuotes: TradeQuoteState['pendingQuotes'],
+      tradeType = TradeType.SWAP,
+    ): TradeFormValidationContext {
+      return {
+        ...baseContext,
+        derivedTradeState: { ...baseContext.derivedTradeState, tradeType },
+        tradeQuote: { isLoading: false, quote: {}, fetchParams: { priceQuality: 'verified' }, pendingQuotes },
+      } as unknown as TradeFormValidationContext
+    }
+
+    const FAST_PENDING = { fetchStartTimestamp: 1, priceQualities: [PriceQuality.FAST] }
+
+    test('adds QuoteLoading until every quote of the fetch round has arrived', () => {
+      expect(validateTradeForm(withPendingQuotes(FAST_PENDING))).toContain(TradeFormValidation.QuoteLoading)
+    })
+
+    test('does not add QuoteLoading once every quote has arrived', () => {
+      expect(validateTradeForm(withPendingQuotes(null)) || []).not.toContain(TradeFormValidation.QuoteLoading)
+    })
+
+    test('does not add QuoteLoading for a limit order while its quote refreshes', () => {
+      expect(validateTradeForm(withPendingQuotes(FAST_PENDING, TradeType.LIMIT_ORDER)) || []).not.toContain(
+        TradeFormValidation.QuoteLoading,
+      )
+    })
   })
 })
 
