@@ -150,8 +150,8 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
       {!isConnected && (
         // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
         <div className={styles.connectPrompt}>
-          <span>Connect your wallet to trade this tokenized asset.</span>
           <ConnectButton variant="secondary" />
+          <span> to trade this tokenized asset.</span>
         </div>
       )}
     </div>

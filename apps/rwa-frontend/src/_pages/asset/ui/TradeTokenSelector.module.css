@@ -130,7 +130,6 @@
 .connectPrompt {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   flex-wrap: wrap;
   gap: 8px;
   padding: 6px 0 2px 8px;
