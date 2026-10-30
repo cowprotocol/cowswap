@@ -228,7 +228,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom
-  useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
+  const solverCompetitionFailed = useBackendApiStatusUpdater(chainId, orderId, doNotQuery)
+  const solverCompetitionReady = apiSolverCompetition !== undefined || solverCompetitionFailed
   useProgressBarStepNameUpdater(
     orderId,
     isUnfillable,
@@ -263,6 +264,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
       countdown,
       totalSolvers,
       solverCompetition,
+      solverCompetitionReady,
       stepName: progressBarStepName || DEFAULT_STEP_NAME,
       showCancellationModal,
       swapAndBridgeContext,
@@ -272,6 +274,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     countdown,
     totalSolvers,
     solverCompetition,
+    solverCompetitionReady,
     progressBarStepName,
     showCancellationModal,
     swapAndBridgeContext,
@@ -527,10 +530,15 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   [CompetitionOrderStatus.type.CANCELLED]: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string | undefined, doNotQuery: boolean): void {
+function useBackendApiStatusUpdater(
+  chainId: SupportedChainId,
+  orderId: string | undefined,
+  doNotQuery: boolean,
+): boolean {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const [stopQuerying, setStopQuerying] = useState(false)
-  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
+  const { data: status, error } = usePendingOrderStatus(chainId, orderId, stopQuerying)
+  const { type: backendApiStatus, value } = status || {}
 
   // Once doNotQuery is set to true, keep querying for another 3 seconds to ensure we get the final status and then stop
   useEffect(() => {
@@ -557,6 +565,8 @@ function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string |
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
   }, [orderId, setAtom, backendApiStatus, value])
+
+  return error !== undefined
 }
 
 const POOLING_SWR_OPTIONS = {
@@ -631,10 +641,12 @@ function usePendingOrderStatus(
   chainId: SupportedChainId,
   orderId: string | undefined,
   doNotQuery?: boolean,
-): CompetitionOrderStatus | undefined {
-  return useSWR(
+): { data: CompetitionOrderStatus | undefined; error: unknown } {
+  const { data, error } = useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
-  ).data
+  )
+
+  return { data, error }
 }

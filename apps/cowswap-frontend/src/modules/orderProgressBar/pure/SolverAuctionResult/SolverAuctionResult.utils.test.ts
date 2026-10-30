@@ -91,25 +91,32 @@ describe('SolverAuctionResult.utils', () => {
   })
 
   describe('getSolverBidFillPercent', () => {
-    const winner = CurrencyAmount.fromRawAmount(buyToken, '100000000000000000000')
+    const winner = CurrencyAmount.fromRawAmount(buyToken, '100')
+    const worst = CurrencyAmount.fromRawAmount(buyToken, '80')
 
-    it('returns the buy amount as a percent of the winning bid', () => {
-      const half = CurrencyAmount.fromRawAmount(buyToken, '50000000000000000000')
+    it('scales the fill from the worst bid to the winner and keeps a 10% floor', () => {
+      const mid = CurrencyAmount.fromRawAmount(buyToken, '90')
 
-      expect(getSolverBidFillPercent(half, winner)).toBe(50)
-      expect(getSolverBidFillPercent(winner, winner)).toBe(100)
+      expect(getSolverBidFillPercent(worst, winner, worst)).toBe(10)
+      expect(getSolverBidFillPercent(mid, winner, worst)).toBe(55)
+      expect(getSolverBidFillPercent(winner, winner, worst)).toBe(100)
     })
 
-    it('caps the fill at 100 percent', () => {
-      const more = CurrencyAmount.fromRawAmount(buyToken, '150000000000000000000')
+    it('fills the row when there is no spread between the worst bid and the winner', () => {
+      expect(getSolverBidFillPercent(winner, winner, winner)).toBe(100)
+    })
 
-      expect(getSolverBidFillPercent(more, winner)).toBe(100)
+    it('caps a bid above the winner at a full row', () => {
+      const more = CurrencyAmount.fromRawAmount(buyToken, '150')
+
+      expect(getSolverBidFillPercent(more, winner, worst)).toBe(100)
     })
 
     it('returns null when a bid amount is missing or the winner is zero', () => {
-      expect(getSolverBidFillPercent(null, winner)).toBeNull()
-      expect(getSolverBidFillPercent(winner, null)).toBeNull()
-      expect(getSolverBidFillPercent(winner, CurrencyAmount.fromRawAmount(buyToken, '0'))).toBeNull()
+      expect(getSolverBidFillPercent(null, winner, worst)).toBeNull()
+      expect(getSolverBidFillPercent(winner, null, worst)).toBeNull()
+      expect(getSolverBidFillPercent(winner, winner, null)).toBeNull()
+      expect(getSolverBidFillPercent(winner, CurrencyAmount.fromRawAmount(buyToken, '0'), worst)).toBeNull()
     })
   })
 

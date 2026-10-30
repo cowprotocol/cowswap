@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
-import { InfoTooltip, TokenAmount } from '@cowprotocol/ui'
+import { getTokenAmountTitle, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { PiTrophyFill } from 'react-icons/pi'
@@ -21,14 +21,21 @@ export interface SolverAuctionRowProps {
   index: number
   solver: SolverCompetition
   winnerBuyAmount: CurrencyAmount<Currency> | null
+  worstBuyAmount: CurrencyAmount<Currency> | null
 }
 
-export function SolverAuctionRow({ solver, index, buyToken, winnerBuyAmount }: SolverAuctionRowProps): ReactNode {
+export function SolverAuctionRow({
+  solver,
+  index,
+  buyToken,
+  winnerBuyAmount,
+  worstBuyAmount,
+}: SolverAuctionRowProps): ReactNode {
   const isWinner = index === 0
   const name = solver.displayName || solver.solver
   const logoSrc = solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src
   const buyAmount = buyToken ? getSolverBuyAmount(solver, buyToken) : null
-  const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount) : null
+  const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount, worstBuyAmount) : null
   const deltaAmount =
     !isWinner && winnerBuyAmount && buyAmount && winnerBuyAmount.greaterThan(buyAmount)
       ? winnerBuyAmount.subtract(buyAmount)
@@ -76,11 +83,17 @@ export function SolverAuctionRow({ solver, index, buyToken, winnerBuyAmount }: S
           </styledEl.SolverDetails>
         </styledEl.SolverInfo>
         {isWinner && buyAmount ? (
-          <sharedStyledEl.BidValue $isWinner>
-            <TokenAmount amount={buyAmount} tokenSymbol={buyAmount.currency} />
-          </sharedStyledEl.BidValue>
+          <sharedStyledEl.BidValueTooltip
+            content={getTokenAmountTitle({ amount: buyAmount, tokenSymbol: buyAmount.currency })}
+            disableHoverablePopup
+            placement="top"
+          >
+            <sharedStyledEl.BidValue $isWinner data-testid="solver-auction-bid-value">
+              <TokenAmount amount={buyAmount} noTitle tokenSymbol={buyAmount.currency} />
+            </sharedStyledEl.BidValue>
+          </sharedStyledEl.BidValueTooltip>
         ) : null}
-        {!isWinner && deltaAmount ? <SolverDeltaValue delta={deltaAmount} /> : null}
+        {!isWinner && deltaAmount && buyAmount ? <SolverDeltaValue buyAmount={buyAmount} delta={deltaAmount} /> : null}
       </styledEl.RowContent>
     </styledEl.Row>
   )

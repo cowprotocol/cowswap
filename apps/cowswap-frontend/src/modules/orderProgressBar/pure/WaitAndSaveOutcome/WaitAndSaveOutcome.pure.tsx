@@ -13,7 +13,7 @@ import { formatGainPercentLabel, getGainBarLayout } from './WaitAndSaveOutcome.u
 export interface WaitAndSaveOutcomeProps {
   gainAmount: string
   gainFiat: string
-  gainPercent: number
+  gainPercent?: number
   tradingAloneAmount: string
   tradingAloneNumeric: number
   gainNumeric: number
@@ -37,7 +37,7 @@ export function WaitAndSaveOutcome({
   const heroContent = `+${gainAmount} ${tokenSymbol}`
   const { ref: heroRef, isFitted } = useFitHeroFontSize(heroContent)
   const barLayout = getGainBarLayout(tradingAloneNumeric, gainNumeric)
-  const percentLabel = formatGainPercentLabel(gainPercent)
+  const percentLabel = gainPercent === undefined ? undefined : formatGainPercentLabel(gainPercent)
   const tooltipContent =
     comparisonTooltip ??
     t`Compares what you received with the best offer solvers made for your order alone, in the same auction. It's not compared with swapping right away or with your quote.`
@@ -55,7 +55,9 @@ export function WaitAndSaveOutcome({
             <Trans>Wait & save</Trans>
           </styledEl.Title>
         </styledEl.TitleGroup>
-        <styledEl.GainPill data-testid="wait-and-save-gain-pill">{percentLabel}</styledEl.GainPill>
+        {percentLabel ? (
+          <styledEl.GainPill data-testid="wait-and-save-gain-pill">{percentLabel}</styledEl.GainPill>
+        ) : null}
       </styledEl.TopRow>
 
       <styledEl.Hero>
@@ -64,7 +66,7 @@ export function WaitAndSaveOutcome({
         </styledEl.GainAmount>
         <styledEl.SubRow>
           <styledEl.SubText>
-            <Trans>≈ ${gainFiat} more than trading alone</Trans>
+            {gainFiat ? <Trans>≈ {gainFiat} more than trading alone</Trans> : <Trans>more than trading alone</Trans>}
           </styledEl.SubText>
           <TooltipIcon type="info" title={t`Wait & save`} content={tooltipContent} />
         </styledEl.SubRow>
