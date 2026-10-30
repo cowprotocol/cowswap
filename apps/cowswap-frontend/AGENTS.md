@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-28
+last_reviewed: 2026-10-30
 source_of_truth_scope: cowswap-frontend-specific architecture and module overrides
 ---
 
@@ -40,7 +40,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
   - `pure/` (presentational components)
   - `hooks/`
   - `state/` (Jotai atoms)
-  - `updaters/` (legacy/internal pattern to avoid duplicate execution; see state notes below)
+  - `updaters/` (legacy; a new side effect uses `observe` from `jotai-effect` in `state/`. See state notes below)
   - `index.ts` (module entry for public exports)
 - Treat `src/common` as a shared module namespace; do not put domain-specific logic there.
 - Before adding code to `src/common`, verify it is truly cross-domain/shared and not owned by a specific module.
@@ -49,7 +49,7 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Modules may include additional directories (`utils/`, `constants/`, `types/`) when needed.
 
 ## File naming and exports
-- Prefer explicit suffixes: `*.container.tsx`, `*.pure.tsx`, `*.modal.tsx`, `*.input.tsx`, `*.updater.tsx`, `*.styled.ts`, `*.atoms.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`.
+- Prefer explicit suffixes: `*.container.tsx`, `*.pure.tsx`, `*.modal.tsx`, `*.input.tsx`, `*.updater.tsx` (legacy; do not add new updater files), `*.styled.ts`, `*.atoms.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`.
 - Non-barrel files should use an explicit approved suffix; hooks remain the naming exception.
 - Hooks are the naming exception: use descriptive `useX.ts`/`useX.tsx` filenames.
 - Avoid generic filenames like `styled` or `index` unless the file is an actual barrel export.
@@ -91,6 +91,17 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Full rule: [`docs/FONT_CONVENTIONS.md`](../../docs/FONT_CONVENTIONS.md). Do not migrate existing `Font.*` / raw sizes unless already editing that style.
 
 ## State management notes
-- Prefer managing side effects with `jotai-effect` rather than updaters.
-- Use `atom.onMount` to subscribe to external sources when needed.
+- `SHOULD` run side effects with `observe` from `jotai-effect` in `state/`. `SHOULD NOT` add an updater so a `useEffect` can write atoms after render.
+- Use `atom.onMount` to subscribe to an external source while the atom has listeners.
+- `SHOULD` wait for a deadline with `setTimeout`. `runCountdown` in `@cowprotocol/common-hooks` wakes when the whole second changes and stops at zero. `useRemainingSeconds` re-renders on that change. `useCountdown` writes text without a render when the value is only displayed.
+- `SHOULD NOT` poll a known deadline with `setInterval`.
 - Both SWR and `jotai/query` (`atomWithQuery`) are acceptable for data fetching; the team is evaluating migration.
+
+## Business logic and unit tests
+- `MUST` keep derivations and state transitions in `state/` (Jotai atoms) or in pure `utils/` / `services/` functions. Components call `useAtomValue`, `useSetAtom`, or `useAtom` on the atom.
+- `MUST NOT` add a hook whose body only returns `useAtomValue(someAtom)`, `useSetAtom(someAtom)`, or `useAtom(someAtom)`. Call the Jotai hook at the component. 
+- `MUST NOT` chain domain hooks inside `useMemo` / `useCallback` / `useEffect` / `useLayoutEffect` to compute domain state. Extract a derived or write atom.
+- `MUST NOT` import `react`, `react-redux`, or `legacy/state` from new files under `state/` or `utils/`. ESLint blocks this. Existing files are an allowlist in `eslint.config.js`.
+- `SHOULD` test atoms and pure functions in `*.test.ts` with `createStore()` from `jotai`.
+- `SHOULD NOT` add `render` / `renderHook` tests, or stack `jest.mock()` calls, unless the subject is a complex stateful container or a browser-only hook and the PR notes say why. More than 3 `jest.mock()` calls together with `render` / `renderHook` fails `pnpm arch:check` when the file is new or the mock count grew.
+- UI behavior belongs in Cosmos fixtures and Playwright (`apps/cowswap-e2e-tests`), not in unit tests that restate markup.
