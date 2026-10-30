@@ -13,7 +13,7 @@ import { useFeatureFlags } from './useFeatureFlags'
  * bridge feature flags are enabled.
  */
 export function useAvailableTargetChains(): TargetChainId[] {
-  const { isBtcBridgeEnabled, isSolBridgeEnabled } = useFeatureFlags()
+  const { isBtcBridgeEnabled, isSolBridgeEnabled, isRobinhoodEnabled } = useFeatureFlags()
 
   return useMemo(() => {
     const chainsToSkip: TargetChainId[] = []
@@ -26,6 +26,10 @@ export function useAvailableTargetChains(): TargetChainId[] {
       chainsToSkip.push(SupportedChainId.SOLANA)
     }
 
+    if (!isRobinhoodEnabled) {
+      chainsToSkip.push(SupportedChainId.ROBINHOOD)
+    }
+
     return getAvailableDestinationChains(chainsToSkip)
-  }, [isBtcBridgeEnabled, isSolBridgeEnabled])
+  }, [isBtcBridgeEnabled, isSolBridgeEnabled, isRobinhoodEnabled])
 }

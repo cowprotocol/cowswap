@@ -24,7 +24,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/cow-sdk": "9.3.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/types": "workspace:*",
@@ -38,7 +38,7 @@
     "styled-components": "5.3.11",
     "swr": "2.3.3",
     "timeago.js": "4.0.2",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {

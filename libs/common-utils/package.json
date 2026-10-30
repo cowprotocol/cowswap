@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/cow-sdk": "9.3.0",
     "@cowprotocol/currency": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",
@@ -81,7 +81,7 @@
     "react": "19.1.2",
     "safe-stable-stringify": "2.5.0",
     "ua-parser-js": "1.0.38",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9"
   },
   "devDependencies": {

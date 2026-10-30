@@ -119,6 +119,10 @@ const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, ChainAccentOverri
     // Override: Original color #627EEA differs from SDK's #62688F
     color: '#627EEA',
   },
+  [SupportedChainId.ROBINHOOD]: {
+    // Robin Neon (#ccff00) is 1.2:1 on white; darkened to the 3:1 UI contrast minimum for light mode
+    lightColor: '#7e9e00',
+  },
 }
 
 /**

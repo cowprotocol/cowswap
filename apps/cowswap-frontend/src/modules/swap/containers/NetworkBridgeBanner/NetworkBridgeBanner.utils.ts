@@ -6,6 +6,7 @@ const SHOULD_SHOW_ALERT_CHAIN_IDS = [
   SupportedChainId.LINEA,
   SupportedChainId.PLASMA,
   SupportedChainId.INK,
+  SupportedChainId.ROBINHOOD,
 ] as const satisfies SupportedChainId[]
 
 const SHOULD_SHOW_ALERT = new Set<SupportedChainId | undefined>(SHOULD_SHOW_ALERT_CHAIN_IDS)

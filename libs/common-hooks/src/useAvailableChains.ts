@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { getAvailableSourceChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useFeatureFlags } from './useFeatureFlags'
 import { useIsSolanaAvailable } from './useIsSolanaAvailable'
 
 export interface UseAvailableChainsOptions {
@@ -19,6 +20,7 @@ export interface UseAvailableChainsOptions {
  */
 export function useAvailableChains({ excludeSolana = false }: UseAvailableChainsOptions = {}): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
+  const { isRobinhoodEnabled } = useFeatureFlags()
   const isSolanaAvailable = useIsSolanaAvailable()
 
   return useMemo(
@@ -31,8 +33,12 @@ export function useAvailableChains({ excludeSolana = false }: UseAvailableChains
         chainsToSkip.push(SupportedChainId.SOLANA)
       }
 
+      if (!isRobinhoodEnabled) {
+        chainsToSkip.push(SupportedChainId.ROBINHOOD)
+      }
+
       return getAvailableSourceChains(chainsToSkip)
     },
-    [isSolanaAvailable, excludeSolana],
+    [isSolanaAvailable, excludeSolana, isRobinhoodEnabled],
   )
 }
