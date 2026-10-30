@@ -16,6 +16,7 @@ import { getIsFastQuote, getIsFinalQuote } from '../utils/getIsFastQuote'
 
 export interface PendingQuotes {
   fetchStartTimestamp: number
+  hasParamsChanged: boolean
   priceQualities: PriceQuality[]
 }
 
@@ -103,7 +104,7 @@ export const updatePendingQuotesAtom = atom(
     const sellTokenAddress = getAddressKey(_sellTokenAddress)
     const prevState = get(tradeQuotesAtom)
     const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
-    const { fetchStartTimestamp, priceQuality } = fetchParams
+    const { fetchStartTimestamp, hasParamsChanged, priceQuality } = fetchParams
     const current = prevQuote.pendingQuotes
     const isCurrentRound = current?.fetchStartTimestamp === fetchStartTimestamp
 
@@ -117,7 +118,7 @@ export const updatePendingQuotesAtom = atom(
       ...prevState,
       [sellTokenAddress]: {
         ...prevQuote,
-        pendingQuotes: priceQualities.length ? { fetchStartTimestamp, priceQualities } : null,
+        pendingQuotes: priceQualities.length ? { fetchStartTimestamp, hasParamsChanged, priceQualities } : null,
       },
     })
   },

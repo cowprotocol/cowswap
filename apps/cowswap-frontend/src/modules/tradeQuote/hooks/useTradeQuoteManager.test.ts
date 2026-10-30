@@ -11,7 +11,7 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 
 import { TradeQuoteState, tradeQuotesAtom } from '../state/tradeQuoteAtom'
 import { TradeQuoteFetchParams } from '../types'
-import { getAreAllQuotesReceived } from '../utils/getAreAllQuotesReceived'
+import { getAreAllQuotesReceived, getIsSameTradeQuoteRefreshing } from '../utils/getAreAllQuotesReceived'
 
 // Avoid pulling token entities / wallet deps into this unit test.
 jest.mock('./useProcessUnsupportedTokenError', () => ({
@@ -230,6 +230,30 @@ describe('useTradeQuoteManager - all quotes received', () => {
     act(() => manager.onSettled(fetchParams))
 
     expect(getAreAllQuotesReceived(getState())).toBe(false)
+  })
+
+  it('keeps a params change visible on the round after the fast quote arrives', () => {
+    const manager = renderManager()
+    const params = makeParams()
+
+    startRound(manager, params)
+    act(() => manager.onResponse(quote, null, fastParams, params))
+
+    expect(getState().hasParamsChanged).toBe(false)
+    expect(getIsSameTradeQuoteRefreshing(getState())).toBe(false)
+  })
+
+  it('treats a polling round of the same trade as refreshing', () => {
+    const manager = renderManager()
+    const params = makeParams()
+    const pollingParams: TradeQuoteFetchParams = { ...fetchParams, hasParamsChanged: false, fetchStartTimestamp: 2 }
+
+    startRound(manager, params)
+    act(() => manager.onResponse(quote, null, fetchParams, params))
+    act(() => manager.onResponse(quote, null, fastParams, params))
+    act(() => manager.setLoading(pollingParams, params))
+
+    expect(getIsSameTradeQuoteRefreshing(getState())).toBe(true)
   })
 
   it('clears pending quotes on reset', () => {

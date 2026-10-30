@@ -18,7 +18,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import {
   useGetTradeFormValidations,
-  useIsTradeFormValidationPassed,
+  useIsTradeFormValidationPassedOrRefreshing,
   useShouldHideTradeRateDetails,
 } from 'modules/tradeFormValidation'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
@@ -84,7 +84,7 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
   const localFormValidation = useTwapFormState()
   const validations = useGetTradeFormValidations()
   const primaryFormValidation = validations?.[0] || null
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
 
   const hideQuoteAmount = useShouldHideTradeRateDetails({ hideIfWrapUnwrap: true })
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
@@ -245,7 +245,7 @@ export function TwapFormWidget({ tradeWarnings, captcha }: TwapFormWidget): Reac
       <TwapFormWarnings localFormValidation={localFormValidation} />
 
       <TradeRows>
-        {isPrimaryValidationPassed && !localFormValidation && (
+        {isValidationPassedOrRefreshing && !localFormValidation && (
           <TradeApproveWithAffectedOrderList approvalTarget={isEoaTwap ? 'poller' : undefined} />
         )}
       </TradeRows>
