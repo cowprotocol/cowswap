@@ -7,10 +7,10 @@ import { widgetIframeTransport, WidgetMethodsEmit } from '@cowprotocol/widget-li
 
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
-import { openModalState } from 'common/state/openModalState'
+import { openModalElementsState } from 'common/state/openModalState'
 
 export function IframeResizer(): null {
-  const isModalOpen = useAtomValue(openModalState)
+  const modalElements = useAtomValue(openModalElementsState)
   const previousHeightRef = useRef(0)
   const { disableScrollbars } = useInjectedWidgetParams()
 
@@ -36,19 +36,8 @@ export function IframeResizer(): null {
     const contentElement = getContentElement(document)
 
     const sendHeightUpdate = (): void => {
-      const contentHeight = getContentHeight(contentElement)
-
-      if (isModalOpen) {
-        widgetIframeTransport.postMessageToWindow(
-          window.parent,
-          WidgetMethodsEmit.SET_FULL_HEIGHT,
-          void 0,
-          parentOrigin,
-        )
-
-        previousHeightRef.current = 0
-        return
-      }
+      // Legacy modals render in a portal outside #root, so they are measured separately
+      const contentHeight = Math.max(getContentHeight(contentElement), ...modalElements.map(getContentHeight))
 
       if (contentHeight !== previousHeightRef.current) {
         widgetIframeTransport.postMessageToWindow(
@@ -79,6 +68,8 @@ export function IframeResizer(): null {
       resizeObserver?.observe(document.body)
     }
 
+    modalElements.forEach((modalElement) => resizeObserver?.observe(modalElement))
+
     const mutationObserver =
       !resizeObserver && typeof MutationObserver !== 'undefined'
         ? new MutationObserver(() => {
@@ -98,7 +89,7 @@ export function IframeResizer(): null {
       resizeObserver?.disconnect()
       mutationObserver?.disconnect()
     }
-  }, [isModalOpen])
+  }, [modalElements])
 
   return null
 }
