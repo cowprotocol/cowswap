@@ -100,10 +100,11 @@ export async function getAsset(ticker: string): Promise<RwaAssetResponse | null>
 
 /** Per share like `getAssetChart` */
 export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandle[]> {
-  const [candles, sharesPerToken] = await Promise.all([
-    marketDataProvider.getCandles(asset, range),
-    loadChartSharesPerToken(asset.tokens),
+  const [{ items: candles, coinTokens }, { byKey }] = await Promise.all([
+    loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getCandles(coingeckoId, range)),
+    loadSharesPerToken(asset.tokens),
   ])
+  const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
 
   if (sharesPerToken === null) return candles
 
@@ -118,10 +119,11 @@ export async function getAssetCandles(asset: RwaAsset, range: RwaChartRange): Pr
 
 /** USD per share of the underlying, or per token when the charted coin has no single known multiplier */
 export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]> {
-  const [points, sharesPerToken] = await Promise.all([
-    marketDataProvider.getChart(asset, range),
-    loadChartSharesPerToken(asset.tokens),
+  const [{ items: points, coinTokens }, { byKey }] = await Promise.all([
+    loadFirstCoinWithData(asset.tokens, (coingeckoId) => marketDataProvider.getChart(coingeckoId, range)),
+    loadSharesPerToken(asset.tokens),
   ])
+  const sharesPerToken = getCoinSharesPerToken(coinTokens, byKey)
 
   if (sharesPerToken === null) return points
 
@@ -230,26 +232,38 @@ export async function listAssets({ page, pageSize, sort, order, ...filter }: Lis
   }
 }
 
+/**
+ * Shares per token of a charted coin. Its price is shared by every token of that coin, so a multiplier that differs
+ * between them, or is unknown for one, leaves the chart per token
+ */
+function getCoinSharesPerToken(coinTokens: RwaToken[], sharesPerToken: Record<string, number>): number | null {
+  const multipliers = new Set(coinTokens.map((token) => sharesPerToken[getTokenKey(token)]))
+  const [multiplier] = multipliers
+
+  return multipliers.size === 1 && multiplier !== undefined && multiplier > 0 ? multiplier : null
+}
+
 function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[] | null {
   return market ? buildDailySeries(market) : null
 }
 
 /**
- * Shares per token of the coin `MarketDataProvider.getChart` and `getCandles` read, the first token's. Its price is
- * shared by every token of that coin, so a multiplier that differs between them, or is unknown for one, leaves the
- * chart per token
+ * Tries the coins of `tokens` in registry order: an issuer's coin can stop getting prices while another issuer's coin
+ * of the same asset still trades. `coinTokens` are the tokens of the coin `items` came from
  */
-async function loadChartSharesPerToken(tokens: RwaToken[]): Promise<number | null> {
-  const coingeckoId = tokens.find((token) => token.coingeckoId)?.coingeckoId
+async function loadFirstCoinWithData<T>(
+  tokens: RwaToken[],
+  load: (coingeckoId: string) => Promise<T[]>,
+): Promise<{ items: T[]; coinTokens: RwaToken[] }> {
+  const coingeckoIds = [...new Set(tokens.flatMap((token) => (token.coingeckoId ? [token.coingeckoId] : [])))]
 
-  if (!coingeckoId) return null
+  for (const coingeckoId of coingeckoIds) {
+    const items = await load(coingeckoId)
 
-  const coinTokens = tokens.filter((token) => token.coingeckoId === coingeckoId)
-  const { byKey } = await loadSharesPerToken(coinTokens)
-  const multipliers = new Set(coinTokens.map((token) => byKey[getTokenKey(token)]))
-  const [multiplier] = multipliers
+    if (items.length) return { items, coinTokens: tokens.filter((token) => token.coingeckoId === coingeckoId) }
+  }
 
-  return multipliers.size === 1 && multiplier !== undefined && multiplier > 0 ? multiplier : null
+  return { items: [], coinTokens: [] }
 }
 
 async function loadNetworkStats(

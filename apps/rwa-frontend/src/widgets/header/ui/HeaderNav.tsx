@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import styles from './Header.module.css'
+import { HeaderMoreMenu } from './HeaderMoreMenu'
 
 const LINKS = [
   { href: '/', title: 'Explore' },
@@ -33,6 +34,7 @@ export function HeaderNav(): ReactNode {
       })}
       {/* CoW Swap is served at the root of the same origin, outside of the basePath that `Link` adds */}
       <a href="/">Swap</a>
+      <HeaderMoreMenu />
     </nav>
   )
 }
