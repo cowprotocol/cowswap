@@ -11,6 +11,7 @@ import useSWR from 'swr'
 
 import {
   getSolanaTradeOverhead,
+  getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,
   useDerivedTradeState,
   useIsSolanaSponsoredTrade,
@@ -18,6 +19,15 @@ import {
 } from 'modules/trade'
 import type { SolanaFundedAccount, SolanaTradeOverhead } from 'modules/trade'
 import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
+
+export interface UseSolanaTradeOverheadOptions {
+  /**
+   * Prices the bundle as if nobody sponsored it — what placing the order costs in total, rather than
+   * what the owner has to hold. Sponsoring moves most of that spend to the funder without changing
+   * it, so the un-sponsored figure is also what the order costs to place either way.
+   */
+  ignoreSponsor?: boolean
+}
 
 interface OverheadRequest {
   fundedAccounts: SolanaFundedAccount[]
@@ -27,10 +37,13 @@ interface OverheadRequest {
 /**
  * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve
  * (`required` gates the trade, `maxReserve` adds priority-fee headroom for the MAX button). On a
- * sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
- * still debits the owner). `null` while unknown or when nothing debits the wallet at all.
+ * sponsored trade only a native sell debits the owner at all, and then only for the wrap: the
+ * transfer itself, and the rent for the WSOL account it opens. `null` while unknown or when nothing
+ * debits the wallet at all.
  */
-export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
+export function useSolanaTradeOverhead({
+  ignoreSponsor = false,
+}: UseSolanaTradeOverheadOptions = {}): SolanaTradeOverhead | null {
   const { chainId, account } = useWalletInfo()
   const { connection } = useAppKitConnection()
   const { quote } = useTradeQuote()
@@ -41,7 +54,8 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
   const isNativeSell = Boolean(inputCurrency && getIsNativeToken(inputCurrency))
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
 
-  const isSponsored = useIsSolanaSponsoredTrade()
+  const isSponsoredTrade = useIsSolanaSponsoredTrade()
+  const isSponsored = isSponsoredTrade && !ignoreSponsor
   const { isAtaCreationDisabled } = useFeatureFlags()
 
   const request = useMemo<OverheadRequest | null>(() => {
@@ -52,8 +66,12 @@ export function useSolanaTradeOverhead(): SolanaTradeOverhead | null {
 
     if (!solanaQuote) return null
 
+    // The WSOL account a native sell opens is the owner's, so its rent is the owner's even here —
+    // every other account the bundle creates is the sponsor's, as are the fees.
     if (isSponsored) {
-      return isNativeSell ? { fundedAccounts: [], ownerPaysFees: false } : null
+      return isNativeSell
+        ? { fundedAccounts: getWrapFundedAccounts(new PublicKey(account)), ownerPaysFees: false }
+        : null
     }
 
     return {

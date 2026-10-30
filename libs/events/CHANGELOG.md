@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.17.1](https://github.com/cowprotocol/cowswap/compare/events-v4.17.0...events-v4.17.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/types@4.14.1
+
 ## [4.17.0](https://github.com/cowprotocol/cowswap/compare/events-v4.16.0...events-v4.17.0) (2026-10-21)
 
 ### Minor Changes

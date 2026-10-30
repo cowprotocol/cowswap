@@ -489,7 +489,7 @@ function extrapolatePriceBasedOnFeeAmount<T extends Currency>(
 ): Price<Token, Token> | undefined {
   // With no fee, extrapolating degenerates to a 0/0 price (multiplying by FEE_AMOUNT_MULTIPLIER keeps it
   // zero) instead of "no fee to extrapolate from" — fall through to the regular formula, which already
-  // returns the correct price when the fee is zero (e.g. Solana orders, which never carry a fee).
+  // returns the correct price when the fee is zero.
   if (!feeAmount.greaterThan(ZERO_FRACTION)) {
     return undefined
   }

@@ -16,11 +16,15 @@ export interface RwaAsset {
   tokens: RwaToken[]
 }
 
-export const RWA_ASSET_TYPES = ['stock', 'index'] as const
+export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
-export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
+export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = {
+  stock: 'Stock',
+  index: 'ETF',
+  commodity: 'Commodity',
+}
 
 /** CoinGecko tokenized market of an RWA over every chain and issuer. Server-only: never sent in a response */
 export interface RwaAggregateMarket {
@@ -74,8 +78,13 @@ export interface RwaAssetWithMarket extends RwaAsset {
 
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
 export interface RwaMarketData extends Omit<RwaAggregateMarket, 'sparkline7d'> {
-  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` only, `{}` elsewhere */
+  /** Keyed by `RwaToken.coingeckoId`. Filled by `/asset/{ticker}` and tickers-filtered `/assets` only, `{}` elsewhere */
   tokens: Record<string, RwaTokenMarketData>
+  /**
+   * Shares of the underlying one token stands for, from the issuer. Keyed by `getTokenKey`, tokens without a known
+   * multiplier are missing. Filled like `tokens`
+   */
+  sharesPerToken: Record<string, number>
 }
 
 export interface RwaMarketOverview extends DegradableResponse {
@@ -174,7 +183,16 @@ export interface RwaTokenNetworkStats {
   dexVolume24h: number | null
 }
 
-export type RwaTokenSummary = Pick<RwaToken, 'chainId' | 'address' | 'symbol' | 'decimals' | 'issuer'>
+export type RwaTokenSummary = Pick<RwaToken, 'chainId' | 'address' | 'symbol' | 'decimals' | 'issuer' | 'coingeckoId'>
+
+/** A window around an issuer's corporate action, when trading its tokens is paused */
+export interface RwaTradingPause {
+  issuer: string
+  /** ISO 8601 */
+  start: string
+  /** ISO 8601 */
+  end: string
+}
 
 export interface RwaTradingTime {
   title: string
@@ -186,7 +204,15 @@ export interface RwaTradingTime {
 
 export const RWA_SORT_FIELDS = ['priority', 'marketCap', 'volume24h', 'change24h', 'price', 'ticker', 'title'] as const
 
-export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {}
+export interface RwaAssetResponse extends RwaAssetWithMarket, DegradableResponse {
+  /** The next pause of the asset's tokens, until it ends. `null` when none is scheduled */
+  tradingPause: RwaTradingPause | null
+}
+
+/** Assets requested by ticker over as many `/assets` pages as needed */
+export interface RwaAssetsByTickers extends DegradableResponse {
+  items: RwaAssetListItem[]
+}
 
 export interface RwaAssetsPage extends DegradableResponse {
   items: RwaAssetListItem[]

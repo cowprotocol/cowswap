@@ -26,6 +26,30 @@ describe('getDailyStats', () => {
     expect(getDailyStats([{ time: 1, value: 400 }], 400)).toBeNull()
   })
 
+  describe('with the price update time', () => {
+    const DAY = 24 * 3600
+    const UPDATED_AT = '2026-10-28T11:00:00.000Z'
+    const updated = Date.parse(UPDATED_AT) / 1000
+    const HOURLY = [
+      { time: updated - DAY - 1800, value: 380 },
+      { time: updated - DAY + 1800, value: 400 },
+      { time: updated - 3600, value: 410 },
+    ]
+
+    it('starts the day 24h before it, interpolated between the points around it', () => {
+      expect(getDailyStats(HOURLY, 390, UPDATED_AT)).toEqual({ change24h: 0, dayLow: 390, dayHigh: 410 })
+    })
+
+    it('keeps every point of a chart starting after it', () => {
+      expect(getDailyStats(HOURLY.slice(1), 420, UPDATED_AT)).toEqual({ change24h: 5, dayLow: 400, dayHigh: 420 })
+    })
+
+    it('returns null for a chart ending before the day', () => {
+      expect(getDailyStats(HOURLY.slice(0, 1), 390, UPDATED_AT)).toBeNull()
+      expect(getDailyStats(HOURLY, 390, '2026-10-30T11:00:00.000Z')).toBeNull()
+    })
+  })
+
   it('returns null when the first price is not positive', () => {
     expect(
       getDailyStats(

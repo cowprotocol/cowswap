@@ -10,4 +10,4 @@ export { useCurrentBridgingAccountProxy } from './hooks/useCurrentBridgingAccoun
 export { getProxyAccountUrl } from './utils/getProxyAccountUrl'
 export { getCowShedHooks } from './utils/getCowShedHooks'
 export { assertFactoryDeployed, hasBytecode } from './utils/assertFactoryDeployed'
-export { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from './accountProxy.constants'
+export { ACCOUNT_PROXY_CONFIGS, ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from './accountProxy.constants'

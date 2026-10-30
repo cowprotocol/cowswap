@@ -3,8 +3,6 @@ import { createStore } from 'jotai'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AccountType } from '@cowprotocol/types'
 
-import { waitFor } from '@testing-library/react'
-
 import {
   accountTypeAsyncAtom,
   accountTypeLoadableAtom,
@@ -20,6 +18,10 @@ import { gnosisSafeInfoAtom, walletDetailsAtom, walletInfoAtom } from '../../api
 import { ConnectionType, WalletInfo } from '../../api/types'
 
 const mockGetCode = jest.fn()
+
+// Mirrors ACCOUNT_TYPE_RETRY_OPTIONS in walletMetadata.atoms.ts: 3 retries, each after a random wait of at most 1s.
+const ACCOUNT_TYPE_RETRIES = 3
+const ACCOUNT_TYPE_MAX_RETRY_WAIT_MS = 1000
 
 jest.mock('@cowprotocol/common-utils', () => ({
   ...jest.requireActual('@cowprotocol/common-utils'),
@@ -375,16 +377,12 @@ describe('walletMetadata atoms', () => {
 
 describe('isSmartContractWalletAtom', () => {
   beforeEach(() => {
-    jest.useFakeTimers()
-    jest.spyOn(Math, 'random').mockReturnValue(1)
     mockGetCode.mockReset()
     mockGetCode.mockImplementation(() => new Promise(() => undefined))
   })
 
   afterEach(() => {
-    jest.clearAllTimers()
     jest.useRealTimers()
-    jest.restoreAllMocks()
   })
 
   it('treats a Safe as a smart-contract wallet even while account type is unknown', () => {
@@ -423,6 +421,7 @@ describe('isSmartContractWalletAtom', () => {
   })
 
   it('retries transient getCode failures within one lookup', async () => {
+    jest.useFakeTimers()
     mockGetCode.mockRejectedValueOnce(new Error('rpc down')).mockResolvedValueOnce('0x')
 
     const store = createStore()
@@ -437,10 +436,8 @@ describe('isSmartContractWalletAtom', () => {
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    await jest.runAllTimersAsync()
-    await waitFor(() => {
-      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
-    })
+    await jest.advanceTimersByTimeAsync(ACCOUNT_TYPE_MAX_RETRY_WAIT_MS)
+
     expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
     expect(store.get(isEoaAtom)).toBe(true)
@@ -448,6 +445,7 @@ describe('isSmartContractWalletAtom', () => {
   })
 
   it('keeps wallet type unknown after retries are exhausted, and allows a manual refresh', async () => {
+    jest.useFakeTimers()
     mockGetCode.mockRejectedValue(new Error('rpc down'))
 
     const store = createStore()
@@ -462,9 +460,9 @@ describe('isSmartContractWalletAtom', () => {
     expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
 
-    const rejectedLookup = expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
-    await jest.runAllTimersAsync()
-    await rejectedLookup
+    const exhaustedLookup = expect(store.get(accountTypeAsyncAtom)).rejects.toThrow('rpc down')
+    await jest.advanceTimersByTimeAsync(ACCOUNT_TYPE_RETRIES * ACCOUNT_TYPE_MAX_RETRY_WAIT_MS)
+    await exhaustedLookup
 
     expect(store.get(accountTypeLoadableAtom).state).toBe('hasError')
     expect(store.get(isSmartContractWalletAtom)).toBe(null)
@@ -474,10 +472,9 @@ describe('isSmartContractWalletAtom', () => {
     mockGetCode.mockReset()
     mockGetCode.mockResolvedValue('0x')
     store.set(accountTypeAsyncAtom)
+    expect(store.get(accountTypeLoadableAtom).state).toBe('loading')
+    await jest.advanceTimersByTimeAsync(0)
 
-    await waitFor(() => {
-      expect(store.get(accountTypeLoadableAtom).state).toBe('hasData')
-    })
     expect(store.get(accountTypeLoadableAtom)).toEqual({ state: 'hasData', data: AccountType.EOA })
     expect(store.get(isSmartContractWalletAtom)).toBe(false)
     expect(store.get(isEoaAtom)).toBe(true)

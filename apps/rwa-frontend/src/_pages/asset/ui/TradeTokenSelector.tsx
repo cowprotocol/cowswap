@@ -3,11 +3,10 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 
-import Image from 'next/image'
-
 import styles from './TradeTokenSelector.module.css'
 
-import { isRankedQuote } from '../lib/quotedTokens'
+import { getPremiumNote } from '../lib/premiumNote'
+import { getBestQuoteLabel, isRankedQuote } from '../lib/quotedTokens'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
 import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
 
@@ -20,12 +19,14 @@ import {
   type RwaAsset,
   type RwaMarketData,
   type RwaQuoteSide,
+  type RwaToken,
 } from '@/entities/asset'
-import { getChainLabel, getChainLogoUrl } from '@/shared/lib/chain'
 import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
-import { useIsDarkTheme } from '@/shared/lib/theme'
-import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
+import { InfoIcon } from '@/shared/ui/icons'
+import { useNetworkOptions } from '@/shared/ui/network-logos'
+import { Select } from '@/shared/ui/select'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
   { side: 'buy', title: 'Buy' },
@@ -41,6 +42,7 @@ const QUOTE_ERRORS: Record<string, string> = {
 interface TradeTokenOptionProps {
   quoted: QuotedToken
   market: RwaMarketData | null | undefined
+  bestQuoteLabel: string
   isSelected: boolean
   isSelectedByUser: boolean
   isBest: boolean
@@ -55,6 +57,12 @@ interface TradeTokenSelectorProps {
   selection: TradeSelection
 }
 
+interface VsStockProps {
+  token: RwaToken
+  sharesPerToken: number | null
+  premium: number
+}
+
 export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps): ReactNode {
   const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
   const setSide = useSetAtom(tradeSideAtom)
@@ -63,6 +71,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
   const sideTitle = side === 'buy' ? 'Buy' : 'Sell'
   const rankedCount = quotedTokens.filter(isRankedQuote).length
   const hasVerifiedQuote = quotedTokens.some((quoted) => isRankedQuote(quoted) && quoted.quote?.verified)
+  const bestQuoteLabel = getBestQuoteLabel(side, hasVerifiedQuote)
 
   return (
     <div className={styles.selector}>
@@ -75,14 +84,11 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
           ))}
         </div>
         {!isAutoSelected && (
-          <button
-            type="button"
-            className={styles.auto}
-            title="Trade the token with the best quote"
-            onClick={() => setTokenKey(null)}
-          >
-            Use Auto
-          </button>
+          <Tooltip className={styles.autoTrigger} content={`Trade the token with the ${bestQuoteLabel.toLowerCase()}`}>
+            <button type="button" className={styles.auto} onClick={() => setTokenKey(null)}>
+              Use Auto
+            </button>
+          </Tooltip>
         )}
         <NetworkSelect asset={asset} chainId={selection.chainId} />
       </div>
@@ -90,14 +96,14 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
         <span>Stock token</span>
         <span className={styles.quoteTitle}>
           {sideTitle} quote / share
-          <span
+          <Tooltip
             className={styles.info}
-            role="img"
-            aria-label="Quote details"
-            title={`Price per share for a $1,000 ${side} order, including network costs and fees`}
+            content={`Price per share for a $1,000 ${side} order, including network costs and fees. Tokens from different issuers may have different rights and risks.`}
           >
-            <InfoIcon />
-          </span>
+            <span role="img" aria-label="Quote details">
+              <InfoIcon />
+            </span>
+          </Tooltip>
         </span>
       </div>
       {selection.quotesError && (
@@ -109,6 +115,7 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
             <TradeTokenOption
               quoted={quoted}
               market={market}
+              bestQuoteLabel={bestQuoteLabel}
               isSelected={quoted.token === assetToken}
               isSelectedByUser={quoted.token === assetToken && !isAutoSelected}
               isBest={rankedCount > 1 && quoted.token === bestToken}
@@ -124,30 +131,16 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
 }
 
 function NetworkSelect({ asset, chainId }: { asset: RwaAsset; chainId: number }): ReactNode {
-  const isDark = useIsDarkTheme()
   const selectNetwork = useSelectTradeNetwork()
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-  const logoUrl = getChainLogoUrl(chainId, isDark)
+  const options = useNetworkOptions([...new Set(asset.tokens.map((token) => token.chainId))], 20)
 
-  return (
-    <label className={styles.network}>
-      {logoUrl && <Image className={styles.networkLogo} src={logoUrl} alt="" width={20} height={20} unoptimized />}
-      <span className={styles.visuallyHidden}>Network</span>
-      <select value={chainId} onChange={(event) => selectNetwork(Number(event.target.value))}>
-        {chainIds.map((id) => (
-          <option key={id} value={id}>
-            {getChainLabel(id)}
-          </option>
-        ))}
-      </select>
-      <ChevronDownIcon className={styles.chevron} />
-    </label>
-  )
+  return <Select variant="filled" aria-label="Network" value={chainId} options={options} onChange={selectNetwork} />
 }
 
 function TradeTokenOption({
-  quoted: { token, quote, pricePerShare, isPriceOutlier, stats },
+  quoted: { token, quote, pricePerShare, sharesPerToken, isPriceOutlier, stats },
   market,
+  bestQuoteLabel,
   isSelected,
   isSelectedByUser,
   isBest,
@@ -172,7 +165,7 @@ function TradeTokenOption({
           <span>
             {token.symbol} · {token.issuer}
           </span>
-          {isBest && <span className={styles.bestBadge}>Best quote</span>}
+          {isBest && <span className={styles.bestBadge}>{bestQuoteLabel}</span>}
           {isSelectedByUser && !isBest && <span className={styles.secondary}>Selected by you</span>}
         </span>
         <span className={styles.stats}>
@@ -187,20 +180,20 @@ function TradeTokenOption({
       </span>
       <span className={styles.quote}>
         {isPriceOutlier ? (
-          <span className={styles.secondary} title="The quote is far from the stock price, liquidity is too low">
+          <Tooltip className={styles.secondary} content="The quote is far from the stock price, liquidity is too low">
             Insufficient liquidity
-          </span>
+          </Tooltip>
         ) : pricePerShare !== null ? (
           <>
             <span className={styles.price}>≈ {formatUsd(pricePerShare)}</span>
             {isUnverifiedShown && (
-              <span className={styles.secondary} title="The order book could not simulate this trade">
+              <Tooltip className={styles.secondary} content="The order book could not simulate this trade">
                 Unverified quote
-              </span>
+              </Tooltip>
             )}
-            {stockPrice && (
-              <span className={styles.secondary}>{formatPercent((pricePerShare / stockPrice - 1) * 100)} vs stock</span>
-            )}
+            {stockPrice ? (
+              <VsStock token={token} sharesPerToken={sharesPerToken} premium={pricePerShare / stockPrice - 1} />
+            ) : null}
           </>
         ) : (
           <span className={styles.secondary}>
@@ -209,5 +202,13 @@ function TradeTokenOption({
         )}
       </span>
     </button>
+  )
+}
+
+function VsStock({ token, sharesPerToken, premium }: VsStockProps): ReactNode {
+  return (
+    <Tooltip className={`${styles.secondary} ${styles.hint}`} content={getPremiumNote(token, sharesPerToken, premium)}>
+      {formatPercent(premium * 100)} vs stock
+    </Tooltip>
   )
 }

@@ -60,6 +60,14 @@
   line-height: 16px;
 }
 
+.hint {
+  cursor: help;
+}
+
+.dividendNotes {
+  margin: 12px 24px 16px;
+}
+
 .warning {
   margin: 0;
   padding: 12px 24px 16px;

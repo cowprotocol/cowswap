@@ -30,6 +30,12 @@
   min-height: 32px;
 }
 
+.cardTitleGroup {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .cardTitle {
   margin: 0;
   font-size: 16px;
