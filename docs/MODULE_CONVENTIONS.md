@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-28
+last_reviewed: 2026-10-30
 source_of_truth_scope: naming, file structure, exports/imports, and React module hygiene
 ---
 
@@ -12,6 +12,7 @@ source_of_truth_scope: naming, file structure, exports/imports, and React module
 - Prefer explicit suffixes:
   - `*.container.tsx`, `*.pure.tsx`, `*.styled.ts`, `*.types.ts`, `*.constants.ts`, `*.utils.ts`, `*.service.ts`, `*.test.ts`
 - Hooks are the naming exception and should use `useX.ts` / `useX.tsx`.
+- A `useX` hook whose body only returns `useAtomValue`, `useSetAtom`, or `useAtom` is an alias. Call the Jotai hook at the component.
 - Avoid generic filenames like `styled` unless the file is intentionally a barrel or module entry.
 
 ## Exports
@@ -48,6 +49,12 @@ source_of_truth_scope: naming, file structure, exports/imports, and React module
   import * as styledEl from './X.styled'
   ```
 - Typography tokens, `font()` mixin, and Studio Feixen allowlist: [`FONT_CONVENTIONS.md`](./FONT_CONVENTIONS.md).
+
+## Unit testing
+
+- Test `utils/` and `services/` directly, and test `state/` atoms with `createStore()` from `jotai`, in `*.test.ts`.
+- `*.test.tsx` and `render` / `renderHook` need a justification: a complex stateful container or a browser-API lifecycle hook. `pnpm arch:check` fails above 3 `jest.mock()` calls when `render` or `renderHook` is also used and the file is new or the mock count grew.
+- Keep unit tests proportional to the business-logic change. UI coverage belongs in Cosmos fixtures and Playwright.
 
 ## TypeScript Rules
 

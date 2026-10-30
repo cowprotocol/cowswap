@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-09-21
+last_reviewed: 2026-10-30
 source_of_truth_scope: root coordination contract for AI and human contributors
 review_cadence: weekly during active frontend work, otherwise bi-weekly
 ---
@@ -35,6 +35,8 @@ Normative language:
 - `MUST` keep diffs scoped to the task and avoid unrelated edits.
 - `MUST` preserve module boundaries and import direction constraints already enforced by lint.
 - `MUST` prefer existing shared utilities/hooks over creating near-duplicates.
+- `SHOULD` put business logic, state derivations, and state transitions in pure functions (`utils/`, `services/`) or Jotai atoms (`state/`). `SHOULD NOT` put that logic in React components or custom hooks. `SHOULD NOT` add a hook whose body only forwards `useAtomValue`, `useSetAtom`, or `useAtom`; call those at the component. Hooks are for browser lifecycle or logic that is not an atom read. See [`docs/STATE_MANAGEMENT.md`](./docs/STATE_MANAGEMENT.md).
+- `SHOULD` unit-test pure functions and Jotai atoms in `.test.ts` (`createStore()`). `SHOULD NOT` add `.test.tsx`, `render()`, or `renderHook()` unless the subject is a complex stateful container or a browser-only hook, with the reason in the PR notes.
 - `MUST` pin dependency versions in `package.json` files (exact semver) for `dependencies`, `devDependencies`, `optionalDependencies`, `resolutions`, and `pnpm.overrides`; `workspace:*` and explicit package artifact sources (`https://...tgz`, `file:`, `link:`, `portal:`, `patch:`) are allowed. `peerDependencies` MAY use semver ranges because they express integrator compatibility.
 - `MUST` run targeted verification (lint/tests/typecheck) for the touched area.
 - `MUST NOT` test log messages or logger calls; they do not need test coverage.
@@ -109,6 +111,7 @@ Mechanical checks are preferred over prose.
   - restricted imports (`@typescript-eslint/no-restricted-imports`)
   - import order and restricted internal module paths
 - Run `pnpm agents:check` to verify AGENTS/doc harness integrity.
+- `pnpm arch:check` ratchets legacy Redux imports, multi-hook orchestration, atom-alias hooks, and mock-heavy `render`/`renderHook` tests (`tools/baselines/architecture-and-tests-baseline.json`).
 - CI enforcement: `.github/workflows/ci.yml` job `agent-harness` runs `pnpm agents:check` on push and PR.
 - If adding new architectural rules, add machine checks (lint rule, script, or test) in the same PR.
 

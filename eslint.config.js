@@ -13,6 +13,65 @@ const reactHooks = require('eslint-plugin-react-hooks')
 const reactRefresh = require('eslint-plugin-react-refresh')
 const unusedImports = require('eslint-plugin-unused-imports')
 
+// Existing state/ and utils/ files that still import React or legacy/state.
+// Do not add paths. New files must stay framework-agnostic.
+const STATE_UTILS_FRAMEWORK_IMPORT_ALLOWLIST = [
+  'apps/cowswap-frontend/src/common/state/HydrateAtom.tsx',
+  'apps/cowswap-frontend/src/common/state/receiverWalletBannerVisibility/hooks.ts',
+  'apps/cowswap-frontend/src/common/state/totalSurplusState/hooks.ts',
+  'apps/cowswap-frontend/src/common/state/totalSurplusState/updaters.ts',
+  'apps/cowswap-frontend/src/common/utils/getIsBridgeOrder.ts',
+  'apps/cowswap-frontend/src/common/utils/isOrderCancellable.ts',
+  'apps/cowswap-frontend/src/common/utils/startTypingAnimation.ts',
+  'apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx',
+  'apps/cowswap-frontend/src/entities/twap/state/eoaTwapOrdersAtom.ts',
+  'apps/cowswap-frontend/src/modules/erc20Approve/state/customApproveAmountInputState.ts',
+  'apps/cowswap-frontend/src/modules/hooksStore/utils/urlValidation.tsx',
+  'apps/cowswap-frontend/src/modules/limitOrders/utils/getRecreatedOrderAmounts.utils.ts',
+  'apps/cowswap-frontend/src/modules/orders/state/spotPricesAtom.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/ordersTable.atoms.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/ordersTable.types.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/ordersTable.utils.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/pendingEoaTwapOrders.atom.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/permit/pendingOrdersPermitValidity.atom.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/permit/updaters/LimitOrdersPermit.updater.tsx',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/permit/updaters/OrderPermit.updater.tsx',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/permit/updaters/OrdersPermit.updater.tsx',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/permit/updaters/TradeOrdersPermit.updater.tsx',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/redux/reduxOrders.atom.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/state/redux/reduxOrders.utils.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/getFilteredOrders.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/getIsFallbackHandlerUnfillable.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/getOrdersTableList.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/groupOrdersTable.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/shouldShowDashForExpiration.ts',
+  'apps/cowswap-frontend/src/modules/ordersTable/utils/url/getActivityUrl.ts',
+  'apps/cowswap-frontend/src/modules/sounds/utils/sound.ts',
+  'apps/cowswap-frontend/src/modules/tokensList/state/selectTokenWidgetAtom.ts',
+  'apps/cowswap-frontend/src/modules/tokensList/state/tokensToSelectAtom.ts',
+  'apps/cowswap-frontend/src/modules/trade/state/alternativeOrder/hooks.ts',
+  'apps/cowswap-frontend/src/modules/trade/utils/addPendingOrderStep.ts',
+  'apps/cowswap-frontend/src/modules/trade/utils/analytics.ts',
+  'apps/cowswap-frontend/src/modules/trade/utils/tradeFlowAnalytics.ts',
+  'apps/cowswap-frontend/src/modules/twap/state/emulatedPartOrdersAtom.ts',
+  'apps/cowswap-frontend/src/modules/twap/state/emulatedTwapOrdersAtom.ts',
+  'apps/cowswap-frontend/src/modules/twap/state/twapOrdersListAtom.ts',
+  'apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx',
+  'apps/cowswap-frontend/src/modules/twap/utils/getPartOrderStatus.ts',
+  'apps/cowswap-frontend/src/modules/twap/utils/mapPartOrderToStoreOrder.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/calculateAmountForRate.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getIsCustomRecipient.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getIsFinalizedOrder.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getOrderExecutedAmounts.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getOrderFilledAmount.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getOrderSurplus.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/isOrderFilled.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/isPartiallyFilled.ts',
+  'apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts',
+  'apps/cowswap-frontend/src/utils/withModalProvider.tsx',
+]
+
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
@@ -459,6 +518,61 @@ module.exports = [
     ...config,
     files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],
   })),
+  // Core rule on purpose: the @typescript-eslint/no-restricted-imports list stays in effect.
+  // Hook complexity stays at the repo error floor; thin hooks are ratcheted by pnpm arch:check.
+  {
+    files: ['apps/cowswap-frontend/src/**/state/**/*.{ts,tsx}', 'apps/cowswap-frontend/src/**/utils/**/*.{ts,tsx}'],
+    ignores: [
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      'apps/cowswap-frontend/src/legacy/**',
+      ...STATE_UTILS_FRAMEWORK_IMPORT_ALLOWLIST,
+    ],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react',
+              message:
+                'State and utils modules must stay framework-agnostic. Use pure functions or Jotai atoms (`get`/`set`) instead of React hooks or Redux.',
+            },
+            {
+              name: 'react-redux',
+              message:
+                'State and utils modules must stay framework-agnostic. Use pure functions or Jotai atoms (`get`/`set`) instead of React hooks or Redux.',
+            },
+          ],
+          patterns: [
+            {
+              group: ['legacy/state', 'legacy/state/*', 'legacy/state/**'],
+              message:
+                'Do not import the legacy Redux store from state/ or utils/. Read or write a Jotai atom instead.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['apps/cowswap-frontend/src/**/*.test.{ts,tsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'warn',
+        {
+          paths: [
+            {
+              name: '@testing-library/react',
+              importNames: ['render', 'renderHook'],
+              message:
+                'Prefer testing pure functions or Jotai atoms via createStore() in .test.ts. Only use render/renderHook for complex stateful containers or browser-API hooks.',
+            },
+          ],
+        },
+      ],
+    },
+  },
   { ignores: ['.next/**/*'] },
   prettierConfig,
 ]

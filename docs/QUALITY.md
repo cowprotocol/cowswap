@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-03-05
+last_reviewed: 2026-10-30
 source_of_truth_scope: lightweight quality/freshness signal for autonomous contributors
 ---
 
@@ -28,6 +28,7 @@ source_of_truth_scope: lightweight quality/freshness signal for autonomous contr
 ## Known Cross-Cutting Gaps
 
 - Some architectural boundaries are still documented more strongly than they are lint-enforced.
+- New cowswap-frontend business logic is ratcheted toward Jotai atoms and pure functions (`pnpm arch:check`). Legacy Redux slices, hook orchestration, and atom-alias hooks remain baselined debt.
 - Data fetching pattern (SWR vs `atomWithQuery`) migration is under evaluation.
 - Domain grading should be refreshed continuously with targeted evidence.
 - Hardening roadmap and milestones live in `docs/HARNESS_HARDENING.md`.

@@ -1,7 +1,7 @@
 ---
 author: agents
 status: normative
-last_reviewed: 2026-08-28
+last_reviewed: 2026-10-30
 source_of_truth_scope: cowswap-frontend-specific architecture and module overrides
 ---
 
@@ -94,3 +94,12 @@ Root rules: [`../../AGENTS.md`](../../AGENTS.md) (global safety, workflow, and v
 - Prefer managing side effects with `jotai-effect` rather than updaters.
 - Use `atom.onMount` to subscribe to external sources when needed.
 - Both SWR and `jotai/query` (`atomWithQuery`) are acceptable for data fetching; the team is evaluating migration.
+
+## Business logic and unit tests
+- `MUST` keep derivations and state transitions in `state/` (Jotai atoms) or in pure `utils/` / `services/` functions. Components call `useAtomValue`, `useSetAtom`, or `useAtom` on the atom.
+- `MUST NOT` add a hook whose body only returns `useAtomValue(someAtom)`, `useSetAtom(someAtom)`, or `useAtom(someAtom)`. Call the Jotai hook at the component. 
+- `MUST NOT` chain domain hooks inside `useMemo` / `useCallback` / `useEffect` / `useLayoutEffect` to compute domain state. Extract a derived or write atom.
+- `MUST NOT` import `react`, `react-redux`, or `legacy/state` from new files under `state/` or `utils/`. ESLint blocks this. Existing files are an allowlist in `eslint.config.js`.
+- `SHOULD` test atoms and pure functions in `*.test.ts` with `createStore()` from `jotai`.
+- `SHOULD NOT` add `render` / `renderHook` tests, or stack `jest.mock()` calls, unless the subject is a complex stateful container or a browser-only hook and the PR notes say why. More than 3 `jest.mock()` calls together with `render` / `renderHook` fails `pnpm arch:check` when the file is new or the mock count grew.
+- UI behavior belongs in Cosmos fixtures and Playwright (`apps/cowswap-e2e-tests`), not in unit tests that restate markup.
