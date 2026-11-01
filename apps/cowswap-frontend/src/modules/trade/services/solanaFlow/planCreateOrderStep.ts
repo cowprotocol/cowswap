@@ -1,7 +1,5 @@
 import { bytesToHex } from 'viem'
 
-import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
-import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import { buildSolanaSwapOrder, SolanaSwapOrder, SolanaSwapOrderQuote } from '@cowprotocol/sdk-trading-solana'
 
@@ -13,12 +11,6 @@ import { SolanaFlowStep, SolanaFundedAccount } from './types'
 // Order account layout of the settlement program: every order PDA on chain reports `space: 264`.
 const ORDER_ACCOUNT_SIZE = 264
 
-const DEFAULT_APP_DATA: SwapAdvancedSettings['appData'] = {
-  appCode: DEFAULT_APP_CODE,
-  environment: isBarnBackendEnv ? 'staging' : 'prod',
-  metadata: { orderClass: { orderClass: 'market' } },
-}
-
 export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   sellSymbol: string
   buySymbol: string
@@ -26,6 +18,8 @@ export interface PlanCreateOrderStepParams extends SolanaSwapOrderQuote {
   validTo: number
   /** Pays the fee and the order PDA's rent instead of the owner. Omitted for the self-paid flow. */
   sponsor?: PublicKeyInitData
+  /** The app's appData doc; the SDK signs its keccak256, the same digest as the app's `appDataKeccak256`. */
+  appDataDoc: SwapAdvancedSettings['appData']
 }
 
 export interface PlannedCreateOrderStep {
@@ -69,10 +63,11 @@ export async function planCreateOrderStep({
   buySymbol,
   validTo,
   sponsor,
+  appDataDoc,
 }: PlanCreateOrderStepParams): Promise<PlannedCreateOrderStep> {
   const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaSwapOrder(
     { quoteResults, solanaQuote },
-    { quoteRequest: { validTo }, appData: DEFAULT_APP_DATA },
+    { quoteRequest: { validTo }, appData: appDataDoc },
     { sponsor },
   )
 

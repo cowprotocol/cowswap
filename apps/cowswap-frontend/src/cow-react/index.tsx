@@ -35,6 +35,7 @@ import {
   Updaters,
   WithLDProvider,
 } from 'modules/application'
+import { installRestrictedAddressesGuard } from 'modules/restrictedAddresses'
 
 import { hashHistory } from 'common/constants/routes'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -118,6 +119,7 @@ export function Main({ localeMessages }: MainProps): ReactNode {
 
 async function initApp(): Promise<void> {
   resetReact310RecoveryOnDocumentLoad()
+  installRestrictedAddressesGuard()
 
   const container = document.getElementById('root')
   if (container === null) {

@@ -9,6 +9,10 @@ import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 
 import { useToggleWalletModal } from './hooks'
 
+jest.mock('launchdarkly-react-client-sdk', () => ({
+  useFlags: () => ({ isAlphaNetworksOptionVisible: true }),
+}))
+
 jest.mock('@cowprotocol/wallet', () => ({
   OPEN_WALLET_MODAL_EVENT: 'cowswap-open-wallet-modal',
   useWalletInfo: jest.fn(),

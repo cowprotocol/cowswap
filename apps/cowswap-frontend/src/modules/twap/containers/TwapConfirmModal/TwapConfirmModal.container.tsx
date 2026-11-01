@@ -27,8 +27,10 @@ import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { EoaTwapLeaveSetupModal } from '../../pure/EoaTwapLeaveSetupModal/EoaTwapLeaveSetupModal.pure'
 import { EoaTwapSigningPendingContent } from '../EoaTwapSigningPendingContent/EoaTwapSigningPendingContent'
+import { EoaTwapSuccessHeading } from '../EoaTwapSigningPendingContent/EoaTwapSuccessContent.pure'
 import { TwapFormWarnings } from '../TwapFormWarnings/TwapFormWarnings.container'
 
+// eslint-disable-next-line max-lines-per-function
 export function TwapConfirmModal(): ReactNode {
   const { account } = useWalletInfo()
   const commonTradeConfirmContext = useCommonTradeConfirmContext()
@@ -69,7 +71,6 @@ export function TwapConfirmModal(): ReactNode {
 
   const dismissSuccessState = useViewPlacedOrder(onDismiss)
   const onViewOrders = useViewPlacedOrder()
-
   useEoaTwapDismissOnFinalStatus(onDismiss)
 
   const { lockDismiss, leaveSetupModalProps, onDismissRequest } = useEoaTwapLeaveConfirmation({
@@ -77,13 +78,8 @@ export function TwapConfirmModal(): ReactNode {
     onDismiss,
   })
 
-  const eoaTwapSigningStepElement =
-    steps || isEoaTwapSuccess ? (
-      <EoaTwapSigningPendingContent steps={steps ?? []} buttonProps={buttonProps} onViewOrders={dismissSuccessState} />
-    ) : null
-
   const titleBadgeElement = badgeProps ? <TwapBadge {...badgeProps} /> : null
-  const titleElement = hasSigningPlan ? (
+  const titleElement = isEoaTwapSuccess ? undefined : hasSigningPlan ? (
     <>
       {t`TWAP order`} {titleBadgeElement}
     </>
@@ -108,10 +104,6 @@ export function TwapConfirmModal(): ReactNode {
       />
     ) : null
 
-  const twapFormWarningsElement = hasSigningPlan ? null : (
-    <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
-  )
-
   return (
     <>
       <TradeConfirmModal orderType={UiOrderType.TWAP} showGetNotifiedMessage onViewOrders={onViewOrders}>
@@ -128,13 +120,22 @@ export function TwapConfirmModal(): ReactNode {
           recipient={recipient}
           hasSigningPlan={hasSigningPlan}
           lockDismiss={lockDismiss}
+          headerContent={isEoaTwapSuccess ? <EoaTwapSuccessHeading /> : null}
         >
           {(restContent) => (
             <>
               {tradeDetailsElement}
               {isEoaTwapSuccess ? null : restContent}
-              {twapFormWarningsElement}
-              {eoaTwapSigningStepElement}
+              {hasSigningPlan ? null : (
+                <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
+              )}
+              {steps || isEoaTwapSuccess ? (
+                <EoaTwapSigningPendingContent
+                  steps={steps ?? []}
+                  buttonProps={buttonProps}
+                  onViewOrders={dismissSuccessState}
+                />
+              ) : null}
             </>
           )}
         </TradeConfirmation>

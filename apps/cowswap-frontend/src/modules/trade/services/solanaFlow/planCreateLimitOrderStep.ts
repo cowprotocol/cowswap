@@ -1,7 +1,6 @@
 import { bytesToHex, hexToBytes } from 'viem'
 
-import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
-import { backendEnv, isBarnBackendEnv } from '@cowprotocol/common-utils'
+import { backendEnv } from '@cowprotocol/common-utils'
 import { buildSolanaLimitOrderOrder, SolanaLimitOrderParams } from '@cowprotocol/sdk-trading-solana'
 
 import { t } from '@lingui/core/macro'
@@ -9,6 +8,8 @@ import { t } from '@lingui/core/macro'
 import { getCreateOrderFundedAccounts, PlannedCreateOrderStep } from './planCreateOrderStep'
 
 export interface PlanCreateLimitOrderStepParams extends Omit<SolanaLimitOrderParams, 'appData'> {
+  /** keccak256 of the app's `fullAppData`, signed as the intent's opaque 32 bytes. */
+  appDataHash: string
   sellSymbol: string
   buySymbol: string
 }
@@ -20,13 +21,12 @@ export interface PlanCreateLimitOrderStepParams extends Omit<SolanaLimitOrderPar
  * market happened to imply at quote time.
  */
 export async function planCreateLimitOrderStep({
+  appDataHash,
   sellSymbol,
   buySymbol,
   ...limitOrderParams
 }: PlanCreateLimitOrderStepParams): Promise<PlannedCreateOrderStep> {
-  // TODO: add real appData once we have it integrated on backend
-  const appDataHex = isBarnBackendEnv ? SOLANA_LIMIT_ORDER_STAGING_APP_DATA : SOLANA_LIMIT_ORDER_PROD_APP_DATA
-  const appData = hexToBytes(appDataHex as `0x${string}`)
+  const appData = hexToBytes(appDataHash as `0x${string}`)
 
   const { instruction, orderId, signingScheme, intent, feePayer } = await buildSolanaLimitOrderOrder({
     ...limitOrderParams,
@@ -44,8 +44,6 @@ export async function planCreateLimitOrderStep({
     orderId,
     signingScheme,
     feePayer,
-    // The actual signed bytes, not the constant we picked — lets the caller store what's really on-chain
-    // without re-deriving env logic, and stays correct if this ever stops being a hardcoded pick.
     appData: bytesToHex(intent.appData),
     // From the built intent, not `limitOrderParams` directly — same value here (this builder never
     // overrides them), but keeps both planners reading their return the same way.

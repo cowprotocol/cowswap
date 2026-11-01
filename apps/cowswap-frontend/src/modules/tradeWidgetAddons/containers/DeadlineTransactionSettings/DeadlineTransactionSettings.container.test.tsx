@@ -5,13 +5,11 @@ import { ReactNode } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-import { useCountdown, useFeatureFlags } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { useCountdown } from '@cowprotocol/common-hooks'
 
 import { render } from '@testing-library/react'
 
-import { cowBatchValidFromAtom, waitAndSaveEnabledAtom } from 'modules/trade'
+import { cowBatchValidFromAtom, useIsWaitAndSaveAvailable, waitAndSaveEnabledAtom } from 'modules/trade'
 
 import { DeadlineTransactionSettings } from './DeadlineTransactionSettings.container'
 
@@ -23,9 +21,7 @@ let mockDeadlineError: string | false = false
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useCountdown: jest.fn(),
-  useFeatureFlags: jest.fn(),
 }))
-jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('@cowprotocol/ui', () => ({
   SettingsInput: () => null,
   SettingsFeedback: ({ message }: { message: ReactNode }) => <div>{message}</div>,
@@ -33,7 +29,11 @@ jest.mock('@cowprotocol/ui', () => ({
 jest.mock('modules/trade', () => {
   const { atom } = jest.requireActual('jotai')
 
-  return { cowBatchValidFromAtom: atom(undefined), waitAndSaveEnabledAtom: atom(false) }
+  return {
+    cowBatchValidFromAtom: atom(undefined),
+    waitAndSaveEnabledAtom: atom(false),
+    useIsWaitAndSaveAvailable: jest.fn(),
+  }
 })
 jest.mock('lib/hooks/useNativeCurrency', () => ({ __esModule: true, default: () => ({ symbol: 'ETH' }) }))
 jest.mock('./hooks/useCustomDeadline', () => ({
@@ -48,20 +48,15 @@ jest.mock('./hooks/useCustomDeadline', () => ({
 }))
 
 const useCountdownMock = jest.mocked(useCountdown)
+const useIsWaitAndSaveAvailableMock = jest.mocked(useIsWaitAndSaveAvailable)
 
 interface Scenario {
-  isWaitForCowsEnabled: boolean
+  isWaitAndSaveAvailable: boolean
   isWaitAndSaveEnabled: boolean
-  chainId: SupportedChainId
 }
 
-function renderSettings({
-  isWaitForCowsEnabled,
-  isWaitAndSaveEnabled,
-  chainId,
-}: Scenario): (number | null | undefined)[] {
-  jest.mocked(useFeatureFlags).mockReturnValue({ isWaitForCowsEnabled })
-  jest.mocked(useWalletInfo).mockReturnValue({ chainId } as ReturnType<typeof useWalletInfo>)
+function renderSettings({ isWaitAndSaveAvailable, isWaitAndSaveEnabled }: Scenario): (number | null | undefined)[] {
+  useIsWaitAndSaveAvailableMock.mockReturnValue(isWaitAndSaveAvailable)
 
   const store = createStore()
   store.set(cowBatchValidFromAtom, VALID_FROM)
@@ -81,32 +76,22 @@ function renderSettings({
 describe('DeadlineTransactionSettings countdowns', () => {
   beforeEach(() => {
     useCountdownMock.mockClear()
+    useIsWaitAndSaveAvailableMock.mockReset()
     mockDeadlineError = false
   })
 
   it('counts down the batch wait and total expiry when Wait for CoWs is shown', () => {
     const targets = renderSettings({
-      isWaitForCowsEnabled: true,
+      isWaitAndSaveAvailable: true,
       isWaitAndSaveEnabled: true,
-      chainId: SupportedChainId.MAINNET,
     })
 
     expect(targets).toEqual([VALID_FROM, VALID_FROM + DEADLINE])
   })
 
   it.each<[string, Scenario]>([
-    [
-      'the feature flag is off',
-      { isWaitForCowsEnabled: false, isWaitAndSaveEnabled: true, chainId: SupportedChainId.MAINNET },
-    ],
-    [
-      'wait-and-save is disabled',
-      { isWaitForCowsEnabled: true, isWaitAndSaveEnabled: false, chainId: SupportedChainId.MAINNET },
-    ],
-    [
-      'the chain is Solana',
-      { isWaitForCowsEnabled: true, isWaitAndSaveEnabled: true, chainId: SupportedChainId.SOLANA },
-    ],
+    ['Wait & Save is unavailable', { isWaitAndSaveAvailable: false, isWaitAndSaveEnabled: true }],
+    ['wait-and-save is disabled', { isWaitAndSaveAvailable: true, isWaitAndSaveEnabled: false }],
   ])('does not start countdowns when %s', (_, scenario) => {
     expect(renderSettings(scenario)).toEqual([undefined, undefined])
   })
@@ -115,9 +100,8 @@ describe('DeadlineTransactionSettings countdowns', () => {
     mockDeadlineError = 'tooSmall'
 
     const targets = renderSettings({
-      isWaitForCowsEnabled: true,
+      isWaitAndSaveAvailable: true,
       isWaitAndSaveEnabled: true,
-      chainId: SupportedChainId.MAINNET,
     })
 
     expect(targets).toEqual([undefined, undefined])

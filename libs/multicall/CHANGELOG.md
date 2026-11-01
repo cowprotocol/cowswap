@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.11.3](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.2...multicall-v3.11.3) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/wallet@3.19.1
+
+## [3.11.2](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.1...multicall-v3.11.2) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/wallet@3.19.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.0...multicall-v3.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/wallet@3.18.1
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/multicall-v3.10.0...multicall-v3.11.0) (2026-10-21)
 
 ### Minor Changes

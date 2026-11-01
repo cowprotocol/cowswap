@@ -10,7 +10,6 @@ import { planWrapStep } from './planWrapStep'
 import { WSOL_MINT } from '../wrapNativeSolana/const'
 
 const OWNER = new PublicKey('9WzDXwBbmkg8ZTbNMqUxvQRAyrZzDsGYdLVL9zYtAWWM')
-const SPONSOR = new PublicKey('6vFq2dRADQkpDAJK64Vm4JpEBygByRpjicwf4US9f9QW')
 const ata = getAssociatedTokenAddressSync(WSOL_MINT, OWNER, false, TOKEN_PROGRAM_ID)
 
 describe('planWrapStep', () => {
@@ -27,22 +26,14 @@ describe('planWrapStep', () => {
     expect(decoded.toPubkey.equals(ata)).toBe(true)
   })
 
-  it('rents the WSOL account from the owner by default', () => {
+  // The WSOL account is the owner's to close, so a sponsor-funded one would hand them the rent back;
+  // the step therefore has no way to name anyone but the owner, sponsored bundle or not.
+  it('rents the WSOL account from the owner, as it does the transfer', () => {
     const step = planWrapStep({ owner: OWNER, sellAmount: 10_000n })
-
-    const [create] = step!.instructions
-
-    expect(create.keys[0].pubkey.equals(OWNER)).toBe(true)
-  })
-
-  // A sponsored order costs the owner nothing but the amount being wrapped: the sponsor rents the
-  // account, while the transfer has to stay the owner's or the order book rejects the bundle.
-  it("rents the WSOL account from the sponsor while the transfer stays the owner's", () => {
-    const step = planWrapStep({ owner: OWNER, rentPayer: SPONSOR, sellAmount: 10_000n })
 
     const [create, transfer] = step!.instructions
 
-    expect(create.keys[0].pubkey.equals(SPONSOR)).toBe(true)
+    expect(create.keys[0].pubkey.equals(OWNER)).toBe(true)
     expect(SystemInstruction.decodeTransfer(transfer).fromPubkey.equals(OWNER)).toBe(true)
   })
 

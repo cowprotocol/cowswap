@@ -21,18 +21,12 @@
   line-height: 22px;
 }
 
-.issuer {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 2px;
-  color: var(--color-text);
-  font-weight: 600;
-  vertical-align: bottom;
-}
-
-:global([data-theme='dark']) .monochromeLogo {
-  filter: invert(1);
+.disclaimer {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 18px;
 }
 
 @media (max-width: 720px) {

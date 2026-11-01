@@ -23,7 +23,7 @@ const inter = localFont({
   variable: '--font-inter',
 })
 
-const DEFAULT_TITLE = `${SITE_NAME}: trade tokenized stocks and ETFs`
+const DEFAULT_TITLE = `${SITE_NAME}: tokens referencing stocks and ETFs`
 
 export const metadata: Metadata = {
   ...buildPageMetadata({ title: DEFAULT_TITLE, description: SITE_DESCRIPTION, path: '' }),

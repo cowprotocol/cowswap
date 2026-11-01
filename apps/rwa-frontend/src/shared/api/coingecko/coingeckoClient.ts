@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { normalizeError } from '@cowprotocol/common-utils/errors'
+
 import { unstable_cache } from 'next/cache'
 
 import { withRetryBackoff } from './retryBackoff'
@@ -56,6 +58,11 @@ export interface CoingeckoRwaMarket {
   } | null
 }
 
+interface CachedResponse {
+  body: unknown
+  fetchedAt: number
+}
+
 interface CoingeckoConfig {
   baseUrl: string
   headers: Record<string, string>
@@ -78,7 +85,12 @@ const ONCHAIN_BATCH_SIZE = 30
 const RWA_MARKETS_PAGE_SIZE = 250
 const GECKOTERMINAL_BASE_URL = 'https://api.geckoterminal.com/api/v2'
 /** Bump when a cached upstream payload changes shape: the data cache outlives deployments */
-const RESPONSE_CACHE_KEY = ['coingecko-response', 'v1']
+const RESPONSE_CACHE_KEY = ['coingecko-response', 'v2']
+/**
+ * Next serves an expired entry once before refreshing it, however old it is, so an entry
+ * older than this many `revalidate` periods is refetched before it is served
+ */
+const MAX_ENTRY_AGE_REVALIDATIONS = 2
 /** Fails a hanging request, so `withRetryBackoff` starts counting instead of waiting for the platform timeout */
 const REQUEST_TIMEOUT_MS = 10_000
 
@@ -212,27 +224,40 @@ function chunk<T>(items: T[], size: number): T[][] {
   return chunks
 }
 
-const cachedRequests = new Map<number, (url: string, allowNotFound: boolean) => Promise<unknown>>()
+const cachedRequests = new Map<number, (url: string, allowNotFound: boolean) => Promise<CachedResponse>>()
 
 /**
  * Data cache entry per URL. A failed refresh keeps serving the stale entry
  * and `withRetryBackoff` spaces out the next upstream attempts.
  * `null` when the upstream answers 404 and `allowNotFound` is set, otherwise a 404 is a failure
  */
-function fetchCachedJson(url: string, revalidate: number, allowNotFound: boolean): Promise<unknown> {
+async function fetchCachedJson(url: string, revalidate: number, allowNotFound: boolean): Promise<unknown> {
   let load = cachedRequests.get(revalidate)
 
   if (!load) {
     load = unstable_cache(
-      (cacheUrl: string, cacheAllowNotFound: boolean) =>
-        withRetryBackoff(cacheUrl, () => requestJson(cacheUrl, cacheAllowNotFound)),
+      async (cacheUrl: string, cacheAllowNotFound: boolean): Promise<CachedResponse> => ({
+        body: await requestJsonWithBackoff(cacheUrl, cacheAllowNotFound),
+        fetchedAt: Date.now(),
+      }),
       RESPONSE_CACHE_KEY,
       { revalidate },
     )
     cachedRequests.set(revalidate, load)
   }
 
-  return load(url, allowNotFound)
+  const cached = await load(url, allowNotFound)
+
+  if (Date.now() - cached.fetchedAt <= revalidate * MAX_ENTRY_AGE_REVALIDATIONS * 1000) return cached.body
+
+  try {
+    return await requestJsonWithBackoff(url, allowNotFound)
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.warn(`[rwa] Serving a stale CoinGecko response of ${url}`, error)
+
+    return cached.body
+  }
 }
 
 async function fetchJson<T>(url: string, revalidate: number): Promise<T> {
@@ -304,4 +329,9 @@ async function requestJson(url: string, allowNotFound: boolean): Promise<unknown
   if (isUpstreamErrorBody(body)) throw new UpstreamError(url, body.status.error_code)
 
   return body
+}
+
+/** Shares one upstream call with the data cache refresh of the same URL */
+function requestJsonWithBackoff(url: string, allowNotFound: boolean): Promise<unknown> {
+  return withRetryBackoff(url, () => requestJson(url, allowNotFound))
 }

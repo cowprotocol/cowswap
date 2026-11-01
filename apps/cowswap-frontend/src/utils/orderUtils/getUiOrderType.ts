@@ -43,9 +43,9 @@ export function getUiOrderType({
     return UiOrderType.TWAP
   }
 
-  // 2. Solana has no real appData-doc convention yet (unlike EVM's keccak256-of-a-JSON-doc) — a limit
-  // order signs one of these two pre-agreed constants as its opaque appData bytes, and that raw value is
-  // the only signal available to tell it apart from a market order. See common/constants/solanaAppData.ts.
+  // 2. A Solana order placed while `isSolanaAppDataEnabled` was off signs one of two agreed constants
+  // as its opaque appData and registers no doc, so that raw value is the only limit/market signal.
+  // Checked before the doc below so such orders stay classified after the flag is turned on.
   if (isSolanaLimitOrderAppData(inputToken, appData)) {
     return UiOrderType.LIMIT
   }

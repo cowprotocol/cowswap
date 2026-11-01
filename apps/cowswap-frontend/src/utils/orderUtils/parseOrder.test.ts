@@ -1,4 +1,3 @@
-import { SOLANA_LIMIT_ORDER_PROD_APP_DATA } from '@cowprotocol/common-const'
 import { OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@cowprotocol/currency'
 import { UiOrderType } from '@cowprotocol/types'
@@ -37,7 +36,8 @@ function buildOrder(overrides: Partial<Order> = {}): Order {
     sellAmount: '1000000000',
     sellAmountBeforeFee: '1000000000',
     buyAmount: '2000000',
-    appData: SOLANA_LIMIT_ORDER_PROD_APP_DATA,
+    appData: '0x' + 'ab'.repeat(32),
+    fullAppData: JSON.stringify({ appCode: 'CoW Swap', metadata: { orderClass: { orderClass: 'limit' } } }),
     creationTime: new Date('2026-10-08T09:46:13Z').toISOString(),
     validTo: 1791539173,
     partiallyFillable: false,
@@ -62,10 +62,9 @@ describe('parseOrder', () => {
     expect(getFilledAmounts(parsedOrder).mainAmount.quotient.toString()).toBe('1000000000')
   })
 
-  // The orders table classifies from the raw order and the receipt modal from the parsed one. With
-  // `appData` dropped in between, the two disagreed: the order sat under the limit-orders tab while
-  // its receipt read "Undefined sell order".
-  it('carries appData through, so a Solana limit order stays classified as one', () => {
+  // The orders table classifies from the raw order and the receipt modal from the parsed one, so a
+  // field dropped in between makes the two disagree on the order type.
+  it('carries fullAppData through, so a Solana limit order stays classified as one', () => {
     expect(getUiOrderType(parseOrder(buildOrder()))).toBe(UiOrderType.LIMIT)
   })
 })

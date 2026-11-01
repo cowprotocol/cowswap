@@ -7,6 +7,10 @@
   background: var(--color-surface);
 }
 
+.option {
+  display: inline-flex;
+}
+
 .switcher button {
   display: inline-flex;
   align-items: center;

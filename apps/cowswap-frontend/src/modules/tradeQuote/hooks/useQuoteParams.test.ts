@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getGlobalAdapter, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo, WalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -13,6 +13,7 @@ import { TradeDerivedState, useDerivedTradeState, useIsWrapOrUnwrap } from 'modu
 import { useTradeSlippageValueAndType } from 'modules/tradeSlippage'
 import { useVolumeFee } from 'modules/volumeFee'
 
+import { useAppSignerForAccount } from 'common/hooks/useAppSigner'
 import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -70,12 +71,9 @@ jest.mock('../utils/getBridgeQuoteSigner', () => {
   }
 })
 jest.mock('common/hooks/useSafeMemo', () => ({
-  useSafeMemo: (fn: () => unknown, _deps: unknown[]) => fn(),
+  useSafeMemo: (fn: () => unknown, deps: unknown[]) => jest.requireActual('react').useMemo(fn, deps),
 }))
-jest.mock('@cowprotocol/cow-sdk', () => ({
-  ...jest.requireActual('@cowprotocol/cow-sdk'),
-  getGlobalAdapter: jest.fn(),
-}))
+jest.mock('common/hooks/useAppSigner', () => ({ useAppSignerForAccount: jest.fn() }))
 
 const mockedUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockedUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
@@ -130,8 +128,7 @@ function setupDefaults(): void {
   mockedUseAtomValue.mockReturnValue(true)
   mockedUseFeatureFlags.mockReturnValue({ isTwapEoaEnabled: false } as ReturnType<typeof useFeatureFlags>)
   mockedUseWalletProvider.mockReturnValue(mockProvider as unknown as ReturnType<typeof useWalletProvider>)
-  const mockAdapter = { signerOrNull: jest.fn().mockReturnValue('user-signer') }
-  ;(getGlobalAdapter as jest.Mock).mockReturnValue(mockAdapter)
+  jest.mocked(useAppSignerForAccount).mockImplementation((account) => (account ? 'user-signer' : undefined))
   mockedUseAppData.mockReturnValue({ doc: { appCode: 'CoW Swap' } } as unknown as ReturnType<typeof useAppData>)
   mockedUseDerivedTradeState.mockReturnValue({
     inputCurrency: mockInputCurrency,
@@ -542,5 +539,37 @@ describe('useQuoteParams', () => {
 
       expect(result.current!.appData).toBe(doc)
     })
+  })
+})
+
+describe('useQuoteParams account signer', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    setupDefaults()
+  })
+
+  const AMOUNT = '1000000000000000000'
+
+  it('should use bridgeQuoteSigner while the connected account has no signer yet', () => {
+    jest.mocked(useAppSignerForAccount).mockReturnValue(undefined)
+
+    const { result } = renderHook(() => useQuoteParams(AMOUNT))
+
+    const qp = result.current!.quoteParams!
+    expect(qp.owner).toBe(ACCOUNT_ADDRESS)
+    expect(qp.signer).toBe('mock-signer')
+  })
+
+  it('should rebuild params with the account signer once it is available', () => {
+    jest.mocked(useAppSignerForAccount).mockReturnValue(undefined)
+
+    const { result, rerender } = renderHook(() => useQuoteParams(AMOUNT))
+
+    expect(result.current!.quoteParams!.signer).toBe('mock-signer')
+
+    jest.mocked(useAppSignerForAccount).mockImplementation((account) => (account ? 'user-signer' : undefined))
+    rerender()
+
+    expect(result.current!.quoteParams!.signer).toBe('user-signer')
   })
 })

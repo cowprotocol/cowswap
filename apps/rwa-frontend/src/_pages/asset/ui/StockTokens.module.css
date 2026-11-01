@@ -36,6 +36,41 @@
   gap: 8px;
 }
 
+.issuerFilter {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.infoButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.infoButton:hover,
+.infoButton[aria-expanded='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.infoButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.dividendNotes {
+  margin: 0 24px 16px;
+}
+
 .selected td {
   background: var(--color-selected);
 }
@@ -130,4 +165,25 @@ a.address:hover {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+.legalDocs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin: -8px 0 0;
+  padding: 0 24px 16px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.legalDocs a {
+  color: var(--color-text);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.legalDocs a:hover {
+  text-decoration: underline;
 }

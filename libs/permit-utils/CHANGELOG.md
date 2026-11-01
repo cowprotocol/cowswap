@@ -1,5 +1,25 @@
 # Changelog
 
+## [3.12.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.11.1...permit-utils-v3.12.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: bump all gas limits 2x for Glamsterdam (#8389)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.0
+
+## [3.11.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.11.0...permit-utils-v3.11.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.4.1
+
 ## [3.11.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.10.0...permit-utils-v3.11.0) (2026-10-21)
 
 ### Minor Changes

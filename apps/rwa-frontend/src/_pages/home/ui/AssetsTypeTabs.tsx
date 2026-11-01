@@ -10,7 +10,7 @@ import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
 import { RWA_ASSET_TYPES, type RwaAssetType } from '@/entities/asset'
 
-const TAB_TITLES: Record<RwaAssetType, string> = { stock: 'Stocks', index: 'ETFs' }
+const TAB_TITLES: Record<RwaAssetType, string> = { stock: 'Stocks', index: 'ETFs', commodity: 'Commodities' }
 
 interface AssetsTypeTabsProps {
   tableId: string

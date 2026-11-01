@@ -1,21 +1,12 @@
 'use client'
 
-import {
-  type KeyboardEvent,
-  type ReactNode,
-  type RefObject,
-  useCallback,
-  useEffect,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type KeyboardEvent, type ReactNode, useCallback, useId, useLayoutEffect, useRef, useState } from 'react'
 
 import { createPortal } from 'react-dom'
 
 import styles from './RowMenu.module.css'
 
+import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { MoreIcon } from '@/shared/ui/icons'
 
 export interface RowMenuItem {
@@ -81,7 +72,9 @@ export function RowMenu({ label, items }: RowMenuProps): ReactNode {
     menu.querySelector<HTMLButtonElement>('[role="menuitem"]')?.focus()
   }, [isOpen])
 
-  useDismissOnOutsideInteraction(isOpen, triggerRef, menuRef, close)
+  const dismiss = useCallback(() => close(false), [close])
+
+  useDismissOnOutsideInteraction(isOpen, [triggerRef, menuRef], dismiss)
 
   return (
     <>
@@ -147,33 +140,4 @@ function onMenuKeyDown(event: KeyboardEvent<HTMLDivElement>, close: (restoreFocu
   const step = event.key === 'ArrowDown' ? 1 : -1
 
   menuItems[(index + step + menuItems.length) % menuItems.length]?.focus()
-}
-
-function useDismissOnOutsideInteraction(
-  isOpen: boolean,
-  triggerRef: RefObject<HTMLElement | null>,
-  menuRef: RefObject<HTMLElement | null>,
-  close: (restoreFocus: boolean) => void,
-): void {
-  useEffect(() => {
-    if (!isOpen) return
-
-    const onPointerDown = (event: PointerEvent): void => {
-      const { target } = event
-
-      if (!(target instanceof Node)) return
-      if (!triggerRef.current?.contains(target) && !menuRef.current?.contains(target)) close(false)
-    }
-    const onViewportChange = (): void => close(false)
-
-    document.addEventListener('pointerdown', onPointerDown)
-    window.addEventListener('scroll', onViewportChange, true)
-    window.addEventListener('resize', onViewportChange)
-
-    return () => {
-      document.removeEventListener('pointerdown', onPointerDown)
-      window.removeEventListener('scroll', onViewportChange, true)
-      window.removeEventListener('resize', onViewportChange)
-    }
-  }, [isOpen, triggerRef, menuRef, close])
 }

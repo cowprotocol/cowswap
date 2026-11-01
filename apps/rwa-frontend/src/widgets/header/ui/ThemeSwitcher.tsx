@@ -6,6 +6,7 @@ import type { ReactNode } from 'react'
 import styles from './ThemeSwitcher.module.css'
 
 import { setThemePreferenceAtom, type ThemePreference, themePreferenceAtom } from '@/shared/lib/theme'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 const OPTIONS: { preference: ThemePreference; title: string; icon: ReactNode }[] = [
   { preference: 'light', title: 'Light theme', icon: <SunIcon /> },
@@ -20,16 +21,16 @@ export function ThemeSwitcher(): ReactNode {
   return (
     <div className={styles.switcher} role="group" aria-label="Theme">
       {OPTIONS.map((option) => (
-        <button
-          key={option.preference}
-          type="button"
-          aria-pressed={option.preference === preference}
-          aria-label={option.title}
-          title={option.title}
-          onClick={() => setPreference(option.preference)}
-        >
-          {option.icon}
-        </button>
+        <Tooltip key={option.preference} className={styles.option} content={option.title}>
+          <button
+            type="button"
+            aria-pressed={option.preference === preference}
+            aria-label={option.title}
+            onClick={() => setPreference(option.preference)}
+          >
+            {option.icon}
+          </button>
+        </Tooltip>
       ))}
     </div>
   )

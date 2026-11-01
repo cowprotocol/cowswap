@@ -20,6 +20,7 @@ const SOLANA_ORDER: SolanaRawOrder = {
   kind: 'sell',
   partiallyFillable: false,
   appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+  fullAppData: null,
   orderPda: 'Aim7u7pMEFGFCEJNk9L3VgeTfwKVwuTPTCphAwTA9hzH',
   creationDate: '2026-09-10T19:04:55.119331Z',
   executedSellAmount: '0',
@@ -52,6 +53,7 @@ describe('toRawOrder', () => {
     expect(order.buyAmount).toBe(SOLANA_ORDER.buyAmount)
     expect(order.validTo).toBe(SOLANA_ORDER.validTo)
     expect(order.appData).toBe(SOLANA_ORDER.appData)
+    expect(order.fullAppData).toBe(SOLANA_ORDER.fullAppData)
     expect(order.creationDate).toBe(SOLANA_ORDER.creationDate)
     expect(order.partiallyFillable).toBe(false)
   })

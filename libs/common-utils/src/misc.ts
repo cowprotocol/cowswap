@@ -155,6 +155,10 @@ export function getChainIdValues(): ChainId[] {
  */
 export function getProviderErrorMessage(error: unknown): string | undefined {
   if (typeof error === 'string') return error
+
+  const widgetHostReason = getWidgetHostErrorReason(error)
+  if (widgetHostReason) return widgetHostReason
+
   if (error && typeof error === 'object') {
     // Prefer viem's shortMessage (concise, human-readable) over the full message
     // which includes verbose request arguments and hex data.
@@ -285,6 +289,24 @@ function getErrorCause(error: unknown): unknown {
 
 function getErrorName(error: unknown): unknown {
   return typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined
+}
+
+// Matches `RpcError` from @cowprotocol/iframe-transport by shape, so common-utils doesn't depend on it:
+// the widget throws it with the message the host's provider rejected with, and viem nests it in `cause`.
+function getWidgetHostErrorReason(error: unknown, depth = 0): string | undefined {
+  if (typeof error !== 'object' || error === null || depth > MAX_ERROR_CAUSE_DEPTH) return undefined
+
+  if (isWidgetHostRpcError(error)) {
+    // A host that rethrows a viem error sends its full message; the first line is viem's summary
+    return error.reason.split('\n')[0].trim() || undefined
+  }
+
+  const cause = getErrorCause(error)
+  return cause !== error ? getWidgetHostErrorReason(cause, depth + 1) : undefined
+}
+
+function isWidgetHostRpcError(error: object): error is { reason: string } {
+  return 'isRpcError' in error && error.isRpcError === true && 'reason' in error && typeof error.reason === 'string'
 }
 
 function matchesInsufficientFundsMessage(message: string): boolean {

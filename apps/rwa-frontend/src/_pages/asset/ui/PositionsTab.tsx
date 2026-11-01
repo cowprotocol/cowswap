@@ -5,11 +5,13 @@ import type { ReactNode } from 'react'
 
 import styles from './AccountTable.module.css'
 
+import { getPositionValue } from '../lib/positionValue'
+
 import type { AccountBalances } from '@/widgets/account'
 
-import { assetQueryAtomFamily, type RwaAsset, type RwaToken } from '@/entities/asset'
+import { assetQueryAtomFamily, DividendNotes, type RwaAsset, type RwaToken } from '@/entities/asset'
 import { getChainLabel } from '@/shared/lib/chain'
-import { formatTokenAmount, formatUsd, toTokenUnits } from '@/shared/lib/format'
+import { formatTokenAmount, formatUsd } from '@/shared/lib/format'
 import { StatusMessage } from '@/shared/ui/status-message'
 
 interface PositionsTabProps {
@@ -18,7 +20,7 @@ interface PositionsTabProps {
 }
 
 export function PositionsTab({ asset, balances: { positions, error } }: PositionsTabProps): ReactNode {
-  const price = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market?.price
+  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
 
   if (!positions) {
     return <StatusMessage>{error ? `Failed to load balances: ${error.message}` : 'Loading balances…'}</StatusMessage>
@@ -47,9 +49,7 @@ export function PositionsTab({ asset, balances: { positions, error } }: Position
                   </td>
                   <td>{getChainLabel(token.chainId)}</td>
                   <td className={styles.numeric}>{formatTokenAmount(balance, token.decimals)}</td>
-                  <td className={styles.numeric}>
-                    {formatUsd(typeof price === 'number' ? toTokenUnits(balance, token.decimals) * price : null)}
-                  </td>
+                  <td className={styles.numeric}>{formatUsd(getPositionValue(token, balance, market))}</td>
                 </tr>
               ))}
             </tbody>
@@ -58,6 +58,7 @@ export function PositionsTab({ asset, balances: { positions, error } }: Position
       ) : (
         <StatusMessage>You don&apos;t hold any {asset.ticker} tokens</StatusMessage>
       )}
+      <DividendNotes className={styles.dividendNotes} tokens={positions.map(({ token }) => token)} />
     </>
   )
 }

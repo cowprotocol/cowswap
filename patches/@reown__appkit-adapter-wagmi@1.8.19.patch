@@ -1,5 +1,5 @@
 diff --git a/dist/esm/src/client.js b/dist/esm/src/client.js
-index 79697e342068039131b11f6f47d97702e28c9ff2..881a01a1056cb7f202defc2c319865114601c212 100644
+index 79697e342068039131b11f6f47d97702e28c9ff2..6f57d7a020b50f91f3b88f25db1df023a5302f39 100644
 --- a/dist/esm/src/client.js
 +++ b/dist/esm/src/client.js
 @@ -152,9 +152,10 @@ export class WagmiAdapter extends AdapterBlueprint {
@@ -15,7 +15,43 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..881a01a1056cb7f202defc2c31986511
                          this.setupWatchPendingTransactions();
                          this.handleAccountChanged({
                              address: accountData.address,
-@@ -358,8 +359,13 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -344,13 +345,33 @@ export class WagmiAdapter extends AdapterBlueprint {
+         await this.addThirdPartyConnectors();
+     }
+     async syncConnections() {
+-        const wagmiConnectors = this.connectors
++        const connectorIds = this.connectors
+             .filter(c => {
+             const { hasDisconnected, hasConnected } = HelpersUtil.getConnectorStorageInfo(c.id, this.namespace);
+             return !hasDisconnected && hasConnected;
+         })
+-            .map(connector => this.getWagmiConnector(connector.id))
++            .map(connector => connector.id);
++        /*
++         * A cold start has no connection records yet, and wagmi's reconnect() reads an empty
++         * `connectors` array as "no preference": it falls back to every configured connector and
++         * connects the first one whose isAuthorized() is true. A wallet approved for another
++         * namespace is approved on eip155 too — MetaMask connected to Solana alone still answers
++         * eth_accounts — so the empty list silently connects an EVM account the user never
++         * connected here. Restore the connector this namespace last used instead, and reconnect
++         * nothing when there is none.
++         */
++        if (!connectorIds.length) {
++            const lastConnectorId = StorageUtil.getConnectedConnectorId(this.namespace);
++            if (lastConnectorId && !StorageUtil.isConnectorDisconnected(lastConnectorId, this.namespace)) {
++                connectorIds.push(lastConnectorId);
++            }
++        }
++        const wagmiConnectors = connectorIds
++            .map(id => this.getWagmiConnector(id))
+             .filter(Boolean);
++        if (!wagmiConnectors.length) {
++            return;
++        }
+         await reconnect(this.wagmiConfig, {
+             connectors: wagmiConnectors
+         });
+@@ -358,8 +379,13 @@ export class WagmiAdapter extends AdapterBlueprint {
      async syncConnection(params) {
          const { id, chainId } = params;
          const connections = getConnections(this.wagmiConfig);
@@ -30,7 +66,25 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..881a01a1056cb7f202defc2c31986511
          const provider = (await connector?.getProvider());
          const isSafeApp = CoreHelperUtil.isSafeApp();
          if (isSafeApp && id === CommonConstantsUtil.CONNECTOR_ID.SAFE && !connection?.accounts.length) {
-@@ -424,7 +430,11 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -379,6 +405,17 @@ export class WagmiAdapter extends AdapterBlueprint {
+                 };
+             }
+         }
++        /*
++         * initialize() awaits syncExistingConnection() before syncAdapterConnections(), the call
++         * that actually reconnects wagmi, so on a cold start getConnections() is still empty here.
++         * Falling through would checksum an undefined address and throw, and syncAdapterConnection()
++         * turns that throw into onDisconnectNamespace(), which records the connector as disconnected
++         * — so the wagmi reconnect that runs next skips it and the wallet stays disconnected for
++         * good. Reporting "nothing to restore" instead leaves the namespace merely disconnected.
++         */
++        if (!connection?.accounts?.length) {
++            return undefined;
++        }
+         return {
+             chainId: Number(connection?.chainId),
+             address: this.toChecksummedAddress(connection?.accounts[0]),
+@@ -424,7 +461,11 @@ export class WagmiAdapter extends AdapterBlueprint {
              if (provider && info && connector.id === CommonConstantsUtil.CONNECTOR_ID.EIP6963) {
                  connector.setEip6963Wallet?.({ provider, info });
              }
@@ -43,7 +97,7 @@ index 79697e342068039131b11f6f47d97702e28c9ff2..881a01a1056cb7f202defc2c31986511
              if (connection) {
                  await this.wagmiConfig.storage?.setItem('recentConnectorId', connector.id);
                  const sortedAccounts = [...connection.accounts].sort((a, b) => {
-@@ -520,13 +530,14 @@ export class WagmiAdapter extends AdapterBlueprint {
+@@ -520,13 +561,14 @@ export class WagmiAdapter extends AdapterBlueprint {
                          chainId,
                          token: params.tokens?.[caipNetwork.caipNetworkId]?.address
                      });

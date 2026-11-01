@@ -29,7 +29,8 @@ const SERIES_VARIANTS = [
 export function createChartSymbols(currencies: Currency[]): ChartSymbol[] {
   return currencies.flatMap((currency) =>
     SERIES_VARIANTS.map(({ metric, supplyVariant }) => {
-      const ticker = `${currency.chainId}_${getAddressKey(getCurrencyAddress(currency))}_USD_${metric}_${supplyVariant}`
+      const ticker =
+        `${currency.chainId}_${getAddressKey(getCurrencyAddress(currency))}_USD_${metric}_${supplyVariant}`.toUpperCase()
       const symbol = currency.symbol || FALLBACK_TOKEN_SYMBOL
       const description = metric === 'price' ? symbol : `${symbol} Market Cap`
 
@@ -64,5 +65,5 @@ export function createChartSymbols(currencies: Currency[]): ChartSymbol[] {
 }
 
 export function findChartSymbol(symbols: ChartSymbol[], ticker: string): ChartSymbol | undefined {
-  return symbols.find((symbol) => symbol.ticker === ticker)
+  return symbols.find((symbol) => symbol.ticker === ticker.toUpperCase())
 }

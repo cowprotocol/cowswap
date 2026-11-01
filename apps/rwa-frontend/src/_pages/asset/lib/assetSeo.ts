@@ -2,7 +2,7 @@ import type { RwaAsset, RwaAssetType } from '@/entities/asset'
 
 import { getChainLabel } from '@/shared/lib/chain'
 
-const ASSET_TYPE_NOUNS: Record<RwaAssetType, string> = { stock: 'stock', index: 'ETF' }
+const ASSET_TYPE_NOUNS: Record<RwaAssetType, string> = { stock: 'stock', index: 'ETF', commodity: 'commodity' }
 
 const MAX_LISTED_NETWORKS = 3
 
@@ -10,7 +10,7 @@ export function getAssetSeoDescription(asset: RwaAsset): string {
   const { title, ticker, type } = asset
 
   return (
-    `Trade ${title} (${ticker}) tokenized ${ASSET_TYPE_NOUNS[type]} onchain with CoW Protocol: ` +
+    `Third-party tokens referencing ${title} (${ticker}) ${ASSET_TYPE_NOUNS[type]}, with swaps powered by CoW Protocol: ` +
     `${getAssetSeoTokensLabel(asset)}.`
   )
 }

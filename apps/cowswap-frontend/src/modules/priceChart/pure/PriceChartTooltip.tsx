@@ -8,7 +8,7 @@ import * as styledEl from './PriceChartTooltip.styled'
 
 import { formatPriceChartValue } from '../lib/priceChart.utils'
 
-import type { Candle, ChartMetric } from '../lib/priceChart.types'
+import type { Candle, ChartMetric, PriceChartExecutionMarker } from '../lib/priceChart.types'
 
 const TOOLTIP_HEIGHT = 88
 const TOOLTIP_ROW_HEIGHT = 27
@@ -16,6 +16,7 @@ const TOOLTIP_OFFSET = 12
 const TOOLTIP_WIDTH = 280
 
 export interface ChartTooltipData {
+  executions?: PriceChartExecutionMarker[]
   price: number
   ohlc?: Pick<Candle, 'open' | 'high' | 'low' | 'close'>
   time: number
@@ -44,7 +45,10 @@ export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipPro
         { label: t`Close`, value: data.ohlc.close },
       ]
     : [{ label: metric === 'marketCap' ? t`Market Cap` : t`Price`, value: data.price }]
-  const halfHeight = (TOOLTIP_HEIGHT + (rows.length - 1 + Number(data.volume !== undefined)) * TOOLTIP_ROW_HEIGHT) / 2
+  const halfHeight =
+    (TOOLTIP_HEIGHT +
+      (rows.length - 1 + Number(data.volume !== undefined) + (data.executions?.length ?? 0)) * TOOLTIP_ROW_HEIGHT) /
+    2
   const x = Math.max(
     0,
     Math.min(data.x + (placeOnLeft ? -TOOLTIP_OFFSET - width : TOOLTIP_OFFSET), data.chartWidth - width),
@@ -65,6 +69,14 @@ export function PriceChartTooltip({ data, metric, locale }: PriceChartTooltipPro
           <styledEl.TooltipValue>{formatPriceChartValue(data.volume, locale)}</styledEl.TooltipValue>
         </styledEl.TooltipRow>
       )}
+      {data.executions?.map((execution) => (
+        <styledEl.ExecutionRow key={execution.id} $side={execution.side} title={execution.title}>
+          <span>{execution.side === 'buy' ? t`Bought` : t`Sold`}</span>
+          <styledEl.TooltipValue>
+            {execution.activeAmount} {execution.activeTokenSymbol}
+          </styledEl.TooltipValue>
+        </styledEl.ExecutionRow>
+      ))}
       <styledEl.TooltipTime>{formatDateTime(data.time * 1000, locale)}</styledEl.TooltipTime>
     </styledEl.Tooltip>
   )
