@@ -92,6 +92,12 @@ describe('getRatePercentage', () => {
     expect(getRatePercentage(market, rate, true)).toBe('6.54')
   })
 
+  it('keeps the minimum percentage when converting it to the inverted side', () => {
+    const rate = getPercentageRate(market, '0.01', false)
+
+    expect(getRatePercentage(market, rate, true)).toBe('0.01')
+  })
+
   it('converts a percentage below the inverted market into the equivalent percentage above market', () => {
     const rate = getPercentageRate(market, '20', true)
 

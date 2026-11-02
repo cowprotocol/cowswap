@@ -35,10 +35,9 @@ export function getRatePercentage(
   const percent = isInverted
     ? new Fraction(100).subtract(referenceRate.multiply(100).divide(rate))
     : rate.multiply(100).divide(referenceRate).subtract(100)
-  if (percent.lessThan(MIN_PERCENTAGE)) return null
-
   const maxPercent = isInverted ? MAX_INVERTED_PERCENTAGE : MAX_PERCENTAGE
-  const cappedPercent = percent.greaterThan(maxPercent) ? maxPercent : percent
+  const roundedPercent = (percent.greaterThan(maxPercent) ? maxPercent : percent).toFixed(2)
+  if (Number(roundedPercent) < Number(MIN_PERCENTAGE.toFixed(2))) return null
 
-  return cappedPercent.toFixed(2).replace(/\.?0+$/, '')
+  return roundedPercent.replace(/\.?0+$/, '')
 }

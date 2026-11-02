@@ -59,11 +59,7 @@ export function PricePercentageShortcuts({
   const selectedPreset = PRESETS.find((percentage) =>
     matchesRate(getPercentageRate(referenceRate, percentage, isInverted)),
   )
-  const customMatches =
-    !selectedPreset &&
-    !!customRate &&
-    getRatePercentage(referenceRate, activeRate, isInverted) ===
-      getRatePercentage(referenceRate, customRate, isInverted)
+  const customMatches = !selectedPreset && !!customValue && matchesRate(customRate)
 
   return (
     <styledEl.Shortcuts role="group" aria-label={t`Price relative to market`}>
