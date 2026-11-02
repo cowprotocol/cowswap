@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.1...wallet-v3.19.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
 ## [3.19.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.0...wallet-v3.19.1) (2026-10-28)
 
 ### Patch Changes

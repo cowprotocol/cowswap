@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.17.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.1...tokens-v3.17.2) (2026-11-02)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
 ## [3.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.0...tokens-v3.17.1) (2026-10-28)
 
 ### Patch Changes
