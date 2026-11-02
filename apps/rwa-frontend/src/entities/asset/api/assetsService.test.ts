@@ -6,7 +6,6 @@ import {
   getAsset,
   getAssetCandles,
   getAssetChart,
-  getAssetNetworkStats,
   getAssetTokenStats,
   getMarketOverview,
   listAssets,
@@ -484,20 +483,6 @@ describe('getAssetCandles', () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
 
     expect(await getAssetCandles(nvda(), '1W')).toEqual(TOKEN_CANDLES)
-  })
-})
-
-describe('getAssetNetworkStats', () => {
-  it('prices the stats with the tokens of the asset only', async () => {
-    getNetworkStatsMock.mockResolvedValue([
-      { address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-    ])
-
-    const stats = await getAssetNetworkStats(nvda(), 1)
-
-    expect(getTokenMarketsMock).toHaveBeenCalledWith(nvda().tokens)
-    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
-    expect(stats.degraded).toBe(false)
   })
 })
 

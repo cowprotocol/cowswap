@@ -57,10 +57,6 @@ export function getMarketOverviewUrl(): string {
   return `${RWA_API_PREFIX}market-overview`
 }
 
-export function getNetworkStatsUrl(ticker: string, chainId: number): string {
-  return `${RWA_API_PREFIX}network-stats/${encodeURIComponent(ticker)}?chainId=${chainId}`
-}
-
 export function getNewsUrl(ticker: string): string {
   return `${RWA_API_PREFIX}news/${encodeURIComponent(ticker)}`
 }

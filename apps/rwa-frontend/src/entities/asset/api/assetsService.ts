@@ -37,7 +37,6 @@ import type {
   RwaMarketData,
   RwaMarketOverview,
   RwaMarketOverviewItem,
-  RwaNetworkStats,
   RwaQuoteSide,
   RwaSortField,
   RwaSortOrder,
@@ -129,14 +128,6 @@ export async function getAssetChart(asset: RwaAsset, range: RwaChartRange): Prom
   if (sharesPerToken === null) return points
 
   return points.map(({ time, value }) => ({ time, value: value / sharesPerToken }))
-}
-
-/** `chainId` must have tokens of the asset */
-export async function getAssetNetworkStats(asset: RwaAsset, chainId: number): Promise<RwaNetworkStats> {
-  const tokenMarkets = await loadTokenMarkets(asset.tokens)
-  const { tokens, isLoaded } = await loadChainStats(asset, chainId, tokenMarkets ?? {})
-
-  return { ticker: asset.ticker, chainId, tokens, degraded: !isLoaded || tokenMarkets === null }
 }
 
 /** `chainId` must have tokens of the asset */

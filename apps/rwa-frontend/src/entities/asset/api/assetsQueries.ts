@@ -11,7 +11,6 @@ import {
   getCandlesUrl,
   getChartUrl,
   getMarketOverviewUrl,
-  getNetworkStatsUrl,
   getNewsUrl,
   getQuotesUrl,
   getTokenStatsUrl,
@@ -30,7 +29,6 @@ import type {
   RwaChart,
   RwaChartRange,
   RwaMarketOverview,
-  RwaNetworkStats,
   RwaQuoteSide,
   RwaTokenList,
 } from '../model/types'
@@ -63,16 +61,6 @@ export function assetChartQueryOptions(ticker: string, range: RwaChartRange): Rw
     queryFn: () => rwaFetcher<RwaChart>(getChartUrl(ticker, range)),
     placeholderData: keepPreviousData,
     refetchOnWindowFocus: false,
-  }
-}
-
-/** `/api/v1/network-stats` caches stats for the same interval */
-export function assetNetworkStatsQueryOptions(ticker: string, chainId: number): RwaQueryOptions<RwaNetworkStats> {
-  return {
-    queryKey: [RWA_QUERY_KEY_ROOT, 'network-stats', ticker, chainId],
-    queryFn: () => rwaFetcher<RwaNetworkStats>(getNetworkStatsUrl(ticker, chainId)),
-    placeholderData: keepPreviousData,
-    refetchInterval: MARKET_REFRESH_INTERVAL_MS,
   }
 }
 

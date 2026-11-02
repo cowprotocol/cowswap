@@ -4,7 +4,6 @@ export {
   getAsset,
   getAssetCandles,
   getAssetChart,
-  getAssetNetworkStats,
   getAssetQuotes,
   getAssetTokenStats,
   getMarketOverview,

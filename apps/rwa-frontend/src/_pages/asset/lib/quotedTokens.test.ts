@@ -66,13 +66,16 @@ describe('toQuotedTokens', () => {
     ).toEqual([null, null])
   })
 
-  it('matches stats by address', () => {
-    const stats = {
-      ticker: 'AAPL',
-      chainId: 1,
-      tokens: [{ address: AAPLON_MAINNET.address.toLowerCase(), onchainCap: 5, dexVolume24h: 1 }],
-      degraded: false,
-    }
+  it('matches stats by network and address', () => {
+    const stats = [
+      {
+        chainId: AAPLON_MAINNET.chainId,
+        address: AAPLON_MAINNET.address.toLowerCase(),
+        onchainCap: 5,
+        dexVolume24h: 1,
+      },
+      { chainId: 42161, address: AAPLX_MAINNET.address, onchainCap: 7, dexVolume24h: 2 },
+    ]
 
     expect(
       toQuotedTokens(CHAIN_TOKENS, undefined, stats, null, NO_SHARES).map((quoted) => quoted.stats?.onchainCap),

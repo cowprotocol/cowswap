@@ -366,6 +366,7 @@
 
 .balancesStatus {
   display: flex;
+  margin-left: auto;
   flex-wrap: wrap;
   align-items: center;
   gap: 4px 12px;

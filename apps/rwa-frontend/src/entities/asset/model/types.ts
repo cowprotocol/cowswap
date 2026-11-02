@@ -148,13 +148,6 @@ export interface RwaMarketOverviewTotals {
   marketCapSeries: RwaChartPoint[] | null
 }
 
-/** Stats of every asset token on one network */
-export interface RwaNetworkStats extends DegradableResponse {
-  ticker: string
-  chainId: number
-  tokens: RwaTokenNetworkStats[]
-}
-
 export interface RwaNewsFeed {
   /** Shown beside every item, e.g. `NVIDIA Newsroom` */
   source: string

@@ -11,6 +11,7 @@ import { PortfolioFilters } from './PortfolioFilters'
 import { PortfolioSummary } from './PortfolioSummary'
 
 import { formatUtcTime } from '../lib/formatUtcTime'
+import { isEmptyWallet } from '../lib/holdings'
 import { NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
 import { type Portfolio, usePortfolio } from '../model/usePortfolio'
 
@@ -63,7 +64,7 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
   const portfolio = usePortfolio(owner, assets, filter)
   const { filteredHoldings, orders, activity } = portfolio
 
-  const isWalletEmpty = portfolio.holdings?.length === 0
+  const isWalletEmpty = isEmptyWallet(portfolio.holdings, portfolio.failedChainIds)
   const isAccountEmpty =
     isWalletEmpty && filter === NO_PORTFOLIO_FILTER && orders.data?.length === 0 && activity.data?.length === 0
 
@@ -124,8 +125,8 @@ function Positions({ portfolio, isWalletEmpty }: { portfolio: Portfolio; isWalle
     <>
       {balancesError && <p className={styles.note}>Some balances are unavailable: {balancesError.message}</p>}
       <HoldingsTable holdings={filteredHoldings} getLogoUrl={portfolio.getLogoUrl} isWalletEmpty={isWalletEmpty} />
-      {!isWalletEmpty && (
-        <div className={styles.panelNote}>
+      <div className={styles.panelNote}>
+        {filteredHoldings.length > 0 && (
           <p>
             Confirmed balances
             {pricesUpdatedAt && (
@@ -135,9 +136,9 @@ function Positions({ portfolio, isWalletEmpty }: { portfolio: Portfolio; isWalle
               </>
             )}
           </p>
-          <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
-        </div>
-      )}
+        )}
+        <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
+      </div>
     </>
   )
 }
