@@ -23,3 +23,22 @@ export function getPercentageRate(
   // The stored rate is output/input, so a discount on the inverted price divides the stored rate.
   return isInverted ? referenceRate.multiply(100).divide(factor) : referenceRate.multiply(factor).divide(100)
 }
+
+export function getRatePercentage(
+  referenceRate: Fraction | null,
+  rate: Fraction | null,
+  isInverted: boolean,
+): string | null {
+  if (!referenceRate?.greaterThan(0) || !rate?.greaterThan(0)) return null
+
+  // Inverse of getPercentageRate: rate = ref * (100 + p) / 100, or rate = ref * 100 / (100 - p) when inverted
+  const percent = isInverted
+    ? new Fraction(100).subtract(referenceRate.multiply(100).divide(rate))
+    : rate.multiply(100).divide(referenceRate).subtract(100)
+  if (percent.lessThan(MIN_PERCENTAGE)) return null
+
+  const maxPercent = isInverted ? MAX_INVERTED_PERCENTAGE : MAX_PERCENTAGE
+  const cappedPercent = percent.greaterThan(maxPercent) ? maxPercent : percent
+
+  return cappedPercent.toFixed(2).replace(/\.?0+$/, '')
+}

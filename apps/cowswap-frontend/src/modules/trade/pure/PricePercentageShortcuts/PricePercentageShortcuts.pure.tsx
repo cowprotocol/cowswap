@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 
 import * as styledEl from './PricePercentageShortcuts.styled'
 
-import { getPercentageRate } from '../../utils/percentageRate.utils'
+import { getPercentageRate, getRatePercentage } from '../../utils/percentageRate.utils'
 
 export interface PricePercentageShortcutsProps {
   referenceRate: Fraction | null
@@ -26,7 +26,11 @@ export function PricePercentageShortcuts({
   disabled,
   onSelect,
 }: PricePercentageShortcutsProps): ReactNode {
-  const [customInput, setCustomInput] = useState<{ value: string; rate: Fraction | null } | null>(null)
+  const [customInput, setCustomInput] = useState<{
+    value: string
+    rate: Fraction | null
+    isInverted: boolean
+  } | null>(null)
 
   useEffect(() => {
     setCustomInput((current) => {
@@ -36,8 +40,17 @@ export function PricePercentageShortcuts({
     })
   }, [activeRate])
   const isDisabled = disabled || !referenceRate?.greaterThan(0)
-  const customRate = customInput ? getPercentageRate(referenceRate, customInput.value, isInverted) : null
-  const customValue = customInput?.value ?? ''
+  const isCustomInputConverted = !!customInput && customInput.isInverted !== isInverted
+  const customValue = !customInput
+    ? ''
+    : isCustomInputConverted
+      ? (getRatePercentage(referenceRate, customInput.rate, isInverted) ?? '')
+      : customInput.value
+  const customRate = !customInput
+    ? null
+    : isCustomInputConverted
+      ? customInput.rate
+      : getPercentageRate(referenceRate, customInput.value, isInverted)
   const matchesRate = (rate: Fraction | null): boolean =>
     !!rate &&
     !!activeRate?.greaterThan(0) &&
@@ -46,7 +59,11 @@ export function PricePercentageShortcuts({
   const selectedPreset = PRESETS.find((percentage) =>
     matchesRate(getPercentageRate(referenceRate, percentage, isInverted)),
   )
-  const customMatches = !selectedPreset && matchesRate(customRate)
+  const customMatches =
+    !selectedPreset &&
+    !!customRate &&
+    getRatePercentage(referenceRate, activeRate, isInverted) ===
+      getRatePercentage(referenceRate, customRate, isInverted)
 
   return (
     <styledEl.Shortcuts role="group" aria-label={t`Price relative to market`}>
@@ -77,7 +94,7 @@ export function PricePercentageShortcuts({
             if (!/^\d*(?:\.\d{0,2})?$/.test(value)) return
             const rate = getPercentageRate(referenceRate, value, isInverted)
             if (Number(value) > 0 && !rate) return
-            setCustomInput({ value, rate })
+            setCustomInput({ value, rate, isInverted })
             onSelect(rate)
           }}
           disabled={isDisabled}
