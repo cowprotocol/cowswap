@@ -272,7 +272,11 @@ export function RateInput() {
               <i>
                 <Trans>Market:</Trans>
               </i>{' '}
-              <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
+              <styledEl.MarketPriceButton
+                title={marketRateDisplay ?? ''}
+                disabled={isDisabledMPrice}
+                onClick={handleSetMarketPrice}
+              >
                 {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay}
               </styledEl.MarketPriceButton>
             </styledEl.MarketRateWrapper>
