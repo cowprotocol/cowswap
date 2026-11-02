@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cow-fi",
-  "version": "2.16.4",
+  "version": "2.16.5",
   "private": true,
   "description": "CoW DAO website",
   "main": "index.js",
