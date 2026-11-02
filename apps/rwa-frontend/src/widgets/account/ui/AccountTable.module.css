@@ -1,4 +1,6 @@
 .scroll {
+  /* Contains the absolute visually hidden headers, which would widen the page past this scroller */
+  position: relative;
   overflow-x: auto;
 }
 

@@ -9,7 +9,6 @@ import { getAssets } from '../model/registry'
 
 import type {
   RwaAggregateMarket,
-  RwaAsset,
   RwaCandle,
   RwaChartPoint,
   RwaChartRange,
@@ -34,9 +33,10 @@ import {
 } from '@/shared/api/index.server'
 
 export interface MarketDataProvider {
-  getChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[]>
-  /** Candles of the coin `getChart` reads */
-  getCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandle[]>
+  /** `coingeckoId` is a `RwaToken.coingeckoId`, empty when the coin has no prices in `range` */
+  getChart(coingeckoId: string, range: RwaChartRange): Promise<RwaChartPoint[]>
+  /** `coingeckoId` is a `RwaToken.coingeckoId`, empty when the coin has no prices in `range` */
+  getCandles(coingeckoId: string, range: RwaChartRange): Promise<RwaCandle[]>
   /** `tokens` are on `chainId`, `tokenMarkets` (keyed by `coingeckoId`) gives their prices */
   getNetworkStats(
     chainId: number,
@@ -96,22 +96,14 @@ export const CHART_REVALIDATE_SECONDS: Record<RwaChartRange, number> = {
 }
 
 export const coingeckoProvider: MarketDataProvider = {
-  async getChart(asset, range) {
-    const [primaryId] = getTokenCoingeckoIds(asset.tokens)
-
-    if (!primaryId) return []
-
-    const chart = await fetchMarketChart(primaryId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
+  async getChart(coingeckoId, range) {
+    const chart = await fetchMarketChart(coingeckoId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
 
     return toChartPoints(chart.prices)
   },
 
-  async getCandles(asset, range) {
-    const [primaryId] = getTokenCoingeckoIds(asset.tokens)
-
-    if (!primaryId) return []
-
-    const ohlc = await fetchOhlc(primaryId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
+  async getCandles(coingeckoId, range) {
+    const ohlc = await fetchOhlc(coingeckoId, CHART_DAYS[range], CHART_REVALIDATE_SECONDS[range])
 
     return toCandles(ohlc, CANDLE_SECONDS[range])
   },
