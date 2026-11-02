@@ -1,8 +1,13 @@
-import { font, UI } from '@cowprotocol/ui'
+import { font, NewTooltip, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 import { AuctionDotKind } from '../SolverAuctionResult.utils'
+
+export const BidValueTooltip = styled(NewTooltip)`
+  margin-left: auto;
+  flex-shrink: 0;
+`
 
 export const BidValue = styled.span<{ $isWinner?: boolean }>`
   ${font('FONT_NORMAL', 'semibold')}
@@ -10,7 +15,6 @@ export const BidValue = styled.span<{ $isWinner?: boolean }>`
   align-items: center;
   justify-content: flex-end;
   flex-shrink: 0;
-  margin-left: auto;
   color: ${({ $isWinner }) => ($isWinner ? `var(${UI.COLOR_SUCCESS_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   white-space: nowrap;
 
