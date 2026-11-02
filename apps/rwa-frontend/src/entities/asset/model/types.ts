@@ -262,13 +262,13 @@ export interface RwaCandle {
   close: number
 }
 
-export interface RwaCandleChart {
+export interface RwaCandleChart extends DegradableResponse {
   ticker: string
   range: RwaChartRange
   candles: RwaCandle[]
 }
 
-export interface RwaChart {
+export interface RwaChart extends DegradableResponse {
   ticker: string
   range: RwaChartRange
   points: RwaChartPoint[]
