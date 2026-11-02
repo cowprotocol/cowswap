@@ -205,7 +205,7 @@ export function SimpleChartCanvas({
         locale,
         timeFormatter,
         priceFormatter: (value: number) =>
-          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale),
+          formatPriceChartValue(Math.abs(value) < priceFormat.minMove / 2 ? 0 : value, locale, priceFormat.precision),
       },
     })
     priceSeries.applyOptions({ priceFormat })

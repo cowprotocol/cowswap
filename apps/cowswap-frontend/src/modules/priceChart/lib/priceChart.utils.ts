@@ -27,13 +27,14 @@ export function formatPercentageChange(change: number, locale: string): string {
   })
 }
 
-export function formatPriceChartValue(value: number, locale: string): string {
+/** @param decimals Fixed decimal places. Omitted, precision is guessed from the value's own magnitude. */
+export function formatPriceChartValue(value: number, locale: string, decimals?: number): string {
   const absoluteValue = Math.abs(value)
   const isCompact = absoluteValue >= 1_000_000
-  const usesSignificantDigits = absoluteValue > 0 && absoluteValue < 1
+  const usesSignificantDigits = decimals === undefined && absoluteValue > 0 && absoluteValue < 1
 
   return formatLocaleNumber({
-    fixedDecimals: usesSignificantDigits ? undefined : FIAT_PRECISION,
+    fixedDecimals: usesSignificantDigits ? undefined : (decimals ?? FIAT_PRECISION),
     locale,
     number: value,
     options: {
@@ -47,7 +48,14 @@ export function formatPriceChartValue(value: number, locale: string): string {
 
 export function getPriceChartPriceFormat(bars: Candle[]): PriceFormatBuiltIn {
   const smallestPrice = bars.reduce((smallest, bar) => (bar.low > 0 ? Math.min(smallest, bar.low) : smallest), Infinity)
-  const precision = smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : FIAT_PRECISION
+  const largestPrice = bars.reduce((largest, bar) => (bar.low > 0 ? Math.max(largest, bar.high) : largest), 0)
+  const magnitudePrecision =
+    smallestPrice < 1 ? Math.min(18, 3 - Math.floor(Math.log10(smallestPrice))) : FIAT_PRECISION
+  // Magnitude alone cannot tell a series apart from a flat line when it moves by far less than it is worth:
+  // a stablecoin swinging 0.0005 around $1 collapses into a single `$1.00` on every gridline.
+  const spread = largestPrice - smallestPrice
+  const spreadPrecision = spread > 0 ? Math.ceil(-Math.log10(spread)) : 0
+  const precision = Math.min(18, Math.max(magnitudePrecision, spreadPrecision))
 
   return { minMove: 1 / 10 ** precision, precision, type: 'price' }
 }

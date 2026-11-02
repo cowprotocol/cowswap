@@ -5,7 +5,7 @@ import { useQueryClient } from '@tanstack/react-query'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { getPriceChartSummary } from '../lib/priceChart.utils'
+import { getPriceChartPriceFormat, getPriceChartSummary } from '../lib/priceChart.utils'
 import { createPriceChartDatafeed } from '../lib/priceChartAdvancedDatafeed.service'
 import { createChartSymbols } from '../lib/priceChartAdvancedSymbols.utils'
 import { attachExecutionMarkersToBars } from '../lib/priceChartExecutionMarker.utils'
@@ -51,6 +51,7 @@ export function AdvancedPriceChart({
     [executionMarkers, historyBars],
   )
   const [hasVolume, setHasVolume] = useState<boolean>()
+  const pricePrecision = useMemo(() => getPriceChartPriceFormat(historyBars).precision, [historyBars])
   const activeTicker = activeSymbol?.ticker || ''
   const [datafeedController, setDatafeedController] = useState<PriceChartDatafeedController | null>(null)
 
@@ -101,6 +102,7 @@ export function AdvancedPriceChart({
             referenceLines={referenceLines}
             datafeedController={datafeedController}
             hasVolume={hasVolume}
+            pricePrecision={pricePrecision}
             symbols={symbols}
             locale={i18n.locale}
             onError={setWidgetError}

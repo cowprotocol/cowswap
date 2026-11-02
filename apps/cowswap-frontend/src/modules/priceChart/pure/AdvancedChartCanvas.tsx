@@ -22,7 +22,7 @@ import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
 import type { ChartSymbol } from '../lib/priceChartAdvancedSymbols.utils'
 import type { AttachedPriceChartExecutionMarker } from '../lib/priceChartExecutionMarker.utils'
-import type { IChartingLibraryWidget } from 'charting_library'
+import type { CustomFormatters, IChartingLibraryWidget } from 'charting_library'
 
 export interface AdvancedChartCanvasProps {
   activeTicker: string
@@ -34,6 +34,7 @@ export interface AdvancedChartCanvasProps {
   symbols: ChartSymbol[]
   locale: string
   onError: (error: boolean) => void
+  pricePrecision: number
 }
 
 export function AdvancedChartCanvas({
@@ -46,19 +47,20 @@ export function AdvancedChartCanvas({
   symbols,
   locale,
   onError,
+  pricePrecision,
 }: AdvancedChartCanvasProps): ReactNode {
   const chartId = useId().replace(/:/g, '')
   const containerId = `${ADVANCED_CHART_CONTAINER_ID}-${chartId}`
   const theme = useTheme()
-  const latestRef = useRef({ theme, activeTicker })
+  const latestRef = useRef({ theme, activeTicker, pricePrecision })
   const [readyWidget, setReadyWidget] = useState<IChartingLibraryWidget | null>(null)
 
   const { datafeed } = datafeedController
   usePriceChartAdvancedExecutionMarkers(readyWidget, activeTicker, executionMarkers, datafeedController)
 
   useEffect(() => {
-    latestRef.current = { theme, activeTicker }
-  }, [theme, activeTicker])
+    latestRef.current = { theme, activeTicker, pricePrecision }
+  }, [theme, activeTicker, pricePrecision])
 
   useEffect(() => {
     if (!symbols.length) return
@@ -89,9 +91,7 @@ export function AdvancedChartCanvas({
         container: containerId,
         custom_timezones: [customTimezone],
         custom_css_url: new URL('/tv.css', window.location.href).href,
-        custom_formatters: {
-          priceFormatterFactory: () => ({ format: (value: number) => formatPriceChartValue(value, locale) }),
-        },
+        custom_formatters: createPriceFormatters(locale, () => latestRef.current.pricePrecision),
         datafeed,
         loading_screen: { backgroundColor: currentTheme.paper, foregroundColor: currentTheme.primary },
         overrides,
@@ -146,4 +146,12 @@ export function AdvancedChartCanvas({
   usePriceChartAdvancedPriceSelection(readyWidget, activeTicker, onSelectPrice)
 
   return <styledEl.ChartContainer id={containerId} />
+}
+
+function createPriceFormatters(locale: string, getPrecision: () => number): CustomFormatters {
+  return {
+    priceFormatterFactory: () => ({
+      format: (value: number) => formatPriceChartValue(value, locale, getPrecision()),
+    }),
+  }
 }

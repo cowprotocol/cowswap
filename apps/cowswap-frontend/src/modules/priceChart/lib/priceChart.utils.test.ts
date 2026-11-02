@@ -1,5 +1,7 @@
 import { formatPriceChartValue, getPriceChartPriceFormat, getPriceChartSummary } from './priceChart.utils'
 
+import type { Candle } from './priceChart.types'
+
 describe('price chart formatting', () => {
   it('keeps significant digits for small prices', () => {
     expect(formatPriceChartValue(0.10943, 'en-US')).toBe('$0.1094')
@@ -14,6 +16,20 @@ describe('price chart formatting', () => {
 
   it('formats any large value consistently', () => {
     expect(formatPriceChartValue(109_430_000, 'en-US')).toBe('$109.43M')
+  })
+
+  // Without an explicit precision a stablecoin reads the same on every gridline, because the branch is
+  // picked by magnitude: 0.99985 gets four significant digits, 1.00012 gets two decimals.
+  it('formats both sides of $1 alike once the series precision is known', () => {
+    expect(formatPriceChartValue(0.99985, 'en-US')).toBe('$0.9999')
+    expect(formatPriceChartValue(1.00012, 'en-US')).toBe('$1.00')
+
+    expect(formatPriceChartValue(0.99985, 'en-US', 4)).toBe('$0.9999')
+    expect(formatPriceChartValue(1.00012, 'en-US', 4)).toBe('$1.0001')
+  })
+
+  it('keeps compact notation for large values', () => {
+    expect(formatPriceChartValue(71_520_071_848, 'en-US', 2)).toBe('$71.52B')
   })
 })
 
@@ -42,5 +58,18 @@ describe('getPriceChartPriceFormat', () => {
     const bar = { close: price, high: price, low: price, open: price, timestamp: 1 }
 
     expect(getPriceChartPriceFormat([bar])).toEqual({ minMove, precision, type: 'price' })
+  })
+
+  const series = (prices: number[]): Candle[] =>
+    prices.map((price, index) => ({ close: price, high: price, low: price, open: price, timestamp: index }))
+
+  // A series that moves by far less than it is worth needs decimals its magnitude never asks for.
+  it.each([
+    ['a stablecoin straddling $1', [0.99971, 0.99985, 1.00012, 1.00031], 4],
+    ['a stablecoin entirely above $1', [1.00001, 1.00022, 1.00051], 4],
+    ['a volatile token', [2250, 2271, 2290], 2],
+    ['a market cap in billions', [71_500_000_000, 71_520_071_848, 71_550_000_000], 2],
+  ])('uses the spread, not the magnitude, for %s', (_, prices, precision) => {
+    expect(getPriceChartPriceFormat(series(prices))).toEqual({ minMove: 1 / 10 ** precision, precision, type: 'price' })
   })
 })
