@@ -26,6 +26,63 @@ describe('getSplTokenInfo', () => {
     })
   })
 
+  // Token-2022 carries name and symbol in the mint account itself, in the same response decimals
+  // come from — pump.fun mints are the common case.
+  it('reads the name and symbol off a Token-2022 metadata extension', async () => {
+    fetchMock.mockReturnValueOnce(
+      jsonResponse({
+        result: {
+          value: {
+            data: {
+              parsed: {
+                info: {
+                  decimals: 6,
+                  extensions: [
+                    { extension: 'metadataPointer', state: { authority: null } },
+                    { extension: 'tokenMetadata', state: { name: 'FartCow-in', symbol: 'FARTCOW' } },
+                  ],
+                },
+              },
+            },
+          },
+        },
+      }),
+    )
+
+    expect(await getSplTokenInfo(MINT)).toEqual({
+      address: MINT,
+      decimals: 6,
+      symbol: 'FARTCOW',
+      name: 'FartCow-in',
+    })
+  })
+
+  it('falls back to the shortened mint when the metadata extension is blank', async () => {
+    fetchMock.mockReturnValueOnce(
+      jsonResponse({
+        result: {
+          value: {
+            data: {
+              parsed: {
+                info: {
+                  decimals: 6,
+                  extensions: [{ extension: 'tokenMetadata', state: { name: '', symbol: '' } }],
+                },
+              },
+            },
+          },
+        },
+      }),
+    )
+
+    expect(await getSplTokenInfo(MINT)).toEqual({
+      address: MINT,
+      decimals: 6,
+      symbol: SHORTENED,
+      name: SHORTENED,
+    })
+  })
+
   it('returns null when the account is not a mint', async () => {
     fetchMock.mockReturnValueOnce(jsonResponse({ result: { value: null } }))
 
