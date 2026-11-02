@@ -1,5 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { isSupportedChainId } from './isSupportedChainId'
+
 /**
  * Maps chain names used in URL query parameters to SupportedChainId.
  * The names here must match the `name` field in CHAIN_INFO (libs/common-const/src/chainInfo.ts).
@@ -32,7 +34,7 @@ export function getRawCurrentChainIdFromUrl(location = window.location): Support
 
   const chainId = +(urlChainIdMatch?.[1] || chainNameToIdMap[chainQueryParam || ''] || '')
 
-  if (chainId && chainId in SupportedChainId) return chainId
+  if (isSupportedChainId(chainId)) return chainId
 
   return null
 }

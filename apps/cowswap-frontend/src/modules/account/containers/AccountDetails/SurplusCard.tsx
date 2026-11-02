@@ -49,6 +49,8 @@ const START_DATE: Record<SupportedChainId, Date> = {
   [SupportedChainId.LINEA]: LINEA_START_DATE,
   [SupportedChainId.PLASMA]: PLASMA_START_DATE,
   [SupportedChainId.INK]: INK_START_DATE,
+  // Robinhood Chain is not enabled yet
+  [SupportedChainId.ROBINHOOD]: DEFAULT_START_DATE,
   // Solana trading not launched yet — surplus tracking doesn't apply.
   [SupportedChainId.SOLANA]: DEFAULT_START_DATE,
 }
