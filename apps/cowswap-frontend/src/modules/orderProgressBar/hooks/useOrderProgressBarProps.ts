@@ -612,6 +612,21 @@ export function buildSolverCompetition(
   }, [])
 }
 
+// `getOrderCompetitionStatus` swallows every failure and resolves `undefined`, which SWR reports as a
+// successful fetch. Rejecting here is what lets SWR's `error` mark the lookup as settled-and-failed.
+export async function fetchOrderCompetitionStatus(
+  chainId: SupportedChainId,
+  orderId: string,
+): Promise<CompetitionOrderStatus> {
+  const status = await getOrderCompetitionStatus(chainId, orderId)
+
+  if (!status) {
+    throw new Error('Order competition status unavailable')
+  }
+
+  return status
+}
+
 /**
  * Merges solverCompetition data returned by the orderbook /status endpoint with
  * solver info fetched from CMS.
@@ -644,7 +659,7 @@ function usePendingOrderStatus(
 ): { data: CompetitionOrderStatus | undefined; error: unknown } {
   const { data, error } = useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
-    async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
+    async ([, _chainId, _orderId]) => fetchOrderCompetitionStatus(_chainId, _orderId),
     doNotQuery ? SWR_NO_REFRESH_OPTIONS : POOLING_SWR_OPTIONS,
   )
 
