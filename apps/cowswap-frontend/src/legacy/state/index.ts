@@ -8,7 +8,7 @@ import enhancedTransactions from './enhancedTransactions/reducer'
 import gas from './gas/reducer'
 import { appziMiddleware, soundMiddleware } from './orders/middleware'
 import orders from './orders/reducer'
-import user from './user/reducer'
+import user, { initialState as userInitialState } from './user/reducer'
 
 const reducers = {
   application,
@@ -29,7 +29,12 @@ export const cowSwapStore = configureStore({
       .concat(cowTokenMiddleware)
       .concat(soundMiddleware)
       .concat(appziMiddleware),
-  preloadedState: load({ states: PERSISTED_KEYS, disableWarnings: process.env.NODE_ENV === 'test' }),
+  preloadedState: load({
+    states: PERSISTED_KEYS,
+    // The RWA app on this origin saves only `userDarkMode` when CoW Swap has never been opened
+    preloadedState: { user: { ...userInitialState } },
+    disableWarnings: process.env.NODE_ENV === 'test',
+  }),
 })
 
 export type AppDispatch = typeof cowSwapStore.dispatch
