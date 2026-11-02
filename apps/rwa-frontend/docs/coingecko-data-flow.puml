@@ -145,7 +145,7 @@ package "Browser" as BROWSER {
 
   package "Home page (/)" as UI_HOME {
     [AssetsExplorer / AssetsTable\n(price, change, mcap, vol, sparkline;\nlogo from registry)] as U_TABLE
-    [AssetsFilters / AssetsTypeTabs\n(typeCounts, issuers, chainIds)] as U_FILTERS
+    [AssetsFilters / AssetsTypeTabs\n(issuers, chainIds)] as U_FILTERS
     [MarketTotalsCard\n(mcap, vol, mcap sparkline)] as U_TOTALS
     [MostTradedCard\n(hourly DEX volume)] as U_MOST
     [TopMoversCard\n(gainers / losers + 1D sparkline)] as U_MOVERS

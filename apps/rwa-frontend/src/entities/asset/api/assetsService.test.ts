@@ -213,16 +213,15 @@ describe('listAssets', () => {
     expect(page.items[0]?.market?.change24h).toBeCloseTo(((180 - 170) / 170) * 100)
   })
 
-  it('filters and counts the types with the other filters applied', async () => {
+  it('filters by type and lists every issuer and network', async () => {
     const page = await listAssets({ page: 1, pageSize: 10, sort: 'priority', order: 'desc', type: 'index' })
 
     expect(tickers(page.items)).toEqual(['SPY'])
-    expect(page.typeCounts).toEqual({ stock: 2, index: 1, commodity: 0 })
     expect(page.issuers).toEqual(['Ondo', 'xStocks'])
     expect(page.chainIds).toEqual([1, 56])
   })
 
-  it('applies the market minimums to the matches and the type counts, but not to the type total', async () => {
+  it('applies the market minimums to the matches but not to the type total', async () => {
     const page = await listAssets({
       page: 1,
       pageSize: 10,
@@ -235,7 +234,6 @@ describe('listAssets', () => {
     expect(tickers(page.items)).toEqual(['AAPL'])
     expect(page.total).toBe(1)
     expect(page.typeTotal).toBe(2)
-    expect(page.typeCounts).toEqual({ stock: 1, index: 0, commodity: 0 })
   })
 
   it('degrades with null market data when the RWA markets fail', async () => {

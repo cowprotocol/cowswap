@@ -83,7 +83,6 @@ const ASSETS_PAGE: RwaAssetsPage = {
   total: 1,
   typeTotal: 1,
   totalPages: 1,
-  typeCounts: { stock: 3, index: 2, commodity: 0 },
   issuers: ['Ondo', 'xStocks'],
   chainIds: [1],
   degraded: false,
@@ -94,7 +93,6 @@ const DEGRADED_ASSETS_PAGE: RwaAssetsPage = {
   items: [],
   total: 0,
   totalPages: 0,
-  typeCounts: { stock: 0, index: 0, commodity: 0 },
   degraded: true,
 }
 

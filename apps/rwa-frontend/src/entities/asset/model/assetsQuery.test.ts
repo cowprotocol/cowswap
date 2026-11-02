@@ -1,15 +1,7 @@
 /**
  * @jest-environment node
  */
-import {
-  countByType,
-  filterAssets,
-  filterByMarket,
-  getDefaultSortOrder,
-  paginate,
-  searchAssets,
-  sortAssets,
-} from './assetsQuery'
+import { filterAssets, filterByMarket, getDefaultSortOrder, paginate, searchAssets, sortAssets } from './assetsQuery'
 
 import type { RwaAssetListItem, RwaMarketData, RwaToken } from './types'
 
@@ -173,10 +165,6 @@ describe('filterAssets', () => {
     expect(tickers(filterAssets(all, { query: 'invesco' }))).toEqual(['QQQ'])
     expect(tickers(filterAssets(all, { tickers: ['MSFT', 'QQQ'] }))).toEqual(['MSFT', 'QQQ'])
     expect(filterAssets(all, { tickers: [] })).toEqual([])
-  })
-
-  it('counts every type', () => {
-    expect(countByType(all)).toEqual({ stock: 2, index: 2, commodity: 0 })
   })
 })
 

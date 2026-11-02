@@ -240,8 +240,6 @@ export interface RwaAssetsPage extends DegradableResponse {
   /** Assets of the selected type with no other filter applied */
   typeTotal: number
   totalPages: number
-  /** Matches of each type with every filter but `type` applied */
-  typeCounts: Record<RwaAssetType, number>
   /** Issuers in the registry, for the filter */
   issuers: string[]
   /** Networks in the registry, for the filter */

@@ -38,7 +38,7 @@ const HOLDINGS: Holding[] = [
 
 describe('HoldingsTable', () => {
   it('starts with the tokens of a multi-token asset shown and of a single-token asset hidden', () => {
-    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} />)
+    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
 
     expect(screen.getByRole('button', { name: 'Hide NVIDIA stock tokens', expanded: true })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Show Apple stock tokens', expanded: false })).toBeTruthy()
@@ -48,7 +48,7 @@ describe('HoldingsTable', () => {
   })
 
   it('shows a dash without the approximation sign for an unpriced asset, and toggles its tokens', () => {
-    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} />)
+    render(<HoldingsTable holdings={HOLDINGS} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Show Apple stock tokens' }))
 
@@ -57,16 +57,23 @@ describe('HoldingsTable', () => {
   })
 
   it('invites an empty wallet to explore assets', () => {
-    render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty />)
+    render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty isFiltered={false} />)
 
     expect(screen.getByRole('heading', { name: 'No stock tokens in this wallet yet' })).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Explore assets' }).getAttribute('href')).toBe('/')
   })
 
   it('tells a wallet with holdings that none match the filters', () => {
-    render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty={false} />)
+    render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty={false} isFiltered />)
 
     expect(screen.getByText('No positions match the filters')).toBeTruthy()
+    expect(screen.queryByRole('link', { name: 'Explore assets' })).toBeNull()
+  })
+
+  it('blames the networks that loaded, not the filters, when none is set', () => {
+    render(<HoldingsTable holdings={[]} getLogoUrl={() => null} isWalletEmpty={false} isFiltered={false} />)
+
+    expect(screen.getByText('No positions on the networks that loaded')).toBeTruthy()
     expect(screen.queryByRole('link', { name: 'Explore assets' })).toBeNull()
   })
 })

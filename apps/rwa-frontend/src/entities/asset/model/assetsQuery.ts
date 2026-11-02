@@ -2,7 +2,6 @@ import type {
   RwaAsset,
   RwaAssetListItem,
   RwaAssetsFilter,
-  RwaAssetType,
   RwaAssetWithMarket,
   RwaSortField,
   RwaSortOrder,
@@ -20,14 +19,6 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
   price: (asset) => asset.market?.price ?? null,
   ticker: (asset) => asset.ticker,
   title: (asset) => asset.title,
-}
-
-export function countByType(assets: RwaAsset[]): Record<RwaAssetType, number> {
-  const counts: Record<RwaAssetType, number> = { stock: 0, index: 0, commodity: 0 }
-
-  for (const asset of assets) counts[asset.type]++
-
-  return counts
 }
 
 export function filterAssets<T extends RwaAsset>(assets: T[], filter: RwaAssetsFilter): T[] {

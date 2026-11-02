@@ -12,7 +12,7 @@ import { PortfolioSummary } from './PortfolioSummary'
 
 import { formatUtcTime } from '../lib/formatUtcTime'
 import { isEmptyWallet } from '../lib/holdings'
-import { NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
+import { isPortfolioFiltered, NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
 import { type Portfolio, usePortfolio } from '../model/usePortfolio'
 
 import type { RwaAssetSummary } from '@/entities/asset'
@@ -27,6 +27,12 @@ interface PortfolioContentProps {
 }
 
 type PortfolioTab = 'positions' | 'orders' | 'activity'
+
+interface PositionsProps {
+  portfolio: Portfolio
+  isWalletEmpty: boolean
+  isFiltered: boolean
+}
 
 export function PortfolioView({ assets }: { assets: RwaAssetSummary[] }): ReactNode {
   const { address } = useConnection()
@@ -65,8 +71,8 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
   const { filteredHoldings, orders, activity } = portfolio
 
   const isWalletEmpty = isEmptyWallet(portfolio.holdings, portfolio.failedChainIds)
-  const isAccountEmpty =
-    isWalletEmpty && filter === NO_PORTFOLIO_FILTER && orders.data?.length === 0 && activity.data?.length === 0
+  const isFiltered = isPortfolioFiltered(filter)
+  const isAccountEmpty = isWalletEmpty && !isFiltered && orders.data?.length === 0 && activity.data?.length === 0
 
   const tabs: AccountTab<PortfolioTab>[] = [
     { id: 'positions', title: 'Positions', count: filteredHoldings?.length || undefined },
@@ -89,7 +95,7 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
         toolbar={isAccountEmpty ? undefined : <PortfolioFilters assets={assets} filter={filter} onChange={setFilter} />}
       >
         {activeTab === 'positions' ? (
-          <Positions portfolio={portfolio} isWalletEmpty={isWalletEmpty} />
+          <Positions portfolio={portfolio} isWalletEmpty={isWalletEmpty} isFiltered={isFiltered} />
         ) : activeTab === 'orders' ? (
           <OpenOrdersTable
             orders={orders.data}
@@ -110,7 +116,7 @@ function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
   )
 }
 
-function Positions({ portfolio, isWalletEmpty }: { portfolio: Portfolio; isWalletEmpty: boolean }): ReactNode {
+function Positions({ portfolio, isWalletEmpty, isFiltered }: PositionsProps): ReactNode {
   const { filteredHoldings, balancesError, pricesUpdatedAt } = portfolio
 
   if (!filteredHoldings) {
@@ -124,7 +130,12 @@ function Positions({ portfolio, isWalletEmpty }: { portfolio: Portfolio; isWalle
   return (
     <>
       {balancesError && <p className={styles.note}>Some balances are unavailable: {balancesError.message}</p>}
-      <HoldingsTable holdings={filteredHoldings} getLogoUrl={portfolio.getLogoUrl} isWalletEmpty={isWalletEmpty} />
+      <HoldingsTable
+        holdings={filteredHoldings}
+        getLogoUrl={portfolio.getLogoUrl}
+        isWalletEmpty={isWalletEmpty}
+        isFiltered={isFiltered}
+      />
       <div className={styles.panelNote}>
         {filteredHoldings.length > 0 && (
           <p>

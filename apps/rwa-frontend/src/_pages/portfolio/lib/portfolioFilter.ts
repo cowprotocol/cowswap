@@ -9,6 +9,10 @@ export interface PortfolioFilter {
 
 export const NO_PORTFOLIO_FILTER: PortfolioFilter = { issuer: null, chainId: null }
 
+export function isPortfolioFiltered(filter: PortfolioFilter): boolean {
+  return filter.issuer !== null || filter.chainId !== null
+}
+
 export function matchesPortfolioFilter(filter: PortfolioFilter, token: RwaTokenSummary): boolean {
   return (
     (filter.issuer === null || token.issuer === filter.issuer) &&

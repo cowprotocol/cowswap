@@ -31,6 +31,7 @@ interface HoldingsTableProps {
   getLogoUrl: Portfolio['getLogoUrl']
   /** The wallet holds no stock tokens, as opposed to none matching the filters */
   isWalletEmpty: boolean
+  isFiltered: boolean
 }
 
 interface TokenRowProps {
@@ -40,7 +41,7 @@ interface TokenRowProps {
   className: string
 }
 
-export function HoldingsTable({ holdings, getLogoUrl, isWalletEmpty }: HoldingsTableProps): ReactNode {
+export function HoldingsTable({ holdings, getLogoUrl, isWalletEmpty, isFiltered }: HoldingsTableProps): ReactNode {
   const isEmpty = !holdings.length
 
   return (
@@ -72,7 +73,9 @@ export function HoldingsTable({ holdings, getLogoUrl, isWalletEmpty }: HoldingsT
         isWalletEmpty ? (
           <EmptyWallet />
         ) : (
-          <StatusMessage>No positions match the filters</StatusMessage>
+          <StatusMessage>
+            {isFiltered ? 'No positions match the filters' : 'No positions on the networks that loaded'}
+          </StatusMessage>
         )
       ) : (
         <DividendNotes
