@@ -154,7 +154,7 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
       setWidget(null)
       created?.remove()
     }
-  }, [ticker, hasData])
+  }, [ticker, hasData, failed])
 
   useEffect(() => {
     if (loading || stale) return
@@ -187,7 +187,7 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
 
   useChartTheme(widget, containerRef)
 
-  if (failed) return <p className={styles.status}>Chart is unavailable</p>
+  if (failed) return <ChartUnavailable onRetry={() => setFailed(false)} />
 
   return (
     <div className={styles.frame} style={{ height: CHART_HEIGHT }}>
@@ -197,6 +197,17 @@ export function PriceChart({ ticker, candles, chartType, range, loading, stale }
           <Loader size={32} label="Loading chart" />
         </div>
       )}
+    </div>
+  )
+}
+
+function ChartUnavailable({ onRetry }: { onRetry: () => void }): ReactNode {
+  return (
+    <div className={styles.status}>
+      <p>Chart is unavailable</p>
+      <button type="button" className={styles.retry} onClick={onRetry}>
+        Retry
+      </button>
     </div>
   )
 }

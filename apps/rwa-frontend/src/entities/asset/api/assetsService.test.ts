@@ -388,18 +388,29 @@ describe('getAssetChart', () => {
   it('converts the token prices to prices per share', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
 
-    expect(await getAssetChart(nvda(), '1D')).toEqual([
-      { time: 1, value: 2 },
-      { time: 2, value: 3 },
-    ])
+    expect(await getAssetChart(nvda(), '1D')).toEqual({
+      ticker: 'NVDA',
+      range: '1D',
+      points: [
+        { time: 1, value: 2 },
+        { time: 2, value: 3 },
+      ],
+      degraded: false,
+    })
     expect(getChartMock).toHaveBeenCalledWith(nvda(), '1D')
     expect(loadSharesPerTokenMock).toHaveBeenCalledWith([nvda().tokens[0]])
   })
 
-  it('keeps the token prices when the multiplier is unknown', async () => {
+  it('keeps the token prices without marking them degraded when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: false })
+  })
+
+  it('marks the token prices degraded when the multiplier source fails', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
 
-    expect(await getAssetChart(nvda(), '1D')).toEqual(TOKEN_POINTS)
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: true })
   })
 
   it('keeps the token prices when the tokens of the charted coin have different multipliers', async () => {
@@ -411,7 +422,10 @@ describe('getAssetChart', () => {
       degraded: false,
     })
 
-    expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toEqual(TOKEN_POINTS)
+    expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toMatchObject({
+      points: TOKEN_POINTS,
+      degraded: false,
+    })
   })
 })
 
@@ -425,14 +439,25 @@ describe('getAssetCandles', () => {
   it('converts the token candles to candles per share', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
 
-    expect(await getAssetCandles(nvda(), '1W')).toEqual([{ time: 1, open: 2, high: 4, low: 1, close: 3 }])
+    expect(await getAssetCandles(nvda(), '1W')).toEqual({
+      ticker: 'NVDA',
+      range: '1W',
+      candles: [{ time: 1, open: 2, high: 4, low: 1, close: 3 }],
+      degraded: false,
+    })
     expect(getCandlesMock).toHaveBeenCalledWith(nvda(), '1W')
   })
 
-  it('keeps the token candles when the multiplier is unknown', async () => {
+  it('keeps the token candles without marking them degraded when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: false })
+  })
+
+  it('marks the token candles degraded when the multiplier source fails', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
 
-    expect(await getAssetCandles(nvda(), '1W')).toEqual(TOKEN_CANDLES)
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: true })
   })
 })
 
