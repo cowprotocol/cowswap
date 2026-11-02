@@ -3,6 +3,12 @@
   animation: rotate 2s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation: none;
+  }
+}
+
 @keyframes rotate {
   to {
     transform: rotate(360deg);
