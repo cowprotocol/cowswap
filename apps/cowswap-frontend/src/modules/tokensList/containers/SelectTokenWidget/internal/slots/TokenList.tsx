@@ -7,9 +7,10 @@ import { TokensContent } from '../../../../pure/TokensContent'
 
 export interface TokenListProps {
   isRouteAvailable?: boolean
+  notice?: string
 }
 
-export function TokenList({ isRouteAvailable = true }: TokenListProps): ReactNode {
+export function TokenList({ isRouteAvailable = true, notice }: TokenListProps): ReactNode {
   if (!isRouteAvailable) {
     return (
       <styledEl.RouteNotAvailable>
@@ -18,5 +19,10 @@ export function TokenList({ isRouteAvailable = true }: TokenListProps): ReactNod
     )
   }
 
-  return <TokensContent />
+  return (
+    <>
+      {notice && <styledEl.TokensFilterNotice>{notice}</styledEl.TokensFilterNotice>}
+      <TokensContent />
+    </>
+  )
 }
