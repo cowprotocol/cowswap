@@ -55,9 +55,12 @@ async function buildQuote(quoteAppDataDoc: LatestAppDataDocVersion): Promise<Sol
   } as unknown as SolanaSwapOrderQuote
 }
 
+// A different appCode at quote time, so a merge that kept any quote-time value would show in `fullAppData`.
+const QUOTE_APP_CODE = 'Quote-time app'
+
 async function plan(appDataDoc: LatestAppDataDocVersion): Promise<{ appData: string; fullAppData: string }> {
   const { appData, fullAppData } = await planCreateOrderStep({
-    ...(await buildQuote(appDataDoc)),
+    ...(await buildQuote({ ...appDataDoc, appCode: QUOTE_APP_CODE })),
     appDataDoc,
     sellSymbol: 'SOL',
     buySymbol: 'USDC',
@@ -87,6 +90,12 @@ describe('planCreateOrderStep · signed appData', () => {
     const { fullAppData } = await plan(SWAP_DOC_WITH_UTM)
 
     expect(JSON.parse(fullAppData).metadata.quote).toEqual({ slippageBips: 39, smartSlippage: true })
+  })
+
+  it("keeps the app's appCode over the quote's", async () => {
+    const { fullAppData } = await plan(SWAP_DOC_WITH_UTM)
+
+    expect(JSON.parse(fullAppData).appCode).toBe(SWAP_DOC_WITH_UTM.appCode)
   })
 
   // Same as an EVM order: the SDK adds its default UTM to a doc that has none.
