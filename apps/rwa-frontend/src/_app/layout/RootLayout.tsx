@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import localFont from 'next/font/local'
 
 import { Footer } from './Footer'
+import { LegalNotice } from './LegalNotice'
 import { Providers } from './Providers'
 
 import { APPLE_ICON, FAVICON } from '../seo'
@@ -53,7 +54,10 @@ export function RootLayout({ children }: { children: ReactNode }): ReactNode {
           <div className="canvas">
             <OfflineBanner />
             <Header />
-            <main className="page">{children}</main>
+            <main className="page">
+              {children}
+              <LegalNotice />
+            </main>
           </div>
           <Footer />
         </Providers>

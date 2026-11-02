@@ -14,6 +14,9 @@
   --color-positive: #004718;
   --color-positive-bg: rgba(0, 123, 40, 0.15);
   --color-negative: #c21000;
+  --color-success: #007b28;
+  --color-danger: #d41300;
+  --color-well: #f5f6f8;
   --color-warning-bg: #fff4d6;
   --color-warning-text: #6b4b00;
   --color-star: #e8a317;
@@ -48,6 +51,9 @@
   --color-positive: #35c07a;
   --color-positive-bg: rgba(53, 192, 122, 0.15);
   --color-negative: #ff6b6b;
+  --color-success: #35c07a;
+  --color-danger: #ff6b6b;
+  --color-well: #1f2143;
   --color-warning-bg: #3b2e05;
   --color-warning-text: #ffd978;
   --color-star: #ffc24b;

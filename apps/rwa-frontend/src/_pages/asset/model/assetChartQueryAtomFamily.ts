@@ -20,6 +20,11 @@ export const assetCandlesQueryAtomFamily = atomFamily((ticker: string) =>
   })),
 )
 
+/** Shares the cache of the 1Y price chart */
+export const assetYearChartQueryAtomFamily = atomFamily((ticker: string) =>
+  atomWithQuery(() => assetChartQueryOptions(ticker, '1Y')),
+)
+
 export const assetDailyChartQueryAtomFamily = atomFamily((ticker: string) =>
   atomWithQuery(() => assetChartQueryOptions(ticker, '1D')),
 )

@@ -6,7 +6,7 @@
  * Env: COINGECKO_API_KEY (required), COINGECKO_API_PLAN (`pro` for pro-api.coingecko.com, Demo API otherwise).
  *
  * Hand-edited fields of assets and tokens that are already in the file are kept:
- * asset `title`, `priority`, `allowedTradingTime`, `newsFeed` and token `symbol`, `name`, `issuer`.
+ * asset `title`, `priority`, `allowedTradingTime`, `newsFeed`, `profile` and token `symbol`, `name`, `issuer`.
  *
  * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped.
  */
@@ -110,6 +110,7 @@ async function main() {
       priority: existing?.priority ?? DEFAULT_PRIORITY,
       allowedTradingTime: existing ? existing.allowedTradingTime : getDefaultTradingTime(rwa),
       newsFeed: existing?.newsFeed,
+      profile: existing?.profile,
       tokens,
     })
   }

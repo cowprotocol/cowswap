@@ -17,6 +17,12 @@
       "require": "./src/tokens.ts",
       "default": "./src/tokens.ts"
     },
+    "./theme": {
+      "types": "./src/theme.ts",
+      "import": "./src/theme.ts",
+      "require": "./src/theme.ts",
+      "default": "./src/theme.ts"
+    },
     "./wallet": {
       "types": "./src/wallet.ts",
       "import": "./src/wallet.ts",
@@ -37,6 +43,11 @@
         "types": "./tokens.d.ts",
         "import": "./tokens.mjs",
         "require": "./tokens.js"
+      },
+      "./theme": {
+        "types": "./theme.d.ts",
+        "import": "./theme.mjs",
+        "require": "./theme.js"
       },
       "./wallet": {
         "types": "./wallet.d.ts",

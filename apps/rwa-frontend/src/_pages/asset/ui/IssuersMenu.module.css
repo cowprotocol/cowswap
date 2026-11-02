@@ -1,0 +1,105 @@
+.wrapper {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 8px 0 10px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.trigger:hover {
+  filter: brightness(0.97);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.chevron {
+  transition: transform 0.15s;
+}
+
+.trigger[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 20;
+  width: min(360px, calc(100vw - 32px));
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-widget);
+}
+
+.menu[hidden] {
+  display: none;
+}
+
+.hint {
+  margin: 0 0 12px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.issuer {
+  color: var(--color-text);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.symbols {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.networks {
+  grid-column: 1;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.legalDocs {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  align-self: center;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  text-underline-offset: 3px;
+}

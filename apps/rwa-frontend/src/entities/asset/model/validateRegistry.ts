@@ -3,7 +3,14 @@ import { isAddress } from 'viem'
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
 import { RWA_ISSUERS } from './issuers'
-import { RWA_ASSET_TYPES, type RwaAsset, type RwaRegistry, type RwaToken, type RwaTradingTime } from './types'
+import {
+  RWA_ASSET_TYPES,
+  type RwaAsset,
+  type RwaAssetProfile,
+  type RwaRegistry,
+  type RwaToken,
+  type RwaTradingTime,
+} from './types'
 
 const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
@@ -62,6 +69,16 @@ function validateAsset(asset: RwaAsset, path: string): string[] {
   return errors
 }
 
+function validateProfile(profile: RwaAssetProfile, path: string): string[] {
+  const errors: string[] = []
+
+  if (!profile.description) errors.push(`${path}.description: required`)
+  if (!profile.sector) errors.push(`${path}.sector: required`)
+  if (!isHttpsUrl(profile.website)) errors.push(`${path}.website: must be an https URL`)
+
+  return errors
+}
+
 function validateRequiredStrings(asset: RwaAsset, path: string): string[] {
   const errors: string[] = []
 
@@ -72,6 +89,7 @@ function validateRequiredStrings(asset: RwaAsset, path: string): string[] {
     if (!asset.newsFeed.source) errors.push(`${path}.newsFeed.source: required`)
     if (!isHttpsUrl(asset.newsFeed.url)) errors.push(`${path}.newsFeed.url: must be an https URL`)
   }
+  if (asset.profile) errors.push(...validateProfile(asset.profile, `${path}.profile`))
 
   return errors
 }

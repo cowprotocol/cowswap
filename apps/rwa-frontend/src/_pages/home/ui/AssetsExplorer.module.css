@@ -1,92 +1,94 @@
 .explorer {
   display: flex;
   flex-direction: column;
-  padding: 0 8px 8px;
+  padding-bottom: 8px;
   border-radius: var(--radius-card);
   background: var(--color-bg);
   box-shadow: var(--shadow-subtle);
 }
 
 .toolbar {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  padding: 14px 8px 12px;
+  padding: 14px 24px 16px;
 }
 
-.tabs {
+.types {
   display: flex;
-  gap: 2px;
-  margin-right: auto;
-  overflow-x: auto;
+  gap: 8px;
 }
 
-.tab {
+.outlinedButton {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   height: 40px;
   padding: 0 16px;
-  border: none;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
-  background: none;
+  background: var(--color-bg);
   color: var(--color-text-secondary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   line-height: 20px;
   white-space: nowrap;
 }
 
-.tab:hover {
-  color: var(--color-text);
-}
-
-.tab[aria-selected='true'] {
+.outlinedButton:hover {
   background: var(--color-surface);
   color: var(--color-text);
 }
 
-.tabCount {
-  display: inline-flex;
-  align-items: center;
-  height: 18px;
-  padding: 0 6px;
-  border-radius: 9px;
-  background: var(--color-border);
-  color: var(--color-text-secondary);
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 14px;
-}
-
-.tab[aria-selected='true'] .tabCount {
+.outlinedButton[aria-pressed='true'],
+.outlinedButton[aria-expanded='true'],
+.outlinedButton[data-active='true'] {
+  border-color: transparent;
   background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
+.outlinedButton:focus-visible,
+.clearButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.filtersCount {
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.clearButton {
+  height: 40px;
+  padding: 0 8px;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .filterInput {
   display: flex;
+  flex: 1 1 240px;
   align-items: center;
   gap: 10px;
-  width: 260px;
+  min-width: 0;
   height: 40px;
-  padding: 0 14px;
-  border-radius: 20px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
   background: var(--color-surface);
   color: var(--color-text-secondary);
   cursor: text;
 }
 
 .filterInput:focus-within {
-  outline: 1px solid var(--color-accent);
+  outline: 2px solid var(--color-accent);
 }
 
 .filterInput input {
@@ -103,32 +105,42 @@
   color: var(--color-text-secondary);
 }
 
-.filterControls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.watchlistButton {
-  display: inline-flex;
+.footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: 8px;
-  height: 40px;
-  padding: 0 14px;
-  border-radius: 20px;
-  background: var(--color-bg);
-  font-size: 14px;
+  padding: 0 24px;
+}
+
+.footer > nav {
+  grid-column: 2;
+}
+
+.footer:empty {
+  display: none;
+}
+
+.scope {
+  padding: 16px 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.aboutMetrics {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 20px 4px 0;
+  color: var(--color-text);
+  font-size: 13px;
   font-weight: 500;
-  line-height: 20px;
-}
-
-.watchlistButton:hover {
-  background: var(--color-surface);
-}
-
-.watchlistButton[aria-pressed='true'] {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  line-height: 18px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: help;
 }
 
 .visuallyHidden {
@@ -141,8 +153,41 @@
 }
 
 @media (max-width: 600px) {
-  .filterInput {
-    flex: 1 1 100%;
-    width: auto;
+  .toolbar {
+    padding: 12px 16px;
   }
+
+  .types {
+    overflow-x: auto;
+  }
+
+  .filterInput {
+    flex-basis: 100%;
+    order: -1;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+  }
+}
+
+.emptyAction {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-weight: 500;
+}
+
+.emptyAction:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.emptyAction:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }

@@ -517,6 +517,11 @@
         "source": "NVIDIA Newsroom",
         "url": "https://nvidianews.nvidia.com/releases.xml"
       },
+      "profile": {
+        "description": "NVIDIA designs graphics processors and computing platforms for AI, data centers, gaming and professional visualization.",
+        "sector": "Technology · Semiconductors",
+        "website": "https://www.nvidia.com"
+      },
       "tokens": [
         {
           "chainId": 42161,

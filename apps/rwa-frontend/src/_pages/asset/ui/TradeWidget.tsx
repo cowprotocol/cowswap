@@ -17,9 +17,9 @@ import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
+import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
-import { ConnectButton } from '@/features/connect-wallet'
 import { APP_CODE, WIDGET_BASE_URL } from '@/shared/config'
 import { useIsDarkTheme } from '@/shared/lib/theme'
 import { useWalletProvider } from '@/shared/lib/wallet'
@@ -38,6 +38,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const { isConnected } = useConnection()
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
+  const listeners = useWidgetTradeTokenSync(asset, selection)
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
   const tradingPauseMessage =
@@ -78,21 +79,20 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
     <section id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
-      {!isConnected && (
-        // In dapp mode (`standaloneMode: false`) the widget has no connect button of its own
-        <div className={styles.connectPrompt}>
-          <span>Connect your wallet to trade this tokenized asset</span>
-          <ConnectButton />
-        </div>
-      )}
+      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
+        <CowSwapWidget
+          params={params}
+          provider={provider}
+          listeners={listeners}
+          onReady={onWidgetSettled}
+          onLoadingError={onWidgetSettled}
+        />
+        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
+      </div>
       <p className={styles.disclaimer}>
         Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check
         issuer terms and eligibility before trading.
       </p>
-      <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
-        <CowSwapWidget params={params} provider={provider} onReady={onWidgetSettled} onLoadingError={onWidgetSettled} />
-        {isWidgetLoading && <TradeWidgetSkeleton overlay />}
-      </div>
     </section>
   )
 }
