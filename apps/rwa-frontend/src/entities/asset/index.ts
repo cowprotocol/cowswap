@@ -1,5 +1,6 @@
 export { type AssetsPageQuery } from './api/assetsApi'
 export {
+  assetCandlesQueryOptions,
   assetChartQueryOptions,
   assetNewsQueryAtomFamily,
   assetNewsQueryOptions,
@@ -18,6 +19,7 @@ export {
   RWA_ASSET_TYPE_LABELS,
   RWA_ASSET_TYPES,
   RWA_CHART_RANGES,
+  RWA_CHART_TYPES,
   RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAsset,
@@ -32,9 +34,12 @@ export {
   type RwaAssetsSearchResult,
   type RwaAssetType,
   type RwaAssetWithMarket,
+  type RwaCandle,
+  type RwaCandleChart,
   type RwaChart,
   type RwaChartPoint,
   type RwaChartRange,
+  type RwaChartType,
   type RwaMarketData,
   type RwaMarketOverview,
   type RwaMarketOverviewItem,
@@ -59,6 +64,7 @@ export {
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'
 export { IssuersCount } from './ui/IssuersCount'
+export { pointsToCandles } from './lib/chartBars'
 export { PriceChart } from './ui/PriceChart'
 export { getDefaultSortOrder } from './model/assetsQuery'
 export {

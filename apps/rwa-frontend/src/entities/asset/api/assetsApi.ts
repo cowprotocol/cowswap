@@ -41,6 +41,10 @@ export function getAssetUrl(ticker: string): string {
   return `${RWA_API_PREFIX}asset/${encodeURIComponent(ticker)}`
 }
 
+export function getCandlesUrl(ticker: string, range: RwaChartRange): string {
+  return `${RWA_API_PREFIX}candles/${encodeURIComponent(ticker)}?range=${range}`
+}
+
 export function getChartUrl(ticker: string, range: RwaChartRange): string {
   return `${RWA_API_PREFIX}chart/${encodeURIComponent(ticker)}?range=${range}`
 }

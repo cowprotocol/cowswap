@@ -1,6 +1,7 @@
 export { getAssetHandler } from './asset'
 export { getAssetsHandler } from './assets'
 export { searchAssetsHandler } from './assetsSearch'
+export { getCandlesHandler } from './candles'
 export { getChartHandler } from './chart'
 export { getLlmsTxtHandler } from './llmsTxt'
 export { getMarketOverviewHandler } from './marketOverview'
