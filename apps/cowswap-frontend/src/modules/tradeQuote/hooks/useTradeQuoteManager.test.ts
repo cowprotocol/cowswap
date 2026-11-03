@@ -285,6 +285,28 @@ describe('useTradeQuoteManager - all quotes received', () => {
     expect(getIsSameTradeQuoteRefreshing(getState())).toBe(false)
   })
 
+  it('keeps a params change when its quote failed and a poll of the same trade follows', () => {
+    const manager = renderManager()
+    const prevParams = makeParams()
+    const params = makeParams({ amount: 2_000_000n })
+    const changedParams: TradeQuoteFetchParams = { ...fetchParams, fetchStartTimestamp: 2 }
+    const pollingParams: TradeQuoteFetchParams = { ...fetchParams, hasParamsChanged: false, fetchStartTimestamp: 3 }
+    const nextPollingParams: TradeQuoteFetchParams = { ...pollingParams, fetchStartTimestamp: 4 }
+
+    act(() => manager.setLoading(fetchParams, prevParams))
+    act(() => manager.onResponse(quote, null, fetchParams, prevParams))
+    act(() => manager.setLoading(changedParams, params))
+    act(() => manager.onError(liquidityError, SupportedChainId.MAINNET, params, changedParams))
+    act(() => manager.setLoading(pollingParams, params))
+
+    expect(getIsSameTradeQuoteRefreshing(getState())).toBe(false)
+
+    act(() => manager.onResponse(quote, null, pollingParams, params))
+    act(() => manager.setLoading(nextPollingParams, params))
+
+    expect(getIsSameTradeQuoteRefreshing(getState())).toBe(true)
+  })
+
   it('clears pending quotes on reset', () => {
     const manager = renderManager()
 

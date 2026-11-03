@@ -32,6 +32,8 @@ export interface TradeQuoteState {
   localQuoteTimestamp: number | null
   /** Whether a final quote has arrived since the quote was last cleared; later fast quotes keep it set. */
   hasFinalQuote: boolean
+  /** Whether the retained quote belongs to params changed since; only a response for the current params clears it. */
+  isQuoteOutdated: boolean
   /** Quotes of the latest fetch round that have neither arrived nor failed; null once all of them have. */
   pendingQuotes: PendingQuotes | null
 }
@@ -48,6 +50,7 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   isLoading: false,
   localQuoteTimestamp: null,
   hasFinalQuote: false,
+  isQuoteOutdated: false,
   pendingQuotes: null,
 }
 

@@ -59,6 +59,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
       update(sellTokenAddress, {
         isLoading: true,
         hasParamsChanged: fetchParams.hasParamsChanged,
+        ...(fetchParams.hasParamsChanged ? { isQuoteOutdated: true } : null),
         ...(tradeSubjectChanged ? { error: null } : null),
         // Quotes are keyed by sell token address, which can repeat across chains: never keep another chain's quote
         ...(didQuoteChainChange(prevQuoteParams, quoteParams) ? { quote: null } : null),
@@ -67,7 +68,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
 
     const reset = (): void => {
       lastQuoteParamsRef.current = null
-      update(sellTokenAddress, { quote: null, isLoading: false, pendingQuotes: null })
+      update(sellTokenAddress, { quote: null, isLoading: false, isQuoteOutdated: false, pendingQuotes: null })
     }
 
     const onError = (
@@ -114,6 +115,7 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
         ...(getIsFinalQuote(fetchParams) ? { isLoading: false } : null),
         error: null,
         hasParamsChanged: false,
+        isQuoteOutdated: false,
         fetchParams,
       })
     }

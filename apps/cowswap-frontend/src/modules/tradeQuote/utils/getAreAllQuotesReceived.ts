@@ -5,5 +5,5 @@ export function getAreAllQuotesReceived(state: TradeQuoteState): boolean {
 }
 
 export function getIsSameTradeQuoteRefreshing(state: TradeQuoteState): boolean {
-  return !!state.quote && !!state.pendingQuotes && !state.pendingQuotes.hasParamsChanged
+  return !!state.quote && !state.isQuoteOutdated && !!state.pendingQuotes && !state.pendingQuotes.hasParamsChanged
 }
