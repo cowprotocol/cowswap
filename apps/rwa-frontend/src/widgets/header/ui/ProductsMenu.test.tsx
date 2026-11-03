@@ -25,7 +25,7 @@ describe('ProductsMenu', () => {
 
     const current = screen.getByRole('link', { name: 'CoW RWA' })
 
-    expect(current.getAttribute('aria-current')).toBe('page')
+    expect(current.getAttribute('aria-current')).toBe('true')
     expect(current.getAttribute('target')).toBeNull()
 
     fireEvent.keyDown(current, { key: 'Escape' })

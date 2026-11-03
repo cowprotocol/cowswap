@@ -57,7 +57,7 @@ export function ProductsMenu(): ReactNode {
                 key={id}
                 className={`${styles.item} ${styles.current}`}
                 href="/"
-                aria-current="page"
+                aria-current="true"
                 onClick={close}
               >
                 <CowLogo className={styles.logo} height={MENU_LOGO_HEIGHT} />

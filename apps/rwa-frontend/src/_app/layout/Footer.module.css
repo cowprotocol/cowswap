@@ -202,6 +202,12 @@
   transform: rotate(-90deg);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: color 0.2s ease-in-out;
+  }
+}
+
 @media (max-width: 1024px) {
   .content {
     grid-template-columns: 1fr;
