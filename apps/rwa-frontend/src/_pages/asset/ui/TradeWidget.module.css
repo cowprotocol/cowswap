@@ -21,19 +21,6 @@
   line-height: 16px;
 }
 
-.connectPrompt {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 10px 10px 16px;
-  border-radius: var(--radius-card);
-  background: var(--color-bg);
-  box-shadow: var(--shadow-widget);
-  font-weight: 500;
-}
-
 /* Browsers paint an opaque white backdrop behind an iframe whose color scheme differs from the embedding page */
 .widget iframe {
   color-scheme: normal;

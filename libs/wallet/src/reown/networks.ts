@@ -1,5 +1,5 @@
-import { VIEM_CHAINS } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { RELEASED_SUPPORTED_CHAIN_IDS, VIEM_CHAINS } from '@cowprotocol/common-const'
+import { isEvmChain, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { solana } from '@reown/appkit/networks'
 import { type Chain } from 'viem/chains'
@@ -19,7 +19,7 @@ import type { AppKitNetwork } from '@reown/appkit-common'
  * connector-id constants reown-free lets them be imported without dragging in that
  * bundle (which Jest does not transform).
  */
-export const SUPPORTED_REOWN_NETWORKS = ALL_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
+export const SUPPORTED_REOWN_NETWORKS = RELEASED_SUPPORTED_CHAIN_IDS.flatMap((chainId): Chain[] =>
   isEvmChain(chainId) ? [VIEM_CHAINS[chainId]] : [],
 ) as [AppKitNetwork, ...AppKitNetwork[]]
 

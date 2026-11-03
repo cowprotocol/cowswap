@@ -20,7 +20,7 @@ import SVG from 'react-inlinesvg'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { BaseTradeConfirmation, TradeTokenPairProps } from 'modules/trade'
+import { BaseTradeConfirmation, CowParticipationFooter, TradeTokenPairProps } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -32,10 +32,10 @@ import * as styledEl from './styled'
 
 import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
-import { OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+import { ConfirmationOutcomeSlot } from '../ConfirmationOutcomeSlot/ConfirmationOutcomeSlot.pure'
 import { SolverAuctionResult } from '../SolverAuctionResult/SolverAuctionResult.pure'
 import { SolverCompetitionExpand } from '../SolverCompetitionExpand/SolverCompetitionExpand.pure'
-import { WAIT_AND_SAVE_OUTCOME_DEMO } from '../WaitAndSaveOutcome/waitAndSaveOutcome.demo'
 import { WaitAndSaveOutcome } from '../WaitAndSaveOutcome/WaitAndSaveOutcome.pure'
 
 export interface FinishedSuccessHeadingProps {
@@ -57,7 +57,8 @@ interface FinishedStepProps {
   totalSolvers?: number
   randomBenefit: string
   debugForceShowSurplus?: boolean
-  showWaitAndSaveOutcome?: boolean
+  solverCompetitionPending?: boolean
+  waitAndSave?: OrderProgressBarProps['waitAndSave']
 }
 
 // eslint-disable-next-line complexity
@@ -70,14 +71,15 @@ export function FinishedStep({
   totalSolvers,
   randomBenefit,
   debugForceShowSurplus,
-  showWaitAndSaveOutcome = false,
+  solverCompetitionPending = false,
+  waitAndSave,
 }: FinishedStepProps): ReactNode {
   const { t } = useLingui()
   const { disablePostTradeTips } = useInjectedWidgetParams()
   const cancellationFailed = stepName === 'cancellationFailed'
   const { showSurplus } = surplusData || {}
   const shouldShowSurplus = Boolean(debugForceShowSurplus || showSurplus)
-  const showWaitAndSaveCard = showWaitAndSaveOutcome && WAIT_AND_SAVE_OUTCOME_DEMO.gainNumeric > 0
+  const showWaitAndSaveCard = Boolean(waitAndSave?.outcome)
   const isSell = Boolean(order && isSellOrder(order.kind))
   const surplusTooltip = isSell
     ? t`The extra amount you received compared to your limit price.`
@@ -106,33 +108,21 @@ export function FinishedStep({
 
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
-  const cowParticipationTooltip = t`Your trade was matched with other orders in a Coincidence of Wants (CoW).`
-  const tokenPair = useMemo(() => {
-    if (!order) {
-      return undefined
-    }
+  const celebrateWin = shouldShowSurplus || showWaitAndSaveCard
+  const tokenPair = useFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave)
 
-    const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
-
-    if (!pair || !showWaitAndSaveCard) {
-      return pair
-    }
-
-    return {
-      ...pair,
-      cowParticipation: { tooltip: cowParticipationTooltip },
-    }
-  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, showWaitAndSaveCard, cowParticipationTooltip])
+  const showShare = !disablePostTradeTips || celebrateWin
+  const competitionPending = waitAndSave?.pending === true
+  const surplusPending = !cancellationFailed && surplusData?.isReady === false
+  const outcomeLoading = solverCompetitionPending || competitionPending || surplusPending
+  const solversList = competitionPending ? [] : (solvers ?? [])
+  const hasSolvers = solversList.length > 0
+  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
+  const showCollapsedSolvers = !outcomeLoading && hasSolvers && !showExpandedAuction
 
   if (!order) {
     return null
   }
-
-  const showShare = !disablePostTradeTips || shouldShowSurplus
-  const solversList = solvers ?? []
-  const hasSolvers = solversList.length > 0
-  const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
-  const showCollapsedSolvers = hasSolvers && !showExpandedAuction
 
   return (
     <styledEl.FinishedStepContainer>
@@ -140,19 +130,28 @@ export function FinishedStep({
       {cancellationFailed ? <CancellationFailedBanner /> : null}
 
       <BaseTradeConfirmation tokenPair={tokenPair}>
-        {showWaitAndSaveCard ? <WaitAndSaveOutcome {...WAIT_AND_SAVE_OUTCOME_DEMO} /> : null}
+        {waitAndSave?.outcome ? <WaitAndSaveOutcome {...waitAndSave.outcome} /> : null}
 
-        {showExpandedAuction ? (
-          <SolverAuctionResult solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} framed />
+        {outcomeLoading || !showWaitAndSaveCard ? (
+          <ConfirmationOutcomeSlot loading={outcomeLoading}>
+            {showExpandedAuction ? (
+              <SolverAuctionResult
+                solvers={solversList}
+                totalSolvers={totalSolvers}
+                buyToken={order.outputToken}
+                framed
+              />
+            ) : (
+              children
+            )}
+          </ConfirmationOutcomeSlot>
         ) : null}
-
-        {showWaitAndSaveCard || showExpandedAuction ? null : children}
 
         {showCollapsedSolvers ? (
           <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
         ) : null}
 
-        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={shouldShowSurplus} /> : null}
+        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={celebrateWin} /> : null}
       </BaseTradeConfirmation>
     </styledEl.FinishedStepContainer>
   )
@@ -180,27 +179,22 @@ function buildFinishedTokenPair(
   soldLabel: string,
   receivedLabel: string,
   surplusSecondaryAmount?: CurrencyPreviewSecondaryAmount,
-): TradeTokenPairProps | undefined {
-  const executedSellAmount = order.apiAdditionalInfo?.executedSellAmount
-  const executedBuyAmount = order.apiAdditionalInfo?.executedBuyAmount
-
-  if (!isNonZeroAmount(executedSellAmount) || !isNonZeroAmount(executedBuyAmount)) {
-    return undefined
-  }
-
+): TradeTokenPairProps {
+  const sold = settledPreview(order.inputToken, order.apiAdditionalInfo?.executedSellAmount)
+  const received = settledPreview(order.outputToken, order.apiAdditionalInfo?.executedBuyAmount)
   const showSurplusOnSoldSide = Boolean(surplusSecondaryAmount) && !isSellOrder(order.kind)
 
   return {
     variant: 'slim',
     inputCurrencyInfo: {
-      amount: CurrencyAmount.fromRawAmount(order.inputToken, executedSellAmount),
+      ...sold,
       fiatAmount: null,
       balance: null,
       label: soldLabel,
       secondaryAmount: showSurplusOnSoldSide ? surplusSecondaryAmount : undefined,
     },
     outputCurrencyInfo: {
-      amount: CurrencyAmount.fromRawAmount(order.outputToken, executedBuyAmount),
+      ...received,
       fiatAmount: null,
       balance: null,
       label: receivedLabel,
@@ -318,4 +312,40 @@ function getFinishedSurplusSecondaryAmount(
 
 function isNonZeroAmount(amount: string | undefined): amount is string {
   return !!amount && amount !== '0'
+}
+
+function settledPreview(
+  token: Order['inputToken'],
+  rawAmount: string | undefined,
+): { amount: CurrencyAmount<Order['inputToken']> | null; token: Order['inputToken']; amountLoading: boolean } {
+  if (!isNonZeroAmount(rawAmount)) {
+    return { amount: null, token, amountLoading: true }
+  }
+
+  return { amount: CurrencyAmount.fromRawAmount(token, rawAmount), token, amountLoading: false }
+}
+
+function useFinishedTokenPair(
+  order: Order | undefined,
+  soldLabel: string,
+  receivedLabel: string,
+  surplusSecondaryAmount: CurrencyPreviewSecondaryAmount | undefined,
+  waitAndSave: OrderProgressBarProps['waitAndSave'],
+): TradeTokenPairProps | undefined {
+  return useMemo(() => {
+    if (!order) {
+      return undefined
+    }
+
+    const pair = buildFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount)
+
+    if (!pair || !waitAndSave?.strip) {
+      return pair
+    }
+
+    return {
+      ...pair,
+      footer: <CowParticipationFooter {...waitAndSave.strip} />,
+    }
+  }, [order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave])
 }

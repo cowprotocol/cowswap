@@ -3,6 +3,8 @@ import { atom } from 'jotai'
 export interface WatcherHealthState {
   status: BalancesWatcherHealth
   isRecovering: boolean
+  /** Timestamp (ms) of the failure that started the current recovery */
+  recoveringSince: number | null
 }
 
 /**
@@ -28,6 +30,7 @@ export enum BalancesWatcherHealth {
 export const DEFAULT_WATCHER_HEALTH_STATE: WatcherHealthState = {
   status: BalancesWatcherHealth.Idle,
   isRecovering: false,
+  recoveringSince: null,
 }
 
 export const balancesWatcherHealthAtom = atom<WatcherHealthState>(DEFAULT_WATCHER_HEALTH_STATE)

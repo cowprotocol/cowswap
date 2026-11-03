@@ -21,17 +21,6 @@ export function Footer(): ReactNode {
           CoW Protocol
         </a>
       </div>
-      <div className={styles.disclaimer}>
-        <p>
-          CoW RWA provides access to information concerning third-party issued tokenized assets and supported onchain
-          transaction functionality. Tokenized assets are issued by independent third parties and are subject to their
-          respective terms and conditions. Tokens may not confer the rights attached to the underlying assets.
-        </p>
-        <p>
-          The availability of an asset through this interface does not constitute a recommendation or endorsement of
-          that asset.
-        </p>
-      </div>
     </footer>
   )
 }

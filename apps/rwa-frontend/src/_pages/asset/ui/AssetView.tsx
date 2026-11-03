@@ -7,14 +7,14 @@ import Link from 'next/link'
 import { AssetAccount } from './AssetAccount'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
+import { IssuersMenu } from './IssuersMenu'
 import { TradeWidget } from './TradeWidget'
 
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { useAssetMarket } from '../model/useAssetMarket'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
-import { AssetStats, IssuersCount, type RwaAsset } from '@/entities/asset'
-import { NetworkLogos } from '@/shared/ui/network-logos'
+import { AssetStats, type RwaAsset } from '@/entities/asset'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
@@ -64,8 +64,6 @@ function ArrowLeftIcon(): ReactNode {
 }
 
 function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-
   return (
     <header className={styles.identity}>
       <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} size="hero" />
@@ -73,8 +71,7 @@ function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
         <h1>{asset.title}</h1>
         <div className={styles.meta}>
           <span>{asset.ticker}</span>
-          <IssuersCount className={styles.issuers} tokens={asset.tokens} />
-          <NetworkLogos chainIds={chainIds} />
+          <IssuersMenu tokens={asset.tokens} />
         </div>
       </div>
     </header>

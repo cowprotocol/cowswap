@@ -20,11 +20,15 @@
   font-weight: 600;
 }
 
+.withBadge .logo,
+.withBadge .placeholder {
+  /* 1.5px gap around the 16px badge, whose centre sits 4px inside the corner */
+  mask: radial-gradient(circle at calc(100% - 4px) calc(100% - 4px), transparent 9.5px, #000 10px);
+}
+
 .chainBadge {
   position: absolute;
   right: -4px;
   bottom: -4px;
-  border: 2px solid var(--color-bg);
   border-radius: 50%;
-  background: var(--color-bg);
 }

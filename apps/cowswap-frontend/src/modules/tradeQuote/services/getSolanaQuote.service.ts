@@ -19,10 +19,11 @@ import { SolanaQuoteAndPost } from '../types'
  * returned alongside `quoteResults` so `solanaFlow` can build the `CreateOrder` instruction and bundle it
  * with the wrap/delegate instructions into one transaction — quoting itself stays free of any signer.
  *
- * `orderToSign`/`appDataInfo`/`orderTypedData` stay stubbed: these are EIP-712/CoW app-data concepts
- * the Solana settlement program's order intent has no counterpart for at all. `tradeParameters` is
- * built from the real request/response below — `quoteUsingSameParameters` and `getQuoteTimeOffset`
- * (validFor-based expiry offset used by `getOrderValidTo`) both read it and need real values, not stubs.
+ * `appDataInfo` is the SDK's doc for `advancedSettings.appData`, merged onto its own defaults; `solanaFlow`
+ * merges the app's doc onto it again when building the order. `orderToSign`/`orderTypedData` stay stubbed:
+ * they are EIP-712 concepts with no Solana counterpart. `tradeParameters` is built from the real
+ * request/response below — `quoteUsingSameParameters` and `getQuoteTimeOffset` (validFor-based expiry
+ * offset used by `getOrderValidTo`) both read it and need real values, not stubs.
  */
 export async function getSolanaQuote(
   quoteParams: QuoteBridgeRequest,
@@ -39,12 +40,14 @@ export async function getSolanaQuote(
     account,
     receiver,
     partiallyFillable,
+    appCode,
   } = quoteParams
 
   const tokenProgramId = await getTokenProgramIdResolver()
 
   const { quoteResults, solanaQuote } = await getSolanaQuoteFromSdk(
     {
+      appCode,
       ownerAddress: owner ?? account,
       sellTokenAddress,
       buyTokenAddress,

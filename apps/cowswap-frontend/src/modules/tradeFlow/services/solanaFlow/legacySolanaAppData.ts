@@ -7,9 +7,9 @@ import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import type { SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 
 /**
- * What a Solana order signed before the order book served appData. Used while `isSolanaAppDataEnabled`
- * is off: the doc is never registered, so it must stay a value the UI can classify on its own.
- * Delete this module once the flag is removed.
+ * The swap's appData override while `isSolanaAppDataEnabled` is off. The SDK merges it onto the quote's doc,
+ * so the signed hash differs per order and is never registered; the UI classifies such a swap only by not
+ * matching `LEGACY_SOLANA_LIMIT_APP_DATA_HASH`. Delete this module once the flag is removed.
  */
 export const LEGACY_SOLANA_SWAP_APP_DATA: SwapAdvancedSettings['appData'] = {
   appCode: DEFAULT_APP_CODE,

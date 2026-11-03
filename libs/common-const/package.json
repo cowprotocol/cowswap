@@ -17,6 +17,12 @@
       "require": "./src/tokens.ts",
       "default": "./src/tokens.ts"
     },
+    "./theme": {
+      "types": "./src/theme.ts",
+      "import": "./src/theme.ts",
+      "require": "./src/theme.ts",
+      "default": "./src/theme.ts"
+    },
     "./wallet": {
       "types": "./src/wallet.ts",
       "import": "./src/wallet.ts",
@@ -38,6 +44,11 @@
         "import": "./tokens.mjs",
         "require": "./tokens.js"
       },
+      "./theme": {
+        "types": "./theme.d.ts",
+        "import": "./theme.mjs",
+        "require": "./theme.js"
+      },
       "./wallet": {
         "types": "./wallet.d.ts",
         "import": "./wallet.mjs",
@@ -46,7 +57,7 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/cow-sdk": "9.3.1",
     "viem": "2.48.8",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",

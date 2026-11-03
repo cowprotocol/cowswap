@@ -1,3 +1,4 @@
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { AdditionalTargetChainId, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { isBridgeSourceChainSupported } from 'entities/bridgeProvider'
@@ -90,7 +91,7 @@ export function createOutputChainsState({
 }
 
 export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId || chain.id in AdditionalTargetChainId)
+  return bridgeSupportedNetworks?.filter((chain) => isSupportedChainId(chain.id) || chain.id in AdditionalTargetChainId)
 }
 
 export function resolveDefaultChainId(

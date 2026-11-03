@@ -4,13 +4,19 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import type { ReactNode } from 'react'
 
 import styles from './AssetsExplorer.module.css'
+import { CommoditiesIcon, EtfsIcon, StocksIcon } from './ToolbarIcons'
 
 import { assetsFiltersAtom, updateAssetsFiltersAtom } from '../model/assetsFiltersAtoms'
-import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 
 import { RWA_ASSET_TYPES, type RwaAssetType } from '@/entities/asset'
 
-const TAB_TITLES: Record<RwaAssetType, string> = { stock: 'Stocks', index: 'ETFs', commodity: 'Commodities' }
+const TYPE_TITLES: Record<RwaAssetType, string> = { stock: 'Stocks', index: 'ETFs', commodity: 'Commodities' }
+
+const TYPE_ICONS: Record<RwaAssetType, () => ReactNode> = {
+  stock: StocksIcon,
+  index: EtfsIcon,
+  commodity: CommoditiesIcon,
+}
 
 interface AssetsTypeTabsProps {
   tableId: string
@@ -19,32 +25,27 @@ interface AssetsTypeTabsProps {
 export function AssetsTypeTabs({ tableId }: AssetsTypeTabsProps): ReactNode {
   const { type: selectedType } = useAtomValue(assetsFiltersAtom)
   const updateFilters = useSetAtom(updateAssetsFiltersAtom)
-  const counts = useAtomValue(assetsPageQueryAtom).data?.typeCounts
-  const tabs: { type: RwaAssetType | null; title: string; count: number | undefined }[] = [
-    {
-      type: null,
-      title: 'All assets',
-      count: counts && RWA_ASSET_TYPES.reduce((acc, type) => acc + counts[type], 0),
-    },
-    ...RWA_ASSET_TYPES.map((type) => ({ type, title: TAB_TITLES[type], count: counts?.[type] })),
-  ]
 
   return (
-    <div className={styles.tabs} role="tablist" aria-label="Asset type">
-      {tabs.map(({ type, title, count }) => (
-        <button
-          key={title}
-          type="button"
-          role="tab"
-          className={styles.tab}
-          aria-selected={type === selectedType}
-          aria-controls={tableId}
-          onClick={() => updateFilters({ type })}
-        >
-          {title}
-          {count !== undefined && <span className={styles.tabCount}>{count}</span>}
-        </button>
-      ))}
+    <div className={styles.types} role="group" aria-label="Asset type">
+      {RWA_ASSET_TYPES.map((type) => {
+        const Icon = TYPE_ICONS[type]
+        const isSelected = type === selectedType
+
+        return (
+          <button
+            key={type}
+            type="button"
+            className={styles.outlinedButton}
+            aria-pressed={isSelected}
+            aria-controls={tableId}
+            onClick={() => updateFilters({ type: isSelected ? null : type })}
+          >
+            <Icon />
+            {TYPE_TITLES[type]}
+          </button>
+        )
+      })}
     </div>
   )
 }
