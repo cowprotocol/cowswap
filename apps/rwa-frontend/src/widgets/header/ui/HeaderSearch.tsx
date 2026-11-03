@@ -17,6 +17,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import styles from './HeaderSearch.module.css'
 
 import { useBodyScrollLock } from '../lib/useBodyScrollLock'
+import { useDismissOnMediaQueryExit } from '../lib/useDismissOnMediaQueryExit'
 import {
   debouncedHeaderSearchQueryAtom,
   headerSearchQueryAtom,
@@ -59,10 +60,6 @@ export function HeaderSearch(): ReactNode {
     toggleRef.current?.focus()
   }
 
-  const onPanelKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key === 'Escape' && isFieldShown) hideField()
-  }
-
   return (
     <div ref={rootRef} className={isFieldShown ? `${styles.root} ${styles.fieldShown}` : styles.root}>
       <button
@@ -76,7 +73,7 @@ export function HeaderSearch(): ReactNode {
       >
         <SearchIcon />
       </button>
-      <div id={fieldId} className={styles.panel} onKeyDown={onPanelKeyDown}>
+      <div id={fieldId} className={styles.panel}>
         <div className={styles.bar}>
           <SearchCombobox inputRef={inputRef} onOpenAsset={() => setIsFieldShown(false)} />
           <button className={styles.close} type="button" aria-label="Close search" onClick={hideField}>
@@ -254,10 +251,28 @@ function useFieldToggle(inputRef: RefObject<HTMLInputElement | null>): {
 
   // The on-screen keyboard resizes the viewport when the field gets the focus
   useDismissOnOutsideInteraction(isFieldShown, [rootRef], hideField, false)
+  useDismissOnMediaQueryExit(isFieldShown, FULL_SCREEN_QUERY, hideField)
 
   useEffect(() => {
     if (isFieldShown) inputRef.current?.focus()
   }, [inputRef, isFieldShown])
+
+  useEffect(() => {
+    if (!isFieldShown) return
+
+    const onKeyDown = (event: globalThis.KeyboardEvent): void => {
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+      hideField()
+      toggleRef.current?.focus()
+    }
+
+    // Capture, so the field hides before the menu's Escape listener, which skips handled events
+    document.addEventListener('keydown', onKeyDown, true)
+
+    return () => document.removeEventListener('keydown', onKeyDown, true)
+  }, [isFieldShown, hideField])
 
   return { rootRef, toggleRef, isFieldShown, setIsFieldShown }
 }

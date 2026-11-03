@@ -13,15 +13,15 @@ jest.mock('@/widgets/header', () => ({
   WalletBarSlot: ({ children }: { children: ReactNode }) => <div data-testid="wallet-bar">{children}</div>,
 }))
 
-let reportIntersection: (isIntersecting: boolean) => void = () => undefined
+let reportVisibleHeight: (height: number) => void = () => undefined
 
 class MockIntersectionObserver {
   observe = jest.fn()
   disconnect = jest.fn()
 
   constructor(callback: IntersectionObserverCallback) {
-    reportIntersection = (isIntersecting) =>
-      callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
+    reportVisibleHeight = (height) =>
+      callback([{ intersectionRect: { height } } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
   }
 }
 
@@ -59,17 +59,21 @@ describe('TradeBarActions', () => {
     return store
   }
 
-  it('shows Buy and Sell in the wallet bar while the widget is out of view', () => {
+  it('shows Buy and Sell in the wallet bar until 120px of the widget shows above it', () => {
     renderSection()
     const buy = within(screen.getByTestId('wallet-bar')).getByRole('button', { name: 'Buy NVDA' })
 
     expect(buy.closest('[inert]')).toBeNull()
 
-    act(() => reportIntersection(true))
+    act(() => reportVisibleHeight(119))
+
+    expect(buy.closest('[inert]')).toBeNull()
+
+    act(() => reportVisibleHeight(120))
 
     expect(buy.closest('[inert]')).not.toBeNull()
 
-    act(() => reportIntersection(false))
+    act(() => reportVisibleHeight(0))
 
     expect(buy.closest('[inert]')).toBeNull()
   })

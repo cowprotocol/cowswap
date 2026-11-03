@@ -60,6 +60,12 @@
   }
 }
 
+@container (max-width: 60px) {
+  .actions {
+    display: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .actions {
     transition: none;

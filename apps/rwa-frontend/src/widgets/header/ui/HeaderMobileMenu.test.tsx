@@ -94,7 +94,7 @@ describe('HeaderMobileMenu', () => {
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('releases the page scroll when the viewport grows past the menu breakpoint', () => {
+  it('closes and releases the page scroll when the viewport grows past the menu breakpoint', () => {
     render(<HeaderMobileMenu />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
@@ -104,6 +104,23 @@ describe('HeaderMobileMenu', () => {
     viewport.matches = false
     act(() => viewport.listeners.forEach((listener) => listener()))
 
+    expect(screen.queryByRole('navigation')).toBeNull()
     expect(document.body.style.overflow).toBe('')
+
+    viewport.matches = true
+    act(() => viewport.listeners.forEach((listener) => listener()))
+
+    expect(screen.queryByRole('navigation')).toBeNull()
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('stays open on an Escape that another control handled', () => {
+    render(<HeaderMobileMenu />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    document.body.addEventListener('keydown', (event) => event.preventDefault(), { once: true })
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+
+    expect(screen.getByRole('navigation')).toBeTruthy()
   })
 })

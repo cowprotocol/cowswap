@@ -3,7 +3,7 @@ import type { ReactElement } from 'react'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { HeaderSearch } from './HeaderSearch'
@@ -36,13 +36,16 @@ function renderSearch(): { input: HTMLElement; rerender(): void } {
 
 describe('HeaderSearch', () => {
   let isPhoneViewport = true
+  const viewportListeners = new Set<() => void>()
 
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
       value: () => ({
-        matches: isPhoneViewport,
-        addEventListener: () => undefined,
-        removeEventListener: () => undefined,
+        get matches() {
+          return isPhoneViewport
+        },
+        addEventListener: (_type: string, listener: () => void) => viewportListeners.add(listener),
+        removeEventListener: (_type: string, listener: () => void) => viewportListeners.delete(listener),
       }),
     })
   })
@@ -139,15 +142,44 @@ describe('HeaderSearch', () => {
     expect(document.body.style.overflow).toBe('')
   })
 
-  it('hides the field on Escape from the close button', () => {
+  it('hides the field on Escape from the close button and marks the Escape handled', () => {
     renderSearch()
     const button = screen.getByRole('button', { name: 'Search' })
 
     fireEvent.click(button)
-    fireEvent.keyDown(screen.getByRole('button', { name: 'Close search' }), { key: 'Escape' })
+    const isNotHandled = fireEvent.keyDown(screen.getByRole('button', { name: 'Close search' }), { key: 'Escape' })
 
+    expect(isNotHandled).toBe(false)
     expect(button.getAttribute('aria-expanded')).toBe('false')
     expect(document.activeElement).toBe(button)
+  })
+
+  it('hides the field on Escape while the focus is outside it', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('hides the field when the viewport grows past the full-screen breakpoint', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+    isPhoneViewport = false
+    act(() => viewportListeners.forEach((listener) => listener()))
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+
+    isPhoneViewport = true
+    act(() => viewportListeners.forEach((listener) => listener()))
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.body.style.overflow).toBe('')
   })
 
   it('hides the field when the page changes', () => {

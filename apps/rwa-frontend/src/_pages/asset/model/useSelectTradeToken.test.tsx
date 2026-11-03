@@ -50,6 +50,7 @@ describe('useJumpToTrade', () => {
     const store = jumpToTrade('sell')
 
     expect(store.get(tradeSideAtom)).toBe('sell')
+    expect(scrollIntoView.mock.contexts).toEqual([document.getElementById(TRADE_WIDGET_ID)])
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth', block: 'start' })
     expect(document.activeElement?.textContent).toBe('Sell')
   })
@@ -61,6 +62,7 @@ describe('useJumpToTrade', () => {
 
     jumpToTrade('buy')
 
+    expect(scrollIntoView.mock.contexts).toEqual([document.getElementById(TRADE_WIDGET_ID)])
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'auto', block: 'nearest' })
     expect(document.activeElement).toBe(document.body)
   })

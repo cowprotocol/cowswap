@@ -9,6 +9,7 @@ import styles from './HeaderMobileMenu.module.css'
 
 import { isNavLinkActive, MORE_SECTIONS, NAV_LINKS, SWAP_HREF } from '../config/navLinks'
 import { useBodyScrollLock } from '../lib/useBodyScrollLock'
+import { useDismissOnMediaQueryExit } from '../lib/useDismissOnMediaQueryExit'
 
 import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { ArrowUpRightIcon, ChevronDownIcon, CloseIcon, MenuIcon } from '@/shared/ui/icons'
@@ -37,13 +38,15 @@ export function HeaderMobileMenu(): ReactNode {
 
   // The panel sits under the header, and mobile browsers resize the viewport as their toolbars show and hide
   useDismissOnOutsideInteraction(isOpen, [rootRef], close, false)
+  useDismissOnMediaQueryExit(isOpen, MENU_QUERY, close)
   useBodyScrollLock(isOpen, MENU_QUERY)
 
   useEffect(() => {
     if (!isOpen) return
 
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== 'Escape') return
+      // The full-screen search, which can open over the menu, handles its Escape first
+      if (event.key !== 'Escape' || event.defaultPrevented) return
 
       event.preventDefault()
       close()
