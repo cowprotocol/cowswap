@@ -26,6 +26,37 @@ const ORDER_PARAMS = {
   feeAmount: '0',
 } as OrderParameters
 
+// services#5214 moves the Solana quote to the EVM shape: the cost arrives as `feeAmount` in the sell token
+// and the SDK restores the pre-cost stages from it. Both shapes are in flight, so both are pinned here.
+describe('applySolanaQuoteCosts · quote already reporting the fee', () => {
+  const FEE_AMOUNT = '1500000'
+
+  it('leaves the stages the SDK already restored for a sell order', () => {
+    const withFee = { ...ORDER_PARAMS, sellAmount: '8500000', feeAmount: FEE_AMOUNT } as OrderParameters
+    const result = buildReceiveAmountInfo(withFee, COSTS)
+    const withoutCosts = buildReceiveAmountInfo(withFee, undefined)
+
+    expect(result.beforeAllFees.buyAmount.quotient).toBe(withoutCosts.beforeAllFees.buyAmount.quotient)
+    expect(result.beforeNetworkCosts.buyAmount.quotient).toBe(withoutCosts.beforeNetworkCosts.buyAmount.quotient)
+  })
+
+  it('leaves the stages the SDK already restored for a buy order', () => {
+    const withFee = { ...ORDER_PARAMS, kind: OrderKind.BUY, feeAmount: FEE_AMOUNT } as OrderParameters
+    const result = buildReceiveAmountInfo(withFee, COSTS)
+    const withoutCosts = buildReceiveAmountInfo(withFee, undefined)
+
+    expect(result.beforeAllFees.sellAmount.quotient).toBe(withoutCosts.beforeAllFees.sellAmount.quotient)
+  })
+
+  it('still reports the cost breakdown, which stays exact in the token the cut comes from', () => {
+    const withFee = { ...ORDER_PARAMS, sellAmount: '8500000', feeAmount: FEE_AMOUNT } as OrderParameters
+    const result = buildReceiveAmountInfo(withFee, COSTS)
+
+    expect(result.costs.networkFee.amountInBuyCurrency?.quotient).toBe(BigInt(COSTS.networkFees))
+    expect(result.costs.accountRentFee?.quotient).toBe(BigInt(COSTS.buyTokenAtaCosts))
+  })
+})
+
 describe('applySolanaQuoteCosts', () => {
   describe('sell order', () => {
     it('adds the costs back to the amounts quoted before them', () => {
