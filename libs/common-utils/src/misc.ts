@@ -42,6 +42,7 @@ const INSUFFICIENT_FUNDS_ERROR_MESSAGES = [
 const MAX_ERROR_CAUSE_DEPTH = 8
 
 const INTERNAL_RPC_ERROR_NAME = 'InternalRpcError'
+const EXECUTION_REVERTED_MESSAGE = 'execution reverted'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -117,10 +118,6 @@ export interface CanonicalMarketParams<T> {
   kind: OrderKind
 }
 
-export interface TokensFromMarketParams<T> extends Market<T> {
-  kind: OrderKind
-}
-
 /**
  * Helper function that transforms Basis Points (BPS) into a percentage
  * @param percent
@@ -163,7 +160,12 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
   const widgetHostReason = getWidgetHostErrorReason(error)
   if (widgetHostReason) return widgetHostReason
 
-  if (isInternalRpcError(error)) return t`The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮`
+  if (isInternalRpcError(error)) {
+    return (
+      getExecutionRevertedReason(error) ??
+      t`The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮`
+    )
+  }
 
   return getErrorObjectMessage(error) ?? error?.toString()
 }
@@ -269,6 +271,11 @@ function getErrorCause(error: unknown): unknown {
   return typeof error === 'object' && error !== null && 'cause' in error ? error.cause : undefined
 }
 
+function getErrorDataMessage(error: object): unknown {
+  const data = 'data' in error ? error.data : undefined
+  return typeof data === 'object' && data !== null && 'message' in data ? data.message : undefined
+}
+
 function getErrorName(error: unknown): unknown {
   return typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined
 }
@@ -280,6 +287,19 @@ function getErrorObjectMessage(error: unknown): string | undefined {
   if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
   if ('message' in error && typeof error.message === 'string') return error.message
   return undefined
+}
+
+// MetaMask reports reverts as -32603 "Internal JSON-RPC error." and keeps the revert reason in `data.message`
+function getExecutionRevertedReason(error: unknown, depth = 0): string | undefined {
+  if (typeof error !== 'object' || error === null || depth > MAX_ERROR_CAUSE_DEPTH) return undefined
+
+  const dataMessage = getErrorDataMessage(error)
+  if (typeof dataMessage === 'string' && dataMessage.toLowerCase().includes(EXECUTION_REVERTED_MESSAGE)) {
+    return dataMessage
+  }
+
+  const cause = getErrorCause(error)
+  return cause !== error ? getExecutionRevertedReason(cause, depth + 1) : undefined
 }
 
 // Matches `RpcError` from @cowprotocol/iframe-transport by shape, so common-utils doesn't depend on it:

@@ -247,6 +247,35 @@ describe('getProviderErrorMessage', () => {
     ).toBe(friendlyMessage)
   })
 
+  it('shows the revert reason when an InternalRpcError wraps an execution revert', () => {
+    const revertReason = 'execution reverted: ERC20: transfer amount exceeds balance'
+    const providerError = {
+      code: -32603,
+      message: 'Internal JSON-RPC error.',
+      data: { code: 3, message: revertReason, data: '0x08c379a0' },
+    }
+
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: { name: 'InternalRpcError', shortMessage: 'An internal error was received.', cause: providerError },
+      }),
+    ).toBe(revertReason)
+  })
+
+  it('keeps the friendly message when InternalRpcError data is not a revert', () => {
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(
+      getProviderErrorMessage({
+        name: 'InternalRpcError',
+        shortMessage: 'An internal error was received.',
+        cause: { code: -32603, message: 'Internal JSON-RPC error.', data: { message: 'header not found' } },
+      }),
+    ).toBe('The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮')
+  })
+
   it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {
     const hostRejection = viemWrapped({ ...hostError('Your wallet declined'), code: 4001 })
     expect(isRejectRequestProviderError(hostRejection)).toBe(true)
