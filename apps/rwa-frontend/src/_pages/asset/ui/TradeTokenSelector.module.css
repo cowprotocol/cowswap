@@ -197,9 +197,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+.optionQuote {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .unverifiedNote {
   grid-column: 2 / -1;
   color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 16px;
+}
+
+@media (max-width: 500px) {
+  .optionQuote {
+    grid-column: 2 / -1;
+  }
 }

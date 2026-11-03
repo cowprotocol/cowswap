@@ -210,7 +210,9 @@ function TradeTokenOption({
           </span>
         </span>
       </span>
-      <TradeTokenQuote quoted={quoted} stockPrice={market?.price} isLoading={isLoading} />
+      <span className={styles.optionQuote}>
+        <TradeTokenQuote quoted={quoted} stockPrice={market?.price} isLoading={isLoading} />
+      </span>
       {isChecked && isUnverifiedQuote(quoted) && (
         <span className={styles.unverifiedNote}>Unverified price. It may change when you trade.</span>
       )}
