@@ -14,12 +14,14 @@ jest.mock('@/widgets/header', () => ({
 }))
 
 let reportVisibleHeight: (height: number) => void = () => undefined
+let observerOptions: IntersectionObserverInit | undefined
 
 class MockIntersectionObserver {
   observe = jest.fn()
   disconnect = jest.fn()
 
-  constructor(callback: IntersectionObserverCallback) {
+  constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
+    observerOptions = options
     reportVisibleHeight = (height) =>
       callback([{ intersectionRect: { height } } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
   }
@@ -65,6 +67,7 @@ describe('TradeBarActions', () => {
     const actions = [bar.getByRole('button', { name: 'Buy NVDA' }), bar.getByRole('button', { name: 'Sell NVDA' })]
     const areInert = (): boolean[] => actions.map((action) => action.closest('[inert]') !== null)
 
+    expect(observerOptions?.rootMargin).toBe('0px 0px -56px 0px')
     expect(areInert()).toEqual([false, false])
 
     act(() => reportVisibleHeight(119))

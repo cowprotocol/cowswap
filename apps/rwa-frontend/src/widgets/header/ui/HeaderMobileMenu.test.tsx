@@ -1,7 +1,9 @@
+import { createStore, Provider } from 'jotai'
+
 import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import { HeaderMobileMenu } from './HeaderMobileMenu'
-import { SETTINGS_BUTTON_ID } from './SettingsMenu'
+import { SettingsMenu } from './SettingsMenu'
 
 let mockPathname = '/portfolio'
 
@@ -117,12 +119,10 @@ describe('HeaderMobileMenu', () => {
 
   it('moves the focus to the settings gear when it closes past the menu breakpoint', () => {
     render(
-      <>
-        <button type="button" id={SETTINGS_BUTTON_ID}>
-          Settings
-        </button>
+      <Provider store={createStore()}>
+        <SettingsMenu />
         <HeaderMobileMenu />
-      </>,
+      </Provider>,
     )
 
     fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
