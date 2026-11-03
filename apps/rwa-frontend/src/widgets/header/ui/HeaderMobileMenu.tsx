@@ -1,6 +1,6 @@
 'use client'
 
-import { type KeyboardEvent, type ReactNode, useCallback, useId, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -21,28 +21,42 @@ export function HeaderMobileMenu(): ReactNode {
   const moreId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
-  const [isOpen, setIsOpen] = useState(false)
+  // The page the menu was opened on: the header outlives navigation, so Back and Forward must close it
+  const [openOn, setOpenOn] = useState<string | null>(null)
   const [isMoreOpen, setIsMoreOpen] = useState(false)
+  const isOpen = openOn === pathname
 
-  const close = useCallback(() => {
-    setIsOpen(false)
+  if (openOn !== null && !isOpen) setOpenOn(null)
+
+  const close = useCallback(() => setOpenOn(null), [])
+
+  const open = (): void => {
+    setOpenOn(pathname)
     setIsMoreOpen(false)
-  }, [])
+  }
 
   // The panel sits under the header, and mobile browsers resize the viewport as their toolbars show and hide
   useDismissOnOutsideInteraction(isOpen, [rootRef], close, false)
   useBodyScrollLock(isOpen, MENU_QUERY)
 
-  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
-    if (event.key !== 'Escape' || !isOpen) return
+  useEffect(() => {
+    if (!isOpen) return
 
-    event.preventDefault()
-    close()
-    triggerRef.current?.focus()
-  }
+    const onKeyDown = (event: KeyboardEvent): void => {
+      if (event.key !== 'Escape') return
+
+      event.preventDefault()
+      close()
+      triggerRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, close])
 
   return (
-    <div ref={rootRef} className={styles.root} onKeyDown={onKeyDown}>
+    <div ref={rootRef} className={styles.root}>
       <button
         ref={triggerRef}
         className={styles.trigger}
@@ -50,7 +64,7 @@ export function HeaderMobileMenu(): ReactNode {
         aria-label="Menu"
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
-        onClick={() => (isOpen ? close() : setIsOpen(true))}
+        onClick={() => (isOpen ? close() : open())}
       >
         {isOpen ? <CloseIcon /> : <MenuIcon />}
       </button>

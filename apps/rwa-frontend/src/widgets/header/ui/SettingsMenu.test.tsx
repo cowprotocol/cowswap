@@ -32,6 +32,7 @@ describe('SettingsMenu', () => {
 
     expect(document.documentElement.dataset.theme).toBe('dark')
     expect(screen.queryByRole('menu')).toBeNull()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Settings' }))
 
     fireEvent.click(screen.getByRole('button', { name: 'Settings' }))
     fireEvent.click(await screen.findByRole('menuitem', { name: 'Light Mode' }))

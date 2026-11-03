@@ -2,11 +2,9 @@
 
 import { useAtomValue, useSetAtom } from 'jotai'
 import {
-  type Dispatch,
   type KeyboardEvent,
   type ReactNode,
   type RefObject,
-  type SetStateAction,
   useCallback,
   useEffect,
   useId,
@@ -14,7 +12,7 @@ import {
   useState,
 } from 'react'
 
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 import styles from './HeaderSearch.module.css'
 
@@ -33,7 +31,6 @@ import { TokenLogo } from '@/shared/ui/token-logo'
 
 interface SearchComboboxProps {
   inputRef: RefObject<HTMLInputElement | null>
-  onEscape(): void
   onOpenAsset(): void
 }
 
@@ -62,6 +59,10 @@ export function HeaderSearch(): ReactNode {
     toggleRef.current?.focus()
   }
 
+  const onPanelKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'Escape' && isFieldShown) hideField()
+  }
+
   return (
     <div ref={rootRef} className={isFieldShown ? `${styles.root} ${styles.fieldShown}` : styles.root}>
       <button
@@ -71,17 +72,13 @@ export function HeaderSearch(): ReactNode {
         aria-label="Search"
         aria-expanded={isFieldShown}
         aria-controls={fieldId}
-        onClick={() => setIsFieldShown((isShown) => !isShown)}
+        onClick={() => setIsFieldShown(!isFieldShown)}
       >
         <SearchIcon />
       </button>
-      <div id={fieldId} className={styles.panel}>
+      <div id={fieldId} className={styles.panel} onKeyDown={onPanelKeyDown}>
         <div className={styles.bar}>
-          <SearchCombobox
-            inputRef={inputRef}
-            onEscape={() => isFieldShown && hideField()}
-            onOpenAsset={() => setIsFieldShown(false)}
-          />
+          <SearchCombobox inputRef={inputRef} onOpenAsset={() => setIsFieldShown(false)} />
           <button className={styles.close} type="button" aria-label="Close search" onClick={hideField}>
             <CloseIcon />
           </button>
@@ -102,7 +99,7 @@ function optionId(listboxId: string, ticker: string): string {
   return `${listboxId}-${ticker}`
 }
 
-function SearchCombobox({ inputRef, onEscape, onOpenAsset }: SearchComboboxProps): ReactNode {
+function SearchCombobox({ inputRef, onOpenAsset }: SearchComboboxProps): ReactNode {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const listboxId = useId()
@@ -144,7 +141,6 @@ function SearchCombobox({ inputRef, onEscape, onOpenAsset }: SearchComboboxProps
       event.preventDefault()
       setIsOpen(false)
       setActiveIndex(-1)
-      onEscape()
     }
   }
 
@@ -243,12 +239,18 @@ function useFieldToggle(inputRef: RefObject<HTMLInputElement | null>): {
   rootRef: RefObject<HTMLDivElement | null>
   toggleRef: RefObject<HTMLButtonElement | null>
   isFieldShown: boolean
-  setIsFieldShown: Dispatch<SetStateAction<boolean>>
+  setIsFieldShown(isShown: boolean): void
 } {
+  const pathname = usePathname()
   const rootRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLButtonElement>(null)
-  const [isFieldShown, setIsFieldShown] = useState(false)
-  const hideField = useCallback(() => setIsFieldShown(false), [])
+  // The page the field was shown on: the header outlives navigation, so Back and Forward must hide it
+  const [shownOn, setShownOn] = useState<string | null>(null)
+  const isFieldShown = shownOn === pathname
+
+  if (shownOn !== null && !isFieldShown) setShownOn(null)
+  const setIsFieldShown = useCallback((isShown: boolean) => setShownOn(isShown ? pathname : null), [pathname])
+  const hideField = useCallback(() => setShownOn(null), [])
 
   // The on-screen keyboard resizes the viewport when the field gets the focus
   useDismissOnOutsideInteraction(isFieldShown, [rootRef], hideField, false)

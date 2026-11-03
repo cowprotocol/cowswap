@@ -1,14 +1,29 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import { HeaderMobileMenu } from './HeaderMobileMenu'
 
-jest.mock('next/navigation', () => ({ usePathname: () => '/portfolio' }))
+let mockPathname = '/portfolio'
+
+jest.mock('next/navigation', () => ({ usePathname: () => mockPathname }))
+
+const viewport = { matches: true, listeners: new Set<() => void>() }
 
 describe('HeaderMobileMenu', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
-      value: () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }),
+      value: () => ({
+        get matches() {
+          return viewport.matches
+        },
+        addEventListener: (_type: string, listener: () => void) => viewport.listeners.add(listener),
+        removeEventListener: (_type: string, listener: () => void) => viewport.listeners.delete(listener),
+      }),
     })
+  })
+
+  beforeEach(() => {
+    mockPathname = '/portfolio'
+    viewport.matches = true
   })
 
   it('lists the pages and the legal links, and locks the page scroll while open', () => {
@@ -40,5 +55,55 @@ describe('HeaderMobileMenu', () => {
     expect(screen.queryByRole('navigation')).toBeNull()
     expect(document.body.style.overflow).toBe('')
     expect(document.activeElement).toBe(trigger)
+  })
+
+  it('closes on Escape while the focus is outside the menu', () => {
+    render(<HeaderMobileMenu />)
+
+    const trigger = screen.getByRole('button', { name: 'Menu' })
+
+    fireEvent.click(trigger)
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+
+    expect(screen.queryByRole('navigation')).toBeNull()
+    expect(document.activeElement).toBe(trigger)
+  })
+
+  it('closes when the page changes', () => {
+    const { rerender } = render(<HeaderMobileMenu />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    mockPathname = '/asset/NVDA'
+    rerender(<HeaderMobileMenu />)
+
+    expect(screen.queryByRole('navigation')).toBeNull()
+    expect(document.body.style.overflow).toBe('')
+
+    mockPathname = '/portfolio'
+    rerender(<HeaderMobileMenu />)
+
+    expect(screen.queryByRole('navigation')).toBeNull()
+  })
+
+  it('locks the page scroll only while the viewport shows the menu', () => {
+    viewport.matches = false
+    render(<HeaderMobileMenu />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+
+    expect(document.body.style.overflow).toBe('')
+  })
+
+  it('releases the page scroll when the viewport grows past the menu breakpoint', () => {
+    render(<HeaderMobileMenu />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+
+    expect(document.body.style.overflow).toBe('hidden')
+
+    viewport.matches = false
+    act(() => viewport.listeners.forEach((listener) => listener()))
+
+    expect(document.body.style.overflow).toBe('')
   })
 })

@@ -36,6 +36,7 @@ export function SettingsMenu(): ReactNode {
   const toggleTheme = (): void => {
     setThemePreference(isDark ? 'light' : 'dark')
     close()
+    triggerRef.current?.focus()
   }
 
   return (
