@@ -213,5 +213,16 @@ describe('buildVirtualRows', () => {
       const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
       expect(allTokensTitle).toBeDefined()
     })
+
+    it('does not render the title without tokens below it', () => {
+      const result = buildVirtualRows({
+        ...defaultParams,
+        sortedTokens: [],
+        recentTokens: [mockToken],
+      })
+
+      const allTokensTitle = result.find((r) => r.type === 'title' && r.label === 'All tokens')
+      expect(allTokensTitle).toBeUndefined()
+    })
   })
 })

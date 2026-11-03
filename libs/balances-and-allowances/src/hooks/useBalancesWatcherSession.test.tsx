@@ -581,6 +581,8 @@ describe('useBalancesWatcherSession — isRecovering sticky flag', () => {
       firstSession.reject(new Error('boom'))
     })
     expect(result.current.health.isRecovering).toBe(true)
+    const { recoveringSince } = result.current.health
+    expect(recoveringSince).not.toBeNull()
 
     const retrySession = deferred<void>()
     mockCreateSession.mockReturnValueOnce(retrySession.promise)
@@ -594,6 +596,7 @@ describe('useBalancesWatcherSession — isRecovering sticky flag', () => {
     await advanceTimers(FIRST_SNAPSHOT_TIMEOUT_MS)
     expect(result.current.health.status).toBe(BalancesWatcherHealth.Fallback)
     expect(result.current.health.isRecovering).toBe(true)
+    expect(result.current.health.recoveringSince).toBe(recoveringSince)
   })
 
   it('clears to false on the first successful snapshot from a retry', async () => {
@@ -621,6 +624,7 @@ describe('useBalancesWatcherSession — isRecovering sticky flag', () => {
     })
     expect(result.current.health.status).toBe(BalancesWatcherHealth.Healthy)
     expect(result.current.health.isRecovering).toBe(false)
+    expect(result.current.health.recoveringSince).toBeNull()
   })
 })
 

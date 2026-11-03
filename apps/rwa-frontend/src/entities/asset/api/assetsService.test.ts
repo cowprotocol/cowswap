@@ -4,8 +4,9 @@
 import {
   findAssets,
   getAsset,
+  getAssetCandles,
   getAssetChart,
-  getAssetNetworkStats,
+  getAssetTokenStats,
   getMarketOverview,
   listAssets,
 } from './assetsService'
@@ -21,6 +22,7 @@ jest.mock('./marketData', () => ({
     getRwaMarkets: jest.fn(),
     getTokenMarkets: jest.fn(),
     getChart: jest.fn(),
+    getCandles: jest.fn(),
     getNetworkStats: jest.fn(),
     getHourlyDexVolume: jest.fn(),
   },
@@ -84,6 +86,7 @@ jest.mock('../model/registry', () => {
 const getRwaMarketsMock = coingeckoProvider.getRwaMarkets as jest.Mock
 const getTokenMarketsMock = coingeckoProvider.getTokenMarkets as jest.Mock
 const getChartMock = coingeckoProvider.getChart as jest.Mock
+const getCandlesMock = coingeckoProvider.getCandles as jest.Mock
 const getNetworkStatsMock = coingeckoProvider.getNetworkStats as jest.Mock
 const getHourlyDexVolumeMock = coingeckoProvider.getHourlyDexVolume as jest.Mock
 const loadSharesPerTokenMock = loadSharesPerToken as jest.Mock
@@ -92,6 +95,7 @@ const ALL_MOCKS = [
   getRwaMarketsMock,
   getTokenMarketsMock,
   getChartMock,
+  getCandlesMock,
   getNetworkStatsMock,
   getHourlyDexVolumeMock,
   loadSharesPerTokenMock,
@@ -209,13 +213,27 @@ describe('listAssets', () => {
     expect(page.items[0]?.market?.change24h).toBeCloseTo(((180 - 170) / 170) * 100)
   })
 
-  it('filters and counts the types with the other filters applied', async () => {
+  it('filters by type and lists every issuer and network', async () => {
     const page = await listAssets({ page: 1, pageSize: 10, sort: 'priority', order: 'desc', type: 'index' })
 
     expect(tickers(page.items)).toEqual(['SPY'])
-    expect(page.typeCounts).toEqual({ stock: 2, index: 1, commodity: 0 })
     expect(page.issuers).toEqual(['Ondo', 'xStocks'])
     expect(page.chainIds).toEqual([1, 56])
+  })
+
+  it('applies the market minimums to the matches but not to the type total', async () => {
+    const page = await listAssets({
+      page: 1,
+      pageSize: 10,
+      sort: 'priority',
+      order: 'desc',
+      type: 'stock',
+      minMarketCap: 2000,
+    })
+
+    expect(tickers(page.items)).toEqual(['AAPL'])
+    expect(page.total).toBe(1)
+    expect(page.typeTotal).toBe(2)
   })
 
   it('degrades with null market data when the RWA markets fail', async () => {
@@ -384,18 +402,56 @@ describe('getAssetChart', () => {
   it('converts the token prices to prices per share', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
 
-    expect(await getAssetChart(nvda(), '1D')).toEqual([
-      { time: 1, value: 2 },
-      { time: 2, value: 3 },
-    ])
-    expect(getChartMock).toHaveBeenCalledWith(nvda(), '1D')
-    expect(loadSharesPerTokenMock).toHaveBeenCalledWith([nvda().tokens[0]])
+    expect(await getAssetChart(nvda(), '1D')).toEqual({
+      ticker: 'NVDA',
+      range: '1D',
+      points: [
+        { time: 1, value: 2 },
+        { time: 2, value: 3 },
+      ],
+      degraded: false,
+    })
+    expect(getChartMock).toHaveBeenCalledTimes(1)
+    expect(getChartMock).toHaveBeenCalledWith('nvidia-ondo-tokenized-stock', '1D')
+    expect(loadSharesPerTokenMock).toHaveBeenCalledWith(nvda().tokens)
   })
 
-  it('keeps the token prices when the multiplier is unknown', async () => {
+  it('charts the next coin of the asset when the first one has no prices', async () => {
+    getChartMock.mockImplementation(async (coingeckoId: string) =>
+      coingeckoId === 'nvidia-xstock' ? TOKEN_POINTS : [],
+    )
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25, [NVDAX_KEY]: 0.5 }, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({
+      points: [
+        { time: 1, value: 1 },
+        { time: 2, value: 1.5 },
+      ],
+    })
+    expect(getChartMock.mock.calls).toEqual([
+      ['nvidia-ondo-tokenized-stock', '1D'],
+      ['nvidia-xstock', '1D'],
+    ])
+  })
+
+  it('returns no points when no coin of the asset has prices', async () => {
+    getChartMock.mockResolvedValue([])
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: [] })
+    expect(getChartMock).toHaveBeenCalledTimes(2)
+  })
+
+  it('keeps the token prices without marking them degraded when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: false })
+  })
+
+  it('marks the token prices degraded when the multiplier source fails', async () => {
     loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
 
-    expect(await getAssetChart(nvda(), '1D')).toEqual(TOKEN_POINTS)
+    expect(await getAssetChart(nvda(), '1D')).toMatchObject({ points: TOKEN_POINTS, degraded: true })
   })
 
   it('keeps the token prices when the tokens of the charted coin have different multipliers', async () => {
@@ -407,21 +463,95 @@ describe('getAssetChart', () => {
       degraded: false,
     })
 
-    expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toEqual(TOKEN_POINTS)
+    expect(await getAssetChart({ ...asset, tokens: [ondoToken, bnbToken] }, '1D')).toMatchObject({
+      points: TOKEN_POINTS,
+      degraded: false,
+    })
   })
 })
 
-describe('getAssetNetworkStats', () => {
-  it('prices the stats with the tokens of the asset only', async () => {
-    getNetworkStatsMock.mockResolvedValue([
-      { address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-    ])
+describe('getAssetCandles', () => {
+  const TOKEN_CANDLES = [{ time: 1, open: 0.5, high: 1, low: 0.25, close: 0.75 }]
 
-    const stats = await getAssetNetworkStats(nvda(), 1)
+  beforeEach(() => {
+    getCandlesMock.mockResolvedValue(TOKEN_CANDLES)
+  })
 
-    expect(getTokenMarketsMock).toHaveBeenCalledWith(nvda().tokens)
+  it('converts the token candles to candles per share', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25 }, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toEqual({
+      ticker: 'NVDA',
+      range: '1W',
+      candles: [{ time: 1, open: 2, high: 4, low: 1, close: 3 }],
+      degraded: false,
+    })
+    expect(getCandlesMock).toHaveBeenCalledWith('nvidia-ondo-tokenized-stock', '1W')
+  })
+
+  it('takes the candles of the next coin of the asset when the first one has none', async () => {
+    getCandlesMock.mockImplementation(async (coingeckoId: string) =>
+      coingeckoId === 'nvidia-xstock' ? TOKEN_CANDLES : [],
+    )
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: { [NVDAON_KEY]: 0.25, [NVDAX_KEY]: 0.5 }, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({
+      candles: [{ time: 1, open: 1, high: 2, low: 0.5, close: 1.5 }],
+    })
+  })
+
+  it('keeps the token candles without marking them degraded when the multiplier is unknown', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: false })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: false })
+  })
+
+  it('marks the token candles degraded when the multiplier source fails', async () => {
+    loadSharesPerTokenMock.mockResolvedValue({ byKey: {}, degraded: true })
+
+    expect(await getAssetCandles(nvda(), '1W')).toMatchObject({ candles: TOKEN_CANDLES, degraded: true })
+  })
+})
+
+describe('getAssetTokenStats', () => {
+  it('loads every network of the asset and tags the stats with their chain', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      Promise.resolve(
+        chainId === 1
+          ? [{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }]
+          : [{ address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 }],
+      ),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(getTokenMarketsMock).toHaveBeenCalledTimes(1)
     expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
-    expect(stats.degraded).toBe(false)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]], NVDA_TOKEN_MARKETS)
+    expect(stats).toEqual({
+      ticker: 'NVDA',
+      tokens: [
+        { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+        { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 },
+      ],
+      degraded: false,
+    })
+  })
+
+  it('keeps the networks that loaded and flags the response when one fails', async () => {
+    getNetworkStatsMock.mockImplementation((chainId: number) =>
+      chainId === 1
+        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }])
+        : Promise.reject(new Error('Upstream failed')),
+    )
+
+    const stats = await getAssetTokenStats(nvda())
+
+    expect(stats.degraded).toBe(true)
+    expect(stats.tokens).toEqual([
+      { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
+      { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: null, dexVolume24h: null },
+    ])
   })
 })
 
@@ -465,7 +595,7 @@ describe('getMarketOverview', () => {
 
     expect(overview.losers[0]?.series).toEqual(chart)
     expect(getChartMock).toHaveBeenCalledTimes(1)
-    expect(getChartMock).toHaveBeenCalledWith(getAssetByTicker('AAPL'), '1D')
+    expect(getChartMock).toHaveBeenCalledWith('apple-xstock', '1D')
   })
 
   it('nulls the series of a mover whose 1D chart fails', async () => {

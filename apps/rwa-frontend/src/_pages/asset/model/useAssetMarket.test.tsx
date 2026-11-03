@@ -48,7 +48,7 @@ const POINTS: RwaChartPoint[] = [
 type FetchResult = Promise<object>
 
 function chart(points: RwaChartPoint[]): RwaChart {
-  return { ticker: TICKER, range: '1D', points }
+  return { ticker: TICKER, range: '1D', points, degraded: false }
 }
 
 function mockFetch(routes: { asset: () => FetchResult; chart: () => FetchResult }): jest.Mock {

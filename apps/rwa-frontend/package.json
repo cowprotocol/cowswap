@@ -11,6 +11,7 @@
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/cow-sdk": "9.2.22",
+    "@cowprotocol/events": "workspace:*",
     "@cowprotocol/sdk-viem-adapter": "0.3.36",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
@@ -22,7 +23,6 @@
     "jotai": "2.16.2",
     "jotai-family": "1.0.1",
     "jotai-tanstack-query": "0.11.0",
-    "lightweight-charts": "5.2.1",
     "localforage": "1.10.0",
     "next": "16.3.6",
     "react": "19.1.2",
@@ -37,6 +37,7 @@
     "@types/react": "19.1.3",
     "@types/react-dom": "19.1.3",
     "@vercel/config": "0.1.0",
+    "charting_library": "https://files.cow.fi/charting-library/32.1.0/charting-library-types.tgz",
     "steiger": "0.6.0"
   },
   "nx": {},
