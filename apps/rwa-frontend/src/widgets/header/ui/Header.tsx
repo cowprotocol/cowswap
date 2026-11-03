@@ -7,6 +7,7 @@ import { HeaderMobileMenu } from './HeaderMobileMenu'
 import { HeaderNav } from './HeaderNav'
 import { HeaderSearch } from './HeaderSearch'
 import { SettingsMenu } from './SettingsMenu'
+import { WalletBar } from './WalletBar'
 
 import { ConnectButton } from '@/features/connect-wallet'
 import { CowLogo } from '@/shared/ui/cow-logo'
@@ -29,9 +30,7 @@ export function Header(): ReactNode {
         <SettingsMenu />
         <HeaderMobileMenu />
       </header>
-      <div className={styles.walletBar}>
-        <ConnectButton />
-      </div>
+      <WalletBar />
     </>
   )
 }

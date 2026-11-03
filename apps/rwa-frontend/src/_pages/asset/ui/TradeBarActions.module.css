@@ -1,0 +1,67 @@
+.actions {
+  display: flex;
+  gap: 8px;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+}
+
+.actions[inert] {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+.actions button {
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.buy {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.sell {
+  background: var(--color-border);
+  color: var(--color-text);
+}
+
+.actions button:hover {
+  filter: brightness(0.96);
+}
+
+@media (max-width: 720px) {
+  .ticker {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .actions {
+    gap: 6px;
+  }
+
+  .actions button {
+    padding: 0 14px;
+  }
+}
+
+@container (max-width: 124px) {
+  .sell {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actions {
+    transition: none;
+  }
+}

@@ -1,20 +1,31 @@
 .layout {
   display: grid;
+  grid-template-areas:
+    'overview side'
+    'details side';
   grid-template-columns: minmax(0, 800px) 448px;
+  grid-template-rows: auto 1fr;
   justify-content: space-between;
-  gap: 32px;
+  gap: 16px 32px;
   padding-top: 28px;
   align-items: start;
 }
 
-.main {
+.overview {
+  grid-area: overview;
   display: flex;
   flex-direction: column;
   gap: 16px;
   min-width: 0;
 }
 
+.details {
+  grid-area: details;
+  min-width: 0;
+}
+
 .side {
+  grid-area: side;
   position: sticky;
   top: var(--sticky-top, 16px);
   margin-top: 50px;
@@ -73,7 +84,12 @@
 
 @media (max-width: 960px) {
   .layout {
+    grid-template-areas:
+      'overview'
+      'side'
+      'details';
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
   }
 
   .side {
