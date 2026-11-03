@@ -64,11 +64,12 @@
   color: var(--color-text-muted);
 }
 
-.narrow {
+.narrow,
+.compact {
   display: none;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .wide {
     display: none;
   }
@@ -82,5 +83,15 @@
     min-width: 32px;
     height: 32px;
     padding: 0 6px;
+  }
+}
+
+@media (max-width: 500px) {
+  .narrow {
+    display: none;
+  }
+
+  .compact {
+    display: flex;
   }
 }

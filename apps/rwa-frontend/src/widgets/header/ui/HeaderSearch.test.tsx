@@ -32,6 +32,12 @@ function renderSearch(): HTMLElement {
 }
 
 describe('HeaderSearch', () => {
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      value: () => ({ matches: true, addEventListener: () => undefined, removeEventListener: () => undefined }),
+    })
+  })
+
   beforeEach(() => {
     mockPush.mockReset()
     global.fetch = jest.fn(() =>
@@ -81,5 +87,35 @@ describe('HeaderSearch', () => {
     fireEvent.keyDown(document.body, { key: '/' })
 
     expect(document.activeElement).toBe(input)
+  })
+
+  it('shows the field from the search button and hides it on Escape', () => {
+    const input = renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+
+    expect(button.getAttribute('aria-expanded')).toBe('true')
+    expect(document.activeElement).toBe(input)
+
+    fireEvent.keyDown(input, { key: 'Escape' })
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.activeElement).toBe(button)
+  })
+
+  it('locks the page scroll while the field is shown and hides it from the close button', () => {
+    renderSearch()
+    const button = screen.getByRole('button', { name: 'Search' })
+
+    fireEvent.click(button)
+
+    expect(document.body.style.overflow).toBe('hidden')
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close search' }))
+
+    expect(button.getAttribute('aria-expanded')).toBe('false')
+    expect(document.body.style.overflow).toBe('')
+    expect(document.activeElement).toBe(button)
   })
 })

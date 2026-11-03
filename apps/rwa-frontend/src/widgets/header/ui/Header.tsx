@@ -3,26 +3,35 @@ import type { ReactNode } from 'react'
 import Link from 'next/link'
 
 import styles from './Header.module.css'
+import { HeaderMobileMenu } from './HeaderMobileMenu'
 import { HeaderNav } from './HeaderNav'
 import { HeaderSearch } from './HeaderSearch'
-import { ThemeSwitcher } from './ThemeSwitcher'
+import { SettingsMenu } from './SettingsMenu'
 
 import { ConnectButton } from '@/features/connect-wallet'
 import { CowLogo } from '@/shared/ui/cow-logo'
 
 export function Header(): ReactNode {
   return (
-    <header className={styles.header}>
-      <Link className={styles.logo} href="/">
-        <CowLogo />
-        CoW RWA
-      </Link>
-      <HeaderNav />
-      <div className={styles.search}>
-        <HeaderSearch />
+    <>
+      <header className={styles.header}>
+        <Link className={styles.logo} href="/" aria-label="CoW RWA">
+          <CowLogo />
+          <span className={styles.logoText}>CoW RWA</span>
+        </Link>
+        <HeaderNav />
+        <div className={styles.search}>
+          <HeaderSearch />
+        </div>
+        <div className={styles.wallet}>
+          <ConnectButton />
+        </div>
+        <SettingsMenu />
+        <HeaderMobileMenu />
+      </header>
+      <div className={styles.walletBar}>
+        <ConnectButton />
       </div>
-      <ConnectButton />
-      <ThemeSwitcher />
-    </header>
+    </>
   )
 }

@@ -96,6 +96,7 @@
   min-width: 0;
   padding: 0;
   border: none;
+  border-radius: 0;
   background: none;
   font-size: 14px;
   outline: none;
@@ -152,7 +153,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .toolbar {
     padding: 12px 16px;
   }

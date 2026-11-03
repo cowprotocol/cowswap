@@ -30,8 +30,15 @@
   color: #ffffff;
 }
 
+/* Clears the 56px wallet bar fixed to the bottom of the viewport by the header */
+@media (max-width: 960px) {
+  .footer {
+    padding-bottom: 88px;
+  }
+}
+
 @media (max-width: 720px) {
   .footer {
-    padding: 24px 16px;
+    padding: 24px 16px 80px;
   }
 }
