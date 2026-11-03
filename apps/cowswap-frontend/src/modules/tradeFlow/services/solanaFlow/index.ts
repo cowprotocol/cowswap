@@ -23,7 +23,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
   getIsBuyAtaCreationSkipped,
-  getIsSelfSigningOwner,
+  getIsSolanaSmartContractWallet,
   getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
@@ -123,10 +123,10 @@ export async function solanaFlow(
     // returns the rent to the owner, so a sponsor-funded one would be a standing withdrawal from the
     // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
     //
-    // An owner that cannot sign for itself is placed self-paid instead: sponsored placement needs the
-    // funder as fee payer and `CreateOrder` top-level, while a vault signs only from inside
-    // `VaultTransactionExecute`, so the order book rejects such a bundle as `WrongFeePayer`.
-    const sponsor = isSponsored && getIsSelfSigningOwner(owner) ? solanaQuote.funder : undefined
+    // A program-owned wallet is placed self-paid instead: sponsored placement needs the funder as fee
+    // payer and `CreateOrder` top-level, while a vault signs only from inside `VaultTransactionExecute`,
+    // so the order book rejects such a bundle as `WrongFeePayer`.
+    const sponsor = isSponsored && !getIsSolanaSmartContractWallet(owner) ? solanaQuote.funder : undefined
     const buyAtaRentPayer = sponsor ?? owner
 
     const {

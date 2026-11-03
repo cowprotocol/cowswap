@@ -8,7 +8,7 @@ import { TradeType } from 'common/modules/tradeNavigation'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
-import { getIsSelfSigningOwner } from '../utils/getIsSelfSigningOwner'
+import { getIsSolanaSmartContractWallet } from '../utils/getIsSolanaSmartContractWallet'
 
 // Mirrors `solanaFlow`'s sponsor pick: the quote's funder pays the fees and rents the accounts the
 // order itself needs. The owner still funds the WSOL account a native sell opens, since that account
@@ -21,7 +21,7 @@ export function useIsSolanaSponsoredTrade(): boolean {
 
   const solanaQuote = isSolanaQuoteAndPost(quote) ? quote.solanaQuote : null
   // A quote outlives the wallet that asked for it, so an EVM account can be current while a Solana
-  // quote is still in state. `getIsSelfSigningOwner` throws on anything that is not base58.
+  // quote is still in state. `getIsSolanaSmartContractWallet` throws on anything that is not base58.
   const owner = isSolanaChain(chainId) ? account : undefined
 
   return Boolean(
@@ -29,6 +29,6 @@ export function useIsSolanaSponsoredTrade(): boolean {
       derivedState?.tradeType !== TradeType.LIMIT_ORDER &&
       solanaQuote?.funder &&
       // No owner yet leaves the estimate alone: there is nothing to place.
-      (!owner || getIsSelfSigningOwner(owner)),
+      (!owner || !getIsSolanaSmartContractWallet(owner)),
   )
 }

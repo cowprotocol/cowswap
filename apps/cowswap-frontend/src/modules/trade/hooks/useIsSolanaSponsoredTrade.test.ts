@@ -60,7 +60,7 @@ describe('useIsSolanaSponsoredTrade', () => {
 
   // The displayed cost has to agree with the path `solanaFlow` takes, or the UI promises a sponsor
   // the flow will not use and the owner is billed for what the screen called free.
-  it('is not sponsored for an owner that cannot sign for itself', () => {
+  it('is not sponsored for a smart contract wallet owner', () => {
     expect(PublicKey.isOnCurve(VAULT_OWNER)).toBe(false)
 
     setup({ account: VAULT_OWNER })

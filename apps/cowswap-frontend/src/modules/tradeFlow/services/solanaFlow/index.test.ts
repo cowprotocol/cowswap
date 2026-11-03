@@ -565,7 +565,7 @@ describe('solanaFlow', () => {
   // A vault's order only reaches the chain nested in `VaultTransactionExecute`, while sponsored
   // placement needs the funder as fee payer and `CreateOrder` top-level — the order book rejects the
   // combination as `WrongFeePayer`. Self-paid is the path such an owner can actually complete.
-  it('places self-paid when the owner cannot sign for itself, even with sponsoring on', async () => {
+  it('places self-paid for a smart contract wallet owner, even with sponsoring on', async () => {
     mockSignSolanaFlow.mockResolvedValue({ transaction: 'base64-tx', signedAtMs: Date.now() })
 
     expect(PublicKey.isOnCurve(VAULT_OWNER.toBytes())).toBe(false)
