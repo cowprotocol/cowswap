@@ -19,6 +19,7 @@ import svgMenuHamburgerSrc from '@cowprotocol/assets/images/menu-hamburger.svg'
 import svgSettingsGlobalSrc from '@cowprotocol/assets/images/settings-global.svg'
 import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
+import { COW_DAO_LINK, COW_PRODUCT_LINKS, type CowProductId } from '@cowprotocol/common-const/cowLinks'
 import { useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
@@ -56,13 +57,19 @@ import { Media } from '../../consts'
 import { UI } from '../../enum'
 import { BadgeType } from '../../types'
 import { Badge } from '../Badge'
-import { ProductLogo, ProductVariant } from '../ProductLogo'
+import { COW_PRODUCT_VARIANTS, ProductLogo, ProductVariant } from '../ProductLogo'
 
 import type { CowSwapTheme } from '../../types'
 
+const PRODUCT_NAV_STYLES: Record<CowProductId, Pick<MenuItem, 'hoverColor' | 'hoverBgColor'>> = {
+  cowSwap: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
+  cowProtocol: { hoverColor: '#FCCAF2', hoverBgColor: '#AD02C6' },
+  cowRwa: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
+}
+
 const DAO_NAV_ITEMS: MenuItem[] = [
   {
-    href: 'https://cow.fi/',
+    href: COW_DAO_LINK.href,
     productVariant: ProductVariant.CowDao,
     hasDivider: true,
     hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
@@ -70,22 +77,13 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     external: true,
     utmContent: 'menubar-dao-nav-cowdao',
   },
-  {
-    href: 'https://swap.cow.fi/',
-    productVariant: ProductVariant.CowSwap,
-    hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
-    hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
+  ...COW_PRODUCT_LINKS.map(({ id, href }) => ({
+    href,
+    productVariant: COW_PRODUCT_VARIANTS[id],
+    ...PRODUCT_NAV_STYLES[id],
     external: true,
-    utmContent: 'menubar-dao-nav-cowswap',
-  },
-  {
-    href: 'https://cow.fi/cow-protocol',
-    productVariant: ProductVariant.CowProtocol,
-    hoverColor: '#FCCAF2',
-    hoverBgColor: '#AD02C6',
-    external: true,
-    utmContent: 'menubar-dao-nav-cowprotocol',
-  },
+    utmContent: `menubar-dao-nav-${id.toLowerCase()}`,
+  })),
 ]
 
 const getLanguageName = (locale: string): string => {
