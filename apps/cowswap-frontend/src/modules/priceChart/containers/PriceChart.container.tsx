@@ -19,6 +19,8 @@ import { useExecutedOrderChartMarkers } from '../hooks/useExecutedOrderChartMark
 import { useOpenLimitOrderChartLines } from '../hooks/useOpenLimitOrderChartLines'
 import { usePriceChartLimitPrice } from '../hooks/usePriceChartLimitPrice'
 import { usePriceChartVisibility } from '../hooks/usePriceChartVisibility'
+import { PriceChartStatus } from '../pure/PriceChartStatus'
+import { OverlayState } from '../pure/SimplePriceChart.styled'
 import { priceChartExpandedAtom } from '../state/priceChartExpandedAtom'
 import { priceChartMetricAtom } from '../state/priceChartMetricAtom'
 import { priceChartModalOpenAtom } from '../state/priceChartModalOpenAtom'
@@ -51,7 +53,7 @@ export const PriceChart = memo(function PriceChart({
   const chartMode = useAtomValue(priceChartModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
-  const isVisible = usePriceChartVisibility(inputCurrency, outputCurrency)
+  const isVisible = usePriceChartVisibility()
   const [isExpanded, setIsExpanded] = useAtom(priceChartExpandedAtom)
   const supplyVariant = useAtomValue(priceChartSupplyVariantAtom)
   const [metric, setMetric] = useAtom(priceChartMetricAtom)
@@ -110,7 +112,15 @@ export const PriceChart = memo(function PriceChart({
       className="price-chart trade-orders-table"
       data-expanded={!isUpToLarge && expandable && isExpanded}
     >
-      {chartMode === 'advanced' ? <AdvancedPriceChart {...chartProps} /> : <SimplePriceChart {...chartProps} />}
+      {currencies.length === 0 ? (
+        <OverlayState>
+          <PriceChartStatus isPending isError={false} />
+        </OverlayState>
+      ) : chartMode === 'advanced' ? (
+        <AdvancedPriceChart {...chartProps} />
+      ) : (
+        <SimplePriceChart {...chartProps} />
+      )}
     </ChartWrapper>
   )
 
