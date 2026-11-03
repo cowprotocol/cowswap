@@ -256,6 +256,35 @@ describe('useTradeQuoteManager - all quotes received', () => {
     expect(getIsSameTradeQuoteRefreshing(getState())).toBe(true)
   })
 
+  it('keeps waiting for a request when a cancelled one of the same round and quality settles', () => {
+    const manager = renderManager()
+    const params = makeParams()
+    const successorParams: TradeQuoteFetchParams = { ...fetchParams }
+
+    act(() => manager.setLoading(fetchParams, params))
+    act(() => manager.setLoading(successorParams, params))
+    act(() => manager.onSettled(fetchParams))
+
+    expect(getAreAllQuotesReceived(getState())).toBe(false)
+
+    act(() => manager.onResponse(quote, null, successorParams, params))
+    act(() => manager.onSettled(successorParams))
+    expect(getAreAllQuotesReceived(getState())).toBe(true)
+  })
+
+  it('keeps a params change when a poll of the same round follows it', () => {
+    const manager = renderManager()
+    const params = makeParams()
+    const pollingParams: TradeQuoteFetchParams = { ...fetchParams, hasParamsChanged: false }
+
+    act(() => manager.setLoading(fetchParams, params))
+    act(() => manager.onResponse(quote, null, fetchParams, params))
+    act(() => manager.setLoading(fetchParams, params))
+    act(() => manager.setLoading(pollingParams, params))
+
+    expect(getIsSameTradeQuoteRefreshing(getState())).toBe(false)
+  })
+
   it('clears pending quotes on reset', () => {
     const manager = renderManager()
 

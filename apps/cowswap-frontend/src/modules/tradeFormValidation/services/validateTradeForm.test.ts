@@ -806,7 +806,11 @@ describe('validateTradeForm - Solana swap recipient', () => {
       } as unknown as TradeFormValidationContext
     }
 
-    const FAST_PENDING = { fetchStartTimestamp: 1, priceQualities: [PriceQuality.FAST] }
+    const FAST_PENDING = {
+      fetchStartTimestamp: 1,
+      hasParamsChanged: false,
+      requests: [{ hasParamsChanged: false, priceQuality: PriceQuality.FAST, fetchStartTimestamp: 1 }],
+    }
 
     test('adds QuoteLoading until every quote of the fetch round has arrived', () => {
       expect(validateTradeForm(withPendingQuotes(FAST_PENDING))).toContain(TradeFormValidation.QuoteLoading)
