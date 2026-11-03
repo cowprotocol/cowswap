@@ -9029,6 +9029,14 @@ msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount and
 msgid "There was an error trying to load claimable tokens"
 msgstr "There was an error trying to load claimable tokens"
 
+#: libs/common-utils/src/misc.ts
+msgid ""
+"The wallet has hit a bit of a moo-tdown.\n"
+"Please try again in a moo-ment! 🐮"
+msgstr ""
+"The wallet has hit a bit of a moo-tdown.\n"
+"Please try again in a moo-ment! 🐮"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
 msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."

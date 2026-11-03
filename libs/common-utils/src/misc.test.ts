@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+
 import {
   debounce,
   getProviderErrorMessage,
@@ -228,6 +230,21 @@ describe('getProviderErrorMessage', () => {
   it('falls back to the regular message when the host sent no usable reason', () => {
     expect(getProviderErrorMessage(viemWrapped(hostError(undefined)))).toBe('JSON is not a valid request object.')
     expect(getProviderErrorMessage(viemWrapped(hostError('   ')))).toBe('JSON is not a valid request object.')
+  })
+
+  it("replaces viem's generic InternalRpcError message with a friendly one", () => {
+    const internalError = { code: -32603, name: 'InternalRpcError', shortMessage: 'An internal error was received.' }
+    const friendlyMessage = 'The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮'
+    i18n.loadAndActivate({ locale: 'en-US', messages: {} })
+
+    expect(getProviderErrorMessage(internalError)).toBe(friendlyMessage)
+    expect(
+      getProviderErrorMessage({
+        name: 'TransactionExecutionError',
+        shortMessage: 'An internal error was received.',
+        cause: internalError,
+      }),
+    ).toBe(friendlyMessage)
   })
 
   it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {

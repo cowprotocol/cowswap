@@ -1,6 +1,8 @@
 import { OrderKind, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Percent } from '@cowprotocol/currency'
 
+import { t } from '@lingui/core/macro'
+
 import { isSellOrder } from './isSellOrder'
 import { createCowLogger } from './logger'
 
@@ -38,6 +40,8 @@ const INSUFFICIENT_FUNDS_ERROR_MESSAGES = [
 // Cap recursion when walking the error.cause chain, in case a provider produces a cyclic
 // or pathologically deep chain.
 const MAX_ERROR_CAUSE_DEPTH = 8
+
+const INTERNAL_RPC_ERROR_NAME = 'InternalRpcError'
 
 export const isTruthy = <T>(value: T | null | undefined | false): value is T => !!value
 
@@ -159,31 +163,9 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
   const widgetHostReason = getWidgetHostErrorReason(error)
   if (widgetHostReason) return widgetHostReason
 
-  if (error && typeof error === 'object') {
-    // Prefer viem's shortMessage (concise, human-readable) over the full message
-    // which includes verbose request arguments and hex data.
-    if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
-    if ('message' in error && typeof error.message === 'string') return error.message
-  }
-  return error?.toString()
-}
+  if (isInternalRpcError(error)) return t`The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮`
 
-export function getTokensFromMarket<T>({
-  quoteToken,
-  baseToken,
-  kind,
-}: TokensFromMarketParams<T>): Omit<CanonicalMarketParams<T>, 'kind'> {
-  if (isSellOrder(kind)) {
-    return {
-      sellToken: baseToken,
-      buyToken: quoteToken,
-    }
-  } else {
-    return {
-      buyToken: baseToken,
-      sellToken: quoteToken,
-    }
-  }
+  return getErrorObjectMessage(error) ?? error?.toString()
 }
 
 /**
@@ -291,6 +273,15 @@ function getErrorName(error: unknown): unknown {
   return typeof error === 'object' && error !== null && 'name' in error ? error.name : undefined
 }
 
+function getErrorObjectMessage(error: unknown): string | undefined {
+  if (!error || typeof error !== 'object') return undefined
+  // Prefer viem's shortMessage (concise, human-readable) over the full message
+  // which includes verbose request arguments and hex data.
+  if ('shortMessage' in error && typeof error.shortMessage === 'string') return error.shortMessage
+  if ('message' in error && typeof error.message === 'string') return error.message
+  return undefined
+}
+
 // Matches `RpcError` from @cowprotocol/iframe-transport by shape, so common-utils doesn't depend on it:
 // the widget throws it with the message the host's provider rejected with, and viem nests it in `cause`.
 function getWidgetHostErrorReason(error: unknown, depth = 0): string | undefined {
@@ -303,6 +294,15 @@ function getWidgetHostErrorReason(error: unknown, depth = 0): string | undefined
 
   const cause = getErrorCause(error)
   return cause !== error ? getWidgetHostErrorReason(cause, depth + 1) : undefined
+}
+
+// viem wrappers (e.g. TransactionExecutionError) copy the cause's generic shortMessage, so walk the chain
+function isInternalRpcError(error: unknown, depth = 0): boolean {
+  if (!error || depth > MAX_ERROR_CAUSE_DEPTH) return false
+  if (getErrorName(error) === INTERNAL_RPC_ERROR_NAME) return true
+
+  const cause = getErrorCause(error)
+  return cause !== undefined && cause !== error ? isInternalRpcError(cause, depth + 1) : false
 }
 
 function isWidgetHostRpcError(error: object): error is { reason: string } {
