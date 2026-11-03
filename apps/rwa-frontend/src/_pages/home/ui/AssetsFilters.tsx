@@ -102,7 +102,11 @@ export function AssetsFilters(): ReactNode {
         />
       </div>
       {activeFilters > 0 && (
-        <button type="button" className={styles.clearButton} onClick={() => updateFilters(NO_PANEL_FILTERS)}>
+        <button
+          type="button"
+          className={styles.clearButton}
+          onClick={() => updateFilters({ ...NO_PANEL_FILTERS, type: null })}
+        >
           Clear
         </button>
       )}
