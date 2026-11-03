@@ -40,9 +40,9 @@ describe('HeaderSearch', () => {
 
   beforeAll(() => {
     Object.defineProperty(window, 'matchMedia', {
-      value: () => ({
+      value: (query: string) => ({
         get matches() {
-          return isPhoneViewport
+          return query === '(max-width: 720px)' && isPhoneViewport
         },
         addEventListener: (_type: string, listener: () => void) => viewportListeners.add(listener),
         removeEventListener: (_type: string, listener: () => void) => viewportListeners.delete(listener),

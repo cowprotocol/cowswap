@@ -1,11 +1,12 @@
 'use client'
 
-import { type ReactNode, useCallback, useEffect, useId, useRef, useState } from 'react'
+import { type ReactNode, type RefObject, useCallback, useEffect, useId, useRef, useState } from 'react'
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import styles from './HeaderMobileMenu.module.css'
+import { SETTINGS_BUTTON_ID } from './SettingsMenu'
 
 import { isNavLinkActive, MORE_SECTIONS, NAV_LINKS, SWAP_HREF } from '../config/navLinks'
 import { useBodyScrollLock } from '../lib/useBodyScrollLock'
@@ -31,6 +32,12 @@ export function HeaderMobileMenu(): ReactNode {
 
   const close = useCallback(() => setOpenOn(null), [])
 
+  const closeOutOfRange = useCallback(() => {
+    // Past the breakpoint the trigger is hidden, so the focus moves to the settings gear beside it
+    if (rootRef.current?.contains(document.activeElement)) document.getElementById(SETTINGS_BUTTON_ID)?.focus()
+    close()
+  }, [close])
+
   const open = (): void => {
     setOpenOn(pathname)
     setIsMoreOpen(false)
@@ -38,25 +45,9 @@ export function HeaderMobileMenu(): ReactNode {
 
   // The panel sits under the header, and mobile browsers resize the viewport as their toolbars show and hide
   useDismissOnOutsideInteraction(isOpen, [rootRef], close, false)
-  useDismissOnMediaQueryExit(isOpen, MENU_QUERY, close)
+  useDismissOnMediaQueryExit(isOpen, MENU_QUERY, closeOutOfRange)
   useBodyScrollLock(isOpen, MENU_QUERY)
-
-  useEffect(() => {
-    if (!isOpen) return
-
-    const onKeyDown = (event: KeyboardEvent): void => {
-      // The full-screen search, which can open over the menu, handles its Escape first
-      if (event.key !== 'Escape' || event.defaultPrevented) return
-
-      event.preventDefault()
-      close()
-      triggerRef.current?.focus()
-    }
-
-    document.addEventListener('keydown', onKeyDown)
-
-    return () => document.removeEventListener('keydown', onKeyDown)
-  }, [isOpen, close])
+  useCloseOnEscape(isOpen, close, triggerRef)
 
   return (
     <div ref={rootRef} className={styles.root}>
@@ -127,4 +118,24 @@ export function HeaderMobileMenu(): ReactNode {
       )}
     </div>
   )
+}
+
+/** Closes the menu on Escape wherever the focus is, and returns the focus to `triggerRef` */
+function useCloseOnEscape(isOpen: boolean, close: () => void, triggerRef: RefObject<HTMLButtonElement | null>): void {
+  useEffect(() => {
+    if (!isOpen) return
+
+    const onKeyDown = (event: KeyboardEvent): void => {
+      // The full-screen search, which can open over the menu, handles its Escape first
+      if (event.key !== 'Escape' || event.defaultPrevented) return
+
+      event.preventDefault()
+      close()
+      triggerRef.current?.focus()
+    }
+
+    document.addEventListener('keydown', onKeyDown)
+
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [isOpen, close, triggerRef])
 }

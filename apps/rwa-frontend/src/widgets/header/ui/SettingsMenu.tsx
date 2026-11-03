@@ -8,6 +8,8 @@ import styles from './SettingsMenu.module.css'
 import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { setThemePreferenceAtom, useIsDarkTheme } from '@/shared/lib/theme'
 
+export const SETTINGS_BUTTON_ID = 'header-settings'
+
 export function SettingsMenu(): ReactNode {
   const menuId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
@@ -43,6 +45,7 @@ export function SettingsMenu(): ReactNode {
     <div ref={rootRef} className={styles.root} onKeyDown={onKeyDown}>
       <button
         ref={triggerRef}
+        id={SETTINGS_BUTTON_ID}
         className={styles.trigger}
         type="button"
         aria-label="Settings"

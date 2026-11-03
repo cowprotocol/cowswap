@@ -61,21 +61,23 @@ describe('TradeBarActions', () => {
 
   it('shows Buy and Sell in the wallet bar until 120px of the widget shows above it', () => {
     renderSection()
-    const buy = within(screen.getByTestId('wallet-bar')).getByRole('button', { name: 'Buy NVDA' })
+    const bar = within(screen.getByTestId('wallet-bar'))
+    const actions = [bar.getByRole('button', { name: 'Buy NVDA' }), bar.getByRole('button', { name: 'Sell NVDA' })]
+    const areInert = (): boolean[] => actions.map((action) => action.closest('[inert]') !== null)
 
-    expect(buy.closest('[inert]')).toBeNull()
+    expect(areInert()).toEqual([false, false])
 
     act(() => reportVisibleHeight(119))
 
-    expect(buy.closest('[inert]')).toBeNull()
+    expect(areInert()).toEqual([false, false])
 
     act(() => reportVisibleHeight(120))
 
-    expect(buy.closest('[inert]')).not.toBeNull()
+    expect(areInert()).toEqual([true, true])
 
     act(() => reportVisibleHeight(0))
 
-    expect(buy.closest('[inert]')).toBeNull()
+    expect(areInert()).toEqual([false, false])
   })
 
   it('jumps to the widget on the chosen side', () => {

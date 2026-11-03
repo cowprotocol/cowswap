@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 
 import { HeaderMobileMenu } from './HeaderMobileMenu'
+import { SETTINGS_BUTTON_ID } from './SettingsMenu'
 
 let mockPathname = '/portfolio'
 
@@ -112,6 +113,25 @@ describe('HeaderMobileMenu', () => {
 
     expect(screen.queryByRole('navigation')).toBeNull()
     expect(document.body.style.overflow).toBe('')
+  })
+
+  it('moves the focus to the settings gear when it closes past the menu breakpoint', () => {
+    render(
+      <>
+        <button type="button" id={SETTINGS_BUTTON_ID}>
+          Settings
+        </button>
+        <HeaderMobileMenu />
+      </>,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Menu' }))
+    screen.getByRole('link', { name: 'Explore' }).focus()
+    viewport.matches = false
+    act(() => viewport.listeners.forEach((listener) => listener()))
+
+    expect(screen.queryByRole('navigation')).toBeNull()
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Settings' }))
   })
 
   it('stays open on an Escape that another control handled', () => {
