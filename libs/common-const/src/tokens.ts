@@ -589,6 +589,8 @@ export const USDC: Record<TargetChainId, TokenWithLogo> = {
    */
   [SupportedChainId.PLASMA]: USDT_PLASMA,
   [SupportedChainId.INK]: USDC_INK,
+  // Placeholder until Robinhood Chain is enabled: no USDC is listed for it yet.
+  [SupportedChainId.ROBINHOOD]: USDC_MAINNET,
   [SupportedChainId.SOLANA]: USDC_SOLANA,
   // we need some stablecoin ref currency to calculate price impact in usd,
   // due to btc chain specific - there is no other currency than btc
@@ -680,6 +682,7 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
   [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
   [SupportedChainId.INK]: COW_TOKEN_INK,
+  [SupportedChainId.ROBINHOOD]: null,
   // COW token is not deployed on Solana.
   [SupportedChainId.SOLANA]: null,
 }
@@ -772,6 +775,7 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
   [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
   [SupportedChainId.INK]: new Set(INK_STABLECOINS),
+  [SupportedChainId.ROBINHOOD]: new Set(),
   [SupportedChainId.SOLANA]: new Set([USDC_SOLANA.address]),
 }
 

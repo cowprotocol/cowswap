@@ -7,7 +7,6 @@ import {
   OrderClass,
   OrderKind,
   SigningScheme,
-  stringifyDeterministic,
   SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
@@ -153,11 +152,14 @@ const APP_DATA: AppDataInfo = {
   fullAppData: '{}',
   appDataKeccak256: toKeccak256('{}'),
 }
-// What each planner signs: a swap the SDK's hash of the deterministically stringified doc (keys sorted),
-// a limit order the app's own hash. They differ, so a test can tell which one reached the upload.
-const MARKET_APP_DATA_HEX = toKeccak256(
-  JSON.stringify({ appCode: 'CoW Swap', metadata: {}, version: LATEST_APP_DATA_VERSION }),
-)
+// What each planner signs: a swap the SDK's merged doc, a limit order the app's own hash. They differ, so a
+// test can tell which one reached the upload.
+const MARKET_FULL_APP_DATA = JSON.stringify({
+  appCode: 'CoW Swap',
+  metadata: { utm: { utmSource: 'cowmunity' } },
+  version: LATEST_APP_DATA_VERSION,
+})
+const MARKET_APP_DATA_HEX = toKeccak256(MARKET_FULL_APP_DATA)
 const LIMIT_APP_DATA_HEX = APP_DATA.appDataKeccak256
 const outputAmount = CurrencyAmount.fromRawAmount(usdc, '150000000')
 // The quote always reports its sellToken as WSOL, even for a native sell — see `getSolanaSellToken`.
@@ -304,6 +306,7 @@ beforeEach(() => {
     orderId: ORDER_ID,
     signingScheme: SigningScheme.PRESIGN,
     appData: MARKET_APP_DATA_HEX,
+    fullAppData: MARKET_FULL_APP_DATA,
     sellAmount: MARKET_SIGNED_SELL_AMOUNT,
     buyAmount: MARKET_SIGNED_BUY_AMOUNT,
   })
@@ -731,6 +734,7 @@ describe('solanaFlow · appData', () => {
       orderId: ORDER_ID,
       signingScheme: SigningScheme.PRESIGN,
       appData: '0x' + 'cc'.repeat(32),
+      fullAppData: MARKET_FULL_APP_DATA,
       sellAmount: MARKET_SIGNED_SELL_AMOUNT,
       buyAmount: MARKET_SIGNED_BUY_AMOUNT,
       feePayer: new PublicKey(SOLANA_ACCOUNT),
@@ -764,19 +768,16 @@ describe('solanaFlow · appData', () => {
     expect(mockUploadAppData.mock.invocationCallOrder[0]).toBeLessThan(mockSendSolanaFlow.mock.invocationCallOrder[0])
   })
 
-  // `APP_DATA.fullAppData` deliberately differs from its doc, as the non-deterministic fallback appData does.
-  it('registers and records the deterministic doc for a swap, which is what the SDK hashes', async () => {
-    const expectedFullAppData = await stringifyDeterministic(APP_DATA.doc)
-
+  it("registers and records the SDK's merged doc for a swap, which is what it signed", async () => {
     await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockUploadAppData).toHaveBeenCalledWith({
       appDataKeccak256: MARKET_APP_DATA_HEX,
-      fullAppData: expectedFullAppData,
+      fullAppData: MARKET_FULL_APP_DATA,
       chainId: SOLANA_CHAIN_ID,
     })
     expect(addPendingOrderStepModule.addPendingOrderStep).toHaveBeenCalledWith(
-      expect.objectContaining({ order: expect.objectContaining({ fullAppData: expectedFullAppData }) }),
+      expect.objectContaining({ order: expect.objectContaining({ fullAppData: MARKET_FULL_APP_DATA }) }),
       expect.anything(),
     )
   })
@@ -843,7 +844,7 @@ describe('solanaFlow · appData', () => {
     expect(mockCaptureError).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'SolanaAppDataMismatchError' }),
       ERROR_TYPES.ON_SWAP,
-      expect.objectContaining({ fullAppData: await stringifyDeterministic(APP_DATA.doc) }),
+      expect.objectContaining({ fullAppData: MARKET_FULL_APP_DATA }),
     )
   })
 

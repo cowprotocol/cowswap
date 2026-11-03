@@ -19,6 +19,14 @@ describe('getCurrentChainIdFromUrl()', () => {
     expect(chainId).toBe(SupportedChainId.MAINNET)
   })
 
+  it('When chainId from the url path is an unreleased chain, then should take mainnet as default', () => {
+    const chainId = getCurrentChainIdFromUrl({
+      hash: `#/${SupportedChainId.ROBINHOOD}/WETH`,
+    } as Location)
+
+    expect(chainId).toBe(SupportedChainId.MAINNET)
+  })
+
   it('When network name presents in the url query, then it should taken as chainId', () => {
     const chainId = getCurrentChainIdFromUrl({
       hash: '#/WETH?chain=gnosis_chain',

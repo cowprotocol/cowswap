@@ -1,6 +1,6 @@
 import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { OrderClass, OrderKind, OrderParameters, stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
@@ -129,6 +129,7 @@ export async function solanaFlow(
       orderId,
       signingScheme,
       appData: signedAppData,
+      fullAppData: signedFullAppData,
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
       feePayer,
@@ -157,13 +158,11 @@ export async function solanaFlow(
           appDataDoc: isSolanaAppDataEnabled ? appData.doc : LEGACY_SOLANA_SWAP_APP_DATA,
         })
 
-    // A swap signs the SDK's hash of `doc`, which only matches `fullAppData` when that was stringified
-    // deterministically — the fallback appData (`getAppData()`) is not.
     const fullAppData = !isSolanaAppDataEnabled
       ? undefined
       : orderClass === OrderClass.LIMIT
         ? appData.fullAppData
-        : await stringifyDeterministic(appData.doc)
+        : signedFullAppData
 
     if (fullAppData !== undefined) {
       assertSignedAppData(signedAppData, fullAppData)
@@ -352,8 +351,8 @@ function buildSolanaOrder(params: {
     // instruction, so the deadline shown here is the one the on-chain order actually has.
     receiver,
     validTo,
-    // Override the quote's own appData: it's a meaningless constant stub for Solana (getSolanaQuote.ts's
-    // ZERO_APP_DATA) — this is what was actually signed.
+    // Override the quote's own appData: the order merges the app's doc onto the quote's, so the quote's
+    // digest is not what was signed.
     appData,
     fullAppData,
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote
