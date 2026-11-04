@@ -132,15 +132,29 @@ describe('HomePage', () => {
     expect(screen.getByRole('searchbox', { name: 'Search assets' })).toBeTruthy()
   })
 
-  it('renders the type toggles without a selection and the asset rows', async () => {
+  it('renders the type toggles with All selected and the asset rows', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
     expect(await screen.findByText('$180M')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'Stocks', pressed: false })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
     expect(screen.getByText('2 issuers')).toBeTruthy()
     expect(screen.getByText('on Ethereum')).toBeTruthy()
+  })
+
+  it('selects one type at a time and unselects All', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'Commodities' }))
+
+    expect(await screen.findByRole('button', { name: 'Commodities', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'All', pressed: false })).toBeTruthy()
+    await waitFor(() => expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).toContain('type=commodity'))
   })
 
   it('toggles a type off when it is selected again', async () => {
@@ -151,14 +165,32 @@ describe('HomePage', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'ETFs', pressed: true }))
 
     await screen.findByRole('button', { name: 'ETFs', pressed: false })
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
     expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).not.toContain('type=')
   })
 
-  it('counts the set filters and clears them', async () => {
+  it('returns to all types with All', async () => {
+    mockApi(OVERVIEW, ASSETS_PAGE)
+    renderHomePage()
+
+    fireEvent.click(await screen.findByRole('button', { name: 'ETFs' }))
+    fireEvent.click(await screen.findByRole('button', { name: 'All', pressed: false }))
+
+    expect(await screen.findByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'ETFs', pressed: false })).toBeTruthy()
+    expect(String((global.fetch as jest.Mock).mock.calls.at(-1)?.[0])).not.toContain('type=')
+
+    fireEvent.click(screen.getByRole('button', { name: 'All', pressed: true }))
+
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
+  })
+
+  it('counts the set filters without the type and clears them with the type', async () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
     await screen.findByText('$180M')
+    fireEvent.click(screen.getByRole('button', { name: 'ETFs' }))
     fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
@@ -173,6 +205,7 @@ describe('HomePage', () => {
 
     expect(await screen.findByRole('button', { name: 'Filters' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
     expect(
       within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: 'Any' }),
     ).toHaveProperty('checked', true)

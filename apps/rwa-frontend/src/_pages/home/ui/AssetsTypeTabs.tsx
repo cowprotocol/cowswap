@@ -28,6 +28,15 @@ export function AssetsTypeTabs({ tableId }: AssetsTypeTabsProps): ReactNode {
 
   return (
     <div className={styles.types} role="group" aria-label="Asset type">
+      <button
+        type="button"
+        className={styles.outlinedButton}
+        aria-pressed={selectedType === null}
+        aria-controls={tableId}
+        onClick={() => updateFilters({ type: null })}
+      >
+        All
+      </button>
       {RWA_ASSET_TYPES.map((type) => {
         const Icon = TYPE_ICONS[type]
         const isSelected = type === selectedType
