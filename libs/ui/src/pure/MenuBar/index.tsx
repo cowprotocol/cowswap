@@ -67,24 +67,26 @@ const PRODUCT_NAV_STYLES: Record<CowProductId, Pick<MenuItem, 'hoverColor' | 'ho
   cowRwa: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
 }
 
-const DAO_NAV_ITEMS: MenuItem[] = [
-  {
-    href: COW_DAO_LINK.href,
-    productVariant: ProductVariant.CowDao,
-    hasDivider: true,
-    hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
-    hoverBgColor: `var(${UI.COLOR_NEUTRAL_20})`,
-    external: true,
-    utmContent: 'menubar-dao-nav-cowdao',
-  },
-  ...COW_PRODUCT_LINKS.map(({ id, href }) => ({
-    href,
-    productVariant: COW_PRODUCT_VARIANTS[id],
-    ...PRODUCT_NAV_STYLES[id],
-    external: true,
-    utmContent: `menubar-dao-nav-${id.toLowerCase()}`,
-  })),
-]
+function getDaoNavItems(isRwaEnabled: boolean): MenuItem[] {
+  return [
+    {
+      href: COW_DAO_LINK.href,
+      productVariant: ProductVariant.CowDao,
+      hasDivider: true,
+      hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
+      hoverBgColor: `var(${UI.COLOR_NEUTRAL_20})`,
+      external: true,
+      utmContent: 'menubar-dao-nav-cowdao',
+    },
+    ...COW_PRODUCT_LINKS.filter(({ id }) => isRwaEnabled || id !== 'cowRwa').map(({ id, href }) => ({
+      href,
+      productVariant: COW_PRODUCT_VARIANTS[id],
+      ...PRODUCT_NAV_STYLES[id],
+      external: true,
+      utmContent: `menubar-dao-nav-${id.toLowerCase()}`,
+    })),
+  ]
+}
 
 const getLanguageName = (locale: string): string => {
   const override = LOCALE_DISPLAY_NAMES[locale as keyof typeof LOCALE_DISPLAY_NAMES]
@@ -363,10 +365,12 @@ const NavDaoTrigger: React.FC<{
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   mobileMode: boolean
   LinkComponent: LinkComponentType
+  isRwaEnabled: boolean
   // TODO: Break down this large function into smaller functions
-}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent }) => {
+}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent, isRwaEnabled }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
+  const daoNavItems = useMemo(() => getDaoNavItems(isRwaEnabled), [isRwaEnabled])
 
   useOnClickOutside([triggerRef, dropdownRef], () => setIsOpen(false))
 
@@ -398,13 +402,13 @@ const NavDaoTrigger: React.FC<{
             mobileMode={mobileMode}
             ref={dropdownRef as unknown as React.RefObject<HTMLDivElement>}
           >
-            {DAO_NAV_ITEMS.map((item, index) => (
+            {daoNavItems.map((item, index) => (
               <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
             ))}
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
-            {DAO_NAV_ITEMS.map((item, index) => (
+            {daoNavItems.map((item, index) => (
               <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
             ))}
           </DropdownContent>
@@ -782,6 +786,7 @@ interface MenuBarProps {
   settingsNavItems?: MenuItem[]
   showGlobalSettings?: boolean
   isInternationalizationEnabled?: boolean
+  isRwaEnabled?: boolean
 }
 
 function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
@@ -827,6 +832,7 @@ export const MenuBar = (props: MenuBarProps) => {
     settingsNavItems,
     showGlobalSettings,
     isInternationalizationEnabled,
+    isRwaEnabled = false,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -897,6 +903,7 @@ export const MenuBar = (props: MenuBarProps) => {
           setIsOpen={setIsDaoOpen}
           mobileMode={isMedium}
           LinkComponent={LinkComponent}
+          isRwaEnabled={isRwaEnabled}
         />
         <ProductLogo
           key={customTheme ?? 'default'}
