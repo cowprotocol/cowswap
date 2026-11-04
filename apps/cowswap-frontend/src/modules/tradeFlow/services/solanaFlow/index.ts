@@ -1,4 +1,4 @@
-import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
@@ -46,9 +46,10 @@ import {
   USER_SWAP_REJECTED_ERROR,
 } from 'common/utils/getSwapErrorMessage'
 
-import { assertSignedAppData, SolanaAppDataMismatchError } from './assertSignedAppData'
+import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
+import { reportSolanaOrderError } from './reportSolanaOrderError'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -261,32 +262,8 @@ export async function solanaFlow(
     const error = normalizeError(err)
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
-
-    captureError(error, ERROR_TYPES.ON_SWAP, {
-      swapErrorMessage,
-      // Never reaches the order book on a mismatch, so this is the only record of what failed to hash.
-      ...(error instanceof SolanaAppDataMismatchError && { fullAppData: error.fullAppData }),
-    })
-    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
-
-    // The user retried while this attempt's prompt was still open: its screen belongs to the newer
-    // run now, and a stale failure must not repaint it.
-    if (attemptId !== latestAttemptId) {
-      return
-    }
-
     const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
     const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
-
-    // Rejecting a prompt whose window already closed is the expected retry path, not an error: back
-    // to the review screen (with forced price confirmation), or silence if the modal was left.
-    if (isRejection && isSigningWindowClosed) {
-      if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
-        tradeConfirmActions.onOpen(true)
-      }
-
-      return
-    }
 
     // Three ways to learn the same thing — the blockhash died before the order was placed. The
     // countdown catches it locally, and the order book catches the rest: the hand-over above is
@@ -298,6 +275,34 @@ export async function solanaFlow(
       error instanceof SigningWindowClosedError ||
       isBlockhashExpiredError(error) ||
       (isSigningWindowClosed && !isSubmissionStarted)
+
+    reportSolanaOrderError({
+      error,
+      chainId,
+      orderClass,
+      isSponsored,
+      isSubmissionStarted,
+      isRejection,
+      isWindowExpiryFailure,
+      swapErrorMessage,
+    })
+    analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
+
+    // The user retried while this attempt's prompt was still open: its screen belongs to the newer
+    // run now, and a stale failure must not repaint it.
+    if (attemptId !== latestAttemptId) {
+      return
+    }
+
+    // Rejecting a prompt whose window already closed is the expected retry path, not an error: back
+    // to the review screen (with forced price confirmation), or silence if the modal was left.
+    if (isRejection && isSigningWindowClosed) {
+      if (jotaiStore.get(tradeConfirmStateAtom).isOpen) {
+        tradeConfirmActions.onOpen(true)
+      }
+
+      return
+    }
 
     if (isWindowExpiryFailure) {
       jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)

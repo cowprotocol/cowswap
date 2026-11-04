@@ -842,9 +842,11 @@ describe('solanaFlow · appData', () => {
     await solanaFlow(buildContext({ orderClass: OrderClass.MARKET }), buildAnalytics(), APP_DATA_ON)
 
     expect(mockCaptureError).toHaveBeenCalledWith(
-      expect.objectContaining({ name: 'SolanaAppDataMismatchError' }),
+      expect.objectContaining({ name: 'SolanaOrderSubmissionError' }),
       ERROR_TYPES.ON_SWAP,
-      expect.objectContaining({ fullAppData: MARKET_FULL_APP_DATA }),
+      expect.objectContaining({ reason: 'app-data-mismatch', fullAppData: MARKET_FULL_APP_DATA }),
+      expect.objectContaining({ scope: 'SolanaOrder' }),
+      ['SolanaOrder', 'app-data-mismatch'],
     )
   })
 
