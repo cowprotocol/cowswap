@@ -3892,12 +3892,12 @@ msgid "Affiliate payouts and registration happen on Ethereum mainnet."
 msgstr "Affiliate payouts and registration happen on Ethereum mainnet."
 
 #: libs/common-utils/src/misc.ts
-msgid ""
-"Looks like something's not quite right with your wallet. \n"
-"Give it a quick check and try again in a moo-ment! :cow2:"
-msgstr ""
-"Looks like something's not quite right with your wallet. \n"
-"Give it a quick check and try again in a moo-ment! :cow2:"
+#~ msgid ""
+#~ "Looks like something's not quite right with your wallet. \n"
+#~ "Give it a quick check and try again in a moo-ment! :cow2:"
+#~ msgstr ""
+#~ "Looks like something's not quite right with your wallet. \n"
+#~ "Give it a quick check and try again in a moo-ment! :cow2:"
 
 #: apps/cowswap-frontend/src/common/pure/IconSpinner/index.tsx
 msgid "Spinning icon"
@@ -4291,6 +4291,14 @@ msgstr "This is an Alpha version of CoW Swap on Solana. This deployment has not 
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #~ msgid "This requires connecting a different wallet, and your current wallet will be disconnected."
 #~ msgstr "This requires connecting a different wallet, and your current wallet will be disconnected."
+
+#: libs/common-utils/src/misc.ts
+msgid ""
+"Looks like something's not quite right with your wallet. \n"
+"Give it a quick check and try again in a moo-ment! 🐄"
+msgstr ""
+"Looks like something's not quite right with your wallet. \n"
+"Give it a quick check and try again in a moo-ment! 🐄"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
 msgid "TWAP splits your swap into equal parts over time"
