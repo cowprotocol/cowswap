@@ -19,6 +19,7 @@ import svgMenuHamburgerSrc from '@cowprotocol/assets/images/menu-hamburger.svg'
 import svgSettingsGlobalSrc from '@cowprotocol/assets/images/settings-global.svg'
 import svgXSrc from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
+import { COW_DAO_LINK, COW_PRODUCT_LINKS, type CowProductId } from '@cowprotocol/common-const/cowLinks'
 import { useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
@@ -56,37 +57,36 @@ import { Media } from '../../consts'
 import { UI } from '../../enum'
 import { BadgeType } from '../../types'
 import { Badge } from '../Badge'
-import { ProductLogo, ProductVariant } from '../ProductLogo'
+import { COW_PRODUCT_VARIANTS, ProductLogo, ProductVariant } from '../ProductLogo'
 
 import type { CowSwapTheme } from '../../types'
 
-const DAO_NAV_ITEMS: MenuItem[] = [
-  {
-    href: 'https://cow.fi/',
-    productVariant: ProductVariant.CowDao,
-    hasDivider: true,
-    hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
-    hoverBgColor: `var(${UI.COLOR_NEUTRAL_20})`,
-    external: true,
-    utmContent: 'menubar-dao-nav-cowdao',
-  },
-  {
-    href: 'https://swap.cow.fi/',
-    productVariant: ProductVariant.CowSwap,
-    hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
-    hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    external: true,
-    utmContent: 'menubar-dao-nav-cowswap',
-  },
-  {
-    href: 'https://cow.fi/cow-protocol',
-    productVariant: ProductVariant.CowProtocol,
-    hoverColor: '#FCCAF2',
-    hoverBgColor: '#AD02C6',
-    external: true,
-    utmContent: 'menubar-dao-nav-cowprotocol',
-  },
-]
+const PRODUCT_NAV_STYLES: Record<CowProductId, Pick<MenuItem, 'hoverColor' | 'hoverBgColor'>> = {
+  cowSwap: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
+  cowProtocol: { hoverColor: '#FCCAF2', hoverBgColor: '#AD02C6' },
+  cowRwa: { hoverColor: `var(${UI.COLOR_BLUE_300_PRIMARY})`, hoverBgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})` },
+}
+
+function getDaoNavItems(isRwaEnabled: boolean): MenuItem[] {
+  return [
+    {
+      href: COW_DAO_LINK.href,
+      productVariant: ProductVariant.CowDao,
+      hasDivider: true,
+      hoverColor: `var(${UI.COLOR_NEUTRAL_100})`,
+      hoverBgColor: `var(${UI.COLOR_NEUTRAL_20})`,
+      external: true,
+      utmContent: 'menubar-dao-nav-cowdao',
+    },
+    ...COW_PRODUCT_LINKS.filter(({ id }) => isRwaEnabled || id !== 'cowRwa').map(({ id, href }) => ({
+      href,
+      productVariant: COW_PRODUCT_VARIANTS[id],
+      ...PRODUCT_NAV_STYLES[id],
+      external: true,
+      utmContent: `menubar-dao-nav-${id.toLowerCase()}`,
+    })),
+  ]
+}
 
 const getLanguageName = (locale: string): string => {
   const override = LOCALE_DISPLAY_NAMES[locale as keyof typeof LOCALE_DISPLAY_NAMES]
@@ -228,10 +228,11 @@ const DropdownContentItem: React.FC<{
   item: DropdownMenuItem
   closeMenu: () => void
   LinkComponent: LinkComponentType
+  hideArrow?: boolean
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line max-lines-per-function
-}> = ({ item, closeMenu, LinkComponent }) => {
+}> = ({ item, closeMenu, LinkComponent, hideArrow = false }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
   // TODO: Add proper return type annotation
@@ -353,8 +354,9 @@ const DropdownContentItem: React.FC<{
     >
       <LinkComponent href={href}>
         {renderItemContent()}
-        {item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right external" />}
-        {!item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right" />}
+        {!hideArrow && !item.children && (
+          <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+        )}
       </LinkComponent>
     </StyledDropdownContentItem>
   )
@@ -365,10 +367,13 @@ const NavDaoTrigger: React.FC<{
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   mobileMode: boolean
   LinkComponent: LinkComponentType
+  isRwaEnabled: boolean
+  productVariant: ProductVariant
   // TODO: Break down this large function into smaller functions
-}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent }) => {
+}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent, isRwaEnabled, productVariant }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
+  const daoNavItems = useMemo(() => getDaoNavItems(isRwaEnabled), [isRwaEnabled])
 
   useOnClickOutside([triggerRef, dropdownRef], () => setIsOpen(false))
 
@@ -400,14 +405,26 @@ const NavDaoTrigger: React.FC<{
             mobileMode={mobileMode}
             ref={dropdownRef as unknown as React.RefObject<HTMLDivElement>}
           >
-            {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
+            {daoNavItems.map((item, index) => (
+              <DropdownContentItem
+                key={index}
+                item={item}
+                closeMenu={closeMenu}
+                LinkComponent={LinkComponent}
+                hideArrow={item.productVariant === productVariant}
+              />
             ))}
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
-            {DAO_NAV_ITEMS.map((item, index) => (
-              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
+            {daoNavItems.map((item, index) => (
+              <DropdownContentItem
+                key={index}
+                item={item}
+                closeMenu={closeMenu}
+                LinkComponent={LinkComponent}
+                hideArrow={item.productVariant === productVariant}
+              />
             ))}
           </DropdownContent>
         ))}
@@ -784,6 +801,7 @@ interface MenuBarProps {
   settingsNavItems?: MenuItem[]
   showGlobalSettings?: boolean
   isInternationalizationEnabled?: boolean
+  isRwaEnabled?: boolean
 }
 
 function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
@@ -829,6 +847,7 @@ export const MenuBar = (props: MenuBarProps) => {
     settingsNavItems,
     showGlobalSettings,
     isInternationalizationEnabled,
+    isRwaEnabled = false,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -899,6 +918,8 @@ export const MenuBar = (props: MenuBarProps) => {
           setIsOpen={setIsDaoOpen}
           mobileMode={isMedium}
           LinkComponent={LinkComponent}
+          isRwaEnabled={isRwaEnabled}
+          productVariant={productVariant}
         />
         <ProductLogo
           key={customTheme ?? 'default'}

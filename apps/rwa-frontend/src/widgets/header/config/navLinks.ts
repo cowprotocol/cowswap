@@ -3,9 +3,6 @@ export const NAV_LINKS = [
   { href: '/portfolio', title: 'Portfolio' },
 ]
 
-/** CoW Swap is served at the root of the same origin, outside of the basePath that `Link` adds */
-export const SWAP_HREF = '/'
-
 export const MORE_SECTIONS = [
   {
     title: 'Legal',

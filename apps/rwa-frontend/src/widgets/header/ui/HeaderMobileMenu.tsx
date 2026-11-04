@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import styles from './HeaderMobileMenu.module.css'
 import { SETTINGS_BUTTON_ID } from './SettingsMenu'
 
-import { isNavLinkActive, MORE_SECTIONS, NAV_LINKS, SWAP_HREF } from '../config/navLinks'
+import { isNavLinkActive, MORE_SECTIONS, NAV_LINKS } from '../config/navLinks'
 import { useBodyScrollLock } from '../lib/useBodyScrollLock'
 import { useDismissOnMediaQueryExit } from '../lib/useDismissOnMediaQueryExit'
 
@@ -79,9 +79,6 @@ export function HeaderMobileMenu(): ReactNode {
               </Link>
             )
           })}
-          <a className={styles.item} href={SWAP_HREF}>
-            Swap
-          </a>
           <button
             className={styles.item}
             type="button"
@@ -96,7 +93,6 @@ export function HeaderMobileMenu(): ReactNode {
             <div id={moreId} className={styles.more}>
               {MORE_SECTIONS.map(({ title, links }) => (
                 <section key={title} className={styles.section} aria-label={title}>
-                  <h3 className={styles.sectionTitle}>{title}</h3>
                   {links.map(({ href, title }) => (
                     <a
                       key={href}

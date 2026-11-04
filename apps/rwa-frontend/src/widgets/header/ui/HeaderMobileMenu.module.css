@@ -87,15 +87,6 @@
   flex-direction: column;
 }
 
-.sectionTitle {
-  margin: 0;
-  padding: 8px 16px 4px;
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-}
-
 .link {
   display: flex;
   align-items: center;

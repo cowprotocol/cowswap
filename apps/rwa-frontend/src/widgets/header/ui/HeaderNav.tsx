@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import styles from './Header.module.css'
 import { HeaderMoreMenu } from './HeaderMoreMenu'
 
-import { isNavLinkActive, NAV_LINKS, SWAP_HREF } from '../config/navLinks'
+import { isNavLinkActive, NAV_LINKS } from '../config/navLinks'
 
 export function HeaderNav(): ReactNode {
   const pathname = usePathname()
@@ -29,7 +29,6 @@ export function HeaderNav(): ReactNode {
           </Link>
         )
       })}
-      <a href={SWAP_HREF}>Swap</a>
       <HeaderMoreMenu />
     </nav>
   )

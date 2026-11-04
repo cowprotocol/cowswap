@@ -8,8 +8,8 @@ import SVG from 'react-inlinesvg'
 
 import {
   getGlobalFooterNavItems,
+  getProductLogoLinks,
   GLOBAL_FOOTER_DESCRIPTION,
-  PRODUCT_LOGO_LINKS,
   SOCIAL_LINKS,
 } from './footer.constants'
 import { FooterAnimation } from './footerAnimation'
@@ -48,6 +48,7 @@ export interface FooterProps {
   hasTouchFooter?: boolean
   maxWidth?: number
   host?: string
+  isRwaEnabled?: boolean
 }
 
 export interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
@@ -95,22 +96,23 @@ const FooterLink = ({ href, external, label, utmSource: _utmSource, utmContent, 
   )
 }
 
-export const GLOBAL_FOOTER_NAV_ITEMS = getGlobalFooterNavItems()
-
 export const Footer = ({
   description = GLOBAL_FOOTER_DESCRIPTION,
-  navItems = GLOBAL_FOOTER_NAV_ITEMS,
+  navItems,
   additionalFooterContent,
   expanded = false,
   hasTouchFooter = false,
   maxWidth,
   host,
+  isRwaEnabled = false,
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
   const theme = useTheme()
+  const resolvedNavItems = navItems ?? getGlobalFooterNavItems(isRwaEnabled)
+  const productLogoLinks = getProductLogoLinks(isRwaEnabled)
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -151,7 +153,7 @@ export const Footer = ({
             </FooterDescriptionSection>
 
             <LinkListWrapper>
-              {navItems.map((item, index) => (
+              {resolvedNavItems.map((item, index) => (
                 <LinkListGroup key={index}>
                   <SectionTitle>{item.label}</SectionTitle>
                   <LinkList>
@@ -179,7 +181,7 @@ export const Footer = ({
       <FooterBottom maxWidth={maxWidth}>
         <BottomText>&copy; CoW DAO - {new Date().getFullYear()}</BottomText>
         <FooterBottomLogos>
-          {PRODUCT_LOGO_LINKS.map((product, index) => (
+          {productLogoLinks.map((product, index) => (
             <ProductLogo
               key={index}
               variant={product.productVariant}

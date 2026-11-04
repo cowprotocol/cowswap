@@ -36,7 +36,6 @@ describe('HeaderMobileMenu', () => {
 
     expect(screen.getByRole('link', { name: 'Portfolio' }).getAttribute('aria-current')).toBe('page')
     expect(screen.getByRole('link', { name: 'Explore' }).getAttribute('aria-current')).toBeNull()
-    expect(screen.getByRole('link', { name: 'Swap' })).toBeTruthy()
     expect(document.body.style.overflow).toBe('hidden')
     expect(screen.queryByRole('link', { name: 'Terms and Conditions' })).toBeNull()
 

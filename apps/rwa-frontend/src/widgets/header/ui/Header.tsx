@@ -6,6 +6,7 @@ import styles from './Header.module.css'
 import { HeaderMobileMenu } from './HeaderMobileMenu'
 import { HeaderNav } from './HeaderNav'
 import { HeaderSearch } from './HeaderSearch'
+import { ProductsMenu } from './ProductsMenu'
 import { SettingsMenu } from './SettingsMenu'
 import { WalletBar } from './WalletBar'
 
@@ -16,6 +17,7 @@ export function Header(): ReactNode {
   return (
     <>
       <header className={styles.header}>
+        <ProductsMenu />
         <Link className={styles.logo} href="/" aria-label="CoW RWA">
           <CowLogo />
           <span className={styles.logoText}>CoW RWA</span>

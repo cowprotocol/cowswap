@@ -44,7 +44,6 @@ export function HeaderMoreMenu(): ReactNode {
         <div id={menuId} className={styles.menu}>
           {MORE_SECTIONS.map(({ title, links }) => (
             <section key={title} className={styles.section} aria-label={title}>
-              <h3 className={styles.sectionTitle}>{title}</h3>
               {links.map(({ href, title }) => (
                 <a
                   key={href}
