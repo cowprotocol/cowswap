@@ -538,6 +538,22 @@ describe('checkSolanaTransaction with a multisig owner', () => {
     })
   })
 
+  // "Order Failed" alone leaves the user guessing; the members rejecting it is something we know.
+  it('says the multisig rejected it, rather than a bare placement failure', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalOutcome: 'failed',
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('rejected-message-signature'), params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalledWith(FAILED_ORDER))
+
+    expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ summary: 'Order rejected in your multisig' }),
+    )
+  })
+
   it('keeps an aged-out signature pending while its proposal is still awaiting votes', async () => {
     const { params, dispatch } = createParams({
       status: null,

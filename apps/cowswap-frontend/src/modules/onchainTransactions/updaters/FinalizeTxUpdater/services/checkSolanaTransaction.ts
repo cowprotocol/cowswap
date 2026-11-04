@@ -11,7 +11,7 @@ import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { emitCancelledOrderEvent } from 'modules/orders'
 
-import { resolveConfirmedSolanaStatus, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
+import { resolveConfirmedSolanaStatus, SolanaRevertReason, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
 
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
@@ -47,7 +47,7 @@ export function checkSolanaTransaction(
 
   let isCancelled = false
 
-  const finalize = (status: 'success' | 'reverted', slot: number): void => {
+  const finalize = (status: 'success' | 'reverted', slot: number, reason?: SolanaRevertReason): void => {
     const receipt = {
       to: null,
       from: transaction.from,
@@ -98,7 +98,7 @@ export function checkSolanaTransaction(
       // There is nothing to fail, and claiming a failure without failing anything would leave the
       // order in `CREATING` under a notification saying it had not been placed.
       if (status === 'reverted' && createdOrderId) {
-        failCreatedOrder(createdOrderId, transaction, params, slot)
+        failCreatedOrder(createdOrderId, transaction, params, slot, reason)
       }
 
       return
@@ -128,7 +128,7 @@ export function checkSolanaTransaction(
         return
       }
 
-      finalize(result.type === 'success' ? 'success' : 'reverted', result.slot)
+      finalize(result.type, result.slot, result.type === 'reverted' ? result.reason : undefined)
     })
     .catch((error) => {
       if (isCancelled) return
@@ -252,13 +252,19 @@ function failCreatedOrder(
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions,
   slot: number,
+  reason?: SolanaRevertReason,
 ): void {
   const { chainId, dispatch, isSafeWallet } = params
 
   dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
   // Not `transaction.summary`, which reads as the steps the transaction bundled: what the user needs
-  // to know is that the order did not get placed.
-  emitTransactionFailedEvent(transaction, transaction.hash, slot, t`Failed to place order`)
+  // to know is that the order did not get placed, and why when we can say.
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected' ? t`Order rejected in your multisig` : t`Failed to place order`,
+  )
 }
 
 /**

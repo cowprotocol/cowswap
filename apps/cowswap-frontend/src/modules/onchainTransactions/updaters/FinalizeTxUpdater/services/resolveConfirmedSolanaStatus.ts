@@ -6,7 +6,13 @@ import { getSquadsProposalOutcome } from './getSquadsProposalOutcome'
 
 import type { Connection } from '@solana/web3.js'
 
-export type SolanaStatusResult = { type: 'success' | 'reverted'; slot: number } | { type: 'pending' }
+/** Why an order-creating transaction failed, when the UI can say something better than "it failed". */
+export type SolanaRevertReason = 'multisig-rejected'
+
+export type SolanaStatusResult =
+  | { type: 'success'; slot: number }
+  | { type: 'reverted'; slot: number; reason?: SolanaRevertReason }
+  | { type: 'pending' }
 
 /**
  * What a confirmed signature actually means for the order it was supposed to place.
@@ -27,7 +33,7 @@ export async function resolveConfirmedSolanaStatus(
 
   const outcome = await getSquadsProposalOutcome(connection, signature)
 
-  if (outcome === 'failed') return { type: 'reverted', slot }
+  if (outcome === 'failed') return { type: 'reverted', slot, reason: 'multisig-rejected' }
 
   return outcome === 'executed' ? { type: 'success', slot } : { type: 'pending' }
 }
