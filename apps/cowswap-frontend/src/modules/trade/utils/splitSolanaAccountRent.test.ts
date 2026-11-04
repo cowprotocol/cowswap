@@ -1,4 +1,10 @@
-import { OrderKind, SupportedChainId, type OrderParameters, type SolanaQuoteCosts } from '@cowprotocol/cow-sdk'
+import {
+  OrderKind,
+  SupportedChainId,
+  type OrderParameters,
+  type SolanaQuoteCosts,
+  type SolanaQuoteResponse,
+} from '@cowprotocol/cow-sdk'
 import { Percent, Token } from '@cowprotocol/currency'
 
 import { getReceiveAmountInfo } from './getReceiveAmountInfo'
@@ -26,7 +32,7 @@ const ORDER_PARAMS = {
   feeAmount: '0',
 } as OrderParameters
 
-describe('applySolanaQuoteCosts', () => {
+describe('getReceiveAmountInfo for a Solana quote', () => {
   describe('sell order', () => {
     it('adds the costs back to the amounts quoted before them', () => {
       const result = buildReceiveAmountInfo(ORDER_PARAMS, COSTS)
@@ -53,13 +59,27 @@ describe('applySolanaQuoteCosts', () => {
       expect(result.beforeAllFees.buyAmount.quotient).toBe(7105874972n)
     })
 
-    it('reports the costs in the buy token', () => {
+    it('reports the account rent apart from the network fee, in the buy token', () => {
       const result = buildReceiveAmountInfo(ORDER_PARAMS, COSTS)
 
       expect(result.costs.networkFee.amountInBuyCurrency.quotient).toBe(BigInt(COSTS.networkFees))
       expect(result.costs.networkFee.amountInBuyCurrency.currency).toBe(APE)
       expect(result.costs.accountRentFee?.quotient).toBe(BigInt(COSTS.buyTokenAtaCosts))
       expect(result.costs.accountRentFee?.currency).toBe(APE)
+    })
+
+    it('keeps only the network fee share of the costs in the sell token', () => {
+      const result = buildReceiveAmountInfo(ORDER_PARAMS, COSTS)
+
+      expect(result.costs.networkFee.amountInSellCurrency.quotient).toBe(16511n)
+      expect(result.costs.networkFee.amountInSellCurrency.currency).toBe(WSOL)
+    })
+
+    it('reports all the costs as the network fee when there is no account rent', () => {
+      const result = buildReceiveAmountInfo(ORDER_PARAMS, { ...COSTS, buyTokenAtaCosts: '0', total: COSTS.networkFees })
+
+      expect(result.costs.networkFee.amountInBuyCurrency.quotient).toBe(BigInt(COSTS.networkFees))
+      expect(result.costs.accountRentFee).toBeUndefined()
     })
   })
 
@@ -82,10 +102,11 @@ describe('applySolanaQuoteCosts', () => {
       expect(result.afterNetworkCosts.sellAmount.quotient).toBe(BigInt(SELL_AMOUNT))
     })
 
-    it('reports the costs in the sell token', () => {
+    it('reports the account rent apart from the network fee, in the sell token', () => {
       const result = buildReceiveAmountInfo(buyOrderParams, sellSideCosts)
 
       expect(result.costs.networkFee.amountInSellCurrency.quotient).toBe(BigInt(sellSideCosts.networkFees))
+      expect(result.costs.networkFee.amountInBuyCurrency.quotient).toBe(13815093n)
       expect(result.costs.accountRentFee?.quotient).toBe(BigInt(sellSideCosts.buyTokenAtaCosts))
       expect(result.costs.accountRentFee?.currency).toBe(WSOL)
     })
@@ -109,7 +130,9 @@ describe('applySolanaQuoteCosts', () => {
   })
 })
 
-function buildReceiveAmountInfo(orderParams: OrderParameters, solanaQuoteCosts?: SolanaQuoteCosts): ReceiveAmountInfo {
+function buildReceiveAmountInfo(orderParams: OrderParameters, costs?: SolanaQuoteCosts): ReceiveAmountInfo {
+  const solanaQuoteResponse = { quote: { ...orderParams, costs } } as SolanaQuoteResponse
+
   return getReceiveAmountInfo({
     orderParams,
     inputCurrency: WSOL,
@@ -117,6 +140,6 @@ function buildReceiveAmountInfo(orderParams: OrderParameters, solanaQuoteCosts?:
     slippagePercent: new Percent(50, 10_000),
     partnerFeeBps: 0,
     protocolFeeBps: 0,
-    solanaQuoteCosts,
+    solanaQuoteResponse,
   })
 }
