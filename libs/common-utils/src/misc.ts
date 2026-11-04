@@ -163,7 +163,7 @@ export function getProviderErrorMessage(error: unknown): string | undefined {
   if (isInternalRpcError(error)) {
     return (
       getExecutionRevertedReason(error) ??
-      t`Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! :cow2:`
+      t`Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄`
     )
   }
 
