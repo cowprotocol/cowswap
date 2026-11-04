@@ -2,7 +2,8 @@ import { OrderKind, type OrderParameters } from '@cowprotocol/cow-sdk'
 
 import { getQuoteFeeAmountRaw } from './getQuoteFeeAmountRaw'
 
-// The real barrel pulls the whole quote module graph in, which cannot load under jest.
+// The real barrels pull the whole trade/quote module graph in, which cannot load under jest.
+jest.mock('modules/trade', () => jest.requireActual('../../trade/utils/reportsFeeInSellToken'))
 jest.mock('modules/tradeQuote', () => ({
   isSolanaQuoteAndPost: (quote: unknown) => !!quote && typeof quote === 'object' && 'solanaQuote' in quote,
 }))
@@ -38,6 +39,10 @@ describe('getQuoteFeeAmountRaw', () => {
 
   it('takes the network fee in the sell token from the breakdown of a Solana quote', () => {
     expect(getQuoteFeeAmountRaw(quoteOf(ORDER_PARAMS, 1497148n))).toBe('1497148')
+  })
+
+  it('takes the fee a Solana quote already reports as is, rather than the breakdown of its costs', () => {
+    expect(getQuoteFeeAmountRaw(quoteOf({ ...ORDER_PARAMS, feeAmount: '1500000' }, 1497148n))).toBe('1500000')
   })
 
   it('reports a zero fee rather than nothing when a Solana quote carries no costs', () => {

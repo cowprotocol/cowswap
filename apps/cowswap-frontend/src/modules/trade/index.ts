@@ -18,6 +18,7 @@ export {
 export * from './utils/getCrossChainReceiveAmountInfo'
 export * from './utils/getIsNativeSellUnsupported'
 export * from './utils/getTotalCosts'
+export * from './utils/reportsFeeInSellToken'
 export * from './utils/getOrderTypeReceiveAmounts'
 export * from './utils/getLimitPriceFromReceiveAmount'
 export * from './utils/tradeFlowAnalytics'

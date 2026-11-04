@@ -6,6 +6,7 @@ import { getSolanaQuoteAmountsAndCosts } from '@cowprotocol/sdk-trading-solana'
 
 import { applyConsumedHookGasReceive, hookGasConsumesQuotedPart } from './applyConsumedHookGasReceive'
 import { positiveIntegerAtom } from './positiveIntegerAtom'
+import { reportsFeeInSellToken } from './reportsFeeInSellToken'
 import { splitSolanaAccountRent } from './splitSolanaAccountRent'
 import { ReceiveAmountInfoParams } from './types'
 
@@ -83,7 +84,8 @@ function getAmountsAndCosts(params: ReceiveAmountInfoParams, orderParams: OrderP
   const { slippagePercent, partnerFeeBps = 0, protocolFeeBps, solanaQuoteResponse } = params
   const slippagePercentBps = Number(slippagePercent.numerator)
 
-  if (solanaQuoteResponse) {
+  // The SDK restores the pre-cost amounts from `costs`, which a quote carrying `feeAmount` already did
+  if (solanaQuoteResponse && !reportsFeeInSellToken(orderParams)) {
     return getSolanaQuoteAmountsAndCosts({
       quoteResponse: { ...solanaQuoteResponse, quote: { ...solanaQuoteResponse.quote, ...orderParams } },
       slippagePercentBps,

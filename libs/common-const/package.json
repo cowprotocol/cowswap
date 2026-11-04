@@ -28,6 +28,12 @@
       "import": "./src/wallet.ts",
       "require": "./src/wallet.ts",
       "default": "./src/wallet.ts"
+    },
+    "./cowLinks": {
+      "types": "./src/cowLinks.ts",
+      "import": "./src/cowLinks.ts",
+      "require": "./src/cowLinks.ts",
+      "default": "./src/cowLinks.ts"
     }
   },
   "publishConfig": {
@@ -53,6 +59,11 @@
         "types": "./wallet.d.ts",
         "import": "./wallet.mjs",
         "require": "./wallet.js"
+      },
+      "./cowLinks": {
+        "types": "./cowLinks.d.ts",
+        "import": "./cowLinks.mjs",
+        "require": "./cowLinks.js"
       }
     }
   },
