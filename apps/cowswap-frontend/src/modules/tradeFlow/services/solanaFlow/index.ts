@@ -103,8 +103,9 @@ export async function solanaFlow(
 
   // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
   // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only
-  // thing that separates a refused prompt from a hand-over the order book rejected. Anything from
-  // `submit` on may have placed an order; everything before it definitely did not.
+  // thing that separates a refused prompt from a hand-over the order book rejected. It drives the
+  // screen too, via `isSolanaOrderSubmitted` — which stays false through `sign` because that is
+  // what the UI has always assumed, even though a self-paid send broadcasts inside it.
   let phase: SolanaOrderPhase = 'plan'
 
   try {

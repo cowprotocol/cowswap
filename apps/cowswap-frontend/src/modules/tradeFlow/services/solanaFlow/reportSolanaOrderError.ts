@@ -19,9 +19,9 @@ export interface ReportSolanaOrderErrorParams {
   orderClass: OrderClass
   phase: SolanaOrderPhase
   /**
-   * Which attempt this is since the page loaded, counting from 1. The failure has been reported as
-   * sticking until a reload, so a high count separates a one-off from a client that has stopped
-   * being able to trade at all.
+   * Which Solana order attempt this is since the page loaded, counting from 1 and counting the ones
+   * that succeeded. The failure has been reported as sticking until a reload, so a failure on a late
+   * attempt is what separates a client that has stopped being able to trade from a one-off.
    */
   attempt: number
   isSponsored: boolean
@@ -132,7 +132,7 @@ export function reportSolanaOrderError({
       sponsored: String(isSponsored),
       submissionStarted: String(isSolanaOrderSubmitted(phase)),
       errorName: chain[0]?.name ?? 'Unknown',
-      retried: String(attempt > 1),
+      firstAttempt: String(attempt === 1),
     },
     [SOLANA_ORDER_SENTRY_SCOPE, reason],
   )

@@ -161,11 +161,17 @@ describe('reportSolanaOrderError', () => {
     expect((lastCall()[2].errorChain as unknown[]).length).toBeLessThanOrEqual(5)
   })
 
-  it('flags a retry, which is the signal that the client is stuck', () => {
+  it('separates a late attempt, which is the signal that the client is stuck', () => {
     report({ attempt: 3 })
 
     const [, , params, tags] = lastCall()
     expect(params.attempt).toBe(3)
-    expect(tags.retried).toBe('true')
+    expect(tags.firstAttempt).toBe('false')
+  })
+
+  it('marks the first attempt of the page session', () => {
+    report({ attempt: 1 })
+
+    expect(lastCall()[3].firstAttempt).toBe('true')
   })
 })
