@@ -234,7 +234,8 @@ describe('getProviderErrorMessage', () => {
 
   it("replaces viem's generic InternalRpcError message with a friendly one", () => {
     const internalError = { code: -32603, name: 'InternalRpcError', shortMessage: 'An internal error was received.' }
-    const friendlyMessage = 'The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮'
+    const friendlyMessage =
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄"
     i18n.loadAndActivate({ locale: 'en-US', messages: {} })
 
     expect(getProviderErrorMessage(internalError)).toBe(friendlyMessage)
@@ -273,7 +274,9 @@ describe('getProviderErrorMessage', () => {
         shortMessage: 'An internal error was received.',
         cause: { code: -32603, message: 'Internal JSON-RPC error.', data: { message: 'header not found' } },
       }),
-    ).toBe('The wallet has hit a bit of a moo-tdown.\nPlease try again in a moo-ment! 🐮')
+    ).toBe(
+      "Looks like something's not quite right with your wallet. \nGive it a quick check and try again in a moo-ment! 🐄",
+    )
   })
 
   it('still lets the rejection and insufficient-funds checks see a host rejection with code 4001', () => {
