@@ -75,7 +75,7 @@
 
 .filterInput {
   display: flex;
-  flex: 1 1 240px;
+  flex: 1 1 160px;
   align-items: center;
   gap: 10px;
   min-width: 0;
@@ -99,11 +99,13 @@
   border-radius: 0;
   background: none;
   font-size: 14px;
+  text-overflow: ellipsis;
   outline: none;
 }
 
 .filterInput input::placeholder {
   color: var(--color-text-secondary);
+  text-overflow: ellipsis;
 }
 
 .footer {
@@ -153,24 +155,115 @@
   white-space: nowrap;
 }
 
+@media (max-width: 960px) {
+  .types svg {
+    display: none;
+  }
+
+  .filterInput {
+    flex-basis: 0;
+  }
+
+  .iconButton,
+  .filtersTrigger {
+    flex: none;
+  }
+
+  .iconButton {
+    position: relative;
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+  }
+
+  .buttonLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .filtersCount {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  .clearButton {
+    display: none;
+  }
+}
+
 @media (max-width: 720px) {
   .toolbar {
     padding: 12px 16px;
   }
 
   .types {
+    flex: 0 0 calc(100% + 32px);
+    gap: 4px;
+    margin: -4px -16px;
+    padding: 4px 16px;
     overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .types::-webkit-scrollbar {
+    display: none;
+  }
+
+  .types .outlinedButton {
+    flex: none;
+    height: 44px;
+    padding: 0 12px;
   }
 
   .filterInput {
-    flex-basis: 100%;
     order: -1;
+    height: 44px;
+    padding: 0 14px;
+  }
+
+  /* iOS zooms into inputs under 16px */
+  .filterInput input {
+    font-size: 16px;
+  }
+
+  .filterInput input::placeholder {
+    font-size: 14px;
+  }
+
+  .iconButton,
+  .filtersTrigger {
+    order: -1;
+  }
+
+  .iconButton {
+    width: 44px;
+    height: 44px;
   }
 
   .footer {
     display: flex;
     flex-direction: column;
     padding: 0 16px;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .types {
+    scroll-behavior: smooth;
   }
 }
 
