@@ -126,3 +126,9 @@ a {
   margin: 0 auto;
   padding: 0 16px;
 }
+
+@media (max-width: 500px) {
+  .page {
+    padding: 0 6px;
+  }
+}
