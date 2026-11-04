@@ -79,3 +79,18 @@ describe('getSolanaCostsInSellAtoms', () => {
     })
   })
 })
+
+// services#5214: a quote that carries the cost as `feeAmount` is taken at its word rather than having the
+// fee rebuilt from `costs`, which would disagree by the rounding of the conversion.
+describe('quote already reporting the fee', () => {
+  it('returns feeAmount instead of converting the costs', () => {
+    const orderParams = {
+      kind: OrderKind.SELL,
+      sellAmount: '8500000',
+      buyAmount: '6175026740',
+      feeAmount: '1500000',
+    } as OrderParameters
+
+    expect(getSolanaCostsInSellAtoms(orderParams, COSTS)).toBe(1500000n)
+  })
+})

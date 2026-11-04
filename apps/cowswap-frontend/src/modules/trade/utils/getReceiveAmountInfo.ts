@@ -6,6 +6,7 @@ import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
 import { applyConsumedHookGasReceive, hookGasConsumesQuotedPart } from './applyConsumedHookGasReceive'
 import { applySolanaQuoteCosts } from './applySolanaQuoteCosts'
 import { positiveIntegerAtom } from './positiveIntegerAtom'
+import { reportsFeeInSellToken } from './reportsFeeInSellToken'
 import { ReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
@@ -67,7 +68,7 @@ export function getReceiveAmountInfo(
     return applyConsumedHookGasReceive(info, networkFeeInSellAtoms ?? beforeNetworkCosts.sellAmount.quotient)
   }
 
-  return applySolanaQuoteCosts(info, params.solanaQuoteCosts)
+  return applySolanaQuoteCosts(info, params.solanaQuoteCosts, reportsFeeInSellToken(params.orderParams))
 }
 
 function calculateNetworkFee(
