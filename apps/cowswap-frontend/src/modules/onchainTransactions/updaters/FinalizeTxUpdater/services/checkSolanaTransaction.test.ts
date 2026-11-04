@@ -518,6 +518,42 @@ describe('checkSolanaTransaction', () => {
 })
 
 describe('checkSolanaTransaction with a multisig owner', () => {
+  // The signature leaves the node's recent status cache after ~150 slots, so within a minute or two of
+  // every send this is the path that runs. Returning success here retired the transaction before any
+  // vote could be cast, which left the order creating forever however the members later voted.
+  it('consults the proposal when the signature is only found in transaction history', async () => {
+    const { params, dispatch, getSignatureStatuses } = createParams({
+      status: null,
+      blockHeight: LAST_VALID_BLOCK_HEIGHT + 1,
+      historicalStatus: { slot: 99, confirmations: null, err: null, confirmationStatus: 'finalized' },
+      proposalOutcome: 'failed',
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('aged-out-signature'), params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalledWith(FAILED_ORDER))
+
+    expect(getSignatureStatuses).toHaveBeenLastCalledWith(['aged-out-signature'], {
+      searchTransactionHistory: true,
+    })
+  })
+
+  it('keeps an aged-out signature pending while its proposal is still awaiting votes', async () => {
+    const { params, dispatch } = createParams({
+      status: null,
+      blockHeight: LAST_VALID_BLOCK_HEIGHT + 1,
+      historicalStatus: { slot: 99, confirmations: null, err: null, confirmationStatus: 'finalized' },
+      proposalOutcome: 'unresolved',
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('aged-out-pending-signature'), params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+    expect(dispatch).not.toHaveBeenCalledWith(FAILED_ORDER)
+    expect(dispatch.mock.calls.flat().some((action) => action?.type === finalizeTransaction.type)).toBe(false)
+  })
+
   // A multisig never broadcasts the transaction it is handed, so a confirmed signature only proves the
   // proposal was filed. Taking it as success marks the transaction done while the order is never placed.
   it('fails the order once the members reject the proposal', async () => {

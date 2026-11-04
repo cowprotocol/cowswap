@@ -152,9 +152,12 @@ async function checkHistoricalStatus(
   const [historicalStatus] = value
 
   if (historicalStatus) {
-    return historicalStatus.err
-      ? { type: 'reverted', slot: historicalStatus.slot }
-      : { type: 'success', slot: historicalStatus.slot }
+    if (historicalStatus.err) return { type: 'reverted', slot: historicalStatus.slot }
+
+    // Landing is not the same as succeeding: for a multisig filing the proposal decides. This path is
+    // reached within a minute or two of every send, once the signature ages out of the recent cache,
+    // so skipping the check here would retire the transaction before any vote could be cast.
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, historicalStatus.slot)
   }
 
   // Still nothing, anywhere — but if we're only just past the blockhash's validity window, the archive
