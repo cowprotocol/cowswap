@@ -49,7 +49,7 @@ import {
 import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
 import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
-import { reportSolanaOrderError } from './reportSolanaOrderError'
+import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -101,9 +101,11 @@ export async function solanaFlow(
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
 
-  // Flipped the moment the transaction leaves for the network, so the error handling below can tell
-  // a failure that definitely placed nothing from one whose outcome is unknown.
-  let isSubmissionStarted = false
+  // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
+  // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only
+  // thing that separates a refused prompt from a hand-over the order book rejected. Anything from
+  // `submit` on may have placed an order; everything before it definitely did not.
+  let phase: SolanaOrderPhase = 'plan'
 
   try {
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
@@ -168,6 +170,7 @@ export async function solanaFlow(
     if (fullAppData !== undefined) {
       assertSignedAppData(signedAppData, fullAppData)
 
+      phase = 'app-data-upload'
       // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
       await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
@@ -196,6 +199,7 @@ export async function solanaFlow(
 
     // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
     // track: the order book submits it once it has countersigned as fee payer.
+    phase = 'sign'
     const txHash = sponsor
       ? await postSponsoredBundle(
           { connection, provider, feePayer },
@@ -203,13 +207,13 @@ export async function solanaFlow(
           tradeQuote.quoteResults,
           () => attemptId === latestAttemptId,
           () => {
-            isSubmissionStarted = true
+            phase = 'submit'
           },
         )
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
     // Self-paid sends broadcast inside the wallet call above, so reaching here means it went out.
-    isSubmissionStarted = true
+    phase = 'register'
 
     addPendingOrderStep(
       {
@@ -274,14 +278,15 @@ export async function solanaFlow(
     const isWindowExpiryFailure =
       error instanceof SigningWindowClosedError ||
       isBlockhashExpiredError(error) ||
-      (isSigningWindowClosed && !isSubmissionStarted)
+      (isSigningWindowClosed && !isSolanaOrderSubmitted(phase))
 
     reportSolanaOrderError({
       error,
       chainId,
       orderClass,
+      phase,
+      attempt: attemptId,
       isSponsored,
-      isSubmissionStarted,
       isRejection,
       isWindowExpiryFailure,
       swapErrorMessage,
@@ -306,7 +311,7 @@ export async function solanaFlow(
 
     if (isWindowExpiryFailure) {
       jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)
-    } else if (!isSubmissionStarted && !isRejection) {
+    } else if (!isSolanaOrderSubmitted(phase) && !isRejection) {
       // Nothing left the client, so the screen can say outright that no order was placed and keep
       // the wallet's own wording — which is where the unreadable ones come from — out of the way
       // under "technical details". A deliberate rejection is not a failure and keeps its own copy.

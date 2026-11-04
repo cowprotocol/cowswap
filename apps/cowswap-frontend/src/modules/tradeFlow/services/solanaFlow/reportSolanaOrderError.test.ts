@@ -25,8 +25,9 @@ function report(params: Partial<ReportSolanaOrderErrorParams> = {}): void {
     error: new Error('Something went wrong'),
     chainId: SupportedChainId.SOLANA,
     orderClass: OrderClass.MARKET,
+    phase: 'sign',
+    attempt: 1,
     isSponsored: false,
-    isSubmissionStarted: false,
     isRejection: false,
     isWindowExpiryFailure: false,
     swapErrorMessage: 'Something went wrong',
@@ -119,12 +120,52 @@ describe('reportSolanaOrderError', () => {
   })
 
   it('tags whether the transaction had already left the client', () => {
-    report({ isSubmissionStarted: true, isSponsored: true, orderClass: OrderClass.LIMIT })
+    report({ phase: 'submit', isSponsored: true, orderClass: OrderClass.LIMIT })
 
     expect(lastCall()[3]).toMatchObject({
+      phase: 'submit',
       submissionStarted: 'true',
       sponsored: 'true',
       orderClass: OrderClass.LIMIT,
     })
+  })
+
+  it.each(['plan', 'app-data-upload', 'sign'] as const)('treats %s as having placed nothing', (phase) => {
+    report({ phase })
+
+    expect(lastCall()[3].submissionStarted).toBe('false')
+  })
+
+  it('describes the cause chain of a wallet error that says nothing', () => {
+    const inner = Object.assign(new Error(''), { name: 'WalletSignTransactionError', code: 4900 })
+    const error = Object.assign(new Error('Unexpected error'), {
+      name: 'WalletSendTransactionError',
+      cause: inner,
+    })
+    report({ error })
+
+    const [, , params, tags] = lastCall()
+    expect(tags.errorName).toBe('WalletSendTransactionError')
+    expect(params.errorChain).toEqual([
+      { name: 'WalletSendTransactionError', message: 'Unexpected error' },
+      { name: 'WalletSignTransactionError', message: '', code: 4900 },
+    ])
+    expect(params.errorKeys).toEqual(expect.arrayContaining(['name', 'cause']))
+  })
+
+  it('does not recurse forever through a self-referencing cause', () => {
+    const error: Error & { cause?: unknown } = new Error('loop')
+    error.cause = error
+    report({ error })
+
+    expect((lastCall()[2].errorChain as unknown[]).length).toBeLessThanOrEqual(5)
+  })
+
+  it('flags a retry, which is the signal that the client is stuck', () => {
+    report({ attempt: 3 })
+
+    const [, , params, tags] = lastCall()
+    expect(params.attempt).toBe(3)
+    expect(tags.retried).toBe('true')
   })
 })
