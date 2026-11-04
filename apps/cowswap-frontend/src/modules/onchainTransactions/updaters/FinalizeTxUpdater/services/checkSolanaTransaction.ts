@@ -11,12 +11,12 @@ import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
 
 import { emitCancelledOrderEvent } from 'modules/orders'
 
+import { resolveConfirmedSolanaStatus, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
+
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
 import type { Connection } from '@solana/web3.js'
-
-type StatusResult = { type: 'success' | 'reverted'; slot: number } | { type: 'pending' }
 
 /**
  * `searchTransactionHistory` reaches into the RPC provider's own archival index rather than the
@@ -147,7 +147,7 @@ async function checkHistoricalStatus(
   signature: string,
   transaction: EnhancedTransactionDetails,
   fallbackSlot: number,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   const { value } = await connection.getSignatureStatuses([signature], { searchTransactionHistory: true })
   const [historicalStatus] = value
 
@@ -169,7 +169,7 @@ async function checkStatus(
   connection: Connection | undefined,
   signature: string,
   transaction: EnhancedTransactionDetails,
-): Promise<StatusResult> {
+): Promise<SolanaStatusResult> {
   if (!connection) return { type: 'pending' }
 
   // The cheap lookup: consults only the node's recent status cache.
@@ -181,7 +181,9 @@ async function checkStatus(
 
     const isConfirmed = status.confirmationStatus === 'confirmed' || status.confirmationStatus === 'finalized'
 
-    return isConfirmed ? { type: 'success', slot: status.slot } : { type: 'pending' }
+    if (!isConfirmed) return { type: 'pending' }
+
+    return resolveConfirmedSolanaStatus(connection, signature, transaction, status.slot)
   }
 
   const lastValidBlockHeight = getLastValidBlockHeight(transaction)

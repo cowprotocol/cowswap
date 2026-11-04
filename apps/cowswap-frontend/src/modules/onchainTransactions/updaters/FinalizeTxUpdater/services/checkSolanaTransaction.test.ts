@@ -1,5 +1,6 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { PublicKey } from '@solana/web3.js'
 import { waitFor } from '@testing-library/react'
 import { orderBookApi } from 'cowSdk'
 
@@ -49,15 +50,44 @@ function createTransaction(addedTime = Date.now()): EnhancedTransactionDetails {
 
 const transaction = createTransaction()
 
+/** The proposal address is memoised per signature, so each multisig test needs its own. */
+function buildMultisigTransaction(hash: string): EnhancedTransactionDetails {
+  return {
+    ...createTransaction(),
+    hash,
+    transactionHash: hash,
+    from: VAULT,
+    solanaOrderCreation: { orderId: ORDER_ID },
+  }
+}
+
+// A real Squads vault: off the ed25519 curve, so `getIsSolanaSmartContractWallet` recognises it.
+const VAULT = 'D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE'
+const PROPOSAL = new PublicKey(new Uint8Array(32).fill(3))
+const SQUADS_V4_PROGRAM_ID = new PublicKey('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf')
+
+function buildProposalAccount(tag: number): unknown {
+  const data = Buffer.alloc(72)
+
+  // `sha256("account:Proposal")[:8]`.
+  Buffer.from([26, 94, 189, 187, 116, 136, 53, 33]).copy(data, 0)
+  data[48] = tag
+
+  return { owner: SQUADS_V4_PROGRAM_ID, data, executable: false, lamports: 1, rentEpoch: 0 }
+}
+
 function createParams({
   status,
   blockHeight = LAST_VALID_BLOCK_HEIGHT - 1,
   historicalStatus = null,
+  proposalStatusTag = 1,
 }: {
   status: SignatureStatus | null
   blockHeight?: number
   /** What a `searchTransactionHistory` lookup finds, which reaches beyond the recent status cache. */
   historicalStatus?: SignatureStatus | null
+  /** Squads proposal status the owner's multisig reports: 2 rejected, 5 executed, 1 still voting. */
+  proposalStatusTag?: number
 }): {
   params: CheckEthereumTransactions
   dispatch: jest.Mock
@@ -77,6 +107,9 @@ function createParams({
   const solanaConnection = {
     getSignatureStatuses,
     getBlockHeight: jest.fn().mockResolvedValue(blockHeight),
+    getTransaction: jest.fn(async () => ({ transaction: { message: { staticAccountKeys: [PROPOSAL] } } })),
+    getMultipleAccountsInfo: jest.fn(async () => [buildProposalAccount(proposalStatusTag)]),
+    getAccountInfo: jest.fn(async () => buildProposalAccount(proposalStatusTag)),
   } as unknown as Connection
 
   return {
@@ -489,5 +522,67 @@ describe('checkSolanaTransaction', () => {
       // The order carries this activity itself, so the generic transaction snackbar stays suppressed.
       expect(emitOnchainTransactionEvent).not.toHaveBeenCalled()
     })
+  })
+})
+
+describe('checkSolanaTransaction with a multisig owner', () => {
+  // A multisig never broadcasts the transaction it is handed, so a confirmed signature only proves the
+  // proposal was filed. Taking it as success marks the transaction done while the order is never placed.
+  it('fails the order once the members reject the proposal', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalStatusTag: 2,
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('rejected-proposal-signature'), params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalledWith(FAILED_ORDER))
+  })
+
+  it('keeps polling while the proposal is still awaiting votes', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalStatusTag: 1,
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('active-proposal-signature'), params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+    expect(dispatch).not.toHaveBeenCalledWith(FAILED_ORDER)
+    expect(dispatch.mock.calls.flat().some((action) => action?.type === finalizeTransaction.type)).toBe(false)
+  })
+
+  it('finalizes as successful once the proposal is executed', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalStatusTag: 5,
+    })
+
+    checkSolanaTransaction(buildMultisigTransaction('executed-proposal-signature'), params)
+
+    await waitFor(() =>
+      expect(dispatch.mock.calls.flat().some((action) => action?.type === finalizeTransaction.type)).toBe(true),
+    )
+    expect(dispatch).not.toHaveBeenCalledWith(FAILED_ORDER)
+  })
+
+  // The gate: an ordinary keypair owner must never pay for a proposal lookup, nor have one applied.
+  it('does not look up a proposal for an ordinary keypair owner', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+    })
+    const keypairOrderCreation = {
+      ...createTransaction(),
+      hash: 'keypair-owner-signature',
+      solanaOrderCreation: { orderId: ORDER_ID },
+    } as EnhancedTransactionDetails
+
+    checkSolanaTransaction(keypairOrderCreation, params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+    expect(params.solanaConnection?.getTransaction).not.toHaveBeenCalled()
+    expect(dispatch).not.toHaveBeenCalledWith(FAILED_ORDER)
   })
 })
