@@ -228,10 +228,11 @@ const DropdownContentItem: React.FC<{
   item: DropdownMenuItem
   closeMenu: () => void
   LinkComponent: LinkComponentType
+  hideArrow?: boolean
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line max-lines-per-function
-}> = ({ item, closeMenu, LinkComponent }) => {
+}> = ({ item, closeMenu, LinkComponent, hideArrow = false }) => {
   const [isChildrenVisible, setIsChildrenVisible] = useState(false)
 
   // TODO: Add proper return type annotation
@@ -353,8 +354,9 @@ const DropdownContentItem: React.FC<{
     >
       <LinkComponent href={href}>
         {renderItemContent()}
-        {item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right external" />}
-        {!item.external && !item.children && <SVG src={svgArrowRightSrc} className="arrow-icon-right" />}
+        {!hideArrow && !item.children && (
+          <SVG src={svgArrowRightSrc} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
+        )}
       </LinkComponent>
     </StyledDropdownContentItem>
   )
@@ -366,8 +368,9 @@ const NavDaoTrigger: React.FC<{
   mobileMode: boolean
   LinkComponent: LinkComponentType
   isRwaEnabled: boolean
+  productVariant: ProductVariant
   // TODO: Break down this large function into smaller functions
-}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent, isRwaEnabled }) => {
+}> = ({ isOpen, setIsOpen, mobileMode, LinkComponent, isRwaEnabled, productVariant }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
   const daoNavItems = useMemo(() => getDaoNavItems(isRwaEnabled), [isRwaEnabled])
@@ -403,13 +406,25 @@ const NavDaoTrigger: React.FC<{
             ref={dropdownRef as unknown as React.RefObject<HTMLDivElement>}
           >
             {daoNavItems.map((item, index) => (
-              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
+              <DropdownContentItem
+                key={index}
+                item={item}
+                closeMenu={closeMenu}
+                LinkComponent={LinkComponent}
+                hideArrow={item.productVariant === productVariant}
+              />
             ))}
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={dropdownRef} mobileMode={mobileMode}>
             {daoNavItems.map((item, index) => (
-              <DropdownContentItem key={index} item={item} closeMenu={closeMenu} LinkComponent={LinkComponent} />
+              <DropdownContentItem
+                key={index}
+                item={item}
+                closeMenu={closeMenu}
+                LinkComponent={LinkComponent}
+                hideArrow={item.productVariant === productVariant}
+              />
             ))}
           </DropdownContent>
         ))}
@@ -904,6 +919,7 @@ export const MenuBar = (props: MenuBarProps) => {
           mobileMode={isMedium}
           LinkComponent={LinkComponent}
           isRwaEnabled={isRwaEnabled}
+          productVariant={productVariant}
         />
         <ProductLogo
           key={customTheme ?? 'default'}
