@@ -30,6 +30,11 @@
   transition: transform 450ms cubic-bezier(0.32, 0.72, 0, 1);
 }
 
+/* Base UI's scroll lock reserves the scrollbar's gutter. A fixed backdrop stops short of it, and only the root's solid background color paints it */
+html:has(.backdrop) {
+  background: var(--color-backdrop-on-canvas);
+}
+
 .backdrop[data-starting-style],
 .backdrop[data-ending-style] {
   opacity: 0;

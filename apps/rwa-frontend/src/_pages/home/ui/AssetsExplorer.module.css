@@ -108,6 +108,11 @@
   text-overflow: ellipsis;
 }
 
+/* The empty field keeps room for its hidden clear button, which clips the placeholder */
+.filterInput input:placeholder-shown::-webkit-search-cancel-button {
+  display: none;
+}
+
 .footer {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
@@ -162,6 +167,7 @@
 
   .filterInput {
     flex-basis: 0;
+    padding: 0 12px;
   }
 
   .iconButton,
@@ -232,7 +238,6 @@
   .filterInput {
     order: -1;
     height: 44px;
-    padding: 0 14px;
   }
 
   /* iOS zooms into inputs under 16px */

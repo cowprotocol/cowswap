@@ -23,6 +23,7 @@ import { assetsPageQueryAtom } from '../model/assetsQueryAtoms'
 import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { SearchIcon } from '@/shared/ui/icons'
 
+const NARROWEST_WIDTH_QUERY = '(max-width: 320px)'
 const PHONE_WIDTH_QUERY = '(max-width: 720px)'
 const TABLET_WIDTH_QUERY = '(max-width: 960px)'
 
@@ -35,7 +36,7 @@ export function AssetsFilters(): ReactNode {
   const { data } = useAtomValue(assetsPageQueryAtom)
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const isPhoneWidth = useMediaQuery(PHONE_WIDTH_QUERY)
-  const isTabletWidth = useMediaQuery(TABLET_WIDTH_QUERY)
+  const searchPlaceholder = useSearchPlaceholder()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const panelId = useId()
@@ -53,7 +54,7 @@ export function AssetsFilters(): ReactNode {
         <SearchIcon />
         <input
           type="search"
-          placeholder={isTabletWidth ? 'Search assets…' : 'Search assets or tickers…'}
+          placeholder={searchPlaceholder}
           aria-label="Search assets"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -144,4 +145,13 @@ function useCloseWithFocusOnTrigger(
     }
     // React commits between media query listeners, so `isDrawer` as a dependency would remove this one before it fires
   }, [isOpen, close, triggerRef])
+}
+
+function useSearchPlaceholder(): string {
+  const isNarrowestWidth = useMediaQuery(NARROWEST_WIDTH_QUERY)
+  const isTabletWidth = useMediaQuery(TABLET_WIDTH_QUERY)
+
+  if (isNarrowestWidth) return 'Search…'
+
+  return isTabletWidth ? 'Search assets…' : 'Search assets or tickers…'
 }

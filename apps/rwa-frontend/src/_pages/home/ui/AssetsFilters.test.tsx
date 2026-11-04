@@ -102,6 +102,15 @@ describe('AssetsFilters', () => {
       expect(screen.getByRole('button', { name: 'Filters' })).toBeTruthy()
     })
 
+    it('shortens the search placeholder again at the narrowest width', async () => {
+      mockViewport(320)
+      renderFilters()
+
+      await screen.findByText('128 assets')
+
+      expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe('Search…')
+    })
+
     it('opens a drawer with every option and no list search', async () => {
       mockViewport(PHONE)
       renderFilters()
