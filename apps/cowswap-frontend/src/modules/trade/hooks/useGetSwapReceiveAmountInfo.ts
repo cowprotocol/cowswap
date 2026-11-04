@@ -85,6 +85,7 @@ function getSolanaQuoteResponse(quote: TradeQuoteState['quote']): SolanaQuoteRes
 
   const { quoteResponse } = quote.quoteResults
 
+  // The SDK types `quoteResults` as the EVM `QuoteResults`, dropping `quote.costs` that is there at runtime
   return { ...quoteResponse, quote: { ...quoteResponse.quote, costs: quote.solanaQuote.costs } }
 }
 
