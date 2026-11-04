@@ -1,6 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { PublicKey } from '@solana/web3.js'
 import { waitFor } from '@testing-library/react'
 import { orderBookApi } from 'cowSdk'
 
@@ -12,6 +11,7 @@ import { emitOnchainTransactionEvent } from 'modules/onchainTransactions/utils/e
 import { emitCancelledOrderEvent } from 'modules/orders'
 
 import { checkSolanaTransaction, HISTORICAL_LOOKUP_GRACE_PERIOD_MS } from './checkSolanaTransaction'
+import { getSquadsProposalOutcome } from './getSquadsProposalOutcome'
 
 import { CheckEthereumTransactions } from '../types'
 
@@ -26,6 +26,10 @@ jest.mock('cowSdk', () => ({
 jest.mock('modules/orders', () => ({
   emitCancelledOrderEvent: jest.fn(),
 }))
+
+// The real service derives a Squads PDA, which jsdom's crypto shim cannot do; its own suite covers the
+// decoding. What matters here is that the updater acts on each outcome.
+jest.mock('./getSquadsProposalOutcome', () => ({ getSquadsProposalOutcome: jest.fn() }))
 
 jest.mock('modules/onchainTransactions/utils/emitOnchainTransactionEvent', () => ({
   emitOnchainTransactionEvent: jest.fn(),
@@ -50,7 +54,10 @@ function createTransaction(addedTime = Date.now()): EnhancedTransactionDetails {
 
 const transaction = createTransaction()
 
-/** The proposal address is memoised per signature, so each multisig test needs its own. */
+// A real Squads vault: off the ed25519 curve, so `getIsSolanaSmartContractWallet` recognises it.
+const VAULT = 'D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE'
+
+/** Each multisig test needs its own signature, matching how the real service memoises per signature. */
 function buildMultisigTransaction(hash: string): EnhancedTransactionDetails {
   return {
     ...createTransaction(),
@@ -61,33 +68,18 @@ function buildMultisigTransaction(hash: string): EnhancedTransactionDetails {
   }
 }
 
-// A real Squads vault: off the ed25519 curve, so `getIsSolanaSmartContractWallet` recognises it.
-const VAULT = 'D9DvzXZjyqECswED5YgHi4wA1qTVjjiGP76sN6Dr8vGE'
-const PROPOSAL = new PublicKey(new Uint8Array(32).fill(3))
-const SQUADS_V4_PROGRAM_ID = new PublicKey('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf')
-
-function buildProposalAccount(tag: number): unknown {
-  const data = Buffer.alloc(72)
-
-  // `sha256("account:Proposal")[:8]`.
-  Buffer.from([26, 94, 189, 187, 116, 136, 53, 33]).copy(data, 0)
-  data[48] = tag
-
-  return { owner: SQUADS_V4_PROGRAM_ID, data, executable: false, lamports: 1, rentEpoch: 0 }
-}
-
 function createParams({
   status,
   blockHeight = LAST_VALID_BLOCK_HEIGHT - 1,
   historicalStatus = null,
-  proposalStatusTag = 1,
+  proposalOutcome = 'unresolved',
 }: {
   status: SignatureStatus | null
   blockHeight?: number
   /** What a `searchTransactionHistory` lookup finds, which reaches beyond the recent status cache. */
   historicalStatus?: SignatureStatus | null
-  /** Squads proposal status the owner's multisig reports: 2 rejected, 5 executed, 1 still voting. */
-  proposalStatusTag?: number
+  /** What the Squads service reports for the owner's multisig. */
+  proposalOutcome?: 'failed' | 'executed' | 'unresolved'
 }): {
   params: CheckEthereumTransactions
   dispatch: jest.Mock
@@ -96,6 +88,8 @@ function createParams({
 } {
   const dispatch = jest.fn()
   const cancelOrdersBatch = jest.fn()
+
+  jest.mocked(getSquadsProposalOutcome).mockResolvedValue(proposalOutcome)
 
   const getSignatureStatuses = jest.fn(
     async (_signatures: string[], config?: { searchTransactionHistory?: boolean }) => ({
@@ -107,9 +101,7 @@ function createParams({
   const solanaConnection = {
     getSignatureStatuses,
     getBlockHeight: jest.fn().mockResolvedValue(blockHeight),
-    getTransaction: jest.fn(async () => ({ transaction: { message: { staticAccountKeys: [PROPOSAL] } } })),
-    getMultipleAccountsInfo: jest.fn(async () => [buildProposalAccount(proposalStatusTag)]),
-    getAccountInfo: jest.fn(async () => buildProposalAccount(proposalStatusTag)),
+    getTransaction: jest.fn(),
   } as unknown as Connection
 
   return {
@@ -531,7 +523,7 @@ describe('checkSolanaTransaction with a multisig owner', () => {
   it('fails the order once the members reject the proposal', async () => {
     const { params, dispatch } = createParams({
       status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
-      proposalStatusTag: 2,
+      proposalOutcome: 'failed',
     })
 
     checkSolanaTransaction(buildMultisigTransaction('rejected-proposal-signature'), params)
@@ -542,7 +534,7 @@ describe('checkSolanaTransaction with a multisig owner', () => {
   it('keeps polling while the proposal is still awaiting votes', async () => {
     const { params, dispatch } = createParams({
       status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
-      proposalStatusTag: 1,
+      proposalOutcome: 'unresolved',
     })
 
     checkSolanaTransaction(buildMultisigTransaction('active-proposal-signature'), params)
@@ -556,7 +548,7 @@ describe('checkSolanaTransaction with a multisig owner', () => {
   it('finalizes as successful once the proposal is executed', async () => {
     const { params, dispatch } = createParams({
       status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
-      proposalStatusTag: 5,
+      proposalOutcome: 'executed',
     })
 
     checkSolanaTransaction(buildMultisigTransaction('executed-proposal-signature'), params)
