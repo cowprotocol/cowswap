@@ -6,8 +6,7 @@ import { getTokenAmountTitle, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import { PiTrophyFill } from 'react-icons/pi'
 
-import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
-
+import { SolverLogo } from 'common/pure/SolverLogo/SolverLogo.pure'
 import { SolverCompetition } from 'common/types/soverCompetition'
 
 import * as styledEl from './SolverAuctionRow.styled'
@@ -33,7 +32,6 @@ export function SolverAuctionRow({
 }: SolverAuctionRowProps): ReactNode {
   const isWinner = index === 0
   const name = solver.displayName || solver.solver
-  const logoSrc = solver.image || AMM_LOGOS[solver.solver]?.src || AMM_LOGOS.default.src
   const buyAmount = buyToken ? getSolverBuyAmount(solver, buyToken) : null
   const fillPercent = !isWinner ? getSolverBidFillPercent(buyAmount, winnerBuyAmount, worstBuyAmount) : null
   const deltaAmount =
@@ -48,7 +46,7 @@ export function SolverAuctionRow({
       ) : null}
       <styledEl.RowContent>
         <styledEl.SolverInfo>
-          <styledEl.SolverLogo src={logoSrc} alt="" />
+          <SolverLogo solver={solver} size={24} />
           <styledEl.SolverDetails>
             <styledEl.SolverName>
               {name}
