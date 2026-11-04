@@ -32,8 +32,6 @@ export function HeaderNav(): ReactNode {
           </Link>
         )
       })}
-      {/* CoW Swap is served at the root of the same origin, outside of the basePath that `Link` adds */}
-      <a href="/">Swap</a>
       <HeaderMoreMenu />
     </nav>
   )

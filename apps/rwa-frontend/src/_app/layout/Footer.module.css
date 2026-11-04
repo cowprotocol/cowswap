@@ -1,37 +1,254 @@
 .footer {
+  --footer-title: #fff8f7;
+
+  width: 100%;
+  background: var(--color-footer);
+  color: var(--color-footer-text);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 0.7fr 1fr;
+  gap: 20px;
+  padding: 134px 48px 0;
+}
+
+.about {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  padding: 32px 40px;
-  color: var(--color-footer-text);
-  font-size: 13px;
-  line-height: 18px;
+  gap: 40px;
+  max-width: 400px;
 }
 
-.brands {
-  display: flex;
-  align-items: center;
-  gap: 26px;
-}
-
-.brand {
+.daoLogo {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  line-height: 22px;
+  gap: 12px;
+  width: fit-content;
+  color: var(--footer-title);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
   text-decoration: none;
 }
 
-.brand:hover {
-  color: #ffffff;
+.description {
+  margin: 0;
+}
+
+.socials {
+  display: flex;
+  gap: 16px;
+}
+
+.social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-footer-text);
+  color: var(--color-footer);
+  transition: background 0.2s ease-in-out;
+}
+
+.social:hover,
+.social:focus-visible {
+  background: var(--footer-title);
+}
+
+.social > svg {
+  width: 100%;
+  height: 100%;
+}
+
+.groups {
+  column-count: 3;
+  column-gap: 70px;
+  width: max-content;
+  margin-left: auto;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-bottom: 40px;
+  break-inside: avoid;
+}
+
+.groupTitle {
+  margin: 0;
+  color: var(--footer-title);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  line-height: 1;
+}
+
+.link,
+.product {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.link:hover,
+.link:focus-visible,
+.product:hover,
+.product:focus-visible {
+  color: var(--footer-title);
+}
+
+.moo {
+  display: flex;
+  align-items: center;
+  height: 112px;
+  margin: 50px 0;
+  overflow: hidden;
+  color: var(--footer-title);
+  white-space: nowrap;
+}
+
+.mooTrack {
+  display: flex;
+  gap: 56px;
+  font-size: 148px;
+  font-weight: 700;
+  line-height: 1;
+  animation: moo 10s linear infinite;
+  will-change: transform;
+}
+
+@keyframes moo {
+  to {
+    transform: translateX(calc(-50% - 28px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mooTrack {
+    animation: none;
+  }
+}
+
+.bottom {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.copyright {
+  margin: 0;
+  white-space: nowrap;
+}
+
+.products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-right: auto;
+}
+
+.product {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  white-space: nowrap;
+}
+
+.toggle {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: inherit;
+  transition:
+    transform 0.5s ease-in-out,
+    color 0.2s ease-in-out;
+}
+
+.toggle:hover,
+.toggle:focus-visible {
+  color: var(--footer-title);
+}
+
+.toggle[aria-expanded='true'] {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toggle {
+    transition: color 0.2s ease-in-out;
+  }
+}
+
+@media (max-width: 1024px) {
+  .content {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+
+  .about {
+    max-width: none;
+  }
+
+  .groups {
+    width: 100%;
+  }
+
+  .bottom {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .products {
+    order: 1;
+    flex-basis: 100%;
+    justify-content: center;
+    margin: 0;
+  }
 }
 
 @media (max-width: 720px) {
-  .footer {
-    padding: 24px 16px;
+  .content {
+    padding: 54px 24px 0;
+  }
+
+  .groups {
+    column-count: initial;
+  }
+
+  .links {
+    gap: 16px;
+  }
+
+  .mooTrack {
+    font-size: 96px;
   }
 }

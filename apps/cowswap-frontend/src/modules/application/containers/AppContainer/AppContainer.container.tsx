@@ -55,12 +55,13 @@ interface FooterSectionProps {
   currentNotification: NotificationModel | null
   onDismissNotification: () => void
   pageScene: ReactNode | null
+  isRwaEnabled: boolean
 }
 
 export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { walletName } = useWalletDetails()
-  const { isYieldEnabled } = useFeatureFlags()
+  const { isYieldEnabled, isRwaEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -134,6 +135,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
           currentNotification={currentNotification}
           onDismissNotification={dismiss}
           pageScene={pageScene}
+          isRwaEnabled={!!isRwaEnabled}
         />
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
@@ -150,6 +152,7 @@ function FooterSection({
   currentNotification,
   onDismissNotification,
   pageScene,
+  isRwaEnabled,
 }: FooterSectionProps): ReactNode {
   if (!show) {
     return null
@@ -167,7 +170,12 @@ function FooterSection({
     <styledEl.FooterSlot>
       {bubbleElement}
       {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
-      <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
+      <Footer
+        productVariant={PRODUCT_VARIANT}
+        additionalFooterContent={ADDITIONAL_FOOTER_CONTENT}
+        hasTouchFooter
+        isRwaEnabled={isRwaEnabled}
+      />
     </styledEl.FooterSlot>
   )
 }
