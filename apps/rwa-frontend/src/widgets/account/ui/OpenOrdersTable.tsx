@@ -10,6 +10,7 @@ import { StatusBadge } from './StatusBadge'
 import { TokenCell } from './TokenCell'
 
 import { formatLegPrice, formatPaidAmount, formatReceivedAmount } from '../lib/formatTradeLeg'
+import { ORDER_TYPE_LABELS } from '../lib/orderType'
 
 import type { OpenOrder } from '../api/openOrders'
 import type { RwaTokenSummary } from '@/entities/asset'
@@ -57,7 +58,7 @@ export function OpenOrdersTable({ orders, error, emptyText, getLogoUrl }: OpenOr
               </td>
               <td>
                 <span className={styles.strong}>{order.side === 'buy' ? 'Buy' : 'Sell'}</span>
-                <span className={styles.secondary}>{order.isLimit ? 'Limit' : 'Swap'}</span>
+                <span className={styles.secondary}>{ORDER_TYPE_LABELS[order.type]}</span>
               </td>
               <td className={styles.numeric}>
                 <span className={styles.strong}>{formatPaidAmount(order)}</span>

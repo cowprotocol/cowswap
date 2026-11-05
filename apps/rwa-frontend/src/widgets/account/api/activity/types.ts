@@ -1,9 +1,11 @@
+import type { OrderType } from '../../lib/orderType'
 import type { TradeLeg } from '../../lib/tradeLeg'
 import type { RwaTokenSummary } from '@/entities/asset'
 
 export interface Activity extends TradeLeg {
   id: string
   kind: ActivityKind
+  orderType: OrderType
   /** Unix seconds, `null` when unknown */
   timestamp: number | null
   txHash: string | null

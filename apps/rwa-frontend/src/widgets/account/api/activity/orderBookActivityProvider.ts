@@ -1,6 +1,7 @@
 import type { SupportedChainId, Trade } from '@cowprotocol/cow-sdk'
 
 import { collectPages } from '../../lib/collectPages'
+import { getOrderType, type OrderType } from '../../lib/orderType'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, toTradeLeg } from '../../lib/tradeLeg'
 
 import type { Activity, ActivityProvider, ActivityQuery } from './types'
@@ -13,6 +14,7 @@ const TRADES_PAGE_SIZE = 1000
 const MAX_TRADES_PAGES = 10
 
 const blockTimestamps = new Map<string, number>()
+const orderTypes = new Map<string, OrderType>()
 
 /** Trades settled by CoW Protocol only: the order book knows nothing about transfers and other protocols */
 export const orderBookActivityProvider: ActivityProvider = {
@@ -45,18 +47,23 @@ async function getChainActivity(
     { pageSize: TRADES_PAGE_SIZE, maxPages: MAX_TRADES_PAGES, limit },
   )
 
-  // Trades carry no time, it comes from their blocks
-  const [resolved, timestamps] = await Promise.all([
+  // Trades carry no time nor order type, they come from their blocks and orders
+  const [resolved, timestamps, types] = await Promise.all([
     resolveCounterTokens(chainId, assetTrades),
     readBlockTimestamps(
       chainId,
       assetTrades.map(({ trade }) => trade.blockNumber),
+    ),
+    readOrderTypes(
+      chainId,
+      assetTrades.map(({ trade }) => trade.orderUid),
     ),
   ])
 
   return resolved.map(({ trade, ...leg }) => ({
     ...leg,
     ...getTradeDetails(trade),
+    orderType: types.get(trade.orderUid) ?? 'swap',
     timestamp: timestamps.get(trade.blockNumber) ?? null,
   }))
 }
@@ -95,4 +102,32 @@ async function readBlockTimestamps(chainId: number, blockNumbers: number[]): Pro
   )
 
   return timestamps
+}
+
+/** An order type never changes, so each order is read once per session */
+async function readOrderTypes(chainId: SupportedChainId, orderUids: string[]): Promise<Map<string, OrderType>> {
+  const types = new Map<string, OrderType>()
+
+  await Promise.all(
+    [...new Set(orderUids)].map(async (orderUid) => {
+      const key = `${chainId}:${orderUid}`
+      const cached = orderTypes.get(key)
+
+      if (cached !== undefined) {
+        types.set(orderUid, cached)
+        return
+      }
+
+      const order = await orderBookApi.getOrder(orderUid, { chainId }).catch(() => null)
+
+      if (!order) return
+
+      const type = getOrderType(order)
+
+      orderTypes.set(key, type)
+      types.set(orderUid, type)
+    }),
+  )
+
+  return types
 }

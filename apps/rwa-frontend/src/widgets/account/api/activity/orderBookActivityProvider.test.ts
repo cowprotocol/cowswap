@@ -6,14 +6,19 @@ import { orderBookApi, readTokensMetadata } from '@/shared/api'
 import { getPublicClient } from '@/shared/lib/chain'
 
 jest.mock('@/shared/api', () => ({
-  orderBookApi: { getTrades: jest.fn() },
+  orderBookApi: { getTrades: jest.fn(), getOrder: jest.fn() },
   readTokensMetadata: jest.fn(),
 }))
 
 jest.mock('@/shared/lib/chain', () => ({ getPublicClient: jest.fn() }))
 
 const getTradesMock = orderBookApi.getTrades as jest.Mock
+const getOrderMock = orderBookApi.getOrder as jest.Mock
 const getBlockMock = jest.fn()
+
+function appData(orderClass: string): string {
+  return JSON.stringify({ metadata: { orderClass: { orderClass } } })
+}
 
 function trade(overrides: Record<string, unknown>): Record<string, unknown> {
   return {
@@ -34,6 +39,7 @@ describe('orderBookActivityProvider', () => {
   beforeEach(() => {
     ;(readTokensMetadata as jest.Mock).mockResolvedValue({})
     ;(getPublicClient as jest.Mock).mockReturnValue({ getBlock: getBlockMock })
+    getOrderMock.mockResolvedValue({ class: 'limit', fullAppData: appData('market') })
     getBlockMock.mockImplementation(async ({ blockNumber }: { blockNumber: bigint }) => {
       if (blockNumber === 300n) throw new Error('RPC is down')
 
@@ -118,5 +124,36 @@ describe('orderBookActivityProvider', () => {
     const activity = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 2 })
 
     expect(activity).toHaveLength(2)
+  })
+
+  it('takes the order type from the app data of the order', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1
+        ? [trade({ orderUid: '0xtwap', blockNumber: 500 }), trade({ orderUid: '0xswap', blockNumber: 501 })]
+        : [],
+    )
+    getOrderMock.mockImplementation(async (orderUid: string) => ({
+      class: 'limit',
+      fullAppData: appData(orderUid === '0xtwap' ? 'twap' : 'market'),
+    }))
+
+    const activity = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(Object.fromEntries(activity.map(({ orderUid, orderType }) => [orderUid, orderType]))).toEqual({
+      '0xtwap': 'twap',
+      '0xswap': 'swap',
+    })
+    expect(getOrderMock).toHaveBeenCalledWith('0xtwap', { chainId: 1 })
+  })
+
+  it('falls back to a swap when the order is unavailable', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1 ? [trade({ orderUid: '0xmissing' })] : [],
+    )
+    getOrderMock.mockRejectedValue(new Error('Not found'))
+
+    const [item] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(item.orderType).toBe('swap')
   })
 })
