@@ -22,8 +22,8 @@ export function SolverLogo({ solver: { displayName, image }, size, className }: 
   )
 }
 
-function getSolverInitial(displayName = ''): string {
-  const [initial = ''] = Array.from(displayName.trim())
+function getSolverInitial(displayName?: string): string {
+  const [initial = ''] = Array.from(displayName?.trim() ?? '')
 
   return initial.toUpperCase()
 }

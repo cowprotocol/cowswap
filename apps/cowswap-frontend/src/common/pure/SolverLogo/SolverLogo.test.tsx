@@ -30,6 +30,7 @@ describe('SolverLogo', () => {
   it.each([
     ['no display name', {}],
     ['a blank display name', { displayName: '   ' }],
+    ['a null display name', { displayName: null as unknown as string }],
   ])('shows the generic icon for a solver with %s', (_, solver) => {
     const { container } = render(<SolverLogo solver={solver} size={24} />)
 
