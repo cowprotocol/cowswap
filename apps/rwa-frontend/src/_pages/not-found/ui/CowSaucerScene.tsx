@@ -32,17 +32,19 @@ export function CowSaucerScene(): ReactNode {
         <div className={styles.cow}>
           <div className={styles.cowSprite} />
         </div>
-        <div className={styles.saucer}>
-          <svg className={styles.saucerSvg} viewBox="0 0 528 698" role="presentation">
-            <path className={styles.beam} d={BEAM_PATH} />
-            <path className={styles.side} d={SIDE_LEFT_PATH} />
-            <path className={styles.side} d={SIDE_RIGHT_PATH} />
-            <path className={styles.dome} d={DOME_PATH} />
-            <path className={styles.cap} d={CAP_PATH} />
-            {STARS.map(({ path, className }) => (
-              <path key={path} className={className} d={path} />
-            ))}
-          </svg>
+        <div className={styles.saucerEntry}>
+          <div className={styles.saucer}>
+            <svg className={styles.saucerSvg} viewBox="0 0 528 698" role="presentation">
+              <path className={styles.beam} d={BEAM_PATH} />
+              <path className={styles.side} d={SIDE_LEFT_PATH} />
+              <path className={styles.side} d={SIDE_RIGHT_PATH} />
+              <path className={styles.dome} d={DOME_PATH} />
+              <path className={styles.cap} d={CAP_PATH} />
+              {STARS.map(({ path, className }) => (
+                <path key={path} className={className} d={path} />
+              ))}
+            </svg>
+          </div>
         </div>
       </div>
     </div>

@@ -10,7 +10,6 @@
   width: 100%;
   height: clamp(16rem, 24vw, 22rem);
   overflow: hidden;
-  container-type: inline-size;
   pointer-events: none;
   mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
@@ -30,14 +29,20 @@
   animation: flight-exit 10s linear infinite both;
 }
 
+.saucerEntry {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  animation: saucer-entry 10s linear infinite both;
+}
+
 .saucer {
   position: absolute;
   left: 50%;
   bottom: -6%;
-  z-index: 2;
   height: clamp(13.2rem, 19.8vw, 22.6rem);
   aspect-ratio: 528 / 698;
-  animation: saucer-flight 10s linear infinite both;
+  transform: translate(-50%, 0);
 }
 
 .saucerSvg {
@@ -111,56 +116,59 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .saucer,
   .cow {
     animation: none;
     transform: translate(-50%, 0);
   }
 
   .flight,
+  .saucerEntry,
   .cowSprite,
   .star {
     animation: none;
   }
 }
 
-@keyframes saucer-flight {
+/*
+ * Both flights move a scene-sized box by a percentage. Chrome can keep a running animation's old cqw distance after a
+ * viewport change, for one element and not another, which sent the cow off without the saucer
+ */
+@keyframes saucer-entry {
   0%,
   16% {
-    transform: translate(-50%, 0) translateX(55cqw);
+    transform: translateX(55%);
     opacity: 0;
   }
 
   26%,
   56% {
-    transform: translate(-50%, 0) translateX(0);
+    transform: translateX(0);
     opacity: 1;
   }
 
   64% {
-    transform: translate(-50%, 0) translateX(0);
+    transform: translateX(0);
     opacity: 0;
   }
 
   72%,
   100% {
-    transform: translate(-50%, 0) translateX(55cqw);
+    transform: translateX(55%);
     opacity: 0;
   }
 }
 
-/* The saucer and the cow leave on one transform: as two animations they can drift apart, leaving the cow outside the beam */
 @keyframes flight-exit {
   0%,
   44%,
-  72%,
+  76%,
   100% {
     transform: translateX(0);
   }
 
   56%,
-  64% {
-    transform: translateX(-55cqw);
+  68% {
+    transform: translateX(-55%);
   }
 }
 
