@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scroll-margin-top: 12px;
 }
 
 .notice {
@@ -33,6 +34,15 @@
 /* The iframe is appended in an effect after the first paint; hold the skeleton height until then */
 .frame[data-loading] {
   min-height: 640px;
+}
+
+/* CoW Swap caps its form at 470px, so where the single column is wider the card keeps this row as wide as the others */
+@media (min-width: 501px) and (max-width: 960px) {
+  .frame {
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-widget);
+  }
 }
 
 .skeleton {

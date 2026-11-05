@@ -4,6 +4,7 @@ import svgCowammSrc from '@cowprotocol/assets/images/logo-cowamm.svg'
 import svgCowdaoSrc from '@cowprotocol/assets/images/logo-cowdao.svg'
 import svgCowexplorerSrc from '@cowprotocol/assets/images/logo-cowexplorer.svg'
 import svgCowprotocolSrc from '@cowprotocol/assets/images/logo-cowprotocol.svg'
+import svgCowrwaSrc from '@cowprotocol/assets/images/logo-cowrwa.svg'
 import svgCowswapChristmasDarkSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-dark.svg'
 import svgCowswapChristmasLightSrc from '@cowprotocol/assets/images/logo-cowswap-christmas-light.svg'
 import svgCowswapHalloweenSrc from '@cowprotocol/assets/images/logo-cowswap-halloween.svg'
@@ -12,6 +13,7 @@ import svgCowwidgetSrc from '@cowprotocol/assets/images/logo-cowwidget.svg'
 import iconCowSrc from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import iconMevblockerSrc from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import svgMevblockerSrc from '@cowprotocol/assets/images/logo-mevblocker.svg'
+import type { CowProductId } from '@cowprotocol/common-const/cowLinks'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { toPixelValue } from '@cowprotocol/ui-utils'
 
@@ -38,6 +40,13 @@ export enum ProductVariant {
   MevBlocker = 'mevBlocker',
   CowAmm = 'cowAmm',
   CowDao = 'cowDao',
+  CowRwa = 'cowRwa',
+}
+
+export const COW_PRODUCT_VARIANTS: Record<CowProductId, ProductVariant> = {
+  cowSwap: ProductVariant.CowSwap,
+  cowProtocol: ProductVariant.CowProtocol,
+  cowRwa: ProductVariant.CowRwa,
 }
 
 interface LogoInfo {
@@ -213,6 +222,34 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
         src: iconCowSrc,
         alt: 'CoW Protocol',
         color: Color.neutral100,
+      },
+    },
+  },
+
+  // CoW RWA
+  [ProductVariant.CowRwa]: {
+    light: {
+      default: {
+        src: svgCowrwaSrc,
+        alt: 'CoW RWA',
+        color: '#004293',
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW RWA',
+        color: '#004293',
+      },
+    },
+    dark: {
+      default: {
+        src: svgCowrwaSrc,
+        alt: 'CoW RWA',
+        color: Color.blue300Primary,
+      },
+      logoIconOnly: {
+        src: iconCowSrc,
+        alt: 'CoW RWA',
+        color: Color.blue300Primary,
       },
     },
   },

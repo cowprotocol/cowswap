@@ -1,7 +1,7 @@
 'use client'
 
 import { useAtomValue } from 'jotai'
-import { type ReactNode, useCallback, useMemo, useState } from 'react'
+import { type ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 
 import { useConnection } from 'wagmi'
 
@@ -10,6 +10,7 @@ import { type CowSwapWidgetParams, type TokenInfo, TradeType } from '@cowprotoco
 
 import dynamic from 'next/dynamic'
 
+import { TradeBarActions } from './TradeBarActions'
 import { TradeTokenSelector } from './TradeTokenSelector'
 import styles from './TradeWidget.module.css'
 
@@ -44,6 +45,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const tradingPauseMessage =
     tradingPause?.issuer === assetToken?.issuer ? getTradingPauseMessage(tradingPause, new Date()) : null
   const side = selection?.side
+  const widgetRef = useRef<HTMLElement>(null)
   const [isWidgetLoading, setIsWidgetLoading] = useState(true)
   const onWidgetSettled = useCallback(() => setIsWidgetLoading(false), [])
 
@@ -76,7 +78,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   }
 
   return (
-    <section id={TRADE_WIDGET_ID} className={styles.widget}>
+    <section ref={widgetRef} id={TRADE_WIDGET_ID} className={styles.widget}>
       <TradeTokenSelector asset={asset} selection={selection} />
       {tradingPauseMessage && <p className={styles.notice}>{tradingPauseMessage}</p>}
       <div className={styles.frame} data-loading={isWidgetLoading || undefined}>
@@ -93,6 +95,7 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
         Tokens are issued by independent third parties and may not confer ownership of the underlying shares. Check
         issuer terms and eligibility before trading.
       </p>
+      <TradeBarActions ticker={asset.ticker} widgetRef={widgetRef} />
     </section>
   )
 }

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/rwa-frontend",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "private": true,
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
@@ -8,11 +8,12 @@
     "update-registry": "node --env-file-if-exists=.env scripts/updateRegistry.mjs"
   },
   "dependencies": {
+    "@base-ui/react": "1.7.0",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
-    "@cowprotocol/cow-sdk": "9.3.1",
+    "@cowprotocol/cow-sdk": "9.3.3",
     "@cowprotocol/events": "workspace:*",
-    "@cowprotocol/sdk-viem-adapter": "0.3.38",
+    "@cowprotocol/sdk-viem-adapter": "0.3.39",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
     "@reown/appkit": "1.8.19",
