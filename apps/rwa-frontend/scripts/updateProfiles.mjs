@@ -10,7 +10,6 @@
  * by `--force`. Commodities are skipped. `--offset` and `--limit` pick a slice of the candidates in registry order;
  * without `--force`, filled assets stop being candidates, so the next chunk is `--limit` alone.
  */
-import { readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
@@ -18,6 +17,7 @@ import { parseArgs } from 'node:util'
 import { buildProfilePrompt, parseProfileResponse, requestProfile } from './profiles/claude.mjs'
 import { fetchWikidataMatches } from './profiles/wikidata.mjs'
 import { fetchSourceTexts } from './profiles/wikipedia.mjs'
+import { readRegistry, writeRegistry } from './registryFile.mjs'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 const SOURCES = ['wikipedia', 'ai']
@@ -31,7 +31,7 @@ async function main() {
   const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) exit('ANTHROPIC_API_KEY is required')
 
-  const registry = JSON.parse(await readFile(REGISTRY_PATH, 'utf8'))
+  const { registry, maps } = await readRegistry(REGISTRY_PATH)
   const candidates = registry.assets
     .filter(
       (asset) =>
@@ -53,7 +53,7 @@ async function main() {
   )
 
   const report = { filled: [], skipped: [], rejected: [], failed: [] }
-  const writer = createRegistryWriter(registry, options.dryRun)
+  const writer = createRegistryWriter(registry, maps, options.dryRun)
   let done = 0
   const logResult = (ticker, result) => console.log(`[${++done}/${selected.length}] ${ticker}: ${result}`)
 
@@ -155,10 +155,9 @@ async function loadSources(candidates) {
 }
 
 /**
- * Saves profiles as they come, at most once per `SAVE_INTERVAL_MS`, through a temp file and a rename so an
- * interrupted run leaves a valid registry. The version is bumped once per run.
+ * Saves profiles as they come, at most once per `SAVE_INTERVAL_MS`. The version is bumped once per run.
  */
-function createRegistryWriter(registry, dryRun) {
+function createRegistryWriter(registry, maps, dryRun) {
   const next = { ...registry, assets: [...registry.assets] }
   let changed = false
   let lastSave = 0
@@ -168,11 +167,7 @@ function createRegistryWriter(registry, dryRun) {
     if (dryRun || !changed) return saving
 
     lastSave = Date.now()
-    saving = saving.then(async () => {
-      const tempPath = `${REGISTRY_PATH}.tmp`
-      await writeFile(tempPath, `${JSON.stringify(next, null, 2)}\n`)
-      await rename(tempPath, REGISTRY_PATH)
-    })
+    saving = saving.then(() => writeRegistry(REGISTRY_PATH, next, maps))
 
     return saving
   }

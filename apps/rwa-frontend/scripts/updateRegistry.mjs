@@ -10,13 +10,14 @@
  *
  * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped.
  */
-import { readFile, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 import { getAddress, isAddress } from 'viem'
 
 import { areAddressesEqual, isSupportedChain } from '@cowprotocol/cow-sdk'
+
+import { readRegistry, writeRegistry } from './registryFile.mjs'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 
@@ -51,7 +52,7 @@ const BASE_URL = isPro ? 'https://pro-api.coingecko.com/api/v3' : 'https://api.c
 const HEADERS = { accept: 'application/json', [isPro ? 'x-cg-pro-api-key' : 'x-cg-demo-api-key']: apiKey }
 
 async function main() {
-  const registry = JSON.parse(await readFile(REGISTRY_PATH, 'utf8'))
+  const { registry, maps } = await readRegistry(REGISTRY_PATH)
   const platformChainIds = await fetchPlatformChainIds()
   const rwas = (await coingecko('/rwas/list')).filter((rwa) => {
     if (ASSET_TYPES[rwa.asset_type]) return true
@@ -120,7 +121,7 @@ async function main() {
     ? { version: bumpPatch(registry.version), lastModificationTime: new Date().toISOString(), assets }
     : registry
 
-  await writeFile(REGISTRY_PATH, `${JSON.stringify(next, null, 2)}\n`)
+  await writeRegistry(REGISTRY_PATH, next, maps)
 
   const tokensCount = assets.reduce((sum, asset) => sum + asset.tokens.length, 0)
   console.log(

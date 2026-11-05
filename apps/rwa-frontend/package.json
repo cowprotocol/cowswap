@@ -5,7 +5,7 @@
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
   "scripts": {
-    "test-scripts": "node --test scripts/profiles/*.test.mjs",
+    "test-scripts": "node --test scripts/*.test.mjs scripts/profiles/*.test.mjs",
     "update-profiles": "node --env-file-if-exists=.env scripts/updateProfiles.mjs",
     "update-registry": "node --env-file-if-exists=.env scripts/updateRegistry.mjs"
   },
