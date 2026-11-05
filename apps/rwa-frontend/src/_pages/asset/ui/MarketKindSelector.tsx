@@ -1,7 +1,7 @@
 'use client'
 
 import { useAtomValue, useSetAtom } from 'jotai'
-import type { ReactNode } from 'react'
+import { type ReactNode, useId } from 'react'
 
 import styles from './ChartRangeSelector.module.css'
 
@@ -27,6 +27,7 @@ export function MarketKindSelector({ asset, className }: MarketKindSelectorProps
   const isStockUnavailable = useAtomValue(isStockUnavailableAtomFamily(asset.ticker))
   const isStockOutage = useAtomValue(isStockOutageAtomFamily(asset.ticker))
   const setMarketKind = useSetAtom(marketKindAtom)
+  const hintId = useId()
   const unavailableHint = isStockOutage
     ? `Stock market data is temporarily unavailable for ${asset.title}`
     : `Stock market data isn't available for ${asset.title}`
@@ -42,14 +43,20 @@ export function MarketKindSelector({ asset, className }: MarketKindSelectorProps
             type="button"
             className={kind === shownKind ? styles.activeRange : undefined}
             aria-pressed={kind === shownKind}
-            disabled={isDisabled}
+            aria-disabled={isDisabled}
+            aria-describedby={isDisabled ? hintId : undefined}
             title={isDisabled ? unavailableHint : undefined}
-            onClick={() => setMarketKind(kind)}
+            onClick={isDisabled ? undefined : () => setMarketKind(kind)}
           >
             {MARKET_KIND_LABELS[kind]}
           </button>
         )
       })}
+      {isStockUnavailable && (
+        <span id={hintId} className={styles.hint}>
+          {unavailableHint}
+        </span>
+      )}
     </div>
   )
 }

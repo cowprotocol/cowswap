@@ -153,10 +153,15 @@ export async function getAssetQuotes(
   return { ticker: asset.ticker, chainId, side, amountUsd: QUOTE_AMOUNT_USD, quotes, degraded }
 }
 
-/** Degraded with a `null` market when every stock data provider that could cover the asset failed */
+/**
+ * Degraded with a `null` market when every stock data provider that could cover the asset failed,
+ * and with a market when part of it failed
+ */
 export async function getAssetStock(asset: RwaAsset): Promise<RwaAssetStock> {
   try {
-    return { ticker: asset.ticker, market: await stockDataProvider.getMarket(asset), degraded: false }
+    const result = await stockDataProvider.getMarket(asset)
+
+    return { ticker: asset.ticker, market: result?.market ?? null, degraded: result?.degraded ?? false }
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error(`[rwa] Failed to load the ${asset.ticker} stock market`, error)

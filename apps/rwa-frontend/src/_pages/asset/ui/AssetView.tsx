@@ -39,7 +39,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         </Link>
         <AssetIdentity asset={asset} />
         {error && !data && <StatusMessage>Failed to load market data: {error.message}</StatusMessage>}
-        {data?.degraded && <StatusMessage>Market data is temporarily unavailable</StatusMessage>}
+        {data?.degraded && <StatusMessage>Tokenized stock market data is temporarily unavailable</StatusMessage>}
         {tradingPauseMessage && <StatusMessage>{tradingPauseMessage}</StatusMessage>}
         <MarketKindSelector asset={asset} />
         <AssetStats asset={asset} market={stats} marketKind={marketKind} provider={provider} />

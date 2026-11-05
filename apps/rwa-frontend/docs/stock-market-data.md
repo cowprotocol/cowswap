@@ -23,10 +23,11 @@ The stock market comes first. Ideally the page shows both.
 | `AssetStats` (price, 24h change, market status) | toggle **[Stock / Tokenized stock]**, Stock by default | toggle |
 | `AssetPriceChart` (line and candles, 1D / 1W / 1M / 1Y / ALL) | toggle | toggle |
 | Overview → `AssetAbout`: ticker, sector, description, website | static, from `data/RWAs.json` | stock, always |
-| Overview → stock card: market status (`allowedTradingTime`), market cap, volume (24h), day range, 52-week range | dynamic | stock, always |
+| Overview → `AssetAbout` ranges: day range, 52-week range, market cap, volume (24h) | dynamic | toggle |
 | Positions, open orders, activity | CoW services | tokens |
 
-With Tokenized stock selected, `AssetStats` and `AssetPriceChart` keep today's CoinGecko behaviour.
+With Tokenized stock selected, `AssetStats`, `AssetPriceChart` and the About ranges keep today's CoinGecko behaviour,
+and the About card labels the market cap "Tokenized market cap".
 
 Static data in `RWAs.json` (`allowedTradingTime`, `newsFeed`, `profile`) can be sourced from Massive's ticker reference
 (`https://api.massive.com/v3/reference/tickers/{TICKER}`), with the description rewritten rather than copied verbatim.

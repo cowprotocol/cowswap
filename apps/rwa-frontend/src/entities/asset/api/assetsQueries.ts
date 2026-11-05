@@ -1,4 +1,4 @@
-import { keepPreviousData } from '@tanstack/query-core'
+import { keepPreviousData, type QueryKey } from '@tanstack/query-core'
 
 import { atomFamily } from 'jotai-family'
 import { type AtomWithQueryOptions, atomWithQuery } from 'jotai-tanstack-query'
@@ -57,7 +57,7 @@ export function assetCandlesQueryOptions(
   return {
     queryKey: [RWA_QUERY_KEY_ROOT, 'candles', ticker, range, market],
     queryFn: () => rwaFetcher<RwaCandleChart>(getCandlesUrl(ticker, range, market)),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousDataOfMarket(market),
     refetchOnWindowFocus: false,
   }
 }
@@ -70,7 +70,7 @@ export function assetChartQueryOptions(
   return {
     queryKey: [RWA_QUERY_KEY_ROOT, 'chart', ticker, range, market],
     queryFn: () => rwaFetcher<RwaChart>(getChartUrl(ticker, range, market)),
-    placeholderData: keepPreviousData,
+    placeholderData: keepPreviousDataOfMarket(market),
     refetchOnWindowFocus: false,
   }
 }
@@ -199,3 +199,10 @@ export const assetStockQueryAtomFamily = atomFamily((ticker: string) =>
 )
 
 export const tokenListQueryAtom = atomWithQuery(() => tokenListQueryOptions())
+
+/** Another range of the same market stands in while loading, never the other market's series */
+function keepPreviousDataOfMarket<T>(
+  market: RwaMarketKind,
+): (previousData: T | undefined, previousQuery: { queryKey: QueryKey } | undefined) => T | undefined {
+  return (previousData, previousQuery) => (previousQuery?.queryKey.at(-1) === market ? previousData : undefined)
+}
