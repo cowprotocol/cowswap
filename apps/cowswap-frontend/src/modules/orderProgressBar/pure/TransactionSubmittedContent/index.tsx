@@ -17,11 +17,12 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
-import { OrderFailureReason, orderFailureReasonsAtom } from 'modules/orders'
+import { orderFailureReasonsAtom } from 'modules/orders'
 import { WatchAssetInWallet } from 'modules/wallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CancelButton } from 'common/pure/CancelButton'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
@@ -91,6 +92,18 @@ export function TransactionSubmittedContent({
     />
   )
 
+  // The members rejected the proposal, so no order exists and none is coming. That is an outcome, not a
+  // step in the progress bar — show it the way a wallet rejection is shown, rather than leaving the
+  // confirmation sitting on a progress UI for something that will never happen.
+  if (failureReason === 'multisig-rejected') {
+    return (
+      <TransactionErrorContent
+        message={t`Your multisig rejected this order, so it was not placed.`}
+        onDismiss={onDismiss}
+      />
+    )
+  }
+
   if (isFinishedProgressStep && showProgressBar && order) {
     return (
       <Modal.Root>
@@ -156,9 +169,7 @@ export function TransactionSubmittedContent({
           </styledEl.ActionsWrapper>
         </styledEl.Header>
         <>
-          {!isProgressBarSetup && (
-            <styledEl.Title>{getTitleStatus(activityDerivedState, failureReason)}</styledEl.Title>
-          )}
+          {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
           {!isFinished &&
             (isSolanaChain(chainId) ? (
@@ -207,15 +218,9 @@ export function TransactionSubmittedContent({
   )
 }
 
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null, failureReason?: OrderFailureReason): string {
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
   if (!activityDerivedState) {
     return ''
-  }
-
-  // "Order Failed" is true but useless here: the members rejected it, and that is what tells the user
-  // whether to retry or go chase a co-signer.
-  if (failureReason === 'multisig-rejected') {
-    return t`Order rejected in your multisig`
   }
 
   const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
