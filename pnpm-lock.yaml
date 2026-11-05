@@ -1233,6 +1233,9 @@ importers:
       '@cowprotocol/events':
         specifier: workspace:*
         version: link:../../libs/events
+      '@cowprotocol/sdk-composable':
+        specifier: 1.8.14
+        version: 1.8.14(encoding@0.1.13)(typescript@5.9.3)
       '@cowprotocol/sdk-viem-adapter':
         specifier: 0.3.39
         version: 0.3.39(viem@2.48.8(bufferutil@4.0.8)(typescript@5.9.3)(utf-8-validate@5.0.10)(zod@3.25.76))
