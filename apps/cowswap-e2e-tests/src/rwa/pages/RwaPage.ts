@@ -14,6 +14,8 @@ const PORTFOLIO_PATH = `${BASE_PATH}/portfolio`
 const TALL_STABLE_PAGE_CSS =
   'body { overflow-anchor: none; } body::after { content: ""; display: block; height: 200vh; }'
 const SCROLL_DELTA_PX = 300
+const SWIPE_STEPS = 10
+const SWIPE_HOLD_MS = 150
 const SCROLL_SETTLE_MS = 500
 const RETRY_TIMEOUT_MS = 30_000
 const BACKDROP_Y_PX = 30
@@ -217,7 +219,16 @@ export class RwaPage {
   private async swipe({ x, y }: Point, deltaY: number): Promise<void> {
     const cdp = await this.page.context().newCDPSession(this.page)
 
-    await cdp.send('Input.synthesizeScrollGesture', { x, y, yDistance: -deltaY, gestureSourceType: 'touch' })
+    // `Input.synthesizeScrollGesture` with touch scrolls on macOS but not on the Linux CI runner
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+    for (let step = 1; step <= SWIPE_STEPS; step++) {
+      const fingerY = y - (deltaY * step) / SWIPE_STEPS
+
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: fingerY }] })
+    }
+    // Pausing before release prevents a fling, which would keep moving the page into the next check
+    await this.page.waitForTimeout(SWIPE_HOLD_MS)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
     await cdp.detach()
   }
 

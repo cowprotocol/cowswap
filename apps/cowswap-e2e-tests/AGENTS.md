@@ -94,8 +94,10 @@ a production build with `pnpm preview:rwa` in CI (both on port 3002, base path `
   element sits under the pointer. With real data the drawer's list overflows and takes a wheel at the screen's centre,
   leaving the page still with the lock gone, so the drawer tests wheel over the backdrop.
 - **Don't add a touch test for the filters drawer.** With the CSS rule removed, a swipe still leaves the page still,
-  most likely through Base UI's own handling, so the test wouldn't guard the rule. Touch tests use CDP
-  `Input.synthesizeScrollGesture`, which needs Chromium, and don't cover iOS Safari.
+  most likely through Base UI's own handling, so the test wouldn't guard the rule.
+- **Send touch input with CDP `Input.dispatchTouchEvent`, not `Input.synthesizeScrollGesture`.** The gesture scrolled
+  the page on macOS and never on the Linux CI runner, so passing locally didn't prove it worked. Both need Chromium,
+  and neither covers iOS Safari.
 - **Run these on Chromium only.** Firefox 111-120 has no `:has()`, a documented, accepted limit of the lock rules.
 - **Check who owns port 3002 before trusting a run.** Any 200 from `localhost:3002/rwa` counts as the server, so with
   another worktree's `pnpm start:rwa` up, the tests run against that checkout, even mid-build in CI mode. Check with
