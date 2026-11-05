@@ -14,6 +14,7 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
+import { TokenRiskBanners } from './TokenRiskBanners'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
@@ -143,6 +144,11 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
               isPriceChanged={isPriceChangeActionable}
               isPriceStatic={isPriceStatic}
               resetPriceChanged={resetPriceChanged}
+            />
+
+            <TokenRiskBanners
+              inputCurrencyInfo={props.inputCurrencyInfo}
+              outputCurrencyInfo={props.outputCurrencyInfo}
             />
 
             <ConfirmButton

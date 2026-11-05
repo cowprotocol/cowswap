@@ -297,11 +297,10 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
               </styledEl.FiatAmountText>
             )}
           </div>
-          <styledEl.BottomRowEnd>
-            {bottomContent}
-            {!isUsdValuesMode && balanceView}
-          </styledEl.BottomRowEnd>
+          {!isUsdValuesMode && balanceView}
         </styledEl.CurrencyInputBox>
+
+        {bottomContent}
       </styledEl.Wrapper>
 
       {receiveAmountInfo && currency && (

@@ -76,12 +76,6 @@ export const CurrencyInputBox = styled.div<{ isInvalid?: boolean }>`
   }
 `
 
-export const BottomRowEnd = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
 export const CurrencyTopLabel = styled.div`
   font-size: 13px;
   font-weight: 400;

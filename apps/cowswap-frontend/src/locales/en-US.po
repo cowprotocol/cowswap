@@ -338,8 +338,8 @@ msgid "My Custom Hooks ({customHooksCount})"
 msgstr "My Custom Hooks ({customHooksCount})"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/index.tsx
-msgid "Token warnings"
-msgstr "Token warnings"
+#~ msgid "Token warnings"
+#~ msgstr "Token warnings"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Considering current network costs (<0><1/></0> per part), switch to a {swapOrderLink}."
@@ -1160,8 +1160,8 @@ msgid "Limit Price Position"
 msgstr "Limit Price Position"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "Mint authority"
-msgstr "Mint authority"
+#~ msgid "Mint authority"
+#~ msgstr "Mint authority"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Pre Hooks"
@@ -1310,6 +1310,10 @@ msgstr "Bitcoin address (bc1…, 1…, 3…)"
 msgid "Signing"
 msgstr "Signing"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Almost nothing has traded recently, so the price may not mean much."
+msgstr "Almost nothing has traded recently, so the price may not mean much."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/OrderTypeField.tsx
 msgid "TWAP buy order"
 msgstr "TWAP buy order"
@@ -1439,6 +1443,10 @@ msgstr "On CoW Swap, you can set limit orders for balances you don't have yet."
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
 msgstr "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
+
+#: apps/cowswap-frontend/src/common/containers/TokenRisk/TokenRiskInline.container.tsx
+msgid "You confirmed the serious risks when you imported {symbol}."
+msgstr "You confirmed the serious risks when you imported {symbol}."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
@@ -2439,6 +2447,10 @@ msgstr "Closed"
 #~ msgid "Share this tip!"
 #~ msgstr "Share this tip!"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRisk.utils.ts
+msgid "{total, plural, one {# risk to check} few {# risks to check} many {# risks to check} other {# risks to check}}"
+msgstr "{total, plural, one {# risk to check} few {# risks to check} many {# risks to check} other {# risks to check}}"
+
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
 msgstr "Connect Telegram"
@@ -2891,6 +2903,10 @@ msgstr "Volume (24h)"
 #~ msgid "If any of the above is not true, you must select Cancel and you will not be able to proceed with this asset through this interface."
 #~ msgstr "If any of the above is not true, you must select Cancel and you will not be able to proceed with this asset through this interface."
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "I understand the issuer can take my {symbol}, and I may not be able to sell it."
+msgstr "I understand the issuer can take my {symbol}, and I may not be able to sell it."
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliateTraderModal/CodeCreationSubtitle.tsx
 #~ msgid "Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per {triggerVolume}of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
 #~ msgstr "Code binds on your first eligible trade. Earn {rewardAmount} {AFFILIATE_REWARDS_CURRENCY} per {triggerVolume}of eligible volume in {timeCapDays} days. Payouts happen on Ethereum mainnet."
@@ -3307,6 +3323,10 @@ msgstr "Sign the {operationLabel} with your wallet."
 msgid "Recipient"
 msgstr "Recipient"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "The issuer can freeze any holder's tokens. If they do, you can't sell or move {symbol}."
+msgstr "The issuer can freeze any holder's tokens. If they do, you can't sell or move {symbol}."
+
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Enter a code with 5-20 characters (A-Z, 0-9, - or _)."
 #~ msgstr "Enter a code with 5-20 characters (A-Z, 0-9, - or _)."
@@ -3318,6 +3338,10 @@ msgstr "Limit Settings"
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 msgid "{action} {sellAmount} for at least {receiveAmount}"
 msgstr "{action} {sellAmount} for at least {receiveAmount}"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Issuer can take your tokens"
+msgstr "Issuer can take your tokens"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #~ msgid "Swap with {symbol}"
@@ -3724,6 +3748,10 @@ msgstr "Disable Alpha Networks"
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "The issuer can create more tokens at any time, which can dilute your share."
+msgstr "The issuer can create more tokens at any time, which can dilute your share."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookDappIframeReview.pure.tsx
 msgid "Update pre-hook"
 msgstr "Update pre-hook"
@@ -3980,6 +4008,10 @@ msgstr "Wrap {sendAmountStr} {native} to {receiveAmountStr} {wrapped}"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Wrap operation failed."
 msgstr "Wrap operation failed."
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "The issuer can move {symbol} out of your wallet at any time, without asking you."
+msgstr "The issuer can move {symbol} out of your wallet at any time, without asking you."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Row/WarningTooltip/WarningTooltip.pure.tsx
 #~ msgid "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
@@ -4246,8 +4278,8 @@ msgid "Description"
 msgstr "Description"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "Freeze authority"
-msgstr "Freeze authority"
+#~ msgid "Freeze authority"
+#~ msgstr "Freeze authority"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The estimated amount you'll receive after bridge costs."
@@ -4312,6 +4344,10 @@ msgstr "You can get under the {FEE_SIZE_THRESHOLD}% cost threshold by reducing t
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
 #~ msgid "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 #~ msgstr "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRiskList.pure.tsx
+msgid "Serious"
+msgstr "Serious"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Account overview"
@@ -4704,6 +4740,14 @@ msgstr "{currencyNameCapitalized} orders can, in rare cases, be frontrun due to 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Transaction Confirmed"
 msgstr "Transaction Confirmed"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRiskDetails.pure.tsx
+msgid "Data from Jupiter"
+msgstr "Data from Jupiter"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Issuer can mint more tokens"
+msgstr "Issuer can mint more tokens"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/accountProxy.constants.ts
 msgid "Advanced Orders"
@@ -5405,6 +5449,10 @@ msgstr "Unverified"
 msgid "Coinbase Wallet"
 msgstr "Coinbase Wallet"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRiskList.pure.tsx
+msgid "Worth knowing"
+msgstr "Worth knowing"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/LoadMore/Section/LoadMoreOrdersSection.tsx
 msgid "Only the {limit} most recent orders were searched."
@@ -5576,6 +5624,10 @@ msgstr "Request cancellations"
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Left to next $10"
 #~ msgstr "Left to next $10"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "I understand the issuer can freeze my {symbol}, and I may not be able to sell it."
+msgstr "I understand the issuer can freeze my {symbol}, and I may not be able to sell it."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "Order expirations"
@@ -5956,6 +6008,10 @@ msgstr "Token symbol, address"
 msgid "Order Receipt"
 msgstr "Order Receipt"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRiskDetails.pure.tsx
+msgid "About {symbol}"
+msgstr "About {symbol}"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
 #~ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
@@ -6102,6 +6158,10 @@ msgstr "Unsupported Network"
 msgid "Approve"
 msgstr "Approve"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Trades can move the price sharply, and a large order may not fill."
+msgstr "Trades can move the price sharply, and a large order may not fill."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Header/ordersTableHeader.constants.tsx
 msgid "Execution time"
 msgstr "Execution time"
@@ -6195,6 +6255,10 @@ msgstr "Alert"
 #: apps/cowswap-frontend/src/modules/twap/pure/TotalDurationTooltip/TotalDurationTooltip.pure.tsx
 msgid "Your order consists of <0>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</0>."
 msgstr "Your order consists of <0>{parts, plural, one {# part} few {# parts} many {# parts} other {# parts}}</0>."
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "A few large holders selling could move the price sharply."
+msgstr "A few large holders selling could move the price sharply."
 
 #: apps/cowswap-frontend/src/modules/affiliate/pure/PayoutHistoryTable.tsx
 #~ msgid "View tx on explorer"
@@ -6454,6 +6518,10 @@ msgstr "Can't find your token on the list? <0>Read our guide</0> on how to add c
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 #~ msgid "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
 #~ msgstr "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Most recent trading looks automated."
+msgstr "Most recent trading looks automated."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/SolverAuctionResult/SolverAuctionResult.pure.tsx
 #~ msgid "View all {solversLength, plural, one {# bid} few {# bids} many {# bids} other {# bids}}"
@@ -6919,6 +6987,10 @@ msgstr "You can now get Telegram notifications when your trades execute! Sign up
 msgid "Scan this code, or open the link on this device, then tap “Start” in the chat."
 msgstr "Scan this code, or open the link on this device, then tap “Start” in the chat."
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "A few wallets own most of the supply"
+msgstr "A few wallets own most of the supply"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTable/Content/NoOrders/OrdersTableNoOrdersContent.utils.tsx
 msgid "{limit, plural, one {No open orders found in your last # order} few {No open orders found in your last # orders} many {No open orders found in your last # orders} other {No open orders found in your last # orders}}"
 msgstr "{limit, plural, one {No open orders found in your last # order} few {No open orders found in your last # orders} many {No open orders found in your last # orders} other {No open orders found in your last # orders}}"
@@ -7035,7 +7107,7 @@ msgstr "Edit"
 #~ msgid "Order Expiration"
 #~ msgstr "Order Expiration"
 
-#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
 msgid "Low liquidity"
 msgstr "Low liquidity"
 
@@ -7325,6 +7397,10 @@ msgstr "Save & lock code"
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 msgid "This toggle is on by default. Toggling on/off will be supported in the future."
 msgstr "This toggle is on by default. Toggling on/off will be supported in the future."
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "I understand the issuer can freeze or take my {symbol}, and I may not be able to sell it."
+msgstr "I understand the issuer can freeze or take my {symbol}, and I may not be able to sell it."
 
 #: apps/cowswap-frontend/src/modules/twap/utils/buildEoaTwapConfirmationPendingSteps.tsx
 #~ msgid "Sign in your wallet. We'll submit the funding order automatically."
@@ -7731,8 +7807,8 @@ msgstr "Cancelled order"
 #~ msgstr "CoW AMM Deposit"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "Permanent delegate"
-msgstr "Permanent delegate"
+#~ msgid "Permanent delegate"
+#~ msgstr "Permanent delegate"
 
 #: apps/cowswap-frontend/src/pages/Account/Affiliate.tsx
 #~ msgid "Affiliate stats are temporarily unavailable. Try again later."
@@ -7798,6 +7874,10 @@ msgstr "Approval amount"
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 #~ msgid "https:// or ipfs:// or ENS name"
 #~ msgstr "https:// or ipfs:// or ENS name"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRisk.utils.ts
+msgid "{total, plural, one {# risk · {serious} serious} few {# risks · {serious} serious} many {# risks · {serious} serious} other {# risks · {serious} serious}}"
+msgstr "{total, plural, one {# risk · {serious} serious} few {# risks · {serious} serious} many {# risks · {serious} serious} other {# risks · {serious} serious}}"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokens"
@@ -8038,6 +8118,10 @@ msgstr "Review TWAP order"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid manifest format: Missing \"cow_hook_dapp\" property in manifest.json"
 msgstr "Invalid manifest format: Missing \"cow_hook_dapp\" property in manifest.json"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/TokenRiskDetails.pure.tsx
+msgid "Data from Jupiter · Updated {updatedAgo}"
+msgstr "Data from Jupiter · Updated {updatedAgo}"
 
 #: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
 #~ msgid "Disable alpha networks"
@@ -8289,6 +8373,10 @@ msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount"
 msgid "Your friend shared a referral code with you."
 msgstr "Your friend shared a referral code with you."
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "No route to sell {symbol} was found. You may not be able to get out of this position."
+msgstr "No route to sell {symbol} was found. You may not be able to get out of this position."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Avg. execution price"
 msgstr "Avg. execution price"
@@ -8497,6 +8585,10 @@ msgstr "Your referral code expired on {rewardsEndLabel}."
 msgid "Something went wrong"
 msgstr "Something went wrong"
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "Issuer can freeze your tokens"
+msgstr "Issuer can freeze your tokens"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/AffiliatePartner/AffiliatePartnerCodeForm.tsx
 #~ msgid "Type or generate a code (subject to availability). Saving locks this code to your wallet and cannot be changed. Links/codes don't reveal your wallet."
 #~ msgstr "Type or generate a code (subject to availability). Saving locks this code to your wallet and cannot be changed. Links/codes don't reveal your wallet."
@@ -8541,7 +8633,7 @@ msgstr "Set approval amount"
 msgid "CoW Fortune of the day"
 msgstr "CoW Fortune of the day"
 
-#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
 msgid "Low organic activity"
 msgstr "Low organic activity"
 
@@ -8764,10 +8856,9 @@ msgstr "Order Created"
 #~ msgid "Confirm the approval transaction in your connected wallet."
 #~ msgstr "Confirm the approval transaction in your connected wallet."
 
-#. placeholder {0}: warnings.length
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/index.tsx
-msgid "{0, plural, one {# Warning} other {# Warnings}}"
-msgstr "{0, plural, one {# Warning} other {# Warnings}}"
+#~ msgid "{0, plural, one {# Warning} other {# Warnings}}"
+#~ msgstr "{0, plural, one {# Warning} other {# Warnings}}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/OrderFillsAt.pure.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTabs/OrdersTabs.pure.tsx
@@ -8920,6 +9011,10 @@ msgstr "<0><1/> Experimental:</0> Add DeFi interactions before and after your tr
 #: apps/cowswap-frontend/src/common/pure/OrderSummary/summaryTemplates.tsx
 msgid "Buy"
 msgstr "Buy"
+
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "I understand {symbol} carries serious risks and I may not be able to sell it."
+msgstr "I understand {symbol} carries serious risks and I may not be able to sell it."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetMetadata.ts
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/ChainSelector.tsx
@@ -9091,7 +9186,7 @@ msgstr "While CoW Swap on Solana is in Alpha and unaudited, trades without a USD
 msgid "The competition has started"
 msgstr "The competition has started"
 
-#: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
 msgid "Very low trading activity"
 msgstr "Very low trading activity"
 
@@ -9380,6 +9475,10 @@ msgstr "Confirm Swap"
 msgid "Expand the price chart to use more space."
 msgstr "Expand the price chart to use more space."
 
+#: apps/cowswap-frontend/src/common/pure/TokenRisk/useTokenRiskCopy.ts
+msgid "{symbol} may not be sellable"
+msgstr "{symbol} may not be sellable"
+
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/pure/TraderReferralCodeModal/TraderReferralCodeForm.tsx
 #~ msgid "Save"
@@ -9434,8 +9533,8 @@ msgid "{value} sec"
 msgstr "{value} sec"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "Not verified"
-msgstr "Not verified"
+#~ msgid "Not verified"
+#~ msgstr "Not verified"
 
 #: apps/cowswap-frontend/src/modules/injectedWidget/utils/validatePartnerFee.ts
 msgid "Partner fee recipient must be set!"
@@ -9535,8 +9634,8 @@ msgid "Tokens must be different"
 msgstr "Tokens must be different"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "High single ownership"
-msgstr "High single ownership"
+#~ msgid "High single ownership"
+#~ msgstr "High single ownership"
 
 #: apps/cowswap-frontend/src/legacy/hooks/useGetSafeTxInfo.ts
 #~ msgid "There is no provider to get Gnosis safe info"
@@ -10115,8 +10214,8 @@ msgid "Base Account"
 msgstr "Base Account"
 
 #: apps/cowswap-frontend/src/common/pure/TokenWarningsBadge/TokenWarningsBadge.utils.ts
-msgid "May not be sellable"
-msgstr "May not be sellable"
+#~ msgid "May not be sellable"
+#~ msgstr "May not be sellable"
 
 #: apps/cowswap-frontend/src/common/pure/LoadingApp/index.tsx
 msgid "Loading"

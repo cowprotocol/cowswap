@@ -26,7 +26,12 @@ export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
 export type { RestrictedTokenListState } from './state/restrictedTokens/restrictedTokensAtom'
 export type { TokenId } from '@cowprotocol/cow-sdk'
 export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
-export type { TokenWarning, TokenWarningSeverity } from './hooks/tokens/useTokenWarnings'
+export type {
+  TokenWarning,
+  TokenWarningSeverity,
+  TokenWarningTier,
+  TokenWarningsInfo,
+} from './hooks/tokens/useTokenWarnings'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -56,7 +61,11 @@ export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
 export { useTokensByAddressMapForChain } from './hooks/tokens/useTokensByAddressMapForChain'
 export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddress'
 export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
-export { useTokenWarnings } from './hooks/tokens/useTokenWarnings'
+export { useTokenWarnings, useTokenWarningsList } from './hooks/tokens/useTokenWarnings'
+export {
+  useAcknowledgedWarningCodes,
+  useAcknowledgeTokenWarnings,
+} from './hooks/tokens/useTokenWarningsAcknowledgement'
 export { useTryFindToken } from './hooks/tokens/useTryFindToken'
 export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereTokensWithSameSymbol'
 export { useDoesSymbolResolveToToken } from './hooks/tokens/useDoesSymbolResolveToToken'

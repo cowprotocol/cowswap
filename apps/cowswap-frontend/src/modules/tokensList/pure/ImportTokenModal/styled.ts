@@ -3,22 +3,45 @@ import { TokenName, TokenSymbol, UI } from '@cowprotocol/ui'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
+import { TokenRiskDetails } from 'common/pure/TokenRisk'
+
 export const Wrapper = styled.div`
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
+  max-height: 100%;
   background: var(${UI.COLOR_PAPER});
   border-radius: 20px;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
 `
 
 export const Contents = styled.div`
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 20px;
   padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto;
+`
+
+/* The acknowledgement must stay reachable without scrolling the risk list to its end. */
+export const StickyFooter = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
+  box-shadow: 0 -4px 12px rgb(0 0 0 / 6%);
+`
+
+export const RiskPanel = styled(TokenRiskDetails)`
+  padding: 0;
+  text-align: left;
+  background: transparent;
 `
 
 export const AlertIcon = styled(AlertTriangle)`
