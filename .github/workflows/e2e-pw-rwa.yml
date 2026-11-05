@@ -6,6 +6,8 @@ on:
       - 'apps/rwa-frontend/**'
       - 'apps/cowswap-e2e-tests/src/rwa/**'
       - 'apps/cowswap-e2e-tests/playwright.rwa.config.ts'
+      - 'apps/cowswap-e2e-tests/project.json'
+      - 'apps/cowswap-e2e-tests/package.json'
       - '.github/workflows/e2e-pw-rwa.yml'
       - 'package.json'
       - 'pnpm-lock.yaml'

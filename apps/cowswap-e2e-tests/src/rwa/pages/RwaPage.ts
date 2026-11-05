@@ -1,14 +1,23 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 
+interface Point {
+  x: number
+  y: number
+}
+
+type ScrollInput = (point: Point, deltaY: number) => Promise<void>
+
 const BASE_PATH = '/rwa'
 const PORTFOLIO_PATH = `${BASE_PATH}/portfolio`
 // Scroll anchoring moves the page without any input when content above the viewport changes height, like the market
 // overview collapsing once its aborted requests give up, which reads as a broken lock
 const TALL_STABLE_PAGE_CSS =
   'body { overflow-anchor: none; } body::after { content: ""; display: block; height: 200vh; }'
-const WHEEL_DELTA_PX = 300
+const SCROLL_DELTA_PX = 300
 const SCROLL_SETTLE_MS = 500
 const RETRY_TIMEOUT_MS = 30_000
+const BACKDROP_Y_PX = 30
+const PAST_PHONE_WIDTH_PX = 800
 
 export class RwaPage {
   readonly menuButton: Locator
@@ -46,6 +55,11 @@ export class RwaPage {
     await expect(this.menu).toBeHidden()
   }
 
+  async closeMenuWithEscape(): Promise<void> {
+    await this.page.keyboard.press('Escape')
+    await expect(this.menu).toBeHidden()
+  }
+
   async goToPortfolioFromMenu(): Promise<void> {
     await this.menu.getByRole('link', { name: 'Portfolio' }).click()
     await this.page.waitForURL(`**${PORTFOLIO_PATH}`)
@@ -62,9 +76,20 @@ export class RwaPage {
     await expect(this.searchInput).toBeVisible()
   }
 
+  async openSearchWithShortcut(): Promise<void> {
+    await this.page.keyboard.press('/')
+    await expect(this.searchInput).toBeVisible()
+  }
+
   async closeSearch(): Promise<void> {
     await this.closeSearchButton.click()
     await expect(this.searchInput).toBeHidden()
+  }
+
+  async closeSearchWithEscapeOverMenu(): Promise<void> {
+    await this.page.keyboard.press('Escape')
+    await expect(this.searchInput).toBeHidden()
+    await expect(this.menu).toBeVisible()
   }
 
   async openFilters(): Promise<void> {
@@ -77,25 +102,86 @@ export class RwaPage {
     await expect(this.filtersDrawer).toBeHidden()
   }
 
+  async resizePastPhoneWidthClosingFilters(): Promise<void> {
+    await this.page.setViewportSize({ width: PAST_PHONE_WIDTH_PX, height: this.getViewport().height })
+    await expect(this.filtersDrawer).toBeHidden()
+  }
+
+  async makeFiltersListOverflow(): Promise<void> {
+    // Blocked data leaves the list short, but real data makes it overflow and catch any wheel over it
+    await this.filtersDrawer.evaluate((drawer) => {
+      const list = Array.from(drawer.querySelectorAll('*')).find(
+        (element) => getComputedStyle(element).overflowY === 'auto',
+      )
+      if (!list) throw new Error('The filters drawer has no scrollable list')
+
+      const filler = document.createElement('div')
+      filler.style.height = '200vh'
+      list.append(filler)
+    })
+  }
+
   async expectPageScrolls(): Promise<void> {
+    await this.expectScrolls((point, deltaY) => this.wheel(point, deltaY))
+  }
+
+  async expectPageScrollsOnSwipe(): Promise<void> {
+    await this.expectScrolls((point, deltaY) => this.swipe(point, deltaY))
+  }
+
+  async expectPageLocked(): Promise<void> {
+    await this.expectLocked((point, deltaY) => this.wheel(point, deltaY), this.getViewportCenter())
+  }
+
+  async expectPageLockedOverBackdrop(): Promise<void> {
+    const point = { x: this.getViewportCenter().x, y: BACKDROP_Y_PX }
+
+    await this.expectLocked((wheelPoint, deltaY) => this.wheel(wheelPoint, deltaY), point)
+  }
+
+  async expectPageLockedOnSwipe(): Promise<void> {
+    await this.expectLocked((point, deltaY) => this.swipe(point, deltaY), this.getViewportCenter())
+  }
+
+  private async expectScrolls(scroll: ScrollInput): Promise<void> {
     await this.waitForNextFrames()
     const scrollBefore = await this.readScrollY()
-    const deltaY = scrollBefore > 0 ? -WHEEL_DELTA_PX : WHEEL_DELTA_PX
+    const deltaY = scrollBefore > 0 ? -SCROLL_DELTA_PX : SCROLL_DELTA_PX
 
     await expect(async () => {
-      await this.wheel(deltaY)
+      await scroll(this.getViewportCenter(), deltaY)
       await expect.poll(() => this.readScrollY(), { timeout: SCROLL_SETTLE_MS }).not.toBe(scrollBefore)
     }).toPass({ timeout: RETRY_TIMEOUT_MS })
   }
 
-  async expectPageLocked(): Promise<void> {
+  private async expectLocked(scroll: ScrollInput, point: Point): Promise<void> {
     await this.waitForNextFrames()
+    await this.expectNoScrollerUnder(point)
     const scrollBefore = await this.readScrollY()
 
-    await this.wheel(WHEEL_DELTA_PX)
+    await scroll(point, SCROLL_DELTA_PX)
     await this.page.waitForTimeout(SCROLL_SETTLE_MS)
 
     expect(await this.readScrollY()).toBe(scrollBefore)
+  }
+
+  private async expectNoScrollerUnder(point: Point): Promise<void> {
+    const scroller = await this.page.evaluate(({ x, y }) => {
+      let element = document.elementFromPoint(x, y)
+
+      while (element && element !== document.body && element !== document.documentElement) {
+        const { overflowY } = getComputedStyle(element)
+        const canScroll = overflowY === 'auto' || overflowY === 'scroll'
+
+        if (canScroll && element.scrollHeight > element.clientHeight) return element.outerHTML.slice(0, 100)
+
+        element = element.parentElement
+      }
+
+      return null
+    }, point)
+
+    expect(scroller, 'This element would absorb the input, so the page stays still with or without a lock').toBeNull()
   }
 
   private async blockLiveData(): Promise<void> {
@@ -113,12 +199,10 @@ export class RwaPage {
     }).toPass({ timeout: RETRY_TIMEOUT_MS })
   }
 
-  private async wheel(deltaY: number): Promise<void> {
-    const viewport = this.page.viewportSize()
-    if (!viewport) throw new Error('RWA scroll tests need a fixed viewport')
+  private async wheel({ x, y }: Point, deltaY: number): Promise<void> {
+    await this.page.mouse.move(x, y)
 
-    await this.page.mouse.move(viewport.width / 2, viewport.height / 2)
-
+    // The wrapper object stops `evaluateHandle` awaiting the promise, which only settles after the wheel below
     const wheelSeen = await this.page.evaluateHandle(() => ({
       done: new Promise<void>((resolve) => {
         window.addEventListener('wheel', () => resolve(), { once: true, passive: true })
@@ -127,6 +211,27 @@ export class RwaPage {
 
     await this.page.mouse.wheel(0, deltaY)
     await wheelSeen.evaluate(({ done }) => done)
+    await wheelSeen.dispose()
+  }
+
+  private async swipe({ x, y }: Point, deltaY: number): Promise<void> {
+    const cdp = await this.page.context().newCDPSession(this.page)
+
+    await cdp.send('Input.synthesizeScrollGesture', { x, y, yDistance: -deltaY, gestureSourceType: 'touch' })
+    await cdp.detach()
+  }
+
+  private getViewport(): { width: number; height: number } {
+    const viewport = this.page.viewportSize()
+    if (!viewport) throw new Error('RWA scroll tests need a fixed viewport')
+
+    return viewport
+  }
+
+  private getViewportCenter(): Point {
+    const { width, height } = this.getViewport()
+
+    return { x: width / 2, y: height / 2 }
   }
 
   private readScrollY(): Promise<number> {

@@ -15,6 +15,7 @@ subset; everything runs on the nightly job.
 `RWA`-prefixed tests are the exception: they live in `src/rwa/` and test `apps/rwa-frontend` through
 `playwright.rwa.config.ts`, with no wallet or env vars. Run them with `pnpm e2e:rwa`. In CI,
 `e2e-pw-rwa.yml` runs them on PRs that touch the RWA app or these tests, not `@smoke` or nightly.
+`e2e-pw-smoke.yml` skips changes that only touch `src/rwa/` or that config.
 
 ## Prerequisites
 
