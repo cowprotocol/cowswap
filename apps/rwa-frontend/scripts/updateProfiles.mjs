@@ -7,9 +7,9 @@
  * Env: ANTHROPIC_API_KEY (required).
  *
  * The registry must pass `validate-registry` first, and a profile that would make it fail is reported as failed.
- * Only assets without a profile are filled unless `--force`. `website` is hand-edited: it is never written, and kept
- * by `--force`. Commodities are skipped. `--offset` and `--limit` pick a slice of the candidates in registry order;
- * without `--force`, filled assets stop being candidates, so the next chunk is `--limit` alone.
+ * Only assets without a profile are filled unless `--force`. `website` is written by `update-websites` or by hand:
+ * never here, and kept by `--force`. Commodities are skipped. `--offset` and `--limit` pick a slice of the candidates
+ * in registry order; without `--force`, filled assets stop being candidates, so the next chunk is `--limit` alone.
  */
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
