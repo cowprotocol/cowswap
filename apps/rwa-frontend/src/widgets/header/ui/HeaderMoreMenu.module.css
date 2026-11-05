@@ -68,16 +68,3 @@
   background: var(--color-surface);
   outline: none;
 }
-
-@media (max-width: 720px) {
-  .trigger {
-    justify-content: center;
-    width: 100%;
-    padding: 0 8px;
-  }
-
-  .menu {
-    right: 0;
-    left: auto;
-  }
-}

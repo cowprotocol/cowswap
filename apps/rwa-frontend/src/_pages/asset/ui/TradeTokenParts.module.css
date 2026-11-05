@@ -1,7 +1,8 @@
 .name {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 6px;
+  gap: 2px 6px;
   min-width: 0;
   font-size: 14px;
   font-weight: 600;
@@ -30,6 +31,13 @@
 .bestTag {
   background: var(--color-positive-bg);
   color: var(--color-positive);
+}
+
+.unverified {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
 }
 
 .info {

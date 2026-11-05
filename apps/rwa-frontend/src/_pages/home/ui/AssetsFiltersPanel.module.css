@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: min(332px, calc(100vw - 32px));
+  width: 332px;
   padding: 20px 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-card);
@@ -16,6 +16,12 @@
 
 .panel[hidden] {
   display: none;
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .header,
@@ -92,6 +98,7 @@
   min-width: 0;
   padding: 0;
   border: none;
+  border-radius: 0;
   background: none;
   color: var(--color-text);
   font-size: 13px;
@@ -227,8 +234,47 @@
   opacity: 0;
 }
 
-@media (max-width: 600px) {
-  .panel {
-    right: 16px;
-  }
+.sections[data-touch] {
+  gap: 24px;
+}
+
+.sections[data-touch] .sectionTitle {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.sections[data-touch] .option {
+  min-height: 44px;
+  padding: 0;
+}
+
+.sections[data-touch] .option:hover,
+.sections[data-touch] .option:focus-within {
+  background: none;
+}
+
+.sections[data-touch] .option:has(:focus-visible) {
+  background: var(--color-surface);
+}
+
+.sections[data-touch] .optionLabel {
+  gap: 12px;
+  align-self: stretch;
+  font-size: 15px;
+}
+
+.sections[data-touch] .checkbox {
+  width: 20px;
+  height: 20px;
+}
+
+.sections[data-touch] .segments {
+  align-self: stretch;
+}
+
+.sections[data-touch] .segment {
+  flex: 1;
+  justify-content: center;
+  height: 38px;
+  font-size: 13px;
 }

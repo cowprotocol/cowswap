@@ -14,6 +14,7 @@ import {
 } from './TradeTokenParts'
 import styles from './TradeTokenSelector.module.css'
 
+import { TRADE_SIDES } from '../config/tradeSides'
 import { getBestQuoteLabel, getCollapsedQuotedTokens, isRankedQuote } from '../lib/quotedTokens'
 import { formatTokenStat } from '../lib/tokenStat'
 import { tradeSideAtom, tradeTokenKeyAtom } from '../model/tradeSelectionAtoms'
@@ -22,13 +23,7 @@ import { useSelectTradeNetwork } from '../model/useSelectTradeToken'
 import type { QuotedToken } from '../lib/quotedTokens'
 import type { TradeSelection } from '../model/useTradeSelection'
 
-import {
-  assetQueryAtomFamily,
-  getTokenKey,
-  type RwaAsset,
-  type RwaMarketData,
-  type RwaQuoteSide,
-} from '@/entities/asset'
+import { assetQueryAtomFamily, getTokenKey, type RwaAsset, type RwaMarketData } from '@/entities/asset'
 import { ConnectButton } from '@/features/connect-wallet'
 import { getChainLabel } from '@/shared/lib/chain'
 import { ChevronDownIcon, InfoIcon } from '@/shared/ui/icons'
@@ -37,11 +32,6 @@ import { Select } from '@/shared/ui/select'
 import { Tooltip } from '@/shared/ui/tooltip'
 
 const COLLAPSED_TOKENS_COUNT = 2
-
-const TRADE_SIDES: { side: RwaQuoteSide; title: string }[] = [
-  { side: 'buy', title: 'Buy' },
-  { side: 'sell', title: 'Sell' },
-]
 
 interface AllTokensToggleProps {
   count: number
@@ -90,7 +80,13 @@ export function TradeTokenSelector({ asset, selection }: TradeTokenSelectorProps
       <div className={styles.controls}>
         <div className={styles.sides} role="group" aria-label="Trade side">
           {TRADE_SIDES.map(({ side: option, title }) => (
-            <button key={option} type="button" aria-pressed={option === side} onClick={() => setSide(option)}>
+            <button
+              key={option}
+              type="button"
+              aria-pressed={option === side}
+              data-trade-side={option}
+              onClick={() => setSide(option)}
+            >
               {title}
             </button>
           ))}
@@ -214,7 +210,9 @@ function TradeTokenOption({
           </span>
         </span>
       </span>
-      <TradeTokenQuote quoted={quoted} stockPrice={market?.price} isLoading={isLoading} />
+      <span className={styles.optionQuote}>
+        <TradeTokenQuote quoted={quoted} stockPrice={market?.price} isLoading={isLoading} />
+      </span>
       {isChecked && isUnverifiedQuote(quoted) && (
         <span className={styles.unverifiedNote}>Unverified price. It may change when you trade.</span>
       )}
