@@ -48,13 +48,27 @@ function useIsWidgetInView(widgetRef: RefObject<HTMLElement | null>): boolean {
     const widget = widgetRef.current
     if (!widget) return
 
-    const observer = new IntersectionObserver((entries) => setIsInView(entries.at(-1)?.isIntersecting ?? false), {
-      // Inset from both visible edges by the minimum height, so the widget meets this band once that much of it shows
-      rootMargin: `-${MIN_VISIBLE_WIDGET_HEIGHT}px 0px -${WALLET_BAR_HEIGHT + MIN_VISIBLE_WIDGET_HEIGHT}px 0px`,
-    })
-    observer.observe(widget)
+    // Inset from each visible edge by the minimum height, so the widget meets both once that much of it shows. One
+    // observer per edge, because a single band inset from both would invert on a viewport too short to hold them
+    const rootMargins = [
+      `-${MIN_VISIBLE_WIDGET_HEIGHT}px 0px 0px 0px`,
+      `0px 0px -${WALLET_BAR_HEIGHT + MIN_VISIBLE_WIDGET_HEIGHT}px 0px`,
+    ]
+    const areIntersecting = rootMargins.map(() => false)
+    const observers = rootMargins.map((rootMargin, index) => {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          areIntersecting[index] = entries.at(-1)?.isIntersecting ?? false
+          setIsInView(areIntersecting.every(Boolean))
+        },
+        { rootMargin },
+      )
+      observer.observe(widget)
 
-    return () => observer.disconnect()
+      return observer
+    })
+
+    return () => observers.forEach((observer) => observer.disconnect())
   }, [widgetRef])
 
   return isInView

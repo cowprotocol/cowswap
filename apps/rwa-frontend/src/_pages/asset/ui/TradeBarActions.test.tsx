@@ -16,17 +16,23 @@ jest.mock('@/widgets/header', () => ({
   WalletBarSlot: ({ children }: { children: ReactNode }) => <div data-testid="wallet-bar">{children}</div>,
 }))
 
-let reportIntersection: (isIntersecting: boolean) => void = () => undefined
-let observerOptions: IntersectionObserverInit | undefined
+interface EdgeObserver {
+  rootMargin: string | undefined
+  report(isIntersecting: boolean): void
+}
+
+let edgeObservers: EdgeObserver[] = []
 
 class MockIntersectionObserver {
   observe = jest.fn()
   disconnect = jest.fn()
 
   constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
-    observerOptions = options
-    reportIntersection = (isIntersecting) =>
-      callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
+    edgeObservers.push({
+      rootMargin: options?.rootMargin,
+      report: (isIntersecting) =>
+        callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver),
+    })
   }
 }
 
@@ -52,6 +58,10 @@ describe('TradeBarActions', () => {
     mockViewport(390)
   })
 
+  beforeEach(() => {
+    edgeObservers = []
+  })
+
   function renderSection(): ReturnType<typeof createStore> {
     const store = createStore()
 
@@ -70,14 +80,20 @@ describe('TradeBarActions', () => {
     const actions = [bar.getByRole('button', { name: 'Buy NVDA' }), bar.getByRole('button', { name: 'Sell NVDA' })]
     const areInert = (): boolean[] => actions.map((action) => action.closest('[inert]') !== null)
 
-    expect(observerOptions?.rootMargin).toBe('-120px 0px -176px 0px')
+    const [topEdge, bottomEdge] = edgeObservers
+
+    expect(edgeObservers.map(({ rootMargin }) => rootMargin)).toEqual(['-120px 0px 0px 0px', '0px 0px -176px 0px'])
     expect(areInert()).toEqual([false, false])
 
-    act(() => reportIntersection(true))
+    act(() => topEdge.report(true))
+
+    expect(areInert()).toEqual([false, false])
+
+    act(() => bottomEdge.report(true))
 
     expect(areInert()).toEqual([true, true])
 
-    act(() => reportIntersection(false))
+    act(() => topEdge.report(false))
 
     expect(areInert()).toEqual([false, false])
   })

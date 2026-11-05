@@ -5,9 +5,11 @@ interface DismissOnEscapeOptions {
   capture?: boolean
 }
 
+const openOverlays: symbol[] = []
+
 /**
- * Closes an overlay on Escape wherever the focus is, and returns the focus to `triggerRef`. An Escape that another
- * control handled is left alone, and this one is marked handled in turn
+ * Closes the overlay opened last on Escape wherever the focus is, and returns the focus to its `triggerRef`. An Escape
+ * that another control handled is left alone, and this one is marked handled in turn
  */
 export function useDismissOnEscape(
   isOpen: boolean,
@@ -18,8 +20,11 @@ export function useDismissOnEscape(
   useEffect(() => {
     if (!isOpen) return
 
+    const overlay = Symbol()
+    openOverlays.push(overlay)
+
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key !== 'Escape' || event.defaultPrevented) return
+      if (event.key !== 'Escape' || event.defaultPrevented || openOverlays.at(-1) !== overlay) return
 
       event.preventDefault()
       close()
@@ -28,6 +33,9 @@ export function useDismissOnEscape(
 
     document.addEventListener('keydown', onKeyDown, capture)
 
-    return () => document.removeEventListener('keydown', onKeyDown, capture)
+    return () => {
+      document.removeEventListener('keydown', onKeyDown, capture)
+      openOverlays.splice(openOverlays.indexOf(overlay), 1)
+    }
   }, [isOpen, close, triggerRef, capture])
 }

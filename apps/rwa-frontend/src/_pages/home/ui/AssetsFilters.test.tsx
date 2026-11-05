@@ -145,6 +145,21 @@ describe('AssetsFilters', () => {
       await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Filters' })).toBeNull())
       expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Filters' }))
     })
+
+    it('keeps the list search text after Escape closes the popover', async () => {
+      mockViewport(width)
+      renderFilters()
+
+      const panel = within(await openFilters())
+      const search = panel.getByRole('searchbox', { name: 'Search issuers…' })
+      fireEvent.change(search, { target: { value: 'Ondo' } })
+      fireEvent.keyDown(search, { key: 'Escape' })
+      await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Filters' })).toBeNull())
+
+      const reopened = within(await openFilters())
+
+      expect(reopened.getByRole('searchbox', { name: 'Search issuers…' })).toHaveProperty('value', 'Ondo')
+    })
   })
 
   it.each([
