@@ -8,12 +8,15 @@ import { TradeBarActions } from './TradeBarActions'
 import { tradeSideAtom } from '../model/tradeSelectionAtoms'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 
+import { mockViewport } from '@/shared/lib/testing'
+
 jest.mock('wagmi', () => ({ useChainId: jest.fn(), useConnection: jest.fn(), useSwitchChain: jest.fn() }))
 jest.mock('@/widgets/header', () => ({
+  WALLET_BAR_HEIGHT: 56,
   WalletBarSlot: ({ children }: { children: ReactNode }) => <div data-testid="wallet-bar">{children}</div>,
 }))
 
-let reportVisibleHeight: (height: number) => void = () => undefined
+let reportIntersection: (isIntersecting: boolean) => void = () => undefined
 let observerOptions: IntersectionObserverInit | undefined
 
 class MockIntersectionObserver {
@@ -22,8 +25,8 @@ class MockIntersectionObserver {
 
   constructor(callback: IntersectionObserverCallback, options?: IntersectionObserverInit) {
     observerOptions = options
-    reportVisibleHeight = (height) =>
-      callback([{ intersectionRect: { height } } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
+    reportIntersection = (isIntersecting) =>
+      callback([{ isIntersecting } as IntersectionObserverEntry], this as unknown as IntersectionObserver)
   }
 }
 
@@ -46,7 +49,7 @@ function TradeSection(): ReactNode {
 describe('TradeBarActions', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'IntersectionObserver', { value: MockIntersectionObserver })
-    Object.defineProperty(window, 'matchMedia', { value: () => ({ matches: true }) })
+    mockViewport(390)
   })
 
   function renderSection(): ReturnType<typeof createStore> {
@@ -67,18 +70,14 @@ describe('TradeBarActions', () => {
     const actions = [bar.getByRole('button', { name: 'Buy NVDA' }), bar.getByRole('button', { name: 'Sell NVDA' })]
     const areInert = (): boolean[] => actions.map((action) => action.closest('[inert]') !== null)
 
-    expect(observerOptions?.rootMargin).toBe('0px 0px -56px 0px')
+    expect(observerOptions?.rootMargin).toBe('-120px 0px -176px 0px')
     expect(areInert()).toEqual([false, false])
 
-    act(() => reportVisibleHeight(119))
-
-    expect(areInert()).toEqual([false, false])
-
-    act(() => reportVisibleHeight(120))
+    act(() => reportIntersection(true))
 
     expect(areInert()).toEqual([true, true])
 
-    act(() => reportVisibleHeight(0))
+    act(() => reportIntersection(false))
 
     expect(areInert()).toEqual([false, false])
   })

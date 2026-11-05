@@ -2,12 +2,16 @@ import { createStore, Provider } from 'jotai'
 
 import { QueryClient } from '@tanstack/query-core'
 
-import { act, fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
+import { fireEvent, render, type RenderResult, screen, waitFor, within } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { AssetsFilters } from './AssetsFilters'
+// Loaded up front, so that opening the drawer doesn't wait for its dynamic import
+import './AssetsFiltersDrawer'
 
 import type { RwaAssetsPage } from '@/entities/asset'
+
+import { mockViewport } from '@/shared/lib/testing'
 
 const ISSUERS = ['Coinbase', 'Ondo', 'Paxos', 'Reality', 'Tether', 'bStocks', 'xStocks']
 const CHAIN_IDS = [1, 56, 100, 137, 8453, 42161, 43114, 57073]
@@ -24,42 +28,10 @@ const ASSETS_PAGE: RwaAssetsPage = {
   degraded: false,
 }
 
+const NARROWEST = 320
 const PHONE = 390
 const TABLET = 800
 const DESKTOP = 1280
-
-type ChangeListener = () => void
-
-function mockViewport(initialWidth: number): (width: number) => void {
-  const listeners = new Map<ChangeListener, string>()
-  let width = initialWidth
-
-  const matchesAt = (query: string, atWidth: number): boolean => atWidth <= Number(query.match(/\d+/)?.[0])
-
-  Object.defineProperty(window, 'matchMedia', {
-    writable: true,
-    configurable: true,
-    value: (query: string) => ({
-      get matches() {
-        return matchesAt(query, width)
-      },
-      media: query,
-      addEventListener: (_: string, listener: ChangeListener) => listeners.set(listener, query),
-      removeEventListener: (_: string, listener: ChangeListener) => listeners.delete(listener),
-    }),
-  })
-
-  return (next) => {
-    const flipped = [...listeners].filter(([, query]) => matchesAt(query, width) !== matchesAt(query, next))
-
-    width = next
-
-    // Browsers fire each MediaQueryList separately and React commits between them, which can remove a later listener
-    flipped.forEach(([listener]) => {
-      if (listeners.has(listener)) act(() => listener())
-    })
-  }
-}
 
 async function openFilters(): Promise<HTMLElement> {
   await screen.findByText('128 assets')
@@ -88,29 +60,23 @@ describe('AssetsFilters', () => {
     localStorage.clear()
   })
 
+  it.each([
+    [NARROWEST, 'Search…'],
+    [PHONE, 'Search assets…'],
+    [TABLET, 'Search assets…'],
+    [DESKTOP, 'Search assets or tickers…'],
+  ])('fits the search placeholder at %ipx and keeps the names of the toolbar buttons', async (width, placeholder) => {
+    mockViewport(width)
+    renderFilters()
+
+    await screen.findByText('128 assets')
+
+    expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe(placeholder)
+    expect(screen.getByRole('button', { name: 'Watchlist' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Filters' })).toBeTruthy()
+  })
+
   describe('at phone width', () => {
-    it('shortens the search placeholder and keeps the names of the icon buttons', async () => {
-      mockViewport(PHONE)
-      renderFilters()
-
-      await screen.findByText('128 assets')
-
-      expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe(
-        'Search assets…',
-      )
-      expect(screen.getByRole('button', { name: 'Watchlist' })).toBeTruthy()
-      expect(screen.getByRole('button', { name: 'Filters' })).toBeTruthy()
-    })
-
-    it('shortens the search placeholder again at the narrowest width', async () => {
-      mockViewport(320)
-      renderFilters()
-
-      await screen.findByText('128 assets')
-
-      expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe('Search…')
-    })
-
     it('opens a drawer with every option and no list search', async () => {
       mockViewport(PHONE)
       renderFilters()
@@ -142,36 +108,14 @@ describe('AssetsFilters', () => {
       await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Filters' })).toBeNull())
       expect(document.activeElement).toBe(screen.getByRole('button', { name: /^Filters/, hidden: true }))
     })
-
-    it('points the trigger at the drawer only while it is open', async () => {
-      mockViewport(PHONE)
-      renderFilters()
-
-      await screen.findByText('128 assets')
-      const trigger = screen.getByRole('button', { name: 'Filters' })
-
-      expect(trigger.hasAttribute('aria-controls')).toBe(false)
-
-      const drawer = await openFilters()
-
-      expect(trigger.getAttribute('aria-controls')).toBe(drawer.id)
-    })
   })
 
-  describe('above phone width', () => {
-    it('keeps the full search placeholder', async () => {
-      mockViewport(DESKTOP)
-      renderFilters()
-
-      await screen.findByText('128 assets')
-
-      expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe(
-        'Search assets or tickers…',
-      )
-    })
-
+  describe.each([
+    ['tablet', TABLET],
+    ['desktop', DESKTOP],
+  ])('at %s width', (_, width) => {
     it('opens the popover with the search and folded list', async () => {
-      mockViewport(DESKTOP)
+      mockViewport(width)
       renderFilters()
 
       const panel = within(await openFilters())
@@ -182,7 +126,7 @@ describe('AssetsFilters', () => {
     })
 
     it('closes the popover on a press outside it', async () => {
-      mockViewport(DESKTOP)
+      mockViewport(width)
       renderFilters()
 
       await openFilters()
@@ -190,40 +134,44 @@ describe('AssetsFilters', () => {
 
       await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Filters' })).toBeNull())
     })
-  })
 
-  describe('at tablet width', () => {
-    it('shortens the search placeholder and keeps the names of the icon buttons', async () => {
-      mockViewport(TABLET)
-      renderFilters()
-
-      await screen.findByText('128 assets')
-
-      expect(screen.getByRole('searchbox', { name: 'Search assets' }).getAttribute('placeholder')).toBe(
-        'Search assets…',
-      )
-      expect(screen.getByRole('button', { name: 'Watchlist' })).toBeTruthy()
-    })
-
-    it('still opens the popover with the search and folded list', async () => {
-      mockViewport(TABLET)
-      renderFilters()
-
-      const panel = within(await openFilters())
-
-      expect(panel.getByRole('searchbox', { name: 'Search issuers…' })).toBeTruthy()
-      expect(panel.getByRole('button', { name: /^\+ 2 more:/ })).toBeTruthy()
-    })
-
-    it('keeps the popover open when the width changes without reaching phone width', async () => {
-      const setWidth = mockViewport(TABLET)
+    it('closes the popover on Escape, returning the focus to the trigger', async () => {
+      mockViewport(width)
       renderFilters()
 
       await openFilters()
-      setWidth(DESKTOP)
+      fireEvent.keyDown(document.body, { key: 'Escape' })
 
-      expect(screen.getByRole('dialog', { name: 'Filters' })).toBeTruthy()
+      await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Filters' })).toBeNull())
+      expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Filters' }))
     })
+  })
+
+  it.each([
+    ['drawer', PHONE],
+    ['popover', DESKTOP],
+  ])('points the trigger at the %s only while it is open', async (_, width) => {
+    mockViewport(width)
+    renderFilters()
+
+    await screen.findByText('128 assets')
+    const trigger = screen.getByRole('button', { name: 'Filters' })
+
+    expect(trigger.hasAttribute('aria-controls')).toBe(false)
+
+    const filters = await openFilters()
+
+    expect(trigger.getAttribute('aria-controls')).toBe(filters.id)
+  })
+
+  it('keeps the popover open when the width changes without reaching phone width', async () => {
+    const setWidth = mockViewport(TABLET)
+    renderFilters()
+
+    await openFilters()
+    setWidth(DESKTOP)
+
+    expect(screen.getByRole('dialog', { name: 'Filters' })).toBeTruthy()
   })
 
   it.each([

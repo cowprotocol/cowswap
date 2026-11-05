@@ -7,18 +7,15 @@ import styles from './TradeBarActions.module.css'
 import { TRADE_SIDES } from '../config/tradeSides'
 import { TRADE_WIDGET_ID, useJumpToTrade } from '../model/useSelectTradeToken'
 
-import { WalletBarSlot } from '@/widgets/header'
+import { WALLET_BAR_HEIGHT, WalletBarSlot } from '@/widgets/header'
 
-const WALLET_BAR_HEIGHT = 56
 const MIN_VISIBLE_WIDGET_HEIGHT = 120
-const VISIBILITY_STEPS = Array.from({ length: 101 }, (_, step) => step / 100)
 
 interface TradeBarActionsProps {
   ticker: string
   widgetRef: RefObject<HTMLElement | null>
 }
 
-/** Buy and Sell in the wallet bar, shown while the trade widget is out of view */
 export function TradeBarActions({ ticker, widgetRef }: TradeBarActionsProps): ReactNode {
   const jumpToTrade = useJumpToTrade()
   const isWidgetInView = useIsWidgetInView(widgetRef)
@@ -51,11 +48,10 @@ function useIsWidgetInView(widgetRef: RefObject<HTMLElement | null>): boolean {
     const widget = widgetRef.current
     if (!widget) return
 
-    const observer = new IntersectionObserver(
-      (entries) => setIsInView((entries.at(-1)?.intersectionRect.height ?? 0) >= MIN_VISIBLE_WIDGET_HEIGHT),
-      // Every 1% step reports the height that shows above the bar, about every 11px of the widget
-      { rootMargin: `0px 0px -${WALLET_BAR_HEIGHT}px 0px`, threshold: VISIBILITY_STEPS },
-    )
+    const observer = new IntersectionObserver((entries) => setIsInView(entries.at(-1)?.isIntersecting ?? false), {
+      // Inset from both visible edges by the minimum height, so the widget meets this band once that much of it shows
+      rootMargin: `-${MIN_VISIBLE_WIDGET_HEIGHT}px 0px -${WALLET_BAR_HEIGHT + MIN_VISIBLE_WIDGET_HEIGHT}px 0px`,
+    })
     observer.observe(widget)
 
     return () => observer.disconnect()
