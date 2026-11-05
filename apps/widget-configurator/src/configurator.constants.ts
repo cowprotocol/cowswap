@@ -185,6 +185,7 @@ export const DEFAULT_CONFIGURATOR_FORM_VALUES: ConfiguratorFormValues = {
   hideRecentTokens: false,
   hideFavoriteTokens: false,
   hideBridgeInfo: false,
+  hideWaitAndSave: false,
   hideWrapBanner: false,
   hideOrdersTable: false,
   disableWindowOpen: false,

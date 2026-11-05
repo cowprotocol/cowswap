@@ -35,6 +35,9 @@ describe('en-US catalog', () => {
       'Code <0>{code}</0> is linked for the next {timeCapDays, plural, one {# day} few {# days} many {# days} other {# days}}',
       '{ordersCount, plural, one {Are you sure you want to cancel # order?} few {Are you sure you want to cancel # orders?} many {Are you sure you want to cancel # orders?} other {Are you sure you want to cancel # orders?}}',
       '{ordersToCancelCount, plural, one {Cancel # selected} few {Cancel # selected} many {Cancel # selected} other {Cancel # selected}}',
+      '{competedCount, plural, one {# solver competed} few {# solvers competed} many {# solvers competed} other {# solvers competed}}',
+      '{solversLength, plural, one {# solver competed for your order} few {# solvers competed for your order} many {# solvers competed for your order} other {# solvers competed for your order}}',
+      '{total, plural, one {# solver} few {# solvers} many {# solvers} other {# solvers}}',
     ]
 
     expect(expected.filter((msgId) => !liveMsgIds.includes(msgId))).toEqual([])

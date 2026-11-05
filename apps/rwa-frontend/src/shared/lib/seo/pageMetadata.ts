@@ -19,7 +19,7 @@ interface PageMetadataParams {
   image?: PageImage
 }
 
-export const SITE_IMAGE: PageImage = { path: '/og-image', alt: `${SITE_NAME}: tokenized stocks and ETFs` }
+export const SITE_IMAGE: PageImage = { path: '/og-image', alt: `${SITE_NAME}: tokens referencing stocks and ETFs` }
 
 /**
  * `openGraph` and `twitter` of a page replace the root layout ones, so every page sets all their fields.

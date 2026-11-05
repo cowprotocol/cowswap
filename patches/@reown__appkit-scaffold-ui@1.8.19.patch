@@ -1,0 +1,59 @@
+diff --git a/dist/esm/src/views/w3m-connecting-external-view/index.js b/dist/esm/src/views/w3m-connecting-external-view/index.js
+index 72701d9..5695026 100644
+--- a/dist/esm/src/views/w3m-connecting-external-view/index.js
++++ b/dist/esm/src/views/w3m-connecting-external-view/index.js
+@@ -21,7 +21,7 @@ let W3mConnectingExternalView = class W3mConnectingExternalView extends W3mConne
+             throw new Error('w3m-connecting-view: No connector provided');
+         }
+         const namespace = this.connector?.chain;
+-        if (this.isAlreadyConnected(this.connector)) {
++        if (this.isLinkingBlocked(this.connector)) {
+             this.secondaryBtnLabel = undefined;
+             this.label = `This account is already linked, change your account in ${this.connector.name}`;
+             this.secondaryLabel = `To link a new account, open ${this.connector.name} and switch to the account you want to link`;
+@@ -62,18 +62,26 @@ let W3mConnectingExternalView = class W3mConnectingExternalView extends W3mConne
+         this.externalViewUnsubscribe.forEach(unsubscribe => unsubscribe());
+     }
+     async onConnectProxy() {
++        const previousActiveConnectorId = this.currentActiveConnectorId;
+         try {
+             this.error = false;
+             if (this.connector) {
+-                if (this.isAlreadyConnected(this.connector)) {
++                if (this.isLinkingBlocked(this.connector)) {
+                     return;
+                 }
+                 if (this.connector.id !== CommonConstantsUtil.CONNECTOR_ID.COINBASE_SDK || !this.error) {
++                    /*
++                     * The activeConnectorIds subscription below only reacts when the id *changes*.
++                     * Reconnecting the wallet whose id is already active writes the identical id, so
++                     * without this reset the connection succeeds while the user stays on this view.
++                     */
++                    this.currentActiveConnectorId = undefined;
+                     await ConnectionController.connectExternal(this.connector, this.connector.chain);
+                 }
+             }
+         }
+         catch (error) {
++            this.currentActiveConnectorId = previousActiveConnectorId;
+             const isUserRejectedRequestError = error instanceof AppKitError &&
+                 error.originalName === ErrorUtil.PROVIDER_RPC_ERROR_NAME.USER_REJECTED_REQUEST;
+             if (isUserRejectedRequestError) {
+@@ -123,6 +131,17 @@ let W3mConnectingExternalView = class W3mConnectingExternalView extends W3mConne
+             }
+         }
+     }
++    isLinkingBlocked(connector) {
++        /*
++         * "Already linked" only has a meaning while multiWallet lets an account hold several
++         * wallets; without it there is no flow to link another account, so refusing the click just
++         * strands the user. A connection record outlives a restore that produced no account — the
++         * adapters re-add records from storage on every boot and disconnectConnector() skips
++         * removing them while the namespace has no address — which would otherwise make
++         * onConnectProxy() a permanent no-op for that wallet.
++         */
++        return Boolean(this.remoteFeatures?.multiWallet) && this.isAlreadyConnected(connector);
++    }
+     isAlreadyConnected(connector) {
+         return (Boolean(connector) &&
+             this.connectionsByNamespace.some(c => HelpersUtil.isLowerCaseMatch(c.connectorId, connector.id)));

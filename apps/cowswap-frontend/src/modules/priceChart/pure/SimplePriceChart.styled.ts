@@ -30,6 +30,7 @@ export const OverlayState = styled.div`
   position: absolute;
   inset: 0;
   z-index: 3;
+  border-radius: inherit;
   display: grid;
   place-items: center;
   padding: 24px;

@@ -21,6 +21,7 @@ const MARKET: RwaMarketData = {
   volume24h: 2291.01,
   updatedAt: '2026-10-19T08:01:30Z',
   tokens: {},
+  sharesPerToken: {},
 }
 
 const ASSET: RwaAssetResponse = {
@@ -31,14 +32,17 @@ const ASSET: RwaAssetResponse = {
   priority: 0,
   tokens: [],
   market: MARKET,
+  tradingPause: null,
   degraded: false,
 }
 
+const UPDATED_SECONDS = Date.parse(MARKET.updatedAt ?? '') / 1000
+
 const POINTS: RwaChartPoint[] = [
-  { time: 1, value: 400 },
-  { time: 2, value: 410 },
-  { time: 3, value: 395 },
-  { time: 4, value: 404 },
+  { time: UPDATED_SECONDS - 4 * 3600, value: 400 },
+  { time: UPDATED_SECONDS - 3 * 3600, value: 410 },
+  { time: UPDATED_SECONDS - 2 * 3600, value: 395 },
+  { time: UPDATED_SECONDS - 3600, value: 404 },
 ]
 
 type FetchResult = Promise<object>

@@ -42,6 +42,7 @@ describe('toAssetSummaries', () => {
             symbol: 'NVDAon',
             decimals: 18,
             issuer: 'Ondo',
+            coingeckoId: 'nvidia-ondo-tokenized-stock',
           },
         ],
       },

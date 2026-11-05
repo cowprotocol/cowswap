@@ -23,6 +23,7 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   : undefined
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
+export const appSignerAccountAtom = atom<string | undefined>(undefined)
 
 function getInitialEvmChainId(): EvmChains {
   const urlChainId = getCurrentChainIdFromUrl()
@@ -61,6 +62,7 @@ export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
   const setAppSigner = useSetAtom(appSignerAtom)
+  const setAppSignerAccount = useSetAtom(appSignerAccountAtom)
 
   useEffect(() => {
     if (!publicClient) return
@@ -69,8 +71,9 @@ export function CowSdkUpdater(): null {
       const adapter = new ViemAdapter({ provider: publicClient, walletClient })
       setGlobalAdapter(adapter as AbstractProviderAdapter)
       setAppSigner(adapter.signer)
+      setAppSignerAccount(walletClient.account.address)
     }
-  }, [publicClient, walletClient, setAppSigner])
+  }, [publicClient, walletClient, setAppSigner, setAppSignerAccount])
 
   return null
 }

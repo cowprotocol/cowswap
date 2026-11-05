@@ -108,6 +108,28 @@ function ProgressContent({
   auctionValidFrom,
   onAuctionRemainingChange,
 }: ProgressContentProps): ReactNode {
+  const skipLayoutGate =
+    stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
+
+  const section = stepName ? (
+    <ProgressTopSection
+      stepName={stepName}
+      order={order}
+      countdown={countdown}
+      chainId={chainId}
+      randomImage={randomImage}
+      surplusPercentValue={surplusPercentValue}
+      randomBenefit={randomBenefit}
+      shouldShowSurplus={shouldShowSurplus}
+      auctionValidFrom={auctionValidFrom}
+      onAuctionRemainingChange={onAuctionRemainingChange}
+    />
+  ) : null
+
+  if (skipLayoutGate) {
+    return section
+  }
+
   if (!isLayoutReady) {
     return <ProgressSkeleton />
   }
@@ -129,20 +151,7 @@ function ProgressContent({
           exit={{ opacity: 0, width: '100%' }}
           style={{ width: '100%' }}
         >
-          {stepName && (
-            <ProgressTopSection
-              stepName={stepName}
-              order={order}
-              countdown={countdown}
-              chainId={chainId}
-              randomImage={randomImage}
-              surplusPercentValue={surplusPercentValue}
-              randomBenefit={randomBenefit}
-              shouldShowSurplus={shouldShowSurplus}
-              auctionValidFrom={auctionValidFrom}
-              onAuctionRemainingChange={onAuctionRemainingChange}
-            />
-          )}
+          {section}
         </MotionDiv>
       </AnimatePresence>
     </Suspense>

@@ -15,7 +15,7 @@ const SORT_VALUE_GETTERS: Record<RwaSortField, SortValueGetter> = {
 }
 
 export function countByType(assets: RwaAsset[], filter: RwaAssetsFilter): Record<RwaAssetType, number> {
-  const counts: Record<RwaAssetType, number> = { stock: 0, index: 0 }
+  const counts: Record<RwaAssetType, number> = { stock: 0, index: 0, commodity: 0 }
 
   for (const asset of filterAssets(assets, { ...filter, type: undefined })) counts[asset.type]++
 

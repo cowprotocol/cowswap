@@ -13,6 +13,7 @@ import { OptionsController } from '@reown/appkit-controllers'
 
 import { getConnectors } from './getConnectors'
 import { getReownDefaultNetwork } from './getReownDefaultNetwork'
+import { installWalletTransactionGuard, type WalletTransactionGuard } from './walletTransactionGuard'
 
 import { bindActiveProvider } from '../bindActiveProvider'
 import { IS_SOLANA_WALLET_ENABLED } from '../constants'
@@ -209,5 +210,10 @@ if (IS_SOLANA_WALLET_ENABLED) {
 }
 
 const { wagmiConfig } = wagmiAdapter
+
+// Connector clients are patched only once a guard is set, so apps without a guard keep wagmi's default client
+export function setWalletTransactionGuard(guard: WalletTransactionGuard): void {
+  installWalletTransactionGuard(wagmiConfig, guard)
+}
 
 export { wagmiConfig, wagmiAdapter, reownAppKit, wagmiStorage }

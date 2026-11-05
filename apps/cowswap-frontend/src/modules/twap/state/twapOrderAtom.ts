@@ -4,6 +4,8 @@ import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'
 
+export const twapRateInvertedAtom = atom(false)
+
 export const twapDeadlineAtom = atom<number>((get) => {
   const { isCustomDeadline, customDeadline, deadline } = get(twapOrdersSettingsAtom)
 

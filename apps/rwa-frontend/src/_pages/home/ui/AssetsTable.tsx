@@ -9,14 +9,23 @@ import styles from './AssetsTable.module.css'
 import { Sparkline, type SparklineTone } from './Sparkline'
 import { StarIcon } from './StarIcon'
 
+import { MARKET_DATA_HINT } from '../lib/marketDataHint'
 import { assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
 
-import { getDefaultSortOrder, RWA_ASSET_TYPE_LABELS, type RwaAssetListItem, type RwaSortField } from '@/entities/asset'
-import { formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
+import {
+  getDefaultSortOrder,
+  IssuersCount,
+  RWA_ASSET_TYPE_LABELS,
+  type RwaAssetListItem,
+  type RwaSortField,
+} from '@/entities/asset'
+import { EMPTY_VALUE, formatCompactUsd, formatPercent, formatUsd } from '@/shared/lib/format'
+import { InfoIcon } from '@/shared/ui/icons'
 import { NetworkLogos } from '@/shared/ui/network-logos'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
 
 interface AssetsTableProps {
   id: string
@@ -28,6 +37,7 @@ interface SortableHeaderProps {
   title: string
   numeric?: boolean
   className?: string
+  hint?: string
 }
 
 export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
@@ -40,10 +50,10 @@ export function AssetsTable({ id, assets }: AssetsTableProps): ReactNode {
               <span className={styles.visuallyHidden}>Watchlist</span>
             </th>
             <SortableHeader field="title" title="Asset" />
-            <SortableHeader field="price" title="Stock price" numeric />
+            <SortableHeader field="price" title="Reference price" numeric hint={MARKET_DATA_HINT} />
             <SortableHeader field="change24h" title="24H change" numeric />
             <SortableHeader field="volume24h" title="24h volume" numeric className={styles.optional} />
-            <SortableHeader field="marketCap" title="Market cap" numeric className={styles.optional} />
+            <SortableHeader field="marketCap" title="Tokenized market cap" numeric className={styles.optional} />
             <th className={`${styles.numeric} ${styles.chartColumn}`}>24H chart</th>
           </tr>
         </thead>
@@ -75,7 +85,7 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
             <div className={styles.assetMeta}>
               <span>{asset.ticker}</span>
               <span className={styles.assetType}>{RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-              <IssuersCount asset={asset} />
+              <IssuersCount className={styles.issuers} tokens={asset.tokens} />
               <NetworkLogos chainIds={[...new Set(asset.tokens.map((token) => token.chainId))]} />
             </div>
           </div>
@@ -87,7 +97,7 @@ function AssetRow({ asset }: { asset: RwaAssetListItem }): ReactNode {
       <td className={`${styles.numeric} ${styles.optional}`}>{formatCompactUsd(asset.market?.marketCap)}</td>
       <td className={`${styles.numeric} ${styles.chartColumn}`}>
         <span className={styles.sparkline}>
-          <Sparkline series={asset.series} tone={getTone(change)} />
+          <Sparkline series={asset.series} tone={getTone(change)} placeholder={EMPTY_VALUE} />
         </span>
       </td>
     </tr>
@@ -106,17 +116,7 @@ function getTone(change: number | null | undefined): SparklineTone {
   return change > 0 ? 'positive' : 'negative'
 }
 
-function IssuersCount({ asset }: { asset: RwaAssetListItem }): ReactNode {
-  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
-
-  return (
-    <span className={styles.issuers} title={issuers.join(', ')}>
-      {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-    </span>
-  )
-}
-
-function SortableHeader({ field, title, numeric = false, className }: SortableHeaderProps): ReactNode {
+function SortableHeader({ field, title, numeric = false, className, hint }: SortableHeaderProps): ReactNode {
   const [{ sort, order }, setSort] = useAtom(assetsSortAtom)
   const setPage = useSetAtom(assetsPageAtom)
   const isActive = sort === field
@@ -137,6 +137,13 @@ function SortableHeader({ field, title, numeric = false, className }: SortableHe
         {isActive && <span aria-hidden="true">{order === 'asc' ? '↑' : '↓'}</span>}
         {title}
       </button>
+      {hint && (
+        <Tooltip className={styles.info} content={hint}>
+          <span role="img" aria-label="About market data">
+            <InfoIcon />
+          </span>
+        </Tooltip>
+      )}
     </th>
   )
 }

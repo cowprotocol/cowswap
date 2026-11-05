@@ -166,6 +166,7 @@ export enum UI {
 
   // Font Sizes:
   FONT_SIZE_SMALLER = '--cow-font-size-smaller',
+  FONT_SIZE_OVERLINE = '--cow-font-size-overline',
   FONT_SIZE_SMALL = '--cow-font-size-small',
   FONT_SIZE_SMALL_PLUS = '--cow-font-size-small-plus',
   FONT_SIZE_NORMAL = '--cow-font-size-normal',

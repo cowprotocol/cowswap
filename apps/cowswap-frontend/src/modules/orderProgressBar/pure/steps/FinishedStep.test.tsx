@@ -1,0 +1,622 @@
+import { ReactElement, ReactNode } from 'react'
+
+import { i18n } from '@lingui/core'
+import { I18nProvider } from '@lingui/react'
+
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount } from '@cowprotocol/currency'
+
+import { render, RenderResult, screen } from '@testing-library/react'
+import { useInjectedWidgetParams } from 'entities/injectedWidget'
+import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
+import { getCowswapTheme } from 'theme'
+
+import { Order } from 'legacy/state/orders/actions'
+
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+
+import { FinishedStep, FinishedSuccessHeading } from './FinishedStep'
+
+import { getOrderMock } from '../../../../mocks/orderMock'
+import { OrderProgressBarStepName } from '../../types'
+
+jest.mock('react-inlinesvg', () => ({
+  __esModule: true,
+  default: () => <span data-testid="inline-svg" />,
+}))
+
+jest.mock('modules/trade', () => ({
+  BaseTradeConfirmation: ({
+    heading,
+    tokenPair,
+    children,
+  }: {
+    heading?: { title: ReactNode; subtitle?: ReactNode }
+    tokenPair?: {
+      footer?: ReactNode
+      inputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
+      outputCurrencyInfo?: { secondaryAmount?: { prefix?: ReactNode; tooltip?: ReactNode } }
+    }
+    children?: ReactNode
+  }) => (
+    <div data-testid="base-trade-confirmation">
+      {heading ? (
+        <div data-testid="confirmation-success-heading">
+          <div>{heading.title}</div>
+          <div>{heading.subtitle}</div>
+        </div>
+      ) : null}
+      {tokenPair ? (
+        <div data-testid="trade-token-pair">
+          {tokenPair.inputCurrencyInfo?.secondaryAmount ? (
+            <div data-testid="sold-surplus">
+              {tokenPair.inputCurrencyInfo.secondaryAmount.prefix}
+              {tokenPair.inputCurrencyInfo.secondaryAmount.tooltip}
+            </div>
+          ) : null}
+          {tokenPair.outputCurrencyInfo?.secondaryAmount ? (
+            <div data-testid="received-surplus">
+              {tokenPair.outputCurrencyInfo.secondaryAmount.prefix}
+              {tokenPair.outputCurrencyInfo.secondaryAmount.tooltip}
+            </div>
+          ) : null}
+          {tokenPair.footer}
+        </div>
+      ) : null}
+      {children}
+    </div>
+  ),
+  CowParticipationFooter: ({ kind }: { kind: string }) => <div data-testid="cow-participation-footer">{kind}</div>,
+}))
+
+jest.mock('../SolverCompetitionExpand/SolverCompetitionExpand.pure', () => ({
+  SolverCompetitionExpand: () => <div data-testid="solver-competition-expand" />,
+}))
+
+jest.mock('../SolverAuctionResult/SolverAuctionResult.pure', () => ({
+  SolverAuctionResult: () => <div data-testid="solver-auction-result" />,
+}))
+
+jest.mock('../WaitAndSaveOutcome/WaitAndSaveOutcome.pure', () => ({
+  WaitAndSaveOutcome: ({ gainAmount }: { gainAmount: string }) => (
+    <div data-testid="wait-and-save-outcome">{gainAmount}</div>
+  ),
+}))
+
+jest.mock('entities/injectedWidget', () => ({
+  useInjectedWidgetParams: jest.fn(() => ({ disablePostTradeTips: false })),
+}))
+
+jest.mock('../../hooks/useWithConfetti', () => ({
+  useWithConfetti: () => false,
+}))
+
+i18n.load('en-US', {})
+i18n.activate('en-US')
+
+beforeEach(() => {
+  jest.mocked(useInjectedWidgetParams).mockReturnValue({ disablePostTradeTips: false })
+})
+
+beforeAll(() => {
+  window.matchMedia =
+    window.matchMedia ||
+    (() =>
+      ({
+        matches: false,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+      }) as unknown as MediaQueryList)
+})
+
+function getSharedText(buttonName: string): string | null {
+  const href = screen.getByRole('link', { name: buttonName }).getAttribute('href')
+
+  if (!href) {
+    throw new Error('Share link has no URL')
+  }
+
+  return new URL(href).searchParams.get('text')
+}
+
+function renderFinished(element: ReactElement): RenderResult {
+  return render(
+    <StyledComponentsThemeProvider theme={getCowswapTheme(false)}>
+      <I18nProvider i18n={i18n}>{element}</I18nProvider>
+    </StyledComponentsThemeProvider>,
+  )
+}
+
+const order = {
+  ...getOrderMock(SupportedChainId.MAINNET),
+  apiAdditionalInfo: {
+    executedBuyAmount: '1000000000000000000',
+    executedSellAmount: '2000000000000000000',
+  },
+} as Order
+
+const surplusData: SurplusData = {
+  surplusAmount: CurrencyAmount.fromRawAmount(order.outputToken, '2470000'),
+  surplusFiatValue: CurrencyAmount.fromRawAmount(order.outputToken, '7610000'),
+  surplusToken: order.outputToken,
+  surplusPercent: '0.51',
+  showFiatValue: true,
+  showSurplus: true,
+  isReady: true,
+}
+
+describe('FinishedSuccessHeading', () => {
+  it('renders the success heading for Modal.Header chrome', () => {
+    renderFinished(<FinishedSuccessHeading order={order} chainId={SupportedChainId.MAINNET} />)
+
+    const heading = screen.getByTestId('confirmation-success-heading')
+    expect(heading.textContent).toContain('Swap complete')
+    expect(heading.textContent).toMatch(/Your .+ is in your wallet/)
+    expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
+  })
+
+  it('uses Order complete for cancellation-failed finished chrome', () => {
+    renderFinished(
+      <FinishedSuccessHeading
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        stepName={OrderProgressBarStepName.CANCELLATION_FAILED}
+      />,
+    )
+
+    expect(screen.getByTestId('confirmation-success-heading').textContent).toContain('Order complete')
+    expect(screen.getByTestId('confirmation-success-heading').textContent).not.toContain('Swap complete')
+  })
+
+  it('uses an explicit success title when provided', () => {
+    renderFinished(<FinishedSuccessHeading order={order} chainId={SupportedChainId.MAINNET} title="Order complete" />)
+
+    expect(screen.getByTestId('confirmation-success-heading').textContent).toContain('Order complete')
+  })
+
+  it('links a custom recipient address to the block explorer', () => {
+    const receiver = '0xdd9EB88C5C6D2A85A08a96c7F0ccccE27Cb843cb'
+    renderFinished(<FinishedSuccessHeading order={{ ...order, receiver }} chainId={SupportedChainId.MAINNET} />)
+
+    const heading = screen.getByTestId('confirmation-success-heading')
+    expect(heading.textContent).toMatch(/was sent to/)
+    expect(screen.getByRole('link', { name: '0xdd9E...43cb' }).getAttribute('href')).toBe(
+      `https://etherscan.io/address/${receiver}`,
+    )
+    expect(screen.getByRole('link', { name: /View on Explorer/i }).getAttribute('href')).toContain('/orders/')
+  })
+})
+
+describe('FinishedStep', () => {
+  it('renders the expanded auction instead of the solver toggle when there is no surplus', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solvers={[
+          { solver: 'tsolver', displayName: 'Tsolver' },
+          { solver: 'quasi', displayName: 'Quasi' },
+        ]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('base-trade-confirmation')).toBeTruthy()
+    expect(screen.queryByTestId('confirmation-success-heading')).toBeNull()
+    expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByText('Share this swap')).toBeTruthy()
+    expect(getSharedText('Share this swap')).toBe(
+      '2 solvers competed for my swap on @CoWSwap. Tsolver won 🐮⚡\n\nStart swapping on swap.cow.fi',
+    )
+  })
+
+  it('keeps the token pair mounted while executed amounts are still zero', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={
+          {
+            ...order,
+            apiAdditionalInfo: {
+              executedBuyAmount: '0',
+              executedSellAmount: '0',
+            },
+          } as Order
+        }
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('trade-token-pair')).toBeTruthy()
+  })
+
+  it('omits solver expand and auction when there are no solvers', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div />
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+  })
+
+  it('keeps surplus tips and omits WaitAndSaveOutcome by default', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('cow-participation-footer')).toBeNull()
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+  })
+
+  it('shows surplus under You received and keeps surplus tips on a regular sell swap', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
+    expect(screen.getByTestId('received-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('received-surplus').textContent).toContain(
+      'The extra amount you received compared to your limit price.',
+    )
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just got an extra 2.47 USDC on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+
+    const tips = screen.getByTestId('finished-tips')
+    const solvers = screen.getByTestId('solver-competition-expand')
+    expect(tips.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('shows surplus under You sold for a buy order', () => {
+    const buyOrder = {
+      ...order,
+      kind: OrderKind.BUY,
+    } as Order
+    const buySurplusData: SurplusData = {
+      ...surplusData,
+      surplusAmount: CurrencyAmount.fromRawAmount(buyOrder.inputToken, '2470000000000000000'),
+      surplusFiatValue: CurrencyAmount.fromRawAmount(buyOrder.inputToken, '7610000'),
+      surplusToken: buyOrder.inputToken,
+    }
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={buyOrder}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={buySurplusData}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.getByTestId('sold-surplus').textContent).toContain('saved')
+    expect(screen.getByTestId('sold-surplus').textContent).not.toContain('+')
+    expect(screen.getByTestId('sold-surplus').textContent).toContain(
+      'The amount you saved compared to your limit price.',
+    )
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just saved an extra 2.47 COW on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+  })
+
+  it('holds a surplus-sized placeholder while the solver competition is still loading', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solverCompetitionPending
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('confirmation-outcome-loading')).toBeTruthy()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+    expect(screen.queryByRole('link', { name: /Share this/ })).toBeNull()
+  })
+
+  it('renders the green card and CoW strip instead of surplus when Wait & Save beat trading alone', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        waitAndSave={{
+          outcome: {
+            gainAmount: '1.46',
+            gainFiat: '$4.50',
+            gainNumeric: 1.46,
+            gainPercent: 0.3,
+            tokenSymbol: 'RAI',
+            tradingAloneAmount: '485.72',
+            tradingAloneNumeric: 485.72,
+          },
+          strip: { hasAloneBid: true, kind: 'cow' },
+        }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('cow')
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toBe('1.46')
+    expect(screen.queryByTestId('sold-surplus')).toBeNull()
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByText('Share this win!')).toBeTruthy()
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just got an extra 1.46 RAI with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+
+    const confirmation = screen.getByTestId('base-trade-confirmation')
+    const outcome = screen.getByTestId('wait-and-save-outcome')
+    const solvers = screen.getByTestId('solver-competition-expand')
+    expect(confirmation.compareDocumentPosition(outcome) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(outcome.compareDocumentPosition(solvers) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('keeps surplus and names the batch when Wait & Save has no gain to show', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+        waitAndSave={{ strip: { companionCount: 3, hasAloneBid: false, kind: 'batched' } }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('batched')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.getByTestId('received-surplus').textContent).toContain('+')
+    expect(screen.getByTestId('finished-tips').textContent).toBe('Tips')
+    expect(screen.getByTestId('solver-competition-expand')).toBeTruthy()
+    expect(screen.queryByTestId('solver-auction-result')).toBeNull()
+  })
+
+  it('shows the joined strip and the solver auction when there is no gain and no surplus', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ strip: { comparisonUnavailable: true, hasAloneBid: false, kind: 'joined' } }}
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div data-testid="finished-tips">Tips</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('cow-participation-footer').textContent).toBe('joined')
+    expect(screen.queryByTestId('wait-and-save-outcome')).toBeNull()
+    expect(screen.queryByTestId('received-surplus')).toBeNull()
+    expect(screen.queryByTestId('finished-tips')).toBeNull()
+    expect(screen.getByTestId('solver-auction-result')).toBeTruthy()
+    expect(screen.queryByTestId('solver-competition-expand')).toBeNull()
+    expect(screen.getByText('Share this swap')).toBeTruthy()
+  })
+})
+
+describe('FinishedStep sharing', () => {
+  it('shares a generic swap message when only one solver bid', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solvers={[{ solver: 'tsolver', displayName: 'Tsolver' }]}
+        totalSolvers={10}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(getSharedText('Share this swap')).toBe(
+      'Solvers compete for every swap on @CoWSwap 🐮⚡\n\nStart swapping on swap.cow.fi',
+    )
+  })
+
+  it('shares a generic message without exposing an unknown winner address', () => {
+    const unknownSolver = '0x1111111111111111111111111111111111111111'
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solvers={[{ solver: unknownSolver }, { solver: 'quasi', displayName: 'Quasi' }]}
+        totalSolvers={10}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    const sharedText = getSharedText('Share this swap')
+
+    expect(sharedText).toBe('Solvers compete for every swap on @CoWSwap 🐮⚡\n\nStart swapping on swap.cow.fi')
+    expect(sharedText).not.toContain(unknownSolver)
+    expect(sharedText).not.toContain('Quasi')
+  })
+
+  it('shares the visible tip when auction data is unavailable', () => {
+    const benefit = 'CoW Protocol is MEV protected'
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit={benefit}
+      >
+        <div data-testid="finished-tips">{benefit}</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('finished-tips').textContent).toBe(benefit)
+    expect(getSharedText('Share this tip!')).toBe(
+      `Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`,
+    )
+  })
+
+  it('shares the Wait & save gain when there is no surplus', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{
+          outcome: {
+            gainAmount: '1.46',
+            gainFiat: '$4.50',
+            gainNumeric: 1.46,
+            gainPercent: 0.3,
+            tokenSymbol: 'RAI',
+            tradingAloneAmount: '485.72',
+            tradingAloneNumeric: 485.72,
+          },
+          strip: { hasAloneBid: true, kind: 'cow' },
+        }}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('wait-and-save-outcome').textContent).toBe('1.46')
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just got an extra 1.46 RAI with Wait & save on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+  })
+
+  it('hides sharing while Wait & save is loading even with previous solvers available', () => {
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        waitAndSave={{ pending: true }}
+        solvers={[
+          { solver: 'tsolver', displayName: 'Tsolver' },
+          { solver: 'quasi', displayName: 'Quasi' },
+        ]}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.getByTestId('confirmation-outcome-loading')).toBeTruthy()
+    expect(screen.queryByRole('link', { name: /Share this/ })).toBeNull()
+  })
+
+  it('respects widget settings that disable post-trade tips and non-win sharing', () => {
+    jest.mocked(useInjectedWidgetParams).mockReturnValue({ disablePostTradeTips: true })
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        solvers={[
+          { solver: 'tsolver', displayName: 'Tsolver' },
+          { solver: 'quasi', displayName: 'Quasi' },
+        ]}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(screen.queryByRole('link', { name: /Share this/ })).toBeNull()
+  })
+
+  it('keeps win sharing available when post-trade tips are disabled', () => {
+    jest.mocked(useInjectedWidgetParams).mockReturnValue({ disablePostTradeTips: true })
+
+    renderFinished(
+      <FinishedStep
+        stepName={OrderProgressBarStepName.FINISHED}
+        order={order}
+        chainId={SupportedChainId.MAINNET}
+        randomBenefit="CoW Protocol is MEV protected"
+        surplusData={surplusData}
+      >
+        <div>CoW Protocol is MEV protected</div>
+      </FinishedStep>,
+    )
+
+    expect(getSharedText('Share this win!')).toBe(
+      'Hey, I just got an extra 2.47 USDC on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi',
+    )
+  })
+})

@@ -1,3 +1,5 @@
+export { CheckIcon } from './CheckIcon'
 export { ChevronDownIcon } from './ChevronDownIcon'
 export { InfoIcon } from './InfoIcon'
+export { MoreIcon } from './MoreIcon'
 export { SearchIcon } from './SearchIcon'

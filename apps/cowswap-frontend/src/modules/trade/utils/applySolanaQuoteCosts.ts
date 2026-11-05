@@ -1,29 +1,32 @@
 import type { SolanaQuoteCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 
-import { positiveIntegerAtom } from './positiveIntegerAtom'
+import { getSolanaCostAtoms } from './getSolanaCostAtoms'
 
 import type { ReceiveAmountInfo } from '../types'
 
 /**
- * Restores the amounts a Solana quote had before the costs it already netted out of them.
+ * Reports a Solana quote's costs, and restores the amounts it netted out of them.
  *
  * The API answers with the amounts the trade settles at — a sell order's `buyAmount` has the costs
  * subtracted, a buy order's `sellAmount` has them added on top — and reports those costs separately,
  * in atoms of the token they were taken from. Only the pre-cost stages move here: `afterNetworkCosts`
  * onwards, the signed amounts included, is what the quote already said.
+ *
+ * @param feeReported - whether the quote already carries the cost as `feeAmount`. Then the SDK has
+ *   restored the pre-cost stages from it and restoring them again would count the cost twice; the cost
+ *   breakdown is still read from `costs`, which is exact and in the token the cut comes from.
  */
-export function applySolanaQuoteCosts(info: ReceiveAmountInfo, costs?: SolanaQuoteCosts): ReceiveAmountInfo {
+export function applySolanaQuoteCosts(
+  info: ReceiveAmountInfo,
+  costs?: SolanaQuoteCosts,
+  feeReported = false,
+): ReceiveAmountInfo {
   if (!costs) return info
 
   const { isSell } = info
   const costsCurrency = isSell ? info.beforeAllFees.buyAmount.currency : info.beforeAllFees.sellAmount.currency
-  const networkFeeAtoms = positiveIntegerAtom(costs.networkFees) ?? 0n
-  const accountRentAtoms = positiveIntegerAtom(costs.buyTokenAtaCosts) ?? 0n
-  // Summed rather than read off `costs.total`, which also carries `costs.protocolFee`: a protocol fee
-  // reaches these stages through `protocolFeeBps`, which `getQuoteAmountsAndCosts` has already added
-  // back. Taking the total would count it twice and still leave it off the breakdown.
-  const total = networkFeeAtoms + accountRentAtoms
+  const { networkFeeAtoms, accountRentAtoms, total } = getSolanaCostAtoms(costs)
 
   if (total === 0n) return info
 
@@ -40,6 +43,8 @@ export function applySolanaQuoteCosts(info: ReceiveAmountInfo, costs?: SolanaQuo
       accountRentFee,
     },
   }
+
+  if (feeReported) return withCosts
 
   if (isSell) {
     const buyAmount = info.beforeAllFees.buyAmount.add(CurrencyAmount.fromRawAmount(costsCurrency, total))

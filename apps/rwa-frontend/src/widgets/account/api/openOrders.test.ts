@@ -1,4 +1,4 @@
-import { getAddressKey, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
+import { getAddressKey, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { getOpenOrders } from './openOrders'
 
@@ -27,6 +27,7 @@ function order(overrides: Record<string, unknown>): Record<string, unknown> {
     executedSellAmountBeforeFees: '0',
     validTo: 1_790_000_000,
     creationDate: '2026-09-28T10:00:00.000Z',
+    signingScheme: SigningScheme.EIP712,
     ...overrides,
   }
 }
@@ -107,5 +108,29 @@ describe('getOpenOrders', () => {
     const [openOrder] = await getOpenOrders({ owner: OWNER, tokens: [AAPLX_MAINNET] })
 
     expect(openOrder.counterToken).toBe(null)
+  })
+
+  it('allows soft cancellation only for orders signed off-chain by their owner', async () => {
+    getOrdersMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1
+        ? [
+            order({ uid: '0x01' }),
+            order({ uid: '0x02', signingScheme: SigningScheme.ETHSIGN }),
+            order({ uid: '0x03', signingScheme: SigningScheme.PRESIGN }),
+            order({ uid: '0x04', signingScheme: SigningScheme.EIP1271 }),
+            order({ uid: '0x05', onchainOrderData: { sender: OWNER } }),
+          ]
+        : [],
+    )
+
+    const orders = await getOpenOrders({ owner: OWNER, tokens: [AAPLX_MAINNET] })
+
+    expect(Object.fromEntries(orders.map(({ uid, isSoftCancellable }) => [uid, isSoftCancellable]))).toEqual({
+      '0x01': true,
+      '0x02': true,
+      '0x03': false,
+      '0x04': false,
+      '0x05': false,
+    })
   })
 })

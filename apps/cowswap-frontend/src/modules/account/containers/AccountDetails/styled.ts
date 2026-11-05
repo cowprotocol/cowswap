@@ -114,6 +114,7 @@ export const UnsupportedWalletBox = styled.div`
   text-align: center;
   font-size: 14px;
   margin-top: 60px;
+  padding-bottom: 48px;
 `
 
 export const WalletSecondaryActions = styled.div``

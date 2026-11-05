@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 import { OrderStatus } from '@cowprotocol/cow-sdk'
 
 import styles from './AccountTable.module.css'
+import { CancelOrderCell } from './CancelOrderCell'
 import { TokenCell } from './TokenCell'
 import { TradeSide } from './TradeSide'
 
@@ -42,6 +43,9 @@ export function OpenOrdersTable({ orders, error, emptyText }: OpenOrdersTablePro
             <th className={styles.numeric}>Limit price</th>
             <th className={styles.numeric}>Filled</th>
             <th>Expires</th>
+            <th className={styles.numeric}>
+              <span className={styles.visuallyHidden}>Actions</span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -65,6 +69,9 @@ export function OpenOrdersTable({ orders, error, emptyText }: OpenOrdersTablePro
               <td className={styles.numeric}>{formatLegPrice(order)}</td>
               <td className={styles.numeric}>{percentFormatter.format(order.filledFraction)}</td>
               <td>{formatDateTime(order.validTo)}</td>
+              <td className={styles.numeric}>
+                <CancelOrderCell order={order} />
+              </td>
             </tr>
           ))}
         </tbody>
