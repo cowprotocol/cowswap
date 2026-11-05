@@ -8657,6 +8657,7 @@ msgid "Quote not yet verified by CoW Protocol simulation"
 msgstr "Quote not yet verified by CoW Protocol simulation"
 
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/checkSolanaTransaction.ts
 msgid "Cancellation rejected in your multisig"
 msgstr "Cancellation rejected in your multisig"
 
