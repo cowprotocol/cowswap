@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { SOLANA_TOKEN_WARNINGS_URL } from '@cowprotocol/common-const'
@@ -8,6 +9,7 @@ import { Currency } from '@cowprotocol/currency'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
+import { activeTokensMapAtom } from '../../state/tokens/allTokensAtom'
 import { useIsRwaToken, useRwaTokenAddresses } from '../lists/useIsRwaToken'
 
 export interface TokenWarning {
@@ -128,11 +130,14 @@ export function useTokenWarnings(currency: Currency | null | undefined): TokenWa
   const address = currency && !getIsNativeToken(currency) ? currency.address : undefined
   const isSolana = !!currency && isSolanaChain(currency.chainId)
   const isRwa = useIsRwaToken(address ? { address } : undefined)
+  const listedTokens = useAtomValue(activeTokensMapAtom)
   const { types, timestamp, codesByAddressKey, isLoading } = useTokenWarningsFile(isSolana)
 
+  const isListed = !!address && !!listedTokens[getAddressKey(address)]
+
   return useMemo(
-    () => toWarningsInfo(address, types, timestamp, codesByAddressKey, isRwa, isSolana && isLoading),
-    [address, types, timestamp, codesByAddressKey, isRwa, isSolana, isLoading],
+    () => toWarningsInfo(address, types, timestamp, codesByAddressKey, isRwa, isListed, isSolana && isLoading),
+    [address, types, timestamp, codesByAddressKey, isRwa, isListed, isSolana, isLoading],
   )
 }
 
@@ -147,14 +152,17 @@ export function useTokenWarnings(currency: Currency | null | undefined): TokenWa
 export function useTokenWarningsList(currencies: readonly Currency[]): TokenWarningsInfo[] {
   const hasSolanaToken = currencies.some((currency) => isSolanaChain(currency.chainId))
   const rwaAddresses = useRwaTokenAddresses()
+  const listedTokens = useAtomValue(activeTokensMapAtom)
   const { types, timestamp, codesByAddressKey, isLoading } = useTokenWarningsFile(hasSolanaToken)
 
   return currencies.map((currency) => {
     const address = getIsNativeToken(currency) ? undefined : currency.address
     const isSolana = isSolanaChain(currency.chainId)
-    const isRwa = !!address && rwaAddresses.has(getAddressKey(address))
+    const addressKey = address ? getAddressKey(address) : undefined
+    const isRwa = !!addressKey && rwaAddresses.has(addressKey)
+    const isListed = !!addressKey && !!listedTokens[addressKey]
 
-    return toWarningsInfo(address, types, timestamp, codesByAddressKey, isRwa, isSolana && isLoading)
+    return toWarningsInfo(address, types, timestamp, codesByAddressKey, isRwa, isListed, isSolana && isLoading)
   })
 }
 
@@ -198,8 +206,17 @@ function toWarningsInfo(
   timestamp: string | undefined,
   codesByAddressKey: Record<string, string[]> | undefined,
   isRwa: boolean,
+  isListed: boolean,
   isLoading: boolean,
 ): TokenWarningsInfo {
+  // Curation is the signal: a token on one of CoW's lists never shows a risk signal, whatever the
+  // published data says. The file is generated from those same lists, so without this every listed
+  // mint carries one — USDC is published with freeze and mint authority. Jupiter draws the same
+  // line: its risk API flags USDC, its swap form does not.
+  if (isListed) {
+    return { warnings: NO_WARNINGS, seriousWarnings: NO_WARNINGS, updatedAt: timestamp, isLoading: false }
+  }
+
   const warnings = toTokenWarnings(address ? codesByAddressKey?.[getAddressKey(address)] : undefined, types, isRwa)
 
   return {
