@@ -5,9 +5,10 @@
   "description": "CoW Protocol RWA frontend",
   "license": "ISC",
   "scripts": {
-    "test-scripts": "node --test scripts/*.test.mjs scripts/profiles/*.test.mjs",
-    "update-profiles": "node --env-file-if-exists=.env scripts/updateProfiles.mjs",
-    "update-registry": "node --env-file-if-exists=.env scripts/updateRegistry.mjs"
+    "test-scripts": "tsx --test scripts/*.test.mjs scripts/profiles/*.test.mjs",
+    "update-profiles": "tsx --env-file-if-exists=.env scripts/updateProfiles.mjs",
+    "update-registry": "tsx --env-file-if-exists=.env scripts/updateRegistry.mjs",
+    "validate-registry": "tsx scripts/validateRegistry.mjs"
   },
   "dependencies": {
     "@cowprotocol/common-const": "workspace:*",

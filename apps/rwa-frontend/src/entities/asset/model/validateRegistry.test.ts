@@ -85,6 +85,19 @@ describe('validateRegistry', () => {
     ])
   })
 
+  it('rejects an unsafe profile description', () => {
+    expect(
+      validateRegistry(
+        registryWith([
+          {
+            ...VALID_ASSET,
+            profile: { description: 'Claim at nvidia-claim.xyz.', sector: 'Information Technology · Semiconductors' },
+          },
+        ]),
+      ),
+    ).toEqual(['assets[0].profile.description: must not contain links or domains'])
+  })
+
   it('accepts an https news feed and rejects an incomplete one', () => {
     const newsFeed = { source: 'NVIDIA Newsroom', url: 'https://nvidianews.nvidia.com/releases.xml' }
 

@@ -2,6 +2,7 @@ import { isAddress } from 'viem'
 
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
+import { findRwaDescriptionIssue } from './description'
 import { RWA_ISSUERS } from './issuers'
 import { RWA_SECTOR_SEPARATOR, RWA_SECTORS } from './sectors'
 import {
@@ -80,10 +81,11 @@ function validateAsset(asset: RwaAsset, path: string): string[] {
   return errors
 }
 
-function validateProfile(profile: RwaAssetProfile, path: string): string[] {
+function validateProfile(profile: RwaAssetProfile, title: string, path: string): string[] {
   const errors: string[] = []
 
-  if (!profile.description) errors.push(`${path}.description: required`)
+  const descriptionIssue = profile.description ? findRwaDescriptionIssue(profile.description, title) : 'required'
+  if (descriptionIssue) errors.push(`${path}.description: ${descriptionIssue}`)
   if (!profile.sector) errors.push(`${path}.sector: required`)
   else if (!isValidSector(profile.sector)) {
     errors.push(`${path}.sector: must start with one of ${SECTORS.join(', ')} followed by "${RWA_SECTOR_SEPARATOR}"`)
@@ -105,7 +107,7 @@ function validateRequiredStrings(asset: RwaAsset, path: string): string[] {
     if (!asset.newsFeed.source) errors.push(`${path}.newsFeed.source: required`)
     if (!isHttpsUrl(asset.newsFeed.url)) errors.push(`${path}.newsFeed.url: must be an https URL`)
   }
-  if (asset.profile) errors.push(...validateProfile(asset.profile, `${path}.profile`))
+  if (asset.profile) errors.push(...validateProfile(asset.profile, asset.title, `${path}.profile`))
 
   return errors
 }

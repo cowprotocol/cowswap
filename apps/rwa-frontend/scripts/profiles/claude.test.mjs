@@ -72,3 +72,15 @@ test('parseProfileResponse allows digits that are part of the title and common a
     ),
   )
 })
+
+test('parseProfileResponse rejects unsafe descriptions', () => {
+  for (const description of [
+    'NVIDIA <b>designs</b> GPUs.',
+    'NVIDIA designs GPUs. See nvidia-claim.xyz.',
+    'NVIDIA\u202E designs GPUs.',
+  ]) {
+    const text = JSON.stringify({ description, sector: 'Information Technology · Semiconductors' })
+
+    assert.equal(parseProfileResponse(text, 'NVIDIA'), null, description)
+  }
+})

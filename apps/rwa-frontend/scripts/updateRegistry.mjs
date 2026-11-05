@@ -8,7 +8,8 @@
  * Hand-edited fields of assets and tokens that are already in the file are kept:
  * asset `title`, `priority`, `allowedTradingTime`, `newsFeed`, `profile` and token `symbol`, `name`, `issuer`.
  *
- * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped.
+ * Only tokens of `ALLOWED_ISSUERS` are written; an asset without any of them is skipped. Nothing is written when the
+ * result fails `validate-registry`.
  */
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -18,6 +19,7 @@ import { getAddress, isAddress } from 'viem'
 import { areAddressesEqual, isSupportedChain } from '@cowprotocol/cow-sdk'
 
 import { readRegistry, writeRegistry } from './registryFile.mjs'
+import { assertValidRegistry } from './registryValidation.mjs'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 
@@ -121,6 +123,7 @@ async function main() {
     ? { version: bumpPatch(registry.version), lastModificationTime: new Date().toISOString(), assets }
     : registry
 
+  assertValidRegistry(next)
   await writeRegistry(REGISTRY_PATH, next, maps)
 
   const tokensCount = assets.reduce((sum, asset) => sum + asset.tokens.length, 0)

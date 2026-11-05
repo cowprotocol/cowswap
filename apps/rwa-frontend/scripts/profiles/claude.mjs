@@ -1,3 +1,4 @@
+import { findDescriptionIssue } from './description.mjs'
 import { fetchWithRetry } from './http.mjs'
 import { isValidSector, SECTOR_SEPARATOR, SECTORS } from './sectors.mjs'
 
@@ -55,6 +56,7 @@ export function parseProfileResponse(text, title) {
 
   if (parsed.skip || !description || !sector || !isValidSector(sector)) return null
   if (hasFigures(description, title) || countSentences(description) > MAX_SENTENCES) return null
+  if (findDescriptionIssue(description, title)) return null
 
   return { description, sector }
 }

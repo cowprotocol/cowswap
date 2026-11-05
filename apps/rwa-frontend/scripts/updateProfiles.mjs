@@ -6,6 +6,7 @@
  * Usage: pnpm --filter @cowprotocol/rwa-frontend update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--offset 0] [--limit 10] [--dry-run]
  * Env: ANTHROPIC_API_KEY (required).
  *
+ * The registry must pass `validate-registry` first, and a profile that would make it fail is reported as failed.
  * Only assets without a profile are filled unless `--force`. `website` is hand-edited: it is never written, and kept
  * by `--force`. Commodities are skipped. `--offset` and `--limit` pick a slice of the candidates in registry order;
  * without `--force`, filled assets stop being candidates, so the next chunk is `--limit` alone.
@@ -18,6 +19,7 @@ import { buildProfilePrompt, parseProfileResponse, requestProfile } from './prof
 import { fetchWikidataMatches } from './profiles/wikidata.mjs'
 import { fetchSourceTexts } from './profiles/wikipedia.mjs'
 import { readRegistry, writeRegistry } from './registryFile.mjs'
+import { assertValidRegistry, validateRegistry } from './registryValidation.mjs'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 const SOURCES = ['wikipedia', 'ai']
@@ -32,6 +34,7 @@ async function main() {
   if (!apiKey) exit('ANTHROPIC_API_KEY is required')
 
   const { registry, maps } = await readRegistry(REGISTRY_PATH)
+  assertValidRegistry(registry)
   const candidates = registry.assets
     .filter(
       (asset) =>
@@ -178,7 +181,11 @@ function createRegistryWriter(registry, maps, dryRun) {
       const previous = next.assets[index]
       if (JSON.stringify(previous.profile) === JSON.stringify(profile)) return
 
-      next.assets[index] = withProfile(previous, profile)
+      const assets = next.assets.with(index, withProfile(previous, profile))
+      const errors = validateRegistry({ ...next, assets })
+      if (errors.length) throw new Error(errors.join('; '))
+
+      next.assets = assets
       if (!changed) {
         changed = true
         next.version = bumpPatch(registry.version)

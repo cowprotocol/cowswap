@@ -7,10 +7,13 @@ import { MarketKindSelector } from './MarketKindSelector'
 
 import { useAssetPriceStats } from '../model/useAssetPriceStats'
 
-import { RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
+import { RWA_ASSET_TYPE_LABELS, RWA_REGISTRY_EDIT_URL, type RwaAsset } from '@/entities/asset'
 import { formatCompactUsd, formatDate, formatUsd } from '@/shared/lib/format'
-import { ChevronDownIcon } from '@/shared/ui/icons'
+import { ChevronDownIcon, PencilIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
+import { Tooltip } from '@/shared/ui/tooltip'
+
+const PROPOSE_FIX_LABEL = 'Found a mistake? Propose a fix'
 
 interface RangeStatProps {
   label: string
@@ -30,11 +33,18 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
         <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} />
         <h2 id="asset-about-title">About {asset.title}</h2>
         <span className={styles.sector}>{profile?.sector ?? RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-        {profile?.website && (
-          <a className={styles.website} href={profile.website} target="_blank" rel="noopener noreferrer">
-            {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
-          </a>
-        )}
+        <span className={styles.links}>
+          {profile?.website && (
+            <a className={styles.website} href={profile.website} target="_blank" rel="noopener noreferrer">
+              {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
+            </a>
+          )}
+          <Tooltip className={styles.proposeFix} content={PROPOSE_FIX_LABEL}>
+            <a href={RWA_REGISTRY_EDIT_URL} target="_blank" rel="noopener noreferrer" aria-label={PROPOSE_FIX_LABEL}>
+              <PencilIcon />
+            </a>
+          </Tooltip>
+        </span>
       </header>
       {profile && <Description text={profile.description} />}
       <MarketKindSelector asset={asset} className={styles.marketKind} />

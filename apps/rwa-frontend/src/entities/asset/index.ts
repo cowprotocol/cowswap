@@ -68,6 +68,7 @@ export {
   type RwaTradingPause,
   type RwaTradingTime,
 } from './model/types'
+export { RWA_REGISTRY_EDIT_URL } from './model/registryEditUrl'
 export { AssetStats } from './ui/AssetStats'
 export { DividendNotes } from './ui/DividendNotes'
 export { pointsToCandles } from './lib/chartBars'
