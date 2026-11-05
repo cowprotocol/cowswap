@@ -3,9 +3,12 @@ import { render } from '@testing-library/react'
 import { SolverLogo } from './SolverLogo.pure'
 
 describe('SolverLogo', () => {
-  it('shows the CMS image when the solver has one', () => {
+  it.each([
+    ['a display name', { displayName: 'dfusion' }],
+    ['no display name', {}],
+  ])('shows the CMS image for a solver with %s', (_, solver) => {
     const image = 'https://cms.example/logo.png'
-    const { container } = render(<SolverLogo solver={{ displayName: 'dfusion', image }} size={24} />)
+    const { container } = render(<SolverLogo solver={{ ...solver, image }} size={24} />)
 
     expect(container.querySelector('img')?.getAttribute('src')).toBe(image)
     expect(container.querySelector('svg')).toBeNull()
