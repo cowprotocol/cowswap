@@ -7,6 +7,7 @@ import { Media, SettingsBox } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
@@ -15,6 +16,8 @@ export function PriceChartSettings(): ReactNode {
   const { isPriceChartEnabled } = useFeatureFlags()
   const { disablePriceChart } = useInjectedWidgetParams()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
+  const isNetworkUnavailable = isProviderNetworkUnsupported || isProviderNetworkDeprecated
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
 
@@ -24,8 +27,8 @@ export function PriceChartSettings(): ReactNode {
     <SettingsBox
       title={t`Show price chart`}
       tooltip={t`Show or hide the price chart next to the trade form.`}
-      checked={!isProviderNetworkUnsupported && isVisible}
-      disabled={isProviderNetworkUnsupported}
+      checked={!isNetworkUnavailable && isVisible}
+      disabled={isNetworkUnavailable}
       toggle={() => setIsVisible((value) => !value)}
     />
   )

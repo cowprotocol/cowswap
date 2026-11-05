@@ -56,7 +56,7 @@
     "ms.macro": "2.0.0",
     "react": "19.1.2",
     "styled-components": "5.3.11",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9",
     "@wagmi/core": "3.4.8",
     "@wagmi/connectors": "8.0.9",

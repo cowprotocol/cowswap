@@ -13,7 +13,7 @@ import { getLogo } from './NetworksList.utils'
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
 import { ChainStatusBadge } from '../ChainStatusBadge/ChainStatusBadge.pure'
 
-const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([])
+const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.ROBINHOOD])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null

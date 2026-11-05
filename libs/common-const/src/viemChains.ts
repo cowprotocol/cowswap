@@ -1,6 +1,4 @@
-import { defineChain } from 'viem'
-
-import { EvmChains, robinhood as robinhoodChainInfo } from '@cowprotocol/cow-sdk'
+import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import {
   arbitrum,
@@ -15,22 +13,9 @@ import {
   optimism,
   plasma,
   polygon,
+  robinhood,
   sepolia,
 } from 'viem/chains'
-
-// viem has no definition for Robinhood Chain yet
-const robinhood = defineChain({
-  id: robinhoodChainInfo.id,
-  name: robinhoodChainInfo.label,
-  nativeCurrency: {
-    name: robinhoodChainInfo.nativeCurrency.name ?? 'Ether',
-    symbol: robinhoodChainInfo.nativeCurrency.symbol ?? 'ETH',
-    decimals: robinhoodChainInfo.nativeCurrency.decimals,
-  },
-  rpcUrls: robinhoodChainInfo.rpcUrls,
-  blockExplorers: { default: robinhoodChainInfo.blockExplorer },
-  contracts: robinhoodChainInfo.contracts,
-})
 
 /**
  * viem `Chain` definitions for every EVM chain known to cow-sdk.
