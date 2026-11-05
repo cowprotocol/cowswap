@@ -101,7 +101,14 @@ function loadSquadsSdk(): Promise<SquadsSdk> {
 
 /** The proposal the given account votes on, if that account is a Squads `VaultTransaction`. */
 function toProposalAddress(account: AccountInfo<Buffer> | null, sdk: SquadsSdk): PublicKey | undefined {
-  if (!account) return undefined
+  // The SDK's `deserialize` reads the discriminator as a plain field and never compares it, so
+  // identifying the account by whether decoding throws would rest on every other account in the filing
+  // happening to overrun the buffer. Check owner and discriminator outright instead.
+  if (!account || !account.owner.equals(sdk.PROGRAM_ID)) return undefined
+
+  const discriminator = sdk.accounts.vaultTransactionDiscriminator
+
+  if (!discriminator.every((byte, index) => account.data[index] === byte)) return undefined
 
   try {
     const [vaultTransaction] = sdk.accounts.VaultTransaction.fromAccountInfo(account)

@@ -4,46 +4,53 @@ import { getSquadsProposalOutcome } from './getSquadsProposalOutcome'
 
 import type { AccountInfo, Connection } from '@solana/web3.js'
 
+const SQUADS_PROGRAM_ID = new PublicKey('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf')
+const TOKEN_PROGRAM_ID = new PublicKey('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA')
+
+const VAULT_TRANSACTION_DISCRIMINATOR = [168, 250, 162, 100, 81, 14, 162, 207]
+/** Another Squads account that sits in the same filing — a decoder alone would not tell them apart. */
+const MULTISIG_DISCRIMINATOR = [224, 116, 121, 186, 68, 161, 79, 236]
+
 const MULTISIG = new PublicKey(new Uint8Array(32).fill(5))
 const PROPOSAL_ADDRESS = new PublicKey(new Uint8Array(32).fill(7))
 const TRANSACTION_INDEX = 14
-
-/** First data byte marks what the SDK would decode the account as, so the mocks can act like it. */
-const VAULT_TRANSACTION = 1
-const PROPOSAL = 2
 
 const mockGetProposalPda = jest.fn()
 const mockDecodeVaultTransaction = jest.fn()
 const mockDecodeProposal = jest.fn()
 
 jest.mock('@sqds/multisig', () => ({
+  PROGRAM_ID: new (jest.requireActual('@solana/web3.js').PublicKey)('SQDS4ep65T869zMMBKyuUq6aD6EgTu8psMjkvj52pCf'),
   getProposalPda: (...args: unknown[]) => mockGetProposalPda(...args),
   accounts: {
+    vaultTransactionDiscriminator: [168, 250, 162, 100, 81, 14, 162, 207],
     Proposal: { fromAccountInfo: (...args: unknown[]) => mockDecodeProposal(...args) },
     VaultTransaction: { fromAccountInfo: (...args: unknown[]) => mockDecodeVaultTransaction(...args) },
   },
 }))
 
-function buildAccount(kind: number): AccountInfo<Buffer> {
-  const data = Buffer.alloc(8)
+function buildAccount(discriminator: number[], owner = SQUADS_PROGRAM_ID): AccountInfo<Buffer> {
+  const data = Buffer.alloc(120)
 
-  data[0] = kind
+  Buffer.from(discriminator).copy(data, 0)
 
-  return { owner: MULTISIG, data, executable: false, lamports: 1, rentEpoch: 0 }
+  return { owner, data, executable: false, lamports: 1, rentEpoch: 0 }
 }
 
 function buildConnection({
-  filing = [buildAccount(0), buildAccount(VAULT_TRANSACTION)],
+  filing = [buildAccount(MULTISIG_DISCRIMINATOR), buildAccount(VAULT_TRANSACTION_DISCRIMINATOR)],
   proposal = null,
-  keys = [PROPOSAL_ADDRESS, PROPOSAL_ADDRESS],
+  hasTransaction = true,
 }: {
   filing?: Array<AccountInfo<Buffer> | null>
   proposal?: AccountInfo<Buffer> | null
-  keys?: PublicKey[]
+  hasTransaction?: boolean
 } = {}): Connection {
+  const keys = [PROPOSAL_ADDRESS, PROPOSAL_ADDRESS]
+
   return {
     getTransaction: jest.fn(async () =>
-      keys.length ? { transaction: { message: { staticAccountKeys: keys } } } : null,
+      hasTransaction ? { transaction: { message: { staticAccountKeys: keys } } } : null,
     ),
     getMultipleAccountsInfo: jest.fn(async () => filing),
     getAccountInfo: jest.fn(async () => proposal),
@@ -60,21 +67,14 @@ function nextSignature(): string {
 }
 
 function setProposalStatus(kind: string): void {
-  mockDecodeProposal.mockImplementation((account: AccountInfo<Buffer>) => {
-    if (account.data[0] !== PROPOSAL) throw new Error('not a proposal account')
-
-    return [{ status: { __kind: kind } }]
-  })
+  mockDecodeProposal.mockImplementation(() => [{ status: { __kind: kind } }])
 }
 
 beforeEach(() => {
   jest.clearAllMocks()
   mockGetProposalPda.mockReturnValue([PROPOSAL_ADDRESS, 254])
-  mockDecodeVaultTransaction.mockImplementation((account: AccountInfo<Buffer>) => {
-    if (account.data[0] !== VAULT_TRANSACTION) throw new Error('not a vault transaction account')
-
-    return [{ multisig: MULTISIG, index: TRANSACTION_INDEX }]
-  })
+  // Deliberately never throws: identification must rest on the discriminator, not on a decode failure.
+  mockDecodeVaultTransaction.mockReturnValue([{ multisig: MULTISIG, index: TRANSACTION_INDEX }])
   setProposalStatus('Active')
 })
 
@@ -82,7 +82,7 @@ describe('getSquadsProposalOutcome', () => {
   // The filing the wallet broadcasts creates a `VaultTransaction` only. The `Proposal` carrying the vote
   // is written later, by a transaction this code never sees, so it has to be derived.
   it('derives the proposal from the vault transaction rather than the filing accounts', async () => {
-    const connection = buildConnection({ proposal: buildAccount(PROPOSAL) })
+    const connection = buildConnection({ proposal: buildAccount([]) })
 
     await getSquadsProposalOutcome(connection, nextSignature())
 
@@ -93,10 +93,31 @@ describe('getSquadsProposalOutcome', () => {
     expect(connection.getAccountInfo).toHaveBeenCalledWith(PROPOSAL_ADDRESS)
   })
 
+  // The SDK's decoder reads the discriminator as a plain field and never compares it, so every Squads
+  // account in the filing decodes "successfully". Picking the wrong one caches a bogus address for the
+  // signature, and every later poll reads an empty account — the order waits out a rejection forever.
+  it('ignores other squads accounts in the filing, even when they decode cleanly', async () => {
+    const connection = buildConnection({
+      filing: [buildAccount(MULTISIG_DISCRIMINATOR), buildAccount(MULTISIG_DISCRIMINATOR)],
+    })
+
+    await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
+    expect(mockGetProposalPda).not.toHaveBeenCalled()
+  })
+
+  it('ignores an account with the right discriminator owned by another program', async () => {
+    const connection = buildConnection({
+      filing: [null, buildAccount(VAULT_TRANSACTION_DISCRIMINATOR, TOKEN_PROGRAM_ID)],
+    })
+
+    await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
+    expect(mockGetProposalPda).not.toHaveBeenCalled()
+  })
+
   it.each([['Rejected'], ['Cancelled']])('gives up on the order when the proposal is %s', async (kind) => {
     setProposalStatus(kind)
 
-    const connection = buildConnection({ proposal: buildAccount(PROPOSAL) })
+    const connection = buildConnection({ proposal: buildAccount([]) })
 
     await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('failed')
   })
@@ -104,7 +125,7 @@ describe('getSquadsProposalOutcome', () => {
   it('lets the order through when the proposal was executed', async () => {
     setProposalStatus('Executed')
 
-    const connection = buildConnection({ proposal: buildAccount(PROPOSAL) })
+    const connection = buildConnection({ proposal: buildAccount([]) })
 
     await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('executed')
   })
@@ -113,19 +134,34 @@ describe('getSquadsProposalOutcome', () => {
   // would kill an order that is about to be executed.
   it.each([
     ['the members have not voted yet, so no proposal exists', { proposal: null }],
-    ['the proposal is still awaiting votes', { proposal: buildAccount(PROPOSAL) }],
-    ['the proposal cannot be decoded', { proposal: buildAccount(0) }],
-    ['the filing holds no vault transaction', { filing: [buildAccount(0), buildAccount(0)] }],
     ['the filing holds no accounts at all', { filing: [null, null] }],
-    ['the transaction cannot be found', { keys: [] }],
+    ['the transaction cannot be found', { hasTransaction: false }],
   ])('keeps waiting when %s', async (_label, overrides) => {
     const connection = buildConnection(overrides)
 
     await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
   })
 
+  it('keeps waiting when the proposal status is one this code does not know', async () => {
+    setProposalStatus('Draft')
+
+    const connection = buildConnection({ proposal: buildAccount([]) })
+
+    await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
+  })
+
+  it('keeps waiting when the proposal cannot be decoded', async () => {
+    mockDecodeProposal.mockImplementation(() => {
+      throw new Error('not a proposal')
+    })
+
+    const connection = buildConnection({ proposal: buildAccount([]) })
+
+    await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
+  })
+
   it('derives the proposal once and reuses it across polls', async () => {
-    const connection = buildConnection({ proposal: buildAccount(PROPOSAL) })
+    const connection = buildConnection({ proposal: buildAccount([]) })
     const signature = nextSignature()
 
     await getSquadsProposalOutcome(connection, signature)

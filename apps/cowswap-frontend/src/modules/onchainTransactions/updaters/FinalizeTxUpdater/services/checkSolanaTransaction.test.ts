@@ -531,6 +531,29 @@ describe('checkSolanaTransaction with a multisig owner', () => {
     } as EnhancedTransactionDetails
   }
 
+  // The path the cancel button actually takes: `useSolanaCancelOrder` records `onChainCancellation`,
+  // while `solanaCancelOrderIds` only comes from the batch hook behind "cancel all".
+  it('names the rejection on a single-order cancellation too', async () => {
+    const { params, dispatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalOutcome: 'failed',
+    })
+    const singleCancel = {
+      ...createTransaction(),
+      hash: 'rejected-single-cancel-signature',
+      from: VAULT,
+      onChainCancellation: { orderId: ORDER_ID, sellTokenSymbol: 'USDC' },
+    } as EnhancedTransactionDetails
+
+    checkSolanaTransaction(singleCancel, params)
+
+    await waitFor(() => expect(dispatch).toHaveBeenCalled())
+
+    expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ summary: 'Cancellation rejected in your multisig' }),
+    )
+  })
+
   // The dangerous direction: telling the user an order is cancelled while the members have not voted
   // leaves a live, fillable order behind a "Cancelled" label.
   it('does not cancel orders while the cancellation proposal is still awaiting votes', async () => {

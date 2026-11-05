@@ -72,7 +72,14 @@ export function checkSolanaTransaction(
         void finalizeSuccessfulCancellation(orderId, params, hash)
       } else {
         clearCancellingState(orderId, params)
-        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel order selling ${sellTokenSymbol}`)
+        emitTransactionFailedEvent(
+          transaction,
+          hash,
+          slot,
+          reason === 'multisig-rejected'
+            ? t`Cancellation rejected in your multisig`
+            : t`Failed to cancel order selling ${sellTokenSymbol}`,
+        )
       }
 
       return
