@@ -28,6 +28,13 @@ test('buildProfilePrompt with source text', () => {
   }
 })
 
+test('buildProfilePrompt lists the known sectors to reuse', () => {
+  const knownSectors = ['ETF · High Yield Bonds', 'Information Technology · Semiconductors']
+
+  assert.ok(buildProfilePrompt({ ...NVIDIA, knownSectors }).includes(knownSectors.join('; ')))
+  assert.ok(!buildProfilePrompt(NVIDIA).includes('already use'))
+})
+
 test('buildProfilePrompt without source text tells the model to skip unknown assets', () => {
   const prompt = buildProfilePrompt({
     ticker: 'QQQ',

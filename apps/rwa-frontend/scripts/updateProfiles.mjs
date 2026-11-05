@@ -57,6 +57,7 @@ async function main() {
 
   const report = { filled: [], skipped: [], rejected: [], failed: [] }
   const writer = createRegistryWriter(registry, maps, options.dryRun)
+  const knownSectors = new Set(registry.assets.flatMap((asset) => (asset.profile ? [asset.profile.sector] : [])))
   let done = 0
   const logResult = (ticker, result) => console.log(`[${++done}/${selected.length}] ${ticker}: ${result}`)
 
@@ -68,6 +69,7 @@ async function main() {
       type: asset.type,
       sourceText: source?.sourceText ?? null,
       industry: source?.industry ?? null,
+      knownSectors: [...knownSectors].sort(),
     })
 
     try {
@@ -82,6 +84,7 @@ async function main() {
       }
 
       report.filled.push(asset.ticker)
+      knownSectors.add(profile.sector)
       logResult(asset.ticker, options.dryRun ? `${profile.sector} | ${profile.description}` : 'filled')
 
       await writer.setProfile(asset.ticker, {

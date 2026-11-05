@@ -9,7 +9,7 @@ const RETRY_DELAYS_MS = [2000, 4000, 8000]
 const MAX_SENTENCES = 2
 const ABBREVIATIONS = ['Inc.', 'Corp.', 'Co.', 'Ltd.', 'S.A.', 'N.V.', 'U.S.', 'U.K.', 'plc.', 'L.P.']
 
-export function buildProfilePrompt({ ticker, title, type, sourceText, industry }) {
+export function buildProfilePrompt({ ticker, title, type, sourceText, industry, knownSectors = [] }) {
   const kind = type === 'index' ? 'exchange-traded fund' : 'company'
   const lines = [
     `Write a short profile of the ${kind} behind the US-listed asset "${title}" (ticker ${ticker}) for a trading app.`,
@@ -18,6 +18,12 @@ export function buildProfilePrompt({ ticker, title, type, sourceText, industry }
     `- "description": one or two factual sentences about what the ${kind} does. No figures: no numbers, dates, years, percentages, amounts, rankings or employee counts. Plain, neutral tone, no marketing words.`,
     `- "sector": one of these sectors, then "${SECTOR_SEPARATOR}", then a short industry in title case: ${SECTORS.join(', ')}. Use "ETF" for funds and a GICS sector otherwise. Example: "Information Technology${SECTOR_SEPARATOR}Semiconductors", "ETF${SECTOR_SEPARATOR}US Large Cap".`,
   ]
+
+  if (knownSectors.length) {
+    lines.push(
+      `- Other assets already use the sectors below. Answer with one of them, exactly as written, when it fits; write a new one only when none does: ${knownSectors.join('; ')}.`,
+    )
+  }
 
   if (sourceText) {
     lines.push(

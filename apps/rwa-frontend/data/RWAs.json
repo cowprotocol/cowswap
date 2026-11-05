@@ -18,7 +18,6 @@
     "6": "Communication Services · Satellite Communications",
     "7": "Communication Services · Telecommunication Services",
     "8": "Communication Services · Wireless Telecommunication Services",
-    "9": "Consumer Discretionary · Apparel & Luxury Goods",
     "10": "Consumer Discretionary · Apparel Retail",
     "11": "Consumer Discretionary · Apparel, Accessories & Luxury Goods",
     "12": "Consumer Discretionary · Automobile Manufacturers",
@@ -30,12 +29,9 @@
     "18": "Consumer Discretionary · Footwear",
     "19": "Consumer Discretionary · Home Improvement Retail",
     "20": "Consumer Discretionary · Homebuilding",
-    "21": "Consumer Discretionary · Hotels & Resorts",
     "22": "Consumer Discretionary · Hotels, Resorts & Cruise Lines",
     "23": "Consumer Discretionary · Internet Retail",
     "24": "Consumer Discretionary · Leisure Products",
-    "25": "Consumer Discretionary · Off-Price Apparel & Home Retail",
-    "26": "Consumer Discretionary · Off-Price Apparel Retail",
     "27": "Consumer Discretionary · Online Travel Services",
     "28": "Consumer Discretionary · Restaurants",
     "29": "Consumer Discretionary · Specialty Retail",
@@ -44,16 +40,13 @@
     "32": "Consumer Staples · Confectionery",
     "33": "Consumer Staples · Food Distributors",
     "34": "Consumer Staples · Household Products",
-    "35": "Consumer Staples · Packaged Foods & Meats",
     "36": "Consumer Staples · Soft Drinks",
-    "37": "Consumer Staples · Soft Drinks & Non-Alcoholic Beverages",
     "38": "Consumer Staples · Tobacco",
     "39": "ETF · Aerospace & Defense",
     "40": "ETF · Artificial Intelligence & Technology",
     "41": "ETF · Biotechnology",
     "42": "ETF · Blockchain Technology",
     "43": "ETF · Brazil Equity",
-    "44": "ETF · Broad Commodities",
     "45": "ETF · Chile Equity",
     "46": "ETF · Commodities",
     "47": "ETF · Commodities Gold",
@@ -64,13 +57,10 @@
     "52": "ETF · Emerging Markets Equity",
     "53": "ETF · Floating Rate Treasury",
     "54": "ETF · Global Equity",
-    "55": "ETF · Gold Commodity",
     "56": "ETF · Gold Miners",
     "57": "ETF · High Yield Bonds",
-    "58": "ETF · High Yield Corporate Bonds",
     "59": "ETF · India Equity",
     "60": "ETF · Inflation-Protected Bonds",
-    "61": "ETF · International Developed Large Cap",
     "62": "ETF · International Developed Markets",
     "63": "ETF · International Equity",
     "64": "ETF · International Value Equity",
@@ -83,25 +73,19 @@
     "71": "ETF · Leveraged Single Stock",
     "72": "ETF · Leveraged South Korea Equity",
     "73": "ETF · Leveraged Volatility",
-    "74": "ETF · Long-Term Treasury Bonds",
     "75": "ETF · Multisector Bond",
     "76": "ETF · Nickel Mining",
     "77": "ETF · Oil Services",
     "78": "ETF · Precious Metals",
     "79": "ETF · Rare Earth & Strategic Metals",
     "80": "ETF · Robotics & Artificial Intelligence",
-    "81": "ETF · Sector Energy",
     "82": "ETF · Securitized Credit",
     "83": "ETF · Semiconductors",
     "84": "ETF · Short-Term Bonds",
-    "85": "ETF · Short-Term Treasuries",
-    "86": "ETF · Short-Term US Treasuries",
-    "87": "ETF · Short-Term US Treasury Bonds",
     "88": "ETF · Solar Energy",
     "89": "ETF · South Korea Equity",
     "90": "ETF · Structured Credit",
     "91": "ETF · Tanker Freight Futures",
-    "92": "ETF · Technology Sector",
     "93": "ETF · Technology Software",
     "94": "ETF · Technology Thematic",
     "95": "ETF · Thematic Growth",
@@ -116,7 +100,6 @@
     "104": "ETF · US Small Cap Value",
     "105": "ETF · US Technology Equity",
     "106": "ETF · US Total Market",
-    "107": "ETF · US Treasury Bonds",
     "108": "ETF · Ultra-Short Bond",
     "109": "ETF · Uranium & Nuclear",
     "110": "ETF · Uranium Mining",
@@ -125,8 +108,6 @@
     "113": "Energy · Integrated Oil & Gas",
     "114": "Energy · Oil & Gas Equipment & Services",
     "115": "Energy · Oil & Gas Exploration & Production",
-    "116": "Energy · Oil & Gas Exploration and Production",
-    "117": "Energy · Oil & Gas Midstream",
     "118": "Energy · Oil & Gas Refining & Marketing",
     "119": "Energy · Oil & Gas Storage & Transportation",
     "120": "Financials · Asset Management",
@@ -134,12 +115,10 @@
     "122": "Financials · Banks",
     "123": "Financials · Capital Markets",
     "124": "Financials · Consumer Finance",
-    "125": "Financials · Crypto Exchanges",
     "126": "Financials · Digital Asset Custody",
     "127": "Financials · Digital Asset Mining",
     "128": "Financials · Digital Asset Treasury",
     "129": "Financials · Diversified Banks",
-    "130": "Financials · Financial Data & Ratings",
     "131": "Financials · Financial Exchanges & Data",
     "132": "Financials · Investment Banking & Brokerage",
     "133": "Financials · Life & Health Insurance",
@@ -165,12 +144,10 @@
     "153": "Industrials · Autonomous Trucking",
     "154": "Industrials · Building Products",
     "155": "Industrials · Construction & Engineering",
-    "156": "Industrials · Construction Machinery & Heavy Equipment",
     "157": "Industrials · Electrical Components & Equipment",
     "158": "Industrials · Electrical Equipment",
     "159": "Industrials · Industrial Conglomerates",
     "160": "Industrials · Industrial Machinery",
-    "161": "Industrials · Machinery",
     "162": "Industrials · Passenger Airlines",
     "163": "Industrials · Professional Services",
     "164": "Industrials · Railroad Equipment",
@@ -181,13 +158,11 @@
     "169": "Information Technology · Cloud Security Software",
     "170": "Information Technology · Communications Equipment",
     "171": "Information Technology · Computer Storage",
-    "172": "Information Technology · Computer Storage and Peripherals",
     "173": "Information Technology · Cybersecurity Software",
     "174": "Information Technology · Data Analytics Software",
     "175": "Information Technology · Data Center Infrastructure",
     "176": "Information Technology · Database Software",
     "177": "Information Technology · Electronic Components",
-    "178": "Information Technology · Electronic Equipment",
     "179": "Information Technology · Electronic Equipment & Instruments",
     "180": "Information Technology · Electronic Manufacturing Services",
     "181": "Information Technology · IT Services",
@@ -209,10 +184,8 @@
     "197": "Materials · Copper Mining",
     "198": "Materials · Fertilizers & Agricultural Chemicals",
     "199": "Materials · Gold Mining",
-    "200": "Materials · Metals & Mining",
     "201": "Materials · Metals Service Centers",
     "202": "Materials · Precious Metals & Minerals",
-    "203": "Materials · Precious Metals Mining",
     "204": "Materials · Rare Earth Mining",
     "205": "Materials · Silver Mining",
     "206": "Materials · Specialty Chemicals",
@@ -233,7 +206,6 @@
     "221": "ETF · China Technology Equity",
     "222": "Consumer Staples · Soft Drinks & Snack Foods",
     "223": "Communication Services · Movies & Entertainment",
-    "224": "Consumer Discretionary · Footwear & Apparel",
     "225": "ETF · US Short-Term Treasury Bonds",
     "226": "Communication Services · Interactive Home Entertainment",
     "227": "ETF · China Large Cap",
@@ -242,15 +214,11 @@
     "230": "ETF · Active Core Bonds",
     "231": "Materials · Industrial Gases",
     "232": "Information Technology · Data Cloud Software",
-    "233": "Information Technology · IT Consulting",
     "234": "ETF · Copper Mining",
     "235": "Consumer Discretionary · Hotels, Resorts & Leisure",
-    "236": "Materials · Rare Earth Mining & Magnets",
-    "237": "Information Technology · Computer Storage Devices",
     "238": "Utilities · Independent Power Producers",
     "239": "ETF · US Equity Income",
     "240": "Information Technology · Semiconductor IP",
-    "241": "ETF · Investment Grade Corporate Bonds",
     "242": "ETF · US Investment Grade Corporate Bonds",
     "243": "ETF · US Real Estate",
     "244": "ETF · US Large Cap Value",
@@ -270,20 +238,16 @@
     "258": "Real Estate · Mortgage REITs",
     "259": "Information Technology · IT Consulting & Services",
     "260": "Energy · Uranium",
-    "261": "Information Technology · Quantum Computing Technology",
     "262": "Information Technology · Enterprise Software",
-    "263": "Consumer Staples · Household & Personal Products",
     "264": "Consumer Discretionary · Education Services",
     "265": "Financials · Closed-End Funds",
     "266": "Health Care · Health Care Technology",
     "267": "Consumer Staples · Brewers",
     "268": "ETF · US Intermediate Treasury Bonds",
     "269": "Information Technology · Autonomous Driving Software",
-    "270": "Industrials · Environmental Services",
     "271": "Information Technology · Network Security Software",
     "272": "ETF · Cybersecurity",
     "273": "Industrials · Human Resource & Employment Services",
-    "274": "Financials · Financial Data & Stock Exchanges",
     "275": "Information Technology · Electronic Design Software",
     "276": "Real Estate · Real Estate Services",
     "277": "ETF · Oil & Gas Exploration & Production",
@@ -291,7 +255,6 @@
     "279": "ETF · Argentina Equity",
     "280": "Health Care · Animal Health Pharmaceuticals",
     "281": "Information Technology · Data Center And Digital Asset Infrastructure",
-    "282": "Information Technology · Cloud Infrastructure Services",
     "283": "ETF · Euro High Yield Bonds",
     "284": "ETF · Thematic AI & Power Infrastructure",
     "285": "ETF · Leveraged Biotechnology",
@@ -305,9 +268,7 @@
     "293": "Materials · Steel",
     "294": "Industrials · Rail Transportation",
     "295": "Information Technology · Computer Hardware",
-    "296": "Information Technology · Solar Energy Equipment",
     "297": "ETF · Leveraged Inverse US Small Cap",
-    "298": "Financials · Transaction & Payment Processing Services",
     "299": "ETF · Global Clean Energy",
     "300": "Financials · Cryptocurrency Exchanges",
     "301": "Consumer Staples · Packaged Foods",
@@ -319,7 +280,6 @@
     "307": "ETF · Floating Rate Loans",
     "308": "Industrials · Environmental & Facilities Services",
     "309": "Consumer Staples · Convenience Stores",
-    "310": "Health Care · Diagnostics & Genetic Testing",
     "311": "Financials · Mortgage Finance",
     "312": "Information Technology · Computer Peripherals",
     "313": "Consumer Discretionary · Online Delivery Platforms",
@@ -333,17 +293,17 @@
     "321": "Real Estate · Timber REITs",
     "322": "Industrials · Construction Machinery & Heavy Transportation Equipment",
     "323": "Consumer Discretionary · Consumer Electronics Retail",
-    "324": "Consumer Staples · Warehouse Clubs & Retail",
     "325": "Consumer Discretionary · Specialty Online Retail",
     "326": "Materials · Metal & Glass Containers",
     "327": "Information Technology · Networking Software",
     "328": "Consumer Staples · Personal Care Products",
-    "329": "Health Care · Diagnostics & Research",
     "330": "Financials · Insurance",
     "331": "Consumer Discretionary · Leisure Facilities",
     "332": "Industrials · Research & Consulting Services",
     "333": "Financials · Insurance Brokers",
-    "334": "Consumer Discretionary · Specialized Consumer Services"
+    "334": "Consumer Discretionary · Specialized Consumer Services",
+    "335": "ETF · US Long-Term Treasury Bonds",
+    "336": "ETF · US Energy Equity"
   },
   "assets": [
     {
@@ -1123,7 +1083,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SanDisk is a California-based company that designs and manufactures flash memory storage products. Its offerings include memory cards, USB flash drives, and solid-state drives for consumers and businesses.",
-        "sector": 172,
+        "sector": 171,
         "website": "https://www.sandisk.com"
       },
       "tokens": [
@@ -1709,7 +1669,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coinbase operates a platform where people and institutions can buy, sell, store and transfer cryptocurrencies. It also provides custody and other crypto-related products and services, and runs as a remote-first company without a physical headquarters.",
-        "sector": 125,
+        "sector": 300,
         "website": "https://www.coinbase.com"
       },
       "tokens": [
@@ -3083,7 +3043,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SPDR Gold Shares is an exchange-traded trust that holds physical gold bullion and issues shares representing an interest in that gold. Its shares are designed to track the price of gold bullion, less the trust's expenses.",
-        "sector": 55
+        "sector": 47
       },
       "tokens": [
         {
@@ -3249,7 +3209,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund that seeks to track an index of US Treasury bonds with long remaining maturities. It gives investors exposure to long-term US government debt and is managed by BlackRock under the iShares brand.",
-        "sector": 74
+        "sector": 335
       },
       "tokens": [
         {
@@ -3291,7 +3251,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "This UCITS exchange-traded fund tracks an index of US Treasury bonds that are close to maturity, giving exposure to very short-dated US government debt. It is issued by iShares, trades on the London Stock Exchange in US dollars, and is aimed at investors seeking a low-duration alternative to cash.",
-        "sector": 86
+        "sector": 225
       },
       "tokens": [
         {
@@ -4471,7 +4431,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "The iShares 0-3 Month Treasury Bond ETF is an exchange-traded fund managed by BlackRock that holds short-term US Treasury securities with very short remaining maturities. It aims to provide investors with income and capital preservation by tracking an index of such Treasury bills.",
-        "sector": 85
+        "sector": 225
       },
       "tokens": [
         {
@@ -8620,7 +8580,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Nike designs, markets and sells athletic footwear, apparel and sports equipment under its own brand as well as the Jordan and Converse labels. It sells through its own retail stores and other channels, and sponsors athletes and sports teams around the world.",
-        "sector": 224,
+        "sector": 18,
         "website": "https://www.nike.com"
       },
       "tokens": [
@@ -9793,7 +9753,7 @@
       "profile": {
         "description": "UnitedHealth Group is a health care company that sells insurance coverage through its UnitedHealthcare business and provides care delivery, pharmacy and data services through its Optum business. It is the largest health insurer in the United States and also operates internationally.",
         "sector": 146,
-        "website": "https://www.uhc.com"
+        "website": "https://www.unitedhealthgroup.com"
       },
       "tokens": [
         {
@@ -10752,7 +10712,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Accenture is a global professional services company that provides technology and management consulting. It advises and supports organizations on information technology projects and business strategy across many countries.",
-        "sector": 233,
+        "sector": 259,
         "website": "https://www.accenture.com"
       },
       "tokens": [
@@ -11198,7 +11158,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "USA Rare Earth is an American company focused on mining, processing, and producing rare-earth elements and the permanent magnets made from them. It aims to build a domestic supply chain for magnets used in defense, electric vehicles, renewable energy, consumer electronics, and advanced manufacturing.",
-        "sector": 236,
+        "sector": 204,
         "website": "https://www.usare.com"
       },
       "tokens": [
@@ -11485,7 +11445,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "This exchange-traded fund, issued by iShares, seeks to track an index of US dollar-denominated, high-yield corporate bonds. It holds a broad basket of below-investment-grade debt issued by companies, giving investors diversified exposure to the junk bond market.",
-        "sector": 58
+        "sector": 57
       },
       "tokens": [
         {
@@ -11763,7 +11723,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Seagate is a data storage company that designs and manufactures hard disk drives and related storage products. It has expanded over time by acquiring other drive makers and runs manufacturing and research operations in Thailand, among other locations.",
-        "sector": 237
+        "sector": 171
       },
       "tokens": [
         {
@@ -12739,7 +12699,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund that seeks to track an index of short-term US Treasury bills, giving investors exposure to very short-maturity government debt. It is designed for those looking for a low-duration, cash-like holding.",
-        "sector": 85
+        "sector": 225
       },
       "tokens": [
         {
@@ -12945,7 +12905,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund managed by BlackRock that seeks to track a systematic, rules-based index of US dollar-denominated investment-grade corporate bonds. It uses a quantitative approach to select and weight bonds based on factors such as value, quality and momentum.",
-        "sector": 241
+        "sector": 242
       },
       "tokens": [
         {
@@ -12978,7 +12938,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "This exchange-traded fund seeks to track an index of US Treasury bills with short remaining maturities. It provides exposure to very short-term US government debt and is commonly used as a cash-like holding.",
-        "sector": 85
+        "sector": 225
       },
       "tokens": [
         {
@@ -14570,7 +14530,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund from iShares that seeks to track an index of US dollar-denominated, high yield corporate bonds issued by companies with below investment grade credit ratings. It holds a broad basket of these bonds to give investors diversified exposure to the US junk bond market.",
-        "sector": 58
+        "sector": 57
       },
       "tokens": [
         {
@@ -15273,7 +15233,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "A Franklin Templeton exchange-traded fund that holds physical gold bullion and aims to track the price of gold. It focuses on bullion sourced in line with responsible sourcing standards.",
-        "sector": 55
+        "sector": 47
       },
       "tokens": [
         {
@@ -16844,7 +16804,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Quantum Computing Inc. develops photonic technology, including thin-film lithium niobate chip manufacturing and quantum optics products. It serves customers in areas such as sensing, communications and computing, with a focus on integrated photonics.",
-        "sector": 178
+        "sector": 179
       },
       "tokens": [
         {
@@ -17588,7 +17548,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "The Invesco DB Commodity Index Tracking Fund is an exchange-traded fund that seeks to track an index of commodity futures contracts covering energy, precious metals, industrial metals and agricultural products. It gains exposure to commodities through futures rather than holding the physical goods.",
-        "sector": 44
+        "sector": 46
       },
       "tokens": [
         {
@@ -17700,7 +17660,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund from Charles Schwab that seeks to track the performance of an index of large-cap stocks from developed markets outside the United States. It gives investors diversified exposure to international companies through a single, low-cost holding.",
-        "sector": 61
+        "sector": 62
       },
       "tokens": [
         {
@@ -18911,7 +18871,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund from Vanguard that seeks to track the performance of a benchmark index of US information technology stocks. It holds shares of companies in areas such as software, hardware, semiconductors and IT services.",
-        "sector": 92
+        "sector": 105
       },
       "tokens": [
         {
@@ -20929,7 +20889,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Caterpillar designs and manufactures construction, mining, and other heavy engineering equipment, sold under the Cat brand and recognizable by its yellow machinery. The company also licenses its name for a line of clothing and workwear boots.",
-        "sector": 156,
+        "sector": 322,
         "website": "https://www.caterpillar.com"
       },
       "tokens": [
@@ -21041,7 +21001,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ouster develops digital lidar sensors that capture detailed three-dimensional views of surroundings, including versions that record in colour. Its sensors and accompanying software are used in robotics, drones, mapping, autonomous vehicles, industrial automation, defense and security applications.",
-        "sector": 178,
+        "sector": 179,
         "website": "https://ouster.com"
       },
       "tokens": [
@@ -21524,7 +21484,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Vale is a Brazilian mining company that extracts and sells iron ore and nickel, along with metals and minerals such as copper, manganese, and cobalt. It also runs railroads, ports, and ships to move its products to customers.",
-        "sector": 200
+        "sector": 315
       },
       "tokens": [
         {
@@ -21962,7 +21922,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Infleqtion is a quantum technology company that builds systems based on neutral atoms and ultracold-atom physics. Its products include quantum computers, quantum sensors for navigation and timing, and related components and software.",
-        "sector": 261
+        "sector": 186
       },
       "tokens": [
         {
@@ -22218,7 +22178,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Unilever is a British multinational that makes and sells consumer goods, including beauty, personal care, and home care products. It sells its brands worldwide and is headquartered in London.",
-        "sector": 263,
+        "sector": 34,
         "website": "https://unilever.com"
       },
       "tokens": [
@@ -22873,7 +22833,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "WM is a Houston-based provider of waste collection, transfer, recycling and disposal services to residential, commercial, industrial and municipal customers across the United States, Canada and Puerto Rico. It operates landfills, recycling facilities and transfer stations, and uses landfill gas for energy generation.",
-        "sector": 270,
+        "sector": 308,
         "website": "https://www.wm.com"
       },
       "tokens": [
@@ -24854,7 +24814,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "MSCI provides investment research tools and benchmark indices covering equities, fixed income and real estate, along with portfolio analytics and products for ESG and climate analysis. Much of its revenue comes from licensing its indices to funds, including exchange-traded funds, that track them.",
-        "sector": 274,
+        "sector": 131,
         "website": "https://www.msci.com"
       },
       "tokens": [
@@ -25374,7 +25334,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "This exchange-traded fund seeks to track the performance of an index of US Treasury bonds with remaining maturities in the intermediate range. It gives investors exposure to medium-term US government debt in a single traded security.",
-        "sector": 107
+        "sector": 268
       },
       "tokens": [
         {
@@ -25459,7 +25419,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Vanguard Energy ETF is an exchange-traded fund that seeks to track the performance of a benchmark index of US energy sector stocks. It holds companies involved in oil, gas, and consumable fuels as well as energy equipment and services.",
-        "sector": 81
+        "sector": 336
       },
       "tokens": [
         {
@@ -26762,7 +26722,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "An exchange-traded fund managed by BlackRock that seeks to track the performance of an index of US Treasury bonds with short remaining maturities. It holds a diversified basket of government securities and is commonly used for capital preservation and short-term cash management.",
-        "sector": 87
+        "sector": 225
       },
       "tokens": [
         {
@@ -28131,7 +28091,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "United States Antimony Corporation processes and sells antimony products, which are used in flame retardants, plastics, and other industrial applications. It also produces zeolite materials and is involved in mining and processing of other critical minerals and metals.",
-        "sector": 200
+        "sector": 315
       },
       "tokens": [
         {
@@ -28971,7 +28931,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "DigitalOcean provides cloud infrastructure services aimed at developers, startups and small and medium-sized businesses. It operates data centers around the world and also runs an annual open-source community event with software partners.",
-        "sector": 282,
+        "sector": 168,
         "website": "https://www.digitalocean.com"
       },
       "tokens": [
@@ -29576,7 +29536,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Advanced Energy Industries designs and makes precision power conversion, measurement and control systems. Its products are used in equipment for manufacturing semiconductors, displays, data storage, telecommunications gear, industrial coatings, medical devices, solar cells and architectural glass.",
-        "sector": 178
+        "sector": 179
       },
       "tokens": [
         {
@@ -32515,7 +32475,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Kinder Morgan is an American energy infrastructure company that owns and operates pipelines and storage terminals. Its network carries natural gas, refined petroleum products, crude oil, carbon dioxide and other products, and its terminals handle fuels and bulk materials.",
-        "sector": 117
+        "sector": 119
       },
       "tokens": [
         {
@@ -32575,7 +32535,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SolarEdge Technologies is an Israeli company that designs and makes DC optimized inverter systems used in solar power installations. Its products are built to improve how electricity is harvested and managed from solar panels.",
-        "sector": 296
+        "sector": 192
       },
       "tokens": [
         {
@@ -33789,7 +33749,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Fiserv is a financial technology company that handles payment and transaction processing for banks, credit unions and other financial institutions, including card transactions, bill pay, transfers and ATM activity. It also makes cards, point of sale terminals and related software and hardware, serving financial firms and retailers.",
-        "sector": 298,
+        "sector": 137,
         "website": "https://www.fiserv.com"
       },
       "tokens": [
@@ -35136,7 +35096,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Moody's is a holding company that owns a credit rating agency, which assesses the creditworthiness of borrowers and debt securities, and a separate unit offering financial analysis software and related services. Its offerings help investors, lenders and businesses evaluate risk and make financing decisions.",
-        "sector": 130,
+        "sector": 131,
         "website": "https://www.moodys.com"
       },
       "tokens": [
@@ -35993,7 +35953,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Enbridge is a Calgary-based energy infrastructure company that owns and operates pipeline networks across Canada and the United States. It moves crude oil, natural gas and natural gas liquids, and also produces renewable power.",
-        "sector": 117,
+        "sector": 119,
         "website": "https://www.enbridge.com"
       },
       "tokens": [
@@ -38368,7 +38328,7 @@
       "profile": {
         "description": "Telkom Indonesia is a state-controlled telecommunications group that provides fixed-line telephony, internet access and data communications services. Through its subsidiaries it also operates in multimedia, property and financial services.",
         "sector": 7,
-        "website": "https://www.telkom.co.id/sites"
+        "website": "https://www.telkom.co.id"
       },
       "tokens": [
         {
@@ -39217,7 +39177,7 @@
       "profile": {
         "description": "Charter Communications is a US telecommunications and media company that sells cable television, internet, phone and mobile services to homes and businesses under the Spectrum brand. It also offers internet security, managed services and unified communications.",
         "sector": 2,
-        "website": "https://www.spectrum.com"
+        "website": "https://corporate.charter.com"
       },
       "tokens": [
         {
@@ -39500,7 +39460,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Natera is a genetic testing company that develops blood-based tests analyzing cell-free DNA. Its tests are used in areas such as women's health, cancer care, and organ transplant monitoring, supported by proprietary lab methods and bioinformatics software.",
-        "sector": 310
+        "sector": 139
       },
       "tokens": [
         {
@@ -39989,7 +39949,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Keurig Dr Pepper is a North American beverage company that makes and sells carbonated soft drinks, juices and other ready-to-drink brands such as Dr Pepper, Snapple, Canada Dry and Crush. It also produces single-serve coffee brewing systems and coffee blends, and licenses some of its drink brands to third-party manufacturers in other markets.",
-        "sector": 37
+        "sector": 36
       },
       "tokens": [
         {
@@ -40979,7 +40939,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Marriott International operates, franchises, and licenses a wide range of lodging brands covering hotels, residences, and timeshare properties. It runs a global network of properties from its headquarters in Maryland and grew out of the hospitality division of an earlier family-founded company.",
-        "sector": 21,
+        "sector": 22,
         "website": "https://www.marriott.com/default.mi"
       },
       "tokens": [
@@ -41360,7 +41320,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coeur Mining is a precious metals producer that runs mining operations across North America, focusing on silver and gold. Its shares trade on the New York Stock Exchange, and the company is headquartered in Chicago.",
-        "sector": 203
+        "sector": 202
       },
       "tokens": [
         {
@@ -41906,7 +41866,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "TJX Companies is an off-price retailer that sells discounted apparel, home goods and accessories through a portfolio of store chains. Its banners include TJ Maxx, Marshalls, HomeGoods and Sierra in the United States, with Winners, HomeSense and TK Maxx serving Canada, Europe and Australia.",
-        "sector": 25
+        "sector": 302
       },
       "tokens": [
         {
@@ -42075,7 +42035,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coca-Cola Consolidated is an independent bottler based in Charlotte, North Carolina, that produces, sells and distributes Coca-Cola products and other beverages. It serves customers across the southeastern, midwestern and mid-Atlantic regions of the United States through its manufacturing plants and distribution centers.",
-        "sector": 37,
+        "sector": 36,
         "website": "https://www.cokeconsolidated.com"
       },
       "tokens": [
@@ -43279,7 +43239,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Woodside Energy Group is an Australian company that explores for and produces oil and natural gas. It operates oil and gas production in Australia and is headquartered in Perth, Western Australia.",
-        "sector": 116,
+        "sector": 115,
         "website": "https://www.woodside.com"
       },
       "tokens": [
@@ -43958,7 +43918,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ralph Lauren is an American fashion and lifestyle company that designs and sells apparel, accessories, home goods and fragrances under a range of brands, from mid-priced lines to luxury labels. It also licenses its name to partners that make products such as eyewear, fragrances, bedding and furniture.",
-        "sector": 9,
+        "sector": 11,
         "website": "https://www.ralphlauren.com"
       },
       "tokens": [
@@ -44440,7 +44400,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Tyson Foods is a US-based food company that processes and markets chicken, beef and pork. It sells prepared and packaged foods under brands such as Tyson, Jimmy Dean, Hillshire Farm and Ball Park, and also exports meat products.",
-        "sector": 35
+        "sector": 301
       },
       "tokens": [
         {
@@ -44862,7 +44822,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ross Stores is an American off-price retailer that runs discount department stores under the Ross Dress for Less name, selling apparel, footwear and home goods at reduced prices. It also operates a second discount chain, DD's Discounts, with locations concentrated in warmer southern states.",
-        "sector": 26,
+        "sector": 302,
         "website": "https://www.rossstores.com"
       },
       "tokens": [
@@ -45045,7 +45005,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Cummins designs, builds and distributes diesel engines, electric vehicle components and power generation equipment. It also provides service and parts for engines and related systems such as fuel systems, filtration, emission controls and electrical generation products, sold worldwide through distributors and dealers.",
-        "sector": 161,
+        "sector": 160,
         "website": "https://www.cummins.com"
       },
       "tokens": [
@@ -45616,7 +45576,7 @@
       "profile": {
         "description": "A German healthcare company that provides kidney dialysis treatment through a large network of outpatient clinics and manufactures dialysis equipment and related products. It mainly serves patients with end-stage renal disease who need ongoing, lifelong dialysis care.",
         "sector": 143,
-        "website": "https://fmcna.com"
+        "website": "https://www.freseniusmedicalcare.com"
       },
       "tokens": [
         {
@@ -46206,7 +46166,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GFL Environmental is a Canadian diversified environmental services company that provides solid waste collection, transfer, recycling and landfill disposal. It also offers liquid waste management and soil remediation services to municipal, commercial and industrial customers across Canada and the United States.",
-        "sector": 270
+        "sector": 308
       },
       "tokens": [
         {
@@ -46352,7 +46312,7 @@
       "profile": {
         "description": "KE Holdings operates an integrated online and offline platform in China that connects buyers, sellers, renters and agents for housing transactions and related services. It runs through subsidiaries and is commonly known to investors as Beike.",
         "sector": 276,
-        "website": "https://bj.ke.com"
+        "website": "https://investors.ke.com"
       },
       "tokens": [
         {
@@ -47322,7 +47282,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "BJ's Wholesale Club operates a chain of membership-only warehouse stores, selling groceries and general merchandise to paying members. It is based in Massachusetts and serves mainly the eastern United States and Texas, competing with other warehouse club retailers.",
-        "sector": 324,
+        "sector": 228,
         "website": "https://www.bjs.com"
       },
       "tokens": [
@@ -47903,7 +47863,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hecla Mining Company is an Idaho-based miner that produces silver, gold and other precious metals, and is the largest silver producer in the United States. Its operating region, the Silver Valley, was formally designated a cleanup site by federal regulators because of contamination left by long-running, largely unregulated mining.",
-        "sector": 203,
+        "sector": 202,
         "website": "https://www.hecla.com"
       },
       "tokens": [
@@ -48293,7 +48253,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Labcorp provides clinical laboratory testing used to support diagnosis and healthcare decisions, operating a large network of patient service centers and specialty testing facilities. It also offers drug, medical device and diagnostic development services to pharmaceutical, biotechnology and diagnostic companies.",
-        "sector": 329,
+        "sector": 139,
         "website": "https://www.labcorp.com"
       },
       "tokens": [
@@ -49622,7 +49582,7 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Wipro is an Indian multinational technology company headquartered in Bengaluru that offers IT services, consulting and business process outsourcing. Its work spans cloud computing, cybersecurity, digital transformation, artificial intelligence, robotics and data analytics for business clients.",
-        "sector": 233,
+        "sector": 259,
         "website": "https://www.wipro.com"
       },
       "tokens": [
