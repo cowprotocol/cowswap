@@ -25,7 +25,7 @@ export interface RwaAssetProfile {
   description: string
   /** `RWA_SECTORS` sector, `RWA_SECTOR_SEPARATOR` and industry, e.g. `Information Technology · Semiconductors` */
   sector: string
-  /** Official site, `https`. Hand-edited: `update-profiles` never writes it */
+  /** Official site, `https`. Written by `update-websites` or by hand, never by `update-profiles` */
   website?: string
 }
 
