@@ -1,16 +1,14 @@
 'use client'
 
-import { useAtomValue } from 'jotai'
 import { type ReactNode, useId, useLayoutEffect, useRef, useState } from 'react'
 
 import styles from './AssetAbout.module.css'
+import { MarketKindSelector } from './MarketKindSelector'
 
-import { getYearRange } from '../lib/yearRange'
-import { assetYearChartQueryAtomFamily } from '../model/assetChartQueryAtomFamily'
-import { useAssetMarket } from '../model/useAssetMarket'
+import { useAssetPriceStats } from '../model/useAssetPriceStats'
 
 import { RWA_ASSET_TYPE_LABELS, type RwaAsset } from '@/entities/asset'
-import { formatDate, formatUsd } from '@/shared/lib/format'
+import { formatCompactUsd, formatDate, formatUsd } from '@/shared/lib/format'
 import { ChevronDownIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
 
@@ -22,9 +20,8 @@ interface RangeStatProps {
 }
 
 export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
-  const { market } = useAssetMarket(asset.ticker)
-  const yearPoints = useAtomValue(assetYearChartQueryAtomFamily(asset.ticker)).data?.points
-  const yearRange = yearPoints ? getYearRange(yearPoints) : null
+  const { marketKind, stats, yearRange } = useAssetPriceStats(asset.ticker)
+  const isStock = marketKind === 'stock'
   const { profile } = asset
 
   return (
@@ -40,8 +37,9 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
         )}
       </header>
       {profile && <Description text={profile.description} />}
+      <MarketKindSelector asset={asset} className={styles.marketKind} />
       <dl className={styles.well}>
-        <RangeStat label="Day range" low={market?.dayLow} high={market?.dayHigh} price={market?.price} />
+        <RangeStat label="Day range" low={stats?.dayLow} high={stats?.dayHigh} price={stats?.price} />
         <RangeStat
           label={
             yearRange?.since
@@ -50,8 +48,17 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
           }
           low={yearRange?.low}
           high={yearRange?.high}
-          price={market?.price}
+          price={stats?.price}
         />
+        {stats && (
+          <>
+            <ValueStat
+              label={isStock ? 'Market cap' : 'Tokenized market cap'}
+              value={formatCompactUsd(stats.marketCap)}
+            />
+            <ValueStat label="Volume (24h)" value={formatCompactUsd(stats.volume24h)} />
+          </>
+        )}
       </dl>
     </section>
   )
@@ -107,6 +114,15 @@ function RangeStat({ label, low, high, price }: RangeStatProps): ReactNode {
           <span>{formatUsd(high)}</span>
         </span>
       </dd>
+    </div>
+  )
+}
+
+function ValueStat({ label, value }: { label: string; value: string }): ReactNode {
+  return (
+    <div className={styles.stat}>
+      <dt>{label}</dt>
+      <dd className={styles.value}>{value}</dd>
     </div>
   )
 }

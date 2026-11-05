@@ -4,8 +4,10 @@ import { normalizeError } from '@cowprotocol/common-utils/errors'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { coingeckoProvider, type MarketDataProvider } from './marketData'
+import { ondoStockDataProvider } from './ondoStockData'
 import { getTokenQuotes, QUOTE_AMOUNT_USD } from './quotes'
 import { loadSharesPerToken, loadTradingPause, type SharesPerTokenLoadResult } from './sharesMultipliers'
+import { type StockDataProvider, withStockDataFallback } from './stockData'
 
 import { sumNullable } from '../lib/sumNullable'
 import { getTokenKey } from '../lib/tokenKey'
@@ -28,6 +30,7 @@ import type {
   RwaAssetQuotes,
   RwaAssetResponse,
   RwaAssetsFilter,
+  RwaAssetStock,
   RwaAssetTokenStats,
   RwaAssetsPage,
   RwaAssetsSearchResult,
@@ -47,6 +50,8 @@ import type {
 } from '../model/types'
 
 const marketDataProvider: MarketDataProvider = coingeckoProvider
+/** FinancialData.net is the planned fallback for assets without an Ondo token */
+const stockDataProvider: StockDataProvider = withStockDataFallback([ondoStockDataProvider])
 
 const MARKET_OVERVIEW_LIST_LIMIT = 3
 
@@ -146,6 +151,32 @@ export async function getAssetQuotes(
   const { quotes, degraded } = await getTokenQuotes(chainId, side, addresses)
 
   return { ticker: asset.ticker, chainId, side, amountUsd: QUOTE_AMOUNT_USD, quotes, degraded }
+}
+
+/** Degraded with a `null` market when every stock data provider that could cover the asset failed */
+export async function getAssetStock(asset: RwaAsset): Promise<RwaAssetStock> {
+  try {
+    return { ticker: asset.ticker, market: await stockDataProvider.getMarket(asset), degraded: false }
+  } catch (err: unknown) {
+    const error = normalizeError(err)
+    console.error(`[rwa] Failed to load the ${asset.ticker} stock market`, error)
+
+    return { ticker: asset.ticker, market: null, degraded: true }
+  }
+}
+
+/** Stock candles per share. Empty when no stock data provider covers the asset */
+export async function getAssetStockCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandleChart> {
+  const candles = await stockDataProvider.getCandles(asset, range)
+
+  return { ticker: asset.ticker, range, candles: candles ?? [], degraded: false }
+}
+
+/** Stock price per share. Empty when no stock data provider covers the asset */
+export async function getAssetStockChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChart> {
+  const points = await stockDataProvider.getChart(asset, range)
+
+  return { ticker: asset.ticker, range, points: points ?? [], degraded: false }
 }
 
 export async function getAssetTokenStats(asset: RwaAsset): Promise<RwaAssetTokenStats> {

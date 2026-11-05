@@ -23,7 +23,7 @@ The stock market comes first. Ideally the page shows both.
 | `AssetStats` (price, 24h change, market status) | toggle **[Stock / Tokenized stock]**, Stock by default | toggle |
 | `AssetPriceChart` (line and candles, 1D / 1W / 1M / 1Y / ALL) | toggle | toggle |
 | Overview → `AssetAbout`: ticker, sector, description, website | static, from `data/RWAs.json` | stock, always |
-| Overview → stock card: market status (`allowedTradingTime`), company market cap, avg. volume, day range, 52-week range | dynamic | stock, always |
+| Overview → stock card: market status (`allowedTradingTime`), market cap, volume (24h), day range, 52-week range | dynamic | stock, always |
 | Positions, open orders, activity | CoW services | tokens |
 
 With Tokenized stock selected, `AssetStats` and `AssetPriceChart` keep today's CoinGecko behaviour.
@@ -33,7 +33,9 @@ Static data in `RWAs.json` (`allowedTradingTime`, `newsFeed`, `profile`) can be 
 
 ## Provider abstraction
 
-Stock data sits behind one interface, with providers tried in order:
+Stock data sits behind `StockDataProvider` (`src/entities/asset/api/stockData.ts`), with providers tried in order
+by `withStockDataFallback`: a provider without data (`null`) or failing is skipped, and the chain rejects only when
+none has data and one failed. The Ondo implementation is `src/entities/asset/api/ondoStockData.ts`.
 
 1. **Ondo**: the only provider today.
 2. **FinancialData.net**: planned fallback for assets Ondo does not cover. It is the first choice in the Notion
@@ -98,9 +100,9 @@ Candles have `timestamp` (ms), `open`, `high`, `low`, `close`, and **no volume**
 | Stock price | `underlyingMarket.price` | ✅ Live, and moves in premarket, postmarket and overnight sessions too |
 | 24h change | none for the stock (`priceChangePct24h` is the token's) | 🟡 Calculate from the `15min/1day` stock candles |
 | Chart | `underlyingMarket.data` from OHLC | ✅ |
-| Company market cap | `underlyingMarket.marketCap` | ✅ ETFs need a fund label, not "Company market cap" |
+| Market cap | `underlyingMarket.marketCap` | ✅ Labelled "Market cap", not "Company market cap", because ETFs have it too |
 | 52-week range | `priceLow52w`, `priceHigh52w` | ✅ |
-| Avg. volume | `underlyingMarket.averageVolume` | 🟡 A **1-year** average. It does not match the "30d" label in the design, and candles have no volume to calculate 30 days ourselves |
+| Volume (24h) | `underlyingMarket.volume` × price | 🟡 Shares, shown in USD at the current price like the tokenized volume. Shown instead of the design's "Avg. volume (30d)": `averageVolume` is a **1-year** average, and candles have no volume to calculate 30 days ourselves |
 | Day range | min/max of the `1day` candles | 🟡 A rolling 24 h including extended sessions, not the regular session |
 | Sector | `tags.sectorIndustry` | 🟡 Broad (`["Technology"]`), and empty for about 100 of 482 Ondo assets. `RWAs.json` `profile.sector` stays the primary source |
 | Description, website, news | none | ❌ Keep them in `RWAs.json` |

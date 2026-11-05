@@ -258,6 +258,9 @@ export const RWA_CHART_RANGES = ['1D', '1W', '1M', '1Y', 'ALL'] as const
 
 export const RWA_CHART_TYPES = ['line', 'candles'] as const
 
+/** `stock`: the underlying share on its exchange, from a stock data provider. `tokenized`: its tokens, from CoinGecko */
+export const RWA_MARKET_KINDS = ['stock', 'tokenized'] as const
+
 export const RWA_QUOTE_SIDES = ['buy', 'sell'] as const
 
 /** Quotes of every asset token on one network against a fixed USDC amount */
@@ -268,6 +271,12 @@ export interface RwaAssetQuotes extends DegradableResponse {
   /** USD, spent on `buy` and received on `sell` */
   amountUsd: number
   quotes: RwaTokenQuote[]
+}
+
+export interface RwaAssetStock extends DegradableResponse {
+  ticker: string
+  /** `null` when no stock data provider covers the asset */
+  market: RwaStockMarket | null
 }
 
 /** USD */
@@ -303,7 +312,33 @@ export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
 
 export type RwaChartType = (typeof RWA_CHART_TYPES)[number]
 
+export type RwaMarketKind = (typeof RWA_MARKET_KINDS)[number]
+
 export type RwaQuoteSide = (typeof RWA_QUOTE_SIDES)[number]
+
+/** The underlying share on its exchange, including extended sessions */
+export interface RwaStockMarket {
+  /** USD */
+  price: number
+  /** Percent over the last 24h, e.g. `2.5` for +2.5% */
+  change24h: number | null
+  /** USD, over the last 24h */
+  dayLow: number | null
+  /** USD, over the last 24h */
+  dayHigh: number | null
+  /** USD */
+  yearLow: number | null
+  /** USD */
+  yearHigh: number | null
+  /** USD, of the company or fund */
+  marketCap: number | null
+  /** USD traded over the last 24h, estimated as shares traded × `price` */
+  volume24h: number | null
+  /** ISO 8601 */
+  updatedAt: string
+  /** Name of the provider the data came from, e.g. `Ondo` */
+  provider: string
+}
 
 /** [Token list](https://tokenlists.org) of every token in the registry */
 export interface RwaTokenList {

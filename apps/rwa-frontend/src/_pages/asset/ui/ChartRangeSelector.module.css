@@ -30,3 +30,8 @@
   box-shadow: var(--shadow-pill);
   color: var(--color-text);
 }
+
+.ranges button:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+}

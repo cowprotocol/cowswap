@@ -10,15 +10,19 @@ import { ChartTypeSelector } from './ChartTypeSelector'
 import { assetCandlesQueryAtomFamily, assetChartQueryAtomFamily } from '../model/assetChartQueryAtomFamily'
 import { chartRangeAtom } from '../model/chartRangeAtom'
 import { chartTypeAtom } from '../model/chartTypeAtom'
+import { shownMarketKindAtomFamily } from '../model/marketKindAtom'
 import { usePrefetchOtherChartType } from '../model/usePrefetchOtherChartType'
 
-import { pointsToCandles, PriceChart } from '@/entities/asset'
+import { assetStockQueryAtomFamily, pointsToCandles, PriceChart } from '@/entities/asset'
 
 export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
   const range = useAtomValue(chartRangeAtom)
   const chartType = useAtomValue(chartTypeAtom)
   const lineQuery = useAtomValue(assetChartQueryAtomFamily(ticker))
   const candlesQuery = useAtomValue(assetCandlesQueryAtomFamily(ticker))
+  const marketKind = useAtomValue(shownMarketKindAtomFamily(ticker))
+  // Until the stock market loads, an asset without stock data would flash an empty stock chart
+  const isStockPending = useAtomValue(assetStockQueryAtomFamily(ticker)).isPending && marketKind === 'stock'
 
   usePrefetchOtherChartType(ticker)
   const { data, error, isPlaceholderData } = chartType === 'line' ? lineQuery : candlesQuery
@@ -43,7 +47,7 @@ export function AssetPriceChart({ ticker }: { ticker: string }): ReactNode {
           candles={candles}
           chartType={chartType}
           range={range}
-          loading={!data}
+          loading={!data || isStockPending}
           stale={isPlaceholderData}
         />
       )}

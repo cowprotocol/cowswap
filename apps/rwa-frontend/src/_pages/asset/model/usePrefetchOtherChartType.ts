@@ -7,6 +7,7 @@ import { queryClientAtom } from 'jotai-tanstack-query'
 
 import { chartRangeAtom } from './chartRangeAtom'
 import { chartTypeAtom } from './chartTypeAtom'
+import { shownMarketKindAtomFamily } from './marketKindAtom'
 
 import { assetCandlesQueryOptions, assetChartQueryOptions } from '@/entities/asset'
 
@@ -17,18 +18,19 @@ export function usePrefetchOtherChartType(ticker: string): void {
   const store = useStore()
   const queryClient = useAtomValue(queryClientAtom)
   const range = useAtomValue(chartRangeAtom)
+  const marketKind = useAtomValue(shownMarketKindAtomFamily(ticker))
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (store.get(chartTypeAtom) === 'line') {
-        const { queryKey, queryFn } = assetCandlesQueryOptions(ticker, range)
+        const { queryKey, queryFn } = assetCandlesQueryOptions(ticker, range, marketKind)
         void queryClient.prefetchQuery({ queryKey, queryFn })
       } else {
-        const { queryKey, queryFn } = assetChartQueryOptions(ticker, range)
+        const { queryKey, queryFn } = assetChartQueryOptions(ticker, range, marketKind)
         void queryClient.prefetchQuery({ queryKey, queryFn })
       }
     }, PREFETCH_DELAY_MS)
 
     return () => clearTimeout(timer)
-  }, [queryClient, range, store, ticker])
+  }, [marketKind, queryClient, range, store, ticker])
 }
