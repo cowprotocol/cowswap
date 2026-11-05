@@ -1,7 +1,7 @@
 export type PageItem = number | 'start-gap' | 'end-gap'
 
 /**
- * Pages to show in `slots` positions (odd, at least 7), always with the first and the last page: e.g. for 11 slots
+ * Pages to show in `slots` positions (odd, at least 5), always with the first and the last page: e.g. for 11 slots
  * `1 … 44 45 46 47 48 … 93`. Near an end the run grows to fill the slots of the gap it doesn't need
  */
 export function getPageItems(page: number, totalPages: number, slots: number): PageItem[] {

@@ -62,14 +62,14 @@ export function TradeTokenName({ quoted, bestQuoteLabel }: TradeTokenNameProps):
       </span>
       {bestQuoteLabel && <span className={`${styles.tag} ${styles.bestTag}`}>{bestQuoteLabel}</span>}
       {isUnverifiedQuote(quoted) && (
-        <>
+        <span className={styles.unverified}>
           <span className={styles.tag}>Unverified</span>
           <Tooltip className={styles.info} content="The order book could not simulate this trade">
             <span role="img" aria-label="Unverified quote details">
               <InfoIcon />
             </span>
           </Tooltip>
-        </>
+        </span>
       )}
     </span>
   )

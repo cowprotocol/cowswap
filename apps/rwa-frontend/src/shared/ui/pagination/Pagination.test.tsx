@@ -13,7 +13,7 @@ describe('Pagination', () => {
     render(<Pagination page={1} totalPages={93} onChange={jest.fn()} />)
 
     expect(screen.getAllByRole('button', { name: 'Page 1' })[0]?.getAttribute('aria-current')).toBe('page')
-    expect(screen.getAllByRole('button', { name: 'Page 93' })).toHaveLength(2)
+    expect(screen.getAllByRole('button', { name: 'Page 93' })).toHaveLength(3)
     expect(screen.getByRole<HTMLButtonElement>('button', { name: 'Previous page' }).disabled).toBe(true)
     expect(screen.getByRole<HTMLButtonElement>('button', { name: 'Next page' }).disabled).toBe(false)
   })

@@ -5,7 +5,7 @@
   margin-bottom: 20px;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .grid {
     grid-template-columns: minmax(0, 1fr);
   }

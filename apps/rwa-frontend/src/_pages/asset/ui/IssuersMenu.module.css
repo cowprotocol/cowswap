@@ -39,7 +39,7 @@
   top: calc(100% + 8px);
   left: 0;
   z-index: 20;
-  width: min(360px, calc(100vw - 32px));
+  width: 360px;
   padding: 16px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-control);
@@ -102,4 +102,15 @@
   font-weight: 500;
   line-height: 16px;
   text-underline-offset: 3px;
+}
+
+/* The trigger sits mid-row, so the menu anchors to the identity header, which spans the column */
+@media (max-width: 720px) {
+  .wrapper {
+    position: static;
+  }
+
+  .menu {
+    width: min(360px, 100%);
+  }
 }
