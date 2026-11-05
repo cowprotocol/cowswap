@@ -141,8 +141,8 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
    * 2. When chainId in URL is invalid or unavailable (e.g. Solana in the widget), then redirect to the default chainId
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
-   * 5. When only chainId was changed in URL, then redirect to the default state
-   * 6. Otherwise, fill the trade state by data from URL
+   * 5. Otherwise, fill the trade state by data from URL, also when only chainId was changed:
+   *    the network selector picks the default tokens itself, and a token can share one address across chains
    *
    * *** When chainId in URL was changed while wallet is connected ***
    * Imagine a case:
@@ -217,16 +217,13 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       return
     }
 
-    if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty || onlyChainIdIsChanged) {
+    if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty) {
       navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId)
 
       if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
-      } else if (tokensAreEmpty) {
+      } else {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
-      } else if (onlyChainIdIsChanged) {
-        updateState?.({ ...state, chainId: currentChainId })
-        console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
 
       return
