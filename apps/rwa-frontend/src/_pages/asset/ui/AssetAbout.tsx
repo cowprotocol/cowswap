@@ -30,7 +30,7 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
         <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} />
         <h2 id="asset-about-title">About {asset.title}</h2>
         <span className={styles.sector}>{profile?.sector ?? RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-        {profile && (
+        {profile?.website && (
           <a className={styles.website} href={profile.website} target="_blank" rel="noopener noreferrer">
             {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
           </a>

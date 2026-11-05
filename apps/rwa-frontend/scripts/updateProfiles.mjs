@@ -1,0 +1,209 @@
+#!/usr/bin/env node
+/**
+ * Fills `profile.description` and `profile.sector` of data/RWAs.json assets: Wikipedia summaries (matched through
+ * Wikidata NYSE/Nasdaq/HKEX/LSE listings) reworded by Claude, or Claude alone for assets without an article.
+ *
+ * Usage: pnpm --filter @cowprotocol/rwa-frontend update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--dry-run]
+ * Env: ANTHROPIC_API_KEY (required).
+ *
+ * Only assets without a profile are filled unless `--force`. `website` is hand-edited: it is never written, and kept
+ * by `--force`. Commodities are skipped.
+ */
+import { readFile, rename, writeFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { parseArgs } from 'node:util'
+
+import { buildProfilePrompt, parseProfileResponse, requestProfile } from './profiles/claude.mjs'
+import { fetchWikidataMatches } from './profiles/wikidata.mjs'
+import { fetchSourceText } from './profiles/wikipedia.mjs'
+
+const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
+const SOURCES = ['wikipedia', 'ai']
+const CONCURRENCY = 4
+const SAVE_INTERVAL_MS = 1000
+const USAGE =
+  'Usage: update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--dry-run]\nEnv: ANTHROPIC_API_KEY'
+
+async function main() {
+  const options = readOptions()
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) exit('ANTHROPIC_API_KEY is required')
+
+  const registry = JSON.parse(await readFile(REGISTRY_PATH, 'utf8'))
+  const candidates = registry.assets.filter(
+    (asset) =>
+      asset.type !== 'commodity' &&
+      (!options.tickers.length || options.tickers.includes(asset.ticker)) &&
+      (options.force || !asset.profile),
+  )
+  console.log(`${candidates.length} candidates`)
+
+  const sources = await loadSources(candidates)
+  const selected = candidates.filter((asset) => {
+    if (options.source === 'wikipedia') return sources.has(asset.ticker)
+    if (options.source === 'ai') return !sources.has(asset.ticker)
+    return true
+  })
+  console.log(
+    `${selected.length} selected (${selected.filter((asset) => sources.has(asset.ticker)).length} with Wikipedia text)`,
+  )
+
+  const report = { filled: [], skipped: [], rejected: [], failed: [] }
+  const writer = createRegistryWriter(registry, options.dryRun)
+
+  await forEachConcurrently(selected, async (asset) => {
+    const source = sources.get(asset.ticker)
+    const prompt = buildProfilePrompt({
+      ticker: asset.ticker,
+      title: asset.title,
+      type: asset.type,
+      sourceText: source?.sourceText ?? null,
+      industry: source?.industry ?? null,
+    })
+
+    try {
+      const text = await requestProfile(prompt, apiKey)
+      const profile = parseProfileResponse(text, asset.title)
+
+      if (!profile) {
+        report[/"skip"\s*:\s*true/.test(text) ? 'skipped' : 'rejected'].push(asset.ticker)
+        return
+      }
+
+      report.filled.push(asset.ticker)
+      if (options.dryRun) console.log(`${asset.ticker} → ${profile.sector} | ${profile.description}`)
+
+      await writer.setProfile(asset.ticker, {
+        ...profile,
+        ...(asset.profile?.website ? { website: asset.profile.website } : {}),
+      })
+    } catch (err) {
+      report.failed.push(asset.ticker)
+      console.error(`${asset.ticker}: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  })
+
+  await writer.flush()
+  printReport(report, options.source === 'wikipedia' ? candidates.filter((asset) => !sources.has(asset.ticker)) : [])
+}
+
+function readOptions() {
+  let values
+  try {
+    ;({ values } = parseArgs({
+      options: {
+        source: { type: 'string' },
+        force: { type: 'boolean', default: false },
+        ticker: { type: 'string', multiple: true, default: [] },
+        'dry-run': { type: 'boolean', default: false },
+      },
+    }))
+  } catch (err) {
+    exit(`${err instanceof Error ? err.message : String(err)}\n${USAGE}`)
+  }
+
+  if (values.source !== undefined && !SOURCES.includes(values.source))
+    exit(`Invalid --source "${values.source}"\n${USAGE}`)
+
+  return { source: values.source, force: values.force, tickers: values.ticker, dryRun: values['dry-run'] }
+}
+
+/** Ticker to Wikipedia source text and Wikidata industry, for candidates with a usable article */
+async function loadSources(candidates) {
+  const matches = await fetchWikidataMatches(candidates.map((asset) => asset.ticker))
+  const sources = new Map()
+
+  await forEachConcurrently([...matches], async ([ticker, match]) => {
+    if (!match.articleTitle) return
+
+    try {
+      const sourceText = await fetchSourceText(match.articleTitle)
+      if (sourceText) sources.set(ticker, { sourceText, industry: match.industry })
+    } catch (err) {
+      console.error(`${ticker}: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  })
+
+  return sources
+}
+
+/**
+ * Saves profiles as they come, at most once per `SAVE_INTERVAL_MS`, through a temp file and a rename so an
+ * interrupted run leaves a valid registry. The version is bumped once per run.
+ */
+function createRegistryWriter(registry, dryRun) {
+  const next = { ...registry, assets: [...registry.assets] }
+  let changed = false
+  let lastSave = 0
+  let saving = Promise.resolve()
+
+  function save() {
+    if (dryRun || !changed) return saving
+
+    lastSave = Date.now()
+    saving = saving.then(async () => {
+      const tempPath = `${REGISTRY_PATH}.tmp`
+      await writeFile(tempPath, `${JSON.stringify(next, null, 2)}\n`)
+      await rename(tempPath, REGISTRY_PATH)
+    })
+
+    return saving
+  }
+
+  return {
+    async setProfile(ticker, profile) {
+      const index = next.assets.findIndex((asset) => asset.ticker === ticker)
+      const previous = next.assets[index]
+      if (JSON.stringify(previous.profile) === JSON.stringify(profile)) return
+
+      next.assets[index] = withProfile(previous, profile)
+      if (!changed) {
+        changed = true
+        next.version = bumpPatch(registry.version)
+        next.lastModificationTime = new Date().toISOString()
+      }
+      if (Date.now() - lastSave >= SAVE_INTERVAL_MS) await save()
+    },
+    flush: save,
+  }
+}
+
+/** Keeps the key order of `update-registry`, where `profile` comes right before `tokens` */
+function withProfile(asset, profile) {
+  const { profile: _previous, tokens, ...rest } = asset
+
+  return { ...rest, profile, tokens }
+}
+
+async function forEachConcurrently(items, callback) {
+  let nextIndex = 0
+  const workers = Array.from({ length: Math.min(CONCURRENCY, items.length) }, async () => {
+    while (nextIndex < items.length) await callback(items[nextIndex++])
+  })
+
+  await Promise.all(workers)
+}
+
+function printReport(report, withoutSource) {
+  for (const [label, tickers] of Object.entries(report)) {
+    console.log(`${label}: ${tickers.length}${tickers.length ? ` (${tickers.sort().join(', ')})` : ''}`)
+  }
+  if (withoutSource.length) console.log(`without Wikipedia text: ${withoutSource.length}`)
+}
+
+function bumpPatch(version) {
+  const [major = 0, minor = 0, patch = 0] = version.split('.').map(Number)
+
+  return `${major}.${minor}.${patch + 1}`
+}
+
+function exit(message) {
+  console.error(message)
+  process.exit(1)
+}
+
+main().catch((err) => {
+  console.error(err)
+  process.exit(1)
+})

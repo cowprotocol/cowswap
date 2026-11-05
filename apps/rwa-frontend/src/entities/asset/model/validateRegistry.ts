@@ -3,6 +3,7 @@ import { isAddress } from 'viem'
 import { isSupportedChain } from '@cowprotocol/cow-sdk'
 
 import { RWA_ISSUERS } from './issuers'
+import { RWA_SECTOR_SEPARATOR, RWA_SECTORS } from './sectors'
 import {
   RWA_ASSET_TYPES,
   type RwaAsset,
@@ -16,6 +17,7 @@ const TRADING_TIME_REGEX = /^([01]\d|2[0-3]):[0-5]\d UTC$/
 
 const ALLOWED_ISSUERS: readonly string[] = RWA_ISSUERS
 const ASSET_TYPES: readonly string[] = RWA_ASSET_TYPES
+const SECTORS: readonly string[] = RWA_SECTORS
 
 export function validateRegistry(registry: RwaRegistry): string[] {
   const errors: string[] = []
@@ -40,6 +42,15 @@ export function validateRegistry(registry: RwaRegistry): string[] {
 
 function isHttpsUrl(value: string): boolean {
   return URL.canParse(value) && new URL(value).protocol === 'https:'
+}
+
+function isValidSector(sector: string): boolean {
+  const separatorIndex = sector.indexOf(RWA_SECTOR_SEPARATOR)
+  if (separatorIndex === -1) return false
+
+  const industry = sector.slice(separatorIndex + RWA_SECTOR_SEPARATOR.length).trim()
+
+  return SECTORS.includes(sector.slice(0, separatorIndex)) && industry.length > 0
 }
 
 function isValidTradingTime(tradingTime: RwaTradingTime | undefined): boolean {
@@ -74,7 +85,12 @@ function validateProfile(profile: RwaAssetProfile, path: string): string[] {
 
   if (!profile.description) errors.push(`${path}.description: required`)
   if (!profile.sector) errors.push(`${path}.sector: required`)
-  if (!isHttpsUrl(profile.website)) errors.push(`${path}.website: must be an https URL`)
+  else if (!isValidSector(profile.sector)) {
+    errors.push(`${path}.sector: must start with one of ${SECTORS.join(', ')} followed by "${RWA_SECTOR_SEPARATOR}"`)
+  }
+  if (profile.website !== undefined && !isHttpsUrl(profile.website)) {
+    errors.push(`${path}.website: must be an https URL`)
+  }
 
   return errors
 }

@@ -23,10 +23,10 @@ export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
 export interface RwaAssetProfile {
   /** One or two sentences */
   description: string
-  /** e.g. `Technology · Semiconductors` */
+  /** `RWA_SECTORS` sector, `RWA_SECTOR_SEPARATOR` and industry, e.g. `Information Technology · Semiconductors` */
   sector: string
-  /** Official site, `https` */
-  website: string
+  /** Official site, `https`. Hand-edited: `update-profiles` never writes it */
+  website?: string
 }
 
 /** Stats of every asset token on every network it has */
