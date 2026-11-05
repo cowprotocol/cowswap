@@ -13,14 +13,35 @@ export interface RwaAsset {
   allowedTradingTime?: RwaTradingTime
   /** Official issuer press releases, hand-edited */
   newsFeed?: RwaNewsFeed
+  /** The company or fund behind the asset, hand-edited */
+  profile?: RwaAssetProfile
   tokens: RwaToken[]
 }
 
-export const RWA_ASSET_TYPES = ['stock', 'index'] as const
+export const RWA_ASSET_TYPES = ['stock', 'index', 'commodity'] as const
+
+export interface RwaAssetProfile {
+  /** One or two sentences */
+  description: string
+  /** e.g. `Technology · Semiconductors` */
+  sector: string
+  /** Official site, `https` */
+  website: string
+}
+
+/** Stats of every asset token on every network it has */
+export interface RwaAssetTokenStats extends DegradableResponse {
+  ticker: string
+  tokens: RwaChainTokenStats[]
+}
 
 export type RwaAssetType = (typeof RWA_ASSET_TYPES)[number]
 
-export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = { stock: 'Stock', index: 'ETF' }
+export const RWA_ASSET_TYPE_LABELS: Record<RwaAssetType, string> = {
+  stock: 'Stock',
+  index: 'ETF',
+  commodity: 'Commodity',
+}
 
 /** CoinGecko tokenized market of an RWA over every chain and issuer. Server-only: never sent in a response */
 export interface RwaAggregateMarket {
@@ -55,9 +76,13 @@ export interface RwaAssetNews extends DegradableResponse {
 
 export interface RwaAssetsFilter {
   type?: RwaAssetType
-  /** Matches assets with a token of this issuer, on `chainId` when both are set */
-  issuer?: string
-  chainId?: number
+  /** Matches assets with a token of one of these issuers, on one of `chainIds` when both are set */
+  issuers?: string[]
+  chainIds?: number[]
+  /** USD */
+  minMarketCap?: number
+  /** USD */
+  minVolume24h?: number
   /** Matches ticker, title or token symbol */
   query?: string
   tickers?: string[]
@@ -70,6 +95,10 @@ export interface RwaAssetSummary extends Pick<RwaAsset, 'ticker' | 'title' | 'lo
 
 export interface RwaAssetWithMarket extends RwaAsset {
   market: RwaMarketData | null
+}
+
+export interface RwaChainTokenStats extends RwaTokenNetworkStats {
+  chainId: number
 }
 
 /** `RwaAggregateMarket` of the asset, plus the markets of its tokens */
@@ -117,13 +146,6 @@ export interface RwaMarketOverviewTotals {
   volume24h: number | null
   /** 7 days, hourly */
   marketCapSeries: RwaChartPoint[] | null
-}
-
-/** Stats of every asset token on one network */
-export interface RwaNetworkStats extends DegradableResponse {
-  ticker: string
-  chainId: number
-  tokens: RwaTokenNetworkStats[]
 }
 
 export interface RwaNewsFeed {
@@ -215,9 +237,9 @@ export interface RwaAssetsPage extends DegradableResponse {
   page: number
   pageSize: number
   total: number
+  /** Assets of the selected type with no other filter applied */
+  typeTotal: number
   totalPages: number
-  /** Matches of each type with every filter but `type` applied */
-  typeCounts: Record<RwaAssetType, number>
   /** Issuers in the registry, for the filter */
   issuers: string[]
   /** Networks in the registry, for the filter */
@@ -234,6 +256,8 @@ export type RwaSortOrder = 'asc' | 'desc'
 
 export const RWA_CHART_RANGES = ['1D', '1W', '1M', '1Y', 'ALL'] as const
 
+export const RWA_CHART_TYPES = ['line', 'candles'] as const
+
 export const RWA_QUOTE_SIDES = ['buy', 'sell'] as const
 
 /** Quotes of every asset token on one network against a fixed USDC amount */
@@ -246,7 +270,23 @@ export interface RwaAssetQuotes extends DegradableResponse {
   quotes: RwaTokenQuote[]
 }
 
-export interface RwaChart {
+/** USD */
+export interface RwaCandle {
+  /** Unix seconds of the candle open */
+  time: number
+  open: number
+  high: number
+  low: number
+  close: number
+}
+
+export interface RwaCandleChart extends DegradableResponse {
+  ticker: string
+  range: RwaChartRange
+  candles: RwaCandle[]
+}
+
+export interface RwaChart extends DegradableResponse {
   ticker: string
   range: RwaChartRange
   points: RwaChartPoint[]
@@ -260,6 +300,8 @@ export interface RwaChartPoint {
 }
 
 export type RwaChartRange = (typeof RWA_CHART_RANGES)[number]
+
+export type RwaChartType = (typeof RWA_CHART_TYPES)[number]
 
 export type RwaQuoteSide = (typeof RWA_QUOTE_SIDES)[number]
 

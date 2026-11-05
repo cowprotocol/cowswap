@@ -1,5 +1,6 @@
 import {
   AdditionalTargetChainId,
+  ALL_SUPPORTED_CHAIN_IDS,
   arbitrumOne,
   avalanche,
   base,
@@ -185,6 +186,16 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.SOLANA,
   SupportedChainId.SEPOLIA,
 ]
+
+/**
+ * Chains known to the SDK that the app must not expose yet: they are left out of the lists above and
+ * rejected by `isSupportedChainId`.
+ */
+export const UNRELEASED_CHAIN_IDS: ReadonlySet<number> = new Set<number>()
+
+export const RELEASED_SUPPORTED_CHAIN_IDS: SupportedChainId[] = ALL_SUPPORTED_CHAIN_IDS.filter(
+  (chainId) => !UNRELEASED_CHAIN_IDS.has(chainId),
+)
 
 /**
  * Sorted array of chain IDs in order of relevance.

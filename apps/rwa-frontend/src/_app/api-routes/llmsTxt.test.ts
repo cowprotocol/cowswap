@@ -49,7 +49,7 @@ describe('buildLlmsTxt', () => {
     expect(buildLlmsTxt([ASSET], APP_URL).split('\n').slice(0, 3)).toEqual([
       '# CoW RWA',
       '',
-      '> Trade tokenized stocks and ETFs with CoW Protocol',
+      '> Third-party tokens referencing stocks and ETFs, with swaps powered by CoW Protocol',
     ])
   })
 

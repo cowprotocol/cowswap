@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { AssetAccount } from './AssetAccount'
 import { AssetPriceChart } from './AssetPriceChart'
 import styles from './AssetView.module.css'
+import { IssuersMenu } from './IssuersMenu'
 import { TradeWidget } from './TradeWidget'
 
 import { getTradingPauseMessage } from '../lib/tradingPause'
@@ -14,10 +15,8 @@ import { useAssetMarket } from '../model/useAssetMarket'
 import { useFitStickyTop } from '../model/useFitStickyTop'
 
 import { AssetStats, type RwaAsset } from '@/entities/asset'
-import { NetworkLogos } from '@/shared/ui/network-logos'
 import { StatusMessage } from '@/shared/ui/status-message'
 import { TokenLogo } from '@/shared/ui/token-logo'
-import { Tooltip } from '@/shared/ui/tooltip'
 
 const SIDE_STICKY_GAP = 16
 
@@ -30,7 +29,7 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
 
   return (
     <div className={styles.layout}>
-      <div className={styles.main}>
+      <div className={styles.overview}>
         <Link className={styles.back} href="/">
           <ArrowLeftIcon />
           Explore
@@ -41,11 +40,13 @@ export function AssetView({ asset }: { asset: RwaAsset }): ReactNode {
         {tradingPauseMessage && <StatusMessage>{tradingPauseMessage}</StatusMessage>}
         <AssetStats asset={asset} market={market} />
         <AssetPriceChart ticker={asset.ticker} />
-        <AssetAccount asset={asset} />
       </div>
-      <aside ref={sideRef} className={styles.side}>
+      <aside ref={sideRef} className={styles.side} aria-label={`Trade ${asset.ticker}`}>
         <TradeWidget asset={asset} />
       </aside>
+      <div className={styles.details}>
+        <AssetAccount asset={asset} />
+      </div>
     </div>
   )
 }
@@ -65,9 +66,6 @@ function ArrowLeftIcon(): ReactNode {
 }
 
 function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
-  const issuers = [...new Set(asset.tokens.map((token) => token.issuer))]
-  const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
-
   return (
     <header className={styles.identity}>
       <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} size="hero" />
@@ -75,10 +73,7 @@ function AssetIdentity({ asset }: { asset: RwaAsset }): ReactNode {
         <h1>{asset.title}</h1>
         <div className={styles.meta}>
           <span>{asset.ticker}</span>
-          <Tooltip className={styles.issuers} content={issuers.join(', ')}>
-            {issuers.length} {issuers.length === 1 ? 'issuer' : 'issuers'}
-          </Tooltip>
-          <NetworkLogos chainIds={chainIds} />
+          <IssuersMenu tokens={asset.tokens} />
         </div>
       </div>
     </header>

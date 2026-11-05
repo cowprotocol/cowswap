@@ -59,7 +59,7 @@ export const Footer = styled.div`
   min-height: 40px;
   padding: 4px 8px;
   background: var(${UI.COLOR_PAPER});
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border: 1px solid var(${UI.COLOR_BORDER});
   border-top: none;
   border-radius: 0 0 24px 24px;
 `

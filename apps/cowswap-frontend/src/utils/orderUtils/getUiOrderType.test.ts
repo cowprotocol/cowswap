@@ -1,4 +1,5 @@
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { getUiOrderType, UiOrderTypeParams } from './getUiOrderType'
@@ -8,6 +9,8 @@ function buildParams(overrides: Partial<UiOrderTypeParams> = {}): UiOrderTypePar
     class: OrderClass.MARKET,
     fullAppData: undefined,
     composableCowInfo: undefined,
+    appData: '{}',
+    inputToken: { chainId: SupportedChainId.MAINNET } as UiOrderTypeParams['inputToken'],
     ...overrides,
   }
 }
@@ -55,6 +58,63 @@ describe('getUiOrderType', () => {
         fullAppData: fullAppDataWithClass('limit'),
       }),
     )
+
+    expect(result).toBe(UiOrderType.LIMIT)
+  })
+})
+
+describe('getUiOrderType · legacy Solana appData constants', () => {
+  const solanaToken = { chainId: SupportedChainId.SOLANA } as UiOrderTypeParams['inputToken']
+
+  it.each([
+    ['staging', SOLANA_LIMIT_ORDER_STAGING_APP_DATA],
+    ['prod', SOLANA_LIMIT_ORDER_PROD_APP_DATA],
+  ])('recognizes a Solana order signed with the %s limit-order constant, regardless of its class', (_env, appData) => {
+    const result = getUiOrderType(buildParams({ class: OrderClass.MARKET, appData, inputToken: solanaToken }))
+
+    expect(result).toBe(UiOrderType.LIMIT)
+  })
+
+  it('does not special-case a non-Solana order carrying the same constant by coincidence', () => {
+    const result = getUiOrderType(
+      buildParams({
+        class: OrderClass.MARKET,
+        appData: SOLANA_LIMIT_ORDER_STAGING_APP_DATA,
+        inputToken: { chainId: SupportedChainId.MAINNET } as UiOrderTypeParams['inputToken'],
+      }),
+    )
+
+    expect(result).toBe(UiOrderType.SWAP)
+  })
+
+  it('still prioritizes composableCowInfo (TWAP) over the constant', () => {
+    const result = getUiOrderType(
+      buildParams({
+        class: OrderClass.MARKET,
+        appData: SOLANA_LIMIT_ORDER_STAGING_APP_DATA,
+        inputToken: solanaToken,
+        composableCowInfo: {} as UiOrderTypeParams['composableCowInfo'],
+      }),
+    )
+
+    expect(result).toBe(UiOrderType.TWAP)
+  })
+
+  // The flag can be turned on while orders signed under the old scheme are still open.
+  it('keeps classifying a legacy order once a registered doc is the norm', () => {
+    const result = getUiOrderType(
+      buildParams({
+        class: undefined as unknown as UiOrderTypeParams['class'],
+        appData: SOLANA_LIMIT_ORDER_PROD_APP_DATA,
+        inputToken: solanaToken,
+      }),
+    )
+
+    expect(result).toBe(UiOrderType.LIMIT)
+  })
+
+  it('falls back to the API order class for a Solana order whose appData matches neither constant', () => {
+    const result = getUiOrderType(buildParams({ class: OrderClass.LIMIT, appData: '{}', inputToken: solanaToken }))
 
     expect(result).toBe(UiOrderType.LIMIT)
   })

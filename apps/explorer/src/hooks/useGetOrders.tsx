@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { ALL_SUPPORTED_CHAIN_IDS, getAddressKey } from '@cowprotocol/cow-sdk'
+import { CHAIN_INFO, RELEASED_SUPPORTED_CHAIN_IDS } from '@cowprotocol/common-const'
+import { getAddressKey } from '@cowprotocol/cow-sdk'
 
 import { Props as ExplorerLinkProps } from 'components/common/BlockExplorerLink'
 import { useMultipleErc20 } from 'hooks/useErc20'
@@ -209,7 +209,7 @@ export function useTxOrderExplorerLink(
   useEffect(() => {
     if (!networkId || !isZeroOrders) return
 
-    for (const network of ALL_SUPPORTED_CHAIN_IDS) {
+    for (const network of RELEASED_SUPPORTED_CHAIN_IDS) {
       //update provider to find tx in network
       updateWeb3Provider(web3, network)
       web3.eth.getTransaction(txHash).then((tx) => {

@@ -51,6 +51,21 @@ describe('validateRegistry', () => {
     ).toEqual(['assets[0].logoUrl: must be an https URL', 'assets[1].logoUrl: must be an https URL'])
   })
 
+  it('accepts a complete profile and rejects an incomplete one', () => {
+    const profile = { description: 'Makes chips.', sector: 'Technology', website: 'https://www.nvidia.com' }
+
+    expect(validateRegistry(registryWith([{ ...VALID_ASSET, profile }]))).toEqual([])
+    expect(
+      validateRegistry(
+        registryWith([{ ...VALID_ASSET, profile: { description: '', sector: '', website: 'http://nvidia.com' } }]),
+      ),
+    ).toEqual([
+      'assets[0].profile.description: required',
+      'assets[0].profile.sector: required',
+      'assets[0].profile.website: must be an https URL',
+    ])
+  })
+
   it('accepts an https news feed and rejects an incomplete one', () => {
     const newsFeed = { source: 'NVIDIA Newsroom', url: 'https://nvidianews.nvidia.com/releases.xml' }
 
@@ -94,7 +109,7 @@ describe('validateRegistry', () => {
 
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Coinbase' }] }]))).toEqual([])
     expect(validateRegistry(registryWith([{ ...VALID_ASSET, tokens: [{ ...token, issuer: 'Dinari' }] }]))).toEqual([
-      'assets[0].tokens[0].issuer: "Dinari" is not an allowed issuer (Ondo, xStocks, Coinbase, bStocks, Reality)',
+      'assets[0].tokens[0].issuer: "Dinari" is not an allowed issuer (Ondo, xStocks, Coinbase, bStocks, Reality, Paxos, Tether)',
     ])
   })
 

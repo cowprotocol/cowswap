@@ -142,7 +142,7 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
   border-radius: 16px;
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
+  border: 1px solid var(${UI.COLOR_BORDER});
   font-size: var(--fontSize);
   font-weight: 500;
   padding: 5px 10px;
@@ -172,7 +172,7 @@ export const ButtonOutlined = styled.button<{ disabled?: boolean; margin?: strin
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
     color: var(${UI.COLOR_TEXT});
-    border: 1px solid var(${UI.COLOR_PAPER_DARKER});
+    border: 1px solid var(${UI.COLOR_BORDER});
   }
 
   &:disabled {

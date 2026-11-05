@@ -44,7 +44,7 @@ interface LayoutProps {
 
 export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isRwaEnabled } = useFeatureFlags()
 
   const LocalStyles = createGlobalStyle(
     () => css`
@@ -66,6 +66,7 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
           padding="10px 60px"
           maxWidth={PAGE_MAX_WIDTH}
           LinkComponent={LinkComponent}
+          isRwaEnabled={!!isRwaEnabled}
         />
       </ThemeProvider>
       <Wrapper minHeight={contentMinHeight}>{children}</Wrapper>
@@ -75,10 +76,11 @@ export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeigh
         <Footer
           maxWidth={PAGE_MAX_WIDTH}
           productVariant={PRODUCT_VARIANT}
-          navItems={getGlobalFooterNavItems()}
+          navItems={getGlobalFooterNavItems(!!isRwaEnabled)}
           host={host ?? process.env.NEXT_PUBLIC_SITE_URL!}
           expanded
           hasTouchFooter
+          isRwaEnabled={!!isRwaEnabled}
         />
       </ThemeProvider>
     </>

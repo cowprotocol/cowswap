@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.9.2](https://github.com/cowprotocol/cowswap/compare/currency-v1.9.1...currency-v1.9.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+## [1.9.1](https://github.com/cowprotocol/cowswap/compare/currency-v1.9.0...currency-v1.9.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/currency-v1.8.0...currency-v1.9.0) (2026-10-21)
 
 ### Minor Changes

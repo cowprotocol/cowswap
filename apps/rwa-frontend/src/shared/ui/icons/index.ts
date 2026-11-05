@@ -1,5 +1,8 @@
+export { ArrowUpRightIcon } from './ArrowUpRightIcon'
 export { CheckIcon } from './CheckIcon'
 export { ChevronDownIcon } from './ChevronDownIcon'
+export { CloseIcon } from './CloseIcon'
 export { InfoIcon } from './InfoIcon'
+export { MenuIcon } from './MenuIcon'
 export { MoreIcon } from './MoreIcon'
 export { SearchIcon } from './SearchIcon'

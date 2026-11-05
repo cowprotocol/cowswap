@@ -11,6 +11,7 @@ import useSWR from 'swr'
 
 import {
   getSolanaTradeOverhead,
+  getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,
   useDerivedTradeState,
   useIsSolanaSponsoredTrade,
@@ -21,9 +22,9 @@ import { isSolanaQuoteAndPost, useTradeQuote } from 'modules/tradeQuote'
 
 export interface UseSolanaTradeOverheadOptions {
   /**
-   * Prices the bundle as if nobody sponsored it — what placing the order costs, rather than what the
-   * owner has to hold. A sponsor rents every account the bundle creates and pays the fee, so the
-   * un-sponsored figure is also what it spends on the owner's behalf.
+   * Prices the bundle as if nobody sponsored it — what placing the order costs in total, rather than
+   * what the owner has to hold. Sponsoring moves most of that spend to the funder without changing
+   * it, so the un-sponsored figure is also what the order costs to place either way.
    */
   ignoreSponsor?: boolean
 }
@@ -36,8 +37,9 @@ interface OverheadRequest {
 /**
  * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve
  * (`required` gates the trade, `maxReserve` adds priority-fee headroom for the MAX button). On a
- * sponsored trade only the wallet reserve remains, and only for a native sell (the wrap transfer
- * still debits the owner). `null` while unknown or when nothing debits the wallet at all.
+ * sponsored trade only a native sell debits the owner at all, and then only for the wrap: the
+ * transfer itself, and the rent for the WSOL account it opens. `null` while unknown or when nothing
+ * debits the wallet at all.
  */
 export function useSolanaTradeOverhead({
   ignoreSponsor = false,
@@ -64,8 +66,12 @@ export function useSolanaTradeOverhead({
 
     if (!solanaQuote) return null
 
+    // The WSOL account a native sell opens is the owner's, so its rent is the owner's even here —
+    // every other account the bundle creates is the sponsor's, as are the fees.
     if (isSponsored) {
-      return isNativeSell ? { fundedAccounts: [], ownerPaysFees: false } : null
+      return isNativeSell
+        ? { fundedAccounts: getWrapFundedAccounts(new PublicKey(account)), ownerPaysFees: false }
+        : null
     }
 
     return {

@@ -1,3 +1,4 @@
+import { SOLANA_LIMIT_ORDER_PROD_APP_DATA, SOLANA_LIMIT_ORDER_STAGING_APP_DATA } from '@cowprotocol/common-const'
 import { cowAppDataLatestScheme, OrderClass } from '@cowprotocol/cow-sdk'
 import { isEoaTwapPollFundsHook } from '@cowprotocol/hook-dapp-lib'
 
@@ -27,7 +28,12 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIQUIDITY,
 }
 
-export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrderType {
+export function getUiOrderType({ fullAppData, class: orderClass, solana, appData }: Order): UiOrderType {
+  // A Solana order placed while `isSolanaAppDataEnabled` was off signs one of two agreed constants as
+  // its opaque appData and registers no doc, so that raw value is the only limit/market signal.
+  if (solana && (appData === SOLANA_LIMIT_ORDER_STAGING_APP_DATA || appData === SOLANA_LIMIT_ORDER_PROD_APP_DATA))
+    return UiOrderType.LIMIT
+
   const decodedAppData = decodeFullAppData(fullAppData)
 
   const appDataOrderClass = decodedAppData?.metadata?.orderClass as

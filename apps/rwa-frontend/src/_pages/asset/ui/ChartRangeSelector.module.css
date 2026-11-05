@@ -13,6 +13,8 @@
   border: none;
   border-radius: var(--radius-pill);
   background: none;
+  display: flex;
+  align-items: center;
   color: var(--color-text-secondary);
   font-size: 13px;
   font-weight: 500;

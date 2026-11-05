@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-const",
-  "version": "3.16.0",
+  "version": "3.18.0",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "private": true,
@@ -17,11 +17,23 @@
       "require": "./src/tokens.ts",
       "default": "./src/tokens.ts"
     },
+    "./theme": {
+      "types": "./src/theme.ts",
+      "import": "./src/theme.ts",
+      "require": "./src/theme.ts",
+      "default": "./src/theme.ts"
+    },
     "./wallet": {
       "types": "./src/wallet.ts",
       "import": "./src/wallet.ts",
       "require": "./src/wallet.ts",
       "default": "./src/wallet.ts"
+    },
+    "./cowLinks": {
+      "types": "./src/cowLinks.ts",
+      "import": "./src/cowLinks.ts",
+      "require": "./src/cowLinks.ts",
+      "default": "./src/cowLinks.ts"
     }
   },
   "publishConfig": {
@@ -38,15 +50,25 @@
         "import": "./tokens.mjs",
         "require": "./tokens.js"
       },
+      "./theme": {
+        "types": "./theme.d.ts",
+        "import": "./theme.mjs",
+        "require": "./theme.js"
+      },
       "./wallet": {
         "types": "./wallet.d.ts",
         "import": "./wallet.mjs",
         "require": "./wallet.js"
+      },
+      "./cowLinks": {
+        "types": "./cowLinks.d.ts",
+        "import": "./cowLinks.mjs",
+        "require": "./cowLinks.js"
       }
     }
   },
   "dependencies": {
-    "@cowprotocol/cow-sdk": "9.3.0",
+    "@cowprotocol/cow-sdk": "9.3.3",
     "viem": "2.55.19",
     "@cowprotocol/types": "workspace:*",
     "@lingui/core": "5.5.1",

@@ -1,5 +1,23 @@
 # Changelog
 
+## [4.14.2](https://github.com/cowprotocol/cowswap/compare/types-v4.14.1...types-v4.14.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.2
+
+## [4.14.1](https://github.com/cowprotocol/cowswap/compare/types-v4.14.0...types-v4.14.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.1
+
 ## [4.14.0](https://github.com/cowprotocol/cowswap/compare/types-v4.13.0...types-v4.14.0) (2026-10-21)
 
 ### Minor Changes

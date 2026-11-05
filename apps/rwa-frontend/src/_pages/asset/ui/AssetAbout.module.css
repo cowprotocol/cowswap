@@ -4,7 +4,14 @@
   min-width: 0;
 }
 
-.about h2 {
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.header h2 {
   margin: 0;
   font-size: 22px;
   font-weight: 600;
@@ -12,48 +19,120 @@
   letter-spacing: -0.22px;
 }
 
-.subtitle {
-  margin: 0;
+.sector {
   color: var(--color-text-secondary);
   font-size: 13px;
   line-height: 18px;
 }
 
-.group {
-  margin: 16px 0 10px;
-  color: var(--color-text-secondary);
-  font-size: 12px;
+.website {
+  margin-left: auto;
+  color: var(--color-accent);
+  font-size: 14px;
   font-weight: 500;
-  line-height: 16px;
+  line-height: 20px;
+  text-decoration: none;
 }
 
-.tiles {
+.website:hover {
+  text-decoration: underline;
+}
+
+.description {
+  max-width: 600px;
+  margin: 16px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.clamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.readMore {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.readMore[aria-expanded='true'] svg {
+  transform: rotate(180deg);
+}
+
+.well {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px;
-  margin: 0;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px 24px;
+  margin: 24px 0 0;
+  padding: 20px;
+  border-radius: var(--radius-control);
+  background: var(--color-well);
 }
 
-.tile {
+.stat {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-height: 78px;
-  padding: 12px 14px;
-  border-radius: var(--radius-control);
-  background: var(--color-surface);
 }
 
-.tile dt {
+.stat dt {
   color: var(--color-text-secondary);
   font-size: 12px;
   line-height: 16px;
 }
 
-.tile dd {
+.stat dd {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin: 0;
+}
+
+.bar {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--color-border);
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  transform: translate(-50%, -50%);
+}
+
+.rangeLabels {
+  display: flex;
+  justify-content: space-between;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 20px;
   font-variant-numeric: tabular-nums;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }

@@ -36,17 +36,19 @@ const ASSET: RwaAssetResponse = {
   degraded: false,
 }
 
+const UPDATED_SECONDS = Date.parse(MARKET.updatedAt ?? '') / 1000
+
 const POINTS: RwaChartPoint[] = [
-  { time: 1, value: 400 },
-  { time: 2, value: 410 },
-  { time: 3, value: 395 },
-  { time: 4, value: 404 },
+  { time: UPDATED_SECONDS - 4 * 3600, value: 400 },
+  { time: UPDATED_SECONDS - 3 * 3600, value: 410 },
+  { time: UPDATED_SECONDS - 2 * 3600, value: 395 },
+  { time: UPDATED_SECONDS - 3600, value: 404 },
 ]
 
 type FetchResult = Promise<object>
 
 function chart(points: RwaChartPoint[]): RwaChart {
-  return { ticker: TICKER, range: '1D', points }
+  return { ticker: TICKER, range: '1D', points, degraded: false }
 }
 
 function mockFetch(routes: { asset: () => FetchResult; chart: () => FetchResult }): jest.Mock {

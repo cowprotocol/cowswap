@@ -1,6 +1,6 @@
-import { captureError, ERROR_TYPES, getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, normalizeError } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
-import { OrderClass, OrderKind, OrderParameters, stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Token } from '@cowprotocol/currency'
 import type { SolanaOrderIntent, SolanaSwapOrder } from '@cowprotocol/sdk-trading-solana'
 import { postSolanaSponsoredOrder } from '@cowprotocol/sdk-trading-solana'
@@ -46,8 +46,10 @@ import {
   USER_SWAP_REJECTED_ERROR,
 } from 'common/utils/getSwapErrorMessage'
 
-import { assertSignedAppData, SolanaAppDataMismatchError } from './assertSignedAppData'
+import { assertSignedAppData } from './assertSignedAppData'
 import { getSolanaErrorLogs } from './getSolanaErrorLogs'
+import { LEGACY_SOLANA_LIMIT_APP_DATA_HASH, LEGACY_SOLANA_SWAP_APP_DATA } from './legacySolanaAppData'
+import { isSolanaOrderSubmitted, reportSolanaOrderError, SolanaOrderPhase } from './reportSolanaOrderError'
 
 import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 
@@ -55,17 +57,24 @@ import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 // newest run may touch the confirm-screen state, and every stale one goes silent.
 let latestAttemptId = 0
 
+// Set by an unexpected failure and cleared by a success, so it answers "has this client already been
+// unable to trade since the page loaded?" — the reported shape of FE-1003, where the only way out is
+// a reload. A declined prompt or an expired window never sets it: neither means the client is stuck.
+let hasFailedAttempt = false
+
 export interface SolanaFlowOptions {
   isSponsored?: boolean
   /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
   isAtaCreationDisabled?: boolean
+  /** LaunchDarkly `isSolanaAppDataEnabled`: off until the order book serves appData for Solana. */
+  isSolanaAppDataEnabled?: boolean
 }
 
 // eslint-disable-next-line max-lines-per-function,complexity
 export async function solanaFlow(
   input: SolanaTradeFlowContext,
   analytics: TradeFlowAnalytics,
-  { isSponsored = false, isAtaCreationDisabled = false }: SolanaFlowOptions = {},
+  { isSponsored = false, isAtaCreationDisabled = false, isSolanaAppDataEnabled = false }: SolanaFlowOptions = {},
 ): Promise<boolean | void> {
   const {
     tradeConfirmActions,
@@ -88,6 +97,7 @@ export async function solanaFlow(
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
   const attemptId = ++latestAttemptId
+  const followsFailure = hasFailedAttempt
   // A previous attempt can hang forever on an unanswered wallet prompt, which leaves its (expired)
   // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
   jotaiStore.set(solanaSigningDeadlineAtom, null)
@@ -97,9 +107,18 @@ export async function solanaFlow(
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
 
-  // Flipped the moment the transaction leaves for the network, so the error handling below can tell
-  // a failure that definitely placed nothing from one whose outcome is unknown.
-  let isSubmissionStarted = false
+  // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
+  // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
+  // owner paying — the only thing it can do there. Declared out here because the error handling
+  // reports which path was actually taken, not which one was asked for.
+  const sponsor = isSponsored ? solanaQuote.funder : undefined
+
+  // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
+  // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only
+  // thing that separates a refused prompt from a hand-over the order book rejected. It drives the
+  // screen too, via `isSolanaOrderSubmitted` — which stays false through `sign` because that is
+  // what the UI has always assumed, even though a self-paid send broadcasts inside it.
+  let phase: SolanaOrderPhase = 'plan'
 
   try {
     const sellSymbol = inputAmount.currency.symbol ?? 'token'
@@ -110,21 +129,18 @@ export async function solanaFlow(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
 
-    // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
-    // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
-    // owner paying — the only thing it can do there.
-    //
-    // A sponsored order is meant to cost the owner nothing, so every account the bundle creates is
-    // rented by the sponsor too. The order book allows that; only the wrap transfer has to stay the
-    // owner's, since those are the funds being wrapped.
-    const sponsor = isSponsored ? solanaQuote.funder : undefined
-    const rentPayer = sponsor ?? owner
+    // A sponsored order covers the fees and rents the accounts the order itself needs. The WSOL
+    // account a native sell opens is not one of them: it is the owner's own account, and closing it
+    // returns the rent to the owner, so a sponsor-funded one would be a standing withdrawal from the
+    // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
+    const buyAtaRentPayer = sponsor ?? owner
 
     const {
       step: createOrderStep,
       orderId,
       signingScheme,
       appData: signedAppData,
+      fullAppData: signedFullAppData,
       sellAmount: signedSellAmount,
       buyAmount: signedBuyAmount,
       feePayer,
@@ -139,7 +155,7 @@ export async function solanaFlow(
           kind: orderKind,
           validTo,
           partiallyFillable,
-          appDataHash: appData.appDataKeccak256,
+          appDataHash: isSolanaAppDataEnabled ? appData.appDataKeccak256 : LEGACY_SOLANA_LIMIT_APP_DATA_HASH,
           sellSymbol,
           buySymbol,
         })
@@ -150,22 +166,30 @@ export async function solanaFlow(
           buySymbol,
           validTo,
           sponsor,
-          appDataDoc: appData.doc,
+          appDataDoc: isSolanaAppDataEnabled ? appData.doc : LEGACY_SOLANA_SWAP_APP_DATA,
         })
 
-    // A swap signs the SDK's hash of `doc`, which only matches `fullAppData` when that was stringified
-    // deterministically — the fallback appData (`getAppData()`) is not.
-    const fullAppData =
-      orderClass === OrderClass.LIMIT ? appData.fullAppData : await stringifyDeterministic(appData.doc)
+    const fullAppData = !isSolanaAppDataEnabled
+      ? undefined
+      : orderClass === OrderClass.LIMIT
+        ? appData.fullAppData
+        : signedFullAppData
 
-    assertSignedAppData(signedAppData, fullAppData)
+    if (fullAppData !== undefined) {
+      assertSignedAppData(signedAppData, fullAppData)
 
-    // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
-    await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
+      phase = 'app-data-upload'
+      // The order is created on-chain, so unlike an EVM order POST nothing carries the doc to the order book.
+      await uploadAppDataDocOrderbookApi({ appDataKeccak256: signedAppData, fullAppData, chainId })
 
-    // A retry started while the upload was in flight owns the flow now: going on would open a second
-    // wallet prompt for this stale order.
-    if (attemptId !== latestAttemptId) return
+      // A retry started while the upload was in flight owns the flow now: going on would open a second
+      // wallet prompt for this stale order.
+      if (attemptId !== latestAttemptId) return
+
+      // The upload is done; the remaining steps are planning again, and a failure in them is not an
+      // appData failure.
+      phase = 'plan'
+    }
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
     // both plan functions return null otherwise, so the transaction carries the minimum instructions.
@@ -173,10 +197,10 @@ export async function solanaFlow(
     // always reports its sellToken as WSOL for a native sell (see `getSolanaSellToken`), so checking
     // `inputAmount.currency` here would skip the wrap step for every native-SOL trade.
     const steps = [
-      planWrapStep({ owner, rentPayer, sellAmount: isNativeSell ? sellAmount : 0n }),
+      planWrapStep({ owner, sellAmount: isNativeSell ? sellAmount : 0n }),
       planDelegateStep({ owner, token: sellToken, amount: delegationAmount, currentDelegation }),
       planCreateBuyAtaStep({
-        payer: rentPayer,
+        payer: buyAtaRentPayer,
         receiver: buyAtaReceiver,
         quote: solanaQuote,
         buySymbol,
@@ -187,6 +211,7 @@ export async function solanaFlow(
 
     // A sponsored bundle is signed and handed over, never broadcast here, so it yields no signature to
     // track: the order book submits it once it has countersigned as fee payer.
+    phase = 'sign'
     const txHash = sponsor
       ? await postSponsoredBundle(
           { connection, provider, feePayer },
@@ -194,13 +219,13 @@ export async function solanaFlow(
           tradeQuote.quoteResults,
           () => attemptId === latestAttemptId,
           () => {
-            isSubmissionStarted = true
+            phase = 'submit'
           },
         )
       : (await sendSolanaFlow({ connection, provider, owner, addTransaction: callbacks.addTransaction }, steps)).hash
 
     // Self-paid sends broadcast inside the wallet call above, so reaching here means it went out.
-    isSubmissionStarted = true
+    phase = 'register'
 
     addPendingOrderStep(
       {
@@ -248,27 +273,54 @@ export async function solanaFlow(
     analytics.sign(tradeFlowAnalyticsContext)
     callbacks.closeModals()
 
+    if (attemptId === latestAttemptId) {
+      hasFailedAttempt = false
+    }
+
     return true
   } catch (err: unknown) {
     const error = normalizeError(err)
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
+    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
+    // The atom is shared and reset per attempt, so a stale run would read whatever the attempt that
+    // replaced it left there and have its own failure filed as an expired window.
+    const isSigningWindowClosed = attemptId === latestAttemptId && jotaiStore.get(solanaSigningAbandonedAtom)
 
-    captureError(error, ERROR_TYPES.ON_SWAP, {
+    // Three ways to learn the same thing — the blockhash died before the order was placed. The
+    // countdown catches it locally, and the order book catches the rest: the hand-over above is
+    // deliberately optimistic, so a signature given near the boundary is rejected there instead.
+    // The third is a wallet that answered a prompt whose countdown had already run out: whatever
+    // it called the failure, the user watched the window close, and that is the part they can act
+    // on. Only before the hand-over — afterwards the bundle may still have been taken.
+    const isWindowExpiryFailure =
+      error instanceof SigningWindowClosedError ||
+      isBlockhashExpiredError(error) ||
+      (isSigningWindowClosed && !isSolanaOrderSubmitted(phase))
+
+    const wasReported = reportSolanaOrderError({
+      error,
+      chainId,
+      orderClass,
+      phase,
+      attempt: attemptId,
+      followsFailure,
+      isSponsored: sponsor !== undefined,
+      isRejection,
+      isWindowExpiryFailure,
       swapErrorMessage,
-      // Never reaches the order book on a mismatch, so this is the only record of what failed to hash.
-      ...(error instanceof SolanaAppDataMismatchError && { fullAppData: error.fullAppData }),
     })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
+
+    if (wasReported && attemptId === latestAttemptId) {
+      hasFailedAttempt = true
+    }
 
     // The user retried while this attempt's prompt was still open: its screen belongs to the newer
     // run now, and a stale failure must not repaint it.
     if (attemptId !== latestAttemptId) {
       return
     }
-
-    const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
-    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
 
     // Rejecting a prompt whose window already closed is the expected retry path, not an error: back
     // to the review screen (with forced price confirmation), or silence if the modal was left.
@@ -280,20 +332,9 @@ export async function solanaFlow(
       return
     }
 
-    // Three ways to learn the same thing — the blockhash died before the order was placed. The
-    // countdown catches it locally, and the order book catches the rest: the hand-over above is
-    // deliberately optimistic, so a signature given near the boundary is rejected there instead.
-    // The third is a wallet that answered a prompt whose countdown had already run out: whatever
-    // it called the failure, the user watched the window close, and that is the part they can act
-    // on. Only before the hand-over — afterwards the bundle may still have been taken.
-    const isWindowExpiryFailure =
-      error instanceof SigningWindowClosedError ||
-      isBlockhashExpiredError(error) ||
-      (isSigningWindowClosed && !isSubmissionStarted)
-
     if (isWindowExpiryFailure) {
       jotaiStore.set(solanaSigningWindowExpiredAtom, tradeAmounts)
-    } else if (!isSubmissionStarted && !isRejection) {
+    } else if (!isSolanaOrderSubmitted(phase) && !isRejection) {
       // Nothing left the client, so the screen can say outright that no order was placed and keep
       // the wallet's own wording — which is where the unreadable ones come from — out of the way
       // under "technical details". A deliberate rejection is not a failure and keeps its own copy.
@@ -319,7 +360,7 @@ function buildSolanaOrder(params: {
   validTo: number
   orderClass: OrderClass
   appData: string
-  fullAppData: string
+  fullAppData: string | undefined
   inputToken: Token
   outputToken: Token
   partiallyFillable: boolean
@@ -343,8 +384,8 @@ function buildSolanaOrder(params: {
     // instruction, so the deadline shown here is the one the on-chain order actually has.
     receiver,
     validTo,
-    // Override the quote's own appData: it's a meaningless constant stub for Solana (getSolanaQuote.ts's
-    // ZERO_APP_DATA) — this is what was actually signed.
+    // Override the quote's own appData: the order merges the app's doc onto the quote's, so the quote's
+    // digest is not what was signed.
     appData,
     fullAppData,
     // Override the quote's own partiallyFillable: it isn't part of the quote request, so the quote

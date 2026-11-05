@@ -1,6 +1,6 @@
 import { formatUnits } from 'viem'
 
-const EMPTY_VALUE = '—'
+export const EMPTY_VALUE = '—'
 
 const usdFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',

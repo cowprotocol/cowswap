@@ -1,0 +1,120 @@
+.root {
+  display: none;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-text-muted);
+}
+
+.trigger:hover,
+.trigger[aria-expanded='true'] {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.panel {
+  position: absolute;
+  z-index: 100;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  height: 100vh;
+  padding: 16px 16px 200px;
+  overflow-y: auto;
+  scrollbar-color: var(--color-border) transparent;
+  scrollbar-width: thin;
+  border-radius: 28px;
+  background: var(--color-bg);
+  box-shadow: var(--shadow-widget);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 50px;
+  padding: 0 8px;
+  border: none;
+  border-radius: var(--radius-control);
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 26px;
+  text-align: left;
+  text-decoration: none;
+}
+
+.item:hover,
+.item[aria-current='page'] {
+  background: var(--color-surface);
+}
+
+.chevron {
+  width: 16px;
+  height: 9px;
+  color: var(--color-text-muted);
+  transition: transform 0.15s ease;
+}
+
+.item[aria-expanded='true'] .chevron {
+  transform: rotate(180deg);
+  color: var(--color-text);
+}
+
+.more {
+  padding: 8px;
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 56px;
+  padding: 0 16px;
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 22px;
+  text-decoration: none;
+}
+
+.link:hover,
+.link:focus-visible {
+  background: var(--color-bg);
+  outline: none;
+}
+
+.external {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 1280px) {
+  .root {
+    display: block;
+  }
+}
