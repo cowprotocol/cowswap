@@ -1,4 +1,4 @@
-import { decodeFunctionData, parseAbi } from 'viem'
+import { decodeFunctionData, type Hex, parseAbi } from 'viem'
 import { getConnection, sendTransaction, switchChain } from 'wagmi/actions'
 
 /* eslint-disable @typescript-eslint/no-restricted-imports */
@@ -34,7 +34,7 @@ function sentCalls(): { target: string; call: { functionName: string; args: read
   expect(to).toBe(TWAP.cowShedAddress)
 
   const { args } = decodeFunctionData({ abi: ABI, data })
-  const [calls] = args as [{ target: string; callData: `0x${string}` }[]]
+  const [calls] = args as readonly [readonly { target: string; callData: Hex }[]]
 
   return calls.map(({ target, callData }) => ({
     target,
