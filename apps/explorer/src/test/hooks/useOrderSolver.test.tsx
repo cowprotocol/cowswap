@@ -230,6 +230,7 @@ describe('useOrderSolver', () => {
       solverId: UNKNOWN_ADDRESS,
       displayName: '0x3333...3333',
       image: undefined,
+      isUnidentified: true,
     })
   })
 
@@ -328,6 +329,7 @@ describe('useOrderSolver', () => {
       solverId: UNKNOWN_ADDRESS,
       displayName: '0x3333...3333',
       image: undefined,
+      isUnidentified: true,
     })
   })
 
@@ -343,6 +345,7 @@ describe('useOrderSolver', () => {
       solverId: BLANC_ADDRESS,
       displayName: '0x1111...1111',
       image: undefined,
+      isUnidentified: true,
     })
   })
 
