@@ -67,15 +67,6 @@ export const SolverDetails = styled.div`
   height: 100%;
 `
 
-export const SolverLogo = styled.img`
-  width: 24px;
-  height: 24px;
-  flex-shrink: 0;
-  border-radius: 12px;
-  object-fit: contain;
-  background: var(${UI.COLOR_WHITE});
-`
-
 export const SolverName = styled.span`
   ${font('FONT_NORMAL', 'semibold')}
   display: flex;

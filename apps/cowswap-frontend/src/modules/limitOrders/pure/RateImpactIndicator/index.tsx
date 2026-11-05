@@ -40,8 +40,9 @@ export function RateImpactIndicator({ rateImpact, priceChangePercent, inputCurre
   const exceedsDisplayLimit = priceChangePercent > MAX_POSITIVE_RATE_IMPACT_PERCENT
   const displayedPriceChange = exceedsDisplayLimit ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : priceChangePercent
 
+  const absPriceChange = Math.abs(priceChangePercent)
   const displayedPercent =
-    rateImpact > MAX_POSITIVE_RATE_IMPACT_PERCENT ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : rateImpact
+    absPriceChange > MAX_POSITIVE_RATE_IMPACT_PERCENT ? '>' + MAX_POSITIVE_RATE_IMPACT_PERCENT : absPriceChange
 
   if (!rateImpact) return null
 
@@ -49,7 +50,14 @@ export function RateImpactIndicator({ rateImpact, priceChangePercent, inputCurre
     <ImpactTooltip>
       {isPositive &&
         t`Your order will execute when the market price is ${displayedPercent}% better than the current market price.`}
-      {!isPositive && (
+      {!isPositive && priceChangePercent > 0 && (
+        <Trans>
+          This price is {displayedPercent}% higher than current market price. You could be selling your{' '}
+          <TokenSymbol token={inputCurrency} /> at a loss! Click on "Market price" to set your limit price to the
+          current market price.
+        </Trans>
+      )}
+      {!isPositive && priceChangePercent <= 0 && (
         <Trans>
           This price is {displayedPercent}% lower than current market price. You could be selling your{' '}
           <TokenSymbol token={inputCurrency} /> at a loss! Click on "Market price" to set your limit price to the

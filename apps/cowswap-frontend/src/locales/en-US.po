@@ -1838,6 +1838,16 @@ msgstr "This hook is not compatible with your wallet"
 msgid "Get started with limit orders"
 msgstr "Get started with limit orders"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid ""
+"Solvers compete for every swap on @CoWSwap 🐮⚡\n"
+"\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
+"Solvers compete for every swap on @CoWSwap 🐮⚡\n"
+"\n"
+"Start swapping on swap.cow.fi"
+
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
 msgstr "Minimize price impact with TWAP"
@@ -1962,6 +1972,7 @@ msgstr "You were part of a CoW"
 msgid "Buy amount per part (1/{partsCount})"
 msgstr "Buy amount per part (1/{partsCount})"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
@@ -2435,8 +2446,8 @@ msgid "Closed"
 msgstr "Closed"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-#~ msgid "Share this tip!"
-#~ msgstr "Share this tip!"
+msgid "Share this tip!"
+msgstr "Share this tip!"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
@@ -5707,8 +5718,8 @@ msgid "Order out of market"
 msgstr "Order out of market"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
-msgid "{solver} logo"
-msgstr "{solver} logo"
+#~ msgid "{solver} logo"
+#~ msgstr "{solver} logo"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveCallback.tsx
 msgid "Approve {tokenSymbol}"
@@ -5966,6 +5977,16 @@ msgstr "Token symbol, address"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order Receipt"
 msgstr "Order Receipt"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid ""
+"{solverCount, plural, one {# solver competed for my swap on @CoWSwap.} few {# solvers competed for my swap on @CoWSwap.} many {# solvers competed for my swap on @CoWSwap.} other {# solvers competed for my swap on @CoWSwap.}} {winnerName} won 🐮⚡\n"
+"\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
+"{solverCount, plural, one {# solver competed for my swap on @CoWSwap.} few {# solvers competed for my swap on @CoWSwap.} many {# solvers competed for my swap on @CoWSwap.} other {# solvers competed for my swap on @CoWSwap.}} {winnerName} won 🐮⚡\n"
+"\n"
+"Start swapping on swap.cow.fi"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
@@ -6597,6 +6618,10 @@ msgstr "CoWmunity fees discount"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Action"
 msgstr "Action"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
+msgid "This price is {displayedPercent}% higher than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
+msgstr "This price is {displayedPercent}% higher than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -9076,6 +9101,16 @@ msgstr "The output token cannot be transferred. There may be an issue with the o
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 #~ msgid "Swap and bridge, TWAP for EOA orders aren't supported yet."
 #~ msgstr "Swap and bridge, TWAP for EOA orders aren't supported yet."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid ""
+"Hey, I just got an extra {gain} with Wait & save on @CoWSwap! 🐮💸\n"
+"\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
+"Hey, I just got an extra {gain} with Wait & save on @CoWSwap! 🐮💸\n"
+"\n"
+"Start swapping on swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
