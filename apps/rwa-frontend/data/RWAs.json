@@ -1,6 +1,6 @@
 {
-  "version": "0.1.14",
-  "lastModificationTime": "2026-11-05T09:44:26.392Z",
+  "version": "0.1.15",
+  "lastModificationTime": "2026-11-05T10:13:29.596Z",
   "allowedTradingTimes": {
     "0": {
       "title": "US market open",
@@ -408,7 +408,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SpaceX builds and launches reusable rockets and spacecraft, including the Falcon, Starship and Dragon vehicles, for government and commercial customers. It also runs the Starlink satellite internet network and an artificial intelligence business that develops the Grok language models, operates the social network X, and runs large data centers.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://spacex.com"
       },
       "tokens": [
         {
@@ -495,7 +496,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Strategy, formerly known as MicroStrategy, is a business intelligence and mobile software company that builds tools for analyzing data to support business decisions. It also holds a large bitcoin treasury, which leads many investors to treat its shares as a proxy for the cryptocurrency.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://www.microstrategy.com"
       },
       "tokens": [
         {
@@ -849,7 +851,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SanDisk is a California-based company that designs and manufactures flash memory storage products. Its offerings include memory cards, USB flash drives, and solid-state drives for consumers and businesses.",
-        "sector": 172
+        "sector": 172,
+        "website": "https://www.sandisk.com"
       },
       "tokens": [
         {
@@ -931,7 +934,8 @@
       },
       "profile": {
         "description": "Tesla is an American company that designs, builds and sells battery electric vehicles. It also makes stationary battery storage systems for homes and power grids, along with solar panels, solar roof shingles and related products and services.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://www.tesla.com"
       },
       "tokens": [
         {
@@ -1031,7 +1035,8 @@
       },
       "profile": {
         "description": "Alphabet is the holding company that owns Google and a group of other businesses, with Google's internet services forming its core. The structure gives its non-internet ventures more independence from the main business.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://abc.xyz"
       },
       "tokens": [
         {
@@ -1127,7 +1132,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Micron Technology is a US semiconductor company that designs and manufactures computer memory and data storage products, including DRAM, flash memory, high-bandwidth memory and solid-state drives. It is one of the few large global producers of memory chips and sells to data center, computing and consumer markets.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.micron.com"
       },
       "tokens": [
         {
@@ -1200,7 +1206,8 @@
       },
       "profile": {
         "description": "Intel designs, manufactures and sells processors and related computing hardware, including central processing units, graphics processors, chipsets, network controllers and flash memory. Its chips are used in personal computers and other systems serving both business and consumer markets.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.intel.com"
       },
       "tokens": [
         {
@@ -1619,7 +1626,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coinbase operates a platform where people and institutions can buy, sell, store and transfer cryptocurrencies. It also provides custody and other crypto-related products and services, and runs as a remote-first company without a physical headquarters.",
-        "sector": 125
+        "sector": 125,
+        "website": "https://www.coinbase.com"
       },
       "tokens": [
         {
@@ -1743,7 +1751,8 @@
       },
       "profile": {
         "description": "Meta Platforms owns and operates social media and messaging services including Facebook, Instagram, WhatsApp, Messenger and Threads. It earns most of its revenue by selling advertising across its own apps and to third-party sites, and it invests in virtual and augmented reality technologies.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://www.meta.com"
       },
       "tokens": [
         {
@@ -1939,7 +1948,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Broadcom designs, develops and supplies semiconductor products alongside infrastructure software. Its offerings serve data center, networking, broadband, wireless, storage and industrial customers.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.broadcom.com"
       },
       "tokens": [
         {
@@ -2039,7 +2049,8 @@
       },
       "profile": {
         "description": "Marvell Technology designs and sells semiconductors and related technology. The company is based in Santa Clara, California.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.marvell.com"
       },
       "tokens": [
         {
@@ -2135,7 +2146,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hims & Hers Health operates a telehealth platform that connects customers with healthcare providers online. It sells prescription drugs, over-the-counter medications, and personal care products directly to consumers, largely through a subscription model.",
-        "sector": 149
+        "sector": 149,
+        "website": "https://www.forhims.com"
       },
       "tokens": [
         {
@@ -2231,7 +2243,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Advanced Micro Devices designs semiconductors, including processors, graphics chips, programmable logic devices and system-on-chips. Its products are used in personal computers, gaming consoles, data centers and embedded systems, and it relies on outside foundries to manufacture its chips.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.amd.com"
       },
       "tokens": [
         {
@@ -2304,7 +2317,8 @@
       },
       "profile": {
         "description": "Amazon operates a large online marketplace and retail business selling a wide range of consumer products, alongside a major cloud computing platform. It also offers streaming and entertainment services, advertising, and consumer devices such as e-readers, smart speakers, and tablets.",
-        "sector": 14
+        "sector": 14,
+        "website": "https://www.amazon.com"
       },
       "tokens": [
         {
@@ -2704,7 +2718,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Taiwan Semiconductor Manufacturing is a Taiwan-based contract chipmaker that fabricates semiconductors designed by other companies. It serves many of the world's leading chip designers and offers advanced manufacturing processes used in smartphones, computing and artificial intelligence hardware.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.tsmc.com"
       },
       "tokens": [
         {
@@ -2842,7 +2857,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "BitMine Immersion Technologies is a company that operates cryptocurrency mining facilities and holds digital assets on its balance sheet, with a strategy centered on accumulating Ether. It has also developed immersion cooling approaches for hosting and running mining hardware.",
-        "sector": 128
+        "sector": 128,
+        "website": "https://www.bitminetech.io"
       },
       "tokens": [
         {
@@ -2920,7 +2936,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Nebius Group is a Netherlands-based technology company that builds and operates infrastructure for artificial intelligence workloads. It maintains offices in Israel and the United States.",
-        "sector": 181
+        "sector": 181,
+        "website": "https://nebius.group"
       },
       "tokens": [
         {
@@ -3049,7 +3066,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Robinhood Markets runs an online brokerage platform where customers trade stocks, ETFs, options, futures, event contracts and cryptocurrency. It also provides crypto wallets, wealth management, credit cards and banking services, along with a venture capital arm and a financial news media subsidiary.",
-        "sector": 132
+        "sector": 132,
+        "website": "https://www.robinhood.com"
       },
       "tokens": [
         {
@@ -3394,7 +3412,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Oracle is a technology company that provides database software, enterprise business applications, and cloud infrastructure services. Its application suites cover areas such as financial planning, human resources, customer experience, and supply chain management.",
-        "sector": 191
+        "sector": 191,
+        "website": "https://www.oracle.com"
       },
       "tokens": [
         {
@@ -3532,7 +3551,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "PDD Holdings operates e-commerce platforms, including Pinduoduo, a mobile marketplace in China that connects consumers with merchants and agricultural producers, and Temu, a cross-border online marketplace serving international shoppers. It earns revenue mainly from online marketing services and transaction fees paid by merchants.",
-        "sector": 23
+        "sector": 23,
+        "website": "https://www.pddholdings.com"
       },
       "tokens": [
         {
@@ -3592,7 +3612,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Alibaba is a Chinese technology company that operates online marketplaces connecting consumers and businesses, spanning retail, wholesale and cross-border trade. It also runs cloud computing, logistics, digital media and entertainment services.",
-        "sector": 23
+        "sector": 23,
+        "website": "https://www.alibabagroup.com"
       },
       "tokens": [
         {
@@ -3928,7 +3949,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GameStop is a retailer of video games, consumer electronics and gaming-related merchandise, operating physical stores and an online presence across the United States, Europe and Australia. It sells new and pre-owned games and hardware alongside collectibles and pop culture products.",
-        "sector": 29
+        "sector": 29,
+        "website": "https://www.gamestop.com"
       },
       "tokens": [
         {
@@ -4333,7 +4355,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Palantir Technologies builds software that integrates and analyzes large sets of data for government agencies and private companies. Its platforms support intelligence, defense, and commercial operations, and include tools for data analysis, software deployment, and artificial intelligence.",
-        "sector": 191
+        "sector": 191,
+        "website": "https://www.palantir.com"
       },
       "tokens": [
         {
@@ -4429,7 +4452,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Applied Materials provides equipment, services and software used to manufacture semiconductor chips, flat panel displays and solar products. It also supplies equipment for producing coatings used in flexible electronics, packaging and other applications.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.appliedmaterials.com"
       },
       "tokens": [
         {
@@ -4692,7 +4716,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Eli Lilly is a pharmaceutical company that develops, manufactures and sells prescription medicines worldwide. Its portfolio focuses on diabetes and weight management, along with treatments for cancer, autoimmune conditions and migraine.",
-        "sector": 148
+        "sector": 148,
+        "website": "https://www.lilly.com"
       },
       "tokens": [
         {
@@ -4788,7 +4813,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Cerebras Systems designs very large AI processors, supercomputers and supporting software for training and running deep-learning models. It also offers cloud access to its computing power and operates data centers that provide these services to customers without requiring them to buy the hardware.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.cerebras.ai"
       },
       "tokens": [
         {
@@ -4995,7 +5021,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "IREN is an Australian-headquartered company that builds and runs data centres and offers GPU-based computing, software and managed services for training and running AI models. It sites its facilities in regions with abundant renewable power and also operates Bitcoin mining sites that it is shifting toward its AI cloud business.",
-        "sector": 166
+        "sector": 166,
+        "website": "https://iren.com"
       },
       "tokens": [
         {
@@ -5166,7 +5193,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Netflix is a media company that operates a subscription streaming service offering films and series, including its own original productions as well as licensed content from other studios and distributors. It began as a DVD rental-by-mail business before moving into online streaming and original programming.",
-        "sector": 3
+        "sector": 3,
+        "website": "https://ir.netflix.net"
       },
       "tokens": [
         {
@@ -5346,7 +5374,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "ASML is a Dutch technology company that designs and builds the photolithography machines chipmakers use to print circuit patterns onto silicon wafers. It supplies the most advanced extreme ultraviolet systems needed to produce leading-edge semiconductors.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.asml.com"
       },
       "tokens": [
         {
@@ -5406,7 +5435,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "AST SpaceMobile designs and builds satellites for a planned space-based cellular network. The system is meant to give standard, unmodified smartphones direct broadband connectivity, with a focus on remote and underserved areas.",
-        "sector": 8
+        "sector": 8,
+        "website": "https://ast-science.com"
       },
       "tokens": [
         {
@@ -5475,7 +5505,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Qualcomm designs wireless communication technologies and semiconductors, including the Snapdragon processors used in smartphones and other connected devices. It also licenses patents tied to major mobile network standards and is extending into automotive, Internet of Things, extended reality and embedded AI products.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.qualcomm.com"
       },
       "tokens": [
         {
@@ -5649,7 +5680,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "McDonald's operates and franchises a global chain of fast food restaurants serving burgers, fries, chicken, breakfast items, and beverages, with menus adapted to local tastes. Most locations are run by independent franchisees, and the company earns income from restaurant sales as well as rent, royalties, and fees.",
-        "sector": 28
+        "sector": 28,
+        "website": "https://www.mcdonalds.com"
       },
       "tokens": [
         {
@@ -5727,7 +5759,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Arm Holdings designs processor cores and related technology built on the ARM instruction set architecture, which it licenses to chipmakers rather than manufacturing chips itself. Its designs are used in smartphones, embedded systems and a wide range of other computing devices, alongside graphics processors and software development tools.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.arm.com"
       },
       "tokens": [
         {
@@ -5865,7 +5898,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "IBM is a multinational technology company that provides enterprise software, hybrid cloud infrastructure, consulting and IT services to businesses and governments. It also builds mainframe systems and conducts research in areas such as artificial intelligence and quantum computing.",
-        "sector": 181
+        "sector": 181,
+        "website": "https://www.ibm.com"
       },
       "tokens": [
         {
@@ -5952,7 +5986,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coca-Cola is an Atlanta-based beverage company that makes and markets soft drinks and other non-alcoholic beverage concentrates and syrups. It sells much of its product as syrup to independent bottlers who hold exclusive territories and distribute its brands around the world.",
-        "sector": 36
+        "sector": 36,
+        "website": "https://www.coca-colacompany.com"
       },
       "tokens": [
         {
@@ -6126,7 +6161,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Lockheed Martin is a defense and aerospace manufacturer that builds military aircraft, missiles, air-defense systems, space systems and mission technology. Its main customer is the US government, including the Department of Defense, along with space and intelligence agencies and allied governments.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://lockheedmartin.com"
       },
       "tokens": [
         {
@@ -6237,7 +6273,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Pfizer is a New York-based multinational pharmaceutical and biotechnology company that develops, manufactures and sells medicines and vaccines. Its work spans areas such as immunology, oncology, cardiology, endocrinology and neurology, with products sold in the United States and internationally.",
-        "sector": 148
+        "sector": 148,
+        "website": "https://www.pfizer.com"
       },
       "tokens": [
         {
@@ -6409,7 +6446,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Nokia is a Finnish company that builds and sells telecommunications network equipment and related software and services for communications providers and enterprises. It also earns income by licensing its large portfolio of mobile technology patents to phone makers.",
-        "sector": 170
+        "sector": 170,
+        "website": "https://www.nokia.com"
       },
       "tokens": [
         {
@@ -6469,7 +6507,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Trump Media & Technology Group is a Florida-based company that operates the Truth Social social-media platform. It became publicly listed through a merger with a special-purpose acquisition company and is majority-owned by a trust tied to Donald Trump.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://www.tmtgcorp.com"
       },
       "tokens": [
         {
@@ -6547,7 +6586,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Western Digital is a data storage company based in California. It designs and manufactures hard disk drives and related storage products used in data centers, computers and consumer devices.",
-        "sector": 171
+        "sector": 171,
+        "website": "https://www.westerndigital.com"
       },
       "tokens": [
         {
@@ -6676,7 +6716,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Chevron is an American multinational energy company that explores for, produces, refines, transports and markets oil and natural gas. It also makes fuels, lubricants, additives and petrochemicals, and generates power.",
-        "sector": 113
+        "sector": 113,
+        "website": "https://www.chevron.com"
       },
       "tokens": [
         {
@@ -6754,7 +6795,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "JPMorgan Chase is a New York-based banking group that provides investment banking, commercial and private banking, asset management, and consumer services. Its retail banking and credit card products are offered under the Chase brand.",
-        "sector": 129
+        "sector": 129,
+        "website": "https://www.jpmorganchase.com"
       },
       "tokens": [
         {
@@ -7006,7 +7048,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Super Micro Computer designs and builds high-performance servers, storage systems and server management software. Its products serve enterprise data centers, cloud computing, artificial intelligence and edge computing customers.",
-        "sector": 194
+        "sector": 194,
+        "website": "https://www.supermicro.com"
       },
       "tokens": [
         {
@@ -7084,7 +7127,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Cisco designs, makes and sells networking hardware, software and related services, with a focus on networking, cybersecurity and artificial intelligence. Its offerings also serve areas such as internet of things connectivity, domain security, videoconferencing and energy management.",
-        "sector": 185
+        "sector": 185,
+        "website": "https://www.cisco.com"
       },
       "tokens": [
         {
@@ -7434,7 +7478,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Reddit operates a social platform made up of thousands of topic-based communities where users post, comment, and vote on content. The company earns most of its revenue from advertising on the platform and also licenses its data to other companies.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://www.redditinc.com"
       },
       "tokens": [
         {
@@ -7608,7 +7653,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Palo Alto Networks is a cybersecurity company that provides a security platform built around advanced firewalls and cloud-based services that extend protection to other areas of network and data security. It also runs a threat research team and an annual industry conference.",
-        "sector": 173
+        "sector": 173,
+        "website": "https://www.paloaltonetworks.com"
       },
       "tokens": [
         {
@@ -12721,7 +12767,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Constellation Energy is a Baltimore-based company that generates and sells electric power, natural gas, and energy management services to customers across the continental United States. It emerged as an independent business after separating from Exelon, and it traces its roots to the earlier Constellation Energy Group.",
-        "sector": 214
+        "sector": 214,
+        "website": "https://www.constellation.com"
       },
       "tokens": [
         {
@@ -12781,7 +12828,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Intuit is a financial technology company that develops software and online services for tax preparation, accounting, and personal finance. Its products include TurboTax, QuickBooks, Credit Karma, and Mailchimp, serving consumers, self-employed individuals, and small businesses.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://www.intuit.com"
       },
       "tokens": [
         {
@@ -12859,7 +12907,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Apollo Global Management is an alternative asset manager that invests across credit, private equity, and real assets such as real estate and infrastructure. It manages money for pension funds, endowments, sovereign wealth funds, and other institutional and individual investors, and also runs a publicly traded business development company that lends to middle-market companies.",
-        "sector": 120
+        "sector": 120,
+        "website": "https://www.apollo.com"
       },
       "tokens": [
         {
@@ -12979,7 +13028,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Lam Research designs and sells the equipment and services that chipmakers use to fabricate semiconductor wafers. Its tools are used mainly in front-end processing to build transistors, capacitors and the wiring between them, and it also serves wafer-level packaging and MEMS manufacturing.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.lamresearch.com"
       },
       "tokens": [
         {
@@ -13160,7 +13210,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Aehr Test Systems designs and manufactures test and burn-in equipment used by semiconductor makers to screen integrated circuits at the wafer and packaged-part level. Its systems are used to verify reliability and screen out early failures in devices such as silicon carbide power chips, photonics and memory.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.aehr.com"
       },
       "tokens": [
         {
@@ -13262,7 +13313,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Figma develops a browser-based collaborative design platform used to create user interfaces, prototypes, and digital products. Its tools let teams design, share feedback, and hand off work to developers in a single shared workspace.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://figma.com"
       },
       "tokens": [
         {
@@ -13713,7 +13765,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "NIO is a Chinese electric vehicle maker that designs and sells premium sedans and SUVs, along with its own chip development and other connected products. It also runs a network of battery swapping stations and operates additional brands aimed at the mass market.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://www.nio.com"
       },
       "tokens": [
         {
@@ -13764,7 +13817,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Intuitive Surgical designs, builds and sells robotic-assisted systems that let surgeons perform minimally invasive procedures. Its best-known product is the da Vinci Surgical System, supported by related instruments, accessories and services.",
-        "sector": 141
+        "sector": 141,
+        "website": "https://www.intuitive.com"
       },
       "tokens": [
         {
@@ -14135,7 +14189,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Riot Platforms is a Bitcoin mining company that operates large-scale data center facilities in the United States, using specialized computing equipment to validate transactions on the Bitcoin network. It also provides hosting for third-party miners and manufactures electrical equipment for data centers and mining operations.",
-        "sector": 127
+        "sector": 127,
+        "website": "https://www.riotplatforms.com"
       },
       "tokens": [
         {
@@ -14246,7 +14301,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Rivian designs and builds electric vehicles, including a pickup truck, SUVs and a delivery van sold to a major online retailer. It also develops its own vehicle technology and runs a public fast-charging network in the United States.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://rivian.com"
       },
       "tokens": [
         {
@@ -14615,7 +14671,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "MARA Holdings is a digital asset technology company that mines bitcoin and holds the cryptocurrency on its balance sheet. It runs large-scale mining data centers in the United States and abroad, and has pursued power arrangements with energy facilities to supply its operations.",
-        "sector": 127
+        "sector": 127,
+        "website": "https://www.mara.com"
       },
       "tokens": [
         {
@@ -14724,7 +14781,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Arista Networks designs and sells networking hardware and software for large data centers, AI environments, campus networks and routing. Its products connect users and devices to cloud infrastructure.",
-        "sector": 170
+        "sector": 170,
+        "website": "https://www.arista.com"
       },
       "tokens": [
         {
@@ -14793,7 +14851,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "IonQ builds quantum computers that use trapped ions as their basic computing elements. It also develops software for creating, optimizing and running quantum circuits on its systems.",
-        "sector": 186
+        "sector": 186,
+        "website": "https://ionq.co"
       },
       "tokens": [
         {
@@ -14880,7 +14939,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Snap is a technology company based in California that builds and operates the Snapchat camera and messaging app, along with the Bitmoji personalized avatar service. It also develops Spectacles, a line of camera-equipped smart glasses.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://snap.com"
       },
       "tokens": [
         {
@@ -15000,7 +15060,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Zoom is a communications technology company best known for its cloud-based videoconferencing platform, which lets individuals and organizations hold virtual meetings and collaborate remotely. It is headquartered in San Jose, California, and has worked to address earlier security and privacy concerns about its software.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://www.zoom.com"
       },
       "tokens": [
         {
@@ -15069,7 +15130,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hewlett Packard Enterprise provides technology for businesses, including servers, data storage, networking equipment, and artificial intelligence systems. It also offers containerization software along with consulting and support services.",
-        "sector": 193
+        "sector": 193,
+        "website": "https://www.hpe.com"
       },
       "tokens": [
         {
@@ -15180,7 +15242,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Bank of America is a US bank holding company that provides consumer and commercial banking, wealth management, and investment banking services. It serves individuals, businesses, and institutions through its banking operations, its Merrill wealth unit, and its BofA Securities investment bank.",
-        "sector": 129
+        "sector": 129,
+        "website": "https://www.bankofamerica.com"
       },
       "tokens": [
         {
@@ -15336,7 +15399,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Lululemon designs and sells athletic apparel, originally focused on yoga wear and now also covering sportswear, everyday clothing, footwear, accessories and personal care items. It sells through its own stores and its website, and is headquartered in Vancouver.",
-        "sector": 10
+        "sector": 10,
+        "website": "https://shop.lululemon.com"
       },
       "tokens": [
         {
@@ -15426,7 +15490,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "MongoDB develops and commercially supports a document-oriented database designed for unstructured data, and has broadened it with enterprise features such as transaction support. It also offers a cloud-hosted, managed version of the database called Atlas.",
-        "sector": 176
+        "sector": 176,
+        "website": "https://www.mongodb.com"
       },
       "tokens": [
         {
@@ -15573,7 +15638,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "DraftKings is a digital sports entertainment and gambling company that runs online and retail sportsbooks alongside daily fantasy sports contests. It began as a fantasy sports provider and later expanded into regulated sports betting and online casino offerings.",
-        "sector": 15
+        "sector": 15,
+        "website": "https://www.draftkings.com"
       },
       "tokens": [
         {
@@ -15675,7 +15741,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "KLA designs and builds process control and yield management systems used in semiconductor manufacturing. Its inspection and measurement tools support chipmakers and related nanoelectronics producers across wafer, reticle, integrated circuit and packaging production, from research through high-volume manufacturing.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.kla.com"
       },
       "tokens": [
         {
@@ -15795,7 +15862,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Wolfspeed develops and manufactures wide-bandgap semiconductors, with a focus on silicon carbide materials and devices. Its products are used in power applications such as electric vehicles, power supplies, inverters and wireless systems.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.wolfspeed.com"
       },
       "tokens": [
         {
@@ -15888,7 +15956,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Redwire is a Florida-based aerospace manufacturer and space infrastructure technology company. It was created by a private equity firm through the combination of two of its space-focused portfolio businesses.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://rdw.com"
       },
       "tokens": [
         {
@@ -16019,7 +16088,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Symbotic develops and operates automated warehouse systems that combine robotics with artificial intelligence software. Its customers are in the grocery, retail and wholesale industries across the United States and Canada.",
-        "sector": 160
+        "sector": 160,
+        "website": "https://symbotic.com"
       },
       "tokens": [
         {
@@ -16081,7 +16151,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ondas Holdings develops and sells wireless radio systems for mission-critical industrial and rail networks, along with autonomous drone and robotics systems for security, inspection and defense uses. Its operations are organized around a networks business and a portfolio of subsidiaries focused on unmanned aerial and ground systems.",
-        "sector": 170
+        "sector": 170,
+        "website": "https://www.ondas.com"
       },
       "tokens": [
         {
@@ -16339,7 +16410,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Bilibili operates a Shanghai-based online video platform where users upload, watch and comment on content, including through overlaid on-screen comments. It began around animation, comics and games and has widened into documentaries, variety shows and original programming, alongside live streaming and mobile games.",
-        "sector": 4
+        "sector": 4,
+        "website": "https://www.bilibili.com"
       },
       "tokens": [
         {
@@ -16731,7 +16803,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Amkor Technology provides outsourced packaging and testing services for semiconductors, helping chip makers turn finished wafers into usable integrated circuits. It operates manufacturing facilities across several countries in Asia and Europe.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://amkor.com"
       },
       "tokens": [
         {
@@ -16809,7 +16882,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hut 8 is a digital infrastructure company that operates bitcoin mining facilities and builds and manages energy-intensive data center sites, including capacity for high-performance computing and artificial intelligence workloads. It also holds bitcoin and offers hosting and related services in North America.",
-        "sector": 127
+        "sector": 127,
+        "website": "https://www.hut8.com"
       },
       "tokens": [
         {
@@ -17015,7 +17089,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Quanta Services provides infrastructure contracting services to the electric power, pipeline, industrial and communications sectors. It builds and maintains power grids and related networks, and also works on data center projects driven by growing electricity demand from artificial intelligence.",
-        "sector": 155
+        "sector": 155,
+        "website": "https://www.quantaservices.com"
       },
       "tokens": [
         {
@@ -17135,7 +17210,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Comcast is a media and telecommunications company that provides home internet, cable television, mobile and business connectivity services under the Xfinity and Comcast Business brands. It also owns NBCUniversal, which includes film studios, broadcast networks, a streaming service and theme parks, as well as the European broadcaster Sky.",
-        "sector": 1
+        "sector": 1,
+        "website": "https://www.cmcsa.com"
       },
       "tokens": [
         {
@@ -17246,7 +17322,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Intuitive Machines is a Houston-based space company that builds lunar landers and delivers payloads to the Moon's surface for NASA and other customers. It also provides data transmission services and infrastructure support for lunar exploration.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://www.intuitivemachines.com"
       },
       "tokens": [
         {
@@ -17339,7 +17416,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Lattice Semiconductor designs and sells low-power field-programmable gate arrays, which are programmable chips used to handle custom processing tasks in electronic systems. The company is based in Oregon and maintains operations across the United States and Asia.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.latticesemi.com"
       },
       "tokens": [
         {
@@ -17417,7 +17495,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "STMicroelectronics is a European semiconductor company that designs and manufactures a broad range of microelectronic chips, including widely used microcontrollers. It is incorporated in the Netherlands and operates from a Swiss headquarters, serving customers across many industries.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.st.com"
       },
       "tokens": [
         {
@@ -17459,7 +17538,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Tower Semiconductor is an Israeli company that operates as a specialty foundry, producing analog and mixed-signal chips for other firms using processes such as silicon germanium, silicon photonics, image sensor, power management and embedded memory technologies. It also offers micro-electromechanical systems manufacturing and runs a joint venture with a Japanese semiconductor partner.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.towersemi.com"
       },
       "tokens": [
         {
@@ -17501,7 +17581,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Danaher is a science and technology company that makes tools and products for biotechnology, life sciences research, and medical diagnostics. Its businesses supply equipment and materials used to develop and manufacture therapies and vaccines, study disease, and diagnose illness through instruments, consumables, software, and services.",
-        "sector": 145
+        "sector": 145,
+        "website": "https://www.danaher.com"
       },
       "tokens": [
         {
@@ -17656,7 +17737,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "MACOM designs and manufactures semiconductor devices and components that operate across radio, microwave and millimeter wave frequencies. It serves customers through design centers and sales offices spread across several regions worldwide.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.macom.com"
       },
       "tokens": [
         {
@@ -17734,7 +17816,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Grindr operates a location-based social networking app aimed at gay, bi, trans and queer people. Users build profiles and browse nearby members by distance, with options to chat, exchange photos, video call and share location, offered in free and paid subscription tiers on iOS and Android.",
-        "sector": 5
+        "sector": 5,
+        "website": "https://www.grindr.com"
       },
       "tokens": [
         {
@@ -17776,7 +17859,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Xiaomi is a Chinese technology company that designs and sells smartphones, smart home devices, wearables, and a wide range of household appliances. It also develops its own mobile operating system and software services, and has expanded into electric vehicles.",
-        "sector": 193
+        "sector": 193,
+        "website": "https://www.mi.com"
       },
       "tokens": [
         {
@@ -17827,7 +17911,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ford Motor is an American automaker based in Michigan that designs, builds and sells cars, trucks and commercial vehicles under the Ford name, along with luxury vehicles under the Lincoln brand. It also operates joint ventures in several overseas markets and remains under the influence of the founding family through a special class of shares.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://www.ford.com"
       },
       "tokens": [
         {
@@ -21696,7 +21781,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Akamai Technologies provides services that speed up and protect internet content and applications for businesses. Its offerings cover content delivery, cybersecurity, defense against denial-of-service attacks, and cloud computing.",
-        "sector": 181
+        "sector": 181,
+        "website": "https://www.akamai.com"
       },
       "tokens": [
         {
@@ -21756,7 +21842,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Duke Energy is a holding company that generates and delivers electricity and natural gas to residential, commercial and industrial customers across the eastern United States. It is based in Charlotte, North Carolina.",
-        "sector": 214
+        "sector": 214,
+        "website": "https://www.duke-energy.com"
       },
       "tokens": [
         {
@@ -21858,7 +21945,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Planet Labs designs, builds and operates fleets of small Earth-imaging satellites that photograph the planet's surface on a frequent basis. It sells the resulting imagery and data to commercial, government and nonprofit customers, mainly through subscriptions, for uses such as agriculture, climate monitoring, mapping and disaster response.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://www.planet.com"
       },
       "tokens": [
         {
@@ -21942,7 +22030,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Carnival Corporation is a cruise operator that runs a large fleet of ships under multiple cruise brands. The company is incorporated in Bermuda, has its operational base in Florida, and maintains a significant regional presence in England.",
-        "sector": 22
+        "sector": 22,
+        "website": "https://www.carnivalcorp.com"
       },
       "tokens": [
         {
@@ -21966,7 +22055,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Flex is a multinational contract manufacturer that builds electronic products and provides design and engineering services for other companies. It runs production facilities across many countries and is headquartered in the United States, with its legal home in Singapore.",
-        "sector": 180
+        "sector": 180,
+        "website": "https://www.flex.com"
       },
       "tokens": [
         {
@@ -22008,7 +22098,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Caterpillar designs and manufactures construction, mining, and other heavy engineering equipment, sold under the Cat brand and recognizable by its yellow machinery. The company also licenses its name for a line of clothing and workwear boots.",
-        "sector": 156
+        "sector": 156,
+        "website": "https://www.caterpillar.com"
       },
       "tokens": [
         {
@@ -22086,7 +22177,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Huntington Ingalls Industries designs and builds military ships for the US Navy and Coast Guard, and also provides professional and technical services to government and industry customers. It operates through two shipyards and a mission technologies division, and was spun off from Northrop Grumman.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://hii.com"
       },
       "tokens": [
         {
@@ -22206,7 +22298,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Plug Power develops hydrogen fuel cell and electrolyzer systems that serve as an alternative to conventional batteries in electric-powered equipment and vehicles. Its GenDrive product line powers forklifts and can be refueled with hydrogen much faster than lead-acid batteries can be recharged.",
-        "sector": 158
+        "sector": 158,
+        "website": "https://www.plugpower.com"
       },
       "tokens": [
         {
@@ -22350,7 +22443,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Trip.com Group is a Shanghai-based online travel company that operates booking platforms and fare comparison services for flights, hotels and other travel products. Its brands include Trip.com, Ctrip, Skyscanner, Qunar and Travix, offered to customers in many languages and countries.",
-        "sector": 27
+        "sector": 27,
+        "website": "https://group.trip.com"
       },
       "tokens": [
         {
@@ -22392,7 +22486,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Powell Industries designs and builds electrical equipment and packaged systems that monitor, control and distribute electrical power for commercial and industrial customers. Its products include switchgear, motor controls, power control rooms and related field services, serving industries such as oil and gas, petrochemical, mining, rail, renewable energy and utilities.",
-        "sector": 158
+        "sector": 158,
+        "website": "https://www.powellind.com"
       },
       "tokens": [
         {
@@ -22425,7 +22520,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Oscar Health is a technology-oriented health insurer that sells coverage plans to individuals and families. It also offers telemedicine, digital tools for managing care, and claims pricing designed to be easier for members to understand.",
-        "sector": 146
+        "sector": 146,
+        "website": "https://www.hioscar.com"
       },
       "tokens": [
         {
@@ -22542,7 +22638,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "T-Mobile US is a wireless carrier that provides mobile phone and data services to consumers and businesses across the United States. It sells service under several retail and prepaid brands and is majority owned by the German telecom group Deutsche Telekom.",
-        "sector": 8
+        "sector": 8,
+        "website": "https://www.t-mobile.com"
       },
       "tokens": [
         {
@@ -22640,7 +22737,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "American Airlines Group is a Texas-based airline holding company that was created through the combination of American Airlines and US Airways. Its carriers provide scheduled passenger air service and now fly under the single American Airlines brand.",
-        "sector": 162
+        "sector": 162,
+        "website": "https://www.aa.com"
       },
       "tokens": [
         {
@@ -22682,7 +22780,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "CleanSpark is a bitcoin mining company that operates data centers to mine bitcoin and also offers related energy and infrastructure services. It focuses on using energy-efficient and low-carbon power sources for its mining operations.",
-        "sector": 127
+        "sector": 127,
+        "website": "https://www.cleanspark.com"
       },
       "tokens": [
         {
@@ -22715,7 +22814,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Celestica is a Toronto-based provider of electronics manufacturing services. It designs and builds hardware, develops hardware platforms, and manages supply chains for customers across a global network of facilities.",
-        "sector": 180
+        "sector": 180,
+        "website": "https://www.celestica.com"
       },
       "tokens": [
         {
@@ -22781,7 +22881,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Merck is a pharmaceutical company that develops and sells medicines and vaccines, with a particular focus on cancer treatments. It also makes animal health products and operates under the MSD name outside the United States and Canada.",
-        "sector": 148
+        "sector": 148,
+        "website": "https://www.merck.com"
       },
       "tokens": [
         {
@@ -22859,7 +22960,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GitLab develops and operates a DevOps software platform that helps teams plan, build, secure, and deploy software in one place. Its open-core product includes Git-based version control along with access controls, issue tracking, task management, and project wikis.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://about.gitlab.com/company"
       },
       "tokens": [
         {
@@ -22939,7 +23041,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "McKesson is a healthcare company that distributes pharmaceuticals and medical supplies to pharmacies, hospitals and other care providers. It also offers health information technology and management tools, and operates a large logistics network supporting the healthcare industry.",
-        "sector": 140
+        "sector": 140,
+        "website": "https://www.mckesson.com"
       },
       "tokens": [
         {
@@ -22999,7 +23102,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Stellantis is an international automaker that designs, builds and sells passenger cars, SUVs and trucks under a broad portfolio of European and American brands, including Jeep, Peugeot, Fiat, Opel, Ram and Maserati. It was created through the combination of a French and an Italian-American carmaker and is headquartered in the Netherlands.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://www.stellantis.com"
       },
       "tokens": [
         {
@@ -23023,7 +23127,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GlobalFoundries is a semiconductor contract manufacturer that produces integrated circuits on silicon wafers designed by other companies. Its chips serve markets such as mobile devices, data centers, communications infrastructure, automotive, aerospace and defense, and consumer internet of things products.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://gf.com"
       },
       "tokens": [
         {
@@ -23586,7 +23691,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Regeneron Pharmaceuticals is an American biotechnology company based in New York that researches, develops and commercializes medicines. Its work grew from early research on neurotrophic factors into the study of cytokine and tyrosine kinase receptors, which led to its first product, a VEGF-trap.",
-        "sector": 138
+        "sector": 138,
+        "website": "https://www.regeneron.com"
       },
       "tokens": [
         {
@@ -23759,7 +23865,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "First Solar is an American manufacturer of solar panels that uses thin-film technology based on cadmium telluride as the semiconductor material. It produces its modules at several factories across the United States.",
-        "sector": 192
+        "sector": 192,
+        "website": "https://www.firstsolar.com"
       },
       "tokens": [
         {
@@ -23852,7 +23959,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Shell is a British energy company that operates across the oil and gas value chain, from exploration and production to refining, transport, retail fuel distribution, petrochemicals, power generation and trading. It also holds a growing natural gas and liquefied natural gas business and owns lubricant brands such as Pennzoil and Quaker State.",
-        "sector": 113
+        "sector": 113,
+        "website": "https://www.shell.com"
       },
       "tokens": [
         {
@@ -23900,7 +24008,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coupang is an online retail and technology company that runs a large e-commerce marketplace, a food delivery service and a video streaming service. It operates mainly in South Korea and Taiwan and is headquartered in the United States.",
-        "sector": 23
+        "sector": 23,
+        "website": "https://www.coupang.com"
       },
       "tokens": [
         {
@@ -23978,7 +24087,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "BigBear.ai provides artificial intelligence and machine learning analytics, data and decision-support software and services. Its customers are mainly government agencies, defense and intelligence organizations, and commercial clients in areas such as supply chain, logistics and biometrics.",
-        "sector": 191
+        "sector": 191,
+        "website": "https://bigbear.ai"
       },
       "tokens": [
         {
@@ -24040,7 +24150,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "SoundHound AI develops voice recognition and speech synthesis software that businesses use to let customers interact through spoken commands. Its technology is applied in settings such as restaurant drive-throughs and other customer-facing sales and service uses.",
-        "sector": 191
+        "sector": 191,
+        "website": "https://www.soundhound.com"
       },
       "tokens": [
         {
@@ -24091,7 +24202,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Block is a technology and financial services company that builds payment and banking tools for merchants and consumers. Its offerings include the Square point-of-sale system for sellers, the Cash App digital wallet, the Afterpay buy now, pay later service, and bitcoin-related products.",
-        "sector": 137
+        "sector": 137,
+        "website": "https://block.xyz"
       },
       "tokens": [
         {
@@ -24220,7 +24332,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Allstate is an American insurance holding company that provides personal lines insurance, including auto and home coverage, to consumers. It is based in Illinois and also has personal insurance operations in Canada.",
-        "sector": 135
+        "sector": 135,
+        "website": "https://www.allstate.com"
       },
       "tokens": [
         {
@@ -24280,7 +24393,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "The Cheesecake Factory operates a chain of full-service restaurants under its namesake brand as well as North Italia and several other concepts. It also runs bakery production facilities that make its signature cheesecakes and other desserts.",
-        "sector": 28
+        "sector": 28,
+        "website": "https://www.thecheesecakefactory.com"
       },
       "tokens": [
         {
@@ -24382,7 +24496,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Virgin Galactic develops spacecraft and operates suborbital flights that carry paying passengers and researchers to the edge of space. Its vehicles are launched from beneath a carrier aircraft, and the company is moving toward a newer class of spaceships.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://www.virgingalactic.com"
       },
       "tokens": [
         {
@@ -24839,7 +24954,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Vertex Pharmaceuticals is a biopharmaceutical company headquartered in Boston that develops medicines for serious diseases. It was among the early biotech firms to rely on rational drug design instead of combinatorial chemistry, and it operates research sites in the United States and England.",
-        "sector": 138
+        "sector": 138,
+        "website": "https://www.vrtx.com"
       },
       "tokens": [
         {
@@ -25001,7 +25117,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Fastly operates a cloud platform that speeds up the delivery of websites and applications to users. Its offerings include content delivery, image optimization, load balancing, and security tools such as attack protection, bot mitigation, and a web application firewall.",
-        "sector": 183
+        "sector": 183,
+        "website": "https://www.fastly.com"
       },
       "tokens": [
         {
@@ -25222,7 +25339,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Analog Devices designs and makes semiconductors that convert, condition and process real-world signals such as light, sound, temperature, motion and pressure into electrical form. Its analog, mixed-signal and digital signal processing chips are used in communications, automotive, aerospace, industrial instrumentation and consumer electronics equipment.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.analog.com"
       },
       "tokens": [
         {
@@ -25486,7 +25604,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "On Holding AG is a Swiss company that designs and sells performance running shoes, apparel, and accessories. Its products are known for a distinctive cushioning sole system and are sold through its own website, retail stores, and third-party retailers worldwide.",
-        "sector": 18
+        "sector": 18,
+        "website": "https://investors.on-running.com/home/default.aspx"
       },
       "tokens": [
         {
@@ -25612,7 +25731,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Victoria's Secret & Co. is a specialty retailer of women's lingerie, apparel and beauty products. It sells through mall-based and airport stores, franchised locations abroad and online, under brands including Victoria's Secret and PINK.",
-        "sector": 10
+        "sector": 10,
+        "website": "https://www.victoriassecret.com"
       },
       "tokens": [
         {
@@ -30050,7 +30170,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Peloton Interactive makes internet-connected exercise equipment such as stationary bikes, treadmills and rowing machines, with touch screens that stream live and on-demand workout classes. It earns subscription revenue from members who access the class library and performance tracking features, either on its hardware or through an app and website.",
-        "sector": 24
+        "sector": 24,
+        "website": "https://www.onepeloton.com"
       },
       "tokens": [
         {
@@ -30074,7 +30195,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Cummins designs, builds and distributes diesel engines, electric vehicle components and power generation equipment. It also provides service and parts for engines and related systems such as fuel systems, filtration, emission controls and electrical generation products, sold worldwide through distributors and dealers.",
-        "sector": 161
+        "sector": 161,
+        "website": "https://www.cummins.com"
       },
       "tokens": [
         {
@@ -30134,7 +30256,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "CME Group runs a group of derivatives exchanges and clearing services for futures, options and swaps tied to interest rates, stock indexes, energy, agriculture, currencies, metals and cryptocurrency. It also operates electronic trading platforms and sells market data.",
-        "sector": 131
+        "sector": 131,
+        "website": "https://www.cmegroup.com"
       },
       "tokens": [
         {
@@ -30296,7 +30419,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Lucid Group designs and builds battery-electric luxury vehicles, including a sedan and an SUV, at its manufacturing facility in Arizona. It also develops and supplies electric powertrain technology to other automakers.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://lucidmotors.com"
       },
       "tokens": [
         {
@@ -30799,7 +30923,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hilton Worldwide is a hospitality company that manages and franchises a wide range of hotels, resorts, and timeshare properties across many countries. It operates mostly through management and franchise arrangements, owning or leasing only a small share of its properties.",
-        "sector": 22
+        "sector": 22,
+        "website": "https://www.hilton.com"
       },
       "tokens": [
         {
@@ -30901,7 +31026,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "VICI Properties is a real estate investment trust that owns casino, hotel, and entertainment properties across the United States and Canada. It leases these assets to gaming and hospitality operators and was created as a spin-off from Caesars Entertainment during that company's bankruptcy restructuring.",
-        "sector": 208
+        "sector": 208,
+        "website": "https://viciproperties.com"
       },
       "tokens": [
         {
@@ -31003,7 +31129,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Prologis is a real estate investment trust that owns and operates logistics facilities such as warehouses, often placed near large urban centers where land is limited. It leases space to a broad base of tenants worldwide and also offers customers items like solar power, EV charging infrastructure and other logistics equipment.",
-        "sector": 210
+        "sector": 210,
+        "website": "https://www.prologis.com"
       },
       "tokens": [
         {
@@ -31063,7 +31190,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "HDFC Bank is an Indian private sector bank based in Mumbai that provides banking and financial services. It operates under the oversight of the Reserve Bank of India, which classifies it as a domestic systemically important bank.",
-        "sector": 122
+        "sector": 122,
+        "website": "https://hdfc.bank.in"
       },
       "tokens": [
         {
@@ -31178,7 +31306,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Onto Innovation supplies process control equipment and software to makers of semiconductors and other microelectronic devices. Its offerings cover wafer quality checks, three-dimensional measurement, defect inspection, factory analytics and lithography used in advanced chip packaging.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://ontoinnovation.com"
       },
       "tokens": [
         {
@@ -31340,7 +31469,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Hershey is a Pennsylvania-based confectionery company that makes chocolate and other sweets, along with baked goods and beverages. It sells its products internationally and is partly controlled by a trust that holds the majority of its voting power.",
-        "sector": 32
+        "sector": 32,
+        "website": "https://www.thehersheycompany.com/en_us/home.html"
       },
       "tokens": [
         {
@@ -31442,7 +31572,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Delta Air Lines is a US passenger airline based in Atlanta that runs a network of hub airports and offers scheduled flights across domestic and international routes. It operates alongside regional carriers under the Delta Connection name and belongs to the SkyTeam airline alliance.",
-        "sector": 162
+        "sector": 162,
+        "website": "https://www.delta.com"
       },
       "tokens": [
         {
@@ -31604,7 +31735,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Cigna is a managed healthcare and insurance company whose subsidiaries provide medical, dental, disability, life and accident coverage along with related services. Most of its products are offered through employers and other groups such as unions, associations and government organizations.",
-        "sector": 146
+        "sector": 146,
+        "website": "https://www.cigna.com"
       },
       "tokens": [
         {
@@ -31664,7 +31796,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Fifth Third Bancorp is a bank holding company that provides commercial banking, consumer banking, wealth management, and payment services through its banking subsidiary. It serves individuals, businesses, and institutions across a multi-state footprint, primarily in the Midwest and Southeast United States.",
-        "sector": 136
+        "sector": 136,
+        "website": "https://ir.53.com"
       },
       "tokens": [
         {
@@ -31724,7 +31857,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Annaly Capital Management is a mortgage real estate investment trust based in New York. It borrows mainly through short-term repurchase agreements and invests in mortgage-backed securities, mostly those issued by government-sponsored agencies, earning income from the spread between asset yields and borrowing costs.",
-        "sector": 134
+        "sector": 134,
+        "website": "https://www.annaly.com"
       },
       "tokens": [
         {
@@ -31952,7 +32086,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "NXP Semiconductors is a Dutch company that designs and manufactures semiconductors and related chips. Its products serve automotive, industrial, mobile and communications customers, and it helped develop near field communication technology.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.nxp.com"
       },
       "tokens": [
         {
@@ -32042,7 +32177,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Zebra Technologies is an American technology company that designs and sells products for capturing and tracking data, such as barcode scanners, printers, mobile computers and related software. Its tools are used by businesses to track inventory, assets and workflows.",
-        "sector": 179
+        "sector": 179,
+        "website": "https://www.zebra.com"
       },
       "tokens": [
         {
@@ -32177,7 +32313,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "LPL Financial is a broker-dealer that supports independent financial advisors by providing brokerage, advisory, custody and technology services. Advisors use its platform to serve retail investors while operating their own practices.",
-        "sector": 132
+        "sector": 132,
+        "website": "https://www.lpl.com"
       },
       "tokens": [
         {
@@ -32294,7 +32431,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Charles Schwab is a financial services company that provides brokerage, banking, and wealth management services to individual and institutional clients. It also offers retirement plan services, investment advisory support, and a donor advised fund for clients who want to give securities to charity.",
-        "sector": 132
+        "sector": 132,
+        "website": "https://www.schwab.com"
       },
       "tokens": [
         {
@@ -32372,7 +32510,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "EQT Corporation is a natural gas producer based in Pittsburgh, Pennsylvania, with operations centered on the Appalachian Basin and the Marcellus Formation. It explores for and develops hydrocarbon reserves and has been tied to midstream pipeline and water services that support well completion.",
-        "sector": 115
+        "sector": 115,
+        "website": "https://www.eqt.com"
       },
       "tokens": [
         {
@@ -32512,7 +32651,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Microchip Technology designs and makes semiconductor products, including microcontrollers, microprocessors, analog and mixed-signal chips, and flash memory. It runs its own wafer fabrication plants in the western United States and assembly and testing sites in Southeast Asia.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.microchip.com"
       },
       "tokens": [
         {
@@ -32572,7 +32712,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Stryker is a medical technology company that makes surgical equipment, endoscopy systems, patient handling and emergency care products, and neurosurgical and neurovascular devices. It also produces orthopedic implants for joint replacement, trauma and extremities procedures, which it sells to healthcare providers worldwide.",
-        "sector": 147
+        "sector": 147,
+        "website": "https://stryker.com"
       },
       "tokens": [
         {
@@ -33010,7 +33151,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "AMETEK designs and manufactures electronic instruments and electromechanical devices for industrial and technical customers worldwide. Its products include analytical, monitoring, testing and calibration instruments, as well as electric motors, pumps and interconnects, and it grows through new products, international expansion and acquisitions.",
-        "sector": 158
+        "sector": 158,
+        "website": "https://www.ametek.com"
       },
       "tokens": [
         {
@@ -33088,7 +33230,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Nova develops metrology systems used in semiconductor manufacturing, covering dimensional, materials and chemical measurement. It is known for integrated metrology, which places measurement tools inside process equipment so chipmakers can monitor and control production wafer by wafer.",
-        "sector": 187
+        "sector": 187,
+        "website": "https://www.novami.com"
       },
       "tokens": [
         {
@@ -33187,7 +33330,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Moody's is a holding company that owns a credit rating agency, which assesses the creditworthiness of borrowers and debt securities, and a separate unit offering financial analysis software and related services. Its offerings help investors, lenders and businesses evaluate risk and make financing decisions.",
-        "sector": 130
+        "sector": 130,
+        "website": "https://www.moodys.com"
       },
       "tokens": [
         {
@@ -33247,7 +33391,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "AutoZone is a retailer of aftermarket automotive parts and accessories, selling to both do-it-yourself customers and professional repair shops. It operates stores across the United States, Mexico, Brazil and several other territories, and is headquartered in Memphis, Tennessee.",
-        "sector": 13
+        "sector": 13,
+        "website": "https://www.autozone.com"
       },
       "tokens": [
         {
@@ -33418,7 +33563,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Workday provides cloud-based software for managing finances, workforce and human resources, and student information. Its platforms help organizations handle payroll, accounting, planning and talent administration.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://www.workday.com"
       },
       "tokens": [
         {
@@ -33502,7 +33648,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Progressive is an insurance holding company that sells coverage for cars, motorcycles, recreational vehicles, boats, personal watercraft and commercial vehicles. It also offers home, life, pet and other policies through selected partner companies.",
-        "sector": 135
+        "sector": 135,
+        "website": "https://www.progressive.com"
       },
       "tokens": [
         {
@@ -33562,7 +33709,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "General Motors is an American automaker that designs, builds and sells cars, trucks and crossovers under the Chevrolet, Buick, GMC and Cadillac brands. It also runs a defense vehicles unit, the OnStar connected services business, the ACDelco parts brand and a financing arm, and holds stakes in Chinese vehicle ventures.",
-        "sector": 12
+        "sector": 12,
+        "website": "https://www.gm.com"
       },
       "tokens": [
         {
@@ -33803,7 +33951,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Pan American Silver is a Canada-based mining company that operates mines and develops projects across Latin America. It is among the largest silver producers globally and also produces gold, zinc, lead and copper.",
-        "sector": 205
+        "sector": 205,
+        "website": "https://panamericansilver.com"
       },
       "tokens": [
         {
@@ -33884,7 +34033,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Skyworks Solutions is a semiconductor company based in California that designs and supplies chips and related components used in wireless communication. Its products are used in devices such as smartphones and other connected equipment.",
-        "sector": 190
+        "sector": 190,
+        "website": "https://www.skyworksinc.com"
       },
       "tokens": [
         {
@@ -34123,7 +34273,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Extreme Networks builds wired and wireless networking equipment for organizations. It also develops software for managing networks, setting policies, running analytics, and handling security and access controls.",
-        "sector": 185
+        "sector": 185,
+        "website": "https://www.extremenetworks.com"
       },
       "tokens": [
         {
@@ -34282,7 +34433,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Harmonic is a technology company that builds video delivery and broadband access products. Its offerings help broadcasters, cable operators and other media providers produce, process and distribute video content to viewers over television and internet networks.",
-        "sector": 170
+        "sector": 170,
+        "website": "https://www.harmonicinc.com"
       },
       "tokens": [
         {
@@ -34315,7 +34467,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Charter Communications is a US telecommunications and media company that sells cable television, internet, phone and mobile services to homes and businesses under the Spectrum brand. It also offers internet security, managed services and unified communications.",
-        "sector": 2
+        "sector": 2,
+        "website": "https://www.spectrum.com"
       },
       "tokens": [
         {
@@ -34468,7 +34621,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Enbridge is a Calgary-based energy infrastructure company that owns and operates pipeline networks across Canada and the United States. It moves crude oil, natural gas and natural gas liquids, and also produces renewable power.",
-        "sector": 117
+        "sector": 117,
+        "website": "https://www.enbridge.com"
       },
       "tokens": [
         {
@@ -34510,7 +34664,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Guardant Health is a precision oncology company that develops blood-based tests used to detect and monitor cancer. Its diagnostic tools analyze genetic material in the blood to help guide cancer screening and treatment decisions.",
-        "sector": 139
+        "sector": 139,
+        "website": "https://guardanthealth.com"
       },
       "tokens": [
         {
@@ -34576,7 +34731,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "BlackSky Technology provides geospatial intelligence, delivering satellite imagery and analytics from a fleet of small satellites in low Earth orbit. It sells to government and commercial customers through image products and a software platform called Spectra.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://blacksky.com"
       },
       "tokens": [
         {
@@ -38346,7 +38502,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Simon Property Group is a real estate investment trust that owns and operates shopping malls, outlet centers and community or lifestyle centers across the United States. It leases retail space in these properties to a range of tenants and is based in Indianapolis.",
-        "sector": 211
+        "sector": 211,
+        "website": "https://www.simon.com"
       },
       "tokens": [
         {
@@ -38406,7 +38563,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Digital Realty is a real estate investment trust that owns and operates carrier-neutral data centers around the world. It provides data center space, colocation and interconnection services, and is working to shift its operations toward renewable power.",
-        "sector": 207
+        "sector": 207,
+        "website": "https://www.digitalrealty.com"
       },
       "tokens": [
         {
@@ -38466,7 +38624,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "TELUS is a Canadian telecommunications company offering internet access, mobile and landline voice, television, smart home automation and digital health services. It serves as the incumbent local phone carrier in British Columbia and Alberta and runs a wireless business under the Telus Mobility name.",
-        "sector": 7
+        "sector": 7,
+        "website": "https://www.telus.com/en"
       },
       "tokens": [
         {
@@ -38514,7 +38673,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Woori Financial Group is a Seoul-based holding company that oversees a group of banking and financial services businesses in South Korea. Through its subsidiaries it serves individual and corporate customers with a range of banking and related financial products.",
-        "sector": 122
+        "sector": 122,
+        "website": "https://www.woorifg.com/eng/main/index.do"
       },
       "tokens": [
         {
@@ -38538,7 +38698,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Dick's Sporting Goods operates a chain of retail stores selling sports equipment, apparel, and footwear across the United States. The company is headquartered near Pittsburgh, Pennsylvania, and was started by Richard \"Dick\" Stack.",
-        "sector": 29
+        "sector": 29,
+        "website": "https://www.dickssportinggoods.com"
       },
       "tokens": [
         {
@@ -38598,7 +38759,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "FedEx is a global transportation and logistics company that provides express and ground parcel delivery, freight forwarding, customs brokerage and supply-chain services. It also runs a retail business offering printing and shipping services, supported by a large network of aircraft and delivery vehicles.",
-        "sector": 152
+        "sector": 152,
+        "website": "https://www.fedex.com"
       },
       "tokens": [
         {
@@ -38760,7 +38922,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Brookfield Renewable Corporation is a Canada-based company that owns and operates renewable power generation assets, including hydroelectric facilities. It is affiliated with Brookfield Asset Management and its sister partnership, Brookfield Renewable Partners.",
-        "sector": 216
+        "sector": 216,
+        "website": "https://brookfieldrenewable.com"
       },
       "tokens": [
         {
@@ -38868,7 +39031,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "First Citizens BancShares is a bank holding company headquartered in Raleigh, North Carolina. Through its banking subsidiaries, including First Citizens Bank and the Silicon Valley Bank division, it provides retail and commercial banking services across many US states.",
-        "sector": 136
+        "sector": 136,
+        "website": "https://ir.firstcitizens.com"
       },
       "tokens": [
         {
@@ -39017,7 +39181,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Exelon is a Chicago-based holding company that owns regulated electric and natural gas utilities serving customers across several states in the Mid-Atlantic and Midwest. Its subsidiaries deliver power and gas to homes and businesses in areas including Illinois, Pennsylvania, Maryland, New Jersey, Delaware and Washington, DC.",
-        "sector": 214
+        "sector": 214,
+        "website": "https://www.exeloncorp.com"
       },
       "tokens": [
         {
@@ -39137,7 +39302,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GSK is a British pharmaceutical and biotechnology company headquartered in London that researches, develops and sells medicines and vaccines. Its portfolio includes treatments and vaccines used in areas such as infectious disease, and it helped develop the first malaria vaccine.",
-        "sector": 148
+        "sector": 148,
+        "website": "https://www.gsk.com"
       },
       "tokens": [
         {
@@ -39436,7 +39602,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Marriott International operates, franchises, and licenses a wide range of lodging brands covering hotels, residences, and timeshare properties. It runs a global network of properties from its headquarters in Maryland and grew out of the hospitality division of an earlier family-founded company.",
-        "sector": 21
+        "sector": 21,
+        "website": "https://www.marriott.com/default.mi"
       },
       "tokens": [
         {
@@ -39576,7 +39743,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Royal Caribbean Group is a cruise holding company that owns and operates several cruise brands offering vacation voyages worldwide. It also holds a joint venture stake in a European cruise operator.",
-        "sector": 22
+        "sector": 22,
+        "website": "https://www.royalcaribbeangroup.com"
       },
       "tokens": [
         {
@@ -39600,7 +39768,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Coca-Cola Consolidated is an independent bottler based in Charlotte, North Carolina, that produces, sells and distributes Coca-Cola products and other beverages. It serves customers across the southeastern, midwestern and mid-Atlantic regions of the United States through its manufacturing plants and distribution centers.",
-        "sector": 37
+        "sector": 37,
+        "website": "https://www.cokeconsolidated.com"
       },
       "tokens": [
         {
@@ -39786,7 +39955,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "GoDaddy is an internet company that registers domain names and provides web hosting. It serves small businesses and individuals who need an online presence.",
-        "sector": 184
+        "sector": 184,
+        "website": "https://www.godaddy.com"
       },
       "tokens": [
         {
@@ -39846,7 +40016,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Welltower is a real estate investment trust that owns and operates healthcare-related properties, including senior living communities, nursing facilities, and outpatient medical centers. Its portfolio is located across North America and the United Kingdom.",
-        "sector": 209
+        "sector": 209,
+        "website": "https://welltower.com"
       },
       "tokens": [
         {
@@ -39930,7 +40101,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Amer Sports owns a group of sporting goods and outdoor apparel brands, including Arc'teryx, Salomon, Wilson, Atomic and Peak Performance. It designs, makes and markets equipment and clothing for outdoor and athletic activities, and is controlled by the Chinese sportswear company Anta Sports.",
-        "sector": 24
+        "sector": 24,
+        "website": "https://www.amersports.com"
       },
       "tokens": [
         {
@@ -40098,7 +40270,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ulta Beauty operates a chain of retail stores selling cosmetics, fragrances, skincare, haircare, nail products and beauty tools across a range of price levels. Most of its stores also include a full-service salon.",
-        "sector": 29
+        "sector": 29,
+        "website": "https://www.ulta.com"
       },
       "tokens": [
         {
@@ -40158,7 +40331,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Bending Spoons is a Milan-based technology company that buys established digital products and runs them under long-term ownership. It rebuilds the acquired software using in-house engineering, artificial intelligence and proprietary tools, and works to grow revenue while cutting costs.",
-        "sector": 191
+        "sector": 191,
+        "website": "https://bendingspoons.com"
       },
       "tokens": [
         {
@@ -40353,7 +40527,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Vulcan Materials is a US producer and supplier of construction materials, mainly crushed stone, gravel and sand used in building and infrastructure. It operates quarries and distribution facilities across much of the United States and in Mexico, shipping some limestone by sea to Gulf coast ports.",
-        "sector": 196
+        "sector": 196,
+        "website": "https://www.vulcanmaterials.com"
       },
       "tokens": [
         {
@@ -40437,7 +40612,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "EOG Resources is an independent energy company that explores for, develops and produces crude oil, natural gas liquids and natural gas. Its operations are concentrated in major shale and unconventional basins across the United States, with additional activity internationally.",
-        "sector": 115
+        "sector": 115,
+        "website": "https://www.eogresources.com"
       },
       "tokens": [
         {
@@ -40497,7 +40673,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Textron is an industrial conglomerate that owns a group of operating businesses spanning general aviation aircraft, helicopters, aircraft engines, and automotive components. Its subsidiaries include Textron Aviation, Bell, Lycoming Engines, and Kautex.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://www.textron.com"
       },
       "tokens": [
         {
@@ -40761,7 +40938,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "3M is a diversified American manufacturer that makes a wide range of industrial, worker safety, and consumer products. Its offerings include adhesives, abrasives, protective equipment, films, and electronic materials, along with well-known consumer brands such as Scotch Tape and Post-it notes.",
-        "sector": 159
+        "sector": 159,
+        "website": "https://www.3m.com"
       },
       "tokens": [
         {
@@ -40820,7 +40998,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Kaspi.kz operates a digital platform in Kazakhstan that combines an online marketplace, banking and lending services, payment processing and travel booking. These services are delivered through a single consumer app and a group of subsidiaries.",
-        "sector": 124
+        "sector": 124,
+        "website": "https://kaspi.kz"
       },
       "tokens": [
         {
@@ -40844,7 +41023,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Woodside Energy Group is an Australian company that explores for and produces oil and natural gas. It operates oil and gas production in Australia and is headquartered in Perth, Western Australia.",
-        "sector": 116
+        "sector": 116,
+        "website": "https://www.woodside.com"
       },
       "tokens": [
         {
@@ -40928,7 +41108,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "American Tower is a real estate investment trust that owns, develops and operates wireless and broadcast communications infrastructure, such as towers, leasing space to wireless carriers and other tenants. Its sites are spread across multiple regions around the world, and the company is based in Boston, Massachusetts.",
-        "sector": 212
+        "sector": 212,
+        "website": "https://www.americantower.com"
       },
       "tokens": [
         {
@@ -40988,7 +41169,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Evercore is an independent investment banking advisory firm that counsels clients on mergers and acquisitions, divestitures, restructurings, financings and other strategic transactions. It also offers equity research, sales and trading to institutional investors, along with wealth management, asset management and private equity investing.",
-        "sector": 132
+        "sector": 132,
+        "website": "https://www.evercore.com"
       },
       "tokens": [
         {
@@ -41392,7 +41574,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Corebridge Financial is a US provider of retirement and protection products, including annuities, life insurance, and workplace retirement plans. It serves individuals, employers, and institutions through businesses covering individual retirement, life insurance, retirement services, and institutional markets.",
-        "sector": 133
+        "sector": 133,
+        "website": "https://www.corebridgefinancial.com"
       },
       "tokens": [
         {
@@ -41452,7 +41635,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ralph Lauren is an American fashion and lifestyle company that designs and sells apparel, accessories, home goods and fragrances under a range of brands, from mid-priced lines to luxury labels. It also licenses its name to partners that make products such as eyewear, fragrances, bedding and furniture.",
-        "sector": 9
+        "sector": 9,
+        "website": "https://www.ralphlauren.com"
       },
       "tokens": [
         {
@@ -41512,7 +41696,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Elevance Health is a US health insurer, formerly known as Anthem, that offers medical, pharmacy, dental, behavioral health, long-term care and disability coverage through affiliated plans such as Anthem Blue Cross and Blue Shield and Wellpoint. Its Carelon unit provides health services and shared business support.",
-        "sector": 146
+        "sector": 146,
+        "website": "https://www.elevancehealth.com"
       },
       "tokens": [
         {
@@ -41628,7 +41813,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Toast develops cloud-based software for restaurants, centered on an Android-based point-of-sale system that combines ordering, payments, and day-to-day restaurant operations in one platform. The company is headquartered in Boston, Massachusetts.",
-        "sector": 167
+        "sector": 167,
+        "website": "https://pos.toasttab.com"
       },
       "tokens": [
         {
@@ -41736,7 +41922,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "British American Tobacco is a London-headquartered multinational that makes and sells cigarettes, other tobacco products, and newer nicotine products such as vapes, heated tobacco, and nicotine pouches. It sells its brands in markets around the world, including Dunhill, Lucky Strike, Pall Mall, Vuse, Glo, and Velo.",
-        "sector": 38
+        "sector": 38,
+        "website": "https://bat.com"
       },
       "tokens": [
         {
@@ -41759,7 +41946,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Honeywell Aerospace is an American supplier of aircraft engines, avionics, auxiliary power units, navigation equipment, and life-support and environmental control systems. It also makes hydraulics, flight data recorders, and other aviation and space systems for commercial and military customers.",
-        "sector": 151
+        "sector": 151,
+        "website": "https://www.honeywellaerospace.com"
       },
       "tokens": [
         {
@@ -41783,7 +41971,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Affirm is a financial technology company that provides buy now, pay later installment loans to shoppers at checkout, through payment links, virtual or physical cards, and digital wallets. It earns money from fees paid by merchants and interest paid by borrowers, and also offers a savings account and a debit card.",
-        "sector": 124
+        "sector": 124,
+        "website": "https://www.affirm.com"
       },
       "tokens": [
         {
@@ -41954,7 +42143,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Fastenal distributes industrial and construction supplies, with a particular focus on fasteners. It also offers supply chain services such as vending machines, bin stock programs, inventory management and logistics support to its customers.",
-        "sector": 165
+        "sector": 165,
+        "website": "https://www.fastenal.com"
       },
       "tokens": [
         {
@@ -42203,7 +42393,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ross Stores is an American off-price retailer that runs discount department stores under the Ross Dress for Less name, selling apparel, footwear and home goods at reduced prices. It also operates a second discount chain, DD's Discounts, with locations concentrated in warmer southern states.",
-        "sector": 26
+        "sector": 26,
+        "website": "https://www.rossstores.com"
       },
       "tokens": [
         {
@@ -42263,7 +42454,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Ferguson Enterprises distributes plumbing, heating, ventilation and air conditioning equipment, appliances, lighting, pipes, valves and fittings, and water and wastewater products. It serves customers mainly in the United States, with a smaller presence in Canada, through a network of branches and distribution centers.",
-        "sector": 165
+        "sector": 165,
+        "website": "https://www.ferguson.com"
       },
       "tokens": [
         {
@@ -42323,7 +42515,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Humana is a health insurance company headquartered in Louisville, Kentucky. It offers health coverage plans to individuals and families across the United States.",
-        "sector": 146
+        "sector": 146,
+        "website": "https://www.humana.com"
       },
       "tokens": [
         {
@@ -42383,7 +42576,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Wabtec is a Pittsburgh-based rail equipment company that makes components and systems for locomotives, freight cars and passenger transit vehicles. It also builds new locomotives and serves rail operators and transit agencies.",
-        "sector": 164
+        "sector": 164,
+        "website": "https://www.wabteccorp.com"
       },
       "tokens": [
         {
@@ -42443,7 +42637,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "CF Industries manufactures and distributes nitrogen-based fertilizers, including ammonia, urea, and ammonium nitrate, for agricultural use. The company is headquartered near Chicago and began as a federation of farm supply cooperatives before becoming a publicly traded business.",
-        "sector": 198
+        "sector": 198,
+        "website": "https://www.cfindustries.com"
       },
       "tokens": [
         {
@@ -42563,7 +42758,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Crown Castle is a real estate investment trust that owns, operates and leases shared communications infrastructure across the United States, chiefly cell towers. Wireless carriers use these sites to deliver mobile data and voice service to cities and communities.",
-        "sector": 213
+        "sector": 213,
+        "website": "https://www.crowncastle.com"
       },
       "tokens": [
         {
@@ -42743,7 +42939,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Motorola Solutions develops communication and safety technology for public safety agencies and businesses. Its products include two-way radio systems, video security cameras with analytics, and command center software, supported by managed services.",
-        "sector": 170
+        "sector": 170,
+        "website": "https://www.motorolasolutions.com"
       },
       "tokens": [
         {
@@ -42803,7 +43000,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Aflac is an American insurance holding company, based in Georgia, that specializes in supplemental insurance. Its policies, often sold through payroll deduction, pay cash benefits to policyholders who face a covered accident or illness, and it operates in both the United States and Japan.",
-        "sector": 133
+        "sector": 133,
+        "website": "https://www.aflac.com"
       },
       "tokens": [
         {
@@ -42923,7 +43121,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "Sysco distributes food products, supplies, and equipment to restaurants, healthcare and educational facilities, stadiums, and other venues that serve meals. It operates a large network of distribution centers and is headquartered in Houston, Texas.",
-        "sector": 33
+        "sector": 33,
+        "website": "https://www.sysco.com"
       },
       "tokens": [
         {
@@ -43007,7 +43206,8 @@
       "allowedTradingTime": 0,
       "profile": {
         "description": "A German healthcare company that provides kidney dialysis treatment through a large network of outpatient clinics and manufactures dialysis equipment and related products. It mainly serves patients with end-stage renal disease who need ongoing, lifelong dialysis care.",
-        "sector": 143
+        "sector": 143,
+        "website": "https://fmcna.com"
       },
       "tokens": [
         {
