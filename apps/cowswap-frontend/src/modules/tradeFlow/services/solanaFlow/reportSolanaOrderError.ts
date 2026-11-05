@@ -18,12 +18,14 @@ export interface ReportSolanaOrderErrorParams {
   chainId: SupportedChainId
   orderClass: OrderClass
   phase: SolanaOrderPhase
-  /**
-   * Which Solana order attempt this is since the page loaded, counting from 1 and counting the ones
-   * that succeeded. The failure has been reported as sticking until a reload, so a failure on a late
-   * attempt is what separates a client that has stopped being able to trade from a one-off.
-   */
+  /** Which Solana order attempt this is since the page loaded, counting from 1. */
   attempt: number
+  /**
+   * Whether an attempt has already failed unexpectedly since the page loaded, with no success since.
+   * The failure has been reported as sticking until a reload, so this is what separates a client that
+   * has stopped being able to trade from a one-off.
+   */
+  followsFailure: boolean
   isSponsored: boolean
   isRejection: boolean
   isWindowExpiryFailure: boolean
@@ -81,6 +83,9 @@ export function isSolanaOrderSubmitted(phase: SolanaOrderPhase): boolean {
  *
  * A declined prompt and a countdown that ran out are both the flow working as designed, so neither
  * is reported — at trading volume they would swamp any threshold set on this scope.
+ *
+ * @returns whether the failure was unexpected enough to report, which is also what makes it count as
+ * the client having been unable to trade.
  */
 export function reportSolanaOrderError({
   error,
@@ -88,14 +93,15 @@ export function reportSolanaOrderError({
   orderClass,
   phase,
   attempt,
+  followsFailure,
   isSponsored,
   isRejection,
   isWindowExpiryFailure,
   swapErrorMessage,
-}: ReportSolanaOrderErrorParams): void {
+}: ReportSolanaOrderErrorParams): boolean {
   const reason = classifySolanaOrderError({ error, isRejection, isWindowExpiryFailure })
 
-  if (EXPECTED_REASONS.has(reason)) return
+  if (EXPECTED_REASONS.has(reason)) return false
 
   const logs = getSolanaErrorLogs(error)
   const chain = describeErrorChain(error)
@@ -117,8 +123,10 @@ export function reportSolanaOrderError({
       swapErrorMessage,
       message: error.message,
       // A wallet that throws a bare "Unexpected error" leaves the chain of classes and the extra
-      // properties it hung on them as the only description of what actually happened.
-      errorChain: chain,
+      // properties it hung on them as the only description of what actually happened. Flattened to
+      // strings because Sentry normalizes contexts to a depth of 3 by default, which would replace
+      // every entry object in this array with "[Object]".
+      errorChain: chain.map(formatErrorChainEntry),
       errorKeys: getOwnKeys(error),
       ...(logs ? { logs } : undefined),
       // Never reaches the order book on a mismatch, so this is the only record of what failed to hash.
@@ -132,10 +140,12 @@ export function reportSolanaOrderError({
       sponsored: String(isSponsored),
       submissionStarted: String(isSolanaOrderSubmitted(phase)),
       errorName: chain[0]?.name ?? 'Unknown',
-      firstAttempt: String(attempt === 1),
+      followsFailure: String(followsFailure),
     },
     [SOLANA_ORDER_SENTRY_SCOPE, reason],
   )
+
+  return true
 }
 
 function classifySolanaOrderError({
@@ -169,6 +179,10 @@ function describeErrorChain(error: unknown, depth = 0): SolanaErrorChainEntry[] 
   }
 
   return 'cause' in error ? [entry, ...describeErrorChain(error.cause, depth + 1)] : [entry]
+}
+
+function formatErrorChainEntry({ name, message, code }: SolanaErrorChainEntry): string {
+  return `${name}${code === undefined ? '' : ` [${code}]`}: ${message}`
 }
 
 // `message`, `name` and `stack` are not enumerable on a real Error, so what is left is whatever the

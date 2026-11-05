@@ -20,13 +20,14 @@ function lastCall(): [Error, ERROR_TYPES, Record<string, unknown>, Record<string
   return captureErrorMock.mock.calls[0]
 }
 
-function report(params: Partial<ReportSolanaOrderErrorParams> = {}): void {
-  reportSolanaOrderError({
+function report(params: Partial<ReportSolanaOrderErrorParams> = {}): boolean {
+  return reportSolanaOrderError({
     error: new Error('Something went wrong'),
     chainId: SupportedChainId.SOLANA,
     orderClass: OrderClass.MARKET,
     phase: 'sign',
     attempt: 1,
+    followsFailure: false,
     isSponsored: false,
     isRejection: false,
     isWindowExpiryFailure: false,
@@ -71,14 +72,12 @@ describe('reportSolanaOrderError', () => {
   })
 
   it('does not report a rejected wallet prompt', () => {
-    report({ isRejection: true })
-
+    expect(report({ isRejection: true })).toBe(false)
     expect(captureErrorMock).not.toHaveBeenCalled()
   })
 
   it('does not report a signing window that ran out', () => {
-    report({ isWindowExpiryFailure: true })
-
+    expect(report({ isWindowExpiryFailure: true })).toBe(false)
     expect(captureErrorMock).not.toHaveBeenCalled()
   })
 
@@ -146,9 +145,11 @@ describe('reportSolanaOrderError', () => {
 
     const [, , params, tags] = lastCall()
     expect(tags.errorName).toBe('WalletSendTransactionError')
+    // Strings, not objects: Sentry's default context normalization would flatten objects this deep
+    // into "[Object]".
     expect(params.errorChain).toEqual([
-      { name: 'WalletSendTransactionError', message: 'Unexpected error' },
-      { name: 'WalletSignTransactionError', message: '', code: 4900 },
+      'WalletSendTransactionError: Unexpected error',
+      'WalletSignTransactionError [4900]: ',
     ])
     expect(params.errorKeys).toEqual(expect.arrayContaining(['name', 'cause']))
   })
@@ -161,17 +162,17 @@ describe('reportSolanaOrderError', () => {
     expect((lastCall()[2].errorChain as unknown[]).length).toBeLessThanOrEqual(5)
   })
 
-  it('separates a late attempt, which is the signal that the client is stuck', () => {
-    report({ attempt: 3 })
+  it('separates a failure after an earlier one, which is the signal that the client is stuck', () => {
+    report({ attempt: 3, followsFailure: true })
 
     const [, , params, tags] = lastCall()
     expect(params.attempt).toBe(3)
-    expect(tags.firstAttempt).toBe('false')
+    expect(tags.followsFailure).toBe('true')
   })
 
-  it('marks the first attempt of the page session', () => {
-    report({ attempt: 1 })
+  it('does not treat a late attempt as stuck on its own', () => {
+    report({ attempt: 3, followsFailure: false })
 
-    expect(lastCall()[3].firstAttempt).toBe('true')
+    expect(lastCall()[3].followsFailure).toBe('false')
   })
 })

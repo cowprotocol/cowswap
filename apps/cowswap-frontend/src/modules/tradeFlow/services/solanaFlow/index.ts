@@ -57,6 +57,11 @@ import { SolanaTradeFlowContext } from '../../types/TradeFlowContext'
 // newest run may touch the confirm-screen state, and every stale one goes silent.
 let latestAttemptId = 0
 
+// Set by an unexpected failure and cleared by a success, so it answers "has this client already been
+// unable to trade since the page loaded?" — the reported shape of FE-1003, where the only way out is
+// a reload. A declined prompt or an expired window never sets it: neither means the client is stuck.
+let hasFailedAttempt = false
+
 export interface SolanaFlowOptions {
   isSponsored?: boolean
   /** LaunchDarkly `isAtaCreationDisabled`: the driver creates the buy token account at settle instead. */
@@ -92,6 +97,7 @@ export async function solanaFlow(
 
   logTradeFlow('SOLANA FLOW', 'STEP 1: sign and send wrap, delegate, buy-ATA and create-order in one transaction')
   const attemptId = ++latestAttemptId
+  const followsFailure = hasFailedAttempt
   // A previous attempt can hang forever on an unanswered wallet prompt, which leaves its (expired)
   // deadline behind — without this reset the new attempt opens straight onto a 00:00 countdown.
   jotaiStore.set(solanaSigningDeadlineAtom, null)
@@ -100,6 +106,12 @@ export async function solanaFlow(
   jotaiStore.set(solanaOrderNotPlacedAtom, null)
   tradeConfirmActions.onSign(tradeAmounts)
   analytics.trade(tradeFlowAnalyticsContext)
+
+  // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
+  // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
+  // owner paying — the only thing it can do there. Declared out here because the error handling
+  // reports which path was actually taken, not which one was asked for.
+  const sponsor = isSponsored ? solanaQuote.funder : undefined
 
   // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
   // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only
@@ -117,15 +129,10 @@ export async function solanaFlow(
       orderClass === OrderClass.LIMIT ? receiver : (tradeQuote.quoteResults.tradeParameters.receiver ?? receiver),
     )
 
-    // The funder comes from the quote, never pinned here: the back end rotates it, and a stale address
-    // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
-    // owner paying — the only thing it can do there.
-    //
     // A sponsored order covers the fees and rents the accounts the order itself needs. The WSOL
     // account a native sell opens is not one of them: it is the owner's own account, and closing it
     // returns the rent to the owner, so a sponsor-funded one would be a standing withdrawal from the
     // sponsor. Both the wrap's rent and its transfer therefore stay the owner's.
-    const sponsor = isSponsored ? solanaQuote.funder : undefined
     const buyAtaRentPayer = sponsor ?? owner
 
     const {
@@ -178,6 +185,10 @@ export async function solanaFlow(
       // A retry started while the upload was in flight owns the flow now: going on would open a second
       // wallet prompt for this stale order.
       if (attemptId !== latestAttemptId) return
+
+      // The upload is done; the remaining steps are planning again, and a failure in them is not an
+      // appData failure.
+      phase = 'plan'
     }
 
     // Wrap only applies to a native SOL sell and delegate only when the existing delegation is short —
@@ -262,13 +273,19 @@ export async function solanaFlow(
     analytics.sign(tradeFlowAnalyticsContext)
     callbacks.closeModals()
 
+    if (attemptId === latestAttemptId) {
+      hasFailedAttempt = false
+    }
+
     return true
   } catch (err: unknown) {
     const error = normalizeError(err)
     logTradeFlow('SOLANA FLOW', 'STEP 3: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error, chainId)
     const isRejection = swapErrorMessage === USER_SWAP_REJECTED_ERROR
-    const isSigningWindowClosed = jotaiStore.get(solanaSigningAbandonedAtom)
+    // The atom is shared and reset per attempt, so a stale run would read whatever the attempt that
+    // replaced it left there and have its own failure filed as an expired window.
+    const isSigningWindowClosed = attemptId === latestAttemptId && jotaiStore.get(solanaSigningAbandonedAtom)
 
     // Three ways to learn the same thing — the blockhash died before the order was placed. The
     // countdown catches it locally, and the order book catches the rest: the hand-over above is
@@ -281,18 +298,23 @@ export async function solanaFlow(
       isBlockhashExpiredError(error) ||
       (isSigningWindowClosed && !isSolanaOrderSubmitted(phase))
 
-    reportSolanaOrderError({
+    const wasReported = reportSolanaOrderError({
       error,
       chainId,
       orderClass,
       phase,
       attempt: attemptId,
-      isSponsored,
+      followsFailure,
+      isSponsored: sponsor !== undefined,
       isRejection,
       isWindowExpiryFailure,
       swapErrorMessage,
     })
     analytics.error(error, swapErrorMessage, tradeFlowAnalyticsContext)
+
+    if (wasReported && attemptId === latestAttemptId) {
+      hasFailedAttempt = true
+    }
 
     // The user retried while this attempt's prompt was still open: its screen belongs to the newer
     // run now, and a stale failure must not repaint it.
