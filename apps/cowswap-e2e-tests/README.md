@@ -12,6 +12,10 @@ maps to its spec file (`CS`/`MO` → `market-orders.spec.ts`, `CC` → `cross-ch
 `LO` → `limit-orders.spec.ts`, `NW` → `network.spec.ts`). `@smoke`-tagged tests are the PR-gating
 subset; everything runs on the nightly job.
 
+`RWA`-prefixed tests are the exception: they live in `src/rwa/` and test `apps/rwa-frontend` through
+`playwright.rwa.config.ts`, with no wallet or env vars. Run them with `pnpm e2e:rwa`. In CI,
+`e2e-pw-rwa.yml` runs them on PRs that touch the RWA app or these tests, not `@smoke` or nightly.
+
 ## Prerequisites
 
 - Node 22 (LTS, matches the repo).
@@ -228,6 +232,7 @@ second install point in `src/mockWallet/walletEngine.ts` reusing `codec.ts`.
 | `pnpm e2e` | Full suite — every spec in `src/tests/` (31 tests across 4 files as of this writing; run `pnpm exec playwright test --list` for the current count) |
 | `pnpm e2e:smoke` | PR smoke subset — `--grep @smoke` |
 | `pnpm e2e:ui` | Playwright UI mode for interactive debugging |
+| `pnpm e2e:rwa` | RWA app specs in `src/rwa/`, on port 3002: `pnpm start:rwa` locally, a production build in CI |
 | `npx nx test cowswap-e2e-tests` | Unit tests for the mocks and support code (`node:test` via tsx) |
 | `pnpm e2e:record-mocks` | Re-record the CoW Protocol API response fixtures from the live barn API |
 
