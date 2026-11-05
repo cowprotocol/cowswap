@@ -25,7 +25,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   }, [buyAmount, bridgeFee])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
-  const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
+  const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
   const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceiveAmount)
   const { value: bridgeMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
 
