@@ -23,6 +23,7 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import {
   estimateSolanaSigningDeadline,
   getIsBuyAtaCreationSkipped,
+  getIsSolanaSmartContractWallet,
   getSigningWindowClosedError,
   planCreateBuyAtaStep,
   planCreateLimitOrderStep,
@@ -111,7 +112,11 @@ export async function solanaFlow(
   // is rejected as `WrongFeePayer`. A deployment without sponsoring reports none, which leaves the
   // owner paying — the only thing it can do there. Declared out here because the error handling
   // reports which path was actually taken, not which one was asked for.
-  const sponsor = isSponsored ? solanaQuote.funder : undefined
+  //
+  // A program-owned wallet is placed self-paid instead: sponsored placement needs the funder as fee
+  // payer and `CreateOrder` top-level, while a vault signs only from inside `VaultTransactionExecute`,
+  // so the order book rejects such a bundle as `WrongFeePayer`.
+  const sponsor = isSponsored && !getIsSolanaSmartContractWallet(solana.owner) ? solanaQuote.funder : undefined
 
   // Advanced as the flow moves, so a failure can say where it happened: wallets routinely throw a
   // bare "Unexpected error" with no message, no code and no logs, and then the phase is the only

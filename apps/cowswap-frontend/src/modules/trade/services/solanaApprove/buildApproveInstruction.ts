@@ -1,9 +1,5 @@
-import {
-  createApproveInstruction,
-  getAssociatedTokenAddressSync,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from '@solana/spl-token'
+import { createApproveInstruction, TOKEN_2022_PROGRAM_ID, TOKEN_PROGRAM_ID } from '@solana/spl-token'
+import { deriveSolanaAta } from 'tradingSdk/solana/deriveSolanaAta'
 
 import type { PublicKey, TransactionInstruction } from '@solana/web3.js'
 
@@ -34,7 +30,7 @@ export function buildApproveInstruction({
   amount,
 }: BuildApproveInstructionParams): TransactionInstruction {
   const programId = isToken2022 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID
-  const associatedTokenAccount = getAssociatedTokenAddressSync(mint, owner, false, programId)
+  const associatedTokenAccount = deriveSolanaAta(mint, owner, programId)
 
   return createApproveInstruction(associatedTokenAccount, delegate, owner, amount, [], programId)
 }

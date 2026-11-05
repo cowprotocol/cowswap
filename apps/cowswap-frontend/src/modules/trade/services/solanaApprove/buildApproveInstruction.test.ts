@@ -34,14 +34,14 @@ describe('buildApproveInstruction', () => {
   it('derives the ATA and approves via the classic token program for a non-Token-2022 mint', () => {
     build(false)
 
-    expect(mockGetAta).toHaveBeenCalledWith(MINT, OWNER, false, 'TOKEN_PROGRAM_ID')
+    expect(mockGetAta).toHaveBeenCalledWith(MINT, OWNER, true, 'TOKEN_PROGRAM_ID')
     expect(mockCreateApprove).toHaveBeenCalledWith('ATA', DELEGATE, OWNER, MAX, [], 'TOKEN_PROGRAM_ID')
   })
 
   it('uses the Token-2022 program for a Token-2022 mint', () => {
     build(true, 123n)
 
-    expect(mockGetAta).toHaveBeenCalledWith(MINT, OWNER, false, 'TOKEN_2022_PROGRAM_ID')
+    expect(mockGetAta).toHaveBeenCalledWith(MINT, OWNER, true, 'TOKEN_2022_PROGRAM_ID')
     expect(mockCreateApprove).toHaveBeenCalledWith('ATA', DELEGATE, OWNER, 123n, [], 'TOKEN_2022_PROGRAM_ID')
   })
 

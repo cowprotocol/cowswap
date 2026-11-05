@@ -17,6 +17,7 @@ export {
 } from './state/alternativeOrder/hooks'
 export * from './utils/getCrossChainReceiveAmountInfo'
 export * from './utils/getIsNativeSellUnsupported'
+export * from './utils/getIsSolanaSmartContractWallet'
 export * from './utils/getTotalCosts'
 export * from './utils/reportsFeeInSellToken'
 export * from './utils/getOrderTypeReceiveAmounts'

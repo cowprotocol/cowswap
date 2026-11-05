@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { i18n, MessageDescriptor } from '@lingui/core'
@@ -16,10 +17,12 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
+import { orderFailureReasonsAtom } from 'modules/orders'
 import { WatchAssetInWallet } from 'modules/wallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CancelButton } from 'common/pure/CancelButton'
+import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
@@ -64,6 +67,7 @@ export function TransactionSubmittedContent({
   successTitle,
 }: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
+  const failureReason = useAtomValue(orderFailureReasonsAtom)[order?.id ?? '']
   const { isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
@@ -87,6 +91,18 @@ export function TransactionSubmittedContent({
       navigateToNewOrder={navigateToNewOrderCallback?.(chainId, order, onDismiss)}
     />
   )
+
+  // The members rejected the proposal, so no order exists and none is coming. That is an outcome, not a
+  // step in the progress bar — show it the way a wallet rejection is shown, rather than leaving the
+  // confirmation sitting on a progress UI for something that will never happen.
+  if (failureReason === 'multisig-rejected') {
+    return (
+      <TransactionErrorContent
+        message={t`Your multisig rejected this order, so it was not placed.`}
+        onDismiss={onDismiss}
+      />
+    )
+  }
 
   if (isFinishedProgressStep && showProgressBar && order) {
     return (
