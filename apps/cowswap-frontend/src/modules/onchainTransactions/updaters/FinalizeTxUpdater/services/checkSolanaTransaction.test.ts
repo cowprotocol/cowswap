@@ -519,6 +519,69 @@ describe('checkSolanaTransaction', () => {
 })
 
 describe('checkSolanaTransaction with a multisig owner', () => {
+  const CANCEL_ORDER_ID = '0x' + 'ef'.repeat(32)
+
+  function buildMultisigCancellation(hash: string): EnhancedTransactionDetails {
+    return {
+      ...createTransaction(),
+      hash,
+      transactionHash: hash,
+      from: VAULT,
+      solanaCancelOrderIds: [CANCEL_ORDER_ID],
+    } as EnhancedTransactionDetails
+  }
+
+  // The dangerous direction: telling the user an order is cancelled while the members have not voted
+  // leaves a live, fillable order behind a "Cancelled" label.
+  it('does not cancel orders while the cancellation proposal is still awaiting votes', async () => {
+    const { params, cancelOrdersBatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalOutcome: 'unresolved',
+    })
+
+    checkSolanaTransaction(buildMultisigCancellation('pending-cancel-signature'), params)
+
+    await new Promise((resolve) => setTimeout(resolve, 50))
+
+    expect(cancelOrdersBatch).not.toHaveBeenCalled()
+  })
+
+  it('cancels the orders once the cancellation proposal is executed', async () => {
+    const { params, cancelOrdersBatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalOutcome: 'executed',
+    })
+    ;(orderBookApi.getOrderMultiEnv as jest.Mock).mockResolvedValue({
+      uid: CANCEL_ORDER_ID,
+      kind: 'sell',
+      sellAmount: '100',
+      buyAmount: '200',
+      executedSellAmount: '0',
+      executedBuyAmount: '0',
+      executedSellAmountBeforeFees: '0',
+    })
+
+    checkSolanaTransaction(buildMultisigCancellation('executed-cancel-signature'), params)
+
+    await waitFor(() => expect(cancelOrdersBatch).toHaveBeenCalled())
+  })
+
+  it('releases the orders and says why when the cancellation proposal is rejected', async () => {
+    const { params, cancelOrdersBatch } = createParams({
+      status: { slot: 42, confirmations: 1, err: null, confirmationStatus: 'confirmed' },
+      proposalOutcome: 'failed',
+    })
+
+    checkSolanaTransaction(buildMultisigCancellation('rejected-cancel-signature'), params)
+
+    await waitFor(() =>
+      expect(emitOnchainTransactionEvent).toHaveBeenCalledWith(
+        expect.objectContaining({ summary: 'Cancellation rejected in your multisig' }),
+      ),
+    )
+    expect(cancelOrdersBatch).not.toHaveBeenCalled()
+  })
+
   // The signature leaves the node's recent status cache after ~150 slots, so within a minute or two of
   // every send this is the path that runs. Returning success here retired the transaction before any
   // vote could be cast, which left the order creating forever however the members later voted.

@@ -79,15 +79,7 @@ export function checkSolanaTransaction(
     }
 
     if (transaction.solanaCancelOrderIds) {
-      const orderIds = transaction.solanaCancelOrderIds
-
-      if (status === 'success') {
-        orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, hash))
-      } else {
-        orderIds.forEach((orderId) => clearCancellingState(orderId, params))
-        const ordersCount = orderIds.length
-        emitTransactionFailedEvent(transaction, hash, slot, t`Failed to cancel ${ordersCount} orders`)
-      }
+      finalizeBatchCancellation(transaction.solanaCancelOrderIds, { transaction, params, slot, status, reason })
 
       return
     }
@@ -269,6 +261,46 @@ function failCreatedOrder(
     transaction.hash,
     slot,
     reason === 'multisig-rejected' ? t`Order rejected in your multisig` : t`Failed to place order`,
+  )
+}
+
+/**
+ * A batch cancellation reports per order: each one either goes to cancelled, or is released back to open
+ * with a single snackbar explaining why — never silently left mid-cancellation.
+ */
+function finalizeBatchCancellation(
+  orderIds: string[],
+  {
+    transaction,
+    params,
+    slot,
+    status,
+    reason,
+  }: {
+    transaction: EnhancedTransactionDetails
+    params: CheckEthereumTransactions
+    slot: number
+    status: 'success' | 'reverted'
+    reason?: SolanaRevertReason
+  },
+): void {
+  if (status === 'success') {
+    orderIds.forEach((orderId) => void finalizeSuccessfulCancellation(orderId, params, transaction.hash))
+
+    return
+  }
+
+  orderIds.forEach((orderId) => clearCancellingState(orderId, params))
+
+  const ordersCount = orderIds.length
+
+  emitTransactionFailedEvent(
+    transaction,
+    transaction.hash,
+    slot,
+    reason === 'multisig-rejected'
+      ? t`Cancellation rejected in your multisig`
+      : t`Failed to cancel ${ordersCount} orders`,
   )
 }
 

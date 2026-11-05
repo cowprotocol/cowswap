@@ -17,7 +17,7 @@ export type SolanaStatusResult =
 /**
  * What a confirmed signature actually means for the order it was supposed to place.
  *
- * For an ordinary wallet it means the order was placed. A multisig does not broadcast the transaction
+ * For an ordinary wallet it means the order was placed, or cancelled. A multisig does not broadcast the transaction
  * it is handed: it files the instructions as a proposal for its members to vote on, and the signature
  * identifies that filing, which confirms whether or not the proposal is ever executed. Taking it at
  * face value marks the transaction done while no order exists and none is coming, leaving the order
@@ -29,7 +29,7 @@ export async function resolveConfirmedSolanaStatus(
   transaction: EnhancedTransactionDetails,
   slot: number,
 ): Promise<SolanaStatusResult> {
-  if (!getIsMultisigOrderCreation(transaction)) return { type: 'success', slot }
+  if (!getIsMultisigFiling(transaction)) return { type: 'success', slot }
 
   const outcome = await getSquadsProposalOutcome(connection, signature)
 
@@ -38,6 +38,16 @@ export async function resolveConfirmedSolanaStatus(
   return outcome === 'executed' ? { type: 'success', slot } : { type: 'pending' }
 }
 
-function getIsMultisigOrderCreation(transaction: EnhancedTransactionDetails): boolean {
-  return Boolean(transaction.solanaOrderCreation) && getIsSolanaSmartContractWallet(transaction.from)
+/**
+ * Only transactions whose outcome decides an order's fate. Those have to be signed by the vault, so a
+ * multisig can only file them as proposals — which is what makes waiting for the proposal correct.
+ * A wrap or an approval is left alone: a spending limit can execute one directly, with no proposal to
+ * wait for, and this would hold it pending forever.
+ */
+function getIsMultisigFiling(transaction: EnhancedTransactionDetails): boolean {
+  const decidesAnOrder = Boolean(
+    transaction.solanaOrderCreation || transaction.solanaCancelOrderIds || transaction.onChainCancellation,
+  )
+
+  return decidesAnOrder && getIsSolanaSmartContractWallet(transaction.from)
 }
