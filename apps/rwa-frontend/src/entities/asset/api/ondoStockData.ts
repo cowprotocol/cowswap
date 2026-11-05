@@ -50,12 +50,15 @@ export const ondoStockDataProvider: StockDataProvider = {
 
     const [snapshot, dayCandles] = await Promise.all([
       fetchOndoUnderlyingMarket(symbol, MARKET_REVALIDATE_SECONDS),
-      fetchOndoUnderlyingCandles(symbol, DAY_PERIOD, MARKET_REVALIDATE_SECONDS).catch((err: unknown) => {
-        const error = normalizeError(err)
-        console.warn(`[rwa] Ondo ${symbol} day candles failed, the stock market has no 24h stats`, error)
+      fetchOndoUnderlyingCandles(symbol, DAY_PERIOD, MARKET_REVALIDATE_SECONDS).then(
+        (candles) => ({ candles }),
+        (err: unknown) => {
+          const error = normalizeError(err)
+          console.warn(`[rwa] Ondo ${symbol} day candles failed, the stock market has no 24h stats`, error)
 
-        return null
-      }),
+          return null
+        },
+      ),
     ])
     const price = toNumber(snapshot?.underlyingMarket.price)
 
@@ -64,14 +67,17 @@ export const ondoStockDataProvider: StockDataProvider = {
     const { underlyingMarket } = snapshot
 
     return {
-      price,
-      ...getDayStats(price, toCandles(dayCandles ?? [])),
-      yearLow: toNumber(underlyingMarket.priceLow52w),
-      yearHigh: toNumber(underlyingMarket.priceHigh52w),
-      marketCap: toNumber(underlyingMarket.marketCap),
-      volume24h: toUsdVolume(toNumber(underlyingMarket.volume), price),
-      updatedAt: new Date(snapshot.timestamp).toISOString(),
-      provider: 'Ondo',
+      market: {
+        price,
+        ...getDayStats(price, toCandles(dayCandles?.candles ?? [])),
+        yearLow: toNumber(underlyingMarket.priceLow52w),
+        yearHigh: toNumber(underlyingMarket.priceHigh52w),
+        marketCap: toNumber(underlyingMarket.marketCap),
+        volume24h: toUsdVolume(toNumber(underlyingMarket.volume), price),
+        updatedAt: new Date(snapshot.timestamp).toISOString(),
+        provider: 'Ondo',
+      },
+      degraded: dayCandles === null,
     }
   },
 
@@ -130,7 +136,8 @@ function toCandles(candles: OndoCandle[]): RwaCandle[] {
     const low = toNumber(prices.low)
     const close = toNumber(prices.close)
 
-    if (open === null || high === null || low === null || close === null || low <= 0) return []
+    if (open === null || high === null || low === null || close === null) return []
+    if (Math.min(open, high, low, close) <= 0) return []
 
     return [{ time: Math.floor(timestamp / 1000), open, high, low, close }]
   })

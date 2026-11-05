@@ -37,7 +37,8 @@ export function createCachedJsonFetcher(cacheKey: string[], request: JsonRequest
           body: await request(cacheUrl, cacheAllowNotFound),
           fetchedAt: Date.now(),
         }),
-        cacheKey,
+        // Next keys an entry by `keyParts`, arguments and function text, not by `revalidate`
+        [...cacheKey, `revalidate:${revalidate}`],
         { revalidate },
       )
       cachedRequests.set(revalidate, load)

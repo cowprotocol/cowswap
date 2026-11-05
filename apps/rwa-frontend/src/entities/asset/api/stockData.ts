@@ -7,11 +7,17 @@ import type { RwaAsset, RwaCandle, RwaChartPoint, RwaChartRange, RwaStockMarket 
 /** Stock market data of the share behind an asset. Every method resolves to `null` when the provider has no data */
 export interface StockDataProvider {
   name: string
-  getMarket(asset: RwaAsset): Promise<RwaStockMarket | null>
+  getMarket(asset: RwaAsset): Promise<StockMarketResult | null>
   /** USD per share, oldest first */
   getChart(asset: RwaAsset, range: RwaChartRange): Promise<RwaChartPoint[] | null>
   /** USD per share, oldest first */
   getCandles(asset: RwaAsset, range: RwaChartRange): Promise<RwaCandle[] | null>
+}
+
+export interface StockMarketResult {
+  market: RwaStockMarket
+  /** Part of the market failed to load, e.g. the 24h stats */
+  degraded: boolean
 }
 
 /**

@@ -22,6 +22,8 @@
   --color-star: #e8a317;
   --color-footer: #23191a;
   --color-footer-text: #827474;
+  --color-backdrop: rgba(0, 35, 78, 0.4);
+  --color-backdrop-on-canvas: #8e9fb4;
   --shadow-subtle: 0 1px 2px rgba(0, 35, 78, 0.04), 0 2px 6px rgba(0, 35, 78, 0.03);
   --shadow-pill: 0 1px 2px rgba(0, 35, 78, 0.05);
   --shadow-widget: 0 12px 12px rgba(5, 43, 101, 0.06);
@@ -57,6 +59,8 @@
   --color-warning-bg: #3b2e05;
   --color-warning-text: #ffd978;
   --color-star: #ffc24b;
+  --color-backdrop: rgba(0, 0, 0, 0.425);
+  --color-backdrop-on-canvas: #08091a;
   --shadow-subtle: none;
   --shadow-pill: none;
   --shadow-widget: none;
@@ -121,4 +125,10 @@ a {
   max-width: calc(var(--content-width) + 32px);
   margin: 0 auto;
   padding: 0 16px;
+}
+
+@media (max-width: 500px) {
+  .page {
+    padding: 0 6px;
+  }
 }

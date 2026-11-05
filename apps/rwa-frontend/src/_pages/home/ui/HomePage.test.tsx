@@ -120,6 +120,19 @@ function renderHomePage(): RenderResult {
 }
 
 describe('HomePage', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: false,
+        media: query,
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+      }),
+    })
+  })
+
   afterEach(() => {
     localStorage.clear()
   })

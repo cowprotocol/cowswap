@@ -281,13 +281,13 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 960px) {
   .optional {
     display: none;
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 720px) {
   .chartColumn {
     display: none;
   }

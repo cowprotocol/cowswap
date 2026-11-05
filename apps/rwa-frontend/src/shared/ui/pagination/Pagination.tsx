@@ -7,6 +7,7 @@ import { ChevronDownIcon } from '@/shared/ui/icons'
 
 const WIDE_SLOTS = 11
 const NARROW_SLOTS = 7
+const COMPACT_SLOTS = 5
 
 interface PageListProps {
   page: number
@@ -42,6 +43,13 @@ export function Pagination({ page, totalPages, onChange }: PaginationProps): Rea
         totalPages={totalPages}
         slots={NARROW_SLOTS}
         className={styles.narrow}
+        onChange={onChange}
+      />
+      <PageList
+        page={page}
+        totalPages={totalPages}
+        slots={COMPACT_SLOTS}
+        className={styles.compact}
         onChange={onChange}
       />
       <button

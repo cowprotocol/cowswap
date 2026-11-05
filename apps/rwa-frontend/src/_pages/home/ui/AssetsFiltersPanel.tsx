@@ -28,6 +28,13 @@ interface AssetsFiltersPanelProps {
   chainIds: number[]
 }
 
+interface AssetsFiltersSectionsProps {
+  issuers: string[]
+  chainIds: number[]
+  /** Larger targets, and every option listed without the search, "Only" and folding of long lists */
+  isTouch?: boolean
+}
+
 interface FilterOption<T> {
   value: T
   label: string
@@ -38,6 +45,7 @@ interface OptionsSectionProps<T> {
   searchPlaceholder: string
   options: FilterOption<T>[]
   selected: T[]
+  isTouch: boolean
   onChange(selected: T[]): void
 }
 
@@ -49,25 +57,29 @@ interface ThresholdSectionProps {
 }
 
 export function AssetsFiltersPanel({ id, hidden, issuers, chainIds }: AssetsFiltersPanelProps): ReactNode {
-  const filters = useAtomValue(assetsFiltersAtom)
-  const activeFilters = useAtomValue(activePanelFiltersCountAtom)
-  const updateFilters = useSetAtom(updateAssetsFiltersAtom)
-
   return (
     <div id={id} className={styles.panel} role="dialog" aria-label="Filters" hidden={hidden}>
       <div className={styles.header}>
         <h2 className={styles.title}>Filters</h2>
-        {activeFilters > 0 && (
-          <button type="button" className={styles.textButton} onClick={() => updateFilters(NO_PANEL_FILTERS)}>
-            Clear all
-          </button>
-        )}
+        <ClearAllFiltersButton />
       </div>
+      <AssetsFiltersSections issuers={issuers} chainIds={chainIds} />
+    </div>
+  )
+}
+
+export function AssetsFiltersSections({ issuers, chainIds, isTouch = false }: AssetsFiltersSectionsProps): ReactNode {
+  const filters = useAtomValue(assetsFiltersAtom)
+  const updateFilters = useSetAtom(updateAssetsFiltersAtom)
+
+  return (
+    <div className={styles.sections} data-touch={isTouch || undefined}>
       <OptionsSection
         title="Issuer"
         searchPlaceholder="Search issuers…"
         options={issuers.map((issuer) => ({ value: issuer, label: issuer }))}
         selected={filters.issuers}
+        isTouch={isTouch}
         onChange={(selected) => updateFilters({ issuers: selected })}
       />
       <OptionsSection
@@ -75,6 +87,7 @@ export function AssetsFiltersPanel({ id, hidden, issuers, chainIds }: AssetsFilt
         searchPlaceholder="Search networks…"
         options={chainIds.map((chainId) => ({ value: chainId, label: getChainLabel(chainId) }))}
         selected={filters.chainIds}
+        isTouch={isTouch}
         onChange={(selected) => updateFilters({ chainIds: selected })}
       />
       <ThresholdSection
@@ -93,20 +106,34 @@ export function AssetsFiltersPanel({ id, hidden, issuers, chainIds }: AssetsFilt
   )
 }
 
+export function ClearAllFiltersButton(): ReactNode {
+  const activeFilters = useAtomValue(activePanelFiltersCountAtom)
+  const updateFilters = useSetAtom(updateAssetsFiltersAtom)
+
+  if (!activeFilters) return null
+
+  return (
+    <button type="button" className={styles.textButton} onClick={() => updateFilters(NO_PANEL_FILTERS)}>
+      Clear all
+    </button>
+  )
+}
+
 function OptionsSection<T extends string | number>({
   title,
   searchPlaceholder,
   options,
   selected,
+  isTouch,
   onChange,
 }: OptionsSectionProps<T>): ReactNode {
   const headingId = useId()
   const [search, setSearch] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
-  const isLong = options.length > SHORT_LIST_SIZE
+  const isLong = !isTouch && options.length > SHORT_LIST_SIZE
   const needle = search.trim().toLowerCase()
   const matches = needle ? options.filter((option) => option.label.toLowerCase().includes(needle)) : options
-  const canFold = !needle && !isExpanded && matches.length > SHORT_LIST_SIZE + 1
+  const canFold = isLong && !needle && !isExpanded && matches.length > SHORT_LIST_SIZE + 1
   const visible = canFold ? matches.slice(0, SHORT_LIST_SIZE) : matches
   const folded = matches.slice(visible.length)
 

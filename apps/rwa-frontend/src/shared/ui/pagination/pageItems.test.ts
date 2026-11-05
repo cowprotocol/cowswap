@@ -26,4 +26,15 @@ describe('getPageItems', () => {
   ])('fills 7 slots on page %i of 93', (page, expected) => {
     expect(getPageItems(page, 93, 7)).toEqual(expected)
   })
+
+  it.each([
+    [1, [1, 2, 3, 'end-gap', 93]],
+    [3, [1, 2, 3, 'end-gap', 93]],
+    [4, [1, 'start-gap', 4, 'end-gap', 93]],
+    [46, [1, 'start-gap', 46, 'end-gap', 93]],
+    [90, [1, 'start-gap', 90, 'end-gap', 93]],
+    [91, [1, 'start-gap', 91, 92, 93]],
+  ])('fills 5 slots on page %i of 93', (page, expected) => {
+    expect(getPageItems(page, 93, 5)).toEqual(expected)
+  })
 })

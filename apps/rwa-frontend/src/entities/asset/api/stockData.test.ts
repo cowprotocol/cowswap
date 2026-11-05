@@ -1,9 +1,9 @@
 /**
  * @jest-environment node
  */
-import { type StockDataProvider, withStockDataFallback } from './stockData'
+import { type StockDataProvider, type StockMarketResult, withStockDataFallback } from './stockData'
 
-import type { RwaAsset, RwaStockMarket } from '../model/types'
+import type { RwaAsset } from '../model/types'
 
 const ASSET: RwaAsset = {
   ticker: 'NVDA',
@@ -14,18 +14,21 @@ const ASSET: RwaAsset = {
   tokens: [],
 }
 
-function market(provider: string): RwaStockMarket {
+function market(provider: string): StockMarketResult {
   return {
-    price: 200,
-    change24h: null,
-    dayLow: null,
-    dayHigh: null,
-    yearLow: null,
-    yearHigh: null,
-    marketCap: null,
-    volume24h: null,
-    updatedAt: '2026-11-05T12:00:00.000Z',
-    provider,
+    market: {
+      price: 200,
+      change24h: null,
+      dayLow: null,
+      dayHigh: null,
+      yearLow: null,
+      yearHigh: null,
+      marketCap: null,
+      volume24h: null,
+      updatedAt: '2026-11-05T12:00:00.000Z',
+      provider,
+    },
+    degraded: false,
   }
 }
 

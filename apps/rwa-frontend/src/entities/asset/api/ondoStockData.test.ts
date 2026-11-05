@@ -65,16 +65,19 @@ afterEach(() => {
 describe('ondoStockDataProvider.getMarket', () => {
   it('looks the stock up by the Ondo token and derives the 24h stats from its 15 min candles', async () => {
     expect(await ondoStockDataProvider.getMarket(ASSET)).toEqual({
-      price: 210,
-      change24h: 5,
-      dayLow: 198,
-      dayHigh: 212,
-      yearLow: 164.27,
-      yearHigh: 243.37,
-      marketCap: 4832834234634,
-      volume24h: 149033316.518682 * 210,
-      updatedAt: '2026-11-05T15:00:00.000Z',
-      provider: 'Ondo',
+      market: {
+        price: 210,
+        change24h: 5,
+        dayLow: 198,
+        dayHigh: 212,
+        yearLow: 164.27,
+        yearHigh: 243.37,
+        marketCap: 4832834234634,
+        volume24h: 149033316.518682 * 210,
+        updatedAt: '2026-11-05T15:00:00.000Z',
+        provider: 'Ondo',
+      },
+      degraded: false,
     })
     expect(fetchMarketMock).toHaveBeenCalledWith('NVDAon', 60)
     expect(fetchCandlesMock).toHaveBeenCalledWith('NVDAon', '15min/1day', 60)
@@ -84,22 +87,18 @@ describe('ondoStockDataProvider.getMarket', () => {
     fetchCandlesMock.mockResolvedValue(null)
 
     expect(await ondoStockDataProvider.getMarket(ASSET)).toMatchObject({
-      price: 210,
-      change24h: null,
-      dayLow: null,
-      dayHigh: null,
+      market: { price: 210, change24h: null, dayLow: null, dayHigh: null },
+      degraded: false,
     })
   })
 
-  it('keeps the price when the candles fail', async () => {
+  it('keeps the price when the candles fail, as degraded', async () => {
     jest.spyOn(console, 'warn').mockImplementation(() => undefined)
     fetchCandlesMock.mockRejectedValue(new Error('Ondo responded with 429'))
 
     expect(await ondoStockDataProvider.getMarket(ASSET)).toMatchObject({
-      price: 210,
-      change24h: null,
-      dayLow: null,
-      dayHigh: null,
+      market: { price: 210, change24h: null, dayLow: null, dayHigh: null },
+      degraded: true,
     })
   })
 
@@ -118,6 +117,18 @@ describe('ondoStockDataProvider.getMarket', () => {
 })
 
 describe('ondoStockDataProvider.getChart', () => {
+  it('skips candles with a non-positive price', async () => {
+    fetchCandlesMock.mockResolvedValue([
+      candle(NOW_MS - 2 * HOUR_MS, 200, 205, 198, 0),
+      candle(NOW_MS - HOUR_MS, 0, 205, 198, 204),
+      candle(NOW_MS - 30 * 60_000, 204, 206, 203, 205),
+    ])
+
+    expect(await ondoStockDataProvider.getChart(ASSET, '1D')).toEqual([
+      { time: (NOW_MS - 30 * 60_000) / 1000 + 900, value: 205 },
+    ])
+  })
+
   it('places each close at the end of its candle, and the open last candle at now', async () => {
     expect(await ondoStockDataProvider.getChart(ASSET, '1D')).toEqual([
       { time: (NOW_MS - 24 * HOUR_MS) / 1000 + 900, value: 204 },
