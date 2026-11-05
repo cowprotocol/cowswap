@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.12.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.12.0...permit-utils-v3.12.1) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/hook-dapp-lib@2.5.1
+
 ## [3.12.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v3.11.1...permit-utils-v3.12.0) (2026-10-28)
 
 ### Minor Changes

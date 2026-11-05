@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.11.5](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.4...multicall-v3.11.5) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/wallet@3.20.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/types@4.14.2
+
 ## [3.11.4](https://github.com/cowprotocol/cowswap/compare/multicall-v3.11.3...multicall-v3.11.4) (2026-11-02)
 
 ### Patch Changes

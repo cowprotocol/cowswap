@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.8.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.7.0...assets-v2.8.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait for cows UI bits & new confirmation (#8443)
+
+### Patch Changes
+
+- fix(progress-bar): give solver logos an edge and drop the Gnosis fallback (#8524)
+
 ## [2.7.0](https://github.com/cowprotocol/cowswap/compare/assets-v2.6.0...assets-v2.7.0) (2026-09-09)
 
 ### Minor Changes
