@@ -1,3 +1,4 @@
+import { jotaiStore } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
@@ -9,7 +10,7 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 import { isOrderFulfilled, partialOrderUpdate } from 'legacy/state/orders/utils'
 
-import { emitCancelledOrderEvent } from 'modules/orders'
+import { emitCancelledOrderEvent, orderFailureReasonsAtom } from 'modules/orders'
 
 import { resolveConfirmedSolanaStatus, SolanaRevertReason, SolanaStatusResult } from './resolveConfirmedSolanaStatus'
 
@@ -255,6 +256,10 @@ function failCreatedOrder(
   reason?: SolanaRevertReason,
 ): void {
   const { chainId, dispatch, isSafeWallet } = params
+
+  if (reason) {
+    jotaiStore.set(orderFailureReasonsAtom, (reasons) => ({ ...reasons, [orderId]: reason }))
+  }
 
   dispatch(invalidateOrdersBatch({ chainId, ids: [orderId], isSafeWallet }))
   // Not `transaction.summary`, which reads as the steps the transaction bundled: what the user needs

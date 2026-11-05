@@ -25,6 +25,7 @@ jest.mock('cowSdk', () => ({
 
 jest.mock('modules/orders', () => ({
   emitCancelledOrderEvent: jest.fn(),
+  orderFailureReasonsAtom: jest.requireActual('jotai').atom({}),
 }))
 
 // The real service derives a Squads PDA, which jsdom's crypto shim cannot do; its own suite covers the

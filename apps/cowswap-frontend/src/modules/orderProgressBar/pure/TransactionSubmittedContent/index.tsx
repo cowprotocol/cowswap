@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import { i18n, MessageDescriptor } from '@lingui/core'
@@ -16,6 +17,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
+import { OrderFailureReason, orderFailureReasonsAtom } from 'modules/orders'
 import { WatchAssetInWallet } from 'modules/wallet'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -64,6 +66,7 @@ export function TransactionSubmittedContent({
   successTitle,
 }: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
+  const failureReason = useAtomValue(orderFailureReasonsAtom)[order?.id ?? '']
   const { isProgressBarSetup, showCancellationModal, stepName, receiverEnsName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
@@ -153,7 +156,9 @@ export function TransactionSubmittedContent({
           </styledEl.ActionsWrapper>
         </styledEl.Header>
         <>
-          {!isProgressBarSetup && <styledEl.Title>{getTitleStatus(activityDerivedState)}</styledEl.Title>}
+          {!isProgressBarSetup && (
+            <styledEl.Title>{getTitleStatus(activityDerivedState, failureReason)}</styledEl.Title>
+          )}
           {showSafeSigningInfo && <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />}
           {!isFinished &&
             (isSolanaChain(chainId) ? (
@@ -202,9 +207,15 @@ export function TransactionSubmittedContent({
   )
 }
 
-function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
+function getTitleStatus(activityDerivedState: ActivityDerivedState | null, failureReason?: OrderFailureReason): string {
   if (!activityDerivedState) {
     return ''
+  }
+
+  // "Order Failed" is true but useless here: the members rejected it, and that is what tells the user
+  // whether to retry or go chase a co-signer.
+  if (failureReason === 'multisig-rejected') {
+    return t`Order rejected in your multisig`
   }
 
   const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
