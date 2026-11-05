@@ -12,6 +12,7 @@
   overflow: hidden;
   container-type: inline-size;
   pointer-events: none;
+  mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
 }
 
 :global(:root[data-theme='dark']) .scene {
@@ -21,6 +22,12 @@
   --saucer-dome: #2c2f6f;
   --saucer-cap: #f2cd16;
   --saucer-stars: #f2cd16;
+}
+
+.flight {
+  position: absolute;
+  inset: 0;
+  animation: flight-exit 10s linear infinite both;
 }
 
 .saucer {
@@ -110,6 +117,7 @@
     transform: translate(-50%, 0);
   }
 
+  .flight,
   .cowSprite,
   .star {
     animation: none;
@@ -124,18 +132,13 @@
   }
 
   26%,
-  44% {
+  56% {
     transform: translate(-50%, 0) translateX(0);
     opacity: 1;
   }
 
-  56% {
-    transform: translate(-50%, 0) translateX(-55cqw);
-    opacity: 1;
-  }
-
   64% {
-    transform: translate(-50%, 0) translateX(-55cqw);
+    transform: translate(-50%, 0) translateX(0);
     opacity: 0;
   }
 
@@ -146,53 +149,55 @@
   }
 }
 
-@keyframes cow-abduction {
+/* The saucer and the cow leave on one transform: as two animations they can drift apart, leaving the cow outside the beam */
+@keyframes flight-exit {
   0%,
-  22% {
-    opacity: 1;
-    transform: translate(-50%, 0) translateX(0);
+  44%,
+  72%,
+  100% {
+    transform: translateX(0);
   }
 
+  56%,
+  64% {
+    transform: translateX(-55cqw);
+  }
+}
+
+@keyframes cow-abduction {
+  0%,
   28% {
     opacity: 1;
-    transform: translate(-50%, 0) translateX(0);
+    transform: translate(-50%, 0);
   }
 
   36% {
     opacity: 1;
-    transform: translate(-50%, -18%) translateX(0);
+    transform: translate(-50%, -18%);
   }
 
-  44% {
-    opacity: 1;
-    transform: translate(-50%, -38%) translateX(0);
-  }
-
+  44%,
   56% {
     opacity: 1;
-    transform: translate(-50%, -38%) translateX(-55cqw);
+    transform: translate(-50%, -38%);
   }
 
   60%,
   74% {
     opacity: 0;
-    transform: translate(-50%, -38%) translateX(-55cqw);
+    transform: translate(-50%, -38%);
   }
 
-  82% {
-    opacity: 0;
-    transform: translate(-50%, 0) translateX(55cqw);
-  }
-
+  82%,
   88% {
     opacity: 0;
-    transform: translate(-50%, 0) translateX(0);
+    transform: translate(-50%, 0);
   }
 
   92%,
   100% {
     opacity: 1;
-    transform: translate(-50%, 0) translateX(0);
+    transform: translate(-50%, 0);
   }
 }
 
