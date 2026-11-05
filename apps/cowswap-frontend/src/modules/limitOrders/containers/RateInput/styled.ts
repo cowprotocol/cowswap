@@ -71,6 +71,9 @@ export const MarketRateWrapper = styled.div`
 `
 
 export const MarketPriceButton = styled.button`
+  max-width: 110px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 500;
   font-size: inherit;
