@@ -13,8 +13,10 @@ export async function fetchWithRetry(url, init, delaysMs) {
     try {
       const response = await fetch(url, init)
       if (!RETRY_STATUSES.has(response.status) || delayMs === undefined) return response
+      console.warn(`${new URL(url).host}: HTTP ${response.status}, retrying in ${delayMs / 1000}s`)
     } catch (error) {
       if (delayMs === undefined) throw error
+      console.warn(`${new URL(url).host}: ${error instanceof Error ? error.message : String(error)}, retrying in ${delayMs / 1000}s`)
     }
 
     await new Promise((resolve) => setTimeout(resolve, delayMs))

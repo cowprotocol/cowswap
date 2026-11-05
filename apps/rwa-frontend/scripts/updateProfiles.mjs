@@ -3,11 +3,12 @@
  * Fills `profile.description` and `profile.sector` of data/RWAs.json assets: Wikipedia summaries (matched through
  * Wikidata NYSE/Nasdaq/HKEX/LSE listings) reworded by Claude, or Claude alone for assets without an article.
  *
- * Usage: pnpm --filter @cowprotocol/rwa-frontend update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--dry-run]
+ * Usage: pnpm --filter @cowprotocol/rwa-frontend update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--offset 0] [--limit 10] [--dry-run]
  * Env: ANTHROPIC_API_KEY (required).
  *
  * Only assets without a profile are filled unless `--force`. `website` is hand-edited: it is never written, and kept
- * by `--force`. Commodities are skipped.
+ * by `--force`. Commodities are skipped. `--offset` and `--limit` pick a slice of the candidates in registry order;
+ * without `--force`, filled assets stop being candidates, so the next chunk is `--limit` alone.
  */
 import { readFile, rename, writeFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
@@ -16,14 +17,14 @@ import { parseArgs } from 'node:util'
 
 import { buildProfilePrompt, parseProfileResponse, requestProfile } from './profiles/claude.mjs'
 import { fetchWikidataMatches } from './profiles/wikidata.mjs'
-import { fetchSourceText } from './profiles/wikipedia.mjs'
+import { fetchSourceTexts } from './profiles/wikipedia.mjs'
 
 const REGISTRY_PATH = resolve(dirname(fileURLToPath(import.meta.url)), '../data/RWAs.json')
 const SOURCES = ['wikipedia', 'ai']
 const CONCURRENCY = 4
 const SAVE_INTERVAL_MS = 1000
 const USAGE =
-  'Usage: update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--dry-run]\nEnv: ANTHROPIC_API_KEY'
+  'Usage: update-profiles [--source wikipedia|ai] [--force] [--ticker NVDA ...] [--offset 0] [--limit 10] [--dry-run]\nEnv: ANTHROPIC_API_KEY'
 
 async function main() {
   const options = readOptions()
@@ -31,12 +32,14 @@ async function main() {
   if (!apiKey) exit('ANTHROPIC_API_KEY is required')
 
   const registry = JSON.parse(await readFile(REGISTRY_PATH, 'utf8'))
-  const candidates = registry.assets.filter(
-    (asset) =>
-      asset.type !== 'commodity' &&
-      (!options.tickers.length || options.tickers.includes(asset.ticker)) &&
-      (options.force || !asset.profile),
-  )
+  const candidates = registry.assets
+    .filter(
+      (asset) =>
+        asset.type !== 'commodity' &&
+        (!options.tickers.length || options.tickers.includes(asset.ticker)) &&
+        (options.force || !asset.profile),
+    )
+    .slice(options.offset, options.limit === undefined ? undefined : options.offset + options.limit)
   console.log(`${candidates.length} candidates`)
 
   const sources = await loadSources(candidates)
@@ -51,6 +54,8 @@ async function main() {
 
   const report = { filled: [], skipped: [], rejected: [], failed: [] }
   const writer = createRegistryWriter(registry, options.dryRun)
+  let done = 0
+  const logResult = (ticker, result) => console.log(`[${++done}/${selected.length}] ${ticker}: ${result}`)
 
   await forEachConcurrently(selected, async (asset) => {
     const source = sources.get(asset.ticker)
@@ -67,12 +72,14 @@ async function main() {
       const profile = parseProfileResponse(text, asset.title)
 
       if (!profile) {
-        report[/"skip"\s*:\s*true/.test(text) ? 'skipped' : 'rejected'].push(asset.ticker)
+        const result = /"skip"\s*:\s*true/.test(text) ? 'skipped' : 'rejected'
+        report[result].push(asset.ticker)
+        logResult(asset.ticker, result)
         return
       }
 
       report.filled.push(asset.ticker)
-      if (options.dryRun) console.log(`${asset.ticker} → ${profile.sector} | ${profile.description}`)
+      logResult(asset.ticker, options.dryRun ? `${profile.sector} | ${profile.description}` : 'filled')
 
       await writer.setProfile(asset.ticker, {
         ...profile,
@@ -80,7 +87,7 @@ async function main() {
       })
     } catch (err) {
       report.failed.push(asset.ticker)
-      console.error(`${asset.ticker}: ${err instanceof Error ? err.message : String(err)}`)
+      logResult(asset.ticker, `failed: ${err instanceof Error ? err.message : String(err)}`)
     }
   })
 
@@ -96,6 +103,8 @@ function readOptions() {
         source: { type: 'string' },
         force: { type: 'boolean', default: false },
         ticker: { type: 'string', multiple: true, default: [] },
+        offset: { type: 'string' },
+        limit: { type: 'string' },
         'dry-run': { type: 'boolean', default: false },
       },
     }))
@@ -106,24 +115,41 @@ function readOptions() {
   if (values.source !== undefined && !SOURCES.includes(values.source))
     exit(`Invalid --source "${values.source}"\n${USAGE}`)
 
-  return { source: values.source, force: values.force, tickers: values.ticker, dryRun: values['dry-run'] }
+  return {
+    source: values.source,
+    force: values.force,
+    tickers: values.ticker,
+    offset: readInteger('offset', values.offset, 0) ?? 0,
+    limit: readInteger('limit', values.limit, 1),
+    dryRun: values['dry-run'],
+  }
+}
+
+function readInteger(name, value, min) {
+  if (value === undefined) return undefined
+
+  const number = Number(value)
+  if (!Number.isInteger(number) || number < min) exit(`Invalid --${name} "${value}"\n${USAGE}`)
+
+  return number
 }
 
 /** Ticker to Wikipedia source text and Wikidata industry, for candidates with a usable article */
 async function loadSources(candidates) {
-  const matches = await fetchWikidataMatches(candidates.map((asset) => asset.ticker))
+  const matches = await fetchWikidataMatches(
+    candidates.map((asset) => asset.ticker),
+    (done, total) => console.log(`Wikidata: ${done}/${total} tickers`),
+  )
+  const texts = await fetchSourceTexts(
+    [...matches.values()].flatMap((match) => match.articleTitle ?? []),
+    (done, total) => console.log(`Wikipedia: ${done}/${total} articles`),
+  )
   const sources = new Map()
 
-  await forEachConcurrently([...matches], async ([ticker, match]) => {
-    if (!match.articleTitle) return
-
-    try {
-      const sourceText = await fetchSourceText(match.articleTitle)
-      if (sourceText) sources.set(ticker, { sourceText, industry: match.industry })
-    } catch (err) {
-      console.error(`${ticker}: ${err instanceof Error ? err.message : String(err)}`)
-    }
-  })
+  for (const [ticker, match] of matches) {
+    const sourceText = match.articleTitle ? texts.get(match.articleTitle) : undefined
+    if (sourceText) sources.set(ticker, { sourceText, industry: match.industry })
+  }
 
   return sources
 }

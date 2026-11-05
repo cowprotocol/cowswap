@@ -80,7 +80,7 @@ export function matchEntities(tickers, bindings) {
   return matches
 }
 
-export async function fetchWikidataMatches(tickers) {
+export async function fetchWikidataMatches(tickers, onProgress = () => {}) {
   const matches = new Map()
 
   for (let start = 0; start < tickers.length; start += BATCH_SIZE) {
@@ -102,6 +102,7 @@ export async function fetchWikidataMatches(tickers) {
 
     const { results } = await response.json()
     for (const [ticker, match] of matchEntities(batch, results.bindings)) matches.set(ticker, match)
+    onProgress(start + batch.length, tickers.length)
   }
 
   return matches
