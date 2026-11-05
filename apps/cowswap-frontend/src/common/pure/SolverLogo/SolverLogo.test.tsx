@@ -5,21 +5,33 @@ import { SolverLogo } from './SolverLogo.pure'
 describe('SolverLogo', () => {
   it('shows the CMS image when the solver has one', () => {
     const image = 'https://cms.example/logo.png'
-    const { container } = render(<SolverLogo solver={{ solver: 'dfusion', image }} size={24} />)
+    const { container } = render(<SolverLogo solver={{ displayName: 'dfusion', image }} size={24} />)
 
     expect(container.querySelector('img')?.getAttribute('src')).toBe(image)
+    expect(container.querySelector('svg')).toBeNull()
     expect(container.textContent).toBe('')
   })
 
   it.each([
-    ['the display name', { solver: 'solver-id', displayName: 'dfusion' }, 'D'],
-    ['the solver id without a display name', { solver: 'nexroute' }, 'N'],
-    ['the solver id with a blank display name', { solver: 'nexroute', displayName: '   ' }, 'N'],
-    ['a leading emoji, kept whole', { solver: 'nexroute', displayName: '🐮 Solver' }, '🐮'],
-  ])('shows the initial from %s when there is no image', (_, solver, initial) => {
+    ['the display name', 'dfusion', 'D'],
+    ['a display name with leading spaces', '  dfusion', 'D'],
+    ['a leading emoji, kept whole', '🐮 Solver', '🐮'],
+  ])('shows the initial from %s when there is no image', (_, displayName, initial) => {
+    const { container } = render(<SolverLogo solver={{ displayName }} size={24} />)
+
+    expect(container.querySelector('img')).toBeNull()
+    expect(container.querySelector('svg')).toBeNull()
+    expect(container.textContent).toBe(initial)
+  })
+
+  it.each([
+    ['no display name', {}],
+    ['a blank display name', { displayName: '   ' }],
+  ])('shows the generic icon for a solver with %s', (_, solver) => {
     const { container } = render(<SolverLogo solver={solver} size={24} />)
 
     expect(container.querySelector('img')).toBeNull()
-    expect(container.textContent).toBe(initial)
+    expect(container.querySelector('svg')).not.toBeNull()
+    expect(container.textContent).toBe('')
   })
 })

@@ -5,21 +5,25 @@ import { SolverCompetition } from 'common/types/soverCompetition'
 import * as styledEl from './SolverLogo.styled'
 
 export interface SolverLogoProps {
-  solver: Pick<SolverCompetition, 'solver' | 'displayName' | 'image'>
+  solver: Pick<SolverCompetition, 'displayName' | 'image'>
   size: number
   className?: string
 }
 
-export function SolverLogo({ solver, size, className }: SolverLogoProps): ReactNode {
+export function SolverLogo({ solver: { displayName, image }, size, className }: SolverLogoProps): ReactNode {
   return (
     <styledEl.LogoFrame $size={size} className={className} aria-hidden>
-      {solver.image ? <styledEl.LogoImage src={solver.image} alt="" /> : getSolverInitial(solver)}
+      {image ? (
+        <styledEl.LogoImage src={image} alt="" />
+      ) : (
+        getSolverInitial(displayName) || <styledEl.UnknownSolverIcon />
+      )}
     </styledEl.LogoFrame>
   )
 }
 
-function getSolverInitial({ displayName, solver }: SolverLogoProps['solver']): string {
-  const [initial = ''] = Array.from(displayName?.trim() || solver)
+function getSolverInitial(displayName = ''): string {
+  const [initial = ''] = Array.from(displayName.trim())
 
   return initial.toUpperCase()
 }
