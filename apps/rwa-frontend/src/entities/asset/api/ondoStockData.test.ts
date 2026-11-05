@@ -91,6 +91,18 @@ describe('ondoStockDataProvider.getMarket', () => {
     })
   })
 
+  it('keeps the price when the candles fail', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => undefined)
+    fetchCandlesMock.mockRejectedValue(new Error('Ondo responded with 429'))
+
+    expect(await ondoStockDataProvider.getMarket(ASSET)).toMatchObject({
+      price: 210,
+      change24h: null,
+      dayLow: null,
+      dayHigh: null,
+    })
+  })
+
   it('is null for an asset without an Ondo token, without a request', async () => {
     expect(await ondoStockDataProvider.getMarket({ ...ASSET, tokens: [NVDAX] })).toBeNull()
     expect(fetchMarketMock).not.toHaveBeenCalled()

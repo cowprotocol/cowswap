@@ -1,5 +1,7 @@
 import 'server-only'
 
+import { normalizeError } from '@cowprotocol/common-utils/errors'
+
 import { CHART_REVALIDATE_SECONDS } from './marketData'
 
 import type { StockDataProvider } from './stockData'
@@ -48,7 +50,12 @@ export const ondoStockDataProvider: StockDataProvider = {
 
     const [snapshot, dayCandles] = await Promise.all([
       fetchOndoUnderlyingMarket(symbol, MARKET_REVALIDATE_SECONDS),
-      fetchOndoUnderlyingCandles(symbol, DAY_PERIOD, MARKET_REVALIDATE_SECONDS),
+      fetchOndoUnderlyingCandles(symbol, DAY_PERIOD, MARKET_REVALIDATE_SECONDS).catch((err: unknown) => {
+        const error = normalizeError(err)
+        console.warn(`[rwa] Ondo ${symbol} day candles failed, the stock market has no 24h stats`, error)
+
+        return null
+      }),
     ])
     const price = toNumber(snapshot?.underlyingMarket.price)
 

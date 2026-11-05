@@ -28,6 +28,15 @@ export const isStockUnavailableAtomFamily = atomFamily((ticker: string) =>
   }),
 )
 
+/** Stock market data is unavailable because its providers failed, not because none covers the asset */
+export const isStockOutageAtomFamily = atomFamily((ticker: string) =>
+  atom((get): boolean => {
+    const { data, error } = get(assetStockQueryAtomFamily(ticker))
+
+    return data ? data.degraded === true : error !== null
+  }),
+)
+
 /** The picked market, or `tokenized` for an asset without stock market data */
 export const shownMarketKindAtomFamily = atomFamily((ticker: string) =>
   atom((get): RwaMarketKind => (get(isStockUnavailableAtomFamily(ticker)) ? 'tokenized' : get(marketKindAtom))),

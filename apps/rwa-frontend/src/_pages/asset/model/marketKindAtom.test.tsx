@@ -6,7 +6,12 @@ import { QueryClient } from '@tanstack/query-core'
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { queryClientAtom } from 'jotai-tanstack-query'
 
-import { marketKindAtom, shownMarketKindAtomFamily } from './marketKindAtom'
+import {
+  isStockOutageAtomFamily,
+  isStockUnavailableAtomFamily,
+  marketKindAtom,
+  shownMarketKindAtomFamily,
+} from './marketKindAtom'
 
 import type { RwaAssetStock, RwaMarketKind } from '@/entities/asset'
 
@@ -72,6 +77,23 @@ describe('shownMarketKindAtomFamily', () => {
     const { result } = renderShownMarketKind()
 
     await waitFor(() => expect(result.current).toBe('tokenized'))
+  })
+
+  it('tells a provider outage from an asset without stock market data', async () => {
+    mockStockResponse({ ...STOCK, market: null })
+    const { store } = renderShownMarketKind()
+    const { result: notCovered } = renderHook(() => useAtomValue(isStockOutageAtomFamily(TICKER)), {
+      wrapper: ({ children }: { children: ReactNode }) => <Provider store={store}>{children}</Provider>,
+    })
+
+    await waitFor(() => expect(store.get(isStockUnavailableAtomFamily(TICKER))).toBe(true))
+    expect(notCovered.current).toBe(false)
+
+    mockStockResponse({ ...STOCK, market: null, degraded: true })
+    const { store: outageStore } = renderShownMarketKind()
+
+    await waitFor(() => expect(outageStore.get(isStockUnavailableAtomFamily(TICKER))).toBe(true))
+    expect(outageStore.get(isStockOutageAtomFamily(TICKER))).toBe(true)
   })
 
   it('follows the picked market when stock data is available', async () => {
