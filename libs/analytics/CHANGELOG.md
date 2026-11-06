@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.16.4](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.3...analytics-v3.16.4) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/events@4.17.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.16.3](https://github.com/cowprotocol/cowswap/compare/analytics-v3.16.2...analytics-v3.16.3) (2026-10-28)
 
 ### Patch Changes

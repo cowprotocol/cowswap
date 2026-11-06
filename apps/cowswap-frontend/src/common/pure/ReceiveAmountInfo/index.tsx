@@ -13,7 +13,12 @@ import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
-import { getOrderTypeReceiveAmounts, useIsEoaEthFlow, ReceiveAmountInfo } from 'modules/trade'
+import {
+  getOrderTypeReceiveAmounts,
+  getProtocolFeeDisplayAmount,
+  useIsEoaEthFlow,
+  ReceiveAmountInfo,
+} from 'modules/trade'
 
 import { FeeItem } from './FeeItem'
 import { NetworkFeeItem } from './NetworkFeeItem'
@@ -44,7 +49,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const protocolFeeAmount = protocolFee?.amount
+  const protocolFeeAmount = getProtocolFeeDisplayAmount(receiveAmountInfo)
   const protocolFeeBps = protocolFee?.bps
 
   const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)

@@ -1,4 +1,4 @@
-import type { SupportedChainId, Trade } from '@cowprotocol/cow-sdk'
+import { isSupportedChain, type SupportedChainId, type Trade } from '@cowprotocol/cow-sdk'
 
 import { collectPages } from '../../lib/collectPages'
 import { getOrderType, type OrderType } from '../../lib/orderType'
@@ -16,6 +16,8 @@ const MAX_TRADES_PAGES = 10
 const blockTimestamps = new Map<string, number>()
 const orderTypes = new Map<string, OrderType>()
 
+type TradeActivity = Omit<Activity, 'orderType'>
+
 /** Trades settled by CoW Protocol only: the order book knows nothing about transfers and other protocols */
 export const orderBookActivityProvider: ActivityProvider = {
   async getActivity({ owner, tokens, limit }: ActivityQuery): Promise<Activity[]> {
@@ -23,11 +25,14 @@ export const orderBookActivityProvider: ActivityProvider = {
       getChainActivity(chainId, owner, tokens, limit),
     )
 
-    return activity.sort(byTimestampDesc).slice(0, limit)
+    const latest = activity.sort(byTimestampDesc).slice(0, limit)
+    const types = await readOrderTypes(latest)
+
+    return latest.map((item) => ({ ...item, orderType: types.get(getOrderKey(item)) ?? 'swap' }))
   },
 }
 
-function byTimestampDesc(a: Activity, b: Activity): number {
+function byTimestampDesc(a: TradeActivity, b: TradeActivity): number {
   return (b.timestamp ?? 0) - (a.timestamp ?? 0)
 }
 
@@ -36,7 +41,7 @@ async function getChainActivity(
   owner: string,
   tokens: RwaTokenSummary[],
   limit: number,
-): Promise<Activity[]> {
+): Promise<TradeActivity[]> {
   const assetTrades = await collectPages(
     (offset, pageLimit) => orderBookApi.getTrades({ owner, offset, limit: pageLimit }, { chainId }),
     (trade) => {
@@ -47,28 +52,27 @@ async function getChainActivity(
     { pageSize: TRADES_PAGE_SIZE, maxPages: MAX_TRADES_PAGES, limit },
   )
 
-  // Trades carry no time nor order type, they come from their blocks and orders
-  const [resolved, timestamps, types] = await Promise.all([
+  // Trades carry no time, it comes from their blocks
+  const [resolved, timestamps] = await Promise.all([
     resolveCounterTokens(chainId, assetTrades),
     readBlockTimestamps(
       chainId,
       assetTrades.map(({ trade }) => trade.blockNumber),
-    ),
-    readOrderTypes(
-      chainId,
-      assetTrades.map(({ trade }) => trade.orderUid),
     ),
   ])
 
   return resolved.map(({ trade, ...leg }) => ({
     ...leg,
     ...getTradeDetails(trade),
-    orderType: types.get(trade.orderUid) ?? 'swap',
     timestamp: timestamps.get(trade.blockNumber) ?? null,
   }))
 }
 
-function getTradeDetails(trade: Trade): Pick<Activity, 'id' | 'kind' | 'txHash' | 'orderUid'> {
+function getOrderKey({ chainId, orderUid }: Pick<TradeActivity, 'chainId' | 'orderUid'>): string {
+  return `${chainId}:${orderUid}`
+}
+
+function getTradeDetails(trade: Trade): Pick<TradeActivity, 'id' | 'kind' | 'txHash' | 'orderUid'> {
   return {
     id: `${trade.orderUid}:${trade.blockNumber}:${trade.logIndex}`,
     kind: 'trade',
@@ -105,16 +109,21 @@ async function readBlockTimestamps(chainId: number, blockNumbers: number[]): Pro
 }
 
 /** An order type never changes, so each order is read once per session */
-async function readOrderTypes(chainId: SupportedChainId, orderUids: string[]): Promise<Map<string, OrderType>> {
+async function readOrderTypes(items: TradeActivity[]): Promise<Map<string, OrderType>> {
+  const orders = new Map<string, { chainId: SupportedChainId; orderUid: string }>()
+
+  for (const { chainId, orderUid } of items) {
+    if (orderUid && isSupportedChain(chainId)) orders.set(getOrderKey({ chainId, orderUid }), { chainId, orderUid })
+  }
+
   const types = new Map<string, OrderType>()
 
   await Promise.all(
-    [...new Set(orderUids)].map(async (orderUid) => {
-      const key = `${chainId}:${orderUid}`
+    [...orders].map(async ([key, { chainId, orderUid }]) => {
       const cached = orderTypes.get(key)
 
       if (cached !== undefined) {
-        types.set(orderUid, cached)
+        types.set(key, cached)
         return
       }
 
@@ -125,7 +134,7 @@ async function readOrderTypes(chainId: SupportedChainId, orderUids: string[]): P
       const type = getOrderType(order)
 
       orderTypes.set(key, type)
-      types.set(orderUid, type)
+      types.set(key, type)
     }),
   )
 
