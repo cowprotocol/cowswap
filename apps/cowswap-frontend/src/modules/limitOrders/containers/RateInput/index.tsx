@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import {
   formatInputAmount,
   getCurrencyAddress,
@@ -70,6 +70,7 @@ export function RateInput() {
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
+  const { isPriceChartEnabled } = useFeatureFlags()
   const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
   const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
@@ -303,26 +304,28 @@ export function RateInput() {
                 </styledEl.UsdButton>
               </styledEl.CurrencyToggle>
 
-              <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
-                <styledEl.IconButton
-                  aria-label={t`Pick the limit price from the chart`}
-                  aria-pressed={isLimitPickerMode}
-                  onClick={() => {
-                    if (!isLimitPickerMode) {
-                      setIsUsdRateMode(true)
-                      if (isUpToLarge) {
-                        setChartModalOpen(true)
-                      } else {
-                        setChartVisible(true)
+              {isPriceChartEnabled && (
+                <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
+                  <styledEl.IconButton
+                    aria-label={t`Pick the limit price from the chart`}
+                    aria-pressed={isLimitPickerMode}
+                    onClick={() => {
+                      if (!isLimitPickerMode) {
+                        setIsUsdRateMode(true)
+                        if (isUpToLarge) {
+                          setChartModalOpen(true)
+                        } else {
+                          setChartVisible(true)
+                        }
                       }
-                    }
-                    setLimitPickerMode((state) => !state)
-                  }}
-                  $active={isLimitPickerMode}
-                >
-                  <MousePointer size={14} />
-                </styledEl.IconButton>
-              </HoverTooltip>
+                      setLimitPickerMode((state) => !state)
+                    }}
+                    $active={isLimitPickerMode}
+                  >
+                    <MousePointer size={14} />
+                  </styledEl.IconButton>
+                </HoverTooltip>
+              )}
             </styledEl.CurrencyToggleGroup>
           )}
         </styledEl.Body>
