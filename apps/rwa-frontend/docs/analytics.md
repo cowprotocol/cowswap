@@ -12,9 +12,10 @@ tag for it. The app is served at `swap.cow.fi/rwa`, so filter RWA traffic by pag
 - `src/_app/analytics/Analytics.tsx`: loads GTM, sends page views and the wallet events.
 - `src/_pages/asset/model/useWidgetOrderAnalytics.ts`: order events from the trade widget.
 
-The `@cowprotocol/analytics` lib isn't used: its root entry imports Lingui macros (which Turbopack doesn't run), Sentry
-and `react-router`. The data layer format is the same: event params are flat, and every event carries the
-dimensions CoW Swap sends.
+The `@cowprotocol/analytics` root entry isn't used: it imports Lingui macros (which Turbopack doesn't run), Sentry and
+`react-router`. The order event payloads come from its side-effect-free `@cowprotocol/analytics/order-lifecycle`
+subpath, the same mappers CoW Swap uses. The data layer format is the same: event params are flat, and every event
+carries the dimensions CoW Swap sends.
 
 Run `window.dataLayer` in the browser console to see the pushed events, or use GTM preview mode.
 
@@ -26,7 +27,7 @@ Sent with every event once known, as in CoW Swap:
 |---|---|
 | `dimension_chainId` | Wallet network id, e.g. `1` |
 | `dimension_userAddress` | Connected address, `disconnected` without a wallet |
-| `dimension_walletName` | Wallet connector name, e.g. `MetaMask`, `WalletConnect` |
+| `dimension_walletName` | Wallet connector name, e.g. `MetaMask`, `WalletConnect`, `Not connected` without a wallet |
 
 ## Events
 
@@ -36,11 +37,13 @@ Sent with every event once known, as in CoW Swap:
 |---|---|---|
 | `page_view` | Every route change, and the first page load | `page_path` (with `/rwa`), `page_title` |
 | `connect_wallet_click` | **Connect wallet** clicked | `variant`: `primary` (header, wallet bar, account tabs) or `secondary` (trade widget and portfolio prompts) |
-| `wallet_connected` | A wallet connects, including the automatic reconnection on page load | `walletAddress`, `walletName` |
-| `wallet_switched` | The connected account changes | `walletAddress`, `walletName`, `previousWalletAddress`, `previousWalletName` |
-| `wallet_disconnected` | The wallet disconnects | `previousWalletAddress`, `previousWalletName` |
+| `set_user_account` | The wallet state settles (page load, connect, switch, disconnect) | `userId` (connected address, left out without a wallet) |
+| `wallet_connected` | A wallet connects, including the automatic reconnection on page load | `eventType` (`wallet_initial_connection`), `walletAddress`, `walletName` |
+| `wallet_switched` | The connected account changes | `eventType` (`wallet_switch`), `walletAddress`, `walletName`, `previousWalletAddress`, `previousWalletName` |
+| `wallet_disconnected` | The wallet disconnects | `eventType` (`wallet_disconnection`), `previousWalletAddress`, `previousWalletName` |
 
-The wallet events use the CoW Swap names and params, so the existing GTM tags pick them up.
+The wallet events use the CoW Swap names and params (`CowAnalyticsGtm.setUserAccount`), so the existing GTM tags pick
+them up.
 
 ### Discovery (home page and search)
 
@@ -65,17 +68,20 @@ The wallet events use the CoW Swap names and params, so the existing GTM tags pi
 ### Orders
 
 The trade widget is CoW Swap in an iframe, which sends no analytics in widget mode. The app forwards the widget order
-events under the CoW Swap event names:
+events with the payloads CoW Swap sends (`mapPostedOrder`, `mapFulfilledOrder`, `mapCancelledOrder`,
+`mapExpiredOrder` from `@cowprotocol/analytics/order-lifecycle`), plus `ticker` (the asset page):
 
-| Event | Widget event | Params |
+| Event | Widget event | RWA params |
 |---|---|---|
-| `order_submitted` | `ON_POSTED_ORDER` | common params, plus `side` (`buy` when the bought token is a token of the asset), `kind` (`sell`, `buy`), `sellAmountUnits`, `buyAmountUnits` (decimal amounts) |
-| `swap_executed` | `ON_FULFILLED_ORDER` | common params, plus `executedSellAmount`, `executedBuyAmount` (atoms) |
-| `swap_cancelled` | `ON_CANCELLED_ORDER` | common params |
-| `swap_expired` | `ON_EXPIRED_ORDER` | common params |
+| `order_submitted` | `ON_POSTED_ORDER` | `ticker`, `side` (`buy` when the bought token is a token of the asset) |
+| `swap_executed` | `ON_FULFILLED_ORDER` | `ticker` |
+| `swap_cancelled` | `ON_CANCELLED_ORDER` | `ticker` |
+| `swap_expired` | `ON_EXPIRED_ORDER` | `ticker` |
 
-Common params: `ticker` (the asset page), `orderId`, `chainId`, `orderType` (`SWAP`, `LIMIT`, `TWAP`), `walletAddress`,
-`sellToken`, `buyToken` (addresses), and, when known, `sellTokenSymbol`, `buyTokenSymbol`, `isEoaTwap`.
+The CoW Swap params include `orderId`, `chainId` (a string), `orderType`, `walletAddress`, `sellToken`, `buyToken`,
+amounts in atoms (`sellAmount`, `buyAmount`) and in units (`sellAmountUnits`, `buyAmountUnits`), and the Safary
+aliases `fromCurrency`, `toCurrency`, `fromAmount`, `toAmount`; `swap_executed` adds the executed amounts
+(`executedSellAmountUnits`, ...). See `libs/analytics/src/widget/orderLifecyclePayloads.ts` for the full list.
 
 The widget reports fulfilment, cancellation and expiry only while the asset page is open.
 

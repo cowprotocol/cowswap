@@ -1,3 +1,4 @@
+import { mapPostedOrder } from '@cowprotocol/analytics/order-lifecycle'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, type OnPostedOrderPayload } from '@cowprotocol/events'
 
@@ -51,18 +52,24 @@ describe('useWidgetOrderAnalytics', () => {
 
     expect(window.dataLayer).toEqual([
       expect.objectContaining({
+        ...withoutUndefined(mapPostedOrder(POSTED_ORDER)),
         event: 'order_submitted',
         ticker: 'AAPL',
         side: 'buy',
-        orderId: '0xorder',
-        chainId: 1,
-        orderType: 'SWAP',
-        kind: OrderKind.SELL,
-        sellTokenSymbol: 'USDC',
-        buyTokenSymbol: 'AAPLx',
-        sellAmountUnits: '1000',
-        buyAmountUnits: '4',
       }),
     ])
+    expect(window.dataLayer?.[0]).toMatchObject({
+      chainId: '1',
+      sellAmountUnits: '1000',
+      buyAmountUnits: '4',
+      fromCurrency: 'USDC',
+      toCurrency: 'AAPLx',
+      fromAmount: '1000',
+      toAmount: '4',
+    })
   })
 })
+
+function withoutUndefined(payload: Record<string, unknown>): Record<string, unknown> {
+  return Object.fromEntries(Object.entries(payload).filter(([, value]) => value !== undefined))
+}

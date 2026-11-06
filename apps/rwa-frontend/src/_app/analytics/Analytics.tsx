@@ -16,6 +16,7 @@ interface ConnectedWallet {
 }
 
 const UNKNOWN_WALLET = 'Unknown'
+const NOT_CONNECTED_WALLET_NAME = 'Not connected'
 
 /** Loads GTM and tracks page views and wallet connections, see `docs/analytics.md` */
 export function Analytics(): ReactNode {
@@ -55,12 +56,19 @@ function useWalletEvents(): void {
 
     previousRef.current = current
     setAnalyticsDimension('userAddress', current?.address ?? 'disconnected')
-    setAnalyticsDimension('walletName', current?.name)
+    if (current) setAnalyticsDimension('walletName', current.name)
+
+    trackEvent('set_user_account', { userId: current?.address })
 
     if (current && !previous) {
-      trackEvent('wallet_connected', { walletAddress: current.address, walletName: current.name })
+      trackEvent('wallet_connected', {
+        eventType: 'wallet_initial_connection',
+        walletAddress: current.address,
+        walletName: current.name,
+      })
     } else if (current && previous && !areAddressesEqual(current.address, previous.address)) {
       trackEvent('wallet_switched', {
+        eventType: 'wallet_switch',
         walletAddress: current.address,
         walletName: current.name,
         previousWalletAddress: previous.address,
@@ -68,9 +76,12 @@ function useWalletEvents(): void {
       })
     } else if (!current && previous) {
       trackEvent('wallet_disconnected', {
+        eventType: 'wallet_disconnection',
         previousWalletAddress: previous.address,
         previousWalletName: previous.name,
       })
     }
+
+    if (!current) setAnalyticsDimension('walletName', NOT_CONNECTED_WALLET_NAME)
   }, [address, connector, status])
 }
