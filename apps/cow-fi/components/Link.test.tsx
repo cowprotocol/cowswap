@@ -1,0 +1,65 @@
+/** @jest-environment jsdom */
+
+import type { HTMLAttributes } from 'react'
+
+import { render, screen } from '@testing-library/react'
+
+import { Link } from './Link'
+
+jest.mock('@cowprotocol/ui', () => ({
+  Media: {
+    upToLarge: () => '',
+    upToMedium: () => '',
+  },
+  UI: {},
+}))
+
+jest.mock('styled-components/macro', () => {
+  const React = jest.requireActual<typeof import('react')>('react')
+  const styled = new Proxy(
+    {},
+    {
+      get: (_target, tagName: string) => () => (props: HTMLAttributes<HTMLElement>) =>
+        React.createElement(tagName, props),
+    },
+  )
+
+  return { __esModule: true, default: styled, css: () => '' }
+})
+
+// The barrel loads babel macros that cow-fi's Jest setup cannot run.
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('../../../libs/common-utils/src/safeLink'),
+  ...jest.requireActual('../../../libs/common-utils/src/utmParameters'),
+}))
+
+jest.mock('modules/utm', () => ({
+  addUtmToUrl: jest.requireActual<typeof import('modules/utm/utils')>('modules/utm/utils').addUtmToUrl,
+}))
+
+describe('Link', () => {
+  it.each(['https://docs.cow.fi/', 'HTTPS://docs.cow.fi/'])('adds UTM parameters to the absolute URL %s', (href) => {
+    render(
+      <Link external href={href} utmContent="docs">
+        Docs
+      </Link>,
+    )
+
+    expect(screen.getByRole('link', { name: 'Docs' }).getAttribute('href')).toBe(
+      'https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=docs',
+    )
+  })
+
+  it('does not add UTM parameters to a cow.fi page opened in a new tab', () => {
+    render(
+      <Link external href="/learn/aave-trade-breakdown" utmContent="case-study">
+        Case study
+      </Link>,
+    )
+
+    const link = screen.getByRole('link', { name: 'Case study' })
+
+    expect(link.getAttribute('href')).toBe('/learn/aave-trade-breakdown')
+    expect(link.getAttribute('target')).toBe('_blank')
+  })
+})
