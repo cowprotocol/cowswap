@@ -28,16 +28,19 @@ jest.mock('styled-components/macro', () => {
 })
 
 // The barrel loads babel macros that cow-fi's Jest setup cannot run.
-jest.mock('@cowprotocol/common-utils', () => jest.requireActual('../../../libs/common-utils/src/utmParameters'))
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('../../../libs/common-utils/src/safeLink'),
+  ...jest.requireActual('../../../libs/common-utils/src/utmParameters'),
+}))
 
 jest.mock('modules/utm', () => ({
   addUtmToUrl: jest.requireActual<typeof import('modules/utm/utils')>('modules/utm/utils').addUtmToUrl,
 }))
 
 describe('Link', () => {
-  it('adds UTM parameters to an external link with an absolute URL', () => {
+  it.each(['https://docs.cow.fi/', 'HTTPS://docs.cow.fi/'])('adds UTM parameters to the absolute URL %s', (href) => {
     render(
-      <Link external href="https://docs.cow.fi/" utmContent="docs">
+      <Link external href={href} utmContent="docs">
         Docs
       </Link>,
     )
