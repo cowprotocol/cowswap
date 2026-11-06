@@ -144,7 +144,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
    * 5. When only chainId was changed in URL, then redirect to the default state
-   *    (unless URL contains forceTradeNavigate flag, e.g. the widget explicitly sets the same token on another chain)
+   *    (unless URL contains forceTradeNavigate flag and at least one token, e.g. the widget sets the same token on another chain)
    * 6. Otherwise, fill the trade state by data from URL
    *
    * *** When chainId in URL was changed while wallet is connected ***
@@ -220,7 +220,8 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       return
     }
 
-    const shouldResetOnChainChange = onlyChainIdIsChanged && !isForceTradeNavigate
+    const hasTokenInUrl = [inputCurrencyId, outputCurrencyId].some((id) => !!id && id !== EMPTY_TOKEN_ID)
+    const shouldResetOnChainChange = onlyChainIdIsChanged && !(isForceTradeNavigate && hasTokenInUrl)
 
     if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty || shouldResetOnChainChange) {
       navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId)
