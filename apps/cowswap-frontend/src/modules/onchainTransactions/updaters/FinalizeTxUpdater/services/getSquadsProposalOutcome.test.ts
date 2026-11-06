@@ -41,18 +41,31 @@ function buildConnection({
   filing = [buildAccount(MULTISIG_DISCRIMINATOR), buildAccount(VAULT_TRANSACTION_DISCRIMINATOR)],
   proposal = null,
   hasTransaction = true,
+  staticKeyCount = 2,
 }: {
   filing?: Array<AccountInfo<Buffer> | null>
   proposal?: AccountInfo<Buffer> | null
   hasTransaction?: boolean
+  /** Keys the message carries itself; the rest are treated as supplied by a lookup table. */
+  staticKeyCount?: number
 } = {}): Connection {
-  const keys = [PROPOSAL_ADDRESS, PROPOSAL_ADDRESS]
+  // Distinct keys, and the lookup answers by key — otherwise a test cannot tell whether the code
+  // actually asked for the account it needed.
+  const keys = filing.map((_, index) => new PublicKey(new Uint8Array(32).fill(index + 11)))
+  const byKey = new Map(keys.map((key, index) => [key.toBase58(), filing[index] ?? null]))
 
   return {
     getTransaction: jest.fn(async () =>
-      hasTransaction ? { transaction: { message: { staticAccountKeys: keys } } } : null,
+      hasTransaction
+        ? {
+            transaction: { message: { staticAccountKeys: keys.slice(0, staticKeyCount) } },
+            meta: { loadedAddresses: { writable: keys.slice(staticKeyCount), readonly: [] } },
+          }
+        : null,
     ),
-    getMultipleAccountsInfo: jest.fn(async () => filing),
+    getMultipleAccountsInfo: jest.fn(async (requested: PublicKey[]) =>
+      requested.map((key) => byKey.get(key.toBase58()) ?? null),
+    ),
     getAccountInfo: jest.fn(async () => proposal),
   } as unknown as Connection
 }
@@ -103,6 +116,23 @@ describe('getSquadsProposalOutcome', () => {
 
     await expect(getSquadsProposalOutcome(connection, nextSignature())).resolves.toBe('unresolved')
     expect(mockGetProposalPda).not.toHaveBeenCalled()
+  })
+
+  // `staticAccountKeys` omits whatever an address lookup table supplied, and Squads does not require
+  // the vault transaction to be static. Missing it leaves the order waiting out a rejection forever.
+  it('finds a vault transaction supplied by an address lookup table', async () => {
+    const connection = buildConnection({
+      filing: [buildAccount(MULTISIG_DISCRIMINATOR), buildAccount(VAULT_TRANSACTION_DISCRIMINATOR)],
+      staticKeyCount: 1,
+      proposal: buildAccount([]),
+    })
+
+    await getSquadsProposalOutcome(connection, nextSignature())
+
+    expect(mockGetProposalPda).toHaveBeenCalledWith({
+      multisigPda: MULTISIG,
+      transactionIndex: BigInt(TRANSACTION_INDEX),
+    })
   })
 
   it('ignores an account with the right discriminator owned by another program', async () => {

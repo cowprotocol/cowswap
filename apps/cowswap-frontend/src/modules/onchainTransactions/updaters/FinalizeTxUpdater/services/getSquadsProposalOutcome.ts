@@ -1,6 +1,6 @@
 import { FiniteMap } from '@cowprotocol/common-utils'
 
-import type { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
+import type { AccountInfo, Connection, PublicKey, VersionedTransactionResponse } from '@solana/web3.js'
 
 /**
  * `failed` is terminal and gives up on the order; `executed` is terminal and lets it through. Anything
@@ -9,6 +9,9 @@ import type { AccountInfo, Connection, PublicKey } from '@solana/web3.js'
 export type SquadsProposalOutcome = 'failed' | 'executed' | 'unresolved'
 
 type SquadsSdk = typeof import('@sqds/multisig')
+
+/** `getMultipleAccountsInfo` is a single RPC call, and the node refuses more addresses than this. */
+const MAX_ACCOUNTS_PER_LOOKUP = 100
 
 /** A signature's proposal never changes, so it is derived once rather than on every poll. */
 const MAX_CACHED_PROPOSALS = 50
@@ -78,9 +81,12 @@ async function findProposalAddress(
   if (cached) return cached
 
   const transaction = await connection.getTransaction(signature, { maxSupportedTransactionVersion: 0 })
-  const keys = transaction?.transaction.message.staticAccountKeys
 
-  if (!keys?.length) return undefined
+  if (!transaction) return undefined
+
+  const keys = getFilingAccountKeys(transaction)
+
+  if (!keys.length) return undefined
 
   const accounts = await connection.getMultipleAccountsInfo(keys)
   const address = accounts.reduce<PublicKey | undefined>(
@@ -91,6 +97,20 @@ async function findProposalAddress(
   if (address) proposalAddressBySignature.set(signature, address)
 
   return address
+}
+
+/**
+ * Every account the filing touches, not only the ones written into the message. `staticAccountKeys`
+ * leaves out whatever an address lookup table supplied, and Squads does not require the
+ * `VaultTransaction` to be static — missing it would leave the order waiting out a rejection forever.
+ */
+function getFilingAccountKeys(transaction: VersionedTransactionResponse): PublicKey[] {
+  const { writable = [], readonly = [] } = transaction.meta?.loadedAddresses ?? {}
+
+  return [...transaction.transaction.message.staticAccountKeys, ...writable, ...readonly].slice(
+    0,
+    MAX_ACCOUNTS_PER_LOOKUP,
+  )
 }
 
 function loadSquadsSdk(): Promise<SquadsSdk> {
