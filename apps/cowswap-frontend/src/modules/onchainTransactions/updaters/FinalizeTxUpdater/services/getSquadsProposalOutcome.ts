@@ -114,7 +114,13 @@ function getFilingAccountKeys(transaction: VersionedTransactionResponse): Public
 }
 
 function loadSquadsSdk(): Promise<SquadsSdk> {
-  sdkPromise ??= import('@sqds/multisig')
+  sdkPromise ??= import('@sqds/multisig').catch((error: unknown) => {
+    // Caching the rejection would retire proposal tracking for the rest of the session, and this import
+    // has a real way to fail: the chunk 404s for any tab still open across a deployment.
+    sdkPromise = undefined
+
+    throw error
+  })
 
   return sdkPromise
 }
