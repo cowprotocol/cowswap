@@ -27,8 +27,11 @@ jest.mock('styled-components/macro', () => {
   return { __esModule: true, default: styled, css: () => '' }
 })
 
+// The barrel loads babel macros that cow-fi's Jest setup cannot run.
+jest.mock('@cowprotocol/common-utils', () => jest.requireActual('../../../libs/common-utils/src/utmParameters'))
+
 jest.mock('modules/utm', () => ({
-  addUtmToUrl: (href: string, { utmContent }: { utmContent: string }) => `${href}?utm_content=${utmContent}`,
+  addUtmToUrl: jest.requireActual<typeof import('modules/utm/utils')>('modules/utm/utils').addUtmToUrl,
 }))
 
 describe('Link', () => {
@@ -40,7 +43,7 @@ describe('Link', () => {
     )
 
     expect(screen.getByRole('link', { name: 'Docs' }).getAttribute('href')).toBe(
-      'https://docs.cow.fi/?utm_content=docs',
+      'https://docs.cow.fi/?utm_source=cow.fi&utm_medium=web&utm_content=docs',
     )
   })
 
