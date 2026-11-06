@@ -12,6 +12,7 @@ import { useAppKitProvider } from '@reown/appkit/react'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { TradeType, useTradeNavigate, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
+import { useForceTradeNavigateFromUrl } from './useForceTradeNavigateFromUrl'
 import { useIsUrlChainUnavailable } from './useIsUrlChainUnavailable'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -27,6 +28,7 @@ const EMPTY_TOKEN_ID = '_'
 // eslint-disable-next-line max-lines-per-function
 export function useSetupTradeState(enableSellEqBuy = false): void {
   const tradeStateFromUrl = useSetupTradeStateFromUrl()
+  const isForceTradeNavigate = useForceTradeNavigateFromUrl()
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
@@ -141,8 +143,9 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
    * 2. When chainId in URL is invalid or unavailable (e.g. Solana in the widget), then redirect to the default chainId
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
-   * 5. Otherwise, fill the trade state by data from URL, also when only chainId was changed:
-   *    the network selector picks the default tokens itself, and a token can share one address across chains
+   * 5. When only chainId was changed in URL, then redirect to the default state
+   *    (unless URL contains forceTradeNavigate flag, e.g. the widget explicitly sets the same token on another chain)
+   * 6. Otherwise, fill the trade state by data from URL
    *
    * *** When chainId in URL was changed while wallet is connected ***
    * Imagine a case:
@@ -217,13 +220,18 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
       return
     }
 
-    if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty) {
+    const shouldResetOnChainChange = onlyChainIdIsChanged && !isForceTradeNavigate
+
+    if ((sameTokens && !enableSellEqBuyRef.current) || tokensAreEmpty || shouldResetOnChainChange) {
       navigateAndSwitchNetwork(currentChainId, defaultState, prevProviderChainId)
 
       if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
-      } else {
+      } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
+      } else if (shouldResetOnChainChange) {
+        updateState?.({ ...state, chainId: currentChainId })
+        console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
 
       return
