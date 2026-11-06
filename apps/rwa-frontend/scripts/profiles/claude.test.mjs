@@ -74,6 +74,12 @@ test('parseProfileResponse allows digits that are part of the title and common a
   assert.ok(parseProfileResponse('{"description":"3M makes adhesives.","sector":"Industrials · Conglomerates"}', '3M'))
   assert.ok(
     parseProfileResponse(
+      '{"description":"L3Harris builds communications systems.","sector":"Industrials · Aerospace & Defense"}',
+      'L3Harris Technologies',
+    ),
+  )
+  assert.ok(
+    parseProfileResponse(
       '{"description":"Apple Inc. designs phones. It also sells services in the U.S. and abroad.","sector":"Information Technology · Hardware"}',
       'Apple',
     ),

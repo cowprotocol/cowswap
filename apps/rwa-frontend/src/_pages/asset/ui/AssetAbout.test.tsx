@@ -9,13 +9,15 @@ jest.mock('../model/useAssetPriceStats', () => ({
 }))
 jest.mock('./MarketKindSelector', () => ({ MarketKindSelector: () => null }))
 
+const PROFILE = { description: 'NVIDIA designs GPUs.', sector: 'Information Technology · Semiconductors' }
+
 const ASSET: RwaAsset = {
   ticker: 'NVDA',
   coingeckoId: 'nvidia',
   title: 'NVIDIA',
   type: 'stock',
   priority: 1,
-  profile: { description: 'NVIDIA designs GPUs.', sector: 'Information Technology · Semiconductors' },
+  profile: PROFILE,
   tokens: [],
 }
 
@@ -32,5 +34,13 @@ describe('AssetAbout', () => {
 
     fireEvent.focus(link)
     expect(screen.getByRole('tooltip').textContent).toBe('Found a mistake? Propose a fix')
+  })
+
+  it('links to the official website by its hostname', () => {
+    render(<AssetAbout asset={{ ...ASSET, profile: { ...PROFILE, website: 'https://www.nvidia.com/en-us' } }} />)
+
+    const link = screen.getByRole('link', { name: /nvidia\.com/ })
+    expect(link.getAttribute('href')).toBe('https://www.nvidia.com/en-us')
+    expect(link.textContent).toContain('nvidia.com')
   })
 })

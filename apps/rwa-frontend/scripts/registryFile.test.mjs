@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile, rm } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import test from 'node:test'
@@ -47,6 +47,29 @@ test('writeRegistry and readRegistry round-trip', async () => {
     assert.equal(JSON.stringify(read), JSON.stringify(registry))
     assert.deepEqual(maps.sectors, { 0: 'ETF · Gold' })
     assert.equal(JSON.parse(await readFile(path, 'utf8')).assets[0].profile.sector, 0)
+  } finally {
+    await rm(dir, { recursive: true })
+  }
+})
+
+test('readRegistry rejects map keys and references that are not canonical numbers', async () => {
+  const dir = await mkdtemp(join(tmpdir(), 'rwas-'))
+  const path = join(dir, 'RWAs.json')
+  const write = (file) => writeFile(path, JSON.stringify({ version: '1', allowedTradingTimes: {}, ...file }))
+  const withSector = (sectors, sector) => ({
+    sectors,
+    assets: [{ ticker: 'A', profile: { description: 'A.', sector }, tokens: [] }],
+  })
+
+  try {
+    for (const file of [
+      withSector({ tech: 'X' }, 0),
+      withSector({ '01': 'X', 1: 'Y' }, 1),
+      withSector({ 0: 'X' }, '0'),
+    ]) {
+      await write(file)
+      await assert.rejects(readRegistry(path), /is not a number/, JSON.stringify(file))
+    }
   } finally {
     await rm(dir, { recursive: true })
   }

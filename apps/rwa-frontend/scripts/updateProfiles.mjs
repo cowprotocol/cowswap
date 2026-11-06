@@ -83,14 +83,14 @@ async function main() {
         return
       }
 
-      report.filled.push(asset.ticker)
-      knownSectors.add(profile.sector)
-      logResult(asset.ticker, options.dryRun ? `${profile.sector} | ${profile.description}` : 'filled')
-
       await writer.setProfile(asset.ticker, {
         ...profile,
         ...(asset.profile?.website ? { website: asset.profile.website } : {}),
       })
+
+      report.filled.push(asset.ticker)
+      knownSectors.add(profile.sector)
+      logResult(asset.ticker, options.dryRun ? `${profile.sector} | ${profile.description}` : 'filled')
     } catch (err) {
       report.failed.push(asset.ticker)
       logResult(asset.ticker, `failed: ${err instanceof Error ? err.message : String(err)}`)

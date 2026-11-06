@@ -33,20 +33,7 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
         <TokenLogo symbol={asset.ticker} logoUrl={asset.logoUrl} />
         <h2 id="asset-about-title">About {asset.title}</h2>
         <span className={styles.sector}>{profile?.sector ?? RWA_ASSET_TYPE_LABELS[asset.type]}</span>
-        <span className={styles.links}>
-          {profile?.website && (
-            <a className={styles.website} href={profile.website} target="_blank" rel="noopener noreferrer">
-              {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
-            </a>
-          )}
-          {profile?.description && (
-            <Tooltip className={styles.proposeFix} content={PROPOSE_FIX_LABEL}>
-              <a href={RWA_REGISTRY_EDIT_URL} target="_blank" rel="noopener noreferrer" aria-label={PROPOSE_FIX_LABEL}>
-                <PencilIcon />
-              </a>
-            </Tooltip>
-          )}
-        </span>
+        {profile && <ProfileLinks profile={profile} />}
       </header>
       {profile && <Description text={profile.description} />}
       <MarketKindSelector asset={asset} className={styles.marketKind} />
@@ -106,6 +93,27 @@ function Description({ text }: { text: string }): ReactNode {
         </button>
       )}
     </>
+  )
+}
+
+function ProfileLinks({ profile }: { profile: NonNullable<RwaAsset['profile']> }): ReactNode {
+  if (!profile.website && !profile.description) return null
+
+  return (
+    <span className={styles.links}>
+      {profile.website && (
+        <a className={styles.website} href={profile.website} target="_blank" rel="noopener noreferrer">
+          {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
+        </a>
+      )}
+      {profile.description && (
+        <Tooltip className={styles.proposeFix} content={PROPOSE_FIX_LABEL}>
+          <a href={RWA_REGISTRY_EDIT_URL} target="_blank" rel="noopener noreferrer" aria-label={PROPOSE_FIX_LABEL}>
+            <PencilIcon />
+          </a>
+        </Tooltip>
+      )}
+    </span>
   )
 }
 
