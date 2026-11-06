@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.11.4](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.3...ens-v3.11.4) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+
 ## [3.11.3](https://github.com/cowprotocol/cowswap/compare/ens-v3.11.2...ens-v3.11.3) (2026-10-28)
 
 ### Patch Changes

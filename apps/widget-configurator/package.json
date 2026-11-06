@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/widget-configurator",
-  "version": "3.18.2",
+  "version": "3.19.0",
   "private": true,
   "description": "CoW Swap widget configurator",
   "main": "src/main.tsx",
@@ -50,7 +50,7 @@
     "react-inlinesvg": "4.2.0",
     "react-syntax-highlighter": "15.5.0",
     "react": "19.1.2",
-    "viem": "2.48.8",
+    "viem": "2.55.19",
     "wagmi": "3.6.9",
     "widget-react-v3.2.0": "npm:@cowprotocol/widget-react@3.2.0",
     "widget-react-v2.0.2": "npm:@cowprotocol/widget-react@2.0.2",

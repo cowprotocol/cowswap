@@ -54,6 +54,7 @@ export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId>
   'eip155:56': SupportedChainId.BNB,
   'eip155:100': SupportedChainId.GNOSIS_CHAIN,
   'eip155:137': SupportedChainId.POLYGON,
+  'eip155:4663': SupportedChainId.ROBINHOOD,
   'eip155:8453': SupportedChainId.BASE,
   'eip155:9745': SupportedChainId.PLASMA,
   'eip155:42161': SupportedChainId.ARBITRUM_ONE,

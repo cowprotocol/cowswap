@@ -39,11 +39,13 @@ export function AssetAbout({ asset }: { asset: RwaAsset }): ReactNode {
               {new URL(profile.website).hostname.replace(/^www\./, '')} <span aria-hidden="true">↗</span>
             </a>
           )}
-          <Tooltip className={styles.proposeFix} content={PROPOSE_FIX_LABEL}>
-            <a href={RWA_REGISTRY_EDIT_URL} target="_blank" rel="noopener noreferrer" aria-label={PROPOSE_FIX_LABEL}>
-              <PencilIcon />
-            </a>
-          </Tooltip>
+          {profile?.description && (
+            <Tooltip className={styles.proposeFix} content={PROPOSE_FIX_LABEL}>
+              <a href={RWA_REGISTRY_EDIT_URL} target="_blank" rel="noopener noreferrer" aria-label={PROPOSE_FIX_LABEL}>
+                <PencilIcon />
+              </a>
+            </Tooltip>
+          )}
         </span>
       </header>
       {profile && <Description text={profile.description} />}
