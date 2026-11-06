@@ -1,12 +1,11 @@
+import { isSupportedChainId } from '@cowprotocol/common-utils'
 import { AdditionalTargetChainId, ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
+
+import { isBridgeSourceChainSupported } from 'entities/bridgeProvider'
 
 import { sortChainsByDisplayOrder } from './sortChainsByDisplayOrder'
 
 import { ChainsToSelectState } from '../types'
-
-// Solana is a bridge-only destination: you can bridge *to* it, but not *from* it (no source support yet).
-// Treat it as a non-bridgeable source so the destination selector is single-chain, matching Sepolia's behaviour.
-const SOURCE_CHAINS_BRIDGE_DISABLED = new Set<SupportedChainId>([SupportedChainId.SOLANA])
 
 export interface CreateOutputChainsOptions {
   selectedTargetChainId: SupportedChainId | number
@@ -68,7 +67,7 @@ export function createOutputChainsState({
   const orderedChains = sortChainsByDisplayOrder(chainsWithCurrent)
 
   const destinationIds = new Set(filterDestinationChains(bridgeSupportedNetworks)?.map((c) => c.id) ?? [])
-  const sourceSupported = !SOURCE_CHAINS_BRIDGE_DISABLED.has(chainId) && destinationIds.has(chainId)
+  const sourceSupported = isBridgeSourceChainSupported(chainId, filterDestinationChains(bridgeSupportedNetworks))
 
   const baseDisabledChainIds = computeDisabledChainIds(
     orderedChains,
@@ -92,7 +91,7 @@ export function createOutputChainsState({
 }
 
 export function filterDestinationChains(bridgeSupportedNetworks: ChainInfo[] | undefined): ChainInfo[] | undefined {
-  return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId || chain.id in AdditionalTargetChainId)
+  return bridgeSupportedNetworks?.filter((chain) => isSupportedChainId(chain.id) || chain.id in AdditionalTargetChainId)
 }
 
 export function resolveDefaultChainId(

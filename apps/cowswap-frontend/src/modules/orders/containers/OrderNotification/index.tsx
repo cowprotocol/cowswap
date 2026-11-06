@@ -53,7 +53,11 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     if (rest.skipExplorerLink) return title
 
     return (
-      <TransactionContentWithLink orderUid={orderUid} transactionHash={rest.transactionHash}>
+      <TransactionContentWithLink
+        orderUid={orderUid}
+        transactionHash={rest.transactionHash}
+        onExplorerClick={rest.onExplorerClick}
+      >
         {title}
       </TransactionContentWithLink>
     )

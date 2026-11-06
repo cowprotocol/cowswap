@@ -133,6 +133,19 @@ describe('Quote deadline utils', () => {
 
       expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams))).toEqual(MAX_VALID_TO_EPOCH)
     })
+
+    it('When validFrom is set, ValidTo should be validFrom + deadline', () => {
+      const deadline = 120 // 2 minutes
+      const validFrom = Math.floor(NOW_TIME / 1000) + 240 // batch in 4 minutes
+      const localQuoteTimestamp = Math.floor(NOW_TIME / 1000)
+      const quoteDeadlineParams = {
+        validFor: deadline,
+        quoteValidTo: localQuoteTimestamp + deadline,
+        localQuoteTimestamp,
+      }
+
+      expect(getOrderValidTo(deadline, getQuoteState(quoteDeadlineParams), validFrom)).toEqual(validFrom + deadline)
+    })
   })
 
   describe('isQuoteExpired()', () => {

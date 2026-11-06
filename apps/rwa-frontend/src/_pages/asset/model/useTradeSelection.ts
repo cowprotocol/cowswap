@@ -1,0 +1,103 @@
+import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
+
+import { useChainId, useConnection } from 'wagmi'
+
+import { tokenStatsQueryAtomFamily, tradeQuotesQueryAtomFamily } from './tradeQueryAtoms'
+import { tradeChainIdAtom, tradeSideAtom, tradeTokenKeyAtom } from './tradeSelectionAtoms'
+import { useKeptQuotedTokensOrder } from './useKeptQuotedTokensOrder'
+
+import {
+  getAutoToken,
+  getBestQuotedToken,
+  type QuotedToken,
+  sortQuotedTokens,
+  toQuotedTokens,
+} from '../lib/quotedTokens'
+import { resolveTradeChainId, resolveTradeToken, type TradeToken } from '../lib/tradeToken'
+
+import {
+  assetQueryAtomFamily,
+  type RwaAsset,
+  type RwaMarketData,
+  type RwaQuoteSide,
+  type RwaToken,
+} from '@/entities/asset'
+
+interface SharePricing {
+  stockPrice: number | null
+  sharesPerToken: Record<string, number>
+}
+
+const NO_SHARES_PER_TOKEN: Record<string, number> = {}
+
+export interface TradeSelection extends TradeToken {
+  chainId: number
+  side: RwaQuoteSide
+  quotedTokens: QuotedToken[]
+  bestToken: RwaToken | null
+  isQuotesLoading: boolean
+  quotesError: Error | null
+}
+
+/** `null` when the asset has no tokens */
+export function useTradeSelection(asset: RwaAsset): TradeSelection | null {
+  const walletChainId = useChainId()
+  const { isConnected } = useConnection()
+  const side = useAtomValue(tradeSideAtom)
+  const selectedTokenKey = useAtomValue(tradeTokenKeyAtom)
+  const preferredChainId = useAtomValue(tradeChainIdAtom)
+  const market = useAtomValue(assetQueryAtomFamily(asset.ticker)).data?.market
+
+  const chainId =
+    resolveTradeChainId(asset.tokens, selectedTokenKey, preferredChainId, isConnected ? walletChainId : undefined) ??
+    // `validateRegistry` requires tokens, so this only keeps the query atoms keyed
+    0
+  const networkParams = { ticker: asset.ticker, chainId }
+  const quotesQuery = useAtomValue(tradeQuotesQueryAtomFamily(networkParams))
+  const stats = useAtomValue(tokenStatsQueryAtomFamily(asset.ticker)).data?.tokens
+  // `keepPreviousData` keeps the quotes of the previous side or network while the new ones load
+  const chainQuotes = quotesQuery.data?.chainId === chainId ? quotesQuery.data : undefined
+  const quotes = chainQuotes?.side === side ? chainQuotes : undefined
+
+  const { stockPrice, sharesPerToken } = getSharePricing(market)
+  const chainTokens = useMemo(() => asset.tokens.filter((token) => token.chainId === chainId), [asset.tokens, chainId])
+  const sortedTokens = useMemo(
+    () => sortQuotedTokens(toQuotedTokens(chainTokens, quotes, stats, stockPrice, sharesPerToken), side),
+    [chainTokens, quotes, stats, stockPrice, sharesPerToken, side],
+  )
+  const quotedTokens = useKeptQuotedTokensOrder(sortedTokens, `${chainId}:${side}`)
+
+  return useMemo(() => {
+    const bestToken = getBestQuotedToken(quotedTokens, side)
+    const autoToken = getAutoToken(chainTokens, chainQuotes, stockPrice, sharesPerToken)
+    const tradeToken = resolveTradeToken(chainTokens, selectedTokenKey, autoToken?.address ?? null)
+
+    if (!tradeToken) return null
+
+    return {
+      ...tradeToken,
+      chainId,
+      side,
+      quotedTokens,
+      bestToken,
+      isQuotesLoading: !quotes && !quotesQuery.error,
+      quotesError: quotes ? null : quotesQuery.error,
+    }
+  }, [
+    chainTokens,
+    quotedTokens,
+    chainId,
+    chainQuotes,
+    quotes,
+    stockPrice,
+    sharesPerToken,
+    side,
+    selectedTokenKey,
+    quotesQuery.error,
+  ])
+}
+
+function getSharePricing(market: RwaMarketData | null | undefined): SharePricing {
+  return { stockPrice: market?.price ?? null, sharesPerToken: market?.sharesPerToken ?? NO_SHARES_PER_TOKEN }
+}

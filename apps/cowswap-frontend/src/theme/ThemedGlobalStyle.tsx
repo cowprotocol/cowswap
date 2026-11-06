@@ -53,6 +53,15 @@ export const ThemedGlobalStyle = createGlobalStyle`
     }
   }
 
+  // Match AppKit overlay dim to dialog/drawer backdrops (inherits into w3m-modal shadow DOM).
+  w3m-modal {
+    --apkt-tokens-theme-overlay: color-mix(
+      in srgb,
+      var(${UI.MODAL_BACKDROP}) var(${UI.MODAL_BACKDROP_OPACITY}),
+      transparent
+    );
+  }
+
   // Walletconnect V2 mobile override
   body #wcm-modal.wcm-overlay {
     ${Media.upToSmall()} {

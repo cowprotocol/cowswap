@@ -1,0 +1,102 @@
+.widget {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-margin-top: 12px;
+}
+
+.notice {
+  margin: 0;
+  padding: 10px 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.disclaimer {
+  margin: 0;
+  padding: 0 6px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* Browsers paint an opaque white backdrop behind an iframe whose color scheme differs from the embedding page */
+.widget iframe {
+  color-scheme: normal;
+}
+
+.frame {
+  position: relative;
+}
+
+/* The iframe is appended in an effect after the first paint; hold the skeleton height until then */
+.frame[data-loading] {
+  min-height: 640px;
+}
+
+/* CoW Swap caps its form at 470px, so where the single column is wider the card keeps this row as wide as the others */
+@media (min-width: 501px) and (max-width: 960px) {
+  .frame {
+    border-radius: var(--radius-card);
+    background: var(--color-bg);
+    box-shadow: var(--shadow-widget);
+  }
+}
+
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+  height: 640px;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-widget);
+}
+
+.skeletonOverlay {
+  position: absolute;
+  inset: 0;
+  height: auto;
+}
+
+.skeletonTabs {
+  display: flex;
+  gap: 8px;
+}
+
+.skeletonBlock {
+  display: block;
+  border-radius: var(--radius-control);
+  background: var(--color-surface);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.skeletonTab {
+  width: 72px;
+  height: 32px;
+}
+
+.skeletonField {
+  height: 112px;
+}
+
+.skeletonButton {
+  height: 56px;
+  margin-top: auto;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonBlock {
+    animation: none;
+  }
+}

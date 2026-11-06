@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
+import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -7,7 +8,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@cowprotocol/currency'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ClosableBanner } from '@cowprotocol/ui'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { isSmartContractWalletAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -40,7 +41,7 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const tokensByAddress = useTokensByAddressMap()
   const tradeNavigate = useTradeNavigate()
   const vampireAttackFirstTarget = useVampireAttackFirstTarget()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const isSmartContractWallet = useAtomValue(isSmartContractWalletAtom)
   const yieldState = useYieldRawState()
   const cowAnalytics = useCowAnalytics()
 

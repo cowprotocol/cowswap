@@ -1,9 +1,19 @@
+import { IS_SOLANA_ENABLED } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import type { CaipNetworkId } from '@reown/appkit'
+import type { ChainNamespace } from '@reown/appkit-common'
+
+export interface OpenWalletModalEventDetail {
+  namespace?: ChainNamespace
+}
 
 /** Custom event name for "open wallet modal". Dispatched by the app; handled in Web3Provider to open Reown (AppKit). */
 export const OPEN_WALLET_MODAL_EVENT = 'cowswap-open-wallet-modal'
+
+// Solana is not supported in the widget yet (e.g. partner fees)
+export const IS_SOLANA_WALLET_ENABLED = IS_SOLANA_ENABLED && !isInjectedWidget()
 
 export const WC_DISABLED_TEXT =
   'Wallet-connect based wallet is already in use. Please disconnect it to connect to this wallet.'
@@ -28,6 +38,7 @@ export const SUPPORTED_CHAIN_ID_TO_CAIP: Record<SupportedChainId, CaipNetworkId>
   [SupportedChainId.BNB]: 'eip155:56',
   [SupportedChainId.GNOSIS_CHAIN]: 'eip155:100',
   [SupportedChainId.POLYGON]: 'eip155:137',
+  [SupportedChainId.ROBINHOOD]: 'eip155:4663',
   [SupportedChainId.BASE]: 'eip155:8453',
   [SupportedChainId.PLASMA]: 'eip155:9745',
   [SupportedChainId.ARBITRUM_ONE]: 'eip155:42161',
@@ -43,6 +54,7 @@ export const CAIP_TO_SUPPORTED_CHAIN_ID: Record<CaipNetworkId, SupportedChainId>
   'eip155:56': SupportedChainId.BNB,
   'eip155:100': SupportedChainId.GNOSIS_CHAIN,
   'eip155:137': SupportedChainId.POLYGON,
+  'eip155:4663': SupportedChainId.ROBINHOOD,
   'eip155:8453': SupportedChainId.BASE,
   'eip155:9745': SupportedChainId.PLASMA,
   'eip155:42161': SupportedChainId.ARBITRUM_ONE,

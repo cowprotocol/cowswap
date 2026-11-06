@@ -1,8 +1,11 @@
-import { decodeFunctionData, type Hex } from 'viem'
+import { createPublicClient, decodeFunctionData, http, type Hex } from 'viem'
 
-import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
+import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { AbstractProviderAdapter, EvmChains, LATEST_APP_DATA_VERSION, setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { ComposableCowPollerAbi } from '@cowprotocol/cowswap-abis'
 import { EOA_TWAP_POLL_FUNDS_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
+import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 import { POLL_FUNDS_HOOK_GAS_LIMIT } from 'entities/twap/composable-cow-poller.constants'
 
@@ -10,7 +13,6 @@ import type { AppDataInfo, CowHook } from 'modules/appData'
 
 import { toKeccak256 } from 'common/utils/toKeccak256'
 
-import { encodePollFundsCalldata } from './composable-cow-poller.utils'
 import { injectPollFundsPreHookIntoAppData } from './injectPollFundsPreHookIntoAppData'
 
 const POLLER_ADDRESS = '0xd8088f0d57dB91AC6404FB3a9723A890100a6bB3' as const
@@ -48,13 +50,24 @@ function buildAppData(hooks?: AppDataInfo['doc']['metadata']['hooks']): AppDataI
 function expectedPollFundsHook(): CowHook {
   return {
     target: POLLER_ADDRESS,
-    callData: encodePollFundsCalldata(SCHEDULE_ID),
+    callData: new ComposableCowPoller(POLLER_ADDRESS).encodePollFunds(SCHEDULE_ID),
     gasLimit: POLL_FUNDS_HOOK_GAS_LIMIT,
     dappId: EOA_TWAP_POLL_FUNDS_DAPP_ID,
   }
 }
 
 describe('injectPollFundsPreHookIntoAppData()', () => {
+  beforeAll(() => {
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({
+          chain: VIEM_CHAINS[EvmChains.MAINNET],
+          transport: http('http://127.0.0.1:8545'),
+        }),
+      }) as AbstractProviderAdapter,
+    )
+  })
+
   it('prepends pollFunds before existing pre-hooks so JIT funding runs first', async () => {
     const appData = buildAppData({ pre: [EXISTING_PRE_HOOK] })
 

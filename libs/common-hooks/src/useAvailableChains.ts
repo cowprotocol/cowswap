@@ -4,6 +4,12 @@ import { getAvailableSourceChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useFeatureFlags } from './useFeatureFlags'
+import { useIsSolanaAvailable } from './useIsSolanaAvailable'
+
+export interface UseAvailableChainsOptions {
+  /** Excludes Solana regardless of the feature flag. Defaults to `false` */
+  excludeSolana?: boolean
+}
 
 /**
  * Hook to get a list of SupportedChainId currently available/enabled
@@ -12,9 +18,10 @@ import { useFeatureFlags } from './useFeatureFlags'
  * It'll be different when a chain is behind a feature flag.
  * Set the flag in this hook.
  */
-export function useAvailableChains(): SupportedChainId[] {
+export function useAvailableChains({ excludeSolana = false }: UseAvailableChainsOptions = {}): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isSolanaEnabled } = useFeatureFlags()
+  const { isRobinhoodEnabled } = useFeatureFlags()
+  const isSolanaAvailable = useIsSolanaAvailable()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
@@ -22,12 +29,16 @@ export function useAvailableChains(): SupportedChainId[] {
     () => {
       const chainsToSkip: SupportedChainId[] = []
 
-      if (!isSolanaEnabled) {
+      if (!isSolanaAvailable || excludeSolana) {
         chainsToSkip.push(SupportedChainId.SOLANA)
+      }
+
+      if (!isRobinhoodEnabled) {
+        chainsToSkip.push(SupportedChainId.ROBINHOOD)
       }
 
       return getAvailableSourceChains(chainsToSkip)
     },
-    [isSolanaEnabled],
+    [isSolanaAvailable, excludeSolana, isRobinhoodEnabled],
   )
 }

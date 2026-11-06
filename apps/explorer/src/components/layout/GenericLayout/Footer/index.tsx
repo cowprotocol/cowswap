@@ -1,7 +1,11 @@
 import React from 'react'
 
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/common-utils'
-import { isSolanaChain, SOLANA_SETTLEMENT_PROGRAM_ID } from '@cowprotocol/cow-sdk'
+import {
+  COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
+  COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
+  isBarnBackendEnv,
+} from '@cowprotocol/common-utils'
+import { isSolanaChain, SOLANA_SETTLEMENT_PROGRAM_ID, SOLANA_SETTLEMENT_PROGRAM_ID_STAGING } from '@cowprotocol/cow-sdk'
 import { Color, Media } from '@cowprotocol/ui'
 
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'
@@ -126,9 +130,10 @@ export const Footer: React.FC<FooterType> = (props) => {
   const { isBeta = footerConfig.isBeta, url = footerConfig.url } = props
   const networkId = useNetworkId() || Network.MAINNET
   const isSolana = isSolanaChain(networkId)
-  const settlementAddress = isSolana
-    ? SOLANA_SETTLEMENT_PROGRAM_ID
-    : COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
+  const solanaSettlementProgramId = isBarnBackendEnv
+    ? SOLANA_SETTLEMENT_PROGRAM_ID_STAGING
+    : SOLANA_SETTLEMENT_PROGRAM_ID
+  const settlementAddress = isSolana ? solanaSettlementProgramId : COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[networkId]
   const settlementLabel = isSolana ? 'Settlement program↗' : 'Settlement contract↗'
   const settlementSourceUrl = isSolana ? footerConfig.url.contracts.solanaSettlement : url.contracts.settlement
   // SPL delegation takes the vault relayer's place on Solana, there is no counterpart to link to.

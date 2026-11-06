@@ -2,6 +2,11 @@ import { ReactNode } from 'react'
 
 import { useIsTxBundlingSupported, useWalletDetails } from '@cowprotocol/wallet'
 
+import { usePermitInfo } from 'modules/permit'
+import { TradeRowsWide } from 'modules/trade'
+
+import { TradeType } from 'common/modules/tradeNavigation'
+
 import {
   ApproveRequiredReason,
   useGetAmountToSignApprove,
@@ -36,6 +41,9 @@ export function TradeApproveWithAffectedOrderList({
 
   const partialAmountToApprove = useGetPartialAmountToSignApprove()
   const finalAmountToApprove = useGetAmountToSignApprove()
+  // ADVANCED_ORDERS has permits disabled (EOA TWAP uses poller, Safe uses vault-relayer). SWAP only to read token type.
+  const permitInfo = usePermitInfo(partialAmountToApprove?.currency, TradeType.SWAP)
+  const isDaiLikePermit = permitInfo?.type === 'dai-like'
 
   const isApproveOrPartialPermitRequired =
     isApproveRequired === ApproveRequiredReason.Required ||
@@ -47,7 +55,7 @@ export function TradeApproveWithAffectedOrderList({
       (approvalTarget === 'poller' && isApproveOrPartialPermitRequired)) &&
     !isMaxAmountToApprove(finalAmountToApprove)
 
-  const showApproveToggle = isApproveOrPartialPermitRequired || showAffectedOrders
+  const showApproveToggle = !isDaiLikePermit && (isApproveOrPartialPermitRequired || showAffectedOrders)
 
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
@@ -59,13 +67,16 @@ export function TradeApproveWithAffectedOrderList({
         <TradeApproveToggle
           updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
           amountToApprove={partialAmountToApprove}
+          wideDetails
         />
       )}
       {showAffectedOrders && currencyToApprove && (
-        <ActiveOrdersWithAffectedPermit
-          currency={currencyToApprove}
-          approvalTarget={approvalTarget ?? 'vault-relayer'}
-        />
+        <TradeRowsWide>
+          <ActiveOrdersWithAffectedPermit
+            currency={currencyToApprove}
+            approvalTarget={approvalTarget ?? 'vault-relayer'}
+          />
+        </TradeRowsWide>
       )}
     </>
   )

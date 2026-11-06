@@ -5,6 +5,7 @@ import { delay } from '@cowprotocol/common-utils'
 import { EvmChains } from '@cowprotocol/cow-sdk'
 
 import { GAS_LIMIT_DEFAULT, MAX_WALLET_RETRIES, RETRY_BASE_DELAY_MS } from 'common/constants/common'
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 export async function estimateApprove(
   publicClient: PublicClient,
@@ -37,19 +38,19 @@ export async function estimateApprove(
   const chain = VIEM_CHAINS[chainId]
 
   if (rpcUrl && chain) {
-    try {
-      const fallbackClient = createPublicClient({ chain, transport: http(rpcUrl) })
-      const gasLimit = await fallbackClient.estimateContractGas({
-        address: tokenAddress,
-        abi: erc20Abi,
-        functionName: 'approve',
-        args: [spender as Address, amountToApprove],
-        account,
-      })
-      return { gasLimit }
-    } catch (error) {
-      console.warn('[estimateApproveGas] Fallback RPC gas estimation failed', error)
-    }
+    const fallbackClient = createPublicClient({ chain, transport: http(rpcUrl) })
+    const gasLimit = await estimateGasWithFallback(
+      () =>
+        fallbackClient.estimateContractGas({
+          address: tokenAddress,
+          abi: erc20Abi,
+          functionName: 'approve',
+          args: [spender as Address, amountToApprove],
+          account,
+        }),
+      GAS_LIMIT_DEFAULT,
+    )
+    return { gasLimit }
   }
 
   console.error(`[estimateApproveGas] All attempts failed, using default ${GAS_LIMIT_DEFAULT}`)

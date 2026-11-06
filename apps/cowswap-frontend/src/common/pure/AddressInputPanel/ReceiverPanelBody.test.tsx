@@ -4,6 +4,7 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
 import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { fireEvent, render, screen, RenderResult } from '@testing-library/react'
 import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-components/macro'
@@ -18,6 +19,10 @@ jest.mock('react-inlinesvg', () => ({
   default: ({ src, ...props }: { src: string; [key: string]: unknown }) => (
     <svg data-testid="inline-svg" data-src={src} {...(props as React.SVGProps<SVGSVGElement>)} />
   ),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
 }))
 
 jest.mock('./hooks/useReceiverChainInfo', () => ({
@@ -42,6 +47,11 @@ jest.mock('common/pure/ChainPrefixWarning', () => ({
 
 const mockUseReceiverChainInfo = useReceiverChainInfo as jest.MockedFunction<typeof useReceiverChainInfo>
 const mockUseReceiverValidation = useReceiverValidation as jest.MockedFunction<typeof useReceiverValidation>
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+
+beforeEach(() => {
+  mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET })
+})
 
 i18n.load('en-US', {})
 i18n.activate('en-US')
@@ -209,6 +219,14 @@ describe('ReceiverPanelBody — confirmation row visibility', () => {
   it('does NOT show while address is loading', () => {
     mockSolanaChainInfo()
     mockLoadingAddress()
+    renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
+    expect(screen.queryByRole('checkbox')).toBeNull()
+  })
+
+  it('does NOT show when the wallet is connected to Solana', () => {
+    mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.SOLANA })
+    mockSolanaChainInfo()
+    mockValidAddress()
     renderComponent({ value: VALID_SOL_ADDRESS, targetChainId: SupportedChainId.SOLANA })
     expect(screen.queryByRole('checkbox')).toBeNull()
   })

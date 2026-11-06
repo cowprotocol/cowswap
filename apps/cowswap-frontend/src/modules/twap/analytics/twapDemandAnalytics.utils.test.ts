@@ -155,10 +155,10 @@ describe('twapDemandAnalytics utils', () => {
       expect(
         getIsTwapDemandWalletTypePending({
           account: ACCOUNT,
-          accountType: undefined,
+          accountType: null,
           isSafeViaWc: false,
           isSafeWallet: false,
-          isSmartContractWallet: undefined,
+          isSmartContractWallet: null,
         }),
       ).toBe(true)
 
@@ -177,10 +177,10 @@ describe('twapDemandAnalytics utils', () => {
       expect(
         getIsTwapDemandWalletTypePending({
           account: ACCOUNT,
-          accountType: undefined,
+          accountType: null,
           isSafeViaWc: true,
           isSafeWallet: false,
-          isSmartContractWallet: undefined,
+          isSmartContractWallet: null,
         }),
       ).toBe(true)
 

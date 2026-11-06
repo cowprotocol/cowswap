@@ -14,7 +14,7 @@ import type { SelectInputOption } from '../../ui/inputs/Select/base/BaseSelectIn
 import type { SidebarSectionFormProps } from '../forms.types'
 
 export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormProps): ReactNode {
-  const availableChains = useAvailableChains()
+  const availableChains = useAvailableChains({ excludeSolana: true })
 
   const chainOptions: SelectInputOption<SupportedChainId>[] = useMemo(() => {
     const availableChainsSet = new Set(availableChains)
@@ -52,14 +52,7 @@ export function TradeSetupSectionForm({ values, onChange }: SidebarSectionFormPr
         onChange={onChange}
       />
 
-      <SelectInput
-        name="chainId"
-        label="Network"
-        value={values.chainId}
-        disabled={values.widgetMode === 'standalone'}
-        options={chainOptions}
-        onChange={onChange}
-      />
+      <SelectInput name="chainId" label="Network" value={values.chainId} options={chainOptions} onChange={onChange} />
 
       <SwitchInput
         checked={!values.disableCrossChainSwap}

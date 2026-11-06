@@ -23,7 +23,7 @@ describe('useBalancesAccountForChain', () => {
   beforeEach(() => {
     jest.clearAllMocks()
 
-    mockUseWalletInfo.mockReturnValue({ account: '0xEvmAccount' } as WalletInfo)
+    mockUseWalletInfo.mockReturnValue({ account: '0xEvmAccount', chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseBalancesContext.mockReturnValue({ account: undefined } as ReturnType<typeof useBalancesContext>)
     mockUseSolanaAccount.mockReturnValue('SoLanaPubKey11111111111111111111111111111')
   })
@@ -52,6 +52,17 @@ describe('useBalancesAccountForChain', () => {
     mockUseSolanaAccount.mockReturnValue(undefined)
 
     const { result } = renderHook(() => useBalancesAccountForChain(SupportedChainId.SOLANA))
+
+    expect(result.current).toBeUndefined()
+  })
+
+  it('returns undefined for an EVM chain when the wallet is connected to Solana', () => {
+    mockUseWalletInfo.mockReturnValue({
+      account: 'SoLanaPubKey11111111111111111111111111111',
+      chainId: SupportedChainId.SOLANA,
+    } as WalletInfo)
+
+    const { result } = renderHook(() => useBalancesAccountForChain(SupportedChainId.MAINNET))
 
     expect(result.current).toBeUndefined()
   })

@@ -26,7 +26,7 @@ export const OrdersTableWithData: React.FC = () => {
 
   const isFirstRender = useFirstRender()
 
-  return isFirstRender || isOrdersLoading ? (
+  return (isFirstRender && !orders) || isOrdersLoading ? (
     <LoadingWrapper message="Loading orders" />
   ) : (
     <OrdersTable

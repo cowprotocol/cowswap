@@ -1,7 +1,6 @@
 import { useAtomValue } from 'jotai'
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -16,6 +15,7 @@ import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersW
 import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/LimitOrdersWidget/hooks/useLimitOrdersWidgetActions'
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import {
+  TradeRows,
   TradeWidget,
   TradeWidgetParams,
   TradeWidgetSlots,
@@ -25,7 +25,7 @@ import {
   useTradePriceImpact,
 } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
-import { useIsTradeFormValidationPassed, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
+import { useIsTradeFormValidationPassedOrRefreshing, useShouldHideTradeRateDetails } from 'modules/tradeFormValidation'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -166,10 +166,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const hideTradeRateDetails = useShouldHideTradeRateDetails()
-  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isValidationPassedOrRefreshing = useIsTradeFormValidationPassedOrRefreshing()
 
   const tradeConfirmActions = useTradeConfirmActions()
   const {
@@ -215,41 +214,42 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
 
   const slots: TradeWidgetSlots = {
     settingsWidget: <SettingsWidget />,
-    lockScreen:
-      !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
-        <UnlockWidgetScreen
-          id="limit-orders"
-          items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
-            content,
-          }))}
-          buttonLink={UNLOCK_SCREEN.buttonLink}
-          title={i18n._(UNLOCK_SCREEN.title)}
-          subtitle={i18n._(UNLOCK_SCREEN.subtitle)}
-          orderType={i18n._(UNLOCK_SCREEN.orderType)}
-          buttonText={i18n._(UNLOCK_SCREEN.buttonText)}
-          handleUnlock={handleUnlock}
-        />
-      ) : undefined,
+    lockScreen: !isUnlocked ? (
+      <UnlockWidgetScreen
+        id="limit-orders"
+        items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
+          content,
+        }))}
+        buttonLink={UNLOCK_SCREEN.buttonLink}
+        title={i18n._(UNLOCK_SCREEN.title)}
+        subtitle={i18n._(UNLOCK_SCREEN.subtitle)}
+        orderType={i18n._(UNLOCK_SCREEN.orderType)}
+        buttonText={i18n._(UNLOCK_SCREEN.buttonText)}
+        handleUnlock={handleUnlock}
+      />
+    ) : undefined,
     topContent: props.settingsState.limitPricePosition === 'top' ? rateInput : undefined,
     middleContent: props.settingsState.limitPricePosition === 'between' ? rateInput : undefined,
     // TODO: Extract nested component outside render function
     // eslint-disable-next-line react/no-unstable-nested-components
-    bottomContent(warnings) {
+    bottomContent(warnings, captcha) {
       return (
         <>
           {props.settingsState.limitPricePosition === 'bottom' && rateInput}
-          {!hideTradeRateDetails && (
-            <styledEl.FooterBox>
-              <DeadlineInput />
-              <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
-            </styledEl.FooterBox>
-          )}
+
+          <TradeRows>
+            {!hideTradeRateDetails && (
+              <>
+                <DeadlineInput />
+                <TradeRateDetails rateInfoParams={rateInfoParams} alwaysExpanded={true} loading={isRateLoading} />
+              </>
+            )}
+            {isValidationPassedOrRefreshing && <TradeApproveWithAffectedOrderList />}
+          </TradeRows>
 
           <LimitOrdersWarnings feeAmount={feeAmount} />
           {warnings}
-
-          {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
-
+          {captcha}
           <styledEl.TradeButtonBox>
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>

@@ -11,8 +11,11 @@ const MIN_NATIVE_CURRENCY_FOR_GAS_POLYGON = BigInt('100000000000000000') // 0.1 
 const MIN_NATIVE_CURRENCY_FOR_GAS_MID = BigInt('3000000000000000') // 0.003 native (BNB Chain, Linea)
 const MIN_NATIVE_CURRENCY_FOR_GAS_LOW = BigInt('1000000000000000') // 0.001 native (Gnosis Chain, Arbitrum One, Base, Avalanche, Ink, Plasma)
 // SOL has 9 decimals, unlike the 18-decimal tiers above, so it needs its own value rather than the
-// LOW fallback. Covers the ~5_000 lamport fee plus the 2_039_280 lamport rent-exempt reserve that
-// creating the wrapped-SOL associated token account requires.
+// LOW fallback. A trade transaction funds the wrapped-SOL account, the buy-token account and the order
+// PDA on top of the fees (~5_000 lamports plus ~0.001 SOL reserved for wallet-injected priority fees),
+// and the wallet itself must stay rent-exempt: ~6_623_480 lamports at the rent rate of 2026-09. Only a
+// fallback for the first render — callers pass the live figure from `useSolanaTradeOverhead` as
+// `nativeReserve` once it is known (just the wallet's rent-exempt reserve on a sponsored trade).
 const MIN_NATIVE_CURRENCY_FOR_GAS_SOLANA = BigInt('10000000') // 0.01 SOL
 
 // Per-chain native currency reserve for gas. Chains not listed fall back to the LOW tier.
@@ -35,14 +38,17 @@ const MIN_NATIVE_CURRENCY_FOR_GAS: Partial<Record<SupportedChainId, bigint>> = {
  * Given some token amount, return the max that can be spent of it
  * @param currencyAmount to return max of
  * @param canUseAllNative whether or not the use can use all the native currency, if native
+ * @param nativeReserve exact amount (in raw units) the pending transaction needs on top of the sell
+ *   amount — overrides the static per-chain constant when the caller knows the live figure
  */
 export function maxAmountSpend(
   currencyAmount?: CurrencyAmount<Currency>,
   canUseAllNative?: boolean,
+  nativeReserve?: bigint,
 ): CurrencyAmount<Currency> | undefined {
   if (!currencyAmount) return undefined
   if (getIsNativeToken(currencyAmount.currency) && !canUseAllNative) {
-    const minNativeCurrencyForGas = getMinNativeCurrencyForGas(currencyAmount.currency.chainId)
+    const minNativeCurrencyForGas = nativeReserve ?? getMinNativeCurrencyForGas(currencyAmount.currency.chainId)
     if (currencyAmount.quotient > minNativeCurrencyForGas) {
       return CurrencyAmount.fromRawAmount(currencyAmount.currency, currencyAmount.quotient - minNativeCurrencyForGas)
     } else {

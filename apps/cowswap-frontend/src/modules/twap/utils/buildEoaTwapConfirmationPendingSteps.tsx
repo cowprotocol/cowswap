@@ -4,11 +4,13 @@ import type { Hex } from 'viem'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency } from '@cowprotocol/currency'
-import { BadgeType, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@cowprotocol/currency'
+import { BadgeType, LongLoadText, TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
+import { isMaxAmountToApprove } from 'modules/erc20Approve'
 import { OrderStep, OrderStepStatus } from 'modules/trade'
 
 import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
@@ -33,6 +35,7 @@ export interface BuildEoaTwapConfirmationPendingStepsParams {
   chainId?: SupportedChainId
   signingStep: EoaTwapSigningStepState
   token?: Currency
+  amountToApprove?: CurrencyAmount<Currency> | null
 }
 
 export interface EoaTwapCurrentStepBadgeProps {
@@ -48,6 +51,7 @@ export interface EoaTwapCurrentStepButtonProps {
 export interface EoaTwapStepDescriptionOptions {
   chainId?: SupportedChainId
   completedStepTxHashes?: Partial<Record<EoaTwapSigningSteps, Hex>>
+  amountToApprove?: CurrencyAmount<Currency> | null
 }
 
 interface BuildEoaTwapWalletActionsCompleteDescriptionParams {
@@ -55,6 +59,7 @@ interface BuildEoaTwapWalletActionsCompleteDescriptionParams {
   completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
   token: Currency | undefined
   chainId: SupportedChainId | undefined
+  amountToApprove: CurrencyAmount<Currency> | null | undefined
 }
 
 interface BuildEoaTwapWalletActionSummaryLineParams {
@@ -62,6 +67,7 @@ interface BuildEoaTwapWalletActionSummaryLineParams {
   symbol: string | undefined
   chainId: SupportedChainId | undefined
   completedStepTxHashes: Partial<Record<EoaTwapSigningSteps, Hex>> | undefined
+  amountToApprove: CurrencyAmount<Currency> | null | undefined
 }
 
 interface EoaTwapWalletActionOutcome {
@@ -69,10 +75,17 @@ interface EoaTwapWalletActionOutcome {
   hasTxLink: boolean
 }
 
+interface GetEoaTwapApprovalAmountLabelParams {
+  action: 'approve' | 'permit'
+  symbol: string | undefined
+  amountToApprove: CurrencyAmount<Currency> | null | undefined
+}
+
 export function buildEoaTwapConfirmationPendingSteps({
   chainId,
   signingStep,
   token,
+  amountToApprove,
 }: BuildEoaTwapConfirmationPendingStepsParams): OrderStep[] | null {
   const currentIndex = signingStep.plan.indexOf(signingStep.step)
 
@@ -94,6 +107,7 @@ export function buildEoaTwapConfirmationPendingSteps({
           completedStepTxHashes: signingStep.completedStepTxHashes,
           token,
           chainId,
+          amountToApprove,
         }),
         status: 'success',
       },
@@ -108,7 +122,7 @@ export function buildEoaTwapConfirmationPendingSteps({
 
   return signingStep.plan.map((step, index) => {
     const symbol = token?.symbol
-    const label = getEoaTwapStepLabel(step, symbol)
+    const label = getEoaTwapStepLabel(step, symbol, amountToApprove)
 
     let status: OrderStepStatus
 
@@ -123,6 +137,7 @@ export function buildEoaTwapConfirmationPendingSteps({
     const description = getEoaTwapStepDescription(step, status, token, {
       chainId,
       completedStepTxHashes: signingStep.completedStepTxHashes,
+      amountToApprove,
     })
 
     return {
@@ -132,6 +147,38 @@ export function buildEoaTwapConfirmationPendingSteps({
       status,
     }
   })
+}
+
+export function getEoaTwapApprovalAmountLabel({
+  action,
+  symbol,
+  amountToApprove,
+}: GetEoaTwapApprovalAmountLabelParams): ReactNode {
+  if (amountToApprove && !isMaxAmountToApprove(amountToApprove)) {
+    return action === 'approve' ? (
+      <Trans>
+        Approve <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} />
+      </Trans>
+    ) : (
+      <Trans>
+        Permit <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} />
+      </Trans>
+    )
+  }
+
+  if (amountToApprove && isMaxAmountToApprove(amountToApprove)) {
+    if (action === 'approve') {
+      return symbol ? t`Approve ${symbol} (unlimited)` : t`Approve token (unlimited)`
+    }
+
+    return symbol ? t`Permit ${symbol} (unlimited)` : t`Permit token (unlimited)`
+  }
+
+  if (action === 'approve') {
+    return symbol ? t`Approve ${symbol}` : t`Approve token`
+  }
+
+  return symbol ? t`Permit ${symbol}` : t`Permit token`
 }
 
 export function getEoaTwapCurrentStepBadge(
@@ -200,6 +247,7 @@ export function getEoaTwapCurrentStepButton(
   step: EoaTwapSigningSteps,
   status: OrderStepStatus,
   symbol: string,
+  amountToApprove?: CurrencyAmount<Currency> | null,
 ): EoaTwapCurrentStepButtonProps | null {
   const isLoading = status === 'loading'
   const hasError = status === 'error'
@@ -209,8 +257,8 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
-                {t`Resetting approval`}
+              <LongLoadText>
+                {t`Revoking approval`}
                 <ThreeDots />
               </LongLoadText>
             ),
@@ -218,7 +266,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Reset approval`,
+              children: t`Revoke approval`,
               disabled: false,
             }
           : getConfirmWithWalletButton()
@@ -227,8 +275,8 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
-                {t`Approving ${symbol}`}
+              <LongLoadText>
+                {getEoaTwapApprovingButtonLabel(symbol, amountToApprove)}
                 <ThreeDots />
               </LongLoadText>
             ),
@@ -236,7 +284,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Approve ${symbol}`,
+              children: getEoaTwapStepLabel(step, symbol, amountToApprove),
               disabled: false,
             }
           : getConfirmWithWalletButton()
@@ -245,8 +293,8 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
-                {t`Approving ${symbol}`}
+              <LongLoadText>
+                {getEoaTwapApprovingButtonLabel(symbol, amountToApprove)}
                 <ThreeDots />
               </LongLoadText>
             ),
@@ -254,7 +302,7 @@ export function getEoaTwapCurrentStepButton(
           }
         : hasError
           ? {
-              children: t`Approve ${symbol}`,
+              children: getEoaTwapApprovalAmountLabel({ action: 'approve', symbol, amountToApprove }),
               disabled: false,
             }
           : getConfirmWithWalletButton()
@@ -263,7 +311,7 @@ export function getEoaTwapCurrentStepButton(
       return isLoading
         ? {
             children: (
-              <LongLoadText fontSize={15} fontWeight={500}>
+              <LongLoadText>
                 {t`Activating TWAP`}
                 <ThreeDots />
               </LongLoadText>
@@ -346,13 +394,18 @@ export function getEoaTwapStepDescription(
   }
 }
 
-export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string): string {
+export function getEoaTwapStepLabel(
+  step: EoaTwapSigningSteps,
+  symbol?: string,
+  amountToApprove?: CurrencyAmount<Currency> | null,
+): ReactNode {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
-      return symbol ? t`Approve ${symbol}` : t`Approve token`
+      return getEoaTwapApprovalAmountLabel({ action: 'approve', symbol, amountToApprove })
     case EoaTwapSigningSteps.PermitPoller:
-      return symbol ? t`Permit ${symbol}` : t`Permit token`
+      return getEoaTwapApprovalAmountLabel({ action: 'permit', symbol, amountToApprove })
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     case EoaTwapSigningSteps.SubmitTwap:
@@ -367,14 +420,15 @@ export function getEoaTwapStepLabel(step: EoaTwapSigningSteps, symbol?: string):
 export function getEoaTwapWalletActionSummaryLabel(
   step: EoaTwapSigningSteps,
   symbol: string | undefined,
-): null | string {
+  amountToApprove?: CurrencyAmount<Currency> | null,
+): null | ReactNode {
   switch (step) {
     case EoaTwapSigningSteps.ZeroApprovePoller:
-      return t`Reset approval`
+      return t`Revoke approval`
     case EoaTwapSigningSteps.ApprovePoller:
-      return symbol ? t`Approve ${symbol}` : t`Approve token`
+      return getEoaTwapApprovalAmountLabel({ action: 'approve', symbol, amountToApprove })
     case EoaTwapSigningSteps.PermitPoller:
-      return symbol ? t`Permit ${symbol}` : t`Permit token`
+      return getEoaTwapApprovalAmountLabel({ action: 'permit', symbol, amountToApprove })
     case EoaTwapSigningSteps.TwapSign:
       return t`Sign TWAP`
     default:
@@ -392,6 +446,7 @@ function buildEoaTwapStepSuccessDescription(
     symbol: token?.symbol,
     chainId: options?.chainId,
     completedStepTxHashes: options?.completedStepTxHashes,
+    amountToApprove: options?.amountToApprove,
   })
 
   if (!summaryLine) {
@@ -413,6 +468,7 @@ function buildEoaTwapWalletActionsCompleteDescription({
   completedStepTxHashes,
   token,
   chainId,
+  amountToApprove,
 }: BuildEoaTwapWalletActionsCompleteDescriptionParams): ReactNode {
   const symbol = token?.symbol
 
@@ -424,6 +480,7 @@ function buildEoaTwapWalletActionsCompleteDescription({
           symbol,
           chainId,
           completedStepTxHashes,
+          amountToApprove,
         })
 
         if (!summaryLine) {
@@ -441,8 +498,9 @@ function buildEoaTwapWalletActionSummaryLine({
   symbol,
   chainId,
   completedStepTxHashes,
+  amountToApprove,
 }: BuildEoaTwapWalletActionSummaryLineParams): ReactNode {
-  const label = getEoaTwapWalletActionSummaryLabel(step, symbol)
+  const label = getEoaTwapWalletActionSummaryLabel(step, symbol, amountToApprove)
   const outcome = getEoaTwapWalletActionOutcome(step)
 
   if (!label || !outcome) {
@@ -468,9 +526,9 @@ function buildEoaTwapWalletActionSummaryLine({
 function getConfirmWithWalletButton(): EoaTwapCurrentStepButtonProps {
   return {
     children: (
-      <LongLoadText fontSize={15} fontWeight={500}>
+      <LongLoadText>
         {t`Confirm with your wallet`}
-        <CenteredDots smaller />
+        <ThreeDots />
       </LongLoadText>
     ),
     disabled: true,
@@ -483,6 +541,25 @@ function getEoaTwapActivationStepStatus(signingStep: EoaTwapSigningStepState): O
   }
 
   return signingStep.phase === EoaTwapSigningPhase.WaitingForTx ? 'loading' : 'active'
+}
+
+function getEoaTwapApprovingButtonLabel(
+  symbol: string,
+  amountToApprove: CurrencyAmount<Currency> | null | undefined,
+): ReactNode {
+  if (amountToApprove && !isMaxAmountToApprove(amountToApprove)) {
+    return (
+      <Trans>
+        Approving <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} />
+      </Trans>
+    )
+  }
+
+  if (amountToApprove && isMaxAmountToApprove(amountToApprove)) {
+    return t`Approving ${symbol} (unlimited)`
+  }
+
+  return t`Approving ${symbol}`
 }
 
 function getEoaTwapWalletActionOutcome(step: EoaTwapSigningSteps): null | EoaTwapWalletActionOutcome {

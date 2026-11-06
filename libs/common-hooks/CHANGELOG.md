@@ -1,5 +1,99 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.17.1...common-hooks-v3.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: add isAlphaNetworksOptionVisible flag (#8477)
+
+### Patch Changes
+
+- fix(performance): wake countdowns once per displayed second (#8448)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/types@4.14.2
+
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.17.0...common-hooks-v3.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.16.1...common-hooks-v3.17.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: wait for cows alpha (#8393)
+
+- feat: add isAlphaNetworksOptionVisible flag (#8477)
+
+- feat: simple price chart (#8305)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/common-utils@3.21.0
+
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.16.0...common-hooks-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/types@4.14.1
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.15.0...common-hooks-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat: wait for cows + compact approval form changes (#8376)
+
+- feat: add FF to disable ata creation instruction (#8422)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/types@4.14.0
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.14.0...common-hooks-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): add setting to toggle alpha chains (#8364)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): disable Solana in widget (#8372)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/types@4.13.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v3.13.0...common-hooks-v3.14.0) (2026-10-06)
 
 ### Minor Changes

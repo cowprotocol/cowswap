@@ -1,11 +1,18 @@
-import { decodeFunctionData, parseAbi } from 'viem'
+import { createPublicClient, decodeFunctionData, http, parseAbi } from 'viem'
 
-import type { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { AbstractProviderAdapter, EvmChains, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  COW_SHED_2_1_0_VERSION,
+  COW_SHED_FACTORY_FOR_COMPOSABLE_COW,
+  type ICoWShedCall,
+} from '@cowprotocol/sdk-cow-shed'
+import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 import { encodeTrustedExecuteHooksCalldata, buildEoaTwapTrustedExecuteTx } from './buildEoaTwapTrustedExecuteTx'
 
 const PROXY = '0x00000000000000000000000000000000000000bb' as const
-const FACTORY = '0x00000000000000000000000000000000000000cc' as const
+const FACTORY = COW_SHED_FACTORY_FOR_COMPOSABLE_COW[COW_SHED_2_1_0_VERSION]
 
 const SAMPLE_CALLS: ICoWShedCall[] = [
   {
@@ -24,10 +31,21 @@ describe('encodeTrustedExecuteHooksCalldata()', () => {
 })
 
 describe('buildEoaTwapTrustedExecuteTx()', () => {
+  beforeAll(() => {
+    setGlobalAdapter(
+      new ViemAdapter({
+        provider: createPublicClient({
+          chain: VIEM_CHAINS[EvmChains.MAINNET],
+          transport: http('http://127.0.0.1:8545'),
+        }),
+      }) as AbstractProviderAdapter,
+    )
+  })
+
   it('targets the proxy when it is already deployed', () => {
     const tx = buildEoaTwapTrustedExecuteTx({
       proxyAddress: PROXY,
-      factoryAddress: FACTORY,
+      chainId: SupportedChainId.MAINNET,
       calls: SAMPLE_CALLS,
       isProxyDeployed: true,
     })
@@ -39,7 +57,7 @@ describe('buildEoaTwapTrustedExecuteTx()', () => {
   it('deploys the proxy and executes hooks through the factory without a setup signature', () => {
     const tx = buildEoaTwapTrustedExecuteTx({
       proxyAddress: PROXY,
-      factoryAddress: FACTORY,
+      chainId: SupportedChainId.MAINNET,
       calls: SAMPLE_CALLS,
       isProxyDeployed: false,
     })

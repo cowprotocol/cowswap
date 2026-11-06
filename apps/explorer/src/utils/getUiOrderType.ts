@@ -29,7 +29,8 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
 }
 
 export function getUiOrderType({ fullAppData, class: orderClass, solana, appData }: Order): UiOrderType {
-  // TODO: wire up real appData
+  // A Solana order placed while `isSolanaAppDataEnabled` was off signs one of two agreed constants as
+  // its opaque appData and registers no doc, so that raw value is the only limit/market signal.
   if (solana && (appData === SOLANA_LIMIT_ORDER_STAGING_APP_DATA || appData === SOLANA_LIMIT_ORDER_PROD_APP_DATA))
     return UiOrderType.LIMIT
 

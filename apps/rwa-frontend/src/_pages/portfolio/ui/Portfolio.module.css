@@ -1,0 +1,450 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 32px;
+}
+
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 44px;
+  font-weight: 600;
+  line-height: 48px;
+  letter-spacing: -0.88px;
+}
+
+.intro {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  padding-right: 24px;
+}
+
+.valueLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+  cursor: help;
+}
+
+.total {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 46px;
+  letter-spacing: -0.8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cents {
+  color: var(--color-text-secondary);
+}
+
+.skeletonTotal {
+  display: inline-block;
+  width: 240px;
+  height: 44px;
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  vertical-align: middle;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.warning {
+  margin: 4px 0 0;
+  padding: 4px 8px;
+  border-radius: var(--radius);
+  background: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  font-size: 13px;
+}
+
+.emptyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 64px 24px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
+  text-align: center;
+}
+
+.emptyCard h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.emptyCard p {
+  max-width: 440px;
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.scroll {
+  /* Contains the absolute visually hidden headers, which would widen the page past this scroller */
+  position: relative;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th,
+.table td {
+  padding: 0 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table th:first-child,
+.table td:first-child {
+  padding-left: 24px;
+}
+
+.table th:last-child,
+.table td:last-child {
+  padding-right: 24px;
+}
+
+.table th {
+  height: 40px;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.table td {
+  height: 72px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.group + .group .assetRow td {
+  border-top: 1px solid var(--color-border);
+}
+
+.table .sorted {
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.numeric {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.table .numeric {
+  text-align: right;
+}
+
+.strong {
+  font-weight: 500;
+}
+
+.menuColumn {
+  width: 32px;
+}
+
+/* Lines the header up with the asset logos, past the 24px expand button */
+.table th.assetColumn {
+  padding-left: 58px;
+}
+
+.holding {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.expandButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: -2px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: none;
+  color: var(--color-text-secondary);
+}
+
+.expandButton svg {
+  transform: rotate(-90deg);
+  transition: transform 0.15s;
+}
+
+.expandButton[aria-expanded='true'] svg {
+  transform: none;
+}
+
+.expandButton:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.expandButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+}
+
+.holdingIdentity {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.holdingTitle,
+.tokenTitle {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.holdingTitle:hover {
+  text-decoration: underline;
+}
+
+.secondary {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+
+.block {
+  display: block;
+}
+
+/* The well around the tokens of an asset: transparent borders inset it from the card edges, and with the background
+   clipped to the padding box a 20px outer radius leaves the 12px inner one */
+.tokenRow td {
+  background: var(--color-well);
+  background-clip: padding-box;
+}
+
+.tokenRow td:first-child {
+  padding-left: 50px;
+  border-left: 8px solid transparent;
+}
+
+.tokenRow td:last-child {
+  padding-right: 16px;
+  border-right: 8px solid transparent;
+}
+
+.firstTokenRow td:first-child {
+  border-top-left-radius: 20px 12px;
+}
+
+.firstTokenRow td:last-child {
+  border-top-right-radius: 20px 12px;
+}
+
+.lastTokenRow td {
+  border-bottom: 8px solid transparent;
+}
+
+.lastTokenRow td:first-child {
+  border-bottom-left-radius: 20px;
+}
+
+.lastTokenRow td:last-child {
+  border-bottom-right-radius: 20px;
+}
+
+.emptyWallet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.emptyWallet h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.emptyWallet p {
+  max-width: 420px;
+  margin: 4px 0 20px;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.exploreLink {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.exploreLink:hover {
+  opacity: 0.9;
+}
+
+.dividendNotes {
+  margin: 12px 24px 0;
+}
+
+.panelNote {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 12px 24px 20px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.panelNote p {
+  margin: 0;
+}
+
+.panelNote time {
+  font-variant-numeric: tabular-nums;
+}
+
+.balancesStatus {
+  display: flex;
+  margin-left: auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.progress {
+  width: 120px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--color-surface);
+}
+
+.progressValue {
+  height: 100%;
+  background: var(--color-accent);
+  transition: width 0.2s ease-out;
+}
+
+.linkButton {
+  padding: 4px 0;
+  border: none;
+  background: none;
+  color: var(--color-text);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.linkButton:disabled {
+  color: var(--color-text-secondary);
+  cursor: default;
+}
+
+.note {
+  margin: 12px 24px 0;
+  color: var(--color-text-secondary);
+  font-size: 13px;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeletonTotal {
+    animation: none;
+  }
+
+  .progressValue,
+  .expandButton svg {
+    transition: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .title {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .summary {
+    align-items: flex-start;
+    padding-right: 0;
+  }
+
+  .total {
+    font-size: 32px;
+    line-height: 40px;
+  }
+}

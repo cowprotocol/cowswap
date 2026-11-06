@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -9,7 +10,7 @@ import { useLocation, useParams } from 'react-router'
 import { PageTitle } from 'modules/application'
 import { HooksStoreWidget } from 'modules/hooksStore'
 import { swapDerivedStateAtom, SwapUpdaters, useSwapDerivedStateToFill } from 'modules/swap'
-import { getDefaultTradeRawState } from 'modules/trade'
+import { getDefaultTradeRawState, TradeRouteRedirect } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -23,6 +24,10 @@ export function HooksPage(): ReactNode {
 
   if (!params.chainId) {
     return <HooksPageRedirect />
+  }
+
+  if (isSolanaChain(Number(params.chainId))) {
+    return <TradeRouteRedirect route={Routes.SWAP} />
   }
 
   return (

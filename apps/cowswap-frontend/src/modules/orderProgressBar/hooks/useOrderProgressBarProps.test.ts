@@ -1,16 +1,28 @@
-import { SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
+import { CompetitionOrderStatus, SupportedChainId, getAddressKey } from '@cowprotocol/cow-sdk'
 
+import { Order } from 'legacy/state/orders/actions'
+
+import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { ApiSolverCompetition } from 'common/types/soverCompetition'
 
 import {
   getEnsLookupAddress,
   buildSolverCompetition,
+  fetchOrderCompetitionStatus,
+  getIsCancellationRequested,
   getProgressBarStepName,
   shouldUpdateStepImmediately,
 } from './useOrderProgressBarProps'
 
 import { OrderProgressBarStepName } from '../constants'
 import { OrderProgressBarState } from '../types'
+
+jest.mock('api/cowProtocol/api', () => ({
+  ...jest.requireActual('api/cowProtocol/api'),
+  getOrderCompetitionStatus: jest.fn(),
+}))
+
+const mockedGetOrderCompetitionStatus = jest.mocked(getOrderCompetitionStatus)
 
 const OPEN_STATUS = 'open' as OrderProgressBarState['backendApiStatus']
 const EXECUTING_STATUS = 'executing' as OrderProgressBarState['backendApiStatus']
@@ -118,6 +130,23 @@ describe('getEnsLookupAddress', () => {
   })
 })
 
+describe('getIsCancellationRequested', () => {
+  it('is true when the activity reports the order as cancelling', () => {
+    expect(getIsCancellationRequested(undefined, true)).toBe(true)
+  })
+
+  it('is true when cancellation was requested after the order got filled', () => {
+    const filledOrder = { isCancelling: true } as Order
+
+    expect(getIsCancellationRequested(filledOrder, false)).toBe(true)
+  })
+
+  it('is false when no cancellation was requested', () => {
+    expect(getIsCancellationRequested({ isCancelling: false } as Order, false)).toBe(false)
+    expect(getIsCancellationRequested(undefined, false)).toBe(false)
+  })
+})
+
 describe('buildSolverCompetition', () => {
   // Backend returns entries ranked ascending, so the last entry is the winner. A `marker` tags
   // each raw entry so we can assert which duplicate occurrence survived deduplication.
@@ -186,5 +215,31 @@ describe('buildSolverCompetition', () => {
 
   it('returns an empty list when there is no competition data', () => {
     expect(buildSolverCompetition(undefined, {})).toEqual([])
+  })
+})
+
+describe('fetchOrderCompetitionStatus', () => {
+  const CHAIN_ID = SupportedChainId.MAINNET
+  const ORDER_ID = '0xorder'
+
+  afterEach(() => {
+    mockedGetOrderCompetitionStatus.mockReset()
+  })
+
+  it('resolves the status when the lookup succeeds', async () => {
+    const status = { type: 'traded' } as unknown as CompetitionOrderStatus
+    mockedGetOrderCompetitionStatus.mockResolvedValue(status)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).resolves.toBe(status)
+  })
+
+  // getOrderCompetitionStatus catches every failure and resolves undefined. Without a rejection here
+  // SWR treats that as success, `error` stays undefined, and the finished-order placeholder never clears.
+  it('rejects when the lookup settles without a status', async () => {
+    mockedGetOrderCompetitionStatus.mockResolvedValue(undefined)
+
+    await expect(fetchOrderCompetitionStatus(CHAIN_ID, ORDER_ID)).rejects.toThrow(
+      'Order competition status unavailable',
+    )
   })
 })

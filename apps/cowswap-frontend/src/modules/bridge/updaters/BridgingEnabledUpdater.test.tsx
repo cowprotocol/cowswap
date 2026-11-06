@@ -1,6 +1,8 @@
+import { getDefaultStore, type PrimitiveAtom } from 'jotai'
+
 import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSafeApp } from '@cowprotocol/wallet'
+import { isSafeAppAtom } from '@cowprotocol/wallet'
 
 import { render } from '@testing-library/react'
 import { useHasBridgeProviders } from 'entities/bridgeProvider'
@@ -22,7 +24,7 @@ jest.mock('@cowprotocol/common-utils', () => ({
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
-  useIsSafeApp: jest.fn(),
+  isSafeAppAtom: jest.requireActual('jotai').atom(false),
 }))
 
 jest.mock('entities/bridgeProvider', () => ({
@@ -42,7 +44,7 @@ const setIsBridgingEnabledMock = jest.fn()
 const useFeatureFlagsMock = useFeatureFlags as jest.Mock
 const useSetIsBridgingEnabledMock = useSetIsBridgingEnabled as jest.Mock
 const isInjectedWidgetMock = isInjectedWidget as jest.Mock
-const useIsSafeAppMock = useIsSafeApp as jest.Mock
+const writableIsSafeAppAtom = isSafeAppAtom as PrimitiveAtom<boolean | null>
 const useHasBridgeProvidersMock = useHasBridgeProviders as jest.Mock
 const useInjectedWidgetParamsMock = useInjectedWidgetParams as jest.Mock
 const useTradeTypeInfoMock = useTradeTypeInfo as jest.Mock
@@ -53,7 +55,7 @@ describe('BridgingEnabledUpdater', () => {
     useSetIsBridgingEnabledMock.mockReturnValue(setIsBridgingEnabledMock)
     useFeatureFlagsMock.mockReturnValue({ isBridgingInSafeWidgetEnabled: false })
     isInjectedWidgetMock.mockReturnValue(false)
-    useIsSafeAppMock.mockReturnValue(false)
+    getDefaultStore().set(writableIsSafeAppAtom, false)
     useHasBridgeProvidersMock.mockReturnValue(true)
     useInjectedWidgetParamsMock.mockReturnValue({})
   })
@@ -102,7 +104,7 @@ describe('BridgingEnabledUpdater', () => {
 
   it('disables bridging inside a widget hosted in a Safe app', () => {
     useTradeTypeInfoMock.mockReturnValue({ route: Routes.SWAP })
-    useIsSafeAppMock.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeAppAtom, true)
     isInjectedWidgetMock.mockReturnValue(true)
 
     render(<BridgingEnabledUpdater />)
@@ -112,7 +114,7 @@ describe('BridgingEnabledUpdater', () => {
 
   it('keeps bridging enabled inside a Safe widget when the feature flag is on', () => {
     useTradeTypeInfoMock.mockReturnValue({ route: Routes.SWAP })
-    useIsSafeAppMock.mockReturnValue(true)
+    getDefaultStore().set(writableIsSafeAppAtom, true)
     isInjectedWidgetMock.mockReturnValue(true)
     useFeatureFlagsMock.mockReturnValue({ isBridgingInSafeWidgetEnabled: true })
 

@@ -8,7 +8,7 @@ const EMPTY_CUSTOM_TOKENS: AddressKey[] = []
 /**
  * Normalized addresses of user-imported tokens and widget-provided custom tokens (virtual lists,
  * e.g. `widgetCustomTokens`) for the given chain. Virtual lists aren't fetchable URLs (see
- * `useEnabledTokensListsUrls`), so their tokens are tracked by address here instead. Sorted so the
+ * `useWatcherTokensLists`), so their tokens are tracked by address here instead. Sorted so the
  * result is deterministic regardless of source insertion order, keeping `useStableStringList`
  * (index-sensitive) from treating a reordered-but-unchanged set as a change.
  */

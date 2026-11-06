@@ -197,6 +197,11 @@ export default defineConfig(({ mode, isPreview }) => {
           target: 'http://localhost:4317',
           changeOrigin: true,
         },
+        // Mirrors the Vercel rewrite, run the RWA app with `pnpm start:rwa`
+        '/rwa': {
+          target: 'http://localhost:3002',
+          ws: true,
+        },
       },
     },
 
@@ -312,7 +317,7 @@ export default defineConfig(({ mode, isPreview }) => {
       manifest: true,
       assetsInlineLimit: 0, // prevent inlining assets
       assetsDir: 'static', // All assets go to /static/ directory
-      sourcemap: !isPreview,
+      sourcemap: !isPreview && process.env.BUNDLE_SIZE_BUILD !== 'true',
       rollupOptions: {
         output: {
           // Remove hash for font files to enable preloading

@@ -2,9 +2,9 @@ import { http } from 'viem'
 import { createStorage } from 'wagmi'
 import type { Transport } from 'wagmi'
 
-import { VIEM_CHAINS } from '@cowprotocol/common-const'
+import { RELEASED_SUPPORTED_CHAIN_IDS, VIEM_CHAINS } from '@cowprotocol/common-const'
 import { getIsSafeAppIframe } from '@cowprotocol/common-utils'
-import { ALL_SUPPORTED_CHAIN_IDS, EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EvmChains, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { createAppKit } from '@reown/appkit/react'
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
@@ -26,7 +26,7 @@ import type { AppKitNetwork } from '@reown/appkit/networks'
  * `getBalance` to throw, which makes AppKit display `0.000 ETH` (the adapter's error
  * fallback) instead of the real balance.
  */
-const EVM_SUPPORTED_CHAIN_IDS = (ALL_SUPPORTED_CHAIN_IDS as readonly number[]).filter(isEvmChain)
+const EVM_SUPPORTED_CHAIN_IDS = (RELEASED_SUPPORTED_CHAIN_IDS as readonly number[]).filter(isEvmChain)
 
 function getRpcUrl(chainId: EvmChains): string | undefined {
   const envOverride = process.env[`REACT_APP_NETWORK_URL_${chainId}`]

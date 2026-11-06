@@ -33,6 +33,22 @@ interface SwapTradeButtonsContext {
   swapBridgeClickEvent?: string
 }
 
+const wrapAndSwapButton: SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => (
+  <ButtonError
+    id="do-trade-button"
+    buttonSize={ButtonSize.BIG}
+    onClick={props.openSwapConfirm}
+    disabled={isDisabled}
+    data-click-event={props.swapBridgeClickEvent}
+  >
+    <div>
+      <Trans>
+        Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
+      </Trans>
+    </div>
+  </ButtonError>
+)
+
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
     // When using Safe wallet (e.g., Safe+Rabby or Safe mobile + WC), the flow will wrap first
@@ -75,21 +91,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       </ButtonError>
     )
   },
-  [SwapFormState.WrapAndSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError
-      id="do-trade-button"
-      buttonSize={ButtonSize.BIG}
-      onClick={props.openSwapConfirm}
-      disabled={isDisabled}
-      data-click-event={props.swapBridgeClickEvent}
-    >
-      <div>
-        <Trans>
-          Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
-        </Trans>
-      </div>
-    </ButtonError>
-  ),
+  [SwapFormState.WrapAndSwap]: wrapAndSwapButton,
   [SwapFormState.WrapAndSwapAndBridge]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <ButtonError
       id="do-trade-button"
@@ -123,17 +125,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       />
     </Wrapper>
   ),
-  [SwapFormState.SolanaNativeSell]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError
-      id="do-trade-button"
-      buttonSize={ButtonSize.BIG}
-      onClick={props.openSwapConfirm}
-      disabled={isDisabled}
-      data-click-event={props.swapBridgeClickEvent}
-    >
-      <div>{props.confirmText}</div>
-    </ButtonError>
-  ),
+  [SwapFormState.SolanaNativeSell]: wrapAndSwapButton,
   [SwapFormState.SellNativeInHooks]: (props: SwapTradeButtonsContext) => {
     const currency = props.inputCurrency
     const symbol = currency?.symbol

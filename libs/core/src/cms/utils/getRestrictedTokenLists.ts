@@ -3,10 +3,13 @@ import { TTLCache } from '@cowprotocol/cow-sdk'
 import { querySerializer } from './querySerializer'
 
 import {
+  BRIX_FALLBACK_TOKEN_LIST,
   COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
   DEFAULT_CMS_REQUEST_TTL,
   ONDO_FALLBACK_TOKEN_LIST,
   RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
+  SOLANA_RWA_FALLBACK_TOKEN_LIST,
+  ST0X_FALLBACK_TOKEN_LIST,
   XStocks_FALLBACK_TOKEN_LIST,
 } from '../consts'
 import { RestrictedTokenList, RestrictedTokenLists } from '../types'
@@ -40,6 +43,9 @@ const FALLBACK_TOKEN_LISTS: RestrictedTokenLists = [
   XStocks_FALLBACK_TOKEN_LIST,
   RESERVE_PROTOCOL_BNB_FALLBACK_TOKEN_LIST,
   COINBASE_TOKENIZED_STOCKS_FALLBACK_TOKEN_LIST,
+  SOLANA_RWA_FALLBACK_TOKEN_LIST,
+  ST0X_FALLBACK_TOKEN_LIST,
+  BRIX_FALLBACK_TOKEN_LIST,
 ]
 
 export async function getRestrictedTokenLists(): Promise<RestrictedTokenLists> {

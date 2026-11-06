@@ -1,11 +1,13 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode, useRef, type MouseEvent } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains, useBodyScrollbarLocker, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
-import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
+import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import { useIsSolanaVisible } from 'entities/alphaNetworks'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
@@ -13,6 +15,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { ChainStatusBadge } from 'common/pure/ChainStatusBadge/ChainStatusBadge.pure'
 import { NetworksList } from 'common/pure/NetworksList/NetworksList.pure'
 
 import * as styledEl from './NetworkSelector.styled'
@@ -52,7 +55,7 @@ export function NetworkSelector(): ReactNode {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
-  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
+  const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
   useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
@@ -64,7 +67,7 @@ export function NetworkSelector(): ReactNode {
   const onSelectChain = useOnSelectNetwork()
   const isDarkMode = useIsDarkMode()
   const logoUrl = isDarkMode ? info.logo.dark : info.logo.light
-  const availableChains = useAvailableChains()
+  const availableChains = useAvailableChains({ excludeSolana: !useIsSolanaVisible() })
   const { t } = useLingui()
 
   const handleClose = createCloseHandler(isOpen, toggleModal)
@@ -81,6 +84,7 @@ export function NetworkSelector(): ReactNode {
           <>
             <styledEl.SelectorLogo src={logoUrl} />
             <styledEl.SelectorLabel>{info?.label}</styledEl.SelectorLabel>
+            <ChainStatusBadge chainId={chainId} />
             <styledEl.StyledChevronDown $isOpen={isOpen} />
           </>
         ) : (

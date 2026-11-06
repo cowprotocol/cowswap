@@ -32,6 +32,8 @@ export type BuildAppDataParams = {
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
   userConsent?: UserConsentsMetadata
+  /** Canonical-batch start (unix seconds). Pending official sdk-app-data schema field. */
+  validFrom?: number
 }
 
 export async function buildAppData({
@@ -47,6 +49,7 @@ export async function buildAppData({
   partnerFee,
   replacedOrderUid,
   userConsent,
+  validFrom,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams: AppDataRootSchema['metadata']['referrer'] = refCode ? { code: refCode } : undefined
 
@@ -57,6 +60,8 @@ export async function buildAppData({
   const orderClass = { orderClass: orderClassName }
   const replacedOrder = replacedOrderUid ? { uid: replacedOrderUid } : undefined
 
+  // validFrom is not in the published app-data schema yet (additionalProperties: false), but
+  // generateAppDataDoc preserves unknown metadata keys so the signed hash includes it.
   const doc = await metadataApiSDK.generateAppDataDoc({
     appCode,
     environment,
@@ -70,6 +75,7 @@ export async function buildAppData({
       partnerFee,
       ...{ replacedOrder },
       ...(userConsent ? userConsent : {}),
+      ...(typeof validFrom === 'number' ? { validFrom } : {}),
     },
   })
 

@@ -1,5 +1,81 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.1...common-const-v3.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.0...common-const-v3.17.1) (2026-10-28)
+
+### Patch Changes
+
+- fix(solana): gate appData integration behind isSolanaAppDataEnabled (#8493)
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.1...common-const-v3.17.0) (2026-10-28)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+- feat(rwa): serve RWA under /rwa in CoW Swap and share wallet connection (#8432)
+
+- feat: wait for cows alpha (#8393)
+
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.16.0...common-const-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/types@4.14.1
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.15.0...common-const-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(rwa): display asset quotes (#8281)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.14.0...common-const-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat: add trade limits and alpha label (#8331)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- fix(account-proxy): set page title on account proxy pages (#8310)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/types@4.13.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.13.0...common-const-v3.14.0) (2026-10-06)
 
 ### Minor Changes

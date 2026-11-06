@@ -59,7 +59,9 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   const { slippage } = useYieldDerivedState()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
+  const submittedContent = (
+    <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} successTitle={t`Order complete`} />
+  )
 
   // Freeze every quote-derived value shown in the review screen once the user clicks confirm, so
   // the modal can never display a different amount than what was actually confirmed/signed.

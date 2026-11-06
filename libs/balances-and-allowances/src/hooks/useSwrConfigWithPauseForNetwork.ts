@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getAddressKey, type SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -19,6 +19,7 @@ export function useSwrConfigWithPauseForNetwork(
   account: string | undefined,
   config: BalancesQueryConfig,
   validityPeriod?: number,
+  refreshTrigger?: number,
 ): BalancesQueryConfig {
   const effectiveValidityPeriod = validityPeriod || BALANCE_VALIDITY_PERIOD
   const balances = useAtomValue(balancesAtom)
@@ -36,15 +37,40 @@ export function useSwrConfigWithPauseForNetwork(
     }
   }, [balancesChainId, chainId, lastUpdateTimestamp])
 
+  // The trigger value carried by the most recent fetch to land. Initialised to the mounting value so a
+  // mount with fresh balances still pauses — that is what the throttle is for. Held as state, not a
+  // ref: consumers call `isPaused()` while computing `enabled`, before effects run, so this has to be
+  // readable during render and has to schedule one when it settles.
+  const [settledRefreshTrigger, setSettledRefreshTrigger] = useState(refreshTrigger)
+  const previousUpdateTimestampRef = useRef(lastUpdateTimestamp)
+
+  // Settles only when a fetch lands, never merely because the trigger moved — otherwise the request
+  // would mark itself satisfied without anything having been re-read.
+  useEffect(() => {
+    if (previousUpdateTimestampRef.current === lastUpdateTimestamp) return
+
+    previousUpdateTimestampRef.current = lastUpdateTimestamp
+    setSettledRefreshTrigger(refreshTrigger)
+  }, [lastUpdateTimestamp, refreshTrigger])
+
+  const isForcedRefreshPending = refreshTrigger !== settledRefreshTrigger
+
   return useMemo(
     () => ({
       ...config,
       isPaused: () => {
         const timestamp = lastUpdateTimestampRef.current
 
-        return !!timestamp && Date.now() - timestamp < effectiveValidityPeriod
+        if (!timestamp) return false
+
+        // A deliberate invalidation (an order filled, a transaction confirmed) must outrank the
+        // throttle, or the refetch it asks for is dropped and the caller waits out the very period it
+        // was trying to skip.
+        if (isForcedRefreshPending) return false
+
+        return Date.now() - timestamp < effectiveValidityPeriod
       },
     }),
-    [config, effectiveValidityPeriod],
+    [config, effectiveValidityPeriod, isForcedRefreshPending],
   )
 }

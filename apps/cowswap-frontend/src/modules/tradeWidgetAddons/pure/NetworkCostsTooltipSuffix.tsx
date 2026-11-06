@@ -1,35 +1,28 @@
-import { isTruthy } from '@cowprotocol/common-utils'
-import { useWalletDetails } from '@cowprotocol/wallet'
+import { ReactNode } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { useIsEoaEthFlow } from 'modules/trade'
+import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NetworkCostsTooltipSuffix() {
-  const { allowsOffchainSigning } = useWalletDetails()
+export function NetworkCostsTooltipSuffix(): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
+  const shouldPayGas = useShouldPayGas()
   const native = useNativeCurrency()
 
-  const isPresign = !isEoaEthFlow && !allowsOffchainSigning
+  if (!shouldPayGas) return null
+
   const nativeSymbol = native.symbol || ''
-
-  const addons = [
-    isPresign && t`Because you are using a smart contract wallet`,
-    isEoaEthFlow && t`Because you are selling ${nativeSymbol} (native currency)`,
-    (isPresign || isEoaEthFlow) && `, ` + t`you will pay a separate gas cost for signing the order placement on-chain.`,
-  ].filter(isTruthy)
-
-  if (!addons.length) return null
+  const reason = isEoaEthFlow
+    ? t`Because you are selling ${nativeSymbol} (native currency)`
+    : t`Because you are using a smart contract wallet`
 
   return (
     <>
       <br />
       <br />
-      {addons.join('')}
+      {reason + `, ` + t`you will pay a separate gas cost for signing the order placement on-chain.`}
     </>
   )
 }

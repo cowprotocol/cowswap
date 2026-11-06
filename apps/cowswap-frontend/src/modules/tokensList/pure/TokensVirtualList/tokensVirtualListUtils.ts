@@ -96,7 +96,7 @@ export function buildVirtualRows(params: BuildVirtualRowsParams): TokensVirtualR
     })
   }
 
-  if (hasFavoriteSection || hasRecentSection) {
+  if ((hasFavoriteSection || hasRecentSection) && tokenRows.length > 0) {
     composedRows.push({ type: 'title', label: t`All tokens` })
   }
 

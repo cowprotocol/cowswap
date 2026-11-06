@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
@@ -19,6 +20,7 @@ interface CancelButtonProps {
 }
 
 interface SolvingStepProps {
+  chainId: SupportedChainId
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
   showCancellationModal: Command | null
@@ -26,6 +28,7 @@ interface SolvingStepProps {
 }
 
 interface StepDescriptionProps {
+  chainId: SupportedChainId
   stepName: OrderProgressBarStepName
   showCancellationModal: Command | null
   cancelEventData: ReturnType<typeof toCowSwapGtmEvent>
@@ -61,6 +64,7 @@ function DefaultSolvingDescription(): ReactNode {
 }
 
 function DelayedDescription({
+  chainId,
   showCancellationModal,
   cancelEventData,
 }: Omit<StepDescriptionProps, 'stepName'>): ReactNode {
@@ -72,6 +76,16 @@ function DelayedDescription({
   ) : (
     '.'
   )
+
+  if (isSolanaChain(chainId)) {
+    return (
+      <Trans>
+        There may be a network issue that is delaying your order. You can wait for the issue to resolve
+        {cancellationModal}
+      </Trans>
+    )
+  }
+
   return (
     <Trans>
       There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to
@@ -153,6 +167,7 @@ const STEP_DESCRIPTIONS: Record<
 }
 
 export function SolvingStep({
+  chainId,
   children,
   stepName,
   showCancellationModal,
@@ -180,6 +195,7 @@ export function SolvingStep({
         extraContent={
           <Description>
             <StepDescription
+              chainId={chainId}
               stepName={stepName || OrderProgressBarStepName.SOLVING}
               showCancellationModal={showCancellationModal}
               cancelEventData={cancelEventData}
@@ -206,7 +222,18 @@ function getCustomStepTitles(
   return undefined
 }
 
-function StepDescription({ stepName, showCancellationModal, cancelEventData }: StepDescriptionProps): ReactNode {
+function StepDescription({
+  chainId,
+  stepName,
+  showCancellationModal,
+  cancelEventData,
+}: StepDescriptionProps): ReactNode {
   const DescriptionComponent = STEP_DESCRIPTIONS[stepName] || DefaultSolvingDescription
-  return <DescriptionComponent showCancellationModal={showCancellationModal} cancelEventData={cancelEventData} />
+  return (
+    <DescriptionComponent
+      chainId={chainId}
+      showCancellationModal={showCancellationModal}
+      cancelEventData={cancelEventData}
+    />
+  )
 }

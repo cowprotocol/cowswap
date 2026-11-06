@@ -49,3 +49,20 @@ export function timeSinceInSeconds(timestamp?: number): number | undefined {
 }
 
 export const MAX_VALID_TO_EPOCH = 4294967295 // Max uint32 (Feb 07 2106 07:28:15 GMT+0100)
+
+export const DateFormatOptions: Intl.DateTimeFormatOptions = {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+}
+
+/**
+ * Formats a medium date and short time in the runtime's default time zone.
+ *
+ * @param value - A Date or Unix timestamp in milliseconds.
+ * @param locale - A BCP 47 language tag, such as 'en-US'.
+ * @returns The localized date and time.
+ * @throws {RangeError} If the date is invalid or the locale tag is malformed.
+ */
+export function formatDateTime(value: Date | number, locale: string): string {
+  return new Intl.DateTimeFormat(locale, DateFormatOptions).format(value)
+}

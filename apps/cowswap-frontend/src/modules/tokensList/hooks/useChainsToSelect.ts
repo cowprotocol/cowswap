@@ -1,9 +1,10 @@
+import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useWalletInfo, useNetworkSwitchUnsupported } from '@cowprotocol/wallet'
+import { isNetworkSwitchUnsupportedAtom, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks, useRoutesAvailability } from 'entities/bridgeProvider'
 
@@ -36,7 +37,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
-  const shouldHideNetworkSelector = useNetworkSwitchUnsupported()
+  const shouldHideNetworkSelector = useAtomValue(isNetworkSwitchUnsupportedAtom)
 
   const supportedChains = useSupportedChains()
   const supportedTargetChains = useSupportedTargetChains()

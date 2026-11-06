@@ -1,0 +1,155 @@
+'use client'
+
+import { type ReactNode, useState } from 'react'
+
+import { useConnection } from 'wagmi'
+
+import { BalancesStatus } from './BalancesStatus'
+import { HoldingsTable } from './HoldingsTable'
+import styles from './Portfolio.module.css'
+import { PortfolioFilters } from './PortfolioFilters'
+import { PortfolioSummary } from './PortfolioSummary'
+
+import { formatUtcTime } from '../lib/formatUtcTime'
+import { isEmptyWallet } from '../lib/holdings'
+import { isPortfolioFiltered, NO_PORTFOLIO_FILTER, type PortfolioFilter } from '../lib/portfolioFilter'
+import { type Portfolio, usePortfolio } from '../model/usePortfolio'
+
+import type { RwaAssetSummary } from '@/entities/asset'
+
+import { ConnectButton } from '@/features/connect-wallet'
+import { StatusMessage } from '@/shared/ui/status-message'
+import { type AccountTab, AccountTabs, ActivityTable, OpenOrdersTable } from '@/widgets/account'
+
+interface PortfolioContentProps {
+  owner: string
+  assets: RwaAssetSummary[]
+}
+
+type PortfolioTab = 'positions' | 'orders' | 'activity'
+
+interface PositionsProps {
+  portfolio: Portfolio
+  isWalletEmpty: boolean
+  isFiltered: boolean
+}
+
+export function PortfolioView({ assets }: { assets: RwaAssetSummary[] }): ReactNode {
+  const { address } = useConnection()
+
+  return (
+    <div className={styles.page}>
+      {address ? <PortfolioContent owner={address} assets={assets} /> : <DisconnectedPortfolio />}
+    </div>
+  )
+}
+
+function DisconnectedPortfolio(): ReactNode {
+  return (
+    <>
+      <header className={styles.header}>
+        <div className={styles.heading}>
+          <h1 className={styles.title}>Portfolio</h1>
+          <p className={styles.intro}>
+            Your stock token holdings, open orders and activity, across issuers and networks.
+          </p>
+        </div>
+      </header>
+      <section className={styles.emptyCard} aria-labelledby="portfolio-connect-title">
+        <h2 id="portfolio-connect-title">Connect your wallet to see your portfolio</h2>
+        <p>Stock tokens you hold, from any issuer and network, show here with your open orders and activity.</p>
+        <ConnectButton variant="secondary" />
+      </section>
+    </>
+  )
+}
+
+function PortfolioContent({ owner, assets }: PortfolioContentProps): ReactNode {
+  const [activeTab, setActiveTab] = useState<PortfolioTab>('positions')
+  const [filter, setFilter] = useState<PortfolioFilter>(NO_PORTFOLIO_FILTER)
+  const portfolio = usePortfolio(owner, assets, filter)
+  const { filteredHoldings, orders, activity } = portfolio
+
+  const isWalletEmpty = isEmptyWallet(portfolio.holdings, portfolio.failedChainIds)
+  const isFiltered = isPortfolioFiltered(filter)
+  const isAccountEmpty = isWalletEmpty && !isFiltered && orders.data?.length === 0 && activity.data?.length === 0
+
+  const tabs: AccountTab<PortfolioTab>[] = [
+    { id: 'positions', title: 'Positions', count: filteredHoldings?.length || undefined },
+    { id: 'orders', title: 'Open orders', count: orders.data?.length || undefined },
+    { id: 'activity', title: 'Activity' },
+  ]
+
+  return (
+    <>
+      <PortfolioSummary
+        holdings={portfolio.holdings}
+        error={portfolio.balancesError}
+        failedChainIds={portfolio.failedChainIds}
+        arePricesLoading={portfolio.arePricesLoading}
+      />
+      <AccountTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onChange={setActiveTab}
+        toolbar={isAccountEmpty ? undefined : <PortfolioFilters assets={assets} filter={filter} onChange={setFilter} />}
+      >
+        {activeTab === 'positions' ? (
+          <Positions portfolio={portfolio} isWalletEmpty={isWalletEmpty} isFiltered={isFiltered} />
+        ) : activeTab === 'orders' ? (
+          <OpenOrdersTable
+            orders={orders.data}
+            error={orders.error}
+            emptyText="No open orders"
+            getLogoUrl={portfolio.getTokenLogoUrl}
+          />
+        ) : (
+          <ActivityTable
+            activity={activity.data}
+            error={activity.error}
+            emptyText="No activity yet"
+            getLogoUrl={portfolio.getTokenLogoUrl}
+          />
+        )}
+      </AccountTabs>
+    </>
+  )
+}
+
+function Positions({ portfolio, isWalletEmpty, isFiltered }: PositionsProps): ReactNode {
+  const { filteredHoldings, balancesError, pricesUpdatedAt } = portfolio
+
+  if (!filteredHoldings) {
+    return (
+      <StatusMessage>
+        {balancesError ? `Failed to load balances: ${balancesError.message}` : 'Loading balances…'}
+      </StatusMessage>
+    )
+  }
+
+  return (
+    <>
+      {balancesError && <p className={styles.note}>Some balances are unavailable: {balancesError.message}</p>}
+      <HoldingsTable
+        holdings={filteredHoldings}
+        getLogoUrl={portfolio.getLogoUrl}
+        isWalletEmpty={isWalletEmpty}
+        isFiltered={isFiltered}
+      />
+      <div className={styles.panelNote}>
+        {filteredHoldings.length > 0 && (
+          <p>
+            Confirmed balances
+            {pricesUpdatedAt && (
+              <>
+                {' · Prices updated '}
+                <time dateTime={pricesUpdatedAt}>{formatUtcTime(Date.parse(pricesUpdatedAt))}</time>
+              </>
+            )}
+          </p>
+        )}
+        <BalancesStatus progress={portfolio.balancesProgress} onRefresh={portfolio.refreshBalances} />
+      </div>
+    </>
+  )
+}

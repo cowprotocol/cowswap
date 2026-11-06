@@ -1,0 +1,292 @@
+.explorer {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 8px;
+  border-radius: var(--radius-card);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-subtle);
+}
+
+.toolbar {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 24px 16px;
+}
+
+.types {
+  display: flex;
+  gap: 8px;
+}
+
+.outlinedButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg);
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.outlinedButton:hover {
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.outlinedButton[aria-pressed='true'],
+.outlinedButton[aria-expanded='true'],
+.outlinedButton[data-active='true'] {
+  border-color: transparent;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.outlinedButton:focus-visible,
+.clearButton:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.filtersCount {
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.clearButton {
+  height: 40px;
+  padding: 0 8px;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.filterInput {
+  display: flex;
+  flex: 1 1 160px;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  cursor: text;
+}
+
+.filterInput:focus-within {
+  outline: 2px solid var(--color-accent);
+}
+
+.filterInput input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: none;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+.filterInput input::placeholder {
+  color: var(--color-text-secondary);
+  text-overflow: ellipsis;
+}
+
+/* The empty field keeps room for its hidden clear button, which clips the placeholder */
+.filterInput input:placeholder-shown::-webkit-search-cancel-button {
+  display: none;
+}
+
+.footer {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.footer > nav {
+  grid-column: 2;
+}
+
+.footer:empty {
+  display: none;
+}
+
+.scope {
+  padding: 16px 0;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.aboutMetrics {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin: 20px 4px 0;
+  color: var(--color-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 960px) {
+  .types svg {
+    display: none;
+  }
+
+  .filterInput {
+    flex-basis: 0;
+    padding: 0 12px;
+  }
+
+  .iconButton,
+  .filtersTrigger {
+    flex: none;
+  }
+
+  .iconButton {
+    position: relative;
+    justify-content: center;
+    width: 40px;
+    padding: 0;
+  }
+
+  .buttonLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .filtersCount {
+    position: absolute;
+    top: -3px;
+    right: -3px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+    font-size: 11px;
+    line-height: 18px;
+    text-align: center;
+  }
+
+  .clearButton {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .toolbar {
+    padding: 12px 16px;
+  }
+
+  .types {
+    flex: 0 0 calc(100% + 32px);
+    gap: 4px;
+    margin: -4px -16px;
+    padding: 4px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .types::-webkit-scrollbar {
+    display: none;
+  }
+
+  .types .outlinedButton {
+    flex: none;
+    height: 44px;
+    padding: 0 12px;
+  }
+
+  .filterInput {
+    order: -1;
+    height: 44px;
+  }
+
+  /* iOS zooms into inputs under 16px */
+  .filterInput input {
+    font-size: 16px;
+  }
+
+  .filterInput input::placeholder {
+    font-size: 14px;
+  }
+
+  .iconButton,
+  .filtersTrigger {
+    order: -1;
+  }
+
+  .iconButton {
+    width: 44px;
+    height: 44px;
+  }
+
+  .footer {
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+  }
+}
+
+@media (max-width: 720px) and (prefers-reduced-motion: no-preference) {
+  .types {
+    scroll-behavior: smooth;
+  }
+}
+
+.emptyAction {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-accent);
+  font: inherit;
+  font-weight: 500;
+}
+
+.emptyAction:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.emptyAction:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

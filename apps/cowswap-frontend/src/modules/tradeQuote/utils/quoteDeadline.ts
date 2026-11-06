@@ -9,15 +9,18 @@ import { TradeQuoteState } from '../state/tradeQuoteAtom'
 const MAX_EXPIRATION_TIME = ms`1min`
 
 /**
- * Calculate the validTo timestamp for the order
+ * Calculate the validTo timestamp for the order.
+ * When `validFrom` is set (Wait for CoWs), expiration runs from the batch start
+ * so the order does not expire during the wait: validTo = validFrom + deadline.
  */
-export function getOrderValidTo(deadline: number, state: TradeQuoteState): number {
+export function getOrderValidTo(deadline: number, state: TradeQuoteState, validFrom?: number): number {
   const timeOffset = getQuoteTimeOffset(state)
 
   if (timeOffset === undefined) return 0
 
   const now = Date.now() / 1000
-  const validTo = Math.floor(deadline + now - timeOffset)
+  const validTo =
+    typeof validFrom === 'number' ? Math.floor(validFrom + deadline) : Math.floor(deadline + now - timeOffset)
 
   // Should not be greater than what the contract supports
   return Math.min(validTo, MAX_VALID_TO_EPOCH)

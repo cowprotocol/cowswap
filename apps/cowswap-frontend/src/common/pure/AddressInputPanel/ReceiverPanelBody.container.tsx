@@ -1,8 +1,9 @@
 import { ReactElement, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import svgOrderCheckSrc from '@cowprotocol/assets/cow-swap/order-check.svg'
-import { TargetChainId } from '@cowprotocol/cow-sdk'
+import { isSolanaChain, TargetChainId } from '@cowprotocol/cow-sdk'
 import { TEST_IDS } from '@cowprotocol/test-ids'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -35,6 +36,7 @@ export function ReceiverPanelBody({
   isSmartContractWalletBridging,
   onNonEvmReceiverConfirmedChange,
 }: ReceiverPanelBodyProps): ReactElement {
+  const { chainId: walletChainId } = useWalletInfo()
   const { strategy, isNonEvm, chainInfo, chainId } = useReceiverChainInfo(targetChainId)
   const { isValid, isError, loading } = useReceiverValidation(value, targetChainId)
   const { handleInput, chainPrefixWarning } = useOnAddressInput(onChange, chainInfo?.addressPrefix, strategy, value)
@@ -81,7 +83,8 @@ export function ReceiverPanelBody({
     [onNonEvmReceiverConfirmedChange],
   )
 
-  const showConfirmationRow = (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
+  const showConfirmationRow =
+    !isSolanaChain(walletChainId) && (isNonEvm || !!isSmartContractWalletBridging) && isValid && !loading
 
   const showCheckmark = isValid && !loading
   // Only non-EVM addresses get JS-shortened by useAddressDisplayValue (shouldBeShorted = isNonEvm) -

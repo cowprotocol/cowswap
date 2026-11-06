@@ -10,6 +10,7 @@ import { OrderBookApiError, type SupportedChainId } from '@cowprotocol/cow-sdk'
 import { t } from '@lingui/core/macro'
 
 import { OperatorError } from 'api/cowProtocol/errors/OperatorError'
+import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 // Not translated: compared against directly for Sentry/analytics de-duping (see
 // cow-react/sentry/index.ts and tradeFlowAnalytics.ts), which needs a stable literal value.
@@ -28,17 +29,27 @@ export function getSwapErrorMessage(error: Error, chainId: SupportedChainId): st
     return t`Transaction blockhash expired. Sign a new one.`
   }
 
-  const defaultErrorMessage = getProviderErrorMessage(error) || String(error)
-
-  if (isValidOperatorError(error)) {
-    return capitalizeFirstLetter(error.message) || defaultErrorMessage
-  }
-
-  return defaultErrorMessage
+  return getApiErrorMessage(error) || getProviderErrorMessage(error) || String(error)
 }
 
-function isBlockhashExpiredError(error: unknown): boolean {
+export function isBlockhashExpiredError(error: unknown): boolean {
   return error instanceof OrderBookApiError && error.body.errorType === 'BlockhashExpired'
+}
+
+/**
+ * The reason the order book gave, whether or not we have copy of our own for that error type.
+ * Without the untyped fallback an error type we don't know shows as a bare "Error": browsers report
+ * an empty `statusText` over HTTP/2, so the raw error has no message to stringify.
+ */
+function getApiErrorMessage(error: unknown): string | undefined {
+  if (isValidOperatorError(error)) {
+    return capitalizeFirstLetter(error.message)
+  }
+  if (getIsOrderBookTypedError(error)) {
+    return capitalizeFirstLetter(error.body.description)
+  }
+
+  return undefined
 }
 
 function isValidOperatorError(error: unknown): error is OperatorError {

@@ -125,12 +125,7 @@ test.describe('Cross-chain swaps', () => {
     await swapPage.page.goto(url)
   }
 
-  test('[CS-285] Cross-chain swap UI: accessible via Swap form @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-285] Cross-chain swap UI: accessible via Swap form', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -164,7 +159,13 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeStopTitle('Near Intents')).toBeVisible()
   })
 
-  test('[CS-286] Cross-chain swap: Near provider', async ({ swapPage, wallet, confirmModal, mocks, rpcProxy }) => {
+  test('[CS-286] Cross-chain swap: Near provider @smoke', async ({
+    swapPage,
+    wallet,
+    confirmModal,
+    mocks,
+    rpcProxy,
+  }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
@@ -207,18 +208,12 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })
@@ -277,18 +272,12 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.routePanel.bridgeMinToReceive()).toHaveAttribute('title', /.+/)
 
     const orderId = generateOrderId()
-    // Confirming a cross-chain swap needs two separate enable-waits + clicks
-    // (clickPrimaryAction, then confirmModal.confirm()) before the order actually posts — under a
-    // loaded CI runner that sequence alone can eat past the default 10s budget with no time left
-    // for the network round-trip, observed in CI as a false "no postOrder request observed"
-    // failure even though the trigger was still mid-flight. First bumped to 15s, then to 20s after
-    // CS-287 still timed out on CI with `clickPrimaryAction` alone taking ~15s on a loaded runner.
     await mocks.orders.expectOrderToBePosted({
       orderId,
       owner: wallet.address,
       timeoutMs: 20_000,
       trigger: async () => {
-        await swapPage.clickPrimaryAction()
+        await confirmModal.openWith(() => swapPage.clickPrimaryAction())
         await confirmModal.confirm()
       },
     })
@@ -441,7 +430,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.orderProgressBarModal).toContainText('Bridging to destination')
   })
 
-  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination @smoke', async ({
+  test('[CS-299] Cross-chain: swap to Solana — SOL or SPL token as destination', async ({
     swapPage,
     wallet,
     mocks,
@@ -508,12 +497,7 @@ test.describe('Cross-chain swaps', () => {
     await expect(swapPage.primaryActionButton).toBeEnabled()
   })
 
-  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination @smoke', async ({
-    swapPage,
-    wallet,
-    mocks,
-    rpcProxy,
-  }) => {
+  test('[CS-301] Cross-chain: swap to Bitcoin — BTC as destination', async ({ swapPage, wallet, mocks, rpcProxy }) => {
     seedTrader(mocks, wallet, MAINNET, {
       balances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },
       allowances: { [USDC_MAINNET]: INITIAL_USDC_BALANCE },

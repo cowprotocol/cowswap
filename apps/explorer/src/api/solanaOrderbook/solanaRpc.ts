@@ -27,6 +27,16 @@ export async function getParsedAccount<TInfo>(address: AddressKey): Promise<Pars
   return result?.value?.data?.parsed
 }
 
+export async function getSlotTimestamp(slot: number): Promise<number> {
+  const timestamp = await solanaRpcCall<number | null>('getBlockTime', [slot])
+
+  if (typeof timestamp !== 'number') {
+    throw new Error(`Solana RPC getBlockTime returned no time for slot ${slot}`)
+  }
+
+  return timestamp
+}
+
 async function solanaRpcCall<T>(method: string, params: unknown[]): Promise<T | undefined> {
   const response = await fetch(SOLANA_RPC_URL, {
     method: 'POST',

@@ -9,7 +9,7 @@ export function parseTokensFromApi(apiResult: TokenSearchFromApiResult[], chainI
     .filter((token) => token.chainId === chainId)
     .map((token) => {
       try {
-        return TokenWithLogo.fromToken(token, token.project.logoUrl)
+        return TokenWithLogo.fromToken(token, token.logoURI)
       } catch (e) {
         console.error('parseTokensFromApi error', e)
 

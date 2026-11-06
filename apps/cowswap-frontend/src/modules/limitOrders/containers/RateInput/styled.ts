@@ -71,6 +71,9 @@ export const MarketRateWrapper = styled.div`
 `
 
 export const MarketPriceButton = styled.button`
+  max-width: 110px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 500;
   font-size: inherit;
@@ -128,6 +131,32 @@ export const CurrencyToggleGroup = styled.div`
   background: transparent;
   overflow: hidden;
   margin: 0 0 0 8px;
+  gap: 6px;
+`
+
+const ToggleButtonBase = css<{ $active?: boolean }>`
+  --height: 25px;
+  --border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--height);
+  border: none;
+  border-radius: var(--border-radius);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  background: ${({ $active }) => ($active ? 'var(' + UI.COLOR_PAPER + ')' : 'var(' + UI.COLOR_PAPER_DARKEST + ')')};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_TEXT + ')' : 'var(' + UI.COLOR_TEXT_OPACITY_50 + ')')};
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
+  }
+`
+
+export const CurrencyToggle = styled.div`
+  display: flex;
+  overflow: hidden;
 `
 
 export const ActiveCurrency = styled.button<{ $active?: boolean }>`
@@ -211,6 +240,18 @@ export const UsdButton = styled(ActiveCurrency)`
     width: 10px;
     height: 16px;
     color: inherit;
+  }
+`
+
+export const IconButton = styled.button<{ $active?: boolean }>`
+  ${ToggleButtonBase}
+  min-width: 30px;
+  width: 30px;
+  padding: 0;
+
+  > svg {
+    color: inherit;
+    stroke-width: 2.2;
   }
 `
 

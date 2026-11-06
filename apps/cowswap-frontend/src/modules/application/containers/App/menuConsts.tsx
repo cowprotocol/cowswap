@@ -2,7 +2,7 @@ import { i18n, MessageDescriptor } from '@lingui/core'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BadgeType, BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { BadgeType, MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 
@@ -39,14 +39,10 @@ const ACCOUNT_ITEM = (chainId: SupportedChainId): UntranslatedMenuItem => ({
     {
       href: Routes.ACCOUNT_AFFILIATE_PARTNER,
       label: msg`Affiliate`,
-      badge: msg`New`,
-      badgeType: BadgeTypes.ALERT,
     },
     {
       href: Routes.ACCOUNT_AFFILIATE_TRADER,
       label: msg`My Rewards`,
-      badge: msg`New`,
-      badgeType: BadgeTypes.ALERT,
     },
     {
       href: '/account/tokens',

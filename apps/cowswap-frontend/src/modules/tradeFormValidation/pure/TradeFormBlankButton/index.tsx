@@ -2,11 +2,13 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { TEST_IDS } from '@cowprotocol/test-ids'
-import { CenteredDots, LongLoadText, UI, Media } from '@cowprotocol/ui'
+import { LongLoadText, UI, Media } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
+
+import { ThreeDots } from 'common/pure/ThreeDots/ThreeDots.pure'
 
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
@@ -122,7 +124,7 @@ export function TradeFormBlankButton({
       {showLoader ? (
         <LongLoadText>
           <Trans>Confirm with your wallet</Trans>
-          <CenteredDots smaller />
+          <ThreeDots />
         </LongLoadText>
       ) : (
         <>{children}</>

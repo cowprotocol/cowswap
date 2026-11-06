@@ -48,3 +48,4 @@ export const SPECIAL_ADDRESSES: { [key: string]: string } = {
 }
 
 export const TAB_QUERY_PARAM_KEY = 'tab'
+export const TWAP_TAB_QUERY_VALUE = 'twap'

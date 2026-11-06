@@ -16,6 +16,7 @@ type SimpleAccountDetailsProps = Pick<AccountDetailsProps, 'pendingTransactions'
 type StyledWrapperProps = { $margin?: string }
 
 const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
+  width: 100%;
   ${({ $margin }) => $margin && `margin: ${$margin};`}
   ${Media.upToMedium()} {
     padding: 0;

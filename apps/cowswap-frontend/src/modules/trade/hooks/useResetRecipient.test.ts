@@ -1,12 +1,14 @@
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { renderHook } from '@testing-library/react'
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 import { useLocation } from 'react-router'
 
+import { useNavigate } from 'common/hooks/useNavigate'
+
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useIsCustomRecipientDisabled } from './useIsCustomRecipientDisabled'
 import { useIsHooksTradeType } from './useIsHooksTradeType'
 import { useIsNativeIn } from './useIsNativeInOrOut'
 import { useResetRecipient } from './useResetRecipient'
@@ -25,8 +27,8 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
 }))
 
-jest.mock('entities/injectedWidget', () => ({
-  useInjectedWidgetParams: jest.fn(),
+jest.mock('./useIsCustomRecipientDisabled', () => ({
+  useIsCustomRecipientDisabled: jest.fn(),
 }))
 
 jest.mock('entities/orderHooks/usePostHooksRecipientOverride', () => ({
@@ -35,6 +37,10 @@ jest.mock('entities/orderHooks/usePostHooksRecipientOverride', () => ({
 
 jest.mock('react-router', () => ({
   useLocation: jest.fn(),
+}))
+
+jest.mock('common/hooks/useNavigate', () => ({
+  useNavigate: jest.fn(),
 }))
 
 jest.mock('./setupTradeState/useTradeStateFromUrl', () => ({
@@ -62,10 +68,14 @@ jest.mock('../state/alternativeOrder', () => ({
 const RECIPIENT = '0x000000000000000000000000000000000000dEaD'
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
-const mockUseInjectedWidgetParams = useInjectedWidgetParams as jest.MockedFunction<typeof useInjectedWidgetParams>
+const mockUseIsCustomRecipientDisabled = useIsCustomRecipientDisabled as jest.MockedFunction<
+  typeof useIsCustomRecipientDisabled
+>
 const mockUsePostHooksRecipientOverride = usePostHooksRecipientOverride as jest.MockedFunction<
   typeof usePostHooksRecipientOverride
 >
+const mockUseNavigate = useNavigate as jest.MockedFunction<typeof useNavigate>
+const mockNavigate = jest.fn()
 const mockUseLocation = useLocation as jest.MockedFunction<typeof useLocation>
 const mockUseTradeStateFromUrl = useTradeStateFromUrl as jest.MockedFunction<typeof useTradeStateFromUrl>
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
@@ -75,14 +85,18 @@ const mockUseIsAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible 
   typeof useIsAlternativeOrderModalVisible
 >
 
-function setup({ chainId = 1 as number | undefined, recipientInUrl = null as string | null } = {}): void {
+function setup({
+  chainId = 1 as number | undefined,
+  recipientInUrl = null as string | null,
+  isCustomRecipientDisabled = false,
+} = {}): void {
   mockUseWalletInfo.mockImplementation(() => ({ chainId }) as ReturnType<typeof useWalletInfo>)
+  mockUseNavigate.mockReturnValue(mockNavigate)
   mockUseLocation.mockReturnValue({
-    search: recipientInUrl ? `?recipient=${recipientInUrl}` : '',
+    pathname: '/1/swap/ETH/COW',
+    search: recipientInUrl ? `?recipient=${recipientInUrl}&sellAmount=1` : '',
   } as ReturnType<typeof useLocation>)
-  mockUseInjectedWidgetParams.mockReturnValue({ disableCustomRecipient: false } as ReturnType<
-    typeof useInjectedWidgetParams
-  >)
+  mockUseIsCustomRecipientDisabled.mockReturnValue(isCustomRecipientDisabled)
   mockUsePostHooksRecipientOverride.mockReturnValue(null)
   mockUseTradeStateFromUrl.mockReturnValue(
     recipientInUrl
@@ -138,5 +152,68 @@ describe('useResetRecipient', () => {
     renderHook(() => useResetRecipient(onChangeRecipient))
 
     expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  it('clears a URL recipient when custom recipients are disabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    setup({ recipientInUrl: RECIPIENT, isCustomRecipientDisabled: true })
+
+    renderHook(() => useResetRecipient(onChangeRecipient))
+
+    expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  it('clears a recipient re-applied from the URL after a token change when custom recipients are disabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    setup({ isCustomRecipientDisabled: true })
+
+    const { rerender } = renderHook(() => useResetRecipient(onChangeRecipient))
+
+    onChangeRecipient.mockClear()
+    mockUseDerivedTradeState.mockReturnValue({
+      recipient: RECIPIENT,
+      inputCurrency: { chainId: 1 },
+      outputCurrency: { chainId: 1 },
+    } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(onChangeRecipient).toHaveBeenCalledWith(null)
+  })
+
+  it('does not clear a recipient edit when custom recipients are enabled', () => {
+    const onChangeRecipient = jest.fn()
+
+    const { rerender } = renderHook(() => useResetRecipient(onChangeRecipient))
+
+    onChangeRecipient.mockClear()
+    mockUseDerivedTradeState.mockReturnValue({
+      recipient: RECIPIENT,
+      inputCurrency: { chainId: 1 },
+      outputCurrency: { chainId: 1 },
+    } as ReturnType<typeof useDerivedTradeState>)
+    rerender()
+
+    expect(onChangeRecipient).not.toHaveBeenCalled()
+  })
+
+  it('removes the recipient from the URL when custom recipients are disabled', () => {
+    setup({ recipientInUrl: RECIPIENT, isCustomRecipientDisabled: true })
+
+    renderHook(() => useResetRecipient(jest.fn()))
+
+    expect(mockNavigate).toHaveBeenCalledWith(
+      { pathname: '/1/swap/ETH/COW', search: 'sellAmount=1' },
+      { replace: true },
+    )
+  })
+
+  it('keeps the recipient in the URL when custom recipients are enabled', () => {
+    setup({ recipientInUrl: RECIPIENT })
+
+    renderHook(() => useResetRecipient(jest.fn()))
+
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 })

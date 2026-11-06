@@ -54,13 +54,13 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
   }
 `
 
-export const Label = styled.span<{ labelOpacity?: boolean }>`
+export const Label = styled.span<{ labelOpacity?: boolean; mediumLabel?: boolean }>`
   align-items: center;
   color: inherit;
   display: flex;
   flex-flow: row;
   flex: 0 1 auto;
-  font-weight: 400;
+  font-weight: ${({ mediumLabel }) => (mediumLabel ? 500 : 400)};
   gap: 4px;
   hyphens: auto;
   line-height: 1.2;

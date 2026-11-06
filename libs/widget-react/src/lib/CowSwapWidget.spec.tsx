@@ -36,6 +36,17 @@ describe('CowSwapWidget', () => {
     expect(createCowSwapWidgetMock).toHaveBeenCalledTimes(2)
     expect(createCowSwapWidgetMock.mock.calls[1]?.[1].enableSafeSdkBridge).toBe(false)
   })
+
+  it('calls onLoadingError when the widget cannot be created', () => {
+    const onLoadingError = jest.fn()
+    createCowSwapWidgetMock.mockImplementation(() => {
+      throw new Error('Iframe does not contain a window!')
+    })
+
+    render(<CowSwapWidget params={{ appCode: 'test-app' }} onLoadingError={onLoadingError} />)
+
+    expect(onLoadingError).toHaveBeenCalledTimes(1)
+  })
 })
 
 function createWidgetHandler(): CowSwapWidgetHandler {

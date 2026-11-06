@@ -1,9 +1,10 @@
-import { findOrderPda, getSolanaSettlementProgramId, SolanaTradingSdk } from '@cowprotocol/sdk-trading-solana'
 import { useSolanaWalletProvider, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAppKitConnection } from '@reown/appkit-adapter-solana/react'
 import { PublicKey, Connection } from '@solana/web3.js'
 import { act, renderHook } from '@testing-library/react'
+import { buildSolanaCancelOrderParams } from 'tradingSdk/solana/buildSolanaCancelOrderParams'
+import { solanaTradingSdk } from 'tradingSdk/solanaTradingSdk'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 import { Order } from 'legacy/state/orders/actions'
@@ -23,7 +24,10 @@ const txHash = 'solanaTxHash123'
 
 // The SDK's own crypto (PDA derivation, instruction encoding) is covered by its own test suite -
 // this test only verifies the hook wires the SDK and the wallet/Redux/tx-store glue correctly.
-jest.mock('@cowprotocol/sdk-trading-solana')
+jest.mock('tradingSdk/solanaTradingSdk', () => ({
+  SOLANA_TRADING_ENV: 'prod',
+  solanaTradingSdk: { cancelOrder: jest.fn() },
+}))
 jest.mock('@cowprotocol/wallet', () => ({
   useSolanaWalletProvider: jest.fn(),
   useWalletInfo: jest.fn(),
@@ -32,27 +36,26 @@ jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: je
 jest.mock('legacy/state/orders/hooks')
 jest.mock('legacy/state/enhancedTransactions/hooks')
 jest.mock('modules/trade/services/solanaSend/sendSolanaTransaction')
+jest.mock('tradingSdk/solana/buildSolanaCancelOrderParams')
 
 const mockUseSolanaWalletProvider = useSolanaWalletProvider as jest.MockedFunction<typeof useSolanaWalletProvider>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseAppKitConnection = useAppKitConnection as jest.MockedFunction<typeof useAppKitConnection>
 const mockSendSolanaTransaction = sendSolanaTransaction as jest.MockedFunction<typeof sendSolanaTransaction>
-const mockFindOrderPda = findOrderPda as jest.MockedFunction<typeof findOrderPda>
-const mockGetSolanaSettlementProgramId = getSolanaSettlementProgramId as jest.MockedFunction<
-  typeof getSolanaSettlementProgramId
+const mockBuildSolanaCancelOrderParams = buildSolanaCancelOrderParams as jest.MockedFunction<
+  typeof buildSolanaCancelOrderParams
 >
-const MockSolanaTradingSdk = SolanaTradingSdk as jest.MockedClass<typeof SolanaTradingSdk>
 
 const requestOrderCancellation = jest.fn()
 const setOrderCancellationHash = jest.fn()
 const transactionAdder = jest.fn()
-const mockCancelOrder = jest.fn()
+const mockCancelOrder = solanaTradingSdk.cancelOrder as jest.MockedFunction<typeof solanaTradingSdk.cancelOrder>
 
 const provider = {} as SolanaProvider
 const connection = {} as Connection
 const orderPda = new PublicKey('So11111111111111111111111111111111111111112')
 const instruction = { keys: [], programId: orderPda, data: Buffer.from([]) } as ReturnType<
-  typeof SolanaTradingSdk.prototype.cancelOrder
+  typeof solanaTradingSdk.cancelOrder
 >
 
 const orderMock = {
@@ -68,10 +71,10 @@ describe('useSolanaCancelOrder', () => {
     mockUseSolanaWalletProvider.mockReturnValue(provider)
     mockUseAppKitConnection.mockReturnValue({ connection } as ReturnType<typeof useAppKitConnection>)
     mockSendSolanaTransaction.mockResolvedValue({ hash: txHash, lastValidBlockHeight: 100 })
-    mockFindOrderPda.mockReturnValue([orderPda, 255])
-    mockGetSolanaSettlementProgramId.mockReturnValue(orderPda)
+    mockBuildSolanaCancelOrderParams.mockImplementation(async (_connection, ownerAddress) => [
+      { ownerAddress, orderPda, intent: undefined },
+    ])
     mockCancelOrder.mockReturnValue(instruction)
-    MockSolanaTradingSdk.mockImplementation(() => ({ cancelOrder: mockCancelOrder }) as unknown as SolanaTradingSdk)
     ;(useRequestOrderCancellation as jest.Mock).mockReturnValue(requestOrderCancellation)
     ;(useSetOrderCancellationHash as jest.Mock).mockReturnValue(setOrderCancellationHash)
     ;(useTransactionAdder as jest.Mock).mockReturnValue(transactionAdder)
@@ -84,6 +87,12 @@ describe('useSolanaCancelOrder', () => {
       await result.current(orderMock)
     })
 
+    expect(mockBuildSolanaCancelOrderParams).toHaveBeenCalledWith(
+      connection,
+      expect.any(PublicKey),
+      [{ id: orderId, order: orderMock }],
+      'prod',
+    )
     expect(mockCancelOrder).toHaveBeenCalledWith(
       expect.objectContaining({ orderPda, ownerAddress: expect.any(PublicKey) }),
     )

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { isAddress } from '@cowprotocol/common-utils'
-import { areAddressesEqual, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, isSupportedAddress, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -31,7 +30,7 @@ interface RecipientRowProps {
 export function RecipientRow(props: RecipientRowProps): ReactNode {
   const { chainId, recipient, account } = props
 
-  const recipientAddress = isAddress(recipient) ? recipient : props.recipientAddress
+  const recipientAddress = recipient && isSupportedAddress(recipient) ? recipient : props.recipientAddress
 
   if (!recipient || !recipientAddress || areAddressesEqual(recipientAddress, account)) {
     return null

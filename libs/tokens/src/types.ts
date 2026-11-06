@@ -59,4 +59,4 @@ export type TokensBySymbolState = { tokens: TokensBySymbol; chainId: SupportedCh
 
 export type TokensMap = { [address: string]: TokenInfo }
 
-export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: number } }
+export type UnsupportedTokensState = { [tokenAddress: string]: { dateAdded: number; reason?: string } }

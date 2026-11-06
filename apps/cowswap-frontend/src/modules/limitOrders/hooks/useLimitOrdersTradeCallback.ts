@@ -10,7 +10,7 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { buildTradeWidgetHookPayload, BuildTradeWidgetHookPayloadParams, callWidgetHook } from 'modules/injectedWidget'
 import { TradeConfirmActions, useTradeFlowAnalytics } from 'modules/trade'
-import { solanaFlow, SolanaTradeFlowContext } from 'modules/tradeFlow'
+import { solanaFlow, SolanaTradeFlowContext, useSolanaFlowOptions } from 'modules/tradeFlow'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 
@@ -43,6 +43,7 @@ export function useLimitOrdersTradeCallback(
   const shouldUseSafeBundle =
     !isSolana && isSafeBundle && Boolean(tradeContext?.postOrderParams.isSafeWallet) && !canUsePermit
   const analytics = useTradeFlowAnalytics()
+  const solanaFlowOptions = useSolanaFlowOptions()
 
   return useCallback(async (): Promise<string | true | undefined> => {
     const widgetHookPayloadParams = getTradeWidgetHookPayloadParams(solanaContext, tradeContext, settingsState)
@@ -58,7 +59,7 @@ export function useLimitOrdersTradeCallback(
 
     // Solana flow
     if (isSolana && solanaContext) {
-      const placed = await solanaFlow(solanaContext, analytics)
+      const placed = await solanaFlow(solanaContext, analytics, solanaFlowOptions)
       return placed === true ? true : undefined
     }
 
@@ -79,6 +80,7 @@ export function useLimitOrdersTradeCallback(
     isSolana,
     solanaContext,
     analytics,
+    solanaFlowOptions,
     shouldUseSafeBundle,
     tradeContext,
     safeBundleFlowContext,

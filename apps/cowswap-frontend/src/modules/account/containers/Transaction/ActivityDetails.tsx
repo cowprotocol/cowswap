@@ -3,7 +3,7 @@ import { ReactElement, ReactNode, useMemo } from 'react'
 import { i18n } from '@lingui/core'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, formatDateTime, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { areAddressesEqual, isSolanaChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { useENS } from '@cowprotocol/ens'
@@ -199,7 +199,7 @@ export function ActivityDetails(props: {
     const effectiveOutputToken = intermediateToken ?? outputToken
     const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
     const outputAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, buyAmount.toString())
-    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
+    const feeAmount = CurrencyAmount.fromRawAmount(inputToken, (feeAmountRaw ?? 0).toString())
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
 
@@ -223,21 +223,12 @@ export function ActivityDetails(props: {
       invertedActiveRateFiatAmount: null,
     }
 
-    const DateFormatOptions: Intl.DateTimeFormatOptions = {
-      dateStyle: 'medium',
-      timeStyle: 'short',
-    }
-
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
       to: <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />,
-      validTo: validTo
-        ? new Date((validTo as number) * 1000).toLocaleString(i18n.locale, DateFormatOptions)
-        : undefined,
-      fulfillmentTime: fulfillmentTime
-        ? new Date(fulfillmentTime).toLocaleString(i18n.locale, DateFormatOptions)
-        : undefined,
+      validTo: validTo ? formatDateTime((validTo as number) * 1000, i18n.locale) : undefined,
+      fulfillmentTime: fulfillmentTime ? formatDateTime(new Date(fulfillmentTime), i18n.locale) : undefined,
       inputAmount,
       outputAmount,
     }

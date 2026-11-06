@@ -134,10 +134,10 @@ function getUnfillableParams(
   orderParams: OrderParams,
   defaultValue: boolean,
 ): { hasKnownFillability: boolean; isUnfillable: boolean } {
-  const hasKnownFillability = orderParams.hasEnoughBalance !== undefined && orderParams.hasEnoughAllowance !== undefined
-  const isUnfillable = hasKnownFillability
-    ? orderParams.hasEnoughBalance === false || orderParams.hasEnoughAllowance === false
-    : defaultValue
+  const isKnownUnfillable = orderParams.hasEnoughBalance === false || orderParams.hasEnoughAllowance === false
+  const hasKnownFillability =
+    isKnownUnfillable || (orderParams.hasEnoughBalance !== undefined && orderParams.hasEnoughAllowance !== undefined)
+  const isUnfillable = hasKnownFillability ? isKnownUnfillable : defaultValue
 
   return { hasKnownFillability, isUnfillable }
 }

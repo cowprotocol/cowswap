@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { getQuoteUnsupportedToken } from '@cowprotocol/common-utils'
+import { getQuoteUnsupportedToken, getQuoteUnsupportedTokenReason } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddUnsupportedToken } from '@cowprotocol/tokens'
 
@@ -20,7 +20,7 @@ export function useProcessUnsupportedTokenError() {
       const unsupportedTokenAddress = getQuoteUnsupportedToken(error, quoteParams)
 
       if (unsupportedTokenAddress) {
-        addGpUnsupportedToken(chainId, unsupportedTokenAddress)
+        addGpUnsupportedToken(chainId, unsupportedTokenAddress, getQuoteUnsupportedTokenReason(error.description))
       }
     },
     [addGpUnsupportedToken],

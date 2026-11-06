@@ -1,5 +1,121 @@
 # Changelog
 
+## [3.17.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.2...tokens-v3.17.3) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(performance): remove render hotspots in token search, route matching and Solana balances (#8450)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
+## [3.17.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.1...tokens-v3.17.2) (2026-11-02)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
+## [3.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.0...tokens-v3.17.1) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+  - @cowprotocol/common-hooks@3.17.1
+  - @cowprotocol/common-utils@3.21.1
+  - @cowprotocol/core@3.14.1
+  - @cowprotocol/ui@3.19.1
+
+## [3.17.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.16.1...tokens-v3.17.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: use new bff token search endpoint (#8400)
+
+- feat(rwa): add st0x token list (#8405)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+  - @cowprotocol/core@3.14.0
+  - @cowprotocol/common-utils@3.21.0
+  - @cowprotocol/common-hooks@3.17.0
+  - @cowprotocol/ui@3.19.0
+
+## [3.16.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.16.0...tokens-v3.16.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/common-hooks@3.16.1
+  - @cowprotocol/common-utils@3.20.1
+  - @cowprotocol/core@3.13.1
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/types@4.14.1
+  - @cowprotocol/ui@3.18.1
+
+## [3.16.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.15.0...tokens-v3.16.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): explain token-2022 transfer fee (#8423)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/common-hooks@3.16.0
+  - @cowprotocol/common-utils@3.20.0
+  - @cowprotocol/core@3.13.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+  - @cowprotocol/ui@3.18.0
+
+## [3.15.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.14.0...tokens-v3.15.0) (2026-10-14)
+
+### Minor Changes
+
+- feat(solana): use different token list for rwa + renaming sol lists (#8340)
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- fix(solana): allow importing SPL and Token2022 tokens by address (#8338)
+
+- fix(solana): import custom tokens from orders (#8356)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/core@3.12.0
+  - @cowprotocol/common-hooks@3.15.0
+  - @cowprotocol/common-utils@3.19.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/types@4.13.0
+  - @cowprotocol/ui@3.17.0
+
 ## [3.14.0](https://github.com/cowprotocol/cowswap/compare/tokens-v3.13.1...tokens-v3.14.0) (2026-10-06)
 
 ### Minor Changes

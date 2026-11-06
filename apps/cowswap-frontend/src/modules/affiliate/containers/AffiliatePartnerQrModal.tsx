@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import iconCowCircleAccentSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-accent.svg'
 import iconCowCircleBlackSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-black.svg'
 import iconCowCircleWhiteSrc from '@cowprotocol/assets/images/logo-icon-cow-circle-white.svg'
-import { ButtonOutlined, ModalHeader, UI } from '@cowprotocol/ui'
+import { ButtonOutlined, UI, Modal } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -64,9 +64,9 @@ export function AffiliatePartnerQrModal({
   return (
     <CowModal isOpen={isOpen} onDismiss={onDismiss}>
       <ModalContent>
-        <ModalHeader onClose={onDismiss}>
+        <Modal.Header onClose={onDismiss}>
           <Trans>Download referral QR code</Trans>
-        </ModalHeader>
+        </Modal.Header>
         <ModalBody>
           <QrUrl>{referralLink}</QrUrl>
           <QrFrame $bg={QR_COLORS[qrColor].bg}>

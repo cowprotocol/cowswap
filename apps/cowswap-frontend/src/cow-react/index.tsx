@@ -1,6 +1,6 @@
 import '@reach/dialog/styles.css'
 import { Provider as AtomProvider } from 'jotai'
-import { type ReactNode, StrictMode } from 'react'
+import { type ReactNode } from 'react'
 import './sentry'
 
 import { Messages } from '@lingui/core'
@@ -35,6 +35,7 @@ import {
   Updaters,
   WithLDProvider,
 } from 'modules/application'
+import { installRestrictedAddressesGuard } from 'modules/restrictedAddresses'
 
 import { hashHistory } from 'common/constants/routes'
 import { loadActiveLocaleMessages } from 'lib/localeMessages'
@@ -77,7 +78,7 @@ interface MainProps {
 
 export function Main({ localeMessages }: MainProps): ReactNode {
   return (
-    <StrictMode>
+    <>
       <SvgCacheProvider>
         <HelmetProvider context={helmetContext}>
           <Provider store={cowSwapStore}>
@@ -112,12 +113,13 @@ export function Main({ localeMessages }: MainProps): ReactNode {
           </Provider>
         </HelmetProvider>
       </SvgCacheProvider>
-    </StrictMode>
+    </>
   )
 }
 
 async function initApp(): Promise<void> {
   resetReact310RecoveryOnDocumentLoad()
+  installRestrictedAddressesGuard()
 
   const container = document.getElementById('root')
   if (container === null) {

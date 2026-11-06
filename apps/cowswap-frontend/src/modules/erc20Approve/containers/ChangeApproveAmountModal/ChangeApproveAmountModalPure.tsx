@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount } from '@cowprotocol/currency'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ModalHeader } from '@cowprotocol/ui'
+import { Modal } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 
@@ -40,13 +40,13 @@ export function ChangeApproveAmountModalPure({
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack}>
+      <Modal.Header onBack={onBack}>
         <styledEl.Title>
           <div>
             <Trans>Edit partial approval</Trans>
           </div>
         </styledEl.Title>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.SwapInfo>
         <TokenLogo token={inputToken} size={54} />
         <styledEl.SetTitle>

@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useIsRestoringConnection, useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -21,6 +20,7 @@ import {
   getAffiliatePartnerPageState,
   isSupportedPayoutsNetwork,
   isSupportedTradingNetwork,
+  useAffiliateChainId,
   useAffiliatePartnerInfo,
   useAffiliateStateViewAnalytics,
   useAffiliateTraderWallet,
@@ -30,7 +30,7 @@ import { PageTitle } from 'modules/application'
 export default function AffiliatePartner(): ReactNode {
   const { i18n } = useLingui()
   const { account } = useWalletInfo()
-  const chainId = useWalletChainId()
+  const chainId = useAffiliateChainId()
   const { data: partnerInfo, isLoading: infoLoading } = useAffiliatePartnerInfo(account)
   const walletStatus = useAffiliateTraderWallet()
   const isConnectionRestoring = useIsRestoringConnection()

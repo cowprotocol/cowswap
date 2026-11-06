@@ -32,6 +32,11 @@ export class SwapPage implements TradePage {
   readonly tokens: TokenSelector
   readonly unlockButton: Locator
   readonly orderProgressBarModal: Locator
+  /**
+   * `FinishedSuccessHeading` lives on `Modal.Header`, not inside `#order-progress-bar-modal`.
+   * The progress-bar body shows "You sold"/"You received" instead of this title.
+   */
+  readonly confirmationSuccessHeading: Locator
   readonly sellTokenSelect: Locator
   readonly buyTokenSelect: Locator
   readonly sellFiatAmount: Locator
@@ -51,6 +56,7 @@ export class SwapPage implements TradePage {
   readonly recipientConfirmationCheckbox: Locator
   /** `TradeApproveButton`'s toggle between "Partial approval" (a finite, trade-tied amount) and infinite (MaxUint256). */
   readonly approveModeSelector: Locator
+  readonly approvalAmountToggle: Locator
   readonly settingsDialogButton: Locator
   readonly tradeFormActionButton: Locator
   readonly slippageInput: Locator
@@ -116,6 +122,7 @@ export class SwapPage implements TradePage {
     this.openOrders = page.locator(`[data-testid="${TEST_IDS.openOrdersList}"]`)
     this.unlockButton = page.locator('#unlock-cross-chain-swap-btn')
     this.orderProgressBarModal = page.locator('#order-progress-bar-modal')
+    this.confirmationSuccessHeading = page.locator('[data-testid="confirmation-success-heading"]')
     this.tokens = new TokenSelector(page)
     this.routePanel = new BridgeRoutePanel(page)
     this.recipientPanel = page.locator('#recipient')
@@ -123,6 +130,7 @@ export class SwapPage implements TradePage {
     this.recipientPasteButton = this.recipientPanel.getByText('Paste', { exact: true })
     this.recipientConfirmationCheckbox = page.locator('#receiver-confirmation')
     this.approveModeSelector = page.locator(`[data-testid="${TEST_IDS.approveModeSelector}"]`)
+    this.approvalAmountToggle = page.locator(`[data-testid="${TEST_IDS.approvalAmountToggle}"]`)
     this.settingsDialogButton = page.locator('#open-settings-dialog-button')
     this.tradeFormActionButton = page.locator(`[data-testid="${TEST_IDS.tradeFormBlankButton}"]`)
     this.slippageInput = page.locator('#slippage-input')
@@ -221,6 +229,13 @@ export class SwapPage implements TradePage {
   async clickPrimaryAction(): Promise<void> {
     await expect(this.primaryActionButton).toBeEnabled()
     await this.primaryActionButton.click()
+  }
+
+  async expandApprovalAmount(): Promise<void> {
+    if ((await this.approvalAmountToggle.getAttribute('aria-expanded')) !== 'true') {
+      await this.approvalAmountToggle.click()
+    }
+    await expect(this.approveModeSelector).toBeVisible()
   }
 
   async dismissOrderProgressModal(): Promise<void> {

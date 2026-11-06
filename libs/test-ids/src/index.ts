@@ -55,6 +55,7 @@ export const TEST_IDS = {
 
   // erc20Approve Toggle ("Partial approval" / infinite mode selector)
   approveModeSelector: 'approve-mode-selector',
+  approvalAmountToggle: 'approval-amount-toggle',
 
   // FinishedStep ("You sold" / "Received" rows)
   orderSoldAmount: 'order-sold-amount',

@@ -1,3 +1,4 @@
+import { useAtom } from 'jotai'
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
@@ -7,6 +8,7 @@ import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
+import { alphaNetworksEnabledAtom } from 'entities/alphaNetworks'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -29,6 +31,11 @@ import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = href.startsWith('http')
 
+  // The RWA app is served by a separate deployment, so it needs a full page load instead of a hash route
+  if (href === Routes.RWA) {
+    return <a href={href}>{children}</a>
+  }
+
   return (
     <NavLink to={href} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined}>
       {children}
@@ -45,8 +52,9 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
-  const { isSolversEnabled } = useFeatureFlags()
+  const { isSolversEnabled, isAlphaNetworksOptionVisible, isRwaEnabled } = useFeatureFlags()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const [areAlphaNetworksEnabled, setAlphaNetworksEnabled] = useAtom(alphaNetworksEnabledAtom)
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
@@ -58,11 +66,19 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const settingsNavItems = useMemo(
     () => [
       {
-        label: darkMode ? t`Light mode` : t`Dark mode`,
+        label: darkMode ? t`Light Mode` : t`Dark Mode`,
         onClick: toggleDarkMode,
       },
+      ...(isAlphaNetworksOptionVisible
+        ? [
+            {
+              label: areAlphaNetworksEnabled ? t`Disable Alpha Networks` : t`Enable Alpha Networks`,
+              onClick: () => setAlphaNetworksEnabled(!areAlphaNetworksEnabled),
+            },
+          ]
+        : []),
     ],
-    [darkMode, toggleDarkMode, t],
+    [darkMode, toggleDarkMode, isAlphaNetworksOptionVisible, areAlphaNetworksEnabled, setAlphaNetworksEnabled, t],
   )
 
   const languageNavItems = {
@@ -83,7 +99,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       {
         label: t`Trade`,
         children: tradeMenuItems.map((item) => {
-          const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
+          const href =
+            item.route === Routes.RWA ? item.route : parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
           return {
             href,
@@ -126,6 +143,7 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
       settingsNavItems={settingsNavItems}
       showGlobalSettings
       isInternationalizationEnabled={isInternationalizationEnabled}
+      isRwaEnabled={!!isRwaEnabled}
     />
   )
 }

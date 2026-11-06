@@ -19,7 +19,7 @@ const SOLANA_TOKEN_LIST = {
 
 const SOLANA_LIST_SOURCE: ListSourceConfig = {
   priority: 1,
-  source: 'https://files.cow.fi/token-lists/SolanaDefault.json',
+  source: 'https://files.cow.fi/token-lists/CowSwap.1000000001.json',
 }
 
 describe('fetchTokenList', () => {

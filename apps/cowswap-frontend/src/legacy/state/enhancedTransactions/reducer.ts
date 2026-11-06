@@ -52,8 +52,10 @@ export interface EnhancedTransactionDetails {
   // way `onChainCancellation` is — see `isNotOnChainCancellationTx`.
   solanaCancelOrderIds?: string[]
   // The Solana order-creation tx: like `ethFlow`, its own on-chain activity should be hidden from the
-  // activity list (the order it created is shown instead) — see `isNotSolanaOrderCreationTx`.
-  solanaOrderCreation?: boolean
+  // activity list (the order it created is shown instead) — see `isNotSolanaOrderCreationTx`. Carries
+  // the order's id because the order lives only locally until the order book indexes this transaction,
+  // so a creation that never lands has to fail its order from here — nothing else links the two.
+  solanaOrderCreation?: { orderId: string }
   // Wallet specific
   safeTransaction?: SafeMultisigTransactionResponse // Gnosis Safe transaction info
 

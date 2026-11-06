@@ -1,9 +1,17 @@
-import { encodeFunctionData, erc20Abi, maxUint256, type Hex, type WalletClient } from 'viem'
+import {
+  encodeFunctionData,
+  erc20Abi,
+  maxUint256,
+  type Hex,
+  type SendTransactionParameters,
+  type WalletClient,
+} from 'viem'
 import type { Config } from 'wagmi'
 import { readContract } from 'wagmi/actions'
 
 import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS_PROD,
+  calculateGasMargin,
   createCowLogger,
   normalizeError,
   slowPromiseHandler,
@@ -11,15 +19,18 @@ import {
 import { AccountAddress, isEvmChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@cowprotocol/currency'
 import { PermitHookData } from '@cowprotocol/permit-utils'
-import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
+import { ComposableCowPoller } from '@cowprotocol/sdk-composable'
+import { COW_SHED_2_1_0_VERSION, CowShedSdk, ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 
 import { t } from '@lingui/core/macro'
+import { estimateGas } from 'viem/actions'
 
-import { getCowShedHooks, ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
+import { ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG } from 'modules/accountProxy'
 import { waitForTwapEventId } from 'modules/twap/utils/waitForTwapEventId'
 import { shouldZeroApprove } from 'modules/zeroApproval'
 
 import { TransactionNotBroadcastError } from 'common/hooks/useGetReceipt'
+import { estimateGasWithFallback } from 'common/utils/estimateGasWithFallback'
 
 import { buildEoaTwapTrustedExecuteTx } from './buildEoaTwapTrustedExecuteTx'
 import { waitForEoaTwapTxReceipt } from './waitForEoaTwapTxReceipt.utils'
@@ -28,7 +39,6 @@ import {
   COMPOSABLE_COW_POLLER_ADDRESS,
   COMPOSABLE_COW_POLLER_INITIAL_AUTH_EPOCH,
 } from '../../../composable-cow-poller/composable-cow-poller.constants'
-import { encodeRegisterFromShedCalldata } from '../../../composable-cow-poller/composable-cow-poller.utils'
 import { TwapOrderCreationContext } from '../../../hooks/useTwapOrderCreationContext'
 import { EoaTwapSigningPhase, EoaTwapSigningSteps } from '../../../state/eoaTwapSigningStepAtom'
 import { ConditionalOrderParams, TWAPOrder } from '../../../types'
@@ -39,8 +49,7 @@ import { getCreateTwapOrderCalldata } from '../../getTwapCreateCalldata'
 import type { ComposableCowPollerSchedule } from '../../../composable-cow-poller/composable-cow-poller.types'
 import type { EoaTwapFlowUpdater } from '../../../hooks/useEoaTwapSigningStep'
 
-/** Default gas limit for the executeHooks calls. */
-const DEFAULT_GAS_LIMIT = 1_000_000n
+const DEFAULT_GAS_LIMIT = 2_000_000n
 
 /** After this delay, swap the SubmitTwap UI step to SubmitTwapSlow if the receipt is still pending. */
 const SUBMIT_TWAP_SLOW_MS = 10_000
@@ -97,7 +106,7 @@ export interface PlaceEoaTwapOrderParams {
   account: AccountAddress
   twapOrder: TWAPOrder
   twapOrderCreationContext: null | TwapOrderCreationContext
-  twapOrderId: string
+  twapOrderHash: string
   paramsStruct: ConditionalOrderParams
   config: Config
   walletClient: WalletClient
@@ -206,7 +215,9 @@ export function getEoaTwapOrderShedCalls({
     // Register the JIT poller schedule so each TWAP part can pull funds from the EOA:
     const registerTx: ICoWShedCall = {
       target: pollerRegistration.pollerAddress,
-      callData: encodeRegisterFromShedCalldata(pollerRegistration.schedule),
+      callData: new ComposableCowPoller(pollerRegistration.pollerAddress).encodeRegisterFromShed(
+        pollerRegistration.schedule,
+      ),
       value: 0n,
       isDelegateCall: false,
       allowFailure: false,
@@ -254,7 +265,7 @@ export async function placeEoaTwapOrder({
   account,
   twapOrder,
   twapOrderCreationContext,
-  twapOrderId,
+  twapOrderHash,
   paramsStruct,
   config,
   walletClient,
@@ -287,13 +298,14 @@ export async function placeEoaTwapOrder({
     throw new Error(`ComposableCowPoller is not deployed on chain ${chainId}`)
   }
 
-  // TODO: This could be simplified by using `CowShedSdk` instead of `CowShedHooks`, but right now it does not support passing a custom version, and it defaults
-  // to 1.0.1, so signature verification will fail.
-  const cowShedHooks = getCowShedHooks({ chainId, accountProxyConfig: ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG })
-  const factoryAddress = ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions.factoryAddress as `0x${string}`
+  const cowShedSdk = new CowShedSdk(
+    undefined,
+    ADVANCED_ORDERS_ACCOUNT_PROXY_CONFIG.factoryOptions,
+    COW_SHED_2_1_0_VERSION,
+  )
 
   // `proxyAddress` (quote receiver) is a special shed with support for Composable Cow. See https://github.com/cowdao-grants/cow-shed/pull/53
-  const proxyAddress = cowShedHooks.proxyOf(account) as AccountAddress
+  const proxyAddress = cowShedSdk.getCowShedAccount(chainId, account) as AccountAddress
 
   eoaTwapDebugLog('CowShed account:', proxyAddress)
 
@@ -338,7 +350,7 @@ export async function placeEoaTwapOrder({
 
   const setupTx = buildEoaTwapTrustedExecuteTx({
     proxyAddress: proxyAddress as `0x${string}`,
-    factoryAddress,
+    chainId,
     calls,
     isProxyDeployed,
   })
@@ -347,13 +359,18 @@ export async function placeEoaTwapOrder({
 
   onSigningStep({ step: EoaTwapSigningSteps.TwapSign, phase: EoaTwapSigningPhase.Sign })
 
-  const setupTxHash = await walletClient.sendTransaction({
-    to: setupTx.to,
-    data: setupTx.data,
+  const transaction = {
+    to: setupTx.to as Hex,
+    data: setupTx.data as Hex,
     account,
     chain: walletClient.chain,
-    gas: DEFAULT_GAS_LIMIT,
-  })
+    value: setupTx.value,
+  } satisfies SendTransactionParameters
+  const gas = await estimateGasWithFallback(
+    () => estimateGas(walletClient, transaction).then(calculateGasMargin),
+    DEFAULT_GAS_LIMIT,
+  )
+  const setupTxHash = await walletClient.sendTransaction({ ...transaction, gas })
 
   eoaTwapDebugLog('Setup tx submitted', setupTxHash)
 
@@ -374,7 +391,7 @@ export async function placeEoaTwapOrder({
   const { receipt, eventId } = await slowPromiseHandler(
     waitForEoaTwapTxReceipt(config, setupTxHash, chainId)
       .then(async (receipt) => {
-        const eventId = await waitForTwapEventId(twapOrderId, account, chainId)
+        const eventId = await waitForTwapEventId(twapOrderHash, account, chainId)
 
         return { receipt, eventId }
       })
@@ -445,7 +462,6 @@ async function getProxyAllowances({
   const needsZeroApproval = needsApproval
     ? await shouldZeroApprove({
         tokenAddress: sellTokenAddress,
-        // TODO: Verify this works properly
         owner: proxyAddress as `0x${string}`,
         spender: spender,
         amountToApprove: sellAmount,

@@ -6,3 +6,4 @@ export { useHasHookBridgeProvidersEnabled } from './useHasHookBridgeProvidersEna
 export { useHasBridgeProviders } from './useHasBridgeProviders'
 export { useBridgeProvidersReady } from './useBridgeProvidersReady'
 export { BridgeProvidersUpdater } from './BridgeProvidersUpdater'
+export { isBridgeSourceChainSupported } from './isBridgeSourceChainSupported'

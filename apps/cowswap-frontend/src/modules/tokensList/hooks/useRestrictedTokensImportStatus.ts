@@ -6,9 +6,13 @@ import { t } from '@lingui/core/macro'
 
 import { RwaTokenInfo, RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 
+import { ImportRestriction } from '../pure/ImportTokenModal'
+
 export interface RestrictedTokensImportResult {
   isImportDisabled: boolean
   blockReason: string | null
+  /** Ready to hand to `ImportTokenModal`, so callers do not rebuild it from the two fields above */
+  restriction: ImportRestriction | null
   restrictedTokenInfo: RwaTokenInfo | null
   /** When true, consent modal should be shown before import */
   requiresConsent: boolean
@@ -19,6 +23,7 @@ export interface RestrictedTokensImportResult {
 const NOT_RESTRICTED_RESULT: RestrictedTokensImportResult = {
   isImportDisabled: false,
   blockReason: null,
+  restriction: null,
   restrictedTokenInfo: null,
   requiresConsent: false,
   tokenNeedingConsent: null,
@@ -43,19 +48,24 @@ export function useRestrictedTokensImportStatus(tokens: TokenWithLogo[]): Restri
     }
 
     switch (status) {
-      case RwaTokenStatus.Restricted:
+      case RwaTokenStatus.Restricted: {
+        const blockReason = t`This token is not available in your region.`
+
         return {
           isImportDisabled: true,
-          blockReason: t`This token is not available in your region.`,
+          blockReason,
+          restriction: { isBlocked: true, message: blockReason },
           restrictedTokenInfo: rwaTokenInfo,
           requiresConsent: false,
           tokenNeedingConsent: null,
         }
+      }
 
       case RwaTokenStatus.RequiredConsent:
         return {
           isImportDisabled: false,
           blockReason: null,
+          restriction: null,
           restrictedTokenInfo: rwaTokenInfo,
           requiresConsent: true,
           tokenNeedingConsent: rwaTokenInfo?.token ? TokenWithLogo.fromToken(rwaTokenInfo.token) : null,

@@ -1,5 +1,91 @@
 # Changelog
 
+## [3.21.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.1...common-utils-v3.21.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(widget): display widget provider error in the UI (#8462)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
+## [3.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.0...common-utils-v3.21.1) (2026-10-28)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.1
+
+## [3.21.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.20.1...common-utils-v3.21.0) (2026-10-28)
+
+### Minor Changes
+
+- feat: wait for cows alpha (#8393)
+
+- feat: simple price chart (#8305)
+
+### Patch Changes
+
+- fix(balances): stop sending ipfs token lists to the balances watcher (#8441)
+
+- fix(widget): display widget provider error in the UI
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.17.0
+
+## [3.20.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.20.0...common-utils-v3.20.1) (2026-10-27)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8474)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.1
+  - @cowprotocol/currency@1.9.1
+  - @cowprotocol/types@4.14.1
+
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.19.0...common-utils-v3.20.0) (2026-10-21)
+
+### Minor Changes
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat(solana): explain token-2022 transfer fee (#8423)
+
+- feat(rwa): skeleton app (#8248)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.16.0
+  - @cowprotocol/currency@1.9.0
+  - @cowprotocol/types@4.14.0
+
+## [3.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.18.0...common-utils-v3.19.0) (2026-10-14)
+
+### Minor Changes
+
+- feat: bump sdk + support tokens 2022 (#8315)
+
+- feat(solana): use own RPC node in Reown with fallback (#8373)
+
+- feat: solana settlement 0.5 (#8345)
+
+### Patch Changes
+
+- fix(solana): support expired order (#8298)
+
+- fix: create fee calculator for sol instructions to predict lack of so… (#8224)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.15.0
+  - @cowprotocol/currency@1.8.0
+  - @cowprotocol/types@4.13.0
+
 ## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.17.0...common-utils-v3.18.0) (2026-10-06)
 
 ### Minor Changes

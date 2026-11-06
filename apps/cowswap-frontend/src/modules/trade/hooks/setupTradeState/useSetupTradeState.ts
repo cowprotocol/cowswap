@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useWalletClient } from 'wagmi'
 
-import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
+import { useAvailableChains, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
@@ -12,6 +12,7 @@ import { useAppKitProvider } from '@reown/appkit/react'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 import { TradeType, useTradeNavigate, useTradeTypeInfoFromUrl } from 'common/modules/tradeNavigation'
 
+import { useIsUrlChainUnavailable } from './useIsUrlChainUnavailable'
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
 
@@ -50,7 +51,10 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
   const [isFirstLoad, setIsFirstLoad] = useState(true)
 
   const isWalletConnected = !!account
-  const urlChainId = tradeStateFromUrl?.chainId
+  const rawUrlChainId = tradeStateFromUrl?.chainId
+  const isUrlChainUnavailable = useIsUrlChainUnavailable(rawUrlChainId)
+  const urlChainId = isUrlChainUnavailable ? null : rawUrlChainId
+  const availableChains = useAvailableChains()
   const prevTradeStateFromUrl = usePrevious(tradeStateFromUrl)
 
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
@@ -134,7 +138,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
    * On URL parameter changes
    *
    * 1. The case, when chainId in URL was changed while wallet is connected (read about it below)
-   * 2. When chainId in URL is invalid, then redirect to the default chainId
+   * 2. When chainId in URL is invalid or unavailable (e.g. Solana in the widget), then redirect to the default chainId
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
    * 5. When only chainId was changed in URL, then redirect to the default state
@@ -164,6 +168,15 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
     }
     // Not loaded yet, ignore
     if (!tradeStateFromUrl) {
+      return
+    }
+
+    if (isUrlChainUnavailable) {
+      const fallbackChainId = availableChains.includes(currentChainId) ? currentChainId : SupportedChainId.MAINNET
+
+      navigateAndSwitchNetwork(fallbackChainId, getDefaultTradeRawState(fallbackChainId), prevProviderChainId)
+      console.debug('[TRADE STATE]', 'Url contains unavailable chainId, resetting', rawUrlChainId)
+
       return
     }
 
@@ -224,7 +237,7 @@ export function useSetupTradeState(enableSellEqBuy = false): void {
 
     // Triggering only on changes from URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade])
+  }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade, isUrlChainUnavailable])
 
   /**
    * On:

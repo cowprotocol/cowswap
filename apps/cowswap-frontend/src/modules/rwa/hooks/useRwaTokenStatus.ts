@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { areTokensEqual } from '@cowprotocol/cow-sdk'
+import { areTokensEqual, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Currency, Token } from '@cowprotocol/currency'
 import { getCountryAsKey, RestrictedTokenInfo, useAnyRestrictedToken } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -90,6 +90,18 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
         return RwaTokenStatus.Restricted
       }
       return RwaTokenStatus.Allowed
+    }
+
+    /**
+     * A signed consent travels in the appData document, and a Solana order carries only the appData hash,
+     * so a consent given here can never be proven against the order. With no fallback to offer, an
+     * unknown location blocks instead of asking.
+     *
+     * This covers the lookup still being in flight, not only a failed one: the alternative is opening a
+     * consent flow that cannot be honoured, and a briefly disabled button is the safer way to be wrong.
+     */
+    if (isSolanaChain(rwaTokenInfo.token.chainId)) {
+      return RwaTokenStatus.Restricted
     }
 
     // Country unknown (loading, failed, or unavailable) - fall back to consent check

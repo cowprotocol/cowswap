@@ -11,8 +11,9 @@ import * as styledEl from './NetworksList.styled'
 import { getLogo } from './NetworksList.utils'
 
 import { useDeprecatedChains } from '../../hooks/useDeprecatedChains'
+import { ChainStatusBadge } from '../ChainStatusBadge/ChainStatusBadge.pure'
 
-const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([])
+const NEW_NETWORK_IDS: Set<TargetChainId> = new Set([SupportedChainId.ROBINHOOD])
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -63,6 +64,10 @@ export function NetworksList({
               <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
                 <Trans>NEW</Trans>
               </Badge>
+            )}
+
+            {!isDeprecatedNetwork && (
+              <ChainStatusBadge chainId={targetChainId} style={isActive ? { marginRight: '10px' } : undefined} />
             )}
 
             {isActive && <styledEl.FlyoutRowActiveIndicator $active />}

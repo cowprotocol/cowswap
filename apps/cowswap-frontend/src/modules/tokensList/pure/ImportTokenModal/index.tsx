@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getTokenId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ExternalLink, ModalHeader, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink, UI, Modal } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
@@ -53,9 +53,9 @@ export function ImportTokenModal(props: ImportTokenModalProps): ReactNode {
 
   return (
     <styledEl.Wrapper>
-      <ModalHeader onBack={onBack} onClose={onDismiss}>
+      <Modal.Header onBack={onBack} onClose={onDismiss}>
         <Trans>Import token</Trans>
-      </ModalHeader>
+      </Modal.Header>
       <styledEl.Contents>
         <styledEl.AlertIcon size={48} strokeWidth={1} />
         <p>

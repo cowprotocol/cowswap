@@ -39,6 +39,8 @@ export interface SolanaRawOrder {
   kind: SolanaOrderKind
   partiallyFillable: boolean
   appData: string
+  /** The document `appData` is the hash of, `null` until registered. */
+  fullAppData: string | null
   orderPda: string
   creationDate: string
   executedSellAmount: string

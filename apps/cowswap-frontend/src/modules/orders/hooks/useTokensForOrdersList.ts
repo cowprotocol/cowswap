@@ -1,12 +1,14 @@
 import { useCallback, useRef } from 'react'
 
-import { useConfig } from 'wagmi'
-
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { getAddressKey } from '@cowprotocol/cow-sdk'
-import { Token } from '@cowprotocol/currency'
-import { fetchTokenFromBlockchain, TokensByAddress, useAddUserToken, useTokensByAddressMap } from '@cowprotocol/tokens'
+import {
+  TokensByAddress,
+  useAddUserToken,
+  useFetchTokenFromBlockchain,
+  useTokensByAddressMap,
+} from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
@@ -14,24 +16,18 @@ import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
 // TODO: This could be replaced with apps/cowswap-frontend/src/entities/twap/state/twapOrdersTokensAtom.ts
 
 export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: AbortSignal) => Promise<TokensByAddress> {
-  const config = useConfig()
   const { chainId } = useWalletInfo()
   const allTokens = useTokensByAddressMap()
   const addUserTokens = useAddUserToken()
+  const fetchTokenFromBlockchain = useFetchTokenFromBlockchain()
 
   const getToken = useCallback(
     async (address: string, signal?: AbortSignal) => {
       if (signal?.aborted) return null
-      if (!config) return null
-      // Cast to satisfy fetchTokenFromBlockchain's Config type (tokens lib may resolve a different wagmi/viem copy)
-      const token = await fetchTokenFromBlockchain(
-        address,
-        chainId,
-        config as Parameters<typeof fetchTokenFromBlockchain>[2],
-      ).then(TokenWithLogo.fromToken)
-      return signal?.aborted ? null : token
+      const token = await fetchTokenFromBlockchain(address, chainId)
+      return signal?.aborted || !token ? null : TokenWithLogo.fromToken(token)
     },
-    [chainId, config],
+    [chainId, fetchTokenFromBlockchain],
   )
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
@@ -78,7 +74,7 @@ export function useTokensForOrdersList(): (tokensToFetch: string[], signal?: Abo
 
 async function _fetchTokens(
   tokensToFetch: string[],
-  getToken: (address: string, signal?: AbortSignal) => Promise<Token | null>,
+  getToken: (address: string, signal?: AbortSignal) => Promise<TokenWithLogo | null>,
   signal?: AbortSignal,
 ): Promise<TokensByAddress> {
   if (tokensToFetch.length === 0 || signal?.aborted) {
@@ -91,10 +87,10 @@ async function _fetchTokens(
 
   return settledPromises.reduce<TokensByAddress>((acc, promiseResult) => {
     if (promiseResult.status === 'fulfilled' && promiseResult.value) {
-      const { chainId, address, decimals, symbol, name } = promiseResult.value
+      const { chainId, address, decimals, symbol, name, tags } = promiseResult.value
       const addressKey = getAddressKey(address)
 
-      acc[addressKey] = new TokenWithLogo(undefined, chainId, addressKey, decimals, symbol, name)
+      acc[addressKey] = new TokenWithLogo(undefined, chainId, addressKey, decimals, symbol, name, tags)
     }
     return acc
   }, {})

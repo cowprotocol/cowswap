@@ -36,7 +36,9 @@ jest.mock('jotai', () => {
 })
 
 jest.mock('@cowprotocol/ui', () => ({
-  ModalHeader: () => <div>ModalHeader</div>,
+  Modal: {
+    Header: () => <div>ModalHeader</div>,
+  },
 }))
 
 jest.mock('common/pure/Modal', () => ({

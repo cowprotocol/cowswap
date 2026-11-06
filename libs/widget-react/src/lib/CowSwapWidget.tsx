@@ -49,6 +49,11 @@ export function CowSwapWidget({
   const enableSafeSdkBridgeRef = useRef(enableSafeSdkBridge)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const widgetHandlerRef = useRef<CowSwapWidgetHandler | null>(null)
+  const onLoadingErrorRef = useRef(onLoadingError)
+
+  useEffect(() => {
+    onLoadingErrorRef.current = onLoadingError
+  }, [onLoadingError])
 
   const tryOrHandleError = useCallback((action: string, actionThatMightFail: Command) => {
     try {
@@ -60,6 +65,7 @@ export function CowSwapWidget({
 
       console.error(`[WIDGET] ${errorMessage}`, error)
       setError({ message: errorMessage, error })
+      onLoadingErrorRef.current?.()
     }
   }, [])
 

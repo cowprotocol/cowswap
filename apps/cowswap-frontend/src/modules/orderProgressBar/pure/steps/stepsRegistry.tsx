@@ -10,6 +10,8 @@ import { InitialStep } from './InitialStep'
 import { SolvingStep } from './SolvingStep'
 
 import { OrderProgressBarStepName } from '../../constants'
+import { useAuctionWaitState } from '../../hooks/useAuctionWaitState'
+import { useRandomBenefit } from '../../hooks/useRandomBenefit'
 import { OrderProgressBarProps } from '../../types'
 import { RenderProgressTopSection } from '../RenderProgressTopSection'
 
@@ -72,7 +74,7 @@ function ExecutingStepWrapper(props: OrderProgressBarProps): ReactNode {
 
 function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
   return (
-    <ExpiredStep navigateToNewOrder={props.navigateToNewOrder}>
+    <ExpiredStep chainId={props.chainId} navigateToNewOrder={props.navigateToNewOrder}>
       <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
     </ExpiredStep>
   )
@@ -80,6 +82,7 @@ function ExpiredStepWrapper(props: OrderProgressBarProps): ReactNode {
 
 function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
   const { stepName, solverCompetition: solvers, totalSolvers, order, surplusData, chainId, receiverEnsName } = props
+  const randomBenefit = useRandomBenefit(chainId)
 
   return (
     <FinishedStep
@@ -90,23 +93,37 @@ function FinishedStepWrapper(props: OrderProgressBarProps): ReactNode {
       chainId={chainId}
       receiverEnsName={receiverEnsName}
       totalSolvers={totalSolvers}
+      randomBenefit={randomBenefit}
       debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      solverCompetitionPending={props.solverCompetitionPending}
+      waitAndSave={props.waitAndSave}
     >
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+      <RenderProgressTopSection
+        {...props}
+        randomBenefit={randomBenefit}
+        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      />
     </FinishedStep>
   )
 }
 
 function InitialStepWrapper(props: OrderProgressBarProps): ReactNode {
+  const { auctionValidFrom, isAuctionWaiting, onAuctionRemainingChange } = useAuctionWaitState(props.order)
+
   return (
-    <InitialStep isBridgingTrade={props.isBridgingTrade}>
-      <RenderProgressTopSection {...props} debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS} />
+    <InitialStep isBridgingTrade={props.isBridgingTrade} hideSteps={isAuctionWaiting}>
+      <RenderProgressTopSection
+        {...props}
+        auctionValidFrom={auctionValidFrom}
+        onAuctionRemainingChange={onAuctionRemainingChange}
+        debugForceShowSurplus={DEBUG_FORCE_SHOW_SURPLUS}
+      />
     </InitialStep>
   )
 }
 
 function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
-  const { countdown, stepName, showCancellationModal, isBridgingTrade } = props
+  const { countdown, stepName, showCancellationModal, isBridgingTrade, chainId } = props
   const isUnfillable = stepName === OrderProgressBarStepName.UNFILLABLE
   const isDelayed = stepName === OrderProgressBarStepName.DELAYED
   const isSubmissionFailed = stepName === OrderProgressBarStepName.SUBMISSION_FAILED
@@ -114,7 +131,12 @@ function SolvingStepWrapper(props: OrderProgressBarProps): ReactNode {
   const calculatedCountdownValue = isUnfillable || isDelayed || isSubmissionFailed || isSolved ? undefined : countdown
 
   return (
-    <SolvingStep stepName={stepName} showCancellationModal={showCancellationModal} isBridgingTrade={isBridgingTrade}>
+    <SolvingStep
+      chainId={chainId}
+      stepName={stepName}
+      showCancellationModal={showCancellationModal}
+      isBridgingTrade={isBridgingTrade}
+    >
       <RenderProgressTopSection
         {...props}
         countdown={calculatedCountdownValue}

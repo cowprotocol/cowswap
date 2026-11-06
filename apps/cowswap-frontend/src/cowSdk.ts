@@ -16,7 +16,6 @@ import {
   Signer,
   setGlobalAdapter,
 } from '@cowprotocol/cow-sdk'
-import { PERMIT_ACCOUNT } from '@cowprotocol/permit-utils'
 import { ViemAdapter } from '@cowprotocol/sdk-viem-adapter'
 
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -24,6 +23,7 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
   : undefined
 
 export const appSignerAtom = atom<Signer | undefined>(undefined)
+export const appSignerAccountAtom = atom<string | undefined>(undefined)
 
 function getInitialEvmChainId(): EvmChains {
   const urlChainId = getCurrentChainIdFromUrl()
@@ -62,18 +62,18 @@ export function CowSdkUpdater(): null {
   const publicClient = usePublicClient()
   const { data: walletClient } = useWalletClient()
   const setAppSigner = useSetAtom(appSignerAtom)
+  const setAppSignerAccount = useSetAtom(appSignerAccountAtom)
 
   useEffect(() => {
     if (!publicClient) return
-    let adapter: ViemAdapter
+
     if (walletClient) {
-      adapter = new ViemAdapter({ provider: publicClient, walletClient })
-    } else {
-      adapter = new ViemAdapter({ provider: publicClient, signer: PERMIT_ACCOUNT })
+      const adapter = new ViemAdapter({ provider: publicClient, walletClient })
+      setGlobalAdapter(adapter as AbstractProviderAdapter)
+      setAppSigner(adapter.signer)
+      setAppSignerAccount(walletClient.account.address)
     }
-    setGlobalAdapter(adapter as AbstractProviderAdapter)
-    setAppSigner(walletClient ? adapter.signer : undefined)
-  }, [publicClient, walletClient, setAppSigner])
+  }, [publicClient, walletClient, setAppSigner, setAppSignerAccount])
 
   return null
 }

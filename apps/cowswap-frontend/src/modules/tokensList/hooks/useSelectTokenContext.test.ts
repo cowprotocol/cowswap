@@ -1,8 +1,9 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { renderHook } from '@testing-library/react'
 import { useBalancesAccountForChain } from 'entities/balancesContext/useBalancesAccountForChain'
 
+import { useChainsToSelect } from './useChainsToSelect'
 import { useSelectTokenContext } from './useSelectTokenContext'
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { useSourceChainId } from './useSourceChainId'
@@ -18,6 +19,10 @@ jest.mock('entities/balancesContext/useBalancesAccountForChain', () => ({
 jest.mock('./useSelectTokenWidgetState', () => ({
   ...jest.requireActual('./useSelectTokenWidgetState'),
   useSelectTokenWidgetState: jest.fn(),
+}))
+
+jest.mock('./useChainsToSelect', () => ({
+  useChainsToSelect: jest.fn(),
 }))
 
 jest.mock('./useSourceChainId', () => ({
@@ -36,6 +41,7 @@ const mockUseBalancesAccountForChain = useBalancesAccountForChain as jest.Mocked
   typeof useBalancesAccountForChain
 >
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
+const mockUseChainsToSelect = useChainsToSelect as jest.MockedFunction<typeof useChainsToSelect>
 const mockUseSourceChainId = useSourceChainId as jest.MockedFunction<typeof useSourceChainId>
 const mockUseTokenDataSources = useTokenDataSources as jest.MockedFunction<typeof useTokenDataSources>
 const mockUseTokenSelectionHandler = useTokenSelectionHandler as jest.MockedFunction<typeof useTokenSelectionHandler>
@@ -46,6 +52,7 @@ describe('useSelectTokenContext', () => {
 
     mockUseBalancesAccountForChain.mockReturnValue('0x0000000000000000000000000000000000000001')
     mockUseSelectTokenWidgetState.mockReturnValue(DEFAULT_SELECT_TOKEN_WIDGET_STATE)
+    mockUseChainsToSelect.mockReturnValue(undefined)
     mockUseTokenDataSources.mockReturnValue({
       userAddedTokens: [],
       allTokenLists: [],
@@ -92,5 +99,30 @@ describe('useSelectTokenContext', () => {
     const { result } = renderHook(() => useSelectTokenContext())
 
     expect(result.current.isWalletConnected).toBe(true)
+  })
+
+  it('is NOT connected when browsing Bitcoin, even though an EVM account exists', () => {
+    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
+    mockUseSelectTokenWidgetState.mockReturnValue({
+      ...DEFAULT_SELECT_TOKEN_WIDGET_STATE,
+      selectedTargetChainId: AdditionalTargetChainId.BITCOIN,
+    })
+
+    const { result } = renderHook(() => useSelectTokenContext())
+
+    expect(result.current.isWalletConnected).toBe(false)
+  })
+
+  it('is NOT connected when the chains selector defaults to Bitcoin', () => {
+    mockUseSourceChainId.mockReturnValue({ chainId: SupportedChainId.MAINNET, source: 'wallet' })
+    mockUseChainsToSelect.mockReturnValue({
+      defaultChainId: AdditionalTargetChainId.BITCOIN,
+      chains: [],
+      isLoading: false,
+    } as ReturnType<typeof useChainsToSelect>)
+
+    const { result } = renderHook(() => useSelectTokenContext())
+
+    expect(result.current.isWalletConnected).toBe(false)
   })
 })

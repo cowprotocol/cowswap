@@ -30,7 +30,8 @@ export async function sendSolanaFlow(context: SolanaFlowContext, steps: SolanaFl
   // Tagging an order-creating transaction hides it from the activity list so the order shows instead —
   // see `isNotSolanaOrderCreationTx`. Read off the steps rather than assumed, keeping this function
   // agnostic about what a step means: a wrap- or delegate-only transaction must stay visible.
-  const solanaOrderCreation = steps.some((step) => step.createsOrder)
+  const createdOrderId = steps.find((step) => step.createdOrderId)?.createdOrderId
+  const solanaOrderCreation = createdOrderId ? { orderId: createdOrderId } : undefined
 
   addTransaction({ hash, summary, solanaOrderCreation, data: { lastValidBlockHeight } })
 

@@ -28,11 +28,19 @@ export const getJotaiIsolatedStorage = <T>() => {
   return storage
 }
 
+/**
+ * @param migrated an already-running migration into `key`, started once at module load. This does not run
+ * it — the read just waits for it. The atom reads its key lazily on first access, which races that
+ * migration: lose the race and the atom resolves to `initialValue`, then persists it over everything the
+ * migration wrote.
+ */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function atomWithIdbStorage<Value>(key: string, initialValue: Value) {
+export function atomWithIdbStorage<Value>(key: string, initialValue: Value, migrated?: Promise<unknown>) {
   const storage: AsyncStringStorage = {
     async getItem(key: string): Promise<string | null> {
+      if (migrated) await migrated
+
       return localForageJotai.getItem(key).then((result) => result as string | null)
     },
     async setItem(key: string, newValue: string): Promise<void> {

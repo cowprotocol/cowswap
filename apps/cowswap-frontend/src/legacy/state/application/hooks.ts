@@ -1,9 +1,11 @@
 import { useCallback } from 'react'
 
+import { isSolanaChain } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { OPEN_WALLET_MODAL_EVENT } from '@cowprotocol/wallet'
+import { OPEN_WALLET_MODAL_EVENT, OpenWalletModalEventDetail, useWalletInfo } from '@cowprotocol/wallet'
 
 import { createAction } from '@reduxjs/toolkit'
+import { useIsSolanaVisible } from 'entities/alphaNetworks'
 
 import { ApplicationModal } from './reducer'
 
@@ -44,7 +46,13 @@ export function useToggleModal(modal: ApplicationModal): Command {
  * No wagmi/Reown hooks here so this is safe to call from any part of the tree.
  */
 export function useToggleWalletModal(): Command {
+  const isSolanaVisible = useIsSolanaVisible()
+  const { chainId } = useWalletInfo()
+  const namespace = isSolanaVisible || isSolanaChain(chainId) ? undefined : 'eip155'
+
   return useCallback(() => {
-    document.dispatchEvent(new CustomEvent(OPEN_WALLET_MODAL_EVENT))
-  }, [])
+    document.dispatchEvent(
+      new CustomEvent<OpenWalletModalEventDetail>(OPEN_WALLET_MODAL_EVENT, { detail: { namespace } }),
+    )
+  }, [namespace])
 }

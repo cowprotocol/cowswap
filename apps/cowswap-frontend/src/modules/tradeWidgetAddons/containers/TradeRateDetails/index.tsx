@@ -13,6 +13,8 @@ import {
   useShouldPayGas,
   useGetReceiveAmountInfo,
   useGetSwapReceiveAmountInfo,
+  useSolanaTxCost,
+  TxCostRow,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useShouldShowSlippageProminent, useTradeSlippage } from 'modules/tradeSlippage'
@@ -61,8 +63,11 @@ export function TradeRateDetails({
   const { error: quoteError } = useTradeQuote()
 
   const networkFeeAmount = useNetworkFeeAmount()
+  const solanaTxCost = useSolanaTxCost()
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
+  const solanaTxCostUsd = useUsdAmount(solanaTxCost?.amount).value
+  const solanaOwnerDepositUsd = useUsdAmount(solanaTxCost?.ownerDeposit).value
 
   const toggleAccordion = useCallback(() => {
     setFeeDetailsOpen((prev) => !prev)
@@ -119,10 +124,20 @@ export function TradeRateDetails({
         {accordionContent || defaultExpandedContent}
       </TradeTotalCostsDetails>
 
-      {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
-      {shouldShowSlippageProminent && !isFeeDetailsOpen && (
-        <div style={{ padding: '0 6px', marginTop: '-5px' }}>{slippageRow}</div>
+      {/* Paid from the wallet rather than taken out of the trade, so it sits outside the costs accordion */}
+      {solanaTxCost && (
+        <TxCostRow
+          txCost={solanaTxCost.amount}
+          txCostUsd={solanaTxCostUsd}
+          isSponsored={solanaTxCost.isSponsored}
+          ownerDeposit={solanaTxCost.ownerDeposit}
+          ownerDepositUsd={solanaOwnerDepositUsd}
+          detailRowStyle
+        />
       )}
+
+      {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
+      {shouldShowSlippageProminent && !isFeeDetailsOpen && slippageRow}
     </>
   )
 }

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
+import { isSolanaAddress, isSolanaChain } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Nullish } from 'types'
@@ -16,11 +17,16 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
   const state = useDerivedTradeState()
   const { account } = useWalletInfo()
 
-  const { recipient, recipientAddress, outputCurrency } = state || {}
+  const { recipient, recipientAddress, inputCurrency, outputCurrency } = state || {}
 
   const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   return useMemo(() => {
+    const solanaSwapReceiver = resolveSolanaSwapReceiver(recipient, account, inputCurrency, outputCurrency)
+    if (solanaSwapReceiver) {
+      return { receiver: solanaSwapReceiver, bridgeRecipient: solanaSwapReceiver }
+    }
+
     // Non-EVM recipient (Solana/BTC): pass as bridgeRecipient for the bridge provider,
     // and use account as the EVM receiver for the CoW API.
     // Non-EVM always takes priority over the bridge provider type — do not reorder.
@@ -46,7 +52,7 @@ export function useQuoteParamsRecipient(): { receiver: Nullish<string>; bridgeRe
 
     // Default: EVM receiver, used for both receiver and bridge recipient
     return { receiver: resolvedReceiver, bridgeRecipient: resolvedReceiver }
-  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, outputCurrency])
+  }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress, inputCurrency, outputCurrency])
 }
 
 /** Returns the default non-EVM bridge recipient address for quoting when the user hasn't set one yet. */
@@ -80,4 +86,16 @@ function resolveNonEvmBridgeRecipient(
     ({ isChain, isAddress: isNonEvmAddr }) => isChain(outputCurrency.chainId) && isNonEvmAddr(recipient),
   )
   return chainMatches ? recipient : undefined
+}
+
+function resolveSolanaSwapReceiver(
+  recipient: Nullish<string>,
+  account: Nullish<string>,
+  inputCurrency: Nullish<{ chainId: number }>,
+  outputCurrency: Nullish<{ chainId: number }>,
+): Nullish<string> {
+  if (!inputCurrency || !outputCurrency) return undefined
+  if (!isSolanaChain(inputCurrency.chainId) || !isSolanaChain(outputCurrency.chainId)) return undefined
+
+  return isSolanaAddress(recipient) ? recipient : account
 }

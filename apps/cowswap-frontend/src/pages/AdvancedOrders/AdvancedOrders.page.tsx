@@ -1,9 +1,9 @@
-import { useAtomValue } from 'jotai'
-import { ReactNode, Suspense, useCallback } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { ReactNode, Suspense, useCallback, useMemo } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { Dialog, DialogOrInline, Media, Modal, ModalHeader } from '@cowprotocol/ui'
+import { Dialog, DialogOrInline, Media, Modal } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 import { useInjectedWidgetParams } from 'entities/injectedWidget'
@@ -22,8 +22,14 @@ import {
 import { PageTitle } from 'modules/application'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders'
 import { OrdersTableWidget, ordersTableStateAtom, useOrdersTable } from 'modules/ordersTable'
+import { PriceChart } from 'modules/priceChart'
 import * as styledEl from 'modules/trade'
-import { TradeRouteRedirect, useOrdersTableDrawerState, useSetOrdersTableDrawerOpen } from 'modules/trade'
+import {
+  TradeRouteRedirect,
+  getLimitPriceFromReceiveAmount,
+  useOrdersTableDrawerState,
+  useSetOrdersTableDrawerOpen,
+} from 'modules/trade'
 import {
   SetupFallbackHandlerWarning,
   TwapConfirmModal,
@@ -32,9 +38,11 @@ import {
   TwapUpdaters,
   useIsFallbackHandlerRequired,
   useMapTwapCurrencyInfo,
+  useScaledReceiveAmountInfo,
   useTwapFormState,
   useTwapSlippage,
   TwapFormState,
+  twapRateInvertedAtom,
 } from 'modules/twap'
 
 import { Routes } from 'common/constants/routes'
@@ -43,12 +51,14 @@ import { isTwapSupportedChain } from 'common/utils/isTwapSupportedChain'
 
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
+// eslint-disable-next-line max-lines-per-function
 export function AdvancedOrdersPage(): ReactNode {
   useOrdersTable(TabOrderTypes.ADVANCED)
 
   const params = useParams()
   const { i18n, t } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
+  const [isInverted, setIsInverted] = useAtom(twapRateInvertedAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
   const { pendingOrders } = useAtomValue(ordersTableStateAtom)
@@ -74,6 +84,23 @@ export function AdvancedOrdersPage(): ReactNode {
     twapFormValidation === TwapFormState.RECEIVE_ZERO_FROM_NETWORK_COSTS
   const advancedWidgetParams = { disablePriceImpact }
   const advancedOrdersDerivedStateToFill = useAdvancedOrdersDerivedStateToFill(twapSlippage)
+  const { inputCurrency, outputCurrency } = advancedOrdersDerivedStateToFill
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
+  const worstAcceptablePrice = useMemo(
+    () => (receiveAmountInfo ? getLimitPriceFromReceiveAmount(receiveAmountInfo) : null),
+    [receiveAmountInfo],
+  )
+  const referenceLines = useMemo(
+    () => [
+      {
+        id: 'trade:worst-acceptable-price',
+        label: t`Worst acceptable price`,
+        price: worstAcceptablePrice,
+        variant: 'worst-acceptable-price' as const,
+      },
+    ],
+    [worstAcceptablePrice, t],
+  )
 
   if (!params.chainId) {
     return <TradeRouteRedirect route={Routes.ADVANCED_ORDERS} />
@@ -91,7 +118,7 @@ export function AdvancedOrdersPage(): ReactNode {
         isUnlocked={isUnlocked}
         maxWidth={ADVANCED_ORDERS_MAX_WIDTH}
         secondaryOnLeft={ordersTableOnLeft}
-        hideOrdersTable={hideOrdersTable || isUpToLarge}
+        hideOrdersTable={hideOrdersTable || isUpToLarge || !isUnlocked}
       >
         <styledEl.PrimaryWrapper>
           {isFallbackHandlerRequired && pendingOrders.length > 0 && <SetupFallbackHandlerWarning />}
@@ -102,37 +129,48 @@ export function AdvancedOrdersPage(): ReactNode {
             mapCurrencyInfo={mapTwapCurrencyInfo}
             topContent={<TwapSellAmountDescription />}
           >
-            {(tradeWarnings) => (
+            {(tradeWarnings, captcha) => (
               <>
                 {/*TODO: conditionally display a widget for current advanced order type*/}
-                <TwapFormWidget tradeWarnings={tradeWarnings} />
+                <TwapFormWidget tradeWarnings={tradeWarnings} captcha={captcha} />
               </>
             )}
           </AdvancedOrdersWidget>
         </styledEl.PrimaryWrapper>
 
-        {!hideOrdersTable && isUnlocked && (
-          <DialogOrInline
-            isDialog={isUpToLarge}
-            isOpen={isOrdersTableDrawerOpen}
-            onOpenChange={handleOrdersTableDrawerOpenChange}
-          >
-            <Modal.Root className="trade-orders-table">
-              {isUpToLarge ? (
-                <ModalHeader
-                  sticky
-                  title={t`TWAP orders`}
-                  titleAs={Dialog.Title}
-                  onClose={() => setOrdersTableDrawerOpen(false)}
-                />
-              ) : null}
-              <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
-                <Suspense fallback={<Loading />}>
-                  <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
-                </Suspense>
-              </styledEl.SecondaryWrapper>
-            </Modal.Root>
-          </DialogOrInline>
+        {isUnlocked && (
+          <styledEl.SecondaryColumn>
+            <PriceChart
+              inputCurrency={inputCurrency}
+              outputCurrency={outputCurrency}
+              selectedCurrency={isInverted ? outputCurrency : inputCurrency}
+              onSelectCurrency={(currency) => setIsInverted(Boolean(outputCurrency?.equals(currency)))}
+              referenceLines={referenceLines}
+            />
+            {!hideOrdersTable && (
+              <DialogOrInline
+                isDialog={isUpToLarge}
+                isOpen={isOrdersTableDrawerOpen}
+                onOpenChange={handleOrdersTableDrawerOpenChange}
+              >
+                <Modal.Root className="trade-orders-table">
+                  {isUpToLarge && (
+                    <Modal.Header
+                      sticky
+                      title={t`TWAP orders`}
+                      titleAs={Dialog.Title}
+                      onClose={() => setOrdersTableDrawerOpen(false)}
+                    />
+                  )}
+                  <styledEl.SecondaryWrapper $inDrawer={isUpToLarge}>
+                    <Suspense fallback={<Loading />}>
+                      <OrdersTableWidget orderType={TabOrderTypes.ADVANCED} />
+                    </Suspense>
+                  </styledEl.SecondaryWrapper>
+                </Modal.Root>
+              </DialogOrInline>
+            )}
+          </styledEl.SecondaryColumn>
         )}
       </styledEl.PageWrapper>
     </HydrateAtom>

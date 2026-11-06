@@ -11,27 +11,19 @@ import { ConfirmationModalProps } from '../pure/ConfirmationModal'
 
 interface ConfirmationModalContext {
   onDismiss: Command
-  activePromise?: Promise<boolean>
   title: string
   callToAction: string
   description?: ReactNode
-  warning?: string
   confirmWord: string
   action: string
   onEnable: Command
   skipInput?: boolean
   bottomContent?: ReactNode
-  triggerConfirmation: ({
-    title,
-    description,
-    callToAction,
-    warning,
-    skipInput,
-  }: TriggerConfirmationParams) => Promise<void>
+  triggerConfirmation: ({ title, description, callToAction, skipInput }: TriggerConfirmationParams) => Promise<void>
 }
 type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
-  'title' | 'description' | 'callToAction' | 'warning' | 'confirmWord' | 'action' | 'skipInput' | 'bottomContent'
+  'title' | 'description' | 'callToAction' | 'confirmWord' | 'action' | 'skipInput' | 'bottomContent'
 >
 
 export const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {

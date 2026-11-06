@@ -77,8 +77,8 @@ export interface SolanaTradeFlowContext {
   }
   tradeConfirmActions: TradeConfirmActions
   tradeFlowAnalyticsContext: TradeFlowAnalyticsContext
-  // The app's current appData; passed as `advancedSettings.appData` so the order carries it even if it
-  // has changed since the quote (e.g. hooks added after quoting), mirroring the EVM flow's `orderParams.appData`.
+  // The app's current appData, signed into the order intent rather than the quote's, mirroring the EVM
+  // flow's `orderParams.appData`.
   appData: AppDataInfo
 }
 
