@@ -1,5 +1,29 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.2...ui-v3.20.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: Wait for cows UI bits & new confirmation (#8443)
+
+- feat: Wait & save widget toggle (#8473)
+
+### Patch Changes
+
+- fix: replace Accordion with Expandable, fix React crash (#8475)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.8.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/analytics@3.16.4
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.19.2](https://github.com/cowprotocol/cowswap/compare/ui-v3.19.1...ui-v3.19.2) (2026-11-02)
 
 ### Patch Changes

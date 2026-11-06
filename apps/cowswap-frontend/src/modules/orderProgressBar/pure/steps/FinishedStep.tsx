@@ -30,7 +30,12 @@ import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
 
-import { getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
+import {
+  getTwitterShareUrl,
+  getTwitterShareUrlForAuction,
+  getTwitterShareUrlForBenefit,
+  getTwitterShareUrlForWaitAndSave,
+} from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { ConfirmationOutcomeSlot } from '../ConfirmationOutcomeSlot/ConfirmationOutcomeSlot.pure'
@@ -46,6 +51,11 @@ export interface FinishedSuccessHeadingProps {
   title?: ReactNode
 }
 
+interface FinishedShareButtonProps {
+  twitterUrl: string
+  kind: FinishedShareKind
+}
+
 interface FinishedStepProps {
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
@@ -59,6 +69,13 @@ interface FinishedStepProps {
   debugForceShowSurplus?: boolean
   solverCompetitionPending?: boolean
   waitAndSave?: OrderProgressBarProps['waitAndSave']
+}
+
+enum FinishedShareKind {
+  SURPLUS = 'Surplus',
+  WAIT_AND_SAVE = 'WaitAndSave',
+  AUCTION = 'Auction',
+  TIP = 'Tip',
 }
 
 // eslint-disable-next-line complexity
@@ -102,16 +119,11 @@ export function FinishedStep({
     debugForceShowSurplus,
   })
 
-  const twitterUrl = useMemo(() => {
-    return shouldShowSurplus ? getTwitterShareUrl(surplusData, order) : getTwitterShareUrlForBenefit(randomBenefit)
-  }, [shouldShowSurplus, surplusData, order, randomBenefit])
-
   const soldLabel = t`You sold`
   const receivedLabel = t`You received`
   const celebrateWin = shouldShowSurplus || showWaitAndSaveCard
   const tokenPair = useFinishedTokenPair(order, soldLabel, receivedLabel, surplusSecondaryAmount, waitAndSave)
 
-  const showShare = !disablePostTradeTips || celebrateWin
   const competitionPending = waitAndSave?.pending === true
   const surplusPending = !cancellationFailed && surplusData?.isReady === false
   const outcomeLoading = solverCompetitionPending || competitionPending || surplusPending
@@ -119,6 +131,15 @@ export function FinishedStep({
   const hasSolvers = solversList.length > 0
   const showExpandedAuction = hasSolvers && !shouldShowSurplus && !showWaitAndSaveCard
   const showCollapsedSolvers = !outcomeLoading && hasSolvers && !showExpandedAuction
+  const showShare = !outcomeLoading && (!disablePostTradeTips || celebrateWin)
+  const shareContent = getFinishedShareContent({
+    shouldShowSurplus,
+    surplusData,
+    order,
+    solvers: solversList,
+    randomBenefit,
+    waitAndSave,
+  })
 
   if (!order) {
     return null
@@ -151,7 +172,7 @@ export function FinishedStep({
           <SolverCompetitionExpand solvers={solversList} totalSolvers={totalSolvers} buyToken={order.outputToken} />
         ) : null}
 
-        {showShare ? <FinishedShareButton twitterUrl={twitterUrl} shouldShowSurplus={celebrateWin} /> : null}
+        {showShare ? <FinishedShareButton {...shareContent} /> : null}
       </BaseTradeConfirmation>
     </styledEl.FinishedStepContainer>
   )
@@ -217,13 +238,14 @@ function CancellationFailedBanner(): ReactNode {
   )
 }
 
-function FinishedShareButton({
-  twitterUrl,
-  shouldShowSurplus,
-}: {
-  twitterUrl: string
-  shouldShowSurplus: boolean
-}): ReactNode {
+function FinishedShareButton({ twitterUrl, kind }: FinishedShareButtonProps): ReactNode {
+  const labels: Record<FinishedShareKind, ReactNode> = {
+    [FinishedShareKind.SURPLUS]: <Trans>Share this win!</Trans>,
+    [FinishedShareKind.WAIT_AND_SAVE]: <Trans>Share this win!</Trans>,
+    [FinishedShareKind.AUCTION]: <Trans>Share this swap</Trans>,
+    [FinishedShareKind.TIP]: <Trans>Share this tip!</Trans>,
+  }
+
   return (
     <styledEl.ShareButton
       as="a"
@@ -233,11 +255,11 @@ function FinishedShareButton({
       data-click-event={toCowSwapGtmEvent({
         category: CowSwapAnalyticsCategory.PROGRESS_BAR,
         action: 'Click Share Button',
-        label: shouldShowSurplus ? 'Surplus' : 'Tip',
+        label: kind,
       })}
     >
       <SVG src={iconSocialXSrc} />
-      <span>{shouldShowSurplus ? <Trans>Share this win!</Trans> : <Trans>Share this swap</Trans>}</span>
+      <span>{labels[kind]}</span>
     </styledEl.ShareButton>
   )
 }
@@ -281,6 +303,31 @@ function FinishedSubtitle({
       Your {tokenSymbol} is in your wallet. <ExternalLink href={explorerHref}>{explorerTitle} ↗</ExternalLink>
     </Trans>
   )
+}
+
+function getFinishedShareContent({
+  shouldShowSurplus,
+  surplusData,
+  order,
+  solvers,
+  randomBenefit,
+  waitAndSave,
+}: Pick<FinishedStepProps, 'surplusData' | 'order' | 'solvers' | 'randomBenefit' | 'waitAndSave'> & {
+  shouldShowSurplus: boolean
+}): FinishedShareButtonProps {
+  if (waitAndSave?.outcome) {
+    return {
+      kind: FinishedShareKind.WAIT_AND_SAVE,
+      twitterUrl: getTwitterShareUrlForWaitAndSave(waitAndSave.outcome.gainAmount, waitAndSave.outcome.tokenSymbol),
+    }
+  }
+  if (shouldShowSurplus) {
+    return { kind: FinishedShareKind.SURPLUS, twitterUrl: getTwitterShareUrl(surplusData, order) }
+  }
+  if (solvers?.length) {
+    return { kind: FinishedShareKind.AUCTION, twitterUrl: getTwitterShareUrlForAuction(solvers) }
+  }
+  return { kind: FinishedShareKind.TIP, twitterUrl: getTwitterShareUrlForBenefit(randomBenefit) }
 }
 
 function getFinishedSuccessTitle(stepName?: OrderProgressBarStepName): ReactNode {
