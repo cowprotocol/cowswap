@@ -86,10 +86,7 @@ export function utmParamsToUrlParams(utm: UtmParams): Record<string, string> {
   Object.keys(utm).forEach((key) => {
     if (key.startsWith('utm') && utm[key]) {
       // Convert utmSource to utm_source, utmMedium to utm_medium, etc.
-      const urlParam = key
-        .replace(/^utm/, 'utm_')
-        .replace(/([A-Z])/g, '_$1')
-        .toLowerCase()
+      const urlParam = key.replace(/([A-Z])/g, '_$1').toLowerCase()
       urlParams[urlParam] = utm[key]!
     }
   })
