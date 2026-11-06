@@ -24,7 +24,6 @@
     "useUnknownInCatchVariables": false,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "downlevelIteration": true,
     "allowSyntheticDefaultImports": true
   },
   "files": ["../../node_modules/@nx/react/typings/cssmodule.d.ts", "../../node_modules/@nx/react/typings/image.d.ts"],
