@@ -146,6 +146,35 @@ describe('orderBookActivityProvider', () => {
     expect(getOrderMock).toHaveBeenCalledWith('0xtwap', { chainId: 1 })
   })
 
+  it('reads the order types of the returned trades only', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1
+        ? [trade({ orderUid: '0xnewest', blockNumber: 900 }), trade({ orderUid: '0xoldest', blockNumber: 600 })]
+        : [
+            trade({
+              orderUid: '0xnewer',
+              blockNumber: 800,
+              buyToken: AAPLX_ARBITRUM.address,
+            }),
+          ],
+    )
+
+    const activity = await orderBookActivityProvider.getActivity({
+      owner: OWNER,
+      tokens: [AAPLX_MAINNET, AAPLX_ARBITRUM],
+      limit: 2,
+    })
+
+    expect(activity.map(({ orderUid }) => orderUid)).toEqual(['0xnewest', '0xnewer'])
+    expect(getOrderMock.mock.calls).toEqual(
+      expect.arrayContaining([
+        ['0xnewest', { chainId: 1 }],
+        ['0xnewer', { chainId: AAPLX_ARBITRUM.chainId }],
+      ]),
+    )
+    expect(getOrderMock).toHaveBeenCalledTimes(2)
+  })
+
   it('falls back to a swap when the order is unavailable', async () => {
     getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
       chainId === 1 ? [trade({ orderUid: '0xmissing' })] : [],
