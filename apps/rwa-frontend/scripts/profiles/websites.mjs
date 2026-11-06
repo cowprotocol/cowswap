@@ -44,7 +44,7 @@ export function buildWebsiteQuery(items) {
   ?item p:P856 ?statement.
   ?statement ps:P856 ?website; wikibase:rank ?rank.
   FILTER(?rank != wikibase:DeprecatedRank)
-  FILTER NOT EXISTS { ?statement pq:P582 ?endTime. }
+  FILTER NOT EXISTS { ?statement pq:P582 ?endTime. FILTER(?endTime <= NOW()) }
   OPTIONAL { ?statement pq:P407 ?language. }
 }`
 }

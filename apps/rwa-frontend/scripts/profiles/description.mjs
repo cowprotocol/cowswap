@@ -15,9 +15,9 @@ export function findDescriptionIssue(description, title) {
   if (MARKUP_REGEX.test(description)) return 'must not contain <, >, {, } or `'
   if (INVISIBLE_CHAR_REGEX.test(description)) return 'must not contain control or invisible characters'
 
-  const lowerTitle = title.toLowerCase()
+  const titleDomains = new Set((title.match(DOMAIN_REGEX) ?? []).map((domain) => domain.toLowerCase()))
   const hasForeignDomain = (description.match(DOMAIN_REGEX) ?? []).some(
-    (domain) => !lowerTitle.includes(domain.toLowerCase()),
+    (domain) => !titleDomains.has(domain.toLowerCase()),
   )
   if (URL_SCHEME_REGEX.test(description) || hasForeignDomain) return 'must not contain links or domains'
 

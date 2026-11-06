@@ -37,7 +37,7 @@ export function buildSparqlQuery(tickers) {
   ?item p:P414 ?listing.
   ?listing pq:P249 ?symbol; ps:P414 ?exchange; wikibase:rank ?rank.
   FILTER(?rank != wikibase:DeprecatedRank)
-  FILTER NOT EXISTS { ?listing pq:P582 ?endTime. }
+  FILTER NOT EXISTS { ?listing pq:P582 ?endTime. FILTER(?endTime <= NOW()) }
   OPTIONAL { ?item wdt:P452 ?industry. }
   OPTIONAL { ?article schema:about ?item; schema:isPartOf <https://en.wikipedia.org/>. }
   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
