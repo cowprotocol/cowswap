@@ -11,6 +11,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
 
 import {
+  getIsSolanaSmartContractWallet,
   getSolanaTradeOverhead,
   getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,
@@ -26,6 +27,7 @@ jest.mock('@cowprotocol/wallet', () => ({ useWalletInfo: jest.fn() }))
 jest.mock('@cowprotocol/common-hooks', () => ({ useFeatureFlags: jest.fn() }))
 jest.mock('@reown/appkit-adapter-solana/react', () => ({ useAppKitConnection: jest.fn() }))
 jest.mock('modules/trade', () => ({
+  getIsSolanaSmartContractWallet: jest.fn(),
   getSolanaTradeOverhead: jest.fn(),
   getWrapFundedAccounts: jest.fn(),
   planSolanaTradeFundedAccounts: jest.fn(),
@@ -41,6 +43,7 @@ jest.mock('modules/tradeQuote', () => ({
 const mockUseWalletInfo = jest.mocked(useWalletInfo)
 const mockUseFeatureFlags = jest.mocked(useFeatureFlags)
 const mockUseAppKitConnection = jest.mocked(useAppKitConnection)
+const mockGetIsSolanaSmartContractWallet = jest.mocked(getIsSolanaSmartContractWallet)
 const mockGetSolanaTradeOverhead = jest.mocked(getSolanaTradeOverhead)
 const mockGetWrapFundedAccounts = jest.mocked(getWrapFundedAccounts)
 const mockPlanSolanaTradeFundedAccounts = jest.mocked(planSolanaTradeFundedAccounts)
@@ -78,6 +81,7 @@ beforeEach(() => {
   mockUseFeatureFlags.mockReturnValue({} as unknown as ReturnType<typeof useFeatureFlags>)
   mockUseAppKitConnection.mockReturnValue({ connection } as unknown as ReturnType<typeof useAppKitConnection>)
   mockUseIsWrapOrUnwrap.mockReturnValue(false)
+  mockGetIsSolanaSmartContractWallet.mockReturnValue(false)
   mockUseTradeQuote.mockReturnValue({ quote: { solanaQuote: {} } } as unknown as ReturnType<typeof useTradeQuote>)
   mockGetWrapFundedAccounts.mockReturnValue(WRAP_ACCOUNTS)
   mockPlanSolanaTradeFundedAccounts.mockReturnValue(FULL_ACCOUNTS)
@@ -113,6 +117,41 @@ describe('useSolanaTradeOverhead', () => {
 
     await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
     expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: true })
+  })
+
+  // A vault's order rides inside `VaultTransactionExecute`, so the member executing the proposal
+  // pays the fee — and the priority-fee headroom with it. The rents stay the vault's, since the
+  // bundle names it as payer for the accounts it creates.
+  it('leaves the fees to the member executing a multisig proposal', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockGetIsSolanaSmartContractWallet.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, FULL_ACCOUNTS, { ownerPaysFees: false })
+    expect(mockGetIsSolanaSmartContractWallet).toHaveBeenCalledWith(OWNER)
+  })
+
+  it('leaves the fees to the member on a multisig wrap, which is a proposal too', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseIsWrapOrUnwrap.mockReturnValue(true)
+    mockGetIsSolanaSmartContractWallet.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, [], { ownerPaysFees: false })
+  })
+
+  it('still charges an ordinary wallet the fee to wrap', async () => {
+    setup({ inputCurrency: NATIVE_SOL, isSponsored: false })
+    mockUseIsWrapOrUnwrap.mockReturnValue(true)
+
+    renderHook(() => useSolanaTradeOverhead(), { wrapper })
+
+    await waitFor(() => expect(mockGetSolanaTradeOverhead).toHaveBeenCalled())
+    expect(mockGetSolanaTradeOverhead).toHaveBeenCalledWith(connection, [], { ownerPaysFees: true })
   })
 
   it('ignores the sponsor when asked for the full placement cost', async () => {

@@ -10,6 +10,7 @@ import { PublicKey } from '@solana/web3.js'
 import useSWR from 'swr'
 
 import {
+  getIsSolanaSmartContractWallet,
   getSolanaTradeOverhead,
   getWrapFundedAccounts,
   planSolanaTradeFundedAccounts,
@@ -38,8 +39,9 @@ interface OverheadRequest {
  * Lamports the trade needs on top of the sell amount: rents + fees + the wallet's rent-exempt reserve
  * (`required` gates the trade, `maxReserve` adds priority-fee headroom for the MAX button). On a
  * sponsored trade only a native sell debits the owner at all, and then only for the wrap: the
- * transfer itself, and the rent for the WSOL account it opens. `null` while unknown or when nothing
- * debits the wallet at all.
+ * transfer itself, and the rent for the WSOL account it opens. A multisig vault is not charged the
+ * fees, which the member executing the proposal pays. `null` while unknown or when nothing debits
+ * the wallet at all.
  */
 export function useSolanaTradeOverhead({
   ignoreSponsor = false,
@@ -61,8 +63,13 @@ export function useSolanaTradeOverhead({
   const request = useMemo<OverheadRequest | null>(() => {
     if (!isSolanaChain(chainId) || !account) return null
 
-    // A wrap/unwrap is a plain owner-paid transaction — never sponsored, no quote involved.
-    if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees: true }
+    // A vault never signs a transaction itself: its order rides inside `VaultTransactionExecute`, so
+    // the member who executes the approved proposal pays the fee. The rents stay the vault's — the
+    // bundle names it as payer for every account it creates.
+    const ownerPaysFees = !getIsSolanaSmartContractWallet(account)
+
+    // A wrap/unwrap never goes through a sponsor, and has no quote involved.
+    if (isWrapUnwrap) return { fundedAccounts: [], ownerPaysFees }
 
     if (!solanaQuote) return null
 
@@ -81,7 +88,7 @@ export function useSolanaTradeOverhead({
         isNativeSell,
         isAtaCreationDisabled: Boolean(isAtaCreationDisabled),
       }),
-      ownerPaysFees: true,
+      ownerPaysFees,
     }
   }, [chainId, account, solanaQuote, isNativeSell, isSponsored, isWrapUnwrap, isAtaCreationDisabled])
 
