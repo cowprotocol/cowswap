@@ -213,6 +213,13 @@ describe('buildSolverCompetition', () => {
     expect(result.map((s) => s.solverId)).toEqual(['barter'])
   })
 
+  it('shows a solver missing from the CMS by its shortened address, with no display name', () => {
+    const [solver] = buildSolverCompetition([entry('0x4444444444444444444444444444444444444444', 'unknown')], byAddress)
+
+    expect(solver.solver).toBe('0x4444...4444')
+    expect(solver.displayName).toBeUndefined()
+  })
+
   it('returns an empty list when there is no competition data', () => {
     expect(buildSolverCompetition(undefined, {})).toEqual([])
   })
