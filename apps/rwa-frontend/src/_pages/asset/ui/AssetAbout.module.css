@@ -73,6 +73,14 @@
   transform: rotate(180deg);
 }
 
+.marketKind {
+  margin-top: 24px;
+}
+
+.marketKind + .well {
+  margin-top: 12px;
+}
+
 .well {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -100,6 +108,13 @@
   flex-direction: column;
   gap: 8px;
   margin: 0;
+}
+
+.stat .value {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
 }
 
 .bar {

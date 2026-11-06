@@ -1,4 +1,6 @@
-import { fetchAssetsByTickers } from './assetsQueries'
+import { assetChartQueryOptions, fetchAssetsByTickers } from './assetsQueries'
+
+import type { RwaChart } from '../model/types'
 
 import { rwaFetcher } from '@/shared/api'
 
@@ -48,5 +50,25 @@ describe('fetchAssetsByTickers', () => {
   it('requests nothing without tickers', async () => {
     expect(await fetchAssetsByTickers([])).toEqual({ items: [], degraded: false })
     expect(rwaFetcherMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('assetChartQueryOptions', () => {
+  const previous: RwaChart = { ticker: 'NVDA', range: '1W', points: [], degraded: false }
+
+  function placeholderFor(previousKey: unknown[]): unknown {
+    const { placeholderData } = assetChartQueryOptions('NVDA', '1D', 'stock')
+
+    if (typeof placeholderData !== 'function') throw new Error('Expected a placeholder function')
+
+    return placeholderData(previous, { queryKey: previousKey } as never)
+  }
+
+  it('keeps the previous chart of the same market while loading', () => {
+    expect(placeholderFor(['rwa', 'chart', 'NVDA', '1W', 'stock'])).toBe(previous)
+  })
+
+  it('does not stand in the chart of the other market', () => {
+    expect(placeholderFor(['rwa', 'chart', 'NVDA', '1D', 'tokenized'])).toBeUndefined()
   })
 })

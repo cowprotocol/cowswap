@@ -4,7 +4,7 @@ import styles from './AssetStats.module.css'
 
 import { getMinutesToUsMarketChange, isUsMarketOpen } from '../lib/usMarketStatus'
 
-import type { RwaAsset, RwaMarketData, RwaTradingTime } from '../model/types'
+import type { RwaAsset, RwaMarketData, RwaMarketKind, RwaTradingTime } from '../model/types'
 
 import { formatPercent, formatUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
@@ -15,10 +15,13 @@ const MINUTES_PER_DAY = 24 * MINUTES_PER_HOUR
 
 interface AssetStatsProps {
   asset: RwaAsset
-  market: RwaMarketData | null | undefined
+  market: Pick<RwaMarketData, 'price' | 'change24h'> | null | undefined
+  marketKind: RwaMarketKind
+  /** Where `market` comes from, e.g. `Ondo`. `null` while unknown */
+  provider: string | null
 }
 
-export function AssetStats({ asset, market }: AssetStatsProps): ReactNode {
+export function AssetStats({ asset, market, marketKind, provider }: AssetStatsProps): ReactNode {
   const change = market?.change24h
   const changeClassName = change ? (change > 0 ? styles.positive : styles.negative) : ''
 
@@ -29,8 +32,8 @@ export function AssetStats({ asset, market }: AssetStatsProps): ReactNode {
         <span className={styles.change}>
           <span className={changeClassName}>{formatPercent(change)}</span>
           <span className={styles.period}>24h</span>
-          <Tooltip className={styles.reference} content={getReferencePriceHint(asset)}>
-            · Reference price
+          <Tooltip className={styles.reference} content={getPriceHint(asset, marketKind, provider)}>
+            · {marketKind === 'stock' ? 'Stock price' : 'Reference price'}
             <InfoIcon />
           </Tooltip>
         </span>
@@ -48,8 +51,16 @@ function formatDuration(minutes: number): string {
   return `${Math.floor(minutes / MINUTES_PER_DAY)}d`
 }
 
-function getReferencePriceHint({ title }: RwaAsset): string {
-  return `The price and chart show the tokenized market of ${title} per share, from CoinGecko, across issuers and networks. Token prices and liquidity may differ. Past performance is not indicative of future results.`
+function getPriceHint({ title }: RwaAsset, marketKind: RwaMarketKind, provider: string | null): string {
+  const disclaimer = 'Past performance is not indicative of future results.'
+
+  if (marketKind === 'tokenized') {
+    return `The price and chart show the tokenized market of ${title} per share, from CoinGecko, across issuers and networks. Token prices and liquidity may differ. ${disclaimer}`
+  }
+
+  const source = provider ? `, from ${provider}` : ''
+
+  return `The price and chart show the ${title} share on its exchange${source}, including extended-hours sessions. Token prices may differ from the stock price. ${disclaimer}`
 }
 
 function MarketStatus({ tradingTime }: { tradingTime: RwaTradingTime }): ReactNode {
