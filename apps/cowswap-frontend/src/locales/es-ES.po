@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-02 14:41\n"
+"PO-Revision-Date: 2026-11-05 13:14\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1835,6 +1835,11 @@ msgstr "Este hook no es compatible con tu wallet"
 msgid "Get started with limit orders"
 msgstr "Empezar con órdenes con límite"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid "Solvers compete for every swap on @CoWSwap 🐮⚡\n\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
 msgstr "Minimizar el impacto del precio con TWAP"
@@ -1959,6 +1964,7 @@ msgstr ""
 msgid "Buy amount per part (1/{partsCount})"
 msgstr "Cantidad de compra por parte (1/{partsCount})"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Share this win!"
@@ -2432,8 +2438,8 @@ msgid "Closed"
 msgstr "Cerrado"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-#~ msgid "Share this tip!"
-#~ msgstr "Share this tip!"
+msgid "Share this tip!"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
@@ -3884,6 +3890,14 @@ msgstr "Descripción del Hook"
 msgid "Affiliate payouts and registration happen on Ethereum mainnet."
 msgstr "Los pagos de afiliados y el registro se realizan en Ethereum mainnet."
 
+#: libs/common-utils/src/misc.ts
+#~ msgid ""
+#~ "Looks like something's not quite right with your wallet. \n"
+#~ "Give it a quick check and try again in a moo-ment! :cow2:"
+#~ msgstr ""
+#~ "Looks like something's not quite right with your wallet. \n"
+#~ "Give it a quick check and try again in a moo-ment! :cow2:"
+
 #: apps/cowswap-frontend/src/common/pure/IconSpinner/index.tsx
 msgid "Spinning icon"
 msgstr "Icono giratorio"
@@ -4276,6 +4290,11 @@ msgstr "Esta es una versión Alpha de CoW Swap en Solana. Este despliegue aún n
 #: apps/cowswap-frontend/src/common/hooks/useCrossChainFamilySwitch.tsx
 #~ msgid "This requires connecting a different wallet, and your current wallet will be disconnected."
 #~ msgstr "This requires connecting a different wallet, and your current wallet will be disconnected."
+
+#: libs/common-utils/src/misc.ts
+msgid "Looks like something's not quite right with your wallet. \n"
+"Give it a quick check and try again in a moo-ment! 🐄"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
 msgid "TWAP splits your swap into equal parts over time"
@@ -5698,8 +5717,8 @@ msgid "Order out of market"
 msgstr "Orden fuera del mercado"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
-msgid "{solver} logo"
-msgstr "Logotipo {solver}"
+#~ msgid "{solver} logo"
+#~ msgstr "{solver} logo"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveCallback.tsx
 msgid "Approve {tokenSymbol}"
@@ -5957,6 +5976,11 @@ msgstr "Símbolo del token, dirección"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/ReceiptModal.modal.tsx
 msgid "Order Receipt"
 msgstr "Recibo de la orden"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid "{solverCount, plural, one {# solver competed for my swap on @CoWSwap.} few {# solvers competed for my swap on @CoWSwap.} many {# solvers competed for my swap on @CoWSwap.} other {# solvers competed for my swap on @CoWSwap.}} {winnerName} won 🐮⚡\n\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
@@ -6588,6 +6612,10 @@ msgstr "Descuento de cargos de CoWmunity"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappIframeReview/HookRequestDetails.pure.tsx
 msgid "Action"
 msgstr "Acción"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
+msgid "This price is {displayedPercent}% higher than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -9016,6 +9044,14 @@ msgstr "Los costes de intercambio son al menos un {formattedFeePercentage}% de l
 msgid "There was an error trying to load claimable tokens"
 msgstr "Hubo un error al intentar cargar los tokens cobrables"
 
+#: libs/common-utils/src/misc.ts
+#~ msgid ""
+#~ "The wallet has hit a bit of a moo-tdown.\n"
+#~ "Please try again in a moo-ment! 🐮"
+#~ msgstr ""
+#~ "The wallet has hit a bit of a moo-tdown.\n"
+#~ "Please try again in a moo-ment! 🐮"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "While CoW Swap on Solana is in Alpha and unaudited, trades are limited to ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} per order. Reduce the amount to continue."
 msgstr "Mientras CoW Swap en Solana esté en Alpha y sin auditar, las operaciones están limitadas a ${SOLANA_ALPHA_MAX_TRADE_SIZE_USD_DISPLAY} por orden. Reduce la cantidad para continuar."
@@ -9063,6 +9099,11 @@ msgstr "El token de salida no puede ser transferido. Puede haber un problema con
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSettings.tsx
 #~ msgid "Swap and bridge, TWAP for EOA orders aren't supported yet."
 #~ msgstr "Swap and bridge, TWAP for EOA orders aren't supported yet."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
+msgid "Hey, I just got an extra {gain} with Wait & save on @CoWSwap! 🐮💸\n\n"
+"Start swapping on swap.cow.fi"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
