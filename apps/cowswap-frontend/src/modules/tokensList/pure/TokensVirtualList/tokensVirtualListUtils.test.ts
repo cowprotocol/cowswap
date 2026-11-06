@@ -1,6 +1,7 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
+import { getAddressKey, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { buildVirtualRows } from './tokensVirtualListUtils'
+import { buildVirtualRows, sortTokensByBalance } from './tokensVirtualListUtils'
 
 const mockToken = {
   address: '0xabc123',
@@ -17,6 +18,122 @@ const mockBridgeableToken = {
   symbol: 'BRIDGE',
   name: 'Bridgeable Token',
 } as TokenWithLogo
+
+function rankedToken(
+  symbol: string,
+  address: string,
+  rank?: unknown,
+  chainId = SupportedChainId.SOLANA,
+): TokenWithLogo {
+  return TokenWithLogo.fromToken({ chainId, address, decimals: 6, name: symbol, symbol, extensions: { rank } })
+}
+
+describe('sortTokensByBalance', () => {
+  const mintA = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
+  const mintB = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
+  const mintC = 'So11111111111111111111111111111111111111112'
+
+  it.each([undefined, {}])('uses Solana volume rank instead of alphabetical order with balances %p', (balances) => {
+    const alphabeticalFirst = rankedToken('AAA', mintA, 20)
+    const highestVolume = rankedToken('ZZZ', mintB, 1)
+    const tokens = [alphabeticalFirst, highestVolume]
+
+    expect(sortTokensByBalance(tokens, balances)).toEqual([highestVolume, alphabeticalFirst])
+    expect(tokens).toEqual([alphabeticalFirst, highestVolume])
+  })
+
+  it.each([undefined, null, '1', true, 0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1])(
+    'puts invalid rank %p after ranked tokens',
+    (invalidRank) => {
+      const unranked = rankedToken('AAA', mintA, invalidRank)
+      const ranked = rankedToken('ZZZ', mintB, 1)
+
+      expect(sortTokensByBalance([unranked, ranked], {})).toEqual([ranked, unranked])
+    },
+  )
+
+  it('accepts the largest positive safe integer rank', () => {
+    const unranked = rankedToken('AAA', mintA)
+    const ranked = rankedToken('ZZZ', mintB, Number.MAX_SAFE_INTEGER)
+
+    expect(sortTokensByBalance([unranked, ranked], {})).toEqual([ranked, unranked])
+  })
+
+  it('breaks rank ties and orders unranked tokens by symbol and case-sensitive mint', () => {
+    const rankedB = rankedToken('B', mintB, 1)
+    const rankedA = rankedToken('A', mintA, 1)
+    const unrankedB = rankedToken('Z', `a${'1'.repeat(31)}`)
+    const unrankedA = rankedToken('Z', `A${'1'.repeat(31)}`)
+    const unrankedSymbol = rankedToken('C', mintC)
+
+    expect(sortTokensByBalance([unrankedB, rankedB, unrankedA, unrankedSymbol, rankedA], {})).toEqual([
+      rankedA,
+      rankedB,
+      unrankedSymbol,
+      unrankedA,
+      unrankedB,
+    ])
+  })
+
+  it('keeps native first and held tokens in their existing balance order', () => {
+    const native = NATIVE_CURRENCIES[SupportedChainId.SOLANA]
+    const ranked = rankedToken('ZZZ', mintA, 1)
+    const heldLow = rankedToken('LOW', mintB, 2)
+    const heldHigh = rankedToken('HIGH', mintC, 99)
+    const zeroBalance = rankedToken('AAA', 'pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn')
+    const balances = {
+      [getAddressKey(mintB)]: 2n,
+      [getAddressKey(mintC)]: 10n,
+      [getAddressKey(zeroBalance.address)]: 0n,
+    }
+
+    expect(sortTokensByBalance([zeroBalance, ranked, heldLow, native, heldHigh], balances)).toEqual([
+      native,
+      heldHigh,
+      heldLow,
+      ranked,
+      zeroBalance,
+    ])
+  })
+
+  it('breaks equal rank and symbol ties by mint, preserving case-sensitive addresses', () => {
+    const first = rankedToken('SAME', `A${'1'.repeat(31)}`, 1)
+    const second = rankedToken('SAME', `a${'1'.repeat(31)}`, 1)
+
+    expect(sortTokensByBalance([second, first], {})).toEqual([first, second])
+    expect(sortTokensByBalance([first, first], {})).toEqual([first, first])
+  })
+
+  it('does not use ranks to reorder equal held balances', () => {
+    const heldFirst = rankedToken('AAA', mintA, 10)
+    const heldSecond = rankedToken('ZZZ', mintB, 1)
+    const balances = { [getAddressKey(mintA)]: 2n, [getAddressKey(mintB)]: 2n }
+
+    expect(sortTokensByBalance([heldFirst, heldSecond], balances)).toEqual([heldFirst, heldSecond])
+  })
+
+  it('keeps native priority while ranked tokens load without balances', () => {
+    const native = NATIVE_CURRENCIES[SupportedChainId.SOLANA]
+    const ranked = rankedToken('AAA', mintA, 1)
+
+    expect(sortTokensByBalance([ranked, native], undefined)).toEqual([native, ranked])
+  })
+
+  it.each([undefined, {}])('preserves the existing order when no valid ranks exist with balances %p', (balances) => {
+    const tokens = [rankedToken('ZZZ', mintB), rankedToken('AAA', mintA, 0)]
+
+    expect(sortTokensByBalance(tokens, balances)).toEqual(tokens)
+  })
+
+  it.each([undefined, {}])('preserves EVM ordering despite rank metadata with balances %p', (balances) => {
+    const tokens = [
+      rankedToken('AAA', '0x0000000000000000000000000000000000000001', 20, SupportedChainId.MAINNET),
+      rankedToken('ZZZ', '0x0000000000000000000000000000000000000002', 1, SupportedChainId.MAINNET),
+    ]
+
+    expect(sortTokensByBalance(tokens, balances)).toEqual(tokens)
+  })
+})
 
 describe('buildVirtualRows', () => {
   const defaultParams = {

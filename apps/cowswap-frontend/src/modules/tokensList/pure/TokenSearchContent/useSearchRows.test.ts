@@ -25,6 +25,30 @@ function createTokens(count: number, prefix = 'TOKEN'): TokenWithLogo[] {
 
 // eslint-disable-next-line max-lines-per-function
 describe('useSearchRows', () => {
+  it('preserves Solana search relevance and result order despite volume ranks', () => {
+    const token = (symbol: string, rank: number): TokenWithLogo =>
+      TokenWithLogo.fromToken({
+        chainId: SupportedChainId.SOLANA,
+        address: `${symbol}${'1'.repeat(31)}`,
+        decimals: 6,
+        symbol,
+        name: symbol,
+        extensions: { rank },
+      })
+    const matched = token('Z', 99)
+    const activeFirst = token('A', 20)
+    const activeSecond = token('B', 1)
+    const { result } = renderHook(() =>
+      useSearchRows({ isLoading: false, matchedTokens: [matched], activeList: [activeFirst, activeSecond] }),
+    )
+
+    expect(result.current.flatMap((row) => (row.type === 'token' ? [row.token] : []))).toEqual([
+      matched,
+      activeFirst,
+      activeSecond,
+    ])
+  })
+
   describe('Loading State', () => {
     it('should return empty array when isLoading is true', () => {
       const { result } = renderHook(() =>

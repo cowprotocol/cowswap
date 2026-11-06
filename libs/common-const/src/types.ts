@@ -22,17 +22,19 @@ export class TokenWithLogo extends Token {
       token.symbol,
       token.name,
       resolveTags(token),
+      'extensions' in token ? token.extensions : undefined,
     )
   }
 
   constructor(
-    public logoURI: string | undefined, // <--- this is the only difference
+    public logoURI: string | undefined,
     chainId: number,
     address: string,
     decimals: number,
     symbol?: string,
     name?: string,
     public tags: string[] = [],
+    public extensions?: TokenInfo['extensions'],
   ) {
     super(chainId, address, decimals, symbol, name)
   }
@@ -49,6 +51,7 @@ export class LpToken extends TokenWithLogo {
       token.symbol,
       token.name,
       ('tags' in token && token.tags) || [],
+      'extensions' in token ? token.extensions : undefined,
     )
   }
 
@@ -61,8 +64,9 @@ export class LpToken extends TokenWithLogo {
     symbol?: string,
     name?: string,
     override tags: string[] = [],
+    extensions?: TokenInfo['extensions'],
   ) {
-    super(undefined, chainId, address, decimals, symbol, name)
+    super(undefined, chainId, address, decimals, symbol, name, tags, extensions)
   }
 }
 
