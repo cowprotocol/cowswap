@@ -138,7 +138,8 @@ const StyledDiv = styled.div<LinkProps>`
 `
 
 export const Link: FC<LinkProps> = ({ href, external, linkType, children, asButton, utmContent, ...rest }) => {
-  const finalHref = external && href && utmContent ? addUtmToUrl(href, { ...CONFIG.utm, utmContent }) : href
+  const finalHref =
+    external && href?.startsWith('http') && utmContent ? addUtmToUrl(href, { ...CONFIG.utm, utmContent }) : href
 
   if (asButton) {
     return (
