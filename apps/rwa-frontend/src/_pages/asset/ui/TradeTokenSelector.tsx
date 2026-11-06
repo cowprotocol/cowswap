@@ -196,7 +196,8 @@ function TradeTokenOption({
 }: TradeTokenOptionProps): ReactNode {
   const isDisabled = isQuoteUnavailable(quoted, isLoading)
   const isChecked = isSelected && !isDisabled
-  const { stats } = quoted
+  const { stats, token } = quoted
+  const marketCap = token.coingeckoId ? market?.tokens[token.coingeckoId]?.marketCap : undefined
 
   return (
     <button
@@ -212,7 +213,7 @@ function TradeTokenOption({
         <TradeTokenName quoted={quoted} bestQuoteLabel={bestQuoteLabel} />
         <span className={styles.stats}>
           <span>
-            Onchain cap <strong>{formatTokenStat(stats?.onchainCap)}</strong>
+            Market cap <strong>{formatTokenStat(marketCap)}</strong>
           </span>
           <span aria-hidden="true">·</span>
           <span>

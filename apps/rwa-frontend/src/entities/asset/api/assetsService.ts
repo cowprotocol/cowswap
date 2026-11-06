@@ -185,16 +185,15 @@ export async function getAssetStockChart(asset: RwaAsset, range: RwaChartRange):
 }
 
 export async function getAssetTokenStats(asset: RwaAsset): Promise<RwaAssetTokenStats> {
-  const tokenMarkets = await loadTokenMarkets(asset.tokens)
   const chainIds = [...new Set(asset.tokens.map((token) => token.chainId))]
   const chains = await Promise.all(
-    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId, tokenMarkets ?? {})) })),
+    chainIds.map(async (chainId) => ({ chainId, ...(await loadChainStats(asset, chainId)) })),
   )
 
   return {
     ticker: asset.ticker,
     tokens: chains.flatMap(({ chainId, tokens }) => tokens.map((stats) => ({ ...stats, chainId }))),
-    degraded: tokenMarkets === null || chains.some(({ isLoaded }) => !isLoaded),
+    degraded: chains.some(({ isLoaded }) => !isLoaded),
   }
 }
 
@@ -293,14 +292,13 @@ function getDailySeries(market: RwaAggregateMarket | undefined): RwaChartPoint[]
 async function loadChainStats(
   asset: RwaAsset,
   chainId: number,
-  tokenMarkets: Record<string, RwaTokenMarketData>,
 ): Promise<{ tokens: RwaTokenNetworkStats[]; isLoaded: boolean }> {
   const tokens = asset.tokens.filter((token) => token.chainId === chainId)
-  const stats = await loadNetworkStats(chainId, tokens, tokenMarkets)
+  const stats = await loadNetworkStats(chainId, tokens)
 
   if (stats) return { tokens: stats, isLoaded: true }
 
-  return { tokens: tokens.map(({ address }) => ({ address, onchainCap: null, dexVolume24h: null })), isLoaded: false }
+  return { tokens: tokens.map(({ address }) => ({ address, dexVolume24h: null })), isLoaded: false }
 }
 
 /**
@@ -322,13 +320,9 @@ async function loadFirstCoinWithData<T>(
   return { items: [], coinTokens: [] }
 }
 
-async function loadNetworkStats(
-  chainId: number,
-  tokens: RwaToken[],
-  tokenMarkets: Record<string, RwaTokenMarketData>,
-): Promise<RwaTokenNetworkStats[] | null> {
+async function loadNetworkStats(chainId: number, tokens: RwaToken[]): Promise<RwaTokenNetworkStats[] | null> {
   try {
-    return await marketDataProvider.getNetworkStats(chainId, tokens, tokenMarkets)
+    return await marketDataProvider.getNetworkStats(chainId, tokens)
   } catch (err: unknown) {
     const error = normalizeError(err)
     console.error('[rwa] Failed to load network stats', error)

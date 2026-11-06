@@ -6,15 +6,12 @@ import styles from './MarketOverview.module.css'
 import { Sparkline } from './Sparkline'
 
 import { formatRefTime } from '../lib/formatRefTime'
-import { MARKET_DATA_HINT } from '../lib/marketDataHint'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
 
 import { isUsMarketOpen, type RwaMarketOverview, type RwaTradingTime } from '@/entities/asset'
 import { formatCompactUsd } from '@/shared/lib/format'
 import { InfoIcon } from '@/shared/ui/icons'
 import { Tooltip } from '@/shared/ui/tooltip'
-
-const VOLUME_HINT =
-  'Trading volume of the listed assets across every chain and issuer over the last 24 hours, from CoinGecko'
 
 interface MarketTotalsCardProps {
   /** `undefined` while loading */
@@ -44,9 +41,9 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <Total
           label={
             <>
-              24h volume
-              <Tooltip className={styles.info} content={VOLUME_HINT}>
-                <span role="img" aria-label={VOLUME_HINT}>
+              24h total volume
+              <Tooltip className={styles.info} content={TOTAL_VOLUME_HINT}>
+                <span role="img" aria-label="About total volume">
                   <InfoIcon />
                 </span>
               </Tooltip>

@@ -97,7 +97,7 @@ export function AssetsFiltersSections({ issuers, chainIds, isTouch = false }: As
         onChange={(value) => updateFilters({ minMarketCap: value })}
       />
       <ThresholdSection
-        title="24h volume"
+        title="24h total volume"
         thresholds={VOLUME_THRESHOLDS}
         value={filters.minVolume24h}
         onChange={(value) => updateFilters({ minVolume24h: value })}

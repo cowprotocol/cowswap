@@ -9,7 +9,7 @@ import styles from './AssetsTable.module.css'
 import { Sparkline, type SparklineTone } from './Sparkline'
 import { StarIcon } from './StarIcon'
 
-import { MARKET_DATA_HINT } from '../lib/marketDataHint'
+import { MARKET_DATA_HINT, TOTAL_VOLUME_HINT } from '../lib/marketDataHint'
 import { ASSETS_PAGE_SIZE, assetsPageAtom } from '../model/assetsPageAtom'
 import { assetsSortAtom } from '../model/assetsSortAtom'
 import { toggleWatchlistAtom, watchlistAtom } from '../model/watchlistAtoms'
@@ -44,6 +44,8 @@ interface SortableHeaderProps {
   numeric?: boolean
   className?: string
   hint?: string
+  /** Accessible name of the `hint` icon */
+  hintLabel?: string
 }
 
 export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): ReactNode {
@@ -56,9 +58,22 @@ export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): React
               <span className={styles.visuallyHidden}>Watchlist</span>
             </th>
             <SortableHeader field="title" title="Asset" />
-            <SortableHeader field="price" title="Reference price" numeric hint={MARKET_DATA_HINT} />
+            <SortableHeader
+              field="price"
+              title="Reference price"
+              numeric
+              hint={MARKET_DATA_HINT}
+              hintLabel="About market data"
+            />
             <SortableHeader field="change24h" title="24h change" numeric />
-            <SortableHeader field="volume24h" title="24h volume" numeric className={styles.optional} />
+            <SortableHeader
+              field="volume24h"
+              title="24h total volume"
+              numeric
+              className={styles.optional}
+              hint={TOTAL_VOLUME_HINT}
+              hintLabel="About total volume"
+            />
             <SortableHeader field="marketCap" title="Onchain market cap" numeric className={styles.optional} />
             <th className={`${styles.numeric} ${styles.chartColumn}`}>24h chart</th>
           </tr>
@@ -172,7 +187,7 @@ function SkeletonRow({ index }: { index: number }): ReactNode {
   )
 }
 
-function SortableHeader({ field, title, numeric = false, className, hint }: SortableHeaderProps): ReactNode {
+function SortableHeader({ field, title, numeric = false, className, hint, hintLabel }: SortableHeaderProps): ReactNode {
   const [{ sort, order }, setSort] = useAtom(assetsSortAtom)
   const setPage = useSetAtom(assetsPageAtom)
   const isActive = sort === field
@@ -195,7 +210,7 @@ function SortableHeader({ field, title, numeric = false, className, hint }: Sort
       </button>
       {hint && (
         <Tooltip className={styles.info} content={hint}>
-          <span role="img" aria-label="About market data">
+          <span role="img" aria-label={hintLabel}>
             <InfoIcon />
           </span>
         </Tooltip>

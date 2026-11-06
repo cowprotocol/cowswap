@@ -266,7 +266,9 @@ describe('HomePage', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Filters' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
-    fireEvent.click(within(screen.getByRole('radiogroup', { name: '24h volume' })).getByRole('radio', { name: '$1M+' }))
+    fireEvent.click(
+      within(screen.getByRole('radiogroup', { name: '24h total volume' })).getByRole('radio', { name: '$1M+' }),
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Asset' }))
 
     await waitFor(() =>
@@ -286,7 +288,7 @@ describe('HomePage', () => {
     mockApi(OVERVIEW, ASSETS_PAGE)
     renderHomePage()
 
-    const header = await screen.findByRole('columnheader', { name: '24h volume' })
+    const header = await screen.findByRole('columnheader', { name: /^24h total volume/ })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
     expect(screen.getByRole('columnheader', { name: 'Onchain market cap' })).toBeTruthy()
@@ -322,9 +324,9 @@ describe('HomePage', () => {
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
     expect(totals.textContent).toContain('Onchain market cap')
-    expect(totals.textContent).toContain('24h volume')
+    expect(totals.textContent).toContain('24h total volume')
     expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
-    expect(screen.getByText('24h volume · All networks')).toBeTruthy()
+    expect(screen.getByText('24h total volume · All networks')).toBeTruthy()
   })
 
   it('stores starred assets and requests them in the watchlist mode', async () => {

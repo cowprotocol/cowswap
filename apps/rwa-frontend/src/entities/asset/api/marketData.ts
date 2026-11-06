@@ -37,12 +37,8 @@ export interface MarketDataProvider {
   getChart(coingeckoId: string, range: RwaChartRange): Promise<RwaChartPoint[]>
   /** `coingeckoId` is a `RwaToken.coingeckoId`, empty when the coin has no prices in `range` */
   getCandles(coingeckoId: string, range: RwaChartRange): Promise<RwaCandle[]>
-  /** `tokens` are on `chainId`, `tokenMarkets` (keyed by `coingeckoId`) gives their prices */
-  getNetworkStats(
-    chainId: number,
-    tokens: RwaToken[],
-    tokenMarkets: Record<string, RwaTokenMarketData>,
-  ): Promise<RwaTokenNetworkStats[]>
+  /** `tokens` are on `chainId` */
+  getNetworkStats(chainId: number, tokens: RwaToken[]): Promise<RwaTokenNetworkStats[]>
   /** USD per hour over the last 24h summed over `tokens`, `null` when the provider has no candles for any of them */
   getHourlyDexVolume(tokens: RwaToken[]): Promise<RwaChartPoint[] | null>
   /** Keyed by RWA id (`RwaAsset.coingeckoId`). `expectedCount` sizes the concurrent page requests */
@@ -108,7 +104,7 @@ export const coingeckoProvider: MarketDataProvider = {
     return toCandles(ohlc, CANDLE_SECONDS[range])
   },
 
-  async getNetworkStats(chainId, tokens, tokenMarkets) {
+  async getNetworkStats(chainId, tokens) {
     const onchainTokens = await fetchOnchainTokens(
       chainId,
       tokens.map((token) => token.address),
@@ -119,17 +115,10 @@ export const coingeckoProvider: MarketDataProvider = {
       (onchainTokens ?? []).map(({ attributes }) => [getAddressKey(attributes.address), attributes]),
     )
 
-    return tokens.map((token) => {
-      const attributes = byAddress.get(getAddressKey(token.address))
-      const price = token.coingeckoId ? (tokenMarkets[token.coingeckoId]?.price ?? null) : null
-      const supply = toFiniteNumber(attributes?.normalized_total_supply)
-
-      return {
-        address: token.address,
-        onchainCap: supply !== null && price !== null ? supply * price : null,
-        dexVolume24h: toFiniteNumber(attributes?.volume_usd.h24),
-      }
-    })
+    return tokens.map((token) => ({
+      address: token.address,
+      dexVolume24h: toFiniteNumber(byAddress.get(getAddressKey(token.address))?.volume_usd.h24),
+    }))
   },
 
   async getHourlyDexVolume(tokens) {
