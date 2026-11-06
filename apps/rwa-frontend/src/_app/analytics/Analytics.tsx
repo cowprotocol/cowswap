@@ -31,12 +31,7 @@ function usePageViews(): void {
   const pathname = usePathname()
 
   useEffect(() => {
-    // Next.js sets the title of the new page after the route change commits
-    const timeout = setTimeout(() => {
-      trackEvent('page_view', { page_path: window.location.pathname, page_title: document.title })
-    })
-
-    return () => clearTimeout(timeout)
+    trackEvent('page_view', { page_path: window.location.pathname })
   }, [pathname])
 }
 

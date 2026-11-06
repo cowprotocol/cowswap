@@ -8,7 +8,7 @@ describe('analytics', () => {
     setAnalyticsDimension('walletName', undefined)
   })
 
-  it('pushes the event with its defined params and the dimensions', () => {
+  it('pushes the event with its defined params and the dimensions, keeping null params', () => {
     setAnalyticsDimension('chainId', '1')
     setAnalyticsDimension('walletName', 'Rabby')
 
@@ -19,7 +19,16 @@ describe('analytics', () => {
       side: 'buy',
       placement: 'stock_tokens',
     })
-    trackEvent('assets_filter_change', { changed: 'type', type: undefined, watchlistOnly: false })
+    trackEvent('set_user_account', { userId: undefined })
+    trackEvent('assets_filter_change', {
+      changed: 'issuers',
+      type: null,
+      issuers: null,
+      chainIds: null,
+      minMarketCap: null,
+      minVolume24h: null,
+      watchlistOnly: false,
+    })
 
     expect(window.dataLayer).toEqual([
       {
@@ -32,11 +41,17 @@ describe('analytics', () => {
         side: 'buy',
         placement: 'stock_tokens',
       },
+      { event: 'set_user_account', dimension_chainId: '1', dimension_walletName: 'Rabby' },
       {
         event: 'assets_filter_change',
         dimension_chainId: '1',
         dimension_walletName: 'Rabby',
-        changed: 'type',
+        changed: 'issuers',
+        type: null,
+        issuers: null,
+        chainIds: null,
+        minMarketCap: null,
+        minVolume24h: null,
         watchlistOnly: false,
       },
     ])

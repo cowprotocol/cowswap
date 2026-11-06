@@ -4,7 +4,7 @@ export type RwaAnalyticsEventName = keyof RwaAnalyticsEvents
 
 /** Event name → params, documented in `docs/analytics.md` */
 export interface RwaAnalyticsEvents {
-  page_view: { page_path: string; page_title: string }
+  page_view: { page_path: string }
   set_user_account: { userId: string | undefined }
   wallet_connected: { eventType: 'wallet_initial_connection'; walletAddress: string; walletName: string }
   wallet_switched: {
@@ -25,11 +25,11 @@ export interface RwaAnalyticsEvents {
   assets_filter_change: {
     /** Changed filters, comma separated */
     changed: string
-    type?: string
-    issuers?: string
-    chainIds?: string
-    minMarketCap?: number
-    minVolume24h?: number
+    type: string | null
+    issuers: string | null
+    chainIds: string | null
+    minMarketCap: number | null
+    minVolume24h: number | null
     watchlistOnly: boolean
   }
   trade_side_select: { ticker: string; side: TradeSide; placement: 'trade_widget' | 'wallet_bar' }
@@ -53,7 +53,7 @@ export interface RwaAnalyticsEvents {
   portfolio_refresh: Record<string, never>
 }
 
-/** The CoW Swap order event payload (`@cowprotocol/analytics/order-lifecycle`) and the asset ticker */
-type OrderParams = AnalyticsPayload & { ticker: string }
+/** The CoW Swap order event payload (`@cowprotocol/analytics/order-lifecycle`) and the ticker of the traded asset */
+type OrderParams = AnalyticsPayload & { ticker: string | null }
 
 type TradeSide = 'buy' | 'sell'

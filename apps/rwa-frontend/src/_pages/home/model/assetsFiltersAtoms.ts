@@ -56,11 +56,11 @@ function trackFiltersChange(filters: AssetsFilters, changed: string[]): void {
 
   trackEvent('assets_filter_change', {
     changed: changed.join(','),
-    type: type ?? undefined,
-    issuers: issuers.length ? issuers.join(',') : undefined,
-    chainIds: chainIds.length ? chainIds.join(',') : undefined,
-    minMarketCap: minMarketCap ?? undefined,
-    minVolume24h: minVolume24h ?? undefined,
+    type,
+    issuers: issuers.length ? issuers.join(',') : null,
+    chainIds: chainIds.length ? chainIds.join(',') : null,
+    minMarketCap,
+    minVolume24h,
     watchlistOnly,
   })
 }
