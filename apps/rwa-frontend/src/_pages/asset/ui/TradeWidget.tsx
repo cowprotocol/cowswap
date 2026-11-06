@@ -18,6 +18,7 @@ import { getTradeTokensFilters } from '../lib/tradeTokensFilters'
 import { getTradingPauseMessage } from '../lib/tradingPause'
 import { TRADE_WIDGET_ID } from '../model/useSelectTradeToken'
 import { useTradeSelection } from '../model/useTradeSelection'
+import { useWidgetOrderAnalytics } from '../model/useWidgetOrderAnalytics'
 import { useWidgetTradeTokenSync } from '../model/useWidgetTradeTokenSync'
 
 import { assetQueryAtomFamily, type RwaAsset, type RwaMarketData, type RwaToken } from '@/entities/asset'
@@ -39,7 +40,12 @@ export function TradeWidget({ asset }: { asset: RwaAsset }): ReactNode {
   const { isConnected } = useConnection()
   const isDark = useIsDarkTheme()
   const selection = useTradeSelection(asset)
-  const listeners = useWidgetTradeTokenSync(asset, selection)
+  const tradeTokenSyncListeners = useWidgetTradeTokenSync(asset, selection)
+  const orderAnalyticsListeners = useWidgetOrderAnalytics(asset)
+  const listeners = useMemo(
+    () => [...tradeTokenSyncListeners, ...orderAnalyticsListeners],
+    [tradeTokenSyncListeners, orderAnalyticsListeners],
+  )
   const assetToken = selection?.assetToken
   const { tradingPause, market } = useAtomValue(assetQueryAtomFamily(asset.ticker)).data ?? {}
   const tradingPauseMessage =

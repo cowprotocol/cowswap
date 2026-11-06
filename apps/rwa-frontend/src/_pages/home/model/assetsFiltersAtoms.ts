@@ -5,6 +5,7 @@ import { assetsPageAtom } from './assetsPageAtom'
 
 import { type AssetsFilters, parseAssetsFilters } from '../lib/parseAssetsFilters'
 
+import { trackEvent } from '@/shared/lib/analytics'
 import { debouncedTextAtoms } from '@/shared/lib/debounced-text'
 
 const FILTER_DEBOUNCE_MS = 300
@@ -32,8 +33,11 @@ export const activePanelFiltersCountAtom = atom((get) => {
 })
 
 export const updateAssetsFiltersAtom = atom(null, (get, set, update: Partial<AssetsFilters>) => {
-  set(assetsFiltersAtom, { ...get(assetsFiltersAtom), ...update })
+  const filters = { ...get(assetsFiltersAtom), ...update }
+
+  set(assetsFiltersAtom, filters)
   set(assetsPageAtom, 1)
+  trackFiltersChange(filters, Object.keys(update))
 })
 
 const filterQueryAtoms = debouncedTextAtoms(FILTER_DEBOUNCE_MS)
@@ -46,3 +50,17 @@ export const setAssetsFilterQueryAtom = atom(null, (_get, set, query: string) =>
   set(filterQueryAtoms.setValueAtom, query)
   set(assetsPageAtom, 1)
 })
+
+function trackFiltersChange(filters: AssetsFilters, changed: string[]): void {
+  const { type, issuers, chainIds, minMarketCap, minVolume24h, watchlistOnly } = filters
+
+  trackEvent('assets_filter_change', {
+    changed: changed.join(','),
+    type: type ?? undefined,
+    issuers: issuers.length ? issuers.join(',') : undefined,
+    chainIds: chainIds.length ? chainIds.join(',') : undefined,
+    minMarketCap: minMarketCap ?? undefined,
+    minVolume24h: minVolume24h ?? undefined,
+    watchlistOnly,
+  })
+}
