@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.18.0](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.1...common-const-v3.18.0) (2026-11-05)
+
+### Minor Changes
+
+- feat(solana): integrate appData api (#8467)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.17.1](https://github.com/cowprotocol/cowswap/compare/common-const-v3.17.0...common-const-v3.17.1) (2026-10-28)
 
 ### Patch Changes

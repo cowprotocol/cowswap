@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.21.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.1...common-utils-v3.21.2) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(widget): display widget provider error in the UI (#8462)
+
+- Updated dependencies []:
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
 ## [3.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v3.21.0...common-utils-v3.21.1) (2026-10-28)
 
 ### Patch Changes

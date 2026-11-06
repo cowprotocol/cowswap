@@ -18,6 +18,7 @@ const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   linea: SupportedChainId.LINEA,
   plasma: SupportedChainId.PLASMA,
   ink: SupportedChainId.INK,
+  robinhood: SupportedChainId.ROBINHOOD,
   sepolia: SupportedChainId.SEPOLIA,
   solana: SupportedChainId.SOLANA,
 }
