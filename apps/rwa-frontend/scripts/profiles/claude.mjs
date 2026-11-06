@@ -90,7 +90,8 @@ export async function requestProfile(prompt, apiKey) {
 }
 
 function hasFigures(description, title) {
-  const withoutTitle = description.split(title).join('')
+  const titleWordsWithDigits = title.split(/\s+/).filter((word) => /\d/.test(word))
+  const withoutTitle = [title, ...titleWordsWithDigits].reduce((text, part) => text.split(part).join(''), description)
 
   return /\d/.test(withoutTitle)
 }
