@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import iconLockedSrc from '@cowprotocol/assets/images/icon-locked.svg'
 import iconUnlockedSrc from '@cowprotocol/assets/images/icon-unlocked.svg'
 import iconUsdSrc from '@cowprotocol/assets/images/icon-USD.svg'
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import {
   formatInputAmount,
   getCurrencyAddress,
@@ -33,7 +33,7 @@ import {
 import { limitPickerModeAtom } from 'modules/limitOrders/state/limitPickerModeAtom'
 import { limitRateAtom, updateLimitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { toFraction } from 'modules/limitOrders/utils/toFraction'
-import { priceChartModalOpenAtom, priceChartVisibleAtom } from 'modules/priceChart'
+import { priceChartModalOpenAtom, priceChartVisibleAtom, useIsPriceChartAvailable } from 'modules/priceChart'
 import { PricePercentageShortcuts } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -70,7 +70,7 @@ export function RateInput() {
   const [isUsdRateMode, setIsUsdRateMode] = useAtom(isLocalUsdRateModeAtom)
   const [isLimitPickerMode, setLimitPickerMode] = useAtom(limitPickerModeAtom)
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
-  const { isPriceChartEnabled } = useFeatureFlags()
+  const isPriceChartAvailable = useIsPriceChartAvailable()
   const setChartModalOpen = useSetAtom(priceChartModalOpenAtom)
   const setChartVisible = useSetAtom(priceChartVisibleAtom)
 
@@ -304,7 +304,7 @@ export function RateInput() {
                 </styledEl.UsdButton>
               </styledEl.CurrencyToggle>
 
-              {isPriceChartEnabled && (
+              {isPriceChartAvailable && (
                 <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
                   <styledEl.IconButton
                     aria-label={t`Pick the limit price from the chart`}

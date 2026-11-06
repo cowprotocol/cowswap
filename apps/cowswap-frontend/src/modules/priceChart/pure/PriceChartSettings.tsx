@@ -1,24 +1,23 @@
 import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
-import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, SettingsBox } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { useInjectedWidgetParams } from 'entities/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { useIsPriceChartAvailable } from '../hooks/useIsPriceChartAvailable'
 import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 
 export function PriceChartSettings(): ReactNode {
-  const { isPriceChartEnabled } = useFeatureFlags()
-  const { disablePriceChart } = useInjectedWidgetParams()
+  const isPriceChartAvailable = useIsPriceChartAvailable()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
 
-  if (!isPriceChartEnabled || disablePriceChart || isUpToLarge) return null
+  if (!isPriceChartAvailable || isUpToLarge) return null
 
   return (
     <SettingsBox
