@@ -208,7 +208,7 @@ describe('HomePage', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: 'Ondo' }))
     fireEvent.click(screen.getByRole('checkbox', { name: 'xStocks' }))
     fireEvent.click(
-      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: '$10M+' }),
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: '$10M+' }),
     )
 
     expect(await screen.findByRole('button', { name: 'Filters 2 active' })).toBeTruthy()
@@ -220,7 +220,7 @@ describe('HomePage', () => {
     expect(screen.queryByRole('button', { name: 'Clear' })).toBeNull()
     expect(screen.getByRole('button', { name: 'All', pressed: true })).toBeTruthy()
     expect(
-      within(screen.getByRole('radiogroup', { name: 'Onchain market cap' })).getByRole('radio', { name: 'Any' }),
+      within(screen.getByRole('radiogroup', { name: 'Tokenized market cap' })).getByRole('radio', { name: 'Any' }),
     ).toHaveProperty('checked', true)
   })
 
@@ -291,7 +291,7 @@ describe('HomePage', () => {
     const header = await screen.findByRole('columnheader', { name: /^24h total volume/ })
 
     expect(header.getAttribute('aria-sort')).toBe('descending')
-    expect(screen.getByRole('columnheader', { name: 'Onchain market cap' })).toBeTruthy()
+    expect(screen.getByRole('columnheader', { name: 'Tokenized market cap' })).toBeTruthy()
     expect(
       (global.fetch as jest.Mock).mock.calls
         .map(([url]) => String(url))
@@ -323,7 +323,7 @@ describe('HomePage', () => {
 
     const totals = await screen.findByRole('region', { name: 'Market overview' })
 
-    expect(totals.textContent).toContain('Onchain market cap')
+    expect(totals.textContent).toContain('Tokenized market cap')
     expect(totals.textContent).toContain('24h total volume')
     expect(await screen.findByText('Ref. 14:00 UTC')).toBeTruthy()
     expect(screen.getByText('24h total volume · All networks')).toBeTruthy()

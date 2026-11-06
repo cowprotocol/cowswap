@@ -38,14 +38,18 @@ interface AssetsTableProps {
   emptyState: ReactNode
 }
 
+interface ColumnHint {
+  text: string
+  /** Accessible name of the info icon */
+  label: string
+}
+
 interface SortableHeaderProps {
   field: RwaSortField
   title: string
   numeric?: boolean
   className?: string
-  hint?: string
-  /** Accessible name of the `hint` icon */
-  hintLabel?: string
+  hint?: ColumnHint
 }
 
 export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): ReactNode {
@@ -62,8 +66,7 @@ export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): React
               field="price"
               title="Reference price"
               numeric
-              hint={MARKET_DATA_HINT}
-              hintLabel="About market data"
+              hint={{ text: MARKET_DATA_HINT, label: 'About market data' }}
             />
             <SortableHeader field="change24h" title="24h change" numeric />
             <SortableHeader
@@ -71,10 +74,9 @@ export function AssetsTable({ id, assets, emptyState }: AssetsTableProps): React
               title="24h total volume"
               numeric
               className={styles.optional}
-              hint={TOTAL_VOLUME_HINT}
-              hintLabel="About total volume"
+              hint={{ text: TOTAL_VOLUME_HINT, label: 'About total volume' }}
             />
-            <SortableHeader field="marketCap" title="Onchain market cap" numeric className={styles.optional} />
+            <SortableHeader field="marketCap" title="Tokenized market cap" numeric className={styles.optional} />
             <th className={`${styles.numeric} ${styles.chartColumn}`}>24h chart</th>
           </tr>
         </thead>
@@ -187,7 +189,7 @@ function SkeletonRow({ index }: { index: number }): ReactNode {
   )
 }
 
-function SortableHeader({ field, title, numeric = false, className, hint, hintLabel }: SortableHeaderProps): ReactNode {
+function SortableHeader({ field, title, numeric = false, className, hint }: SortableHeaderProps): ReactNode {
   const [{ sort, order }, setSort] = useAtom(assetsSortAtom)
   const setPage = useSetAtom(assetsPageAtom)
   const isActive = sort === field
@@ -209,8 +211,8 @@ function SortableHeader({ field, title, numeric = false, className, hint, hintLa
         {title}
       </button>
       {hint && (
-        <Tooltip className={styles.info} content={hint}>
-          <span role="img" aria-label={hintLabel}>
+        <Tooltip className={styles.info} content={hint.text}>
+          <span role="img" aria-label={hint.label}>
             <InfoIcon />
           </span>
         </Tooltip>

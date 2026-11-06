@@ -131,7 +131,7 @@ The earlier code requested `/coins/markets` and onchain `tokens/multi` per asset
 | Change | A + B / day: before → now |
 |---|---|
 | **#2: `/coins/markets` in registry-wide batches.** The 601 registry coin ids are sorted and cut into batches of 250. An asset requests only the batches holding its ids, and every asset of a batch shares the URL (`getTokenMarkets` → `fetchCoinsMarkets(ids, 60, registryIds)`) | 102k → **4.3k** |
-| **#4: onchain `tokens/multi` in registry-wide batches per chain, revalidate 60 s → 300 s.** Same batching over the addresses of each chain (583 + 542 + 102 + … = 47 batches of 30). Onchain cap and 24h DEX volume don't need minute freshness | 126k → **12.7k** |
+| **#4: onchain `tokens/multi` in registry-wide batches per chain, revalidate 60 s → 300 s.** Same batching over the addresses of each chain (583 + 542 + 102 + … = 47 batches of 30). 24h DEX volume doesn't need minute freshness | 126k → **12.7k** |
 | #5: OHLCV revalidate 300 s → 900 s (an hourly series) | 5.5k → 1.8k |
 | #1: `/rwas/markets` revalidate 60 s → 180 s | 5.8k → 1.9k |
 | #3: `market_chart` 1D revalidate 300 s → 900 s, 1W 900 s → 1800 s. The route's CDN `s-maxage` now uses the same values (`CHART_REVALIDATE_SECONDS`), so 1W refreshes every 30 min instead of every hour. The 1D chart (5-minute points) may lag up to 15 min at its right edge; the headline price above it comes from `/rwas/markets` | 34k → 26.2k |

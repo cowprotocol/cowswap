@@ -37,7 +37,7 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span className={styles.cardHint}>7D</span>
       </header>
       <div className={styles.totals}>
-        <Total label="Onchain market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
+        <Total label="Tokenized market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
         <Total
           label={
             <>

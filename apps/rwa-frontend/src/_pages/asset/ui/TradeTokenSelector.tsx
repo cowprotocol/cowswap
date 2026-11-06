@@ -213,7 +213,7 @@ function TradeTokenOption({
         <TradeTokenName quoted={quoted} bestQuoteLabel={bestQuoteLabel} />
         <span className={styles.stats}>
           <span>
-            Market cap <strong>{formatTokenStat(marketCap)}</strong>
+            Tokenized market cap <strong>{formatTokenStat(marketCap)}</strong>
           </span>
           <span aria-hidden="true">·</span>
           <span>

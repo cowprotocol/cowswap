@@ -91,7 +91,7 @@ export function AssetsFiltersSections({ issuers, chainIds, isTouch = false }: As
         onChange={(selected) => updateFilters({ chainIds: selected })}
       />
       <ThresholdSection
-        title="Onchain market cap"
+        title="Tokenized market cap"
         thresholds={MARKET_CAP_THRESHOLDS}
         value={filters.minMarketCap}
         onChange={(value) => updateFilters({ minMarketCap: value })}

@@ -34,7 +34,7 @@ import { TokenLogo } from '@/shared/ui/token-logo'
 import { Tooltip } from '@/shared/ui/tooltip'
 
 const TOKEN_METRICS_HINT =
-  'From CoinGecko. Market cap is the value of the tokens held by investors, summed over every network the token is on, so listings of one token on different networks show the same value. 24h DEX volume is the DEX trading of the token on the network over the last 24 hours.'
+  'From CoinGecko. Tokenized market cap is the value of the tokens held by investors, summed over every network the token is on, so listings of one token on different networks show the same value. 24h DEX volume is the DEX trading of the token on the network over the last 24 hours.'
 
 interface DividendNotesToggleProps {
   isExpanded: boolean
@@ -131,7 +131,7 @@ export function StockTokens({ asset }: { asset: RwaAsset }): ReactNode {
                 <th className={tableStyles.numeric}>Token price / share</th>
                 <th className={tableStyles.numeric}>24h DEX volume</th>
                 <th className={`${tableStyles.numeric} ${tableStyles.sorted}`} aria-sort="descending">
-                  <span aria-hidden="true">↓</span> Market cap
+                  <span aria-hidden="true">↓</span> Tokenized market cap
                 </th>
                 <th>
                   <span className={styles.visuallyHidden}>Trade</span>

@@ -154,7 +154,7 @@ package "Browser" as BROWSER {
     [AssetView / AssetStats] as U_STATS
     [StockTokens / TradeTokenSelector /\nPositionsTab / useTradeSelection] as U_TOKENS
     [AssetPriceChart\n(ChartRangeSelector)] as U_CHART
-    [TradeWidget\n(onchain cap, DEX vol, quotes)] as U_TRADE
+    [TradeWidget\n(tokenized market cap, DEX vol, quotes)] as U_TRADE
   }
   package "Portfolio (/portfolio)" as UI_PORT {
     [HoldingsTable / AllocationCard /\nRecentActivityCard\n(uses market price only;\nlogo from registry)] as U_HOLD
