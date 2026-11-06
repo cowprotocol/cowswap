@@ -308,7 +308,7 @@ export function RateInput() {
                 </styledEl.UsdButton>
               </styledEl.CurrencyToggle>
 
-              {isPriceChartAvailable && (
+              {isPriceChartAvailable && !isRateInputDisabled && (
                 <HoverTooltip content={t`Pick the limit price from the chart`} wrapInContainer placement="top">
                   <styledEl.IconButton
                     aria-label={t`Pick the limit price from the chart`}
