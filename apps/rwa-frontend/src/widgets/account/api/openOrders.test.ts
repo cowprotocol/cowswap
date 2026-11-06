@@ -203,6 +203,7 @@ describe('getOpenOrders', () => {
       counterToken: { symbol: 'USDC' },
       filledFraction: 0.5,
       validTo: 1_790_001_200,
+      twapSchedule: { startTime: 1_790_000_000, interval: 600, partsCount: 2 },
       isSoftCancellable: false,
     })
   })

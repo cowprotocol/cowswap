@@ -8,19 +8,20 @@ import {
 } from '@cowprotocol/cow-sdk'
 import type { TwapOrder } from '@cowprotocol/sdk-composable'
 
+import { collectTwapOrders } from './twapOrders'
+
 import { collectPages } from '../lib/collectPages'
 import { getOrderType, type OrderType } from '../lib/orderType'
 import { getSupportedChainIds, resolveCounterTokens, settleChains, type TradeLeg, toTradeLeg } from '../lib/tradeLeg'
 
 import type { CowShedTwap } from './cancelCowShedTwap'
+import type { TwapSchedule } from '../lib/twapProgress'
 import type { RwaTokenSummary } from '@/entities/asset'
 
-import { orderBookApi, programmaticOrderApi } from '@/shared/api'
+import { orderBookApi } from '@/shared/api'
 
 const ORDERS_PAGE_SIZE = 1000
 const MAX_ORDERS_PAGES = 10
-const TWAP_ORDERS_PAGE_SIZE = 1000
-const MAX_TWAP_ORDERS_PAGES = 10
 const OPEN_STATUSES: readonly OrderStatus[] = [OrderStatus.OPEN, OrderStatus.PRESIGNATURE_PENDING]
 const OFF_CHAIN_SIGNING_SCHEMES: readonly SigningScheme[] = [SigningScheme.EIP712, SigningScheme.ETHSIGN]
 
@@ -39,6 +40,8 @@ export interface OpenOrder extends TradeLeg {
   type: OrderType
   /** Set for a TWAP placed by an EOA, which is cancelled through its CoW Shed */
   cowShedTwap?: CowShedTwap
+  /** Set for a TWAP */
+  twapSchedule?: TwapSchedule
 }
 
 export interface OpenOrdersQuery {
@@ -128,32 +131,26 @@ function getTwapDetails({
     type: 'twap',
     // A Safe owns its TWAPs, an EOA's are owned by its CoW Shed
     cowShedTwap: areAddressesEqual(owner, resolvedOwner) ? undefined : { eventId, hash, cowShedAddress: owner },
+    twapSchedule: { startTime: effectiveStartTime, interval: timeBetweenParts, partsCount: numberOfParts },
   }
 }
 
 /** TWAPs placed by an EOA are owned by its CoW Shed proxy, so the order book can't find them by the EOA */
 function getTwapOpenOrders(chainId: SupportedChainId, owner: string, tokens: RwaTokenSummary[]): Promise<OpenOrder[]> {
-  return collectPages(
-    (offset, limit) =>
-      programmaticOrderApi
-        .getTwapOrders({ resolvedOwner: owner, chainId }, { direction: 'desc', offset, limit })
-        .then(({ items }) => items),
-    (twap) => {
-      if (twap.status !== 'open') return null
+  return collectTwapOrders(chainId, owner, (twap) => {
+    if (twap.status !== 'open') return null
 
-      const { sellToken, buyToken, partSellAmount, minPartLimit, numberOfParts } = twap.schedule
-      const parts = BigInt(numberOfParts)
-      const leg = toTradeLeg(chainId, tokens, {
-        sellToken,
-        sellAmount: (partSellAmount * parts).toString(),
-        buyToken,
-        buyAmount: (minPartLimit * parts).toString(),
-      })
+    const { sellToken, buyToken, partSellAmount, minPartLimit, numberOfParts } = twap.schedule
+    const parts = BigInt(numberOfParts)
+    const leg = toTradeLeg(chainId, tokens, {
+      sellToken,
+      sellAmount: (partSellAmount * parts).toString(),
+      buyToken,
+      buyAmount: (minPartLimit * parts).toString(),
+    })
 
-      return leg ? { ...leg, ...getTwapDetails(twap) } : null
-    },
-    { pageSize: TWAP_ORDERS_PAGE_SIZE, maxPages: MAX_TWAP_ORDERS_PAGES },
-  )
+    return leg ? { ...leg, ...getTwapDetails(twap) } : null
+  })
 }
 
 function toFraction(executed: bigint, total: bigint): number {

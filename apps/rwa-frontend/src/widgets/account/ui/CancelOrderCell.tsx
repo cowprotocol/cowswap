@@ -35,8 +35,6 @@ export function CancelOrderCell({ order }: { order: OpenOrder }): ReactNode {
     )
   }
 
-  if (cancellation?.status === 'cancelled') return <span className={styles.secondary}>Cancelled</span>
-
   const items: RowMenuItem[] = order.cowShedTwap
     ? [
         {
