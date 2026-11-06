@@ -2,11 +2,12 @@ import { orderBookActivityProvider } from './orderBookActivityProvider'
 
 import { AAPLX_ARBITRUM, AAPLX_MAINNET, OWNER, USDC } from '../../lib/fixtures'
 
-import { orderBookApi, readTokensMetadata } from '@/shared/api'
+import { orderBookApi, programmaticOrderApi, readTokensMetadata } from '@/shared/api'
 import { getPublicClient } from '@/shared/lib/chain'
 
 jest.mock('@/shared/api', () => ({
   orderBookApi: { getTrades: jest.fn(), getOrder: jest.fn() },
+  programmaticOrderApi: { getDeployedCowSheds: jest.fn(), getTwapOrders: jest.fn() },
   readTokensMetadata: jest.fn(),
 }))
 
@@ -14,7 +15,37 @@ jest.mock('@/shared/lib/chain', () => ({ getPublicClient: jest.fn() }))
 
 const getTradesMock = orderBookApi.getTrades as jest.Mock
 const getOrderMock = orderBookApi.getOrder as jest.Mock
+const getDeployedCowShedsMock = programmaticOrderApi.getDeployedCowSheds as jest.Mock
+const getTwapOrdersMock = programmaticOrderApi.getTwapOrders as jest.Mock
 const getBlockMock = jest.fn()
+
+const COW_SHED = '0x0000000000000000000000000000000000000c0e'
+const TWAP_START = 1_790_000_000
+const TWAP_INTERVAL = 3600
+
+function twapPartOrder(validTo: number): Record<string, unknown> {
+  return {
+    class: 'limit',
+    fullAppData: appData('twap'),
+    owner: COW_SHED,
+    sellToken: USDC,
+    buyToken: AAPLX_MAINNET.address,
+    sellAmount: '1500000',
+    validTo,
+  }
+}
+
+const TWAP = {
+  owner: COW_SHED,
+  schedule: {
+    sellToken: USDC,
+    buyToken: AAPLX_MAINNET.address,
+    partSellAmount: 1_500_000n,
+    effectiveStartTime: TWAP_START,
+    timeBetweenParts: TWAP_INTERVAL,
+    numberOfParts: 10,
+  },
+}
 
 function appData(orderClass: string): string {
   return JSON.stringify({ metadata: { orderClass: { orderClass } } })
@@ -40,6 +71,8 @@ describe('orderBookActivityProvider', () => {
     ;(readTokensMetadata as jest.Mock).mockResolvedValue({})
     ;(getPublicClient as jest.Mock).mockReturnValue({ getBlock: getBlockMock })
     getOrderMock.mockResolvedValue({ class: 'limit', fullAppData: appData('market') })
+    getDeployedCowShedsMock.mockResolvedValue({ items: [] })
+    getTwapOrdersMock.mockResolvedValue({ items: [] })
     getBlockMock.mockImplementation(async ({ blockNumber }: { blockNumber: bigint }) => {
       if (blockNumber === 300n) throw new Error('RPC is down')
 
@@ -184,5 +217,62 @@ describe('orderBookActivityProvider', () => {
     const [item] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
 
     expect(item.orderType).toBe('swap')
+  })
+
+  it('includes the trades of the CoW Shed proxies of the owner', async () => {
+    getDeployedCowShedsMock.mockResolvedValue({ items: [{ address: COW_SHED }] })
+    getTradesMock.mockImplementation(async ({ owner }: { owner: string }, { chainId }: { chainId: number }) =>
+      chainId === 1 && owner === COW_SHED ? [trade({ orderUid: '0xshed', owner: COW_SHED })] : [],
+    )
+
+    const activity = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(getDeployedCowShedsMock).toHaveBeenCalledWith({ owner: OWNER, chainId: 1 }, { limit: 1000 })
+    expect(activity.map(({ orderUid }) => orderUid)).toEqual(['0xshed'])
+  })
+
+  it('keeps the trades of the owner when its CoW Sheds are unavailable', async () => {
+    getDeployedCowShedsMock.mockRejectedValue(new Error('Indexer is down'))
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1 ? [trade({ orderUid: '0xowner' })] : [],
+    )
+
+    const activity = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(activity.map(({ orderUid }) => orderUid)).toEqual(['0xowner'])
+  })
+
+  it('numbers the parts of a TWAP', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1 ? [trade({ orderUid: '0xpart2', owner: COW_SHED })] : [],
+    )
+    getOrderMock.mockResolvedValue(twapPartOrder(TWAP_START + 2 * TWAP_INTERVAL - 1))
+    getTwapOrdersMock.mockResolvedValue({ items: [TWAP] })
+
+    const [item] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(item).toEqual(expect.objectContaining({ orderType: 'twap', twapPart: { number: 2, count: 10 } }))
+    expect(getTwapOrdersMock).toHaveBeenCalledWith(
+      { resolvedOwner: OWNER, chainId: 1 },
+      { direction: 'desc', offset: 0, limit: 1000 },
+    )
+  })
+
+  it('leaves a TWAP part unnumbered while its TWAP is unavailable, and numbers it later', async () => {
+    getTradesMock.mockImplementation(async (_request: unknown, { chainId }: { chainId: number }) =>
+      chainId === 1 ? [trade({ orderUid: '0xpart3', owner: COW_SHED })] : [],
+    )
+    getOrderMock.mockResolvedValue(twapPartOrder(TWAP_START + 3 * TWAP_INTERVAL - 1))
+    getTwapOrdersMock.mockRejectedValueOnce(new Error('Indexer is down'))
+
+    const [before] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(before).toEqual(expect.objectContaining({ orderType: 'twap', twapPart: null }))
+
+    getTwapOrdersMock.mockResolvedValue({ items: [TWAP] })
+
+    const [after] = await orderBookActivityProvider.getActivity({ owner: OWNER, tokens: [AAPLX_MAINNET], limit: 10 })
+
+    expect(after.twapPart).toEqual({ number: 3, count: 10 })
   })
 })

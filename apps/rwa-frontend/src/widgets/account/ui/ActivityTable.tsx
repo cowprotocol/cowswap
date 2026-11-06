@@ -79,7 +79,7 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
               {assetToken.symbol}
             </span>
             <span className={`${styles.secondary} ${styles.inlineLogo}`}>
-              {ORDER_TYPE_LABELS[item.orderType]} · {assetToken.issuer} · <ChainLabel chainId={assetToken.chainId} />
+              {getOrderTypeLabel(item)} · {assetToken.issuer} · <ChainLabel chainId={assetToken.chainId} />
             </span>
           </div>
         </div>
@@ -104,4 +104,8 @@ function ActivityRow({ item, logoUrl }: { item: Activity; logoUrl: string | null
       </td>
     </tr>
   )
+}
+
+function getOrderTypeLabel({ orderType, twapPart }: Activity): string {
+  return twapPart ? `TWAP part ${twapPart.number}/${twapPart.count}` : ORDER_TYPE_LABELS[orderType]
 }
