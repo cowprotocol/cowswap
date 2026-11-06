@@ -1,5 +1,37 @@
 # Changelog
 
+## [3.20.0](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.2...wallet-v3.20.0) (2026-11-05)
+
+### Minor Changes
+
+- feat: last-mile check for restricted addresses in orders and transactions (#8451)
+
+### Patch Changes
+
+- fix(performance): wake countdowns once per displayed second (#8448)
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- Updated dependencies []:
+  - @cowprotocol/assets@2.8.0
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/ens@3.11.4
+  - @cowprotocol/types@4.14.2
+  - @cowprotocol/iframe-transport@2.3.13
+
+## [3.19.2](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.1...wallet-v3.19.2) (2026-11-02)
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
 ## [3.19.1](https://github.com/cowprotocol/cowswap/compare/wallet-v3.19.0...wallet-v3.19.1) (2026-10-28)
 
 ### Patch Changes

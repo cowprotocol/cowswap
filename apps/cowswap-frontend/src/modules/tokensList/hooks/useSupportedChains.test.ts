@@ -45,6 +45,16 @@ describe('useSupportedChains', () => {
     expect(mockMapChainInfo).toHaveBeenCalledWith(SupportedChainId.MAINNET, CHAIN_INFO[SupportedChainId.MAINNET])
   })
 
+  it('hides Robinhood until isRobinhoodEnabled is on', () => {
+    const ids = (): number[] => renderHook(() => useSupportedChains()).result.current.map(({ id }) => id)
+
+    expect(ids()).not.toContain(SupportedChainId.ROBINHOOD)
+
+    mockUseFlags.mockReturnValue({ isRobinhoodEnabled: true })
+
+    expect(ids()).toContain(SupportedChainId.ROBINHOOD)
+  })
+
   it('shows Solana with its flag on, without the user enabling alpha networks', () => {
     mockUseFlags.mockReturnValue({ isSolanaEnabled: true })
 

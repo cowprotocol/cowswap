@@ -1,4 +1,4 @@
-import { buildHoldings, getPortfolioTotals, type HoldingPrices } from './holdings'
+import { buildHoldings, getPortfolioTotals, type HoldingPrices, isEmptyWallet } from './holdings'
 
 import { getTokenKey, type RwaAsset, type RwaToken } from '@/entities/asset'
 
@@ -213,5 +213,19 @@ describe('getPortfolioTotals', () => {
 
   it('has no value without prices', () => {
     expect(getPortfolioTotals([]).value).toBeNull()
+  })
+})
+
+describe('isEmptyWallet', () => {
+  it('is empty without holdings once every network loaded', () => {
+    expect(isEmptyWallet([], [])).toBe(true)
+  })
+
+  it('is not empty while a failed network may hold tokens', () => {
+    expect(isEmptyWallet([], [56])).toBe(false)
+  })
+
+  it('is not empty while loading', () => {
+    expect(isEmptyWallet(null, [])).toBe(false)
   })
 })

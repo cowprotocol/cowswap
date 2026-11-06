@@ -1,5 +1,6 @@
 import {
   AdditionalTargetChainId,
+  ALL_SUPPORTED_CHAIN_IDS,
   arbitrumOne,
   avalanche,
   base,
@@ -15,6 +16,7 @@ import {
   optimism,
   plasma,
   polygon,
+  robinhood,
   sepolia,
   solana,
   SupportedChainId,
@@ -133,6 +135,12 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'ink',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.INK],
   },
+  [SupportedChainId.ROBINHOOD]: {
+    ...mapChainInfoToBaseChainInfo(robinhood),
+    name: 'robinhood',
+    urlAlias: 'robinhood',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ROBINHOOD],
+  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -173,10 +181,21 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.LINEA,
   SupportedChainId.PLASMA,
   SupportedChainId.INK,
+  SupportedChainId.ROBINHOOD,
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.SOLANA,
   SupportedChainId.SEPOLIA,
 ]
+
+/**
+ * Chains known to the SDK that the app must not expose yet: they are left out of the lists above and
+ * rejected by `isSupportedChainId`.
+ */
+export const UNRELEASED_CHAIN_IDS: ReadonlySet<number> = new Set<number>()
+
+export const RELEASED_SUPPORTED_CHAIN_IDS: SupportedChainId[] = ALL_SUPPORTED_CHAIN_IDS.filter(
+  (chainId) => !UNRELEASED_CHAIN_IDS.has(chainId),
+)
 
 /**
  * Sorted array of chain IDs in order of relevance.
@@ -192,6 +211,7 @@ export const SORTED_DST_CHAIN_IDS: TargetChainId[] = [
   SupportedChainId.LINEA,
   SupportedChainId.PLASMA,
   SupportedChainId.INK,
+  SupportedChainId.ROBINHOOD,
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.SOLANA,
   AdditionalTargetChainId.BITCOIN,

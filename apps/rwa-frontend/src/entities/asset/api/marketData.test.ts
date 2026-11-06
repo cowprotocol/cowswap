@@ -1,7 +1,7 @@
 /**
  * @jest-environment node
  */
-import { coingeckoProvider, toChartPoints } from './marketData'
+import { coingeckoProvider, toCandles, toChartPoints } from './marketData'
 
 jest.mock('next/cache', () => ({
   unstable_cache: <T extends unknown[], R>(load: (...args: T) => Promise<R>) => load,
@@ -409,5 +409,23 @@ describe('coingeckoProvider.getTokenMarkets', () => {
 
     expect(await coingeckoProvider.getTokenMarkets(NO_DATA.tokens)).toEqual({})
     expect(fetchMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('toCandles', () => {
+  it('stamps candles with their open time and keeps time strictly ascending', () => {
+    expect(
+      toCandles(
+        [
+          [3_600_000, 1, 2, 0.5, 1.5],
+          [5_400_000, 1.5, 3, 1, 2],
+          [5_400_000, 9, 9, 9, 9],
+        ],
+        1_800,
+      ),
+    ).toEqual([
+      { time: 1_800, open: 1, high: 2, low: 0.5, close: 1.5 },
+      { time: 3_600, open: 1.5, high: 3, low: 1, close: 2 },
+    ])
   })
 })

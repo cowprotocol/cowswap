@@ -86,6 +86,11 @@ export function getPortfolioTotals(holdings: Holding[]): PortfolioTotals {
   }
 }
 
+/** No holdings on any network, `false` while loading or when a network failed and may hold some */
+export function isEmptyWallet(holdings: Holding[] | null, failedChainIds: number[]): boolean {
+  return holdings?.length === 0 && failedChainIds.length === 0
+}
+
 /** A price-accrual token carries its multiplier in its price, so without the issuer's one the price ratio stands in */
 function estimateSharesPerToken(token: RwaTokenSummary, tokenPrice: number | null, assetPrice: number | null): number {
   return getDividendModel(token) === 'price-accrual' && tokenPrice !== null && assetPrice !== null && assetPrice > 0

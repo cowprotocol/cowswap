@@ -3,7 +3,7 @@ import { areAddressesEqual } from '@cowprotocol/cow-sdk'
 import {
   getTokenKey,
   type RwaAssetQuotes,
-  type RwaNetworkStats,
+  type RwaChainTokenStats,
   type RwaToken,
   type RwaTokenNetworkStats,
   type RwaTokenQuote,
@@ -32,13 +32,13 @@ export interface QuotedToken {
 type RankedQuotedToken = QuotedToken & { pricePerShare: number }
 
 const BEST_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
-  buy: 'Lowest buy quote',
-  sell: 'Highest sell quote',
+  buy: 'Lowest price',
+  sell: 'Highest price',
 }
 
 const BEST_VERIFIED_QUOTE_LABELS: Record<RwaAssetQuotes['side'], string> = {
-  buy: 'Lowest verified buy quote',
-  sell: 'Highest verified sell quote',
+  buy: 'Lowest verified price',
+  sell: 'Highest verified price',
 }
 
 /**
@@ -75,6 +75,15 @@ export function getBestQuotedToken(quotedTokens: QuotedToken[], side: RwaAssetQu
  */
 export function getBestQuoteLabel(side: RwaAssetQuotes['side'], hasVerifiedQuote: boolean): string {
   return (hasVerifiedQuote ? BEST_VERIFIED_QUOTE_LABELS : BEST_QUOTE_LABELS)[side]
+}
+
+/** Tokens of a collapsed list: the first `count` and the selected one */
+export function getCollapsedQuotedTokens(
+  quotedTokens: QuotedToken[],
+  selectedToken: RwaToken | undefined,
+  count: number,
+): QuotedToken[] {
+  return quotedTokens.filter((quoted, index) => index < count || quoted.token === selectedToken)
 }
 
 export function isRankedQuote(quoted: QuotedToken): quoted is RankedQuotedToken {
@@ -123,7 +132,7 @@ export function sortQuotedTokens(quotedTokens: QuotedToken[], side: RwaAssetQuot
 export function toQuotedTokens(
   chainTokens: RwaToken[],
   quotes: RwaAssetQuotes | undefined,
-  stats: RwaNetworkStats | undefined,
+  stats: RwaChainTokenStats[] | undefined,
   stockPrice: number | null,
   sharesPerToken: Record<string, number>,
 ): QuotedToken[] {
@@ -142,7 +151,7 @@ export function toQuotedTokens(
         stockPrice !== null &&
         stockPrice > 0 &&
         Math.abs(pricePerShare / stockPrice - 1) > MAX_STOCK_PRICE_DEVIATION,
-      stats: stats?.tokens.find(({ address }) => areAddressesEqual(address, token.address)),
+      stats: stats?.find((item) => item.chainId === token.chainId && areAddressesEqual(item.address, token.address)),
     }
   })
 }

@@ -1,5 +1,32 @@
 # Changelog
 
+## [3.17.3](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.2...tokens-v3.17.3) (2026-11-05)
+
+### Patch Changes
+
+- fix(solana): show quote costs and the price before them (#8452)
+
+- fix(performance): remove render hotspots in token search, route matching and Solana balances (#8450)
+
+- Updated dependencies []:
+  - @cowprotocol/ui@3.20.0
+  - @cowprotocol/common-hooks@3.18.0
+  - @cowprotocol/common-const@3.18.0
+  - @cowprotocol/common-utils@3.21.2
+  - @cowprotocol/core@3.14.3
+  - @cowprotocol/currency@1.9.2
+  - @cowprotocol/types@4.14.2
+
+## [3.17.2](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.1...tokens-v3.17.2) (2026-11-02)
+
+### Patch Changes
+
+- fix(rwa): updated rwa token lists (#8487)
+
+- Updated dependencies []:
+  - @cowprotocol/core@3.14.2
+  - @cowprotocol/ui@3.19.2
+
 ## [3.17.1](https://github.com/cowprotocol/cowswap/compare/tokens-v3.17.0...tokens-v3.17.1) (2026-10-28)
 
 ### Patch Changes

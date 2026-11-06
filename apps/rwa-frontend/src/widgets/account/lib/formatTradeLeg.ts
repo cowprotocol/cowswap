@@ -24,6 +24,14 @@ export function formatLegPrice(leg: TradeLeg): string {
   return `${priceFormatter.format(price)} ${getCounterSymbol(counterToken.symbol, counterTokenAddress)}`
 }
 
+export function formatPaidAmount(leg: TradeLeg): string {
+  return leg.side === 'buy' ? formatCounterAmount(leg) : formatAssetAmount(leg)
+}
+
+export function formatReceivedAmount(leg: TradeLeg): string {
+  return leg.side === 'buy' ? formatAssetAmount(leg) : formatCounterAmount(leg)
+}
+
 function getCounterSymbol(symbol: string | undefined, address: string): string {
   return symbol || shortenAddress(address)
 }

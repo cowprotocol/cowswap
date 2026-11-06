@@ -2,9 +2,13 @@ export { getAssetNews, NEWS_FEED_REVALIDATE_SECONDS } from './api/assetNews'
 export {
   findAssets,
   getAsset,
+  getAssetCandles,
   getAssetChart,
-  getAssetNetworkStats,
   getAssetQuotes,
+  getAssetStock,
+  getAssetStockCandles,
+  getAssetStockChart,
+  getAssetTokenStats,
   getMarketOverview,
   type ListAssetsParams,
   listAssets,
@@ -17,9 +21,11 @@ export { validateRegistry } from './model/validateRegistry'
 export {
   RWA_ASSET_TYPES,
   RWA_CHART_RANGES,
+  RWA_MARKET_KINDS,
   RWA_QUOTE_SIDES,
   RWA_SORT_FIELDS,
   type RwaAssetsFilter,
+  type RwaCandleChart,
   type RwaChart,
   type RwaSortOrder,
 } from './model/types'

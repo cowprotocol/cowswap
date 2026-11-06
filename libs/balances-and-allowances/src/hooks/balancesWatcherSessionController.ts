@@ -106,7 +106,11 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
 
   const enterFallback = (): void => {
     closeSubscription()
-    setHealth(() => ({ status: BalancesWatcherHealth.Fallback, isRecovering: true }))
+    setHealth((prev) => ({
+      status: BalancesWatcherHealth.Fallback,
+      isRecovering: true,
+      recoveringSince: prev.isRecovering ? prev.recoveringSince : Date.now(),
+    }))
     // Close the first-load gate; existing `values` are preserved so the
     // multicall stack the parent mounts can take over without a flicker.
     setBalances((state) => applyEmptyLoad(state, chainId))
@@ -134,7 +138,7 @@ export function createSessionController(deps: SessionControllerDeps): SessionCon
         clearFirstSnapshotTimer()
         // First successful snapshot clears the sticky recovery flag and
         // tells the parent to unmount the multicall fallback stack.
-        setHealth(() => ({ status: BalancesWatcherHealth.Healthy, isRecovering: false }))
+        setHealth(() => ({ status: BalancesWatcherHealth.Healthy, isRecovering: false, recoveringSince: null }))
         setBalances((state) => writeBalancesUpdate(state, balances, chainId, isFirstEvent))
         isFirstEvent = false
       },

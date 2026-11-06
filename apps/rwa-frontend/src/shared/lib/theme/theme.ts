@@ -1,16 +1,21 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { USER_STATE_STORAGE_KEY } from '@cowprotocol/common-const/theme'
+
 export const THEME_PREFERENCES = ['light', 'dark', 'auto'] as const
 
 export type Theme = Exclude<ThemePreference, 'auto'>
 
 export type ThemePreference = (typeof THEME_PREFERENCES)[number]
 
-const THEME_STORAGE_KEY = 'rwaTheme:v1'
 const DARK_SCHEME_QUERY = '(prefers-color-scheme: dark)'
 
-export const themePreferenceAtom = atomWithStorage<ThemePreference>(THEME_STORAGE_KEY, 'auto')
+export const themePreferenceAtom = atomWithStorage<ThemePreference>(USER_STATE_STORAGE_KEY, 'auto', {
+  getItem: () => readThemePreference(),
+  setItem: (_key, preference) => writeThemePreference(preference),
+  removeItem: () => writeThemePreference('auto'),
+})
 
 /** Saves the preference and applies it to the page right away */
 export const setThemePreferenceAtom = atom(null, (_get, set, preference: ThemePreference) => {
@@ -25,8 +30,9 @@ export const setThemePreferenceAtom = atom(null, (_get, set, preference: ThemePr
 export const THEME_INIT_SCRIPT = `(function () {
   var preference = 'auto'
   try {
-    var stored = JSON.parse(localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)}))
-    if (${JSON.stringify(THEME_PREFERENCES)}.indexOf(stored) !== -1) preference = stored
+    var user = JSON.parse(localStorage.getItem(${JSON.stringify(USER_STATE_STORAGE_KEY)}))
+    if (user && user.userDarkMode === true) preference = 'dark'
+    if (user && user.userDarkMode === false) preference = 'light'
   } catch (e) {}
   var dark = preference === 'auto' ? window.matchMedia(${JSON.stringify(DARK_SCHEME_QUERY)}).matches : preference === 'dark'
   document.documentElement.dataset.theme = dark ? 'dark' : 'light'
@@ -36,15 +42,14 @@ export function applyTheme(preference: ThemePreference): void {
   document.documentElement.dataset.theme = resolveTheme(preference, window.matchMedia(DARK_SCHEME_QUERY).matches)
 }
 
-/** `auto` when nothing valid is stored */
+/** `auto` when CoW Swap follows the system scheme or nothing valid is stored */
 export function readThemePreference(): ThemePreference {
-  try {
-    const stored: unknown = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY) ?? 'null')
+  const userDarkMode = readUserState()?.userDarkMode
 
-    return THEME_PREFERENCES.find((preference) => preference === stored) ?? 'auto'
-  } catch {
-    return 'auto'
-  }
+  if (userDarkMode === true) return 'dark'
+  if (userDarkMode === false) return 'light'
+
+  return 'auto'
 }
 
 export function resolveTheme(preference: ThemePreference, prefersDark: boolean): Theme {
@@ -53,19 +58,37 @@ export function resolveTheme(preference: ThemePreference, prefersDark: boolean):
   return preference
 }
 
-/** Re-applies the theme when the system scheme changes or another tab saves a preference */
+/** Re-applies the theme when the system scheme changes */
 export function watchThemeChanges(): () => void {
   const mediaQuery = window.matchMedia(DARK_SCHEME_QUERY)
   const onChange = (): void => applyTheme(readThemePreference())
-  const onStorage = (event: StorageEvent): void => {
-    if (event.key === THEME_STORAGE_KEY) onChange()
-  }
 
   mediaQuery.addEventListener('change', onChange)
-  window.addEventListener('storage', onStorage)
 
-  return () => {
-    mediaQuery.removeEventListener('change', onChange)
-    window.removeEventListener('storage', onStorage)
+  return () => mediaQuery.removeEventListener('change', onChange)
+}
+
+/** Keeps the other fields of the CoW Swap user state, which CoW Swap merges over its defaults on load */
+export function writeThemePreference(preference: ThemePreference): void {
+  const userDarkMode = preference === 'auto' ? null : preference === 'dark'
+
+  try {
+    localStorage.setItem(USER_STATE_STORAGE_KEY, JSON.stringify({ ...readUserState(), userDarkMode }))
+  } catch {
+    // Storage can be unavailable (private mode, blocked site data): the theme still applies to this page
+  }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function readUserState(): Record<string, unknown> | null {
+  try {
+    const stored: unknown = JSON.parse(localStorage.getItem(USER_STATE_STORAGE_KEY) ?? 'null')
+
+    return isRecord(stored) ? stored : null
+  } catch {
+    return null
   }
 }

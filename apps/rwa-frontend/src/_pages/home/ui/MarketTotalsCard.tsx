@@ -22,9 +22,7 @@ interface MarketTotalsCardProps {
 }
 
 export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode {
-  const refTime = overview?.updatedAt
-    ? formatRefTime(overview.updatedAt, Intl.DateTimeFormat().resolvedOptions().timeZone)
-    : null
+  const refTime = overview?.updatedAt ? formatRefTime(overview.updatedAt, 'UTC') : null
 
   return (
     <section className={styles.card} aria-labelledby="market-totals-title">
@@ -42,7 +40,7 @@ export function MarketTotalsCard({ overview }: MarketTotalsCardProps): ReactNode
         <span className={styles.cardHint}>7D</span>
       </header>
       <div className={styles.totals}>
-        <Total label="Market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
+        <Total label="Onchain market cap" value={overview && formatCompactUsd(overview.totals.marketCap)} />
         <Total
           label={
             <>

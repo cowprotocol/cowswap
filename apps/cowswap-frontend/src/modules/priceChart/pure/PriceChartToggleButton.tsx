@@ -9,6 +9,7 @@ import { TrendingUp } from 'react-feather'
 
 import { TradeIconButton, useDerivedTradeState } from 'modules/trade'
 
+import { useIsProviderNetworkDeprecated } from 'common/hooks/useIsProviderNetworkDeprecated'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { useIsPriceChartAvailable } from '../hooks/useIsPriceChartAvailable'
@@ -18,15 +19,17 @@ import { priceChartVisibleAtom } from '../state/priceChartVisibleAtom'
 export function PriceChartToggleButton(): ReactNode {
   const isPriceChartAvailable = useIsPriceChartAvailable()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isProviderNetworkDeprecated = useIsProviderNetworkDeprecated()
   const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
   const isUpToLarge = useMediaQuery(Media.upToLarge(false))
   const [isModalOpen, setIsModalOpen] = useAtom(priceChartModalOpenAtom)
   const [isVisible, setIsVisible] = useAtom(priceChartVisibleAtom)
-  const disabledReason = isProviderNetworkUnsupported
-    ? t`Price chart is unavailable on this network.`
-    : !inputCurrency && !outputCurrency
-      ? t`Select a token to view its price chart.`
-      : undefined
+  const disabledReason =
+    isProviderNetworkUnsupported || isProviderNetworkDeprecated
+      ? t`Price chart is unavailable on this network.`
+      : !inputCurrency && !outputCurrency
+        ? t`Select a token to view its price chart.`
+        : undefined
   const label = !disabledReason && !isUpToLarge && isVisible ? t`Hide price chart` : t`Show price chart`
 
   if (!isPriceChartAvailable) return null

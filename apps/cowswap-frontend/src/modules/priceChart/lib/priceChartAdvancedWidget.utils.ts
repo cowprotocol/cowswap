@@ -36,3 +36,17 @@ export function syncTradingViewVolumeStudy(widget: IChartingLibraryWidget, hasVo
 
   volumeStudies.forEach((study) => chart.removeEntity(study.id, { disableUndo: true }))
 }
+
+// `widget.remove()` destroys the TradingView iframe, but the React state pointing at the widget is cleared in
+// the same cleanup, so a later render can still run subscription teardown against the dead instance. Any
+// widget-level call then throws inside the library: "Cannot read properties of null (reading 'doWhenApiIsReady')".
+const removedWidgets = new WeakSet<IChartingLibraryWidget>()
+
+export function isChartWidgetRemoved(widget: IChartingLibraryWidget): boolean {
+  return removedWidgets.has(widget)
+}
+
+export function removeChartWidget(widget: IChartingLibraryWidget): void {
+  removedWidgets.add(widget)
+  widget.remove()
+}
