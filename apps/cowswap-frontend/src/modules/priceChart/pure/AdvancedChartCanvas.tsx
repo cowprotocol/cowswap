@@ -16,7 +16,7 @@ import { formatPriceChartValue, logPriceChart } from '../lib/priceChart.utils'
 import { loadChartLayout, saveChartLayout } from '../lib/priceChartAdvancedLayout.utils'
 import { getCustomTimezone } from '../lib/priceChartAdvancedTimezone.utils'
 import { loadAdvancedChartWidget } from '../lib/priceChartAdvancedWidget.service'
-import { getThemeOverrides } from '../lib/priceChartAdvancedWidget.utils'
+import { getThemeOverrides, removeChartWidget } from '../lib/priceChartAdvancedWidget.utils'
 
 import type { PriceChartReferenceLine } from '../lib/priceChart.types'
 import type { PriceChartDatafeedController } from '../lib/priceChartAdvancedDatafeed.service'
@@ -105,7 +105,7 @@ export function AdvancedChartCanvas({
       await widget.chartReady()
 
       if (cancelled) {
-        widget.remove()
+        removeChartWidget(widget)
         widget = null
         return
       }
@@ -130,7 +130,7 @@ export function AdvancedChartCanvas({
         if (ready) {
           saveLayout()
             .finally(() => {
-              widget?.remove()
+              if (widget) removeChartWidget(widget)
               widget = null
             })
             .catch(handleSaveError)

@@ -15,6 +15,12 @@ export function captureError(
   errorType?: ERROR_TYPES,
   params?: Record<string, unknown>,
   extraTags?: Record<string, string>,
+  /**
+   * Replaces Sentry's default stacktrace grouping. Needed when the same failure reaches us with a
+   * different message and stack every time (third-party SDKs, wallets), which otherwise splits one
+   * problem across dozens of issues and leaves nothing to threshold an alert on.
+   */
+  fingerprint?: string[],
 ): void {
   const tags = {
     captureType: 'manual',
@@ -27,6 +33,7 @@ export function captureError(
     contexts: {
       params,
     },
+    ...(fingerprint ? { fingerprint } : undefined),
   })
 }
 
