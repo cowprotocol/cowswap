@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-11-05 13:14\n"
+"PO-Revision-Date: 2026-11-06 14:45\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -488,7 +488,7 @@ msgstr "Нажмите «Обернуть {nativeSymbol}», чтобы попр�
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Solvers included your order in a batch with other orders. There’s no separate gain to show."
-msgstr ""
+msgstr "Солверы объединили ваш ордер в батч с другими ордерами, поэтому отдельная выгода не отображается."
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
@@ -1838,7 +1838,8 @@ msgstr "Попробовать лимитные ордера"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Solvers compete for every swap on @CoWSwap 🐮⚡\n\n"
 "Start swapping on swap.cow.fi"
-msgstr ""
+msgstr "Солверы соревнуются за каждый своп на @CoWSwap 🐮⚡\n\n"
+"Торгуйте выгодно на swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
@@ -2000,7 +2001,7 @@ msgstr "Нужна поддержка TWAP для этого кошелька? �
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "The winning solution contained only your order. There’s no separate gain to show."
-msgstr ""
+msgstr "Победившее решение содержало только ваш ордер. Отдельная выгода в этом случае не отображается."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaOrderNotPlaced/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/SolanaSigningCountdown/index.tsx
@@ -2439,7 +2440,7 @@ msgstr "Закрыто"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this tip!"
-msgstr ""
+msgstr "Поделиться этим советом!"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/ConnectTelegram/ConnectTelegramModal.tsx
 msgid "Connect Telegram"
@@ -2496,7 +2497,7 @@ msgstr "4 минуты"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Solvers included your order in a batch with other orders. There was no offer for your order alone to compare, so there’s no separate gain to show."
-msgstr ""
+msgstr "Поскольку солверы включили ваш ордер в общий пакет и не делали предложений для него отдельно, сравнение невозможно и отдельная выгода не отображается."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/AccountProxyRecoverPage.container.tsx
 msgid "Recoverable balance"
@@ -3143,7 +3144,7 @@ msgstr "Ордер отменен"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "The winning solution contained only your order. There was no offer for your order alone to compare, so there’s no separate gain to show."
-msgstr ""
+msgstr "Победившее решение содержало только ваш ордер. Других предложений отдельно для него не поступало, поэтому отдельная выгода не отображается."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Expired before creation"
@@ -3408,7 +3409,7 @@ msgstr "Торгуйте с умом, экономьте больше!"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "There’s no separate gain to show."
-msgstr ""
+msgstr "Отдельная выгода отсутствует."
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/PoolInfo/index.tsx
 msgid "available for your {poolName} pool"
@@ -3970,7 +3971,7 @@ msgstr "Неподдерживаемый кошелек"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
 msgid "≈ {gainFiat} more than trading alone"
-msgstr ""
+msgstr "≈ на {gainFiat} выгоднее, чем при одиночной сделке"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliateTraderCodeInfo.tsx
@@ -4294,7 +4295,8 @@ msgstr "Это Альфа-версия CoW Swap в сети Solana. Данная
 #: libs/common-utils/src/misc.ts
 msgid "Looks like something's not quite right with your wallet. \n"
 "Give it a quick check and try again in a moo-ment! 🐄"
-msgstr ""
+msgstr "Похоже, возникла проблема с вашим кошельком.\n"
+"Проверьте его и попробуйте снова через муу-нуточку! 🐄"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/TwapSellAmountDescription/TwapSellAmountDescription.pure.tsx
 msgid "TWAP splits your swap into equal parts over time"
@@ -5980,7 +5982,8 @@ msgstr "Чек ордера"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "{solverCount, plural, one {# solver competed for my swap on @CoWSwap.} few {# solvers competed for my swap on @CoWSwap.} many {# solvers competed for my swap on @CoWSwap.} other {# solvers competed for my swap on @CoWSwap.}} {winnerName} won 🐮⚡\n\n"
 "Start swapping on swap.cow.fi"
-msgstr ""
+msgstr "{solverCount, plural, one {# солвер соревновался за мой обмен на @CoWSwap.} few {# солвера соревновались за мой обмен на @CoWSwap.} many {# солверов соревновались за мой обмен на @CoWSwap.} other {# солверов соревновались за мой обмен на @CoWSwap.}} Победил {winnerName} 🐮⚡\n\n"
+"Торгуйте на swap.cow.fi"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
@@ -6615,7 +6618,7 @@ msgstr "Действие"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactIndicator/index.tsx
 msgid "This price is {displayedPercent}% higher than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
-msgstr ""
+msgstr "Указанная цена на {displayedPercent}% превышает текущую рыночную цену. Продажа <0/> может оказаться убыточной! Нажмите «Рыночная цена», чтобы приравнять лимитную цену к текущему рыночному курсу."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -7624,7 +7627,7 @@ msgstr "Открытых ордеров не найдено"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Wait & save · Joined the batch"
-msgstr ""
+msgstr "Подождать и сэкономить · Добавлен в батч"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Approve <0/> and {contextDefaultText}"
@@ -8147,7 +8150,7 @@ msgstr "Ордер исполнен"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/WaitAndSaveOutcome/WaitAndSaveOutcome.pure.tsx
 msgid "more than trading alone"
-msgstr ""
+msgstr "выгоднее, чем при одиночной сделке"
 
 #: apps/cowswap-frontend/src/modules/affiliate/containers/AffiliatePartnerCodeCreation.tsx
 #~ msgid "Invalid request."
@@ -9103,7 +9106,8 @@ msgstr "Не удалось перевести получаемый токен. 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "Hey, I just got an extra {gain} with Wait & save on @CoWSwap! 🐮💸\n\n"
 "Start swapping on swap.cow.fi"
-msgstr ""
+msgstr "Плюс {gain} к сделке благодаря «Подождать и сэкономить» на @CoWSwap! 🐮💸\n\n"
+"Торгуйте на swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "{seconds, plural, one {# second} few {# seconds} many {# seconds} other {# seconds}}"
@@ -9229,7 +9233,7 @@ msgstr "TWAP-ордер на продажу"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "Your order was part of a Coincidence of Wants (CoW): solvers combined it with other traders’ orders in the same batch, and you got more than trading alone."
-msgstr ""
+msgstr "Ваш ордер стал частью Coincidence of Wants (CoW, совпадение потребностей): солверы объединили его с ордерами других трейдеров в одном батче, и вы получили больше, чем при отдельном обмене."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/WaitAndSaveRow/WaitAndSaveRow.pure.tsx
 #~ msgid "Join the next batch auction to save on network fees."
@@ -9477,7 +9481,7 @@ msgstr "Восстановить!"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeTokenPair/CowParticipationFooter.pure.tsx
 msgid "{companionCount, plural, one {Wait & save · Batched with # other} few {Wait & save · Batched with # others} many {Wait & save · Batched with # others} other {Wait & save · Batched with # others}}"
-msgstr ""
+msgstr "{companionCount, plural, one {Подождать и сэкономить · В батче с # другим ордером} few {Подождать и сэкономить · В батче с # другими ордерами} many {Подождать и сэкономить · В батче с # другими ордерами} other {Подождать и сэкономить · В батче с # другими ордерами}}"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/EstimatedFillPrice/index.tsx
