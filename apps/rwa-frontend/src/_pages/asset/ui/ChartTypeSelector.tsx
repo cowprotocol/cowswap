@@ -8,6 +8,7 @@ import styles from './ChartRangeSelector.module.css'
 import { chartTypeAtom } from '../model/chartTypeAtom'
 
 import { RWA_CHART_TYPES, type RwaChartType } from '@/entities/asset'
+import { trackEvent } from '@/shared/lib/analytics'
 
 const CHART_TYPE_LABELS: Record<RwaChartType, string> = { line: 'Line chart', candles: 'Candlestick chart' }
 
@@ -24,7 +25,10 @@ export function ChartTypeSelector(): ReactNode {
           aria-pressed={item === chartType}
           aria-label={CHART_TYPE_LABELS[item]}
           title={CHART_TYPE_LABELS[item]}
-          onClick={() => setChartType(item)}
+          onClick={() => {
+            setChartType(item)
+            trackEvent('chart_type_select', { chartType: item })
+          }}
         >
           {item === 'line' ? <LineIcon /> : <CandlesIcon />}
         </button>

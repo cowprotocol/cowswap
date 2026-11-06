@@ -26,6 +26,7 @@ import {
 } from '../model/headerSearchAtoms'
 
 import { RWA_ASSET_TYPE_LABELS, type RwaAssetWithMarket } from '@/entities/asset'
+import { trackEvent } from '@/shared/lib/analytics'
 import { useDismissOnOutsideInteraction } from '@/shared/lib/dismiss'
 import { CloseIcon, SearchIcon } from '@/shared/ui/icons'
 import { TokenLogo } from '@/shared/ui/token-logo'
@@ -115,6 +116,7 @@ function SearchCombobox({ inputRef, onOpenAsset }: SearchComboboxProps): ReactNo
     setActiveIndex(-1)
     onOpenAsset()
     inputRef.current?.blur()
+    trackEvent('search_asset_select', { ticker, search_term: query.trim() })
     router.push(`/asset/${ticker}`)
   }
 
