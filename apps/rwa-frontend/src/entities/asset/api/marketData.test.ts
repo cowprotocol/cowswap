@@ -107,11 +107,7 @@ describe('toChartPoints', () => {
 })
 
 describe('coingeckoProvider.getNetworkStats', () => {
-  const TOKEN_MARKETS = {
-    'nvidia-ondo-tokenized-stock': { price: 230, marketCap: null, volume24h: null, logoUrl: null },
-  }
-
-  it('values the network supply at the token price and keeps the DEX volume', async () => {
+  it('keeps the DEX volume of every token', async () => {
     const [ondo, xstock] = [NVDA.tokens[0], NVDA.tokens[2]]
     const fetchMock = mockFetch({
       data: [
@@ -129,7 +125,6 @@ describe('coingeckoProvider.getNetworkStats', () => {
     const stats = await coingeckoProvider.getNetworkStats(
       1,
       [ondo, xstock].filter((t) => t !== undefined),
-      TOKEN_MARKETS,
     )
 
     expect(fetchMock).toHaveBeenCalledTimes(1)
@@ -137,8 +132,8 @@ describe('coingeckoProvider.getNetworkStats', () => {
       `/networks/eth/tokens/multi/${ondo?.address},${xstock?.address}`,
     )
     expect(stats).toEqual([
-      { address: ondo?.address, onchainCap: 230_115, dexVolume24h: 814560.89 },
-      { address: xstock?.address, onchainCap: null, dexVolume24h: 0 },
+      { address: ondo?.address, dexVolume24h: 814560.89 },
+      { address: xstock?.address, dexVolume24h: 0 },
     ])
   })
 
@@ -148,7 +143,7 @@ describe('coingeckoProvider.getNetworkStats', () => {
     const fetchMock = mockFetch({ data: [] })
     const token = filler.tokens[35]
 
-    await coingeckoProvider.getNetworkStats(1, token ? [token] : [], TOKEN_MARKETS)
+    await coingeckoProvider.getNetworkStats(1, token ? [token] : [])
 
     const addresses = filler.tokens.slice(30).map(({ address }) => address)
 
@@ -161,9 +156,7 @@ describe('coingeckoProvider.getNetworkStats', () => {
 
     const [ondo] = NVDA.tokens
 
-    await expect(coingeckoProvider.getNetworkStats(1, ondo ? [ondo] : [], TOKEN_MARKETS)).rejects.toThrow(
-      'responded with 429',
-    )
+    await expect(coingeckoProvider.getNetworkStats(1, ondo ? [ondo] : [])).rejects.toThrow('responded with 429')
   })
 
   it('returns empty stats on a network the onchain API does not index', async () => {
@@ -171,8 +164,8 @@ describe('coingeckoProvider.getNetworkStats', () => {
 
     const [ondo] = NVDA.tokens
 
-    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [], TOKEN_MARKETS)).toEqual([
-      { address: ondo?.address, onchainCap: null, dexVolume24h: null },
+    expect(await coingeckoProvider.getNetworkStats(57073, ondo ? [ondo] : [])).toEqual([
+      { address: ondo?.address, dexVolume24h: null },
     ])
     expect(fetchMock).not.toHaveBeenCalled()
   })

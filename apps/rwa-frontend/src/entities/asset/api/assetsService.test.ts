@@ -518,21 +518,20 @@ describe('getAssetTokenStats', () => {
     getNetworkStatsMock.mockImplementation((chainId: number) =>
       Promise.resolve(
         chainId === 1
-          ? [{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }]
-          : [{ address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 }],
+          ? [{ address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 }]
+          : [{ address: '0x0000000000000000000000000000000000000003', dexVolume24h: 2 }],
       ),
     )
 
     const stats = await getAssetTokenStats(nvda())
 
-    expect(getTokenMarketsMock).toHaveBeenCalledTimes(1)
-    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]], NVDA_TOKEN_MARKETS)
-    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]], NVDA_TOKEN_MARKETS)
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(1, [nvda().tokens[0]])
+    expect(getNetworkStatsMock).toHaveBeenCalledWith(56, [nvda().tokens[1]])
     expect(stats).toEqual({
       ticker: 'NVDA',
       tokens: [
-        { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-        { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: 20, dexVolume24h: 2 },
+        { chainId: 1, address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 },
+        { chainId: 56, address: '0x0000000000000000000000000000000000000003', dexVolume24h: 2 },
       ],
       degraded: false,
     })
@@ -541,7 +540,7 @@ describe('getAssetTokenStats', () => {
   it('keeps the networks that loaded and flags the response when one fails', async () => {
     getNetworkStatsMock.mockImplementation((chainId: number) =>
       chainId === 1
-        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 }])
+        ? Promise.resolve([{ address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 }])
         : Promise.reject(new Error('Upstream failed')),
     )
 
@@ -549,8 +548,8 @@ describe('getAssetTokenStats', () => {
 
     expect(stats.degraded).toBe(true)
     expect(stats.tokens).toEqual([
-      { chainId: 1, address: '0x0000000000000000000000000000000000000002', onchainCap: 10, dexVolume24h: 1 },
-      { chainId: 56, address: '0x0000000000000000000000000000000000000003', onchainCap: null, dexVolume24h: null },
+      { chainId: 1, address: '0x0000000000000000000000000000000000000002', dexVolume24h: 1 },
+      { chainId: 56, address: '0x0000000000000000000000000000000000000003', dexVolume24h: null },
     ])
   })
 })
